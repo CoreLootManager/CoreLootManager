@@ -1,0 +1,44 @@
+variables:
+    LUA_VERSION: "5.1.4"
+    LUA_PATH: "/tmp"
+
+stages:
+    - syntax
+
+.install_lua: &install_lua |-
+    export BASE_DIR=$PWD
+    yum install -q -y epel-release
+    yum install -q -y readline-devel gcc make
+    curl https://www.lua.org/ftp/lua-$LUA_VERSION.tar.gz > $LUA_PATH/lua-$LUA_VERSION.tar.gz
+    cd $LUA_PATH
+    tar -xzf lua-$LUA_VERSION.tar.gz
+    cd lua-$LUA_VERSION
+    make linux
+    make test
+    make install INSTALL_TOP=$LUA_PATH
+    cd $BASE_DIR
+
+.centos7:
+    image: centos:7
+
+.centos7_luac:
+    extends: .centos7
+    before_script:
+        - *install_lua
+ 
+.centos7_xmllint:
+    extends: .centos7
+
+lua:
+    extends: .centos7_luac
+    stage: syntax
+    
+    #script:
+    #    - $LUA_PATH/bin/luac -o GroupCalendar.luac GroupCalendar_ImportData.lua GroupCalendar_ImportDataEnums.lua
+
+xml:
+    extends: .centos7_xmllint
+    stage: syntax
+    
+    #script:
+    #    - xmllint --dropdtd GroupCalendar_ImportData.xml
