@@ -1,3 +1,4 @@
+-- File is licensed on CC Share-Alike license by https://github.com/DeadlyBossMods and is taken from that RequestArtifactCompletionHistory
 std = "lua51"
 max_line_length = false
 exclude_files = {
