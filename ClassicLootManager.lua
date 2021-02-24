@@ -24,7 +24,15 @@ CLM.version = {
 }
 
 function CLM.core:OnInitialize()
-    -- Code that you want to run when the addon is first loaded goes here.
+
+    CLM.Interconnec.Database.Initialize()
+    CLM.Interconnect.Config.Initialize()
+    CLM.Interconnect.Comms.Initialize()
+    CLM.Interconnect.Raid.Initialize()
+    CLM.Interconnect.StandingsManager.Initialize()
+    CLM.Interconnect.LootManager.Initialize()
+    CLM.Interconnect.ACL()
+
 end
 
 function CLM.core:OnEnable()
