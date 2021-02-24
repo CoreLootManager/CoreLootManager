@@ -24,7 +24,7 @@ stages:
 .install_luarocks: &install_luarocks |-
     mkdir -p $LUAROCKS_PATH
     cd $LUAROCKS_PATH
-    curl https://luarocks.org/releases/luarocks-$LUAROCKS_VERSION.tar.gz > luarocks-$LUAROCKS_VERSION.tar.gz
+    curl https://luarocks.github.io/luarocks/releases/luarocks-$LUAROCKS_VERSION.tar.gz > luarocks-$LUAROCKS_VERSION.tar.gz
     tar xf luarocks-$LUAROCKS_VERSION.tar.gz
     cd luarocks-$LUAROCKS_VERSION
     ./configure --with-lua-include=$LUA_PATH/lua-$LUA_VERSION/src --with-lua-bin=$LUA_PATH/lua-$LUA_VERSION/src
