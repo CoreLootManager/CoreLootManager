@@ -9,7 +9,7 @@ stages:
     - syntax
 
 .install_zip: &install_zip |-
-    yum install -y zip
+    yum install -y zip unzip
 
 .install_lua: &install_lua |-
     export BASE_DIR=$PWD
