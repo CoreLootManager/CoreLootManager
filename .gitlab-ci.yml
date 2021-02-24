@@ -1,6 +1,9 @@
 variables:
     LUA_VERSION: "5.1.4"
     LUA_PATH: "/tmp"
+    LUAROCKS_PATH: "/tmp/luarocks"
+    LUAROCKS_VERSION: "3.5.0"
+    LUACHECK_PATH: $LUAROCKS_PATH/luarocks-$LUAROCKS_VERSION/lua_modules/bin
 
 stages:
     - syntax
@@ -18,6 +21,21 @@ stages:
     make install INSTALL_TOP=$LUA_PATH
     cd $BASE_DIR
 
+.install_luarocks: &install_luarocks |-
+    mkdir -p $LUAROCKS_PATH
+    cd $LUAROCKS_PATH
+    wget https://luarocks.org/releases/luarocks-$LUAROCKS_VERSION.tar.gz
+    tar xf luarocks-$LUAROCKS_VERSION.tar.gz
+    cd luarocks-$LUAROCKS_VERSION
+    ./configure --with-lua-include=$LUA_PATH/lua-$LUA_VERSION/src --with-lua-bin=$LUA_PATH/lua-$LUA_VERSION/src
+    make
+    make install
+
+.install_luacheck: &install_luacheck |-
+    cd $LUAROCKS_PATH/luarocks-$LUAROCKS_VERSION
+    luarocks install luacheck
+
+
 .centos7:
     image: centos:7
 
@@ -25,6 +43,8 @@ stages:
     extends: .centos7
     before_script:
         - *install_lua
+        - *install_luarocks
+        - *install_luacheck
  
 .centos7_xmllint:
     extends: .centos7
@@ -33,8 +53,8 @@ lua:
     extends: .centos7_luac
     stage: syntax
     
-    #script:
-    #    - $LUA_PATH/bin/luac -o GroupCalendar.luac GroupCalendar_ImportData.lua GroupCalendar_ImportDataEnums.lua
+    script:
+        - $LUACHECK_PATH/luacheck --config .luacheckrc .
 
 xml:
     extends: .centos7_xmllint
