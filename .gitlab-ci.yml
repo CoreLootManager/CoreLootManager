@@ -25,6 +25,7 @@ stages:
     cd $BASE_DIR
 
 .install_luarocks: &install_luarocks |-
+    export BASE_DIR=$PWD
     mkdir -p $LUAROCKS_PATH
     cd $LUAROCKS_PATH
     curl https://luarocks.github.io/luarocks/releases/luarocks-$LUAROCKS_VERSION.tar.gz > luarocks-$LUAROCKS_VERSION.tar.gz
@@ -33,11 +34,14 @@ stages:
     ./configure --with-lua-include=$LUA_INSTALL_PATH/lua-$LUA_VERSION/src --with-lua-bin=$LUA_INSTALL_PATH/lua-$LUA_VERSION/src
     make
     make install
+    cd $BASE_DIR
 
 .install_luacheck: &install_luacheck |-
+    export BASE_DIR=$PWD
     cd $LUAROCKS_PATH/luarocks-$LUAROCKS_VERSION
     luarocks install luafilesystem
     luarocks install luacheck
+    cd $BASE_DIR
 
 .centos7:
     image: centos:7
