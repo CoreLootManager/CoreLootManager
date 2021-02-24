@@ -1,7 +1,8 @@
 local name, CLM = ...;
 
-CLM = LibStub("AceAddon-3.0"):NewAddon(
-    name, 
+
+CLM.core = LibStub("AceAddon-3.0"):NewAddon(
+    name,
     "AceComm-3.0", -- Comms using ChatLibThrottle
     "AceConsole-3.0", -- Slash Commands
     "AceEvent-3.0", -- WoW Event handlers
@@ -10,8 +11,9 @@ CLM = LibStub("AceAddon-3.0"):NewAddon(
 CLM.GUI = LibStub("AceGUI-3.0")
 
 -- TODO: Should the modules be created in respective files? How does WoW Resolve that?
-CLM:NewModule("Config", {}, "AceConfig-3.0")
-CLM:NewModule("Database", {}, "AceDB-3.0")
+CLM.core:NewModule("Config", {}, "AceConfig-3.0")
+CLM.core:NewModule("Database", {}, "AceDB-3.0")
+CLM.core:NewModule("Comms", {}, "AceSerialize-3.0")
 
 -- TODO populate through CI
 CLM.version = {
@@ -21,14 +23,14 @@ CLM.version = {
     notes = ""
 }
 
-function CLM:OnInitialize()
+function CLM.core:OnInitialize()
     -- Code that you want to run when the addon is first loaded goes here.
-  end
-  
-function CLM:OnEnable()
+end
+
+function CLM.core:OnEnable()
       -- Called when the addon is enabled
 end
-  
-function CLM:OnDisable()
+
+function CLM.core:OnDisable()
       -- Called when the addon is disabled
 end

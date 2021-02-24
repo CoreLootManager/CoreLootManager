@@ -1,8 +1,9 @@
 -- File is licensed on CC Share-Alike license by https://github.com/DeadlyBossMods and is taken from that repository
 std = "lua51"
 max_line_length = false
+allow_defined = true
 exclude_files = {
-	"**/Libs/**/*.lua",
+	"**/Libs/**",
 	".luacheckrc"
 }
 ignore = {
@@ -19,28 +20,12 @@ ignore = {
 	"542", -- An empty if branch
 }
 globals = {
+	-- Design
+	"LibStub",
+	-- Saved Variable
+	
+	-- WoW 
 	"_G",
-
-	-- Saved Variables
-	"DBM_AllSavedOptions",
-	"DBM_MinimapIcon",
-	"DBM_UsedProfile",
-	"DBM_UseDualProfile",
-	"DBM_CharSavedRevision",
-	"DBT_AllPersistentOptions",
-
-	-- DBM
-	"DBM_CORE_L",
-	"DBM_DISABLE_ZONE_DETECTION",
-	"DBM_GUI_L",
-	"DBM_GUI",
-	"DBM_OPTION_SPACER",
-	"DBM",
-	"DBT",
-	"LOCALE_koKR",
-	"LOCALE_ruRU",
-	"LOCALE_zhCN",
-	"LOCALE_zhTW",
 
 	-- FrameXML misc
 	"ALTERNATE_POWER_INDEX",
