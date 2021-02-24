@@ -38,7 +38,6 @@ stages:
     cd $LUAROCKS_PATH/luarocks-$LUAROCKS_VERSION
     luarocks install luacheck
 
-
 .centos7:
     image: centos:7
 
@@ -58,7 +57,7 @@ lua:
     stage: syntax
     
     script:
-        - $LUACHECK_PATH/luacheck --config .luacheckrc .
+        - sudo $LUACHECK_PATH/luacheck --config .luacheckrc .
 
 # xml:
 #     extends: .centos7_xmllint
