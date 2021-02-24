@@ -56,9 +56,8 @@ lua:
     script:
         - $LUACHECK_PATH/luacheck --config .luacheckrc .
 
-xml:
-    extends: .centos7_xmllint
-    stage: syntax
-    
-    #script:
-    #    - xmllint --dropdtd GroupCalendar_ImportData.xml
+# xml:
+#     extends: .centos7_xmllint
+#     stage: syntax
+#     script:
+#         - xmllint --dropdtd GroupCalendar_ImportData.xml
