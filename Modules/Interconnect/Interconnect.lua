@@ -5,13 +5,13 @@
 -- Designer should keep this up to date as this glue logic represents addons public API
 -- All other functions are expected to be local
 
-_, CLM = ...
+local _, CLM = ...
 
 local function stub(...)
     -- Not implemented
 end
 
-CLM.Interconnect = 
+CLM.Interconnect =
 {
     Database = { -- in memory database and storage backend
         Initialize = stub,
