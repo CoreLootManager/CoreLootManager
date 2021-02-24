@@ -1,6 +1,6 @@
 variables:
     LUA_VERSION: "5.1.4"
-    LUA_PATH: "/tmp"
+    LUA_INSTALL_PATH: "/tmp"
     LUAROCKS_PATH: "/tmp/luarocks"
     LUAROCKS_VERSION: "3.5.0"
     LUACHECK_PATH: $LUAROCKS_PATH/luarocks-$LUAROCKS_VERSION/lua_modules/bin
@@ -15,13 +15,13 @@ stages:
     export BASE_DIR=$PWD
     yum install -q -y epel-release
     yum install -q -y readline-devel gcc make
-    curl https://www.lua.org/ftp/lua-$LUA_VERSION.tar.gz > $LUA_PATH/lua-$LUA_VERSION.tar.gz
-    cd $LUA_PATH
+    curl https://www.lua.org/ftp/lua-$LUA_VERSION.tar.gz > $LUA_INSTALL_PATH/lua-$LUA_VERSION.tar.gz
+    cd $LUA_INSTALL_PATH
     tar -xzf lua-$LUA_VERSION.tar.gz
     cd lua-$LUA_VERSION
     make linux
     make test
-    make install INSTALL_TOP=$LUA_PATH
+    make install INSTALL_TOP=$LUA_INSTALL_PATH
     cd $BASE_DIR
 
 .install_luarocks: &install_luarocks |-
@@ -30,7 +30,7 @@ stages:
     curl https://luarocks.github.io/luarocks/releases/luarocks-$LUAROCKS_VERSION.tar.gz > luarocks-$LUAROCKS_VERSION.tar.gz
     tar xf luarocks-$LUAROCKS_VERSION.tar.gz
     cd luarocks-$LUAROCKS_VERSION
-    ./configure --with-lua-include=$LUA_PATH/lua-$LUA_VERSION/src --with-lua-bin=$LUA_PATH/lua-$LUA_VERSION/src
+    ./configure --with-lua-include=$LUA_INSTALL_PATH/lua-$LUA_VERSION/src --with-lua-bin=$LUA_INSTALL_PATH/lua-$LUA_VERSION/src
     make
     make install
 
