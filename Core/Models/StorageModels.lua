@@ -1,5 +1,6 @@
 local _, CLM = ...
 local CONSTANTS = CLM.CONSTANTS
+local MODELS = CLM.MODELS
 -- Class object models to be used by storage part of database
 
 -----------------------------------
@@ -7,9 +8,9 @@ local CONSTANTS = CLM.CONSTANTS
 --                               --
 --       points storage          --
 -----------------------------------
-PointEntry = class()
+MODELS.PointEntry = class()
 
-function PointEntry:init(primary, secondary)
+function MODELS.PointEntry:init(primary, secondary)
     self.primary = primary or 0 
     self.secondary = secondary 
     -- We allow secondary to be nil so it wont be stored, or i think at least :D
@@ -20,9 +21,9 @@ end
 --                               --
 -- where does the loot come from --
 -----------------------------------
-SourceEntry = class()
+MODELS.SourceEntry = class()
 
-function SourceEntry:init(encounter, zone)
+function MODELS.SourceEntry:init(encounter, zone)
     self.encounter = CONSTANTS.ENCOUNTERS[encounter] and encounter or 0
     self.zone = CONSTANTS.ZONES[zone] and zone or 0
 end
@@ -32,14 +33,13 @@ end
 --                             --
 --       loot description      --
 ---------------------------------
-LootEntry = class()
+MODELS.LootEntry = class()
 
-function LootEntry:init(id, target, value, timestamp, source, manager, reassignInfo)
+function MODELS.LootEntry:init(id, target, value, timestamp, manager, reassignInfo)
     self.id = id or 0
-    self.value = value or PointEntry:new()
+    self.value = value or MODELS.PointEntry:new()
     self.target = target or ""
     self.timestamp = timestamp or 0
-    self.source = source or SourceEntry:new()
     self.manager = manager or ""
     self.reassignInfo = reassignInfo
     -- reassignInfo should be nil and stored only if this is a reassignment
@@ -51,9 +51,9 @@ end
 --                         --
 --  changes to the points  --
 -----------------------------
-PointOperationEntry = class()
+MODELS.PointOperationEntry = class()
 
-function PointOperationEntry:init(operation, targets, value, timestamp, manager, comment)
+function MODELS.PointOperationEntry:init(operation, targets, value, timestamp, manager, comment)
     self.operation = CONSTANTS.POINT_OPERATIONS[operation] and operation or CONSTANTS.POINT_OPERATION_NOP
     -- enforce targets to be always a list
     local targetsType = type(targets)
@@ -64,7 +64,7 @@ function PointOperationEntry:init(operation, targets, value, timestamp, manager,
     else
         self.targets = {}
     end
-    self.value = value or PointEntry:new()
+    self.value = value or MODELS.PointEntry:new()
     self.timestamp = timestamp or 0
     self.manager = manager or ""
     self.comment = comment or ""
