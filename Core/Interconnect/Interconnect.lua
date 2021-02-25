@@ -13,26 +13,37 @@ end
 
 CLM.Interconnect =
 {
-    Database = { -- in memory database and storage backend
+    Database = { -- in memory database and storage backend for handling user information
         Initialize = stub,
-        Get = stub,
+        Get = stub, -- Configuration and addon metadata will be handled directly through the tables
         Search = stub
     },
     Config = { -- Addon Configuration
+        -- Each module will have own configuration 
+        -- they will register with the config module using the ACE3 options tables
         Initialize = stub,
-        Get = stub,
-        Update = stub
+        Register = stub
     },
     Comms = { -- AddOn communication
         Initialize = stub,
         Send = stub,
         RegisterCallback = stub
     },
+    EventHandler = { -- WoW Events handling
+        -- Each module can require mutliple events
+        -- they will register with the handler module which will then call their handlers one by one on the events
+        Initialize = stub,
+        Register = stub
+    },
     Raid = { -- Raid management (initialize / standby / boss points award)
         Initialize = stub,
         -- TODO
     },
-    StandingsManager = { -- Point Management
+    Standings = { -- 
+        Initialize = stub,
+        -- TODO
+    },
+    PointManager = { -- Point award / modify manager
         Initialize = stub,
         -- TODO
     },

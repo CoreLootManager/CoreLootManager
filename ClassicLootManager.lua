@@ -2,10 +2,10 @@ local name, CLM = ...;
 
 CLM.core = LibStub("AceAddon-3.0"):NewAddon(
     name,
-    "AceComm-3.0", -- Comms using ChatLibThrottle
-    "AceConsole-3.0", -- Slash Commands
-    "AceEvent-3.0", -- WoW Event handlers
-    "AceTimer-3.0" -- Timers
+    "AceComm-3.0",      -- Comms using ChatLibThrottle
+    "AceConsole-3.0",   -- Slash Commands
+    "AceEvent-3.0",     -- WoW Event handlers
+    "AceTimer-3.0"      -- Timers
 );
 CLM.GUI = LibStub("AceGUI-3.0")
 
@@ -28,10 +28,12 @@ function CLM.core:OnInitialize()
     CLM.Interconnect.Database.Initialize()
     CLM.Interconnect.Config.Initialize()
     CLM.Interconnect.Comms.Initialize()
+    CLM.Interconnect.EventHandler.Initialize()
     CLM.Interconnect.Raid.Initialize()
-    CLM.Interconnect.StandingsManager.Initialize()
+    CLM.Interconnect.Standings.Initialize()
+    CLM.Interconnect.PointManager.Initialize()
     CLM.Interconnect.LootManager.Initialize()
-    CLM.Interconnect.ACL()
+    CLM.Interconnect.ACL.Initialize()
 
 end
 

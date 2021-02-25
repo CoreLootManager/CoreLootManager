@@ -43,6 +43,8 @@ Core\Models\StorageModels.lua
 Modules\Comms\Comms.lua
 Modules\Config\Config.lua
 Modules\Database\Database.lua
+Modules\Database\Storage.lua
+Modules\EventHandler\EventHandler.lua
 Modules\PointManager\PointManager.lua
 Modules\PointManager\DKP.lua
-Modules\DistributionManager\DistributionManager.lua
+Modules\LootManager\LootManager.lua
