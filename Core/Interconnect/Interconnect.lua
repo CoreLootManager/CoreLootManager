@@ -19,7 +19,7 @@ CLM.Interconnect =
         Search = stub
     },
     Config = { -- Addon Configuration
-        -- Each module will have own configuration 
+        -- Each module will have own configuration
         -- they will register with the config module using the ACE3 options tables
         Initialize = stub,
         Register = stub

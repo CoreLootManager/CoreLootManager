@@ -11,8 +11,8 @@ local MODELS = CLM.MODELS
 MODELS.PointEntry = class()
 
 function MODELS.PointEntry:init(primary, secondary)
-    self.primary = primary or 0 
-    self.secondary = secondary 
+    self.primary = primary or 0
+    self.secondary = secondary
     -- We allow secondary to be nil so it wont be stored, or i think at least :D
     -- This way it will be up to Point manager discretion to use it properly
 end
@@ -71,7 +71,7 @@ function MODELS.PointOperationEntry:init(changes, timestamp, manager, comment)
     -- enforce changes to be always a list
     local changeType = type(changes)
     if changeType == "table" then
-        self.changes = targets
+        self.changes = changes
     elseif changeType == "nil" then
         self.changes = {}
     else
@@ -95,5 +95,5 @@ MODELS.AltLink = class()
 
 function MODELS.AltLink:init(alt, main)
     self.alt = alt or ""
-    self.main = main or "" 
+    self.main = main or ""
 end

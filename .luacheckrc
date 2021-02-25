@@ -20,6 +20,7 @@ ignore = {
 globals = {
 	-- Design
 	"LibStub",
+	"class",
 	-- Saved Variable
 	
 	-- WoW 
