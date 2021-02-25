@@ -43,7 +43,21 @@ function MODELS.LootEntry:init(id, target, value, timestamp, manager, reassignIn
     self.manager = manager or ""
     self.reassignInfo = reassignInfo
     -- reassignInfo should be nil and stored only if this is a reassignment
-    -- reassignInfo will contain the uuid (timestamp-officer)
+    -- reassignInfo will contain the uuid (timestamp..officer concatenation)
+end
+
+----------------------------
+--      Point Change      --
+--                        --
+--  changes to the points --
+--    related to users    --
+----------------------------
+MODELS.PointChange = class()
+
+function MODELS.PointChange:init(operation, target, value)
+    self.operation = CONSTANTS.POINT_OPERATIONS[operation] and operation or CONSTANTS.POINT_OPERATION_NOP
+    self.target = target or ""
+    self.value = value or MODELS.PointEntry:new()
 end
 
 -----------------------------
@@ -53,18 +67,16 @@ end
 -----------------------------
 MODELS.PointOperationEntry = class()
 
-function MODELS.PointOperationEntry:init(operation, targets, value, timestamp, manager, comment)
-    self.operation = CONSTANTS.POINT_OPERATIONS[operation] and operation or CONSTANTS.POINT_OPERATION_NOP
-    -- enforce targets to be always a list
-    local targetsType = type(targets)
-    if targetsType == "table" then
-        self.targets = targets
-    elseif targetsType == "string" then
-        self.targets = { targets }
+function MODELS.PointOperationEntry:init(changes, timestamp, manager, comment)
+    -- enforce changes to be always a list
+    local changeType = type(changes)
+    if changeType == "table" then
+        self.changes = targets
+    elseif changeType == "nil" then
+        self.changes = {}
     else
-        self.targets = {}
+        self.changes = { changes }
     end
-    self.value = value or MODELS.PointEntry:new()
     self.timestamp = timestamp or 0
     self.manager = manager or ""
     self.comment = comment or ""

@@ -5,10 +5,18 @@
 ## Author: CLM Development Team
 ## X-License: MIT
 
+## Utility
+Libs\Class\class.lua
+
 ## LIBS
 
 Libs\LibStub\LibStub.lua
+Libs\LibCompress\lib.xml
+Libs\LibDeflate\lib.xml
+Libs\LibSerialize\lib.xml
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+
+# ACE3
 Libs\AceAddon-3.0\AceAddon-3.0.xml
 Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\AceTimer-3.0\AceTimer-3.0.xml
@@ -24,8 +32,17 @@ Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceTab-3.0\AceTab-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 
+
 ## Addon Core
 ClassicLootManager.lua
+Core\Constants\Constants.lua
+Core\Interconnect\Interconnect.lua
+Core\Models\StorageModels.lua
 
-## Addon
-
+## Addon modules
+Modules\Comms\Comms.lua
+Modules\Config\Config.lua
+Modules\Database\Database.lua
+Modules\PointManager\PointManager.lua
+Modules\PointManager\DKP.lua
+Modules\DistributionManager\DistributionManager.lua
