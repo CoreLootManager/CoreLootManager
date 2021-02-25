@@ -39,7 +39,7 @@ CLM.Interconnect =
         Initialize = stub,
         -- TODO
     },
-    Standings = { -- 
+    ProfileManager = { -- User profiles, alt linking etc
         Initialize = stub,
         -- TODO
     },

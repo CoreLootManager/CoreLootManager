@@ -35,6 +35,7 @@ Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 
 ## Addon Core
 ClassicLootManager.lua
+Core\Config\Config.lua
 Core\Constants\Constants.lua
 Core\Interconnect\Interconnect.lua
 Core\Models\StorageModels.lua

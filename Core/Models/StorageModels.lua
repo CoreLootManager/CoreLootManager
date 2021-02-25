@@ -81,3 +81,19 @@ function MODELS.PointOperationEntry:init(changes, timestamp, manager, comment)
     self.manager = manager or ""
     self.comment = comment or ""
 end
+
+MODELS.Profile = class()
+
+function MODELS.Profile:init(name, current, gained, spent)
+    self.name = name or ""
+    self.current = current or MODELS.PointEntry:new()
+    self.gained = gained or MODELS.PointEntry:new()
+    self.spent = spent or MODELS.PointEntry:new()
+end
+
+MODELS.AltLink = class()
+
+function MODELS.AltLink:init(alt, main)
+    self.alt = alt or ""
+    self.main = main or "" 
+end
