@@ -2,7 +2,6 @@ local name, CLM = ...;
 
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name);
 CLM.GUI = LibStub("AceGUI-3.0")
-
 --  AddOn contained constants
 CLM.CONSTANTS = {}
 
@@ -14,30 +13,46 @@ CLM.VERSION = {
     notes = ""
 }
 
-function CLM.core:OnInitialize()
-    -- Core
-    
-    -- Backend
-    CLM.Interconnect.Database.Initialize()
-    CLM.Interconnect.ConfigManager.Initialize()
-    CLM.Interconnect.LedgerManager.Initialize()
-    CLM.Interconnect.StateManager.Initialize()
-    CLM.Interconnect.Comms.Initialize()
-    CLM.Interconnect.ACL.Initialize()
-    --  Features
-    CLM.Interconnect.EventHandler.Initialize()
-    CLM.Interconnect.RaidManager.Initialize()
-    CLM.Interconnect.RosterManager.Initialize()
-    CLM.Interconnect.ProfileManager.Initialize()
-    CLM.Interconnect.PointManager.Initialize()
-    CLM.Interconnect.LootManager.Initialize()
+-- Local API
+local CORE = CLM.CORE
 
+function CORE:_DelayedInitialize()
+    local Interconnect = CLM.Interconnect
+    -- Core
+    if type(CLM_Logs) ~= "table" then
+        CLM_Logs = {}
+    end
+    CLM.LOG:Debug("My message DEBUG")
+    CLM.LOG:Info("My message INFO")
+    CLM.LOG:Warning("My message WARNING")
+    CLM.LOG:Error("My message ERROR")
+    CLM.LOG:Fatal("My message FATAL")
+    -- Backend
+    Interconnect.Database.Initialize()
+    Interconnect.ConfigManager.Initialize()
+    Interconnect.Logger.Initialize()
+    Interconnect.LedgerManager.Initialize()
+    Interconnect.StateManager.Initialize()
+    Interconnect.Comms.Initialize()
+    Interconnect.ACL.Initialize()
+    --  Features
+    Interconnect.EventHandler.Initialize()
+    Interconnect.RaidManager.Initialize()
+    Interconnect.RosterManager.Initialize()
+    Interconnect.ProfileManager.Initialize()
+    Interconnect.PointManager.Initialize()
+    Interconnect.LootManager.Initialize()
+    -- Frontend GUI
 end
 
-function CLM.core:OnEnable()
+function CORE:OnInitialize()
+    C_Timer.After(2, function() CORE:_DelayedInitialize() end)
+end
+
+function CORE:OnEnable()
       -- Called when the addon is enabled
 end
 
-function CLM.core:OnDisable()
+function CORE:OnDisable()
       -- Called when the addon is disabled
 end

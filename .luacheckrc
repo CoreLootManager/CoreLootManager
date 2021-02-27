@@ -12,6 +12,7 @@ ignore = {
 --	"211", -- Unused local variable
 --	"211/L", -- Unused local variable "L"
 --	"211/CL", -- Unused local variable "CL"
+	"211/CLM",
 	"212", -- Unused argument
 --	"431", -- shadowing upvalue
 --	"43.", -- Shadowing an upvalue, an upvalue argument, an upvalue loop variable.
@@ -22,7 +23,8 @@ globals = {
 	"LibStub",
 	"class",
 	-- Saved Variable
-	
+	"CLM_DB",
+	"CLM_Logs",
 	-- WoW 
 	"_G",
 

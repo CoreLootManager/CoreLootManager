@@ -8,7 +8,8 @@
 local _, CLM = ...
 
 local function stub(...)
-    -- Not implemented
+    -- Placeholder for not implemented API
+    -- print("STUB")
 end
 
 CLM.Interconnect =
@@ -24,9 +25,15 @@ CLM.Interconnect =
     ConfigManager = { -- Addon Configuration
         -- Each module will have own configuration
         -- they will register with the config module using the ACE3 options tables
-        Initialize = stub,
-        Register = stub, -- args: Table, type (LOCAL /  SHARED / PER_ROSTER)
+        --Initialize = stub,
+        --Register = stub, -- args: Table, type (LOCAL /  SHARED / PER_ROSTER)
         Update = stub -- Active Roster change
+    },
+    Logger = {
+        Initialize = stub,
+    },
+    StateManager = {
+        Initialize = stub,
     },
     LedgerManager = {
         Initialize = stub,
@@ -52,10 +59,10 @@ CLM.Interconnect =
         Initialize = stub
         -- TODO
     },
-    TeamManager = { -- Manage team selection. TODO: Use the ACE DB Profile functionality for this?
+    RosterManager = { -- Manage team selection. TODO: Use the ACE DB Profile functionality for this?
         Initialize = stub
         -- TODO
-    }
+    },
     ProfileManager = { -- User profiles, alt linking etc
         Initialize = stub
         -- TODO

@@ -4,17 +4,12 @@
 ## Notes: Point based Loot Manager (DKP / EPGP)
 ## Author: CLM Development Team
 ## X-License: MIT
-## OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, AceAddon-3.0
+# OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, AceAddon-3.0
 ## SavedVariables: CLM_DB, CLM_Logs
 ## LoadOnDemand: 0
 
-## Utility
-Libs\Class\class.lua
-
-## LIBS
-
+# LIBS
 Libs\LibStub\LibStub.lua
-Libs\LibCompress\lib.xml
 Libs\LibDeflate\lib.xml
 Libs\LibSerialize\lib.xml
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
@@ -35,17 +30,18 @@ Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceTab-3.0\AceTab-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 
+# Utility
+Libs\Class\class.lua
 
-## Addon Core
+# Addon Core
 ClassicLootManager.lua
+Core\Interconnect.lua
 Core\Logger.lua
 Core\Constants.lua
-Core\Interconnect.lua
 
 ## Addon modules
 Modules\Comms\Comms.lua
 Modules\Database\Database.lua
-Modules\Database\Storage.lua
 Modules\ConfigManager\ConfigManager.lua
 Modules\StateManager\StateManager.lua
 Modules\EventHandler\EventHandler.lua
