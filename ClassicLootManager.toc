@@ -1,9 +1,12 @@
-## Interface: 90001
-
+## Interface: 11306
+## X-Min-Interface: 11306
 ## Title: Classic Loot Manager
-## Notes: Point based Loot Manager (DKP)
+## Notes: Point based Loot Manager (DKP / EPGP)
 ## Author: CLM Development Team
 ## X-License: MIT
+## OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, AceAddon-3.0
+## SavedVariables: CLM_DB, CLM_Logs
+## LoadOnDemand: 0
 
 ## Utility
 Libs\Class\class.lua
@@ -35,17 +38,18 @@ Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 
 ## Addon Core
 ClassicLootManager.lua
-Core\Config\Config.lua
-Core\Constants\Constants.lua
-Core\Interconnect\Interconnect.lua
-Core\Models\StorageModels.lua
+Core\Logger.lua
+Core\Constants.lua
+Core\Interconnect.lua
 
 ## Addon modules
 Modules\Comms\Comms.lua
-Modules\Config\Config.lua
 Modules\Database\Database.lua
 Modules\Database\Storage.lua
+Modules\ConfigManager\ConfigManager.lua
+Modules\StateManager\StateManager.lua
 Modules\EventHandler\EventHandler.lua
 Modules\PointManager\PointManager.lua
 Modules\PointManager\DKP.lua
 Modules\LootManager\LootManager.lua
+Modules\RosterManager\RosterManager.lua

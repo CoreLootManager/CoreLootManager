@@ -15,14 +15,27 @@ CLM.Interconnect =
 {
     Database = { -- in memory database and storage backend for handling user information
         Initialize = stub,
-        Get = stub, -- Configuration and addon metadata will be handled directly through the tables
-        Search = stub
+        Local = stub,
+        Shared = stub,
+        Rosters = stub,
+        Ledger = stub
+
     },
-    Config = { -- Addon Configuration
+    ConfigManager = { -- Addon Configuration
         -- Each module will have own configuration
         -- they will register with the config module using the ACE3 options tables
         Initialize = stub,
-        Register = stub
+        Register = stub, -- args: Table, type (LOCAL /  SHARED / PER_ROSTER)
+        Update = stub -- Active Roster change
+    },
+    LedgerManager = {
+        Initialize = stub,
+        Enable = stub,
+        PrepareType = stub,
+        Submit = stub,
+        RegisterOnStart = stub,
+        RegisterOnUpdate = stub,
+        RegisterOnFinish = stub
     },
     Comms = { -- AddOn communication
         Initialize = stub,
@@ -35,20 +48,24 @@ CLM.Interconnect =
         Initialize = stub,
         Register = stub
     },
-    Raid = { -- Raid management (initialize / standby / boss points award)
-        Initialize = stub,
+    RaidManager = { -- Raid management (initialize / standby / boss points award)
+        Initialize = stub
         -- TODO
     },
+    TeamManager = { -- Manage team selection. TODO: Use the ACE DB Profile functionality for this?
+        Initialize = stub
+        -- TODO
+    }
     ProfileManager = { -- User profiles, alt linking etc
-        Initialize = stub,
+        Initialize = stub
         -- TODO
     },
     PointManager = { -- Point award / modify manager
-        Initialize = stub,
+        Initialize = stub
         -- TODO
     },
     LootManager = { -- Loot award / entry management
-        Initialize = stub,
+        Initialize = stub
         -- TODO
     },
     ACL = { -- Security and whitelist checks

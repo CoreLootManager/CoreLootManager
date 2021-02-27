@@ -1,22 +1,13 @@
 local name, CLM = ...;
 
-CLM.core = LibStub("AceAddon-3.0"):NewAddon(
-    name,
-    "AceComm-3.0",      -- Comms using ChatLibThrottle
-    "AceConsole-3.0",   -- Slash Commands
-    "AceEvent-3.0",     -- WoW Event handlers
-    "AceTimer-3.0"      -- Timers
-);
+CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name);
 CLM.GUI = LibStub("AceGUI-3.0")
 
 --  AddOn contained constants
 CLM.CONSTANTS = {}
 
--- AddOn contained models
-CLM.MODELS = {}
-
 -- TODO populate through CI
-CLM.version = {
+CLM.VERSION = {
     major = 0,
     minor = 0,
     patch = 0,
@@ -24,16 +15,22 @@ CLM.version = {
 }
 
 function CLM.core:OnInitialize()
-
+    -- Core
+    
+    -- Backend
     CLM.Interconnect.Database.Initialize()
-    CLM.Interconnect.Config.Initialize()
+    CLM.Interconnect.ConfigManager.Initialize()
+    CLM.Interconnect.LedgerManager.Initialize()
+    CLM.Interconnect.StateManager.Initialize()
     CLM.Interconnect.Comms.Initialize()
+    CLM.Interconnect.ACL.Initialize()
+    --  Features
     CLM.Interconnect.EventHandler.Initialize()
-    CLM.Interconnect.Raid.Initialize()
+    CLM.Interconnect.RaidManager.Initialize()
+    CLM.Interconnect.RosterManager.Initialize()
     CLM.Interconnect.ProfileManager.Initialize()
     CLM.Interconnect.PointManager.Initialize()
     CLM.Interconnect.LootManager.Initialize()
-    CLM.Interconnect.ACL.Initialize()
 
 end
 

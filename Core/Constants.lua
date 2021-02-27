@@ -1,0 +1,8 @@
+local _, CLM = ...
+CLM.CONSTANTS.ENCOUNTERS = {
+
+}
+
+CLM.CONSTANTS.ZONES = {
+
+}
