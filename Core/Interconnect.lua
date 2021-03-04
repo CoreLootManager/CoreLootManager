@@ -22,13 +22,6 @@ CLM.Interconnect =
         Ledger = stub
 
     },
-    ConfigManager = { -- Addon Configuration
-        -- Each module will have own configuration
-        -- they will register with the config module using the ACE3 options tables
-        --Initialize = stub,
-        --Register = stub, -- args: Table, type (LOCAL /  SHARED / PER_ROSTER)
-        Update = stub -- Active Roster change
-    },
     Logger = {
         Initialize = stub,
     },

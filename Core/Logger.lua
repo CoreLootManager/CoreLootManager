@@ -13,26 +13,26 @@ local SEVERITY =
     FATAL   = "FATAL"
 }
 
-local LogEntry = { severity = nil, message = nil, timestamp = nil  }
+local LogEntry = { t = nil, s = nil, m = nil  }
 function LogEntry:new(severity, message)
     local o = {}
 
     setmetatable(o, self)
     self.__index = self
 
-	o.severity = severity or SEVERITY.INFO
-    o.message = message or ""
-    o.timestamp = time()
+	o.s = severity or SEVERITY.INFO
+    o.m = message or ""
+    o.t = time()
 
     return o
  end
 
 function Logger:format(entry)
-    return string.format("[%s]: %s", entry.severity, entry.message)
+    return string.format("[%s]: %s", entry.s, entry.m)
 end
 
-function Logger:log(entry)
-    if self.verbose == true then
+function Logger:log(entry, verbose)
+    if self.verbose or verbose then
         print(self:format(entry))
     end
     table.insert(CLM_Logs, entry)
@@ -56,19 +56,18 @@ function Logger:Warning(message)
 end
 
 function Logger:Error(message)
-    self:log(LogEntry:new(SEVERITY.ERROR, message))
+    self:log(LogEntry:new(SEVERITY.ERROR, message), true)
 end
 
 function Logger:Fatal(message)
-    self:log(LogEntry:new(SEVERITY.FATAL, message))
+    self:log(LogEntry:new(SEVERITY.FATAL, message), true)
 end
 
 function Logger:Display(info, count)
-    local countSanitzied = type(count) == 'number' and tonumber(count) or 10
+    local countSanitized = (type(count) == 'number') and tonumber(count) or 10
     local numEntries = #CLM_Logs
-    print(numEntries)
-    if numEntries >= countSanitzied then
-        for i = numEntries - countSanitzied, numEntries - 1 do
+    if numEntries >= countSanitized then
+        for i = numEntries - countSanitized, numEntries - 1 do
             print(self:format(CLM_Logs[i]))
         end
     else
@@ -80,7 +79,7 @@ end
 
 -- Module part
 function Logger:Initialize()
-    CLM.LOG:Info("Logger initializing")
+    CLM.LOG:Info("Logger:Initialize()")
     local options = {
         logs = {
             name = "CLM Logs",
@@ -98,10 +97,10 @@ function Logger:Initialize()
           },
 
     }
-    CLM.Interconnect.ConfigManager.Register(options)
+    CLM.Interconnect.ConfigManager:Register(options)
 end
 
-CLM.Interconnect.Logger.Initialize = function() Logger:Initialize() end
+CLM.Interconnect.Logger = Logger
 
 
 

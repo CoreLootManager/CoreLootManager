@@ -49,3 +49,5 @@ Modules\PointManager\PointManager.lua
 Modules\PointManager\DKP.lua
 Modules\LootManager\LootManager.lua
 Modules\RosterManager\RosterManager.lua
+
+Modules\BIST\BIST.lua

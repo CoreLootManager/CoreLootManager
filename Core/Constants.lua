@@ -1,4 +1,5 @@
 local _, CLM = ...
+
 CLM.CONSTANTS.ENCOUNTERS = {
 
 }
