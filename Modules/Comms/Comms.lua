@@ -21,22 +21,22 @@ CLM.CONSTANTS.COMMS = {
     DISTRIBUTIONS = Set({
         "PARTY",
         "RAID",
-        "INSTANCE_CHAT",
+        --"INSTANCE_CHAT",
         "GUILD",
         "OFFICER",
         "WHISPER",
-        "SAY",
-        "YELL"
+        --"SAY",
+        --"YELL"
     }),
     DISTRIBUTION = {
         PARTY = "PARTY",
         RAID = "RAID",
-        INSTANCE = "INSTANCE_CHAT",
+        --INSTANCE = "INSTANCE_CHAT",
         GUILD = "GUILD",
         OFFICER = "OFFICER",
         WHISPER = "WHISPER",
-        SAY = "SAY",
-        YELL = "YELL"
+        --SAY = "SAY",
+        --YELL = "YELL"
     }
 }
 
@@ -61,10 +61,7 @@ function Comms:Enable()
 end
 
 local function _prefix(prefix)
-    if string.len(prefix) > 12 then
-        prefix = string.sub(prefix, 0, 12)
-    end
-    return "CLM" .. prefix
+    return "CLM" .. string.sub(prefix, 0, 12)
 end
 
 function Comms:Register(prefix, callback, aclLevel)
@@ -176,6 +173,3 @@ function Comms:OnReceive(prefix, message, distribution, sender)
 end
 
 CLM.Interconnect.Comms = Comms
--- Comms:Send
--- Comms:Register
--- Comms:SafeJoin

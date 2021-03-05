@@ -1,6 +1,6 @@
 local name, CLM = ...;
 
-CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name);
+CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0");
 CLM.GUI = LibStub("AceGUI-3.0")
 --  AddOn contained constants
 CLM.CONSTANTS = {}
@@ -19,7 +19,7 @@ local CORE = CLM.CORE
 function CORE:_InitializeCore()
     CLM.LOG:Info("CORE:_InitializeCore()")
 
-    --CLM.Interconnect.Database.Initialize()
+    CLM.Interconnect.Database:Initialize()
     CLM.Interconnect.ConfigManager:Initialize()
     CLM.Interconnect.Logger:Initialize()
     --CLM.Interconnect.StateManager.Initialize()
@@ -69,10 +69,24 @@ function CORE:_SequentialInitialize(stage)
     elseif stage >= 4 then
         self:_Enable()
         CLM.LOG:Info("Initialization complete")
-        C_Timer.After(0.5, function() CORE:_BIST() end)
+        C_Timer.After(1, function() CORE:_BIST() end)
         return
     end
-    C_Timer.After(0.5, function() CORE:_SequentialInitialize(stage + 1) end)
+    C_Timer.After(1, function() CORE:_SequentialInitialize(stage + 1) end)
+end
+
+function CORE:_DelayedInitialize()
+    CLM.LOG:Info("CORE:_DelayedInitialize()")
+    if self._initialize_fired then return end
+    self._initialize_fired = true
+    C_Timer.After(1, function() CORE:_SequentialInitialize(0) end)
+end
+
+function CORE:_Initialize()
+    if not self._initialize_fired then
+        CORE:_DelayedInitialize()
+        self:UnregisterEvent("GUILD_ROSTER_UPDATE")
+    end
 end
 
 function CORE:OnInitialize()
@@ -84,7 +98,10 @@ function CORE:OnInitialize()
         CLM_DB = {}
     end
 
-    C_Timer.After(1, function() CORE:_SequentialInitialize(0) end)
+    self._initialize_fired = false
+    CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
+    GuildRoster()
+    C_Timer.After(10, function() CORE:_DelayedInitialize() end) -- we schedule this in case GUILD_ROSTER_UPDATE won't come earlier
 end
 
 function CORE:OnEnable()
@@ -93,4 +110,9 @@ end
 
 function CORE:OnDisable()
       -- Called when the addon is disabled
+end
+
+function CORE:GUILD_ROSTER_UPDATE(...)
+    CLM.LOG:Info("GUILD_ROSTER_UPDATE")
+    self:_Initialize()
 end
