@@ -81,23 +81,22 @@ end
 function Logger:Initialize()
     CLM.LOG:Info("Logger:Initialize()")
     local options = {
-        logs = {
+        logger_print = {
             name = "CLM Logs",
             desc = "Displays last CLM logs",
             type = "execute",
             handler = self,
             func = "Display"
         },
-        verbose = {
+        logger_verbose = {
             name = "Verbose",
             desc = "Enables / disables verbose data printing during logging",
             type = "toggle",
             set = function(i, v) CLM.LOG.verbose = v end,
             get = function(i) return CLM.LOG.verbose end
-          },
-
+          }
     }
-    CLM.Interconnect.ConfigManager:Register(options)
+    CLM.Interconnect.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 CLM.Interconnect.Logger = Logger
