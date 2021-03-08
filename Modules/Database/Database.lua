@@ -24,6 +24,9 @@ function DB:Initialize()
     if type(CLM_DB[self.server_faction_guild]['roster']) ~= "table" then
         CLM_DB[self.server_faction_guild]['roster'] = {}
     end
+    if type(CLM_DB[self.server_faction_guild]['ledger']) ~= "table" then
+        CLM_DB[self.server_faction_guild]['ledger'] = {}
+    end
 end
 
 function DB:Personal()
@@ -39,7 +42,7 @@ function DB:Roster()
 end
 
 function DB:Ledger()
-    return CLM_DB[self.server_faction_guild]['roster']
+    return CLM_DB[self.server_faction_guild]['ledger']
 end
 
 CLM.Interconnect.Database = DB

@@ -36,7 +36,7 @@ function CORE:_InitializeFeatures()
     CLM.LOG:Info("CORE:_InitializeFeatures()")
     --CLM.Interconnect.EventHandler.Initialize()
     --CLM.Interconnect.RaidManager.Initialize()
-    --CLM.Interconnect.RosterManager.Initialize()
+    CLM.Interconnect.RosterManager:Initialize()
     --CLM.Interconnect.ProfileManager.Initialize()
     --CLM.Interconnect.PointManager.Initialize()
     --CLM.Interconnect.LootManager.Initialize()
@@ -69,10 +69,10 @@ function CORE:_SequentialInitialize(stage)
     elseif stage >= 4 then
         self:_Enable()
         CLM.LOG:Info("Initialization complete")
-        C_Timer.After(1, function() CORE:_BIST() end)
+        C_Timer.After(0.1, function() CORE:_BIST() end)
         return
     end
-    C_Timer.After(1, function() CORE:_SequentialInitialize(stage + 1) end)
+    C_Timer.After(0.1, function() CORE:_SequentialInitialize(stage + 1) end)
 end
 
 function CORE:_DelayedInitialize()

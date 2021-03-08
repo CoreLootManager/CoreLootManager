@@ -61,7 +61,7 @@ function Comms:Enable()
 end
 
 local function _prefix(prefix)
-    return "CLM" .. string.sub(prefix, 0, 12)
+    return CommsPrefix .. string.sub(prefix, 0, 12)
 end
 
 function Comms:Register(prefix, callback, aclLevel)
@@ -155,7 +155,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return
     end
     -- Deserialize
-    local success = false
+    local success;
     success, tmp = serdes:Deserialize(tmp)
     if not success then
         LOG:Error("Comms:Send() unable to deserialize message: " .. tostring(tmp))

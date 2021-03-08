@@ -81,6 +81,10 @@ end
 function Logger:Initialize()
     CLM.LOG:Info("Logger:Initialize()")
     local options = {
+        logger_header = {
+            type = "header",
+            name = "Logging"
+        },
         logger_print = {
             name = "CLM Logs",
             desc = "Displays last CLM logs",
