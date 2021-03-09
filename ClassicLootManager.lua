@@ -1,9 +1,6 @@
 local name, CLM = ...;
 
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0");
-CLM.GUI = LibStub("AceGUI-3.0")
---  AddOn contained constants
-CLM.CONSTANTS = {}
 
 -- TODO populate through CI
 CLM.VERSION = {
@@ -13,51 +10,60 @@ CLM.VERSION = {
     notes = ""
 }
 
--- Local API
+CLM.MODULE =  {}
+CLM.CONSTANTS = {}
+CLM.GUI = {}
+CLM.LOG = { verbose = true }
+
+-- Local upvalues
 local CORE = CLM.CORE
+local LOG = CLM.LOG
 
 function CORE:_InitializeCore()
-    CLM.LOG:Info("CORE:_InitializeCore()")
+    LOG:Info("CORE:_InitializeCore()")
 
-    CLM.Interconnect.Database:Initialize()
-    CLM.Interconnect.ConfigManager:Initialize()
-    CLM.Interconnect.Logger:Initialize()
-    --CLM.Interconnect.StateManager.Initialize()
-    CLM.Interconnect.Comms:Initialize()
-    --CLM.Interconnect.ACL.Initialize()
+    CLM.MODULE.Database:Initialize()
+    CLM.MODULE.ConfigManager:Initialize()
+    CLM.MODULE.Logger:Initialize()
+    --CLM.MODULE.StateManager.Initialize()
+    CLM.MODULE.Comms:Initialize()
+    --CLM.MODULE.ACL.Initialize()
 end
 
 function CORE:_InitializeBackend()
-    CLM.LOG:Info("CORE:_InitializeBackend()")
-    --CLM.Interconnect.LedgerManager.Initialize()
+    LOG:Info("CORE:_InitializeBackend()")
+    --CLM.MODULE.LedgerManager.Initialize()
 end
 
 function CORE:_InitializeFeatures()
-    CLM.LOG:Info("CORE:_InitializeFeatures()")
-    --CLM.Interconnect.EventHandler.Initialize()
-    --CLM.Interconnect.RaidManager.Initialize()
-    CLM.Interconnect.RosterManager:Initialize()
-    --CLM.Interconnect.ProfileManager.Initialize()
-    --CLM.Interconnect.PointManager.Initialize()
-    --CLM.Interconnect.LootManager.Initialize()
+    LOG:Info("CORE:_InitializeFeatures()")
+    --CLM.MODULE.EventHandler.Initialize()
+    --CLM.MODULE.RaidManager.Initialize()
+    CLM.MODULE.ProfileManager:Initialize()
+    CLM.MODULE.RosterManager:Initialize()
+    --CLM.MODULE.PointManager.Initialize()
+    --CLM.MODULE.LootManager.Initialize()
 end
 
 function CORE:_InitializeFrontend()
-    CLM.LOG:Info("CORE:_InitializeFrontend()")
+    LOG:Info("CORE:_InitializeFrontend()")
+    for _, module in pairs(CLM.GUI) do
+        module:Initialize()
+    end
 end
 
 function CORE:_Enable()
-    CLM.LOG:Info("CORE:_Enable()")
-    CLM.Interconnect.Comms:Enable()
+    LOG:Info("CORE:_Enable()")
+    CLM.MODULE.Comms:Enable()
 end
 
 function CORE:_BIST()
-    CLM.Interconnect.BIST:Run()
-    C_Timer.After(2, function() CLM.Interconnect.BIST:Report() end)
+    CLM.MODULE.BIST:Run()
+    C_Timer.After(2, function() CLM.MODULE.BIST:Report() end)
 end
 
 function CORE:_SequentialInitialize(stage)
-    CLM.LOG:Info("CORE:_SequentialInitialize()")
+    LOG:Info("CORE:_SequentialInitialize()")
     if stage == 0 then
         self:_InitializeCore()
     elseif stage == 1 then
@@ -68,7 +74,7 @@ function CORE:_SequentialInitialize(stage)
         self:_InitializeFrontend()
     elseif stage >= 4 then
         self:_Enable()
-        CLM.LOG:Info("Initialization complete")
+        LOG:Info("Initialization complete")
         C_Timer.After(0.1, function() CORE:_BIST() end)
         return
     end
@@ -76,7 +82,7 @@ function CORE:_SequentialInitialize(stage)
 end
 
 function CORE:_DelayedInitialize()
-    CLM.LOG:Info("CORE:_DelayedInitialize()")
+    LOG:Info("CORE:_DelayedInitialize()")
     if self._initialize_fired then return end
     self._initialize_fired = true
     C_Timer.After(1, function() CORE:_SequentialInitialize(0) end)
@@ -113,6 +119,6 @@ function CORE:OnDisable()
 end
 
 function CORE:GUILD_ROSTER_UPDATE(...)
-    CLM.LOG:Info("GUILD_ROSTER_UPDATE")
+    LOG:Info("GUILD_ROSTER_UPDATE")
     self:_Initialize()
 end

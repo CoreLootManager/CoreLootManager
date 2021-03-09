@@ -1,7 +1,11 @@
 local _, CLM = ...
-CLM.LOG = { verbose = true }
+-- TODO:
+-- 1) varargs
+-- 2) delay variables unrolling
+-- 3) logging level
 local Logger = CLM.LOG
 
+local MODULE = CLM.MODULE
 local function print(...) _G.print("|cffebb434CLM:|r", ...) end
 
 local SEVERITY =
@@ -100,10 +104,11 @@ function Logger:Initialize()
             get = function(i) return CLM.LOG.verbose end
           }
     }
-    CLM.Interconnect.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    MODULE.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
-CLM.Interconnect.Logger = Logger
+-- Publish API
+MODULE.Logger = Logger
 
 
 

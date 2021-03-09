@@ -29,15 +29,14 @@ Libs\AceConfig-3.0\AceConfig-3.0.xml
 Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceTab-3.0\AceTab-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
-
+Libs\lib-st-4.1.2\lib-st.xml
 # Utility
 Libs\Class\class.lua
 
 # Addon Core
 ClassicLootManager.lua
-Core\Interconnect.lua
 Core\Logger.lua
-Core\Constants.lua
+Core\Utils.lua
 
 ## Addon modules
 Modules\Comms\Comms.lua
@@ -49,5 +48,7 @@ Modules\PointManager\PointManager.lua
 Modules\PointManager\DKP.lua
 Modules\LootManager\LootManager.lua
 Modules\RosterManager\RosterManager.lua
+Modules\ProfileManager\ProfileManager.lua
+Modules\ProfileManager\GUI.lua
 
 Modules\BIST\BIST.lua

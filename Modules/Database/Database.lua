@@ -1,14 +1,17 @@
 local  _, CLM = ...
 
+local MODULE = CLM.MODULE
+local LOG = CLM.LOG
+
 local DB = {}
 
 local function UpdateGuild()
     DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. (GetGuildInfo("player") or "unguilded"))
-    CLM.LOG:Info(DB.server_faction_guild)
+    LOG:Info(DB.server_faction_guild)
 end
 
 function DB:Initialize()
-    CLM.LOG:Info("DB:Initialize()")
+    LOG:Info("DB:Initialize()")
     -- Below API requires delay after loading to work after variables loaded event
     UpdateGuild()
 
@@ -23,6 +26,9 @@ function DB:Initialize()
     end
     if type(CLM_DB[self.server_faction_guild]['roster']) ~= "table" then
         CLM_DB[self.server_faction_guild]['roster'] = {}
+    end
+    if type(CLM_DB[self.server_faction_guild]['profiles']) ~= "table" then
+        CLM_DB[self.server_faction_guild]['profiles'] = {}
     end
     if type(CLM_DB[self.server_faction_guild]['ledger']) ~= "table" then
         CLM_DB[self.server_faction_guild]['ledger'] = {}
@@ -41,8 +47,12 @@ function DB:Roster()
     return CLM_DB[self.server_faction_guild]['roster']
 end
 
+function DB:Profiles()
+    return CLM_DB[self.server_faction_guild]['profiles']
+end
+
 function DB:Ledger()
     return CLM_DB[self.server_faction_guild]['ledger']
 end
 
-CLM.Interconnect.Database = DB
+MODULE.Database = DB

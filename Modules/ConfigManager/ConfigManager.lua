@@ -1,28 +1,14 @@
 local _, CLM = ...;
+
 local LOG = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local MODULE = CLM.MODULE
 
 local function Set(t)
     local s = {}
     for _,v in pairs(t) do s[v] = true end
     return s
 end
-
-CLM.CONSTANTS.CONFIGS = {
-    GROUPS = Set({
-        "Classic Loot Manager",
-        "Personal",
-        "Guild",
-        "Roster",
-        "BIST"
-    }),
-    GROUP = {
-        GLOBAL = "Classic Loot Manager",
-        PERSONAL = "Personal",
-        GUILD = "Guild",
-        ROSTER = "Roster",
-        BIST = "BIST"
-    },
-}
 
 local LIBS =  {
     registry = LibStub("AceConfigRegistry-3.0"),
@@ -37,51 +23,54 @@ local function ConfigGenerator(config)
 end
 
 local function ConfigGenerator_Global()
-    return ConfigGenerator(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL)
+    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL)
 end
 
 local function ConfigGenerator_Personal()
-    return ConfigGenerator(CLM.CONSTANTS.CONFIGS.GROUP.PERSONAL)
+    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.PERSONAL)
 end
 
 local function ConfigGenerator_Guild()
-    return ConfigGenerator(CLM.CONSTANTS.CONFIGS.GROUP.GUILD)
+    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GUILD)
 end
 
 local function ConfigGenerator_Roster()
-    return ConfigGenerator(CLM.CONSTANTS.CONFIGS.GROUP.ROSTER)
+    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER)
 end
 
 local function ConfigGenerator_BIST()
-    return ConfigGenerator(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
+    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.BIST)
 end
 
 function ConfigManager:Initialize()
     LOG:Info("ConfigManager:Initialize()")
+    -- TODO: cleanup this shit all around when removing BIST
     local groups = {
-        CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL,
-        CLM.CONSTANTS.CONFIGS.GROUP.PERSONAL,
-        CLM.CONSTANTS.CONFIGS.GROUP.GUILD,
-        CLM.CONSTANTS.CONFIGS.GROUP.ROSTER,
-        CLM.CONSTANTS.CONFIGS.GROUP.BIST
+        CONSTANTS.CONFIGS.GROUP.GLOBAL,
+        CONSTANTS.CONFIGS.GROUP.PERSONAL,
+        CONSTANTS.CONFIGS.GROUP.GUILD,
+        CONSTANTS.CONFIGS.GROUP.ROSTER,
+        CONSTANTS.CONFIGS.GROUP.BIST
     }
+    -- TODO: cleanup this shit all around when removing BIST
     self.generators = {
         ["Classic Loot Manager"] = ConfigGenerator_Global,
         ["Personal"] = ConfigGenerator_Personal,
         ["Guild"] = ConfigGenerator_Guild,
         ["Roster"] = ConfigGenerator_Roster,
-        ["BIST"] = ConfigGenerator_BIST,
+        ["BIST"] = ConfigGenerator_BIST
     }
     self.options = {}
     for _, config in pairs(groups) do
-        local parent = CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL
-        if config == CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL then
+        local parent = CONSTANTS.CONFIGS.GROUP.GLOBAL
+        if config == CONSTANTS.CONFIGS.GROUP.GLOBAL then
             parent = nil
         end
-        self.options[config] = { type = "group", args = {}}
+        self.options[config] = { type = "group", childGroups = "select", args = {}}
         LIBS.config:RegisterOptionsTable(config, self.generators[config])
         LIBS.gui:AddToBlizOptions(config, config, parent)
     end
+    self.slash_options = { type = "group", args = {}}
 end
 
 function ConfigManager:Enable()
@@ -102,7 +91,7 @@ function ConfigManager:Register(group, options, clean)
         return false
     end
 
-    if not CLM.CONSTANTS.CONFIGS.GROUPS[group] then
+    if not CONSTANTS.CONFIGS.GROUPS[group] then
         LOG:Error("ConfigManager:Register(): Group " .. tostring(group) .. " is not supported")
         return false
     end
@@ -120,8 +109,27 @@ function ConfigManager:Register(group, options, clean)
     return true
 end
 
+function ConfigManager:RegisterSlash(options)
+    LOG:Info("ConfigManager:RegisterSlash()")
+
+    if type(options) ~= "table" then
+        LOG:Error("ConfigManager:RegisterSlash(): Object is not a table")
+        return false
+    end
+
+    for option, definition in pairs(options) do
+        if self.slash_options.args[option] == nil then
+            self.slash_options.args[option] = definition
+        else
+            LOG:Warning("Option ".. tostring(option) .." already set. Ignoring.")
+        end
+    end
+    LIBS.config:RegisterOptionsTable("CLM", self.slash_options, {"clm", "classiclootmanager"})
+    return true
+end
+
 function ConfigManager:Refresh(group)
-    if not CLM.CONSTANTS.CONFIGS.GROUPS[group] then
+    if not CONSTANTS.CONFIGS.GROUPS[group] then
         LOG:Warning("ConfigManager:Refresh(): Group " .. tostring(group) .. " is not supported")
         return
     end
@@ -129,4 +137,23 @@ function ConfigManager:Refresh(group)
     LIBS.registry:NotifyChange(group)
 end
 
-CLM.Interconnect.ConfigManager = ConfigManager
+-- Publish API
+MODULE.ConfigManager = ConfigManager
+
+-- TODO: cleanup this shit all around when removing BIST
+CONSTANTS.CONFIGS = {
+    GROUPS = Set({
+        "Classic Loot Manager",
+        "Personal",
+        "Guild",
+        "Roster",
+        "BIST"
+    }),
+    GROUP = {
+        GLOBAL = "Classic Loot Manager",
+        PERSONAL = "Personal",
+        GUILD = "Guild",
+        ROSTER = "Roster",
+        BIST = "BIST"
+    },
+}

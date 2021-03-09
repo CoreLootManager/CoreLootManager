@@ -6,47 +6,19 @@ local function Set(t)
     return s
 end
 
-CLM.CONSTANTS.COMMS = {
-    SEPARATOR = "\t",
-    PRIORITIES = Set({
-        "ALERT",
-        "NORMAL",
-        "BULK"
-    }),
-    PRIORITY = {
-        ALERT = "ALERT",
-        NORMAL = "NORMAL",
-        BULK = "BULK"
-    },
-    DISTRIBUTIONS = Set({
-        "PARTY",
-        "RAID",
-        --"INSTANCE_CHAT",
-        "GUILD",
-        "OFFICER",
-        "WHISPER",
-        --"SAY",
-        --"YELL"
-    }),
-    DISTRIBUTION = {
-        PARTY = "PARTY",
-        RAID = "RAID",
-        --INSTANCE = "INSTANCE_CHAT",
-        GUILD = "GUILD",
-        OFFICER = "OFFICER",
-        WHISPER = "WHISPER",
-        --SAY = "SAY",
-        --YELL = "YELL"
-    }
-}
+-- local upvalues
 
+local MODULE = CLM.MODULE
+local LOG = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+
+
+-- Module
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 local serdes = LibStub("LibSerialize")
 local codec = LibStub("LibDeflate")
 
-local CONSTANTS = CLM.CONSTANTS.COMMS
 
-local LOG = CLM.LOG
 local CommsPrefix = "CLM"
 
 function Comms:Initialize()
@@ -105,12 +77,12 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return false
     end
 
-    if not CONSTANTS.DISTRIBUTIONS[distribution] then
+    if not CONSTANTS.COMMS.DISTRIBUTIONS[distribution] then
         LOG:Error("Comms:Send() invalid distribution: " .. tostring(distribution))
         return false
     end
-    if not CONSTANTS.PRIORITIES[priority] then
-        priority = CONSTANTS.PRIORITY.NORMAL
+    if not CONSTANTS.COMMS.PRIORITIES[priority] then
+        priority = CONSTANTS.COMMS.PRIORITY.NORMAL
     end
     -- Serialize
     local tmp = serdes:Serialize(message)
@@ -162,7 +134,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return
     end
     -- Get ACL level
-    --local aclLevel = CLM.Interconnect.ACL:Get(sender)
+    --local aclLevel = MODULE.ACL:Get(sender)
     local aclLevel = 0
     -- Execute callback
     if aclLevel >= self.aclLevel[prefix] then
@@ -172,4 +144,40 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     end
 end
 
-CLM.Interconnect.Comms = Comms
+-- Publish API
+MODULE.Comms = Comms
+
+-- Constants
+CONSTANTS.COMMS = {
+    SEPARATOR = "\t",
+    PRIORITIES = Set({
+        "ALERT",
+        "NORMAL",
+        "BULK"
+    }),
+    PRIORITY = {
+        ALERT = "ALERT",
+        NORMAL = "NORMAL",
+        BULK = "BULK"
+    },
+    DISTRIBUTIONS = Set({
+        "PARTY",
+        "RAID",
+        --"INSTANCE_CHAT",
+        "GUILD",
+        "OFFICER",
+        "WHISPER",
+        --"SAY",
+        --"YELL"
+    }),
+    DISTRIBUTION = {
+        PARTY = "PARTY",
+        RAID = "RAID",
+        --INSTANCE = "INSTANCE_CHAT",
+        GUILD = "GUILD",
+        OFFICER = "OFFICER",
+        WHISPER = "WHISPER",
+        --SAY = "SAY",
+        --YELL = "YELL"
+    }
+}

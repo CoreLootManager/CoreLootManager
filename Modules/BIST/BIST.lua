@@ -1,6 +1,9 @@
 local _, CLM = ...
 
-local Comms = CLM.Interconnect.Comms
+local MODULE = CLM.MODULE
+local LOG = CLM.LOG
+local Comms = MODULE.Comms
+
 local OptionsData = {
     bist_input = "BIST",
     bist_input_multiline = "BIST",
@@ -79,7 +82,7 @@ local BIST = {
                                 OptionsData.bist_select_values[j] = t
                                 print(t)
                             end
-                            CLM.Interconnect.ConfigManager:Refresh(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
+                            MODULE.ConfigManager:Refresh(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
                         end)
                     },
                     bist_execute_minus = {
@@ -97,7 +100,7 @@ local BIST = {
                                 OptionsData.bist_select_values[i] = t
                                 print(t)
                             end
-                            CLM.Interconnect.ConfigManager:Refresh(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
+                            MODULE.ConfigManager:Refresh(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
                         end)
                     }
                 }
@@ -139,14 +142,14 @@ local BIST = {
 }
 
 function BIST.Comms:Run()
-    CLM.LOG:Info("BIST.Comms:Run()")
+    LOG:Info("BIST.Comms:Run()")
     Comms:Register("BIST_Comms", function(m,d,s) BIST.Comms:Complete(m, d, s) end, 0)
     Comms:Send("BIST_Comms", self.data.message, self.data.distribution)
     self.status.executed = true
 end
 
 function BIST.Comms:Complete(message, distribution, sender)
-    CLM.LOG:Info("BIST.Comms:Complete()")
+    LOG:Info("BIST.Comms:Complete()")
     if self.data.message == message and
        self.data.distribution == distribution and
        self.data.sender == sender then
@@ -155,7 +158,7 @@ function BIST.Comms:Complete(message, distribution, sender)
         local s = self.data.message .. " != " .. message .. "\n"
         s = s .. self.data.distribution .. " != " .. distribution .. "\n"
         s = s..self.data.sender .. " != " .. sender .. "\n"
-        CLM.LOG:Warning(s)
+        LOG:Warning(s)
     end
 end
 
@@ -170,20 +173,20 @@ function BIST.Comms:Report()
 end
 
 function BIST.Options:Run()
-    CLM.LOG:Info("BIST.Options:Run()")
-    CLM.Interconnect.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.BIST, self.options)
+    LOG:Info("BIST.Options:Run()")
+    MODULE.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.BIST, self.options)
 end
 
 function BIST:Report()
     local report = "BIST Report:\n"
     report = report .. self.Comms:Report()
-    CLM.LOG:Info(report)
+    LOG:Info(report)
 end
 
 function BIST:Run()
-    CLM.LOG:Info("BIST:Run()")
+    LOG:Info("BIST:Run()")
     self.Comms:Run()
     self.Options:Run()
 end
 
-CLM.Interconnect.BIST = BIST
+MODULE.BIST = BIST
