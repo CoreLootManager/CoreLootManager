@@ -2,7 +2,6 @@ local _, CLM = ...
 -- Upvalues
 local LOG = CLM.LOG
 local MODULE = CLM.MODULE
-local UTILS = CLM.UTILS
 
 local Profile = {}
 --local ProfileOptions = {}
@@ -12,24 +11,57 @@ function ProfileManager:Initialize()
     LOG:Info("ProfileManager:Initialize()")
     self.db = MODULE.Database:Profiles()
 
-    if type(self.db.metadata) ~= "table" then
-        self.db.metadata = {}
-    end
+    -- if type(self.db.metadata) ~= "table" then
+    --     self.db.metadata = {}
+    -- end
 
     if type(self.db.data) ~= "table" then
         self.db.data = {}
     end
-    self.metadata = { playerGuidMap = {} }
-    self:RebuildMetadata()
 
-    ProfileManager:RegisterSlash()
+    -- if type(self.db.altLinks) ~= "table" then
+    --     self.db.altLinks = {}
+    -- end
+
+    self.cache = { playerGuidMap = {}, profiles = {} }
+    self:LoadCache()
+
+    MODULE.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
 end
 
-function ProfileManager:Wipe()
-    self.db.data = {}
-    self.metadata = { playerGuidMap = {} }
-    self.GUI:Refresh()
+-- CORE
+
+function ProfileManager:LoadCache()
+    LOG:Info("ProfileManager:LoadCache()")
+
+    for guid,data in pairs(self.db.data) do
+        local p = Profile:FromStorage(data)
+        self.cache.profiles[guid] = p
+        self.cache.playerGuidMap[p:Name()] = guid
+    end
 end
+
+function ProfileManager:StoreCache(guid)
+    if guid == nil then
+        for g,object in pairs(self.cache.profiles) do
+            self.db.data[g] = object:ToStorage()
+        end
+    else
+        local p = self.cache.profiles[guid]
+        if p ~= nil then
+            self.db.data[guid] = p:ToStorage()
+        end
+    end
+end
+
+function ProfileManager:NewProfile(guid, name, class)
+    if guid == nil then return end
+    if name == nil then return end
+    self.cache.profiles[guid] = Profile:New(name, class)
+    self.cache.playerGuidMap[name] = guid
+end
+
+-- Functionalities
 
 function ProfileManager:FillFromGuild(selectedRanks, minLevel)
     LOG:Info("ProfileManager:FillFromGuild()")
@@ -67,43 +99,119 @@ function ProfileManager:FillFromGuild(selectedRanks, minLevel)
         local name, _, rankIndex, level, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
         name, _ = strsplit("-", name)
         if rankFilterFn(rankIndex, selectedRanks) and minLevelFn(level, minLevel) then
-            self.db.data[GUID] = Profile:New(name, class, nil)
+            self:NewProfile(GUID, name, class)
         end
     end
-    self:RebuildMetadata()
+
+    self:StoreCache()
     self.GUI:Refresh()
 end
 
-function ProfileManager:RebuildMetadata()
-    LOG:Info("ProfileManager:RebuildMetadata()")
-    for guid,object in pairs(self.db.data) do -- currently full rebuild
-        self.metadata.playerGuidMap[object.name] = guid
+function ProfileManager:FillFromRaid()
+    LOG:Info("ProfileManager:FillFromRaid()")
+    if not IsInRaid() then return end
+    for i=1,40 do
+        local name, _, _, _, _, class = GetRaidRosterInfo(i)
+        if name ~= nil then
+            name, _ = strsplit("-", name)
+            local GUID = UnitGUID("raid" .. tostring(i))
+            self:NewProfile(GUID, name, class)
+        end
+    end
+
+    self:StoreCache()
+    self.GUI:Refresh()
+end
+
+function ProfileManager:AddTarget()
+    LOG:Info("ProfileManager:AddTarget()")
+    if UnitIsPlayer("target") then
+        local GUID = UnitGUID("target")
+        local name = GetUnitName("target")
+        name, _ = strsplit("-", name)
+        local _, class, _ = UnitClass("target");
+
+        self:NewProfile(GUID, name, class)
+        self:StoreCache(GUID)
+        self.GUI:Refresh()
+    else
+        LOG:Warning("Your target must be a player.")
     end
 end
 
-function ProfileManager:RegisterSlash()
-    local options = {
-        pm = {
-            type = "input",
-            name = "ProfileManager Debug",
-            desc = "Debug Execute any ProfileManager API",
-            set = function(info, value) UTILS.UniversalCliMethodExecutor("ProfileManager", self, value) end
-        }
-    }
-    MODULE.ConfigManager:RegisterSlash(options)
+function ProfileManager:Wipe()
+    self.db.data = {}
+    self.cache = { playerGuidMap = {}, profiles = {} }
+    self.GUI:Refresh()
 end
 
-function Profile:New(name, class, spec)
+-- Utility
+
+function ProfileManager:GetGUIDFromName(name)
+    return self.cache.playerGuidMap[name] or ""
+end
+
+function ProfileManager:GetProfiles()
+    return self.cache.profiles
+end
+
+function ProfileManager:GetProfileByGuid(guid)
+    return self.cache.profiles[guid]
+end
+
+function ProfileManager:GetProfileByName(name)
+    return self.cache.profiles[self.cache.playerGuidMap[name]]
+end
+
+--- PROFILE ---
+function Profile:FromStorage(object)
+    return self:New(object.name, object.class, object.spec, object.main)
+end
+
+function Profile:ToStorage()
+    return self.persistent
+end
+
+function Profile:New(name, class, spec, main)
     local o = {}
 
     setmetatable(o, self)
     self.__index = self
 
-    o.name = name or ""
-    o.class = class or ""
-    o.spec = spec or ""
+    o.persistent = {
+        name  = tostring(name),
+        class = class or "",
+        spec  = spec  or "",
+        main  = main  or ""
+    }
+
+    o.volatile = {}
 
     return o
+end
+
+function Profile:Name()
+    return self.persistent.name
+end
+
+function Profile:Class()
+    return self.persistent.class
+end
+
+function Profile:Spec()
+    return self.persistent.spec
+end
+
+function Profile:Main()
+    return self.persistent.main
+end
+
+function Profile:SetMain(mainProfile)
+    self.volatile.main = mainProfile
+end
+
+function Profile:GetMain(mainProfile)
+    return self.volatile.main
 end
 
 -- Publis API

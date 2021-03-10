@@ -82,7 +82,7 @@ local BIST = {
                                 OptionsData.bist_select_values[j] = t
                                 print(t)
                             end
-                            MODULE.ConfigManager:Refresh(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
+                            MODULE.ConfigManager:Update(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
                         end)
                     },
                     bist_execute_minus = {
@@ -100,7 +100,7 @@ local BIST = {
                                 OptionsData.bist_select_values[i] = t
                                 print(t)
                             end
-                            MODULE.ConfigManager:Refresh(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
+                            MODULE.ConfigManager:Update(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
                         end)
                     }
                 }

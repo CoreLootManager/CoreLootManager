@@ -3,6 +3,7 @@ local _, CLM = ...;
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local MODULE = CLM.MODULE
+local UTILS = CLM.UTILS
 
 local function Set(t)
     local s = {}
@@ -128,9 +129,21 @@ function ConfigManager:RegisterSlash(options)
     return true
 end
 
-function ConfigManager:Refresh(group)
+function ConfigManager:RegisterUniversalExecutor(command, name, object)
+    local options = {
+        [command] = {
+            type = "input",
+            name = name .. " Debug",
+            desc = "Debug Execute any " .. name .. " API",
+            set = function(info, value) UTILS.UniversalCliMethodExecutor(name, object, value) end
+        }
+    }
+    self:RegisterSlash(options)
+end
+
+function ConfigManager:UpdateOptions(group)
     if not CONSTANTS.CONFIGS.GROUPS[group] then
-        LOG:Warning("ConfigManager:Refresh(): Group " .. tostring(group) .. " is not supported")
+        LOG:Warning("ConfigManager:Update(): Group " .. tostring(group) .. " is not supported")
         return
     end
     LIBS.config:RegisterOptionsTable(group, self.generators[group])
