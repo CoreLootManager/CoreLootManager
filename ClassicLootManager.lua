@@ -11,7 +11,14 @@ CLM.VERSION = {
 }
 
 CLM.MODULE =  {}
-CLM.CONSTANTS = {}
+CLM.CONSTANTS = {
+    RESULTS = { -- Universal return codes
+        ERROR = 0,           -- Request failed
+        IGNORE = 1,          -- Request was ignored
+        SUCCESS = 2,         -- Request success
+        SUCCESS_EXTENDED = 3 -- Request success + can be followed by message in a tuple response
+    }
+}
 CLM.GUI = {}
 CLM.LOG = { verbose = true }
 

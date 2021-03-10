@@ -2,6 +2,7 @@ local _, CLM = ...
 -- Upvalues
 local LOG = CLM.LOG
 local MODULE = CLM.MODULE
+local RESULTS = CLM.CONSTANTS.RESULTS
 
 local Profile = {}
 --local ProfileOptions = {}
@@ -61,6 +62,30 @@ function ProfileManager:NewProfile(guid, name, class)
     self.cache.playerGuidMap[name] = guid
 end
 
+function ProfileManager:MarkAsAltByNames(main, alt)
+    local mainProfile = self:GetProfileByName(main)
+    if mainProfile == nil then return RESULTS.IGNORE end
+    local altProfile = self:GetProfileByName(alt)
+    if altProfile == nil then return RESULTS.IGNORE end
+    -- TODO: Protect from circular references / multi-level alt nesting
+    local result
+    if alt == main then
+        if altProfile:Main() == "" then
+            return RESULTS.IGNORE
+        else
+            -- Remove link
+            altProfile:ClearMain()
+            result = RESULTS.SUCCESS_EXTENDED
+        end
+    else
+        altProfile:SetMain(self:GetGUIDFromName(mainProfile:Name()))
+        result = RESULTS.SUCCESS
+    end
+
+    self:StoreCache(self:GetGUIDFromName(altProfile:Name()))
+    return result
+end
+
 -- Functionalities
 
 function ProfileManager:FillFromGuild(selectedRanks, minLevel)
@@ -104,7 +129,6 @@ function ProfileManager:FillFromGuild(selectedRanks, minLevel)
     end
 
     self:StoreCache()
-    self.GUI:Refresh()
 end
 
 function ProfileManager:FillFromRaid()
@@ -120,7 +144,6 @@ function ProfileManager:FillFromRaid()
     end
 
     self:StoreCache()
-    self.GUI:Refresh()
 end
 
 function ProfileManager:AddTarget()
@@ -133,7 +156,6 @@ function ProfileManager:AddTarget()
 
         self:NewProfile(GUID, name, class)
         self:StoreCache(GUID)
-        self.GUI:Refresh()
     else
         LOG:Warning("Your target must be a player.")
     end
@@ -142,13 +164,12 @@ end
 function ProfileManager:Wipe()
     self.db.data = {}
     self.cache = { playerGuidMap = {}, profiles = {} }
-    self.GUI:Refresh()
 end
 
 -- Utility
 
 function ProfileManager:GetGUIDFromName(name)
-    return self.cache.playerGuidMap[name] or ""
+    return self.cache.playerGuidMap[name]
 end
 
 function ProfileManager:GetProfiles()
@@ -162,6 +183,7 @@ end
 function ProfileManager:GetProfileByName(name)
     return self.cache.profiles[self.cache.playerGuidMap[name]]
 end
+
 
 --- PROFILE ---
 function Profile:FromStorage(object)
@@ -206,12 +228,12 @@ function Profile:Main()
     return self.persistent.main
 end
 
-function Profile:SetMain(mainProfile)
-    self.volatile.main = mainProfile
+function Profile:SetMain(main)
+    self.persistent.main = main
 end
 
-function Profile:GetMain(mainProfile)
-    return self.volatile.main
+function Profile:ClearMain()
+    self.persistent.main = ""
 end
 
 -- Publis API
