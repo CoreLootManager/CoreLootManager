@@ -50,3 +50,33 @@ function UTILS.UniversalCliMethodExecutor(name, object, cli)
         end
     end
 end
+
+local StorageQualifiedObject = {}
+function StorageQualifiedObject:New(storage)
+    local o = {}
+
+    setmetatable(o, self)
+    self.__index = self
+
+    -- Virtual profile that is not stored
+    -- It's not a bug. It's a feature.
+    if storage == nil then
+        LOG:Warning("Virtual storage qualified object. Is this intended?")
+        local s = {}
+        o.persistent = s
+    else
+        o.persistent = storage
+    end
+
+    o.volatile = {}
+
+    return o
+end
+
+function UTILS.NewStorageQualifiedObject(storage, o)
+    local sqo = StorageQualifiedObject:New(storage)
+    o = o or {}
+    setmetatable(sqo, o)
+    o.__index = o
+    return sqo
+end

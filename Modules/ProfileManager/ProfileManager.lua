@@ -2,6 +2,7 @@ local _, CLM = ...
 -- Upvalues
 local LOG = CLM.LOG
 local MODULE = CLM.MODULE
+local UTILS =  CLM.UTILS
 local RESULTS = CLM.CONSTANTS.RESULTS
 
 local Profile = {}
@@ -16,7 +17,7 @@ function ProfileManager:Initialize()
     end
 
     self.cache = {
-        playerGuidMap = {},
+        profilesGuidMap = {},
         profiles = {}
     }
     self:LoadCache()
@@ -32,8 +33,12 @@ function ProfileManager:LoadCache()
     for guid,_ in pairs(self.db.profiles) do
         local p = Profile:Restore(self.db.profiles[guid])
         self.cache.profiles[guid] = p
-        self.cache.playerGuidMap[p:Name()] = guid
+        self.cache.profilesGuidMap[p:Name()] = guid
     end
+end
+
+function ProfileManager:GetProfiles()
+    return self.cache.profiles
 end
 
 function ProfileManager:NewProfile(guid, name, class)
@@ -41,7 +46,7 @@ function ProfileManager:NewProfile(guid, name, class)
     if name == nil then return end
     self.db.profiles[guid] = {} -- Allocate database
     self.cache.profiles[guid] = Profile:New(self.db.profiles[guid], {name = name, class = class})
-    self.cache.playerGuidMap[name] = guid
+    self.cache.profilesGuidMap[name] = guid
 end
 
 function ProfileManager:MarkAsAltByNames(main, alt)
@@ -139,13 +144,13 @@ end
 
 function ProfileManager:WipeAll()
     self.db.profiles = {}
-    self.cache = { playerGuidMap = {}, profiles = {} }
+    self.cache = { profilesGuidMap = {}, profiles = {} }
 end
 
 -- Utility
 
 function ProfileManager:GetGUIDFromName(name)
-    return self.cache.playerGuidMap[name]
+    return self.cache.profilesGuidMap[name]
 end
 
 function ProfileManager:GetProfiles()
@@ -157,32 +162,11 @@ function ProfileManager:GetProfileByGuid(guid)
 end
 
 function ProfileManager:GetProfileByName(name)
-    return self.cache.profiles[self.cache.playerGuidMap[name]]
-end
-
-function Profile:_New(storage)
-    local o = {}
-
-    setmetatable(o, self)
-    self.__index = self
-
-    -- Virtual profile that is not stored
-    -- It's not a bug. It's a feature.
-    if storage == nil then
-        LOG:Warning("Virtual Profile. Is this intended?")
-        local s = {}
-        o.persistent = s
-    else
-        o.persistent = storage
-    end
-
-    o.volatile = {}
-
-    return o
+    return self.cache.profiles[self.cache.profilesGuidMap[name]]
 end
 
 function Profile:New(storage, params)
-    local o = self:_New(storage)
+    local o = UTILS.NewStorageQualifiedObject(storage, self)
 
     o.persistent.name  = tostring(params.name)
     o.persistent.class = params.class or ""
@@ -193,7 +177,7 @@ function Profile:New(storage, params)
 end
 
 function Profile:Restore(storage)
-    return self:_New(storage)
+    return UTILS.NewStorageQualifiedObject(storage, self)
 end
 
 function Profile:Name()

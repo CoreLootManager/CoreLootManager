@@ -20,40 +20,45 @@ CLM.CONSTANTS = {
     }
 }
 CLM.GUI = {}
+CLM.OPTIONS = {}
 CLM.LOG = { verbose = true }
 
 -- Local upvalues
 local CORE = CLM.CORE
 local LOG = CLM.LOG
+local MODULE = CLM.MODULE
 
 function CORE:_InitializeCore()
     LOG:Info("CORE:_InitializeCore()")
 
-    CLM.MODULE.Database:Initialize()
-    CLM.MODULE.ConfigManager:Initialize()
-    CLM.MODULE.Logger:Initialize()
-    --CLM.MODULE.StateManager.Initialize()
-    CLM.MODULE.Comms:Initialize()
-    --CLM.MODULE.ACL.Initialize()
+    MODULE.Database:Initialize()
+    MODULE.ConfigManager:Initialize()
+    MODULE.Logger:Initialize()
+    --MODULE.StateManager.Initialize()
+    MODULE.Comms:Initialize()
+    --MODULE.ACL.Initialize()
 end
 
 function CORE:_InitializeBackend()
     LOG:Info("CORE:_InitializeBackend()")
-    --CLM.MODULE.LedgerManager.Initialize()
+    --MODULE.LedgerManager.Initialize()
 end
 
 function CORE:_InitializeFeatures()
     LOG:Info("CORE:_InitializeFeatures()")
-    --CLM.MODULE.EventHandler.Initialize()
-    --CLM.MODULE.RaidManager.Initialize()
-    CLM.MODULE.ProfileManager:Initialize()
-    CLM.MODULE.RosterManager:Initialize()
-    --CLM.MODULE.PointManager.Initialize()
-    --CLM.MODULE.LootManager.Initialize()
+    --MODULE.EventHandler.Initialize()
+    --MODULE.RaidManager.Initialize()
+    MODULE.ProfileManager:Initialize()
+    MODULE.RosterManager:Initialize()
+    --MODULE.PointManager.Initialize()
+    --MODULE.LootManager.Initialize()
 end
 
 function CORE:_InitializeFrontend()
     LOG:Info("CORE:_InitializeFrontend()")
+    for _, module in pairs(CLM.OPTIONS) do
+        module:Initialize()
+    end
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
@@ -61,12 +66,12 @@ end
 
 function CORE:_Enable()
     LOG:Info("CORE:_Enable()")
-    CLM.MODULE.Comms:Enable()
+    MODULE.Comms:Enable()
 end
 
 function CORE:_BIST()
-    CLM.MODULE.BIST:Run()
-    C_Timer.After(2, function() CLM.MODULE.BIST:Report() end)
+    MODULE.BIST:Run()
+    C_Timer.After(2, function() MODULE.BIST:Report() end)
 end
 
 function CORE:_SequentialInitialize(stage)

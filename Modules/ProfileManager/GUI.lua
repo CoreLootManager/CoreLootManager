@@ -22,6 +22,7 @@ function ProfileManagerGUI:Initialize()
 end
 
 function ProfileManagerGUI:Create()
+    LOG:Info("ProfileManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
     f:SetTitle("Profiles")
@@ -174,7 +175,8 @@ function ProfileManagerGUI:Refresh()
     if not self._initialized then return end
 
     local data = {}
-    for _,object in pairs(ProfileManager.cache.profiles) do
+    profiles = ProfileManager:GetProfiles()
+    for _,object in pairs(profiles) do
         local row = {cols = {}}
         table.insert(row.cols, {value = object:Name()})
         table.insert(row.cols, {value = UTILS.ColorCodeClass(object:Class())})
