@@ -140,7 +140,7 @@ function ProfileManagerGUI:Create()
     local WipeProfilesButton = AceGUI:Create("Button")
     WipeProfilesButton:SetText("Wipe")
     WipeProfilesButton:SetCallback("OnClick", (function()
-        ProfileManager:Wipe()
+        ProfileManager:WipeAll()
         self:Refresh()
     end))
 

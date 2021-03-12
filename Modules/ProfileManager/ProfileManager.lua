@@ -5,26 +5,20 @@ local MODULE = CLM.MODULE
 local RESULTS = CLM.CONSTANTS.RESULTS
 
 local Profile = {}
---local ProfileOptions = {}
 local ProfileManager = { }
 
 function ProfileManager:Initialize()
     LOG:Info("ProfileManager:Initialize()")
     self.db = MODULE.Database:Profiles()
 
-    -- if type(self.db.metadata) ~= "table" then
-    --     self.db.metadata = {}
-    -- end
-
-    if type(self.db.data) ~= "table" then
-        self.db.data = {}
+    if type(self.db.profiles) ~= "table" then
+        self.db.profiles = {}
     end
 
-    -- if type(self.db.altLinks) ~= "table" then
-    --     self.db.altLinks = {}
-    -- end
-
-    self.cache = { playerGuidMap = {}, profiles = {} }
+    self.cache = {
+        playerGuidMap = {},
+        profiles = {}
+    }
     self:LoadCache()
 
     MODULE.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
@@ -35,30 +29,18 @@ end
 function ProfileManager:LoadCache()
     LOG:Info("ProfileManager:LoadCache()")
 
-    for guid,data in pairs(self.db.data) do
-        local p = Profile:FromStorage(data)
+    for guid,_ in pairs(self.db.profiles) do
+        local p = Profile:Restore(self.db.profiles[guid])
         self.cache.profiles[guid] = p
         self.cache.playerGuidMap[p:Name()] = guid
-    end
-end
-
-function ProfileManager:StoreCache(guid)
-    if guid == nil then
-        for g,object in pairs(self.cache.profiles) do
-            self.db.data[g] = object:ToStorage()
-        end
-    else
-        local p = self.cache.profiles[guid]
-        if p ~= nil then
-            self.db.data[guid] = p:ToStorage()
-        end
     end
 end
 
 function ProfileManager:NewProfile(guid, name, class)
     if guid == nil then return end
     if name == nil then return end
-    self.cache.profiles[guid] = Profile:New(name, class)
+    self.db.profiles[guid] = {} -- Allocate database
+    self.cache.profiles[guid] = Profile:New(self.db.profiles[guid], {name = name, class = class})
     self.cache.playerGuidMap[name] = guid
 end
 
@@ -82,7 +64,6 @@ function ProfileManager:MarkAsAltByNames(main, alt)
         result = RESULTS.SUCCESS
     end
 
-    self:StoreCache(self:GetGUIDFromName(altProfile:Name()))
     return result
 end
 
@@ -127,8 +108,6 @@ function ProfileManager:FillFromGuild(selectedRanks, minLevel)
             self:NewProfile(GUID, name, class)
         end
     end
-
-    self:StoreCache()
 end
 
 function ProfileManager:FillFromRaid()
@@ -142,8 +121,6 @@ function ProfileManager:FillFromRaid()
             self:NewProfile(GUID, name, class)
         end
     end
-
-    self:StoreCache()
 end
 
 function ProfileManager:AddTarget()
@@ -155,14 +132,13 @@ function ProfileManager:AddTarget()
         local _, class, _ = UnitClass("target");
 
         self:NewProfile(GUID, name, class)
-        self:StoreCache(GUID)
     else
         LOG:Warning("Your target must be a player.")
     end
 end
 
-function ProfileManager:Wipe()
-    self.db.data = {}
+function ProfileManager:WipeAll()
+    self.db.profiles = {}
     self.cache = { playerGuidMap = {}, profiles = {} }
 end
 
@@ -184,32 +160,40 @@ function ProfileManager:GetProfileByName(name)
     return self.cache.profiles[self.cache.playerGuidMap[name]]
 end
 
-
---- PROFILE ---
-function Profile:FromStorage(object)
-    return self:New(object.name, object.class, object.spec, object.main)
-end
-
-function Profile:ToStorage()
-    return self.persistent
-end
-
-function Profile:New(name, class, spec, main)
+function Profile:_New(storage)
     local o = {}
 
     setmetatable(o, self)
     self.__index = self
 
-    o.persistent = {
-        name  = tostring(name),
-        class = class or "",
-        spec  = spec  or "",
-        main  = main  or ""
-    }
+    -- Virtual profile that is not stored
+    -- It's not a bug. It's a feature.
+    if storage == nil then
+        LOG:Warning("Virtual Profile. Is this intended?")
+        local s = {}
+        o.persistent = s
+    else
+        o.persistent = storage
+    end
 
     o.volatile = {}
 
     return o
+end
+
+function Profile:New(storage, params)
+    local o = self:_New(storage)
+
+    o.persistent.name  = tostring(params.name)
+    o.persistent.class = params.class or ""
+    o.persistent.spec  = params.spec  or ""
+    o.persistent.main  = params.main  or ""
+
+    return o
+end
+
+function Profile:Restore(storage)
+    return self:_New(storage)
 end
 
 function Profile:Name()
