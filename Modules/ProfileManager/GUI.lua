@@ -167,7 +167,7 @@ function ProfileManagerGUI:Create()
 
     f:AddChild(ManagementOptions)
     -- Hide by default
-    --f:Hide()
+    f:Hide()
 end
 
 function ProfileManagerGUI:Refresh()

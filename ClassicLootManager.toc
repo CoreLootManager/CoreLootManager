@@ -47,8 +47,12 @@ Modules\EventHandler\EventHandler.lua
 Modules\PointManager\PointManager.lua
 Modules\PointManager\DKP.lua
 Modules\LootManager\LootManager.lua
-Modules\RosterManager\RosterManager.lua
+
 Modules\ProfileManager\ProfileManager.lua
 Modules\ProfileManager\GUI.lua
+
+Modules\RosterManager\RosterManager.lua
+Modules\RosterManager\GUI.lua
+Modules\RosterManager\Options.lua
 
 Modules\BIST\BIST.lua

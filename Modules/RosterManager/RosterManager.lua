@@ -1,60 +1,15 @@
 local _, CLM = ...
 
 -- Local upvalues
-local MODULE = CLM.MODULE
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+local UTILS = CLM.UTILS
+local MODULE = CLM.MODULE
 
 
-local Roster = { }
-local RosterOptions = { }
-local RosterManager = { }
-
-function RosterManager:Initialize()
-    LOG:Info("RosterManager:Initialize()")
-    -- Initialize DB
-    self.db = MODULE.Database:Roster()
-    if type(self.db.metadata) ~= "table" then
-        self.db.metadata = {
-            next_roster_id = 0
-        }
-    end
-    if type(self.db.rosters) ~= "table" then
-        self.db.rosters = {}
-    end
-    -- Rebuild Cache
-    self:RebuildCache()
-    -- Initialize options
-    self.options = {
-        roster_new = {
-            name = "New",
-            desc = "Creates new roster",
-            type = "execute",
-            handler = self,
-            func = "New",
-            order = -1
-        }
-    }
-    -- Refresh GUI
-    self:Refresh()
-end
-
-function RosterManager:RebuildCache()
-    local max_uid = 0
-    self.metadata = { rosters = {} }
-    for name, roster in pairs(self.db.rosters) do
-        if self.metadata.rosters[roster.uid] ~= nil then
-            LOG:Fatal("Duplicate roster uid: " .. roster.uid .. ".  Please report this issue to authors and attach SavedVariable file.")
-        end
-        self.metadata.rosters[roster.uid] = name
-        if roster.uid > max_uid then
-            max_uid = roster.uid
-        end
-    end
-    if max_uid >= self.db.metadata.next_roster_id then
-        self.db.metadata.next_roster_id = max_uid + 1
-    end
-end
+local Roster = { } -- Roster information
+local RosterConfiguration = { } -- Roster Configuration
+local RosterManager = { } -- Roster Manager Module
 
 local function GenerateName()
     local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(0, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX - 1)]
@@ -62,112 +17,172 @@ local function GenerateName()
     return prefix:sub(1,1):upper()..prefix:sub(2).. " " .. suffix:sub(1,1):upper()..suffix:sub(2)
 end
 
-function RosterManager:New(i)
-    LOG:Info("RosterManager:New()")
+-- Controller Roster Manger
+function RosterManager:Initialize()
+    LOG:Info("RosterManager:Initialize()")
+    -- Initialize DB
+    self.db = MODULE.Database:Roster()
+    if type(self.db.metadata) ~= "table" then
+        self.db.metadata = {
+            next_roster_uid = 0
+        }
+    end
+
+    if type(self.db.rosters) ~= "table" then
+        self.db.rosters = {}
+    end
+    -- Initialize Cache
+    self.cache = {
+        rostersUidMap = {},
+        rosters = {}
+    }
+
+    self:LoadCache()
+end
+
+function RosterManager:LoadCache()
+    LOG:Info("RosterManager:LoadCache()")
+    local max_uid = 0
+    for name, _ in pairs(self.db.rosters) do
+        local roster = Roster:Restore(self.db.rosters[name])
+        local uid = roster:UID()
+        -- Duplication issue check
+        if self.cache.rosters[uid] ~= nil then
+            LOG:Fatal("Duplicate roster uid: " .. uid .. ".  Please report this issue to authors and attach SavedVariable file.")
+        end
+
+        -- Restore Roster
+        self.cache.rosters[name] = roster
+        self.cache.rostersUidMap[uid] = name
+
+        -- Contol uid
+        if uid > max_uid then
+            max_uid = uid
+        end
+    end
+    -- Update uid in case it is needed
+    if max_uid >= self.db.metadata.next_roster_uid then
+        self.db.metadata.next_roster_uid = max_uid + 1
+    end
+end
+
+function RosterManager:GetRosters()
+    return self.cache.rosters
+end
+
+function RosterManager:GetRosterByName(name)
+    return self.cache.rosters[name]
+end
+
+function RosterManager:NewRoster()
+    LOG:Info("RosterManager:NewRoster()")
 
     local name = GenerateName()
     while self.db.rosters[name] ~= nil do
         name = GenerateName()
     end
 
-    self.db.rosters[name] = Roster:New(self.db.metadata.next_roster_id)
-    self.metadata.rosters[self.db.rosters[name].uid] = name
+    self.db.rosters[name] = {}
+    local roster = Roster:New(self.db.rosters[name], { uid = self.db.metadata.next_roster_uid })
+    self.cache.rosters[name] = roster
+    self.cache.rostersUidMap[self.db.metadata.next_roster_uid] = name
 
-    self.db.metadata.next_roster_id = self.db.metadata.next_roster_id + 1
-
-    self:Refresh()
+    self.db.metadata.next_roster_uid = self.db.metadata.next_roster_uid + 1
 end
 
-function RosterManager:Remove(name)
-    LOG:Info("RosterManager:Remove(): " .. name)
-    self.metadata.rosters[self.db.rosters[name].uid] = nil
+function RosterManager:DeleteRosterByName(name)
+    LOG:Info("RosterManager:DeleteRosterByName()")
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return end
+    self.cache.rostersUidMap[roster:UID()] = nil
+    self.cache.rosters[name] = nil
     self.db.rosters[name] = nil
-    self.options[name] = nil
-    self:Refresh()
+    -- Remove from options
 end
 
+function RosterManager:RenameRoster(old, new)
+    LOG:Info("RosterManager:RenameRoster()")
+    local o = RosterManager:GetRosterByName(old)
+    if o == nil then return end
+    local n = RosterManager:GetRosterByName(new)
+    print(type(n))
+    if n ~= nil then return end
 
-local function RosterManager_Remove(i)
-    RosterManager:Remove(i[#i-1])
-end
-
-function RosterManager:Rename(old, new)
-    LOG:Info("RosterManager:Rename()")
     self.db.rosters[new] = self.db.rosters[old]
-    self.metadata.rosters[self.db.rosters[old].uid] = new
-    self:Remove(old)
+    self.cache.rosters[new] = self.cache.rosters[old]
+    self.cache.rostersUidMap[self.cache.rosters[new]:UID()] = new
+
+    self:DeleteRosterByName(old)
 end
 
-local function RosterManager_Rename(i, v)
-    RosterManager:Rename(i[#i-1], v)
+-- Model
+function Roster:New(storage, params)
+    local o = UTILS.NewStorageQualifiedObject(storage, self)
+
+    o.persistent.uid  = tonumber(params.uid)
+    o.persistent.description = params.description or ""
+    o.persistent.configuration  = params.configuration or RosterConfiguration:New()
+
+    return o
 end
 
-function RosterManager:Refresh()
-    for name, roster in pairs(self.db.rosters) do
-        local rosterOptions = RosterOptions:New(name, roster)
-        self.options[name] = rosterOptions.options
-    end
-    MODULE.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, self.options, true)
+function Roster:Restore(storage)
+    return UTILS.NewStorageQualifiedObject(storage, self)
 end
 
-function Roster:New(uid)
+function Roster:UID()
+    return self.persistent.uid
+end
+
+function Roster:Configuration()
+    return self.persistent.configuration
+end
+
+-- Configuration storage for RosterOptions
+function RosterConfiguration:New()
     local o = {}
 
     setmetatable(o, self)
-    self.__index = self
+    self.__index = self 
 
-    o.uid = uid
-    o.description = "The super duper description"
-
-    return o
- end
-
- function RosterOptions:New(name, roster)
-    local o = {}
-
-    setmetatable(o, self)
-    self.__index = self
-
-    self.options = {
-        type = "group",
-        name = name,
-        args = {
-            roster_name = {
-                name = "Name",
-                type = "input",
-                set = RosterManager_Rename,
-                get = function(i) return i[#i-1] end
-            },
-            roster_description = {
-                name = "Description",
-                type = "input",
-                multiline = 4,
-                set = function (i, v) RosterManager.db.rosters[i[#i-1]].description = v end,
-                get = function(i) return RosterManager.db.rosters[i[#i-1]].description end
-            },
-            remove_self = {
-                name = "Remove",
-                desc = "Removes selected roster",
-                type = "execute",
-                func = RosterManager_Remove,
-                confirm = true,
-                order = -1
-            },
-        }
-    }
+    -- Point type: DKP / EPGP
+    self.pointType = CONSTANTS.POINT_TYPES.DKP
+    -- Auction type: Open / Sealed / Vickrey
+    self.auctionType = CONSTANTS.AUCTION_TYPES.SEALED
+    -- Item Value mode: Single-Priced / Ascending
+    self.itemValueMode = CONSTANTS.ITEM_VALUE_MODES.SINGLE_PRICED
+    -- Allow negative standings
+    self.allowNegativeStandings = false
+    -- Allow negative bidders
+    self.allowNegativeBidders = false 
+    -- Zero-Sum Bank
+    self.zeroSum = false
+    -- Simultaneous Auctions
+    self.simultaneousAuctions = false
 
     return o
- end
+end
 
---function RosterManager:Copy(source, target)
---end
-
-
-
--- Publish API
+-- -- Publish API
 MODULE.RosterManager = RosterManager
 
 -- Constants
+CONSTANTS.POINT_TYPES = {
+    DKP = 0,
+    EPGP = 1
+}
+
+CONSTANTS.AUCTION_TYPES = {
+    OPEN = 0,
+    SEALED = 1,
+    VICKREY = 2
+}
+
+CONSTANTS.ITEM_VALUE_MODES = {
+    SINGLE_PRICED,
+    ASCENDING
+}
+
 CONSTANTS.ROSTER_NAME_GENERATOR = {
     PREFIX = {
         "adorable",

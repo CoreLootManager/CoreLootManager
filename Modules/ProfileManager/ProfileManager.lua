@@ -65,6 +65,9 @@ function ProfileManager:MarkAsAltByNames(main, alt)
             result = RESULTS.SUCCESS_EXTENDED
         end
     else
+        if mainProfile:Main() ~= "" then
+            return RESULTS.IGNORE
+        end
         altProfile:SetMain(self:GetGUIDFromName(mainProfile:Name()))
         result = RESULTS.SUCCESS
     end

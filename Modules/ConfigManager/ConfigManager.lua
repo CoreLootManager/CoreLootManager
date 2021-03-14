@@ -67,7 +67,7 @@ function ConfigManager:Initialize()
         if config == CONSTANTS.CONFIGS.GROUP.GLOBAL then
             parent = nil
         end
-        self.options[config] = { type = "group", childGroups = "select", args = {}}
+        self.options[config] = { type = "group", args = {}}
         LIBS.config:RegisterOptionsTable(config, self.generators[config])
         LIBS.gui:AddToBlizOptions(config, config, parent)
     end
