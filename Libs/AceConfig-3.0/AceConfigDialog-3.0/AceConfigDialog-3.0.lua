@@ -5,9 +5,9 @@
 
 local LibStub = LibStub
 local gui = LibStub("AceGUI-3.0")
-local reg = LibStub("AceConfigRegistry-3.0")
+local reg = LibStub("AceConfigRegistry-3.0-CLM")
 
-local MAJOR, MINOR = "AceConfigDialog-3.0", 81
+local MAJOR, MINOR = "AceConfigDialog-3.0-CLM", 181
 local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigDialog then return end
@@ -161,6 +161,7 @@ local allIsLiteral = {
 	descStyle = true,
 	imageWidth = true,
 	imageHeight = true,
+	itemLink = true
 }
 
 --gets the value for a member that could be a function
@@ -508,6 +509,14 @@ local function OptionOnMouseOver(widget, event)
 	local tooltip = AceConfigDialog.tooltip
 
 	tooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+
+	local itemLink = GetOptionsMemberValue("itemLink", opt, options, path, appName)
+	if itemLink then
+		tooltip:SetHyperlink(itemLink)
+		tooltip:Show()
+		return
+	end
+
 	local name = GetOptionsMemberValue("name", opt, options, path, appName)
 	local desc = GetOptionsMemberValue("desc", opt, options, path, appName)
 	local usage = GetOptionsMemberValue("usage", opt, options, path, appName)
