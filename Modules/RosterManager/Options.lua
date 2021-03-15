@@ -2,8 +2,9 @@ local _, CLM = ...
 -- local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local OPTIONS = CLM.OPTIONS
-local MODULE = CLM.MODULE
-local RosterManager = MODULE.RosterManager
+local MODULES = CLM.MODULES
+local RosterManager = MODULES.RosterManager
+local ProfileManager = MODULES.ProfileManager
 
 local CBTYPE = {
     GETTER   = "get",
@@ -14,14 +15,14 @@ local CBTYPE = {
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)
-    print("Get " .. tostring(option))
+    -- print("Get " .. tostring(option))
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     return roster:GetConfiguration(option)
 end
 
 local function SetRosterOption(name, option, value)
-    --print("Set [" .. tostring(option) .. "]: " .. tostring(value))
+    -- print("Set [" .. tostring(option) .. "]: " .. tostring(value))
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     roster:SetConfiguration(option, value)
@@ -66,8 +67,27 @@ function RosterManagerOptions:Initialize()
             RosterManager:DeleteRosterByName(name)
             self:UpdateOptions()
         end),
-        -- copy
-        -- copy_source
+        fill_profiles_execute = (function(name)
+            local profiles = ProfileManager:GetProfiles()
+            local roster = RosterManager:GetRosterByName(name)
+            if roster == nil then return nil end
+            for GUID,_ in pairs(profiles) do
+                roster:AddProfileByGUID(GUID)
+            end
+        end),
+        copy_execute = (function(name)
+            if self.copy_source_name == nil then return end
+            --RosterManager:CopyProfiles(self.copy_source_name, name)
+            RosterManager:CopyConfiguration(self.copy_source_name, name)
+            RosterManager:CopyDefaultSlotValues(self.copy_source_name, name)
+            RosterManager:CopyItemValues(self.copy_source_name, name)
+        end),
+        copy_source_get = (function(name)
+            return self.copy_source_name
+        end),
+        copy_source_set = (function(name, value)
+            self.copy_source_name = value
+        end),
         point_type_get = (function(name)
             return GetRosterOption(name, "pointType")
         end),
@@ -117,8 +137,7 @@ function RosterManagerOptions:Initialize()
         local prefix = slot.type:lower()
         for type, isMin in pairs(values) do
             local node = "default_slot_values_" .. prefix .. "_" .. type
-            print(node)
-            self.handlers[ node .."_get"] = (function(name) 
+            self.handlers[ node .."_get"] = (function(name)
                 return GetDefaultSlotValue(name, slot.type, isMin)
             end)
             self.handlers[ node .."_set"] = (function(name, value)
@@ -143,7 +162,7 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
         node_name = info[#info]
     end
     node_name = node_name .. "_".. cbtype
-    --print(node_name)
+    -- print(node_name)
     -- Execute handler
     if type(self.handlers[node_name]) == "function" then
         return self.handlers[node_name](roster_name, ...)
@@ -164,12 +183,11 @@ function RosterManagerOptions:Handler(info, ...)
 end
 
 function RosterManagerOptions:GenerateRosterOptions(name)
-    local roster = RosterManager:GetRosterByName(name)
-    
+
     local default_slot_values_args = (function()
         --local slots = {"Head", "Neck", "Shoulders", "Back", "Chest", "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger", "Trinket"}
         local values = {
-            ["Minimum"] = "Minimum or actual value for Static-Priced auction. Set to 0 to ignore.", 
+            ["Minimum"] = "Minimum or actual value for Static-Priced auction. Set to 0 to ignore.",
             ["Maximum"] = "Maximum value for Ascending auction. Set to 0 to ignore."
         }
         local args = {}
@@ -268,12 +286,19 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 end),
                 order = 99
             },
+            fill_profiles = {
+                name = "Fill profiles",
+                desc = "Fills current roster with all profiles.",
+                type = "execute",
+                confirm = true,
+                order = 100
+            },
             remove = {
                 name = "Remove",
                 desc = "Removes current roster.",
                 type = "execute",
                 confirm = true,
-                order = 100
+                order = 101
             },
             point_type = {
                 name = "Point type",
@@ -354,7 +379,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     return options
 end
 
-
 function RosterManagerOptions:UpdateOptions()
     local options = {
         new = { -- Global options -> Create New Roster
@@ -373,11 +397,11 @@ function RosterManagerOptions:UpdateOptions()
             order = 2
         }
     }
-    local rosters = MODULE.RosterManager:GetRosters()
+    local rosters = MODULES.RosterManager:GetRosters()
     for name, _ in pairs(rosters) do
         options[name] = self:GenerateRosterOptions(name)
     end
-    MODULE.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, options, true)
+    MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, options, true)
 end
 
 -- Accepts array of ACE options and array of callbacks

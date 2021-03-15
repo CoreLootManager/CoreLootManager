@@ -6,10 +6,10 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
-local MODULE = CLM.MODULE
+local MODULES = CLM.MODULES
 local RESULTS = CLM.CONSTANTS.RESULTS
 local GUI = CLM.GUI
-local ProfileManager = MODULE.ProfileManager
+local ProfileManager = MODULES.ProfileManager
 
 local ProfileManagerGUI =  { _initialized = false }
 
@@ -58,7 +58,7 @@ function ProfileManagerGUI:Create()
         else
             local main = self.selected
             local alt = selected
-            local result = MODULE.ProfileManager:MarkAsAltByNames(main, alt)
+            local result = MODULES.ProfileManager:MarkAsAltByNames(main, alt)
             self.selected = ""
             if result == RESULTS.SUCCESS then
                 self.top:SetStatusText("Marked " .. main .. " as main of " .. alt)
@@ -219,7 +219,7 @@ function ProfileManagerGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULE.ConfigManager:RegisterSlash(options)
+    MODULES.ConfigManager:RegisterSlash(options)
 end
 
 GUI.ProfileManager = ProfileManagerGUI

@@ -84,3 +84,46 @@ end
 function UTILS.GenerateItemLink(itemId)
     return string.format("item:%d:0:0:0:0:0:0:0:0:0:0:0:0", itemId)
 end
+
+function UTILS.Set(t)
+    local s = {}
+    for _,v in pairs(t) do s[v] = true end
+    return s
+end
+
+-- http://lua-users.org/wiki/CopyTable
+function UTILS.ShallowCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+-- http://lua-users.org/wiki/CopyTable
+function UTILS.DeepCopy(orig, copies)
+    copies = copies or {}
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        if copies[orig] then
+            copy = copies[orig]
+        else
+            copy = {}
+            copies[orig] = copy
+            for orig_key, orig_value in next, orig, nil do
+                copy[UTILS.DeepCopy(orig_key, copies)] = UTILS.DeepCopy(orig_value, copies)
+            end
+            setmetatable(copy, UTILS.DeepCopy(getmetatable(orig), copies))
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end

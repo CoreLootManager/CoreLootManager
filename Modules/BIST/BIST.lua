@@ -1,8 +1,8 @@
 local _, CLM = ...
 
-local MODULE = CLM.MODULE
+local MODULES = CLM.MODULES
 local LOG = CLM.LOG
-local Comms = MODULE.Comms
+local Comms = MODULES.Comms
 
 local OptionsData = {
     bist_input = "BIST",
@@ -82,7 +82,7 @@ local BIST = {
                                 OptionsData.bist_select_values[j] = t
                                 print(t)
                             end
-                            MODULE.ConfigManager:Update(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
+                            MODULES.ConfigManager:Update(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
                         end)
                     },
                     bist_execute_minus = {
@@ -100,7 +100,7 @@ local BIST = {
                                 OptionsData.bist_select_values[i] = t
                                 print(t)
                             end
-                            MODULE.ConfigManager:Update(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
+                            MODULES.ConfigManager:Update(CLM.CONSTANTS.CONFIGS.GROUP.BIST)
                         end)
                     }
                 }
@@ -174,7 +174,7 @@ end
 
 function BIST.Options:Run()
     LOG:Info("BIST.Options:Run()")
-    MODULE.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.BIST, self.options)
+    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.BIST, self.options)
 end
 
 function BIST:Report()
@@ -189,4 +189,4 @@ function BIST:Run()
     self.Options:Run()
 end
 
-MODULE.BIST = BIST
+MODULES.BIST = BIST

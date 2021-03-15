@@ -5,7 +5,7 @@ local _, CLM = ...
 -- 3) logging level
 local Logger = CLM.LOG
 
-local MODULE = CLM.MODULE
+local MODULES = CLM.MODULES
 local function print(...) _G.print("|cffebb434CLM:|r", ...) end
 
 local SEVERITY =
@@ -104,11 +104,11 @@ function Logger:Initialize()
             get = function(i) return CLM.LOG.verbose end
           }
     }
-    MODULE.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 -- Publish API
-MODULE.Logger = Logger
+MODULES.Logger = Logger
 
 
 

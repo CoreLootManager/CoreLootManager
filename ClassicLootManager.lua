@@ -10,7 +10,8 @@ CLM.VERSION = {
     notes = ""
 }
 
-CLM.MODULE =  {}
+CLM.MODULES =  {}
+CLM.MODELS =  {}
 CLM.CONSTANTS = {
     RESULTS = { -- Universal return codes
         ERROR = 0,           -- Request failed
@@ -26,32 +27,32 @@ CLM.LOG = { verbose = true }
 -- Local upvalues
 local CORE = CLM.CORE
 local LOG = CLM.LOG
-local MODULE = CLM.MODULE
+local MODULES = CLM.MODULES
 
 function CORE:_InitializeCore()
     LOG:Info("CORE:_InitializeCore()")
 
-    MODULE.Database:Initialize()
-    MODULE.ConfigManager:Initialize()
-    MODULE.Logger:Initialize()
-    --MODULE.StateManager.Initialize()
-    MODULE.Comms:Initialize()
-    --MODULE.ACL.Initialize()
+    MODULES.Database:Initialize()
+    MODULES.ConfigManager:Initialize()
+    MODULES.Logger:Initialize()
+    --MODULES.StateManager.Initialize()
+    MODULES.Comms:Initialize()
+    --MODULES.ACL.Initialize()
 end
 
 function CORE:_InitializeBackend()
     LOG:Info("CORE:_InitializeBackend()")
-    --MODULE.LedgerManager.Initialize()
+    --MODULES.LedgerManager.Initialize()
 end
 
 function CORE:_InitializeFeatures()
     LOG:Info("CORE:_InitializeFeatures()")
-    --MODULE.EventHandler.Initialize()
-    --MODULE.RaidManager.Initialize()
-    MODULE.ProfileManager:Initialize()
-    MODULE.RosterManager:Initialize()
-    --MODULE.PointManager.Initialize()
-    --MODULE.LootManager.Initialize()
+    --MODULES.EventHandler.Initialize()
+    --MODULES.RaidManager.Initialize()
+    MODULES.ProfileManager:Initialize()
+    MODULES.RosterManager:Initialize()
+    --MODULES.PointManager.Initialize()
+    --MODULES.LootManager.Initialize()
 end
 
 function CORE:_InitializeFrontend()
@@ -66,12 +67,12 @@ end
 
 function CORE:_Enable()
     LOG:Info("CORE:_Enable()")
-    MODULE.Comms:Enable()
+    MODULES.Comms:Enable()
 end
 
 function CORE:_BIST()
-    MODULE.BIST:Run()
-    C_Timer.After(2, function() MODULE.BIST:Report() end)
+    MODULES.BIST:Run()
+    C_Timer.After(2, function() MODULES.BIST:Report() end)
 end
 
 function CORE:_SequentialInitialize(stage)

@@ -1,17 +1,11 @@
 local  _, CLM = ...
 
-local function Set(t)
-    local s = {}
-    for _,v in pairs(t) do s[v] = true end
-    return s
-end
-
 -- local upvalues
 
-local MODULE = CLM.MODULE
+local MODULES = CLM.MODULES
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-
+local UTILS = CLM.UTILS
 
 -- Module
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
@@ -134,7 +128,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return
     end
     -- Get ACL level
-    --local aclLevel = MODULE.ACL:Get(sender)
+    --local aclLevel = MODULES.ACL:Get(sender)
     local aclLevel = 0
     -- Execute callback
     if aclLevel >= self.aclLevel[prefix] then
@@ -145,12 +139,12 @@ function Comms:OnReceive(prefix, message, distribution, sender)
 end
 
 -- Publish API
-MODULE.Comms = Comms
+MODULES.Comms = Comms
 
 -- Constants
 CONSTANTS.COMMS = {
     SEPARATOR = "\t",
-    PRIORITIES = Set({
+    PRIORITIES = UTILS.Set({
         "ALERT",
         "NORMAL",
         "BULK"
@@ -160,7 +154,7 @@ CONSTANTS.COMMS = {
         NORMAL = "NORMAL",
         BULK = "BULK"
     },
-    DISTRIBUTIONS = Set({
+    DISTRIBUTIONS = UTILS.Set({
         "PARTY",
         "RAID",
         --"INSTANCE_CHAT",

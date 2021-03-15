@@ -1,16 +1,16 @@
 local _, CLM = ...
 -- Upvalues
 local LOG = CLM.LOG
-local MODULE = CLM.MODULE
-local UTILS =  CLM.UTILS
+local MODULES = CLM.MODULES
 local RESULTS = CLM.CONSTANTS.RESULTS
 
-local Profile = {}
+local Profile = CLM.MODELS.Profile
+
 local ProfileManager = { }
 
 function ProfileManager:Initialize()
     LOG:Info("ProfileManager:Initialize()")
-    self.db = MODULE.Database:Profiles()
+    self.db = MODULES.Database:Profiles()
 
     if type(self.db.profiles) ~= "table" then
         self.db.profiles = {}
@@ -22,7 +22,7 @@ function ProfileManager:Initialize()
     }
     self:LoadCache()
 
-    MODULE.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
+    MODULES.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
 end
 
 -- CORE
@@ -168,44 +168,5 @@ function ProfileManager:GetProfileByName(name)
     return self.cache.profiles[self.cache.profilesGuidMap[name]]
 end
 
-function Profile:New(storage, params)
-    local o = UTILS.NewStorageQualifiedObject(storage, self)
-
-    o.persistent.name  = tostring(params.name)
-    o.persistent.class = params.class or ""
-    o.persistent.spec  = params.spec  or ""
-    o.persistent.main  = params.main  or ""
-
-    return o
-end
-
-function Profile:Restore(storage)
-    return UTILS.NewStorageQualifiedObject(storage, self)
-end
-
-function Profile:Name()
-    return self.persistent.name
-end
-
-function Profile:Class()
-    return self.persistent.class
-end
-
-function Profile:Spec()
-    return self.persistent.spec
-end
-
-function Profile:Main()
-    return self.persistent.main
-end
-
-function Profile:SetMain(main)
-    self.persistent.main = main
-end
-
-function Profile:ClearMain()
-    self.persistent.main = ""
-end
-
 -- Publis API
-MODULE.ProfileManager = ProfileManager
+MODULES.ProfileManager = ProfileManager

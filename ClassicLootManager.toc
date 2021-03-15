@@ -30,29 +30,36 @@ Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceTab-3.0\AceTab-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\lib-st-4.1.2\lib-st.xml
-# Utility
-Libs\Class\class.lua
 
 # Addon Core
 ClassicLootManager.lua
 Core\Logger.lua
 Core\Utils.lua
 
-## Addon modules
+# Addon models
+Modules\ProfileManager\Profile.lua
+Modules\RosterManager\Roster.lua
+
+# Addon modules (Controllers)
 Modules\Comms\Comms.lua
 Modules\Database\Database.lua
 Modules\ConfigManager\ConfigManager.lua
+
+#--- NOT IMPLEMENTED -----#
 Modules\StateManager\StateManager.lua
 Modules\EventHandler\EventHandler.lua
 Modules\PointManager\PointManager.lua
 Modules\PointManager\DKP.lua
 Modules\LootManager\LootManager.lua
-
+#--------#
 Modules\ProfileManager\ProfileManager.lua
-Modules\ProfileManager\GUI.lua
-
 Modules\RosterManager\RosterManager.lua
+
+
+# Addon Options and GUIs (View)
+Modules\ProfileManager\GUI.lua
 Modules\RosterManager\GUI.lua
 Modules\RosterManager\Options.lua
 
+# BIST and test
 Modules\BIST\BIST.lua

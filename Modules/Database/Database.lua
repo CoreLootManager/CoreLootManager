@@ -1,6 +1,6 @@
 local  _, CLM = ...
 
-local MODULE = CLM.MODULE
+local MODULES = CLM.MODULES
 local LOG = CLM.LOG
 
 local DB = {}
@@ -55,4 +55,4 @@ function DB:Ledger()
     return CLM_DB[self.server_faction_guild]['ledger']
 end
 
-MODULE.Database = DB
+MODULES.Database = DB

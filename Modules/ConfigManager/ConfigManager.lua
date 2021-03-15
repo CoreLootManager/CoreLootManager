@@ -2,14 +2,8 @@ local _, CLM = ...;
 
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local MODULE = CLM.MODULE
+local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
-
-local function Set(t)
-    local s = {}
-    for _,v in pairs(t) do s[v] = true end
-    return s
-end
 
 local LIBS =  {
     registry = LibStub("AceConfigRegistry-3.0-CLM"),
@@ -151,11 +145,11 @@ function ConfigManager:UpdateOptions(group)
 end
 
 -- Publish API
-MODULE.ConfigManager = ConfigManager
+MODULES.ConfigManager = ConfigManager
 
 -- TODO: cleanup this shit all around when removing BIST
 CONSTANTS.CONFIGS = {
-    GROUPS = Set({
+    GROUPS = UTILS.Set({
         "Classic Loot Manager",
         "Personal",
         "Guild",
