@@ -121,7 +121,9 @@ function Roster:New(storage, uid)
     o.persistent.uid  = tonumber(uid)
     o.persistent.description = ""
     o.persistent.configuration  = RosterConfiguration:New()
-    o.profiles = {}
+    o.persistent.profiles = {}
+    o.persistent.defaultSlotValues = {}
+    o.persistent.itemValueOverrides = {}
 
     return o
 end
@@ -153,6 +155,28 @@ function Roster:Description(description)
         self.persistent.description = description
     end
     return self.persistent.description
+end
+
+function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)
+    self.persistent.defaultSlotValues[itemEquipLoc] = { min = minimum, max = maximum}
+end
+
+function Roster:GetDefaultSlotValue(itemEquipLoc)
+    return 0, 0
+end
+
+function Roster:OverrideItemValue(itemId, itemName, minimum, maximum)
+    self.persistent.itemValueOverrides[itemId] = { name = itemName, min = minimum, max = maximum}
+end
+
+function Roster:GetItemValue(itemId)
+    local itemValue = self.persistent.itemValueOverrides[itemId]
+    if itemValue == nil then
+        _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+        local minimum, maximum = self:GetDefaultSlotValue(itemEquipLoc)
+        itemValue = { name = "", min = minimum, max = maximum }
+    end
+    return itemValue
 end
 
 function Roster:GetConfiguration(option)
@@ -256,6 +280,72 @@ CONSTANTS.ITEM_VALUE_MODES = {
 CONSTANTS.ITEM_VALUE_MODE = {
     SINGLE_PRICED = 0,
     ASCENDING = 1
+}
+
+CONSTANTS.INVENTORY_TYPES = {
+    INVTYPE_NON_EQUIP,
+    INVTYPE_HEAD,
+    INVTYPE_NECK,
+    INVTYPE_SHOULDER,
+    INVTYPE_BODY,
+    INVTYPE_CHEST,
+    INVTYPE_WAIST,
+    INVTYPE_LEGS,
+    INVTYPE_FEET,
+    INVTYPE_WRIST,
+    INVTYPE_HAND,
+    INVTYPE_FINGER,
+    INVTYPE_TRINKET,
+    INVTYPE_WEAPON,
+    INVTYPE_SHIELD,
+    INVTYPE_RANGED,
+    INVTYPE_CLOAK,
+    INVTYPE_2HWEAPON,
+    INVTYPE_BAG,
+    INVTYPE_TABARD,
+    INVTYPE_ROBE,
+    INVTYPE_WEAPONMAINHAND,
+    INVTYPE_WEAPONOFFHAND,
+    INVTYPE_HOLDABLE,
+    INVTYPE_AMMO,
+    INVTYPE_THROWN,
+    INVTYPE_RANGEDRIGHT,
+    INVTYPE_QUIVER,
+    INVTYPE_RELIC
+}
+
+
+local PAPERDOLL = "Interface\\AddOns\\ClassicLootManager\\Media\\Paperdoll\\"
+CONSTANTS.INVENTORY_TYPES_SORTED = {
+    { type = "INVTYPE_HEAD",            name = "Head",              icon = PAPERDOLL .. "Ui-paperdoll-slot-head.blp" },
+    { type = "INVTYPE_NECK",            name = "Neck",              icon = PAPERDOLL .. "Ui-paperdoll-slot-neck.blp" },
+    { type = "INVTYPE_SHOULDER",        name = "Shoulder",          icon = PAPERDOLL .. "Ui-paperdoll-slot-shoulder.blp" },
+    { type = "INVTYPE_BODY",            name = "Shirt",             icon = PAPERDOLL .. "Ui-paperdoll-slot-shirt.blp" },
+    { type = "INVTYPE_CLOAK",           name = "Back",              icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_CHEST",           name = "Chest",             icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_ROBE",            name = "Chest (robes)",     icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_TABARD",          name = "Tabard",            icon = PAPERDOLL .. "Ui-paperdoll-slot-tabard.blp" },
+    { type = "INVTYPE_WRIST",           name = "Wrist",             icon = PAPERDOLL .. "Ui-paperdoll-slot-wrists.blp" },
+    { type = "INVTYPE_HAND",            name = "Hands",             icon = PAPERDOLL .. "Ui-paperdoll-slot-hands.blp" },
+    { type = "INVTYPE_WAIST",           name = "Waist",             icon = PAPERDOLL .. "Ui-paperdoll-slot-waist.blp" },
+    { type = "INVTYPE_LEGS",            name = "Legs",              icon = PAPERDOLL .. "Ui-paperdoll-slot-legs.blp" },
+    { type = "INVTYPE_FEET",            name = "Feet",              icon = PAPERDOLL .. "Ui-paperdoll-slot-feet.blp" },
+    { type = "INVTYPE_FINGER",          name = "Finger",            icon = PAPERDOLL .. "Ui-paperdoll-slot-finger.blp" },
+    { type = "INVTYPE_TRINKET",         name = "Trinket",           icon = PAPERDOLL .. "Ui-paperdoll-slot-trinket.blp" },
+    { type = "INVTYPE_WEAPON",          name = "One-Hand",          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_WEAPONMAINHAND",  name = "Main Hand",         icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_WEAPONOFFHAND",   name = "Off Hand",          icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_HOLDABLE",        name = "Held In Off-hand",  icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_2HWEAPON",        name = "Two-Hand",          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_SHIELD",          name = "Shield",            icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_RANGED",          name = "Ranged",            icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
+    { type = "INVTYPE_RANGEDRIGHT",     name = "Ranged (wands)",    icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
+    { type = "INVTYPE_NON_EQUIP",       name = "Non-equippable",    icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_BAG",             name = "Bag",               icon = PAPERDOLL .. "Ui-paperdoll-slot-bag.blp" },
+    { type = "INVTYPE_AMMO",            name = "Ammo",              icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_THROWN",          name = "Thrown",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_QUIVER",          name = "Quiver",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_RELIC",           name = "Relic",             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
 }
 
 CONSTANTS.ROSTER_NAME_GENERATOR = {

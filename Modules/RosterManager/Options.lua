@@ -101,9 +101,6 @@ function RosterManagerOptions:Initialize()
 end
 
 function RosterManagerOptions:_Handle(cbtype, info, ...)
-    -- for k,v in pairs(info) do
-    --     print("[" .. tostring(k) .."]: " .. tostring(v) )
-    -- end
     -- Assumes This is the handler of each of the subgroups but not the main group
     local roster_name = info[1]
     local node_name
@@ -136,9 +133,15 @@ function RosterManagerOptions:Handler(info, ...)
     self:_Handle(CBTYPE.EXECUTOR, info, ...)
 end
 
+function RosterManagerOptions:GenerateRosterOptionsDefaultSlotValues(name)
+
+end
+
 function RosterManagerOptions:GenerateRosterOptions(name)
+    local roster = RosterManager:GetRosterByName(name)
+    
     local default_slot_values_args = (function()
-        local slots = {"Head", "Neck", "Shoulders", "Back", "Chest", "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger", "Trinket"}
+        --local slots = {"Head", "Neck", "Shoulders", "Back", "Chest", "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger", "Trinket"}
         local values = {
             ["Minimum"] = "Minimum or actual value for Static-Priced auction. Set to 0 to ignore.", 
             ["Maximum"] = "Maximum value for Ascending auction. Set to 0 to ignore."
@@ -146,12 +149,20 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         local args = {}
         local order = 0
         local prefix
-        for _, slot in ipairs(slots) do
-            prefix = slot:lower()
+        for _, slot in ipairs(CONSTANTS.INVENTORY_TYPES_SORTED) do
+            prefix = slot.type:lower()
             args[prefix .. "_header"] = {
                 type = "header",
                 order = order,
-                name = slot
+                name = slot.name
+            }
+            order = order + 1
+            args[prefix .. "_icon"] = {
+                name = "",
+                type = "description",
+                image = slot.icon,
+                order = order,
+                width = 0.25
             }
             order = order + 1
             for type, desc in pairs(values) do
@@ -173,14 +184,9 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             i22812d = {
                 name = "",
                 type = "description",
-                --name = "\124cffa335ee\124Hitem:22812:0:0:0:0:0:0:0:0:0:0:0:5:645:645:645:645:479\124h[Nerubian Slavemaker]\124h\124r",
-                --name = "|cffa335ee|Hitem:22812:0:0:0:0:0:0:0:0:0:0:0:5:645:645:645:645:479|h[Nerubian Slavemaker]|h|r",
-                --desc = "|cffa335ee[Nerubian Slavemaker]|r",
                 image = 135541,
                 order = 0,
-                --width = 0.75,
-                --descStyle = "inline",
-                fontSize = "medium"
+                width = 0.25
             },
             i22812v = {
                 name = "Nerubian Slavemaker",

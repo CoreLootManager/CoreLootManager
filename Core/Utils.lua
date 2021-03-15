@@ -80,3 +80,7 @@ function UTILS.NewStorageQualifiedObject(storage, o)
     o.__index = o
     return sqo
 end
+
+function UTILS.GenerateItemLink(itemId)
+    return string.format("item:%d:0:0:0:0:0:0:0:0:0:0:0:0", itemId)
+end
