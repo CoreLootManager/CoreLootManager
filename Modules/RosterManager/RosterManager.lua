@@ -83,7 +83,7 @@ function RosterManager:NewRoster()
     end
 
     self.db.rosters[name] = {}
-    local roster = Roster:New(self.db.rosters[name], { uid = self.db.metadata.next_roster_uid })
+    local roster = Roster:New(self.db.rosters[name], self.db.metadata.next_roster_uid)
     self.cache.rosters[name] = roster
     self.cache.rostersUidMap[self.db.metadata.next_roster_uid] = name
 
@@ -105,7 +105,6 @@ function RosterManager:RenameRoster(old, new)
     local o = RosterManager:GetRosterByName(old)
     if o == nil then return end
     local n = RosterManager:GetRosterByName(new)
-    print(type(n))
     if n ~= nil then return end
 
     self.db.rosters[new] = self.db.rosters[old]
@@ -116,71 +115,147 @@ function RosterManager:RenameRoster(old, new)
 end
 
 -- Model
-function Roster:New(storage, params)
+function Roster:New(storage, uid)
     local o = UTILS.NewStorageQualifiedObject(storage, self)
 
-    o.persistent.uid  = tonumber(params.uid)
-    o.persistent.description = params.description or ""
-    o.persistent.configuration  = params.configuration or RosterConfiguration:New()
+    o.persistent.uid  = tonumber(uid)
+    o.persistent.description = ""
+    o.persistent.configuration  = RosterConfiguration:New()
+    o.profiles = {}
 
     return o
 end
 
 function Roster:Restore(storage)
-    return UTILS.NewStorageQualifiedObject(storage, self)
+    local o = UTILS.NewStorageQualifiedObject(storage, self)
+    o.persistent.configuration = RosterConfiguration:New(o.persistent.configuration)
+    return o
+end
+
+function Roster:AddProfileByGUID(GUID)
+    self.persistent.profiles[GUID] = true
+end
+
+function Roster:RemoveProfileByGUID(GUID)
+    self.persistent.profiles[GUID] = nil
+end
+
+function Roster:IsProfileInRoster(GUID)
+    return self.persistent.profiles[GUID]
 end
 
 function Roster:UID()
     return self.persistent.uid
 end
 
-function Roster:Configuration()
-    return self.persistent.configuration
+function Roster:Description(description)
+    if type(description) == "string" then
+        self.persistent.description = description
+    end
+    return self.persistent.description
 end
 
--- Configuration storage for RosterOptions
-function RosterConfiguration:New()
-    local o = {}
+function Roster:GetConfiguration(option)
+    return self.persistent.configuration:Get(option)
+end
+
+function Roster:SetConfiguration(option, value)
+    self.persistent.configuration:Set(option, value)
+end
+
+-- Configuration
+function RosterConfiguration:New(i)
+    local o = i or {}
 
     setmetatable(o, self)
-    self.__index = self 
+    self.__index = self
+
+    if i then return o end
 
     -- Point type: DKP / EPGP
-    self.pointType = CONSTANTS.POINT_TYPES.DKP
+    o.pointType = CONSTANTS.POINT_TYPE.DKP
     -- Auction type: Open / Sealed / Vickrey
-    self.auctionType = CONSTANTS.AUCTION_TYPES.SEALED
+    o.auctionType = CONSTANTS.AUCTION_TYPE.SEALED
     -- Item Value mode: Single-Priced / Ascending
-    self.itemValueMode = CONSTANTS.ITEM_VALUE_MODES.SINGLE_PRICED
-    -- Allow negative standings
-    self.allowNegativeStandings = false
-    -- Allow negative bidders
-    self.allowNegativeBidders = false 
+    o.itemValueMode = CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
     -- Zero-Sum Bank
-    self.zeroSum = false
+    o.zeroSumBank = false
+    -- Allow negative standings
+    o.allowNegativeStandings = false
+    -- Allow negative bidders
+    o.allowNegativeBidders = false
     -- Simultaneous Auctions
-    self.simultaneousAuctions = false
-
+    o.simultaneousAuctions = false
+    -- Default Item Values
     return o
 end
+
+function RosterConfiguration:Get(option)
+    if option ~= nil then
+        return self[option]
+    end
+    return nil
+end
+
+function RosterConfiguration:Set(option, value)
+    if option == nil then return end
+    if self[option] ~= nil then
+        if self:Validate(option, value) then
+            print("setting ".. tostring(option) .. " to " .. tostring(value))
+            self[option] = value
+        end
+    end
+end
+
+function RosterConfiguration:Validate(option, value)
+    if type(self[callback]) == "function" then
+        return self[callback](value)
+    end
+
+    return true -- TODO: true or false?
+end
+
+local function IsBoolean(value) return type(value) == "boolean" end
+function RosterConfiguration:_validate_pointType(value) return CONSTANTS.POINT_TYPES[value] ~= nil end
+function RosterConfiguration:_validate_auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
+function RosterConfiguration:_validate_itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
+function RosterConfiguration:_validate_zeroSumBank(value) return IsBoolean(value) end
+function RosterConfiguration:_validate_allowNegativeStandings(value) return IsBoolean(value) end
+function RosterConfiguration:_validate_allowNegativeBidders(value) return IsBoolean(value) end
+function RosterConfiguration:_validate_simultaneousAuctions(value) return IsBoolean(value) end
 
 -- -- Publish API
 MODULE.RosterManager = RosterManager
 
 -- Constants
 CONSTANTS.POINT_TYPES = {
+    0, -- DKP
+    1  -- EPGP
+}
+CONSTANTS.POINT_TYPE = {
     DKP = 0,
     EPGP = 1
 }
-
 CONSTANTS.AUCTION_TYPES = {
+    0, -- OPEN
+    1, -- SEALED
+    2  -- VICKREY
+}
+
+CONSTANTS.AUCTION_TYPE = {
     OPEN = 0,
     SEALED = 1,
     VICKREY = 2
 }
 
 CONSTANTS.ITEM_VALUE_MODES = {
-    SINGLE_PRICED,
-    ASCENDING
+    0, -- SINGLE_PRICED
+    1  -- ASCENDING
+}
+
+CONSTANTS.ITEM_VALUE_MODE = {
+    SINGLE_PRICED = 0,
+    ASCENDING = 1
 }
 
 CONSTANTS.ROSTER_NAME_GENERATOR = {

@@ -13,16 +13,39 @@ local CBTYPE = {
 
 local RosterManagerOptions = { externalOptions = {} }
 
+local function GetRosterOption(name, option)
+    print("Get " .. tostring(option))
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    return roster:GetConfiguration(option)
+end
+
+local function SetRosterOption(name, option, value)
+    print("Set [" .. tostring(option) .. "]: " .. tostring(value))
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    roster:SetConfiguration(option, value)
+end
+
 function RosterManagerOptions:Initialize()
     self.handlers = {
-        name_get = (function(name) 
+        name_get = (function(name)
             return name
         end),
-        -- TODO: set to the newly renamed (for dropdown) instead of first one. No issue seen for tree
-        name_set = (function(old, new) 
-            print(old .. " -> " .. new)
+        name_set = (function(old, new)
             RosterManager:RenameRoster(old, new)
+            -- TODO: set to the newly renamed instead of first one. Doable?
             self:UpdateOptions()
+        end),
+        description_get = (function(name)
+            local roster = RosterManager:GetRosterByName(name)
+            if roster == nil then return nil end
+            return roster:Description()
+        end),
+        description_set = (function(name, value)
+            local roster = RosterManager:GetRosterByName(name)
+            if roster == nil then return nil end
+            return roster:Description(value)
         end),
         remove_execute = (function(name)
             RosterManager:DeleteRosterByName(name)
@@ -30,20 +53,48 @@ function RosterManagerOptions:Initialize()
         end),
         -- copy
         -- copy_source
-        point_type_get = (function(name) return 0 end),
-        -- point_type_set
-        auction_type_get = (function(name) return 0 end),
-        -- auction_type
-        item_value_mode_get = (function(name) return 0 end),
-        -- item_value_mode
-        zero_sum_bank_get = (function(name) return false end),
-        -- zero_sum_bank
-        allow_negative_standings_get = (function(name) return true end),
-        -- allow_negative_standings
-        allow_negative_bidders_get = (function(name) return true end),
-        -- allow_negative_bidders
-        simultaneous_auctions_get = (function(name) return false end),
-        -- simultaneous_auctions
+        point_type_get = (function(name)
+            return GetRosterOption(name, "pointType")
+        end),
+        point_type_set = (function(name, value)
+            SetRosterOption(name, "pointType", value)
+        end),
+        auction_type_get = (function(name)
+            return GetRosterOption(name, "auctionType")
+        end),
+        auction_type_set = (function(name, value)
+            SetRosterOption(name, "auctionType", value)
+        end),
+        item_value_mode_get = (function(name)
+            return GetRosterOption(name, "itemValueMode")
+        end),
+        item_value_mode_set = (function(name, value)
+            SetRosterOption(name, "itemValueMode", value)
+        end),
+        zero_sum_bank_get = (function(name)
+            return GetRosterOption(name, "zeroSumBank")
+        end),
+        zero_sum_bank_set = (function(name, value)
+            SetRosterOption(name, "zeroSumBank", value)
+        end),
+        allow_negative_standings_get = (function(name)
+            return GetRosterOption(name, "allowNegativeStandings")
+        end),
+        allow_negative_standings_set = (function(name, value)
+            SetRosterOption(name, "allowNegativeStandings", value)
+        end),
+        allow_negative_bidders_get = (function(name)
+            return GetRosterOption(name, "allowNegativeBidders")
+        end),
+        allow_negative_bidders_set = (function(name, value)
+            SetRosterOption(name, "allowNegativeBidders", value)
+        end),
+        simultaneous_auctions_get = (function(name)
+            return GetRosterOption(name, "simultaneousAuctions")
+        end),
+        simultaneous_auctions_set = (function(name, value)
+            SetRosterOption(name, "simultaneousAuctions", value)
+        end),
     }
 
     self:UpdateOptions()
@@ -55,7 +106,7 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
     -- end
     -- Assumes This is the handler of each of the subgroups but not the main group
     local roster_name = info[1]
-    node_name = ""
+    local node_name
     if #info >= 2 then
         node_name = info[2]
         for i=3,#info do
@@ -84,21 +135,63 @@ end
 function RosterManagerOptions:Handler(info, ...)
     self:_Handle(CBTYPE.EXECUTOR, info, ...)
 end
-    -- -- Point type: DKP / EPGP
-    -- self.pointType = CONSTANTS.POINT_TYPES.DKP
-    -- -- Auction type: Open / Sealed / Vickrey
-    -- self.auctionType = CONSTANTS.AUCTION_TYPES.SEALED
-    -- -- Item Value mode: Single-Priced / Ascending
-    -- self.itemValueMode = CONSTANTS.ITEM_VALUE_MODES.SINGLE_PRICED
-    -- -- Allow negative standings
-    -- self.allowNegativeStandings = false
-    -- -- Allow negative bidders
-    -- self.allowNegativeBidders = false 
-    -- -- Zero-Sum Bank
-    -- self.zeroSum = false
-    -- -- Simultaneous Auctions
-    -- self.simultaneousAuctions = false
+
 function RosterManagerOptions:GenerateRosterOptions(name)
+    local default_slot_values_args = (function()
+        local slots = {"Head", "Neck", "Shoulders", "Back", "Chest", "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger", "Trinket"}
+        local values = {
+            ["Minimum"] = "Minimum or actual value for Static-Priced auction. Set to 0 to ignore.", 
+            ["Maximum"] = "Maximum value for Ascending auction. Set to 0 to ignore."
+        }
+        local args = {}
+        local order = 0
+        local prefix
+        for _, slot in ipairs(slots) do
+            prefix = slot:lower()
+            args[prefix .. "_header"] = {
+                type = "header",
+                order = order,
+                name = slot
+            }
+            order = order + 1
+            for type, desc in pairs(values) do
+                args[prefix .. "_" .. type:lower()] = {
+                    type = "input",
+                    order = order,
+                    desc = desc,
+                    name = type,
+                    pattern = "%d+"
+                }
+                order = order + 1
+            end
+        end
+        return args
+    end)()
+
+    local item_value_overrides_args = (function()
+        local args = {
+            i22812d = {
+                name = "",
+                type = "description",
+                --name = "\124cffa335ee\124Hitem:22812:0:0:0:0:0:0:0:0:0:0:0:5:645:645:645:645:479\124h[Nerubian Slavemaker]\124h\124r",
+                --name = "|cffa335ee|Hitem:22812:0:0:0:0:0:0:0:0:0:0:0:5:645:645:645:645:479|h[Nerubian Slavemaker]|h|r",
+                --desc = "|cffa335ee[Nerubian Slavemaker]|r",
+                image = 135541,
+                order = 0,
+                --width = 0.75,
+                --descStyle = "inline",
+                fontSize = "medium"
+            },
+            i22812v = {
+                name = "Nerubian Slavemaker",
+                type = "input",
+                order = 1,
+                itemLink = "item:22812:0:0:0:0:0:0:0:0:0:0:0:0",
+            }
+        }
+        return args
+    end)()
+
     local options = {
         type = "group",
         name = name,
@@ -133,11 +226,11 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Copy source",
                 --desc = "Copy settings from selected roster.",
                 type = "select",
-                values = (function() 
-                    local r = RosterManager:GetRosters()
+                values = (function()
                     local v = {}
-                    for name, _ in pairs(r) do
-                        v[name] = name
+                    local r = RosterManager:GetRosters()
+                    for n, _ in pairs(r) do
+                        v[n] = n
                     end
                     return v
                 end),
@@ -159,7 +252,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 width = "half",
                 disabled = true,
                 values = {
-                    [0] = "DKP", 
+                    [0] = "DKP",
                     [1] = "EPGP"
                 }
             },
@@ -169,7 +262,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "select",
                 style = "radio",
                 order = 4,
-                values = { 
+                values = {
                     [0] = "Open",
                     [1] = "Sealed",
                     [2] = "Vickrey"
@@ -181,7 +274,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "select",
                 style = "radio",
                 order = 5,
-                values = { 
+                values = {
                     [0] = "Single-Priced",
                     [1] = "Ascending"
                 }
@@ -213,7 +306,17 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "toggle",
                 width = "full",
                 order = 9
-            }
+            },
+            default_slot_values = {
+                name = "Default slot values",
+                type = "group",
+                args = default_slot_values_args
+            },
+            item_value_overrides = {
+                name = "Item value overrides",
+                type = "group",
+                args = item_value_overrides_args
+            },
         }
     }
     return options

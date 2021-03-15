@@ -12,9 +12,9 @@ local function Set(t)
 end
 
 local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0"),
-    config = LibStub("AceConfig-3.0"),
-    gui = LibStub("AceConfigDialog-3.0")
+    registry = LibStub("AceConfigRegistry-3.0-CLM"),
+    config = LibStub("AceConfig-3.0-CLM"),
+    gui = LibStub("AceConfigDialog-3.0-CLM")
 }
 
 local ConfigManager = { enabled = false }
@@ -68,7 +68,7 @@ function ConfigManager:Initialize()
             parent = nil
         end
         self.options[config] = { type = "group", args = {}}
-        LIBS.config:RegisterOptionsTable(config, self.generators[config])
+        LIBS.registry:RegisterOptionsTable(config, self.generators[config])
         LIBS.gui:AddToBlizOptions(config, config, parent)
     end
     self.slash_options = { type = "group", args = {}}

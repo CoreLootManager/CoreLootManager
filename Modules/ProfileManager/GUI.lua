@@ -175,7 +175,7 @@ function ProfileManagerGUI:Refresh()
     if not self._initialized then return end
 
     local data = {}
-    profiles = ProfileManager:GetProfiles()
+    local profiles = ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
         local row = {cols = {}}
         table.insert(row.cols, {value = object:Name()})
