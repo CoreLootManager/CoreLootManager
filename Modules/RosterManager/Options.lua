@@ -21,10 +21,25 @@ local function GetRosterOption(name, option)
 end
 
 local function SetRosterOption(name, option, value)
-    print("Set [" .. tostring(option) .. "]: " .. tostring(value))
+    --print("Set [" .. tostring(option) .. "]: " .. tostring(value))
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     roster:SetConfiguration(option, value)
+end
+
+local function GetDefaultSlotValue(name, slot, isMin)
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    local v = roster:GetDefaultSlotValue(slot)
+    if isMin then return tostring(v.min) else return tostring(v.max) end
+end
+
+local function SetDefaultSlotValue(name, slot, value, isMin)
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    local v = roster:GetDefaultSlotValue(slot)
+    if isMin then v.min = value else v.max = value end
+    roster:SetDefaultSlotValue(slot, v.min, v.max)
 end
 
 function RosterManagerOptions:Initialize()
@@ -94,8 +109,23 @@ function RosterManagerOptions:Initialize()
         end),
         simultaneous_auctions_set = (function(name, value)
             SetRosterOption(name, "simultaneousAuctions", value)
-        end),
+        end)
     }
+    -- Handlers for Minimum / Maximum setting
+    local values = {minimum = true, maximum = false}
+    for _, slot in ipairs(CONSTANTS.INVENTORY_TYPES_SORTED) do
+        local prefix = slot.type:lower()
+        for type, isMin in pairs(values) do
+            local node = "default_slot_values_" .. prefix .. "_" .. type
+            print(node)
+            self.handlers[ node .."_get"] = (function(name) 
+                return GetDefaultSlotValue(name, slot.type, isMin)
+            end)
+            self.handlers[ node .."_set"] = (function(name, value)
+                SetDefaultSlotValue(name, slot.type, value, isMin)
+            end)
+        end
+    end
 
     self:UpdateOptions()
 end
@@ -113,7 +143,7 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
         node_name = info[#info]
     end
     node_name = node_name .. "_".. cbtype
-    print(node_name)
+    --print(node_name)
     -- Execute handler
     if type(self.handlers[node_name]) == "function" then
         return self.handlers[node_name](roster_name, ...)
@@ -131,10 +161,6 @@ end
 
 function RosterManagerOptions:Handler(info, ...)
     self:_Handle(CBTYPE.EXECUTOR, info, ...)
-end
-
-function RosterManagerOptions:GenerateRosterOptionsDefaultSlotValues(name)
-
 end
 
 function RosterManagerOptions:GenerateRosterOptions(name)
@@ -171,7 +197,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     order = order,
                     desc = desc,
                     name = type,
-                    pattern = "%d+"
+                    pattern = "%d+",
                 }
                 order = order + 1
             end

@@ -158,15 +158,23 @@ function Roster:Description(description)
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)
-    self.persistent.defaultSlotValues[itemEquipLoc] = { min = minimum, max = maximum}
+    self.persistent.defaultSlotValues[itemEquipLoc] = { 
+        min = tonumber(minimum) or 0, 
+        max = tonumber(maximum) or 0
+    }
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
-    return 0, 0
+    local s = self.persistent.defaultSlotValues[itemEquipLoc]
+    return s or {min = 0, max = 0}
 end
 
 function Roster:OverrideItemValue(itemId, itemName, minimum, maximum)
-    self.persistent.itemValueOverrides[itemId] = { name = itemName, min = minimum, max = maximum}
+    self.persistent.itemValueOverrides[itemId] = {
+        name = itemName or "",
+        min = tonumber(minimum) or 0,
+        max = tonumber(maximum) or 0
+    }
 end
 
 function Roster:GetItemValue(itemId)
