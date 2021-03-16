@@ -36,8 +36,8 @@ function CORE:_InitializeCore()
     MODULES.ConfigManager:Initialize()
     MODULES.Logger:Initialize()
     --MODULES.StateManager.Initialize()
+    MODULES.ACL:Initialize()
     MODULES.Comms:Initialize()
-    --MODULES.ACL.Initialize()
 end
 
 function CORE:_InitializeBackend()

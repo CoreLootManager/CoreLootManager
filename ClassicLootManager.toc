@@ -41,8 +41,9 @@ Modules\ProfileManager\Profile.lua
 Modules\RosterManager\Roster.lua
 
 # Addon modules (Controllers)
-Modules\Comms\Comms.lua
 Modules\Database\Database.lua
+Modules\ACL\ACL.lua
+Modules\Comms\Comms.lua
 Modules\ConfigManager\ConfigManager.lua
 
 #--- NOT IMPLEMENTED -----#

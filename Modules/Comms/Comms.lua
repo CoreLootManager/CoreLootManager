@@ -6,6 +6,7 @@ local MODULES = CLM.MODULES
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
+local ACL = CLM.ACL
 
 -- Module
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
@@ -64,17 +65,23 @@ end
 function Comms:Send(prefix, message, distribution, target, priority)
     LOG:Info("Comms:Send()")
     if not self.enabled then return false end
-    -- Sanity
+    -- Prefix
     prefix = _prefix(prefix)
     if not type(self.callbacks[prefix]) == "function" then
         LOG:Error("Comms:Send() unregistered prefix: " .. tostring(prefix))
         return false
     end
-
+    -- Check ACL before working on data to prevent UI Freeze DoS
+    if not ACL:CheckLevel(self.aclLevel[prefix]) then
+        LOG:Warning("Trying to send privileged message [" .. prefix .."]")
+        return false
+    end
+    -- Distribution
     if not CONSTANTS.COMMS.DISTRIBUTIONS[distribution] then
         LOG:Error("Comms:Send() invalid distribution: " .. tostring(distribution))
         return false
     end
+    -- Priority
     if not CONSTANTS.COMMS.PRIORITIES[priority] then
         priority = CONSTANTS.COMMS.PRIORITY.NORMAL
     end
@@ -108,6 +115,11 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         LOG:Warning("Comms:OnReceive() received message with unsupported prefix")
         return
     end
+    -- Check ACL before working on data to prevent UI Freeze DoS
+    if not ACL:CheckLevel(self.aclLevel[prefix], sender) then
+        LOG:Warning("Received privileged message [" .. prefix .."] from unprivileged sender: " .. sender)
+        return
+    end
     -- Decode
     local tmp = codec:DecodeForWoWAddonChannel(message)
     if tmp == nil then
@@ -127,15 +139,8 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         LOG:Error("Comms:Send() unable to deserialize message: " .. tostring(tmp))
         return
     end
-    -- Get ACL level
-    --local aclLevel = MODULES.ACL:Get(sender)
-    local aclLevel = 0
     -- Execute callback
-    if aclLevel >= self.aclLevel[prefix] then
-        self.callbacks[prefix](tmp, distribution, sender)
-    else
-        LOG:Warning("Received privileged message [" .. prefix .."] from unprivileged sender: " .. sender)
-    end
+    self.callbacks[prefix](tmp, distribution, sender)
 end
 
 -- Publish API

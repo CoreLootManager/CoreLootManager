@@ -3,6 +3,7 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local RESULTS = CLM.CONSTANTS.RESULTS
+local UTILS = CLM.UTILS
 
 local Profile = CLM.MODELS.Profile
 
@@ -135,7 +136,7 @@ function ProfileManager:AddTarget()
     LOG:Info("ProfileManager:AddTarget()")
     if UnitIsPlayer("target") then
         local GUID = UnitGUID("target")
-        local name = GetUnitName("target")
+        local name = UTILS.GetUnitName("target")
         name, _ = strsplit("-", name)
         local _, class, _ = UnitClass("target");
 
