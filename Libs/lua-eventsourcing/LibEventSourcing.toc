@@ -1,0 +1,6 @@
+## Interface: 11305
+## Title: LibEventSourcing
+## Author: Sam Mousa
+## Version: {VERSION}
+
+LibEventSourcing.xml
