@@ -106,21 +106,25 @@ function Util.WeekStart(week)
     return (week - 1) * 604800
 end
 
-function Util.CreateMultiFieldSorter(field1, field2)
-    return function(a, b)
-        if a[field1] == b[field1] then
-            if a[field2] == b[field2] then
-                return 0
-            elseif a[field2] < b[field2] then
-                return -1
-            else
-                return 1
-            end
-        elseif a[field1] < b[field1] then
-            return -1
-        elseif a[field1] > b[field1] then
-            return 1
+local function recursiveCompare(a, b, fields, i)
+    if a[fields[i]] == b[fields[i]] then
+        if i < #fields then
+            return recursiveCompare(a, b, fields, i + 1)
+        else
+            return 0
+
         end
+    elseif a[fields[i]] < b[fields[i]] then
+        return -1
+    else
+        return 1
+    end
+
+end
+function Util.CreateMultiFieldSorter(...)
+    local fields = {...}
+    return function(a, b)
+        return recursiveCompare(a, b, fields, 1)
     end
 end
 

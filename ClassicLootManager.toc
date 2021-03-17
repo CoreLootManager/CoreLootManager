@@ -47,12 +47,11 @@ Modules\ACL\ACL.lua
 Modules\Comms\Comms.lua
 Modules\ConfigManager\ConfigManager.lua
 Modules\LedgerManager\LedgerManager.lua
+Modules\PointManager\PointManager.lua
 
 #--- NOT IMPLEMENTED -----#
 Modules\StateManager\StateManager.lua
 Modules\EventHandler\EventHandler.lua
-Modules\PointManager\PointManager.lua
-Modules\PointManager\DKP.lua
 Modules\LootManager\LootManager.lua
 #--------#
 Modules\ProfileManager\ProfileManager.lua

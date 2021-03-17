@@ -16,6 +16,8 @@ local SortedList = LibStub("EventSourcing/SortedList")
 ]]--
 LogEntry.__index = LogEntry
 LogEntry._cls = 'LE'
+LogEntry._counter = 0
+LogEntry._lastTimestamp = 0
 
 -- private constructor
 local function constructor(self)
@@ -34,21 +36,29 @@ function LogEntry:extend(identifier, snapshot)
     return o
 end
 
+
 function LogEntry:new(creator)
     local o = constructor(self)
 
     o.cls = self._cls
 
     o.t = Util.time()
+    if o.t == LogEntry._lastTimestamp then
+        LogEntry._counter = LogEntry._counter + 1
+    else
+        LogEntry._lastTimestamp = o.t
+        LogEntry._counter = 0
+    end
+    o.co = LogEntry._counter
     if creator == nil then
-        o.c = Util.getIntegerGuid("player")
+        o.cr = Util.getIntegerGuid("player")
     elseif type(creator) == 'string' then
-        o.c = Util.getIntegerGuid(creator)
-        if (o.c == nil) then
+        o.cr = Util.getIntegerGuid(creator)
+        if (o.cr == nil) then
             error(string.format("Failed to convert string `%s` into number", creator))
         end
     else
-        o.c = creator
+        o.cr = creator
     end
 
     return o
@@ -69,8 +79,15 @@ function LogEntry:time()
     return self.t
 end
 
+--[[
+    Returns the numbers to be used
+]]--
+function LogEntry:numbersForHash()
+    return {self.t, self.cr, self.co}
+end
+
 function LogEntry:creator()
-    return self.c
+    return self.cr
 end
 
 
@@ -81,7 +98,7 @@ end
 
 -- Return a sorted list set up for log entries
 function LogEntry.sortedList(data)
-    local r = SortedList:new(data or {}, Util.CreateMultiFieldSorter('t', 'c'), true)
+    local r = SortedList:new(data or {}, Util.CreateMultiFieldSorter('t', 'cr', 'co'), true)
     if type(r.uniqueInsert) ~= 'function' then
         error("Error creating sorted list but doesn't have function")
     end
@@ -89,5 +106,5 @@ function LogEntry.sortedList(data)
 end
 
 function LogEntry:fields()
-    return { "t", "c"}
+    return { "t", "cr", "co"}
 end

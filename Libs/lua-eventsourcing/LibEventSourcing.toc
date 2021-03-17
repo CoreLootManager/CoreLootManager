@@ -1,6 +1,6 @@
-## Interface: 11305
+## Interface: 11306
 ## Title: LibEventSourcing
 ## Author: Sam Mousa
 ## Version: {VERSION}
-
+## Notes: Framework for event sourcing with support for multi agent sync
 LibEventSourcing.xml

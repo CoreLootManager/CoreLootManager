@@ -22,7 +22,7 @@ jobs:
           include: LuaDatabase.toc
           replace: "${{ env.RELEASE_VERSION }}"
       - run: mkdir LibEventSourcing
-      - run: mv `ls | grep -v '^LibEventSourcing'` LibEventSourcing
+      - run: mv `ls | grep -v '^LibEventSourcing$'` LibEventSourcing
       - run: zip -r LibEventSourcing.zip LibEventSourcing -x '*.git*'
       - name: Create GitHub release
         uses: Roang-zero1/github-create-release-action@master
@@ -45,6 +45,6 @@ jobs:
           file_path: LibEventSourcing.zip
           changelog: See github for changes
           display_name: LibEventSourcing
-          game_versions: 1-13-4
+          game_versions: 1-13-6
           release_type: alpha
           #relations:

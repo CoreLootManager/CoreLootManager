@@ -3,7 +3,7 @@ This file is used for direct inclusion outside WoW
 
 ]]--
 if (GetTime == nil) then
-    require "wow"
+    require "_wowstubs"
     require "libs/LibStub/LibStub"
     require "Util"
     require "SortedList"

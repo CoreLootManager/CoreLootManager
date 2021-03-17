@@ -71,3 +71,4 @@ end
 date = os.date
 
 WOW_STUB = true
+print("Stubs loaded")

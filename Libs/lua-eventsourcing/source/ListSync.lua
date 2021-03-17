@@ -19,6 +19,14 @@ local Message = LibStub("EventSourcing/Message")
 
 
 
+--[[
+  Internally we use the secure channel for large messages to prevent DoS,
+  unsecure channel will only send small messages.
+]]--
+local function send(listSync, message, distribution, target)
+    listSync.send(message, distribution, target)
+end
+
 
 local function weekEntryIterator(listSync, week)
     local sortedList = listSync._stateManager:getSortedList()
@@ -62,13 +70,11 @@ local function weekHash(listSync, week)
     end
     if listSync._weekHashCache.entries[week] == nil then
         for entry in weekEntryIterator(listSync, week) do
-            result, hash = coroutine.resume(adler32, LogEntry.time(entry))
-            if not result then
-                error(hash)
-            end
-            result, hash = coroutine.resume(adler32, LogEntry.creator(entry))
-            if not result then
-                error(hash)
+            for _, v in ipairs(LogEntry.numbersForHash(entry)) do
+                result, hash = coroutine.resume(adler32, v)
+                if not result then
+                    error(hash)
+                end
             end
             count = count + 1
 
@@ -111,7 +117,7 @@ local function handleAdvertiseMessage(message, sender, distribution, stateManage
         elseif requestWeekInhibitorCheck(listSync, weekHashCount[1]) then
             print(string.format("Requesting data for week %s", weekHashCount[1]))
             requestWeekInhibitorSet(listSync, weekHashCount[1])
-            listSync:send(RequestWeekMessage.create(weekHashCount[1]), "GUILD")
+            send(listSync, RequestWeekMessage.create(weekHashCount[1]), "GUILD")
         end
     end
 end
@@ -209,14 +215,6 @@ local function advertiseWeekHashInhibitorCheckOrSet(listSync, week)
         return true
     end
     return false
-end
-
---[[
-  Internally we use the secure channel for large messages to prevent DoS,
-  unsecure channel will only send small messages.
-]]--
-local function send(listSync, message, distribution, target)
-    listSync.send(message, distribution, target)
 end
 
 local function sendSecure(listSync, message, distribution, target)
