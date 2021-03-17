@@ -133,3 +133,7 @@ function UTILS.GetUnitName(unit)
     name, _ = strsplit("-", name)
     return name
 end
+
+function UTILS.typeof(object, objectType)
+    return getmetatable(object) == objectType
+end

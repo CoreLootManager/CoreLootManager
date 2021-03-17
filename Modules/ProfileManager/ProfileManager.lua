@@ -5,6 +5,8 @@ local MODULES = CLM.MODULES
 local RESULTS = CLM.CONSTANTS.RESULTS
 local UTILS = CLM.UTILS
 
+local typeof = UTILS.typeof
+
 local Profile = CLM.MODELS.Profile
 
 local ProfileManager = { }
@@ -67,9 +69,9 @@ end
 
 function ProfileManager:MarkAsAltByNames(main, alt)
     local mainProfile = self:GetProfileByName(main)
-    if mainProfile == nil then return RESULTS.IGNORE end
+    if not typeof(mainProfile, Profile) then return RESULTS.IGNORE end
     local altProfile = self:GetProfileByName(alt)
-    if altProfile == nil then return RESULTS.IGNORE end
+    if not typeof(altProfile, Profile) then return RESULTS.IGNORE end
     -- TODO: Protect from circular references / multi-level alt nesting
     local result
     if alt == main then
