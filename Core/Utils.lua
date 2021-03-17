@@ -129,7 +129,7 @@ function UTILS.DeepCopy(orig, copies)
 end
 
 function UTILS.GetUnitName(unit)
-    local name = GetUnitName("target")
+    local name = GetUnitName(unit)
     name, _ = strsplit("-", name)
     return name
 end

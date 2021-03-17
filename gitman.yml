@@ -1,0 +1,6 @@
+location: Libs
+sources:
+  - repo: https://github.com/SamMousa/lua-eventsourcing.git
+    name: lua-eventsourcing
+    rev: master
+    type: git

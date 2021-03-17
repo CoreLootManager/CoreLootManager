@@ -30,6 +30,7 @@ Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceTab-3.0\AceTab-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\lib-st-4.1.2\lib-st.xml
+Libs\lua-eventsourcing\LibEventSourcing.xml
 
 # Addon Core
 ClassicLootManager.lua
@@ -45,6 +46,7 @@ Modules\Database\Database.lua
 Modules\ACL\ACL.lua
 Modules\Comms\Comms.lua
 Modules\ConfigManager\ConfigManager.lua
+Modules\LedgerManager\LedgerManager.lua
 
 #--- NOT IMPLEMENTED -----#
 Modules\StateManager\StateManager.lua

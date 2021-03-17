@@ -4,6 +4,7 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local MODULES = CLM.MODULES
+local UTILS = CLM.UTILS
 
 local Roster = CLM.MODELS.Roster
 
@@ -22,7 +23,11 @@ function RosterManager:Initialize()
     self.db = MODULES.Database:Roster()
     if type(self.db.metadata) ~= "table" then
         self.db.metadata = {
-            next_roster_uid = 0
+            next_roster_uid = 0,
+            lastUpdate = {
+                time = 0,
+                source = ""
+            }
         }
     end
 
@@ -37,6 +42,11 @@ function RosterManager:Initialize()
 
     self:LoadCache()
     MODULES.ConfigManager:RegisterUniversalExecutor("rm", "RosterManager", self)
+end
+
+function RosterManager:UpdateDbChangeMetadata()
+    self.db.metadata.lastUpdate.time   = time()
+    self.db.metadata.lastUpdate.source = UTILS.GetUnitName("player")
 end
 
 function RosterManager:LoadCache()
@@ -87,6 +97,7 @@ function RosterManager:NewRoster()
     self.cache.rostersUidMap[self.db.metadata.next_roster_uid] = name
 
     self.db.metadata.next_roster_uid = self.db.metadata.next_roster_uid + 1
+    self:UpdateDbChangeMetadata()
 end
 
 function RosterManager:DeleteRosterByName(name)
@@ -96,7 +107,7 @@ function RosterManager:DeleteRosterByName(name)
     self.cache.rostersUidMap[roster:UID()] = nil
     self.cache.rosters[name] = nil
     self.db.rosters[name] = nil
-    -- Remove from options
+    self:UpdateDbChangeMetadata()
 end
 
 function RosterManager:RenameRoster(old, new)
@@ -111,6 +122,7 @@ function RosterManager:RenameRoster(old, new)
     self.cache.rostersUidMap[self.cache.rosters[new]:UID()] = new
 
     self:DeleteRosterByName(old)
+    self:UpdateDbChangeMetadata()
 end
 
 function RosterManager:CopyProfiles(source, target)

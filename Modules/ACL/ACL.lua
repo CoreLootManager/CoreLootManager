@@ -14,7 +14,6 @@ function ACL:Initialize()
     self.db = db.ACL
     -- Current user information
     self.guildMaster = IsGuildLeader()
-    self.officer = C_GuildInfo.IsGuildOfficer()
     -- Overall guild information
     self.cache = {}
     self:BuildRankCache()
@@ -66,7 +65,8 @@ function ACL:IsRankOfficer(rank)
 end
 
 function ACL:CheckLevel(level, name)
-    level = level or 0
+    -- By default block everything except for GM if level not provided
+    level = level or CONSTANTS.ACL.LEVEL.GUILD_MASTER
     -- Request is for self
     if name == nil then
         if self.guildMaster then
@@ -75,15 +75,15 @@ function ACL:CheckLevel(level, name)
         name = UTILS.GetUnitName("player")
     end
     -- Check for Guild Master
-    if level >= CONSTANTS.ACL.GUILD_MASTER then
+    if level >= CONSTANTS.ACL.LEVEL.GUILD_MASTER then
         return (self.cache.guildMaster == name)
     end
     -- Check for Officer
-    if level >= CONSTANTS.ACL.OFFICER then
+    if level >= CONSTANTS.ACL.LEVEL.OFFICER then
         return (self.cache.officers[name] or false)
     end
     -- Check for Managers
-    if level >= CONSTANTS.ACL.MANAGER then
+    if level >= CONSTANTS.ACL.LEVEL.MANAGER then
         return (self.db.whitelist[name] or false)
     end
     -- Check for unauthorized

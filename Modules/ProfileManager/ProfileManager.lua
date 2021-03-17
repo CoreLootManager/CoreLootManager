@@ -17,6 +17,15 @@ function ProfileManager:Initialize()
         self.db.profiles = {}
     end
 
+    if type(self.db.metadata) ~= "table" then
+        self.db.metadata = { 
+            lastUpdate = {
+                time = 0,
+                source = ""
+            }
+        }
+    end
+
     self.cache = {
         profilesGuidMap = {},
         profiles = {}
@@ -24,6 +33,11 @@ function ProfileManager:Initialize()
     self:LoadCache()
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
+end
+
+function ProfileManager:UpdateDbChangeMetadata()
+    self.db.metadata.lastUpdate.time   = time()
+    self.db.metadata.lastUpdate.source = UTILS.GetUnitName("player")
 end
 
 -- CORE
@@ -48,6 +62,7 @@ function ProfileManager:NewProfile(guid, name, class)
     self.db.profiles[guid] = {} -- Allocate database
     self.cache.profiles[guid] = Profile:New(self.db.profiles[guid], {name = name, class = class})
     self.cache.profilesGuidMap[name] = guid
+    self:UpdateDbChangeMetadata()
 end
 
 function ProfileManager:MarkAsAltByNames(main, alt)
@@ -73,6 +88,7 @@ function ProfileManager:MarkAsAltByNames(main, alt)
         result = RESULTS.SUCCESS
     end
 
+    self:UpdateDbChangeMetadata()
     return result
 end
 
@@ -149,6 +165,7 @@ end
 function ProfileManager:WipeAll()
     self.db.profiles = {}
     self.cache = { profilesGuidMap = {}, profiles = {} }
+    self:UpdateDbChangeMetadata()
 end
 
 -- Utility

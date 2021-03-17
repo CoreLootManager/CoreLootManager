@@ -35,19 +35,19 @@ function CORE:_InitializeCore()
     MODULES.Database:Initialize()
     MODULES.ConfigManager:Initialize()
     MODULES.Logger:Initialize()
-    --MODULES.StateManager.Initialize()
     MODULES.ACL:Initialize()
-    MODULES.Comms:Initialize()
 end
 
 function CORE:_InitializeBackend()
     LOG:Info("CORE:_InitializeBackend()")
-    --MODULES.LedgerManager.Initialize()
+    --MODULES.StateManager.Initialize()
+    --MODULES.EventHandler.Initialize()
+    MODULES.Comms:Initialize()
+    MODULES.LedgerManager:Initialize()
 end
 
 function CORE:_InitializeFeatures()
     LOG:Info("CORE:_InitializeFeatures()")
-    --MODULES.EventHandler.Initialize()
     --MODULES.RaidManager.Initialize()
     MODULES.ProfileManager:Initialize()
     MODULES.RosterManager:Initialize()
@@ -68,6 +68,7 @@ end
 function CORE:_Enable()
     LOG:Info("CORE:_Enable()")
     MODULES.Comms:Enable()
+    MODULES.LedgerManager:Enable()
 end
 
 function CORE:_BIST()
@@ -120,7 +121,8 @@ function CORE:OnInitialize()
     self._initialize_fired = false
     CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
     GuildRoster()
-    C_Timer.After(10, function() CORE:_DelayedInitialize() end) -- we schedule this in case GUILD_ROSTER_UPDATE won't come earlier
+    -- We schedule this in case GUILD_ROSTER_UPDATE won't come early enough
+    C_Timer.After(10, function() CORE:_DelayedInitialize() end)
 end
 
 function CORE:OnEnable()

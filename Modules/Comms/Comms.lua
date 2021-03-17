@@ -6,7 +6,7 @@ local MODULES = CLM.MODULES
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
-local ACL = CLM.ACL
+local ACL = MODULES.ACL
 
 -- Module
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
