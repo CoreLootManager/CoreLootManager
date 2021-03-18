@@ -16,6 +16,19 @@ function Roster:New(storage, uid)
     o.persistent.profiles = {}
     o.persistent.defaultSlotValues = {}
     o.persistent.itemValues = {}
+
+    o.volatile = { standings = {} }
+
+    return o
+end
+
+function Roster:Restore(storage)
+    local o = UTILS.NewStorageQualifiedObject(storage, self)
+    o.persistent.configuration = RosterConfiguration:New(o.persistent.configuration)
+    o.volatile = { standings = {} }
+    for GUID,_ in pairs(o.persistent.profiles) do
+        o.volatile.standings[GUID] = 0
+    end
     return o
 end
 
@@ -24,19 +37,15 @@ function Roster:UpdateDbChangeMetadata()
     self.persistent.lastUpdate.source = UTILS.GetUnitName("player")
 end
 
-function Roster:Restore(storage)
-    local o = UTILS.NewStorageQualifiedObject(storage, self)
-    o.persistent.configuration = RosterConfiguration:New(o.persistent.configuration)
-    return o
-end
-
 function Roster:AddProfileByGUID(GUID)
     self.persistent.profiles[GUID] = true
+    self.volatile.standings[GUID] = 0
     self:UpdateDbChangeMetadata()
 end
 
 function Roster:RemoveProfileByGUID(GUID)
     self.persistent.profiles[GUID] = nil
+    self.volatile.standings[GUID] = nil
     self:UpdateDbChangeMetadata()
 end
 
@@ -54,6 +63,10 @@ function Roster:Description(description)
         self:UpdateDbChangeMetadata()
     end
     return self.persistent.description
+end
+
+function Roster:Standings()
+    return self.volatile.standings
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)

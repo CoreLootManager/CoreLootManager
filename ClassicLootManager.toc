@@ -40,6 +40,7 @@ Core\Utils.lua
 # Addon models
 Modules\ProfileManager\Profile.lua
 Modules\RosterManager\Roster.lua
+Modules\PointManager\DKP\LedgerEntries.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua

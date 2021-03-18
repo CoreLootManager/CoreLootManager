@@ -6,7 +6,6 @@ local Comms = MODULES.Comms
 local CONSTANTS = CLM.CONSTANTS
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
-local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 local LedgerManager = {}
 function LedgerManager:Initialize()

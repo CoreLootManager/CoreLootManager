@@ -12,11 +12,15 @@ function Profile:New(storage, params)
     o.persistent.spec  = params.spec  or ""
     o.persistent.main  = params.main  or ""
 
+    o.volatile = {}
+
     return o
 end
 
 function Profile:Restore(storage)
-    return UTILS.NewStorageQualifiedObject(storage, self)
+    local profile = UTILS.NewStorageQualifiedObject(storage, self)
+    profile.volatile = {}
+    return profile
 end
 
 function Profile:Name()
@@ -41,6 +45,14 @@ end
 
 function Profile:ClearMain()
     self.persistent.main = ""
+end
+
+function Profile:SetGUID(GUID)
+    self.volatile.GUID = GUID
+end
+
+function Profile:GUID()
+    return self.volatile.GUID
 end
 
 CLM.MODELS.Profile = Profile

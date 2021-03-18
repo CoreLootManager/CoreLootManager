@@ -20,7 +20,7 @@ function ProfileManager:Initialize()
     end
 
     if type(self.db.metadata) ~= "table" then
-        self.db.metadata = { 
+        self.db.metadata = {
             lastUpdate = {
                 time = 0,
                 source = ""
@@ -47,10 +47,11 @@ end
 function ProfileManager:LoadCache()
     LOG:Info("ProfileManager:LoadCache()")
 
-    for guid,_ in pairs(self.db.profiles) do
-        local p = Profile:Restore(self.db.profiles[guid])
-        self.cache.profiles[guid] = p
-        self.cache.profilesGuidMap[p:Name()] = guid
+    for GUID,_ in pairs(self.db.profiles) do
+        local p = Profile:Restore(self.db.profiles[GUID])
+        p:SetGUID(GUID)
+        self.cache.profiles[GUID] = p
+        self.cache.profilesGuidMap[p:Name()] = GUID
     end
 end
 
@@ -58,12 +59,14 @@ function ProfileManager:GetProfiles()
     return self.cache.profiles
 end
 
-function ProfileManager:NewProfile(guid, name, class)
-    if guid == nil then return end
+function ProfileManager:NewProfile(GUID, name, class)
+    if GUID == nil then return end
     if name == nil then return end
-    self.db.profiles[guid] = {} -- Allocate database
-    self.cache.profiles[guid] = Profile:New(self.db.profiles[guid], {name = name, class = class})
-    self.cache.profilesGuidMap[name] = guid
+    self.db.profiles[GUID] = {} -- Allocate database
+    local profile = Profile:New(self.db.profiles[GUID], {name = name, class = class})
+    profile:SetGUID(GUID)
+    self.cache.profiles[GUID] = profile
+    self.cache.profilesGuidMap[name] = GUID
     self:UpdateDbChangeMetadata()
 end
 
@@ -180,8 +183,8 @@ function ProfileManager:GetProfiles()
     return self.cache.profiles
 end
 
-function ProfileManager:GetProfileByGuid(guid)
-    return self.cache.profiles[guid]
+function ProfileManager:GetProfileByGuid(GUID)
+    return self.cache.profiles[GUID]
 end
 
 function ProfileManager:GetProfileByName(name)
