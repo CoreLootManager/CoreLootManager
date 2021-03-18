@@ -48,6 +48,8 @@ Modules\ACL\ACL.lua
 Modules\Comms\Comms.lua
 Modules\ConfigManager\ConfigManager.lua
 Modules\LedgerManager\LedgerManager.lua
+Modules\ProfileManager\ProfileManager.lua
+Modules\RosterManager\RosterManager.lua
 Modules\PointManager\PointManager.lua
 
 #--- NOT IMPLEMENTED -----#
@@ -55,8 +57,6 @@ Modules\StateManager\StateManager.lua
 Modules\EventHandler\EventHandler.lua
 Modules\LootManager\LootManager.lua
 #--------#
-Modules\ProfileManager\ProfileManager.lua
-Modules\RosterManager\RosterManager.lua
 
 
 # Addon Options and GUIs (View)

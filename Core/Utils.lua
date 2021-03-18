@@ -4,8 +4,8 @@ CLM.UTILS = {}
 
 local UTILS = CLM.UTILS
 
-local getIntegerGuid = LibStub("EventSourcing/Util").getIntegerGuid
 local getGuidFromInteger = LibStub("EventSourcing/Util").getGuidFromInteger
+local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
 local classColors = {
     ["druid"]   = { r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
@@ -131,10 +131,14 @@ function UTILS.DeepCopy(orig, copies)
     return copy
 end
 
-function UTILS.GetUnitName(unit)
-    local name = GetUnitName(unit)
+function UTILS.RemoveServer(name)
     name, _ = strsplit("-", name)
     return name
+end
+
+function UTILS.GetUnitName(unit)
+    local name = GetUnitName(unit)
+    return UTILS.RemoveServer(name)
 end
 
 function UTILS.typeof(object, objectType)
@@ -142,9 +146,14 @@ function UTILS.typeof(object, objectType)
 end
 
 function UTILS.getIntegerGuid(GUID)
-    return getIntegerGuid(GUID)
+    return tonumber(string.sub(GUID, -8), 16)
 end
 
+local GUIDPrefix = string.sub(UnitGUID("player"), 1, -9)
 function UTILS.getGuidFromInteger(int)
-    return getGuidFromInteger(int)
+    return GUIDPrefix .. string.format("%08X", int)
+end
+
+function UTILS.DumpTable(t)
+    return DumpTable(t)
 end

@@ -5,6 +5,7 @@ local LOG = CLM.LOG
 local Comms = MODULES.Comms
 local CONSTANTS = CLM.CONSTANTS
 local ACL = MODULES.ACL
+local UTILS = CLM.UTILS
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
@@ -30,7 +31,7 @@ function LedgerManager:Initialize()
         (function(data, distribution, target, progressCallback)
             return Comms:Send(prefixData, data, distribution, target, "BULK")
         end), -- sendLargeMessage
-        5000, 50
+        750, 1000
     )
 
     self.entryExtensions = {}
@@ -41,8 +42,11 @@ function LedgerManager:Enable()
     self.ledger.enableSending()
 end
 
-function  LedgerManager:Authorize(class, sender)
-    if self.authorizationLevel[class] == nil then return false end
+function LedgerManager:Authorize(class, sender)
+    if self.authorizationLevel[class] == nil then
+        LOG:Warning("Unknown class")
+        return false
+    end
     return ACL:CheckLevel(self.authorizationLevel[class], sender)
 end
 
@@ -54,7 +58,7 @@ function LedgerManager:RegisterEntryType(class, mutatorFn, authorizationLevel)
     self.entryExtensions[class] = true
 
     self.ledger.registerMutator(class, mutatorFn)
-    self.authorizationLevel[class] = authorizationLevel
+    self.authorizationLevel[class._cls] = authorizationLevel
 end
 
 function LedgerManager:RegisterOnRestart(callback)

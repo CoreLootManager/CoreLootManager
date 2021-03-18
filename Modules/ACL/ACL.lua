@@ -30,7 +30,7 @@ function ACL:BuildRankCache()
     -- 8    Remove Member
     -- 12   Edit Officer Note
     for i = 1,GuildControlGetNumRanks() do
-        rankInfo = GuildControlGetRankName(i)
+        rankInfo = C_GuildInfo.GuildControlGetRankFlags(i)
         self.cache.ranks.isOfficer[i] = (rankInfo[4] or rankInfo[7] or rankInfo[8] or rankInfo[12])
     end
 end
@@ -40,10 +40,10 @@ function ACL:BuildOfficerCache()
     for i=1,GetNumGuildMembers() do
         local name, _, rankIndex = GetGuildRosterInfo(i)
         if self:IsRankOfficer(rankIndex) then
-            self.cache.officers[name] = true
+            self.cache.officers[UTILS.RemoveServer(name)] = true
         end
         if rankIndex == 0 then
-            self.cache.guildMaster = name
+            self.cache.guildMaster = UTILS.RemoveServer(name)
         end
     end
 end
@@ -74,17 +74,20 @@ function ACL:CheckLevel(level, name)
         end
         name = UTILS.GetUnitName("player")
     end
+    local isGuildMaster = (self.cache.guildMaster == name)
+    local isOfficer = (self.cache.officers[name] or false)
+    local isManager = (self.db.whitelist[name] or false)
     -- Check for Guild Master
     if level >= CONSTANTS.ACL.LEVEL.GUILD_MASTER then
-        return (self.cache.guildMaster == name)
+        return isGuildMaster
     end
     -- Check for Officer
     if level >= CONSTANTS.ACL.LEVEL.OFFICER then
-        return (self.cache.officers[name] or false)
+        return isGuildMaster or isOfficer
     end
     -- Check for Managers
     if level >= CONSTANTS.ACL.LEVEL.MANAGER then
-        return (self.db.whitelist[name] or false)
+        return isGuildMaster or isOfficer or isManager
     end
     -- Check for unauthorized
     return true

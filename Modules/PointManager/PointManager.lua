@@ -39,7 +39,7 @@ local function mutator(entry, mutate)
             standings[GUID] = mutate(standings[GUID], value)
         else
             -- TODO: Add  Profile to roster? Store in anonymous profile?
-            LOG:Warning("PointManager mutator(): Unknown profile guid " .. entry:rosterUid(getGuidFromInteger(target)))
+            LOG:Warning("PointManager mutator(): Unknown profile guid [" .. tostring(GUID).. "]")
             return
         end
     end
@@ -61,17 +61,17 @@ local PointManager = {}
 function PointManager:Initialize()
 
     LedgerManager:RegisterEntryType(
-        DKPLedgerEntries.Modify:class(),
+        DKPLedgerEntries.Modify,
         (function(entry) mutator(entry, mutate_pdm) end),
         ACL_LEVEL.MANAGER)
 
     LedgerManager:RegisterEntryType(
-        DKPLedgerEntries.Set:class(),
+        DKPLedgerEntries.Set,
         (function(entry) mutator(entry, mutate_pds) end),
         ACL_LEVEL.OFFICER)
 
     LedgerManager:RegisterEntryType(
-        DKPLedgerEntries.Decay:class(),
+        DKPLedgerEntries.Decay,
         (function(entry) mutator(entry, mutate_pdd) end),
         ACL_LEVEL.OFFICER)
 
@@ -79,7 +79,10 @@ function PointManager:Initialize()
             RosterManager:WipeStandings()
         end)
 
-    LedgerManager:RegisterOnUpdate(function()
+    local start = time()
+    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
+        if lag ~= 0 or uncommited ~= 0 then return end
+        local stop = time(); print("DONE IN " .. tostring(stop - start));
         local rosters = RosterManager:GetRosters()
         for rosterName, roster in pairs(rosters) do
             print(UTILS.ColorCodeText(rosterName, "ff5522"))
@@ -96,23 +99,80 @@ function PointManager:Initialize()
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
 end
 
-function PointManager:RandomTest()
+function PointManager:Debug(N)
+    N = N or 10
     local rosters = RosterManager:GetRosters()
     local numRosters = 0
+    local rosterLookup = {}
     local numProfiles = {}
+    local profileLookup = {}
     for name, roster in pairs(rosters) do
-        numRosters = numRosters + 1
-        local profiles = roster:GetProfiles()
+        local standings = roster:Standings()
         numProfiles[name] = 0
-        for _,_ in pairs(profiles) do
+        profileLookup[name] = {}
+        for GUID,_ in pairs(standings) do
             numProfiles[name] = numProfiles[name] + 1
+            table.insert(profileLookup[name], GUID)
+        end
+        if numProfiles[name] > 0 then
+            numRosters = numRosters + 1
+            table.insert(rosterLookup, name)
         end
     end
 
-    print("Detected " .. tonumber(numRosters) .. " rosters")
+    print("Detected " .. tonumber(numRosters) .. " rosters with profiles")
     for name, value in pairs(numProfiles) do
         print("  " .. name .. ": " .. tostring(value) .. " profiles")
     end
+
+    print("Generating total of  " .. N .. " entries")
+
+    for iteration=1,N do
+        local selectedRoster = rosterLookup[math.random(1, numRosters)]
+        local roster = rosters[selectedRoster]
+        if roster == nil then
+            print("=== Wrong roster selection ===")
+        else
+            local entryType = math.random(0, 2)
+            local selectedNumberOfProfiles = math.random(1, numProfiles[selectedRoster])
+            local value = math.random(-100, 100)
+            local playerList = {}
+
+            local transformProfile = (function(GUID)
+                local type = math.random(1, 3)
+                if type == 1 then
+                    return GUID
+                end
+                if type == 2 then
+                    return CLM.UTILS.getIntegerGuid(GUID)
+                end
+                if type == 3 then
+                    return ProfileManager:GetProfileByGuid(GUID)
+                end
+
+                return GUID
+            end)
+
+            if selectedNumberOfProfiles == 1 then
+                playerList = transformProfile(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
+            else
+                for _ = 1,selectedNumberOfProfiles do
+                    local profile = transformProfile(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
+                    table.insert(playerList, profile)
+                end
+            end
+            print(
+                "Generated entry: " .. tostring(iteration) ..
+                " of type " .. tostring(entryType) ..
+                " for " .. tostring(selectedNumberOfProfiles) .. " profiles" ..
+                " in roster " .. selectedRoster .. " " ..
+                " with value " .. tostring(value)
+            )
+            PointManager:UpdatePoints(roster, playerList, value, entryType)
+        end
+    end
+
+
 end
 
 -- function PointManager:Round(value)
@@ -120,9 +180,18 @@ end
 -- end
 
 function PointManager:UpdatePoints(roster, targets, value, action)
-    if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then return end
-    if targets == nil then return end
-    if type(value) ~= "number" then return end
+    if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
+        LOG:Error("PointManager:UpdatePoints(): Unknown action")
+        return
+    end
+    if targets == nil then
+        LOG:Error("PointManager:UpdatePoints(): Missing targets")
+        return
+    end
+    if type(value) ~= "number" then
+        LOG:Error("PointManager:UpdatePoints(): Value is not a number")   
+        return 
+    end
 
     local uid
     if typeof(roster, Roster) then
@@ -141,7 +210,7 @@ function PointManager:UpdatePoints(roster, targets, value, action)
         targets = { targets }
     end
 
-    local entry = nil
+    local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
         entry = DKPLedgerEntries.Modify:new(uid, targets, value)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then

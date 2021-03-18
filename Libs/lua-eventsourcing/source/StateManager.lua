@@ -232,7 +232,7 @@ function StateManager:updateState()
         self.stateCheckSum = hash
         applied = applied + 1
     end
-    if applied > 0 or true then
+    if applied > 0 then
         self:trigger(EVENT.STATE_CHANGED)
     end
 end

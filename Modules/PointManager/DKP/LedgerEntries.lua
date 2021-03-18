@@ -39,10 +39,10 @@ local function CreateGUIDList(playerList)
     return playerGUIDList
 end
 
-function Modify:New(rosterUid, playerList, value)
-    local o = LogEntry.new(self, UnitGUID("player"));
+function Modify:new(rosterUid, playerList, value)
+    local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.t = CreateGUIDList(playerList)
+    o.tar = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0
     return o
 end
@@ -52,17 +52,17 @@ function Modify:rosterUid()
 end
 
 function Modify:targets()
-    return self.t
+    return self.tar
 end
 
 function Modify:value()
     return self.v
 end
 
-function Set:New(rosterUid, playerList, value)
-    local o = LogEntry.new(self, UnitGUID("player"));
+function Set:new(rosterUid, playerList, value)
+    local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.t = CreateGUIDList(playerList)
+    o.tar = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0
     return o
 end
@@ -72,19 +72,20 @@ function Set:rosterUid()
 end
 
 function Set:targets()
-    return self.t
+    return self.tar
 end
 
 function Set:value()
     return self.v
 end
 
-function Decay:New(rosterUid, playerList, value)
-    local o = LogEntry.new(self, UnitGUID("player"));
+function Decay:new(rosterUid, playerList, value)
+    local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.t = CreateGUIDList(playerList)
+    o.tar = CreateGUIDList(playerList)
     value = tonumber(value) or 0
-    if value >  100 then value = 100 end
+    if value > 100 then value = 100 end
+    if value < 0 then value = 0 end
     o.v = value
     return o
 end
@@ -94,7 +95,7 @@ function Decay:rosterUid()
 end
 
 function Decay:targets()
-    return self.t
+    return self.tar
 end
 
 function Decay:value()
