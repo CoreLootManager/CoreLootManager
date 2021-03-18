@@ -4,6 +4,9 @@ CLM.UTILS = {}
 
 local UTILS = CLM.UTILS
 
+local getIntegerGuid = LibStub("EventSourcing/Util").getIntegerGuid
+local getGuidFromInteger = LibStub("EventSourcing/Util").getGuidFromInteger
+
 local classColors = {
     ["druid"]   = { r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
     ["hunter"]  = { r = 0.67, g = 0.83, b = 0.45, hex = "ABD473" },
@@ -136,4 +139,12 @@ end
 
 function UTILS.typeof(object, objectType)
     return getmetatable(object) == objectType
+end
+
+function UTILS.getIntegerGuid(GUID)
+    return getIntegerGuid(GUID)
+end
+
+function UTILS.getGuidFromInteger(int)
+    return getGuidFromInteger(int)
 end

@@ -110,6 +110,12 @@ function Roster:SetConfiguration(option, value)
     self:UpdateDbChangeMetadata()
 end
 
+function Roster:WipeStandings()
+    for GUID,_ in pairs(self.volatile.standings) do
+        self.volatile.standings[GUID] = 0
+    end
+end
+
 -- Copies. Hope I didn't fk it up
 
 function Roster:CopyItemValues(s)

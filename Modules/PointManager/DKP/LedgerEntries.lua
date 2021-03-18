@@ -4,7 +4,7 @@ local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
 local typeof = UTILS.typeof
-local getIntegerGuid = LibStub("EventSourcing/Util").getIntegerGuid
+local getIntegerGuid = UTILS.getIntegerGuid
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 

@@ -169,6 +169,12 @@ function RosterManager:CopyItemValues(source, target)
     t:CopyItemValues(s)
 end
 
+function RosterManager:WipeStandings()
+    for _, roster in pairs(self.cache.rosters) do
+        roster:WipeStandings()
+    end
+end
+
 -- -- Publish API
 MODULES.RosterManager = RosterManager
 
