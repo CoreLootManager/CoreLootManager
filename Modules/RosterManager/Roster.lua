@@ -3,6 +3,8 @@ local _, CLM = ...
 local UTILS =  CLM.UTILS
 local CONSTANTS =  CLM.CONSTANTS
 
+local whoami = UTILS.WhoAmI
+
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
@@ -34,7 +36,7 @@ end
 
 function Roster:UpdateDbChangeMetadata()
     self.persistent.lastUpdate.time   = time()
-    self.persistent.lastUpdate.source = UTILS.GetUnitName("player")
+    self.persistent.lastUpdate.source = whoami()
 end
 
 function Roster:AddProfileByGUID(GUID)

@@ -6,6 +6,7 @@ local RESULTS = CLM.CONSTANTS.RESULTS
 local UTILS = CLM.UTILS
 
 local typeof = UTILS.typeof
+local whoami = UTILS.WhoAmI
 
 local Profile = CLM.MODELS.Profile
 
@@ -39,7 +40,7 @@ end
 
 function ProfileManager:UpdateDbChangeMetadata()
     self.db.metadata.lastUpdate.time   = time()
-    self.db.metadata.lastUpdate.source = UTILS.GetUnitName("player")
+    self.db.metadata.lastUpdate.source = whoami()
 end
 
 -- CORE
@@ -158,7 +159,6 @@ function ProfileManager:AddTarget()
     if UnitIsPlayer("target") then
         local GUID = UnitGUID("target")
         local name = UTILS.GetUnitName("target")
-        name, _ = strsplit("-", name)
         local _, class, _ = UnitClass("target");
 
         self:NewProfile(GUID, name, class)

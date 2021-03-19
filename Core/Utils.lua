@@ -157,3 +157,8 @@ end
 function UTILS.DumpTable(t)
     return DumpTable(t)
 end
+
+local playerName = UTILS.GetUnitName("player")
+function UTILS.WhoAmI()
+    return playerName
+end

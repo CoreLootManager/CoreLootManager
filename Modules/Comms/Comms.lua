@@ -8,6 +8,8 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local ACL = MODULES.ACL
 
+local whoami = CLM.WhoAmI
+
 -- Module
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 local serdes = LibStub("LibSerialize")
@@ -110,6 +112,8 @@ end
 function Comms:OnReceive(prefix, message, distribution, sender)
     LOG:Info("Comms:OnReceive()")
     if not self.enabled then return false end
+    -- Ignore messages from self
+    if sender == whoami() then return end
     -- Validate prefix
     if self.callbacks[prefix] == nil then
         LOG:Warning("Comms:OnReceive() received message with unsupported prefix")

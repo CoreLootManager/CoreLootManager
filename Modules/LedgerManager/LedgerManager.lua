@@ -31,7 +31,7 @@ function LedgerManager:Initialize()
         (function(data, distribution, target, progressCallback)
             return Comms:Send(prefixData, data, distribution, target, "BULK")
         end), -- sendLargeMessage
-        750, 1000
+        0, 100
     )
 
     self.entryExtensions = {}
@@ -39,6 +39,7 @@ function LedgerManager:Initialize()
 end
 
 function LedgerManager:Enable()
+    self.ledger.getStateManager():setUpdateInterval(100)
     self.ledger.enableSending()
 end
 
@@ -53,7 +54,7 @@ end
 function LedgerManager:RegisterEntryType(class, mutatorFn, authorizationLevel)
     if self.entryExtensions[class] then
         LOG:Fatal("Class " .. tostring(class) .. " already exists in Ledger Entries.")
-        return nil
+        return
     end
     self.entryExtensions[class] = true
 

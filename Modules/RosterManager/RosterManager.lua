@@ -46,7 +46,7 @@ end
 
 function RosterManager:UpdateDbChangeMetadata()
     self.db.metadata.lastUpdate.time   = time()
-    self.db.metadata.lastUpdate.source = UTILS.GetUnitName("player")
+    self.db.metadata.lastUpdate.source = whoami()
 end
 
 function RosterManager:LoadCache()

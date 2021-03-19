@@ -4,6 +4,8 @@ local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 
+local whoami = UTILS.WhoAmI
+
 local ACL = { }
 
 function ACL:Initialize()
@@ -72,7 +74,7 @@ function ACL:CheckLevel(level, name)
         if self.guildMaster then
             return true
         end
-        name = UTILS.GetUnitName("player")
+        name = whoami()
     end
     local isGuildMaster = (self.cache.guildMaster == name)
     local isOfficer = (self.cache.officers[name] or false)
