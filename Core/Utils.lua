@@ -222,3 +222,11 @@ end
 function UTILS.method2function(handler, method)
     return (function(...) handler[method](handler, ...) end)
 end
+
+function UTILS.merge(t1, t2, t)
+    t = t or {}
+    local n = 0
+    for _,v in ipairs(t1) do n = n+1; t[n] = v end
+    for _,v in ipairs(t2) do n = n+1; t[n] = v end
+    return t
+end

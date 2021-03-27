@@ -3,6 +3,7 @@ local _, CLM = ...
 local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
+local merge = UTILS.merge
 local typeof = UTILS.typeof
 -- local getIntegerGuid = UTILS.getIntegerGuid
 -- local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
@@ -42,6 +43,11 @@ function RosterCreate:name()
     return self.n
 end
 
+local RosterCreateFields = merge(LogEntry:fields(), {"r", "n"})
+function RosterCreate:fields()
+    return RosterCreateFields
+end
+
 -- ------------ --
 -- RosterDelete --
 -- ------------ --
@@ -53,6 +59,11 @@ end
 
 function RosterDelete:rosterUid()
     return self.r
+end
+
+local RosterDeleteFields = merge(LogEntry:fields(), {"r"})
+function RosterDelete:fields()
+    return RosterDeleteFields
 end
 
 -- ------------ --
@@ -73,6 +84,10 @@ function RosterRename:name()
     return self.n
 end
 
+local RosterRenameFields = merge(LogEntry:fields(), {"r", "n"})
+function RosterRename:fields()
+    return RosterRenameFields
+end
 -- ------------------ --
 -- RosterUpdateConfig --
 -- ------------------ --
@@ -82,7 +97,7 @@ function RosterUpdateConfig:new(rosterUid, config)
     if not typeof(config, MODELS.RosterConfiguration) then
         config = MODELS.RosterConfiguration:New()
     end
-    o.o = deflate(config)
+    o.c = deflate(config)
     return o
 end
 
@@ -91,9 +106,13 @@ function RosterUpdateConfig:rosterUid()
 end
 
 function RosterUpdateConfig:config()
-    return self.o
+    return self.c
 end
 
+local RosterUpdateConfigFields = merge(LogEntry:fields(), {"r", "c"})
+function RosterUpdateConfig:fields()
+    return RosterUpdateConfigFields
+end
 -- ------------------------ --
 -- RosterUpdateConfigSingle --
 -- ------------------------ --
@@ -116,6 +135,11 @@ end
 function RosterUpdateConfigSingle:value()
     return self.v
 end
+
+local RosterUpdateConfigSingleFields = merge(LogEntry:fields(), {"r", "c", "v"})
+function RosterUpdateConfigSingle:fields()
+    return RosterUpdateConfigSingleFields
+end
 -- ------------------- --
 -- RosterUpdateDefault --
 -- ------------------- --
@@ -134,13 +158,17 @@ function RosterUpdateDefault:defaults()
     return self.d
 end
 
+local RosterUpdateDefaultFields = merge(LogEntry:fields(), {"r", "d"})
+function RosterUpdateDefault:fields()
+    return RosterUpdateDefaultFields
+end
 -- ------------------------- --
 -- RosterUpdateDefaultSingle --
 -- ------------------------- --
 function RosterUpdateDefaultSingle:new(rosterUid, slot, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.c = tostring(slot) or "" -- not the most optimal but i don't expect it to be changed too often
+    o.d = tostring(slot) or "" -- not the most optimal but i don't expect it to be changed too often
     o.v = value
     return o
 end
@@ -150,11 +178,16 @@ function RosterUpdateDefaultSingle:rosterUid()
 end
 
 function RosterUpdateDefaultSingle:config()
-    return self.c
+    return self.d
 end
 
 function RosterUpdateDefaultSingle:value()
     return self.v
+end
+
+local RosterUpdateDefaultSingleFields = merge(LogEntry:fields(), {"r", "d", "v"})
+function RosterUpdateDefaultSingle:fields()
+    return RosterUpdateDefaultSingleFields
 end
 -- ------------------------ --
 -- RosterUpdateOverrides --
@@ -166,13 +199,17 @@ function RosterUpdateOverrides:new(rosterUid, overrides)
     return o
 end
 
+local RosterUpdateOverridesFields = merge(LogEntry:fields(), {"r", "o"})
+function RosterUpdateOverrides:fields()
+    return RosterUpdateOverridesFields
+end
 -- --------------------------- --
 -- RosterUpdateOverridesSingle --
 -- --------------------------- --
 function RosterUpdateOverridesSingle:new(rosterUid, itemId, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.i = tonumber(itemId) or 0
+    o.o = tonumber(itemId) or 0
     o.v = tonumber(value) or 0
     return o
 end
@@ -182,13 +219,17 @@ function RosterUpdateOverridesSingle:rosterUid()
 end
 
 function RosterUpdateOverridesSingle:itemId()
-    return self.i
+    return self.o
 end
 
 function RosterUpdateOverridesSingle:value()
     return self.v
 end
 
+local RosterUpdateOverridesSingleFields = merge(LogEntry:fields(), {"r", "o", "v"})
+function RosterUpdateOverridesSingle:fields()
+    return RosterUpdateOverridesSingleFields
+end
 -- -------------------- --
 -- RosterUpdateProfiles --
 -- -------------------- --
@@ -210,6 +251,11 @@ end
 
 function RosterUpdateProfiles:remove()
     return self.e
+end
+
+local RosterUpdateProfilesFields = merge(LogEntry:fields(), {"r", "p", "e"})
+function RosterUpdateProfiles:fields()
+    return RosterUpdateProfilesFields
 end
 
 MODELS.LEDGER.Roster = {
