@@ -659,6 +659,7 @@ globals = {
 	"C_GuildInfo.GetGuildNewsInfo",
 	"C_GuildInfo.GuildRoster",
 	"C_GuildInfo.IsGuildOfficer",
+	"C_GuildInfo.GuildControlGetRankFlags",
 	"C_Heirloom",
 	"C_Heirloom.CanHeirloomUpgradeFromPending",
 	"C_Heirloom.CreateHeirloom",

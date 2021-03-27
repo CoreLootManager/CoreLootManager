@@ -8,7 +8,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local ACL = MODULES.ACL
 
-local whoami = CLM.WhoAmI
+local whoami = UTILS.WhoAmI
 
 -- Module
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")

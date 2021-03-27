@@ -3,7 +3,8 @@ local _, CLM = ...
 local UTILS =  CLM.UTILS
 local CONSTANTS =  CLM.CONSTANTS
 
-local whoami = UTILS.WhoAmI
+-- local whoami = UTILS.WhoAmI
+local keys = UTILS.keys
 
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
@@ -34,25 +35,22 @@ function Roster:Restore(storage)
     return o
 end
 
-function Roster:UpdateDbChangeMetadata()
-    self.persistent.lastUpdate.time   = time()
-    self.persistent.lastUpdate.source = whoami()
-end
-
 function Roster:AddProfileByGUID(GUID)
     self.persistent.profiles[GUID] = true
     self.volatile.standings[GUID] = 0
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:RemoveProfileByGUID(GUID)
     self.persistent.profiles[GUID] = nil
     self.volatile.standings[GUID] = nil
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:IsProfileInRoster(GUID)
     return self.persistent.profiles[GUID]
+end
+
+function Roster:Profiles()
+    return keys(self.persistent.profiles)
 end
 
 function Roster:UID()
@@ -62,7 +60,6 @@ end
 function Roster:Description(description)
     if type(description) == "string" then
         self.persistent.description = description
-        self:UpdateDbChangeMetadata()
     end
     return self.persistent.description
 end
@@ -76,7 +73,6 @@ function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)
         min = tonumber(minimum) or 0,
         max = tonumber(maximum) or 0
     }
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
@@ -90,7 +86,6 @@ function Roster:SetItemValue(itemId, itemName, minimum, maximum)
         min = tonumber(minimum) or 0,
         max = tonumber(maximum) or 0
     }
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:GetItemValue(itemId)
@@ -109,7 +104,6 @@ end
 
 function Roster:SetConfiguration(option, value)
     self.persistent.configuration:Set(option, value)
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:WipeStandings()
@@ -122,22 +116,18 @@ end
 
 function Roster:CopyItemValues(s)
     self.persistent.itemValues = UTILS.DeepCopy(s.persistent.itemValues)
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:CopyDefaultSlotValues(s)
     self.persistent.defaultSlotValues = UTILS.DeepCopy(s.persistent.defaultSlotValues)
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:CopyConfiguration(s)
     self.persistent.configuration = RosterConfiguration:New(UTILS.DeepCopy(s.persistent.configuration))
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:CopyProfiles(s)
     self.persistent.profiles = UTILS.ShallowCopy(s.persistent.profiles)
-    self:UpdateDbChangeMetadata()
 end
 
 -- Configuration
@@ -165,6 +155,18 @@ function RosterConfiguration:New(i)
     o.simultaneousAuctions = false
     -- Default Item Values
     return o
+end
+
+function RosterConfiguration:fields(version)
+    return {
+        "pointType",
+        "auctionType",
+        "itemValueMode",
+        "zeroSumBank",
+        "allowNegativeStandings",
+        "allowNegativeBidders",
+        "simultaneousAuctions"
+    }
 end
 
 function RosterConfiguration:Get(option)
@@ -203,6 +205,7 @@ function RosterConfiguration._validate_allowNegativeBidders(value) return IsBool
 function RosterConfiguration._validate_simultaneousAuctions(value) return IsBoolean(value) end
 
 CLM.MODELS.Roster = Roster
+CLM.MODELS.RosterConfiguration = RosterConfiguration
 
 -- Constants
 CONSTANTS.POINT_TYPES = UTILS.Set({

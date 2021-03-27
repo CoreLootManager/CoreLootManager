@@ -12,7 +12,7 @@ local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
 
-local DKPLedgerEntries = CLM.MODELS.DKPLedgerEntries
+local LEDGER_DKP = CLM.MODELS.LEDGER.DKP
 local Profile = CLM.MODELS.Profile
 local Roster = CLM.MODELS.Roster
 
@@ -61,17 +61,17 @@ local PointManager = {}
 function PointManager:Initialize()
 
     LedgerManager:RegisterEntryType(
-        DKPLedgerEntries.Modify,
+        LEDGER_DKP.Modify,
         (function(entry) mutator(entry, mutate_pdm) end),
         ACL_LEVEL.MANAGER)
 
     LedgerManager:RegisterEntryType(
-        DKPLedgerEntries.Set,
+        LEDGER_DKP.Set,
         (function(entry) mutator(entry, mutate_pds) end),
         ACL_LEVEL.OFFICER)
 
     LedgerManager:RegisterEntryType(
-        DKPLedgerEntries.Decay,
+        LEDGER_DKP.Decay,
         (function(entry) mutator(entry, mutate_pdd) end),
         ACL_LEVEL.OFFICER)
 
@@ -79,10 +79,10 @@ function PointManager:Initialize()
             RosterManager:WipeStandings()
         end)
 
-    local start = time()
+    local start = GetServerTime()
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
         if lag ~= 0 or uncommited ~= 0 then return end
-        local stop = time(); print("DONE IN " .. tostring(stop - start));
+        local stop = GetServerTime(); print("DONE IN " .. tostring(stop - start));
         local rosters = RosterManager:GetRosters()
         for rosterName, roster in pairs(rosters) do
             print(UTILS.ColorCodeText(rosterName, "ff5522"))
@@ -189,8 +189,8 @@ function PointManager:UpdatePoints(roster, targets, value, action)
         return
     end
     if type(value) ~= "number" then
-        LOG:Error("PointManager:UpdatePoints(): Value is not a number")   
-        return 
+        LOG:Error("PointManager:UpdatePoints(): Value is not a number")
+        return
     end
 
     local uid
@@ -212,11 +212,11 @@ function PointManager:UpdatePoints(roster, targets, value, action)
 
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = DKPLedgerEntries.Modify:new(uid, targets, value)
+        entry = LEDGER_DKP.Modify:new(uid, targets, value)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = DKPLedgerEntries.Set:new(uid, targets, value)
+        entry = LEDGER_DKP.Set:new(uid, targets, value)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = DKPLedgerEntries.Decay:new(uid, targets, value)
+        entry = LEDGER_DKP.Decay:new(uid, targets, value)
     end
 
     LedgerManager:Submit(entry)

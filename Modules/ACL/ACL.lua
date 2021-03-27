@@ -58,7 +58,7 @@ function ACL:IsTrusted(name)
     if name == nil then
         return self.trusted or false
     else
-        self:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name)
+        return self:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name)
     end
 end
 

@@ -10,8 +10,8 @@ CLM.VERSION = {
     notes = ""
 }
 
-CLM.MODULES =  {}
-CLM.MODELS =  {}
+CLM.MODULES = {}
+CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {
     RESULTS = { -- Universal return codes
         ERROR = 0,           -- Request failed
@@ -40,7 +40,6 @@ end
 
 function CORE:_InitializeBackend()
     LOG:Info("CORE:_InitializeBackend()")
-    --MODULES.StateManager.Initialize()
     --MODULES.EventHandler.Initialize()
     MODULES.Comms:Initialize()
     MODULES.LedgerManager:Initialize()
@@ -57,6 +56,7 @@ end
 
 function CORE:_InitializeFrontend()
     LOG:Info("CORE:_InitializeFrontend()")
+    -- No GUI / OPTIONS should be dependent on each other ever, only on the managers
     for _, module in pairs(CLM.OPTIONS) do
         module:Initialize()
     end
@@ -69,6 +69,7 @@ function CORE:_Enable()
     LOG:Info("CORE:_Enable()")
     MODULES.Comms:Enable()
     MODULES.LedgerManager:Enable()
+    -- MODULES.DataConsistencyManager:Enable()
 end
 
 function CORE:_BIST()
@@ -122,6 +123,7 @@ function CORE:OnInitialize()
     CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
     GuildRoster()
     -- We schedule this in case GUILD_ROSTER_UPDATE won't come early enough
+    -- Never seen it happen but you never know ...
     C_Timer.After(10, function() CORE:_DelayedInitialize() end)
 end
 

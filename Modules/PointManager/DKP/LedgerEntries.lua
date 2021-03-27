@@ -3,8 +3,10 @@ local _, CLM = ...
 local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
-local typeof = UTILS.typeof
-local getIntegerGuid = UTILS.getIntegerGuid
+-- local typeof = UTILS.typeof
+-- local getIntegerGuid = UTILS.getIntegerGuid
+-- local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
+local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
@@ -12,32 +14,6 @@ local LogEntry  = LibStub("EventSourcing/LogEntry")
 local Modify = LogEntry:extend("PDM")
 local Set = LogEntry:extend("PDS")
 local Decay = LogEntry:extend("PDD")
-
-local function GetGUIDFromEntry(e)
-    if typeof(e, MODELS.Profile) then
-        return getIntegerGuid(e:GUID())
-    elseif typeof(e) == "number" then
-        return e
-    elseif typeof(e) == "string" then
-        return getIntegerGuid(e)
-    else
-        return nil
-    end
-end
-
-local function CreateGUIDList(playerList)
-    local playerGUIDList = {}
-    local GUID
-    -- We expect list of either: GUID in string/integer form or profile
-    -- List is expected always
-    for _, p in ipairs(playerList) do
-        GUID = GetGUIDFromEntry(p)
-        if GUID ~= nil then
-            table.insert(playerGUIDList, GUID)
-        end
-    end
-    return playerGUIDList
-end
 
 function Modify:new(rosterUid, playerList, value)
     local o = LogEntry.new(self);
@@ -102,7 +78,7 @@ function Decay:value()
     return self.v
 end
 
-MODELS.DKPLedgerEntries = {
+MODELS.LEDGER.DKP = {
     Modify = Modify,
     Set = Set,
     Decay = Decay

@@ -15,17 +15,13 @@ local CBTYPE = {
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)
-    -- print("Get " .. tostring(option))
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     return roster:GetConfiguration(option)
 end
 
 local function SetRosterOption(name, option, value)
-    -- print("Set [" .. tostring(option) .. "]: " .. tostring(value))
-    local roster = RosterManager:GetRosterByName(name)
-    if roster == nil then return nil end
-    roster:SetConfiguration(option, value)
+    RosterManager:SetRosterConfiguration(name, option, value)
 end
 
 local function GetDefaultSlotValue(name, slot, isMin)
@@ -36,11 +32,7 @@ local function GetDefaultSlotValue(name, slot, isMin)
 end
 
 local function SetDefaultSlotValue(name, slot, value, isMin)
-    local roster = RosterManager:GetRosterByName(name)
-    if roster == nil then return nil end
-    local v = roster:GetDefaultSlotValue(slot)
-    if isMin then v.min = value else v.max = value end
-    roster:SetDefaultSlotValue(slot, v.min, v.max)
+    RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
 end
 
 function RosterManagerOptions:Initialize()

@@ -5,7 +5,6 @@ local LOG = CLM.LOG
 local Comms = MODULES.Comms
 local CONSTANTS = CLM.CONSTANTS
 local ACL = MODULES.ACL
-local UTILS = CLM.UTILS
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 

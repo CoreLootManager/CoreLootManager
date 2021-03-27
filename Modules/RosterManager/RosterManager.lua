@@ -4,9 +4,12 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
+-- local UTILS = CLM.UTILS
+
+-- local whoami = UTILS.WhoAmI
 
 local Roster = CLM.MODELS.Roster
+-- local RosterLedger = CLM.MODELS.LEDGER.Roster
 
 local RosterManager = { } -- Roster Manager Module
 
@@ -23,11 +26,7 @@ function RosterManager:Initialize()
     self.db = MODULES.Database:Roster()
     if type(self.db.metadata) ~= "table" then
         self.db.metadata = {
-            next_roster_uid = 0,
-            lastUpdate = {
-                time = 0,
-                source = ""
-            }
+            next_roster_uid = 0
         }
     end
 
@@ -42,11 +41,6 @@ function RosterManager:Initialize()
 
     self:LoadCache()
     MODULES.ConfigManager:RegisterUniversalExecutor("rm", "RosterManager", self)
-end
-
-function RosterManager:UpdateDbChangeMetadata()
-    self.db.metadata.lastUpdate.time   = time()
-    self.db.metadata.lastUpdate.source = whoami()
 end
 
 function RosterManager:LoadCache()
@@ -101,7 +95,6 @@ function RosterManager:NewRoster()
     self.cache.rostersUidMap[self.db.metadata.next_roster_uid] = name
 
     self.db.metadata.next_roster_uid = self.db.metadata.next_roster_uid + 1
-    self:UpdateDbChangeMetadata()
 end
 
 function RosterManager:DeleteRosterByName(name)
@@ -111,7 +104,6 @@ function RosterManager:DeleteRosterByName(name)
     self.cache.rostersUidMap[roster:UID()] = nil
     self.cache.rosters[name] = nil
     self.db.rosters[name] = nil
-    self:UpdateDbChangeMetadata()
 end
 
 function RosterManager:RenameRoster(old, new)
@@ -126,7 +118,6 @@ function RosterManager:RenameRoster(old, new)
     self.cache.rostersUidMap[self.cache.rosters[new]:UID()] = new
 
     self:DeleteRosterByName(old)
-    self:UpdateDbChangeMetadata()
 end
 
 function RosterManager:CopyProfiles(source, target)
@@ -167,6 +158,20 @@ function RosterManager:CopyItemValues(source, target)
     if t == nil then return end
 
     t:CopyItemValues(s)
+end
+
+function RosterManager:SetRosterConfiguration(name, option, value)
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    roster:SetConfiguration(option, value)
+end
+
+function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    local v = roster:GetDefaultSlotValue(slot)
+    if isMin then v.min = value else v.max = value end
+    roster:SetDefaultSlotValue(slot, v.min, v.max)
 end
 
 function RosterManager:WipeStandings()

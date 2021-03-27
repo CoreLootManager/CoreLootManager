@@ -3,8 +3,8 @@ local LOG = CLM.LOG
 CLM.UTILS = {}
 
 local UTILS = CLM.UTILS
+local Profile = CLM.MODELS.Profile
 
-local getGuidFromInteger = LibStub("EventSourcing/Util").getGuidFromInteger
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
 local classColors = {
@@ -148,6 +148,7 @@ end
 function UTILS.getIntegerGuid(GUID)
     return tonumber(string.sub(GUID, -8), 16)
 end
+local getIntegerGuid = UTILS.getIntegerGuid
 
 local GUIDPrefix = string.sub(UnitGUID("player"), 1, -9)
 function UTILS.getGuidFromInteger(int)
@@ -161,4 +162,63 @@ end
 local playerName = UTILS.GetUnitName("player")
 function UTILS.WhoAmI()
     return playerName
+end
+
+ function UTILS.GetGUIDFromEntry(e)
+    if UTILS.typeof(e, Profile) then
+        return getIntegerGuid(e:GUID())
+    elseif type(e) == "number" then
+        return e
+    elseif type(e) == "string" then
+        return getIntegerGuid(e)
+    else
+        return nil
+    end
+end
+
+function UTILS.CreateGUIDList(playerList)
+    local playerGUIDList = {}
+    local GUID
+    -- We expect list of either: GUID in string/integer form or profile
+    -- List is expected always
+    for _, p in ipairs(playerList) do
+        GUID = UTILS.GetGUIDFromEntry(p)
+        if GUID ~= nil then
+            table.insert(playerGUIDList, GUID)
+        end
+    end
+    return playerGUIDList
+end
+
+
+function UTILS.inflate(object, data)
+    local version = data.v or 1
+    for i, key in ipairs(object:fields(version)) do
+        object[key] = data[i]
+    end
+end
+
+function UTILS.deflate(object, version)
+    local result = {}
+    version = version or 1
+    for _, key in ipairs(object:fields(version)) do
+        table.insert(result, object[key])
+    end
+    result.v = version
+    return result
+end
+
+function UTILS.keys(object)
+    local keyList = {}
+    local n = 0
+
+    for k,_ in pairs(object) do
+      n = n + 1
+      keyList[n] = k
+    end
+    return keyList
+end
+
+function UTILS.method2function(handler, method)
+    return (function(...) handler[method](handler, ...) end)
 end
