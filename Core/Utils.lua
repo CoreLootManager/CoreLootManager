@@ -142,7 +142,7 @@ function UTILS.GetUnitName(unit)
 end
 
 function UTILS.typeof(object, objectType)
-    return getmetatable(object) == objectType
+    return (type(object) == "table") and (getmetatable(object) == objectType)
 end
 
 function UTILS.getIntegerGuid(GUID)

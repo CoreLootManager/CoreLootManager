@@ -258,7 +258,7 @@ function RosterUpdateProfiles:fields()
     return RosterUpdateProfilesFields
 end
 
-MODELS.LEDGER.Roster = {
+MODELS.LEDGER.ROSTER = {
     Create                  = RosterCreate,
     Delete                  = RosterDelete,
     Rename                  = RosterRename,

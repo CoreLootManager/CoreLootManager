@@ -5,6 +5,8 @@ local OPTIONS = CLM.OPTIONS
 local MODULES = CLM.MODULES
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
+local LedgerManager = MODULES.LedgerManager
+local ConfigManager = MODULES.ConfigManager
 
 local CBTYPE = {
     GETTER   = "get",
@@ -139,6 +141,12 @@ function RosterManagerOptions:Initialize()
     end
 
     self:UpdateOptions()
+
+    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
+        if lag ~= 0 or uncommited ~= 0 then return end
+        self:UpdateOptions()
+        ConfigManager:UpdateOptions(CONSTANTS.CONFIGS.GROUP.ROSTER)
+    end)
 end
 
 function RosterManagerOptions:_Handle(cbtype, info, ...)

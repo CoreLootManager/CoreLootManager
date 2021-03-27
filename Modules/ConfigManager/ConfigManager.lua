@@ -135,12 +135,14 @@ function ConfigManager:RegisterUniversalExecutor(command, name, object)
     self:RegisterSlash(options)
 end
 
-function ConfigManager:UpdateOptions(group)
+function ConfigManager:UpdateOptions(group, register)
     if not CONSTANTS.CONFIGS.GROUPS[group] then
         LOG:Warning("ConfigManager:Update(): Group " .. tostring(group) .. " is not supported")
         return
     end
-    LIBS.config:RegisterOptionsTable(group, self.generators[group])
+    if register then
+        LIBS.config:RegisterOptionsTable(group, self.generators[group])
+    end
     LIBS.registry:NotifyChange(group)
 end
 

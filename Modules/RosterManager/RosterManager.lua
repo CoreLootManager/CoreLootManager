@@ -4,7 +4,10 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local MODULES = CLM.MODULES
+local ACL_LEVEL = CONSTANTS.ACL.LEVEL
+local LEDGER_ROSTER = CLM.MODELS.LEDGER.ROSTER
 -- local UTILS = CLM.UTILS
+local LedgerManager = MODULES.LedgerManager
 
 -- local whoami = UTILS.WhoAmI
 
@@ -25,9 +28,7 @@ function RosterManager:Initialize()
     -- Initialize DB
     self.db = MODULES.Database:Roster()
     if type(self.db.metadata) ~= "table" then
-        self.db.metadata = {
-            next_roster_uid = 0
-        }
+        self.db.metadata = {}
     end
 
     if type(self.db.rosters) ~= "table" then
@@ -39,34 +40,62 @@ function RosterManager:Initialize()
         rosters = {}
     }
 
-    self:LoadCache()
+    -- self:LoadCache()
+    -- Register mutators
+    LedgerManager:RegisterEntryType(
+        LEDGER_ROSTER.Create,
+        (function(entry)
+            local uid = entry:rosterUid()
+            local name = entry:name()
+
+            self.db.rosters[name] = {} -- temporary while still using storage
+            local roster = Roster:New(self.db.rosters[name], uid)
+            self.cache.rosters[name] = roster
+            self.cache.rostersUidMap[uid] = name
+        end),
+        ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.Delete,
+            (function(entry)
+                local uid = entry:rosterUid()
+
+                local roster = RosterManager:GetRosterByUid(uid)
+                if roster == nil then return end
+
+                local name = self.cache.rostersUidMap[uid]
+                self.cache.rostersUidMap[uid] = nil
+                self.cache.rosters[name] = nil
+                self.db.rosters[name] = nil
+            end),
+            ACL_LEVEL.OFFICER)
+
+            LedgerManager:RegisterEntryType(
+                LEDGER_ROSTER.Rename,
+                (function(entry)
+                    local uid = entry:rosterUid()
+                    local name = entry:name()
+
+                    local o = RosterManager:GetRosterByUid(uid)
+                    if o == nil then return end
+                    local n = RosterManager:GetRosterByName(name)
+                    if n ~= nil then return end
+                    
+                    self.db.rosters[name] = {} -- temporary while still using storage
+                    local oldname = self.cache.rostersUidMap[uid]
+                    -- Attach roster to new name
+                    self.cache.rosters[name] = o
+                    self.cache.rostersUidMap[uid] = name
+
+                    -- Remove old assignments
+                    self.cache.rosters[oldname] = nil
+                    self.db.rosters[oldname] = nil
+
+                    -- TODO while using storage after rename the roster might not work properly
+                end),
+                ACL_LEVEL.OFFICER)
+        
     MODULES.ConfigManager:RegisterUniversalExecutor("rm", "RosterManager", self)
-end
-
-function RosterManager:LoadCache()
-    LOG:Info("RosterManager:LoadCache()")
-    local max_uid = 0
-    for name, _ in pairs(self.db.rosters) do
-        local roster = Roster:Restore(self.db.rosters[name])
-        local uid = roster:UID()
-        -- Duplication issue check
-        if self.cache.rosters[uid] ~= nil then
-            LOG:Fatal("Duplicate roster uid: " .. uid .. ".  Please report this issue to authors and attach SavedVariable file.")
-        end
-
-        -- Restore Roster
-        self.cache.rosters[name] = roster
-        self.cache.rostersUidMap[uid] = name
-
-        -- Contol uid
-        if uid > max_uid then
-            max_uid = uid
-        end
-    end
-    -- Update uid in case it is needed
-    if max_uid >= self.db.metadata.next_roster_uid then
-        self.db.metadata.next_roster_uid = max_uid + 1
-    end
 end
 
 function RosterManager:GetRosters()
@@ -89,21 +118,14 @@ function RosterManager:NewRoster()
         name = GenerateName()
     end
 
-    self.db.rosters[name] = {}
-    local roster = Roster:New(self.db.rosters[name], self.db.metadata.next_roster_uid)
-    self.cache.rosters[name] = roster
-    self.cache.rostersUidMap[self.db.metadata.next_roster_uid] = name
-
-    self.db.metadata.next_roster_uid = self.db.metadata.next_roster_uid + 1
+    LedgerManager:Submit(LEDGER_ROSTER.Create:new(GetServerTime(), name))
 end
 
 function RosterManager:DeleteRosterByName(name)
     LOG:Info("RosterManager:DeleteRosterByName()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return end
-    self.cache.rostersUidMap[roster:UID()] = nil
-    self.cache.rosters[name] = nil
-    self.db.rosters[name] = nil
+    LedgerManager:Submit(LEDGER_ROSTER.Delete:new(roster:UID()))
 end
 
 function RosterManager:RenameRoster(old, new)
@@ -113,11 +135,7 @@ function RosterManager:RenameRoster(old, new)
     local n = RosterManager:GetRosterByName(new)
     if n ~= nil then return end
 
-    self.db.rosters[new] = self.db.rosters[old]
-    self.cache.rosters[new] = self.cache.rosters[old]
-    self.cache.rostersUidMap[self.cache.rosters[new]:UID()] = new
-
-    self:DeleteRosterByName(old)
+    LedgerManager:Submit(LEDGER_ROSTER.Rename:new(o:UID(), new))
 end
 
 function RosterManager:CopyProfiles(source, target)
