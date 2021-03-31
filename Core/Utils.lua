@@ -192,15 +192,13 @@ end
 
 
 function UTILS.inflate(object, data)
-    local version = data.v or 1
-    for i, key in ipairs(object:fields(version)) do
+    for i, key in ipairs(object:fields(data.v)) do
         object[key] = data[i]
     end
 end
 
 function UTILS.deflate(object, version)
     local result = {}
-    version = version or 1
     for _, key in ipairs(object:fields(version)) do
         table.insert(result, object[key])
     end

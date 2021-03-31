@@ -55,46 +55,99 @@ function RosterManager:Initialize()
         end),
         ACL_LEVEL.OFFICER)
 
+    LedgerManager:RegisterEntryType(
+        LEDGER_ROSTER.Delete,
+        (function(entry)
+            local uid = entry:rosterUid()
+
+            local roster = RosterManager:GetRosterByUid(uid)
+            if roster == nil then return end
+
+            local name = self.cache.rostersUidMap[uid]
+            self.cache.rostersUidMap[uid] = nil
+            self.cache.rosters[name] = nil
+            self.db.rosters[name] = nil
+        end),
+        ACL_LEVEL.OFFICER)
+
         LedgerManager:RegisterEntryType(
-            LEDGER_ROSTER.Delete,
+            LEDGER_ROSTER.Rename,
             (function(entry)
                 local uid = entry:rosterUid()
+                local name = entry:name()
 
-                local roster = RosterManager:GetRosterByUid(uid)
-                if roster == nil then return end
+                local o = RosterManager:GetRosterByUid(uid)
+                if o == nil then return end
+                local n = RosterManager:GetRosterByName(name)
+                if n ~= nil then return end
 
-                local name = self.cache.rostersUidMap[uid]
-                self.cache.rostersUidMap[uid] = nil
-                self.cache.rosters[name] = nil
-                self.db.rosters[name] = nil
+                self.db.rosters[name] = {} -- temporary while still using storage
+                local oldname = self.cache.rostersUidMap[uid]
+                -- Attach roster to new name
+                self.cache.rosters[name] = o
+                self.cache.rostersUidMap[uid] = name
+
+                -- Remove old assignments
+                self.cache.rosters[oldname] = nil
+                self.db.rosters[oldname] = nil
+
+                -- TODO while using storage after rename the roster might not work properly
             end),
             ACL_LEVEL.OFFICER)
 
-            LedgerManager:RegisterEntryType(
-                LEDGER_ROSTER.Rename,
-                (function(entry)
-                    local uid = entry:rosterUid()
-                    local name = entry:name()
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.CopyData,
+            (function(entry)
+                local sourceUid = entry:sourceRosterUid()
+                local targetUid = entry:targetRosterUid()
 
-                    local o = RosterManager:GetRosterByUid(uid)
-                    if o == nil then return end
-                    local n = RosterManager:GetRosterByName(name)
-                    if n ~= nil then return end
-                    
-                    self.db.rosters[name] = {} -- temporary while still using storage
-                    local oldname = self.cache.rostersUidMap[uid]
-                    -- Attach roster to new name
-                    self.cache.rosters[name] = o
-                    self.cache.rostersUidMap[uid] = name
+                local s = RosterManager:GetRosterByUid(sourceUid)
+                if s == nil then return end
+                local t = RosterManager:GetRosterByUid(targetUid)
+                if t == nil then return end
 
-                    -- Remove old assignments
-                    self.cache.rosters[oldname] = nil
-                    self.db.rosters[oldname] = nil
+                if entry:config() then
+                    t:CopyConfiguration(s)
+                end
 
-                    -- TODO while using storage after rename the roster might not work properly
-                end),
-                ACL_LEVEL.OFFICER)
-        
+                if entry:defaults() then
+                    t:CopyDefaultSlotValues(s)
+                end
+
+                if entry:overrides() then
+                    t:CopyItemValues(s)
+                end
+
+                if entry:profiles() then
+                    t:CopyProfiles(s)
+                end
+            end),
+            ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.UpdateConfigSingle,
+            (function(entry)
+                local rosterUid = entry:rosterUid()
+
+                local roster = RosterManager:GetRosterByUid(rosterUid)
+                if roster == nil then return end
+
+                roster:SetConfiguration(entry:config(), entry:value())
+            end),
+            ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.UpdateDefaultSingle,
+            (function(entry)
+                local rosterUid = entry:rosterUid()
+
+                local roster = RosterManager:GetRosterByUid(rosterUid)
+                if roster == nil then return end
+
+                roster:SetDefaultSlotValue(entry:config(), entry:min(), entry:max())
+            end),
+            ACL_LEVEL.OFFICER)
+
     MODULES.ConfigManager:RegisterUniversalExecutor("rm", "RosterManager", self)
 end
 
@@ -138,50 +191,21 @@ function RosterManager:RenameRoster(old, new)
     LedgerManager:Submit(LEDGER_ROSTER.Rename:new(o:UID(), new))
 end
 
-function RosterManager:CopyProfiles(source, target)
-    LOG:Info("RosterManager:CopyProfiles()")
+function RosterManager:Copy(source, target, config, defaults, overrides, profiles)
+    LOG:Info("RosterManager:Copy()")
     local s = RosterManager:GetRosterByName(source)
     if s == nil then return end
     local t = RosterManager:GetRosterByName(target)
     if t == nil then return end
 
-    t:CopyProfiles(s)
-end
-
-function RosterManager:CopyConfiguration(source, target)
-    LOG:Info("RosterManager:CopyConfiguration()")
-    local s = RosterManager:GetRosterByName(source)
-    if s == nil then return end
-    local t = RosterManager:GetRosterByName(target)
-    if t == nil then return end
-
-    t:CopyConfiguration(s)
-end
-
-function RosterManager:CopyDefaultSlotValues(source, target)
-    LOG:Info("RosterManager:CopyDefaultSlotValues()")
-    local s = RosterManager:GetRosterByName(source)
-    if s == nil then return end
-    local t = RosterManager:GetRosterByName(target)
-    if t == nil then return end
-
-    t:CopyDefaultSlotValues(s)
-end
-
-function RosterManager:CopyItemValues(source, target)
-    LOG:Info("RosterManager:CopyItemValues()")
-    local s = RosterManager:GetRosterByName(source)
-    if s == nil then return end
-    local t = RosterManager:GetRosterByName(target)
-    if t == nil then return end
-
-    t:CopyItemValues(s)
+    LedgerManager:Submit(LEDGER_ROSTER.CopyData:new(s:UID(), t:UID(), config, defaults, overrides, profiles))
 end
 
 function RosterManager:SetRosterConfiguration(name, option, value)
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
-    roster:SetConfiguration(option, value)
+
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateConfigSingle:new(roster:UID(), option, value))
 end
 
 function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
@@ -189,7 +213,8 @@ function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
     if roster == nil then return nil end
     local v = roster:GetDefaultSlotValue(slot)
     if isMin then v.min = value else v.max = value end
-    roster:SetDefaultSlotValue(slot, v.min, v.max)
+
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, v.min, v.max))
 end
 
 function RosterManager:WipeStandings()

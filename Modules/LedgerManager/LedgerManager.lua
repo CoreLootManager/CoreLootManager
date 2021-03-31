@@ -30,7 +30,7 @@ function LedgerManager:Initialize()
         (function(data, distribution, target, progressCallback)
             return Comms:Send(prefixData, data, distribution, target, "BULK")
         end), -- sendLargeMessage
-        0, 100
+        0, 10
     )
 
     self.entryExtensions = {}

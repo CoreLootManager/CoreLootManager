@@ -71,10 +71,7 @@ function RosterManagerOptions:Initialize()
         end),
         copy_execute = (function(name)
             if self.copy_source_name == nil then return end
-            --RosterManager:CopyProfiles(self.copy_source_name, name)
-            RosterManager:CopyConfiguration(self.copy_source_name, name)
-            RosterManager:CopyDefaultSlotValues(self.copy_source_name, name)
-            RosterManager:CopyItemValues(self.copy_source_name, name)
+            RosterManager:Copy(self.copy_source_name, name, false, true, true, true)
         end),
         copy_source_get = (function(name)
             return self.copy_source_name

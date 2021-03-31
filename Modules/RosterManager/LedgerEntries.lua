@@ -24,6 +24,7 @@ local RosterUpdateDefaultSingle     = LogEntry:extend("R6")
 local RosterUpdateOverrides         = LogEntry:extend("R7")
 local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
 local RosterUpdateProfiles          = LogEntry:extend("R9")
+local RosterCopyData                = LogEntry:extend("RC")
 
 -- ------------ --
 -- RosterCreate --
@@ -165,11 +166,12 @@ end
 -- ------------------------- --
 -- RosterUpdateDefaultSingle --
 -- ------------------------- --
-function RosterUpdateDefaultSingle:new(rosterUid, slot, value)
+function RosterUpdateDefaultSingle:new(rosterUid, slot, minValue, maxValue)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.d = tostring(slot) or "" -- not the most optimal but i don't expect it to be changed too often
-    o.v = value
+    o.i = tonumber(minValue) or 0
+    o.a = tonumber(maxValue) or 0
     return o
 end
 
@@ -181,11 +183,15 @@ function RosterUpdateDefaultSingle:config()
     return self.d
 end
 
-function RosterUpdateDefaultSingle:value()
-    return self.v
+function RosterUpdateDefaultSingle:min()
+    return self.i
 end
 
-local RosterUpdateDefaultSingleFields = merge(LogEntry:fields(), {"r", "d", "v"})
+function RosterUpdateDefaultSingle:max()
+    return self.a
+end
+
+local RosterUpdateDefaultSingleFields = merge(LogEntry:fields(), {"r", "d", "i", "a"})
 function RosterUpdateDefaultSingle:fields()
     return RosterUpdateDefaultSingleFields
 end
@@ -258,6 +264,49 @@ function RosterUpdateProfiles:fields()
     return RosterUpdateProfilesFields
 end
 
+-- -------------------- --
+-- RosterCopyData --
+-- -------------------- --
+function RosterCopyData:new(sourceRosterUid, targetRosterUid, config, defaults, overrides, profiles)
+    local o = LogEntry.new(self);
+    o.r = tonumber(sourceRosterUid) or 0
+    o.a = tonumber(targetRosterUid) or 0
+    o.c = config    and true or false
+    o.d = defaults  and true or false
+    o.o = overrides and true or false
+    o.p = profiles  and true or false
+    return o
+end
+
+function RosterCopyData:sourceRosterUid()
+    return self.r
+end
+
+function RosterCopyData:targetRosterUid()
+    return self.a
+end
+
+function RosterCopyData:config()
+    return self.c
+end
+
+function RosterCopyData:defaults()
+    return self.d
+end
+
+function RosterCopyData:overrides()
+    return self.o
+end
+
+function RosterCopyData:profiles()
+    return self.p
+end
+
+local RosterCopyDataFields = merge(LogEntry:fields(), {"r", "a", "c", "d", "o", "p"})
+function RosterCopyData:fields()
+    return RosterCopyDataFields
+end
+
 MODELS.LEDGER.ROSTER = {
     Create                  = RosterCreate,
     Delete                  = RosterDelete,
@@ -268,5 +317,6 @@ MODELS.LEDGER.ROSTER = {
     UpdateDefaultSingle     = RosterUpdateDefaultSingle,
     UpdateOverrides         = RosterUpdateOverrides,
     UpdateOverridesSingle   = RosterUpdateOverridesSingle,
-    UpdateProfiles          = RosterUpdateProfiles
+    UpdateProfiles          = RosterUpdateProfiles,
+    CopyData                = RosterCopyData,
 }
