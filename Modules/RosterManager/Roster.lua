@@ -12,79 +12,64 @@ local keys = UTILS.keys
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
-function Roster:New(storage, uid)
-    local o = UTILS.NewStorageQualifiedObject(storage, self)
+function Roster:New(uid)
+    local o = {}
 
-    o.persistent.uid  = tonumber(uid)
-    o.persistent.description = ""
-    o.persistent.lastUpdate = { time = 0, source = "" }
-    o.persistent.configuration  = RosterConfiguration:New()
-    o.persistent.profiles = {}
-    o.persistent.defaultSlotValues = {}
-    o.persistent.itemValues = {}
+    setmetatable(o, self)
+    self.__index = self
 
-    o.volatile = { standings = {} }
+    o.uid  = tonumber(uid)
+    o.lastUpdate = { time = 0, source = "" }
+    o.configuration  = RosterConfiguration:New()
+    o.defaultSlotValues = {}
+    o.itemValues = {}
 
-    return o
-end
+    o.profiles = {}
+    o.standings = {}
 
-function Roster:Restore(storage)
-    local o = UTILS.NewStorageQualifiedObject(storage, self)
-    o.persistent.configuration = RosterConfiguration:New(o.persistent.configuration)
-    o.volatile = { standings = {} }
-    for GUID,_ in pairs(o.persistent.profiles) do
-        o.volatile.standings[GUID] = 0
-    end
     return o
 end
 
 function Roster:AddProfileByGUID(GUID)
-    self.persistent.profiles[GUID] = true
-    self.volatile.standings[GUID] = 0
+    self.standings[GUID] = 0
+    self.profiles = keys(self.standings)
 end
 
 function Roster:RemoveProfileByGUID(GUID)
-    self.persistent.profiles[GUID] = nil
-    self.volatile.standings[GUID] = nil
+    self.standings[GUID] = nil
+    self.profiles = keys(self.standings)
 end
 
 function Roster:IsProfileInRoster(GUID)
-    return self.persistent.profiles[GUID]
-end
-
-function Roster:Profiles()
-    return keys(self.persistent.profiles)
+    return self.standings[GUID]
 end
 
 function Roster:UID()
-    return self.persistent.uid
+    return self.uid
 end
 
-function Roster:Description(description)
-    if type(description) == "string" then
-        self.persistent.description = description
-    end
-    return self.persistent.description
+function Roster:Profiles()
+    return self.profiles
 end
 
 function Roster:Standings()
-    return self.volatile.standings
+    return self.standings
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)
-    self.persistent.defaultSlotValues[itemEquipLoc] = {
+    self.defaultSlotValues[itemEquipLoc] = {
         min = tonumber(minimum) or 0,
         max = tonumber(maximum) or 0
     }
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
-    local s = self.persistent.defaultSlotValues[itemEquipLoc]
+    local s = self.defaultSlotValues[itemEquipLoc]
     return s or {min = 0, max = 0}
 end
 
 function Roster:SetItemValue(itemId, itemName, minimum, maximum)
-    self.persistent.itemValues[itemId] = {
+    self.itemValues[itemId] = {
         name = itemName or "",
         min = tonumber(minimum) or 0,
         max = tonumber(maximum) or 0
@@ -92,7 +77,7 @@ function Roster:SetItemValue(itemId, itemName, minimum, maximum)
 end
 
 function Roster:GetItemValue(itemId)
-    local itemValue = self.persistent.itemValues[itemId]
+    local itemValue = self.itemValues[itemId]
     if itemValue == nil then
         local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
         local minimum, maximum = self:GetDefaultSlotValue(itemEquipLoc)
@@ -102,35 +87,37 @@ function Roster:GetItemValue(itemId)
 end
 
 function Roster:GetConfiguration(option)
-    return self.persistent.configuration:Get(option)
+    return self.configuration:Get(option)
 end
 
 function Roster:SetConfiguration(option, value)
-    self.persistent.configuration:Set(option, value)
+    self.configuration:Set(option, value)
 end
 
 function Roster:WipeStandings()
-    for GUID,_ in pairs(self.volatile.standings) do
-        self.volatile.standings[GUID] = 0
+    for GUID,_ in pairs(self.standings) do
+        self.standings[GUID] = 0
     end
 end
 
 -- Copies. Hope I didn't fk it up
 
 function Roster:CopyItemValues(s)
-    self.persistent.itemValues = DeepCopy(s.persistent.itemValues)
+    self.itemValues = DeepCopy(s.itemValues)
 end
 
 function Roster:CopyDefaultSlotValues(s)
-    self.persistent.defaultSlotValues = DeepCopy(s.persistent.defaultSlotValues)
+    self.defaultSlotValues = DeepCopy(s.defaultSlotValues)
 end
 
 function Roster:CopyConfiguration(s)
-    self.persistent.configuration = RosterConfiguration:New(DeepCopy(s.persistent.configuration))
+    self.configuration = RosterConfiguration:New(DeepCopy(s.configuration))
 end
 
 function Roster:CopyProfiles(s)
-    self.persistent.profiles = ShallowCopy(s.persistent.profiles)
+    self.standings = ShallowCopy(s.standings)
+    self:WipeStandings()
+    self.profiles = keys(self.standings)
 end
 
 -- Configuration

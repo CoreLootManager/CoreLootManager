@@ -46,21 +46,9 @@ function RosterManagerOptions:Initialize()
         name_set = (function(old, new)
             RosterManager:RenameRoster(old, new)
             -- TODO: set to the newly renamed instead of first one. Doable?
-            -- self:UpdateOptions()
-        end),
-        description_get = (function(name)
-            local roster = RosterManager:GetRosterByName(name)
-            if roster == nil then return nil end
-            return roster:Description()
-        end),
-        description_set = (function(name, value)
-            local roster = RosterManager:GetRosterByName(name)
-            if roster == nil then return nil end
-            return roster:Description(value)
         end),
         remove_execute = (function(name)
             RosterManager:DeleteRosterByName(name)
-            -- self:UpdateOptions()
         end),
         fill_profiles_execute = (function(name)
             local profiles = ProfileManager:GetProfiles()
@@ -145,7 +133,6 @@ function RosterManagerOptions:Initialize()
         if lag ~= 0 or uncommited ~= 0 then return end
         self:UpdateOptions()
         ConfigManager:UpdateOptions(CONSTANTS.CONFIGS.GROUP.ROSTER)
-        print("D O N E")
     end)
 end
 
@@ -185,7 +172,6 @@ end
 function RosterManagerOptions:GenerateRosterOptions(name)
 
     local default_slot_values_args = (function()
-        --local slots = {"Head", "Neck", "Shoulders", "Back", "Chest", "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger", "Trinket"}
         local values = {
             ["Minimum"] = "Minimum or actual value for Static-Priced auction. Set to 0 to ignore.",
             ["Maximum"] = "Maximum value for Ascending auction. Set to 0 to ignore."
@@ -256,14 +242,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "input",
                 width = "full",
                 order = 1
-            },
-            description = {
-                name = "Description",
-                desc = "Roster description.",
-                type = "input",
-                width = "full",
-                multiline = 4,
-                order = 2
             },
             copy = {
                 name = "Copy settings",
@@ -389,11 +367,11 @@ function RosterManagerOptions:UpdateOptions()
             func = function() RosterManager:NewRoster() end,
             order = 1
         },
-        sync = { -- Global options -> Send New Rosters
-            name = "Synchronise",
-            desc = "Sends and overwrites roster configuration",
+        export = { -- Global options -> Export rosters
+            name = "Export",
+            desc = "Export rosters to SavedVariable for inspection",
             type = "execute",
-            func = function() end,
+            func = function() RosterManager:ExportRosters() end,
             confirm = true,
             order = 2
         }

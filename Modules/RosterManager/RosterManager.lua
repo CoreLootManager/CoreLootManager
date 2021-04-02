@@ -28,22 +28,13 @@ end
 -- Controller Roster Manger
 function RosterManager:Initialize()
     LOG:Info("RosterManager:Initialize()")
-    -- Initialize DB
-    self.db = MODULES.Database:Roster()
-    if type(self.db.metadata) ~= "table" then
-        self.db.metadata = {}
-    end
 
-    if type(self.db.rosters) ~= "table" then
-        self.db.rosters = {}
-    end
     -- Initialize Cache
     self.cache = {
         rostersUidMap = {},
         rosters = {}
     }
 
-    -- self:LoadCache()
     -- Register mutators
     LedgerManager:RegisterEntryType(
         LEDGER_ROSTER.Create,
@@ -51,8 +42,7 @@ function RosterManager:Initialize()
             local uid = entry:rosterUid()
             local name = entry:name()
 
-            self.db.rosters[name] = {} -- temporary while still using storage
-            local roster = Roster:New(self.db.rosters[name], uid)
+            local roster = Roster:New(uid)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
         end),
@@ -69,7 +59,6 @@ function RosterManager:Initialize()
             local name = self.cache.rostersUidMap[uid]
             self.cache.rostersUidMap[uid] = nil
             self.cache.rosters[name] = nil
-            self.db.rosters[name] = nil
         end),
         ACL_LEVEL.OFFICER)
 
@@ -84,7 +73,6 @@ function RosterManager:Initialize()
                 local n = self:GetRosterByName(name)
                 if n ~= nil then return end
 
-                self.db.rosters[name] = {} -- temporary while still using storage
                 local oldname = self.cache.rostersUidMap[uid]
                 -- Attach roster to new name
                 self.cache.rosters[name] = o
@@ -92,9 +80,6 @@ function RosterManager:Initialize()
 
                 -- Remove old assignments
                 self.cache.rosters[oldname] = nil
-                self.db.rosters[oldname] = nil
-
-                -- TODO while using storage after rename the roster might not work properly
             end),
             ACL_LEVEL.OFFICER)
 
@@ -199,7 +184,7 @@ function RosterManager:NewRoster()
     LOG:Info("RosterManager:NewRoster()")
 
     local name = GenerateName()
-    while self.db.rosters[name] ~= nil do
+    while self.cache.rosters[name] ~= nil do
         name = GenerateName()
     end
 
@@ -265,6 +250,11 @@ function RosterManager:WipeStandings()
     for _, roster in pairs(self.cache.rosters) do
         roster:WipeStandings()
     end
+end
+
+function RosterManager:ExportRosters()
+    local db = CLM.MODULES.Database:Personal()
+    db['rosters'] = self:GetRosters()
 end
 
 local debugCBHandlerSet = false
