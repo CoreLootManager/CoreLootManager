@@ -3,96 +3,81 @@ local _, CLM = ...
 local UTILS =  CLM.UTILS
 local CONSTANTS =  CLM.CONSTANTS
 
+local DeepCopy = UTILS.DeepCopy
+local ShallowCopy = UTILS.ShallowCopy
+
+-- local whoami = UTILS.WhoAmI
+local keys = UTILS.keys
+
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
-function Roster:New(storage, uid)
-    local o = UTILS.NewStorageQualifiedObject(storage, self)
+function Roster:New(uid)
+    local o = {}
 
-    o.persistent.uid  = tonumber(uid)
-    o.persistent.description = ""
-    o.persistent.lastUpdate = { time = 0, source = "" }
-    o.persistent.configuration  = RosterConfiguration:New()
-    o.persistent.profiles = {}
-    o.persistent.defaultSlotValues = {}
-    o.persistent.itemValues = {}
+    setmetatable(o, self)
+    self.__index = self
 
-    o.volatile = { standings = {} }
+    o.uid  = tonumber(uid)
+    o.lastUpdate = { time = 0, source = "" }
+    o.configuration  = RosterConfiguration:New()
+    o.defaultSlotValues = {}
+    o.itemValues = {}
+
+    o.profiles = {}
+    o.standings = {}
 
     return o
-end
-
-function Roster:Restore(storage)
-    local o = UTILS.NewStorageQualifiedObject(storage, self)
-    o.persistent.configuration = RosterConfiguration:New(o.persistent.configuration)
-    o.volatile = { standings = {} }
-    for GUID,_ in pairs(o.persistent.profiles) do
-        o.volatile.standings[GUID] = 0
-    end
-    return o
-end
-
-function Roster:UpdateDbChangeMetadata()
-    self.persistent.lastUpdate.time   = time()
-    self.persistent.lastUpdate.source = UTILS.GetUnitName("player")
 end
 
 function Roster:AddProfileByGUID(GUID)
-    self.persistent.profiles[GUID] = true
-    self.volatile.standings[GUID] = 0
-    self:UpdateDbChangeMetadata()
+    self.standings[GUID] = 0
+    self.profiles = keys(self.standings)
 end
 
 function Roster:RemoveProfileByGUID(GUID)
-    self.persistent.profiles[GUID] = nil
-    self.volatile.standings[GUID] = nil
-    self:UpdateDbChangeMetadata()
+    self.standings[GUID] = nil
+    self.profiles = keys(self.standings)
 end
 
 function Roster:IsProfileInRoster(GUID)
-    return self.persistent.profiles[GUID]
+    return self.standings[GUID]
 end
 
 function Roster:UID()
-    return self.persistent.uid
+    return self.uid
 end
 
-function Roster:Description(description)
-    if type(description) == "string" then
-        self.persistent.description = description
-        self:UpdateDbChangeMetadata()
-    end
-    return self.persistent.description
+function Roster:Profiles()
+    return self.profiles
 end
 
 function Roster:Standings()
-    return self.volatile.standings
+    return self.standings
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)
-    self.persistent.defaultSlotValues[itemEquipLoc] = {
+    self.defaultSlotValues[itemEquipLoc] = {
         min = tonumber(minimum) or 0,
         max = tonumber(maximum) or 0
     }
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
-    local s = self.persistent.defaultSlotValues[itemEquipLoc]
+    local s = self.defaultSlotValues[itemEquipLoc]
     return s or {min = 0, max = 0}
 end
 
 function Roster:SetItemValue(itemId, itemName, minimum, maximum)
-    self.persistent.itemValues[itemId] = {
+    self.itemValues[itemId] = {
         name = itemName or "",
         min = tonumber(minimum) or 0,
         max = tonumber(maximum) or 0
     }
-    self:UpdateDbChangeMetadata()
 end
 
 function Roster:GetItemValue(itemId)
-    local itemValue = self.persistent.itemValues[itemId]
+    local itemValue = self.itemValues[itemId]
     if itemValue == nil then
         local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
         local minimum, maximum = self:GetDefaultSlotValue(itemEquipLoc)
@@ -102,40 +87,37 @@ function Roster:GetItemValue(itemId)
 end
 
 function Roster:GetConfiguration(option)
-    return self.persistent.configuration:Get(option)
+    return self.configuration:Get(option)
 end
 
 function Roster:SetConfiguration(option, value)
-    self.persistent.configuration:Set(option, value)
-    self:UpdateDbChangeMetadata()
+    self.configuration:Set(option, value)
 end
 
 function Roster:WipeStandings()
-    for GUID,_ in pairs(self.volatile.standings) do
-        self.volatile.standings[GUID] = 0
+    for GUID,_ in pairs(self.standings) do
+        self.standings[GUID] = 0
     end
 end
 
 -- Copies. Hope I didn't fk it up
 
 function Roster:CopyItemValues(s)
-    self.persistent.itemValues = UTILS.DeepCopy(s.persistent.itemValues)
-    self:UpdateDbChangeMetadata()
+    self.itemValues = DeepCopy(s.itemValues)
 end
 
 function Roster:CopyDefaultSlotValues(s)
-    self.persistent.defaultSlotValues = UTILS.DeepCopy(s.persistent.defaultSlotValues)
-    self:UpdateDbChangeMetadata()
+    self.defaultSlotValues = DeepCopy(s.defaultSlotValues)
 end
 
 function Roster:CopyConfiguration(s)
-    self.persistent.configuration = RosterConfiguration:New(UTILS.DeepCopy(s.persistent.configuration))
-    self:UpdateDbChangeMetadata()
+    self.configuration = RosterConfiguration:New(DeepCopy(s.configuration))
 end
 
 function Roster:CopyProfiles(s)
-    self.persistent.profiles = UTILS.ShallowCopy(s.persistent.profiles)
-    self:UpdateDbChangeMetadata()
+    self.standings = ShallowCopy(s.standings)
+    self:WipeStandings()
+    self.profiles = keys(self.standings)
 end
 
 -- Configuration
@@ -163,6 +145,18 @@ function RosterConfiguration:New(i)
     o.simultaneousAuctions = false
     -- Default Item Values
     return o
+end
+
+function RosterConfiguration:fields(version)
+    return {
+        "pointType",
+        "auctionType",
+        "itemValueMode",
+        "zeroSumBank",
+        "allowNegativeStandings",
+        "allowNegativeBidders",
+        "simultaneousAuctions"
+    }
 end
 
 function RosterConfiguration:Get(option)
@@ -201,6 +195,7 @@ function RosterConfiguration._validate_allowNegativeBidders(value) return IsBool
 function RosterConfiguration._validate_simultaneousAuctions(value) return IsBoolean(value) end
 
 CLM.MODELS.Roster = Roster
+CLM.MODELS.RosterConfiguration = RosterConfiguration
 
 -- Constants
 CONSTANTS.POINT_TYPES = UTILS.Set({

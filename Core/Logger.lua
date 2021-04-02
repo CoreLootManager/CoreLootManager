@@ -26,7 +26,7 @@ function LogEntry:new(severity, message)
 
 	o.s = severity or SEVERITY.INFO
     o.m = message or ""
-    o.t = time()
+    o.t = GetServerTime()
 
     return o
  end

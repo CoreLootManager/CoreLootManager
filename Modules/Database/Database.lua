@@ -24,9 +24,6 @@ function DB:Initialize()
     if type(CLM_DB[self.server_faction_guild]['guild']) ~= "table" then
         CLM_DB[self.server_faction_guild]['guild'] = {}
     end
-    if type(CLM_DB[self.server_faction_guild]['roster']) ~= "table" then
-        CLM_DB[self.server_faction_guild]['roster'] = {}
-    end
     if type(CLM_DB[self.server_faction_guild]['profiles']) ~= "table" then
         CLM_DB[self.server_faction_guild]['profiles'] = {}
     end
@@ -41,10 +38,6 @@ end
 
 function DB:Guild()
     return CLM_DB[self.server_faction_guild]['guild']
-end
-
-function DB:Roster()
-    return CLM_DB[self.server_faction_guild]['roster']
 end
 
 function DB:Profiles()

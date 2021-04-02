@@ -3,46 +3,23 @@ local _, CLM = ...
 local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
-local typeof = UTILS.typeof
-local getIntegerGuid = UTILS.getIntegerGuid
+local merge = UTILS.merge
+-- local typeof = UTILS.typeof
+-- local getIntegerGuid = UTILS.getIntegerGuid
+-- local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
+local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 -- Point DKP X
-local Modify = LogEntry:extend("PDM")
-local Set = LogEntry:extend("PDS")
-local Decay = LogEntry:extend("PDD")
-
-local function GetGUIDFromEntry(e)
-    if typeof(e, MODELS.Profile) then
-        return getIntegerGuid(e:GUID())
-    elseif typeof(e) == "number" then
-        return e
-    elseif typeof(e) == "string" then
-        return getIntegerGuid(e)
-    else
-        return nil
-    end
-end
-
-local function CreateGUIDList(playerList)
-    local playerGUIDList = {}
-    local GUID
-    -- We expect list of either: GUID in string/integer form or profile
-    -- List is expected always
-    for _, p in ipairs(playerList) do
-        GUID = GetGUIDFromEntry(p)
-        if GUID ~= nil then
-            table.insert(playerGUIDList, GUID)
-        end
-    end
-    return playerGUIDList
-end
+local Modify = LogEntry:extend("DM")
+local Set    = LogEntry:extend("DS")
+local Decay  = LogEntry:extend("DD")
 
 function Modify:new(rosterUid, playerList, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.tar = CreateGUIDList(playerList)
+    o.p = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0
     return o
 end
@@ -52,17 +29,22 @@ function Modify:rosterUid()
 end
 
 function Modify:targets()
-    return self.tar
+    return self.p
 end
 
 function Modify:value()
     return self.v
 end
 
+local modifyFields = merge(LogEntry:fields(), {"r", "p", "v"})
+function Modify:fields()
+    return modifyFields
+end
+
 function Set:new(rosterUid, playerList, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.tar = CreateGUIDList(playerList)
+    o.p = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0
     return o
 end
@@ -72,17 +54,22 @@ function Set:rosterUid()
 end
 
 function Set:targets()
-    return self.tar
+    return self.p
 end
 
 function Set:value()
     return self.v
 end
 
+local setFields = merge(LogEntry:fields(), {"r", "p", "v"})
+function Set:fields()
+    return setFields
+end
+
 function Decay:new(rosterUid, playerList, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.tar = CreateGUIDList(playerList)
+    o.p = CreateGUIDList(playerList)
     value = tonumber(value) or 0
     if value > 100 then value = 100 end
     if value < 0 then value = 0 end
@@ -95,14 +82,19 @@ function Decay:rosterUid()
 end
 
 function Decay:targets()
-    return self.tar
+    return self.p
 end
 
 function Decay:value()
     return self.v
 end
 
-MODELS.DKPLedgerEntries = {
+local decayFields = merge(LogEntry:fields(), {"r", "p", "v"})
+function Decay:fields()
+    return decayFields
+end
+
+MODELS.LEDGER.DKP = {
     Modify = Modify,
     Set = Set,
     Decay = Decay

@@ -3,8 +3,8 @@ local LOG = CLM.LOG
 CLM.UTILS = {}
 
 local UTILS = CLM.UTILS
+local Profile = CLM.MODELS.Profile
 
-local getGuidFromInteger = LibStub("EventSourcing/Util").getGuidFromInteger
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
 local classColors = {
@@ -142,12 +142,14 @@ function UTILS.GetUnitName(unit)
 end
 
 function UTILS.typeof(object, objectType)
-    return getmetatable(object) == objectType
+    return (type(object) == "table") and (getmetatable(object) == objectType)
 end
+local typeof = UTILS.typeof
 
 function UTILS.getIntegerGuid(GUID)
     return tonumber(string.sub(GUID, -8), 16)
 end
+local getIntegerGuid = UTILS.getIntegerGuid
 
 local GUIDPrefix = string.sub(UnitGUID("player"), 1, -9)
 function UTILS.getGuidFromInteger(int)
@@ -156,4 +158,74 @@ end
 
 function UTILS.DumpTable(t)
     return DumpTable(t)
+end
+
+local playerName = UTILS.GetUnitName("player")
+function UTILS.WhoAmI()
+    return playerName
+end
+
+function UTILS.GetGUIDFromEntry(e)
+    if typeof(e, Profile) then
+        return getIntegerGuid(e:GUID())
+    elseif type(e) == "number" then
+        return e
+    elseif type(e) == "string" then
+        return getIntegerGuid(e)
+    else
+        return nil
+    end
+end
+
+function UTILS.CreateGUIDList(playerList)
+    local playerGUIDList = {}
+    local GUID
+    -- We expect list of either: GUID in string/integer form or profile
+    -- List is expected always
+    for _, p in ipairs(playerList) do
+        GUID = UTILS.GetGUIDFromEntry(p)
+        if GUID ~= nil then
+            table.insert(playerGUIDList, GUID)
+        end
+    end
+    return playerGUIDList
+end
+
+
+function UTILS.inflate(object, data)
+    for i, key in ipairs(object:fields(data.v)) do
+        object[key] = data[i]
+    end
+end
+
+function UTILS.deflate(object, version)
+    local result = {}
+    for _, key in ipairs(object:fields(version)) do
+        table.insert(result, object[key])
+    end
+    result.v = version
+    return result
+end
+
+function UTILS.keys(object)
+    local keyList = {}
+    local n = 0
+
+    for k,_ in pairs(object) do
+      n = n + 1
+      keyList[n] = k
+    end
+    return keyList
+end
+
+function UTILS.method2function(handler, method)
+    return (function(...) handler[method](handler, ...) end)
+end
+
+function UTILS.merge(t1, t2, t)
+    t = t or {}
+    local n = 0
+    for _,v in ipairs(t1) do n = n+1; t[n] = v end
+    for _,v in ipairs(t2) do n = n+1; t[n] = v end
+    return t
 end

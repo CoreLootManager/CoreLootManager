@@ -75,7 +75,12 @@ LedgerFactory.createLedger = function(table, send, registerReceiveHandler, autho
             if listSync:transmitViaGuild(entry) then
                 -- only commit locally if we are authorized to send
                 sortedList:uniqueInsert(entry)
+            else
+                error("Attempted to submit entries for which you are not authorized")
             end
+        end,
+        catchup = function(entry)
+            stateManager:catchup()
         end,
         reset = function()
             stateManager:reset()
@@ -88,7 +93,7 @@ LedgerFactory.createLedger = function(table, send, registerReceiveHandler, autho
             --
             stateManager:addStateChangedListener(function(_)
                 local lag, uncommitted = stateManager:lag()
-                return callback(lag, uncommitted)
+                return callback(lag, uncommitted, stateManager:stateHash())
             end)
         end,
         enableSending = function ()

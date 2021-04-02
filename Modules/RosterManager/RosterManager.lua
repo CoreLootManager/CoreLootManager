@@ -4,75 +4,168 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local MODULES = CLM.MODULES
+local ACL_LEVEL = CONSTANTS.ACL.LEVEL
+local LEDGER_ROSTER = CLM.MODELS.LEDGER.ROSTER
 local UTILS = CLM.UTILS
 
+local LedgerManager = MODULES.LedgerManager
+local ProfileManager = MODULES.ProfileManager
+
+-- local whoami = UTILS.WhoAmI
+local getGuidFromInteger = UTILS.getGuidFromInteger
+
 local Roster = CLM.MODELS.Roster
+-- local RosterLedger = CLM.MODELS.LEDGER.Roster
 
 local RosterManager = { } -- Roster Manager Module
 
 local function GenerateName()
-    local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(0, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX - 1)]
-    local suffix = CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX[math.random(0, #CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX - 1)]
+    local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX)]
+    local suffix = CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX)]
     return prefix:sub(1,1):upper()..prefix:sub(2).. " " .. suffix:sub(1,1):upper()..suffix:sub(2)
 end
 
 -- Controller Roster Manger
 function RosterManager:Initialize()
     LOG:Info("RosterManager:Initialize()")
-    -- Initialize DB
-    self.db = MODULES.Database:Roster()
-    if type(self.db.metadata) ~= "table" then
-        self.db.metadata = {
-            next_roster_uid = 0,
-            lastUpdate = {
-                time = 0,
-                source = ""
-            }
-        }
-    end
 
-    if type(self.db.rosters) ~= "table" then
-        self.db.rosters = {}
-    end
     -- Initialize Cache
     self.cache = {
         rostersUidMap = {},
         rosters = {}
     }
 
-    self:LoadCache()
+    -- Register mutators
+    LedgerManager:RegisterEntryType(
+        LEDGER_ROSTER.Create,
+        (function(entry)
+            local uid = entry:rosterUid()
+            local name = entry:name()
+
+            local roster = Roster:New(uid)
+            self.cache.rosters[name] = roster
+            self.cache.rostersUidMap[uid] = name
+        end),
+        ACL_LEVEL.OFFICER)
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_ROSTER.Delete,
+        (function(entry)
+            local uid = entry:rosterUid()
+
+            local roster = self:GetRosterByUid(uid)
+            if roster == nil then return end
+
+            local name = self.cache.rostersUidMap[uid]
+            self.cache.rostersUidMap[uid] = nil
+            self.cache.rosters[name] = nil
+        end),
+        ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.Rename,
+            (function(entry)
+                local uid = entry:rosterUid()
+                local name = entry:name()
+
+                local o = self:GetRosterByUid(uid)
+                if o == nil then return end
+                local n = self:GetRosterByName(name)
+                if n ~= nil then return end
+
+                local oldname = self.cache.rostersUidMap[uid]
+                -- Attach roster to new name
+                self.cache.rosters[name] = o
+                self.cache.rostersUidMap[uid] = name
+
+                -- Remove old assignments
+                self.cache.rosters[oldname] = nil
+            end),
+            ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.CopyData,
+            (function(entry)
+                local sourceUid = entry:sourceRosterUid()
+                local targetUid = entry:targetRosterUid()
+
+                local s = self:GetRosterByUid(sourceUid)
+                if s == nil then return end
+                local t = self:GetRosterByUid(targetUid)
+                if t == nil then return end
+
+                print(self.cache.rostersUidMap[sourceUid] .. " -> " .. self.cache.rostersUidMap[targetUid])
+
+                if entry:config() then
+                    print("CopyConfiguration")
+                    t:CopyConfiguration(s)
+                end
+
+                if entry:defaults() then
+                    print("CopyDefaultSlotValues")
+                    t:CopyDefaultSlotValues(s)
+                end
+
+                if entry:overrides() then
+                    print("CopyItemValues")
+                    t:CopyItemValues(s)
+                end
+
+                if entry:profiles() then
+                    print("CopyProfiles")
+                    t:CopyProfiles(s)
+                end
+            end),
+            ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.UpdateConfigSingle,
+            (function(entry)
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if roster == nil then return end
+
+                roster:SetConfiguration(entry:config(), entry:value())
+            end),
+            ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.UpdateDefaultSingle,
+            (function(entry)
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if roster == nil then return end
+
+                roster:SetDefaultSlotValue(entry:config(), entry:min(), entry:max())
+            end),
+            ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+            LEDGER_ROSTER.UpdateProfiles,
+            (function(entry)
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if roster == nil then return end
+
+                local profiles = entry:profiles()
+                if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then return end
+
+                if entry:remove() then
+                    for _, iGUID in ipairs(profiles) do
+                        roster:RemoveProfileByGUID(getGuidFromInteger(iGUID))
+                    end
+                else
+                    for _, iGUID in ipairs(profiles) do
+                        roster:AddProfileByGUID(getGuidFromInteger(iGUID))
+                    end
+                end
+            end),
+            ACL_LEVEL.OFFICER)
+
     MODULES.ConfigManager:RegisterUniversalExecutor("rm", "RosterManager", self)
-end
-
-function RosterManager:UpdateDbChangeMetadata()
-    self.db.metadata.lastUpdate.time   = time()
-    self.db.metadata.lastUpdate.source = UTILS.GetUnitName("player")
-end
-
-function RosterManager:LoadCache()
-    LOG:Info("RosterManager:LoadCache()")
-    local max_uid = 0
-    for name, _ in pairs(self.db.rosters) do
-        local roster = Roster:Restore(self.db.rosters[name])
-        local uid = roster:UID()
-        -- Duplication issue check
-        if self.cache.rosters[uid] ~= nil then
-            LOG:Fatal("Duplicate roster uid: " .. uid .. ".  Please report this issue to authors and attach SavedVariable file.")
-        end
-
-        -- Restore Roster
-        self.cache.rosters[name] = roster
-        self.cache.rostersUidMap[uid] = name
-
-        -- Contol uid
-        if uid > max_uid then
-            max_uid = uid
-        end
-    end
-    -- Update uid in case it is needed
-    if max_uid >= self.db.metadata.next_roster_uid then
-        self.db.metadata.next_roster_uid = max_uid + 1
-    end
 end
 
 function RosterManager:GetRosters()
@@ -91,27 +184,18 @@ function RosterManager:NewRoster()
     LOG:Info("RosterManager:NewRoster()")
 
     local name = GenerateName()
-    while self.db.rosters[name] ~= nil do
+    while self.cache.rosters[name] ~= nil do
         name = GenerateName()
     end
 
-    self.db.rosters[name] = {}
-    local roster = Roster:New(self.db.rosters[name], self.db.metadata.next_roster_uid)
-    self.cache.rosters[name] = roster
-    self.cache.rostersUidMap[self.db.metadata.next_roster_uid] = name
-
-    self.db.metadata.next_roster_uid = self.db.metadata.next_roster_uid + 1
-    self:UpdateDbChangeMetadata()
+    LedgerManager:Submit(LEDGER_ROSTER.Create:new(GetServerTime(), name), true)
 end
 
 function RosterManager:DeleteRosterByName(name)
     LOG:Info("RosterManager:DeleteRosterByName()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return end
-    self.cache.rostersUidMap[roster:UID()] = nil
-    self.cache.rosters[name] = nil
-    self.db.rosters[name] = nil
-    self:UpdateDbChangeMetadata()
+    LedgerManager:Submit(LEDGER_ROSTER.Delete:new(roster:UID()), true)
 end
 
 function RosterManager:RenameRoster(old, new)
@@ -121,58 +205,193 @@ function RosterManager:RenameRoster(old, new)
     local n = RosterManager:GetRosterByName(new)
     if n ~= nil then return end
 
-    self.db.rosters[new] = self.db.rosters[old]
-    self.cache.rosters[new] = self.cache.rosters[old]
-    self.cache.rostersUidMap[self.cache.rosters[new]:UID()] = new
-
-    self:DeleteRosterByName(old)
-    self:UpdateDbChangeMetadata()
+    LedgerManager:Submit(LEDGER_ROSTER.Rename:new(o:UID(), new), true)
 end
 
-function RosterManager:CopyProfiles(source, target)
-    LOG:Info("RosterManager:CopyProfiles()")
+function RosterManager:Copy(source, target, config, defaults, overrides, profiles)
+    LOG:Info("RosterManager:Copy()")
     local s = RosterManager:GetRosterByName(source)
     if s == nil then return end
     local t = RosterManager:GetRosterByName(target)
     if t == nil then return end
 
-    t:CopyProfiles(s)
+    LedgerManager:Submit(LEDGER_ROSTER.CopyData:new(s:UID(), t:UID(), config, defaults, overrides, profiles), true)
 end
 
-function RosterManager:CopyConfiguration(source, target)
-    LOG:Info("RosterManager:CopyConfiguration()")
-    local s = RosterManager:GetRosterByName(source)
-    if s == nil then return end
-    local t = RosterManager:GetRosterByName(target)
-    if t == nil then return end
+function RosterManager:SetRosterConfiguration(name, option, value)
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
 
-    t:CopyConfiguration(s)
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
 end
 
-function RosterManager:CopyDefaultSlotValues(source, target)
-    LOG:Info("RosterManager:CopyDefaultSlotValues()")
-    local s = RosterManager:GetRosterByName(source)
-    if s == nil then return end
-    local t = RosterManager:GetRosterByName(target)
-    if t == nil then return end
+function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    local v = roster:GetDefaultSlotValue(slot)
+    if isMin then v.min = value else v.max = value end
 
-    t:CopyDefaultSlotValues(s)
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, v.min, v.max), true)
 end
 
-function RosterManager:CopyItemValues(source, target)
-    LOG:Info("RosterManager:CopyItemValues()")
-    local s = RosterManager:GetRosterByName(source)
-    if s == nil then return end
-    local t = RosterManager:GetRosterByName(target)
-    if t == nil then return end
+function RosterManager:AddProfilesToRoster(name, profiles)
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, false), true)
+end
 
-    t:CopyItemValues(s)
+function RosterManager:RemoveProfilesFromRoster(name, profiles)
+    local roster = RosterManager:GetRosterByName(name)
+    if roster == nil then return nil end
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, true), true)
 end
 
 function RosterManager:WipeStandings()
     for _, roster in pairs(self.cache.rosters) do
         roster:WipeStandings()
     end
+end
+
+function RosterManager:ExportRosters()
+    local db = CLM.MODULES.Database:Personal()
+    db['rosters'] = self:GetRosters()
+end
+
+function RosterManager:Debug(N)
+    N = N or 10
+    local actions = {"create", --[["delete",]] "rename", "copy", "set", "override", "profile"}
+    local rosterNames = {}
+    local genRosterNames = (function()
+        rosterNames = {}
+        local rosters = self:GetRosters()
+        local i = 0
+        for k,_ in pairs(rosters) do
+            i = i+ 1
+            table.insert(rosterNames, k)
+        end
+        print("=== We have " .. i .. " rosters ===")
+    end)
+    genRosterNames()
+    local profiles = ProfileManager:GetProfiles()
+    local actionHandlers = {
+        ["create"] =  (function()
+            self:NewRoster()
+            genRosterNames()
+        end),
+        ["delete"] =  (function()
+            self:DeleteRosterByName(rosterNames[math.random(1, #rosterNames)])
+            genRosterNames()
+        end),
+        ["rename"] =  (function()
+            self:RenameRoster(rosterNames[math.random(1, #rosterNames)], GenerateName() .. tostring(math.random(1,999999999)))
+            genRosterNames()
+        end),
+        ["copy"] =  (function()
+            local config = false
+            if math.random(0, 1) == 1 then
+                config = true
+            end
+            local defaults = false
+            if math.random(0, 1) == 1 then
+                defaults = true
+            end
+            local overrides = false
+            if math.random(0, 1) == 1 then
+                overrides = true
+            end
+            local copyProfiles = false
+            if math.random(0, 1) == 1 then
+                copyProfiles = true
+            end
+            self:Copy(
+                rosterNames[math.random(1, #rosterNames)], rosterNames[math.random(1, #rosterNames)],
+                config, defaults, overrides, copyProfiles
+            )
+        end),
+        ["set"] =  (function()
+            local configList = {
+                -- int
+                "pointType",
+                "auctionType",
+                "itemValueMode",
+                -- bool
+                "zeroSumBank",
+                "allowNegativeStandings",
+                "allowNegativeBidders",
+                "simultaneousAuctions"
+            }
+            local configs = {
+                -- int
+                ["pointType"] = 0, -- 0 1
+                ["auctionType"] = 2, -- 0 1 2
+                ["itemValueMode"] = 0, -- 0 1
+                -- bool
+                ["zeroSumBank"] = 1,
+                ["allowNegativeStandings"] = 1,
+                ["allowNegativeBidders"] = 1,
+                ["simultaneousAuctions"] = 1
+            }
+            local config = configList[math.random(1, #configList)]
+            local value
+            if configs[config] == 0 then
+                value = math.random(0, 1)
+            elseif configs[config] == 1 then
+                if math.random(0,1) == 1 then
+                    value = true
+                else
+                    value = false
+                end
+            elseif configs[config] == 2 then
+                value = math.random(0, 2)
+            else
+                return
+            end
+            self:SetRosterConfiguration(rosterNames[math.random(1, #rosterNames)], config, value)
+        end),
+        ["override"] =  (function()
+            local isMin = false
+            if math.random(0, 1) == 1 then
+                isMin = true
+            end
+            self:SetRosterDefaultSlotValue(rosterNames[math.random(1, #rosterNames)], CONSTANTS.INVENTORY_TYPES[math.random(1, #CONSTANTS.INVENTORY_TYPES)], 1000000*math.random(), isMin)
+        end),
+        ["profile"] = (function()
+            local profileList = {}
+            for GUID, _ in pairs(profiles) do
+                if math.random(0,1) == 1 then
+                    table.insert(profileList, GUID)
+                end
+            end
+            if math.random(0,1) == 1 then
+                self:AddProfilesToRoster(rosterNames[math.random(1, #rosterNames)], profileList)
+            else
+                self:RemoveProfilesFromRoster(rosterNames[math.random(1, #rosterNames)], profileList)
+            end
+        end),
+    }
+
+    print("Generating total of  " .. N .. " roster operation entries")
+
+    local actionCount = {}
+    -- pregenerate 1 roster
+    if #rosterNames == 0 then
+        actionHandlers["create"]()
+    end
+
+    for _=1,N do
+        local action = actions[math.random(1, #actions)]
+        if actionCount[action] == nil then
+            actionCount[action] = 1
+        else
+            actionCount[action] = actionCount[action] +  1
+        end
+        actionHandlers[action]()
+    end
+
+    for action, count in pairs(actionCount) do
+        print(tostring(action) .. ": " .. tostring(count))
+    end
+
 end
 
 -- -- Publish API

@@ -41,6 +41,7 @@ Core\Utils.lua
 Modules\ProfileManager\Profile.lua
 Modules\RosterManager\Roster.lua
 Modules\PointManager\DKP\LedgerEntries.lua
+Modules\RosterManager\LedgerEntries.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua
@@ -51,9 +52,7 @@ Modules\LedgerManager\LedgerManager.lua
 Modules\ProfileManager\ProfileManager.lua
 Modules\RosterManager\RosterManager.lua
 Modules\PointManager\PointManager.lua
-
 #--- NOT IMPLEMENTED -----#
-Modules\StateManager\StateManager.lua
 Modules\EventHandler\EventHandler.lua
 Modules\LootManager\LootManager.lua
 #--------#

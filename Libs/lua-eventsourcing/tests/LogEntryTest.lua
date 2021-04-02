@@ -1,4 +1,4 @@
-
+beginTests()
 local LogEntry = LibStub("EventSourcing/LogEntry")
 local Util = LibStub("EventSourcing/Util")
 
@@ -20,4 +20,4 @@ assertSame(100, sortedList:length())
 
 
 
-printResults()
+printResultsAndExit()

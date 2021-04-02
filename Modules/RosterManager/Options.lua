@@ -3,8 +3,11 @@ local _, CLM = ...
 local CONSTANTS = CLM.CONSTANTS
 local OPTIONS = CLM.OPTIONS
 local MODULES = CLM.MODULES
+-- local UTILS = CLM.UTILS
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
+local LedgerManager = MODULES.LedgerManager
+local ConfigManager = MODULES.ConfigManager
 
 local CBTYPE = {
     GETTER   = "get",
@@ -15,17 +18,13 @@ local CBTYPE = {
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)
-    -- print("Get " .. tostring(option))
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     return roster:GetConfiguration(option)
 end
 
 local function SetRosterOption(name, option, value)
-    -- print("Set [" .. tostring(option) .. "]: " .. tostring(value))
-    local roster = RosterManager:GetRosterByName(name)
-    if roster == nil then return nil end
-    roster:SetConfiguration(option, value)
+    RosterManager:SetRosterConfiguration(name, option, value)
 end
 
 local function GetDefaultSlotValue(name, slot, isMin)
@@ -36,11 +35,7 @@ local function GetDefaultSlotValue(name, slot, isMin)
 end
 
 local function SetDefaultSlotValue(name, slot, value, isMin)
-    local roster = RosterManager:GetRosterByName(name)
-    if roster == nil then return nil end
-    local v = roster:GetDefaultSlotValue(slot)
-    if isMin then v.min = value else v.max = value end
-    roster:SetDefaultSlotValue(slot, v.min, v.max)
+    RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
 end
 
 function RosterManagerOptions:Initialize()
@@ -51,36 +46,22 @@ function RosterManagerOptions:Initialize()
         name_set = (function(old, new)
             RosterManager:RenameRoster(old, new)
             -- TODO: set to the newly renamed instead of first one. Doable?
-            self:UpdateOptions()
-        end),
-        description_get = (function(name)
-            local roster = RosterManager:GetRosterByName(name)
-            if roster == nil then return nil end
-            return roster:Description()
-        end),
-        description_set = (function(name, value)
-            local roster = RosterManager:GetRosterByName(name)
-            if roster == nil then return nil end
-            return roster:Description(value)
         end),
         remove_execute = (function(name)
             RosterManager:DeleteRosterByName(name)
-            self:UpdateOptions()
         end),
         fill_profiles_execute = (function(name)
             local profiles = ProfileManager:GetProfiles()
-            local roster = RosterManager:GetRosterByName(name)
-            if roster == nil then return nil end
-            for GUID,_ in pairs(profiles) do
-                roster:AddProfileByGUID(GUID)
+            local profileList = {}
+            for GUID, _ in pairs(profiles) do
+                table.insert(profileList, GUID)
+                print(GUID)
             end
+            RosterManager:AddProfilesToRoster(name, profileList)
         end),
         copy_execute = (function(name)
             if self.copy_source_name == nil then return end
-            --RosterManager:CopyProfiles(self.copy_source_name, name)
-            RosterManager:CopyConfiguration(self.copy_source_name, name)
-            RosterManager:CopyDefaultSlotValues(self.copy_source_name, name)
-            RosterManager:CopyItemValues(self.copy_source_name, name)
+            RosterManager:Copy(self.copy_source_name, name, true, true, true, false)
         end),
         copy_source_get = (function(name)
             return self.copy_source_name
@@ -147,6 +128,12 @@ function RosterManagerOptions:Initialize()
     end
 
     self:UpdateOptions()
+
+    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
+        if lag ~= 0 or uncommited ~= 0 then return end
+        self:UpdateOptions()
+        ConfigManager:UpdateOptions(CONSTANTS.CONFIGS.GROUP.ROSTER)
+    end)
 end
 
 function RosterManagerOptions:_Handle(cbtype, info, ...)
@@ -185,7 +172,6 @@ end
 function RosterManagerOptions:GenerateRosterOptions(name)
 
     local default_slot_values_args = (function()
-        --local slots = {"Head", "Neck", "Shoulders", "Back", "Chest", "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger", "Trinket"}
         local values = {
             ["Minimum"] = "Minimum or actual value for Static-Priced auction. Set to 0 to ignore.",
             ["Maximum"] = "Maximum value for Ascending auction. Set to 0 to ignore."
@@ -257,14 +243,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 width = "full",
                 order = 1
             },
-            description = {
-                name = "Description",
-                desc = "Roster description.",
-                type = "input",
-                width = "full",
-                multiline = 4,
-                order = 2
-            },
             copy = {
                 name = "Copy settings",
                 desc = "Copy settings from selected roster.",
@@ -308,6 +286,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 3,
                 width = "half",
                 disabled = true,
+                confirm = true,
                 values = {
                     [0] = "DKP",
                     [1] = "EPGP"
@@ -385,14 +364,14 @@ function RosterManagerOptions:UpdateOptions()
             name = "Create",
             desc = "Creates new roster with default configuration",
             type = "execute",
-            func = function() RosterManager:NewRoster(); self:UpdateOptions() end,
+            func = function() RosterManager:NewRoster() end,
             order = 1
         },
-        sync = { -- Global options -> Send New Rosters
-            name = "Synchronise",
-            desc = "Sends and overwrites roster configuration",
+        export = { -- Global options -> Export rosters
+            name = "Export",
+            desc = "Export rosters to SavedVariable for inspection",
             type = "execute",
-            func = function() end,
+            func = function() RosterManager:ExportRosters() end,
             confirm = true,
             order = 2
         }
@@ -402,11 +381,6 @@ function RosterManagerOptions:UpdateOptions()
         options[name] = self:GenerateRosterOptions(name)
     end
     MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, options, true)
-end
-
--- Accepts array of ACE options and array of callbacks
-function RosterManagerOptions:RegisterOptions(options, callbacks)
-
 end
 
 OPTIONS.RosterManager = RosterManagerOptions

@@ -5,7 +5,6 @@ local LOG = CLM.LOG
 local Comms = MODULES.Comms
 local CONSTANTS = CLM.CONSTANTS
 local ACL = MODULES.ACL
-local UTILS = CLM.UTILS
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
@@ -31,7 +30,7 @@ function LedgerManager:Initialize()
         (function(data, distribution, target, progressCallback)
             return Comms:Send(prefixData, data, distribution, target, "BULK")
         end), -- sendLargeMessage
-        750, 1000
+        0, 10
     )
 
     self.entryExtensions = {}
@@ -39,6 +38,7 @@ function LedgerManager:Initialize()
 end
 
 function LedgerManager:Enable()
+    self.ledger.getStateManager():setUpdateInterval(100)
     self.ledger.enableSending()
 end
 
@@ -53,7 +53,7 @@ end
 function LedgerManager:RegisterEntryType(class, mutatorFn, authorizationLevel)
     if self.entryExtensions[class] then
         LOG:Fatal("Class " .. tostring(class) .. " already exists in Ledger Entries.")
-        return nil
+        return
     end
     self.entryExtensions[class] = true
 
@@ -69,8 +69,11 @@ function LedgerManager:RegisterOnUpdate(callback)
     self.ledger.addStateChangedListener(callback)
 end
 
-function LedgerManager:Submit(entry)
+function LedgerManager:Submit(entry, catchup)
     self.ledger.submitEntry(entry)
+    if catchup then
+        self.ledger.catchup()
+    end
 end
 
 MODULES.LedgerManager = LedgerManager

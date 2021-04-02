@@ -7,10 +7,18 @@ strmatch = string.match
 
 
 C_Timer = {
+    tickers = {}
 }
 
-local tickers = {}
+local tickers = C_Timer.tickers
 
+function C_Timer.Tick()
+    for _, callbacks in pairs(tickers) do
+        for _, callback in ipairs(callbacks) do
+            callback()
+        end
+    end
+end
 function C_Timer.NewTicker(interval, callback)
     interval = math.max(1, math.floor(interval))
     if tickers[interval] == nil then
@@ -26,15 +34,7 @@ function C_Timer.startEventLoop()
         while os.execute("sleep 1") == 0 do
             io.write('.')
             io.flush()
-            for interval, callbacks in pairs(tickers) do
-                if (i % interval == 0) then
-                    for _, callback in ipairs(callbacks) do
-                        callback()
-                    end
-                end
-
-            end
-            i = i + 1
+            C_Timer.Tick()
         end
         print("\nEvent loop stopped")
     end
@@ -46,7 +46,7 @@ end
 
 function UnitGUID(target)
     if target == "player" then
-        return "00000000-0000-BOB-0000-000000000"
+        return "00000000-0000-BOB-0000-0ABCDABCD"
     else
         error(string.format("Unknown target '%s'", target))
     end
@@ -62,10 +62,6 @@ function GetPlayerInfoByGUID(guid)
 end
 function UnitAffectingCombat(target)
     return false
-end
-
-function GetServerTime()
-    return os.time()
 end
 
 date = os.date

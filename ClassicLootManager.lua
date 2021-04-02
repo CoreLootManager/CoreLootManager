@@ -10,8 +10,8 @@ CLM.VERSION = {
     notes = ""
 }
 
-CLM.MODULES =  {}
-CLM.MODELS =  {}
+CLM.MODULES = {}
+CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {
     RESULTS = { -- Universal return codes
         ERROR = 0,           -- Request failed
@@ -40,7 +40,6 @@ end
 
 function CORE:_InitializeBackend()
     LOG:Info("CORE:_InitializeBackend()")
-    --MODULES.StateManager.Initialize()
     --MODULES.EventHandler.Initialize()
     MODULES.Comms:Initialize()
     MODULES.LedgerManager:Initialize()
@@ -57,6 +56,7 @@ end
 
 function CORE:_InitializeFrontend()
     LOG:Info("CORE:_InitializeFrontend()")
+    -- No GUI / OPTIONS should be dependent on each other ever, only on the managers
     for _, module in pairs(CLM.OPTIONS) do
         module:Initialize()
     end
@@ -69,6 +69,7 @@ function CORE:_Enable()
     LOG:Info("CORE:_Enable()")
     MODULES.Comms:Enable()
     MODULES.LedgerManager:Enable()
+    -- MODULES.DataConsistencyManager:Enable()
 end
 
 function CORE:_BIST()
@@ -96,13 +97,13 @@ function CORE:_SequentialInitialize(stage)
 end
 
 function CORE:_DelayedInitialize()
-    LOG:Info("CORE:_DelayedInitialize()")
     if self._initialize_fired then return end
     self._initialize_fired = true
     C_Timer.After(1, function() CORE:_SequentialInitialize(0) end)
 end
 
 function CORE:_Initialize()
+    LOG:Info("CORE:_Initialize()")
     if not self._initialize_fired then
         CORE:_DelayedInitialize()
         self:UnregisterEvent("GUILD_ROSTER_UPDATE")
@@ -120,9 +121,13 @@ function CORE:OnInitialize()
 
     self._initialize_fired = false
     CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
+    SetGuildRosterShowOffline(true)
     GuildRoster()
     -- We schedule this in case GUILD_ROSTER_UPDATE won't come early enough
-    C_Timer.After(10, function() CORE:_DelayedInitialize() end)
+    C_Timer.After(20, function()
+        LOG:Warning("DelayedInitialization()")
+        CORE:_DelayedInitialize()
+    end)
 end
 
 function CORE:OnEnable()
@@ -135,5 +140,9 @@ end
 
 function CORE:GUILD_ROSTER_UPDATE(...)
     LOG:Info("GUILD_ROSTER_UPDATE")
-    self:_Initialize()
+    local inGuild = IsInGuild()
+    local numTotal = GetNumGuildMembers();
+    if inGuild and numTotal ~= 0 then
+        self:_Initialize()
+    end
 end
