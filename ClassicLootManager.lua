@@ -97,13 +97,13 @@ function CORE:_SequentialInitialize(stage)
 end
 
 function CORE:_DelayedInitialize()
-    LOG:Info("CORE:_DelayedInitialize()")
     if self._initialize_fired then return end
     self._initialize_fired = true
     C_Timer.After(1, function() CORE:_SequentialInitialize(0) end)
 end
 
 function CORE:_Initialize()
+    LOG:Info("CORE:_Initialize()")
     if not self._initialize_fired then
         CORE:_DelayedInitialize()
         self:UnregisterEvent("GUILD_ROSTER_UPDATE")
@@ -121,10 +121,13 @@ function CORE:OnInitialize()
 
     self._initialize_fired = false
     CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
+    SetGuildRosterShowOffline(true)
     GuildRoster()
     -- We schedule this in case GUILD_ROSTER_UPDATE won't come early enough
-    -- Never seen it happen but you never know ...
-    C_Timer.After(10, function() CORE:_DelayedInitialize() end)
+    C_Timer.After(20, function()
+        LOG:Warning("DelayedInitialization()")
+        CORE:_DelayedInitialize()
+    end)
 end
 
 function CORE:OnEnable()
@@ -137,5 +140,9 @@ end
 
 function CORE:GUILD_ROSTER_UPDATE(...)
     LOG:Info("GUILD_ROSTER_UPDATE")
-    self:_Initialize()
+    local inGuild = IsInGuild()
+    local numTotal = GetNumGuildMembers();
+    if inGuild and numTotal ~= 0 then
+        self:_Initialize()
+    end
 end

@@ -388,6 +388,7 @@ function RosterManager:Debug(N)
     -- pregenerate 1 roster
     if #rosterNames == 0 then
         actionHandlers["create"]()
+    end
 
     for i=1,N do
         local action = actions[math.random(1, #actions)]

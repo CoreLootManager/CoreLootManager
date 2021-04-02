@@ -5,7 +5,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 
 local whoami = UTILS.WhoAmI
-
 local ACL = { }
 
 function ACL:Initialize()

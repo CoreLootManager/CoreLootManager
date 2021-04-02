@@ -70,7 +70,6 @@ function LedgerManager:RegisterOnUpdate(callback)
 end
 
 function LedgerManager:Submit(entry, catchup)
-    print("-- SUBMIT ---")
     self.ledger.submitEntry(entry)
     if catchup then
         self.ledger.catchup()
