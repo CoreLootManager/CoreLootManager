@@ -77,6 +77,9 @@ LedgerFactory.createLedger = function(table, send, registerReceiveHandler, autho
                 sortedList:uniqueInsert(entry)
             end
         end,
+        catchup = function(entry)
+            stateManager:catchup()
+        end,
         reset = function()
             stateManager:reset()
         end,
@@ -88,7 +91,7 @@ LedgerFactory.createLedger = function(table, send, registerReceiveHandler, autho
             --
             stateManager:addStateChangedListener(function(_)
                 local lag, uncommitted = stateManager:lag()
-                return callback(lag, uncommitted)
+                return callback(lag, uncommitted, stateManager:stateHash())
             end)
         end,
         enableSending = function ()

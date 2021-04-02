@@ -15,7 +15,7 @@ jobs:
         with:
           luaVersion: "5.1.5"
       - name: Run tests
-        run: lua -l tests/_bootstrap tests/*.lua
+        run: ls tests/ | grep -v '_' | xargs -I {} lua -l tests/_bootstrap tests/{}
       - name: luacheck
         uses: nebularg/actions-luacheck@v1.1.0
         with:

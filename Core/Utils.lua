@@ -144,6 +144,7 @@ end
 function UTILS.typeof(object, objectType)
     return (type(object) == "table") and (getmetatable(object) == objectType)
 end
+local typeof = UTILS.typeof
 
 function UTILS.getIntegerGuid(GUID)
     return tonumber(string.sub(GUID, -8), 16)
@@ -164,8 +165,8 @@ function UTILS.WhoAmI()
     return playerName
 end
 
- function UTILS.GetGUIDFromEntry(e)
-    if UTILS.typeof(e, Profile) then
+function UTILS.GetGUIDFromEntry(e)
+    if typeof(e, Profile) then
         return getIntegerGuid(e:GUID())
     elseif type(e) == "number" then
         return e

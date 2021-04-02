@@ -28,6 +28,10 @@ end
 
 function LogEntry:extend(identifier, snapshot)
     local o = constructor(self)
+
+    if (identifier == nil or type(identifier) ~= "string" or string.len(identifier) == 0) then
+        error("Identifier must be a non-empty string")
+    end
     o.__index = o
 
     -- static properties (won't appear on instances)
@@ -41,6 +45,9 @@ function LogEntry:new(creator)
     local o = constructor(self)
 
     o.cls = self._cls
+    if (self._cls == nil or type(self._cls) ~= "string" or string.len(self._cls) == 0) then
+        error("Could not determine class")
+    end
 
     o.t = Util.time()
     if o.t == LogEntry._lastTimestamp then

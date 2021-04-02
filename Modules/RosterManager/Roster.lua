@@ -3,6 +3,9 @@ local _, CLM = ...
 local UTILS =  CLM.UTILS
 local CONSTANTS =  CLM.CONSTANTS
 
+local DeepCopy = UTILS.DeepCopy
+local ShallowCopy = UTILS.ShallowCopy
+
 -- local whoami = UTILS.WhoAmI
 local keys = UTILS.keys
 
@@ -115,19 +118,19 @@ end
 -- Copies. Hope I didn't fk it up
 
 function Roster:CopyItemValues(s)
-    self.persistent.itemValues = UTILS.DeepCopy(s.persistent.itemValues)
+    self.persistent.itemValues = DeepCopy(s.persistent.itemValues)
 end
 
 function Roster:CopyDefaultSlotValues(s)
-    self.persistent.defaultSlotValues = UTILS.DeepCopy(s.persistent.defaultSlotValues)
+    self.persistent.defaultSlotValues = DeepCopy(s.persistent.defaultSlotValues)
 end
 
 function Roster:CopyConfiguration(s)
-    self.persistent.configuration = RosterConfiguration:New(UTILS.DeepCopy(s.persistent.configuration))
+    self.persistent.configuration = RosterConfiguration:New(DeepCopy(s.persistent.configuration))
 end
 
 function Roster:CopyProfiles(s)
-    self.persistent.profiles = UTILS.ShallowCopy(s.persistent.profiles)
+    self.persistent.profiles = ShallowCopy(s.persistent.profiles)
 end
 
 -- Configuration

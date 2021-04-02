@@ -69,8 +69,12 @@ function LedgerManager:RegisterOnUpdate(callback)
     self.ledger.addStateChangedListener(callback)
 end
 
-function LedgerManager:Submit(entry)
+function LedgerManager:Submit(entry, catchup)
+    print("-- SUBMIT ---")
     self.ledger.submitEntry(entry)
+    if catchup then
+        self.ledger.catchup()
+    end
 end
 
 MODULES.LedgerManager = LedgerManager

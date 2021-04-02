@@ -32,7 +32,53 @@ local function entryToList(entry)
     return result
 end
 
+local function applyEntry(stateManager, entry, index)
+    if type(stateManager.handlers[entry:class()]) ~= 'function' then
+        error("Callback for class " .. entry:class() .. "is not a function")
+    end
+    local result, hash
 
+    stateManager.handlers[entry:class()](entry)
+    stateManager.lastAppliedIndex = index
+    stateManager.lastAppliedEntry = entry
+
+    result, hash = coroutine.resume(stateManager.checksumCoroutine, LogEntry.time(entry))
+    if not result then
+        error("Error updating state hash: " .. hash)
+    end
+    result, hash = coroutine.resume(stateManager.checksumCoroutine, LogEntry.creator(entry))
+    if not result then
+        error("Error updating state hash: " .. hash)
+    end
+    stateManager.stateCheckSum = hash
+end
+
+
+--[[
+  This function plays new entries, it is called repeatedly on a timer.
+  The goal of each call is to remain under the frame render time
+  Current solution: apply just 1 entry
+]]--
+local function updateState(stateManager)
+    local entries = stateManager.list:entries()
+    local applied = 0
+    if stateManager.lastAppliedIndex > #entries
+            or (stateManager.lastAppliedEntry ~= nil and entries[stateManager.lastAppliedIndex] ~= stateManager.lastAppliedEntry)
+    then
+        print("Detected list change, restarting state calc")
+        stateManager:restart()
+    end
+    while applied < stateManager.batchSize and stateManager.lastAppliedIndex < #entries do
+        local entry = entries[stateManager.lastAppliedIndex + 1]
+        stateManager:castLogEntry(entry)
+        -- This will throw an error if update fails, this is good since we don't want to update our tracking in that case.
+        applyEntry(stateManager, entry, stateManager.lastAppliedIndex + 1)
+        applied = applied + 1
+    end
+    if applied > 0 then
+        stateManager:trigger(EVENT.STATE_CHANGED)
+    end
+end
 -- END PRIVATE
 
 function StateManager:new(list)
@@ -50,10 +96,7 @@ function StateManager:new(list)
     o.lastTick = 0
     o.measuredInterval = 0
 
-    o.lastAppliedIndex = 0
-    o.lastAppliedEntry = nil
-    o.stateCheckSum = 0
-    o.checksumCoroutine = Util.IntegerChecksumCoroutine()
+    o:restart()
     return o
 end
 
@@ -112,29 +155,21 @@ function StateManager:registerHandler(eventType, handler)
     self.metatables[eventType._cls] = eventType
 end
 
---[[
- Recalculate the state from the list, will start from the latest snapshot
- Initial implementation does a linear search in reverse order to find a snapshot
- @return the new state
-]]--
-function StateManager:recalculateState()
-    local start
-    -- find last log entry
-    for i = #self.list:entries(), 1, -1 do
-        local entry = self.list:entries()[i]
-        self:castLogEntry(entry)
-        if entry:snapshot() then
-            start = i
-            break
-        end
+-- Applies all pending entries
+function StateManager:catchup()
+    self:commitUncommittedEntries()
+    local entries = self.list:entries()
+    if self.lastAppliedIndex == #entries then
+        return
     end
 
-    for i = start or 1, #self.list:entries() do
-        local entry = self.list:entries()[i]
-        self.handlers[entry:class()](entry)
-        self.lastAppliedIndex = i
-        self.errorCount = 0
+    for i = self.lastAppliedIndex + 1, #entries do
+        local entry = entries[i]
+        self:castLogEntry(entry)
+        applyEntry(self, entry, self.lastAppliedIndex + 1)
     end
+    self.errorCount = 0
+    self:trigger(EVENT.STATE_CHANGED)
 end
 
 function StateManager:setBatchSize(size)
@@ -148,6 +183,12 @@ function StateManager:getBatchSize()
     return self.batchSize
 end
 
+function StateManager:commitUncommittedEntries()
+    for _, v in ipairs(self.uncommittedEntries) do
+        self.list:uniqueInsert(v)
+    end
+    self.uncommittedEntries = {}
+end
 --[[
   Higher means less noticeable lag
   @param float the interval in milliseconds to use for updating state
@@ -165,18 +206,14 @@ function StateManager:setUpdateInterval(interval)
         self.measuredInterval = t - self.lastTick
         self.lastTick = t
 
-        -- Commit uncommittedEntries to the list
-        for _, v in ipairs(self.uncommittedEntries) do
-            self.list:uniqueInsert(v)
-        end
-        self.uncommittedEntries = {}
+        self:commitUncommittedEntries()
 
         -- Skip state updates if we are in combat
         if (UnitAffectingCombat("player")) then
             return
         end
 
-        local success, message = pcall(self.updateState, self)
+        local success, message = pcall(updateState, self)
         if (not success) then
             error(message)
             print(message)
@@ -197,45 +234,14 @@ function StateManager:getUpdateInterval()
     return math.floor(self.measuredInterval * 1000)
 end
 
---[[
-  This function plays new entries, it is called repeatedly on a timer.
-  The goal of each call is to remain under the frame render time
-  Current solution: apply just 1 entry
-]]--
-function StateManager:updateState()
-    local entries = self.list:entries()
-    local applied = 0
-    local result, hash
-    if self.lastAppliedIndex > #entries
-        or (self.lastAppliedEntry ~= nil and entries[self.lastAppliedIndex] ~= self.lastAppliedEntry)
-    then
-        print("Detected list change, restarting state calc")
-        self.lastAppliedIndex = 0
-        self.lastAppliedEntry = nil
-        self:trigger(EVENT.RESTART)
-    end
-    while applied < self.batchSize and self.lastAppliedIndex < #entries do
-        local entry = entries[self.lastAppliedIndex + 1]
-        self:castLogEntry(entry)
-        -- This will throw an error if update fails, this is good since we don't want to update our tracking in that case.
-        self.handlers[entry:class()](entry)
-        self.lastAppliedIndex = self.lastAppliedIndex + 1
-        self.lastAppliedEntry = entry
-        result, hash = coroutine.resume(self.checksumCoroutine, LogEntry.time(entry))
-        if not result then
-            error("Error updating state hash: " .. hash)
-        end
-        result, hash = coroutine.resume(self.checksumCoroutine, LogEntry.creator(entry))
-        if not result then
-            error("Error updating state hash: " .. hash)
-        end
-        self.stateCheckSum = hash
-        applied = applied + 1
-    end
-    if applied > 0 then
-        self:trigger(EVENT.STATE_CHANGED)
-    end
+function StateManager:restart()
+    self.lastAppliedIndex = 0
+    self.lastAppliedEntry = nil
+    self.stateCheckSum = 0
+    self.checksumCoroutine = Util.IntegerChecksumCoroutine()
+    self:trigger(EVENT.RESTART)
 end
+
 
 --[[
   @return int the number of entries the state is lagging behind the log

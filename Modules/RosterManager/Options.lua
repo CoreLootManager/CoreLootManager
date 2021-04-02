@@ -3,6 +3,7 @@ local _, CLM = ...
 local CONSTANTS = CLM.CONSTANTS
 local OPTIONS = CLM.OPTIONS
 local MODULES = CLM.MODULES
+local UTILS = CLM.UTILS
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
 local LedgerManager = MODULES.LedgerManager
@@ -45,7 +46,7 @@ function RosterManagerOptions:Initialize()
         name_set = (function(old, new)
             RosterManager:RenameRoster(old, new)
             -- TODO: set to the newly renamed instead of first one. Doable?
-            self:UpdateOptions()
+            -- self:UpdateOptions()
         end),
         description_get = (function(name)
             local roster = RosterManager:GetRosterByName(name)
@@ -59,19 +60,20 @@ function RosterManagerOptions:Initialize()
         end),
         remove_execute = (function(name)
             RosterManager:DeleteRosterByName(name)
-            self:UpdateOptions()
+            -- self:UpdateOptions()
         end),
         fill_profiles_execute = (function(name)
             local profiles = ProfileManager:GetProfiles()
-            local roster = RosterManager:GetRosterByName(name)
-            if roster == nil then return nil end
-            for GUID,_ in pairs(profiles) do
-                roster:AddProfileByGUID(GUID)
+            local profileList = {}
+            for GUID, _ in pairs(profiles) do
+                table.insert(profileList, GUID)
+                print(GUID)
             end
+            RosterManager:AddProfilesToRoster(name, profileList)
         end),
         copy_execute = (function(name)
             if self.copy_source_name == nil then return end
-            RosterManager:Copy(self.copy_source_name, name, false, true, true, true)
+            RosterManager:Copy(self.copy_source_name, name, true, true, true, false)
         end),
         copy_source_get = (function(name)
             return self.copy_source_name
@@ -143,6 +145,7 @@ function RosterManagerOptions:Initialize()
         if lag ~= 0 or uncommited ~= 0 then return end
         self:UpdateOptions()
         ConfigManager:UpdateOptions(CONSTANTS.CONFIGS.GROUP.ROSTER)
+        print("D O N E")
     end)
 end
 
@@ -305,6 +308,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 3,
                 width = "half",
                 disabled = true,
+                confirm = true,
                 values = {
                     [0] = "DKP",
                     [1] = "EPGP"
@@ -382,7 +386,7 @@ function RosterManagerOptions:UpdateOptions()
             name = "Create",
             desc = "Creates new roster with default configuration",
             type = "execute",
-            func = function() RosterManager:NewRoster(); self:UpdateOptions() end,
+            func = function() RosterManager:NewRoster() end,
             order = 1
         },
         sync = { -- Global options -> Send New Rosters
@@ -399,11 +403,6 @@ function RosterManagerOptions:UpdateOptions()
         options[name] = self:GenerateRosterOptions(name)
     end
     MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, options, true)
-end
-
--- Accepts array of ACE options and array of callbacks
-function RosterManagerOptions:RegisterOptions(options, callbacks)
-
 end
 
 OPTIONS.RosterManager = RosterManagerOptions

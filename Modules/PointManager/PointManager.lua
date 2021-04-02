@@ -107,6 +107,7 @@ function PointManager:Debug(N)
     local numProfiles = {}
     local profileLookup = {}
     for name, roster in pairs(rosters) do
+        print(tostring(name))
         local standings = roster:Standings()
         numProfiles[name] = 0
         profileLookup[name] = {}
@@ -123,6 +124,10 @@ function PointManager:Debug(N)
     print("Detected " .. tonumber(numRosters) .. " rosters with profiles")
     for name, value in pairs(numProfiles) do
         print("  " .. name .. ": " .. tostring(value) .. " profiles")
+    end
+
+    if numRosters == 0 then
+        return
     end
 
     print("Generating total of  " .. N .. " entries")
@@ -171,8 +176,6 @@ function PointManager:Debug(N)
             PointManager:UpdatePoints(roster, playerList, value, entryType)
         end
     end
-
-
 end
 
 -- function PointManager:Round(value)
