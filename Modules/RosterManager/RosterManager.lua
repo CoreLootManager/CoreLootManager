@@ -257,7 +257,6 @@ function RosterManager:ExportRosters()
     db['rosters'] = self:GetRosters()
 end
 
-local debugCBHandlerSet = false
 function RosterManager:Debug(N)
     N = N or 10
     local actions = {"create", --[["delete",]] "rename", "copy", "set", "override", "profile"}
@@ -266,7 +265,7 @@ function RosterManager:Debug(N)
         rosterNames = {}
         local rosters = self:GetRosters()
         local i = 0
-        for k,v in pairs(rosters) do
+        for k,_ in pairs(rosters) do
             i = i+ 1
             table.insert(rosterNames, k)
         end
@@ -289,24 +288,24 @@ function RosterManager:Debug(N)
         end),
         ["copy"] =  (function()
             local config = false
-            if math.random(0, 1) == 1 then 
+            if math.random(0, 1) == 1 then
                 config = true
             end
             local defaults = false
-            if math.random(0, 1) == 1 then 
+            if math.random(0, 1) == 1 then
                 defaults = true
             end
             local overrides = false
-            if math.random(0, 1) == 1 then 
+            if math.random(0, 1) == 1 then
                 overrides = true
             end
-            local profiles = false
-            if math.random(0, 1) == 1 then 
-                profiles = true
+            local copyProfiles = false
+            if math.random(0, 1) == 1 then
+                copyProfiles = true
             end
             self:Copy(
                 rosterNames[math.random(1, #rosterNames)], rosterNames[math.random(1, #rosterNames)],
-                config, defaults, overrides, profiles
+                config, defaults, overrides, copyProfiles
             )
         end),
         ["set"] =  (function()
@@ -345,7 +344,7 @@ function RosterManager:Debug(N)
             elseif configs[config] == 2 then
                 value = math.random(0, 2)
             else
-                return 
+                return
             end
             self:SetRosterConfiguration(rosterNames[math.random(1, #rosterNames)], config, value)
         end),
@@ -364,9 +363,9 @@ function RosterManager:Debug(N)
                 end
             end
             if math.random(0,1) == 1 then
-                self:AddProfilesToRoster(name, profileList)
+                self:AddProfilesToRoster(rosterNames[math.random(1, #rosterNames)], profileList)
             else
-                self:RemoveProfilesFromRoster(name, profileList)
+                self:RemoveProfilesFromRoster(rosterNames[math.random(1, #rosterNames)], profileList)
             end
         end),
     }
@@ -374,13 +373,12 @@ function RosterManager:Debug(N)
     print("Generating total of  " .. N .. " roster operation entries")
 
     local actionCount = {}
-    local actionQueue = {}
     -- pregenerate 1 roster
     if #rosterNames == 0 then
         actionHandlers["create"]()
     end
 
-    for i=1,N do
+    for _=1,N do
         local action = actions[math.random(1, #actions)]
         if actionCount[action] == nil then
             actionCount[action] = 1
