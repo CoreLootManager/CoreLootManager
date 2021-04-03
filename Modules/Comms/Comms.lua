@@ -36,26 +36,26 @@ end
 function Comms:Register(prefix, callback, aclLevel)
     LOG:Info("Comms:Register()")
     if type(callback) ~= "function" then
-        LOG:Fatal("Comms:Register(): callback is not a function")
+        LOG:Error("Comms:Register(): callback is not a function")
         return false
     end
 
     if type(prefix) ~= "string" then
-        LOG:Fatal("Comms:Register(): prefix is not a string: " .. tostring(prefix))
+        LOG:Error("Comms:Register(): prefix [%s] is not a string", prefix)
         return false
     end
 
     if string.len(prefix) > 12 then
-        LOG:Warning("Comms:Register(): truncating prefix to 12 chars: " .. prefix)
+        LOG:Warning("Comms:Register(): truncating prefix [%s] to 12 chars: ", prefix)
     end
     prefix = _prefix(prefix)
 
     if self.callbacks[prefix] ~= nil then
-        LOG:Warning("Comms:Register(): Re-registering prefix " .. prefix)
+        LOG:Warning("Comms:Register(): Re-registering prefix %s", prefix)
     end
 
     if type(aclLevel) ~= "number" then
-        LOG:Warning("Comms:Register(): Unknown ACL Level  " .. tostring(aclLevel) .. ". Setting to any.")
+        LOG:Warning("Comms:Register(): Unknown ACL Level  %s. Setting to any.", aclLevel)
         aclLevel = 0
     end
 
@@ -70,17 +70,17 @@ function Comms:Send(prefix, message, distribution, target, priority)
     -- Prefix
     prefix = _prefix(prefix)
     if not type(self.callbacks[prefix]) == "function" then
-        LOG:Error("Comms:Send() unregistered prefix: " .. tostring(prefix))
+        LOG:Error("Comms:Send() unregistered prefix: %s", prefix)
         return false
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
     if not ACL:CheckLevel(self.aclLevel[prefix]) then
-        LOG:Warning("Trying to send privileged message [" .. prefix .."]")
+        LOG:Warning("Trying to send privileged message [%s]", prefix)
         return false
     end
     -- Distribution
     if not CONSTANTS.COMMS.DISTRIBUTIONS[distribution] then
-        LOG:Error("Comms:Send() invalid distribution: " .. tostring(distribution))
+        LOG:Error("Comms:Send() invalid distribution: %s", distribution)
         return false
     end
     -- Priority
@@ -90,19 +90,19 @@ function Comms:Send(prefix, message, distribution, target, priority)
     -- Serialize
     local tmp = serdes:Serialize(message)
     if tmp == nil then
-        LOG:Error("Comms:Send() unable to serialize message: " .. tostring(message))
+        LOG:Error("Comms:Send() unable to serialize message: %s", message)
         return false
     end
     -- Compress
     tmp = codec:CompressDeflate(tmp, { level = 9 })
     if tmp == nil then
-        LOG:Error("Comms:Send() unable to compress message: " .. tostring(message))
+        LOG:Error("Comms:Send() unable to compress message: %s", message)
         return false
     end
     -- Encode for WoW
     tmp = codec:EncodeForWoWAddonChannel(tmp)
     if tmp == nil then
-        LOG:Error("Comms:Send() unable to encode message: " .. tostring(message))
+        LOG:Error("Comms:Send() unable to encode message: %s", message)
         return false
     end
     self:SendCommMessage(prefix, tmp, distribution, target, priority)
@@ -121,7 +121,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
     if not ACL:CheckLevel(self.aclLevel[prefix], sender) then
-        LOG:Warning("Received privileged message [" .. prefix .."] from unprivileged sender: " .. sender)
+        LOG:Warning("Received privileged message [%s] from unprivileged sender [%s]",prefix, sender)
         return
     end
     -- Decode
@@ -140,7 +140,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     local success;
     success, tmp = serdes:Deserialize(tmp)
     if not success then
-        LOG:Error("Comms:Send() unable to deserialize message: " .. tostring(tmp))
+        LOG:Error("Comms:Send() unable to deserialize message: %s", tmp)
         return
     end
     -- Execute callback

@@ -41,7 +41,7 @@ function UTILS.UniversalCliMethodExecutor(name, object, cli)
     end
 
     if type(object[method]) == "function" then
-        LOG:Info("Execute [" .. name .. "(" .. method .. "(" .. parameters .. ")]")
+        LOG:Info("Execute [%s(%s(%s)]", name, method, parameters)
         object[method](object, unpack(args))
     else
         print("Available methods:")

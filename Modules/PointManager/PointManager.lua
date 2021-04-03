@@ -26,7 +26,7 @@ local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 local function mutator(entry, mutate)
     local roster = RosterManager:GetRosterByUid(entry:rosterUid())
     if roster == nil then
-        LOG:Warning("PointManager mutator(): Unknown roster uid " .. entry:rosterUid())
+        LOG:Warning("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
         return
     end
 
@@ -39,7 +39,7 @@ local function mutator(entry, mutate)
             standings[GUID] = mutate(standings[GUID], value)
         else
             -- TODO: Add  Profile to roster? Store in anonymous profile?
-            LOG:Warning("PointManager mutator(): Unknown profile guid [" .. tostring(GUID).. "] in roster [" .. entry:rosterUid() .. "]")
+            LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
             return
         end
     end

@@ -11,7 +11,7 @@ local RESULTS = CLM.CONSTANTS.RESULTS
 local GUI = CLM.GUI
 local ProfileManager = MODULES.ProfileManager
 
-local getGuidFromInteger = UTILS.getGuidFromInteger
+-- local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local ProfileManagerGUI =  { _initialized = false }
 

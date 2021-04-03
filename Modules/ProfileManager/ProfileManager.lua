@@ -7,7 +7,7 @@ local CONSTANTS = CLM.CONSTANTS
 local RESULTS = CONSTANTS.RESULTS
 local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 
-local keys = UTILS.keys
+-- local keys = UTILS.keys
 local typeof = UTILS.typeof
 local empty = UTILS.empty
 local capitalize = UTILS.capitalize
@@ -39,7 +39,7 @@ function ProfileManager:Initialize()
             local GUID = getGuidFromInteger(iGUID)
             local name = entry:name()
             if empty(name) then return end
-        
+
             local class = capitalize(NumberToClass(entry:ingameClass()))
             local spec = entry:spec()
             local main = entry:main()
@@ -57,7 +57,7 @@ function ProfileManager:Initialize()
                     main = profileInternal:Main()
                 end
             end
-            -- 
+
             local profile = Profile:New(name, class, spec, main)
             profile:SetGUID(GUID)
             self.cache.profiles[GUID] = profile

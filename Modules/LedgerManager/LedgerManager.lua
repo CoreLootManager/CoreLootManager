@@ -44,7 +44,7 @@ end
 
 function LedgerManager:Authorize(class, sender)
     if self.authorizationLevel[class] == nil then
-        LOG:Warning("Unknown class [" .. tostring(class) .. "]")
+        LOG:Warning("Unknown class [%s]", class)
         return false
     end
     return ACL:CheckLevel(self.authorizationLevel[class], sender)
@@ -52,7 +52,7 @@ end
 
 function LedgerManager:RegisterEntryType(class, mutatorFn, authorizationLevel)
     if self.entryExtensions[class] then
-        LOG:Fatal("Class " .. tostring(class) .. " already exists in Ledger Entries.")
+        LOG:Error("Class %s already exists in Ledger Entries.", class)
         return
     end
     self.entryExtensions[class] = true

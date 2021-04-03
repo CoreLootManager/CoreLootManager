@@ -58,7 +58,7 @@ function ConfigManager:Register(group, options, clean)
     end
 
     if not CONSTANTS.CONFIGS.GROUPS[group] then
-        LOG:Error("ConfigManager:Register(): Group " .. tostring(group) .. " is not supported")
+        LOG:Error("ConfigManager:Register(): Group %s is not supported", group)
         return false
     end
 
@@ -87,7 +87,7 @@ function ConfigManager:RegisterSlash(options)
         if self.slash_options.args[option] == nil then
             self.slash_options.args[option] = definition
         else
-            LOG:Warning("Option ".. tostring(option) .." already set. Ignoring.")
+            LOG:Warning("Option %s already set. Ignoring.", option)
         end
     end
 
@@ -109,7 +109,7 @@ end
 
 function ConfigManager:UpdateOptions(group, register)
     if not CONSTANTS.CONFIGS.GROUPS[group] then
-        LOG:Warning("ConfigManager:Update(): Group " .. tostring(group) .. " is not supported")
+        LOG:Warning("ConfigManager:Update(): Group %s is not supported", group)
         return
     end
     if register then
