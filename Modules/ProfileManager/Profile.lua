@@ -16,7 +16,6 @@ function Profile:New(name, class, spec, main)
     o.class = (class ~= nil) and tostring(class) or ""
     o.spec  = (spec ~= nil) and tostring(spec) or ""
     o.main  = (main ~= nil) and tostring(main) or ""
-    UTILS.DumpTable(o)
 
     return o
 end

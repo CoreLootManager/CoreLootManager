@@ -43,7 +43,7 @@ function LogEntry:new(severity, message)
     o.t = GetServerTime()
 
     return o
- end
+end
 
 local function getColoredSeverity(severity)
     local color = SEVERITY_COLOR[severity]
@@ -59,25 +59,31 @@ end
     local severityMessage = getColoredSeverity(severity) or ""
     local time
     if timestamp then
-        time = date("%d/%m/%y %H:%M:%S ", timestamp)
+        time = date("%H:%M:%S ", timestamp)
     else
         time = ""
     end
     print(prefix .. severityMessage .. time .. message)
  end
 
+local function _format(fmt, message)
+    if fmt == nil then return "" end
+    if message == nil then message = fmt end
+    return string.format(fmt, message)
+end
+
 function Logger:log(severity, fmt, message, force)
-    if self.severity >= severity then
-        local entry = LogEntry:New(severity, string.format(fmt, message))
+    if (self.severity or 1000) >= severity then
+        local entry = LogEntry:new(severity, _format(fmt, message))
         if self.verbose or force then
-            _print(entry.severity, entry.timestamp, entry.message)
+            _print(entry.s, entry.t, entry.m)
         end
         table.insert(CLM_Logs, entry)
     end
 end
 
 function Logger:Message(fmt, message)
-    _print(nil, GetServerTime(), string.format(fmt, message))
+    _print(nil, GetServerTime(), _format(fmt, message))
 end
 
 function Logger:Debug(fmt, message)
