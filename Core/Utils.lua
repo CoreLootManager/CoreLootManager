@@ -44,7 +44,6 @@ function UTILS.UniversalCliMethodExecutor(name, object, cli)
         LOG:Info("Execute [" .. name .. "(" .. method .. "(" .. parameters .. ")]")
         object[method](object, unpack(args))
     else
-        -- print available methods:
         print("Available methods:")
         for methodName,ref in pairs(object) do
             if type(ref) == "function" then
@@ -146,6 +145,13 @@ function UTILS.typeof(object, objectType)
 end
 local typeof = UTILS.typeof
 
+function UTILS.empty(object)
+    if object == "" or object == nil then
+        return true
+    end
+    return false
+end
+
 function UTILS.getIntegerGuid(GUID)
     return tonumber(string.sub(GUID, -8), 16)
 end
@@ -228,4 +234,45 @@ function UTILS.merge(t1, t2, t)
     for _,v in ipairs(t1) do n = n+1; t[n] = v end
     for _,v in ipairs(t2) do n = n+1; t[n] = v end
     return t
+end
+
+local classToNumber = {
+    ["WARRIOR"] = 1,
+    ["PALADIN"] = 2,
+    ["HUNTER"] = 3,
+    ["ROGUE"] = 4,
+    ["PRIEST"] = 5,
+    ["DEATHKNIGHT"] = 6,
+    ["SHAMAN"] = 7,
+    ["MAGE"] = 8,
+    ["WARLOCK"] = 9,
+    ["MONK"] = 10,
+    ["DRUID"] = 11,
+    ["DEMONHUNTER"] = 12
+}
+function UTILS.ClassToNumber(class)
+    return classToNumber[(class or ""):upper()] or 0
+end
+
+local numberToClass = {
+    [1]  = "WARRIOR",
+    [2]  = "PALADIN",
+    [3]  = "HUNTER",
+    [4]  = "ROGUE",
+    [5]  = "PRIEST",
+    -- [6]  = "DEATHKNIGHT",
+    [7]  = "SHAMAN",
+    [8]  = "MAGE",
+    [9]  = "WARLOCK",
+    -- [10] = "MONK",
+    [11] = "DRUID",
+    -- [12] = "DEMONHUNTER"
+}
+function UTILS.NumberToClass(number)
+    return (numberToClass[number] or ""):upper()
+end
+
+function UTILS.capitalize(string)
+    string = string or ""
+    return string:sub(1,1):upper()..string:sub(2):lower()
 end

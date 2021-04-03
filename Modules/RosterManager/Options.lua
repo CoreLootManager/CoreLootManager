@@ -55,7 +55,6 @@ function RosterManagerOptions:Initialize()
             local profileList = {}
             for GUID, _ in pairs(profiles) do
                 table.insert(profileList, GUID)
-                print(GUID)
             end
             RosterManager:AddProfilesToRoster(name, profileList)
         end),

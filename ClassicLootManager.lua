@@ -47,11 +47,11 @@ end
 
 function CORE:_InitializeFeatures()
     LOG:Info("CORE:_InitializeFeatures()")
-    --MODULES.RaidManager.Initialize()
     MODULES.ProfileManager:Initialize()
     MODULES.RosterManager:Initialize()
     MODULES.PointManager:Initialize()
     --MODULES.LootManager.Initialize()
+    --MODULES.RaidManager.Initialize()
 end
 
 function CORE:_InitializeFrontend()
@@ -69,12 +69,6 @@ function CORE:_Enable()
     LOG:Info("CORE:_Enable()")
     MODULES.Comms:Enable()
     MODULES.LedgerManager:Enable()
-    -- MODULES.DataConsistencyManager:Enable()
-end
-
-function CORE:_BIST()
-    MODULES.BIST:Run()
-    C_Timer.After(2, function() MODULES.BIST:Report() end)
 end
 
 function CORE:_SequentialInitialize(stage)
@@ -90,13 +84,12 @@ function CORE:_SequentialInitialize(stage)
     elseif stage >= 4 then
         self:_Enable()
         LOG:Info("Initialization complete")
-        C_Timer.After(0.1, function() CORE:_BIST() end)
         return
     end
     C_Timer.After(0.1, function() CORE:_SequentialInitialize(stage + 1) end)
 end
 
-function CORE:_DelayedInitialize()
+function CORE:_ExecuteInitialize()
     if self._initialize_fired then return end
     self._initialize_fired = true
     C_Timer.After(1, function() CORE:_SequentialInitialize(0) end)
@@ -105,7 +98,7 @@ end
 function CORE:_Initialize()
     LOG:Info("CORE:_Initialize()")
     if not self._initialize_fired then
-        CORE:_DelayedInitialize()
+        CORE:_ExecuteInitialize()
         self:UnregisterEvent("GUILD_ROSTER_UPDATE")
     end
 end
@@ -125,8 +118,7 @@ function CORE:OnInitialize()
     GuildRoster()
     -- We schedule this in case GUILD_ROSTER_UPDATE won't come early enough
     C_Timer.After(20, function()
-        LOG:Warning("DelayedInitialization()")
-        CORE:_DelayedInitialize()
+        CORE:_ExecuteInitialize()
     end)
 end
 

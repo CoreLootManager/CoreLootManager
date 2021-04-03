@@ -39,7 +39,7 @@ local function mutator(entry, mutate)
             standings[GUID] = mutate(standings[GUID], value)
         else
             -- TODO: Add  Profile to roster? Store in anonymous profile?
-            LOG:Warning("PointManager mutator(): Unknown profile guid [" .. tostring(GUID).. "]")
+            LOG:Warning("PointManager mutator(): Unknown profile guid [" .. tostring(GUID).. "] in roster [" .. entry:rosterUid() .. "]")
             return
         end
     end
@@ -81,7 +81,7 @@ function PointManager:Initialize()
 
     local start = GetServerTime()
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
-        if lag ~= 0 or uncommited ~= 0 then return end
+        if lag ~= 0 or uncommited ~= 0 then return end -- DEBUG Stuff
         local stop = GetServerTime(); print("DONE IN " .. tostring(stop - start));
         local rosters = RosterManager:GetRosters()
         for rosterName, roster in pairs(rosters) do

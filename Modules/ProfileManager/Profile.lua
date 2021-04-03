@@ -1,58 +1,56 @@
 local _, CLM = ...
 
 local UTILS =  CLM.UTILS
+local getIntegerGuid = UTILS.getIntegerGuid
 
 local Profile = {}
 
-function Profile:New(storage, params)
-    local o = UTILS.NewStorageQualifiedObject(storage, self)
+function Profile:New(name, class, spec, main)
+    local o = {}
 
-    o.persistent.name  = tostring(params.name)
-    o.persistent.class = params.class or ""
-    o.persistent.spec  = params.spec  or ""
-    o.persistent.main  = params.main  or ""
+    setmetatable(o, self)
+    self.__index = self
 
-    o.volatile = {}
+    o.iGUID = ""
+    o.name  = (name ~= nil) and tostring(name) or ""
+    o.class = (class ~= nil) and tostring(class) or ""
+    o.spec  = (spec ~= nil) and tostring(spec) or ""
+    o.main  = (main ~= nil) and tostring(main) or ""
+    UTILS.DumpTable(o)
 
     return o
 end
 
-function Profile:Restore(storage)
-    local profile = UTILS.NewStorageQualifiedObject(storage, self)
-    profile.volatile = {}
-    return profile
-end
-
 function Profile:Name()
-    return self.persistent.name
+    return self.name
 end
 
 function Profile:Class()
-    return self.persistent.class
+    return self.class
 end
 
 function Profile:Spec()
-    return self.persistent.spec
+    return self.spec
 end
 
 function Profile:Main()
-    return self.persistent.main
+    return self.main
 end
 
 function Profile:SetMain(main)
-    self.persistent.main = main
+    self.main = main
 end
 
 function Profile:ClearMain()
-    self.persistent.main = ""
+    self.main = ""
 end
 
 function Profile:SetGUID(GUID)
-    self.volatile.GUID = GUID
+    self.iGUID = GUID
 end
 
 function Profile:GUID()
-    return self.volatile.GUID
+    return self.iGUID
 end
 
 CLM.MODELS.Profile = Profile

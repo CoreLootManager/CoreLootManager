@@ -8,6 +8,8 @@ local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 local LEDGER_ROSTER = CLM.MODELS.LEDGER.ROSTER
 local UTILS = CLM.UTILS
 
+local capitalize = UTILS.capitalize
+
 local LedgerManager = MODULES.LedgerManager
 local ProfileManager = MODULES.ProfileManager
 
@@ -22,7 +24,7 @@ local RosterManager = { } -- Roster Manager Module
 local function GenerateName()
     local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX)]
     local suffix = CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX)]
-    return prefix:sub(1,1):upper()..prefix:sub(2).. " " .. suffix:sub(1,1):upper()..suffix:sub(2)
+    return capitalize(prefix).. " " .. capitalize(suffix)
 end
 
 -- Controller Roster Manger
@@ -41,7 +43,6 @@ function RosterManager:Initialize()
         (function(entry)
             local uid = entry:rosterUid()
             local name = entry:name()
-
             local roster = Roster:New(uid)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
@@ -94,25 +95,19 @@ function RosterManager:Initialize()
                 local t = self:GetRosterByUid(targetUid)
                 if t == nil then return end
 
-                print(self.cache.rostersUidMap[sourceUid] .. " -> " .. self.cache.rostersUidMap[targetUid])
-
                 if entry:config() then
-                    print("CopyConfiguration")
                     t:CopyConfiguration(s)
                 end
 
                 if entry:defaults() then
-                    print("CopyDefaultSlotValues")
                     t:CopyDefaultSlotValues(s)
                 end
 
                 if entry:overrides() then
-                    print("CopyItemValues")
                     t:CopyItemValues(s)
                 end
 
                 if entry:profiles() then
-                    print("CopyProfiles")
                     t:CopyProfiles(s)
                 end
             end),
@@ -188,7 +183,11 @@ function RosterManager:NewRoster()
         name = GenerateName()
     end
 
-    LedgerManager:Submit(LEDGER_ROSTER.Create:new(GetServerTime(), name), true)
+    local uid = GetServerTime()
+    while self.cache.rostersUidMap[uid] ~= nil do
+        uid = uid +  1
+    end
+    LedgerManager:Submit(LEDGER_ROSTER.Create:new(uid, name), true)
 end
 
 function RosterManager:DeleteRosterByName(name)

@@ -11,6 +11,8 @@ local RESULTS = CLM.CONSTANTS.RESULTS
 local GUI = CLM.GUI
 local ProfileManager = MODULES.ProfileManager
 
+local getGuidFromInteger = UTILS.getGuidFromInteger
+
 local ProfileManagerGUI =  { _initialized = false }
 
 function ProfileManagerGUI:Initialize()
@@ -145,25 +147,23 @@ function ProfileManagerGUI:Create()
         self:Refresh()
     end))
 
-    -- -- Management options: SetMain
-    -- local WipeProfilesGroup = AceGUI:Create("InlineGroup")
-    -- WipeProfilesGroup:SetLayout("Flow")
-    -- WipeProfilesGroup:SetTitle("Connect alts")
-
-    -- local WipeProfilesButton = AceGUI:Create("Button")
-    -- WipeProfilesButton:SetText("Set")
-    -- WipeProfilesButton:SetCallback("OnClick", (function()
-    --     if self.selected == "" then
-    --         local selected = self.st:GetRow(self.st:GetSelection());
-    --         self.selected = selected[0]
-    --         self.top:SetStatusText("Setting ")
-    --     else
-    --         self.selected
-    --     end
-    -- end))
-
     WipeProfilesGroup:AddChild(WipeProfilesButton)
     ManagementOptions:AddChild(WipeProfilesGroup)
+
+    -- Management options: Export
+    local ExportProfilesGroup = AceGUI:Create("InlineGroup")
+    ExportProfilesGroup:SetLayout("Flow")
+    ExportProfilesGroup:SetTitle("Export Profiles")
+
+    local ExportProfilesButton = AceGUI:Create("Button")
+    ExportProfilesButton:SetText("Export")
+    ExportProfilesButton:SetCallback("OnClick", (function()
+        ProfileManager:ExportAll()
+        self:Refresh()
+    end))
+
+    ExportProfilesGroup:AddChild(ExportProfilesButton)
+    ManagementOptions:AddChild(ExportProfilesGroup)
 
     f:AddChild(ManagementOptions)
     -- Hide by default

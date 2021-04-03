@@ -17,46 +17,17 @@ local function ConfigGenerator(config)
     return ConfigManager.options[config]
 end
 
-local function ConfigGenerator_Global()
-    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL)
-end
-
-local function ConfigGenerator_Personal()
-    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.PERSONAL)
-end
-
-local function ConfigGenerator_Guild()
-    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GUILD)
-end
-
-local function ConfigGenerator_Roster()
-    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER)
-end
-
-local function ConfigGenerator_BIST()
-    return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.BIST)
-end
-
 function ConfigManager:Initialize()
     LOG:Info("ConfigManager:Initialize()")
-    -- TODO: cleanup this shit all around when removing BIST
-    local groups = {
-        CONSTANTS.CONFIGS.GROUP.GLOBAL,
-        CONSTANTS.CONFIGS.GROUP.PERSONAL,
-        CONSTANTS.CONFIGS.GROUP.GUILD,
-        CONSTANTS.CONFIGS.GROUP.ROSTER,
-        CONSTANTS.CONFIGS.GROUP.BIST
-    }
-    -- TODO: cleanup this shit all around when removing BIST
     self.generators = {
-        ["Classic Loot Manager"] = ConfigGenerator_Global,
-        ["Personal"] = ConfigGenerator_Personal,
-        ["Guild"] = ConfigGenerator_Guild,
-        ["Roster"] = ConfigGenerator_Roster,
-        ["BIST"] = ConfigGenerator_BIST
+        [CONSTANTS.CONFIGS.GROUP.GLOBAL]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
+        [CONSTANTS.CONFIGS.GROUP.PERSONAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.PERSONAL) end),
+        [CONSTANTS.CONFIGS.GROUP.GUILD]    = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GUILD) end),
+        [CONSTANTS.CONFIGS.GROUP.ROSTER]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end)
     }
+
     self.options = {}
-    for _, config in pairs(groups) do
+    for _, config in ipairs(CONSTANTS.CONFIGS.ORDERED_GROUPS) do
         local parent = CONSTANTS.CONFIGS.GROUP.GLOBAL
         if config == CONSTANTS.CONFIGS.GROUP.GLOBAL then
             parent = nil
@@ -119,6 +90,7 @@ function ConfigManager:RegisterSlash(options)
             LOG:Warning("Option ".. tostring(option) .." already set. Ignoring.")
         end
     end
+
     LIBS.config:RegisterOptionsTable("CLM", self.slash_options, {"clm", "classiclootmanager"})
     return true
 end
@@ -149,20 +121,23 @@ end
 -- Publish API
 MODULES.ConfigManager = ConfigManager
 
--- TODO: cleanup this shit all around when removing BIST
 CONSTANTS.CONFIGS = {
     GROUPS = UTILS.Set({
         "Classic Loot Manager",
         "Personal",
         "Guild",
-        "Roster",
-        "BIST"
+        "Rosters"
     }),
+    ORDERED_GROUPS = {
+        "Classic Loot Manager",
+        "Personal",
+        "Guild",
+        "Rosters"
+    },
     GROUP = {
         GLOBAL = "Classic Loot Manager",
         PERSONAL = "Personal",
         GUILD = "Guild",
-        ROSTER = "Roster",
-        BIST = "BIST"
+        ROSTER = "Rosters"
     },
 }

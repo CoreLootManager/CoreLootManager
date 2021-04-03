@@ -40,8 +40,9 @@ Core\Utils.lua
 # Addon models
 Modules\ProfileManager\Profile.lua
 Modules\RosterManager\Roster.lua
-Modules\PointManager\DKP\LedgerEntries.lua
+Modules\ProfileManager\LedgerEntries.lua
 Modules\RosterManager\LedgerEntries.lua
+Modules\PointManager\DKP\LedgerEntries.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua
@@ -62,6 +63,3 @@ Modules\LootManager\LootManager.lua
 Modules\ProfileManager\GUI.lua
 Modules\RosterManager\GUI.lua
 Modules\RosterManager\Options.lua
-
-# BIST and test
-Modules\BIST\BIST.lua

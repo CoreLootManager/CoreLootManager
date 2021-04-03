@@ -30,7 +30,7 @@ function LedgerManager:Initialize()
         (function(data, distribution, target, progressCallback)
             return Comms:Send(prefixData, data, distribution, target, "BULK")
         end), -- sendLargeMessage
-        0, 10
+        0, 250
     )
 
     self.entryExtensions = {}
@@ -38,13 +38,13 @@ function LedgerManager:Initialize()
 end
 
 function LedgerManager:Enable()
-    self.ledger.getStateManager():setUpdateInterval(100)
+    self.ledger.getStateManager():setUpdateInterval(50)
     self.ledger.enableSending()
 end
 
 function LedgerManager:Authorize(class, sender)
     if self.authorizationLevel[class] == nil then
-        LOG:Warning("Unknown class")
+        LOG:Warning("Unknown class [" .. tostring(class) .. "]")
         return false
     end
     return ACL:CheckLevel(self.authorizationLevel[class], sender)

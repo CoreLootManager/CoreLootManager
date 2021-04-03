@@ -2,61 +2,113 @@ local _, CLM = ...
 -- Upvalues
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
-local RESULTS = CLM.CONSTANTS.RESULTS
 local UTILS = CLM.UTILS
+local CONSTANTS = CLM.CONSTANTS
+local RESULTS = CONSTANTS.RESULTS
+local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 
+local keys = UTILS.keys
 local typeof = UTILS.typeof
+local empty = UTILS.empty
+local capitalize = UTILS.capitalize
+local getGuidFromInteger = UTILS.getGuidFromInteger
+local NumberToClass = UTILS.NumberToClass
 
 local Profile = CLM.MODELS.Profile
+
+local LedgerManager = MODULES.LedgerManager
+
+local LEDGER_PROFILE = CLM.MODELS.LEDGER.PROFILE
 
 local ProfileManager = { }
 
 function ProfileManager:Initialize()
     LOG:Info("ProfileManager:Initialize()")
-    self.db = MODULES.Database:Profiles()
-
-    if type(self.db.profiles) ~= "table" then
-        self.db.profiles = {}
-    end
-
-    if type(self.db.metadata) ~= "table" then
-        self.db.metadata = {}
-    end
 
     self.cache = {
         profilesGuidMap = {},
         profiles = {}
     }
-    self:LoadCache()
+
+    -- Register mutators
+    LedgerManager:RegisterEntryType(
+        LEDGER_PROFILE.Update,
+        (function(entry)
+            local iGUID = entry:GUID()
+            if type(iGUID) ~= "number" then return end
+            local GUID = getGuidFromInteger(iGUID)
+            local name = entry:name()
+            if empty(name) then return end
+        
+            local class = capitalize(NumberToClass(entry:ingameClass()))
+            local spec = entry:spec()
+            local main = entry:main()
+            main =  (type(main) == "number" and main ~= 0) and getGuidFromInteger(main) or ""
+            -- Check if it's an update
+            local profileInternal = self.cache.profiles[GUID]
+            if profileInternal ~= nil then
+                if empty(class) then
+                    class = profileInternal:Class()
+                end
+                if empty(spec) then
+                    spec = profileInternal:Spec()
+                end
+                if empty(main) then
+                    main = profileInternal:Main()
+                end
+            end
+            -- 
+            local profile = Profile:New(name, class, spec, main)
+            profile:SetGUID(GUID)
+            self.cache.profiles[GUID] = profile
+            self.cache.profilesGuidMap[name] = GUID
+        end),
+        ACL_LEVEL.OFFICER)
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_PROFILE.Remove,
+        (function(entry)
+            local GUID = entry:GUID()
+            if type(GUID) ~= "number" then return end
+            GUID = getGuidFromInteger(GUID)
+            if self.cache.profiles[GUID] ~= nil then
+                self.cache.profiles[GUID] = nil
+            end
+        end),
+        ACL_LEVEL.OFFICER)
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_PROFILE.Link,
+        (function(entry)
+            local GUID = entry:GUID()
+            if type(GUID) ~= "number" then return end
+            GUID = getGuidFromInteger(GUID)
+            local main = entry:main()
+            if type(main) ~= "number" then return end
+            main = getGuidFromInteger(main)
+            local altProfile = self:GetProfileByGuid(GUID)
+            if not typeof(altProfile, Profile) then return end
+            local mainProfile = self:GetProfileByGuid(main)
+            if not typeof(mainProfile, Profile) then
+                altProfile:ClearMain()
+            else
+                altProfile:SetMain(main)
+            end
+        end),
+        ACL_LEVEL.OFFICER)
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
-end
-
--- CORE
-
-function ProfileManager:LoadCache()
-    LOG:Info("ProfileManager:LoadCache()")
-
-    for GUID,_ in pairs(self.db.profiles) do
-        local p = Profile:Restore(self.db.profiles[GUID])
-        p:SetGUID(GUID)
-        self.cache.profiles[GUID] = p
-        self.cache.profilesGuidMap[p:Name()] = GUID
-    end
-end
-
-function ProfileManager:GetProfiles()
-    return self.cache.profiles
 end
 
 function ProfileManager:NewProfile(GUID, name, class)
     if GUID == nil then return end
     if name == nil then return end
-    self.db.profiles[GUID] = {} -- Allocate database
-    local profile = Profile:New(self.db.profiles[GUID], {name = name, class = class})
-    profile:SetGUID(GUID)
-    self.cache.profiles[GUID] = profile
-    self.cache.profilesGuidMap[name] = GUID
+    LedgerManager:Submit(LEDGER_PROFILE.Update:new(GUID, name, class), true)
+end
+
+function ProfileManager:RemoveProfile(GUID)
+    if GUID == nil then return end
+    LedgerManager:Submit(LEDGER_PROFILE.Remove:new(GUID), true)
 end
 
 function ProfileManager:MarkAsAltByNames(main, alt)
@@ -71,14 +123,14 @@ function ProfileManager:MarkAsAltByNames(main, alt)
             return RESULTS.IGNORE
         else
             -- Remove link
-            altProfile:ClearMain()
             result = RESULTS.SUCCESS_EXTENDED
+            LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), nil), true)
         end
     else
         if mainProfile:Main() ~= "" then
             return RESULTS.IGNORE
         end
-        altProfile:SetMain(self:GetGUIDFromName(mainProfile:Name()))
+        LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
         result = RESULTS.SUCCESS
     end
 
@@ -155,8 +207,12 @@ function ProfileManager:AddTarget()
 end
 
 function ProfileManager:WipeAll()
-    self.db.profiles = {}
     self.cache = { profilesGuidMap = {}, profiles = {} }
+end
+
+function ProfileManager:ExportAll()
+    local db = CLM.MODULES.Database:Personal()
+    db['profiles'] = self:GetProfiles()
 end
 
 -- Utility
