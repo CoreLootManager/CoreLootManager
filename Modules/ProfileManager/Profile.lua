@@ -1,6 +1,6 @@
 local _, CLM = ...
 
-local UTILS =  CLM.UTILS
+-- local UTILS =  CLM.UTILS
 -- local getIntegerGuid = UTILS.getIntegerGuid
 
 local Profile = {}
