@@ -1,8 +1,4 @@
 local _, CLM = ...
--- TODO:
--- 1) varargs
--- 2) delay variables unrolling
--- 3) logging level
 local Logger = CLM.LOG
 
 local MODULES = CLM.MODULES
@@ -72,14 +68,18 @@ local function _format(fmt, message)
     return string.format(fmt, message)
 end
 
-function Logger:log(severity, fmt, message, force)
-    if (self.severity or 1000) >= severity then
+local function log(severity, fmt, message, force)
+    if (Logger.severity or 1000) >= severity then
         local entry = LogEntry:new(severity, _format(fmt, message))
-        if self.verbose or force then
+        if Logger.verbose or force then
             _print(entry.s, entry.t, entry.m)
         end
         table.insert(CLM_Logs, entry)
     end
+end
+
+function Logger:log(severity, fmt, message, force)
+    pcall(log, severity, fmt, message, force)
 end
 
 function Logger:Message(fmt, message)
