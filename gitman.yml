@@ -5,3 +5,11 @@ sources:
     #rev: v0.0.22
     rev: master
     type: git
+
+location: Libs
+sources:
+  - repo: https://github.com/lantisnt/LibLogger.git
+    name: LibLogger
+    #rev: v0.0.22
+    rev: master
+    type: git

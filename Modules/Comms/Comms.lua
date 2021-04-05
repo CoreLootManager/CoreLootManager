@@ -19,7 +19,7 @@ local codec = LibStub("LibDeflate")
 local CommsPrefix = "CLM"
 
 function Comms:Initialize()
-    LOG:Info("Comms:Initialize()")
+    LOG:Trace("Comms:Initialize()")
     self.callbacks = {}
     self.aclLevel = {}
     self.enabled = false
@@ -34,7 +34,7 @@ local function _prefix(prefix)
 end
 
 function Comms:Register(prefix, callback, aclLevel)
-    LOG:Info("Comms:Register()")
+    LOG:Trace("Comms:Register()")
     if type(callback) ~= "function" then
         LOG:Error("Comms:Register(): callback is not a function")
         return false
@@ -65,7 +65,7 @@ function Comms:Register(prefix, callback, aclLevel)
 end
 
 function Comms:Send(prefix, message, distribution, target, priority)
-    LOG:Info("Comms:Send()")
+    LOG:Trace("Comms:Send()")
     if not self.enabled then return false end
     -- Prefix
     prefix = _prefix(prefix)
@@ -110,7 +110,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
 end
 
 function Comms:OnReceive(prefix, message, distribution, sender)
-    LOG:Info("Comms:OnReceive()")
+    LOG:Trace("Comms:OnReceive()")
     if not self.enabled then return false end
     -- Ignore messages from self
     if sender == whoami() then return end

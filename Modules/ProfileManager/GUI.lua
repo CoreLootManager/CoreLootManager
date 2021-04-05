@@ -24,7 +24,7 @@ function ProfileManagerGUI:Initialize()
 end
 
 function ProfileManagerGUI:Create()
-    LOG:Info("ProfileManagerGUI:Create()")
+    LOG:Trace("ProfileManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
     f:SetTitle("Profiles")
@@ -171,7 +171,7 @@ function ProfileManagerGUI:Create()
 end
 
 function ProfileManagerGUI:Refresh()
-    LOG:Info("ProfileManagerGUI:Refresh()")
+    LOG:Trace("ProfileManagerGUI:Refresh()")
     if not self._initialized then return end
 
     local data = {}
@@ -199,7 +199,7 @@ function ProfileManagerGUI:Refresh()
 end
 
 function ProfileManagerGUI:Toggle()
-    LOG:Info("ProfileManagerGUI:Toggle()")
+    LOG:Trace("ProfileManagerGUI:Toggle()")
     if not self._initialized then return end
     if self.top.frame:IsVisible() then
         self.top.frame:Hide()

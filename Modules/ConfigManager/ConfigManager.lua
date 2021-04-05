@@ -18,7 +18,7 @@ local function ConfigGenerator(config)
 end
 
 function ConfigManager:Initialize()
-    LOG:Info("ConfigManager:Initialize()")
+    LOG:Trace("ConfigManager:Initialize()")
     self.generators = {
         [CONSTANTS.CONFIGS.GROUP.GLOBAL]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
         [CONSTANTS.CONFIGS.GROUP.PERSONAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.PERSONAL) end),
@@ -40,12 +40,12 @@ function ConfigManager:Initialize()
 end
 
 function ConfigManager:Enable()
-    LOG:Info("ConfigManager:Enable()")
+    LOG:Trace("ConfigManager:Enable()")
     self.enabled = true
 end
 
 function ConfigManager:Register(group, options, clean)
-    LOG:Info("ConfigManager:Register()")
+    LOG:Trace("ConfigManager:Register()")
 
     if type(options) ~= "table" then
         LOG:Error("ConfigManager:Register(): Object is not a table")
@@ -76,7 +76,7 @@ function ConfigManager:Register(group, options, clean)
 end
 
 function ConfigManager:RegisterSlash(options)
-    LOG:Info("ConfigManager:RegisterSlash()")
+    LOG:Trace("ConfigManager:RegisterSlash()")
 
     if type(options) ~= "table" then
         LOG:Error("ConfigManager:RegisterSlash(): Object is not a table")

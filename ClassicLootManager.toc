@@ -12,6 +12,7 @@
 Libs\LibStub\LibStub.lua
 Libs\LibDeflate\lib.xml
 Libs\LibSerialize\lib.xml
+Libs\LibLogger\lib.xml
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 
 # ACE3

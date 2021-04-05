@@ -24,13 +24,26 @@ CLM.GUI = {}
 CLM.OPTIONS = {}
 CLM.LOG = { verbose = true }
 
+if type(CLM_DB) ~= "table" then
+    CLM_DB = {}
+end
+
+if type(CLM_Logs) ~= "table" then
+    CLM_Logs = {}
+end
+
+CLM.LOG = LibStub("LibLogger"):New(CLM_Logs)
+CLM.LOG:SetSeverity(CLM.LOG.SEVERITY.TRACE)
+CLM.LOG:SetVerbosity(true)
+CLM.LOG:SetPrefix("CLM")
+
 -- Local upvalues
 local CORE = CLM.CORE
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 
 function CORE:_InitializeCore()
-    LOG:Info("CORE:_InitializeCore()")
+    LOG:Trace("CORE:_InitializeCore()")
 
     MODULES.Database:Initialize()
     MODULES.ConfigManager:Initialize()
@@ -39,14 +52,14 @@ function CORE:_InitializeCore()
 end
 
 function CORE:_InitializeBackend()
-    LOG:Info("CORE:_InitializeBackend()")
+    LOG:Trace("CORE:_InitializeBackend()")
     --MODULES.EventHandler.Initialize()
     MODULES.Comms:Initialize()
     MODULES.LedgerManager:Initialize()
 end
 
 function CORE:_InitializeFeatures()
-    LOG:Info("CORE:_InitializeFeatures()")
+    LOG:Trace("CORE:_InitializeFeatures()")
     MODULES.ProfileManager:Initialize()
     MODULES.RosterManager:Initialize()
     MODULES.PointManager:Initialize()
@@ -55,7 +68,7 @@ function CORE:_InitializeFeatures()
 end
 
 function CORE:_InitializeFrontend()
-    LOG:Info("CORE:_InitializeFrontend()")
+    LOG:Trace("CORE:_InitializeFrontend()")
     -- No GUI / OPTIONS should be dependent on each other ever, only on the managers
     for _, module in pairs(CLM.OPTIONS) do
         module:Initialize()
@@ -66,13 +79,13 @@ function CORE:_InitializeFrontend()
 end
 
 function CORE:_Enable()
-    LOG:Info("CORE:_Enable()")
+    LOG:Trace("CORE:_Enable()")
     MODULES.Comms:Enable()
     MODULES.LedgerManager:Enable()
 end
 
 function CORE:_SequentialInitialize(stage)
-    LOG:Info("CORE:_SequentialInitialize()")
+    LOG:Trace("CORE:_SequentialInitialize()")
     if stage == 0 then
         self:_InitializeCore()
     elseif stage == 1 then
@@ -96,7 +109,7 @@ function CORE:_ExecuteInitialize()
 end
 
 function CORE:_Initialize()
-    LOG:Info("CORE:_Initialize()")
+    LOG:Trace("CORE:_Initialize()")
     if not self._initialize_fired then
         CORE:_ExecuteInitialize()
         self:UnregisterEvent("GUILD_ROSTER_UPDATE")
@@ -104,14 +117,6 @@ function CORE:_Initialize()
 end
 
 function CORE:OnInitialize()
-    if type(CLM_Logs) ~= "table" then
-        CLM_Logs = {}
-    end
-
-    if type(CLM_DB) ~= "table" then
-        CLM_DB = {}
-    end
-
     self._initialize_fired = false
     CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
     SetGuildRosterShowOffline(true)
@@ -131,7 +136,7 @@ function CORE:OnDisable()
 end
 
 function CORE:GUILD_ROSTER_UPDATE(...)
-    LOG:Info("GUILD_ROSTER_UPDATE")
+    LOG:Trace("GUILD_ROSTER_UPDATE")
     local inGuild = IsInGuild()
     local numTotal = GetNumGuildMembers();
     if inGuild and numTotal ~= 0 then

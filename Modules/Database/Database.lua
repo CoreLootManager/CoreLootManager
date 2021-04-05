@@ -11,7 +11,7 @@ local function UpdateGuild()
 end
 
 function DB:Initialize()
-    LOG:Info("DB:Initialize()")
+    LOG:Trace("DB:Initialize()")
     -- Below API requires delay after loading to work after variables loaded event
     UpdateGuild()
 

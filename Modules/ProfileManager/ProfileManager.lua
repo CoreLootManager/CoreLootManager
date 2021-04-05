@@ -23,7 +23,7 @@ local LEDGER_PROFILE = CLM.MODELS.LEDGER.PROFILE
 local ProfileManager = { }
 
 function ProfileManager:Initialize()
-    LOG:Info("ProfileManager:Initialize()")
+    LOG:Trace("ProfileManager:Initialize()")
 
     self.cache = {
         profilesGuidMap = {},
@@ -140,7 +140,7 @@ end
 -- Functionalities
 
 function ProfileManager:FillFromGuild(selectedRanks, minLevel)
-    LOG:Info("ProfileManager:FillFromGuild()")
+    LOG:Trace("ProfileManager:FillFromGuild()")
 
     local rankFilterFn, minLevelFn
 
@@ -181,7 +181,7 @@ function ProfileManager:FillFromGuild(selectedRanks, minLevel)
 end
 
 function ProfileManager:FillFromRaid()
-    LOG:Info("ProfileManager:FillFromRaid()")
+    LOG:Trace("ProfileManager:FillFromRaid()")
     if not IsInRaid() then return end
     for i=1,40 do
         local name, _, _, _, _, class = GetRaidRosterInfo(i)
@@ -194,7 +194,7 @@ function ProfileManager:FillFromRaid()
 end
 
 function ProfileManager:AddTarget()
-    LOG:Info("ProfileManager:AddTarget()")
+    LOG:Trace("ProfileManager:AddTarget()")
     if UnitIsPlayer("target") then
         local GUID = UnitGUID("target")
         local name = UTILS.GetUnitName("target")

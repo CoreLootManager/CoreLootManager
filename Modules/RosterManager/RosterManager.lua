@@ -29,7 +29,7 @@ end
 
 -- Controller Roster Manger
 function RosterManager:Initialize()
-    LOG:Info("RosterManager:Initialize()")
+    LOG:Trace("RosterManager:Initialize()")
 
     -- Initialize Cache
     self.cache = {
@@ -176,7 +176,7 @@ function RosterManager:GetRosterByUid(uid)
 end
 
 function RosterManager:NewRoster()
-    LOG:Info("RosterManager:NewRoster()")
+    LOG:Trace("RosterManager:NewRoster()")
 
     local name = GenerateName()
     while self.cache.rosters[name] ~= nil do
@@ -191,14 +191,14 @@ function RosterManager:NewRoster()
 end
 
 function RosterManager:DeleteRosterByName(name)
-    LOG:Info("RosterManager:DeleteRosterByName()")
+    LOG:Trace("RosterManager:DeleteRosterByName()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return end
     LedgerManager:Submit(LEDGER_ROSTER.Delete:new(roster:UID()), true)
 end
 
 function RosterManager:RenameRoster(old, new)
-    LOG:Info("RosterManager:RenameRoster()")
+    LOG:Trace("RosterManager:RenameRoster()")
     local o = RosterManager:GetRosterByName(old)
     if o == nil then return end
     local n = RosterManager:GetRosterByName(new)
@@ -208,7 +208,7 @@ function RosterManager:RenameRoster(old, new)
 end
 
 function RosterManager:Copy(source, target, config, defaults, overrides, profiles)
-    LOG:Info("RosterManager:Copy()")
+    LOG:Trace("RosterManager:Copy()")
     local s = RosterManager:GetRosterByName(source)
     if s == nil then return end
     local t = RosterManager:GetRosterByName(target)
