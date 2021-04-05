@@ -44,6 +44,10 @@ function RosterManager:Initialize()
             LOG:Trace("mutator(RosterCreate)")
             local uid = entry:rosterUid()
             local name = entry:name()
+            if self.cache.rosters[name] or self.cache.rosterUidMap[uid] then
+                LOG:Fatal("Roster [%s:%s] already exists. Verify data integrity with other officers.", name, uid)
+                return
+            end
             local roster = Roster:New(uid)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
@@ -57,7 +61,10 @@ function RosterManager:Initialize()
             local uid = entry:rosterUid()
 
             local roster = self:GetRosterByUid(uid)
-            if roster == nil then return end
+            if roster == nil then
+                LOG:Warning("Removing non-existent roster [%s]", uid)
+                return
+            end
 
             local name = self.cache.rostersUidMap[uid]
             self.cache.rostersUidMap[uid] = nil
@@ -73,9 +80,15 @@ function RosterManager:Initialize()
                 local name = entry:name()
 
                 local o = self:GetRosterByUid(uid)
-                if o == nil then return end
+                if o == nil then
+                    LOG:Warning("Renaming non-existent roster [%s]", uid)
+                    return
+                end
                 local n = self:GetRosterByName(name)
-                if n ~= nil then return end
+                if n ~= nil then
+                    LOG:Error("Roster named [%s] already exists", name)
+                    return
+                end
 
                 local oldname = self.cache.rostersUidMap[uid]
                 -- Attach roster to new name
@@ -95,9 +108,15 @@ function RosterManager:Initialize()
                 local targetUid = entry:targetRosterUid()
 
                 local s = self:GetRosterByUid(sourceUid)
-                if s == nil then return end
+                if s == nil then
+                    LOG:Warning("Copying from non-existent roster [%s]", sourceUid)
+                    return
+                end
                 local t = self:GetRosterByUid(targetUid)
-                if t == nil then return end
+                if t == nil then
+                    LOG:Warning("Copying to non-existent roster [%s]", targetUid)
+                    return
+                end
 
                 if entry:config() then
                     t:CopyConfiguration(s)
@@ -124,7 +143,10 @@ function RosterManager:Initialize()
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
-                if roster == nil then return end
+                if roster == nil then
+                    LOG:Warning("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
 
                 roster:SetConfiguration(entry:config(), entry:value())
             end),
@@ -137,7 +159,10 @@ function RosterManager:Initialize()
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
-                if roster == nil then return end
+                if roster == nil then
+                    LOG:Warning("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
 
                 roster:SetDefaultSlotValue(entry:config(), entry:min(), entry:max())
             end),
@@ -146,13 +171,20 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateProfiles,
             (function(entry)
+                LOG:Trace("mutator(RosterUpdateProfiles)")
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
-                if roster == nil then return end
+                if roster == nil then
+                    LOG:Warning("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
 
                 local profiles = entry:profiles()
-                if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then return end
+                if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
+                    LOG:Warning("Empty profiles table in mutator(RosterUpdateProfiles)")
+                    return
+                end
 
                 if entry:remove() then
                     for _, iGUID in ipairs(profiles) do
@@ -245,6 +277,10 @@ function RosterManager:AddProfilesToRoster(name, profiles)
     LOG:Trace("RosterManager:AddProfilesToRoster()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
+    if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
+        LOG:Warning("Empty profiles table in AddProfilesToRoster()")
+        return
+    end
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, false), true)
 end
 
@@ -252,6 +288,10 @@ function RosterManager:RemoveProfilesFromRoster(name, profiles)
     LOG:Trace("RosterManager:RemoveProfilesFromRoster()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
+    if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
+        LOG:Warning("Empty profiles table in RemoveProfilesFromRoster()")
+        return
+    end
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, true), true)
 end
 

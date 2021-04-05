@@ -79,15 +79,15 @@ function PointManager:Initialize()
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
         if lag ~= 0 or uncommited ~= 0 then return end
         -- DEBUG Stuff
-        local stop = GetServerTime(); print("DONE IN " .. tostring(stop - start));
+        local stop = GetServerTime(); LOG:Debug("PointManager() DONE in %s sec", tostring(stop - start));
         local rosters = RosterManager:GetRosters()
         for rosterName, roster in pairs(rosters) do
-            print(UTILS.ColorCodeText(rosterName, "ff5522"))
+            LOG:Debug(UTILS.ColorCodeText(rosterName, "ff5522"))
             local standings = roster:Standings()
             for GUID, value in pairs(standings) do
                 local profile = ProfileManager:GetProfileByGuid(GUID)
                 if profile ~= nil then
-                    print(UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex) .. ": " .. tostring(value))
+                    LOG:Debug("%s: %s", UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex), tostring(value))
                 end
             end
         end

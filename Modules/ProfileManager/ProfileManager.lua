@@ -105,27 +105,45 @@ end
 
 function ProfileManager:NewProfile(GUID, name, class)
     LOG:Trace("ProfileManager:NewProfile()")
-    if GUID == nil then return end
-    if name == nil then return end
+    if GUID == nil or GUID == "" then
+        LOG:Debug("NewProfile(): Empty GUID")
+        return
+    end
+    if name == nil or name == "" then
+        LOG:Debug("NewProfile(): Empty name")
+        return
+    end
+    LOG:Debug("New profile: [%s]: %s", GUID, name)
     LedgerManager:Submit(LEDGER_PROFILE.Update:new(GUID, name, class), true)
 end
 
 function ProfileManager:RemoveProfile(GUID)
     LOG:Trace("ProfileManager:RemoveProfile()")
-    if GUID == nil then return end
+    if GUID == nil then
+        LOG:Debug("RemoveProfile(): Empty GUID")
+        return
+    end
+    LOG:Debug("Remove profile: [%s]", GUID)
     LedgerManager:Submit(LEDGER_PROFILE.Remove:new(GUID), true)
 end
 
 function ProfileManager:MarkAsAltByNames(main, alt)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local mainProfile = self:GetProfileByName(main)
-    if not typeof(mainProfile, Profile) then return RESULTS.IGNORE end
+    if not typeof(mainProfile, Profile) then
+        LOG:Debug("MarkAsAltByNames(): Invalid main")
+        return RESULTS.IGNORE
+    end
     local altProfile = self:GetProfileByName(alt)
-    if not typeof(altProfile, Profile) then return RESULTS.IGNORE end
+    if not typeof(altProfile, Profile) then
+        LOG:Debug("MarkAsAltByNames(): Invalid alt")
+        return RESULTS.IGNORE
+    end
     -- TODO: Protect from circular references / multi-level alt nesting
     local result
     if alt == main then
         if altProfile:Main() == "" then
+            LOG:Debug("Removal of empty main for %s", alt)
             return RESULTS.IGNORE
         else
             -- Remove link
@@ -134,8 +152,10 @@ function ProfileManager:MarkAsAltByNames(main, alt)
         end
     else
         if mainProfile:Main() ~= "" then
+            LOG:Debug("Alt -> Main chain for %s -> %s", alt, main)
             return RESULTS.IGNORE
         end
+        LOG:Debug("Alt -> Main linking for %s -> %s", alt, main)
         LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
         result = RESULTS.SUCCESS
     end
@@ -147,9 +167,11 @@ end
 
 function ProfileManager:FillFromGuild(selectedRanks, minLevel)
     LOG:Trace("ProfileManager:FillFromGuild()")
+    if LOG.SEVERITY.DEBUG >= LOG:GetSeverity() then
+        LOG:Debug("FillFromGuild: ranks: {%s}, minLevel: %s", UTILS.stringifyList(selectedRanks), minLevel)
+    end
 
     local rankFilterFn, minLevelFn
-
     if type(selectedRanks) == "table" then
         rankFilterFn = (function(rankIndex, _selectedRanks)
             if _selectedRanks[rankIndex] then

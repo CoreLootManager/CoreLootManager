@@ -276,3 +276,19 @@ function UTILS.capitalize(string)
     string = string or ""
     return string:sub(1,1):upper()..string:sub(2):lower()
 end
+
+function UTILS.stringifyList(list)
+    local string = ""
+    for _,v in ipairs(list) do
+        string = string .. tostring(v) .. ", "
+    end
+    return string:sub(1, -3)
+end
+
+function UTILS.stringifyDict(dict)
+    local string = ""
+    for k,v in pairs(dict) do
+        string = string .. tostring(k) .. ": " .. tostring(v) .. ", "
+    end
+    return string:sub(1, -3)
+end
