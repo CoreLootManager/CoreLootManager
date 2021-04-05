@@ -41,6 +41,7 @@ function RosterManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_ROSTER.Create,
         (function(entry)
+            LOG:Trace("mutator(RosterCreate)")
             local uid = entry:rosterUid()
             local name = entry:name()
             local roster = Roster:New(uid)
@@ -52,6 +53,7 @@ function RosterManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_ROSTER.Delete,
         (function(entry)
+            LOG:Trace("mutator(RosterDelete)")
             local uid = entry:rosterUid()
 
             local roster = self:GetRosterByUid(uid)
@@ -66,6 +68,7 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.Rename,
             (function(entry)
+                LOG:Trace("mutator(RosterRename)")
                 local uid = entry:rosterUid()
                 local name = entry:name()
 
@@ -86,6 +89,7 @@ function RosterManager:Initialize()
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.CopyData,
+            LOG:Trace("mutator(RosterCopyData)")
             (function(entry)
                 local sourceUid = entry:sourceRosterUid()
                 local targetUid = entry:targetRosterUid()
@@ -116,6 +120,7 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateConfigSingle,
             (function(entry)
+                LOG:Trace("mutator(RosterUpdateConfigSingle)")
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
@@ -128,6 +133,7 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateDefaultSingle,
             (function(entry)
+                LOG:Trace("mutator(RosterUpdateDefaultSingle)")
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
@@ -218,6 +224,7 @@ function RosterManager:Copy(source, target, config, defaults, overrides, profile
 end
 
 function RosterManager:SetRosterConfiguration(name, option, value)
+    LOG:Trace("RosterManager:SetRosterConfiguration()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
 
@@ -225,6 +232,7 @@ function RosterManager:SetRosterConfiguration(name, option, value)
 end
 
 function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
+    LOG:Trace("RosterManager:SetRosterDefaultSlotValue()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     local v = roster:GetDefaultSlotValue(slot)
@@ -234,24 +242,28 @@ function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
 end
 
 function RosterManager:AddProfilesToRoster(name, profiles)
+    LOG:Trace("RosterManager:AddProfilesToRoster()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, false), true)
 end
 
 function RosterManager:RemoveProfilesFromRoster(name, profiles)
+    LOG:Trace("RosterManager:RemoveProfilesFromRoster()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, true), true)
 end
 
 function RosterManager:WipeStandings()
+    LOG:Trace("RosterManager:WipeStandings()")
     for _, roster in pairs(self.cache.rosters) do
         roster:WipeStandings()
     end
 end
 
 function RosterManager:ExportRosters()
+    LOG:Trace("RosterManager:ExportRosters()")
     local db = CLM.MODULES.Database:Personal()
     db['rosters'] = self:GetRosters()
 end

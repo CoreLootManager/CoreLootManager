@@ -19,10 +19,6 @@ local Roster = CLM.MODELS.Roster
 local typeof = CLM.UTILS.typeof
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
--- local function round(value, decimals)
---     return tonumber((("%%.%df"):format(decimals)):format(value))
--- end
-
 local function mutator(entry, mutate)
     local roster = RosterManager:GetRosterByUid(entry:rosterUid())
     if roster == nil then
@@ -59,20 +55,20 @@ end
 
 local PointManager = {}
 function PointManager:Initialize()
-
+    LOG:Trace("PointManager:Initialize()")
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Modify,
-        (function(entry) mutator(entry, mutate_pdm) end),
+        (function(entry) LOG:Trace("mutator(DKPModify)"); mutator(entry, mutate_pdm) end),
         ACL_LEVEL.MANAGER)
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Set,
-        (function(entry) mutator(entry, mutate_pds) end),
+        (function(entry) LOG:Trace("mutator(DKPSet)"); mutator(entry, mutate_pds) end),
         ACL_LEVEL.OFFICER)
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Decay,
-        (function(entry) mutator(entry, mutate_pdd) end),
+        (function(entry) LOG:Trace("mutator(DKPDecay)"); mutator(entry, mutate_pdd) end),
         ACL_LEVEL.OFFICER)
 
         LedgerManager:RegisterOnRestart(function()
@@ -81,7 +77,8 @@ function PointManager:Initialize()
 
     local start = GetServerTime()
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
-        if lag ~= 0 or uncommited ~= 0 then return end -- DEBUG Stuff
+        if lag ~= 0 or uncommited ~= 0 then return end
+        -- DEBUG Stuff
         local stop = GetServerTime(); print("DONE IN " .. tostring(stop - start));
         local rosters = RosterManager:GetRosters()
         for rosterName, roster in pairs(rosters) do
@@ -94,9 +91,54 @@ function PointManager:Initialize()
                 end
             end
         end
+        start = GetServerTime()
     end)
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
+end
+
+function PointManager:UpdatePoints(roster, targets, value, action)
+    LOG:Trace("PointManager:UpdatePoints()")
+    if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
+        LOG:Error("PointManager:UpdatePoints(): Unknown action")
+        return
+    end
+    if targets == nil then
+        LOG:Error("PointManager:UpdatePoints(): Missing targets")
+        return
+    end
+    if type(value) ~= "number" then
+        LOG:Error("PointManager:UpdatePoints(): Value is not a number")
+        return
+    end
+
+    local uid
+    if typeof(roster, Roster) then
+        uid = roster:UID()
+    elseif type(roster) == "number" then
+        roster = RosterManager:GetRosterByUid(roster)
+        if roster == nil then return end
+        uid = roster:UID()
+    elseif type(roster) == "string" then
+        roster = RosterManager:GetRosterByName(roster)
+        if roster == nil then return end
+        uid = roster:UID()
+    end
+
+    if typeof(targets, Profile) or type(targets) == "number" or type(targets) == "string" then
+        targets = { targets }
+    end
+
+    local entry
+    if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
+        entry = LEDGER_DKP.Modify:new(uid, targets, value)
+    elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
+        entry = LEDGER_DKP.Set:new(uid, targets, value)
+    elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
+        entry = LEDGER_DKP.Decay:new(uid, targets, value)
+    end
+
+    LedgerManager:Submit(entry)
 end
 
 function PointManager:Debug(N)
@@ -176,54 +218,6 @@ function PointManager:Debug(N)
             PointManager:UpdatePoints(roster, playerList, value, entryType)
         end
     end
-end
-
--- function PointManager:Round(value)
---     return tonumber(self.roundingFormatter:format(value))
--- end
-
-function PointManager:UpdatePoints(roster, targets, value, action)
-    if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
-        LOG:Error("PointManager:UpdatePoints(): Unknown action")
-        return
-    end
-    if targets == nil then
-        LOG:Error("PointManager:UpdatePoints(): Missing targets")
-        return
-    end
-    if type(value) ~= "number" then
-        LOG:Error("PointManager:UpdatePoints(): Value is not a number")
-        return
-    end
-
-    local uid
-    if typeof(roster, Roster) then
-        uid = roster:UID()
-    elseif type(roster) == "number" then
-        roster = RosterManager:GetRosterByUid(roster)
-        if roster == nil then return end
-        uid = roster:UID()
-    elseif type(roster) == "string" then
-        roster = RosterManager:GetRosterByName(roster)
-        if roster == nil then return end
-        uid = roster:UID()
-    end
-
-    if typeof(targets, Profile) or type(targets) == "number" or type(targets) == "string" then
-        targets = { targets }
-    end
-
-    local entry
-    if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.Modify:new(uid, targets, value)
-    elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = LEDGER_DKP.Set:new(uid, targets, value)
-    elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = LEDGER_DKP.Decay:new(uid, targets, value)
-    end
-
-    LedgerManager:Submit(entry)
-
 end
 
 CONSTANTS.POINT_MANAGER_ACTION =

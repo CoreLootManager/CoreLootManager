@@ -117,6 +117,7 @@ function CORE:_Initialize()
 end
 
 function CORE:OnInitialize()
+    LOG:Trace("OnInitialize")
     self._initialize_fired = false
     CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
     SetGuildRosterShowOffline(true)

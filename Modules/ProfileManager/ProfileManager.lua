@@ -34,6 +34,7 @@ function ProfileManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Update,
         (function(entry)
+            LOG:Trace("mutator(ProfileUpdate)")
             local iGUID = entry:GUID()
             if type(iGUID) ~= "number" then return end
             local GUID = getGuidFromInteger(iGUID)
@@ -68,6 +69,7 @@ function ProfileManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Remove,
         (function(entry)
+            LOG:Trace("mutator(ProfileRemove)")
             local GUID = entry:GUID()
             if type(GUID) ~= "number" then return end
             GUID = getGuidFromInteger(GUID)
@@ -80,6 +82,7 @@ function ProfileManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Link,
         (function(entry)
+            LOG:Trace("mutator(ProfileLink)")
             local GUID = entry:GUID()
             if type(GUID) ~= "number" then return end
             GUID = getGuidFromInteger(GUID)
@@ -101,17 +104,20 @@ function ProfileManager:Initialize()
 end
 
 function ProfileManager:NewProfile(GUID, name, class)
+    LOG:Trace("ProfileManager:NewProfile()")
     if GUID == nil then return end
     if name == nil then return end
     LedgerManager:Submit(LEDGER_PROFILE.Update:new(GUID, name, class), true)
 end
 
 function ProfileManager:RemoveProfile(GUID)
+    LOG:Trace("ProfileManager:RemoveProfile()")
     if GUID == nil then return end
     LedgerManager:Submit(LEDGER_PROFILE.Remove:new(GUID), true)
 end
 
 function ProfileManager:MarkAsAltByNames(main, alt)
+    LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local mainProfile = self:GetProfileByName(main)
     if not typeof(mainProfile, Profile) then return RESULTS.IGNORE end
     local altProfile = self:GetProfileByName(alt)
@@ -207,10 +213,12 @@ function ProfileManager:AddTarget()
 end
 
 function ProfileManager:WipeAll()
+    LOG:Trace("ProfileManager:WipeAll()")
     self.cache = { profilesGuidMap = {}, profiles = {} }
 end
 
 function ProfileManager:ExportAll()
+    LOG:Trace("ProfileManager:ExportAll()")
     local db = CLM.MODULES.Database:Personal()
     db['profiles'] = self:GetProfiles()
 end
