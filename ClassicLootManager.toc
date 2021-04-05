@@ -2,9 +2,9 @@
 ## X-Min-Interface: 11306
 ## Title: Classic Loot Manager
 ## Notes: Point based Loot Manager (DKP / EPGP)
-## Author: CLM Development Team
+## Author: Lantis (WoW: Mirage Raceway EU <Essential> Alliance)
 ## X-License: MIT
-# OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, AceAddon-3.0
+# OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, LibLogger, AceAddon-3.0
 ## SavedVariables: CLM_DB, CLM_Logs
 ## LoadOnDemand: 0
 
@@ -13,6 +13,7 @@ Libs\LibStub\LibStub.lua
 Libs\LibDeflate\lib.xml
 Libs\LibSerialize\lib.xml
 Libs\LibLogger\lib.xml
+Libs\lua-eventsourcing\LibEventSourcing.xml
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 
 # ACE3
@@ -31,12 +32,12 @@ Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\AceTab-3.0\AceTab-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\lib-st-4.1.2\lib-st.xml
-Libs\lua-eventsourcing\LibEventSourcing.xml
 
 # Addon Core
 ClassicLootManager.lua
-Core\Logger.lua
-Core\Utils.lua
+Utils.lua
+
+Modules\Logger\Logger.lua
 
 # Addon models
 Modules\ProfileManager\Profile.lua

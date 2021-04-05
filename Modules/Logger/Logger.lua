@@ -31,7 +31,7 @@ function Logger:Initialize()
             desc = "Select logging level for troubleshooting",
             type = "select",
             values = LOG.SEVERITY_LEVEL,
-            set = function(i, v) LOG:SetSeverity(v) end,
+            set = function(i, v) print(v);LOG:SetSeverity(v) end,
             get = function(i) return LOG:GetSeverity() end
         },
     }
