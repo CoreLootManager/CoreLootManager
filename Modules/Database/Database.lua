@@ -7,7 +7,7 @@ local DB = {}
 
 local function UpdateGuild()
     DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. (GetGuildInfo("player") or "unguilded"))
-    LOG:Info(DB.server_faction_guild)
+    LOG:Debug("Using database: %s", DB.server_faction_guild)
 end
 
 function DB:Initialize()
@@ -27,6 +27,14 @@ function DB:Initialize()
     if type(CLM_DB[self.server_faction_guild]['ledger']) ~= "table" then
         CLM_DB[self.server_faction_guild]['ledger'] = {}
     end
+end
+
+function DB:Global()
+    return CLM_DB['global']
+end
+
+function DB:Logger()
+    return CLM_DB['global']['logger']
 end
 
 function DB:Personal()

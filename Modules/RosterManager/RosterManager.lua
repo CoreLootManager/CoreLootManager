@@ -44,7 +44,7 @@ function RosterManager:Initialize()
             LOG:Trace("mutator(RosterCreate)")
             local uid = entry:rosterUid()
             local name = entry:name()
-            if self.cache.rosters[name] or self.cache.rosterUidMap[uid] then
+            if self.cache.rosters[name] or self.cache.rostersUidMap[uid] then
                 LOG:Fatal("Roster [%s:%s] already exists. Verify data integrity with other officers.", name, uid)
                 return
             end
@@ -102,8 +102,8 @@ function RosterManager:Initialize()
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.CopyData,
-            LOG:Trace("mutator(RosterCopyData)")
             (function(entry)
+                LOG:Trace("mutator(RosterCopyData)")
                 local sourceUid = entry:sourceRosterUid()
                 local targetUid = entry:targetRosterUid()
 

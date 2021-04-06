@@ -278,6 +278,7 @@ function UTILS.capitalize(string)
 end
 
 function UTILS.stringifyList(list)
+    if not list then return "" end
     local string = ""
     for _,v in ipairs(list) do
         string = string .. tostring(v) .. ", "
@@ -286,6 +287,7 @@ function UTILS.stringifyList(list)
 end
 
 function UTILS.stringifyDict(dict)
+    if not dict then return "" end
     local string = ""
     for k,v in pairs(dict) do
         string = string .. tostring(k) .. ": " .. tostring(v) .. ", "

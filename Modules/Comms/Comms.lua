@@ -15,7 +15,6 @@ local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 local serdes = LibStub("LibSerialize")
 local codec = LibStub("LibDeflate")
 
-
 local CommsPrefix = "CLM"
 
 function Comms:Initialize()
@@ -65,7 +64,7 @@ function Comms:Register(prefix, callback, aclLevel)
 end
 
 function Comms:Send(prefix, message, distribution, target, priority)
-    LOG:Trace("Comms:Send()")
+    -- LOG:Trace("Comms:Send()")
     if not self.enabled then return false end
     -- Prefix
     prefix = _prefix(prefix)
@@ -110,7 +109,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
 end
 
 function Comms:OnReceive(prefix, message, distribution, sender)
-    LOG:Trace("Comms:OnReceive()")
+    -- LOG:Trace("Comms:OnReceive()")
     if not self.enabled then return false end
     -- Ignore messages from self
     if sender == whoami() then return end

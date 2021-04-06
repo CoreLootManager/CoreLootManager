@@ -22,38 +22,50 @@ CLM.CONSTANTS = {
 }
 CLM.GUI = {}
 CLM.OPTIONS = {}
-CLM.LOG = { verbose = true }
 
-if type(CLM_DB) ~= "table" then
-    CLM_DB = {}
-end
+CLM.LOG = LibStub("LibLogger"):New()
 
-if type(CLM_Logs) ~= "table" then
-    CLM_Logs = {}
-end
-
-CLM.LOG = LibStub("LibLogger"):New(CLM_Logs)
-CLM.LOG:SetSeverity(CLM.LOG.SEVERITY.TRACE)
-CLM.LOG:SetVerbosity(true)
-CLM.LOG:SetPrefix("CLM")
-
--- Local upvalues
 local CORE = CLM.CORE
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
+
+local function Initialize_SavedVariables()
+    if type(CLM_DB) ~= "table" then
+        CLM_DB = { 
+            global = {
+                version = 1,
+                logger = {
+                    severity = CLM.LOG.SEVERITY.WARNING,
+                    verbosity = false
+                }
+            }
+        }
+    end
+
+    if type(CLM_Logs) ~= "table" then
+        CLM_Logs = {}
+    end
+end
+
+local function Initialize_Logger()
+    LOG:SetSeverity(CLM_DB.global.logger.severity)
+    LOG:SetVerbosity(CLM_DB.global.logger.verbosity)
+    LOG:SetPrefix("CLM")
+    LOG:SetDatabase(CLM_Logs)
+end
 
 function CORE:_InitializeCore()
     LOG:Trace("CORE:_InitializeCore()")
 
     MODULES.Database:Initialize()
     MODULES.ConfigManager:Initialize()
-    MODULES.Logger:Initialize()
     MODULES.ACL:Initialize()
 end
 
 function CORE:_InitializeBackend()
     LOG:Trace("CORE:_InitializeBackend()")
     --MODULES.EventHandler.Initialize()
+    MODULES.Logger:Initialize()
     MODULES.Comms:Initialize()
     MODULES.LedgerManager:Initialize()
 end
@@ -97,6 +109,7 @@ function CORE:_SequentialInitialize(stage)
     elseif stage >= 4 then
         self:_Enable()
         LOG:Info("Initialization complete")
+        -- CORE:RegisterEvent("PLAYER_LOGOUT")
         return
     end
     C_Timer.After(0.1, function() CORE:_SequentialInitialize(stage + 1) end)
@@ -117,6 +130,12 @@ function CORE:_Initialize()
 end
 
 function CORE:OnInitialize()
+    -- Initialize SavedVariables
+    Initialize_SavedVariables()
+    --  Early Initialize logger
+    Initialize_Logger()
+
+    -- Initialize AddOn
     LOG:Trace("OnInitialize")
     self._initialize_fired = false
     CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
