@@ -5,9 +5,11 @@ if not LedgerFactory then
     return
 end
 
+local Util = LibStub("EventSourcing/Util")
 local ListSync = LibStub("EventSourcing/ListSync")
 local LogEntry = LibStub("EventSourcing/LogEntry")
 local StateManager = LibStub("EventSourcing/StateManager")
+local Logger = LibStub("LibLogger")
 
 --[[
 Params
@@ -28,32 +30,27 @@ Notes
 
 
 ]]--
-local function assertType(arg, name, expectedType, optional)
-    if optional and arg == nil then
-        return
-    end
 
-    if type(arg) ~=  expectedType then
-        error(string.format("Expected argument %s to be of type %s, got %s insead", name, expectedType, type(arg)))
-    end
-end
-local function assertFunction(arg, name, optional)
-    return assertType(arg, name, 'function', optional)
-end
-local function assertTable(arg, name, optional)
-    return assertType(arg, name, 'table', optional)
-end
 
 LedgerFactory.createLedger = function(table, send, registerReceiveHandler, authorizationHandler, sendLargeMessage,
-    updateInterval, batchSize)
-    assertTable(table, 'table')
-    assertFunction(send, 'send')
-    assertFunction(registerReceiveHandler, 'registerReceiveHandler')
-    assertFunction(sendLargeMessage, 'sendLargeMessage', true)
+    updateInterval, batchSize, logger)
+    Util.assertTable(table, 'table')
+    Util.assertFunction(send, 'send')
+    Util.assertFunction(registerReceiveHandler, 'registerReceiveHandler')
+    Util.assertFunction(sendLargeMessage, 'sendLargeMessage', true)
+    Util.assertLogger(logger, 'logger', true)
+
+    if not logger then
+        --[[
+            If calling code doesn't care about logs neither do we; so we set severity to the highest possible level.
+          ]]--
+        logger = Logger:New({})
+        logger:SetSeverity(Logger.SEVERITY.FATAL)
+    end
 
     local sortedList = LogEntry.sortedList(table)
-    local stateManager = StateManager:new(sortedList)
-    local listSync = ListSync:new(stateManager, send, registerReceiveHandler, authorizationHandler, sendLargeMessage)
+    local stateManager = StateManager:new(sortedList, logger)
+    local listSync = ListSync:new(stateManager, send, registerReceiveHandler, authorizationHandler, sendLargeMessage, logger)
 
     stateManager:setUpdateInterval(updateInterval or 500)
     stateManager:setBatchSize(batchSize or 50)

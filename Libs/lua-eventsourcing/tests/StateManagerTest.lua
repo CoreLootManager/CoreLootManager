@@ -1,12 +1,12 @@
 beginTests()
 
-local Util = LibStub("EventSourcing/Util")
+local Logger = LibStub("LibLogger")
 local StateManager = LibStub("EventSourcing/StateManager")
 local LogEntry = LibStub("EventSourcing/LogEntry")
 
 local testData = {}
 local sortedList = LogEntry.sortedList(testData)
-local stateManager = StateManager:new(sortedList)
+local stateManager = StateManager:new(sortedList, Logger:New())
 
 
 

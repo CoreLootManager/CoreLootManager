@@ -2,6 +2,7 @@ print("Starting bootstrap")
 
 require "tests/_wowstubs"
 require "libs/LibStub/LibStub"
+require "libs/LibLogger/LibLogger"
 require "source/Util"
 require "source/SortedList"
 require "source/LogEntry"

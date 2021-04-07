@@ -65,7 +65,7 @@ local function updateState(stateManager)
     if stateManager.lastAppliedIndex > #entries
             or (stateManager.lastAppliedEntry ~= nil and entries[stateManager.lastAppliedIndex] ~= stateManager.lastAppliedEntry)
     then
-        print("Detected list change, restarting state calc")
+        stateManager.logger:Info("Detected non-chronological list change")
         stateManager:restart()
     end
     while applied < stateManager.batchSize and stateManager.lastAppliedIndex < #entries do
@@ -81,17 +81,20 @@ local function updateState(stateManager)
 end
 -- END PRIVATE
 
-function StateManager:new(list)
+function StateManager:new(list, logger)
+    Util.assertTable(list, 'list')
+    Util.assertLogger(logger)
+
     local o = {}
     setmetatable(o, self)
     self.__index = self
 
     o.list  = list
+    o.logger = logger
     o.uncommittedEntries = {}
     o.handlers = {}
     o.batchSize = 1
     o.metatables = {}
-    o.errorCount = 0
     o.listeners = {}
     o.lastTick = 0
     o.measuredInterval = 0
@@ -147,8 +150,6 @@ end
 
 function StateManager:registerHandler(eventType, handler)
     if eventType == nil or type(eventType) ~= "table" or eventType._cls == nil then
-        --print(eventType)
-        --Util.DumpTable(eventType)
         error("Event does not seem to have been created using LogEntry:extend()")
     end
     self.handlers[eventType._cls] = handler
@@ -168,7 +169,6 @@ function StateManager:catchup()
         self:castLogEntry(entry)
         applyEntry(self, entry, self.lastAppliedIndex + 1)
     end
-    self.errorCount = 0
     self:trigger(EVENT.STATE_CHANGED)
 end
 
@@ -215,18 +215,10 @@ function StateManager:setUpdateInterval(interval)
 
         local success, message = pcall(updateState, self)
         if (not success) then
-            error(message)
-            print(message)
-            self.errorCount = self.errorCount + 1
-        else
-            self.errorCount = 0
+            self.ticker:Cancel()
+            self.logger:Fatal("State update failed with error: %s", message)
         end
 
-        if self.errorCount >= 10 then
-            -- not strictly needed since the error() call below will also cancel the ticker
-            self.ticker:Cancel()
-            error("State manager auto update stopped, got 10 consecutive errors")
-        end
     end)
 end
 
@@ -235,6 +227,7 @@ function StateManager:getUpdateInterval()
 end
 
 function StateManager:restart()
+    self.logger:Info("Restarting state manager")
     self.lastAppliedIndex = 0
     self.lastAppliedEntry = nil
     self.stateCheckSum = 0
