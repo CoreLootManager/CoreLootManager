@@ -1,0 +1,9 @@
+## Interface: 11306
+## Title: Lib: LibLogger
+## Notes: Python-like logging library with multiple severity levels and configurable verbosity.
+## Author: Lantis (WoW: Danteril at Mirage Raceway-EU (Alliance))
+## Version: 1.0.0
+## X-Category: Library
+## X-License: MIT
+
+lib.xml
