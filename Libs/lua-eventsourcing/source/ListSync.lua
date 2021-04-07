@@ -113,9 +113,9 @@ local function handleAdvertiseMessage(message, sender, distribution, stateManage
         local hash, count = weekHash(listSync, weekHashCount[1])
         advertiseWeekHashInhibitorSet(listSync, weekHashCount[1])
         if  hash == weekHashCount[2] and count == weekHashCount[3] then
-            print(string.format("Received week %s hash from %s, we are in sync", weekHashCount[1], sender))
+            listSync.logger:Info("Received week %s hash from %s, we are in sync", weekHashCount[1], sender)
         elseif requestWeekInhibitorCheck(listSync, weekHashCount[1]) then
-            print(string.format("Requesting data for week %s", weekHashCount[1]))
+            listSync.logger:Info("Requesting data for week %s", weekHashCount[1])
             requestWeekInhibitorSet(listSync, weekHashCount[1])
             send(listSync, RequestWeekMessage.create(weekHashCount[1]), "GUILD")
         end
@@ -131,10 +131,10 @@ local function handleWeekDataMessage(message, sender, distribution, stateManager
             stateManager:queueRemoteEvent(entry)
             count = count + 1
         else
-            print(string.format("Dropping event from sender %s", sender))
+            listSync.logger:Warning("Dropping event from unauthorized sender %s", sender)
         end
     end
-    print(string.format("Enqueued %d events for week %s from remote received from %s via %s", count, message.week, sender, distribution))
+    listSync.logger:Info("Enqueued %d events for week %s from remote received from %s via %s", count, message.week, sender, distribution)
 end
 
 local function handleBulkDataMessage(message, sender, distribution, stateManager, listSync)
@@ -146,10 +146,10 @@ local function handleBulkDataMessage(message, sender, distribution, stateManager
             stateManager:queueRemoteEvent(entry)
             count = count + 1
         else
-            print(string.format("Dropping event from sender %s", sender))
+            listSync.logger:Warning("Dropping event from unauthorized sender %s", sender)
         end
     end
-    print(string.format("Enqueued %d events from remote received from %s via %s", count, sender, distribution))
+    listSync.logger:Info("Enqueued %d events from remote received from %s via %s", count, sender, distribution)
 end
 
 local function handleRequestWeekMessage(message, sender, distribution, stateManager, listSync)
@@ -168,26 +168,6 @@ local function handleRequestWeekMessage(message, sender, distribution, stateMana
         listSync:weekSyncViaWhisper(sender, message.week)
     end
 
--- todo
---
---    elseif self:isSendingEnabled() and message.type == MESSAGE.REQUESTWEEK then
---    -- If we don't have the same week hash we ignore the request
---    local hash, count = self:weekHash(message.week)
---    if  hash ~= message.hash or count ~= message.count then
---    print(string.format("Ignoring week request for week %d with hash %d from %s, we are not in sync",
---    message.week, message.hash))
---    return
---    end
---
---    if distribution == "WHISPER" then
---    self:weekSyncViaWhisper(sender, message.week)
---    elseif distribution == "GUILD" then
---    -- We need to prevent hammering the guild comms with updates.
---    -- Every agent has an upper limit on sending a week twice (ie send at most once every minute)
---    --
---    -- temp fix: always respond via whisper.
---    self:weekSyncViaWhisper(sender, message.week)
---    end
 end
 
 
@@ -197,7 +177,7 @@ local function handleMessage(self, message, distribution, sender)
     end
 
     if not Message.cast(message) then
-        print(string.format("Ignoring invalid message from %s", sender))
+        self.logger:Warning("Ignoring invalid message from %s", sender)
         return
     end
 
@@ -221,16 +201,13 @@ local function advertiseWeekHashInhibitorCheckOrSet(listSync, week)
     return false
 end
 
-local function sendSecure(listSync, message, distribution, target)
-    listSync.sendSecure(message, distribution, target, function(_, sent, total)
-        print(string.format("Sending data %d out of %d", sent, total))
-    end)
-end
-
-function ListSync:new(stateManager, sendFunction, registerReceiveHandler, authorizationHandler, sendSecureFunction)
-    if getmetatable(stateManager) ~= StateManager then
-        error("stateManager must be an instance of StateManager")
-    end
+function ListSync:new(stateManager, sendMessage, registerReceiveHandler, authorizationHandler, sendLargeMessage, logger)
+    Util.assertInstanceOf(stateManager, StateManager)
+    Util.assertFunction(sendMessage, "send")
+    Util.assertFunction(registerReceiveHandler, "registerReceiveHandler")
+    Util.assertFunction(authorizationHandler, "authorizationHandler")
+    Util.assertFunction(sendLargeMessage, "sendLargeMessage", true)
+    Util.assertLogger(logger)
 
 
 
@@ -239,9 +216,11 @@ function ListSync:new(stateManager, sendFunction, registerReceiveHandler, author
     self.__index = self
 
     o.advertiseTicker = nil
-    o.send = sendFunction
-    o.sendSecure = sendSecureFunction or sendFunction
+    o.defaultAdvertiseCount = 4
+    o.send = sendMessage
+    o.sendLargeMessage = sendLargeMessage or sendMessage
     o.authorizationHandler = authorizationHandler
+    o.logger = logger
 
     o._stateManager = stateManager
     o._weekHashCache = {
@@ -311,7 +290,7 @@ function ListSync:weekSyncViaGuild(week)
     for entry in weekEntryIterator(self, week) do
         message:addEntry(self._stateManager:createListFromEntry(entry))
     end
-    sendSecure(self, message, "GUILD")
+    self.sendLargeMessage(message, "GUILD")
 end
 
 function ListSync:fullSyncViaWhisper(target)
@@ -337,9 +316,9 @@ function ListSync:enableSending()
         -- Get week hash for the last 4 weeks.
         local now = Util.time()
         local currentWeek = Util.WeekNumber(now)
-        print("Announcing hashes of last 4 weeks")
+        self.logger:Info("Announcing hashes of last %d weeks", self.defaultAdvertiseCount)
         local message = AdvertiseHashMessage.create()
-        for i = 0, 3 do
+        for i = 0, self.defaultAdvertiseCount - 1 do
             if (advertiseWeekHashInhibitorCheckOrSet(self, currentWeek - i)) then
                 local hash, count = weekHash(self, currentWeek - i)
                 message:addHash(currentWeek - i, hash, count)
@@ -347,9 +326,10 @@ function ListSync:enableSending()
             end
         end
         if (message:hashCount() > 0) then
+            self.logger:Trace("Sending hashes for %d weeks", message:hashCount())
             send(self, message, "GUILD")
         else
-            print("Skipping due to inhibition")
+            self.logger:Info("Skipping send since all weeks are inhibited")
         end
     end)
 end

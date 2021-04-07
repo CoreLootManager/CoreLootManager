@@ -14,17 +14,15 @@ local Util = LibStub("EventSourcing/Util")
  @param compare the comparison function to use. This function should return -1 if a < b, 0 if a == b and 1 if a > b.
 ]]--
 function SortedList:new(data, compare, unique)
+    Util.assertTable(data, "data")
+    Util.assertFunction(compare, "compare")
+    Util.IsSorted(data, compare)
+
     local o = {}
     setmetatable(o, self)
     self.__index = self
 
     o._entries  = data or {}
-    if type(o._entries) ~= 'table' then
-        error('Entries not initialized to a table')
-    end
-    if type(compare) ~= 'function' then
-        error('Argument missing: compare function')
-    end
     o._compare = compare
     o._unique = unique or false
     o._state = 1
@@ -104,109 +102,4 @@ end
 
 function SortedList:searchGreaterThanOrEqual(entry)
     return Util.BinarySearch(self._entries, entry, self._compare)
-end
-
-
-
-function SortedList.TestUniqueInsert()
-
-    local cases = {
-        { list = { 2, 1}, insert = 4, sorter = Util.InvertSorter(function(a, b)
-            if a < b then
-                return -1
-            elseif a > b then
-                return 1
-            else
-                return 0
-            end
-        end) },
-        { list = { }, insert = 4},
-        { list = { 1, 5}, insert = 4},
-        { list = { { x = 4 }, { x = 6 }}, insert = { x = 2 }, sorter = Util.CreateFieldSorter('x') },
-        { list = { { x = 4 }, { x = 6 }}, insert = { x = 5}, sorter = Util.CreateFieldSorter('x') }
-    }
-
-
-    for _, v in ipairs(cases) do
-        local compare = v.sorter or function(a, b)
-            if a < b then
-                return -1
-            elseif a > b then
-                return 1
-            else
-                return 0
-            end
-        end
-        local sortedList = SortedList:new(v.list, compare)
-        local startLength = sortedList:length()
-        sortedList:insert(v.insert)
-        if compare(v.insert, v.insert) ~= 0 then
-            print("Test FAIL, compare not correct")
-        end
-
-        sortedList:uniqueInsert(v.insert)
-
-
-        if not Util.IsSorted(sortedList:entries(), compare) or sortedList:length() - startLength > 1 then
-
-            io.write(string.format("Test FAIL got length %d, expected %d\n", sortedList:length(), startLength + 1))
---            Util.DumpTable({
---                insert = v.insert,
---                list = v.list
---            })
-        else
-            print("Test PASS")
-        end
-
-    end
-
-
-end
-
-function SortedList.TestInsert()
-
-    local cases = {
-        { list = { 2, 1}, insert = 4, sorter = Util.InvertSorter(function(a, b)
-            if a < b then
-                return -1
-            elseif a > b then
-                return 1
-            else
-                return 0
-            end
-        end) },
-        { list = { }, insert = 4},
-        { list = { 1, 5}, insert = 4},
-        { list = { { x = 4 }, { x = 6 }}, insert = { x = 2 }, sorter = Util.CreateFieldSorter('x') },
-        { list = { { x = 4 }, { x = 6 }}, insert = { x = 5}, sorter = Util.CreateFieldSorter('x') }
-    }
-
-
-    for _, v in ipairs(cases) do
-        local compare = v.sorter or function(a, b)
-            if a < b then
-                return -1
-            elseif a > b then
-                return 1
-            else
-                return 0
-            end
-        end
-        local sortedList = SortedList:new(v.list, compare)
-        sortedList:insert(v.insert)
-
-        if not Util.IsSorted(sortedList:entries(), compare) then
-
-            io.write("Test FAIL =>")
-            Util.DumpTable({
-                insert = v.insert,
-                list = v.list
-            })
-        else
-            print("Test PASS")
-        end
-
-    end
-
-
 end

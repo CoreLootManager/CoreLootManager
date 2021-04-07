@@ -162,38 +162,7 @@ function Util.wipe(data)
 end
 
 
-function Util.TestBinarySearch()
-    local comparator = function(a, b)
-        if a < b then
-            return -1
-        elseif a > b then
-            return 1
-        else
-            return 0
-        end
-    end
-    local cases = {
-        { list = { 1, 2}, search = 2, expected = 2 },
-        { list = { 1, 2, 3}, search = 2, expected = 2 },
-        { list = { 1, 2, 3, 4, 5, 6}, search = 14, expected = nil },
-        { list = { 1, 2, 3, 4, 5, 6}, search = 2, expected = 2 },
-        { list = { 10, 20, 30, 40, 50, 60}, search = 20, expected = 2 },
-        { list = { 1, 2, 4, 5, 6}, search = 4, expected = 3 },
-        { list = { 1, 2, 3, 5, 6}, search = 4, expected = 4 }
 
-    }
-
-    for _, v in ipairs(cases) do
-        local result = Util.BinarySearch(v.list, v.search, comparator)
-        if result ~= v.expected then
-            print("Test FAIL: [", table.concat(v.list, ', '), "], search: ", v.search, " expected: ", v.expected, " got: ", result)
-        else
-            print("Test PASS: [", table.concat(v.list, ', '), "], search: ", v.search, " expected: ", v.expected, " got: ", result)
-        end
-
-    end
-
-end
 
 function Util.IntegerToBytes(number)
     return math.floor(number / 2^24),
@@ -238,7 +207,6 @@ function Util.IntegerChecksumCoroutine()
     end)
 end
 
---Util.TestBinarySearch()
 local defaultCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 function Util.random(length, alternativeCharset)
@@ -275,4 +243,54 @@ function Util.guid()
         Util.random(4, hex),
         Util.random(12, hex),
     }, '-')
+end
+
+function Util.assertType(arg, name, expectedType, optional)
+    if optional and arg == nil then
+        return
+    end
+
+    if type(arg) ~=  expectedType then
+        error(string.format("Expected argument %s to be of type %s, got %s insead", name, expectedType, type(arg)))
+    end
+end
+
+function Util.assertFunction(arg, name, optional)
+    return Util.assertType(arg, name, 'function', optional)
+end
+
+function Util.assertTable(arg, name, optional)
+    return Util.assertType(arg, name, 'table', optional)
+end
+
+function Util.assertTableWithFunctions(arg, funcs, name)
+    Util.assertTable(arg, name)
+    Util.assertTable(funcs)
+    for _, v in ipairs(funcs) do
+        Util.assertFunction(arg[v], string.format("%s:%s", name, v))
+    end
+end
+
+function Util.assertLogger(arg, optional)
+    if optional and arg == nil then
+        return
+    end
+    Util.assertTableWithFunctions(arg, {
+        "Warning",
+        "Info",
+        "Error",
+        "Trace",
+        "Debug",
+        "Fatal"
+    }, "logger")
+end
+
+function Util.assertInstanceOf(arg, type, typeName, optional)
+    if optional and arg == nil then
+        return
+    end
+    Util.assertTable(arg)
+    if getmetatable(arg) ~= type then
+        error(string.format("Argument must be of type %s", typeName))
+    end
 end

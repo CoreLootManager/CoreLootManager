@@ -4,8 +4,12 @@ sources:
     name: LibStub
     rev: master
     type: git
-    # sparse_paths:
-      # - "LibStub.lua"
+    sparse_paths:
+      - "LibStub.lua"
+  - repo: https://github.com/lantisnt/LibLogger
+    name: LibLogger
+    rev: v1.1.1
+    type: git
 sources_locked:
 
 default_group: ''
