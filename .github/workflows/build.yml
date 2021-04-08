@@ -1,0 +1,45 @@
+name: Workflow
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  release:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install gitman
+        run: pipx install gitman
+      - name: install dependencies
+        run: gitman install
+      - run: mkdir ClassicLootManager
+      - run: mv `ls | grep -v '^ClassicLootManager$'` ClassicLootManager
+      - run: zip -r ClassicLootManager.zip ClassicLootManager -x '*.git*'
+      - name: GitHub Release
+        uses: Roang-zero1/github-create-release-action@master
+        with:
+          version_regex: ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifact to github
+        uses: fnkr/github-action-ghr@v1
+        env:
+          GHR_PATH: LibEventSourcing.zip
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  lint:
+    name: Run luacheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install gitman
+        run: pipx install gitman
+      - name: install dependencies
+        run: gitman install
+      - uses: leafo/gh-actions-lua@v8.0.0
+        with:
+          luaVersion: "5.1.5"
+      - name: luacheck
+        uses: nebularg/actions-luacheck@v1.1.0
+        with:
+          files: ClassicLootManager.lua Utils.lua Models/ Modules/
