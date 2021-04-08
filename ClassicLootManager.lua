@@ -31,7 +31,7 @@ local MODULES = CLM.MODULES
 
 local function Initialize_SavedVariables()
     if type(CLM_DB) ~= "table" then
-        CLM_DB = { 
+        CLM_DB = {
             global = {
                 version = 1,
                 logger = {
