@@ -1,8 +1,8 @@
-name: Workflow
+name: Core
 on:
   push:
-    tags:
-      - 'v*'
+    # tags:
+      # - 'v*'
 jobs:
   release:
     name: Build and deploy
