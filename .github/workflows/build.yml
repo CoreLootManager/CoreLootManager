@@ -13,9 +13,11 @@ jobs:
         run: pipx install gitman
       - name: install dependencies
         run: gitman install
-      - name: Pack
+      - name: mkdir
         run: mkdir ClassicLootManager
+      - name: Prepare sources
         run: mv `ls | grep -v '^ClassicLootManager$'` ClassicLootManager
+      - name: Pack
         run: zip -r ClassicLootManager.zip ClassicLootManager -x '*.git*'
       - name: GitHub Deploy
         uses: Roang-zero1/github-create-release-action@master
