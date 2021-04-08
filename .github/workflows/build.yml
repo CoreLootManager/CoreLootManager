@@ -1,8 +1,8 @@
 name: Core
 on:
   push:
-    # tags:
-      # - 'v*'
+    tags:
+      - 'v*'
 jobs:
   release:
     name: Build and deploy
@@ -32,10 +32,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: install gitman
-        run: pipx install gitman
-      - name: install dependencies
-        run: gitman install
+      # - name: install gitman
+      #   run: pipx install gitman
+      # - name: install dependencies
+      #   run: gitman install
       - uses: leafo/gh-actions-lua@v8.0.0
         with:
           luaVersion: "5.1.5"
