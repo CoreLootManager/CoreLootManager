@@ -1,1 +1,3 @@
 .vscode
+Libs/lua-eventsourcing
+Libs/LibLogger

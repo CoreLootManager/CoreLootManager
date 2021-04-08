@@ -5,9 +5,9 @@ sources:
     #rev:  v0.0.22
     rev:  master
     type: git
-
-location: Libs
-sources:
+    sparse_paths:
+      - "/*"
+      - "!/.gitignore"
   - repo: https://github.com/lantisnt/LibLogger.git
     name: LibLogger
     rev:  v1.1.1
