@@ -5,6 +5,7 @@ local LOG = CLM.LOG
 local MODULES =  CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
+local MODELS = CLM.MODELS
 
 local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 
@@ -12,12 +13,12 @@ local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
 
-local LEDGER_DKP = CLM.MODELS.LEDGER.DKP
-local Profile = CLM.MODELS.Profile
-local Roster = CLM.MODELS.Roster
+local LEDGER_DKP = MODELS.LEDGER.DKP
+local Profile = MODELS.Profile
+local Roster = MODELS.Roster
 
-local typeof = CLM.UTILS.typeof
-local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
+local typeof = UTILS.typeof
+local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local function mutator(entry, mutate)
     local roster = RosterManager:GetRosterByUid(entry:rosterUid())
@@ -33,6 +34,8 @@ local function mutator(entry, mutate)
         local GUID = getGuidFromInteger(target)
         if roster:IsProfileInRoster(GUID) then
             standings[GUID] = mutate(standings[GUID], value)
+            -- TODO add to roster point operation list
+            -- TODO add to profile point operation list
         else
             -- TODO: Add  Profile to roster? Store in anonymous profile?
             LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
@@ -111,20 +114,14 @@ function PointManager:UpdatePoints(roster, targets, value, action)
         LOG:Error("PointManager:UpdatePoints(): Value is not a number")
         return
     end
-
-    local uid
-    if typeof(roster, Roster) then
-        uid = roster:UID()
-    elseif type(roster) == "number" then
-        roster = RosterManager:GetRosterByUid(roster)
-        if roster == nil then return end
-        uid = roster:UID()
-    elseif type(roster) == "string" then
-        roster = RosterManager:GetRosterByName(roster)
-        if roster == nil then return end
-        uid = roster:UID()
+    if not typeof(roster, Roster) then
+        LOG:Error("PointManager:UpdatePoints(): Missing valid roster")
+        return
     end
 
+    local uid = roster:UID()
+
+    -- Always a list, even for single entry
     if typeof(targets, Profile) or type(targets) == "number" or type(targets) == "string" then
         targets = { targets }
     end
@@ -136,6 +133,12 @@ function PointManager:UpdatePoints(roster, targets, value, action)
         entry = LEDGER_DKP.Set:new(uid, targets, value)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
         entry = LEDGER_DKP.Decay:new(uid, targets, value)
+    end
+
+    local _targets = entry:targets()
+    if not _targets or #_targets then
+        LOG:Warning("PointManager:UpdatePoints(): Empty targets list")
+        return
     end
 
     LedgerManager:Submit(entry)

@@ -55,11 +55,7 @@ Modules\LedgerManager\LedgerManager.lua
 Modules\ProfileManager\ProfileManager.lua
 Modules\RosterManager\RosterManager.lua
 Modules\PointManager\PointManager.lua
-#--- NOT IMPLEMENTED -----#
-Modules\EventHandler\EventHandler.lua
 Modules\LootManager\LootManager.lua
-#--------#
-
 
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua

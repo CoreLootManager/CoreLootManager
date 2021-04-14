@@ -383,3 +383,10 @@ function RosterManagerOptions:UpdateOptions()
 end
 
 OPTIONS.RosterManager = RosterManagerOptions
+
+
+-- local function GameTooltip_OnTooltipSetItem(tooltip)
+--     tooltip:AddLine("DUPA 8 DEBUG")
+--     tooltip:Show()
+-- end
+-- tooltip:HookScript("OnTooltipSetItem", GameTooltip_OnTooltipSetItem)

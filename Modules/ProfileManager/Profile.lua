@@ -1,8 +1,5 @@
 local _, CLM = ...
 
--- local UTILS =  CLM.UTILS
--- local getIntegerGuid = UTILS.getIntegerGuid
-
 local Profile = {}
 
 function Profile:New(name, class, spec, main)

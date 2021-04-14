@@ -182,6 +182,7 @@ function UTILS.GetGUIDFromEntry(e)
         return nil
     end
 end
+local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 
 function UTILS.CreateGUIDList(playerList)
     local playerGUIDList = {}
@@ -189,7 +190,7 @@ function UTILS.CreateGUIDList(playerList)
     -- We expect list of either: GUID in string/integer form or profile
     -- List is expected always
     for _, p in ipairs(playerList) do
-        GUID = UTILS.GetGUIDFromEntry(p)
+        GUID = GetGUIDFromEntry(p)
         if GUID ~= nil then
             table.insert(playerGUIDList, GUID)
         end

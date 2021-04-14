@@ -76,4 +76,8 @@ function LedgerManager:Submit(entry, catchup)
     end
 end
 
+function LedgerManager:Remove(entry)
+    self.ledger.ignoreEntry(entry)
+end
+
 MODULES.LedgerManager = LedgerManager
