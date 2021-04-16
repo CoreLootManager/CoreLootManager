@@ -11,10 +11,10 @@ local LogEntry  = LibStub("EventSourcing/LogEntry")
 local Award     = LogEntry:extend("IA")
 local Revoke    = LogEntry:extend("IR")
 
-function Award:new(rosterUid, player, itemId, value)
+function Award:new(rosterUid, profile, itemId, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.p = GetGUIDFromEntry(player) or 0
+    o.p = GetGUIDFromEntry(profile) or 0
     o.i = tonumber(itemId) or 0
     o.v = tonumber(value) or 0
     return o
@@ -24,7 +24,7 @@ function Award:rosterUid()
     return self.r
 end
 
-function Award:player()
+function Award:profile()
     return self.p
 end
 
@@ -41,10 +41,10 @@ function Award:fields()
     return awardFields
 end
 
-function Revoke:new(rosterUid, player, itemId, value)
+function Revoke:new(rosterUid, profile, itemId, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.p = GetGUIDFromEntry(player) or 0
+    o.p = GetGUIDFromEntry(profile) or 0
     o.i = tonumber(itemId) or 0
     o.v = tonumber(value) or 0
     return o
@@ -54,7 +54,7 @@ function Revoke:rosterUid()
     return self.r
 end
 
-function Revoke:player()
+function Revoke:profile()
     return self.p
 end
 

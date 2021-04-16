@@ -4,20 +4,23 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local MODULES = CLM.MODULES
+local MODELS = CLM.MODELS
 local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 local LEDGER_ROSTER = CLM.MODELS.LEDGER.ROSTER
 local UTILS = CLM.UTILS
 
-local capitalize = UTILS.capitalize
-
 local LedgerManager = MODULES.LedgerManager
 local ProfileManager = MODULES.ProfileManager
 
+local Profile = MODELS.Profile
+local Loot = MODELS.Loot
+
 -- local whoami = UTILS.WhoAmI
+local typeof = UTILS.typeof
+local capitalize = UTILS.capitalize
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local Roster = CLM.MODELS.Roster
--- local RosterLedger = CLM.MODELS.LEDGER.Roster
 
 local RosterManager = { } -- Roster Manager Module
 
@@ -198,6 +201,10 @@ function RosterManager:Initialize()
             end),
             ACL_LEVEL.OFFICER)
 
+        LedgerManager:RegisterOnRestart(function()
+            self:WipeAll()
+        end)
+
     MODULES.ConfigManager:RegisterUniversalExecutor("rm", "RosterManager", self)
 end
 
@@ -295,10 +302,35 @@ function RosterManager:RemoveProfilesFromRoster(name, profiles)
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, true), true)
 end
 
+function RosterManager:AddLootToRoster(roster, loot, profile)
+    LOG:Trace("RosterManager:AddLootToRoster()")
+    if not typeof(roster, Roster) then
+        LOG:Warning("RosterManager:AddLootToRoster(): Invalid roster object")
+        return
+    end
+    if not typeof(profile, Profile) then
+        LOG:Warning("RosterManager:AddLootToRoster(): Invalid profile object")
+        return
+    end
+    if not typeof(loot, Loot) then
+        LOG:Warning("RosterManager:AddLootToRoster(): Invalid loot object")
+        return
+    end
+    roster:AddLoot(loot, profile)
+end
+
 function RosterManager:WipeStandings()
     LOG:Trace("RosterManager:WipeStandings()")
     for _, roster in pairs(self.cache.rosters) do
         roster:WipeStandings()
+    end
+end
+
+function RosterManager:WipeAll()
+    LOG:Trace("RosterManager:WipeAll()")
+    for _, roster in pairs(self.cache.rosters) do
+        roster:WipeStandings()
+        roster:WipeLoot()
     end
 end
 

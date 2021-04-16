@@ -74,33 +74,29 @@ function PointManager:Initialize()
         (function(entry) LOG:Trace("mutator(DKPDecay)"); mutator(entry, mutate_pdd) end),
         ACL_LEVEL.OFFICER)
 
-        LedgerManager:RegisterOnRestart(function()
-            RosterManager:WipeStandings()
-        end)
-
     local start = GetServerTime()
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
         if lag ~= 0 or uncommited ~= 0 then return end
         -- DEBUG Stuff
-        local stop = GetServerTime(); LOG:Debug("PointManager() DONE in %s sec", tostring(stop - start));
-        local rosters = RosterManager:GetRosters()
-        for rosterName, roster in pairs(rosters) do
-            LOG:Debug(UTILS.ColorCodeText(rosterName, "ff5522"))
-            local standings = roster:Standings()
-            for GUID, value in pairs(standings) do
-                local profile = ProfileManager:GetProfileByGuid(GUID)
-                if profile ~= nil then
-                    LOG:Debug("%s: %s", UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex), tostring(value))
-                end
-            end
-        end
-        start = GetServerTime()
+        -- local stop = GetServerTime(); LOG:Debug("PointManager() DONE in %s sec", tostring(stop - start));
+        -- local rosters = RosterManager:GetRosters()
+        -- for rosterName, roster in pairs(rosters) do
+        --     LOG:Debug(UTILS.ColorCodeText(rosterName, "ff5522"))
+        --     local standings = roster:Standings()
+        --     for GUID, value in pairs(standings) do
+        --         local profile = ProfileManager:GetProfileByGuid(GUID)
+        --         if profile ~= nil then
+        --             LOG:Debug("%s: %s", UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex), tostring(value))
+        --         end
+        --     end
+        -- end
+        -- start = GetServerTime()
     end)
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
 end
 
-function PointManager:UpdatePoints(roster, targets, value, action)
+function PointManager:UpdatePoints(roster, targets, value, action, forceInstant)
     LOG:Trace("PointManager:UpdatePoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdatePoints(): Unknown action")
@@ -141,7 +137,7 @@ function PointManager:UpdatePoints(roster, targets, value, action)
         return
     end
 
-    LedgerManager:Submit(entry)
+    LedgerManager:Submit(entry, forceInstant)
 end
 
 function PointManager:Debug(N)
@@ -218,7 +214,7 @@ function PointManager:Debug(N)
                 " in roster " .. selectedRoster .. " " ..
                 " with value " .. tostring(value)
             )
-            PointManager:UpdatePoints(roster, playerList, value, entryType)
+            PointManager:UpdatePoints(roster, playerList, value, entryType, true)
         end
     end
 end

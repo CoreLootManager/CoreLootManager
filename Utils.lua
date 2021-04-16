@@ -3,7 +3,6 @@ local LOG = CLM.LOG
 CLM.UTILS = {}
 
 local UTILS = CLM.UTILS
-local Profile = CLM.MODELS.Profile
 
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
@@ -172,7 +171,7 @@ function UTILS.WhoAmI()
 end
 
 function UTILS.GetGUIDFromEntry(e)
-    if typeof(e, Profile) then
+    if typeof(e, CLM.MODELS.Profile) then
         return getIntegerGuid(e:GUID())
     elseif type(e) == "number" then
         return e

@@ -75,7 +75,7 @@ function CORE:_InitializeFeatures()
     MODULES.ProfileManager:Initialize()
     MODULES.RosterManager:Initialize()
     MODULES.PointManager:Initialize()
-    --MODULES.LootManager.Initialize()
+    MODULES.LootManager:Initialize()
     --MODULES.RaidManager.Initialize()
 end
 

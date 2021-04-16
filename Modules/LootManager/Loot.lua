@@ -1,5 +1,7 @@
 local _, CLM = ...
 
+local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
+
 local Loot = {}
 
 function Loot:New(entry)
@@ -19,6 +21,10 @@ end
 
 function Loot:Value()
     return self.entry:value()
+end
+
+function Loot:OwnerGUID()
+    return getGuidFromInteger(self.entry:profile())
 end
 
 function Loot:Entry()

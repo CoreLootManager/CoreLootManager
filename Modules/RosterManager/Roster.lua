@@ -2,11 +2,13 @@ local _, CLM = ...
 
 local UTILS =  CLM.UTILS
 local CONSTANTS =  CLM.CONSTANTS
+-- local MODELS = CLM.MODELS
 
 local DeepCopy = UTILS.DeepCopy
 local ShallowCopy = UTILS.ShallowCopy
 
 -- local whoami = UTILS.WhoAmI
+-- local typeof = UTILS.typeof
 local keys = UTILS.keys
 
 local Roster = { } -- Roster information
@@ -18,14 +20,21 @@ function Roster:New(uid)
     setmetatable(o, self)
     self.__index = self
 
+    -- Roster Management
     o.uid  = tonumber(uid)
-    o.lastUpdate = { time = 0, source = "" }
     o.configuration  = RosterConfiguration:New()
     o.defaultSlotValues = {}
     o.itemValues = {}
 
+    -- Roster data
+    -- Profiles in roster (list)
     o.profiles = {}
+    -- Profile standing in roster (dict)
     o.standings = {}
+    -- Loot received in the roster (list). Time descending
+    o.raidLoot = {}
+    -- Loot received by players (dict of lists). Time descending per player
+    o.profileLoot = {}
 
     return o
 end
@@ -33,11 +42,14 @@ end
 function Roster:AddProfileByGUID(GUID)
     self.standings[GUID] = 0
     self.profiles = keys(self.standings)
+    self.profileLoot[GUID] = {}
 end
 
 function Roster:RemoveProfileByGUID(GUID)
     self.standings[GUID] = nil
     self.profiles = keys(self.standings)
+    self.profileLoot[GUID] = nil
+    -- TODO remove raidloot history?
 end
 
 function Roster:IsProfileInRoster(GUID)
@@ -100,6 +112,26 @@ function Roster:WipeStandings()
     end
 end
 
+function Roster:WipeLoot()
+    for GUID,_ in pairs(self.standings) do
+        self.profileLoot[GUID] = {}
+    end
+    self.raidLoot = {}
+end
+
+function Roster:AddLoot(loot, profile)
+    table.insert(self.profileLoot[profile:GUID()], 1,loot)
+    table.insert(self.raidLoot, 1, loot)
+end
+
+function Roster:GetRaidLoot()
+    return self.raidLoot or {}
+end
+
+function Roster:GetProfileLootByGUID(GUID)
+    return self.profileLoot[GUID] or {}
+end
+
 -- Copies. Hope I didn't fk it up
 
 function Roster:CopyItemValues(s)
@@ -119,8 +151,9 @@ function Roster:CopyProfiles(s)
     self:WipeStandings()
     self.profiles = keys(self.standings)
 end
-
--- Configuration
+-- ------------------- --
+-- RosterConfiguration --
+-- ------------------- --
 function RosterConfiguration:New(i)
     local o = i or {}
 
@@ -147,7 +180,7 @@ function RosterConfiguration:New(i)
     return o
 end
 
-function RosterConfiguration:fields(version)
+function RosterConfiguration:fields()
     return {
         "pointType",
         "auctionType",
