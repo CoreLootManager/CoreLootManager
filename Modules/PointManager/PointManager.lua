@@ -36,7 +36,7 @@ local function mutator(entry, mutate)
         local GUID = getGuidFromInteger(target)
         if roster:IsProfileInRoster(GUID) then
             standings[GUID] = mutate(standings[GUID], value)
-            roster:AddProfilePointHistory(pointHistoryEntry, profile)
+            roster:AddProfilePointHistory(pointHistoryEntry, ProfileManager:GetProfileByGuid(GUID))
         else
             -- TODO: Add  Profile to roster? Store in anonymous profile?
             LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
@@ -75,7 +75,7 @@ function PointManager:Initialize()
         (function(entry) LOG:Trace("mutator(DKPDecay)"); mutator(entry, mutate_pdd) end),
         ACL_LEVEL.OFFICER)
 
-    local start = GetServerTime()
+    -- local start = GetServerTime()
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
         if lag ~= 0 or uncommited ~= 0 then return end
         -- DEBUG Stuff

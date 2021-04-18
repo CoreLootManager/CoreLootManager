@@ -31,7 +31,7 @@ function Roster:New(uid)
     o.profiles = {}
     -- Profile standing in roster (dict)
     o.standings = {}
-    -- Point changes in  roster (list) 
+    -- Point changes in  roster (list)
     o.pointHistory = {}
     -- Point changes in to players in roster (dict of lists)
     o.profilePointHistory = {}
