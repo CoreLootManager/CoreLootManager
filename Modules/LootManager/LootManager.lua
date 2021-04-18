@@ -69,8 +69,11 @@ function LootManager:AwardItem(roster, profile, itemId, value, forceInstant)
         LOG:Error("LootManager:AwardItem(): Invalid Value")
         return
     end
-
-    LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
+    if roster:IsProfileInRoster(profile:GUID()) then
+        LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
+    else
+        LOG:Warning("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
+    end
 end
 
 function LootManager:RevokeItem(loot, forceInstant)
@@ -97,8 +100,12 @@ function LootManager:TransferItem(roster, profile, loot, forceInstant)
         LOG:Error("LootManager:TransferItem(): Missing valid loot")
         return
     end
-    LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, loot:Id(), loot:Value()), forceInstant)
-    LedgerManager:Remove(loot:Entry(), forceInstant)
+    if roster:IsProfileInRoster(profile:GUID()) then
+        LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, loot:Id(), loot:Value()), forceInstant)
+        LedgerManager:Remove(loot:Entry(), forceInstant)
+    else
+        LOG:Warning("LootManager:TransferItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
+    end
 end
 
 function LootManager:Debug(N)

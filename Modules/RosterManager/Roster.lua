@@ -31,6 +31,10 @@ function Roster:New(uid)
     o.profiles = {}
     -- Profile standing in roster (dict)
     o.standings = {}
+    -- Point changes in  roster (list) 
+    o.pointHistory = {}
+    -- Point changes in to players in roster (dict of lists)
+    o.profilePointHistory = {}
     -- Loot received in the roster (list). Time descending
     o.raidLoot = {}
     -- Loot received by players (dict of lists). Time descending per player
@@ -43,13 +47,15 @@ function Roster:AddProfileByGUID(GUID)
     self.standings[GUID] = 0
     self.profiles = keys(self.standings)
     self.profileLoot[GUID] = {}
+    self.profilePointHistory[GUID] = {}
 end
 
 function Roster:RemoveProfileByGUID(GUID)
     self.standings[GUID] = nil
     self.profiles = keys(self.standings)
     self.profileLoot[GUID] = nil
-    -- TODO remove raidloot history?
+    self.profilePointHistory[GUID] = nil
+    -- TODO remove raidloot history for the person? how?
 end
 
 function Roster:IsProfileInRoster(GUID)
@@ -130,6 +136,30 @@ end
 
 function Roster:GetProfileLootByGUID(GUID)
     return self.profileLoot[GUID] or {}
+end
+
+function Roster:WipeHistory()
+    for GUID,_ in pairs(self.standings) do
+        self.profilePointHistory[GUID] = {}
+    end
+    self.pointHistory = {}
+end
+
+function Roster:AddProfilePointHistory(history, profile)
+    table.insert(self.profilePointHistory[profile:GUID()], 1, history)
+end
+
+function Roster:AddRosterPointHistory(history)
+    table.insert(self.pointHistory, 1, history)
+end
+
+
+function Roster:GetRaidPointHistory()
+    return self.pointHistory or {}
+end
+
+function Roster:GetProfilePointHistoryByGUID(GUID)
+    return self.profilePointHistory[GUID] or {}
 end
 
 -- Copies. Hope I didn't fk it up

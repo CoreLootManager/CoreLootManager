@@ -316,6 +316,7 @@ function RosterManager:AddLootToRoster(roster, loot, profile)
         LOG:Warning("RosterManager:AddLootToRoster(): Invalid loot object")
         return
     end
+    LOG:Debug("RosterManager:AddLootToRoster(): Roster [%s] Loot Id [%s] Profile [%s]", roster:UID(), loot:Id(), profile:GUID())
     roster:AddLoot(loot, profile)
 end
 
@@ -328,10 +329,14 @@ end
 
 function RosterManager:WipeAll()
     LOG:Trace("RosterManager:WipeAll()")
-    for _, roster in pairs(self.cache.rosters) do
-        roster:WipeStandings()
-        roster:WipeLoot()
-    end
+    -- for _, roster in pairs(self.cache.rosters) do
+    --     roster:WipeStandings()
+    --     roster:WipeLoot()
+    -- end
+    self.cache = {
+        rostersUidMap = {},
+        rosters = {}
+    }
 end
 
 function RosterManager:ExportRosters()

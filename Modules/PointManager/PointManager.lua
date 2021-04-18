@@ -16,6 +16,7 @@ local ProfileManager = MODULES.ProfileManager
 local LEDGER_DKP = MODELS.LEDGER.DKP
 local Profile = MODELS.Profile
 local Roster = MODELS.Roster
+local PointHistory = MODELS.PointHistory
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
@@ -26,16 +27,16 @@ local function mutator(entry, mutate)
         LOG:Warning("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
         return
     end
-
     local value = entry:value()
     local standings = roster:Standings()
     local targets = entry:targets()
+    local pointHistoryEntry = PointHistory:New(entry)
+    roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         local GUID = getGuidFromInteger(target)
         if roster:IsProfileInRoster(GUID) then
             standings[GUID] = mutate(standings[GUID], value)
-            -- TODO add to roster point operation list
-            -- TODO add to profile point operation list
+            roster:AddProfilePointHistory(pointHistoryEntry, profile)
         else
             -- TODO: Add  Profile to roster? Store in anonymous profile?
             LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
