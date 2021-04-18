@@ -132,8 +132,8 @@ function PointManager:UpdatePoints(roster, targets, value, action, forceInstant)
         entry = LEDGER_DKP.Decay:new(uid, targets, value)
     end
 
-    local _targets = entry:targets()
-    if not _targets or #_targets then
+    local t = entry:targets()
+    if not t or (#t == 0) then
         LOG:Warning("PointManager:UpdatePoints(): Empty targets list")
         return
     end

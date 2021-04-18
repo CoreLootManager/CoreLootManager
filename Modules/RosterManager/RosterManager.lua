@@ -345,6 +345,12 @@ function RosterManager:ExportRosters()
     db['rosters'] = self:GetRosters()
 end
 
+function RosterManager:ClearExportedRosters()
+    LOG:Trace("RosterManager:ClearExportedRosters()")
+    local db = CLM.MODULES.Database:Personal()
+    db['rosters'] = nil
+end
+
 function RosterManager:Debug(N)
     N = N or 10
     local actions = {"create", --[["delete",]] "rename", "copy", "set", "override", "profile"}

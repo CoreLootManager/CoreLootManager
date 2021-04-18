@@ -373,6 +373,14 @@ function RosterManagerOptions:UpdateOptions()
             func = function() RosterManager:ExportRosters() end,
             confirm = true,
             order = 2
+        },
+        clear = { -- Global options -> Clear exported rosters
+            name = "Clear",
+            desc = "Clear exported rosters from SavedVariable",
+            type = "execute",
+            func = function() RosterManager:ClearExportedRosters() end,
+            confirm = true,
+            order = 3
         }
     }
     local rosters = MODULES.RosterManager:GetRosters()
