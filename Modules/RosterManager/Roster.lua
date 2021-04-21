@@ -1,5 +1,6 @@
 local _, CLM = ...
 
+local LOG = CLM.LOG
 local UTILS =  CLM.UTILS
 local CONSTANTS =  CLM.CONSTANTS
 -- local MODELS = CLM.MODELS
@@ -44,6 +45,7 @@ function Roster:New(uid)
 end
 
 function Roster:AddProfileByGUID(GUID)
+    LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     self.standings[GUID] = 0
     self.profiles = keys(self.standings)
     self.profileLoot[GUID] = {}
@@ -51,6 +53,7 @@ function Roster:AddProfileByGUID(GUID)
 end
 
 function Roster:RemoveProfileByGUID(GUID)
+    LOG:Debug("Remove profile [%s] from roster [%s]", GUID, self:UID())
     self.standings[GUID] = nil
     self.profiles = keys(self.standings)
     self.profileLoot[GUID] = nil
@@ -67,14 +70,15 @@ function Roster:UID()
 end
 
 function Roster:Profiles()
-    return self.profiles
+    return self.profiles or {}
 end
 
 function Roster:Standings()
-    return self.standings
+    return self.standings or {}
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)
+    LOG:Debug("Set Default Slot Value: [%s]: [%s] [%s] for roster [%s]", itemEquipLoc, minimum, maximum, self:UID())
     self.defaultSlotValues[itemEquipLoc] = {
         min = tonumber(minimum) or 0,
         max = tonumber(maximum) or 0
@@ -87,6 +91,7 @@ function Roster:GetDefaultSlotValue(itemEquipLoc)
 end
 
 function Roster:SetItemValue(itemId, itemName, minimum, maximum)
+    LOG:Debug("Set Item Value: [%s]: [%s] [%s] for roster [%s]", itemId, itemName, minimum, maximum, self:UID())
     self.itemValues[itemId] = {
         name = itemName or "",
         min = tonumber(minimum) or 0,
@@ -113,12 +118,14 @@ function Roster:SetConfiguration(option, value)
 end
 
 function Roster:WipeStandings()
+    LOG:Info("Wipe Standings for roster [%s]", self:UID())
     for GUID,_ in pairs(self.standings) do
         self.standings[GUID] = 0
     end
 end
 
 function Roster:WipeLoot()
+    LOG:Info("Wipe Loot for roster [%s]", self:UID())
     for GUID,_ in pairs(self.standings) do
         self.profileLoot[GUID] = {}
     end
@@ -139,6 +146,7 @@ function Roster:GetProfileLootByGUID(GUID)
 end
 
 function Roster:WipeHistory()
+    LOG:Info("Wipe Standings for roster [%s]", self:UID())
     for GUID,_ in pairs(self.standings) do
         self.profilePointHistory[GUID] = {}
     end
@@ -177,9 +185,11 @@ function Roster:CopyConfiguration(s)
 end
 
 function Roster:CopyProfiles(s)
-    self.standings = ShallowCopy(s.standings)
-    self:WipeStandings()
-    self.profiles = keys(self.standings)
+    for _, GUID in ipairs(s:Profiles()) do
+        if not self:IsProfileInRoster(GUID) then
+            self:AddProfileByGUID(GUID)
+        end
+    end
 end
 -- ------------------- --
 -- RosterConfiguration --

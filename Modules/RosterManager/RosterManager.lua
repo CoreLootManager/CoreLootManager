@@ -44,7 +44,7 @@ function RosterManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_ROSTER.Create,
         (function(entry)
-            LOG:Trace("mutator(RosterCreate)")
+            LOG:TraceAndCount("mutator(RosterCreate)")
             local uid = entry:rosterUid()
             local name = entry:name()
             if self.cache.rosters[name] or self.cache.rostersUidMap[uid] then
@@ -60,7 +60,7 @@ function RosterManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_ROSTER.Delete,
         (function(entry)
-            LOG:Trace("mutator(RosterDelete)")
+            LOG:TraceAndCount("mutator(RosterDelete)")
             local uid = entry:rosterUid()
 
             local roster = self:GetRosterByUid(uid)
@@ -78,7 +78,7 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.Rename,
             (function(entry)
-                LOG:Trace("mutator(RosterRename)")
+                LOG:TraceAndCount("mutator(RosterRename)")
                 local uid = entry:rosterUid()
                 local name = entry:name()
 
@@ -106,7 +106,7 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.CopyData,
             (function(entry)
-                LOG:Trace("mutator(RosterCopyData)")
+                LOG:TraceAndCount("mutator(RosterCopyData)")
                 local sourceUid = entry:sourceRosterUid()
                 local targetUid = entry:targetRosterUid()
 
@@ -142,7 +142,7 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateConfigSingle,
             (function(entry)
-                LOG:Trace("mutator(RosterUpdateConfigSingle)")
+                LOG:TraceAndCount("mutator(RosterUpdateConfigSingle)")
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
@@ -158,7 +158,7 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateDefaultSingle,
             (function(entry)
-                LOG:Trace("mutator(RosterUpdateDefaultSingle)")
+                LOG:TraceAndCount("mutator(RosterUpdateDefaultSingle)")
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
@@ -174,7 +174,7 @@ function RosterManager:Initialize()
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateProfiles,
             (function(entry)
-                LOG:Trace("mutator(RosterUpdateProfiles)")
+                LOG:TraceAndCount("mutator(RosterUpdateProfiles)")
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
@@ -329,14 +329,11 @@ end
 
 function RosterManager:WipeAll()
     LOG:Trace("RosterManager:WipeAll()")
-    -- for _, roster in pairs(self.cache.rosters) do
-    --     roster:WipeStandings()
-    --     roster:WipeLoot()
-    -- end
     self.cache = {
         rostersUidMap = {},
         rosters = {}
     }
+    collectgarbage()
 end
 
 function RosterManager:ExportRosters()
@@ -382,23 +379,16 @@ function RosterManager:Debug(N)
         end),
         ["copy"] =  (function()
             local config = false
-            if math.random(0, 1) == 1 then
-                config = true
-            end
+            if math.random(0, 1) == 1 then config = true end
             local defaults = false
-            if math.random(0, 1) == 1 then
-                defaults = true
-            end
+            if math.random(0, 1) == 1 then defaults = true end
             local overrides = false
-            if math.random(0, 1) == 1 then
-                overrides = true
-            end
+            if math.random(0, 1) == 1 then overrides = true end
             local copyProfiles = false
-            if math.random(0, 1) == 1 then
-                copyProfiles = true
-            end
+            if math.random(0, 1) == 1 then copyProfiles = true end
             self:Copy(
-                rosterNames[math.random(1, #rosterNames)], rosterNames[math.random(1, #rosterNames)],
+                rosterNames[math.random(1, #rosterNames)],
+                rosterNames[math.random(1, #rosterNames)],
                 config, defaults, overrides, copyProfiles
             )
         end),

@@ -48,8 +48,9 @@ function ProfileManagerGUI:Create()
     self.st = ScrollingTable:CreateST(columns, 30, 15, nil, ProfileTableGroup.frame)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOP", ProfileTableGroup.frame, "TOP", 0, -25)
+    self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
     local OnClickHandler = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local selected = self.st:GetRow(self.st:GetSelection())
         if type(selected) ~= "table" then return end
         if selected.cols == nil then return end -- Handle column titles click
@@ -71,6 +72,7 @@ function ProfileManagerGUI:Create()
             end
             self:Refresh()
         end
+        return status
     end)
     self.st:RegisterEvents({
         OnClick = OnClickHandler

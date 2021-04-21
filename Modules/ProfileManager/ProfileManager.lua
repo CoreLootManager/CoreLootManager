@@ -34,7 +34,7 @@ function ProfileManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Update,
         (function(entry)
-            LOG:Trace("mutator(ProfileUpdate)")
+            LOG:TraceAndCount("mutator(ProfileUpdate)")
             local iGUID = entry:GUID()
             if type(iGUID) ~= "number" then return end
             local GUID = getGuidFromInteger(iGUID)
@@ -69,7 +69,7 @@ function ProfileManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Remove,
         (function(entry)
-            LOG:Trace("mutator(ProfileRemove)")
+            LOG:TraceAndCount("mutator(ProfileRemove)")
             local GUID = entry:GUID()
             if type(GUID) ~= "number" then return end
             GUID = getGuidFromInteger(GUID)
@@ -82,7 +82,7 @@ function ProfileManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Link,
         (function(entry)
-            LOG:Trace("mutator(ProfileLink)")
+            LOG:TraceAndCount("mutator(ProfileLink)")
             local GUID = entry:GUID()
             if type(GUID) ~= "number" then return end
             GUID = getGuidFromInteger(GUID)

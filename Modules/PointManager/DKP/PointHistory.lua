@@ -1,6 +1,6 @@
 local _, CLM = ...
 
--- local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
+local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
 local PointHistory = {}
 
@@ -15,8 +15,19 @@ function PointHistory:New(entry)
     return o
 end
 
-function PointHistory:ProfileIGUIDList()
-    return self.entry:targets()
+function PointHistory:Profiles()
+    -- lazy loaded cache
+    if self.profiles == nil then
+        self.profiles = {}
+        local targets = self.entry:targets()
+        for _,target in ipairs(targets) do
+            -- The code below breaks Model-View-Controller rule as it accessess Managers
+            -- Maybe the caching should be done in GUI module?
+            local profile = CLM.MODULES.ProfileManager:GetProfileByGuid(getGuidFromInteger(target))
+            table.insert(self.profiles, profile)
+        end
+    end
+    return self.profiles
 end
 
 function PointHistory:Value()

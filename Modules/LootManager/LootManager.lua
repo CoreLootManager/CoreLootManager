@@ -26,7 +26,7 @@ function LootManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_LOOT.Award,
         (function(entry)
-            LOG:Trace("mutator(LOOTAward)")
+            LOG:TraceAndCount("mutator(LOOTAward)")
             local roster = RosterManager:GetRosterByUid(entry:rosterUid())
             if roster == nil then
                 LOG:Warning("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
