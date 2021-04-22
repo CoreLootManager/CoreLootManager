@@ -6,7 +6,7 @@ local CONSTANTS =  CLM.CONSTANTS
 -- local MODELS = CLM.MODELS
 
 local DeepCopy = UTILS.DeepCopy
-local ShallowCopy = UTILS.ShallowCopy
+-- local ShallowCopy = UTILS.ShallowCopy
 
 -- local whoami = UTILS.WhoAmI
 -- local typeof = UTILS.typeof

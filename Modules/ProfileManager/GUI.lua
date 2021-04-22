@@ -34,6 +34,7 @@ function ProfileManagerGUI:Create()
     f:SetWidth(700)
     f:SetHeight(600)
     self.top = f
+    UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Profiles_GUI")
     -- Profile Scrolling Table
     local columns = {
         {name = "Name",  width = 100},
@@ -45,33 +46,48 @@ function ProfileManagerGUI:Create()
     ProfileTableGroup:SetLayout("Flow")
     ProfileTableGroup:SetHeight(400)
     ProfileTableGroup:SetWidth(450)
-    self.st = ScrollingTable:CreateST(columns, 30, 15, nil, ProfileTableGroup.frame)
+    self.st = ScrollingTable:CreateST(columns, 30, 15, nil, ProfileTableGroup.frame, true)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOP", ProfileTableGroup.frame, "TOP", 0, -25)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
     local OnClickHandler = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local previousSelectedList = self.st:GetSelection():Get()
         local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        local selected = self.st:GetRow(self.st:GetSelection())
-        if type(selected) ~= "table" then return end
-        if selected.cols == nil then return end -- Handle column titles click
-        selected = selected.cols[1].value
-        if self.selected == "" then
-            self.selected = selected
-            self.top:SetStatusText("Click on a profile to mark it as alt of " .. selected)
+        local currentSelectedList = self.st:GetSelection():Get()
+
+        local main
+        local alt
+
+        -- Previous 1 current 1 - clicked on same char: alt main linking clear
+        if (#previousSelectedList == 1) and (#currentSelectedList == 1) then
+            main = self.st:GetRow(previousSelectedList[1]).cols[1].value
+            alt = main
+        elseif (#currentSelectedList == 1) then
+            -- Current == 1 - alt main linking start
+            main = self.st:GetRow(currentSelectedList[1]).cols[1].value
+            self.top:SetStatusText("Click on a profile to mark it as alt of " .. main)
+            return status
+        elseif (#currentSelectedList >= 2) then
+            -- Current == 2 - alt main linking finish
+            main = self.st:GetRow(currentSelectedList[1]).cols[1].value
+            alt = self.st:GetRow(currentSelectedList[2]).cols[1].value
         else
-            local main = self.selected
-            local alt = selected
-            local result = MODULES.ProfileManager:MarkAsAltByNames(main, alt)
-            self.selected = ""
-            if result == RESULTS.SUCCESS then
-                self.top:SetStatusText("Marked " .. main .. " as main of " .. alt)
-            elseif result == RESULTS.SUCCESS_EXTENDED then
-                self.top:SetStatusText("Removed link from " .. alt)
-            else
-                self.top:SetStatusText("")
-            end
-            self:Refresh()
+            self.st:ClearSelection()
+            return status
         end
+        local result = MODULES.ProfileManager:MarkAsAltByNames(main, alt)
+        self.st:ClearSelection()
+        if result == RESULTS.SUCCESS then
+            self.top:SetStatusText("Marked " .. main .. " as main of " .. alt)
+        elseif result == RESULTS.SUCCESS_EXTENDED then
+            self.top:SetStatusText("Removed link from " .. alt)
+        else
+            self.top:SetStatusText("")
+        end
+        self:Refresh()
+        -- if type(selected) ~= "table" then return end -- FYI not neededn ow due to changes in lib to multiselect
+        -- if selected.cols == nil then return end -- Handle column titles click
+        -- selected = selected.cols[1].value
         return status
     end)
     self.st:RegisterEvents({

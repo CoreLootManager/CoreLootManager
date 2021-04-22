@@ -34,6 +34,7 @@ function StandingsGUI:Create()
     f:SetWidth(700)
     f:SetHeight(600)
     self.top = f
+    UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
     -- Profile Scrolling Table
     local columns = {
         {name = "Name",  width = 100},
@@ -49,10 +50,11 @@ function StandingsGUI:Create()
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel("Select roster")
+    RosterSelectorDropDown:SetCallback("OnValueChanged", function() self:Refresh() end)
     self.RosterSelectorDropDown = RosterSelectorDropDown
     StandingsGroup:AddChild(RosterSelectorDropDown)
 
-    self.st = ScrollingTable:CreateST(columns, 25, 15, nil, StandingsGroup.frame)
+    self.st = ScrollingTable:CreateST(columns, 25, 15, nil, StandingsGroup.frame, true)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
@@ -72,10 +74,25 @@ function StandingsGUI:Create()
     ManagementOptions:SetWidth(200)
     f:AddChild(ManagementOptions)
 
-    -- Management options: Decay
+    -- Management options: Award DKP
     local PointManagementGroup = AceGUI:Create("InlineGroup")
     PointManagementGroup:SetLayout("Flow")
-    PointManagementGroup:SetTitle("Decay")
+    PointManagementGroup:SetTitle("Manage points")
+
+    local AwardValueEditBox = AceGUI:Create("EditBox")
+    AwardValueEditBox:SetMaxLetters(10)
+    AwardValueEditBox:SetText("")
+    AwardValueEditBox:SetLabel("Value")
+    PointManagementGroup:AddChild(AwardValueEditBox)
+
+    local AwardValueButton = AceGUI:Create("Button")
+    AwardValueButton:SetText("Decay")
+    AwardValueButton:SetCallback("OnClick", (function()
+        self:Refresh()
+    end))
+    PointManagementGroup:AddChild(AwardValueButton)
+    ManagementOptions:AddChild(PointManagementGroup)
+    -- Management options: Decay
 
     local DecayPercentageValueEditBox = AceGUI:Create("EditBox")
     DecayPercentageValueEditBox:SetMaxLetters(3)
@@ -90,26 +107,6 @@ function StandingsGUI:Create()
     end))
     PointManagementGroup:AddChild(DecayPercentageButton)
     ManagementOptions:AddChild(PointManagementGroup)
-
-    -- Management options: Decay
-    local PointManagementGroup = AceGUI:Create("InlineGroup")
-    PointManagementGroup:SetLayout("Flow")
-    PointManagementGroup:SetTitle("Decay")
-
-    local DecayPercentageValueEditBox = AceGUI:Create("EditBox")
-    DecayPercentageValueEditBox:SetMaxLetters(3)
-    DecayPercentageValueEditBox:SetText("60")
-    DecayPercentageValueEditBox:SetLabel("Decay %")
-    PointManagementGroup:AddChild(DecayPercentageValueEditBox)
-
-    local DecayPercentageButton = AceGUI:Create("Button")
-    DecayPercentageButton:SetText("Decay")
-    DecayPercentageButton:SetCallback("OnClick", (function()
-        self:Refresh()
-    end))
-    PointManagementGroup:AddChild(DecayPercentageButton)
-    ManagementOptions:AddChild(PointManagementGroup)
-
     -- Hide by default
     f:Hide()
 end
@@ -148,6 +145,11 @@ function StandingsGUI:RefreshRosters()
         table.insert(rosterList, roster:UID())
     end
     self.RosterSelectorDropDown:SetList(rosterUidMap, rosterList)
+    if not self.RosterSelectorDropDown:GetValue() then
+        if #rosterList > 0 then
+            self.RosterSelectorDropDown:SetValue(rosterList[1])
+        end
+    end
 end
 
 

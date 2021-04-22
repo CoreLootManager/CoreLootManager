@@ -1,4 +1,0 @@
--
-    type: luadoc
-    input-file: Core.lua
-    output-page: "API"

@@ -294,3 +294,8 @@ function UTILS.stringifyDict(dict)
     end
     return string:sub(1, -3)
 end
+
+function UTILS.MakeFrameCloseOnEsc(frame, name)
+    _G[name] = frame
+    tinsert(UISpecialFrames, name)
+end

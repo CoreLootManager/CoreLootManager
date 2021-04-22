@@ -168,7 +168,6 @@ function PointManager:Debug(N)
     local numProfiles = {}
     local profileLookup = {}
     for name, roster in pairs(rosters) do
-        print(tostring(name))
         local standings = roster:Standings()
         numProfiles[name] = 0
         profileLookup[name] = {}
@@ -182,10 +181,10 @@ function PointManager:Debug(N)
         end
     end
 
-    print("Detected " .. tonumber(numRosters) .. " rosters with profiles")
-    for name, value in pairs(numProfiles) do
-        print("  " .. name .. ": " .. tostring(value) .. " profiles")
-    end
+    -- print("Detected " .. tonumber(numRosters) .. " rosters with profiles")
+    -- for name, value in pairs(numProfiles) do
+    --     print("  " .. name .. ": " .. tostring(value) .. " profiles")
+    -- end
 
     if numRosters == 0 then
         return
@@ -193,11 +192,11 @@ function PointManager:Debug(N)
 
     print("Generating total of  " .. N .. " entries")
 
-    for iteration=1,N do
+    for _=1,N do
         local selectedRoster = rosterLookup[math.random(1, numRosters)]
         local roster = rosters[selectedRoster]
         if roster == nil then
-            print("=== Wrong roster selection ===")
+            -- print("=== Wrong roster selection ===")
         else
             local raidPointHistory = roster:GetRaidPointHistory()
             local removeEntry = false
@@ -208,11 +207,11 @@ function PointManager:Debug(N)
             end
             if removeEntry then
                 local removeEntryId = math.random(1, #raidPointHistory)
-                print(
-                    "Iteration: " .. tostring(iteration) ..
-                    " removing entry  " .. tostring(removeEntryId) .. " " ..
-                    " in roster " .. selectedRoster
-                )
+                -- print(
+                --     "Iteration: " .. tostring(iteration) ..
+                --     " removing entry  " .. tostring(removeEntryId) .. " " ..
+                --     " in roster " .. selectedRoster
+                -- )
                 self:RemovePointChange(raidPointHistory[removeEntryId], true)
             else
                 local entryType = math.random(0, 2)
@@ -242,13 +241,13 @@ function PointManager:Debug(N)
                         table.insert(playerList, profile)
                     end
                 end
-                print(
-                    "Generated entry: " .. tostring(iteration) ..
-                    " of type " .. tostring(entryType) ..
-                    " for " .. tostring(selectedNumberOfProfiles) .. " profiles" ..
-                    " in roster " .. selectedRoster .. " " ..
-                    " with value " .. tostring(value)
-                )
+                -- print(
+                --     "Generated entry: " .. tostring(iteration) ..
+                --     " of type " .. tostring(entryType) ..
+                --     " for " .. tostring(selectedNumberOfProfiles) .. " profiles" ..
+                --     " in roster " .. selectedRoster .. " " ..
+                --     " with value " .. tostring(value)
+                -- )
                 PointManager:UpdatePoints(roster, playerList, value, entryType, true)
             end
         end

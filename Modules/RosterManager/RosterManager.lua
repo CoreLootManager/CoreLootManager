@@ -360,7 +360,7 @@ function RosterManager:Debug(N)
             i = i+ 1
             table.insert(rosterNames, k)
         end
-        print("=== We have " .. i .. " rosters ===")
+        -- print("=== We have " .. i .. " rosters ===")
     end)
     genRosterNames()
     local profiles = ProfileManager:GetProfiles()
@@ -472,9 +472,9 @@ function RosterManager:Debug(N)
         actionHandlers[action]()
     end
 
-    for action, count in pairs(actionCount) do
-        print(tostring(action) .. ": " .. tostring(count))
-    end
+    -- for action, count in pairs(actionCount) do
+    --     print(tostring(action) .. ": " .. tostring(count))
+    -- end
 
 end
 
