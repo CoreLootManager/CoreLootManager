@@ -51,9 +51,9 @@ function ProfileManagerGUI:Create()
     self.st.frame:SetPoint("TOP", ProfileTableGroup.frame, "TOP", 0, -25)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
     local OnClickHandler = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        local previousSelectedList = self.st:GetSelection():Get()
+        local previousSelectedList = self.st:GetSelection()
         local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        local currentSelectedList = self.st:GetSelection():Get()
+        local currentSelectedList = self.st:GetSelection()
 
         local main
         local alt
