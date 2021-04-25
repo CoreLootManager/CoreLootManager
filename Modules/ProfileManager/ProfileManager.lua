@@ -89,9 +89,9 @@ function ProfileManager:Initialize()
             local main = entry:main()
             if type(main) ~= "number" then return end
             main = getGuidFromInteger(main)
-            local altProfile = self:GetProfileByGuid(GUID)
+            local altProfile = self:GetProfileByGUID(GUID)
             if not typeof(altProfile, Profile) then return end
-            local mainProfile = self:GetProfileByGuid(main)
+            local mainProfile = self:GetProfileByGUID(main)
             if not typeof(mainProfile, Profile) then
                 altProfile:ClearMain()
             else
@@ -255,7 +255,7 @@ function ProfileManager:GetProfiles()
     return self.cache.profiles
 end
 
-function ProfileManager:GetProfileByGuid(GUID)
+function ProfileManager:GetProfileByGUID(GUID)
     return self.cache.profiles[GUID]
 end
 

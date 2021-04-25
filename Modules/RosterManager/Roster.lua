@@ -28,8 +28,6 @@ function Roster:New(uid)
     o.itemValues = {}
 
     -- Roster data
-    -- Profiles in roster (list)
-    o.profiles = {}
     -- Profile standing in roster (dict)
     o.standings = {}
     -- Point changes in  roster (list)
@@ -47,7 +45,6 @@ end
 function Roster:AddProfileByGUID(GUID)
     LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     self.standings[GUID] = 0
-    self.profiles = keys(self.standings)
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
 end
@@ -55,7 +52,6 @@ end
 function Roster:RemoveProfileByGUID(GUID)
     LOG:Debug("Remove profile [%s] from roster [%s]", GUID, self:UID())
     self.standings[GUID] = nil
-    self.profiles = keys(self.standings)
     self.profileLoot[GUID] = nil
     self.profilePointHistory[GUID] = nil
     -- TODO remove raidloot history for the person? how?
@@ -70,11 +66,15 @@ function Roster:UID()
 end
 
 function Roster:Profiles()
-    return self.profiles or {}
+    return keys(self.standings)
 end
 
-function Roster:Standings()
-    return self.standings or {}
+function Roster:Standings(GUID)
+    if GUID == nil then
+        return self.standings or {}
+    else
+        return self.standings[GUID] or 0
+    end
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)
@@ -202,48 +202,65 @@ function RosterConfiguration:New(i)
 
     if i then return o end
 
+    o._ = {}
     -- Point type: DKP / EPGP
-    o.pointType = CONSTANTS.POINT_TYPE.DKP
+    o._.pointType = CONSTANTS.POINT_TYPE.DKP
     -- Auction type: Open / Sealed / Vickrey
-    o.auctionType = CONSTANTS.AUCTION_TYPE.SEALED
+    o._.auctionType = CONSTANTS.AUCTION_TYPE.SEALED
     -- Item Value mode: Single-Priced / Ascending
-    o.itemValueMode = CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
+    o._.itemValueMode = CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
     -- Zero-Sum Bank
-    o.zeroSumBank = false
+    o._.zeroSumBank = false
+    -- Zero-Sum Bank inflation value
+    o._.zeroSumBankInflation = 0
+    -- Auction time seconds
+    o._.auctionTime = 30
+    -- Anti snipe time seconds (0 = disabled)
+    o._.antiSnipe = 0
     -- Allow negative standings
-    o.allowNegativeStandings = false
+    o._.allowNegativeStandings = false
     -- Allow negative bidders
-    o.allowNegativeBidders = false
+    o._.allowNegativeBidders = false
     -- Simultaneous Auctions
-    o.simultaneousAuctions = false
-    -- Default Item Values
+    o._.simultaneousAuctions = false
+    -- TODO:
+    -- Max Bid Behavior ?
     return o
 end
 
 function RosterConfiguration:fields()
-    return {
-        "pointType",
-        "auctionType",
-        "itemValueMode",
-        "zeroSumBank",
-        "allowNegativeStandings",
-        "allowNegativeBidders",
-        "simultaneousAuctions"
-    }
+    return keys(self._)
 end
+
+local function transform_none(value) return value end
+local function transform_boolean(value) return value and true or false end
+local function transform_number(value) return tonumber(value) end
+
+local TRANSFORMS = {
+    pointType = transform_number,
+    auctionType = transform_number,
+    itemValueMode = transform_number,
+    zeroSumBank = transform_boolean,
+    zeroSumBankInflation = transform_number,
+    auctionTime = transform_number,
+    antiSnipe = transform_number,
+    allowNegativeStandings = transform_boolean,
+    allowNegativeBidders = transform_boolean,
+    simultaneousAuctions = transform_boolean
+}
 
 function RosterConfiguration:Get(option)
     if option ~= nil then
-        return self[option]
+        return self._[option]
     end
     return nil
 end
 
 function RosterConfiguration:Set(option, value)
     if option == nil then return end
-    if self[option] ~= nil then
+    if self._[option] ~= nil then
         if self:Validate(option, value) then
-            self[option] = value
+            self._[option] = TRANSFORMS[option](value)
         end
     end
 end
@@ -259,6 +276,8 @@ function RosterConfiguration:Validate(option, value)
 end
 
 local function IsBoolean(value) return type(value) == "boolean" end
+local function IsNumeric(value) return type(value) == "number" end
+local function IsPositive(value) return value >= 0 end
 function RosterConfiguration._validate_pointType(value) return CONSTANTS.POINT_TYPES[value] ~= nil end
 function RosterConfiguration._validate_auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
 function RosterConfiguration._validate_itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
@@ -266,6 +285,9 @@ function RosterConfiguration._validate_zeroSumBank(value) return IsBoolean(value
 function RosterConfiguration._validate_allowNegativeStandings(value) return IsBoolean(value) end
 function RosterConfiguration._validate_allowNegativeBidders(value) return IsBoolean(value) end
 function RosterConfiguration._validate_simultaneousAuctions(value) return IsBoolean(value) end
+function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration

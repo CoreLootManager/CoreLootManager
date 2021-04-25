@@ -3,8 +3,18 @@ local LOG = CLM.LOG
 CLM.UTILS = {}
 
 local UTILS = CLM.UTILS
+local CONSTANTS = CLM.CONSTANTS
 
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
+
+local function capitalize(string)
+    string = string or ""
+    return string:sub(1,1):upper()..string:sub(2):lower()
+end
+
+local classOrdered = {
+    "druid", "hunter", "mage", "priest", "rogue", "shaman", "paladin", "warlock", "warrior"
+}
 
 local classColors = {
     ["druid"]   = { r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
@@ -29,6 +39,16 @@ end
 
 function UTILS.ColorCodeClass(className)
     return UTILS.ColorCodeText(className, UTILS.GetClassColor(className).hex);
+end
+
+local colorCodedClassList = {}
+do
+    for _,class in pairs(classOrdered) do
+        table.insert(colorCodedClassList, UTILS.ColorCodeClass(capitalize(class)))
+    end
+end
+function UTILS.GetColorCodedClassDict()
+    return colorCodedClassList
 end
 
 function UTILS.UniversalCliMethodExecutor(name, object, cli)
@@ -140,7 +160,17 @@ function UTILS.GetUnitName(unit)
 end
 
 function UTILS.typeof(object, objectType)
-    return (type(object) == "table") and (getmetatable(object) == objectType)
+    if not object or not objectType then
+        return false
+    end
+    if type(object) ~= "table" then
+        return false
+    end
+    local mo = getmetatable(object)
+    if not mo then
+        return false
+    end
+    return (mo == objectType)
 end
 local typeof = UTILS.typeof
 
@@ -228,12 +258,23 @@ function UTILS.method2function(handler, method)
     return (function(...) handler[method](handler, ...) end)
 end
 
-function UTILS.merge(t1, t2, t)
+function UTILS.mergeLists(t1, t2, t)
     t = t or {}
     local n = 0
     for _,v in ipairs(t1) do n = n+1; t[n] = v end
     for _,v in ipairs(t2) do n = n+1; t[n] = v end
     return t
+end
+
+function UTILS.mergeDicts(t1, t2, t)
+    t = t or {}
+    for k,v in pairs(t1) do t[k] = v end
+    for k,v in pairs(t2) do t[k] = v end
+    return t
+end
+
+function UTILS.mergeDictsInline(t, s)
+    for k,v in pairs(s) do t[k] = v end
 end
 
 local classToNumber = {
@@ -273,8 +314,7 @@ function UTILS.NumberToClass(number)
 end
 
 function UTILS.capitalize(string)
-    string = string or ""
-    return string:sub(1,1):upper()..string:sub(2):lower()
+    return capitalize(string)
 end
 
 function UTILS.stringifyList(list)
@@ -299,3 +339,6 @@ function UTILS.MakeFrameCloseOnEsc(frame, name)
     _G[name] = frame
     tinsert(UISpecialFrames, name)
 end
+
+CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
+CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"

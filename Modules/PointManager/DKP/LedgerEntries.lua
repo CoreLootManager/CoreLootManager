@@ -3,7 +3,7 @@ local _, CLM = ...
 local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
-local merge = UTILS.merge
+local mergeLists = UTILS.mergeLists
 -- local typeof = UTILS.typeof
 -- local getIntegerGuid = UTILS.getIntegerGuid
 -- local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
@@ -16,11 +16,12 @@ local Modify = LogEntry:extend("DM")
 local Set    = LogEntry:extend("DS")
 local Decay  = LogEntry:extend("DD")
 
-function Modify:new(rosterUid, playerList, value)
+function Modify:new(rosterUid, playerList, value, reason)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0
+    o.e = tonumber(reason) or 0
     return o
 end
 
@@ -36,16 +37,21 @@ function Modify:value()
     return self.v
 end
 
-local modifyFields = merge(LogEntry:fields(), {"r", "p", "v"})
+function Modify:reason()
+    return self.e
+end
+
+local modifyFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e"})
 function Modify:fields()
     return modifyFields
 end
 
-function Set:new(rosterUid, playerList, value)
+function Set:new(rosterUid, playerList, value, reason)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0
+    o.e = tonumber(reason) or 0
     return o
 end
 
@@ -61,19 +67,24 @@ function Set:value()
     return self.v
 end
 
-local setFields = merge(LogEntry:fields(), {"r", "p", "v"})
+function Set:reason()
+    return self.e
+end
+
+local setFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e"})
 function Set:fields()
     return setFields
 end
 
-function Decay:new(rosterUid, playerList, value)
+function Decay:new(rosterUid, playerList, value, reason)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
     value = tonumber(value) or 0
     if value > 100 then value = 100 end
     if value < 0 then value = 0 end
-    o.v = value
+    o.v = tonumber(value)
+    o.e = tonumber(reason) or 0
     return o
 end
 
@@ -89,7 +100,11 @@ function Decay:value()
     return self.v
 end
 
-local decayFields = merge(LogEntry:fields(), {"r", "p", "v"})
+function Decay:reason()
+    return self.e
+end
+
+local decayFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e"})
 function Decay:fields()
     return decayFields
 end

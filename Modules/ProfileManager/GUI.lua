@@ -199,7 +199,7 @@ function ProfileManagerGUI:Refresh()
         table.insert(row.cols, {value = object:Name()})
         table.insert(row.cols, {value = UTILS.ColorCodeClass(object:Class())})
         table.insert(row.cols, {value = object:Spec()})
-        local profile = ProfileManager:GetProfileByGuid(object:Main())
+        local profile = ProfileManager:GetProfileByGUID(object:Main())
         local main
         if profile ~= nil then
             main = profile:Name()

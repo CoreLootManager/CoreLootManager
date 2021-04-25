@@ -12,7 +12,8 @@ local ConfigManager = MODULES.ConfigManager
 local CBTYPE = {
     GETTER   = "get",
     SETTER   = "set",
-    EXECUTOR = "execute"
+    EXECUTOR = "execute",
+    HIDER    = "hide"
 }
 
 local RosterManagerOptions = { externalOptions = {} }
@@ -74,41 +75,59 @@ function RosterManagerOptions:Initialize()
         point_type_set = (function(name, value)
             SetRosterOption(name, "pointType", value)
         end),
-        auction_type_get = (function(name)
+        auction_auction_type_get = (function(name)
             return GetRosterOption(name, "auctionType")
         end),
-        auction_type_set = (function(name, value)
+        auction_auction_type_set = (function(name, value)
             SetRosterOption(name, "auctionType", value)
         end),
-        item_value_mode_get = (function(name)
+        auction_item_value_mode_get = (function(name)
             return GetRosterOption(name, "itemValueMode")
         end),
-        item_value_mode_set = (function(name, value)
+        auction_item_value_mode_set = (function(name, value)
             SetRosterOption(name, "itemValueMode", value)
         end),
-        zero_sum_bank_get = (function(name)
+        auction_zero_sum_bank_get = (function(name)
             return GetRosterOption(name, "zeroSumBank")
         end),
-        zero_sum_bank_set = (function(name, value)
+        auction_zero_sum_bank_set = (function(name, value)
             SetRosterOption(name, "zeroSumBank", value)
         end),
-        allow_negative_standings_get = (function(name)
+        auction_zero_sum_bank_inflation_value_get = (function(name)
+            return tostring(GetRosterOption(name, "zeroSumBankInflation"))
+        end),
+        auction_zero_sum_bank_inflation_value_set = (function(name, value)
+            SetRosterOption(name, "zeroSumBankInflation", value)
+        end),
+        auction_allow_negative_standings_get = (function(name)
             return GetRosterOption(name, "allowNegativeStandings")
         end),
-        allow_negative_standings_set = (function(name, value)
+        auction_allow_negative_standings_set = (function(name, value)
             SetRosterOption(name, "allowNegativeStandings", value)
         end),
-        allow_negative_bidders_get = (function(name)
+        auction_allow_negative_bidders_get = (function(name)
             return GetRosterOption(name, "allowNegativeBidders")
         end),
-        allow_negative_bidders_set = (function(name, value)
+        auction_allow_negative_bidders_set = (function(name, value)
             SetRosterOption(name, "allowNegativeBidders", value)
         end),
-        simultaneous_auctions_get = (function(name)
+        auction_simultaneous_auctions_get = (function(name)
             return GetRosterOption(name, "simultaneousAuctions")
         end),
-        simultaneous_auctions_set = (function(name, value)
+        auction_simultaneous_auctions_set = (function(name, value)
             SetRosterOption(name, "simultaneousAuctions", value)
+        end),
+        auction_auction_time_get = (function(name)
+            return tostring(GetRosterOption(name, "auctionTime"))
+        end),
+        auction_auction_time_set = (function(name, value)
+            SetRosterOption(name, "auctionTime", value)
+        end),
+        auction_antisnipe_time_get = (function(name)
+            return tostring(GetRosterOption(name, "antiSnipe"))
+        end),
+        auction_antisnipe_time_set = (function(name, value)
+            SetRosterOption(name, "antiSnipe", value)
         end)
     }
     -- Handlers for Minimum / Maximum setting
@@ -148,11 +167,17 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
         node_name = info[#info]
     end
     node_name = node_name .. "_".. cbtype
+
     -- print(node_name)
     -- Execute handler
     if type(self.handlers[node_name]) == "function" then
         return self.handlers[node_name](roster_name, ...)
     end
+
+    if cbtype == CBTYPE.HIDER then
+        return false
+    end
+
     return nil
 end
 
@@ -166,6 +191,10 @@ end
 
 function RosterManagerOptions:Handler(info, ...)
     self:_Handle(CBTYPE.EXECUTOR, info, ...)
+end
+
+function RosterManagerOptions:Hider(info, ...)
+    self:_Handle(CBTYPE.HIDER, info, ...)
 end
 
 function RosterManagerOptions:GenerateRosterOptions(name)
@@ -200,7 +229,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     order = order,
                     desc = desc,
                     name = type,
-                    pattern = "%d+",
+                    pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 }
                 order = order + 1
             end
@@ -221,7 +250,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Nerubian Slavemaker",
                 type = "input",
                 order = 1,
-                itemLink = "item:22812:0:0:0:0:0:0:0:0:0:0:0:0",
+                itemLink = "item:22812",
             }
         }
         return args
@@ -233,6 +262,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         handler = self,
         set = "Setter",
         get = "Getter",
+        -- hidden = "Hider",
         func = "Handler",
         args = {
             name = {
@@ -291,56 +321,86 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     [1] = "EPGP"
                 }
             },
-            auction_type = {
-                name = "Auction type",
-                desc = "Type of auction used: Open, Sealed, Vickrey (Sealed with second-highest pay price).",
-                type = "select",
-                style = "radio",
-                order = 4,
-                values = {
-                    [0] = "Open",
-                    [1] = "Sealed",
-                    [2] = "Vickrey"
+            auction = {
+                name = "Auction settings",
+                type = "group",
+                args = {
+                    auction_type = {
+                        name = "Auction type",
+                        desc = "Type of auction used: Open, Sealed, Vickrey (Sealed with second-highest pay price).",
+                        type = "select",
+                        style = "radio",
+                        order = 4,
+                        values = {
+                            [0] = "Open",
+                            [1] = "Sealed",
+                            [2] = "Vickrey"
+                        }
+                    },
+                    item_value_mode = {
+                        name = "Item value mode",
+                        desc = "Single-Priced (static) or Ascending (in range of min-max) item value.",
+                        type = "select",
+                        style = "radio",
+                        order = 5,
+                        values = {
+                            [0] = "Single-Priced",
+                            [1] = "Ascending"
+                        }
+                    },
+                    zero_sum_bank = {
+                        name = "Zero-Sum Bank",
+                        desc = "Enable paid value splitting amongst raiders.",
+                        type = "toggle",
+                        width = "full",
+                        order = 6
+                    },
+                    zero_sum_bank_inflation_value = {
+                        name = "Zero-Sum Inflation Value",
+                        desc = "Enable paid value splitting amongst raiders.",
+                        type = "input",
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        width = "full",
+                        order = 6
+                    },
+                    allow_negative_standings = {
+                        name = "Allow Negative Standings",
+                        desc = "Allow biding more than current standings and end up with negative values.",
+                        type = "toggle",
+                        width = "full",
+                        order = 7
+                    },
+                    allow_negative_bidders = {
+                        name = "Allow Negative Bidders",
+                        desc = "Allow biding when current standings are negative values.",
+                        type = "toggle",
+                        width = "full",
+                        order = 8
+                    },
+                    simultaneous_auctions = {
+                        name = "Simultaneous auctions",
+                        desc = "Allow multiple simultaneous auction happening at the same time.",
+                        type = "toggle",
+                        width = "full",
+                        order = 9
+                    },
+                    auction_time = {
+                        name = "Auction length",
+                        desc = "Auction length in seconds.",
+                        type = "input",
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        width = "full",
+                        order = 10
+                    },
+                    antisnipe_time = {
+                        name = "Anti-snipe time",
+                        desc = "Time in seconds by which auction will be extended if bid is received during last 10 seconds.",
+                        type = "input",
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        width = "full",
+                        order = 11
+                    },
                 }
-            },
-            item_value_mode = {
-                name = "Item value mode",
-                desc = "Single-Priced (static) or Ascending (in range of min-max) item value.",
-                type = "select",
-                style = "radio",
-                order = 5,
-                values = {
-                    [0] = "Single-Priced",
-                    [1] = "Ascending"
-                }
-            },
-            zero_sum_bank = {
-                name = "Zero-Sum Bank",
-                desc = "Enable paid value splitting amongst raiders.",
-                type = "toggle",
-                width = "full",
-                order = 6
-            },
-            allow_negative_standings = {
-                name = "Allow Negative Standings",
-                desc = "Allow biding more than current standings and end up with negative values.",
-                type = "toggle",
-                width = "full",
-                order = 7
-            },
-            allow_negative_bidders = {
-                name = "Allow Negative Bidders",
-                desc = "Allow biding when current standings are negative values.",
-                type = "toggle",
-                width = "full",
-                order = 8
-            },
-            simultaneous_auctions = {
-                name = "Simultaneous auctions",
-                desc = "Allow multiple simultaneous auction happening at the same time.",
-                type = "toggle",
-                width = "full",
-                order = 9
             },
             default_slot_values = {
                 name = "Default slot values",

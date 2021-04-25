@@ -3,7 +3,7 @@ local _, CLM = ...
 local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
-local merge = UTILS.merge
+local mergeLists = UTILS.mergeLists
 local typeof = UTILS.typeof
 -- local getIntegerGuid = UTILS.getIntegerGuid
 -- local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
@@ -44,7 +44,7 @@ function RosterCreate:name()
     return self.n
 end
 
-local RosterCreateFields = merge(LogEntry:fields(), {"r", "n"})
+local RosterCreateFields = mergeLists(LogEntry:fields(), {"r", "n"})
 function RosterCreate:fields()
     return RosterCreateFields
 end
@@ -62,7 +62,7 @@ function RosterDelete:rosterUid()
     return self.r
 end
 
-local RosterDeleteFields = merge(LogEntry:fields(), {"r"})
+local RosterDeleteFields = mergeLists(LogEntry:fields(), {"r"})
 function RosterDelete:fields()
     return RosterDeleteFields
 end
@@ -85,7 +85,7 @@ function RosterRename:name()
     return self.n
 end
 
-local RosterRenameFields = merge(LogEntry:fields(), {"r", "n"})
+local RosterRenameFields = mergeLists(LogEntry:fields(), {"r", "n"})
 function RosterRename:fields()
     return RosterRenameFields
 end
@@ -110,7 +110,7 @@ function RosterUpdateConfig:config()
     return self.c
 end
 
-local RosterUpdateConfigFields = merge(LogEntry:fields(), {"r", "c"})
+local RosterUpdateConfigFields = mergeLists(LogEntry:fields(), {"r", "c"})
 function RosterUpdateConfig:fields()
     return RosterUpdateConfigFields
 end
@@ -137,7 +137,7 @@ function RosterUpdateConfigSingle:value()
     return self.v
 end
 
-local RosterUpdateConfigSingleFields = merge(LogEntry:fields(), {"r", "c", "v"})
+local RosterUpdateConfigSingleFields = mergeLists(LogEntry:fields(), {"r", "c", "v"})
 function RosterUpdateConfigSingle:fields()
     return RosterUpdateConfigSingleFields
 end
@@ -159,7 +159,7 @@ function RosterUpdateDefault:defaults()
     return self.d
 end
 
-local RosterUpdateDefaultFields = merge(LogEntry:fields(), {"r", "d"})
+local RosterUpdateDefaultFields = mergeLists(LogEntry:fields(), {"r", "d"})
 function RosterUpdateDefault:fields()
     return RosterUpdateDefaultFields
 end
@@ -191,7 +191,7 @@ function RosterUpdateDefaultSingle:max()
     return self.a
 end
 
-local RosterUpdateDefaultSingleFields = merge(LogEntry:fields(), {"r", "d", "i", "a"})
+local RosterUpdateDefaultSingleFields = mergeLists(LogEntry:fields(), {"r", "d", "i", "a"})
 function RosterUpdateDefaultSingle:fields()
     return RosterUpdateDefaultSingleFields
 end
@@ -205,7 +205,7 @@ function RosterUpdateOverrides:new(rosterUid, overrides)
     return o
 end
 
-local RosterUpdateOverridesFields = merge(LogEntry:fields(), {"r", "o"})
+local RosterUpdateOverridesFields = mergeLists(LogEntry:fields(), {"r", "o"})
 function RosterUpdateOverrides:fields()
     return RosterUpdateOverridesFields
 end
@@ -232,7 +232,7 @@ function RosterUpdateOverridesSingle:value()
     return self.v
 end
 
-local RosterUpdateOverridesSingleFields = merge(LogEntry:fields(), {"r", "o", "v"})
+local RosterUpdateOverridesSingleFields = mergeLists(LogEntry:fields(), {"r", "o", "v"})
 function RosterUpdateOverridesSingle:fields()
     return RosterUpdateOverridesSingleFields
 end
@@ -259,7 +259,7 @@ function RosterUpdateProfiles:remove()
     return self.e
 end
 
-local RosterUpdateProfilesFields = merge(LogEntry:fields(), {"r", "p", "e"})
+local RosterUpdateProfilesFields = mergeLists(LogEntry:fields(), {"r", "p", "e"})
 function RosterUpdateProfiles:fields()
     return RosterUpdateProfilesFields
 end
@@ -302,7 +302,7 @@ function RosterCopyData:profiles()
     return self.p
 end
 
-local RosterCopyDataFields = merge(LogEntry:fields(), {"r", "a", "c", "d", "o", "p"})
+local RosterCopyDataFields = mergeLists(LogEntry:fields(), {"r", "a", "c", "d", "o", "p"})
 function RosterCopyData:fields()
     return RosterCopyDataFields
 end

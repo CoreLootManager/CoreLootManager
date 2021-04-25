@@ -3,7 +3,7 @@ local _, CLM = ...
 local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
-local merge = UTILS.merge
+local mergeLists = UTILS.mergeLists
 -- local typeof = UTILS.typeof
 local ClassToNumber = UTILS.ClassToNumber
 -- local getIntegerGuid = UTILS.getIntegerGuid
@@ -51,7 +51,7 @@ function ProfileUpdate:main()
     return self.m
 end
 
-local ProfileUpdateFields = merge(LogEntry:fields(), {"g", "n", "c", "s", "m"})
+local ProfileUpdateFields = mergeLists(LogEntry:fields(), {"g", "n", "c", "s", "m"})
 function ProfileUpdate:fields()
     return ProfileUpdateFields
 end
@@ -69,7 +69,7 @@ function ProfileRemove:GUID()
     return self.g
 end
 
-local ProfileRemoveFields = merge(LogEntry:fields(), {"g"})
+local ProfileRemoveFields = mergeLists(LogEntry:fields(), {"g"})
 function ProfileRemove:fields()
     return ProfileRemoveFields
 end
@@ -92,7 +92,7 @@ function ProfileLink:main()
     return self.m
 end
 
-local ProfileLinkFields = merge(LogEntry:fields(), {"g", "m"})
+local ProfileLinkFields = mergeLists(LogEntry:fields(), {"g", "m"})
 function ProfileLink:fields()
     return ProfileLinkFields
 end

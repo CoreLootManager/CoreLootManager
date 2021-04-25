@@ -36,7 +36,7 @@ local function mutator(entry, mutate)
         local GUID = getGuidFromInteger(target)
         if roster:IsProfileInRoster(GUID) then
             standings[GUID] = mutate(standings[GUID], value)
-            roster:AddProfilePointHistory(pointHistoryEntry, ProfileManager:GetProfileByGuid(GUID))
+            roster:AddProfilePointHistory(pointHistoryEntry, ProfileManager:GetProfileByGUID(GUID))
         else
             -- TODO: Add  Profile to roster? Store in anonymous profile?
             LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
@@ -94,7 +94,7 @@ function PointManager:Initialize()
         --     LOG:Debug(UTILS.ColorCodeText(rosterName, "ff5522"))
         --     local standings = roster:Standings()
         --     for GUID, value in pairs(standings) do
-        --         local profile = ProfileManager:GetProfileByGuid(GUID)
+        --         local profile = ProfileManager:GetProfileByGUID(GUID)
         --         if profile ~= nil then
         --             LOG:Debug("%s: %s", UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex), tostring(value))
         --         end
@@ -106,7 +106,7 @@ function PointManager:Initialize()
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
 end
 
-function PointManager:UpdatePoints(roster, targets, value, action, forceInstant)
+function PointManager:UpdatePoints(roster, targets, value, reason, action, forceInstant)
     LOG:Trace("PointManager:UpdatePoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdatePoints(): Unknown action")
@@ -134,11 +134,11 @@ function PointManager:UpdatePoints(roster, targets, value, action, forceInstant)
 
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.Modify:new(uid, targets, value)
+        entry = LEDGER_DKP.Modify:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = LEDGER_DKP.Set:new(uid, targets, value)
+        entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = LEDGER_DKP.Decay:new(uid, targets, value)
+        entry = LEDGER_DKP.Decay:new(uid, targets, value, reason)
     end
 
     local t = entry:targets()
@@ -227,7 +227,7 @@ function PointManager:Debug(N)
                         return CLM.UTILS.getIntegerGuid(GUID)
                     end
                     if type == 3 then
-                        return ProfileManager:GetProfileByGuid(GUID)
+                        return ProfileManager:GetProfileByGUID(GUID)
                     end
 
                     return GUID
@@ -248,7 +248,7 @@ function PointManager:Debug(N)
                 --     " in roster " .. selectedRoster .. " " ..
                 --     " with value " .. tostring(value)
                 -- )
-                PointManager:UpdatePoints(roster, playerList, value, entryType, true)
+                PointManager:UpdatePoints(roster, playerList, value, reason, entryType, true)
             end
         end
     end
@@ -272,5 +272,36 @@ CONSTANTS.POINT_MANAGER_ACTION =
 }
 
 CONSTANTS.POINT_MANAGER_ACTIONS = UTILS.Set({ 0, 1, 2 })
+
+-- DO NOT CHANGE THE ID VALUE MAPPING
+CONSTANTS.POINT_CHANGE_REASONS = {
+    GENERAL = {  -- Exposed through GUI dropdown, can  be localized
+        [1] = "On Time Bonus",          
+        [2] = "Boss Kill Bonus",
+        [3] = "Raid Completion Bonus",
+        [4] = "Progression Bonus",
+        [5] = "Standby Bonus",
+        [6] = "Unexcused absence",
+        [7] = "Correcting error",
+        [8] = "Manual adjustment"
+    },
+    INTERNAL = { -- Not exposed directly to GUI
+        [100] = "Decay",
+        [101] = "Interval Bonus"
+    }
+}
+
+CONSTANTS.POINT_CHANGE_REASON = {
+    ON_TIME_BONUS = 1,
+    BOSS_KILL_BONUS = 2,
+    RAID_COMPLETION_BONUS = 3,
+    PROGRESSION_BONUS = 4,
+    STANDBY_BONUS = 5,
+    UNEXCUSED_ABSENCE = 6,
+    CORRECTING_ERROR = 7,
+    MANUAL_ADJUSTMENT = 8,
+    DECAY = 100,
+    INTERVAL_BONUS = 101
+}
 
 MODULES.PointManager = PointManager

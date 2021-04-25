@@ -34,7 +34,7 @@ function LootManager:Initialize()
             end
             local GUID = getGuidFromInteger(entry:profile())
             if roster:IsProfileInRoster(GUID) then
-                local profile = ProfileManager:GetProfileByGuid(GUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile == nil then
                     LOG:Warning("PointManager mutator(): Profile with guid [%s] does not exist", GUID)
                     return
@@ -147,7 +147,7 @@ function LootManager:Debug(N)
         if roster == nil then
             print("=== Wrong roster selection ===")
         else
-            local profile = ProfileManager:GetProfileByGuid(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
+            local profile = ProfileManager:GetProfileByGUID(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
             if profile == nil then
                 print("=== Wrong profile selection ===")
             else
@@ -176,9 +176,9 @@ function LootManager:Debug(N)
                 elseif entryType == 1 then -- Revoke
                     self:RevokeItem(profileLoot[math.random(1, numLoot)], true)
                 elseif entryType == 2 then -- Transfer
-                    local targetProfile = ProfileManager:GetProfileByGuid(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
+                    local targetProfile = ProfileManager:GetProfileByGUID(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
                     while targetProfile == nil or (targetProfile:GUID() == profile:GUID()) do
-                        targetProfile = ProfileManager:GetProfileByGuid(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
+                        targetProfile = ProfileManager:GetProfileByGUID(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
                     end
                     self:TransferItem(roster, targetProfile, profileLoot[math.random(1, numLoot)], true)
                 end

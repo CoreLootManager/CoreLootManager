@@ -23,7 +23,7 @@ function PointHistory:Profiles()
         for _,target in ipairs(targets) do
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
-            local profile = CLM.MODULES.ProfileManager:GetProfileByGuid(getGuidFromInteger(target))
+            local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
             table.insert(self.profiles, profile)
         end
     end

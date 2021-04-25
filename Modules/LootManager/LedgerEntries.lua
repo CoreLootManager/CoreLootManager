@@ -4,7 +4,7 @@ local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
-local merge = UTILS.merge
+local mergeLists = UTILS.mergeLists
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
@@ -36,7 +36,7 @@ function Award:value()
     return self.v
 end
 
-local awardFields = merge(LogEntry:fields(), {"r", "p", "i", "v"})
+local awardFields = mergeLists(LogEntry:fields(), {"r", "p", "i", "v"})
 function Award:fields()
     return awardFields
 end
@@ -66,7 +66,7 @@ function Revoke:value()
     return self.v
 end
 
-local revokeFields = merge(LogEntry:fields(), {"r", "p", "i", "v"})
+local revokeFields = mergeLists(LogEntry:fields(), {"r", "p", "i", "v"})
 function Revoke:fields()
     return revokeFields
 end
