@@ -57,7 +57,8 @@ function RosterManagerOptions:Initialize()
             for GUID, _ in pairs(profiles) do
                 table.insert(profileList, GUID)
             end
-            RosterManager:AddProfilesToRoster(name, profileList)
+            local roster = RosterManager:GetRosterByName(name)
+            RosterManager:AddProfilesToRoster(roster, profileList)
         end),
         copy_execute = (function(name)
             if self.copy_source_name == nil then return end
@@ -256,6 +257,22 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         return args
     end)()
 
+    local boss_kill_award_values_args = (function()
+        local args = {
+            classic = {
+                type = "group",
+                name = "Classic",
+                args = {}
+            },
+            tbc = {
+                type = "group",
+                name = "TBC",
+                args = {}
+            }
+        }
+        return args
+    end)()
+
     local options = {
         type = "group",
         name = name,
@@ -316,10 +333,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 width = "half",
                 disabled = true,
                 confirm = true,
-                values = {
-                    [0] = "DKP",
-                    [1] = "EPGP"
-                }
+                values = CONSTANTS.POINT_TYPES_GUI
             },
             auction = {
                 name = "Auction settings",
@@ -331,11 +345,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "select",
                         style = "radio",
                         order = 4,
-                        values = {
-                            [0] = "Open",
-                            [1] = "Sealed",
-                            [2] = "Vickrey"
-                        }
+                        values = CONSTANTS.AUCTION_TYPES_GUI
                     },
                     item_value_mode = {
                         name = "Item value mode",
@@ -343,10 +353,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "select",
                         style = "radio",
                         order = 5,
-                        values = {
-                            [0] = "Single-Priced",
-                            [1] = "Ascending"
-                        }
+                        values = CONSTANTS.ITEM_VALUE_MODES_GUI
                     },
                     zero_sum_bank = {
                         name = "Zero-Sum Bank",
@@ -412,6 +419,11 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "group",
                 args = item_value_overrides_args
             },
+            boss_kill_award_values = {
+                name = "Boss kill award values",
+                type = "group",
+                args = boss_kill_award_values_args
+            }
         }
     }
     return options

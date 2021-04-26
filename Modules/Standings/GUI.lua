@@ -29,12 +29,12 @@ function StandingsGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    self:Refresh()
     self.selectedRoster = 0
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
+        if lag ~= 0 or uncommited ~= 0 then return end
         self:Refresh()
     end)
-    
+
 end
 
 local function ST_GetName(row)
@@ -72,7 +72,7 @@ local function GenerateManagerOptions(self)
     return {
         award_header = {
             type = "header",
-            name = "DKP Management",
+            name = "Management",
             order = 10
         },
         award_dkp_value = {
@@ -103,15 +103,15 @@ local function GenerateManagerOptions(self)
                 local awardValue = tonumber(self.awardValue)
                 if not awardValue then LOG:Debug("StandingsGUI(Award): missing award value"); return end
                 -- Reason
-                local reason
-                if awardReason and CONSTANTS.POINT_CHANGE_REASONS.GENERAL[awardReason] then
-                    reason = awardReason
+                local awardReason
+                if self.awardReason and CONSTANTS.POINT_CHANGE_REASONS.GENERAL[self.awardReason] then
+                    awardReason = self.awardReason
                 else
                     LOG:Debug("StandingsGUI(Award): missing reason");
-                    reason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
+                    awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
                 end
                 -- Selected: roster, profiles
-                roster, profiles = self:GetSelected()
+                local roster, profiles = self:GetSelected()
                 if roster == nil then
                     LOG:Debug("StandingsGUI(Award): roster == nil")
                     return
@@ -121,7 +121,7 @@ local function GenerateManagerOptions(self)
                     return
                 end
                 -- Update points
-                PointManager:UpdatePoints(roster, profiles, awardValue, reason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
             end),
             confirm = true,
             order = 13
@@ -159,15 +159,15 @@ local function GenerateOfficerOptions(self)
                 -- Decay Value
                 local decayValue = tonumber(self.decayValue)
                 if not decayValue then LOG:Debug("StandingsGUI(Decay): missing decay value"); return end
-                if decayValue > 100 or decayValue < 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
+                if decayValue > 100 or decayValue <= 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
                 -- Selected: roster, profiles
-                local filter 
-                if not self.includeNegative then 
+                local filter
+                if not self.includeNegative then
                     filter = (function(roster, profile)
                         return (roster:Standings(profile:GUID()) >= 0)
                     end)
                 end
-                roster, profiles = self:GetSelected(filter)
+                local roster, profiles = self:GetSelected(filter)
                 if roster == nil then
                     LOG:Debug("StandingsGUI(Decay): roster == nil")
                     return
@@ -175,12 +175,37 @@ local function GenerateOfficerOptions(self)
                 if not profiles or #profiles == 0 then
                     LOG:Debug("StandingsGUI(Decay): profiles == 0")
                     return
-                end 
+                end
                 -- Update points
                 PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
             end),
             confirm = true,
             order = 23
+        },
+        roster_players_header = {
+            type = "header",
+            name = "Players",
+            order = 24
+        },
+        remove_from_roster = {
+            name = "Remove from roster",
+            desc = "Removes selected players from roster or everyone if none selected.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+                local roster, profiles = self:GetSelected()
+                if roster == nil then
+                    LOG:Debug("StandingsGUI(Remove): roster == nil")
+                    return
+                end
+                if not profiles or #profiles == 0 then
+                    LOG:Debug("StandingsGUI(Remove): profiles == 0")
+                    return
+                end
+                RosterManager:RemoveProfilesFromRoster(roster, profiles)
+            end),
+            confirm = true,
+            order = 25
         }
     }
 end
@@ -194,9 +219,10 @@ local function CreateManagementOptions(self, container)
     self.includeNegative = false
     self.awardValue = nil
     self.awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
-    for i=1,9 do table.insert( self.filteredClasses, true ) end
+    for _=1,9 do table.insert( self.filteredClasses, true ) end
     self.filteredClasses[100] = false
     self.filteredClasses[101] = false
+    self.filteredClasses[102] = false
     local options = {
         type = "group",
         args = {}
@@ -253,9 +279,6 @@ local function CreateStandingsDisplay(self)
     return StandingsGroup
 end
 
-local function CreateStandingsTab()
-end
-
 function StandingsGUI:Create()
     LOG:Trace("StandingsGUI:Create()")
     -- Main Frame
@@ -269,7 +292,7 @@ function StandingsGUI:Create()
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
-    
+
     f:AddChild(CreateStandingsDisplay(self))
     f:AddChild(CreateManagementOptions(self))
 
@@ -312,7 +335,7 @@ function StandingsGUI:GetSelected(filter)
         filter = (function(roster, profile) return true end)
     end
     local roster = self:GetCurrentRoster()
-    if roster == nil then 
+    if roster == nil then
         return nil, nil
     end
     -- Profiles

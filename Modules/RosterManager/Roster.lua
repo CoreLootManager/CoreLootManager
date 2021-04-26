@@ -232,7 +232,6 @@ function RosterConfiguration:fields()
     return keys(self._)
 end
 
-local function transform_none(value) return value end
 local function transform_boolean(value) return value and true or false end
 local function transform_number(value) return tonumber(value) end
 
@@ -295,18 +294,35 @@ CLM.MODELS.RosterConfiguration = RosterConfiguration
 -- Constants
 CONSTANTS.POINT_TYPES = UTILS.Set({
     0, -- DKP
-    1  -- EPGP
+    1, -- EPGP
+    2, -- ROLL
+    3  -- SK
 })
+
+CONSTANTS.POINT_TYPES_GUI = {
+    [0] = "DKP",
+    [1] = "EPGP",
+    [2] = "ROLL",
+    [3] = "SK"
+}
 
 CONSTANTS.POINT_TYPE = {
     DKP = 0,
-    EPGP = 1
+    EPGP = 1,
+    ROLL = 2,
+    SK = 3
 }
 CONSTANTS.AUCTION_TYPES = UTILS.Set({
     0, -- OPEN
     1, -- SEALED
     2  -- VICKREY
 })
+
+CONSTANTS.AUCTION_TYPES_GUI = {
+    [0] = "Open",
+    [1] = "Sealed",
+    [2] = "Vickrey"
+}
 
 CONSTANTS.AUCTION_TYPE = {
     OPEN = 0,
@@ -318,6 +334,11 @@ CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
     0, -- SINGLE_PRICED
     1  -- ASCENDING
 })
+
+CONSTANTS.ITEM_VALUE_MODES_GUI = {
+    [0] = "Single-Priced",
+    [1] = "Ascending"
+}
 
 CONSTANTS.ITEM_VALUE_MODE = {
     SINGLE_PRICED = 0,

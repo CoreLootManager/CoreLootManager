@@ -248,7 +248,7 @@ function PointManager:Debug(N)
                 --     " in roster " .. selectedRoster .. " " ..
                 --     " with value " .. tostring(value)
                 -- )
-                PointManager:UpdatePoints(roster, playerList, value, reason, entryType, true)
+                PointManager:UpdatePoints(roster, playerList, value, math.random(1,9), entryType, true)
             end
         end
     end
@@ -276,7 +276,7 @@ CONSTANTS.POINT_MANAGER_ACTIONS = UTILS.Set({ 0, 1, 2 })
 -- DO NOT CHANGE THE ID VALUE MAPPING
 CONSTANTS.POINT_CHANGE_REASONS = {
     GENERAL = {  -- Exposed through GUI dropdown, can  be localized
-        [1] = "On Time Bonus",          
+        [1] = "On Time Bonus",
         [2] = "Boss Kill Bonus",
         [3] = "Raid Completion Bonus",
         [4] = "Progression Bonus",

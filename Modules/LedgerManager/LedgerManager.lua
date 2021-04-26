@@ -8,7 +8,7 @@ local ACL = MODULES.ACL
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
-local LedgerManager = {}
+local LedgerManager = { _initialized = false}
 
 local function authorize(entry, sender)
     return LedgerManager:Authorize(entry:class(), sender)
@@ -35,6 +35,7 @@ function LedgerManager:Initialize()
 
     self.entryExtensions = {}
     self.authorizationLevel = {}
+    self._initialized = true
 end
 
 function LedgerManager:Enable()
@@ -70,6 +71,7 @@ function LedgerManager:RegisterOnUpdate(callback)
 end
 
 function LedgerManager:Submit(entry, catchup)
+    self.lastEntry = entry
     self.ledger.submitEntry(entry)
     if catchup then
         self.ledger.catchup()
@@ -80,6 +82,14 @@ function LedgerManager:Remove(entry, catchup)
     self.ledger.ignoreEntry(entry)
     if catchup then
         self.ledger.catchup()
+    end
+end
+
+function LedgerManager:CancelLastEntry()
+    if not self._initialized then return end
+    if self.lastEntry then
+        self:Remove(self.lastEntry)
+        self.lastEntry = nil
     end
 end
 

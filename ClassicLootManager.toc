@@ -64,4 +64,5 @@ Modules\LootManager\LootManager.lua
 Modules\ProfileManager\GUI.lua
 Modules\RosterManager\GUI.lua
 Modules\RosterManager\Options.lua
-Modules\PointManager\DKP\GUI.lua
+Modules\Standings\GUI.lua
+Modules\History\LedgerEntries\GUI.lua

@@ -1,0 +1,8 @@
+<Bindings>
+    <Binding name="CLM_UNDO" header="CLM" category="ADDONS">
+        CLM_Undo()
+    </Binding>
+    <Binding name="CLM_REDO" category="ADDONS" default="CTRL-Y">
+        CLM_Redo()
+    </Binding>
+</Bindings>

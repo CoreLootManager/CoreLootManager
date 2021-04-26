@@ -280,10 +280,13 @@ function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
     LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, v.min, v.max), true)
 end
 
-function RosterManager:AddProfilesToRoster(name, profiles)
+function RosterManager:AddProfilesToRoster(roster, profiles)
     LOG:Trace("RosterManager:AddProfilesToRoster()")
     local roster = RosterManager:GetRosterByName(name)
-    if roster == nil then return nil end
+    if not typeof(roster, Roster) then
+        LOG:Warning("RosterManager:AddProfilesToRoster(): Invalid roster object")
+        return
+    end
     if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
         LOG:Warning("Empty profiles table in AddProfilesToRoster()")
         return
@@ -291,10 +294,12 @@ function RosterManager:AddProfilesToRoster(name, profiles)
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, false), true)
 end
 
-function RosterManager:RemoveProfilesFromRoster(name, profiles)
+function RosterManager:RemoveProfilesFromRoster(roster, profiles)
     LOG:Trace("RosterManager:RemoveProfilesFromRoster()")
-    local roster = RosterManager:GetRosterByName(name)
-    if roster == nil then return nil end
+    if not typeof(roster, Roster) then
+        LOG:Warning("RosterManager:RemoveProfilesFromRoster(): Invalid roster object")
+        return
+    end
     if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
         LOG:Warning("Empty profiles table in RemoveProfilesFromRoster()")
         return
@@ -446,10 +451,11 @@ function RosterManager:Debug(N)
                     table.insert(profileList, GUID)
                 end
             end
+            local _roster = RosterManager:GetRosterByName(rosterNames[math.random(1, #rosterNames)])
             if math.random(0,1) == 1 then
-                self:AddProfilesToRoster(rosterNames[math.random(1, #rosterNames)], profileList)
+                self:AddProfilesToRoster(_roster, profileList)
             else
-                self:RemoveProfilesFromRoster(rosterNames[math.random(1, #rosterNames)], profileList)
+                self:RemoveProfilesFromRoster(_roster, profileList)
             end
         end),
     }

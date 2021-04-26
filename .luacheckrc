@@ -21,10 +21,12 @@ ignore = {
 globals = {
 	-- Design
 	"LibStub",
-	"class",
 	-- Saved Variable
 	"CLM_DB",
 	"CLM_Logs",
+	-- Bindings
+	"CLM_Undo",
+	"CLM_Redo",
 	-- WoW 
 	"_G",
 

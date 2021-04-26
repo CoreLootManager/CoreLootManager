@@ -163,3 +163,18 @@ function CORE:GUILD_ROSTER_UPDATE(...)
         self:_Initialize()
     end
 end
+
+-- Globals: Keybinds
+
+BINDING_HEADER_CLM = "Classic Loot Manager"
+BINDING_NAME_CLM_UNDO = "Undo action"
+BINDING_NAME_CLM_REDO = "Redo action"
+
+function CLM_Undo()
+    LOG:Message("Executing Undo. Skiping confirmation prompt. Please wait.")
+    MODULES.LedgerManager:CancelLastEntry()
+end
+
+function CLM_Redo()
+    LOG:Warning("Redo not implemented.")
+end
