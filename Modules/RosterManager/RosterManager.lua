@@ -282,7 +282,6 @@ end
 
 function RosterManager:AddProfilesToRoster(roster, profiles)
     LOG:Trace("RosterManager:AddProfilesToRoster()")
-    local roster = RosterManager:GetRosterByName(name)
     if not typeof(roster, Roster) then
         LOG:Warning("RosterManager:AddProfilesToRoster(): Invalid roster object")
         return

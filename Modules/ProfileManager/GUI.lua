@@ -4,194 +4,263 @@ local _, CLM = ...
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 
+local LIBS =  {
+    registry = LibStub("AceConfigRegistry-3.0-CLM"),
+    gui = LibStub("AceConfigDialog-3.0-CLM")
+}
+
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
-local RESULTS = CLM.CONSTANTS.RESULTS
+-- local CONSTANTS = CLM.CONSTANTS
+-- local RESULTS = CLM.CONSTANTS.RESULTS
 local GUI = CLM.GUI
+
+local mergeDictsInline = UTILS.mergeDictsInline
+local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
+
+local ACL = MODULES.ACL
 local ProfileManager = MODULES.ProfileManager
+local RosterManager = MODULES.RosterManager
+local LedgerManager = MODULES.LedgerManager
 
--- local getGuidFromInteger = UTILS.getGuidFromInteger
+local REGISTRY = "clm_profiles_gui_options"
 
-local ProfileManagerGUI =  { _initialized = false }
-
-function ProfileManagerGUI:Initialize()
+local ProfilesGUI = {}
+function ProfilesGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    self:Refresh()
-    self.selected = ""
+    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
+        if lag ~= 0 or uncommited ~= 0 then return end
+        self:Refresh()
+    end)
+
 end
 
-function ProfileManagerGUI:Create()
-    LOG:Trace("ProfileManagerGUI:Create()")
-    -- Main Frame
-    local f = AceGUI:Create("Frame")
-    f:SetTitle("Profiles")
-    f:SetStatusText("")
-    f:SetLayout("Flow")
-    f:EnableResize(false)
-    f:SetWidth(700)
-    f:SetHeight(600)
-    self.top = f
-    UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Profiles_GUI")
+local function ST_GetName(row)
+    return row.cols[1].value
+end
+
+local function ST_GetClass(row)
+    return row.cols[2].value
+end
+
+local function GenerateUntrustedOptions(self)
+    local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
+    return {
+        filter_header = {
+            type = "header",
+            name = "Filtering",
+            order = 0
+        },
+        filter_display = {
+            name = "Filter",
+            type = "multiselect",
+            set = function(i, k, v) self.filteredClasses[tonumber(k)] = v; self:Refresh() end,
+            get = function(i, v) return self.filteredClasses[tonumber(v)] end,
+            values = filters,
+            width = "half",
+            order = 1
+        }
+    }
+end
+
+local function GenerateManagerOptions(self)
+    return {}
+end
+
+local function GenerateOfficerOptions(self)
+    local rankOptions = {}
+    local ranks = ACL:GetGuildRanks()
+    for i,o in ipairs(ranks) do
+        rankOptions[i] = o.name
+    end
+    return {
+        management_header = {
+            type = "header",
+            name = "Management",
+            order = 20
+        },
+        fill_from_guild_ranks = {
+            name = "Ranks",
+            type = "multiselect",
+            set = function(i, k, v) self.fillRanks[tonumber(k)] = v end,
+            get = function(i, v) return self.fillRanks[tonumber(v)] end,
+            values = rankOptions,
+            width = "half",
+            order = 21
+        },
+        fill_from_guild_min_level = {
+            name = "Minimum Level",
+            desc = "Minimum level of players to fill from guild.",
+            type = "range",
+            min  = 0,
+            max  = 70,
+            step = 1,
+            bigStep = 1,
+            set = function(i, v) self.minimumLevel = v end,
+            get = function(i) return self.minimumLevel end,
+            width = "full",
+            order = 22
+        },
+        fill_from_guild = {
+            name = "Fill from Guild",
+            desc = "Fill profile list with players with the minimum level and ranks.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+
+            end),
+            -- disabled = (function() return not IsInGuild() end)
+            confirm = true,
+            order = 23
+        },
+        fill_from_raid_roster = {
+            name = "Fill from Raid Roster",
+            desc = "Fill profile list with players in current raid roster.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+
+            end),
+            -- disabled = (function() return not IsInRaid() end)
+            confirm = true,
+            order = 23
+        },
+        add_target = {
+            name = "Add target",
+            desc = "Add currently selected target to list.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+
+            end),
+            confirm = true,
+            order = 24
+        },
+        remove_selected = {
+            name = "Remove",
+            desc = "Removes selected profiles or everyone if none selected.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+
+            end),
+            confirm = true,
+            order = 25
+        },
+        select_main = {
+            name = "Select main",
+            desc = "Select character to be marked as main for alt-main linking.",
+            type = "select",
+            width = "full",
+            values = self.profilesList,
+            order = 26
+        },
+        mark_as_alt = {
+            name = "Mark as alt",
+            desc = "Marks selected profiles as main of choosen player or everyone if none selected.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+
+            end),
+            confirm = true,
+            order = 27
+        },
+    }
+end
+
+local function CreateManagementOptions(self, container)
+    local ManagementOptions = AceGUI:Create("SimpleGroup")
+    ManagementOptions:SetLayout("Flow")
+    ManagementOptions:SetWidth(200)
+    self.ManagementOptions = ManagementOptions
+    self.filteredClasses = {}
+    self.fillRanks = {}
+    self.minimumLevel =  60
+    self.profilesList = {}
+    for _=1,9 do table.insert( self.filteredClasses, true ) end
+    local options = {
+        type = "group",
+        args = {}
+    }
+    mergeDictsInline(options.args, GenerateUntrustedOptions(self))
+    mergeDictsInline(options.args, GenerateManagerOptions(self))
+    mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    LIBS.registry:RegisterOptionsTable(REGISTRY, options)
+    LIBS.gui:Open(REGISTRY, ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
+
+    self.st:SetFilter(
+        function(stobject, row)
+            -- Check class filter
+            local class = ST_GetClass(row)
+            for id, _class in pairs(GetColorCodedClassDict()) do
+                if class == _class then
+                    return self.filteredClasses[id]
+                end
+            end
+            return true;
+        end
+    )
+
+    return ManagementOptions
+end
+
+local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
         {name = "Name",  width = 100},
         {name = "Class", width = 100},
         {name = "Spec",  width = 100},
-        {name = "Main",  width = 100}
+        {name = "Main",   width = 100}
     }
-    local ProfileTableGroup = AceGUI:Create("SimpleGroup")
-    ProfileTableGroup:SetLayout("Flow")
-    ProfileTableGroup:SetHeight(400)
-    ProfileTableGroup:SetWidth(450)
-    self.st = ScrollingTable:CreateST(columns, 30, 15, nil, ProfileTableGroup.frame, true)
+    local StandingsGroup = AceGUI:Create("SimpleGroup")
+    StandingsGroup:SetLayout("Flow")
+    StandingsGroup:SetHeight(550)
+    StandingsGroup:SetWidth(450)
+    -- Standings
+    self.st = ScrollingTable:CreateST(columns, 25, 18, nil, StandingsGroup.frame, true)
     self.st:EnableSelection(true)
-    self.st.frame:SetPoint("TOP", ProfileTableGroup.frame, "TOP", 0, -25)
+    self.st.frame:SetPoint("TOPLEFT", StandingsGroup.frame, "TOPLEFT", 0, -63)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
-    local OnClickHandler = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        local previousSelectedList = self.st:GetSelection()
-        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        local currentSelectedList = self.st:GetSelection()
 
-        local main
-        local alt
+    return StandingsGroup
+end
 
-        -- Previous 1 current 1 - clicked on same char: alt main linking clear
-        if (#previousSelectedList == 1) and (#currentSelectedList == 1) then
-            main = self.st:GetRow(previousSelectedList[1]).cols[1].value
-            alt = main
-        elseif (#currentSelectedList == 1) then
-            -- Current == 1 - alt main linking start
-            main = self.st:GetRow(currentSelectedList[1]).cols[1].value
-            self.top:SetStatusText("Click on a profile to mark it as alt of " .. main)
-            return status
-        elseif (#currentSelectedList >= 2) then
-            -- Current == 2 - alt main linking finish
-            main = self.st:GetRow(currentSelectedList[1]).cols[1].value
-            alt = self.st:GetRow(currentSelectedList[2]).cols[1].value
-        else
-            self.st:ClearSelection()
-            return status
-        end
-        local result = MODULES.ProfileManager:MarkAsAltByNames(main, alt)
-        self.st:ClearSelection()
-        if result == RESULTS.SUCCESS then
-            self.top:SetStatusText("Marked " .. main .. " as main of " .. alt)
-        elseif result == RESULTS.SUCCESS_EXTENDED then
-            self.top:SetStatusText("Removed link from " .. alt)
-        else
-            self.top:SetStatusText("")
-        end
-        self:Refresh()
-        -- if type(selected) ~= "table" then return end -- FYI not neededn ow due to changes in lib to multiselect
-        -- if selected.cols == nil then return end -- Handle column titles click
-        -- selected = selected.cols[1].value
-        return status
-    end)
-    self.st:RegisterEvents({
-        OnClick = OnClickHandler
-    })
-    f:AddChild(ProfileTableGroup)
-    -- Management options
-    local ManagementOptions = AceGUI:Create("SimpleGroup")
-    ManagementOptions:SetLayout("Flow")
-    ManagementOptions:SetHeight(400)
-    ManagementOptions:SetWidth(200)
+function ProfilesGUI:Create()
+    LOG:Trace("ProfilesGUI:Create()")
+    -- Main Frame
+    local f = AceGUI:Create("Frame")
+    f:SetTitle("Profiles")
+    f:SetStatusText("")
+    f:SetLayout("Table")
+    f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
+    f:EnableResize(false)
+    f:SetWidth(700)
+    f:SetHeight(650)
+    self.top = f
+    UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Profiles_GUI")
 
-    -- Management options: Fill from Guild
-    local FillFromGuildGroup = AceGUI:Create("InlineGroup")
-    FillFromGuildGroup:SetLayout("Flow")
-    FillFromGuildGroup:SetTitle("Fill from Guild Roster")
+    f:AddChild(CreateStandingsDisplay(self))
+    f:AddChild(CreateManagementOptions(self))
 
-    local SetMinLevelSlider = AceGUI:Create("Slider")
-    SetMinLevelSlider:SetSliderValues(1, 70, 1)
-    SetMinLevelSlider:SetValue(60)
-    SetMinLevelSlider:SetLabel("Minimum Level")
-    FillFromGuildGroup:AddChild(SetMinLevelSlider)
-
-    local FillFromGuildButton = AceGUI:Create("Button")
-    FillFromGuildButton:SetText("Fill")
-    FillFromGuildButton:SetCallback("OnClick", (function()
-        ProfileManager:FillFromGuild(nil, SetMinLevelSlider:GetValue())
-        self:Refresh()
-    end))
-    FillFromGuildButton:SetDisabled(not IsInGuild())
-    self.FillFromGuildButton = FillFromGuildButton
-    FillFromGuildGroup:AddChild(FillFromGuildButton)
-    ManagementOptions:AddChild(FillFromGuildGroup)
-
-    -- Management options: Fill from Raid
-    local FillFromRaidGroup = AceGUI:Create("InlineGroup")
-    FillFromRaidGroup:SetLayout("Flow")
-    FillFromRaidGroup:SetTitle("Fill from Raid Roster")
-
-    local FillFromRaidButton = AceGUI:Create("Button")
-    FillFromRaidButton:SetText("Fill")
-    FillFromRaidButton:SetCallback("OnClick", (function()
-        ProfileManager:FillFromRaid()
-        self:Refresh()
-    end))
-    FillFromRaidButton:SetDisabled(not IsInRaid())
-    self.FillFromRaidButton = FillFromRaidButton
-    FillFromRaidGroup:AddChild(FillFromRaidButton)
-    ManagementOptions:AddChild(FillFromRaidGroup)
-
-    -- Management options: Add Target
-    local AddTargetGroup = AceGUI:Create("InlineGroup")
-    AddTargetGroup:SetLayout("Flow")
-    AddTargetGroup:SetTitle("Add target")
-
-    local AddTargetButton = AceGUI:Create("Button")
-    AddTargetButton:SetText("Add")
-    AddTargetButton:SetCallback("OnClick", (function()
-        ProfileManager:AddTarget()
-        self:Refresh()
-    end))
-
-    AddTargetGroup:AddChild(AddTargetButton)
-    ManagementOptions:AddChild(AddTargetGroup)
-
-    -- Management options: Wipe
-    local WipeProfilesGroup = AceGUI:Create("InlineGroup")
-    WipeProfilesGroup:SetLayout("Flow")
-    WipeProfilesGroup:SetTitle("Wipe Profiles")
-
-    local WipeProfilesButton = AceGUI:Create("Button")
-    WipeProfilesButton:SetText("Wipe")
-    WipeProfilesButton:SetCallback("OnClick", (function()
-        ProfileManager:WipeAll()
-        self:Refresh()
-    end))
-
-    WipeProfilesGroup:AddChild(WipeProfilesButton)
-    ManagementOptions:AddChild(WipeProfilesGroup)
-
-    -- Management options: Export
-    local ExportProfilesGroup = AceGUI:Create("InlineGroup")
-    ExportProfilesGroup:SetLayout("Flow")
-    ExportProfilesGroup:SetTitle("Export Profiles")
-
-    local ExportProfilesButton = AceGUI:Create("Button")
-    ExportProfilesButton:SetText("Export")
-    ExportProfilesButton:SetCallback("OnClick", (function()
-        ProfileManager:ExportAll()
-        self:Refresh()
-    end))
-
-    ExportProfilesGroup:AddChild(ExportProfilesButton)
-    ManagementOptions:AddChild(ExportProfilesGroup)
-
-    f:AddChild(ManagementOptions)
     -- Hide by default
     f:Hide()
 end
 
-function ProfileManagerGUI:Refresh()
-    LOG:Trace("ProfileManagerGUI:Refresh()")
+function ProfilesGUI:Refresh()
+    LOG:Trace("ProfilesGUI:Refresh()")
     if not self._initialized then return end
+    self.st:ClearSelection()
 
+    if self.profileList then
+        for k,_ in pairs(self.profileList) do
+            self.profilesList[k] = nil
+        end
+    end
+    
     local data = {}
     local profiles = ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
@@ -208,16 +277,44 @@ function ProfileManagerGUI:Refresh()
         end
         table.insert(row.cols, {value = main})
         table.insert(data, row)
+
+        self.profilesList[object:Name()] = object:Name()
     end
 
     self.st:SetData(data)
-
-    self.FillFromGuildButton:SetDisabled(not IsInGuild())
-    self.FillFromRaidButton:SetDisabled(not IsInRaid())
+   
+    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 
-function ProfileManagerGUI:Toggle()
-    LOG:Trace("ProfileManagerGUI:Toggle()")
+function ProfilesGUI:GetSelected(filter)
+    if type(filter) ~= "function" then
+        filter = (function(profile) return true end)
+    end
+    -- Profiles
+    local selected = self.st:GetSelection()
+    local profiles = {}
+    if #selected == 0 then -- nothing selected: assume all visible are selected
+        selected = self.st:DoFilter()
+    end
+    for _,s in pairs(selected) do
+        local profile = ProfileManager:GetProfileByName(ST_GetName(self.st:GetRow(s)))
+        if profile then
+            table.insert(profiles, profile)
+        else
+            LOG:Debug("No profile for " .. tostring(ST_GetName(self.st:GetRow(s))))
+        end
+    end
+    local profiles_filtered = {}
+    for _, profile in ipairs(profiles) do
+        if filter(profile) then
+            table.insert(profiles_filtered, profile)
+        end
+    end
+    return profiles_filtered
+end
+
+function ProfilesGUI:Toggle()
+    LOG:Trace("ProfilesGUI:Toggle()")
     if not self._initialized then return end
     if self.top.frame:IsVisible() then
         self.top.frame:Hide()
@@ -227,7 +324,7 @@ function ProfileManagerGUI:Toggle()
     end
 end
 
-function ProfileManagerGUI:RegisterSlash()
+function ProfilesGUI:RegisterSlash()
     local options = {
         profiles = {
             type = "execute",
@@ -240,4 +337,4 @@ function ProfileManagerGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
-GUI.ProfileManager = ProfileManagerGUI
+GUI.Profiles = ProfilesGUI

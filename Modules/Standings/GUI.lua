@@ -46,7 +46,7 @@ local function ST_GetClass(row)
 end
 
 local function GenerateUntrustedOptions(self)
-    local filters = GetColorCodedClassDict()
+    local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
     filters[100] = UTILS.ColorCodeText("In Raid", "FFD100")
     filters[101] = UTILS.ColorCodeText("Online", "FFD100")
     filters[102] = UTILS.ColorCodeText("Standby", "FFD100")
@@ -187,6 +187,17 @@ local function GenerateOfficerOptions(self)
             name = "Players",
             order = 24
         },
+        add_from_raid = {
+            name = "Add from raid",
+            desc = "Adds players from current raid to the roster. Creates profiles if not exists.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+
+            end),
+            confirm = true,
+            order = 25
+        },
         remove_from_roster = {
             name = "Remove from roster",
             desc = "Removes selected players from roster or everyone if none selected.",
@@ -205,7 +216,7 @@ local function GenerateOfficerOptions(self)
                 RosterManager:RemoveProfilesFromRoster(roster, profiles)
             end),
             confirm = true,
-            order = 25
+            order = 26
         }
     }
 end
@@ -262,7 +273,7 @@ local function CreateStandingsDisplay(self)
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
-    StandingsGroup:SetHeight(400)
+    StandingsGroup:SetHeight(550)
     StandingsGroup:SetWidth(450)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
@@ -271,7 +282,7 @@ local function CreateStandingsDisplay(self)
     self.RosterSelectorDropDown = RosterSelectorDropDown
     StandingsGroup:AddChild(RosterSelectorDropDown)
     -- Standings
-    self.st = ScrollingTable:CreateST(columns, 25, 15, nil, StandingsGroup.frame, true)
+    self.st = ScrollingTable:CreateST(columns, 25, 18, nil, StandingsGroup.frame, true)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
@@ -289,7 +300,7 @@ function StandingsGUI:Create()
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
     f:SetWidth(700)
-    f:SetHeight(600)
+    f:SetHeight(650)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
 
@@ -330,10 +341,10 @@ function StandingsGUI:GetCurrentRoster()
 end
 
 function StandingsGUI:GetSelected(filter)
-    -- Roster
     if type(filter) ~= "function" then
         filter = (function(roster, profile) return true end)
     end
+    -- Roster
     local roster = self:GetCurrentRoster()
     if roster == nil then
         return nil, nil

@@ -16,7 +16,7 @@ function ACL:Initialize()
     -- Current user information
     self.guildMaster = IsGuildLeader()
     -- Overall guild information
-    self.cache = {}
+    self.cache = { ranks = {} }
     self:BuildRankCache()
     self:BuildOfficerCache()
     -- Set trust level for self
@@ -24,7 +24,6 @@ function ACL:Initialize()
 end
 
 function ACL:BuildRankCache()
-    self.cache.ranks = { isOfficer = {} }
     local rankInfo
     -- 4    Officerchat Speak
     -- 7    Invite Member
@@ -32,14 +31,19 @@ function ACL:BuildRankCache()
     -- 12   Edit Officer Note
     for i = 1,GuildControlGetNumRanks() do
         rankInfo = C_GuildInfo.GuildControlGetRankFlags(i)
-        self.cache.ranks.isOfficer[i] = (rankInfo[4] or rankInfo[7] or rankInfo[8] or rankInfo[12])
+        self.cache.ranks[i] = {}
+        self.cache.ranks[i].isOfficer = (rankInfo[4] or rankInfo[7] or rankInfo[8] or rankInfo[12])
     end
+    -- Add GM
+    self.cache.ranks[0] = { isOfficer = true}
+
 end
 
 function ACL:BuildOfficerCache()
     self.cache.officers = { }
     for i=1,GetNumGuildMembers() do
-        local name, _, rankIndex = GetGuildRosterInfo(i)
+        local name, rankName, rankIndex = GetGuildRosterInfo(i)
+        self.cache.ranks[rankIndex].name = rankName
         if self:IsRankOfficer(rankIndex) then
             self.cache.officers[UTILS.RemoveServer(name)] = true
         end
@@ -62,7 +66,7 @@ function ACL:IsTrusted(name)
 end
 
 function ACL:IsRankOfficer(rank)
-    return self.cache.ranks.isOfficer[rank] or false
+    return self.cache.ranks[rank] and self.cache.ranks[rank].isOfficer or false
 end
 
 function ACL:CheckLevel(level, name)
@@ -106,6 +110,10 @@ function ACL:RemoveFromWhitelist(name, level)
     if self:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
         self.db.whitelist[name] = nil
     end
+end
+
+function ACL:GetGuildRanks()
+    return self.cache.ranks
 end
 
 CONSTANTS.ACL = {}
