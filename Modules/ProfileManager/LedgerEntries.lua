@@ -61,7 +61,7 @@ end
 -- ------------- --
 function ProfileRemove:new(GUID)
     local o = LogEntry.new(self);
-    o.g = tostring(GUID) or ""
+    o.g = GetGUIDFromEntry(GUID or 0)
     return o
 end
 

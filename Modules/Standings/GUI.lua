@@ -300,7 +300,7 @@ function StandingsGUI:Create()
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
     f:SetWidth(700)
-    f:SetHeight(650)
+    f:SetHeight(675)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
 
@@ -342,7 +342,7 @@ end
 
 function StandingsGUI:GetSelected(filter)
     if type(filter) ~= "function" then
-        filter = (function(roster, profile) return true end)
+        filter = (function(roster, profile) return profile end)
     end
     -- Roster
     local roster = self:GetCurrentRoster()

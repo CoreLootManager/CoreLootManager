@@ -73,9 +73,10 @@ end
 local function GenerateOfficerOptions(self)
     local rankOptions = {}
     local ranks = ACL:GetGuildRanks()
-    for i,o in ipairs(ranks) do
+    for i,o in pairs(ranks) do
         rankOptions[i] = o.name
     end
+    rankOptions[-1] = "Any"
     return {
         management_header = {
             type = "header",
@@ -84,11 +85,11 @@ local function GenerateOfficerOptions(self)
         },
         fill_from_guild_ranks = {
             name = "Ranks",
-            type = "multiselect",
-            set = function(i, k, v) self.fillRanks[tonumber(k)] = v end,
-            get = function(i, v) return self.fillRanks[tonumber(v)] end,
+            type = "select",
+            set = function(i, v) self.rank = v end,
+            get = function(i) return self.rank end,
             values = rankOptions,
-            width = "half",
+            width = "full",
             order = 21
         },
         fill_from_guild_min_level = {
@@ -110,7 +111,8 @@ local function GenerateOfficerOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-
+                ProfileManager:FillFromGuild(self.rank, tonumber(self.minimumLevel) or 1)
+                self:Refresh()
             end),
             -- disabled = (function() return not IsInGuild() end)
             confirm = true,
@@ -122,7 +124,8 @@ local function GenerateOfficerOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-
+                ProfileManager:FillFromRaid()
+                self:Refresh()
             end),
             -- disabled = (function() return not IsInRaid() end)
             confirm = true,
@@ -134,7 +137,8 @@ local function GenerateOfficerOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-
+                ProfileManager:AddTarget()
+                self:Refresh()
             end),
             confirm = true,
             order = 24
@@ -145,7 +149,10 @@ local function GenerateOfficerOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-
+                for _,profile in ipairs(self:GetSelected()) do
+                    ProfileManager:RemoveProfile(profile:GUID())
+                end
+                self:Refresh()
             end),
             confirm = true,
             order = 25
@@ -156,18 +163,69 @@ local function GenerateOfficerOptions(self)
             type = "select",
             width = "full",
             values = self.profilesList,
+            set = function(i, v) self.selectedMain = v end,
+            get = function(i) return self.selectedMain end,
+            disabled = true,
             order = 26
         },
         mark_as_alt = {
             name = "Mark as alt",
-            desc = "Marks selected profiles as main of choosen player or everyone if none selected.",
+            desc = "Marks selected profiles or everyone if none selected as alts of choosen player (from dropdown).",
             type = "execute",
             width = "full",
             func = (function(i)
-
+                for _,alt in ipairs(self:GetSelected()) do
+                    ProfileManager:MarkAsAltByNames(self.selectedMain, alt:Name())
+                end
+                self:Refresh()
             end),
             confirm = true,
+            disabled = true,
             order = 27
+        },
+        clear_main = {
+            name = "Clear mains",
+            desc = "Clears selected profiles mains.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+                for _,profile in ipairs(self:GetSelected()) do
+                    ProfileManager:MarkAsAltByNames(profile:Name(), profile:Name())
+                end
+                self:Refresh()
+            end),
+            confirm = true,
+            disabled = true,
+            order = 28
+        },
+        select_roster = {
+            name = "Select roster",
+            desc = "Select roster to add profiles to.",
+            type = "select",
+            width = "full",
+            values = (function()
+                local rosters = RosterManager:GetRosters()
+                local values = {}
+                for name,_ in pairs(rosters) do
+                    values[name] = name
+                end
+                return values
+            end),
+            set = function(i, v) self.selectedRoster = v end,
+            get = function(i) return self.selectedRoster end,
+            order = 29
+        },
+        add_to_roster = {
+            name = "Add to roster",
+            desc = "Adds selected players or everyone if none selected to the selected roster (from dropdown).",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+                RosterManager:AddProfilesToRoster(RosterManager:GetRosterByName(self.selectedRoster), self:GetSelected())
+                self:Refresh()
+            end),
+            confirm = true,
+            order = 30
         },
     }
 end
@@ -178,9 +236,11 @@ local function CreateManagementOptions(self, container)
     ManagementOptions:SetWidth(200)
     self.ManagementOptions = ManagementOptions
     self.filteredClasses = {}
-    self.fillRanks = {}
+    self.rank = -1
     self.minimumLevel =  60
     self.profilesList = {}
+    self.selectedMain = ""
+    self.selectedRoster = ""
     for _=1,9 do table.insert( self.filteredClasses, true ) end
     local options = {
         type = "group",
@@ -239,7 +299,7 @@ function ProfilesGUI:Create()
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
     f:SetWidth(700)
-    f:SetHeight(650)
+    f:SetHeight(675)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Profiles_GUI")
 
@@ -260,7 +320,7 @@ function ProfilesGUI:Refresh()
             self.profilesList[k] = nil
         end
     end
-    
+
     local data = {}
     local profiles = ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
@@ -282,13 +342,13 @@ function ProfilesGUI:Refresh()
     end
 
     self.st:SetData(data)
-   
+
     LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 
 function ProfilesGUI:GetSelected(filter)
     if type(filter) ~= "function" then
-        filter = (function(profile) return true end)
+        filter = (function(profile) return profile end)
     end
     -- Profiles
     local selected = self.st:GetSelection()

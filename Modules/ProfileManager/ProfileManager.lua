@@ -113,6 +113,7 @@ function ProfileManager:NewProfile(GUID, name, class)
         LOG:Debug("NewProfile(): Empty name")
         return
     end
+    if self:GetProfileByGUID(GUID) or self:GetProfileByName(name) then return end
     LOG:Debug("New profile: [%s]: %s", GUID, name)
     LedgerManager:Submit(LEDGER_PROFILE.Update:new(GUID, name, class), true)
 end
@@ -165,22 +166,19 @@ end
 
 -- Functionalities
 
-function ProfileManager:FillFromGuild(selectedRanks, minLevel)
+function ProfileManager:FillFromGuild(selectedRank, minLevel)
     LOG:Trace("ProfileManager:FillFromGuild()")
     if LOG.SEVERITY.DEBUG >= LOG:GetSeverity() then
         LOG:Debug("FillFromGuild: ranks: {%s}, minLevel: %s", UTILS.stringifyList(selectedRanks), minLevel)
     end
 
     local rankFilterFn, minLevelFn
-    if type(selectedRanks) == "table" then
-        rankFilterFn = (function(rankIndex, _selectedRanks)
-            if _selectedRanks[rankIndex] then
-                return true
-            end
-            return false
+    if type(selectedRank) == "number" and selectedRank >= 0 then
+        rankFilterFn = (function(rankIndex)
+            return selectedRank == rankIndex
         end)
     else
-        rankFilterFn = (function(rankIndex, _selectedRanks)
+        rankFilterFn = (function(rankIndex)
             return true
         end)
     end
@@ -202,7 +200,7 @@ function ProfileManager:FillFromGuild(selectedRanks, minLevel)
     for i=1,GetNumGuildMembers() do
         local name, _, rankIndex, level, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
         name, _ = strsplit("-", name)
-        if rankFilterFn(rankIndex, selectedRanks) and minLevelFn(level, minLevel) then
+        if rankFilterFn(rankIndex) and minLevelFn(level, minLevel) then
             self:NewProfile(GUID, name, class)
         end
     end
