@@ -226,6 +226,22 @@ function RosterConfiguration:New(i)
     o._.simultaneousAuctions = false
     -- TODO:
     -- Max Bid Behavior ?
+    -- Boss Kill Bonus
+    o._.bossKillBonus = false
+    -- On time Bonus
+    o._.onTimeBonus = false
+    -- On Time Bonus Value
+    o._.onTimeBonusValue = 0
+    -- Raid Completion Bonus
+    o._.raidCompletionBonus = false
+    -- raidCompletionBonus Value
+    o._.raidCompletionBonusValue = 0
+    -- Interval Bonus
+    o._.intervalBonus = false
+    -- Interval Bonus Time
+    o._.intervalBonusTime = 0
+    -- Interval Bonus Value
+    o._.intervalBonusValue = 0
     return o
 end
 
@@ -246,7 +262,15 @@ local TRANSFORMS = {
     antiSnipe = transform_number,
     allowNegativeStandings = transform_boolean,
     allowNegativeBidders = transform_boolean,
-    simultaneousAuctions = transform_boolean
+    simultaneousAuctions = transform_boolean,
+    bossKillBonus = transform_boolean,
+    onTimeBonus = transform_boolean,
+    onTimeBonusValue = transform_number,
+    raidCompletionBonus = transform_boolean,
+    raidCompletionBonusValue = transform_number,
+    intervalBonus = transform_boolean,
+    intervalBonusTime = transform_number,
+    intervalBonusValue = transform_number,
 }
 
 function RosterConfiguration:Get(option)
@@ -288,6 +312,14 @@ function RosterConfiguration._validate_simultaneousAuctions(value) return IsBool
 function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_bossKillBonus(value) return IsBoolean(value) end
+function RosterConfiguration._validate_onTimeBonus(value) return IsBoolean(value) end
+function RosterConfiguration._validate_onTimeBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_raidCompletionBonus(value) return IsBoolean(value) end
+function RosterConfiguration._validate_raidCompletionBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_intervalBonus(value) return IsBoolean(value) end
+function RosterConfiguration._validate_intervalBonusTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_intervalBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration

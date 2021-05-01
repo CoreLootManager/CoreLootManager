@@ -33,6 +33,7 @@ local function mutator(entry, mutate)
     local pointHistoryEntry = PointHistory:New(entry)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
+        -- TODO: Main alt linking support: We need to account for the link not blindly pass profile
         local GUID = getGuidFromInteger(target)
         if roster:IsProfileInRoster(GUID) then
             standings[GUID] = mutate(standings[GUID], value)

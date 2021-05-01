@@ -70,12 +70,62 @@ function RosterManagerOptions:Initialize()
         copy_source_set = (function(name, value)
             self.copy_source_name = value
         end),
+        -- Points
         point_type_get = (function(name)
             return GetRosterOption(name, "pointType")
         end),
         point_type_set = (function(name, value)
             SetRosterOption(name, "pointType", value)
         end),
+        boss_kill_bonus_get = (function(name)
+            return GetRosterOption(name, "bossKillBonus")
+        end),
+        boss_kill_bonus_set = (function(name, value)
+            SetRosterOption(name, "bossKillBonus", value)
+        end),
+        on_time_bonus_get = (function(name)
+            return GetRosterOption(name, "onTimeBonus")
+        end),
+        on_time_bonus_set = (function(name, value)
+            SetRosterOption(name, "onTimeBonus", value)
+        end),
+        on_time_bonus_value_get = (function(name)
+            return tostring(GetRosterOption(name, "onTimeBonusValue"))
+        end),
+        raid_completion_bonus_get = (function(name)
+            return GetRosterOption(name, "raidCompletionBonus")
+        end),
+        raid_completion_bonus_set = (function(name, value)
+            SetRosterOption(name, "raidCompletionBonus", value)
+        end),
+        raid_completion_bonus_value_get = (function(name)
+            return tostring(GetRosterOption(name, "raidCompletionBonusValue"))
+        end),
+        raid_completion_bonus_value_set = (function(name, value)
+            SetRosterOption(name, "raidCompletionBonusValue", value)
+        end),
+        on_time_bonus_value_set = (function(name, value)
+            SetRosterOption(name, "onTimeBonusValue", value)
+        end),
+        interval_bonus_get = (function(name)
+            return GetRosterOption(name, "intervalBonus")
+        end),
+        interval_bonus_set = (function(name, value)
+            SetRosterOption(name, "intervalBonus", value)
+        end),
+        interval_bonus_value_get = (function(name)
+            return tostring(GetRosterOption(name, "intervalBonusValue"))
+        end),
+        interval_bonus_value_set = (function(name, value)
+            SetRosterOption(name, "intervalBonusValue", value)
+        end),
+        interval_bonus_time_get = (function(name)
+            return tostring(GetRosterOption(name, "intervalBonusTime"))
+        end),
+        interval_bonus_time_set = (function(name, value)
+            SetRosterOption(name, "intervalBonusTime", value)
+        end),
+        -- Auction
         auction_auction_type_get = (function(name)
             return GetRosterOption(name, "auctionType")
         end),
@@ -335,6 +385,54 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 confirm = true,
                 values = CONSTANTS.POINT_TYPES_GUI
             },
+            boss_kill_bonus = {
+                name = "Boss Kill Bonus",
+                type = "toggle",
+                order = 4,
+                width = "full"
+            },
+            on_time_bonus = {
+                name = "On Time Bonus",
+                type = "toggle",
+                order = 5,
+                width = 1
+            },
+            on_time_bonus_value = {
+                name = "On Time Bonus Value",
+                type = "input",
+                order = 6,
+                width = 1
+            },
+            raid_completion_bonus = {
+                name = "Raid Completion Bonus",
+                type = "toggle",
+                order = 7,
+                width = 1
+            },
+            raid_completion_bonus_value = {
+                name = "Raid Completion Value",
+                type = "input",
+                order = 8,
+                width = 1
+            },
+            interval_bonus = {
+                name = "Interval Bonus",
+                type = "toggle",
+                order = 9,
+                width = 1
+            },
+            interval_bonus_time = {
+                name = "Interval Time",
+                type = "input",
+                order = 10,
+                width = 0.6
+            },
+            interval_bonus_value = {
+                name = "Bonus Value",
+                type = "input",
+                order = 11,
+                width = 0.6
+            },
             auction = {
                 name = "Auction settings",
                 type = "group",
@@ -359,7 +457,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         name = "Zero-Sum Bank",
                         desc = "Enable paid value splitting amongst raiders.",
                         type = "toggle",
-                        width = "full",
+                        width = 1,
                         order = 6
                     },
                     zero_sum_bank_inflation_value = {
@@ -367,7 +465,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Enable paid value splitting amongst raiders.",
                         type = "input",
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                        width = "full",
+                        width = 1,
                         order = 6
                     },
                     allow_negative_standings = {
@@ -396,7 +494,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Auction length in seconds.",
                         type = "input",
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                        width = "full",
+                        width = 1,
                         order = 10
                     },
                     antisnipe_time = {
@@ -404,7 +502,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Time in seconds by which auction will be extended if bid is received during last 10 seconds.",
                         type = "input",
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                        width = "full",
+                        width = 1,
                         order = 11
                     },
                 }

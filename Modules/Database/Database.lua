@@ -24,6 +24,9 @@ function DB:Initialize()
     if type(CLM_DB[self.server_faction_guild]['guild']) ~= "table" then
         CLM_DB[self.server_faction_guild]['guild'] = {}
     end
+    if type(CLM_DB[self.server_faction_guild]['raid']) ~= "table" then
+        CLM_DB[self.server_faction_guild]['raid'] = {}
+    end
     if type(CLM_DB[self.server_faction_guild]['ledger']) ~= "table" then
         CLM_DB[self.server_faction_guild]['ledger'] = {}
     end
@@ -43,6 +46,10 @@ end
 
 function DB:Guild()
     return CLM_DB[self.server_faction_guild]['guild']
+end
+
+function DB:Raid()
+    return CLM_DB[self.server_faction_guild]['raid']
 end
 
 function DB:Ledger()

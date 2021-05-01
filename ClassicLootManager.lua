@@ -76,7 +76,8 @@ function CORE:_InitializeFeatures()
     MODULES.RosterManager:Initialize()
     MODULES.PointManager:Initialize()
     MODULES.LootManager:Initialize()
-    --MODULES.RaidManager.Initialize()
+    MODULES.RaidManager:Initialize()
+    MODULES.AuctionManager:Initialize()
 end
 
 function CORE:_InitializeFrontend()

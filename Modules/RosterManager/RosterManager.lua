@@ -220,6 +220,11 @@ function RosterManager:GetRosterByUid(uid)
     return self.cache.rosters[self.cache.rostersUidMap[uid]]
 end
 
+
+function RosterManager:GetRosterNameByUid(uid)
+    return self.cache.rostersUidMap[uid]
+end
+
 function RosterManager:NewRoster()
     LOG:Trace("RosterManager:NewRoster()")
 

@@ -59,10 +59,13 @@ Modules\ProfileManager\ProfileManager.lua
 Modules\RosterManager\RosterManager.lua
 Modules\PointManager\PointManager.lua
 Modules\LootManager\LootManager.lua
+Modules\RaidManager\RaidManager.lua
+Modules\AuctionManager\AuctionManager.lua
 
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua
 Modules\RosterManager\GUI.lua
 Modules\RosterManager\Options.lua
 Modules\Standings\GUI.lua
-Modules\History\LedgerEntries\GUI.lua
+Modules\RaidManager\GUI.lua
+Modules\AuctionManager\GUI.lua

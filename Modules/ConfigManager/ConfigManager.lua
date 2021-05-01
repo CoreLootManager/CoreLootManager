@@ -21,8 +21,8 @@ function ConfigManager:Initialize()
     LOG:Trace("ConfigManager:Initialize()")
     self.generators = {
         [CONSTANTS.CONFIGS.GROUP.GLOBAL]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
-        [CONSTANTS.CONFIGS.GROUP.PERSONAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.PERSONAL) end),
-        [CONSTANTS.CONFIGS.GROUP.GUILD]    = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GUILD) end),
+        -- [CONSTANTS.CONFIGS.GROUP.PERSONAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.PERSONAL) end),
+        -- [CONSTANTS.CONFIGS.GROUP.GUILD]    = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GUILD) end),
         [CONSTANTS.CONFIGS.GROUP.ROSTER]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end)
     }
 
@@ -124,20 +124,20 @@ MODULES.ConfigManager = ConfigManager
 CONSTANTS.CONFIGS = {
     GROUPS = UTILS.Set({
         "Classic Loot Manager",
-        "Personal",
-        "Guild",
+        -- "Personal",
+        -- "Guild",
         "Rosters"
     }),
     ORDERED_GROUPS = {
         "Classic Loot Manager",
-        "Personal",
-        "Guild",
+        -- "Personal",
+        -- "Guild",
         "Rosters"
     },
     GROUP = {
         GLOBAL = "Classic Loot Manager",
-        PERSONAL = "Personal",
-        GUILD = "Guild",
+        -- PERSONAL = "Personal",
+        -- GUILD = "Guild",
         ROSTER = "Rosters"
     },
 }

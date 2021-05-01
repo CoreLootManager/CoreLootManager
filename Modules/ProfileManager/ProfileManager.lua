@@ -127,7 +127,7 @@ function ProfileManager:RemoveProfile(GUID)
     LOG:Debug("Remove profile: [%s]", GUID)
     LedgerManager:Submit(LEDGER_PROFILE.Remove:new(GUID), true)
 end
-
+ -- TODO to do with the markings if profile is removed
 function ProfileManager:MarkAsAltByNames(main, alt)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local mainProfile = self:GetProfileByName(main)
@@ -169,7 +169,7 @@ end
 function ProfileManager:FillFromGuild(selectedRank, minLevel)
     LOG:Trace("ProfileManager:FillFromGuild()")
     if LOG.SEVERITY.DEBUG >= LOG:GetSeverity() then
-        LOG:Debug("FillFromGuild: ranks: {%s}, minLevel: %s", UTILS.stringifyList(selectedRanks), minLevel)
+        LOG:Debug("FillFromGuild: rank: {%s}, minLevel: %s", selectedRank, minLevel)
     end
 
     local rankFilterFn, minLevelFn
