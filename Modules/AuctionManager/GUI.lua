@@ -20,7 +20,7 @@ local mergeDictsInline = UTILS.mergeDictsInline
 
 -- local RosterManager = MODULES.RosterManager
 local AuctionManager = MODULES.AuctionManager
-
+local ProfileManager = MODULES.ProfileManager
 local RaidManager = MODULES.RaidManager
 
 local RosterConfiguration = MODELS.RosterConfiguration
@@ -51,7 +51,7 @@ local function CreateBidWindow(self)
         {name = "Bid",      width = 60},
         {name = "Current",  width = 60},
     }
-    self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame, true)
+    self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", BidWindowGroup.frame, "TOPLEFT", 0, -25)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
@@ -278,18 +278,21 @@ function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
 
-    local data = {}
-    -- for _,_ in pairs(AuctionManager:Bids()) do
-    --     local row = {cols = {}}
-    --     table.insert(row.cols, {value = profile:Name()})
-    --     table.insert(row.cols, {value = UTILS.ColorCodeClass(profile:Class())})
-    --     table.insert(row.cols, {value = profile:Spec()})
-    --     table.insert(row.cols, {value = value})
-    --     table.insert(row.cols, {value = value})
-    --     table.insert(data, row)
-    -- end
+    if AuctionManager:IsAuctionInProgress() then
+        local data = {}
+        for GUID,bid in pairs(AuctionManager:Bids()) do
+            local profile = ProfileManager:GetProfileByGUID(GUID)
+            local row = {cols = {}}
+            table.insert(row.cols, {value = profile:Name()})
+            table.insert(row.cols, {value = UTILS.ColorCodeClass(profile:Class())})
+            table.insert(row.cols, {value = profile:Spec()})
+            table.insert(row.cols, {value = bid})
+            table.insert(row.cols, {value = self.roster:Standings(GUID)})
+            table.insert(data, row)
+        end
+        self.st:SetData(data)
+    end
 
-    self.st:SetData(data)
     UpdateOptions(self)
     LIBS.registry:NotifyChange(REGISTRY)
     LIBS.gui:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
