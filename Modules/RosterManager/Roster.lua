@@ -249,6 +249,12 @@ function RosterConfiguration:fields()
     return keys(self._)
 end
 
+function RosterConfiguration:Copy(o)
+    for k,v in pairs(o._) do
+        self._[k] = v
+    end
+end
+
 local function transform_boolean(value) return value and true or false end
 local function transform_number(value) return tonumber(value) end
 

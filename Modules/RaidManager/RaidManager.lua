@@ -33,7 +33,8 @@ function RaidManager:Initialize()
     else
         -- Raid in progress -> we had a /reload or disconnect and user was ML
         -- Check if user logged back when raid was still in progress
-        if IsInRaid() then
+        -- if IsInRaid() then
+        if false then
             -- We need to handle the stored info
             self:RestoreRaidInfo()
         else

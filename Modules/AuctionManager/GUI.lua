@@ -12,17 +12,25 @@ local LIBS =  {
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
+local MODELS = CLM.MODELS
 -- local CONSTANTS = CLM.CONSTANTS
--- local RESULTS = CLM.CONSTANTS.RESULTS
 local GUI = CLM.GUI
 
 local mergeDictsInline = UTILS.mergeDictsInline
 
 -- local RosterManager = MODULES.RosterManager
--- local AuctionManager = MODULES.AuctionManager
+local AuctionManager = MODULES.AuctionManager
 
+local RaidManager = MODULES.RaidManager
+
+local RosterConfiguration = MODELS.RosterConfiguration
 
 local REGISTRY = "clm_auction_manager_gui_options"
+
+local guiOptions = {
+    type = "group",
+    args = {}
+}
 
 local AuctionManagerGUI = {}
 
@@ -37,11 +45,11 @@ local function CreateBidWindow(self)
     local BidWindowGroup = AceGUI:Create("SimpleGroup")
     BidWindowGroup:SetLayout("Flow")
     local columns = {
-        {name = "Name",  width = 95},
-        {name = "Class", width = 95},
-        {name = "Spec",  width = 95},
-        {name = "Bid",   width = 95},
-        {name = "Current",   width = 95},
+        {name = "Name",     width = 70},
+        {name = "Class",    width = 60},
+        {name = "Spec",     width = 60},
+        {name = "Bid",      width = 60},
+        {name = "Current",  width = 60},
     }
     self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame, true)
     self.st:EnableSelection(true)
@@ -50,14 +58,46 @@ local function CreateBidWindow(self)
     return BidWindowGroup
 end
 
-local function GenerateAuctionOptions(self)
-    local itemID, itemType, itemSubType, itemEquipLoc, icon, itemClassID, itemSubClassID
-    if self.link then
-        itemID, itemType, itemSubType, itemEquipLoc, icon, itemClassID, itemSubClassID = GetItemInfoInstant(self.link) 
+local function UpdateOptions(self)
+    for k,_ in pairs(guiOptions.args) do
+        guiOptions.args[k] = nil
     end
-    local button_name = "Start"
-    if self.auctionInProgress then
-        button_name = "Stop"
+    mergeDictsInline(guiOptions.args, self:GenerateAuctionOptions())
+end
+
+local function CreateOptions(self)
+    local OptionsGroup = AceGUI:Create("SimpleGroup")
+    OptionsGroup:SetLayout("Flow")
+    OptionsGroup:SetWidth(375)
+    self.OptionsGroup = OptionsGroup
+    UpdateOptions(self)
+    LIBS.registry:RegisterOptionsTable(REGISTRY, guiOptions)
+    LIBS.gui:Open(REGISTRY, OptionsGroup)
+
+    return OptionsGroup
+end
+
+function AuctionManagerGUI:GenerateAuctionOptions()
+    local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
+    if self.itemLink then
+        self.itemId, _, _, self.itemEquipLoc, icon = GetItemInfoInstant(self.itemLink)
+    end
+
+    if not self.note then self.note = "" end
+    if not self.min then self.min = 0 end
+    if not self.max then self.max = 0 end
+
+    if RaidManager:IsRaidInProgress() then
+        self.roster = RaidManager:GetRoster()
+        if self.roster then
+            self.configuration:Copy(self.roster.configuration)
+            if false then -- if item override exists -> not yet implemented
+            else -- else default slot value
+                local v = self.roster:GetDefaultSlotValue(self.itemEquipLoc)
+                self.min = v.min
+                self.max = v.max
+            end
+        end
     end
 
     return {
@@ -69,94 +109,110 @@ local function GenerateAuctionOptions(self)
             order = 1
         },
         item = {
-            name = "Item Link / Id",
+            name = "Item",
             type = "input",
             get = (function(i)
-                return self.link
+                return self.itemLink or ""
             end),
             set = (function(i,v)
-                if v and GetItemInfoInstant(v) then
-                    self.link = v
-                else 
-                    self.link = nil
+                if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
+                    self.itemLink = v
+                else
+                    self.itemLink = nil
                 end
 
-                self:CreateOptions()
                 self:Refresh()
             end),
             width = 1.5,
             order = 2,
-            itemLink = "item:" .. tostring(itemID),
-        },
-        auction = {
-            name = button_name,
-            type = "execute",
-            func = function() self:Refresh() end,
-            width = 1,
-            order = 3,
-            disabled = (function() return not (self.link or false) end)
+            itemLink = "item:" .. tostring(self.itemId),
         },
         note_label = {
             name = "Note",
             type = "description",
             width = 0.5,
-            order = 4
+            order = 3
         },
         note = {
             name = "Note",
             type = "input",
-            set = (function(i,v) end),
-            get = (function(i) return end),
-            width = 2.5,
-            order = 5
+            set = (function(i,v) self.note = tostring(v) end),
+            get = (function(i) return self.note end),
+            disabled = (function() return AuctionManager:IsAuctionInProgress() end),
+            width = 1.5,
+            order = 4
         },
         value_label = {
             name = "Value ranges",
             type = "description",
             width = 0.5,
-            order = 6
+            order = 5
         },
         value_min = {
             name = "Min",
             type = "input",
-            set = (function(i,v) end),
-            get = (function(i) return end),
-            disabled = (function(i) return false end),
-            width = 1.25,
-            order = 7
+            set = (function(i,v)
+                self.min = tonumber(v) or 0
+                -- todo override item value
+            end),
+            get = (function(i) return tostring(self.min) end),
+            disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
+            pattern = "%d+",
+            width = 0.75,
+            order = 6
         },
         value_max = {
             name = "Max",
             type = "input",
-            set = (function(i,v) end),
-            get = (function(i) return end),
-            disabled = (function(i) return false end),
-            width = 1.25,
-            order = 8
+            set = (function(i,v)
+                self.max = tonumber(v) or 0
+                -- todo override item value
+            end),
+            get = (function(i) return tostring(self.max) end),
+            disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
+            pattern = "%d+",
+            width = 0.75,
+            order = 7
         },
         time_label = {
             name = "Time settings",
             type = "description",
             width = 0.5,
-            order = 9
+            order = 8
         },
         time_auction = {
             name = "Auction length [s]",
             type = "input",
-            set = (function(i,v) end),
-            get = (function(i) return end),
-            disabled = (function(i) return false end),
-            width = 1.25,
-            order = 10
+            set = (function(i,v) self.configuration:Set("auctionTime", v or 0) end),
+            get = (function(i) return tostring(self.configuration:Get("auctionTime")) end),
+            disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
+            pattern = "%d+",
+            width = 0.75,
+            order = 9
         },
         time_antiSnipe = {
             name = "AntiSnipe [s]",
             type = "input",
-            set = (function(i,v) end),
-            get = (function(i) return end),
-            disabled = (function(i) return false end),
-            width = 1.25,
-            order = 11
+            set = (function(i,v) self.configuration:Set("antiSnipe", v or 0) end),
+            get = (function(i) return tostring(self.configuration:Get("antiSnipe")) end),
+            disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
+            pattern = "%d+",
+            width = 0.75,
+            order = 10
+        },
+        auction = {
+            name = (function() return AuctionManager:IsAuctionInProgress() and "Stop" or "Start" end),
+            type = "execute",
+            func = (function()
+                if not AuctionManager:IsAuctionInProgress() then
+                    AuctionManager:StartAuction(self.itemId, self.itemLink, self.min, self.max, self.note, self.roster, self.configuration)
+                else
+                    AuctionManager:StopAuctionManual()
+                end
+            end),
+            width = 2.5,
+            order = 11,
+            disabled = (function() return not (self.itemLink or false) end)
         },
         auction_results = {
             name = "Auction Results",
@@ -174,34 +230,22 @@ local function GenerateAuctionOptions(self)
             type = "input",
             set = (function(i,v) end),
             get = (function(i) return end),
-            disabled = (function(i) return false end),
-            width = 1.25,
+            disabled = (function(i) return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end),
+            width = 0.75,
             order = 14
         },
         award = {
             name = "Award",
             type = "execute",
-            func = function() self:Refresh() end,
-            width = 1.25,
+            func = (function()
+
+                self:Refresh()
+            end),
+            width = 0.75,
             order = 15,
-            disabled = (function() return not (self.link or false) end)
+            disabled = (function() return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end)
         },
     }
-end
-
-function AuctionManagerGUI:CreateOptions()
-    local OptionsGroup = AceGUI:Create("SimpleGroup")
-    OptionsGroup:SetLayout("Flow")
-    OptionsGroup:SetWidth(550)
-    self.OptionsGroup = OptionsGroup
-    self.selectedRoster = ""
-    local options = {
-        type = "group",
-        args = {}
-    }
-    mergeDictsInline(options.args, GenerateAuctionOptions(self))
-    LIBS.registry:RegisterOptionsTable(REGISTRY, options)
-    LIBS.gui:Open(REGISTRY, OptionsGroup)
 end
 
 function AuctionManagerGUI:Create()
@@ -212,12 +256,18 @@ function AuctionManagerGUI:Create()
     f:SetStatusText("")
     f:SetLayout("flow")
     f:EnableResize(false)
-    f:SetWidth(550)
-    f:SetHeight(600)
+    f:SetWidth(375)
+    f:SetHeight(625)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Auctioning_GUI")
-    self:CreateOptions()
-    f:AddChild(self.OptionsGroup)
+
+    self.configuration = RosterConfiguration:New()
+    self.itemLink = nil
+    self.itemId = 0
+    self.note = ""
+    self.bids = {}
+
+    f:AddChild(CreateOptions(self))
     f:AddChild(CreateBidWindow(self))
 
     -- Hide by default
@@ -228,7 +278,7 @@ function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
 
-    -- local data = {}
+    local data = {}
     -- for _,_ in pairs(AuctionManager:Bids()) do
     --     local row = {cols = {}}
     --     table.insert(row.cols, {value = profile:Name()})
@@ -239,8 +289,9 @@ function AuctionManagerGUI:Refresh()
     --     table.insert(data, row)
     -- end
 
-    -- self.st:SetData(data)
-
+    self.st:SetData(data)
+    UpdateOptions(self)
+    LIBS.registry:NotifyChange(REGISTRY)
     LIBS.gui:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
 end
 
