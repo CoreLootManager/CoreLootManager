@@ -65,7 +65,6 @@ Modules\AuctionManager\AuctionManager.lua
 
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua
-Modules\RosterManager\GUI.lua
 Modules\RosterManager\Options.lua
 Modules\Standings\GUI.lua
 Modules\RaidManager\GUI.lua
