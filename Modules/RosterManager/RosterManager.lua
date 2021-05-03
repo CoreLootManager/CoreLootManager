@@ -275,14 +275,14 @@ function RosterManager:SetRosterConfiguration(name, option, value)
     LedgerManager:Submit(LEDGER_ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
 end
 
-function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
+function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isBase)
     LOG:Trace("RosterManager:SetRosterDefaultSlotValue()")
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     local v = roster:GetDefaultSlotValue(slot)
-    if isMin then v.min = value else v.max = value end
+    if isBase then v.base = value else v.max = value end
 
-    LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, v.min, v.max), true)
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, v.base, v.max), true)
 end
 
 function RosterManager:AddProfilesToRoster(roster, profiles)
@@ -442,11 +442,11 @@ function RosterManager:Debug(N)
             self:SetRosterConfiguration(rosterNames[math.random(1, #rosterNames)], config, value)
         end),
         ["override"] =  (function()
-            local isMin = false
+            local isBase = false
             if math.random(0, 1) == 1 then
-                isMin = true
+                isBase = true
             end
-            self:SetRosterDefaultSlotValue(rosterNames[math.random(1, #rosterNames)], CONSTANTS.INVENTORY_TYPES[math.random(1, #CONSTANTS.INVENTORY_TYPES)], 1000000*math.random(), isMin)
+            self:SetRosterDefaultSlotValue(rosterNames[math.random(1, #rosterNames)], CONSTANTS.INVENTORY_TYPES[math.random(1, #CONSTANTS.INVENTORY_TYPES)], 1000000*math.random(), isBase)
         end),
         ["profile"] = (function()
             local profileList = {}

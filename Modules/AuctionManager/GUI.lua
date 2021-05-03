@@ -84,7 +84,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
     end
 
     if not self.note then self.note = "" end
-    if not self.min then self.min = 0 end
+    if not self.base then self.base = 0 end
     if not self.max then self.max = 0 end
 
     if RaidManager:IsRaidInProgress() then
@@ -94,7 +94,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             if false then -- if item override exists -> not yet implemented
             else -- else default slot value
                 local v = self.roster:GetDefaultSlotValue(self.itemEquipLoc)
-                self.min = v.min
+                self.base = v.base
                 self.max = v.max
             end
         end
@@ -120,9 +120,10 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 else
                     self.itemLink = nil
                 end
-
+                self.st:SetData({})
                 self:Refresh()
             end),
+            disabled = (function() return AuctionManager:IsAuctionInProgress() end),
             width = 1.5,
             order = 2,
             itemLink = "item:" .. tostring(self.itemId),
@@ -148,15 +149,15 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             width = 0.5,
             order = 5
         },
-        value_min = {
-            name = "Min",
+        value_base = {
+            name = "Base",
             type = "input",
             set = (function(i,v)
-                self.min = tonumber(v) or 0
+                self.base = tonumber(v) or 0
                 -- todo override item value
             end),
-            get = (function(i) return tostring(self.min) end),
-            disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
+            get = (function(i) return tostring(self.base) end),
+            disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
             width = 0.75,
             order = 6
@@ -205,7 +206,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 if not AuctionManager:IsAuctionInProgress() then
-                    AuctionManager:StartAuction(self.itemId, self.itemLink, self.min, self.max, self.note, self.roster, self.configuration)
+                    AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.base, self.max, self.note, self.roster, self.configuration)
                 else
                     AuctionManager:StopAuctionManual()
                 end

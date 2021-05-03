@@ -119,7 +119,7 @@ end
 CONSTANTS.ACL = {}
 
 CONSTANTS.ACL.LEVEL = {
-    UNAUTHORISED = 0,
+    PLEBS = 0,
     MANAGER = 1,
     OFFICER = 2,
     GUILD_MASTER = 3

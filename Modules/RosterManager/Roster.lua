@@ -78,24 +78,24 @@ function Roster:Standings(GUID)
     end
 end
 
-function Roster:SetDefaultSlotValue(itemEquipLoc, minimum, maximum)
-    LOG:Debug("Set Default Slot Value: [%s]: [%s] [%s] for roster [%s]", itemEquipLoc, minimum, maximum, self:UID())
+function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
+    LOG:Debug("Set Default Slot Value: [%s]: [%s] [%s] for roster [%s]", itemEquipLoc, base, maximum, self:UID())
     self.defaultSlotValues[itemEquipLoc] = {
-        min = tonumber(minimum) or 0,
+        base = tonumber(base) or 0,
         max = tonumber(maximum) or 0
     }
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
     local s = self.defaultSlotValues[itemEquipLoc]
-    return s or {min = 0, max = 0}
+    return s or {base = 0, max = 0}
 end
 
-function Roster:SetItemValue(itemId, itemName, minimum, maximum)
-    LOG:Debug("Set Item Value: [%s]: [%s] [%s] for roster [%s]", itemId, itemName, minimum, maximum, self:UID())
+function Roster:SetItemValue(itemId, itemName, base, maximum)
+    LOG:Debug("Set Item Value: [%s]: [%s] [%s] for roster [%s]", itemId, itemName, base, maximum, self:UID())
     self.itemValues[itemId] = {
         name = itemName or "",
-        min = tonumber(minimum) or 0,
+        base = tonumber(base) or 0,
         max = tonumber(maximum) or 0
     }
 end
@@ -104,8 +104,8 @@ function Roster:GetItemValue(itemId)
     local itemValue = self.itemValues[itemId]
     if itemValue == nil then
         local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
-        local minimum, maximum = self:GetDefaultSlotValue(itemEquipLoc)
-        itemValue = { name = "", min = minimum, max = maximum }
+        local base, maximum = self:GetDefaultSlotValue(itemEquipLoc)
+        itemValue = { name = "", base = base, max = maximum }
     end
     return itemValue
 end

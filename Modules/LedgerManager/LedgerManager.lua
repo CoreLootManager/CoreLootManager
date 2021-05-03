@@ -23,7 +23,7 @@ function LedgerManager:Initialize()
             return Comms:Send(prefixSync, data, distribution, target, "BULK")
         end), -- send
         (function(callback)
-            Comms:Register(prefixSync, callback, CONSTANTS.ACL.LEVEL.UNAUTHORISED)
+            Comms:Register(prefixSync, callback, CONSTANTS.ACL.LEVEL.PLEBS)
             Comms:Register(prefixData, callback, CONSTANTS.ACL.LEVEL.MANAGER)
         end), -- registerReceiveHandler
         authorize, -- authorizationHandler

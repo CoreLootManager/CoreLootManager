@@ -48,6 +48,7 @@ Modules\PointManager\DKP\LedgerEntries.lua
 Modules\PointManager\DKP\PointHistory.lua
 Modules\LootManager\LedgerEntries.lua
 Modules\LootManager\Loot.lua
+Modules\AuctionManager\AuctionCommStructures.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua

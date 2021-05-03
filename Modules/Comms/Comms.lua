@@ -19,8 +19,10 @@ local CommsPrefix = "CLM"
 
 function Comms:Initialize()
     LOG:Trace("Comms:Initialize()")
+    self.who = whoami()
     self.callbacks = {}
     self.aclLevel = {}
+    self.allowSelfReceive = {}
     self.enabled = false
 end
 
@@ -32,7 +34,7 @@ local function _prefix(prefix)
     return CommsPrefix .. string.sub(prefix, 0, 12)
 end
 
-function Comms:Register(prefix, callback, aclLevel)
+function Comms:Register(prefix, callback, aclLevel, allowSelfReceive)
     LOG:Trace("Comms:Register()")
     if type(callback) ~= "function" then
         LOG:Error("Comms:Register(): callback is not a function")
@@ -60,6 +62,7 @@ function Comms:Register(prefix, callback, aclLevel)
 
     self.callbacks[prefix] = callback
     self.aclLevel[prefix] = aclLevel
+    self.allowSelfReceive[prefix] = allowSelfReceive
     self:RegisterComm(prefix, "OnReceive")
 end
 
@@ -104,15 +107,19 @@ function Comms:Send(prefix, message, distribution, target, priority)
         LOG:Error("Comms:Send() unable to encode message: %s", message)
         return false
     end
+    LOG:Debug("Message on channel %s with size %s [B] ", prefix, tmp:len())
     self:SendCommMessage(prefix, tmp, distribution, target, priority)
     return true
 end
 
 function Comms:OnReceive(prefix, message, distribution, sender)
-    -- LOG:Trace("Comms:OnReceive()")
+    -- LOG:Trace("Comms:OnReceive() %s", prefix)
     if not self.enabled then return false end
-    -- Ignore messages from self
-    if sender == whoami() then return end
+    -- Ignore messages from self if not allowing them specifically
+    if not self.allowSelfReceive[prefix] and (sender == self.who) then
+        LOG:Debug("Comms:OnReceive() allowSelfReceive == false for %s", prefix)
+        return false
+    end
     -- Validate prefix
     if self.callbacks[prefix] == nil then
         LOG:Warning("Comms:OnReceive() received message with unsupported prefix")

@@ -28,15 +28,15 @@ local function SetRosterOption(name, option, value)
     RosterManager:SetRosterConfiguration(name, option, value)
 end
 
-local function GetDefaultSlotValue(name, slot, isMin)
+local function GetDefaultSlotValue(name, slot, isBase)
     local roster = RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     local v = roster:GetDefaultSlotValue(slot)
-    if isMin then return tostring(v.min) else return tostring(v.max) end
+    if isBase then return tostring(v.base) else return tostring(v.max) end
 end
 
-local function SetDefaultSlotValue(name, slot, value, isMin)
-    RosterManager:SetRosterDefaultSlotValue(name, slot, value, isMin)
+local function SetDefaultSlotValue(name, slot, value, isBase)
+    RosterManager:SetRosterDefaultSlotValue(name, slot, value, isBase)
 end
 
 function RosterManagerOptions:Initialize()
@@ -182,16 +182,16 @@ function RosterManagerOptions:Initialize()
         end)
     }
     -- Handlers for Minimum / Maximum setting
-    local values = {minimum = true, maximum = false}
+    local values = {base = true, maximum = false}
     for _, slot in ipairs(CONSTANTS.INVENTORY_TYPES_SORTED) do
         local prefix = slot.type:lower()
-        for type, isMin in pairs(values) do
+        for type, isBase in pairs(values) do
             local node = "default_slot_values_" .. prefix .. "_" .. type
             self.handlers[ node .."_get"] = (function(name)
-                return GetDefaultSlotValue(name, slot.type, isMin)
+                return GetDefaultSlotValue(name, slot.type, isBase)
             end)
             self.handlers[ node .."_set"] = (function(name, value)
-                SetDefaultSlotValue(name, slot.type, value, isMin)
+                SetDefaultSlotValue(name, slot.type, value, isBase)
             end)
         end
     end
@@ -252,7 +252,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
 
     local default_slot_values_args = (function()
         local values = {
-            ["Minimum"] = "Minimum or actual value for Static-Priced auction. Set to 0 to ignore.",
+            ["Base"] = "Base value for Static-Priced auction. Minimum value for Ascending auction. Set to 0 to ignore.",
             ["Maximum"] = "Maximum value for Ascending auction. Set to 0 to ignore."
         }
         local args = {}
