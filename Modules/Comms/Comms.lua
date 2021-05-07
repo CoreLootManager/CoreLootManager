@@ -8,7 +8,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local ACL = MODULES.ACL
 
-local whoami = UTILS.WhoAmI
+local whoami = UTILS.whoami
 
 -- Module
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
@@ -181,7 +181,8 @@ CONSTANTS.COMMS = {
     }),
     DISTRIBUTION = {
         PARTY = "PARTY",
-        RAID = "RAID",
+        -- RAID = "RAID",
+        RAID = "GUILD", -- DEBUG
         --INSTANCE = "INSTANCE_CHAT",
         GUILD = "GUILD",
         OFFICER = "OFFICER",

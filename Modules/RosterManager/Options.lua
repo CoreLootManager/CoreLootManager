@@ -40,6 +40,7 @@ local function SetDefaultSlotValue(name, slot, value, isBase)
 end
 
 function RosterManagerOptions:Initialize()
+    self.pointType = CONSTANTS.POINT_TYPE.DKP
     self.handlers = {
         name_get = (function(name)
             return name
@@ -69,13 +70,6 @@ function RosterManagerOptions:Initialize()
         end),
         copy_source_set = (function(name, value)
             self.copy_source_name = value
-        end),
-        -- Points
-        point_type_get = (function(name)
-            return GetRosterOption(name, "pointType")
-        end),
-        point_type_set = (function(name, value)
-            SetRosterOption(name, "pointType", value)
         end),
         boss_kill_bonus_get = (function(name)
             return GetRosterOption(name, "bossKillBonus")
@@ -374,17 +368,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 confirm = true,
                 order = 101
             },
-            point_type = {
-                name = "Point type",
-                desc = "DKP or EPGP (currently not supported).",
-                type = "select",
-                style = "radio",
-                order = 3,
-                width = "half",
-                disabled = true,
-                confirm = true,
-                values = CONSTANTS.POINT_TYPES_GUI
-            },
             boss_kill_bonus = {
                 name = "Boss Kill Bonus",
                 type = "toggle",
@@ -442,6 +425,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Type of auction used: Open, Sealed, Vickrey (Sealed with second-highest pay price).",
                         type = "select",
                         style = "radio",
+                        disabled = true,
                         order = 4,
                         values = CONSTANTS.AUCTION_TYPES_GUI
                     },
@@ -450,6 +434,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Single-Priced (static) or Ascending (in range of min-max) item value.",
                         type = "select",
                         style = "radio",
+                        disabled = true,
                         order = 5,
                         values = CONSTANTS.ITEM_VALUE_MODES_GUI
                     },
@@ -482,13 +467,13 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         width = "full",
                         order = 8
                     },
-                    simultaneous_auctions = {
-                        name = "Simultaneous auctions",
-                        desc = "Allow multiple simultaneous auction happening at the same time.",
-                        type = "toggle",
-                        width = "full",
-                        order = 9
-                    },
+                    -- simultaneous_auctions = {
+                    --     name = "Simultaneous auctions",
+                    --     desc = "Allow multiple simultaneous auction happening at the same time.",
+                    --     type = "toggle",
+                    --     width = "full",
+                    --     order = 9
+                    -- },
                     auction_time = {
                         name = "Auction length",
                         desc = "Auction length in seconds.",
@@ -533,24 +518,18 @@ function RosterManagerOptions:UpdateOptions()
             name = "Create",
             desc = "Creates new roster with default configuration",
             type = "execute",
-            func = function() RosterManager:NewRoster() end,
+            func = function() RosterManager:NewRoster(self.pointType) end,
             order = 1
         },
-        export = { -- Global options -> Export rosters
-            name = "Export",
-            desc = "Export rosters to SavedVariable for inspection",
-            type = "execute",
-            func = function() RosterManager:ExportRosters() end,
-            confirm = true,
-            order = 2
-        },
-        clear = { -- Global options -> Clear exported rosters
-            name = "Clear",
-            desc = "Clear exported rosters from SavedVariable",
-            type = "execute",
-            func = function() RosterManager:ClearExportedRosters() end,
-            confirm = true,
-            order = 3
+        point_type = {
+            name = "Point type",
+            desc = "Currently only DKP supported.",
+            type = "select",
+            set = (function(i, v) self.pointType = v end),
+            get = (function(i) return self.pointType end),
+            order = 2,
+            disabled = true,
+            values = CONSTANTS.POINT_TYPES_GUI
         }
     }
     local rosters = MODULES.RosterManager:GetRosters()

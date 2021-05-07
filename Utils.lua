@@ -51,6 +51,37 @@ function UTILS.GetColorCodedClassDict()
     return colorCodedClassList
 end
 
+-- formats:
+-- s: string  "AARRGGBB"
+-- a: string array  = {a = "AA", r = "RR", g = "GG", b = "BB"}
+-- i: integer array = {a = AA, r = RR, g = GG, b = BB } from 0 to 255
+-- f: float array   = {a = AA, r = RR, g = GG, b = BB } from 0 to 1
+function UTILS.GetColorFromLink(itemLink, format)
+    local _, _, a, r, g, b = string.find(itemLink, "|c(%x%x)(%x%x)(%x%x)(%x%x)|.*")
+    local color = {
+        a = a or "",
+        r = r or "",
+        g = g or "",
+        b = b or ""
+    }
+    if format == "s" then
+        return string.format("%s%s%s%s", color.a, color.r, color.g, color.b)
+    else
+        if format ~= "s" then
+            for k,v in pairs(color) do
+                color[k] = tonumber("0x" .. v) or 0
+            end
+            if format == "f" then
+                for k,v in pairs(color) do
+                    color[k] = v / 255
+                end
+            end
+        end
+
+        return color
+    end
+end
+
 function UTILS.UniversalCliMethodExecutor(name, object, cli)
     local values = {strsplit(" ", cli)}
     local method, args, parameters = values[1], {}, ""
@@ -196,7 +227,7 @@ function UTILS.DumpTable(t)
 end
 
 local playerName = UTILS.GetUnitName("player")
-function UTILS.WhoAmI()
+function UTILS.whoami()
     return playerName
 end
 

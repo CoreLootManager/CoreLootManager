@@ -7,7 +7,7 @@ sources:
     type: git
   - repo: https://github.com/lantisnt/LibLogger.git
     name: LibLogger
-    rev:  v1.2.0
+    rev:  v1.2.1
     type: git
   - repo: https://github.com/lantisnt/lib-st.git
     name: lib-st-4.1.2

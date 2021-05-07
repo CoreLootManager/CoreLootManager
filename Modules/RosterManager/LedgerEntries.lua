@@ -29,10 +29,11 @@ local RosterCopyData                = LogEntry:extend("RC")
 -- ------------ --
 -- RosterCreate --
 -- ------------ --
-function RosterCreate:new(rosterUid, name)
+function RosterCreate:new(rosterUid, name, pointType)
     local o = LogEntry.new(self);
     o.n = tostring(name) or ""
     o.r = tonumber(rosterUid) or 0
+    o.p = tonumber(pointType) or 0
     return o
 end
 
@@ -44,7 +45,11 @@ function RosterCreate:name()
     return self.n
 end
 
-local RosterCreateFields = mergeLists(LogEntry:fields(), {"r", "n"})
+function RosterCreate:pointType()
+    return self.p
+end
+
+local RosterCreateFields = mergeLists(LogEntry:fields(), {"r", "n", "p"})
 function RosterCreate:fields()
     return RosterCreateFields
 end

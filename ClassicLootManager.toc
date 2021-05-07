@@ -33,6 +33,9 @@ Libs\AceTab-3.0\AceTab-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\lib-st-4.1.2\lib-st.xml
 
+# Additional
+Libs\LibCandyBar-3.0\lib.xml
+
 # Addon Core
 ClassicLootManager.lua
 Utils.lua
@@ -49,6 +52,7 @@ Modules\PointManager\DKP\PointHistory.lua
 Modules\LootManager\LedgerEntries.lua
 Modules\LootManager\Loot.lua
 Modules\AuctionManager\AuctionCommStructures.lua
+Modules\BiddingManager\BiddingCommStructures.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua
@@ -62,6 +66,7 @@ Modules\PointManager\PointManager.lua
 Modules\LootManager\LootManager.lua
 Modules\RaidManager\RaidManager.lua
 Modules\AuctionManager\AuctionManager.lua
+Modules\BiddingManager\BiddingManager.lua
 
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua
@@ -69,3 +74,4 @@ Modules\RosterManager\Options.lua
 Modules\Standings\GUI.lua
 Modules\RaidManager\GUI.lua
 Modules\AuctionManager\GUI.lua
+Modules\BiddingManager\GUI.lua

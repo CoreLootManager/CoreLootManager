@@ -8,14 +8,14 @@ local CONSTANTS =  CLM.CONSTANTS
 local DeepCopy = UTILS.DeepCopy
 -- local ShallowCopy = UTILS.ShallowCopy
 
--- local whoami = UTILS.WhoAmI
+-- local whoami = UTILS.whoami
 -- local typeof = UTILS.typeof
 local keys = UTILS.keys
 
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
-function Roster:New(uid)
+function Roster:New(uid, pointType)
     local o = {}
 
     setmetatable(o, self)
@@ -23,6 +23,7 @@ function Roster:New(uid)
 
     -- Roster Management
     o.uid  = tonumber(uid)
+    o.pointType = pointType
     o.configuration  = RosterConfiguration:New()
     o.defaultSlotValues = {}
     o.itemValues = {}
@@ -204,8 +205,6 @@ function RosterConfiguration:New(i)
     if i then return o end
 
     o._ = {}
-    -- Point type: DKP / EPGP
-    o._.pointType = CONSTANTS.POINT_TYPE.DKP
     -- Auction type: Open / Sealed / Vickrey
     o._.auctionType = CONSTANTS.AUCTION_TYPE.SEALED
     -- Item Value mode: Single-Priced / Ascending
@@ -259,7 +258,6 @@ local function transform_boolean(value) return value and true or false end
 local function transform_number(value) return tonumber(value) end
 
 local TRANSFORMS = {
-    pointType = transform_number,
     auctionType = transform_number,
     itemValueMode = transform_number,
     zeroSumBank = transform_boolean,
@@ -308,7 +306,6 @@ end
 local function IsBoolean(value) return type(value) == "boolean" end
 local function IsNumeric(value) return type(value) == "number" end
 local function IsPositive(value) return value >= 0 end
-function RosterConfiguration._validate_pointType(value) return CONSTANTS.POINT_TYPES[value] ~= nil end
 function RosterConfiguration._validate_auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
 function RosterConfiguration._validate_itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
 function RosterConfiguration._validate_zeroSumBank(value) return IsBoolean(value) end

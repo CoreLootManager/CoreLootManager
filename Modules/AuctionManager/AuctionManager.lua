@@ -9,6 +9,8 @@ local GUI = CLM.GUI
 local CONSTANTS = CLM.CONSTANTS
 
 local ProfileManager = MODULES.ProfileManager
+local RosterManager = MODULES.RosterManager
+local LootManager = MODULES.LootManager
 
 local Comms = MODULES.Comms
 
@@ -19,6 +21,7 @@ local typeof = UTILS.typeof
 
 local AuctionCommStructure = MODELS.AuctionCommStructure
 local AuctionCommStartAuction = MODELS.AuctionCommStartAuction
+local AuctionCommDenyBid = MODELS.AuctionCommDenyBid
 local AuctionCommDistributeBid = MODELS.AuctionCommDistributeBid
 
 local AUCTION_COMM_PREFIX = "Auction"
@@ -35,8 +38,13 @@ function AuctionManager:Initialize()
         if CONSTANTS.AUCTION_COMM.TYPES[message:Type()] == nil then return end
         -- Auction Manager is owner of the channel
         -- pass handling to BidManager
-        -- BidManager:HandleComms(message, distribution, sender)
+        MODULES.BiddingManager:HandleIncomingMessage(message, distribution, sender)
     end), CONSTANTS.ACL.LEVEL.MANAGER, true)
+
+    self.handlers = {
+        [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]    = "HandleSubmitBid",
+        [CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID]    = "HandleCancelBid"
+    }
 
     self._initialized = true
 end
@@ -90,64 +98,75 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     end
     self.baseValue = baseValue or 0
     self.maxValue = maxValue or 0
-    if configuration:Get("auctionTime") <= 0 then
+    if self.auctionTime <= 0 then
         LOG:Warning("RosterManager:StartAuction(): Auction time must be greater than 0 seconds")
         return false
     end
     self.allowNegativeBidders = configuration:Get("allowNegativeBidders")
     self.allowNegativeStandings = configuration:Get("allowNegativeStandings")
     -- Auctioning
-    if self:UserCanAuctionItems() then
-        -- Send users information about auction start
-        -- Start auction timer
+    if self:CanUserAuctionItems() then
+        -- Start Auction Messages
+        local auctionMessage = "Auction of " .. itemLink
+        if note:len() > 0 then
+            auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
+        end
+        self.note = note
+        -- Max 2 raid warnings are displayed at the same time
+        SendChatMessage(auctionMessage , "RAID_WARNING")
+        auctionMessage = ""
+        if baseValue > 0 then
+            auctionMessage = auctionMessage .. "Minimum bid: " .. tostring(baseValue) .. ". "
+        end
+        if maxValue > 0 then
+            auctionMessage = auctionMessage .. "Maximum bid: " .. tostring(maxValue) .. ". "
+        end
+        auctionMessage = auctionMessage .. "Auction time: " .. tostring(auctionTime) .. ". "
+        self.antiSnipe = configuration:Get("antiSnipe")
+        if self.antiSnipe > 0 then
+            auctionMessage = auctionMessage .. "Anti-snipe time: " .. tostring(self.antiSnipe) .. ". "
+        end
+        SendChatMessage(auctionMessage , "RAID_WARNING")
+        -- AntiSnipe settings
+        self.antiSnipeLimit = (self.antiSnipe > 0) and 3 or 0
+        -- Get Auction Type info
+        self.auctionType = configuration:Get("auctionType")
+        -- if baseValue / maxValue are different than default item value we will need to update the config
+        local default = roster:GetDefaultSlotValue(itemSlot)
+        if default.base ~= baseValue then -- TODO: This should be override not default but not yet implemented!
+            RosterManager:SetRosterDefaultSlotValue(self.roster, itemSlot, self.baseValue, true)
+        end
+        if default.max ~= maxValue then
+            RosterManager:SetRosterDefaultSlotValue(self.roster, itemSlot, self.maxValue, false)
+        end
+        -- clear bids
+        self.bids = {}
+        -- calculate server end time
+        self.auctionEndTime = GetServerTime() + self.auctionTime
+        self.auctionTimeLeft = self.auctionEndTime
+        -- Send auction information
+        self:SendAuctionStart()
+        -- Start Auction Ticker
+        self.lastCountdownValue = 5
+        self.ticker = C_Timer.NewTicker(0.1, (function()
+            self.auctionTimeLeft = self.auctionEndTime - GetServerTime()
+            if self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5  then
+                SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), "RAID_WARNING")
+                self.lastCountdownValue = self.lastCountdownValue - 1
+            end
+            if self.auctionTimeLeft < 0.1 then
+                self:StopAuctionTimed()
+                return
+            end
+        end))
+        -- Set auction in progress
+        self.auctionInProgress = true
+        -- UI
+        GUI.AuctionManager:Refresh()
     else
         LOG:Warning("RosterManager:StartAuction(): Missing auctioning permissions")
         return false
     end
-    -- Start Auction Messages
-    local auctionMessage = "Auction of " .. itemLink
-    if note:len() > 0 then
-        auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
-    end
-    -- Max 2 raid warnings are displayed at the same time
-    SendChatMessage(auctionMessage , "RAID_WARNING")
-    auctionMessage = ""
-    if baseValue > 0 then
-        auctionMessage = auctionMessage .. "Minimum bid: " .. tostring(baseValue) .. ". "
-    end
-    if maxValue > 0 then
-        auctionMessage = auctionMessage .. "Maximum bid: " .. tostring(maxValue) .. ". "
-    end
-    auctionMessage = auctionMessage .. "Auction time: " .. tostring(auctionTime) .. ". "
-    self.antiSnipe = configuration:Get("antiSnipe")
-    if self.antiSnipe > 0 then
-        auctionMessage = auctionMessage .. "AntiSnipe time: " .. tostring(self.antiSnipe) .. ". "
-    end
-    SendChatMessage(auctionMessage , "RAID_WARNING")
-    -- AntiSnipe settings
-    self.antiSnipeLimit = 3 and (self.antiSnipe > 0) or 0
-    -- Get Auction Type info
-    self.auctionType = configuration:Get("auctionType")
-    -- if baseValue / maxValue are different than default item value we will need to update the config
-    -- TODO
-    -- Send auction information
-    self:SendAuctionStart()
-    -- Start Auction Ticker
-    self.auctionTimeLeft = auctionTime
-    self.ticker = C_Timer.NewTicker(1, function()
-        if self.auctionTimeLeft <= 0 then
-            self:StopAuctionTimed()
-            return
-        end
-        if self.auctionTimeLeft <= 5 then
-            SendChatMessage(tostring(self.auctionTimeLeft), "RAID_WARNING")
-        end
-        self.auctionTimeLeft = self.auctionTimeLeft - 1
-    end)
-    -- Set auction in progress
-    self.auctionInProgress = true
-    -- UI
-    GUI.AuctionManager:Refresh()
     return true
 end
 
@@ -172,9 +191,11 @@ end
 function AuctionManager:AntiSnipe()
     LOG:Trace("AuctionManager:AntiSnipe()")
     if self.antiSnipeLimit > 0 then
-        self.auctionTimeLeft = self.auctionTimeLeft + self.AntiSnipe
-        self.antiSnipeLimit = self.antiSnipeLimit - 1
-        self:SendAntiSnipe()
+        if self.auctionTimeLeft < self.antiSnipe then
+            self.auctionEndTime = self.auctionEndTime + self.antiSnipe
+            self.antiSnipeLimit = self.antiSnipeLimit - 1
+            self:SendAntiSnipe()
+        end
     end
 end
 
@@ -188,7 +209,9 @@ function AuctionManager:SendAuctionStart()
             self.maxValue,
             self.itemLink,
             self.auctionTime,
-            self.antiSnipe)
+            self.auctionEndTime,
+            self.antiSnipe,
+            self.note)
     )
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
@@ -208,17 +231,48 @@ function AuctionManager:SendBidAccepted(name)
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
-function AuctionManager:SendBidDenied(name)
-    local message = AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.DENY_BID, {})
+function AuctionManager:SendBidDenied(name, reason)
+    local message = AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.DENY_BID, 
+        AuctionCommDenyBid:New(reason)
+    )
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function AuctionManager:SendBidInfo(name, bid)
     if self.auctionType ~= CONSTANTS.AUCTION_TYPE.OPEN then return end
-    local message = AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID,
+    local message = AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID,
         AuctionCommDistributeBid:New(name, bid)
     )
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+end
+
+function AuctionManager:HandleIncomingMessage(message, distribution, sender)
+    LOG:Trace("AuctionManager:HandleIncomingMessage()")
+    local mtype = message:Type() or 0
+    -- UTILS.DumpTable(message)
+    if self.handlers[mtype] then
+        self[self.handlers[mtype]](self, message:Data(), sender)
+    end
+end
+
+function AuctionManager:HandleSubmitBid(data, sender)
+    LOG:Trace("AuctionManager:HandleSubmitBid()")
+    if not self.IsAuctionInProgress then
+        LOG:Debug("Received submit bid from %s while no auctions are in progress", sender)
+        return
+    end
+    self:UpdateBid(sender, data:Bid())
+end
+
+function AuctionManager:HandleCancelBid(data, sender)
+    LOG:Trace("AuctionManager:HandleCancelBid()")
+    if not self.IsAuctionInProgress then
+        LOG:Debug("Received cancel bid from %s while no auctions are in progress", sender)
+        return
+    end
+    self:UpdateBid(sender, nil)
 end
 
 function AuctionManager:ValidateBid(name, bid)
@@ -226,25 +280,25 @@ function AuctionManager:ValidateBid(name, bid)
     if bid == nil then return true end
     -- sanity check
     local profile = ProfileManager:GetProfileByName(name)
-    if not profile then return false end
+    if not profile then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
     local GUID = profile:GUID()
-    if not self.roster:IsProfileInRoster(GUID) then return false end
+    if not self.roster:IsProfileInRoster(GUID) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
     -- allow negative bidders
     local current = self.roster:Standings(GUID)
-    if current < 0 and not self.allowNegativeBidders then return false end
+    if current < 0 and not self.allowNegativeBidders then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_BIDDER end
     -- allow negative standings after bid
     local new = current - bid
-    if new < 0 and not self.allowNegativeStandings then return false end
+    if new < 0 and not self.allowNegativeStandings then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
     -- bid value
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
         -- min
-        if self.baseValue > 0 and bid < self.baseValue then return false end
+        if self.baseValue > 0 and bid < self.baseValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
-        if self.maxValue > 0 and bid > self.maxValue then return false end
+        if self.maxValue > 0 and bid > self.maxValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
     else
         -- single-priced
-        if self.baseValue ~= bid then return false end
+        if self.baseValue ~= bid then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
     end
     -- accept otherwise
     return true
@@ -252,14 +306,18 @@ end
 
 function AuctionManager:UpdateBid(name, bid)
     LOG:Trace("AuctionManager:UpdateBid()")
+    LOG:Debug("Bid from %s: %s", name, bid)
     if not self:IsAuctionInProgress() then return end
-    if self:ValidateBid(name, bid) then
+    local accept, reason = self:ValidateBid(name, bid)
+    if accept then
         self.bids[name] = bid
-        self:AntiSnipe()
+        if bid then
+            self:AntiSnipe()
+        end
         self:SendBidAccepted(name)
         self:SendBidInfo(name, bid)
     else
-        self:SendBidDenied(name)
+        self:SendBidDenied(name, reason)
     end
     GUI.AuctionManager:Refresh()
 end
@@ -269,12 +327,11 @@ function AuctionManager:Bids()
 end
 
 function AuctionManager:Award(itemId, price, name)
-    -- award item to winner
-    -- add to loot history
-    -- deduce points
+    LootManager:AwardItem(self.roster, ProfileManager:GetProfileByName(name), itemId, price)
 end
 
-function AuctionManager:UserCanAuctionItems() -- todo
+function AuctionManager:CanUserAuctionItems(name) -- todo
+    -- name = name or UTILS.whoami()
     return true
 end
 
@@ -295,12 +352,56 @@ function AuctionManager:Debug()
                 else
                     value = math.random(self.baseValue, self.maxValue)
                 end
-                local  GUID = profiles[math.random(1, #profiles)]
+                local GUID = profiles[math.random(1, #profiles)]
                 local profile = ProfileManager:GetProfileByGUID(GUID)
                 self:UpdateBid(profile:Name(), value)
             end))
         end
     end))
 end
+
+CONSTANTS.AUCTION_COMM = {
+    TYPE = {
+        START_AUCTION = 1,
+        STOP_AUCTION = 2,
+        ANTISNIPE = 3,
+        ACCEPT_BID = 4,
+        DENY_BID = 5,
+        DISTRIBUTE_BID = 6
+    },
+    TYPES = UTILS.Set({
+        1, -- START AUCTION
+        2, -- STOP ACUTION
+        3, -- ANTISNIPE
+        4, -- ACCEPT BID
+        5, -- DENY BID
+        6, -- DISTRIBUTE BID
+    }),
+    DENY_BID_REASON = {
+        NOT_IN_ROSTER = 1,
+        NEGATIVE_BIDDER = 2,
+        NEGATIVE_STANDING_AFTER = 3,
+        BID_VALUE_TOO_LOW = 4,
+        BID_VALUE_TOO_HIGH = 5,
+        BID_VALUE_INVALID = 6,
+    },
+    DENY_BID_REASONS = UTILS.Set({
+        1, -- NOT_IN_ROSTER
+        2, -- NEGATIVE_BIDDER
+        3, -- NEGATIVE_STANDING_AFTER
+        4, -- BID_VALUE_TOO_LOW
+        5, -- BID_VALUE_TOO_HIGH
+        6  -- BID_VALUE_INVALID
+    }),
+    DENY_BID_REASONS_STRING = {
+        [1] = "Not in a roster",
+        [2] = "Negative bidders not allowed", 
+        [3] = "Bidding over current standings not allowed",
+        [4] = "Bid too low",
+        [5] = "Bid too high",
+        [6] = "Invalid bid value"
+    }
+
+}
 
 MODULES.AuctionManager = AuctionManager

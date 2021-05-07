@@ -15,7 +15,7 @@ local ProfileManager = MODULES.ProfileManager
 local Profile = MODELS.Profile
 local Loot = MODELS.Loot
 
--- local whoami = UTILS.WhoAmI
+-- local whoami = UTILS.whoami
 local typeof = UTILS.typeof
 local capitalize = UTILS.capitalize
 local getGuidFromInteger = UTILS.getGuidFromInteger
@@ -47,11 +47,13 @@ function RosterManager:Initialize()
             LOG:TraceAndCount("mutator(RosterCreate)")
             local uid = entry:rosterUid()
             local name = entry:name()
+            local pointType = entry:pointType()
             if self.cache.rosters[name] or self.cache.rostersUidMap[uid] then
                 LOG:Fatal("Roster [%s:%s] already exists. Verify data integrity with other officers.", name, uid)
                 return
             end
-            local roster = Roster:New(uid)
+            if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then print("ERR2"); return end
+            local roster = Roster:New(uid, pointType)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
         end),
@@ -225,7 +227,7 @@ function RosterManager:GetRosterNameByUid(uid)
     return self.cache.rostersUidMap[uid]
 end
 
-function RosterManager:NewRoster()
+function RosterManager:NewRoster(pointType)
     LOG:Trace("RosterManager:NewRoster()")
 
     local name = GenerateName()
@@ -237,7 +239,9 @@ function RosterManager:NewRoster()
     while self.cache.rostersUidMap[uid] ~= nil do
         uid = uid +  1
     end
-    LedgerManager:Submit(LEDGER_ROSTER.Create:new(uid, name), true)
+
+    if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then print("ERR1"); return end
+    LedgerManager:Submit(LEDGER_ROSTER.Create:new(uid, name, pointType), true)
 end
 
 function RosterManager:DeleteRosterByName(name)
@@ -275,10 +279,18 @@ function RosterManager:SetRosterConfiguration(name, option, value)
     LedgerManager:Submit(LEDGER_ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
 end
 
-function RosterManager:SetRosterDefaultSlotValue(name, slot, value, isBase)
+function RosterManager:SetRosterDefaultSlotValue(nameOrRoster, slot, value, isBase)
     LOG:Trace("RosterManager:SetRosterDefaultSlotValue()")
-    local roster = RosterManager:GetRosterByName(name)
-    if roster == nil then return nil end
+    local roster
+    if typeof(nameOrRoster, Roster) then
+        roster = nameOrRoster
+    else
+        roster = RosterManager:GetRosterByName(nameOrRoster)
+    end
+    if roster == nil then
+        LOG:Warning("RosterManager:SetRosterDefaultSlotValue(): Invalid roster object or name")
+        return nil
+    end
     local v = roster:GetDefaultSlotValue(slot)
     if isBase then v.base = value else v.max = value end
 

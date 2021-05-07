@@ -33,7 +33,6 @@ local guiOptions = {
 }
 
 local AuctionManagerGUI = {}
-
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     self:Create()
@@ -120,7 +119,6 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 else
                     self.itemLink = nil
                 end
-                self.st:SetData({})
                 self:Refresh()
             end),
             disabled = (function() return AuctionManager:IsAuctionInProgress() end),
@@ -206,6 +204,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 if not AuctionManager:IsAuctionInProgress() then
+                    self.st:SetData({})
                     AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.base, self.max, self.note, self.roster, self.configuration)
                 else
                     AuctionManager:StopAuctionManual()
@@ -281,15 +280,17 @@ function AuctionManagerGUI:Refresh()
 
     if AuctionManager:IsAuctionInProgress() then
         local data = {}
-        for GUID,bid in pairs(AuctionManager:Bids()) do
-            local profile = ProfileManager:GetProfileByGUID(GUID)
-            local row = {cols = {}}
-            table.insert(row.cols, {value = profile:Name()})
-            table.insert(row.cols, {value = UTILS.ColorCodeClass(profile:Class())})
-            table.insert(row.cols, {value = profile:Spec()})
-            table.insert(row.cols, {value = bid})
-            table.insert(row.cols, {value = self.roster:Standings(GUID)})
-            table.insert(data, row)
+        for name,bid in pairs(AuctionManager:Bids()) do -- todo currently this has names hmmm
+            local profile = ProfileManager:GetProfileByName(name)
+            if profile then
+                local row = {cols = {}}
+                table.insert(row.cols, {value = profile:Name()})
+                table.insert(row.cols, {value = UTILS.ColorCodeClass(profile:Class())})
+                table.insert(row.cols, {value = profile:Spec()})
+                table.insert(row.cols, {value = bid})
+                table.insert(row.cols, {value = self.roster:Standings(GUID)})
+                table.insert(data, row)
+            end
         end
         self.st:SetData(data)
     end

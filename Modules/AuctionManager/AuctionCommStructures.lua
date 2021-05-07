@@ -1,12 +1,13 @@
 local _, CLM = ...
 
 local MODELS = CLM.MODELS
-local UTILS = CLM.UTILS
+-- local UTILS = CLM.UTILS
 local CONSTANTS = CLM.CONSTANTS
 
 local AuctionCommStartAuction = {}
-function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, itemLink, time, antiSnipe)
-    local isCopyConstructor = not itemValueMode
+function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, itemLink, time, endtime, antiSnipe, note)
+    local isCopyConstructor = (type(typeOrObject) == "table")
+
     local o = isCopyConstructor and typeOrObject or {}
 
     setmetatable(o, self)
@@ -20,42 +21,72 @@ function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, ite
     o.m = max
     o.l = itemLink
     o.e = time
+    o.d = endtime
     o.s = antiSnipe
+    o.n = note
 
     return o
 end
 
 function AuctionCommStartAuction:Type()
-    return self.t
+    return self.t or 0
 end
 
 function AuctionCommStartAuction:Mode()
-    return self.i
+    return self.i or 0
 end
 
 function AuctionCommStartAuction:Base()
-    return self.b
+    return self.b or 0
 end
 
 function AuctionCommStartAuction:Max()
-    return self.m
+    return self.m or 0
 end
 
 function AuctionCommStartAuction:ItemLink()
-    return self.l
+    return self.l or ""
 end
 
 function AuctionCommStartAuction:Time()
-    return self.e
+    return self.e or 0
+end
+
+function AuctionCommStartAuction:EndTime()
+    return self.d or 0
 end
 
 function AuctionCommStartAuction:AntiSnipe()
-    return self.s
+    return self.s or 0
+end
+
+function AuctionCommStartAuction:Note()
+    return self.n or ""
+end
+
+local AuctionCommDenyBid = {}
+function AuctionCommDenyBid:New(valueOrObject)
+    local isCopyConstructor = (type(valueOrObject) == "table")
+    local o = isCopyConstructor and valueOrObject or {}
+
+    setmetatable(o, self)
+    self.__index = self
+
+    if isCopyConstructor then return o end
+
+    o.d = valueOrObject
+
+    return o
+end
+
+function AuctionCommDenyBid:Reason()
+    return self.d or 0
 end
 
 local AuctionCommDistributeBid = {}
 function AuctionCommDistributeBid:New(nameOrObject, value)
-    local isCopyConstructor = not value
+    local isCopyConstructor = (type(nameOrObject) == "table")
+
     local o = isCopyConstructor and nameOrObject or {}
 
     setmetatable(o, self)
@@ -64,7 +95,9 @@ function AuctionCommDistributeBid:New(nameOrObject, value)
     if isCopyConstructor then return o end
 
     o.n = nameOrObject
-    o.value = value
+    o.d = value
+
+    return o
 end
 
 function AuctionCommDistributeBid:Name()
@@ -72,13 +105,12 @@ function AuctionCommDistributeBid:Name()
 end
 
 function AuctionCommDistributeBid:Value()
-    return self.v
+    return self.d
 end
-
 
 local AuctionCommStructure = {}
 function AuctionCommStructure:New(typeOrObject, data)
-    local isCopyConstructor = not data
+    local isCopyConstructor = (type(typeOrObject) == "table")
 
     local o = isCopyConstructor and typeOrObject or {}
 
@@ -86,9 +118,11 @@ function AuctionCommStructure:New(typeOrObject, data)
     self.__index = self
 
     if isCopyConstructor then
-        if o.t == CONSTANTS.AUCTION_COMM.START_AUCTION then
+        if o.t == CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION then
             o.d = AuctionCommStartAuction:New(o.d)
-        elseif o.t == CONSTANTS.AUCTION_COMM.DISTRIBUTE_BID then
+        elseif o.t == CONSTANTS.AUCTION_COMM.TYPE.DENY_BID then
+            o.d = AuctionCommDenyBid:New(o.d)
+        elseif o.t == CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID then
             o.d = AuctionCommDistributeBid:New(o.d)
         end
         return o
@@ -108,24 +142,7 @@ function AuctionCommStructure:Data()
     return self.d
 end
 
-CONSTANTS.AUCTION_COMM = {
-    TYPE = {
-        START_AUCTION = 1,
-        STOP_AUCTION = 2,
-        ANTISNIPE = 3,
-        ACCEPT_BID = 4,
-        DENY_BID = 5,
-        DISTRIBUTE_BID = 6
-    },
-    TYPES = UTILS.Set({
-        1, -- START AUCTION
-        2, -- STOP ACUTION
-        3, -- ANTISNIPE
-        4, -- ACCEPT BID
-        5, -- DENY BID
-        6, -- DISTRIBUTE BID
-    })
-}
-
 MODELS.AuctionCommStructure = AuctionCommStructure
 MODELS.AuctionCommStartAuction = AuctionCommStartAuction
+MODELS.AuctionCommDenyBid = AuctionCommDenyBid
+MODELS.AuctionCommDistributeBid = AuctionCommDistributeBid

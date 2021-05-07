@@ -78,6 +78,7 @@ function CORE:_InitializeFeatures()
     MODULES.LootManager:Initialize()
     MODULES.RaidManager:Initialize()
     MODULES.AuctionManager:Initialize()
+    MODULES.BiddingManager:Initialize()
 end
 
 function CORE:_InitializeFrontend()
