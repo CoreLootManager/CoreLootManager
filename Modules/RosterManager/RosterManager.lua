@@ -169,9 +169,25 @@ function RosterManager:Initialize()
                     return
                 end
 
-                roster:SetDefaultSlotValue(entry:config(), entry:min(), entry:max())
+                roster:SetDefaultSlotValue(entry:config(), entry:base(), entry:max())
             end),
             ACL_LEVEL.OFFICER)
+
+        LedgerManager:RegisterEntryType(
+                LEDGER_ROSTER.UpdateOverrides,
+                (function(entry)
+                    LOG:TraceAndCount("mutator(RosterUpdateOverrides)")
+                    local rosterUid = entry:rosterUid()
+    
+                    local roster = self:GetRosterByUid(rosterUid)
+                    if roster == nil then
+                        LOG:Warning("Updating non-existent roster [%s]", rosterUid)
+                        return
+                    end
+    
+                    roster:SetItemValue(entry:itemId(), entry:base(), entry:max())
+                end),
+                ACL_LEVEL.OFFICER)
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateProfiles,
@@ -246,16 +262,16 @@ end
 
 function RosterManager:DeleteRosterByName(name)
     LOG:Trace("RosterManager:DeleteRosterByName()")
-    local roster = RosterManager:GetRosterByName(name)
+    local roster = self:GetRosterByName(name)
     if roster == nil then return end
     LedgerManager:Submit(LEDGER_ROSTER.Delete:new(roster:UID()), true)
 end
 
 function RosterManager:RenameRoster(old, new)
     LOG:Trace("RosterManager:RenameRoster()")
-    local o = RosterManager:GetRosterByName(old)
+    local o = self:GetRosterByName(old)
     if o == nil then return end
-    local n = RosterManager:GetRosterByName(new)
+    local n = self:GetRosterByName(new)
     if n ~= nil then return end
 
     LedgerManager:Submit(LEDGER_ROSTER.Rename:new(o:UID(), new), true)
@@ -263,9 +279,9 @@ end
 
 function RosterManager:Copy(source, target, config, defaults, overrides, profiles)
     LOG:Trace("RosterManager:Copy()")
-    local s = RosterManager:GetRosterByName(source)
+    local s = self:GetRosterByName(source)
     if s == nil then return end
-    local t = RosterManager:GetRosterByName(target)
+    local t = self:GetRosterByName(target)
     if t == nil then return end
 
     LedgerManager:Submit(LEDGER_ROSTER.CopyData:new(s:UID(), t:UID(), config, defaults, overrides, profiles), true)
@@ -273,7 +289,7 @@ end
 
 function RosterManager:SetRosterConfiguration(name, option, value)
     LOG:Trace("RosterManager:SetRosterConfiguration()")
-    local roster = RosterManager:GetRosterByName(name)
+    local roster = self:GetRosterByName(name)
     if roster == nil then return nil end
 
     LedgerManager:Submit(LEDGER_ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
@@ -285,7 +301,7 @@ function RosterManager:SetRosterDefaultSlotValue(nameOrRoster, slot, value, isBa
     if typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
     else
-        roster = RosterManager:GetRosterByName(nameOrRoster)
+        roster = self:GetRosterByName(nameOrRoster)
     end
     if roster == nil then
         LOG:Warning("RosterManager:SetRosterDefaultSlotValue(): Invalid roster object or name")
@@ -298,19 +314,19 @@ function RosterManager:SetRosterDefaultSlotValue(nameOrRoster, slot, value, isBa
 end
 
 function RosterManager:SetRosterItemValue(nameOrRoster, itemId, base, max)
-    LOG:Trace("RosterManager:SetItemValueOverride()")
+    LOG:Trace("RosterManager:SetRosterItemValue()")
     local roster
     if typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
     else
-        roster = RosterManager:GetRosterByName(nameOrRoster)
+        roster = self:GetRosterByName(nameOrRoster)
     end
     if roster == nil then
-        LOG:Warning("RosterManager:SetItemValueOverride(): Invalid roster object or name")
+        LOG:Warning("RosterManager:SetRosterItemValue(): Invalid roster object or name")
         return nil
     end
 
-    -- LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), itemId, base, max), true)
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateOverrides:new(roster:UID(), itemId, base, max), true)
 end
 
 function RosterManager:AddProfilesToRoster(roster, profiles)
@@ -483,7 +499,7 @@ function RosterManager:Debug(N)
                     table.insert(profileList, GUID)
                 end
             end
-            local _roster = RosterManager:GetRosterByName(rosterNames[math.random(1, #rosterNames)])
+            local _roster = self:GetRosterByName(rosterNames[math.random(1, #rosterNames)])
             if math.random(0,1) == 1 then
                 self:AddProfilesToRoster(_roster, profileList)
             else
@@ -547,7 +563,7 @@ function RosterManager:Debug2(N)
             id = math.random(1100, 23328)
             _, _, _, _, icon = GetItemInfoInstant(id)
         end
-        roster:SetItemValue(id, math.random()*1000, math.random()*1000)
+        self:SetRosterItemValue(roster, id, math.random()*1000, math.random()*1000)
     end
 end
 

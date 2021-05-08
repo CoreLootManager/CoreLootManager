@@ -282,7 +282,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         return args
     end)()
 
-    local item_value_overrides_args = (function()
+    local item_value_overrides_args = (function(roster)
         local items = roster:GetAllItemValues()
         local args = {}
         local order = 1
@@ -315,9 +315,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = order + 3
             end
         end
-        -- CLM.UTILS.DumpTable(args)
         return args
-    end)()
+    end)(roster)
 
     local boss_kill_award_values_args = (function()
         local args = {
