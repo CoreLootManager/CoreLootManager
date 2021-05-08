@@ -22,6 +22,7 @@ function ACL:Initialize()
     self:BuildOfficerCache()
     -- Set trust level for self
     self:SetTrusted()
+    MODULES.ConfigManager:RegisterUniversalExecutor("acl", "ACL", self)
 end
 
 function ACL:BuildRankCache()
@@ -62,7 +63,7 @@ function ACL:IsTrusted(name)
     if name == nil then
         return self.trusted or false
     else
-        return self:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name)
+        return self:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name) or false
     end
 end
 
@@ -81,10 +82,10 @@ function ACL:CheckLevel(level, name)
         end
         name = whoami()
     end
-    local isGuildMaster = (self.cache.guildMaster == name)
-    local isOfficer = (self.cache.officers[name] or false)
-    local isManager = (self.db.whitelist[name] or false)
-    
+    local isGuildMaster = (self.cache.guildMaster == name) or false
+    local isOfficer = self.cache.officers[name] or false
+    local isManager = self.db.whitelist[name] or false
+
     -- Check for Guild Master
     if level >= CONSTANTS.ACL.LEVEL.GUILD_MASTER then
         return isGuildMaster

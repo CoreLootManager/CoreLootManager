@@ -92,7 +92,13 @@ function UTILS.UniversalCliMethodExecutor(name, object, cli)
 
     if type(object[method]) == "function" then
         LOG:Info("Execute [%s(%s(%s)]", name, method, parameters)
-        object[method](object, unpack(args))
+        local result = object[method](object, unpack(args))
+        if type(result) == 'table' then
+            UTILS.DumpTable(result)
+        else
+            print(result)
+        end
+
     else
         print("Available methods:")
         for methodName,ref in pairs(object) do
