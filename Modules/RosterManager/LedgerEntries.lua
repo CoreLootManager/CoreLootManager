@@ -203,10 +203,10 @@ end
 -- ------------------------ --
 -- RosterUpdateOverrides --
 -- ------------------------ --
-function RosterUpdateOverrides:new(rosterUid, overrides)
+function RosterUpdateOverrides:new(rosterUid, base, max)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.o = overrides or {} -- TODO: Implement when creating the overrides
+    o.b = tonumber(base) or 0
     return o
 end
 

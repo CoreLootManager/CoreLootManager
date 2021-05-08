@@ -39,7 +39,8 @@ function LootManager:Initialize()
                     LOG:Warning("PointManager mutator(): Profile with guid [%s] does not exist", GUID)
                     return
                 end
-                RosterManager:AddLootToRoster(roster, Loot:New(entry), profile)
+                local loot = Loot:New(entry)
+                RosterManager:AddLootToRoster(roster, loot, profile)
             else
                 -- TODO: Add  Profile to roster? Store in anonymous profile?
                 LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
@@ -154,11 +155,12 @@ function LootManager:Debug(N)
                 local profileLoot = roster:GetProfileLootByGUID(profile:GUID())
                 local numLoot = #profileLoot
                 local entryType
-                if numLoot > 0 then
-                    entryType = math.random(0, 2)
-                else
-                    entryType = 0 -- Award only
-                end
+                -- if numLoot > 0 then
+                --     entryType = math.random(0, 2)
+                -- else
+                --     entryType = 0 -- Award only
+                -- end
+                entryType = 0 -- Award only
                 local itemId = math.random(1100, 23328)
                 local value = math.random() * 1000
                 -- while GetItemInfoInstant(itemId) == nil do

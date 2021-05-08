@@ -92,10 +92,13 @@ function Roster:GetDefaultSlotValue(itemEquipLoc)
     return s or {base = 0, max = 0}
 end
 
-function Roster:SetItemValue(itemId, itemName, base, maximum)
-    LOG:Debug("Set Item Value: [%s]: [%s] [%s] for roster [%s]", itemId, itemName, base, maximum, self:UID())
+function Roster:GetAllItemValues()
+    return self.itemValues or {}
+end
+
+function Roster:SetItemValue(itemId, base, maximum)
+    LOG:Debug("Set Item Value: [%s]: [%s] [%s] for roster [%s]", itemId, base, maximum, self:UID())
     self.itemValues[itemId] = {
-        name = itemName or "",
         base = tonumber(base) or 0,
         max = tonumber(maximum) or 0
     }
@@ -106,7 +109,7 @@ function Roster:GetItemValue(itemId)
     if itemValue == nil then
         local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
         local base, maximum = self:GetDefaultSlotValue(itemEquipLoc)
-        itemValue = { name = "", base = base, max = maximum }
+        itemValue = { base = base, max = maximum }
     end
     return itemValue
 end
@@ -135,8 +138,11 @@ function Roster:WipeLoot()
 end
 
 function Roster:AddLoot(loot, profile)
+    -- history store
     table.insert(self.profileLoot[profile:GUID()], 1,loot)
     table.insert(self.raidLoot, 1, loot)
+    -- charging for the item
+    self.standings[profile:GUID()] = self.standings[profile:GUID()] - loot:Value()
 end
 
 function Roster:GetRaidLoot()

@@ -297,6 +297,22 @@ function RosterManager:SetRosterDefaultSlotValue(nameOrRoster, slot, value, isBa
     LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, v.base, v.max), true)
 end
 
+function RosterManager:SetRosterItemValue(nameOrRoster, itemId, base, max)
+    LOG:Trace("RosterManager:SetItemValueOverride()")
+    local roster
+    if typeof(nameOrRoster, Roster) then
+        roster = nameOrRoster
+    else
+        roster = RosterManager:GetRosterByName(nameOrRoster)
+    end
+    if roster == nil then
+        LOG:Warning("RosterManager:SetItemValueOverride(): Invalid roster object or name")
+        return nil
+    end
+
+    -- LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), itemId, base, max), true)
+end
+
 function RosterManager:AddProfilesToRoster(roster, profiles)
     LOG:Trace("RosterManager:AddProfilesToRoster()")
     if not typeof(roster, Roster) then
@@ -387,7 +403,7 @@ function RosterManager:Debug(N)
     local profiles = ProfileManager:GetProfiles()
     local actionHandlers = {
         ["create"] =  (function()
-            self:NewRoster()
+            self:NewRoster(CONSTANTS.POINT_TYPE.DKP)
             genRosterNames()
         end),
         ["delete"] =  (function()
@@ -498,6 +514,41 @@ function RosterManager:Debug(N)
     --     print(tostring(action) .. ": " .. tostring(count))
     -- end
 
+end
+
+function RosterManager:Debug2(N)
+    N = N or 10
+    local rosterNames = {}
+    local genRosterNames = (function()
+        rosterNames = {}
+        local rosters = self:GetRosters()
+        local i = 0
+        for k,_ in pairs(rosters) do
+            i = i+1
+            table.insert(rosterNames, k)
+        end
+        -- print("=== We have " .. i .. " rosters ===")
+    end)
+    genRosterNames()
+    -- local isBase = false
+    --         if math.random(0, 1) == 1 then
+    --             isBase = true
+    --         end
+    --         self:SetRosterDefaultSlotValue(rosterNames[math.random(1, #rosterNames)], CONSTANTS.INVENTORY_TYPES[math.random(1, #CONSTANTS.INVENTORY_TYPES)], 1000000*math.random(), isBase)
+    -- local _, _, _, _, icon = GetItemInfoInstant(id)
+    -- if icon then
+    local name = rosterNames[math.random(1, #rosterNames)]
+    local roster = self:GetRosterByName(name)
+    print("Adding items to roster " .. name)
+    for i=1,N do
+        local id
+        local icon
+        while icon == nil do
+            id = math.random(1100, 23328)
+            _, _, _, _, icon = GetItemInfoInstant(id)
+        end
+        roster:SetItemValue(id, math.random()*1000, math.random()*1000)
+    end
 end
 
 -- -- Publish API

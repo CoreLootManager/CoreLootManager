@@ -243,7 +243,7 @@ function RosterManagerOptions:Hider(info, ...)
 end
 
 function RosterManagerOptions:GenerateRosterOptions(name)
-
+    local roster = RosterManager:GetRosterByName(name)
     local default_slot_values_args = (function()
         local values = {
             ["Base"] = "Base value for Static-Priced auction. Minimum value for Ascending auction. Set to 0 to ignore.",
@@ -283,21 +283,39 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     end)()
 
     local item_value_overrides_args = (function()
-        local args = {
-            i22812d = {
-                name = "",
-                type = "description",
-                image = 135541,
-                order = 0,
-                width = 0.25
-            },
-            i22812v = {
-                name = "Nerubian Slavemaker",
-                type = "input",
-                order = 1,
-                itemLink = "item:22812",
-            }
-        }
+        local items = roster:GetAllItemValues()
+        local args = {}
+        local order = 1
+        for id,value in pairs(items) do 
+            local _, _, _, _, icon = GetItemInfoInstant(id)
+            if icon then
+                local sid = tostring(id)
+                local d = "i" .. sid .. "d"
+                local b = "i" .. sid .. "b"
+                local m = "i" .. sid .. "m"
+                args[d] = {
+                        name = "",
+                        type = "description",
+                        image = icon,
+                        order = order,
+                        width = 0.25
+                    }
+                args[b] = {
+                        name = "Base",
+                        type = "input",
+                        order = order + 1,
+                        itemLink = "item:" .. sid,
+                    }
+                args[m] = {
+                        name = "Max",
+                        type = "input",
+                        order = order + 2,
+                        itemLink = "item:" .. sid,
+                    }
+                order = order + 3
+            end
+        end
+        -- CLM.UTILS.DumpTable(args)
         return args
     end)()
 
