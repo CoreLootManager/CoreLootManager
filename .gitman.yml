@@ -2,13 +2,71 @@ location: Libs
 sources:
   - repo: https://github.com/SamMousa/lua-eventsourcing.git
     name: lua-eventsourcing
-    rev:  v1.2.0
+    rev: master
     type: git
+    sparse_paths:
+      -
+    link:
+    links:
+      -
+    scripts:
+      -
   - repo: https://github.com/lantisnt/LibLogger.git
     name: LibLogger
-    rev:  v1.2.1
+    rev: v1.2.1
     type: git
+    sparse_paths:
+      -
+    link:
+    links:
+      -
+    scripts:
+      -
   - repo: https://github.com/lantisnt/lib-st.git
     name: lib-st-4.1.2
-    rev:  master
+    rev: master
     type: git
+    sparse_paths:
+      -
+    link:
+    links:
+      -
+    scripts:
+      -
+sources_locked:
+  - repo: https://github.com/SamMousa/lua-eventsourcing.git
+    name: lua-eventsourcing
+    rev: 443da66903199f6564406eca66e7793a4be15bb1
+    type: git
+    sparse_paths:
+      -
+    link:
+    links:
+      -
+    scripts:
+      -
+  - repo: https://github.com/lantisnt/LibLogger.git
+    name: LibLogger
+    rev: c3af2263e25c8f340964fdfd4962701feba85a84
+    type: git
+    sparse_paths:
+      -
+    link:
+    links:
+      -
+    scripts:
+      -
+  - repo: https://github.com/lantisnt/lib-st.git
+    name: lib-st-4.1.2
+    rev: d20a50bc039a3fbc2ef060d5d66f9e0401211e2b
+    type: git
+    sparse_paths:
+      -
+    link:
+    links:
+      -
+    scripts:
+      -
+default_group: ''
+groups:
+  -
