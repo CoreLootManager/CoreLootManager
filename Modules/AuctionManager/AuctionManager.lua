@@ -233,7 +233,7 @@ end
 
 function AuctionManager:SendBidDenied(name, reason)
     local message = AuctionCommStructure:New(
-        CONSTANTS.AUCTION_COMM.TYPE.DENY_BID, 
+        CONSTANTS.AUCTION_COMM.TYPE.DENY_BID,
         AuctionCommDenyBid:New(reason)
     )
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
@@ -395,7 +395,7 @@ CONSTANTS.AUCTION_COMM = {
     }),
     DENY_BID_REASONS_STRING = {
         [1] = "Not in a roster",
-        [2] = "Negative bidders not allowed", 
+        [2] = "Negative bidders not allowed",
         [3] = "Bidding over current standings not allowed",
         [4] = "Bid too low",
         [5] = "Bid too high",

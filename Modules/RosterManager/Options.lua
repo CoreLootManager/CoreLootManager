@@ -282,11 +282,11 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         return args
     end)()
 
-    local item_value_overrides_args = (function(roster)
+    local item_value_overrides_args = (function()
         local items = roster:GetAllItemValues()
         local args = {}
         local order = 1
-        for id,value in pairs(items) do 
+        for id,_ in pairs(items) do
             local _, _, _, _, icon = GetItemInfoInstant(id)
             if icon then
                 local sid = tostring(id)
