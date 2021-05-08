@@ -326,6 +326,10 @@ function AuctionManager:Bids()
     return self.bids
 end
 
+function AuctionManager:ClearBids()
+    self.bids = {}
+end
+
 function AuctionManager:Award(itemId, price, name)
     LootManager:AwardItem(self.roster, ProfileManager:GetProfileByName(name), itemId, price)
 end
