@@ -82,8 +82,6 @@ function LootManager:RevokeItem(loot, forceInstant)
     if not typeof(loot, Loot) then
         LOG:Error("LootManager:RevokeItem(): Missing valid loot")
         return
-    end
-    -- TODO: Add entry to track who removed?
     LedgerManager:Remove(loot:Entry(), forceInstant)
 end
 

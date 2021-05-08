@@ -98,16 +98,14 @@ function ACL:CheckLevel(level, name)
     return true
 end
 
-function ACL:AddToWhitelist(name, level)
-    if self:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
-        if CONSTANTS.ACL.LEVELS[level] ~= nil then
-            self.db.whitelist[name] = true
-        end
+function ACL:AddToWhitelist(name)
+    if self:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) then
+        self.db.whitelist[name] = true
     end
 end
 
-function ACL:RemoveFromWhitelist(name, level)
-    if self:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
+function ACL:RemoveFromWhitelist(name)
+    if self:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) then
         self.db.whitelist[name] = nil
     end
 end

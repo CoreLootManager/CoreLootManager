@@ -54,6 +54,26 @@ local function CreateBidWindow(self)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", BidWindowGroup.frame, "TOPLEFT", 0, -25)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
+
+    --- selection ---
+    local OnClickHandler = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local selected = self.st:GetRow(self.st:GetSelection())
+        if type(selected) ~= "table" then return false end
+        if selected.cols == nil then return false end -- Handle column titles click
+        -- selected = selected.cols[1].value
+        if not self.countClicks then
+            self.countClicks = 0
+        end
+        self.countClicks = self.countClicks + 1
+        self.top:SetStatusText(tostring(self.countClicks))
+        return selected
+    end)
+    self.st:RegisterEvents({
+        OnClick = OnClickHandler
+    })
+    --- --- ---
+
     return BidWindowGroup
 end
 
