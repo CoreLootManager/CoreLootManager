@@ -85,7 +85,7 @@ function ACL:CheckLevel(level, name)
     local isGuildMaster = (self.cache.guildMaster == name) or false
     local isOfficer = self.cache.officers[name] or false
     local isManager = self.db.whitelist[name] or false
-    
+
     -- Check for Guild Master
     if level >= CONSTANTS.ACL.LEVEL.GUILD_MASTER then
         return isGuildMaster
