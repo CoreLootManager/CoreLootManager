@@ -59,7 +59,7 @@ function LedgerManager:RegisterEntryType(class, mutatorFn, authorizationLevel)
     self.entryExtensions[class] = true
 
     self.ledger.registerMutator(class, mutatorFn)
-    self.authorizationLevel[class._cls] = authorizationLevel
+    self.authorizationLevel[class:staticClassName()] = authorizationLevel
 end
 
 function LedgerManager:RegisterOnRestart(callback)

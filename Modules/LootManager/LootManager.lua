@@ -154,12 +154,11 @@ function LootManager:Debug(N)
                 local profileLoot = roster:GetProfileLootByGUID(profile:GUID())
                 local numLoot = #profileLoot
                 local entryType
-                -- if numLoot > 0 then
-                --     entryType = math.random(0, 2)
-                -- else
-                --     entryType = 0 -- Award only
-                -- end
-                entryType = 0 -- Award only
+                if numLoot > 0 then
+                 entryType = math.random(0, 2)
+                else
+                 entryType = 0 -- Award only
+                end
                 local itemId = math.random(1100, 23328)
                 local value = math.random() * 1000
                 -- while GetItemInfoInstant(itemId) == nil do

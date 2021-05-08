@@ -2,8 +2,7 @@ location: Libs
 sources:
   - repo: https://github.com/SamMousa/lua-eventsourcing.git
     name: lua-eventsourcing
-    # rev:  v0.1.2
-    rev: v1.1.0
+    rev:  v1.1.1
     type: git
   - repo: https://github.com/lantisnt/LibLogger.git
     name: LibLogger
