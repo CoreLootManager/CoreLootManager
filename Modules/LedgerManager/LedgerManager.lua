@@ -36,6 +36,8 @@ function LedgerManager:Initialize()
     self.entryExtensions = {}
     self.authorizationLevel = {}
     self._initialized = true
+
+    MODULES.ConfigManager:RegisterUniversalExecutor("ledger", "LedgerManager", self)
 end
 
 function LedgerManager:Enable()
@@ -69,6 +71,18 @@ end
 
 function LedgerManager:RegisterOnUpdate(callback)
     self.ledger.addStateChangedListener(callback)
+end
+
+function LedgerManager:GetPeerStatus()
+    return self.ledger.getPeerStatus()
+end
+
+function LedgerManager:RequestPeerStatusFromGuild()
+    self.ledger.requestPeerStatusFromGuild()
+end
+
+function LedgerManager:RequestPeerStatusFromRaid()
+    self.ledger.requestPeerStatusFromRaid()
 end
 
 function LedgerManager:Submit(entry, catchup)
