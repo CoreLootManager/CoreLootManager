@@ -1,7 +1,7 @@
 local  _, CLM = ...
 
 -- Libs
-local ScrollingTable = LibStub("ScrollingTable")
+-- local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 local LibCandyBar = LibStub("LibCandyBar-3.0")
 
@@ -14,7 +14,7 @@ local LIBS =  {
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
-local MODELS = CLM.MODELS
+-- local MODELS = CLM.MODELS
 -- local CONSTANTS = CLM.CONSTANTS
 local GUI = CLM.GUI
 

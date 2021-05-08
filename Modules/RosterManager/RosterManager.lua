@@ -178,13 +178,13 @@ function RosterManager:Initialize()
                 (function(entry)
                     LOG:TraceAndCount("mutator(RosterUpdateOverrides)")
                     local rosterUid = entry:rosterUid()
-    
+
                     local roster = self:GetRosterByUid(rosterUid)
                     if roster == nil then
                         LOG:Warning("Updating non-existent roster [%s]", rosterUid)
                         return
                     end
-    
+
                     roster:SetItemValue(entry:itemId(), entry:base(), entry:max())
                 end),
                 ACL_LEVEL.OFFICER)
@@ -556,7 +556,7 @@ function RosterManager:Debug2(N)
     local name = rosterNames[math.random(1, #rosterNames)]
     local roster = self:GetRosterByName(name)
     print("Adding items to roster " .. name)
-    for i=1,N do
+    for _=1,N do
         local id
         local icon
         while icon == nil do

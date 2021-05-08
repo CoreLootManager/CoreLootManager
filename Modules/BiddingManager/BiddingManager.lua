@@ -122,7 +122,7 @@ function BiddingManager:HandleIncomingMessage(message, distribution, sender)
         self[self.handlers[mtype]](self, message:Data(), sender)
     end
 end
-local candy = LibStub("LibCandyBar-3.0")
+
 function BiddingManager:HandleStartAuction(data, sender)
     LOG:Trace("BiddingManager:HandleStartAuction()")
     if self.auctionInProgress then
