@@ -136,6 +136,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             set = (function(i,v)
                 if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
                     self.itemLink = v
+                    self.st:SetData({})
                 else
                     self.itemLink = nil
                 end
@@ -224,7 +225,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 if not AuctionManager:IsAuctionInProgress() then
-                    self.st:SetData({})
+                    AuctionManager:ClearBids()
                     AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.base, self.max, self.note, self.roster, self.configuration)
                 else
                     AuctionManager:StopAuctionManual()
