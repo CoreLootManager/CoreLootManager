@@ -75,3 +75,4 @@ Modules\Standings\GUI.lua
 Modules\RaidManager\GUI.lua
 Modules\AuctionManager\GUI.lua
 Modules\BiddingManager\GUI.lua
+Modules\LootManager\GUI.lua
