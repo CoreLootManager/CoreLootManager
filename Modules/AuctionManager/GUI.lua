@@ -18,7 +18,6 @@ local GUI = CLM.GUI
 
 local mergeDictsInline = UTILS.mergeDictsInline
 
--- local RosterManager = MODULES.RosterManager
 local AuctionManager = MODULES.AuctionManager
 local ProfileManager = MODULES.ProfileManager
 local RaidManager = MODULES.RaidManager
@@ -61,12 +60,13 @@ local function CreateBidWindow(self)
         local selected = self.st:GetRow(self.st:GetSelection())
         if type(selected) ~= "table" then return false end
         if selected.cols == nil then return false end -- Handle column titles click
-        -- selected = selected.cols[1].value
-        if not self.countClicks then
-            self.countClicks = 0
+        self.awardPlayer = selected.cols[1].value or ""
+        self.awardValue = selected.cols[4].value or 0
+        if self.awardPlayer and self.awardPlayer:len() > 0 then
+            self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
+        else
+            self.top:SetStatusText("")
         end
-        self.countClicks = self.countClicks + 1
-        self.top:SetStatusText(tostring(self.countClicks))
         return selected
     end)
     self.st:RegisterEvents({
@@ -248,8 +248,8 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         award_value = {
             name = "Award value",
             type = "input",
-            set = (function(i,v) end),
-            get = (function(i) return end),
+            set = (function(i,v) self.awardValue = tonumber(v) or 0 end),
+            get = (function(i) return tostring(self.awardValue) end),
             disabled = (function(i) return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end),
             width = 0.75,
             order = 14
@@ -258,7 +258,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             name = "Award",
             type = "execute",
             func = (function()
-
+                AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
                 self:Refresh()
             end),
             width = 0.75,
@@ -285,6 +285,7 @@ function AuctionManagerGUI:Create()
     self.itemLink = nil
     self.itemId = 0
     self.note = ""
+    self.awardValue = 0
     self.bids = {}
 
     f:AddChild(CreateOptions(self))

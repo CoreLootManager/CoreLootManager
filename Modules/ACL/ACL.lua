@@ -3,6 +3,7 @@ local _, CLM = ...
 local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
+local LOG = CLM.LOG
 -- local DumpTable = UTILS.DumpTable
 local whoami = UTILS.whoami
 local ACL = { }
@@ -70,6 +71,7 @@ function ACL:IsRankOfficer(rank)
 end
 
 function ACL:CheckLevel(level, name)
+    LOG:Trace("ACL:CheckLevel()")
     -- By default block everything except for GM if level not provided
     level = level or CONSTANTS.ACL.LEVEL.GUILD_MASTER
     -- Request is for self
@@ -82,6 +84,7 @@ function ACL:CheckLevel(level, name)
     local isGuildMaster = (self.cache.guildMaster == name)
     local isOfficer = (self.cache.officers[name] or false)
     local isManager = (self.db.whitelist[name] or false)
+    
     -- Check for Guild Master
     if level >= CONSTANTS.ACL.LEVEL.GUILD_MASTER then
         return isGuildMaster
@@ -99,12 +102,14 @@ function ACL:CheckLevel(level, name)
 end
 
 function ACL:AddToWhitelist(name)
+    LOG:Trace("ACL:AddToWhitelist()")
     if self:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) then
         self.db.whitelist[name] = true
     end
 end
 
 function ACL:RemoveFromWhitelist(name)
+    LOG:Trace("ACL:RemoveFromWhitelist()")
     if self:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) then
         self.db.whitelist[name] = nil
     end

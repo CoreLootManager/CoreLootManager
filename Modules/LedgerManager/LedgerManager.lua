@@ -44,6 +44,7 @@ function LedgerManager:Enable()
 end
 
 function LedgerManager:Authorize(class, sender)
+    LOG:Trace("LedgerManager:Authorize()")
     if self.authorizationLevel[class] == nil then
         LOG:Warning("Unknown class [%s]", class)
         return false
@@ -71,6 +72,7 @@ function LedgerManager:RegisterOnUpdate(callback)
 end
 
 function LedgerManager:Submit(entry, catchup)
+    LOG:Trace("LedgerManager:Submit()")
     self.lastEntry = entry
     self.ledger.submitEntry(entry)
     if catchup then
@@ -79,6 +81,7 @@ function LedgerManager:Submit(entry, catchup)
 end
 
 function LedgerManager:Remove(entry, catchup)
+    LOG:Trace("LedgerManager:Remove()")
     self.ledger.ignoreEntry(entry)
     if catchup then
         self.ledger.catchup()

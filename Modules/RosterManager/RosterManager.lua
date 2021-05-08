@@ -543,16 +543,8 @@ function RosterManager:Debug2(N)
             i = i+1
             table.insert(rosterNames, k)
         end
-        -- print("=== We have " .. i .. " rosters ===")
     end)
     genRosterNames()
-    -- local isBase = false
-    --         if math.random(0, 1) == 1 then
-    --             isBase = true
-    --         end
-    --         self:SetRosterDefaultSlotValue(rosterNames[math.random(1, #rosterNames)], CONSTANTS.INVENTORY_TYPES[math.random(1, #CONSTANTS.INVENTORY_TYPES)], 1000000*math.random(), isBase)
-    -- local _, _, _, _, icon = GetItemInfoInstant(id)
-    -- if icon then
     local name = rosterNames[math.random(1, #rosterNames)]
     local roster = self:GetRosterByName(name)
     print("Adding items to roster " .. name)
