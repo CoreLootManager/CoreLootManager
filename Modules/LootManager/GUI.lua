@@ -28,29 +28,28 @@ local LootGUI = {}
 function LootGUI:Initialize()
     self:Create()
     self:RegisterSlash()
-    self.displayedLootList = {}
-    self.pendingLootInfoList = {}
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
         if lag ~= 0 or uncommited ~= 0 then return end
-        self:Refresh()
+        -- self:Refresh()
+        -- print("ledger ui")
     end)
     self.tooltip = CreateFrame("GameTooltip", "CLMLootGUIDialogTooltip", UIParent, "GameTooltipTemplate")
-    EventManager:RegisterEvent("GET_ITEM_INFO_RECEIVED", self, "HandleItemInfoReceived")
+    EventManager:RegisterBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
     self._initialized = true
 end
 
 local function CreateLootDisplay(self)
     -- Profile Scrolling Table
     local columns = {
-        {name = "Item",  width = 100},
+        {name = "Item",  width = 250},
         {name = "Date", width = 150},
         {name = "Value",  width = 70},
-        {name = "Player",   width = 70}
+        -- {name = "Player",   width = 70}
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(500)
-    StandingsGroup:SetWidth(440)
+    StandingsGroup:SetWidth(590)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel("Select roster")
@@ -73,7 +72,8 @@ local function CreateLootDisplay(self)
         local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local rowData = self.st:GetRow(realrow) -- temporary until the cell contains itemLink. now its id
         if not rowData or rowData.cols == nil then return status end
-        local itemId = rowData.cols[1].value or 0
+        local itemLink = rowData.cols[1].value or ""
+        local itemId = UTILS.GetItemIdFromLink(itemLink)
         local itemString = "item:" .. tonumber(itemId)
         local tooltip = self.tooltip
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
@@ -99,13 +99,13 @@ function LootGUI:Create()
     LOG:Trace("LootGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Rosters")
+    f:SetTitle("Loot History")
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(470)
-    f:SetHeight(590)
+    f:SetWidth(570)
+    f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Loot_GUI")
 
@@ -134,18 +134,24 @@ function LootGUI:Refresh()
         lootList = roster:GetRaidLoot()
     end
 
-    self.displayedLootList = {}
-    self.pendingLootInfoList = {}
+    self.displayedLootDict = {}
+    -- self.pendingLootCountPrevious = 0
+    self.pendingLootCount = 0
+    -- self.pendingLootInfoDict = {}
 
     for _,loot in ipairs(lootList) do
-        local _, itemLink = GetItemInfo(loot:Id()) 
+        local _, itemLink = GetItemInfo(loot:Id())
+        -- local itemId, _, _, _, icon = GetItemInfoInstant(loot:Id())
+        -- if itemId and icon then
         if not itemLink then
-            table.insert(self.pendingLootInfoList, loot:Id())
+            self.pendingLootCount = self.pendingLootCount + 1
+            -- self.pendingLootInfoDict[loot:Id()] = true
         else
-            self.displayedLootList[loot:Id()] = itemLink
+            self.displayedLootDict[loot:Id()] = {loot, itemLink}
         end
     end
-    if #self.pendingLootInfoList > 0 then
+
+    if self.pendingLootCount > 0 then
         self.st:SetData({
             {cols = {
                 {value = ""},
@@ -156,13 +162,16 @@ function LootGUI:Refresh()
         })
         return
     end
+
     local data = {}
-    for _,loot in ipairs(lootList) do
+    for _,lootData in pairs(self.displayedLootDict) do
+        local loot = lootData[1]
+        local link = lootData[2]
         local row = {cols = {}}
-        table.insert(row.cols, {value = loot:Id()})
+        table.insert(row.cols, {value = link})
         table.insert(row.cols, {value = date("%c",loot:Timestamp())})
         table.insert(row.cols, {value = loot:Value()})
-        table.insert(row.cols, {value = ""})
+        -- table.insert(row.cols, {value = ""})
         table.insert(data, row)
     end
 
@@ -213,8 +222,34 @@ function LootGUI:RefreshProfiles()
     end
 end
 
-function LootGUI:HandleItemInfoReceived(...)
+function LootGUI:HandleItemInfoReceived(itemId, success)
+    print("handler ", self.pendingLootCount, self.pendingLootCountPrevious)
+    -- If there was some update
+    if self.pendingLootCount <= 0 and self.pendingLootCountPrevious > 0 then
+        self:Refresh()
+        return
+    end
+    -- if anything is still pending
+    if self.pendingLootCount > 0 then
+        self.pendingLootCountPrevious = self.pendingLootCount
+        self.pendingLootCount = self.pendingLootCount - 1
+        self.pendingLootInfoDict[itemId] = nil
+    end
+end
 
+function LootGUI:HandleItemInfoReceivedBucket(...)
+    -- print("handler ", self.pendingLootCount, self.pendingLootCountPrevious)
+    -- -- If there was some update
+    -- if self.pendingLootCount <= 0 and self.pendingLootCountPrevious > 0 then
+        self:Refresh()
+    --     return
+    -- end
+    -- -- if anything is still pending
+    -- if self.pendingLootCount > 0 then
+    --     self.pendingLootCountPrevious = self.pendingLootCount
+    --     self.pendingLootCount = self.pendingLootCount - 1
+    --     self.pendingLootInfoDict[itemId] = nil
+    -- end
 end
 
 function LootGUI:Toggle()

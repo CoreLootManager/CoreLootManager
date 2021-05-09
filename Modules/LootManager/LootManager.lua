@@ -159,7 +159,44 @@ function LootManager:Debug(N)
                 else
                  entryType = 0 -- Award only
                 end
-                local itemId = math.random(1100, 23328)
+                -- local itemId = math.random(1100, 23328)
+                -- local icon
+                -- while icon == nil do
+                --     _, _, _, _, icon = GetItemInfoInstant(itemId)
+                --     itemId = math.random(1100, 23328)
+                -- end
+                -- Limit to known existing items by using AtlasLootClassic
+                if not _G.AtlasLoot then
+                    LOG:Error("loot Debug requires AtlasLoot")
+                    return
+                end
+                -- Select instance
+                local dungeons = _G.AtlasLoot.ItemDB.Storage.AtlasLootClassic_DungeonsAndRaids
+                local instanceList = {}
+                for k,v in pairs(dungeons) do
+                    if type(v) == "table" and v.items then
+                        table.insert(instanceList, k)
+                    end
+                end
+
+                local instance = dungeons[instanceList[math.random(1, #instanceList)]]
+                -- Select boss
+                local bosses = instance.items
+                local bossList = {}
+                for k,_ in pairs(bosses) do
+                    table.insert(bossList, k)
+                end
+
+                local boss = bosses[bossList[math.random(1, #bossList)]]
+                -- select item
+                local items = boss[1]
+                local itemList = {}
+                for k,_ in pairs(items) do
+                    table.insert(itemList, k)
+                end
+
+                local itemId = items[itemList[math.random(1, #itemList)]][2]
+
                 local value = math.random() * 1000
                 -- while GetItemInfoInstant(itemId) == nil do
                     -- value = math.random(1100, 23328)

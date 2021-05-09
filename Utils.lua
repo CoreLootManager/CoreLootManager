@@ -82,6 +82,12 @@ function UTILS.GetColorFromLink(itemLink, format)
     end
 end
 
+function UTILS.GetItemIdFromLink(itemLink)
+    -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+    local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
+    return itemId or 0
+end
+
 function UTILS.UniversalCliMethodExecutor(name, object, cli)
     local values = {strsplit(" ", cli)}
     local method, args, parameters = values[1], {}, ""
