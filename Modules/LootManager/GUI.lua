@@ -218,7 +218,6 @@ function LootGUI:RefreshProfiles()
 end
 
 function LootGUI:HandleItemInfoReceived(itemId, success)
-    print("handler ", self.pendingLootCount, self.pendingLootCountPrevious)
     -- If there was some update
     if self.pendingLootCount <= 0 and self.pendingLootCountPrevious > 0 then
         self:Refresh()
