@@ -23,6 +23,10 @@ function Loot:Value()
     return self.entry:value()
 end
 
+function Loot:Timestamp()
+    return self.entry:time()
+end
+
 function Loot:OwnerGUID()
     return getGuidFromInteger(self.entry:profile())
 end

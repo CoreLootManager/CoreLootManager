@@ -2,14 +2,6 @@ local name, CLM = ...;
 
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0");
 
--- TODO populate through CI
-CLM.VERSION = {
-    major = 0,
-    minor = 0,
-    patch = 0,
-    notes = ""
-}
-
 CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {
@@ -33,7 +25,12 @@ local function Initialize_SavedVariables()
     if type(CLM_DB) ~= "table" then
         CLM_DB = {
             global = {
-                version = 1,
+                version = { -- populate through CI
+                    major = 0,
+                    minor = 1,
+                    patch = 0,
+                    changeset = "000000"
+                },
                 logger = {
                     severity = CLM.LOG.SEVERITY.WARNING,
                     verbosity = false
@@ -64,14 +61,15 @@ end
 
 function CORE:_InitializeBackend()
     LOG:Trace("CORE:_InitializeBackend()")
-    --MODULES.EventHandler.Initialize()
     MODULES.Logger:Initialize()
     MODULES.Comms:Initialize()
+    MODULES.EventManager:Initialize()
     MODULES.LedgerManager:Initialize()
 end
 
 function CORE:_InitializeFeatures()
     LOG:Trace("CORE:_InitializeFeatures()")
+    -- We keep the order
     MODULES.ProfileManager:Initialize()
     MODULES.RosterManager:Initialize()
     MODULES.PointManager:Initialize()

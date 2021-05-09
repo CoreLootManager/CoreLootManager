@@ -58,6 +58,7 @@ Modules\BiddingManager\BiddingCommStructures.lua
 Modules\Database\Database.lua
 Modules\ACL\ACL.lua
 Modules\Comms\Comms.lua
+Modules\EventManager\EventManager.lua
 Modules\ConfigManager\ConfigManager.lua
 Modules\LedgerManager\LedgerManager.lua
 Modules\ProfileManager\ProfileManager.lua

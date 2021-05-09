@@ -8,7 +8,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 --     registry = LibStub("AceConfigRegistry-3.0-CLM"),
 --     gui = LibStub("AceConfigDialog-3.0-CLM")
 -- }
-
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
@@ -23,27 +22,30 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 -- local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
+local EventManager = MODULES.EventManager
 
 local LootGUI = {}
 function LootGUI:Initialize()
     self:Create()
     self:RegisterSlash()
-    self._initialized = true
-    self.selectedRoster = 0
+    self.displayedLootList = {}
+    self.pendingLootInfoList = {}
     LedgerManager:RegisterOnUpdate(function(lag, uncommited)
         if lag ~= 0 or uncommited ~= 0 then return end
         self:Refresh()
     end)
-
+    self.tooltip = CreateFrame("GameTooltip", "CLMLootGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+    EventManager:RegisterEvent("GET_ITEM_INFO_RECEIVED", self, "HandleItemInfoReceived")
+    self._initialized = true
 end
 
 local function CreateLootDisplay(self)
     -- Profile Scrolling Table
     local columns = {
         {name = "Item",  width = 100},
-        {name = "Date", width = 100},
-        {name = "Value",  width = 100},
-        {name = "Player",   width = 100}
+        {name = "Date", width = 150},
+        {name = "Value",  width = 70},
+        {name = "Player",   width = 70}
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
@@ -57,16 +59,39 @@ local function CreateLootDisplay(self)
     StandingsGroup:AddChild(RosterSelectorDropDown)
     -- Profile selector
     local ProfileSelectorDropDown = AceGUI:Create("Dropdown")
-    ProfileSelectorDropDown:SetLabel("Select roster")
+    ProfileSelectorDropDown:SetLabel("Select loot")
     ProfileSelectorDropDown:SetCallback("OnValueChanged", function() self:Refresh() end)
     self.ProfileSelectorDropDown = ProfileSelectorDropDown
     StandingsGroup:AddChild(ProfileSelectorDropDown)
     -- Standings
-    self.st = ScrollingTable:CreateST(columns, 25, 18, nil, StandingsGroup.frame, true)
+    self.st = ScrollingTable:CreateST(columns, 25, 18, nil, StandingsGroup.frame)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
-
+    -- OnEnter handler -> on hover
+    local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local rowData = self.st:GetRow(realrow) -- temporary until the cell contains itemLink. now its id
+        if not rowData or rowData.cols == nil then return status end
+        local itemId = rowData.cols[1].value or 0
+        local itemString = "item:" .. tonumber(itemId)
+        local tooltip = self.tooltip
+        tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
+        tooltip:SetHyperlink(itemString)
+		tooltip:Show()
+        return status
+    end)
+    -- OnLeave handler -> on hover out
+    local OnLeaveHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local status = self.st.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        self.tooltip:Hide()
+        return status
+    end)
+    -- end
+    self.st:RegisterEvents({
+        OnEnter = OnEnterHandler,
+        OnLeave = OnLeaveHandler
+    })
     return StandingsGroup
 end
 
@@ -79,13 +104,12 @@ function LootGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(450)
-    f:SetHeight(505)
+    f:SetWidth(470)
+    f:SetHeight(590)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Loot_GUI")
 
     f:AddChild(CreateLootDisplay(self))
-
     -- Hide by default
     f:Hide()
 end
@@ -101,21 +125,48 @@ function LootGUI:Refresh()
     if roster == nil then return end
     local profile = self:GetCurrentProfile()
 
+    local isProfileLoot = (profile and roster:IsProfileInRoster(profile:GUID()))
+    local lootList
+    -- player loot
+    if isProfileLoot then
+        lootList = roster:GetProfileLootByGUID(profile:GUID())
+    else -- raid loot
+        lootList = roster:GetRaidLoot()
+    end
 
-    -- local data = {}
-    -- for GUID,value in pairs(roster:Standings()) do
-    --     local profile = ProfileManager:GetProfileByGUID(GUID)
-    --     if profile ~= nil then
-    --         local row = {cols = {}}
-    --         table.insert(row.cols, {value = profile:Name()})
-    --         table.insert(row.cols, {value = UTILS.ColorCodeClass(profile:Class())})
-    --         table.insert(row.cols, {value = profile:Spec()})
-    --         table.insert(row.cols, {value = value})
-    --         table.insert(data, row)
-    --     end
-    -- end
+    self.displayedLootList = {}
+    self.pendingLootInfoList = {}
 
-    -- self.st:SetData(data)
+    for _,loot in ipairs(lootList) do
+        local _, itemLink = GetItemInfo(loot:Id()) 
+        if not itemLink then
+            table.insert(self.pendingLootInfoList, loot:Id())
+        else
+            self.displayedLootList[loot:Id()] = itemLink
+        end
+    end
+    if #self.pendingLootInfoList > 0 then
+        self.st:SetData({
+            {cols = {
+                {value = ""},
+                {value = "Loading..."},
+                {value = ""},
+                {value = ""}
+            }}
+        })
+        return
+    end
+    local data = {}
+    for _,loot in ipairs(lootList) do
+        local row = {cols = {}}
+        table.insert(row.cols, {value = loot:Id()})
+        table.insert(row.cols, {value = date("%c",loot:Timestamp())})
+        table.insert(row.cols, {value = loot:Value()})
+        table.insert(row.cols, {value = ""})
+        table.insert(data, row)
+    end
+
+    self.st:SetData(data)
 end
 
 function LootGUI:GetCurrentRoster()
@@ -147,8 +198,8 @@ function LootGUI:RefreshProfiles()
     LOG:Trace("LootGUI:RefreshProfiles()")
     local roster = self:GetCurrentRoster()
     local profiles = roster:Profiles()
-    local profileGUIDmap = {}
-    local profileList = {}
+    local profileGUIDmap = { [0] = "-- Raid Loot --"}
+    local profileList = {0}
     for _, GUID in ipairs(profiles) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
         profileGUIDmap[GUID] = profile:Name()
@@ -160,6 +211,10 @@ function LootGUI:RefreshProfiles()
             self.ProfileSelectorDropDown:SetValue(profileList[1])
         end
     end
+end
+
+function LootGUI:HandleItemInfoReceived(...)
+
 end
 
 function LootGUI:Toggle()
