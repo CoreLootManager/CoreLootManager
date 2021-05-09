@@ -32,7 +32,7 @@ function BiddingManager:Initialize()
 
     Comms:Register(BIDDING_COMM_PREFIX, (function(rawMessage, distribution, sender)
         local message = BiddingCommStructure:New(rawMessage)
-        if CONSTANTS.BIDDING_COMM.TYPES[message:Type()] == nil then print("WHY NO"); return end
+        if CONSTANTS.BIDDING_COMM.TYPES[message:Type()] == nil then return end
         -- Bidding Manager is owner of the channel
         -- pass handling to Auction Manager
         MODULES.AuctionManager:HandleIncomingMessage(message, distribution, sender)

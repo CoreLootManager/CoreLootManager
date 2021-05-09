@@ -52,7 +52,7 @@ function RosterManager:Initialize()
                 LOG:Fatal("Roster [%s:%s] already exists. Verify data integrity with other officers.", name, uid)
                 return
             end
-            if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then print("ERR2"); return end
+            if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
             local roster = Roster:New(uid, pointType)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
@@ -256,7 +256,7 @@ function RosterManager:NewRoster(pointType)
         uid = uid +  1
     end
 
-    if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then print("ERR1"); return end
+    if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
     LedgerManager:Submit(LEDGER_ROSTER.Create:new(uid, name, pointType), true)
 end
 
