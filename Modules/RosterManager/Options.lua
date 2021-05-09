@@ -192,8 +192,8 @@ function RosterManagerOptions:Initialize()
 
     self:UpdateOptions()
 
-    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
-        if lag ~= 0 or uncommited ~= 0 then return end
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
         self:UpdateOptions()
         ConfigManager:UpdateOptions(CONSTANTS.CONFIGS.GROUP.ROSTER)
     end)

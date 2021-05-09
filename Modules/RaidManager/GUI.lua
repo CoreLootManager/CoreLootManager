@@ -30,9 +30,9 @@ function RaidManagerGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
-        if lag ~= 0 or uncommited ~= 0 then return end
-        self:Refresh()
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        self:Refresh(true)
     end)
 
 end
@@ -197,7 +197,7 @@ end
 function RaidManagerGUI:Refresh()
     LOG:Trace("RaidManagerGUI:Refresh()")
     if not self._initialized then return end
-
+    if visible and not self.top.frame:IsVisible() then return end
     LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 

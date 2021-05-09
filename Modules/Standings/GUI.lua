@@ -30,9 +30,9 @@ function StandingsGUI:Initialize()
     self:RegisterSlash()
     self._initialized = true
     self.selectedRoster = 0
-    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
-        if lag ~= 0 or uncommited ~= 0 then return end
-        self:Refresh()
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        self:Refresh(true)
     end)
 
 end
@@ -311,9 +311,10 @@ function StandingsGUI:Create()
     f:Hide()
 end
 
-function StandingsGUI:Refresh()
+function StandingsGUI:Refresh(visible)
     LOG:Trace("StandingsGUI:Refresh()")
     if not self._initialized then return end
+    if visible and not self.top.frame:IsVisible() then return end
     self.st:ClearSelection()
     self:RefreshRosters()
 

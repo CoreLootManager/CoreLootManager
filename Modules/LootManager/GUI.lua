@@ -28,10 +28,9 @@ local LootGUI = {}
 function LootGUI:Initialize()
     self:Create()
     self:RegisterSlash()
-    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
-        if lag ~= 0 or uncommited ~= 0 then return end
-        -- self:Refresh()
-        -- print("ledger ui")
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        self:Refresh(true)
     end)
     self.tooltip = CreateFrame("GameTooltip", "CLMLootGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     EventManager:RegisterBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
@@ -114,9 +113,10 @@ function LootGUI:Create()
     f:Hide()
 end
 
-function LootGUI:Refresh()
+function LootGUI:Refresh(visible)
     LOG:Trace("LootGUI:Refresh()")
     if not self._initialized then return end
+    if visible and not self.top.frame:IsVisible() then return end
     self.st:ClearSelection()
     self:RefreshRosters()
     self:RefreshProfiles()
@@ -134,24 +134,19 @@ function LootGUI:Refresh()
         lootList = roster:GetRaidLoot()
     end
 
-    self.displayedLootDict = {}
-    -- self.pendingLootCountPrevious = 0
-    self.pendingLootCount = 0
-    -- self.pendingLootInfoDict = {}
+    self.displayedLoot = {}
+    self.pendingLoot = false
 
     for _,loot in ipairs(lootList) do
         local _, itemLink = GetItemInfo(loot:Id())
-        -- local itemId, _, _, _, icon = GetItemInfoInstant(loot:Id())
-        -- if itemId and icon then
         if not itemLink then
-            self.pendingLootCount = self.pendingLootCount + 1
-            -- self.pendingLootInfoDict[loot:Id()] = true
+            self.pendingLoot = true
         else
-            self.displayedLootDict[loot:Id()] = {loot, itemLink}
+            self.displayedLoot[loot:Id()] = {loot, itemLink}
         end
     end
 
-    if self.pendingLootCount > 0 then
+    if self.pendingLoot then
         self.st:SetData({
             {cols = {
                 {value = ""},
@@ -164,7 +159,7 @@ function LootGUI:Refresh()
     end
 
     local data = {}
-    for _,lootData in pairs(self.displayedLootDict) do
+    for _,lootData in pairs(self.displayedLoot) do
         local loot = lootData[1]
         local link = lootData[2]
         local row = {cols = {}}
@@ -238,18 +233,8 @@ function LootGUI:HandleItemInfoReceived(itemId, success)
 end
 
 function LootGUI:HandleItemInfoReceivedBucket(...)
-    -- print("handler ", self.pendingLootCount, self.pendingLootCountPrevious)
-    -- -- If there was some update
-    -- if self.pendingLootCount <= 0 and self.pendingLootCountPrevious > 0 then
-        self:Refresh()
-    --     return
-    -- end
-    -- -- if anything is still pending
-    -- if self.pendingLootCount > 0 then
-    --     self.pendingLootCountPrevious = self.pendingLootCount
-    --     self.pendingLootCount = self.pendingLootCount - 1
-    --     self.pendingLootInfoDict[itemId] = nil
-    -- end
+    if self.pendingLoot then self:Refresh(true) end
+    self.pendingLoot = false
 end
 
 function LootGUI:Toggle()

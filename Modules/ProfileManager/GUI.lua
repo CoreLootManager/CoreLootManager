@@ -31,9 +31,9 @@ function ProfilesGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
-        if lag ~= 0 or uncommited ~= 0 then return end
-        self:Refresh()
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        self:Refresh(true)
     end)
 
 end
@@ -222,7 +222,6 @@ local function GenerateOfficerOptions(self)
             width = "full",
             func = (function(i)
                 RosterManager:AddProfilesToRoster(RosterManager:GetRosterByName(self.selectedRoster), self:GetSelected())
-                self:Refresh()
             end),
             confirm = true,
             order = 30
@@ -310,9 +309,10 @@ function ProfilesGUI:Create()
     f:Hide()
 end
 
-function ProfilesGUI:Refresh()
+function ProfilesGUI:Refresh(visible)
     LOG:Trace("ProfilesGUI:Refresh()")
     if not self._initialized then return end
+    if visible and not self.top.frame:IsVisible() then return end
     self.st:ClearSelection()
 
     if self.profileList then
@@ -342,7 +342,10 @@ function ProfilesGUI:Refresh()
     end
 
     self.st:SetData(data)
+    -- self:RefreshOptions()
+end
 
+function ProfilesGUI:RefreshOptions()
     LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 

@@ -86,8 +86,8 @@ function PointManager:Initialize()
         ACL_LEVEL.OFFICER)
 
     -- local start = GetServerTime()
-    LedgerManager:RegisterOnUpdate(function(lag, uncommited)
-        if lag ~= 0 or uncommited ~= 0 then return end
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
         -- DEBUG Stuff
         -- local stop = GetServerTime(); LOG:Debug("PointManager() DONE in %s sec", tostring(stop - start));
         -- local rosters = RosterManager:GetRosters()
