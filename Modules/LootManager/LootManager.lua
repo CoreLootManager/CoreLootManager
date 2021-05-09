@@ -52,7 +52,8 @@ function LootManager:Initialize()
         MODULES.ConfigManager:RegisterUniversalExecutor("lm", "LootManager", self)
 end
 
-function LootManager:AwardItem(roster, profile, itemId, value, forceInstant)
+function LootManager:AwardItem(roster, name, itemLink, itemId, value, forceInstant)
+    local profile = ProfileManager:GetProfileByName(name)
     LOG:Trace("LootManager:AwardItem()")
     if not typeof(roster, Roster) then
         LOG:Error("LootManager:AwardItem(): Missing valid roster")
@@ -72,6 +73,7 @@ function LootManager:AwardItem(roster, profile, itemId, value, forceInstant)
     end
     if roster:IsProfileInRoster(profile:GUID()) then
         LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
+        SendChatMessage(itemLink.." awarded to "..name.." for "..value, "RAID_WARNING")
     else
         LOG:Warning("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
     end

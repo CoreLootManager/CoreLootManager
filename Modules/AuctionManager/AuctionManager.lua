@@ -331,7 +331,7 @@ function AuctionManager:ClearBids()
 end
 
 function AuctionManager:Award(itemId, price, name)
-    LootManager:AwardItem(self.roster, ProfileManager:GetProfileByName(name), itemId, price)
+    LootManager:AwardItem(self.roster, name, self.itemLink, itemId, price)
 end
 
 function AuctionManager:CanUserAuctionItems(name) -- todo
