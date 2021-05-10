@@ -162,7 +162,7 @@ local function GenerateOfficerOptions(self)
             desc = "Select character to be marked as main for alt-main linking.",
             type = "select",
             width = "full",
-            values = self.profilesList,
+            values = {}, --self.profilesList, -- not used for now. causes a lot of lag with big profile lists
             set = function(i, v) self.selectedMain = v end,
             get = function(i) return self.selectedMain end,
             disabled = true,
@@ -315,12 +315,6 @@ function ProfilesGUI:Refresh(visible)
     if visible and not self.top.frame:IsVisible() then return end
     self.st:ClearSelection()
 
-    if self.profileList then
-        for k,_ in pairs(self.profileList) do
-            self.profilesList[k] = nil
-        end
-    end
-
     local data = {}
     local profiles = ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
@@ -342,10 +336,6 @@ function ProfilesGUI:Refresh(visible)
     end
 
     self.st:SetData(data)
-    -- self:RefreshOptions()
-end
-
-function ProfilesGUI:RefreshOptions()
     LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 

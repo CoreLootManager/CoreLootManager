@@ -192,34 +192,36 @@ function LootManager:Debug(N)
                 local boss = bosses[bossList[math.random(1, #bossList)]]
                 -- select item
                 local items = boss[1]
-                local itemList = {}
-                for k,_ in pairs(items) do
-                    table.insert(itemList, k)
-                end
-
-                local itemId = items[itemList[math.random(1, #itemList)]][2]
-
-                local value = math.random() * 1000
-                -- while GetItemInfoInstant(itemId) == nil do
-                    -- value = math.random(1100, 23328)
-                -- end
-                print(
-                    "Generated entry: " .. tostring(iteration) ..
-                    " of type " .. tostring(entryType) ..
-                    " in roster " .. selectedRoster .. " " ..
-                    " with id " .. tostring(itemId) .. " "..
-                    " and value " .. tostring(value)
-                )
-                if entryType == 0 then -- Award
-                    self:AwardItem(roster, profile, itemId, value, true)
-                elseif entryType == 1 then -- Revoke
-                    self:RevokeItem(profileLoot[math.random(1, numLoot)], true)
-                elseif entryType == 2 then -- Transfer
-                    local targetProfile = ProfileManager:GetProfileByGUID(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
-                    while targetProfile == nil or (targetProfile:GUID() == profile:GUID()) do
-                        targetProfile = ProfileManager:GetProfileByGUID(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
+                if items then
+                    local itemList = {}
+                    for k,_ in pairs(items) do
+                        table.insert(itemList, k)
                     end
-                    self:TransferItem(roster, targetProfile, profileLoot[math.random(1, numLoot)], true)
+
+                    local itemId = items[itemList[math.random(1, #itemList)]][2]
+
+                    local value = math.random() * 1000
+                    -- while GetItemInfoInstant(itemId) == nil do
+                        -- value = math.random(1100, 23328)
+                    -- end
+                    print(
+                        "Generated entry: " .. tostring(iteration) ..
+                        " of type " .. tostring(entryType) ..
+                        " in roster " .. selectedRoster .. " " ..
+                        " with id " .. tostring(itemId) .. " "..
+                        " and value " .. tostring(value)
+                    )
+                    if entryType == 0 then -- Award
+                        self:AwardItem(roster, profile, itemId, value, true)
+                    elseif entryType == 1 then -- Revoke
+                        self:RevokeItem(profileLoot[math.random(1, numLoot)], true)
+                    elseif entryType == 2 then -- Transfer
+                        local targetProfile = ProfileManager:GetProfileByGUID(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
+                        while targetProfile == nil or (targetProfile:GUID() == profile:GUID()) do
+                            targetProfile = ProfileManager:GetProfileByGUID(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
+                        end
+                        self:TransferItem(roster, targetProfile, profileLoot[math.random(1, numLoot)], true)
+                    end
                 end
             end
         end

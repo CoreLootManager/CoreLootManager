@@ -194,7 +194,7 @@ function RaidManagerGUI:Create()
     f:Hide()
 end
 
-function RaidManagerGUI:Refresh()
+function RaidManagerGUI:Refresh(visible)
     LOG:Trace("RaidManagerGUI:Refresh()")
     if not self._initialized then return end
     if visible and not self.top.frame:IsVisible() then return end

@@ -162,7 +162,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         -- Set auction in progress
         self.auctionInProgress = true
         -- UI
-        GUI.AuctionManager:Refresh()
+        GUI.AuctionManager:UpdateBids()
     else
         LOG:Warning("RosterManager:StartAuction(): Missing auctioning permissions")
         return false
@@ -176,7 +176,7 @@ function AuctionManager:StopAuctionTimed()
     self.ticker:Cancel()
     SendChatMessage("Auction complete", "RAID_WARNING")
     self:SendAuctionEnd()
-    GUI.AuctionManager:Refresh()
+    GUI.AuctionManager:UpdateBids()
 end
 
 function AuctionManager:StopAuctionManual()
@@ -185,7 +185,7 @@ function AuctionManager:StopAuctionManual()
     self.ticker:Cancel()
     SendChatMessage("Auction stopped by Master Looter", "RAID_WARNING")
     self:SendAuctionEnd()
-    GUI.AuctionManager:Refresh()
+    GUI.AuctionManager:UpdateBids()
 end
 
 function AuctionManager:AntiSnipe()
@@ -319,7 +319,7 @@ function AuctionManager:UpdateBid(name, bid)
     else
         self:SendBidDenied(name, reason)
     end
-    GUI.AuctionManager:Refresh()
+    GUI.AuctionManager:UpdateBids()
 end
 
 function AuctionManager:Bids()

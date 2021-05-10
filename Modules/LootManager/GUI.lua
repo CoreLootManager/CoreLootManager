@@ -52,13 +52,18 @@ local function CreateLootDisplay(self)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel("Select roster")
-    RosterSelectorDropDown:SetCallback("OnValueChanged", function() self:Refresh() end)
+    RosterSelectorDropDown:SetCallback("OnValueChanged", function()
+        self.requestRefreshProfiles = true
+        self:Refresh()
+    end)
     self.RosterSelectorDropDown = RosterSelectorDropDown
     StandingsGroup:AddChild(RosterSelectorDropDown)
     -- Profile selector
     local ProfileSelectorDropDown = AceGUI:Create("Dropdown")
     ProfileSelectorDropDown:SetLabel("Select loot")
-    ProfileSelectorDropDown:SetCallback("OnValueChanged", function() self:Refresh() end)
+    ProfileSelectorDropDown:SetCallback("OnValueChanged", function()
+        self:Refresh()
+    end)
     self.ProfileSelectorDropDown = ProfileSelectorDropDown
     StandingsGroup:AddChild(ProfileSelectorDropDown)
     -- Standings
@@ -107,6 +112,7 @@ function LootGUI:Create()
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Loot_GUI")
+    self.requestRefreshProfiles = true
 
     f:AddChild(CreateLootDisplay(self))
     -- Hide by default
@@ -119,7 +125,10 @@ function LootGUI:Refresh(visible)
     if visible and not self.top.frame:IsVisible() then return end
     self.st:ClearSelection()
     self:RefreshRosters()
-    self:RefreshProfiles()
+    if self.requestRefreshProfiles then
+        self:RefreshProfiles()
+        self.requestRefreshProfiles = false
+    end
 
     local roster = self:GetCurrentRoster()
     if roster == nil then return end
@@ -178,7 +187,7 @@ function LootGUI:GetCurrentRoster()
 end
 
 function LootGUI:GetCurrentProfile()
-    return ProfileManager:GetProfileByGUID(self.ProfileSelectorDropDown:GetValue())
+    return ProfileManager:GetProfileByName(self.ProfileSelectorDropDown:GetValue())
 end
 
 function LootGUI:RefreshRosters()
@@ -202,14 +211,15 @@ function LootGUI:RefreshProfiles()
     LOG:Trace("LootGUI:RefreshProfiles()")
     local roster = self:GetCurrentRoster()
     local profiles = roster:Profiles()
-    local profileGUIDmap = { [0] = "-- Raid Loot --"}
-    local profileList = {0}
+    local profileNameMap = { ["-- Raid Loot --"] = "-- Raid Loot --"}
+    local profileList = {"-- Raid Loot --"}
     for _, GUID in ipairs(profiles) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
-        profileGUIDmap[GUID] = profile:Name()
-        table.insert(profileList, GUID)
+        profileNameMap[profile:Name()] = profile:Name()
+        table.insert(profileList, profile:Name())
     end
-    self.ProfileSelectorDropDown:SetList(profileGUIDmap, profileList)
+    table.sort(profileList)
+    self.ProfileSelectorDropDown:SetList(profileNameMap, profileList)
     if not self.ProfileSelectorDropDown:GetValue() then
         if #profileList > 0 then
             self.ProfileSelectorDropDown:SetValue(profileList[1])
@@ -232,8 +242,8 @@ function LootGUI:HandleItemInfoReceived(itemId, success)
 end
 
 function LootGUI:HandleItemInfoReceivedBucket(...)
-    if self.pendingLoot then self:Refresh(true) end
     self.pendingLoot = false
+    if self.pendingLoot then self:Refresh(true) end
 end
 
 function LootGUI:Toggle()

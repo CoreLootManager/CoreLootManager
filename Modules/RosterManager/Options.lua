@@ -442,7 +442,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Type of auction used: Open, Sealed, Vickrey (Sealed with second-highest pay price).",
                         type = "select",
                         style = "radio",
-                        disabled = true,
                         order = 4,
                         values = CONSTANTS.AUCTION_TYPES_GUI
                     },
@@ -451,7 +450,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Single-Priced (static) or Ascending (in range of min-max) item value.",
                         type = "select",
                         style = "radio",
-                        disabled = true,
                         order = 5,
                         values = CONSTANTS.ITEM_VALUE_MODES_GUI
                     },
