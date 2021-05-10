@@ -81,6 +81,18 @@ function LedgerManager:RequestPeerStatusFromGuild()
     self.ledger.requestPeerStatusFromGuild()
 end
 
+function LedgerManager:UpdateSyncState()
+
+end
+
+function LedgerManager:IsInSync()
+    return false
+end
+
+function LedgerManager:IsSyncOngoing()
+    return false
+end
+
 function LedgerManager:RequestPeerStatusFromRaid()
     self.ledger.requestPeerStatusFromRaid()
 end

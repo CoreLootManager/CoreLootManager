@@ -409,10 +409,10 @@ end
 
 function StandingsGUI:RegisterSlash()
     local options = {
-        rosters = {
+        standings = {
             type = "execute",
             name = "Standings",
-            desc = "Toggle standigns window display",
+            desc = "Toggle standings window display",
             handler = self,
             func = "Toggle",
         }
@@ -420,4 +420,4 @@ function StandingsGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
-GUI.DKPStandings = StandingsGUI
+GUI.Standings = StandingsGUI

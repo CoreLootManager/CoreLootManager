@@ -15,6 +15,8 @@ Libs\LibSerialize\lib.xml
 Libs\LibLogger\lib.xml
 Libs\lua-eventsourcing\LibEventSourcing.xml
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\lib.xml
 
 # ACE3
 Libs\AceAddon-3.0\AceAddon-3.0.xml
@@ -39,6 +41,7 @@ Libs\LibCandyBar-3.0\lib.xml
 # Addon Core
 ClassicLootManager.lua
 Utils.lua
+MinimapIcon.lua
 
 Modules\Logger\Logger.lua
 

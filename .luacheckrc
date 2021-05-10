@@ -83,6 +83,7 @@ globals = {
 	"BonusRollFrame",
 	"GameTooltip",
 	"ItemRefTooltip",
+	"InterfaceOptionsFrame_OpenToCategory",
 	"Minimap",
 	"MovieFrame",
 	"RaidBossEmoteFrame",
