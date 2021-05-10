@@ -217,7 +217,7 @@ function RosterManager:Initialize()
                     end
                 end
             end),
-            ACL_LEVEL.OFFICER)
+            ACL_LEVEL.MANAGER)
 
         LedgerManager:RegisterOnRestart(function()
             self:WipeAll()

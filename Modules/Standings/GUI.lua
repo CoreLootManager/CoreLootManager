@@ -13,7 +13,8 @@ local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
--- local RESULTS = CLM.CONSTANTS.RESULTS
+local ACL = MODULES.ACL
+
 local GUI = CLM.GUI
 
 local mergeDictsInline = UTILS.mergeDictsInline
@@ -125,6 +126,42 @@ local function GenerateManagerOptions(self)
             end),
             confirm = true,
             order = 13
+        },
+        roster_players_header = {
+            type = "header",
+            name = "Players",
+            order = 24
+        },
+        add_from_raid = {
+            name = "Add from raid",
+            desc = "Adds players from current raid to the roster. Creates profiles if not exists.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+
+            end),
+            confirm = true,
+            order = 25
+        },
+        remove_from_roster = {
+            name = "Remove from roster",
+            desc = "Removes selected players from roster or everyone if none selected.",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+                local roster, profiles = self:GetSelected()
+                if roster == nil then
+                    LOG:Debug("StandingsGUI(Remove): roster == nil")
+                    return
+                end
+                if not profiles or #profiles == 0 then
+                    LOG:Debug("StandingsGUI(Remove): profiles == 0")
+                    return
+                end
+                RosterManager:RemoveProfilesFromRoster(roster, profiles)
+            end),
+            confirm = true,
+            order = 26
         }
     }
 end
@@ -181,42 +218,6 @@ local function GenerateOfficerOptions(self)
             end),
             confirm = true,
             order = 23
-        },
-        roster_players_header = {
-            type = "header",
-            name = "Players",
-            order = 24
-        },
-        add_from_raid = {
-            name = "Add from raid",
-            desc = "Adds players from current raid to the roster. Creates profiles if not exists.",
-            type = "execute",
-            width = "full",
-            func = (function(i)
-
-            end),
-            confirm = true,
-            order = 25
-        },
-        remove_from_roster = {
-            name = "Remove from roster",
-            desc = "Removes selected players from roster or everyone if none selected.",
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                local roster, profiles = self:GetSelected()
-                if roster == nil then
-                    LOG:Debug("StandingsGUI(Remove): roster == nil")
-                    return
-                end
-                if not profiles or #profiles == 0 then
-                    LOG:Debug("StandingsGUI(Remove): profiles == 0")
-                    return
-                end
-                RosterManager:RemoveProfilesFromRoster(roster, profiles)
-            end),
-            confirm = true,
-            order = 26
         }
     }
 end
@@ -239,8 +240,12 @@ local function CreateManagementOptions(self, container)
         args = {}
     }
     mergeDictsInline(options.args, GenerateUntrustedOptions(self))
-    mergeDictsInline(options.args, GenerateManagerOptions(self))
-    mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+        mergeDictsInline(options.args, GenerateManagerOptions(self))
+    end
+    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) then
+        mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    end
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
     LIBS.gui:Open("clm_standings_gui_options", ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
 

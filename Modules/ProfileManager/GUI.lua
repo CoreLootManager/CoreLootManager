@@ -28,6 +28,8 @@ local REGISTRY = "clm_profiles_gui_options"
 
 local ProfilesGUI = {}
 function ProfilesGUI:Initialize()
+    LOG:Trace("ProfilesGUI:Initialize()")
+    if not ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
     self._initialized = true

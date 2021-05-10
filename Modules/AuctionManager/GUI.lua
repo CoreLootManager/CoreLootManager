@@ -15,6 +15,7 @@ local MODULES = CLM.MODULES
 local MODELS = CLM.MODELS
 local CONSTANTS = CLM.CONSTANTS
 local GUI = CLM.GUI
+local ACL = MODULES.ACL
 
 local mergeDictsInline = UTILS.mergeDictsInline
 
@@ -34,6 +35,7 @@ local guiOptions = {
 local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
+    if not ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
     self._initialized = true

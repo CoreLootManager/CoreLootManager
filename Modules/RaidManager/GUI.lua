@@ -11,6 +11,7 @@ local LIBS =  {
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
+local ACL = MODULES.ACL
 -- local CONSTANTS = CLM.CONSTANTS
 -- local RESULTS = CLM.CONSTANTS.RESULTS
 local GUI = CLM.GUI
@@ -27,6 +28,8 @@ local REGISTRY = "clm_raid_manager_gui_options"
 
 local RaidManagerGUI = {}
 function RaidManagerGUI:Initialize()
+    LOG:Trace("RaidManagerGUI:Initialize()")
+    if not ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
     self._initialized = true
