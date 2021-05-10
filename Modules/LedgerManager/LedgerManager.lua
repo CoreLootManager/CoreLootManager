@@ -43,6 +43,24 @@ end
 function LedgerManager:Enable()
     self.ledger.getStateManager():setUpdateInterval(50)
     self.ledger.enableSending()
+    self.inSync = false
+    self.syncOngoing = false
+    C_Timer.NewTicker(5, function() 
+        if self.inSync and self.syncOngoing then
+            self.inSync = false
+            self.syncOngoing = false
+        elseif self.inSync and not self.syncOngoing then
+            self.inSync = false
+            self.syncOngoing = true
+        elseif not self.inSync and self.syncOngoing then
+            self.inSync = true
+            self.syncOngoing = true
+        else -- both are 0
+            self.inSync = true
+            self.syncOngoing = false
+        end
+        self:UpdateSyncState()
+    end)
 end
 
 function LedgerManager:Authorize(class, sender)
@@ -82,15 +100,15 @@ function LedgerManager:RequestPeerStatusFromGuild()
 end
 
 function LedgerManager:UpdateSyncState()
-
+    
 end
 
 function LedgerManager:IsInSync()
-    return false
+    return self.inSync
 end
 
 function LedgerManager:IsSyncOngoing()
-    return false
+    return self.syncOngoing
 end
 
 function LedgerManager:RequestPeerStatusFromRaid()

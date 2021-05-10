@@ -88,6 +88,16 @@ function CORE:_InitializeFrontend()
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
+    -- Hook Minimap Icon
+    hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
+        if MODULES.LedgerManager:IsInSync() then
+            CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierGreen"
+        elseif MODULES.LedgerManager:IsSyncOngoing() then
+            CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierRed"
+        else -- Unknown state
+            CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierBlue"
+        end
+    end)
 end
 
 function CORE:_Enable()

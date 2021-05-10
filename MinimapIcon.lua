@@ -8,13 +8,13 @@ if not ldb then return end
 local icon = LibStub("LibDBIcon-1.0", true)
 if not icon then return end
 
-local plugin = ldb:NewDataObject(addonName, {
+CLM.MinimapDBI = ldb:NewDataObject(addonName, {
 	type = "data source",
 	text = "0",
-    icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierGreen"
+    icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierBlue"
 })
 
-function plugin.OnClick(self, button)
+function CLM.MinimapDBI.OnClick(self, button)
     local isTrusted = CLM.MODULES.ACL:IsTrusted()
 	if button == "RightButton" then
         if IsShiftKeyDown() and isTrusted then
@@ -34,19 +34,8 @@ function plugin.OnClick(self, button)
 	end
 end
 
--- local LedgerManager = CLM.MODULES.LedgerManager-- todo it needs to be at the end of files?
--- hooksecurefunc(CLM.MODULES.LedgerManager, "UpdateSyncState", function()
---     if CLM.MODULES.LedgerManager:IsInSync() then
--- 	    plugin.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierGreen"
---     elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
---         plugin.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierRed"
---     else -- Unknown state
---         plugin.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierBlue"
---     end
--- end)
-
 do
-	function plugin.OnTooltipShow(tooltip)
+	function CLM.MinimapDBI.OnTooltipShow(tooltip)
         local isTrusted = CLM.MODULES.ACL:IsTrusted()
         tooltip:AddLine(addonName)
 		-- tooltip:AddLine("In-Sync", 0.0, 0.8, 0.0)
@@ -74,6 +63,6 @@ local f = CreateFrame("Frame")
 local CLMLDBIconDB = {}
 f:SetScript("OnEvent", function()
 	if not CLMLDBIconDB then CLMLDBIconDB = {} end
-	icon:Register(addonName, plugin, CLMLDBIconDB)
+	icon:Register(addonName, CLM.MinimapDBI, CLMLDBIconDB)
 end)
 f:RegisterEvent("PLAYER_LOGIN")
