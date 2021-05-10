@@ -6,9 +6,9 @@ local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
 
 local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0-CLM"),
-    config = LibStub("AceConfig-3.0-CLM"),
-    gui = LibStub("AceConfigDialog-3.0-CLM")
+    registry = LibStub("AceConfigRegistry-3.0"),
+    config = LibStub("AceConfig-3.0"),
+    gui = LibStub("AceConfigDialog-3.0")
 }
 
 local ConfigManager = { enabled = false }

@@ -184,8 +184,13 @@ function RosterManager:Initialize()
                         LOG:Warning("Updating non-existent roster [%s]", rosterUid)
                         return
                     end
-
-                    roster:SetItemValue(entry:itemId(), entry:base(), entry:max())
+                    local _, _, _, itemEquipLoc = GetItemInfoInstant(entry:itemId())
+                    local default = roster:GetDefaultSlotValue(itemEquipLoc)
+                    if default.base == entry:base() and default.max == entry:max() then
+                        roster:ClearItemValue(entry:itemId())
+                    else
+                        roster:SetItemValue(entry:itemId(), entry:base(), entry:max())
+                    end
                 end),
                 ACL_LEVEL.OFFICER)
 

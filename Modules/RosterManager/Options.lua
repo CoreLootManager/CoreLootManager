@@ -49,7 +49,6 @@ function RosterManagerOptions:Initialize()
         end),
         name_set = (function(old, new)
             RosterManager:RenameRoster(old, new)
-            -- TODO: set to the newly renamed instead of first one. Doable?
         end),
         remove_execute = (function(name)
             RosterManager:DeleteRosterByName(name)
@@ -308,12 +307,28 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "input",
                         order = order + 1,
                         itemLink = "item:" .. sid,
+                        set = (function(i, v)
+                            local value = roster:GetItemValue(id)
+                            RosterManager:SetRosterItemValue(roster, id, tonumber(v) or 0, value.max)
+                        end),
+                        get = (function(i)
+                            local value = roster:GetItemValue(id)
+                            return tostring(value.base)
+                        end)
                     }
                 args[m] = {
                         name = "Max",
                         type = "input",
                         order = order + 2,
                         itemLink = "item:" .. sid,
+                        set = (function(i, v)
+                            local value = roster:GetItemValue(id)
+                            RosterManager:SetRosterItemValue(roster, id, value.base, tonumber(v) or 0)
+                        end),
+                        get = (function(i)
+                            local value = roster:GetItemValue(id)
+                            return tostring(value.max)
+                        end)
                     }
                 order = order + 3
             end

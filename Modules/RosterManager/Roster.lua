@@ -104,12 +104,17 @@ function Roster:SetItemValue(itemId, base, maximum)
     }
 end
 
+function Roster:ClearItemValue(itemId)
+    LOG:Debug("Clear Item Value: [%s] for roster [%s]", itemId, self:UID())
+    self.itemValues[itemId] = nil
+end
+
 function Roster:GetItemValue(itemId)
     local itemValue = self.itemValues[itemId]
     if itemValue == nil then
         local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
-        local base, maximum = self:GetDefaultSlotValue(itemEquipLoc)
-        itemValue = { base = base, max = maximum }
+        local default = self:GetDefaultSlotValue(itemEquipLoc)
+        itemValue = { base = default.base, max = default.max }
     end
     return itemValue
 end

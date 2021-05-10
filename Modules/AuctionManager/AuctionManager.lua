@@ -131,13 +131,10 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         self.antiSnipeLimit = (self.antiSnipe > 0) and 3 or 0
         -- Get Auction Type info
         self.auctionType = configuration:Get("auctionType")
-        -- if baseValue / maxValue are different than default item value we will need to update the config
-        local default = roster:GetDefaultSlotValue(itemSlot)
-        if default.base ~= baseValue then -- TODO: This should be override not default but not yet implemented!
-            RosterManager:SetRosterDefaultSlotValue(self.roster, itemSlot, self.baseValue, true)
-        end
-        if default.max ~= maxValue then
-            RosterManager:SetRosterDefaultSlotValue(self.roster, itemSlot, self.maxValue, false)
+        -- if baseValue / maxValue are different than current (or default if no override) item value we will need to update the config
+        local current = roster:GetItemValue(itemId)
+        if current.base ~= baseValue or current.max ~= maxValue then
+            RosterManager:SetRosterItemValue(self.roster, itemId, baseValue, maxValue)
         end
         -- clear bids
         self.bids = {}

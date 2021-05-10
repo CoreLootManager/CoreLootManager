@@ -4,8 +4,8 @@ local _, CLM = ...
 local AceGUI = LibStub("AceGUI-3.0")
 
 local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0-CLM"),
-    gui = LibStub("AceConfigDialog-3.0-CLM")
+    registry = LibStub("AceConfigRegistry-3.0"),
+    gui = LibStub("AceConfigDialog-3.0")
 }
 
 local LOG = CLM.LOG

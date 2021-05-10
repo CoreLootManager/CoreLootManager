@@ -5,8 +5,8 @@ local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 
 local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0-CLM"),
-    gui = LibStub("AceConfigDialog-3.0-CLM")
+    registry = LibStub("AceConfigRegistry-3.0"),
+    gui = LibStub("AceConfigDialog-3.0")
 }
 
 local LOG = CLM.LOG
@@ -112,12 +112,9 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         self.roster = RaidManager:GetRoster()
         if self.roster then
             self.configuration:Copy(self.roster.configuration)
-            if false then -- if item override exists -> not yet implemented
-            else -- else default slot value
-                local v = self.roster:GetDefaultSlotValue(self.itemEquipLoc)
-                self.base = v.base
-                self.max = v.max
-            end
+            local v = self.roster:GetItemValue(self.itemId)
+            self.base = v.base
+            self.max = v.max
         end
     end
 

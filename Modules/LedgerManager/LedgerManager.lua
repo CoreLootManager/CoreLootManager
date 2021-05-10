@@ -45,7 +45,7 @@ function LedgerManager:Enable()
     self.ledger.enableSending()
     self.inSync = false
     self.syncOngoing = false
-    C_Timer.NewTicker(5, function() 
+    C_Timer.NewTicker(5, function()
         if self.inSync and self.syncOngoing then
             self.inSync = false
             self.syncOngoing = false
@@ -100,7 +100,7 @@ function LedgerManager:RequestPeerStatusFromGuild()
 end
 
 function LedgerManager:UpdateSyncState()
-    
+
 end
 
 function LedgerManager:IsInSync()
