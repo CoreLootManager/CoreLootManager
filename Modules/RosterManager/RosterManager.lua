@@ -248,10 +248,10 @@ function RosterManager:GetRosterNameByUid(uid)
     return self.cache.rostersUidMap[uid]
 end
 
-function RosterManager:NewRoster(pointType)
+function RosterManager:NewRoster(pointType, name)
     LOG:Trace("RosterManager:NewRoster()")
 
-    local name = GenerateName()
+    name = name or GenerateName()
     while self.cache.rosters[name] ~= nil do
         name = GenerateName()
     end

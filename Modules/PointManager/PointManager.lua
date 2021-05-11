@@ -287,8 +287,9 @@ CONSTANTS.POINT_CHANGE_REASONS = {
         [8] = "Manual adjustment"
     },
     INTERNAL = { -- Not exposed directly to GUI
-        [100] = "Decay",
-        [101] = "Interval Bonus"
+        [100] = "Import",
+        [101] = "Decay",
+        [102] = "Interval Bonus"
     }
 }
 
@@ -301,8 +302,9 @@ CONSTANTS.POINT_CHANGE_REASON = {
     UNEXCUSED_ABSENCE = 6,
     CORRECTING_ERROR = 7,
     MANUAL_ADJUSTMENT = 8,
-    DECAY = 100,
-    INTERVAL_BONUS = 101
+    IMPORT = 100,
+    DECAY = 101,
+    INTERVAL_BONUS = 102
 }
 
 MODULES.PointManager = PointManager

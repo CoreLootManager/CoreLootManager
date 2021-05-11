@@ -85,7 +85,7 @@ end
 function UTILS.GetItemIdFromLink(itemLink)
     -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
     local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
-    return itemId or 0
+    return tonumber(itemId) or 0
 end
 
 function UTILS.UniversalCliMethodExecutor(name, object, cli)
@@ -381,6 +381,11 @@ end
 function UTILS.MakeFrameCloseOnEsc(frame, name)
     _G[name] = frame
     tinsert(UISpecialFrames, name)
+end
+
+function UTILS.GetCutoffTimestamp()
+    -- 25 Aug 2019 00:00:00 small bit before Wow Classic release Time
+    return 1566684000
 end
 
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"

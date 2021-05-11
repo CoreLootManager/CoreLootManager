@@ -73,7 +73,7 @@ function LootManager:AwardItem(roster, name, itemLink, itemId, value, forceInsta
     end
     if roster:IsProfileInRoster(profile:GUID()) then
         LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
-        SendChatMessage(itemLink.." awarded to "..name.." for "..value, "RAID_WARNING")
+        SendChatMessage(itemLink .. " awarded to " .. name .. " for " .. value, "RAID_WARNING")
     else
         LOG:Warning("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
     end

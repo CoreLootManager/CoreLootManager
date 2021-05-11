@@ -77,6 +77,8 @@ function CORE:_InitializeFeatures()
     MODULES.RaidManager:Initialize()
     MODULES.AuctionManager:Initialize()
     MODULES.BiddingManager:Initialize()
+    -- Initialize Migration module
+    CLM.Migration:Initialize()
 end
 
 function CORE:_InitializeFrontend()

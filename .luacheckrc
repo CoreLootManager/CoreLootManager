@@ -27,6 +27,9 @@ globals = {
 	-- Bindings
 	"CLM_Undo",
 	"CLM_Redo",
+	-- Monolith and Essential
+	"MonDKP_DKPTable",
+	"MonDKP_Loot",
 	-- WoW 
 	"_G",
 

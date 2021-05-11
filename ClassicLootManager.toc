@@ -71,6 +71,7 @@ Modules\LootManager\LootManager.lua
 Modules\RaidManager\RaidManager.lua
 Modules\AuctionManager\AuctionManager.lua
 Modules\BiddingManager\BiddingManager.lua
+Modules\Migration\Migration.lua
 
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua

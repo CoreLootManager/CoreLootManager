@@ -117,7 +117,6 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     if not self.enabled then return false end
     -- Ignore messages from self if not allowing them specifically
     if not self.allowSelfReceive[prefix] and (sender == self.who) then
-        LOG:Debug("Comms:OnReceive() allowSelfReceive == false for %s", prefix)
         return false
     end
     -- Validate prefix
