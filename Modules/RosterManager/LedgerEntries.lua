@@ -228,7 +228,7 @@ function RosterUpdateOverrides:max()
     return self.a
 end
 
-local RosterUpdateOverridesFields = mergeLists(LogEntry:fields(), {"r", "b", "a"})
+local RosterUpdateOverridesFields = mergeLists(LogEntry:fields(), {"r", "i", "b", "a"})
 function RosterUpdateOverrides:fields()
     return RosterUpdateOverridesFields
 end
