@@ -27,7 +27,7 @@ local LedgerManager = MODULES.LedgerManager
 
 local FILTER_IN_RAID = 100
 local FILTER_ONLINE = 101
-local FILTER_STANDBY = 102
+-- local FILTER_STANDBY = 102
 
 local StandingsGUI = {}
 function StandingsGUI:Initialize()
@@ -257,7 +257,7 @@ local function CreateManagementOptions(self, container)
         -- ST_GetName
         local isOnline = {}
         local isInRaid = {}
-        -- Check raid 
+        -- Check raid
         for i=1,MAX_RAID_MEMBERS do
             local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
             if name then

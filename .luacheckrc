@@ -32,6 +32,7 @@ globals = {
 	"MonDKP_Loot",
 	-- WoW 
 	"_G",
+	"MAX_RAID_MEMBERS",
 
 	-- FrameXML misc
 	"ALTERNATE_POWER_INDEX",
