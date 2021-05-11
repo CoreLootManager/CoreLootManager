@@ -44,7 +44,7 @@ function Migration:Migrate()
         self.playerCache[UTILS.RemoveServer(name)] = GUID
     end
     self.migrationOngoing = true
-    self:MigrateMonolithDKP()
+    -- self:MigrateMonolithDKP()
     self:MigrateEssentialDKP()
     -- self:MigrateCommunityDKP()
 
