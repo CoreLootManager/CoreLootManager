@@ -8,6 +8,8 @@ local LOG = CLM.LOG
 local whoami = UTILS.whoami
 local ACL = { }
 
+local DEBUG_ALLOW_ALL = true
+
 function ACL:Initialize()
     local db = MODULES.Database:Guild()
     if type(db.ACL) ~= "table" then
@@ -71,38 +73,40 @@ function ACL:IsRankOfficer(rank)
     return self.cache.ranks[rank] and self.cache.ranks[rank].isOfficer or false
 end
 
--- function ACL:CheckLevel(level, name)
---     return true
--- end
-
-function ACL:CheckLevel(level, name)
-    LOG:Trace("ACL:CheckLevel()")
-    -- By default block everything except for GM if level not provided
-    level = level or CONSTANTS.ACL.LEVEL.GUILD_MASTER
-    -- Request is for self
-    if name == nil then
-        if self.guildMaster then
-            return true
+if DEBUG_ALLOW_ALL then
+    function ACL:CheckLevel(level, name)
+        return true
+    end
+else
+    function ACL:CheckLevel(level, name)
+        LOG:Trace("ACL:CheckLevel()")
+        -- By default block everything except for GM if level not provided
+        level = level or CONSTANTS.ACL.LEVEL.GUILD_MASTER
+        -- Request is for self
+        if name == nil then
+            if self.guildMaster then
+                return true
+            end
+            name = whoami()
         end
-        name = whoami()
+        local isGuildMaster = (self.cache.guildMaster == name) or false
+        local isOfficer = self.cache.officers[name] or false
+        local isManager = self.db.whitelist[name] or false
+        -- Check for Guild Master
+        if level >= CONSTANTS.ACL.LEVEL.GUILD_MASTER then
+            return isGuildMaster
+        end
+        -- Check for Officer
+        if level >= CONSTANTS.ACL.LEVEL.OFFICER then
+            return isGuildMaster or isOfficer
+        end
+        -- Check for Managers
+        if level >= CONSTANTS.ACL.LEVEL.MANAGER then
+            return isGuildMaster or isOfficer or isManager
+        end
+        -- Check for unauthorized
+        return true
     end
-    local isGuildMaster = (self.cache.guildMaster == name) or false
-    local isOfficer = self.cache.officers[name] or false
-    local isManager = self.db.whitelist[name] or false
-    -- Check for Guild Master
-    if level >= CONSTANTS.ACL.LEVEL.GUILD_MASTER then
-        return isGuildMaster
-    end
-    -- Check for Officer
-    if level >= CONSTANTS.ACL.LEVEL.OFFICER then
-        return isGuildMaster or isOfficer
-    end
-    -- Check for Managers
-    if level >= CONSTANTS.ACL.LEVEL.MANAGER then
-        return isGuildMaster or isOfficer or isManager
-    end
-    -- Check for unauthorized
-    return true
 end
 
 function ACL:AddToWhitelist(name)

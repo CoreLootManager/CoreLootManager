@@ -37,14 +37,23 @@ function LootGUI:Initialize()
     self._initialized = true
 end
 
-local function CreateLootDisplay(self)
-    -- Profile Scrolling Table
-    local columns = {
-        {name = "Item",  width = 250},
+local columns = {
+    playerLoot = {
+        {name = "Item",  width = 225},
         {name = "Date", width = 150},
         {name = "Value",  width = 70},
-        -- {name = "Player",   width = 70}
+        {name = "", width = 0}
+    },
+    raidLoot = {
+        {name = "Item",  width = 225},
+        {name = "Date", width = 150},
+        {name = "Value",  width = 70},
+        {name = "Player",   width = 50}
     }
+}
+
+local function CreateLootDisplay(self)
+    -- Profile Scrolling Table
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(500)
@@ -67,7 +76,7 @@ local function CreateLootDisplay(self)
     self.ProfileSelectorDropDown = ProfileSelectorDropDown
     StandingsGroup:AddChild(ProfileSelectorDropDown)
     -- Standings
-    self.st = ScrollingTable:CreateST(columns, 25, 18, nil, StandingsGroup.frame)
+    self.st = ScrollingTable:CreateST(columns.playerLoot, 25, 18, nil, StandingsGroup.frame)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
@@ -139,8 +148,10 @@ function LootGUI:Refresh(visible)
     -- player loot
     if isProfileLoot then
         lootList = roster:GetProfileLootByGUID(profile:GUID())
+        self.st:SetDisplayCols(columns.playerLoot)
     else -- raid loot
         lootList = roster:GetRaidLoot()
+        self.st:SetDisplayCols(columns.raidLoot)
     end
 
     self.displayedLoot = {}
@@ -151,7 +162,8 @@ function LootGUI:Refresh(visible)
         if not itemLink then
             self.pendingLoot = true
         else
-            self.displayedLoot[loot:Id()] = {loot, itemLink}
+            local profile = loot:Owner()
+            self.displayedLoot[loot:Id()] = {loot, itemLink, UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)}
         end
     end
 
@@ -175,7 +187,7 @@ function LootGUI:Refresh(visible)
         table.insert(row.cols, {value = link})
         table.insert(row.cols, {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())})
         table.insert(row.cols, {value = loot:Value()})
-        -- table.insert(row.cols, {value = ""})
+        table.insert(row.cols, {value = ""})
         table.insert(data, row)
     end
 

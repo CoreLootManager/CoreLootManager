@@ -4,15 +4,20 @@ local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
 local Loot = {}
 
-function Loot:New(entry)
+function Loot:New(entry, owner)
     local o = {}
 
     setmetatable(o, self)
     self.__index = self
 
     o.entry = entry -- ledger entry reference
+    o.owner = owner 
 
     return o
+end
+
+function Loot:Owner()
+    return self.owner
 end
 
 function Loot:Id()

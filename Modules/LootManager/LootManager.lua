@@ -39,7 +39,7 @@ function LootManager:Initialize()
                     LOG:Warning("PointManager mutator(): Profile with guid [%s] does not exist", GUID)
                     return
                 end
-                local loot = Loot:New(entry)
+                local loot = Loot:New(entry, profile)
                 RosterManager:AddLootToRoster(roster, loot, profile)
             else
                 -- TODO: Add  Profile to roster? Store in anonymous profile?

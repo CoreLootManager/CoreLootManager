@@ -55,7 +55,7 @@ function Migration:GetOldTimestampUnique()
     return self.timestamp
 end
 
-function Migration:MigrateMoolithDKP()
+function Migration:MigrateMonolithDKP()
     LOG:Trace("Migration:MigrateMoolithDKP()")
     LOG:Warning("Migrating MonolithDKP")
     self:_MigrateMonolithEssential("MonolithDKP")
@@ -174,8 +174,10 @@ function Migration:_MigrateMonolithEssential(addonName)
         local itemId = UTILS.GetItemIdFromLink(itemLink)
         local value = math.abs(entry.cost or 0)
         local timestamp = entry.date
-        if self.playerCache[name] and itemId > 0 then
-            AwardItem(rosterUid, self.playerCache[name], itemId, value, timestamp)
+        if not (entry.deletedby and entry.deletes) then
+            if self.playerCache[name] and itemId > 0 then
+                AwardItem(rosterUid, self.playerCache[name], itemId, value, timestamp)
+            end
         end
     end
     -- Set player DKP
