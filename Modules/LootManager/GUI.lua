@@ -173,7 +173,7 @@ function LootGUI:Refresh(visible)
         local link = lootData[2]
         local row = {cols = {}}
         table.insert(row.cols, {value = link})
-        table.insert(row.cols, {value = date("%c",loot:Timestamp())})
+        table.insert(row.cols, {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())})
         table.insert(row.cols, {value = loot:Value()})
         -- table.insert(row.cols, {value = ""})
         table.insert(data, row)
@@ -210,6 +210,7 @@ end
 function LootGUI:RefreshProfiles()
     LOG:Trace("LootGUI:RefreshProfiles()")
     local roster = self:GetCurrentRoster()
+    if not roster then return end
     local profiles = roster:Profiles()
     local profileNameMap = { ["-- Raid Loot --"] = "-- Raid Loot --"}
     local profileList = {"-- Raid Loot --"}
@@ -242,8 +243,8 @@ function LootGUI:HandleItemInfoReceived(itemId, success)
 end
 
 function LootGUI:HandleItemInfoReceivedBucket(...)
-    self.pendingLoot = false
     if self.pendingLoot then self:Refresh(true) end
+    self.pendingLoot = false
 end
 
 function LootGUI:Toggle()

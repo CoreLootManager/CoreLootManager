@@ -2,7 +2,7 @@ location: Libs
 sources:
   - repo: https://github.com/SamMousa/lua-eventsourcing.git
     name: lua-eventsourcing
-    rev: v1.3.0
+    rev: v1.3.1
     type: git
     sparse_paths:
       -

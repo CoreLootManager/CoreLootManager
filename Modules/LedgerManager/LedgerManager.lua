@@ -6,6 +6,10 @@ local Comms = MODULES.Comms
 local CONSTANTS = CLM.CONSTANTS
 local ACL = MODULES.ACL
 
+local STATUS_SYNCED = "synced"
+local STATUS_OUT_OF_SYNC = "out_of_sync"
+-- local STATUS_UNKNOWN = "unknown"
+
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
 local LedgerManager = { _initialized = false}
@@ -32,7 +36,9 @@ function LedgerManager:Initialize()
         end), -- sendLargeMessage
         0, 250, LOG
     )
-
+    self.ledger.addSyncStateChangedListener(function(status)
+        self:UpdateSyncState(status)
+    end)
     self.entryExtensions = {}
     self.authorizationLevel = {}
     self._initialized = true
@@ -43,24 +49,6 @@ end
 function LedgerManager:Enable()
     self.ledger.getStateManager():setUpdateInterval(50)
     self.ledger.enableSending()
-    self.inSync = false
-    self.syncOngoing = false
-    C_Timer.NewTicker(5, function()
-        if self.inSync and self.syncOngoing then
-            self.inSync = false
-            self.syncOngoing = false
-        elseif self.inSync and not self.syncOngoing then
-            self.inSync = false
-            self.syncOngoing = true
-        elseif not self.inSync and self.syncOngoing then
-            self.inSync = true
-            self.syncOngoing = true
-        else -- both are 0
-            self.inSync = true
-            self.syncOngoing = false
-        end
-        self:UpdateSyncState()
-    end)
 end
 
 function LedgerManager:Authorize(class, sender)
@@ -99,8 +87,22 @@ function LedgerManager:RequestPeerStatusFromGuild()
     self.ledger.requestPeerStatusFromGuild()
 end
 
-function LedgerManager:UpdateSyncState()
-
+function LedgerManager:UpdateSyncState(status)
+    if self._initialized then
+        if status == STATUS_SYNCED then
+            self.inSync = true
+            self.syncOngoing = false
+        elseif status == STATUS_OUT_OF_SYNC then
+            self.inSync = false
+            self.syncOngoing = true
+        else
+            self.inSync = false
+            self.syncOngoing = false
+        end
+    else
+        self.inSync = false
+        self.syncOngoing = false
+    end
 end
 
 function LedgerManager:IsInSync()
