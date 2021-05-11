@@ -25,6 +25,10 @@ local RosterManager = MODULES.RosterManager
 local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
 
+local FILTER_IN_RAID = 100
+local FILTER_ONLINE = 101
+local FILTER_STANDBY = 102
+
 local StandingsGUI = {}
 function StandingsGUI:Initialize()
     self:Create()
@@ -60,8 +64,8 @@ local function GenerateUntrustedOptions(self)
         filter_display = {
             name = "Filter",
             type = "multiselect",
-            set = function(i, k, v) self.filteredClasses[tonumber(k)] = v; self:Refresh() end,
-            get = function(i, v) return self.filteredClasses[tonumber(v)] end,
+            set = function(i, k, v) self.filterOptions[tonumber(k)] = v; self:Refresh() end,
+            get = function(i, v) return self.filterOptions[tonumber(v)] end,
             values = filters,
             width = "half",
             order = 1
@@ -226,15 +230,15 @@ local function CreateManagementOptions(self, container)
     local ManagementOptions = AceGUI:Create("SimpleGroup")
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(200)
-    self.filteredClasses = {}
+    self.filterOptions = {}
     self.decayValue = nil
     self.includeNegative = false
     self.awardValue = nil
     self.awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
-    for _=1,9 do table.insert( self.filteredClasses, true ) end
-    self.filteredClasses[100] = false
-    self.filteredClasses[101] = false
-    self.filteredClasses[102] = false
+    for _=1,9 do table.insert( self.filterOptions, true ) end
+    self.filterOptions[100] = false
+    self.filterOptions[101] = false
+    self.filterOptions[102] = false
     local options = {
         type = "group",
         args = {}
@@ -249,21 +253,51 @@ local function CreateManagementOptions(self, container)
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
     LIBS.gui:Open("clm_standings_gui_options", ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
 
-    self.st:SetFilter(
-        function(stobject, row)
-            -- Check for online  filter
-            -- Check for in raid filter
-            -- Check for standby filter
-            -- Check class filter
-            local class = ST_GetClass(row)
-            for id, _class in pairs(GetColorCodedClassDict()) do
-                if class == _class then
-                    return self.filteredClasses[id]
+    self.st:SetFilter((function(stobject, row)
+        -- ST_GetName
+        local isOnline = {}
+        local isInRaid = {}
+        -- Check raid 
+        for i=1,MAX_RAID_MEMBERS do
+            local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
+            if name then
+                name = UTILS.RemoveServer(name)
+                isInRaid[name] = true
+                if online then
+                    isOnline[name] = true
                 end
             end
-            return true;
         end
-    )
+        -- Check guild
+        for i=1,GetNumGuildMembers() do
+            local name, _, _, _, _, _, _, _, online = GetGuildRosterInfo(i)
+            name = UTILS.RemoveServer(name)
+            if online then
+                isOnline[name] = true
+            end
+        end
+        -- Check for standby filter
+        -- FILTER_STANDBY = 102
+        -- Check class filter
+        local playerName = ST_GetName(row)
+        print(playerName)
+        local class = ST_GetClass(row)
+
+        local status
+        for id, _class in pairs(GetColorCodedClassDict()) do
+            if class == _class then
+                status = self.filterOptions[id]
+            end
+        end
+        if status == nil then return false end -- failsafe
+        if self.filterOptions[FILTER_ONLINE] then
+            status = status and isOnline[playerName]
+        end
+        if self.filterOptions[FILTER_IN_RAID] then
+            status = status and isInRaid[playerName]
+        end
+        return status
+    end))
 
     return ManagementOptions
 end
@@ -394,7 +428,6 @@ function StandingsGUI:RefreshRosters()
         end
     end
 end
-
 
 function StandingsGUI:Toggle()
     LOG:Trace("StandingsGUI:Toggle()")

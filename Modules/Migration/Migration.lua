@@ -141,12 +141,12 @@ function Migration:_MigrateMonolithEssential(addonName)
 	end
     if not MonDKP_DKPTable then return end
     if not MonDKP_Loot then return end
-    -- Create Roster
-    local rosterName, rosterUid = NewRoster(addonName)
     -- Import profiles
     LOG:Info("Importing %s entries from DKPTable", #MonDKP_DKPTable)
     self.playerDKP = {}
     self.playerList = {}
+    local rosterCreated = false
+    local rosterName, rosterUid
     for key, entry in pairs(MonDKP_DKPTable) do
         if tonumber(key) then -- skip seed
             local name = entry.player or ""
@@ -154,6 +154,13 @@ function Migration:_MigrateMonolithEssential(addonName)
             -- local spec = entry.spec or ""
             local dkp = entry.dkp or 0
             if self.playerCache[name] then
+                -- Lazy create roster if at least one profile exists
+                -- Create Roster
+                if not rosterCreated then
+                    rosterName, rosterUid = NewRoster(addonName)
+                    rosterCreated = true
+                end
+                -- Create Profile
                 NewProfile(self.playerCache[name], name, class)
                 table.insert(self.playerList, self.playerCache[name])
                 self.playerDKP[name] = dkp

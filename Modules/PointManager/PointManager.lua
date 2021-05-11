@@ -37,7 +37,10 @@ local function mutator(entry, mutate)
         local GUID = getGuidFromInteger(target)
         if roster:IsProfileInRoster(GUID) then
             standings[GUID] = mutate(standings[GUID], value)
-            roster:AddProfilePointHistory(pointHistoryEntry, ProfileManager:GetProfileByGUID(GUID))
+            local profile = ProfileManager:GetProfileByGUID(GUID)
+            if profile then
+                roster:AddProfilePointHistory(pointHistoryEntry, profile)
+            end
         else
             -- TODO: Add  Profile to roster? Store in anonymous profile?
             LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())

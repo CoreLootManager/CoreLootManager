@@ -59,8 +59,8 @@ local function GenerateUntrustedOptions(self)
         filter_display = {
             name = "Filter",
             type = "multiselect",
-            set = function(i, k, v) self.filteredClasses[tonumber(k)] = v; self:Refresh() end,
-            get = function(i, v) return self.filteredClasses[tonumber(v)] end,
+            set = function(i, k, v) self.filterOptions[tonumber(k)] = v; self:Refresh() end,
+            get = function(i, v) return self.filterOptions[tonumber(v)] end,
             values = filters,
             width = "half",
             order = 1
@@ -236,13 +236,13 @@ local function CreateManagementOptions(self, container)
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(200)
     self.ManagementOptions = ManagementOptions
-    self.filteredClasses = {}
+    self.filterOptions = {}
     self.rank = -1
     self.minimumLevel =  60
     self.profilesList = {}
     self.selectedMain = ""
     self.selectedRoster = ""
-    for _=1,9 do table.insert( self.filteredClasses, true ) end
+    for _=1,9 do table.insert( self.filterOptions, true ) end
     local options = {
         type = "group",
         args = {}
@@ -253,18 +253,16 @@ local function CreateManagementOptions(self, container)
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
     LIBS.gui:Open(REGISTRY, ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
 
-    self.st:SetFilter(
-        function(stobject, row)
-            -- Check class filter
-            local class = ST_GetClass(row)
-            for id, _class in pairs(GetColorCodedClassDict()) do
-                if class == _class then
-                    return self.filteredClasses[id]
-                end
+    self.st:SetFilter((function(stobject, row)
+        -- Check class filter
+        local class = ST_GetClass(row)
+        for id, _class in pairs(GetColorCodedClassDict()) do
+            if class == _class then
+                return self.filterOptions[id]
             end
-            return true;
         end
-    )
+        return true;
+    end))
 
     return ManagementOptions
 end
