@@ -162,8 +162,8 @@ function LootGUI:Refresh(visible)
         if not itemLink then
             self.pendingLoot = true
         else
-            local profile = loot:Owner()
-            self.displayedLoot[loot:Id()] = {loot, itemLink, UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)}
+            local owner = loot:Owner()
+            self.displayedLoot[loot:Id()] = {loot, itemLink, UTILS.ColorCodeText(owner:Name(), UTILS.GetClassColor(owner:Class()).hex)}
         end
     end
 
@@ -183,11 +183,12 @@ function LootGUI:Refresh(visible)
     for _,lootData in pairs(self.displayedLoot) do
         local loot = lootData[1]
         local link = lootData[2]
+        local owner = lootData[3]
         local row = {cols = {}}
         table.insert(row.cols, {value = link})
         table.insert(row.cols, {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())})
         table.insert(row.cols, {value = loot:Value()})
-        table.insert(row.cols, {value = ""})
+        table.insert(row.cols, {value = owner})
         table.insert(data, row)
     end
 

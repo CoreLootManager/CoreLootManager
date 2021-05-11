@@ -11,7 +11,7 @@ function Loot:New(entry, owner)
     self.__index = self
 
     o.entry = entry -- ledger entry reference
-    o.owner = owner 
+    o.owner = owner
 
     return o
 end
