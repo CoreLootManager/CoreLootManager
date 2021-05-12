@@ -64,5 +64,5 @@ jobs:
       - name: Upload artifact to github
         uses: fnkr/github-action-ghr@v1
         env:
-          GHR_PATH: ${{ env.artifact }}
+          GHR_PATH: ./release/${{ env.artifact }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
