@@ -16,4 +16,4 @@ jobs:
         with:
           args: "-d -e -u"
       - name: List files
-        run: tree
+        run: tree .release
