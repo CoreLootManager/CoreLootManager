@@ -41,7 +41,6 @@ Libs\LibCandyBar-3.0\lib.xml
 # Addon Core
 ClassicLootManager.lua
 Utils.lua
-MinimapIcon.lua
 
 Modules\Logger\Logger.lua
 
@@ -71,7 +70,6 @@ Modules\LootManager\LootManager.lua
 Modules\RaidManager\RaidManager.lua
 Modules\AuctionManager\AuctionManager.lua
 Modules\BiddingManager\BiddingManager.lua
-Modules\Migration\Migration.lua
 
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua
@@ -81,3 +79,8 @@ Modules\RaidManager\GUI.lua
 Modules\AuctionManager\GUI.lua
 Modules\BiddingManager\GUI.lua
 Modules\LootManager\GUI.lua
+
+# Extra
+MinimapIcon.lua
+Migration.lua
+Debug.lua

@@ -40,6 +40,10 @@ function DB:Logger()
     return CLM_DB['global']['logger']
 end
 
+function DB:Server()
+    return CLM_DB[self.server_faction_guild]
+end
+
 function DB:Personal()
     return CLM_DB[self.server_faction_guild]['personal']
 end

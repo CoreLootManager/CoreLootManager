@@ -273,7 +273,7 @@ function RosterManager:DeleteRosterByName(name)
     LOG:Trace("RosterManager:DeleteRosterByName()")
     local roster = self:GetRosterByName(name)
     if not roster then
-        LOG:Error("RosterManager:RenameRoster(): Unknown roster name %s", new)
+        LOG:Error("RosterManager:RenameRoster(): Unknown roster name %s", name)
         return
     end
     LedgerManager:Submit(LEDGER_ROSTER.Delete:new(roster:UID()), true)

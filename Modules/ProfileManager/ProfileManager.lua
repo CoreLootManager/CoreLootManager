@@ -4,7 +4,6 @@ local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
 local CONSTANTS = CLM.CONSTANTS
-local RESULTS = CONSTANTS.RESULTS
 local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 
 -- local keys = UTILS.keys
@@ -147,7 +146,6 @@ function ProfileManager:MarkAsAltByNames(main, alt)
         return
     end
     -- TODO: Protect from circular references / multi-level alt nesting
-    local result
     if alt == main then
         if altProfile:Main() == "" then
             LOG:Error("Removal of empty main for %s", alt)
