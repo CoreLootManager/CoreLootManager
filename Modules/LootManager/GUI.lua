@@ -161,9 +161,9 @@ function LootGUI:Refresh(visible)
         local _, itemLink = GetItemInfo(loot:Id())
         if not itemLink then
             self.pendingLoot = true
-        else
+        elseif not self.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
             local owner = loot:Owner()
-            self.displayedLoot[loot:Id()] = {loot, itemLink, UTILS.ColorCodeText(owner:Name(), UTILS.GetClassColor(owner:Class()).hex)}
+            table.insert(self.displayedLoot, {loot, itemLink, UTILS.ColorCodeText(owner:Name(), UTILS.GetClassColor(owner:Class()).hex)})
         end
     end
 
@@ -180,7 +180,7 @@ function LootGUI:Refresh(visible)
     end
 
     local data = {}
-    for _,lootData in pairs(self.displayedLoot) do
+    for _,lootData in ipairs(self.displayedLoot) do
         local loot = lootData[1]
         local link = lootData[2]
         local owner = lootData[3]

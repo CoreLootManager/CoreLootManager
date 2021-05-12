@@ -148,8 +148,8 @@ end
 
 function Roster:AddLoot(loot, profile)
     -- history store
-    table.insert(self.profileLoot[profile:GUID()], 1, loot)
-    table.insert(self.raidLoot, 1, loot)
+    table.insert(self.profileLoot[profile:GUID()], loot)
+    table.insert(self.raidLoot, loot)
     -- charging for the item
     self.standings[profile:GUID()] = self.standings[profile:GUID()] - loot:Value()
 end

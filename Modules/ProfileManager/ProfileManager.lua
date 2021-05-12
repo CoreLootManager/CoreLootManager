@@ -237,12 +237,6 @@ function ProfileManager:WipeAll()
     self.cache = { profilesGuidMap = {}, profiles = {} }
 end
 
-function ProfileManager:ExportAll()
-    LOG:Trace("ProfileManager:ExportAll()")
-    local db = CLM.MODULES.Database:Personal()
-    db['profiles'] = self:GetProfiles()
-end
-
 -- Utility
 
 function ProfileManager:GetGUIDFromName(name)

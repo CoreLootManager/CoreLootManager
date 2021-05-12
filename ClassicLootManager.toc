@@ -41,7 +41,6 @@ Libs\LibCandyBar-3.0\lib.xml
 # Addon Core
 ClassicLootManager.lua
 Utils.lua
-MinimapIcon.lua
 
 Modules\Logger\Logger.lua
 

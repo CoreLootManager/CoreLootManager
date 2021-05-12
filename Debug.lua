@@ -87,6 +87,25 @@ function Debug:Disable()
     self.isDebug = false
 end
 
+--- Dump
+function Debug:AddOptionDump()
+    self.options.debug.args.dump = {
+        name = "Dump",
+        desc = "Dump current addon state to a readable form to the Saved Variable file (requires reload).",
+        type = "execute",
+        handler = self,
+        func = "Dump"
+    }
+end
+
+function Debug:Dump()
+    local db = CLM.MODULES.Database:Personal()
+    db.stateDump = {}
+    for k,_ in pairs(MODULES) do
+        db.stateDump[k] = MODULES[k]
+    end
+end
+
 --- Kill command
 function Debug:AddOptionKillCommand()
     self.options.debug.args.kill = {

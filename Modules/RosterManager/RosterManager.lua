@@ -416,18 +416,6 @@ function RosterManager:WipeAll()
     collectgarbage()
 end
 
-function RosterManager:ExportRosters()
-    LOG:Trace("RosterManager:ExportRosters()")
-    local db = CLM.MODULES.Database:Personal()
-    db['rosters'] = self:GetRosters()
-end
-
-function RosterManager:ClearExportedRosters()
-    LOG:Trace("RosterManager:ClearExportedRosters()")
-    local db = CLM.MODULES.Database:Personal()
-    db['rosters'] = nil
-end
-
 function RosterManager:Debug(N)
     N = N or 10
     local actions = {"create", --[["delete",]] "rename", "copy", "set", "override", "profile"}
