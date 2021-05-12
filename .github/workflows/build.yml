@@ -37,7 +37,7 @@ jobs:
       - name: install xq
         run: pipx install xq
       - name: verify required files recursively
-        run: scripts/verify-dependencies
+        run: scripts/verify-dependencies ClassicLootManager.toc
       - name: mkdir
         run: mkdir ClassicLootManager
       - name: Prepare sources
@@ -63,7 +63,7 @@ jobs:
       - name: install xq
         run: pipx install xq
       - name: verify required files recursively
-        run: scripts/verify-dependencies
+        run: scripts/verify-dependencies ClassicLootManager.toc
       - name: Bigwigs packager
         uses: BigWigsMods/packager@master
         with:
