@@ -108,23 +108,26 @@ end
 
 function ProfileManager:NewProfile(GUID, name, class)
     LOG:Trace("ProfileManager:NewProfile()")
-    if GUID == nil or GUID == "" then
-        LOG:Debug("NewProfile(): Empty GUID")
+    if type(GUID) ~= "string" or GUID == "" then
+        LOG:Error("NewProfile(): Empty GUID")
         return
     end
-    if name == nil or name == "" then
-        LOG:Debug("NewProfile(): Empty name")
+    if type(name) ~= "string" or name == "" then
+        LOG:Error("NewProfile(): Empty name")
         return
     end
-    if self:GetProfileByGUID(GUID) or self:GetProfileByName(name) then return end
+    if self:GetProfileByGUID(GUID) or self:GetProfileByName(name) then
+        LOG:Error("NewProfile(): %s (%s) already exists", name, GUID)
+        return
+    end
     LOG:Debug("New profile: [%s]: %s", GUID, name)
     LedgerManager:Submit(LEDGER_PROFILE.Update:new(GUID, name, class), true)
 end
 
 function ProfileManager:RemoveProfile(GUID)
     LOG:Trace("ProfileManager:RemoveProfile()")
-    if GUID == nil then
-        LOG:Debug("RemoveProfile(): Empty GUID")
+    if type(GUID) ~= "string" or GUID == "" then
+        LOG:Error("RemoveProfile(): Empty GUID")
         return
     end
     LOG:Debug("Remove profile: [%s]", GUID)
@@ -135,36 +138,32 @@ function ProfileManager:MarkAsAltByNames(main, alt)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local mainProfile = self:GetProfileByName(main)
     if not typeof(mainProfile, Profile) then
-        LOG:Debug("MarkAsAltByNames(): Invalid main")
-        return RESULTS.IGNORE
+        LOG:Error("MarkAsAltByNames(): Invalid main")
+        return
     end
     local altProfile = self:GetProfileByName(alt)
     if not typeof(altProfile, Profile) then
-        LOG:Debug("MarkAsAltByNames(): Invalid alt")
-        return RESULTS.IGNORE
+        LOG:Error("MarkAsAltByNames(): Invalid alt")
+        return
     end
     -- TODO: Protect from circular references / multi-level alt nesting
     local result
     if alt == main then
         if altProfile:Main() == "" then
-            LOG:Debug("Removal of empty main for %s", alt)
-            return RESULTS.IGNORE
+            LOG:Error("Removal of empty main for %s", alt)
+            return
         else
             -- Remove link
-            result = RESULTS.SUCCESS_EXTENDED
             LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), nil), true)
         end
     else
         if mainProfile:Main() ~= "" then
-            LOG:Debug("Alt -> Main chain for %s -> %s", alt, main)
-            return RESULTS.IGNORE
+            LOG:Error("Alt -> Main chain for %s -> %s", alt, main)
+            return
         end
         LOG:Debug("Alt -> Main linking for %s -> %s", alt, main)
         LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
-        result = RESULTS.SUCCESS
     end
-
-    return result
 end
 
 -- Functionalities

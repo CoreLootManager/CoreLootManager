@@ -115,7 +115,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
     if typeof(targets, Profile) or type(targets) == "number" or type(targets) == "string" then
         targets = { targets }
     elseif type(targets) ~= "table" then
-        LOG:Warning("PointManager:UpdatePoints(): Invalid targets list")
+        LOG:Error("PointManager:UpdatePoints(): Invalid targets list")
         return
     end
 
@@ -130,7 +130,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
 
     local t = entry:targets()
     if not t or (#t == 0) then
-        LOG:Warning("PointManager:UpdatePoints(): Empty targets list")
+        LOG:Error("PointManager:UpdatePoints(): Empty targets list")
         return
     end
 

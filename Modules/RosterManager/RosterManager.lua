@@ -262,23 +262,35 @@ function RosterManager:NewRoster(pointType, name)
         uid = uid +  1
     end
 
-    if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
+    if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then
+        LOG:Error("RosterManager:NewRoster(): Invalid point type")
+        return
+    end
     LedgerManager:Submit(LEDGER_ROSTER.Create:new(uid, name, pointType), true)
 end
 
 function RosterManager:DeleteRosterByName(name)
     LOG:Trace("RosterManager:DeleteRosterByName()")
     local roster = self:GetRosterByName(name)
-    if roster == nil then return end
+    if not roster then
+        LOG:Error("RosterManager:RenameRoster(): Unknown roster name %s", new)
+        return
+    end
     LedgerManager:Submit(LEDGER_ROSTER.Delete:new(roster:UID()), true)
 end
 
 function RosterManager:RenameRoster(old, new)
     LOG:Trace("RosterManager:RenameRoster()")
     local o = self:GetRosterByName(old)
-    if o == nil then return end
+    if not o then
+        LOG:Error("RosterManager:RenameRoster(): Unknown roster name %s", old)
+        return
+    end
     local n = self:GetRosterByName(new)
-    if n ~= nil then return end
+    if n then
+        LOG:Error("RosterManager:RenameRoster(): Roster with name %s already exists", new)
+        return
+    end
 
     LedgerManager:Submit(LEDGER_ROSTER.Rename:new(o:UID(), new), true)
 end
@@ -286,9 +298,15 @@ end
 function RosterManager:Copy(source, target, config, defaults, overrides, profiles)
     LOG:Trace("RosterManager:Copy()")
     local s = self:GetRosterByName(source)
-    if s == nil then return end
+    if not s then
+        LOG:Error("RosterManager:Copy(): Unknown roster name %s", source)
+        return
+    end
     local t = self:GetRosterByName(target)
-    if t == nil then return end
+    if not t then
+        LOG:Error("RosterManager:Copy(): Unknown roster name %s", target)
+        return
+    end
 
     LedgerManager:Submit(LEDGER_ROSTER.CopyData:new(s:UID(), t:UID(), config, defaults, overrides, profiles), true)
 end
@@ -296,7 +314,10 @@ end
 function RosterManager:SetRosterConfiguration(name, option, value)
     LOG:Trace("RosterManager:SetRosterConfiguration()")
     local roster = self:GetRosterByName(name)
-    if roster == nil then return nil end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterConfiguration(): Unknown roster name %s", name)
+        return
+    end
 
     LedgerManager:Submit(LEDGER_ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
 end
@@ -309,8 +330,8 @@ function RosterManager:SetRosterDefaultSlotValue(nameOrRoster, slot, value, isBa
     else
         roster = self:GetRosterByName(nameOrRoster)
     end
-    if roster == nil then
-        LOG:Warning("RosterManager:SetRosterDefaultSlotValue(): Invalid roster object or name")
+    if not roster then
+        LOG:Error("RosterManager:SetRosterDefaultSlotValue(): Invalid roster object or name")
         return nil
     end
     local v = roster:GetDefaultSlotValue(slot)
@@ -327,8 +348,8 @@ function RosterManager:SetRosterItemValue(nameOrRoster, itemId, base, max)
     else
         roster = self:GetRosterByName(nameOrRoster)
     end
-    if roster == nil then
-        LOG:Warning("RosterManager:SetRosterItemValue(): Invalid roster object or name")
+    if not roster then
+        LOG:Error("RosterManager:SetRosterItemValue(): Invalid roster object or name")
         return nil
     end
 
@@ -338,11 +359,11 @@ end
 function RosterManager:AddProfilesToRoster(roster, profiles)
     LOG:Trace("RosterManager:AddProfilesToRoster()")
     if not typeof(roster, Roster) then
-        LOG:Warning("RosterManager:AddProfilesToRoster(): Invalid roster object")
+        LOG:Error("RosterManager:AddProfilesToRoster(): Invalid roster object")
         return
     end
     if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
-        LOG:Warning("Empty profiles table in AddProfilesToRoster()")
+        LOG:Error("Empty profiles table in AddProfilesToRoster()")
         return
     end
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, false), true)
@@ -351,11 +372,11 @@ end
 function RosterManager:RemoveProfilesFromRoster(roster, profiles)
     LOG:Trace("RosterManager:RemoveProfilesFromRoster()")
     if not typeof(roster, Roster) then
-        LOG:Warning("RosterManager:RemoveProfilesFromRoster(): Invalid roster object")
+        LOG:Error("RosterManager:RemoveProfilesFromRoster(): Invalid roster object")
         return
     end
     if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
-        LOG:Warning("Empty profiles table in RemoveProfilesFromRoster()")
+        LOG:Error("Empty profiles table in RemoveProfilesFromRoster()")
         return
     end
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, true), true)
@@ -364,15 +385,15 @@ end
 function RosterManager:AddLootToRoster(roster, loot, profile)
     LOG:Trace("RosterManager:AddLootToRoster()")
     if not typeof(roster, Roster) then
-        LOG:Warning("RosterManager:AddLootToRoster(): Invalid roster object")
+        LOG:Error("RosterManager:AddLootToRoster(): Invalid roster object")
         return
     end
     if not typeof(profile, Profile) then
-        LOG:Warning("RosterManager:AddLootToRoster(): Invalid profile object")
+        LOG:Error("RosterManager:AddLootToRoster(): Invalid profile object")
         return
     end
     if not typeof(loot, Loot) then
-        LOG:Warning("RosterManager:AddLootToRoster(): Invalid loot object")
+        LOG:Error("RosterManager:AddLootToRoster(): Invalid loot object")
         return
     end
     LOG:Debug("RosterManager:AddLootToRoster(): Roster [%s] Loot Id [%s] Profile [%s]", roster:UID(), loot:Id(), profile:GUID())
