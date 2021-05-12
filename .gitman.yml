@@ -1,4 +1,4 @@
-location: Libs
+location: ExternalLibs
 sources:
   - repo: https://github.com/SamMousa/lua-eventsourcing.git
     name: lua-eventsourcing
