@@ -60,9 +60,9 @@ jobs:
         with:
           args: "-d -e -u"
       - name: Get name of zip file
-        run: echo "artifact=`basename .release/*.zip`" >> $GITHUB_ENV
+        run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
       - name: Upload artifact to github
         uses: fnkr/github-action-ghr@v1
         env:
-          GHR_PATH: ./release/${{ env.artifact }}
+          GHR_PATH: ${{ env.artifact }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
