@@ -49,7 +49,7 @@ function RosterManager:Initialize()
             local name = entry:name()
             local pointType = entry:pointType()
             if self.cache.rosters[name] or self.cache.rostersUidMap[uid] then
-                LOG:Fatal("Roster [%s:%s] already exists. Verify data integrity with other officers.", name, uid)
+                LOG:Debug("Roster [%s:%s] already exists. Verify data integrity with other officers.", name, uid)
                 return
             end
             if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
@@ -66,8 +66,8 @@ function RosterManager:Initialize()
             local uid = entry:rosterUid()
 
             local roster = self:GetRosterByUid(uid)
-            if roster == nil then
-                LOG:Warning("Removing non-existent roster [%s]", uid)
+            if not roster then
+                LOG:Debug("Removing non-existent roster [%s]", uid)
                 return
             end
 
@@ -85,13 +85,13 @@ function RosterManager:Initialize()
                 local name = entry:name()
 
                 local o = self:GetRosterByUid(uid)
-                if o == nil then
-                    LOG:Warning("Renaming non-existent roster [%s]", uid)
+                if not o then
+                    LOG:Debug("Renaming non-existent roster [%s]", uid)
                     return
                 end
                 local n = self:GetRosterByName(name)
-                if n ~= nil then
-                    LOG:Error("Roster named [%s] already exists", name)
+                if n then
+                    LOG:Debug("Roster named [%s] already exists", name)
                     return
                 end
 
@@ -113,13 +113,13 @@ function RosterManager:Initialize()
                 local targetUid = entry:targetRosterUid()
 
                 local s = self:GetRosterByUid(sourceUid)
-                if s == nil then
-                    LOG:Warning("Copying from non-existent roster [%s]", sourceUid)
+                if not s then
+                    LOG:Debug("Copying from non-existent roster [%s]", sourceUid)
                     return
                 end
                 local t = self:GetRosterByUid(targetUid)
-                if t == nil then
-                    LOG:Warning("Copying to non-existent roster [%s]", targetUid)
+                if not t then
+                    LOG:Debug("Copying to non-existent roster [%s]", targetUid)
                     return
                 end
 
@@ -148,8 +148,8 @@ function RosterManager:Initialize()
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
-                if roster == nil then
-                    LOG:Warning("Updating non-existent roster [%s]", rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
                 end
 
@@ -164,8 +164,8 @@ function RosterManager:Initialize()
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
-                if roster == nil then
-                    LOG:Warning("Updating non-existent roster [%s]", rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
                 end
 
@@ -180,8 +180,8 @@ function RosterManager:Initialize()
                     local rosterUid = entry:rosterUid()
 
                     local roster = self:GetRosterByUid(rosterUid)
-                    if roster == nil then
-                        LOG:Warning("Updating non-existent roster [%s]", rosterUid)
+                    if not roster then
+                        LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                         return
                     end
 
@@ -202,14 +202,14 @@ function RosterManager:Initialize()
                 local rosterUid = entry:rosterUid()
 
                 local roster = self:GetRosterByUid(rosterUid)
-                if roster == nil then
-                    LOG:Warning("Updating non-existent roster [%s]", rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
                 end
 
                 local profiles = entry:profiles()
-                if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
-                    LOG:Warning("Empty profiles table in mutator(RosterUpdateProfiles)")
+                if not profiles or type(profiles) ~= "table" or #profiles == 0 then
+                    LOG:Debug("Empty profiles table in mutator(RosterUpdateProfiles)")
                     return
                 end
 

@@ -47,7 +47,7 @@ function ProfileManager:Initialize()
             main =  (type(main) == "number" and main ~= 0) and getGuidFromInteger(main) or ""
             -- Check if it's an update
             local profileInternal = self.cache.profiles[GUID]
-            if profileInternal ~= nil then
+            if profileInternal then
                 if empty(class) then
                     class = profileInternal:Class()
                 end
@@ -57,12 +57,15 @@ function ProfileManager:Initialize()
                 if empty(main) then
                     main = profileInternal:Main()
                 end
+                profileInternal.class = class
+                profileInternal.spec = spec
+                profileInternal.main = main
+            else
+                local profile = Profile:New(name, class, spec, main)
+                profile:SetGUID(GUID)
+                self.cache.profiles[GUID] = profile
+                self.cache.profilesGuidMap[name] = GUID
             end
-
-            local profile = Profile:New(name, class, spec, main)
-            profile:SetGUID(GUID)
-            self.cache.profiles[GUID] = profile
-            self.cache.profilesGuidMap[name] = GUID
         end),
         ACL_LEVEL.MANAGER)
 
@@ -73,7 +76,7 @@ function ProfileManager:Initialize()
             local GUID = entry:GUID()
             if type(GUID) ~= "number" then return end
             GUID = getGuidFromInteger(GUID)
-            if self.cache.profiles[GUID] ~= nil then
+            if self.cache.profiles[GUID] then
                 self.cache.profiles[GUID] = nil
             end
         end),

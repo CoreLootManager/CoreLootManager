@@ -88,7 +88,7 @@ function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
-    local s = self.defaultSlotValues[itemEquipLoc]
+    local s = self.defaultSlotValues[itemEquipLoc or "INVTYPE_NON_EQUIP"]
     return s or {base = 0, max = 0}
 end
 

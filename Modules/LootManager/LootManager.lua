@@ -28,22 +28,21 @@ function LootManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(LOOTAward)")
             local roster = RosterManager:GetRosterByUid(entry:rosterUid())
-            if roster == nil then
-                LOG:Warning("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
+            if not roster then
+                LOG:Debug("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
                 return
             end
             local GUID = getGuidFromInteger(entry:profile())
             if roster:IsProfileInRoster(GUID) then
                 local profile = ProfileManager:GetProfileByGUID(GUID)
-                if profile == nil then
-                    LOG:Warning("PointManager mutator(): Profile with guid [%s] does not exist", GUID)
+                if not profile then
+                    LOG:Debug("PointManager mutator(): Profile with guid [%s] does not exist", GUID)
                     return
                 end
                 local loot = Loot:New(entry, profile)
                 RosterManager:AddLootToRoster(roster, loot, profile)
             else
-                -- TODO: Add  Profile to roster? Store in anonymous profile?
-                LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+                LOG:Debug("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
                 return
             end
         end),
