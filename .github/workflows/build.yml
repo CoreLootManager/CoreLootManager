@@ -12,14 +12,14 @@ jobs:
     - uses: Roang-zero1/github-create-release-action@master
       with:
         version_regex: ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+
-        prerelease_regex:  ^ci-test-[[:digit:]]+
+        prerelease_regex:  ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+-ci-test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   custom_release:
     needs:
       - create_github_release
-    name: Build and deploy
+    name: Build via custom flow
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -39,12 +39,6 @@ jobs:
         run: mv `ls | grep -v '^ClassicLootManager$'` ClassicLootManager
       - name: Pack
         run: zip -r ClassicLootManager.zip ClassicLootManager -x '*.git*'
-      - name: GitHub Deploy
-        uses: Roang-zero1/github-create-release-action@master
-        with:
-          version_regex: ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact to github
         uses: fnkr/github-action-ghr@v1
         env:
@@ -53,7 +47,7 @@ jobs:
   bigwigs_release:
     needs:
       - create_github_release
-    name: Build and deploy
+    name: Build via BigWigs packager
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
