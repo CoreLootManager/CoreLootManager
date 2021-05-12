@@ -49,6 +49,14 @@ function AuctionManager:Initialize()
     self._initialized = true
 end
 
+function AuctionManager:SetQuickAuction(value)
+    self.db.quickAuction = value and true or false
+end
+
+function AuctionManager:GetQuickAuction()
+    return self.db.quickAuction
+end
+
 -- We pass configuration separately as it can be overriden on per-auction basis
 function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxValue, note, roster, configuration)
     LOG:Trace("AuctionManager:StartAuction()")

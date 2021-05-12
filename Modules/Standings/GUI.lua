@@ -280,7 +280,6 @@ local function CreateManagementOptions(self, container)
         -- FILTER_STANDBY = 102
         -- Check class filter
         local playerName = ST_GetName(row)
-        print(playerName)
         local class = ST_GetClass(row)
 
         local status

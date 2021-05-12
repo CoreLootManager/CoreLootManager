@@ -37,7 +37,7 @@ function LedgerManager:Initialize()
         0, 250, LOG
     )
     self.ledger.addSyncStateChangedListener(function(status)
-        self:UpdateSyncState(status)
+        self:UpdateSyncState(status) -- there is still something fishy about the Icon (securehook) and I don't know what
     end)
     self.entryExtensions = {}
     self.authorizationLevel = {}

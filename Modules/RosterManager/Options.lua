@@ -373,10 +373,10 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = "Currently only DKP supported.",
                 type = "select",
                 style = "radio",
-                get = (function(i, v)
-                    local roster = RosterManager:GetRosterByName(name)
-                    if roster == nil then return nil end
-                    return roster:GetPointType()
+                get = (function(i)
+                    local r = RosterManager:GetRosterByName(name)
+                    if not r then return nil end
+                    return r:GetPointType()
                 end),
                 order = 2,
                 disabled = true,

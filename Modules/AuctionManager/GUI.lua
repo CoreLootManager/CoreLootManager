@@ -33,10 +33,45 @@ local guiOptions = {
 }
 
 local AuctionManagerGUI = {}
+
+local function FillAuctionWindowFromTooltip(frame, button)
+    if IsAltKeyDown() and not AuctionManager:IsAuctionInProgress() then
+        if GameTooltip then
+            local _, itemLink = GameTooltip:GetItem()
+            if itemLink then
+                AuctionManagerGUI.itemLink = itemLink
+                AuctionManagerGUI:Refresh()
+                if button == "RightButton" then
+                    AuctionManagerGUI:StartAuction()
+                    if AuctionManagerGUI.top.frame:IsVisible() then
+                        AuctionManagerGUI.top.frame:Hide()
+                    end
+                else
+                    if not AuctionManagerGUI.top.frame:IsVisible() then
+                        AuctionManagerGUI.top.frame:Show()
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function HookBagSlots()
+    for bag=1,5 do
+        for slot=1,24 do
+            local itemSlotFrame = _G[format('ContainerFrame%dItem%d', bag, slot)]
+            if itemSlotFrame then
+                itemSlotFrame:HookScript("OnClick", FillAuctionWindowFromTooltip)
+            end
+        end
+    end
+end
+
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     if not ACL:IsTrusted() then return end
     self:Create()
+    HookBagSlots()
     self:RegisterSlash()
     self._initialized = true
 end
@@ -224,8 +259,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 if not AuctionManager:IsAuctionInProgress() then
-                    AuctionManager:ClearBids()
-                    AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.base, self.max, self.note, self.roster, self.configuration)
+                    self:StartAuction()
                 else
                     AuctionManager:StopAuctionManual()
                 end
@@ -293,6 +327,11 @@ function AuctionManagerGUI:Create()
 
     -- Hide by default
     f:Hide()
+end
+
+function AuctionManagerGUI:StartAuction()
+    AuctionManager:ClearBids()
+    AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.base, self.max, self.note, self.roster, self.configuration)
 end
 
 local function GetTopBids()
