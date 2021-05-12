@@ -36,7 +36,7 @@ function RaidManager:Initialize()
         -- if IsInRaid() then
         -- if false then
         --     -- We need to handle the stored info
-        --     self:RestoreRaidInfo()
+        --     self:RestoreRaidInfo() -- todo not working somehow
         -- else
             -- Clear status
             self:ClearRaidInfo()

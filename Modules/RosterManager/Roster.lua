@@ -43,6 +43,10 @@ function Roster:New(uid, pointType)
     return o
 end
 
+function Roster:GetPointType()
+    return self.pointType
+end
+
 function Roster:AddProfileByGUID(GUID)
     LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     if self:IsProfileInRoster(GUID) then return end

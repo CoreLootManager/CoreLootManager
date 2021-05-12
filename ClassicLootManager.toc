@@ -83,4 +83,6 @@ Modules\LootManager\GUI.lua
 # Extra
 MinimapIcon.lua
 Migration.lua
+#@do-not-package@
 Debug.lua
+#@end-do-not-package@

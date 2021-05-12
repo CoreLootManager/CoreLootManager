@@ -10,6 +10,7 @@ local ACL = MODULES.ACL
 local Comms = MODULES.Comms
 local Database = MODULES.Database
 local LedgerManager = MODULES.LedgerManager
+local AuctionManager = MODULES.AuctionManager
 
 local COMM_CHANNEL = "debug"
 local MESSAGE_KILL_COMMAND = "killCommand"
@@ -66,7 +67,10 @@ function Debug:Enable()
     if self:IsEnabled() then return end
     -- Substitue ACL
     self.originalACLMethod = ACL.CheckLevel
-    ACL.CheckLevel = (function(...) return true end)
+    ACL.CheckLevel = (function(...) return true end) -- fully unlock addon
+    -- substitute AuctionManager
+    self.originalAM = AuctionManager.CanUserAuctionItems
+    AuctionManager.CanUserAuctionItems = (function(...) return true end) -- allow anybody to do auctions
     -- Add Kill command
     self:EnableKillCommand()
     -- Enable
@@ -112,21 +116,21 @@ function Debug:EnableKillCommand()
     self.killCommandListenerAdded = true
 end
 
-local function CreatePopup()
--- Create popup
-StaticPopupDialogs["KILL_COMMAND_RELOAD"] = {
-    text = "You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI.",
-    button1 = "Reload",
-    button2 = " ",
-    OnAccept = (function()
-        ReloadUI()
-    end),
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    preferredIndex = 0
-}
-end
+-- local function CreatePopup()
+-- -- Create popup
+-- StaticPopupDialogs["KILL_COMMAND_RELOAD"] = {
+--     text = "You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI.",
+--     button1 = "Reload",
+--     button2 = " ",
+--     OnAccept = (function()
+--         ReloadUI()
+--     end),
+--     timeout = 0,
+--     whileDead = true,
+--     hideOnEscape = true,
+--     preferredIndex = 0
+-- }
+-- end
 
 function Debug:HandleKillCommand(source)
     if not self:IsEnabled() then return end
@@ -135,7 +139,7 @@ function Debug:HandleKillCommand(source)
     db.ledger = {}
     -- CreatePopup()-- not working
     -- StaticPopup_Show("KILL_COMMAND_RELOAD", tostring(source)) -- not working
-    CLM:Message("You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI.", UTILS.ColorCodeText(source, "FFD100"))
+    LOG:Message("You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI.", UTILS.ColorCodeText(source, "FFD100"))
 end
 
 --

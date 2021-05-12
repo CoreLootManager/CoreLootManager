@@ -44,21 +44,11 @@ local function Initialize_Logger()
     LOG:SetDatabase(CLM_Logs)
 end
 
-local function Initialize_Debug()
-    -- Initialize Debug before ACL
-    CLM.Debug:Initialize()
-    CLM.Debug:Enable()
-    CLM.Debug:RegisterSlash()
-end
-
 function CORE:_InitializeCore()
     LOG:Trace("CORE:_InitializeCore()")
 
     MODULES.Database:Initialize()
     MODULES.ConfigManager:Initialize()
-    if type(Initialize_Debug) == "function" then
-        Initialize_Debug()
-    end
     MODULES.ACL:Initialize()
 end
 
@@ -68,6 +58,9 @@ function CORE:_InitializeBackend()
     MODULES.Comms:Initialize()
     MODULES.EventManager:Initialize()
     MODULES.LedgerManager:Initialize()
+    if type(self.Debug) == "function" then
+        self.Debug()
+    end
 end
 
 function CORE:_InitializeFeatures()
@@ -192,3 +185,10 @@ end
 function CLM_Redo()
     LOG:Warning("Redo not implemented.")
 end
+--@do-not-package@
+function CORE.Debug()
+    CLM.Debug:Initialize()
+    CLM.Debug:Enable()
+    CLM.Debug:RegisterSlash()
+end
+--@end-do-not-package@
