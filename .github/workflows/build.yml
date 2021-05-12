@@ -59,8 +59,10 @@ jobs:
         uses: BigWigsMods/packager@master
         with:
           args: "-d -e -u"
+      - name: Get name of zip file
+        run: echo "artifact=`basename .release/*.zip`" >> $GITHUB_ENV
       - name: Upload artifact to github
         uses: fnkr/github-action-ghr@v1
         env:
-          GHR_PATH: .release/*.zip
+          GHR_PATH: ${{ env.artifact }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
