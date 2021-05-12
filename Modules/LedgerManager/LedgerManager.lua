@@ -36,9 +36,9 @@ function LedgerManager:Initialize()
         end), -- sendLargeMessage
         0, 250, LOG
     )
-    -- self.ledger.addSyncStateChangedListener(function(status)
-    --     self:UpdateSyncState(status)
-    -- end)
+    self.ledger.addSyncStateChangedListener(function(status)
+        self:UpdateSyncState(status)
+    end)
     self.entryExtensions = {}
     self.authorizationLevel = {}
     self._initialized = true
