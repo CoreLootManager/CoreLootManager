@@ -25,6 +25,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: install gitman
         run: pipx install gitman
+
       - uses: actions/cache@v1
         with:
           path: ExternalLibs
@@ -33,6 +34,10 @@ jobs:
             gitman-${{ hashFiles('.gitman.yml') }}
       - name: install dependencies
         run: gitman install
+      - name: install xq
+        run: pipx install xq
+      - name: verify required files recursively
+        run: scripts/verify-dependencies
       - name: mkdir
         run: mkdir ClassicLootManager
       - name: Prepare sources
@@ -55,6 +60,10 @@ jobs:
         run: pipx install gitman
       - name: install dependencies
         run: gitman install
+      - name: install xq
+        run: pipx install xq
+      - name: verify required files recursively
+        run: scripts/verify-dependencies
       - name: Bigwigs packager
         uses: BigWigsMods/packager@master
         with:
