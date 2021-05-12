@@ -3,14 +3,34 @@ on:
   push:
     tags:
       - 'v*'
+      - 'ci-test-*'
 jobs:
-  release:
+  create_github_release:
+    name: Create a release object in Github
+    runs-on: ubuntu-latest
+    steps:
+    - uses: Roang-zero1/github-create-release-action@master
+      with:
+        version_regex: ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+
+        prerelease_regex:  ^ci-test-[[:digit:]]+
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  custom_release:
+    needs:
+      - create_github_release
     name: Build and deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: install gitman
         run: pipx install gitman
+      - uses: actions/cache@v1
+        with:
+          path: ExternalLibs
+          key: gitman-${{ hashFiles('.gitman.yml') }}
+          restore-keys: |
+            gitman-${{ hashFiles('.gitman.yml') }}
       - name: install dependencies
         run: gitman install
       - name: mkdir
@@ -29,4 +49,24 @@ jobs:
         uses: fnkr/github-action-ghr@v1
         env:
           GHR_PATH: ClassicLootManager.zip
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  bigwigs_release:
+    needs:
+      - create_github_release
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install gitman
+        run: pipx install gitman
+      - name: install dependencies
+        run: gitman install
+      - name: Bigwigs packager
+        uses: BigWigsMods/packager@master
+        with:
+          args: "-d -e -u"
+      - name: Upload artifact to github
+        uses: fnkr/github-action-ghr@v1
+        env:
+          GHR_PATH: .release/*.zip
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
