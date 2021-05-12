@@ -34,8 +34,8 @@ jobs:
             gitman-${{ hashFiles('.gitman.yml') }}
       - name: install dependencies
         run: gitman install
-      - name: install xq
-        run: pipx install xq
+      - name: install yq
+        run: pipx install yq
       - name: verify required files recursively
         run: scripts/verify-dependencies ClassicLootManager.toc
       - name: mkdir
@@ -60,8 +60,8 @@ jobs:
         run: pipx install gitman
       - name: install dependencies
         run: gitman install
-      - name: install xq
-        run: pipx install xq
+      - name: install yq
+        run: pipx install yq
       - name: verify required files recursively
         run: scripts/verify-dependencies ClassicLootManager.toc
       - name: Bigwigs packager
