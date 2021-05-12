@@ -23,8 +23,8 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local function mutator(entry, mutate)
     local roster = RosterManager:GetRosterByUid(entry:rosterUid())
-    if roster == nil then
-        LOG:Warning("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
+    if not roster then
+        LOG:Debug("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
         return
     end
     local value = entry:value()
@@ -42,8 +42,7 @@ local function mutator(entry, mutate)
                 roster:AddProfilePointHistory(pointHistoryEntry, profile)
             end
         else
-            -- TODO: Add  Profile to roster? Store in anonymous profile?
-            LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+            LOG:Debug("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
             return
         end
     end
@@ -88,25 +87,6 @@ function PointManager:Initialize()
         end),
         ACL_LEVEL.OFFICER)
 
-    -- local start = GetServerTime()
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
-        if lag ~= 0 or uncommitted ~= 0 then return end
-        -- DEBUG Stuff
-        -- local stop = GetServerTime(); LOG:Debug("PointManager() DONE in %s sec", tostring(stop - start));
-        -- local rosters = RosterManager:GetRosters()
-        -- for rosterName, roster in pairs(rosters) do
-        --     LOG:Debug(UTILS.ColorCodeText(rosterName, "ff5522"))
-        --     local standings = roster:Standings()
-        --     for GUID, value in pairs(standings) do
-        --         local profile = ProfileManager:GetProfileByGUID(GUID)
-        --         if profile ~= nil then
-        --             LOG:Debug("%s: %s", UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex), tostring(value))
-        --         end
-        --     end
-        -- end
-        -- start = GetServerTime()
-    end)
-
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
 end
 
@@ -134,6 +114,9 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
     -- Always a list, even for single entry
     if typeof(targets, Profile) or type(targets) == "number" or type(targets) == "string" then
         targets = { targets }
+    elseif type(targets) ~= "table" then
+        LOG:Error("PointManager:UpdatePoints(): Invalid targets list")
+        return
     end
 
     local entry
@@ -147,7 +130,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
 
     local t = entry:targets()
     if not t or (#t == 0) then
-        LOG:Warning("PointManager:UpdatePoints(): Empty targets list")
+        LOG:Error("PointManager:UpdatePoints(): Empty targets list")
         return
     end
 

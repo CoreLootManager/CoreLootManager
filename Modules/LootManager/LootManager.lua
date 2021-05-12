@@ -28,22 +28,21 @@ function LootManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(LOOTAward)")
             local roster = RosterManager:GetRosterByUid(entry:rosterUid())
-            if roster == nil then
-                LOG:Warning("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
+            if not roster then
+                LOG:Debug("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
                 return
             end
             local GUID = getGuidFromInteger(entry:profile())
             if roster:IsProfileInRoster(GUID) then
                 local profile = ProfileManager:GetProfileByGUID(GUID)
-                if profile == nil then
-                    LOG:Warning("PointManager mutator(): Profile with guid [%s] does not exist", GUID)
+                if not profile then
+                    LOG:Debug("PointManager mutator(): Profile with guid [%s] does not exist", GUID)
                     return
                 end
                 local loot = Loot:New(entry, profile)
                 RosterManager:AddLootToRoster(roster, loot, profile)
             else
-                -- TODO: Add  Profile to roster? Store in anonymous profile?
-                LOG:Warning("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+                LOG:Debug("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
                 return
             end
         end),
@@ -75,7 +74,7 @@ function LootManager:AwardItem(roster, name, itemLink, itemId, value, forceInsta
         LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
         SendChatMessage(itemLink .. " awarded to " .. name .. " for " .. value, "RAID_WARNING")
     else
-        LOG:Warning("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
+        LOG:Error("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
     end
 end
 
@@ -106,7 +105,7 @@ function LootManager:TransferItem(roster, profile, loot, forceInstant)
         LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, loot:Id(), loot:Value()), forceInstant)
         LedgerManager:Remove(loot:Entry(), forceInstant)
     else
-        LOG:Warning("LootManager:TransferItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
+        LOG:Error("LootManager:TransferItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
     end
 end
 

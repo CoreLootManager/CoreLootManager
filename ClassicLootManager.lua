@@ -4,14 +4,7 @@ CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0
 
 CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
-CLM.CONSTANTS = {
-    RESULTS = { -- Universal return codes
-        ERROR = 0,           -- Request failed
-        IGNORE = 1,          -- Request was ignored
-        SUCCESS = 2,         -- Request success
-        SUCCESS_EXTENDED = 3 -- Request success + can be followed by message in a tuple response
-    }
-}
+CLM.CONSTANTS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
 
@@ -65,6 +58,9 @@ function CORE:_InitializeBackend()
     MODULES.Comms:Initialize()
     MODULES.EventManager:Initialize()
     MODULES.LedgerManager:Initialize()
+    if type(self.Debug) == "function" then
+        self.Debug()
+    end
 end
 
 function CORE:_InitializeFeatures()
@@ -77,7 +73,7 @@ function CORE:_InitializeFeatures()
     MODULES.RaidManager:Initialize()
     MODULES.AuctionManager:Initialize()
     MODULES.BiddingManager:Initialize()
-    -- Initialize Migration module
+    -- Initialize Migration
     CLM.Migration:Initialize()
 end
 
@@ -146,7 +142,6 @@ function CORE:OnInitialize()
     Initialize_SavedVariables()
     --  Early Initialize logger
     Initialize_Logger()
-
     -- Initialize AddOn
     LOG:Trace("OnInitialize")
     self._initialize_fired = false
@@ -190,3 +185,10 @@ end
 function CLM_Redo()
     LOG:Warning("Redo not implemented.")
 end
+--@do-not-package@
+function CORE.Debug()
+    CLM.Debug:Initialize()
+    CLM.Debug:Enable()
+    CLM.Debug:RegisterSlash()
+end
+--@end-do-not-package@

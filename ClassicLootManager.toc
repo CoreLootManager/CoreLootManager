@@ -81,3 +81,10 @@ Modules\RaidManager\GUI.lua
 Modules\AuctionManager\GUI.lua
 Modules\BiddingManager\GUI.lua
 Modules\LootManager\GUI.lua
+
+# Extra
+MinimapIcon.lua
+Migration.lua
+#@do-not-package@
+Debug.lua
+#@end-do-not-package@

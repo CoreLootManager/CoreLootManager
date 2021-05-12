@@ -368,6 +368,21 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 width = "full",
                 order = 1
             },
+            point_type = { -- informative
+                name = "Point type",
+                desc = "Currently only DKP supported.",
+                type = "select",
+                style = "radio",
+                get = (function(i, v)
+                    local roster = RosterManager:GetRosterByName(name)
+                    if roster == nil then return nil end
+                    return roster:GetPointType()
+                end),
+                order = 2,
+                disabled = true,
+                width = "half",
+                values = CONSTANTS.POINT_TYPES_GUI
+            },
             copy = {
                 name = "Copy settings",
                 desc = "Copy settings from selected roster.",
@@ -411,48 +426,56 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Boss Kill Bonus",
                 type = "toggle",
                 order = 4,
+                disabled = true,
                 width = "full"
             },
             on_time_bonus = {
                 name = "On Time Bonus",
                 type = "toggle",
                 order = 5,
+                disabled = true,
                 width = 1
             },
             on_time_bonus_value = {
                 name = "On Time Bonus Value",
                 type = "input",
                 order = 6,
+                disabled = true,
                 width = 1
             },
             raid_completion_bonus = {
                 name = "Raid Completion Bonus",
                 type = "toggle",
                 order = 7,
+                disabled = true,
                 width = 1
             },
             raid_completion_bonus_value = {
                 name = "Raid Completion Value",
                 type = "input",
                 order = 8,
+                disabled = true,
                 width = 1
             },
             interval_bonus = {
                 name = "Interval Bonus",
                 type = "toggle",
                 order = 9,
+                disabled = true,
                 width = 1
             },
             interval_bonus_time = {
                 name = "Interval Time",
                 type = "input",
                 order = 10,
+                disabled = true,
                 width = 0.6
             },
             interval_bonus_value = {
                 name = "Bonus Value",
                 type = "input",
                 order = 11,
+                disabled = true,
                 width = 0.6
             },
             auction = {
@@ -480,6 +503,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Enable paid value splitting amongst raiders.",
                         type = "toggle",
                         width = 1,
+                        disabled = true,
                         order = 6
                     },
                     zero_sum_bank_inflation_value = {
@@ -488,6 +512,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "input",
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1,
+                        disabled = true,
                         order = 6
                     },
                     allow_negative_standings = {
