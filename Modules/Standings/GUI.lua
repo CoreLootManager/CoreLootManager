@@ -29,6 +29,9 @@ local FILTER_IN_RAID = 100
 local FILTER_ONLINE = 101
 -- local FILTER_STANDBY = 102
 
+local SORT_ASC = 1;
+local SORT_DSC = 2;
+
 local StandingsGUI = {}
 function StandingsGUI:Initialize()
     self:Create()
@@ -301,13 +304,34 @@ local function CreateManagementOptions(self, container)
     return ManagementOptions
 end
 
+local function dumbCompare(st, rowa, rowb, col)
+    local cella, cellb = st:GetCell(rowa, col), st:GetCell(rowb, col)
+    if cella and cellb then
+        return cella.value < cellb.value
+    else
+        return true
+    end
+end
+
 local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
-        {name = "Name",  width = 100},
-        {name = "Class", width = 100},
-        {name = "Spec",  width = 100},
-        {name = "DKP",   width = 100}
+        {   name = "Name",
+            width = 100
+            -- comparesort = dumbCompare
+        },
+        {   name = "Class",
+            width = 100
+            -- comparesort = dumbCompare
+        },
+        {   name = "Spec",
+            width = 100
+            -- comparesort = dumbCompare
+        },
+        {   name = "DKP",
+            width = 100
+            -- comparesort = dumbCompare
+        }
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
@@ -357,18 +381,20 @@ function StandingsGUI:Refresh(visible)
     self:RefreshRosters()
 
     local roster = self:GetCurrentRoster()
-    if roster == nil then return end
+    if not roster then return end
 
+    local rowId = 1
     local data = {}
     for GUID,value in pairs(roster:Standings()) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
-        if profile ~= nil then
+        if profile then
             local row = {cols = {}}
-            table.insert(row.cols, {value = profile:Name()})
-            table.insert(row.cols, {value = UTILS.ColorCodeClass(profile:Class())})
-            table.insert(row.cols, {value = profile:Spec()})
-            table.insert(row.cols, {value = value})
-            table.insert(data, row)
+            row.cols[1] = {value = profile:Name()}
+            row.cols[2] = {value = UTILS.ColorCodeClass(profile:Class())}
+            row.cols[3] = {value = profile:Spec()}
+            row.cols[4] = {value = value}
+            data[rowId] = row
+            rowId = rowId + 1
         end
     end
 
@@ -385,7 +411,7 @@ function StandingsGUI:GetSelected(filter)
     end
     -- Roster
     local roster = self:GetCurrentRoster()
-    if roster == nil then
+    if not roster then
         return nil, nil
     end
     -- Profiles
@@ -399,7 +425,7 @@ function StandingsGUI:GetSelected(filter)
         if profile then
             table.insert(profiles, profile)
         else
-            LOG:Debug("No profile for " .. tostring(ST_GetName(self.st:GetRow(s))))
+            LOG:Debug("No profile for %s", ST_GetName(self.st:GetRow(s)))
         end
     end
     local profiles_filtered = {}

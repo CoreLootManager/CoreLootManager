@@ -35,21 +35,19 @@ local guiOptions = {
 local AuctionManagerGUI = {}
 
 local function FillAuctionWindowFromTooltip(frame, button)
-    if IsAltKeyDown() and not AuctionManager:IsAuctionInProgress() then
-        if GameTooltip then
-            local _, itemLink = GameTooltip:GetItem()
-            if itemLink then
-                AuctionManagerGUI.itemLink = itemLink
-                AuctionManagerGUI:Refresh()
-                if button == "RightButton" then
-                    AuctionManagerGUI:StartAuction()
-                    if AuctionManagerGUI.top.frame:IsVisible() then
-                        AuctionManagerGUI.top.frame:Hide()
-                    end
-                else
-                    if not AuctionManagerGUI.top.frame:IsVisible() then
-                        AuctionManagerGUI.top.frame:Show()
-                    end
+    if GameTooltip and IsAltKeyDown() and not AuctionManager:IsAuctionInProgress() then
+        local _, itemLink = GameTooltip:GetItem()
+        if itemLink then
+            AuctionManagerGUI.itemLink = itemLink
+            AuctionManagerGUI:Refresh()
+            if button == "RightButton" then
+                AuctionManagerGUI:StartAuction()
+                if AuctionManagerGUI.top.frame:IsVisible() then
+                    AuctionManagerGUI.top.frame:Hide()
+                end
+            else
+                if not AuctionManagerGUI.top.frame:IsVisible() then
+                    AuctionManagerGUI.top.frame:Show()
                 end
             end
         end
@@ -57,14 +55,7 @@ local function FillAuctionWindowFromTooltip(frame, button)
 end
 
 local function HookBagSlots()
-    for bag=1,5 do
-        for slot=1,24 do
-            local itemSlotFrame = _G[format('ContainerFrame%dItem%d', bag, slot)]
-            if itemSlotFrame then
-                itemSlotFrame:HookScript("OnClick", FillAuctionWindowFromTooltip)
-            end
-        end
-    end
+    hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", FillAuctionWindowFromTooltip)
 end
 
 function AuctionManagerGUI:Initialize()

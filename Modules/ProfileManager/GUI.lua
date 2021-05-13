@@ -315,13 +315,11 @@ function ProfilesGUI:Refresh(visible)
     if visible and not self.top.frame:IsVisible() then return end
     self.st:ClearSelection()
 
+    local rowId = 1
     local data = {}
     local profiles = ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
         local row = {cols = {}}
-        table.insert(row.cols, {value = object:Name()})
-        table.insert(row.cols, {value = UTILS.ColorCodeClass(object:Class())})
-        table.insert(row.cols, {value = object:Spec()})
         local profile = ProfileManager:GetProfileByGUID(object:Main())
         local main
         if profile ~= nil then
@@ -329,8 +327,12 @@ function ProfilesGUI:Refresh(visible)
         else
             main = ""
         end
-        table.insert(row.cols, {value = main})
-        table.insert(data, row)
+        row.cols[1] = {value = object:Name()}
+        row.cols[2] = {value = UTILS.ColorCodeClass(object:Class())}
+        row.cols[3] = {value = object:Spec()}
+        row.cols[4] = {value = main}
+        data[rowId] = row
+        rowId = rowId + 1
 
         self.profilesList[object:Name()] = object:Name()
     end

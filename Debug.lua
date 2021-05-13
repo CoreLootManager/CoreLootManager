@@ -66,8 +66,10 @@ end
 function Debug:Enable()
     if self:IsEnabled() then return end
     -- Substitue ACL
-    self.originalACLMethod = ACL.CheckLevel
+    self.originalACLCheckLevel = ACL.CheckLevel
+    self.originalACLIsTrusted = ACL.IsTrusted
     ACL.CheckLevel = (function(...) return true end) -- fully unlock addon
+    ACL.IsTrusted  = (function(...) return true end) -- fully unlock addon
     -- substitute AuctionManager
     self.originalAM = AuctionManager.CanUserAuctionItems
     AuctionManager.CanUserAuctionItems = (function(...) return true end) -- allow anybody to do auctions
@@ -81,7 +83,8 @@ end
 function Debug:Disable()
     if not self:IsEnabled() then return end
     -- Restore ACL
-    ACL.CheckLevel = self.originalACLMethod
+    ACL.CheckLevel = self.originalACLCheckLevel
+    ACL.IsTrusted = self.IsTrusted
     -- Disable
     LOG:Message("Debug Mode Disabled")
     self.isDebug = false

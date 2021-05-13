@@ -179,17 +179,19 @@ function LootGUI:Refresh(visible)
         return
     end
 
+    local rowId = 1
     local data = {}
     for _,lootData in ipairs(self.displayedLoot) do
         local loot = lootData[1]
-        local link = lootData[2]
-        local owner = lootData[3]
+        -- local link = lootData[2]
+        -- local owner = lootData[3]
         local row = {cols = {}}
-        table.insert(row.cols, {value = link})
-        table.insert(row.cols, {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())})
-        table.insert(row.cols, {value = loot:Value()})
-        table.insert(row.cols, {value = owner})
-        table.insert(data, row)
+        row.cols[1] = {value = lootData[2]}
+        row.cols[2] = {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())}
+        row.cols[3] = {value = loot:Value()}
+        row.cols[4] = {value = lootData[3]}
+        data[rowId] =  row
+        rowId = rowId + 1
     end
 
     self.st:SetData(data)
