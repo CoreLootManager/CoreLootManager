@@ -26,11 +26,10 @@ local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
 
 local FILTER_IN_RAID = 100
-local FILTER_ONLINE = 101
 -- local FILTER_STANDBY = 102
 
-local SORT_ASC = 1;
-local SORT_DSC = 2;
+local SORT_ASC = 1
+local SORT_DSC = 2
 
 local StandingsGUI = {}
 function StandingsGUI:Initialize()
@@ -56,7 +55,6 @@ end
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
     filters[100] = UTILS.ColorCodeText("In Raid", "FFD100")
-    filters[101] = UTILS.ColorCodeText("Online", "FFD100")
     filters[102] = UTILS.ColorCodeText("Standby", "FFD100")
     return {
         filter_header = {
@@ -255,28 +253,14 @@ local function CreateManagementOptions(self, container)
     end
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
     LIBS.gui:Open("clm_standings_gui_options", ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
-
     self.st:SetFilter((function(stobject, row)
-        -- ST_GetName
-        local isOnline = {}
         local isInRaid = {}
         -- Check raid
         for i=1,MAX_RAID_MEMBERS do
-            local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
+            local name = GetRaidRosterInfo(i)
             if name then
                 name = UTILS.RemoveServer(name)
                 isInRaid[name] = true
-                if online then
-                    isOnline[name] = true
-                end
-            end
-        end
-        -- Check guild
-        for i=1,GetNumGuildMembers() do
-            local name, _, _, _, _, _, _, _, online = GetGuildRosterInfo(i)
-            name = UTILS.RemoveServer(name)
-            if online then
-                isOnline[name] = true
             end
         end
         -- Check for standby filter
@@ -292,9 +276,6 @@ local function CreateManagementOptions(self, container)
             end
         end
         if status == nil then return false end -- failsafe
-        if self.filterOptions[FILTER_ONLINE] then
-            status = status and isOnline[playerName]
-        end
         if self.filterOptions[FILTER_IN_RAID] then
             status = status and isInRaid[playerName]
         end
@@ -304,33 +285,20 @@ local function CreateManagementOptions(self, container)
     return ManagementOptions
 end
 
-local function dumbCompare(st, rowa, rowb, col)
-    local cella, cellb = st:GetCell(rowa, col), st:GetCell(rowb, col)
-    if cella and cellb then
-        return cella.value < cellb.value
-    else
-        return true
-    end
-end
-
 local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
         {   name = "Name",
             width = 100
-            -- comparesort = dumbCompare
         },
         {   name = "Class",
             width = 100
-            -- comparesort = dumbCompare
         },
         {   name = "Spec",
             width = 100
-            -- comparesort = dumbCompare
         },
         {   name = "DKP",
             width = 100
-            -- comparesort = dumbCompare
         }
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
@@ -397,8 +365,8 @@ function StandingsGUI:Refresh(visible)
             rowId = rowId + 1
         end
     end
-
     self.st:SetData(data)
+    self.top:SetStatusText(tostring(#data or 0) .. " players in roster")
 end
 
 function StandingsGUI:GetCurrentRoster()
