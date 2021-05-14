@@ -28,7 +28,6 @@ local RAID_COMMS_INIT = "i"
 local RAID_COMMS_END = "e"
 local RAID_COMMS_REQUEST_REINIT = "r"
 
-
 local RaidManager = {}
 
 function RaidManager:Initialize()
@@ -41,8 +40,7 @@ function RaidManager:Initialize()
     else
         -- Raid in progress -> we had a /reload or disconnect and user was ML
         -- Check if user logged back when raid was still in progress
-        -- if IsInRaid() then
-        if true then
+        if IsInRaid() then
             LOG:Debug("Raid in Progress")
             -- We need to handle the stored info
             self.restoreRaid = true
@@ -66,6 +64,7 @@ function RaidManager:Initialize()
         end
     end)
 
+    self:RegisterSlash()
     self._initialized = true
 end
 
@@ -133,7 +132,7 @@ end
 
 function RaidManager:RestoreRaidInfo()
     LOG:Trace("RaidManager:RestoreRaidInfo()")
-    if self.status.inProgressExternal then
+    if self.status.inProgressExternal and IsInRaid() then
         Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
     else
         -- restore roster
@@ -176,6 +175,7 @@ function RaidManager:GetRosterUid()
 end
 
 function RaidManager:HandleRaidInitialization(auctioneer)
+    LOG:Trace("RaidManager:HandleRaidInitialization()")
     if not self:IsRaidInProgress() then
         LOG:Message("Raid started by %s", UTILS.ColorCodeText(auctioneer, "FFD100"))
     end
@@ -185,6 +185,7 @@ function RaidManager:HandleRaidInitialization(auctioneer)
 end
 
 function RaidManager:HandleRaidEnd(auctioneer)
+    LOG:Trace("RaidManager:HandleRaidEnd()")
     if self:IsRaidInProgress() then
         LOG:Message("Raid ended by %s", UTILS.ColorCodeText(auctioneer, "FFD100"))
     end
@@ -193,6 +194,7 @@ function RaidManager:HandleRaidEnd(auctioneer)
 end
 
 function RaidManager:HandleRequestReinit(sender)
+    LOG:Trace("RaidManager:HandleRequestReinit()")
     -- I am the raid initiator as my status inprogress is not external
     if self:IsRaidInProgress() and not self.status.inProgressExternal then
         Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_INIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
@@ -200,6 +202,7 @@ function RaidManager:HandleRequestReinit(sender)
 end
 
 function RaidManager:HandleIncomingMessage(message, sender)
+    LOG:Trace("RaidManager:HandleIncomingMessage()")
     if type(message) ~= "string" then
         LOG:Debug("RaidManager:HandleIncomingMessage(): Received unsupported message type")
         return
@@ -214,6 +217,24 @@ function RaidManager:HandleIncomingMessage(message, sender)
     else
         LOG:Debug("RaidManager:HandleIncomingMessage(): Received unsupported message %s", tostring(message))
     end
+end
+
+function RaidManager:RegisterSlash()
+    local options = {
+        raidresync = {
+            type = "execute",
+            name = "Resync raid",
+            desc = "Failsafe to resync raid after you were Initiator and did disconnect after which raid was restarted",
+            func = (function()
+                if IsInRaid() and self:IsRaidInProgress() and not self.inProgressExternal then
+                    LOG:Message("Requesting resynchronisation")
+                    self:ClearRaidInfo()
+                    Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+                end
+            end)
+        }
+    }
+    MODULES.ConfigManager:RegisterSlash(options)
 end
 
 MODULES.RaidManager = RaidManager
