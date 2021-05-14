@@ -49,6 +49,12 @@ do
         else -- Unknown state
             tooltip:AddLine("Unknown sync state", 0.4, 0.6, 1)
         end
+
+        local lag = CLM.MODULES.LedgerManager:Lag()
+        local count = CLM.MODULES.LedgerManager:Length()
+        local hash = CLM.MODULES.LedgerManager:Hash()
+        tooltip:AddLine(string.format("We have %d events, %d lag and our state is %s", count, lag, hash))
+
         tooltip:AddLine(" ")
         tooltip:AddLine("|cffcfcfcfLeft Click:|r Toggle Standings window")
         tooltip:AddLine("|cffcfcfcfShift + Left Click:|r Open configuration window")
