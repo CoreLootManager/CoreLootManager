@@ -116,7 +116,10 @@ end
 
 function BiddingManager:HandleIncomingMessage(message, distribution, sender)
     LOG:Trace("BiddingManager:HandleIncomingMessage()")
-    -- UTILS.DumpTable(message)
+    if not MODULES.AuctionManager:CanUserAuctionItems(sender) then
+        LOG:Error("Received unauthorised auction command from %s", sender)
+        return
+    end
     local mtype = message:Type() or 0
     if self.handlers[mtype] then
         self[self.handlers[mtype]](self, message:Data(), sender)

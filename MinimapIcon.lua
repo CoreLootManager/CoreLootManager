@@ -12,6 +12,7 @@ CLM.MinimapDBI = ldb:NewDataObject(addonName, {
     type = "data source",
     text = "0",
     icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierBlue"
+    -- icon = "Interface\\AddOns\\ClassicLootManager\\Media\\CLM-sync-D-128.blp"
 })
 
 function CLM.MinimapDBI.OnClick(self, button)

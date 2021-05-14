@@ -2,7 +2,8 @@
 std = "lua51"
 max_line_length = false
 exclude_files = {
-	"**/Libs/**"
+	"**/Libs/**",
+	"**/ExternalLibs/**"
 }
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable

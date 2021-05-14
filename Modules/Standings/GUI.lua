@@ -28,9 +28,6 @@ local LedgerManager = MODULES.LedgerManager
 local FILTER_IN_RAID = 100
 -- local FILTER_STANDBY = 102
 
-local SORT_ASC = 1
-local SORT_DSC = 2
-
 local StandingsGUI = {}
 function StandingsGUI:Initialize()
     self:Create()

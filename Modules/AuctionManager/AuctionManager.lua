@@ -31,6 +31,7 @@ function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
 
     self.bids = {}
+    self.auctioneer = ""
     self.auctionInProgress = false
 
     Comms:Register(AUCTION_COMM_PREFIX, (function(rawMessage, distribution, sender)
@@ -62,6 +63,11 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     LOG:Trace("AuctionManager:StartAuction()")
     if self.auctionInProgress then
         LOG:Warning("AuctionManager:StartAuction(): Auction in progress")
+        return
+    end
+    if not self:CanUserAuctionItems() then
+        LOG:Message("You are not allowed to auction items")
+        return
     end
     -- Auction parameters sanity checks
     note = note or ""
@@ -113,65 +119,60 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.allowNegativeBidders = configuration:Get("allowNegativeBidders")
     self.allowNegativeStandings = configuration:Get("allowNegativeStandings")
     -- Auctioning
-    if self:CanUserAuctionItems() then
-        -- Start Auction Messages
-        local auctionMessage = "Auction of " .. itemLink
-        if note:len() > 0 then
-            auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
-        end
-        self.note = note
-        -- Max 2 raid warnings are displayed at the same time
-        SendChatMessage(auctionMessage , "RAID_WARNING")
-        auctionMessage = ""
-        if baseValue > 0 then
-            auctionMessage = auctionMessage .. "Minimum bid: " .. tostring(baseValue) .. ". "
-        end
-        if maxValue > 0 then
-            auctionMessage = auctionMessage .. "Maximum bid: " .. tostring(maxValue) .. ". "
-        end
-        auctionMessage = auctionMessage .. "Auction time: " .. tostring(auctionTime) .. ". "
-        self.antiSnipe = configuration:Get("antiSnipe")
-        if self.antiSnipe > 0 then
-            auctionMessage = auctionMessage .. "Anti-snipe time: " .. tostring(self.antiSnipe) .. ". "
-        end
-        SendChatMessage(auctionMessage , "RAID_WARNING")
-        -- AntiSnipe settings
-        self.antiSnipeLimit = (self.antiSnipe > 0) and 3 or 0
-        -- Get Auction Type info
-        self.auctionType = configuration:Get("auctionType")
-        -- if baseValue / maxValue are different than current (or default if no override) item value we will need to update the config
-        local current = roster:GetItemValue(itemId)
-        if current.base ~= baseValue or current.max ~= maxValue then
-            RosterManager:SetRosterItemValue(self.roster, itemId, baseValue, maxValue)
-        end
-        -- clear bids
-        self.bids = {}
-        -- calculate server end time
-        self.auctionEndTime = GetServerTime() + self.auctionTime
-        self.auctionTimeLeft = self.auctionEndTime
-        -- Send auction information
-        self:SendAuctionStart()
-        -- Start Auction Ticker
-        self.lastCountdownValue = 5
-        self.ticker = C_Timer.NewTicker(0.1, (function()
-            self.auctionTimeLeft = self.auctionEndTime - GetServerTime()
-            if self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5  then
-                SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), "RAID_WARNING")
-                self.lastCountdownValue = self.lastCountdownValue - 1
-            end
-            if self.auctionTimeLeft < 0.1 then
-                self:StopAuctionTimed()
-                return
-            end
-        end))
-        -- Set auction in progress
-        self.auctionInProgress = true
-        -- UI
-        GUI.AuctionManager:UpdateBids()
-    else
-        LOG:Warning("RosterManager:StartAuction(): Missing auctioning permissions")
-        return false
+    -- Start Auction Messages
+    local auctionMessage = "Auction of " .. itemLink
+    if note:len() > 0 then
+        auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
     end
+    self.note = note
+    -- Max 2 raid warnings are displayed at the same time
+    SendChatMessage(auctionMessage , "RAID_WARNING")
+    auctionMessage = ""
+    if baseValue > 0 then
+        auctionMessage = auctionMessage .. "Minimum bid: " .. tostring(baseValue) .. ". "
+    end
+    if maxValue > 0 then
+        auctionMessage = auctionMessage .. "Maximum bid: " .. tostring(maxValue) .. ". "
+    end
+    auctionMessage = auctionMessage .. "Auction time: " .. tostring(auctionTime) .. ". "
+    self.antiSnipe = configuration:Get("antiSnipe")
+    if self.antiSnipe > 0 then
+        auctionMessage = auctionMessage .. "Anti-snipe time: " .. tostring(self.antiSnipe) .. ". "
+    end
+    SendChatMessage(auctionMessage , "RAID_WARNING")
+    -- AntiSnipe settings
+    self.antiSnipeLimit = (self.antiSnipe > 0) and 3 or 0
+    -- Get Auction Type info
+    self.auctionType = configuration:Get("auctionType")
+    -- if baseValue / maxValue are different than current (or default if no override) item value we will need to update the config
+    local current = roster:GetItemValue(itemId)
+    if current.base ~= baseValue or current.max ~= maxValue then
+        RosterManager:SetRosterItemValue(self.roster, itemId, baseValue, maxValue)
+    end
+    -- clear bids
+    self.bids = {}
+    -- calculate server end time
+    self.auctionEndTime = GetServerTime() + self.auctionTime
+    self.auctionTimeLeft = self.auctionEndTime
+    -- Send auction information
+    self:SendAuctionStart()
+    -- Start Auction Ticker
+    self.lastCountdownValue = 5
+    self.ticker = C_Timer.NewTicker(0.1, (function()
+        self.auctionTimeLeft = self.auctionEndTime - GetServerTime()
+        if self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5  then
+            SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), "RAID_WARNING")
+            self.lastCountdownValue = self.lastCountdownValue - 1
+        end
+        if self.auctionTimeLeft < 0.1 then
+            self:StopAuctionTimed()
+            return
+        end
+    end))
+    -- Set auction in progress
+    self.auctionInProgress = true
+    -- UI
+    GUI.AuctionManager:UpdateBids()
     return true
 end
 
@@ -327,6 +328,18 @@ function AuctionManager:UpdateBid(name, bid)
     GUI.AuctionManager:UpdateBids()
 end
 
+function AuctionManager:MarkAsAuctioneer(auctioneer)
+    LOG:Trace("AuctionManager:MarkAsAuctioneer()")
+    LOG:Debug("AuctionManager:MarkAsAuctioneer(): Marking %s as auctioneer", tostring(auctioneer))
+    self.auctioneer = auctioneer or ""
+end
+
+function AuctionManager:ClearAuctioneer()
+    LOG:Trace("AuctionManager:ClearAuctioneer()")
+    self.auctioneer = ""
+end
+
+
 function AuctionManager:Bids()
     return self.bids
 end
@@ -339,9 +352,10 @@ function AuctionManager:Award(itemId, price, name)
     LootManager:AwardItem(self.roster, name, self.itemLink, itemId, price)
 end
 
-function AuctionManager:CanUserAuctionItems(name) -- todo
-    -- name = name or UTILS.whoami()
-    return true
+function AuctionManager:CanUserAuctionItems(name)
+    print(name, UTILS.whoami(), self.auctioneer)
+    name = name or UTILS.whoami()
+    return (name == self.auctioneer)
 end
 
 function AuctionManager:IsAuctionInProgress()

@@ -201,6 +201,9 @@ function RaidManagerGUI:Refresh(visible)
     LOG:Trace("RaidManagerGUI:Refresh()")
     if not self._initialized then return end
     if visible and not self.top.frame:IsVisible() then return end
+    if self.selectedRoster == "" then -- workaround for late Raid Initialization due to ledger parsing
+        self.selectedRoster = RosterManager:GetRosterNameByUid(RaidManager:GetRosterUid()) or ""
+    end
     LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 

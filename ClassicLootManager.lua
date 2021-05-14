@@ -95,6 +95,7 @@ function CORE:_InitializeFrontend()
         else -- Unknown state
             CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierBlue"
         end
+        -- CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\CLM-sync-D-128.blp"
     end)
 end
 

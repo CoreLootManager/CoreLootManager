@@ -102,6 +102,10 @@ function ProfileManager:Initialize()
         end),
         ACL_LEVEL.MANAGER)
 
+    LedgerManager:RegisterOnRestart(function()
+        self:WipeAll()
+    end)
+
     MODULES.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
 end
 
