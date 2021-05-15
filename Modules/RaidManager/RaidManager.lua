@@ -82,12 +82,10 @@ function RaidManager:InitializeRaid(roster)
         LOG:Message("You are not allowed to initialize a raid.")
         return
     end
-    -- @non-debug@
-    -- if not IsInRaid() then
-    --     LOG:Message("You are not in raid.")
-    --     return
-    -- end
-    -- @end-non-debug@
+    if not IsInRaid() then
+        LOG:Message("You are not in raid.")
+        return
+    end
     if self:IsRaidInProgress() then
         LOG:Message("Raid is already in progress.")
         return
@@ -103,7 +101,7 @@ function RaidManager:InitializeRaid(roster)
     Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_INIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
     -- Handle internal
     SendChatMessage("Raid started" , "RAID_WARNING")
-    self:HandleRaidInitialization(UTILS.whoami())
+    self:MarkAsAuctioneer(UTILS.whoami())
 end
 
 function RaidManager:EndRaid()
@@ -115,7 +113,7 @@ function RaidManager:EndRaid()
         Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_END, CONSTANTS.COMMS.DISTRIBUTION.RAID)
         -- Handle end of raid
         SendChatMessage("Raid ended" , "RAID_WARNING")
-        self:HandleRaidEnd(UTILS.whoami())
+        self:ClearAuctioneer()
         self:ClearRaidInfo()
     end
 end
@@ -191,6 +189,7 @@ function RaidManager:HandleRaidEnd(auctioneer)
     end
     self.status.inProgressExternal = false
     self:ClearAuctioneer()
+    self:ClearRaidInfo()
 end
 
 function RaidManager:HandleRequestReinit(sender)

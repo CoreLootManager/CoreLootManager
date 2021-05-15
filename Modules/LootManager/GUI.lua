@@ -24,6 +24,14 @@ local RosterManager = MODULES.RosterManager
 local LedgerManager = MODULES.LedgerManager
 local EventManager = MODULES.EventManager
 
+local function ST_GetItemLink(row)
+    return row.cols[1].value
+end
+
+local function ST_GetLoot(row)
+    return row.cols[5].value
+end
+
 local LootGUI = {}
 function LootGUI:Initialize()
     self:Create()
@@ -40,13 +48,13 @@ end
 local columns = {
     playerLoot = {
         {name = "Item",  width = 225},
-        {name = "Date", width = 150},
+        {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
         {name = "Value",  width = 70},
         {name = "", width = 0}
     },
     raidLoot = {
         {name = "Item",  width = 225},
-        {name = "Date", width = 150},
+        {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
         {name = "Value",  width = 70},
         {name = "Player",   width = 50}
     }
@@ -84,13 +92,24 @@ local function CreateLootDisplay(self)
     local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local rowData = self.st:GetRow(realrow) -- temporary until the cell contains itemLink. now its id
-        if not rowData or rowData.cols == nil then return status end
-        local itemLink = rowData.cols[1].value or ""
+        if not rowData or not rowData.cols then return status end
+        local itemLink = ST_GetItemLink(rowData) or ""
         local itemId = UTILS.GetItemIdFromLink(itemLink)
         local itemString = "item:" .. tonumber(itemId)
         local tooltip = self.tooltip
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
+        local loot = ST_GetLoot(rowData)
+        if loot then
+            local profile = ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Entry():creator()))
+            local name
+            if profile then
+                name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+            else
+                name = "Unknown"
+            end
+            tooltip:AddDoubleLine("Awarded by", name)
+        end
 		tooltip:Show()
         return status
     end)
@@ -190,6 +209,7 @@ function LootGUI:Refresh(visible)
         row.cols[2] = {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())}
         row.cols[3] = {value = loot:Value()}
         row.cols[4] = {value = lootData[3]}
+        row.cols[5] = {value = loot}
         data[rowId] =  row
         rowId = rowId + 1
     end

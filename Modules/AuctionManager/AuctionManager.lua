@@ -65,7 +65,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         LOG:Warning("AuctionManager:StartAuction(): Auction in progress")
         return
     end
-    if not self:CanUserAuctionItems() then
+    if not self:IsAuctioneer() then
         LOG:Message("You are not allowed to auction items")
         return
     end
@@ -330,7 +330,7 @@ end
 
 function AuctionManager:MarkAsAuctioneer(auctioneer)
     LOG:Trace("AuctionManager:MarkAsAuctioneer()")
-    LOG:Debug("AuctionManager:MarkAsAuctioneer(): Marking %s as auctioneer", tostring(auctioneer))
+    LOG:Message("AuctionManager:MarkAsAuctioneer(): Marking %s as auctioneer", tostring(auctioneer))
     self.auctioneer = auctioneer or ""
 end
 
@@ -349,12 +349,14 @@ function AuctionManager:ClearBids()
 end
 
 function AuctionManager:Award(itemId, price, name)
+    LOG:Trace("AuctionManager:Award()")
     LootManager:AwardItem(self.roster, name, self.itemLink, itemId, price)
 end
 
-function AuctionManager:CanUserAuctionItems(name)
-    print(name, UTILS.whoami(), self.auctioneer)
+function AuctionManager:IsAuctioneer(name)
+    LOG:Trace("AuctionManager:IsAuctioneer()")
     name = name or UTILS.whoami()
+
     return (name == self.auctioneer)
 end
 
