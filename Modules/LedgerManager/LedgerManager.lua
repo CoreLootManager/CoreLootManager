@@ -36,7 +36,7 @@ function LedgerManager:Initialize()
         end), -- sendLargeMessage
         0, 50, LOG
     )
-    self.ledger.addSyncStateChangedListener(function(status)
+    self.ledger.addSyncStateChangedListener(function(_, status)
         self:UpdateSyncState(status) -- there is still something fishy about the Icon (securehook) and I don't know what
     end)
     self.entryExtensions = {}
@@ -112,6 +112,17 @@ end
 
 function LedgerManager:IsSyncOngoing()
     return self.syncOngoing
+end
+
+function LedgerManager:Lag()
+    return self.ledger.getStateManager():lag()
+end
+
+function LedgerManager:Hash()
+    return self.ledger.getStateManager():stateHash()
+end
+function LedgerManager:Length()
+    return self.ledger.getSortedList():length()
 end
 
 function LedgerManager:RequestPeerStatusFromRaid()
