@@ -34,6 +34,7 @@ local RaidManager = {}
 function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
     self.status = MODULES.Database:Raid()
+    self.isEventHandlingRegistered = false
     if not self:IsRaidInProgress() then
         LOG:Debug("No raid in Progress")
         -- We dont have any inProgress information stored or it's false (raid is not in progress)
@@ -103,7 +104,9 @@ function RaidManager:InitializeRaid(roster)
     self.roster = roster
 
     self.status.inProgress = true
-    -- Handle ontime bonus
+    -- Handle ontime bonus and other point stuff
+    -- Handle roster change event
+    self:SetupRosterUpdateHandling()
     -- Send comms
     Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_INIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
     -- Handle internal
@@ -123,6 +126,14 @@ function RaidManager:EndRaid()
         self:ClearAuctioneer()
         self:ClearRaidInfo()
     end
+end
+
+function RaidManager:SetupRosterUpdateHandling()
+    if self.isEventHandlingRegistered then return end
+    EventManager:RegisterEvent("RAID_ROSTER_UPDATE", (function(...)
+        self:HandleRequestReinit()
+    end))
+    self.isEventHandlingRegistered = true
 end
 
 function RaidManager:MarkAsAuctioneer(name)
@@ -145,6 +156,9 @@ function RaidManager:RestoreRaidInfo()
         LOG:Message("%s", tostring(self.roster))
         -- pass info to auction manager
         self:HandleRaidInitialization(UTILS.whoami())
+        -- restore event handling
+        -- Handle roster change event
+        self:SetupRosterUpdateHandling()
         -- check if we have some pending auto awards to do
     end
 end
@@ -199,7 +213,7 @@ function RaidManager:HandleRaidEnd(auctioneer)
     self:ClearRaidInfo()
 end
 
-function RaidManager:HandleRequestReinit(sender)
+function RaidManager:HandleRequestReinit()
     LOG:Trace("RaidManager:HandleRequestReinit()")
     -- I am the raid initiator as my status inprogress is not external
     if self:AmIRaidManager() then
@@ -219,7 +233,7 @@ function RaidManager:HandleIncomingMessage(message, sender)
     elseif message == RAID_COMMS_END then
         self:HandleRaidEnd(sender)
     elseif message == RAID_COMMS_REQUEST_REINIT then
-        self:HandleRequestReinit(sender)
+        self:HandleRequestReinit()
     else
         LOG:Debug("RaidManager:HandleIncomingMessage(): Received unsupported message %s", tostring(message))
     end
