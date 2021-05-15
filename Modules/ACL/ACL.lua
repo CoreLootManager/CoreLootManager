@@ -34,7 +34,7 @@ function ACL:BuildRankCache()
     for i = 1,GuildControlGetNumRanks() do
         rankInfo = C_GuildInfo.GuildControlGetRankFlags(i)
         self.cache.ranks[i] = {}
-        self.cache.ranks[i].isOfficer = (rankInfo[4] or rankInfo[7] or rankInfo[8] or rankInfo[12])
+        self.cache.ranks[i].isOfficer = rankInfo[4]
     end
     -- Add GM
     self.cache.ranks[0] = { isOfficer = true}

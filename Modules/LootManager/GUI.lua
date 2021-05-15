@@ -252,8 +252,10 @@ function LootGUI:RefreshProfiles()
     local profileList = {"-- Raid Loot --"}
     for _, GUID in ipairs(profiles) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
-        profileNameMap[profile:Name()] = profile:Name()
-        table.insert(profileList, profile:Name())
+        if profile then
+            profileNameMap[profile:Name()] = profile:Name()
+            table.insert(profileList, profile:Name())
+        end
     end
     table.sort(profileList)
     self.ProfileSelectorDropDown:SetList(profileNameMap, profileList)
