@@ -116,7 +116,7 @@ end
 
 function BiddingManager:HandleIncomingMessage(message, distribution, sender)
     LOG:Trace("BiddingManager:HandleIncomingMessage()")
-    if not MODULES.AuctionManager:CanUserAuctionItems(sender) then
+    if not MODULES.AuctionManager:IsAuctioneer(sender) then
         LOG:Error("Received unauthorised auction command from %s", sender)
         return
     end

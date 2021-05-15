@@ -180,8 +180,7 @@ CONSTANTS.COMMS = {
     }),
     DISTRIBUTION = {
         PARTY = "PARTY",
-        -- RAID = "RAID",
-        RAID = "GUILD", -- DEBUG
+        RAID = "RAID",
         --INSTANCE = "INSTANCE_CHAT",
         GUILD = "GUILD",
         OFFICER = "OFFICER",

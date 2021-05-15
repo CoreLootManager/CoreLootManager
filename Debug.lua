@@ -71,8 +71,8 @@ function Debug:Enable()
     ACL.CheckLevel = (function(...) return true end) -- fully unlock addon
     ACL.IsTrusted  = (function(...) return true end) -- fully unlock addon
     -- substitute AuctionManager
-    self.originalAM = AuctionManager.CanUserAuctionItems
-    AuctionManager.CanUserAuctionItems = (function(...) return true end) -- allow anybody to do auctions
+    self.originalAM = AuctionManager.IsAuctioneer
+    AuctionManager.IsAuctioneer = (function(...) return true end) -- allow anybody to do auctions
     -- Add Kill command
     self:EnableKillCommand()
     -- Enable
