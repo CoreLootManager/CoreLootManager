@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - 'v*'
+      - 'v*-beta*'
 jobs:
   create_github_release:
     name: Create a release object in Github
