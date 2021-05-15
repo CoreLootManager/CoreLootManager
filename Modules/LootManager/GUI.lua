@@ -56,7 +56,7 @@ local columns = {
         {name = "Item",  width = 225},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
         {name = "Value",  width = 70},
-        {name = "Player",   width = 50}
+        {name = "Player",   width = 70}
     }
 }
 
@@ -65,7 +65,7 @@ local function CreateLootDisplay(self)
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(500)
-    StandingsGroup:SetWidth(590)
+    StandingsGroup:SetWidth(600)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel("Select roster")
@@ -87,7 +87,7 @@ local function CreateLootDisplay(self)
     self.st = ScrollingTable:CreateST(columns.playerLoot, 25, 18, nil, StandingsGroup.frame)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
-    self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
+    self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
     -- OnEnter handler -> on hover
     local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -136,7 +136,7 @@ function LootGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(570)
+    f:SetWidth(600)
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Loot_GUI")
@@ -191,6 +191,7 @@ function LootGUI:Refresh(visible)
             {cols = {
                 {value = ""},
                 {value = "Loading..."},
+                {value = ""},
                 {value = ""},
                 {value = ""}
             }}

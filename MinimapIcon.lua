@@ -43,7 +43,6 @@ do
         local lag = CLM.MODULES.LedgerManager:Lag()
         local count = CLM.MODULES.LedgerManager:Length()
         -- local hash = CLM.MODULES.LedgerManager:Hash()
-        -- tooltip:AddLine("In-Sync", 0.0, 0.8, 0.0)
         local info
         if lag >  0 then
             info = string.format("%d events (%d pending)", count, lag)

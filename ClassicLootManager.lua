@@ -58,6 +58,19 @@ local function Initialize_Versioning()
     }
     -- set new version
     CLM_DB.global.version = new
+    -- update string
+    local changeset = new.changeset
+    if changeset and changeset ~= "" then
+        changeset = "-" .. changeset
+    else
+        changeset = ""
+    end
+    CORE.versionString = string.format(
+        "v%s.%s.%s%s",
+        new.major or 0,
+        new.minor or 0,
+        new.patch or 0,
+        changeset)
     -- return both for update purposes
     return old, new
 end
@@ -67,23 +80,7 @@ function CORE:GetVersion()
 end
 
 function CORE:GetVersionString()
-    if not self.versionString then
-        local version = self:GetVersion()
-        local changeset = version.string
-        if changeset and changeset ~= "" then
-            changeset = "-" .. changeset
-        else
-            changeset = ""
-        end
-        self.versionString = string.format(
-            "v%s.%s.%s%s",
-            version.major or 0,
-            version.minor or 0,
-            version.patch or 0,
-            changeset)
-    end
-
-    return self.versionString
+    return self.versionString or ""
 end
 
 function CORE:_InitializeCore()
@@ -159,7 +156,6 @@ function CORE:_SequentialInitialize(stage)
     elseif stage >= 4 then
         self:_Enable()
         LOG:Info("Initialization complete")
-        -- CORE:RegisterEvent("PLAYER_LOGOUT")
         return
     end
     C_Timer.After(0.1, function() CORE:_SequentialInitialize(stage + 1) end)
