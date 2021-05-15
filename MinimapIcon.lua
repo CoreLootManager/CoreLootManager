@@ -44,7 +44,12 @@ do
         local count = CLM.MODULES.LedgerManager:Length()
         -- local hash = CLM.MODULES.LedgerManager:Hash()
         -- tooltip:AddLine("In-Sync", 0.0, 0.8, 0.0)
-        local info = string.format("%d events (%d pending)", count, lag)
+        local info
+        if lag >  0 then
+            info = string.format("%d events (%d pending)", count, lag)
+        else
+            info = string.format("%d events", count)
+        end
         if CLM.MODULES.LedgerManager:IsInSync() then
             tooltip:AddDoubleLine("In-Sync", info, 0.0, 0.8, 0.0)
         elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then

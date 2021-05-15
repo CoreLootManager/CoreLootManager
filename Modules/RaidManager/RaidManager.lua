@@ -12,6 +12,7 @@ local MODELS = CLM.MODELS
 local ACL = MODULES.ACL
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
+local EventManager = MODULES.EventManager
 -- local ProfileManager = MODULES.ProfileManager
 local Comms = MODULES.Comms
 
@@ -70,6 +71,10 @@ end
 
 function RaidManager:IsRaidInProgress()
     return self.status and (self.status.inProgress or self.status.inProgressExternal)
+end
+
+function RaidManager:AmIRaidManager()
+    return self.status and self.status.inProgress and not self.status.inProgressExternal
 end
 
 function RaidManager:InitializeRaid(roster)
@@ -197,7 +202,7 @@ end
 function RaidManager:HandleRequestReinit(sender)
     LOG:Trace("RaidManager:HandleRequestReinit()")
     -- I am the raid initiator as my status inprogress is not external
-    if self:IsRaidInProgress() and not self.status.inProgressExternal then
+    if self:AmIRaidManager() then
         Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_INIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
     end
 end
@@ -227,7 +232,7 @@ function RaidManager:RegisterSlash()
             name = "Resync raid",
             desc = "Failsafe to resync raid after you were Initiator and did disconnect after which raid was restarted",
             func = (function()
-                if IsInRaid() and self:IsRaidInProgress() and not self.inProgressExternal then
+                if IsInRaid() and self:AmIRaidManager() then
                     LOG:Message("Requesting resynchronisation")
                     self:ClearRaidInfo()
                     Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
