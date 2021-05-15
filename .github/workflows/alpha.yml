@@ -25,10 +25,3 @@ jobs:
           CF_API_KEY: ${{ secrets.CF_TOKEN }}
         with:
           args: "-o -e -u -m .pkgmeta -g bcc"
-      - name: Get name of zip file
-        run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
-      - name: Upload artifact to github
-        uses: fnkr/github-action-ghr@v1
-        env:
-          GHR_PATH: ${{ env.artifact }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
