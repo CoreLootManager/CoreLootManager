@@ -11,8 +11,7 @@ if not icon then return end
 CLM.MinimapDBI = ldb:NewDataObject(addonName, {
     type = "data source",
     text = "0",
-    icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierBlue"
-    -- icon = "Interface\\AddOns\\ClassicLootManager\\Media\\CLM-sync-D-128.blp"
+    icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
 })
 
 function CLM.MinimapDBI.OnClick(self, button)

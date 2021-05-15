@@ -131,13 +131,12 @@ function CORE:_InitializeFrontend()
     -- Hook Minimap Icon
     hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
         if MODULES.LedgerManager:IsInSync() then
-            CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierGreen"
+            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
         elseif MODULES.LedgerManager:IsSyncOngoing() then
-            CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierRed"
+            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-nok-32.tga"
         else -- Unknown state
-            CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierBlue"
+            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
         end
-        -- CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\CLM-sync-D-128.blp"
     end)
 end
 
