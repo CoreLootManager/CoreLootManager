@@ -140,7 +140,7 @@ local function GenerateManagerOptions(self)
             type = "execute",
             width = "full",
             func = (function()
-                local roster, profiles = self:GetSelected()
+                local roster, _ = self:GetSelected()
                 if roster == nil then
                     LOG:Debug("StandingsGUI(Remove): roster == nil")
                     return

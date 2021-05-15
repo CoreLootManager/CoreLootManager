@@ -48,7 +48,7 @@ end
 
 local function Initialize_Versioning()
     -- Parse autoversion
-    local major, minor, patch, changeset = string.match(CLM.AUTOVERSION, "^v(%d+)\.(%d+)\.(%d+)-?(.*)")
+    local major, minor, patch, changeset = string.match(CLM.AUTOVERSION, "^v(%d+).(%d+).(%d+)-?(.*)")
     local old = CLM_DB.global.version
     local new = {
         major = tonumber(major) or 0,
@@ -69,17 +69,17 @@ end
 function CORE:GetVersionString()
     if not self.versionString then
         local version = self:GetVersion()
-        local changesets = version.string
+        local changeset = version.string
         if changeset and changeset ~= "" then
             changeset = "-" .. changeset
-        else 
+        else
             changeset = ""
         end
         self.versionString = string.format(
-            "v%s.%s.%s%s", 
-            version.major or 0, 
-            version.minor or 0, 
-            version.patch or 0, 
+            "v%s.%s.%s%s",
+            version.major or 0,
+            version.minor or 0,
+            version.patch or 0,
             changeset)
     end
 
