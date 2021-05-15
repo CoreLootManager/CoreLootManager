@@ -90,6 +90,8 @@ function RaidManager:InitializeRaid(roster)
         LOG:Message("Raid is already in progress.")
         return
     end
+    -- Lazy fill raid roster
+    RosterManager:AddFromRaidToRoster(roster)
     -- is RL / ML -> check the loot system ? -- do we need it? maybe everyone can be?
     self.status.time.raidStart = GetServerTime()
     self.status.roster = roster:UID()

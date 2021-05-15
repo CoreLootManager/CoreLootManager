@@ -8,6 +8,8 @@ CLM.CONSTANTS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
 
+CLM.AUTOVERSION = "@project-version@"
+
 CLM.LOG = LibStub("LibLogger"):New()
 
 local CORE = CLM.CORE
@@ -18,11 +20,11 @@ local function Initialize_SavedVariables()
     if type(CLM_DB) ~= "table" then
         CLM_DB = {
             global = {
-                version = { -- populate through CI
+                version = {
                     major = 0,
-                    minor = 1,
+                    minor = 0,
                     patch = 0,
-                    changeset = "000000"
+                    changeset = ""
                 },
                 logger = {
                     severity = CLM.LOG.SEVERITY.WARNING,
@@ -42,6 +44,46 @@ local function Initialize_Logger()
     LOG:SetVerbosity(CLM_DB.global.logger.verbosity)
     LOG:SetPrefix("CLM")
     LOG:SetDatabase(CLM_Logs)
+end
+
+local function Initialize_Versioning()
+    -- Parse autoversion
+    local major, minor, patch, changeset = string.match(CLM.AUTOVERSION, "^v(%d+)\.(%d+)\.(%d+)-?(.*)")
+    local old = CLM_DB.global.version
+    local new = {
+        major = tonumber(major) or 0,
+        minor = tonumber(minor) or 0,
+        patch = tonumber(patch) or 0,
+        changeset = changeset or ""
+    }
+    -- set new version
+    CLM_DB.global.version = new
+    -- return both for update purposes
+    return old, new
+end
+
+function CORE:GetVersion()
+    return CLM_DB.global.version
+end
+
+function CORE:GetVersionString()
+    if not self.versionString then
+        local version = self:GetVersion()
+        local changesets = version.string
+        if changeset and changeset ~= "" then
+            changeset = "-" .. changeset
+        else 
+            changeset = ""
+        end
+        self.versionString = string.format(
+            "v%s.%s.%s%s", 
+            version.major or 0, 
+            version.minor or 0, 
+            version.patch or 0, 
+            changeset)
+    end
+
+    return self.versionString
 end
 
 function CORE:_InitializeCore()
@@ -143,6 +185,8 @@ function CORE:OnInitialize()
     Initialize_SavedVariables()
     --  Early Initialize logger
     Initialize_Logger()
+    -- Initialize Versioning
+    Initialize_Versioning()
     -- Initialize AddOn
     LOG:Trace("OnInitialize")
     self._initialize_fired = false

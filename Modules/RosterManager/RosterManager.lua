@@ -382,6 +382,34 @@ function RosterManager:RemoveProfilesFromRoster(roster, profiles)
     LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, true), true)
 end
 
+function RosterManager:AddFromRaidToRoster(roster)
+    LOG:Trace("RosterManager:AddFromRaidToRoster()")
+    if not typeof(roster, Roster) then
+        LOG:Error("RosterManager:AddFromRaidToRoster(): Invalid roster object")
+        return
+    end
+    -- Lazy fill profiles
+    ProfileManager:FillFromRaid()
+    local missingProfiles = {}
+    for i=1,MAX_RAID_MEMBERS do
+        local name  = GetRaidRosterInfo(i)
+        if name then
+            name = UTILS.RemoveServer(name)
+            local profile = ProfileManager:GetProfileByName(name)
+            if profile then
+                local GUID = profile:GUID()
+                if not roster:IsProfileInRoster(GUID) then
+                    table.insert(missingProfiles, GUID)
+                end
+            else
+                LOG:Debug("Missing [%s] profile after filling from raid. Weird.", name)
+            end
+        end
+    end
+    LOG:Message("Adding missing %s players to current roster", #missingProfiles)
+    self:AddProfilesToRoster(roster, missingProfiles)
+end
+
 function RosterManager:AddLootToRoster(roster, loot, profile)
     LOG:Trace("RosterManager:AddLootToRoster()")
     if not typeof(roster, Roster) then

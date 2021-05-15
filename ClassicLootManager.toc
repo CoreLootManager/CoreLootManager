@@ -1,9 +1,11 @@
-## Interface: 11306
-## X-Min-Interface: 11306
+## Interface: 25101
+## X-Min-Interface: 11307
 ## Title: Classic Loot Manager
 ## Notes: Point based Loot Manager (DKP / EPGP)
 ## Author: Lantis (WoW: Mirage Raceway EU <Essential> Alliance)
 ## X-License: MIT
+## X-Curse-Project-ID: 481373
+## X-WoWI-ID: 26001
 # OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, LibLogger, AceAddon-3.0
 ## SavedVariables: CLM_DB, CLM_Logs
 ## LoadOnDemand: 0

@@ -40,31 +40,33 @@ end
 do
     function CLM.MinimapDBI.OnTooltipShow(tooltip)
         local isTrusted = CLM.MODULES.ACL:IsTrusted()
-        tooltip:AddLine(addonName)
-        -- tooltip:AddLine("In-Sync", 0.0, 0.8, 0.0)
-        if CLM.MODULES.LedgerManager:IsInSync() then
-            tooltip:AddLine("In-Sync", 0.0, 0.8, 0.0)
-        elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
-            tooltip:AddLine("Sync ongoing", 0.6, 0.0, 0.0)
-        else -- Unknown state
-            tooltip:AddLine("Unknown sync state", 0.4, 0.6, 1)
-        end
-
+        tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
         local lag = CLM.MODULES.LedgerManager:Lag()
         local count = CLM.MODULES.LedgerManager:Length()
         local hash = CLM.MODULES.LedgerManager:Hash()
-        tooltip:AddLine(string.format("We have %d events, %d lag and our state is %s", count, lag, hash))
+        -- tooltip:AddLine("In-Sync", 0.0, 0.8, 0.0)
+        local info = string.format("%d events (%d pending)", count, lag)
+        if CLM.MODULES.LedgerManager:IsInSync() then
+            tooltip:AddDoubleLine("In-Sync", info, 0.0, 0.8, 0.0)
+        elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
+            tooltip:AddDoubleLine("Sync ongoing", info, 0.6, 0.0, 0.0)
+        else -- Unknown state
+            tooltip:AddDoubleLine("Unknown sync state", info, 0.4, 0.6, 1)
+        end
+
+        -- tooltip:AddLine(string.format("We have %d events, %d lag and our state is %s", count, lag, hash))
 
         tooltip:AddLine(" ")
-        tooltip:AddLine("|cffcfcfcfLeft Click:|r Toggle Standings window")
-        tooltip:AddLine("|cffcfcfcfShift + Left Click:|r Open configuration window")
+
+        tooltip:AddDoubleLine("|cffcfcfcfLeft Click|r", "Toggle Standings")
+        tooltip:AddDoubleLine("|cffcfcfcfShift + Left Click|r", "Open Configuration")
         if isTrusted then
-            tooltip:AddLine("|cffcfcfcfAlt + Left Click:|r Toggle Auction window")
+            tooltip:AddDoubleLine("|cffcfcfcfAlt + Left Click|r", "Toggle Auction")
         end
-        tooltip:AddLine("|cffcfcfcfRight Click:|r Toggle Loot window")
+        tooltip:AddDoubleLine("|cffcfcfcfRight Click|r", "Toggle Loot")
         if isTrusted then
-            tooltip:AddLine("|cffcfcfcfShift + Right Click:|r Toggle Profiles window")
-            tooltip:AddLine("|cffcfcfcfAlt + Right Click:|r Toggle Raid window")
+            tooltip:AddDoubleLine("|cffcfcfcfShift + Right Click|r", "Toggle Profiles")
+            tooltip:AddDoubleLine("|cffcfcfcfAlt + Right Click|r", "Toggle Raid")
         end
     end
 end

@@ -139,8 +139,13 @@ local function GenerateManagerOptions(self)
             desc = "Adds players from current raid to the roster. Creates profiles if not exists.",
             type = "execute",
             width = "full",
-            func = (function(i)
-
+            func = (function()
+                local roster, profiles = self:GetSelected()
+                if roster == nil then
+                    LOG:Debug("StandingsGUI(Remove): roster == nil")
+                    return
+                end
+                RosterManager:AddFromRaidToRoster(roster)
             end),
             confirm = true,
             order = 25

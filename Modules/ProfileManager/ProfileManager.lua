@@ -120,7 +120,7 @@ function ProfileManager:NewProfile(GUID, name, class)
         return
     end
     if self:GetProfileByGUID(GUID) or self:GetProfileByName(name) then
-        LOG:Error("NewProfile(): %s (%s) already exists", name, GUID)
+        LOG:Debug("NewProfile(): %s (%s) already exists", name, GUID)
         return
     end
     LOG:Debug("New profile: [%s]: %s", GUID, name)
