@@ -64,10 +64,14 @@ jobs:
         run: pipx install yq
       - name: verify required files recursively
         run: scripts/verify-dependencies ClassicLootManager.toc
+      - name: Remove git dirs from gitman deps
+        run:  find ExternalLibs -type d -name ".git" -execdir rm -rf {} \; -prune
+      - name: Copy gitman deps
+        run: mkdir -p .release/ClassicLootManager && mv ExternalLibs .release/ClassicLootManager/
       - name: Bigwigs packager
         uses: BigWigsMods/packager@master
         with:
-          args: "-d -e -u"
+          args: "-d -e -u -o"
       - name: Get name of zip file
         run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
       - name: Upload artifact to github
