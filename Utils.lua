@@ -231,7 +231,7 @@ local getIntegerGuid = UTILS.getIntegerGuid
 
 local GUIDPrefix = string.sub(UnitGUID("player"), 1, -9)
 function UTILS.getGuidFromInteger(int)
-    return GUIDPrefix .. string.format("%08X", int or 0)
+    return GUIDPrefix .. string.format("%08X", tonumber(int) or 0)
 end
 
 function UTILS.DumpTable(t)

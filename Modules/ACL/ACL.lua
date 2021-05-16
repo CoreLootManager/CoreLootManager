@@ -120,7 +120,7 @@ function ACL:GetGuildMaster()
         if rankIndex == 0 then
             self.cache.guildMaster = UTILS.RemoveServer(name)
         end
-        self.cache.ranks[rankIndex] = name -- for reference in other places
+        self.cache.ranks[rankIndex] = rankName -- for reference in other places
     end
 end
 

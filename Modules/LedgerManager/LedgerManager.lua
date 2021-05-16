@@ -5,17 +5,22 @@ local LOG = CLM.LOG
 local Comms = MODULES.Comms
 local CONSTANTS = CLM.CONSTANTS
 local ACL = MODULES.ACL
+local UTILS = CLM.UTILS
 
 local STATUS_SYNCED = "synced"
 local STATUS_OUT_OF_SYNC = "out_of_sync"
 -- local STATUS_UNKNOWN = "unknown"
+
+local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
 local LedgerManager = { _initialized = false}
 
 local function authorize(entry, sender)
-    return LedgerManager:Authorize(entry:class(), sender)
+    local profile = MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(entry:creator()))
+    if not profile then return false end 
+    return LedgerManager:Authorize(entry:class(), profile:Name())
 end
 
 function LedgerManager:Initialize()

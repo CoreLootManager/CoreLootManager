@@ -159,8 +159,8 @@ local function GenerateOfficerOptions(self)
             order = 25
         },
         mark_as_assistant = {
-            name = "Mark as assistant",
-            desc = "Mark selected players as assistant or everyone if none selected.",
+            name = "Mark as Assistant",
+            desc = "Mark selected players as Assistants or everyone if none selected.",
             type = "execute",
             width = "full",
             func = (function(i)
