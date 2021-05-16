@@ -69,7 +69,7 @@ function PointManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModify)")
             mutator(entry, mutate_pdm) end),
-        ACL_LEVEL.MANAGER)
+        ACL_LEVEL.ASSISTANT)
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Set,
@@ -77,7 +77,7 @@ function PointManager:Initialize()
             LOG:TraceAndCount("mutator(DKPSet)")
             mutator(entry, mutate_pds)
         end),
-        ACL_LEVEL.OFFICER)
+        ACL_LEVEL.MANAGER)
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Decay,
@@ -85,7 +85,7 @@ function PointManager:Initialize()
             LOG:TraceAndCount("mutator(DKPDecay)")
             mutator(entry, mutate_pdd)
         end),
-        ACL_LEVEL.OFFICER)
+        ACL_LEVEL.MANAGER)
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
 end

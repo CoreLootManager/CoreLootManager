@@ -97,6 +97,7 @@ function CORE:_InitializeBackend()
     MODULES.Comms:Initialize()
     MODULES.EventManager:Initialize()
     MODULES.LedgerManager:Initialize()
+    MODULES.ACL:RegisterMutators()
     if type(self.Debug) == "function" then
         self.Debug()
     end

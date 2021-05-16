@@ -57,7 +57,7 @@ function RosterManager:Initialize()
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
         end),
-        ACL_LEVEL.OFFICER)
+        ACL_LEVEL.MANAGER)
 
     LedgerManager:RegisterEntryType(
         LEDGER_ROSTER.Delete,
@@ -75,7 +75,7 @@ function RosterManager:Initialize()
             self.cache.rostersUidMap[uid] = nil
             self.cache.rosters[name] = nil
         end),
-        ACL_LEVEL.OFFICER)
+        ACL_LEVEL.MANAGER)
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.Rename,
@@ -103,7 +103,7 @@ function RosterManager:Initialize()
                 -- Remove old assignments
                 self.cache.rosters[oldname] = nil
             end),
-            ACL_LEVEL.OFFICER)
+            ACL_LEVEL.MANAGER)
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.CopyData,
@@ -139,7 +139,7 @@ function RosterManager:Initialize()
                     t:CopyProfiles(s)
                 end
             end),
-            ACL_LEVEL.OFFICER)
+            ACL_LEVEL.MANAGER)
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateConfigSingle,
@@ -155,7 +155,7 @@ function RosterManager:Initialize()
 
                 roster:SetConfiguration(entry:config(), entry:value())
             end),
-            ACL_LEVEL.OFFICER)
+            ACL_LEVEL.MANAGER)
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateDefaultSingle,
@@ -171,7 +171,7 @@ function RosterManager:Initialize()
 
                 roster:SetDefaultSlotValue(entry:config(), entry:base(), entry:max())
             end),
-            ACL_LEVEL.OFFICER)
+            ACL_LEVEL.MANAGER)
 
         LedgerManager:RegisterEntryType(
                 LEDGER_ROSTER.UpdateOverrides,
@@ -193,7 +193,7 @@ function RosterManager:Initialize()
                         roster:SetItemValue(entry:itemId(), entry:base(), entry:max())
                     end
                 end),
-                ACL_LEVEL.OFFICER)
+                ACL_LEVEL.MANAGER)
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateProfiles,
@@ -223,7 +223,7 @@ function RosterManager:Initialize()
                     end
                 end
             end),
-            ACL_LEVEL.MANAGER)
+            ACL_LEVEL.ASSISTANT)
 
         LedgerManager:RegisterOnRestart(function()
             self:WipeAll()
@@ -366,7 +366,15 @@ function RosterManager:AddProfilesToRoster(roster, profiles)
         LOG:Error("Empty profiles table in AddProfilesToRoster()")
         return
     end
-    LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, false), true)
+
+    local entry = LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, false)
+    local t = entry:profiles()
+    if not t or (#t == 0) then
+        LOG:Error("RosterManager:AddProfilesToRoster(): Empty profiles list")
+        return
+    end
+
+    LedgerManager:Submit(entry, true)
 end
 
 function RosterManager:RemoveProfilesFromRoster(roster, profiles)
@@ -379,7 +387,16 @@ function RosterManager:RemoveProfilesFromRoster(roster, profiles)
         LOG:Error("Empty profiles table in RemoveProfilesFromRoster()")
         return
     end
-    LedgerManager:Submit(LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, true), true)
+
+    local entry = LEDGER_ROSTER.UpdateProfiles:new(roster:UID(), profiles, true)
+
+    local t = entry:profiles()
+    if not t or (#t == 0) then
+        LOG:Error("RosterManager:RemoveProfilesFromRoster(): Empty profiles list")
+        return
+    end
+
+    LedgerManager:Submit(entry, true)
 end
 
 function RosterManager:AddFromRaidToRoster(roster)

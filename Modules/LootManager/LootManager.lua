@@ -46,7 +46,7 @@ function LootManager:Initialize()
                 return
             end
         end),
-        ACL_LEVEL.MANAGER)
+        ACL_LEVEL.ASSISTANT)
 
         MODULES.ConfigManager:RegisterUniversalExecutor("lm", "LootManager", self)
 end

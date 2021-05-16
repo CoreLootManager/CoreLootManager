@@ -66,7 +66,7 @@ function ProfileManager:Initialize()
                 self.cache.profilesGuidMap[name] = GUID
             end
         end),
-        ACL_LEVEL.MANAGER)
+        ACL_LEVEL.ASSISTANT)
 
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Remove,
@@ -79,7 +79,7 @@ function ProfileManager:Initialize()
                 self.cache.profiles[GUID] = nil
             end
         end),
-        ACL_LEVEL.MANAGER)
+        ACL_LEVEL.ASSISTANT)
 
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Link,
@@ -100,7 +100,7 @@ function ProfileManager:Initialize()
                 altProfile:SetMain(main)
             end
         end),
-        ACL_LEVEL.MANAGER)
+        ACL_LEVEL.ASSISTANT)
 
     LedgerManager:RegisterOnRestart(function()
         self:WipeAll()

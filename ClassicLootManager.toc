@@ -48,6 +48,7 @@ Utils.lua
 Modules\Logger\Logger.lua
 
 # Addon models
+Modules\ACL\LedgerEntries.lua
 Modules\ProfileManager\Profile.lua
 Modules\RosterManager\Roster.lua
 Modules\ProfileManager\LedgerEntries.lua

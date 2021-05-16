@@ -4,71 +4,156 @@ local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local LOG = CLM.LOG
--- local DumpTable = UTILS.DumpTable
+local MODELS = CLM.MODELS
+local LEDGER_ACL = MODELS.LEDGER.ACL
 local whoami = UTILS.whoami
+
+local getGuidFromInteger = UTILS.getGuidFromInteger
+
 local ACL = { }
 
 function ACL:Initialize()
-    local db = MODULES.Database:Guild()
-    if type(db.ACL) ~= "table" then
-        db.ACL = { whitelist = {} }
-    end
-    self.db = db.ACL
     -- Current user information
     self.guildMaster = IsGuildLeader()
     -- Overall guild information
-    self.cache = { ranks = {} }
-    self:BuildRankCache()
-    self:BuildOfficerCache()
-    -- Set trust level for self
-    self:SetTrusted()
+    self:WipeAll()
+
+    -- Cache the guild master
+    self:GetGuildMaster()
+
     MODULES.ConfigManager:RegisterUniversalExecutor("acl", "ACL", self)
 end
 
-function ACL:BuildRankCache()
-    local rankInfo
-    -- 4    Officerchat Speak
-    -- 7    Invite Member
-    -- 8    Remove Member
-    -- 12   Edit Officer Note
-    for i = 1,GuildControlGetNumRanks() do
-        rankInfo = C_GuildInfo.GuildControlGetRankFlags(i)
-        self.cache.ranks[i] = {}
-        self.cache.ranks[i].isOfficer = rankInfo[4]
-    end
-    -- Add GM
-    self.cache.ranks[0] = { isOfficer = true}
+function ACL:RegisterMutators()
+-- Register mutators
+    MODULES.LedgerManager:RegisterEntryType(
+        LEDGER_ACL.UpdateManagers,
+        (function(entry)
+            LOG:TraceAndCount("mutator(ACLUpdateManagers)")
 
+            local profiles = entry:profiles()
+            if not profiles or type(profiles) ~= "table" or #profiles == 0 then
+                LOG:Debug("Empty profiles table in mutator(ACLUpdateManagers)")
+                return
+            end
+
+            if entry:remove() then
+                for _, iGUID in ipairs(profiles) do
+                    self:RemoveOfficerByGUID(getGuidFromInteger(iGUID))
+                end
+            else
+                for _, iGUID in ipairs(profiles) do
+                    self:AddOfficerByGUID(getGuidFromInteger(iGUID))
+                end
+            end
+        end),
+        CONSTANTS.ACL.LEVEL.GUILD_MASTER)
+
+    MODULES.LedgerManager:RegisterEntryType(
+        LEDGER_ACL.UpdateAssistants,
+        (function(entry)
+            LOG:TraceAndCount("mutator(ACLUpdateAssistants)")
+
+            local profiles = entry:profiles()
+            if not profiles or type(profiles) ~= "table" or #profiles == 0 then
+                LOG:Debug("Empty profiles table in mutator(ACLUpdateAssistants)")
+                return
+            end
+
+            if entry:remove() then
+                for _, iGUID in ipairs(profiles) do
+                    self:RemoveManagerByGUID(getGuidFromInteger(iGUID))
+                end
+            else
+                for _, iGUID in ipairs(profiles) do
+                    self:AddManagerByGUID(getGuidFromInteger(iGUID))
+                end
+            end
+        end),
+        CONSTANTS.ACL.LEVEL.MANAGER)
+
+    -- register on restart: remove the cahce
+    MODULES.LedgerManager:RegisterOnRestart(function()
+        self:WipeAll()
+    end)
 end
 
-function ACL:BuildOfficerCache()
-    self.cache.officers = { }
+function ACL:UpdateManagers(profiles, remove)
+    LOG:Trace("ACL:UpdateManagers()")
+    if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
+        LOG:Error("Empty profiles table in UpdateManagers()")
+        return
+    end
+
+    local entry = LEDGER_ACL.UpdateManagers:new(profiles, remove)
+
+    local t = entry:profiles()
+    if not t or (#t == 0) then
+        LOG:Error("ACL:UpdateManagers(): Empty profiles list")
+        return
+    end
+
+    MODULES.LedgerManager:Submit(entry, true)
+end
+
+function ACL:UpdateAssistants(profiles, remove)
+    LOG:Trace("ACL:UpdateAssistants()")
+    if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
+        LOG:Error("Empty profiles table in UpdateAssistants()")
+        return
+    end
+
+    local entry = LEDGER_ACL.UpdateAssistants:new(profiles, remove)
+
+    local t = entry:profiles()
+    if not t or (#t == 0) then
+        LOG:Error("ACL:UpdateAssistants(): Empty profiles list")
+        return
+    end
+
+    MODULES.LedgerManager:Submit(entry, true)
+end
+
+function ACL:GetGuildMaster()
     for i=1,GetNumGuildMembers() do
         local name, rankName, rankIndex = GetGuildRosterInfo(i)
-        self.cache.ranks[rankIndex].name = rankName
-        if self:IsRankOfficer(rankIndex) then
-            self.cache.officers[UTILS.RemoveServer(name)] = true
-        end
         if rankIndex == 0 then
             self.cache.guildMaster = UTILS.RemoveServer(name)
         end
+        self.cache.ranks[rankIndex] = name -- for reference in other places
     end
 end
 
-function ACL:SetTrusted()
-    self.trusted = self:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+function ACL:AddOfficerByGUID(GUID)
+    local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
+    if profile then
+        self.cache.officers[profile:Name()] = true
+    end
+end
+
+function ACL:RemoveOfficerByGUID(GUID)
+    local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
+    if profile then
+        self.cache.officers[profile:Name()] = nil
+    end
+end
+
+function ACL:AddManagerByGUID(GUID)
+    local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
+    if profile then
+        self.cache.managers[profile:Name()] = true
+    end
+end
+
+function ACL:RemoveManagerByGUID(GUID)
+    local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
+    if profile then
+        self.cache.managers[profile:Name()] = nil
+    end
 end
 
 function ACL:IsTrusted(name)
-    if name == nil then
-        return self.trusted or false
-    else
-        return self:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name) or false
-    end
-end
-
-function ACL:IsRankOfficer(rank)
-    return self.cache.ranks[rank] and self.cache.ranks[rank].isOfficer or false
+    return self:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) or false
 end
 
 function ACL:CheckLevel(level, name)
@@ -84,47 +169,37 @@ function ACL:CheckLevel(level, name)
     end
     local isGuildMaster = (self.cache.guildMaster == name) or false
     local isOfficer = self.cache.officers[name] or false
-    local isManager = self.db.whitelist[name] or false
+    local isManager = self.cache.managers[name] or false
     -- Check for Guild Master
     if level >= CONSTANTS.ACL.LEVEL.GUILD_MASTER then
         return isGuildMaster
     end
     -- Check for Officer
-    if level >= CONSTANTS.ACL.LEVEL.OFFICER then
-        return isGuildMaster or isOfficer
+    if level >= CONSTANTS.ACL.LEVEL.MANAGER then
+        return isOfficer or isGuildMaster
     end
     -- Check for Managers
-    if level >= CONSTANTS.ACL.LEVEL.MANAGER then
-        return isGuildMaster or isOfficer or isManager
+    if level >= CONSTANTS.ACL.LEVEL.ASSISTANT then
+        return isManager or isOfficer or isGuildMaster
     end
     -- Check for unauthorized
     return true
-end
-
-function ACL:AddToWhitelist(name)
-    LOG:Trace("ACL:AddToWhitelist()")
-    if self:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) then
-        self.db.whitelist[name] = true
-    end
-end
-
-function ACL:RemoveFromWhitelist(name)
-    LOG:Trace("ACL:RemoveFromWhitelist()")
-    if self:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) then
-        self.db.whitelist[name] = nil
-    end
 end
 
 function ACL:GetGuildRanks()
     return self.cache.ranks
 end
 
+function ACL:WipeAll()
+    self.cache = { guildMaster = "", officers = {}, managers = {}, ranks = {} }
+end
+
 CONSTANTS.ACL = {}
 
 CONSTANTS.ACL.LEVEL = {
     PLEBS = 0,
-    MANAGER = 1,
-    OFFICER = 2,
+    ASSISTANT = 1,
+    MANAGER = 2,
     GUILD_MASTER = 3
 }
 

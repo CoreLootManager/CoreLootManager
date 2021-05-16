@@ -42,7 +42,7 @@ end
 
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
-    self.readOnly = not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER)
+    self.readOnly = not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     self.handlers = {
         name_get = (function(name)
             return name
@@ -388,7 +388,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = "Copy settings from selected roster.",
                 type = "execute",
                 confirm = true,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) end),
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 98
             },
             copy_source = {
@@ -403,7 +403,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     end
                     return v
                 end),
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) end),
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 99
             },
             fill_profiles = {
@@ -411,7 +411,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = "Fills current roster with all profiles.",
                 type = "execute",
                 confirm = true,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) end),
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 100
             },
             remove = {
@@ -419,7 +419,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = "Removes current roster.",
                 type = "execute",
                 confirm = true,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) end),
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 101
             },
             boss_kill_bonus = {
@@ -581,7 +581,7 @@ function RosterManagerOptions:UpdateOptions()
             desc = "Creates new roster with default configuration",
             type = "execute",
             func = function() RosterManager:NewRoster(self.pointType) end,
-            disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) end),
+            disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
             order = 1
         },
         point_type = {
@@ -591,7 +591,7 @@ function RosterManagerOptions:UpdateOptions()
             set = (function(i, v) self.pointType = v end),
             get = (function(i) return self.pointType end),
             order = 2,
-            disabled = true,--(function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) end),
+            disabled = true,--(function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
             values = CONSTANTS.POINT_TYPES_GUI
         }
     }

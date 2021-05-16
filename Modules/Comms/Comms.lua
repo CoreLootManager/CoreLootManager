@@ -173,7 +173,7 @@ CONSTANTS.COMMS = {
         "RAID",
         --"INSTANCE_CHAT",
         "GUILD",
-        "OFFICER",
+        "MANAGER",
         "WHISPER",
         --"SAY",
         --"YELL"
