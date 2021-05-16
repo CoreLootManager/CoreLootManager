@@ -20,7 +20,8 @@ local LedgerManager = { _initialized = false}
 local function authorize(entry, sender)
     local profile = MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(entry:creator()))
     if not profile then return false end
-    return LedgerManager:Authorize(entry:class(), profile:Name())
+    return (LedgerManager:Authorize(entry:class(), profile:Name()) and
+            LedgerManager:Authorize(entry:class(), sender))
 end
 
 function LedgerManager:Initialize()
