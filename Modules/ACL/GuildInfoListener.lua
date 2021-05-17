@@ -13,7 +13,6 @@ function GuildInfoListener:Initialize()
     self:BuildCache()
     MODULES.EventManager:RegisterEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
         LOG:Debug("Rebuild trust cache after event")
-        self:BuildCache()
         if self.cacheUpdateRequired then
             GuildRoster()
             self.cacheUpdateRequired = false
