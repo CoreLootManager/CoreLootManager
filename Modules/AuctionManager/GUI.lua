@@ -288,6 +288,11 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
                 self:Refresh()
             end),
+            confirm = (function()
+                return "Are you sure, you want to award " .. self.itemLink .. 
+                " to " .. UTILS.ColorCodeText(self.awardPlayer, "FFD100") .. 
+                " for " .. tostring(self.awardValue) .. " DKP?"
+            end),
             width = 0.75,
             order = 15,
             disabled = (function() return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end)
@@ -317,6 +322,9 @@ function AuctionManagerGUI:Create()
 
     f:AddChild(CreateOptions(self))
     f:AddChild(CreateBidWindow(self))
+
+    -- Clear active bid on close
+    f:SetCallback('OnClose', function() AuctionManagerGUI:ClearSelectedBid(self) end)
 
     -- Hide by default
     f:Hide()
