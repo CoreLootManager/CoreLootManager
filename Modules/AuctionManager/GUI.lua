@@ -81,6 +81,8 @@ local function CreateBidWindow(self)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", BidWindowGroup.frame, "TOPLEFT", 0, -25)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
+    -- Award reset on closing BidWindow.
+    self.st.frame:SetScript("OnHide", AuctionManagerGUI:ClearSelectedBid())
 
     --- selection ---
     local OnClickHandler = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -90,6 +92,9 @@ local function CreateBidWindow(self)
         if selected.cols == nil then return false end -- Handle column titles click
         self.awardPlayer = selected.cols[1].value or ""
         -- self.awardValue = selected.cols[4].value or 0
+        if not self.awardValue or self.awardValue == '' then
+            AuctionManagerGUI:UpdateBids(self)
+        end
         if self.awardPlayer and self.awardPlayer:len() > 0 then
             self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
         else
@@ -273,7 +278,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         award_value = {
             name = "Award value",
             type = "input",
-            set = (function(i,v) self.awardValue = tonumber(v) or 0 end),
+            set = (function(i,v) AuctionManagerGUI:setInputAwardValue(self, v) end),
             get = (function(i) return tostring(self.awardValue) end),
             -- disabled = (function(i) return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end),
             width = 0.75,
@@ -288,6 +293,17 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             end),
             width = 0.75,
             order = 15,
+            disabled = (function() return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end)
+        },
+        clear_award = {
+            name = "Clear Award",
+            type = "execute",
+            func = (function()
+                AuctionManagerGUI:ClearSelectedBid(self)
+                self:Refresh()
+            end),
+            width = 0.75,
+            order = 16,
             disabled = (function() return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end)
         },
     }
@@ -344,7 +360,7 @@ local function GetTopBids()
     return max, second
 end
 
-local function UpdateAwardValue(self)
+function AuctionManagerGUI:UpdateAwardValue(self)
     LOG:Trace("AuctionManagerGUI:UpdateAwardValue()")
     local max, second = GetTopBids(self)
     local isVickrey = (self.roster:GetConfiguration("auctionType") ==  CONSTANTS.AUCTION_TYPE.VICKREY)
@@ -359,9 +375,23 @@ local function UpdateAwardValue(self)
     end
 end
 
+function AuctionManagerGUI:setInputAwardValue(self, v)
+    self.awardValue = tonumber(v) or 0;
+    self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
+    self:Refresh()
+end
+
+function AuctionManagerGUI:ClearSelectedBid(self)
+    LOG:Trace("AuctionManagerGUI:ClearAwardValue()")
+    self.awardValue = ""
+    self.awardPlayer = ""
+    self.top:SetStatusText("")
+    self.st:ClearSelection()
+end
+
 function AuctionManagerGUI:UpdateBids()
     LOG:Trace("AuctionManagerGUI:UpdateBids()")
-    UpdateAwardValue(self)
+    AuctionManagerGUI:UpdateAwardValue(self)
     self:Refresh()
 end
 
