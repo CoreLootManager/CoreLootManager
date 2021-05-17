@@ -55,7 +55,7 @@ function RaidManager:Initialize()
     Comms:Register(RAID_COMM_PREFIX, (function(message, distribution, sender)
         if distribution ~= CONSTANTS.COMMS.DISTRIBUTION.RAID then return end
         self:HandleIncomingMessage(message, sender)
-    end), CONSTANTS.ACL.LEVEL.ASSISTANT)
+    end), CONSTANTS.ACL.LEVEL.PLEBS)
 
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag == 0 and uncommitted == 0 then
@@ -197,6 +197,10 @@ end
 
 function RaidManager:HandleRaidInitialization(auctioneer)
     LOG:Trace("RaidManager:HandleRaidInitialization()")
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, auctioneer) then
+        LOG:Error("RaidManager:HandleRaidEnd(): Received unauthorized raid initialize from %s", auctioneer)
+        return
+    end
     if not self:IsRaidInProgress() then
         LOG:Message("Raid started by %s", UTILS.ColorCodeText(auctioneer, "FFD100"))
     end
@@ -207,6 +211,10 @@ end
 
 function RaidManager:HandleRaidEnd(auctioneer)
     LOG:Trace("RaidManager:HandleRaidEnd()")
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, auctioneer) then
+        LOG:Error("RaidManager:HandleRaidEnd(): Received unauthorized raid end from %s", auctioneer)
+        return
+    end
     if self:IsRaidInProgress() then
         LOG:Message("Raid ended by %s", UTILS.ColorCodeText(auctioneer, "FFD100"))
     end
