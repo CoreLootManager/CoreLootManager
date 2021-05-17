@@ -7,7 +7,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local MODELS = CLM.MODELS
 
-local ACL_LEVEL = CONSTANTS.ACL.LEVEL
+-- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
@@ -68,24 +68,21 @@ function PointManager:Initialize()
         LEDGER_DKP.Modify,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModify)")
-            mutator(entry, mutate_pdm) end),
-        ACL_LEVEL.MANAGER)
+            mutator(entry, mutate_pdm) end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Set,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPSet)")
             mutator(entry, mutate_pds)
-        end),
-        ACL_LEVEL.OFFICER)
+        end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Decay,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPDecay)")
             mutator(entry, mutate_pdd)
-        end),
-        ACL_LEVEL.OFFICER)
+        end))
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
 end

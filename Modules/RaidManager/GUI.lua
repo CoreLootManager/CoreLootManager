@@ -29,7 +29,6 @@ local REGISTRY = "clm_raid_manager_gui_options"
 local RaidManagerGUI = {}
 function RaidManagerGUI:Initialize()
     LOG:Trace("RaidManagerGUI:Initialize()")
-    if not ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -210,7 +209,7 @@ end
 function RaidManagerGUI:Toggle()
     LOG:Trace("RaidManagerGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
+    if self.top.frame:IsVisible() or not ACL:IsTrusted() then
         self.top.frame:Hide()
     else
         self:Refresh()

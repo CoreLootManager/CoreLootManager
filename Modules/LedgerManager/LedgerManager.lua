@@ -5,17 +5,20 @@ local LOG = CLM.LOG
 local Comms = MODULES.Comms
 local CONSTANTS = CLM.CONSTANTS
 local ACL = MODULES.ACL
+-- local UTILS = CLM.UTILS
 
 local STATUS_SYNCED = "synced"
 local STATUS_OUT_OF_SYNC = "out_of_sync"
 -- local STATUS_UNKNOWN = "unknown"
+
+-- local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
 local LedgerManager = { _initialized = false}
 
 local function authorize(entry, sender)
-    return LedgerManager:Authorize(entry:class(), sender)
+    return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
 end
 
 function LedgerManager:Initialize()
@@ -28,7 +31,7 @@ function LedgerManager:Initialize()
         end), -- send
         (function(callback)
             Comms:Register(prefixSync, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-            Comms:Register(prefixData, callback, CONSTANTS.ACL.LEVEL.MANAGER)
+            Comms:Register(prefixData, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
         end), -- registerReceiveHandler
         authorize, -- authorizationHandler
         (function(data, distribution, target, progressCallback)
@@ -40,10 +43,13 @@ function LedgerManager:Initialize()
         self:UpdateSyncState(status) -- there is still something fishy about the Icon (securehook) and I don't know what
     end)
     self.entryExtensions = {}
-    self.authorizationLevel = {}
     self._initialized = true
 
     MODULES.ConfigManager:RegisterUniversalExecutor("ledger", "LedgerManager", self)
+end
+
+function LedgerManager:IsInitialized()
+    return self._initialized
 end
 
 function LedgerManager:Enable()
@@ -51,16 +57,7 @@ function LedgerManager:Enable()
     self.ledger.enableSending()
 end
 
-function LedgerManager:Authorize(class, sender)
-    LOG:Trace("LedgerManager:Authorize()")
-    if self.authorizationLevel[class] == nil then
-        LOG:Warning("Unknown class [%s]", class)
-        return false
-    end
-    return ACL:CheckLevel(self.authorizationLevel[class], sender)
-end
-
-function LedgerManager:RegisterEntryType(class, mutatorFn, authorizationLevel)
+function LedgerManager:RegisterEntryType(class, mutatorFn)
     if self.entryExtensions[class] then
         LOG:Error("Class %s already exists in Ledger Entries.", class)
         return
@@ -68,7 +65,6 @@ function LedgerManager:RegisterEntryType(class, mutatorFn, authorizationLevel)
     self.entryExtensions[class] = true
 
     self.ledger.registerMutator(class, mutatorFn)
-    self.authorizationLevel[class:staticClassName()] = authorizationLevel
 end
 
 function LedgerManager:RegisterOnRestart(callback)

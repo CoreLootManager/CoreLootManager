@@ -40,7 +40,7 @@ function AuctionManager:Initialize()
         -- Auction Manager is owner of the channel
         -- pass handling to BidManager
         MODULES.BiddingManager:HandleIncomingMessage(message, distribution, sender)
-    end), CONSTANTS.ACL.LEVEL.MANAGER, true)
+    end), CONSTANTS.ACL.LEVEL.ASSISTANT, true)
 
     self.handlers = {
         [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]    = "HandleSubmitBid",

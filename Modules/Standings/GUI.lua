@@ -247,10 +247,10 @@ local function CreateManagementOptions(self, container)
         args = {}
     }
     mergeDictsInline(options.args, GenerateUntrustedOptions(self))
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         mergeDictsInline(options.args, GenerateManagerOptions(self))
     end
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.OFFICER) then
+    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
         mergeDictsInline(options.args, GenerateOfficerOptions(self))
     end
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)

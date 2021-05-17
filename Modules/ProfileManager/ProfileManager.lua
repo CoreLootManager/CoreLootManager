@@ -3,8 +3,8 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
-local CONSTANTS = CLM.CONSTANTS
-local ACL_LEVEL = CONSTANTS.ACL.LEVEL
+-- local CONSTANTS = CLM.CONSTANTS
+-- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 
 -- local keys = UTILS.keys
 local typeof = UTILS.typeof
@@ -65,8 +65,7 @@ function ProfileManager:Initialize()
                 self.cache.profiles[GUID] = profile
                 self.cache.profilesGuidMap[name] = GUID
             end
-        end),
-        ACL_LEVEL.MANAGER)
+        end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Remove,
@@ -78,8 +77,7 @@ function ProfileManager:Initialize()
             if self.cache.profiles[GUID] then
                 self.cache.profiles[GUID] = nil
             end
-        end),
-        ACL_LEVEL.MANAGER)
+        end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_PROFILE.Link,
@@ -99,8 +97,7 @@ function ProfileManager:Initialize()
             else
                 altProfile:SetMain(main)
             end
-        end),
-        ACL_LEVEL.MANAGER)
+        end))
 
     LedgerManager:RegisterOnRestart(function()
         self:WipeAll()

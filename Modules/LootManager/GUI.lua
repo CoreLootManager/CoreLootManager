@@ -18,6 +18,11 @@ local GUI = CLM.GUI
 -- local mergeDictsInline = UTILS.mergeDictsInline
 -- local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
 
+local getGuidFromInteger = UTILS.getGuidFromInteger
+local GetClassColor = UTILS.GetClassColor
+local ColorCodeText = UTILS.ColorCodeText
+local GetItemIdFromLink = UTILS.GetItemIdFromLink
+
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 -- local PointManager = MODULES.PointManager
@@ -94,17 +99,17 @@ local function CreateLootDisplay(self)
         local rowData = self.st:GetRow(realrow) -- temporary until the cell contains itemLink. now its id
         if not rowData or not rowData.cols then return status end
         local itemLink = ST_GetItemLink(rowData) or ""
-        local itemId = UTILS.GetItemIdFromLink(itemLink)
+        local itemId = GetItemIdFromLink(itemLink)
         local itemString = "item:" .. tonumber(itemId)
         local tooltip = self.tooltip
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
         local loot = ST_GetLoot(rowData)
         if loot then
-            local profile = ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Entry():creator()))
+            local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Entry():creator()))
             local name
             if profile then
-                name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+                name = ColorCodeText(profile:Name(), GetClassColor(profile:Class()).hex)
             else
                 name = "Unknown"
             end
@@ -182,7 +187,7 @@ function LootGUI:Refresh(visible)
             self.pendingLoot = true
         elseif not self.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
             local owner = loot:Owner()
-            table.insert(self.displayedLoot, {loot, itemLink, UTILS.ColorCodeText(owner:Name(), UTILS.GetClassColor(owner:Class()).hex)})
+            table.insert(self.displayedLoot, {loot, itemLink, ColorCodeText(owner:Name(), GetClassColor(owner:Class()).hex)})
         end
     end
 

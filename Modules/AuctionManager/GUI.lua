@@ -60,7 +60,6 @@ end
 
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
-    if not ACL:IsTrusted() then return end
     self:Create()
     HookBagSlots()
     self:RegisterSlash()
@@ -424,7 +423,7 @@ end
 function AuctionManagerGUI:Toggle()
     LOG:Trace("AuctionManagerGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
+    if self.top.frame:IsVisible() or not ACL:IsTrusted() then
         self.top.frame:Hide()
     else
         self:Refresh()

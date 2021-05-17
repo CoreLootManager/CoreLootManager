@@ -55,7 +55,7 @@ function RaidManager:Initialize()
     Comms:Register(RAID_COMM_PREFIX, (function(message, distribution, sender)
         if distribution ~= CONSTANTS.COMMS.DISTRIBUTION.RAID then return end
         self:HandleIncomingMessage(message, sender)
-    end), CONSTANTS.ACL.LEVEL.MANAGER)
+    end), CONSTANTS.ACL.LEVEL.ASSISTANT)
 
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag == 0 and uncommitted == 0 then
@@ -84,7 +84,7 @@ function RaidManager:InitializeRaid(roster)
         LOG:Error("RaidManager:InitializeRaid(): Missing valid roster")
         return
     end
-    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         LOG:Message("You are not allowed to initialize a raid.")
         return
     end

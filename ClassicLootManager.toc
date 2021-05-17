@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 11306
 ## Interface-Classic: 11306
 ## Interface-BCC: 20501
 ## Title: Classic Loot Manager
@@ -61,6 +61,7 @@ Modules\BiddingManager\BiddingCommStructures.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua
+Modules\ACL\GuildInfoListener.lua
 Modules\ACL\ACL.lua
 Modules\Comms\Comms.lua
 Modules\EventManager\EventManager.lua
@@ -87,5 +88,5 @@ Modules\LootManager\GUI.lua
 MinimapIcon.lua
 Migration.lua
 #@do-not-package@
-Debug.lua
+#Debug.lua
 #@end-do-not-package@

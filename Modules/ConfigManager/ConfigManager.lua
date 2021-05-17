@@ -104,7 +104,9 @@ function ConfigManager:RegisterUniversalExecutor(command, name, object)
             set = function(info, value) UTILS.UniversalCliMethodExecutor(name, object, value) end
         }
     }
+    -- @debug@
     self:RegisterSlash(options)
+    -- @end-debug@
 end
 
 function ConfigManager:UpdateOptions(group, register)

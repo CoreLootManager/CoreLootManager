@@ -12,7 +12,7 @@ function EventManager:Initialize()
     self.bucketCallbacks = {}
 end
 
-function EventManager:RegisterEvent(event, functionOrObject, methodName)
+function EventManager:RegisterEvent(events, functionOrObject, methodName)
     LOG:Trace("EventManager:RegisterEvent()")
     local callback
     if type(functionOrObject) == "table" and type(methodName) == "string" then
@@ -20,22 +20,31 @@ function EventManager:RegisterEvent(event, functionOrObject, methodName)
     elseif type(functionOrObject) == "function" then
         callback = functionOrObject
     else
-        LOG:Error("EventManager:RegisterEvent(): Invalid handler input")
+        LOG:Fatal("EventManager:RegisterEvent(): Invalid handler input")
+        return
     end
-    if not self.callbacks[event] then-- lazy load event handlers
-        self.callbacks[event] = {}
-        CORE[event] = (function(...)
-            LOG:Debug("Handling [" .. event .. "]")
-            for _,cb in pairs(self.callbacks[event]) do
-                local status, error = pcall(cb, ...) -- if there are multiple handlers for an event we don't one to error out all of them
-                if not status then
-                    LOG:Error("Error during handling %s event: %s", event, tostring(error))
+    if not events then
+        LOG:Fatal("EventManager:RegisterEvent(): Invalid event")
+        return
+    end
+    if type(events) == "string" then events = { events } end
+    for _,event in ipairs(events) do
+        if not self.callbacks[event] then-- lazy load event handlers
+            self.callbacks[event] = {}
+            CORE[event] = (function(...)
+                LOG:Debug("Handling [" .. event .. "]")
+                for _,cb in pairs(self.callbacks[event]) do
+                    local status, error = pcall(cb, ...) -- if there are multiple handlers for an event we don't one to error out all of them
+                    if not status then
+                        LOG:Error("Error during handling %s event: %s", event, tostring(error))
+                    end
                 end
-            end
-        end)
-        CORE:RegisterEvent(event)
+            end)
+            CORE:RegisterEvent(event)
+        end
+
+        table.insert(self.callbacks[event], callback)
     end
-    table.insert(self.callbacks[event], callback)
 end
 
 function EventManager:RegisterBucketEvent(event, interval, functionOrObject, methodName)
