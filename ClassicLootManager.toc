@@ -1,8 +1,8 @@
-## Interface: 11306
-## Interface-Classic: 11306
+## Interface: 11307
+## Interface-Classic: 11307
 ## Interface-BCC: 20501
 ## Title: Classic Loot Manager
-## Notes: Point based Loot Manager (DKP / EPGP)
+## Notes: Robust, point based Loot Manager system  (DKP / EPGP / SK / ROLL)
 ## Author: Lantis (WoW: Mirage Raceway EU <Essential> Alliance)
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
@@ -88,5 +88,5 @@ Modules\LootManager\GUI.lua
 MinimapIcon.lua
 Migration.lua
 #@do-not-package@
-#Debug.lua
+Debug.lua
 #@end-do-not-package@

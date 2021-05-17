@@ -308,6 +308,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         order = order + 1,
                         itemLink = "item:" .. sid,
                         set = (function(i, v)
+                            if self.readOnly then return end
                             local value = roster:GetItemValue(id)
                             RosterManager:SetRosterItemValue(roster, id, tonumber(v) or 0, value.max)
                         end),
@@ -322,6 +323,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         order = order + 2,
                         itemLink = "item:" .. sid,
                         set = (function(i, v)
+                            if self.readOnly then return end
                             local value = roster:GetItemValue(id)
                             RosterManager:SetRosterItemValue(roster, id, value.base, tonumber(v) or 0)
                         end),

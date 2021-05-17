@@ -364,27 +364,6 @@ function AuctionManager:IsAuctionInProgress()
     return self.auctionInProgress
 end
 
-function AuctionManager:Debug()
-    C_Timer.After(1, (function()
-        local profiles = self.roster:Profiles()
-        local actions = math.random(1,30)
-        for _=1,actions do
-            local delay = math.random(1,30)*0.9
-            C_Timer.After(delay, (function()
-                local value
-                if math.random(1, 20) == 1 then
-                    value = nil
-                else
-                    value = math.random(self.baseValue, self.maxValue)
-                end
-                local GUID = profiles[math.random(1, #profiles)]
-                local profile = ProfileManager:GetProfileByGUID(GUID)
-                self:UpdateBid(profile:Name(), value)
-            end))
-        end
-    end))
-end
-
 CONSTANTS.AUCTION_COMM = {
     TYPE = {
         START_AUCTION = 1,

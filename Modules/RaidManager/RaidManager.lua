@@ -130,7 +130,7 @@ end
 
 function RaidManager:SetupRosterUpdateHandling()
     if self.isEventHandlingRegistered then return end
-    EventManager:RegisterEvent("RAID_ROSTER_UPDATE", (function(...)
+    EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE"}, (function(...)
         self:HandleRequestReinit()
     end))
     self.isEventHandlingRegistered = true
@@ -148,18 +148,20 @@ end
 
 function RaidManager:RestoreRaidInfo()
     LOG:Trace("RaidManager:RestoreRaidInfo()")
-    if self.status.inProgressExternal and IsInRaid() then
-        Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-    else
-        -- restore roster
-        self.roster = RosterManager:GetRosterByUid(self.status.roster)
-        LOG:Message("%s", tostring(self.roster))
-        -- pass info to auction manager
-        self:HandleRaidInitialization(UTILS.whoami())
-        -- restore event handling
-        -- Handle roster change event
-        self:SetupRosterUpdateHandling()
-        -- check if we have some pending auto awards to do
+    if IsInRaid() then
+        if self.status.inProgressExternal then
+            Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+        else
+            -- restore roster
+            self.roster = RosterManager:GetRosterByUid(self.status.roster)
+            LOG:Message("%s", tostring(self.roster))
+            -- pass info to auction manager
+            self:MarkAsAuctioneer(UTILS.whoami())
+            -- restore event handling
+            -- Handle roster change event
+            self:SetupRosterUpdateHandling()
+            -- check if we have some pending auto awards to do
+        end
     end
 end
 
