@@ -27,7 +27,7 @@ local function Initialize_SavedVariables()
                     changeset = ""
                 },
                 logger = {
-                    severity = CLM.LOG.SEVERITY.WARNING,
+                    severity = CLM.LOG.SEVERITY.ERROR,
                     verbosity = false
                 }
             }

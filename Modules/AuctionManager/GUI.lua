@@ -283,6 +283,10 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
+                self.itemLink = nil
+                self.itemId = 0
+                self.awardValue = 0
+                self.awardPlayer = ""
                 self:Refresh()
             end),
             width = 0.75,

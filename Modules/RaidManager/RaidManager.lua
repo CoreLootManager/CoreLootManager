@@ -154,7 +154,6 @@ function RaidManager:RestoreRaidInfo()
         else
             -- restore roster
             self.roster = RosterManager:GetRosterByUid(self.status.roster)
-            LOG:Message("%s", tostring(self.roster))
             -- pass info to auction manager
             self:MarkAsAuctioneer(UTILS.whoami())
             -- restore event handling

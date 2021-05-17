@@ -51,12 +51,12 @@ function LootManager:Initialize()
 end
 
 function LootManager:AwardItem(roster, name, itemLink, itemId, value, forceInstant)
-    local profile = ProfileManager:GetProfileByName(name)
     LOG:Trace("LootManager:AwardItem()")
     if not typeof(roster, Roster) then
         LOG:Error("LootManager:AwardItem(): Missing valid roster")
         return
     end
+    local profile = ProfileManager:GetProfileByName(name)
     if not typeof(profile, Profile) then
         LOG:Error("LootManager:AwardItem(): Missing valid profile")
         return
@@ -71,8 +71,9 @@ function LootManager:AwardItem(roster, name, itemLink, itemId, value, forceInsta
     end
     if roster:IsProfileInRoster(profile:GUID()) then
         LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
-        SendChatMessage(itemLink .. " awarded to " .. name .. " for " .. value, "RAID_WARNING")
-        SendChatMessage(itemLink .. " awarded to " .. name .. " for " .. value, "GUILD")
+        local message = string.format("%s awarded to %s for %s DKP", itemLink, name, value)
+        SendChatMessage(message, "RAID_WARNING")
+        SendChatMessage(message, "GUILD")
     else
         LOG:Error("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
     end
