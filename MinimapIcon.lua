@@ -51,7 +51,11 @@ do
                 info = string.format("%s events", count)
             end
         else
+<<<<<<< HEAD
             info = string.format("Loading events...")
+=======
+            info = string.format("Loading events...", count)
+>>>>>>> c1dfb5fe3e78f82828dff7f4a136d315b83feb89
         end
         if CLM.MODULES.LedgerManager:IsInSync() then
             tooltip:AddDoubleLine("In-Sync", info, 0.0, 0.8, 0.0)
