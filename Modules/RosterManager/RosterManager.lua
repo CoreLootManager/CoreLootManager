@@ -5,7 +5,7 @@ local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local MODULES = CLM.MODULES
 local MODELS = CLM.MODELS
-local ACL_LEVEL = CONSTANTS.ACL.LEVEL
+-- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 local LEDGER_ROSTER = CLM.MODELS.LEDGER.ROSTER
 local UTILS = CLM.UTILS
 
@@ -56,8 +56,7 @@ function RosterManager:Initialize()
             local roster = Roster:New(uid, pointType)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
-        end),
-        ACL_LEVEL.MANAGER)
+        end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_ROSTER.Delete,
@@ -74,8 +73,7 @@ function RosterManager:Initialize()
             local name = self.cache.rostersUidMap[uid]
             self.cache.rostersUidMap[uid] = nil
             self.cache.rosters[name] = nil
-        end),
-        ACL_LEVEL.MANAGER)
+        end))
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.Rename,
@@ -102,8 +100,7 @@ function RosterManager:Initialize()
 
                 -- Remove old assignments
                 self.cache.rosters[oldname] = nil
-            end),
-            ACL_LEVEL.MANAGER)
+            end))
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.CopyData,
@@ -138,8 +135,7 @@ function RosterManager:Initialize()
                 if entry:profiles() then
                     t:CopyProfiles(s)
                 end
-            end),
-            ACL_LEVEL.MANAGER)
+            end))
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateConfigSingle,
@@ -154,8 +150,7 @@ function RosterManager:Initialize()
                 end
 
                 roster:SetConfiguration(entry:config(), entry:value())
-            end),
-            ACL_LEVEL.MANAGER)
+            end))
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateDefaultSingle,
@@ -170,8 +165,7 @@ function RosterManager:Initialize()
                 end
 
                 roster:SetDefaultSlotValue(entry:config(), entry:base(), entry:max())
-            end),
-            ACL_LEVEL.MANAGER)
+            end))
 
         LedgerManager:RegisterEntryType(
                 LEDGER_ROSTER.UpdateOverrides,
@@ -192,8 +186,7 @@ function RosterManager:Initialize()
                     else
                         roster:SetItemValue(entry:itemId(), entry:base(), entry:max())
                     end
-                end),
-                ACL_LEVEL.MANAGER)
+                end))
 
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateProfiles,
@@ -222,8 +215,7 @@ function RosterManager:Initialize()
                         roster:AddProfileByGUID(getGuidFromInteger(iGUID))
                     end
                 end
-            end),
-            ACL_LEVEL.ASSISTANT)
+            end))
 
         LedgerManager:RegisterOnRestart(function()
             self:WipeAll()

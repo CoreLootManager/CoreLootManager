@@ -20,6 +20,7 @@ local mergeDictsInline = UTILS.mergeDictsInline
 local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
 
 local ACL = MODULES.ACL
+local GuildInfoListener = MODULES.GuildInfoListener
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local LedgerManager = MODULES.LedgerManager
@@ -71,11 +72,11 @@ local function GenerateManagerOptions(self)
     return {}
 end
 
-local function GenerateOfficerOptions(self)
+local function GenerateAssistantOptions(self)
     local rankOptions = {}
-    local ranks = ACL:GetGuildRanks()
+    local ranks = GuildInfoListener:GetRanks()
     for i,o in pairs(ranks) do
-        rankOptions[i] = o
+        rankOptions[i] = o.name
     end
     rankOptions[-1] = "Any"
     return {
@@ -158,17 +159,6 @@ local function GenerateOfficerOptions(self)
             confirm = true,
             order = 25
         },
-        mark_as_assistant = {
-            name = "Mark as Assistant",
-            desc = "Mark selected players as Assistants or everyone if none selected.",
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                ACL:UpdateAssistants(self:GetSelected(), false)
-            end),
-            confirm = true,
-            order = 27
-        },
         -- select_main = {
         --     name = "Select main",
         --     desc = "Select character to be marked as main for alt-main linking.",
@@ -242,19 +232,7 @@ local function GenerateOfficerOptions(self)
 end
 
 local function GenerateGMOptions(self)
-    return {
-        mark_as_manager = {
-            name = "Mark as Manager",
-            desc = "Mark selected players as Managers or everyone if none selected.",
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                ACL:UpdateManagers(self:GetSelected(), false)
-            end),
-            confirm = true,
-            order = 26
-        }
-    }
+    return {}
 end
 
 local function CreateManagementOptions(self, container)
@@ -274,8 +252,8 @@ local function CreateManagementOptions(self, container)
         args = {}
     }
     mergeDictsInline(options.args, GenerateUntrustedOptions(self))
+    mergeDictsInline(options.args, GenerateAssistantOptions(self))
     mergeDictsInline(options.args, GenerateManagerOptions(self))
-    mergeDictsInline(options.args, GenerateOfficerOptions(self))
     mergeDictsInline(options.args, GenerateGMOptions(self))
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
     LIBS.gui:Open(REGISTRY, ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
@@ -353,15 +331,16 @@ function ProfilesGUI:Refresh(visible)
         if profile then
             main = profile:Name()
         end
+        local name = object:Name()
         local rank = ""
-        if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
+        if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER, name) then
             rank = "GM"
-        elseif ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+        elseif ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name) then
             rank = "Manager"
-        elseif ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        elseif ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             rank = "Assistant"
         end
-        row.cols[1] = {value = object:Name()}
+        row.cols[1] = {value = name}
         row.cols[2] = {value = UTILS.ColorCodeClass(object:Class())}
         row.cols[3] = {value = object:Spec()}
         row.cols[4] = {value = main}

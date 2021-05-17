@@ -48,7 +48,6 @@ Utils.lua
 Modules\Logger\Logger.lua
 
 # Addon models
-Modules\ACL\LedgerEntries.lua
 Modules\ProfileManager\Profile.lua
 Modules\RosterManager\Roster.lua
 Modules\ProfileManager\LedgerEntries.lua
@@ -62,6 +61,7 @@ Modules\BiddingManager\BiddingCommStructures.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua
+Modules\ACL\GuildInfoListener.lua
 Modules\ACL\ACL.lua
 Modules\Comms\Comms.lua
 Modules\EventManager\EventManager.lua
@@ -88,5 +88,5 @@ Modules\LootManager\GUI.lua
 MinimapIcon.lua
 Migration.lua
 #@do-not-package@
-Debug.lua
+#Debug.lua
 #@end-do-not-package@
