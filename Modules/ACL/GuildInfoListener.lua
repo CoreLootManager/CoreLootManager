@@ -13,11 +13,11 @@ function GuildInfoListener:Initialize()
     self:BuildCache()
     MODULES.EventManager:RegisterEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
         LOG:Debug("Rebuild trust cache after event")
+        self:BuildCache()
         if self.cacheUpdateRequired then
             GuildRoster()
             self.cacheUpdateRequired = false
         end
-        self:BuildCache()
     end))
 end
 
@@ -49,7 +49,6 @@ function GuildInfoListener:BuildTrustedCache()
     LOG:Trace("GuildInfoListener:BuildTrustedCache()")
     for i=1,GetNumGuildMembers() do
         local name, rankName, rankIndex = GetGuildRosterInfo(i)
-<<<<<<< HEAD
         if rankIndex == 0 then
             self.cache.guildMaster = name
         end
@@ -58,13 +57,6 @@ function GuildInfoListener:BuildTrustedCache()
         -- Number - The number corresponding to the guild's rank.
         -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
         rankIndex = rankIndex + 1
-=======
-        -- https://wowwiki-archive.fandom.com/wiki/API_GetGuildRosterInfo
-        -- rankIndex 
-        -- Number - The number corresponding to the guild's rank.
-        -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
-        rankIndex = rankIndex +  1 
->>>>>>> c1dfb5fe3e78f82828dff7f4a136d315b83feb89
         name = RemoveServer(name)
         self.cache.ranks[rankIndex].name = rankName
         if self.cache.ranks[rankIndex] then
@@ -75,12 +67,6 @@ function GuildInfoListener:BuildTrustedCache()
                 self.cache.managers[name] = true
             end
         end
-<<<<<<< HEAD
-=======
-        if rankIndex == 1 then
-            self.cache.guildMaster = name
-        end
->>>>>>> c1dfb5fe3e78f82828dff7f4a136d315b83feb89
     end
 end
 
