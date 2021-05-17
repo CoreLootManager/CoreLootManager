@@ -3,10 +3,10 @@ local  _, CLM = ...
 local LOG = CLM.LOG
 
 local MODULES =  CLM.MODULES
-local CONSTANTS = CLM.CONSTANTS
+-- local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local MODELS =  CLM.MODELS
-local ACL_LEVEL = CONSTANTS.ACL.LEVEL
+-- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
@@ -45,8 +45,7 @@ function LootManager:Initialize()
                 LOG:Debug("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
                 return
             end
-        end),
-        ACL_LEVEL.ASSISTANT)
+        end))
 
         MODULES.ConfigManager:RegisterUniversalExecutor("lm", "LootManager", self)
 end

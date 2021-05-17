@@ -96,8 +96,8 @@ function CORE:_InitializeBackend()
     MODULES.Logger:Initialize()
     MODULES.Comms:Initialize()
     MODULES.EventManager:Initialize()
+    MODULES.GuildInfoListener:Initialize()
     MODULES.LedgerManager:Initialize()
-    MODULES.ACL:RegisterMutators()
     if type(self.Debug) == "function" then
         self.Debug()
     end
@@ -227,9 +227,9 @@ function CLM_Redo()
     LOG:Warning("Redo not implemented.")
 end
 --@do-not-package@
-function CORE.Debug()
-    CLM.Debug:Initialize()
-    CLM.Debug:Enable()
-    CLM.Debug:RegisterSlash()
-end
+-- function CORE.Debug()
+--     CLM.Debug:Initialize()
+--     CLM.Debug:Enable()
+--     CLM.Debug:RegisterSlash()
+-- end
 --@end-do-not-package@

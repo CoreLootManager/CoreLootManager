@@ -40,14 +40,18 @@ do
     function CLM.MinimapDBI.OnTooltipShow(tooltip)
         local isTrusted = CLM.MODULES.ACL:IsTrusted()
         tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
-        local lag = CLM.MODULES.LedgerManager:Lag()
-        local count = CLM.MODULES.LedgerManager:Length()
-        -- local hash = CLM.MODULES.LedgerManager:Hash()
         local info
-        if lag >  0 then
-            info = string.format("%d events (%d pending)", count, lag)
+        if CLM.MODULES.LedgerManager:IsInitialized() then
+            local lag = CLM.MODULES.LedgerManager:Lag()
+            local count = CLM.MODULES.LedgerManager:Length()
+            -- hash = CLM.MODULES.LedgerManager:Hash()
+            if lag > 0 then
+                info = string.format("%s events (%s pending)", count, lag)
+            else
+                info = string.format("%s events", count)
+            end
         else
-            info = string.format("%d events", count)
+            info = string.format("Loading events...")
         end
         if CLM.MODULES.LedgerManager:IsInSync() then
             tooltip:AddDoubleLine("In-Sync", info, 0.0, 0.8, 0.0)
