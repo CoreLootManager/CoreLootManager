@@ -355,7 +355,7 @@ function RosterManager:AddProfilesToRoster(roster, profiles)
         return
     end
     if profiles == nil or type(profiles) ~= "table" or #profiles == 0 then
-        LOG:Error("Empty profiles table in AddProfilesToRoster()")
+        LOG:Warning("Empty profiles table in AddProfilesToRoster()")
         return
     end
 

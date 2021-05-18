@@ -54,7 +54,13 @@ end
 
 function LedgerManager:Enable()
     self.ledger.getStateManager():setUpdateInterval(100)
-    self.ledger.enableSending()
+    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        self.ledger.enableSending()
+    end
+end
+
+function LedgerManager:DisableAdvertising()
+    self.ledger.disableSending()
 end
 
 function LedgerManager:RegisterEntryType(class, mutatorFn)

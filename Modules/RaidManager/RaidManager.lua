@@ -55,7 +55,7 @@ function RaidManager:Initialize()
     Comms:Register(RAID_COMM_PREFIX, (function(message, distribution, sender)
         if distribution ~= CONSTANTS.COMMS.DISTRIBUTION.RAID then return end
         self:HandleIncomingMessage(message, sender)
-    end), CONSTANTS.ACL.LEVEL.ASSISTANT)
+    end), CONSTANTS.ACL.LEVEL.PLEBS)
 
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag == 0 and uncommitted == 0 then
@@ -130,7 +130,7 @@ end
 
 function RaidManager:SetupRosterUpdateHandling()
     if self.isEventHandlingRegistered then return end
-    EventManager:RegisterEvent("RAID_ROSTER_UPDATE", (function(...)
+    EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE"}, (function(...)
         self:HandleRequestReinit()
     end))
     self.isEventHandlingRegistered = true
@@ -148,18 +148,19 @@ end
 
 function RaidManager:RestoreRaidInfo()
     LOG:Trace("RaidManager:RestoreRaidInfo()")
-    if self.status.inProgressExternal and IsInRaid() then
-        Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-    else
-        -- restore roster
-        self.roster = RosterManager:GetRosterByUid(self.status.roster)
-        LOG:Message("%s", tostring(self.roster))
-        -- pass info to auction manager
-        self:HandleRaidInitialization(UTILS.whoami())
-        -- restore event handling
-        -- Handle roster change event
-        self:SetupRosterUpdateHandling()
-        -- check if we have some pending auto awards to do
+    if IsInRaid() then
+        if self.status.inProgressExternal then
+            Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+        else
+            -- restore roster
+            self.roster = RosterManager:GetRosterByUid(self.status.roster)
+            -- pass info to auction manager
+            self:MarkAsAuctioneer(UTILS.whoami())
+            -- restore event handling
+            -- Handle roster change event
+            self:SetupRosterUpdateHandling()
+            -- check if we have some pending auto awards to do
+        end
     end
 end
 
@@ -195,6 +196,10 @@ end
 
 function RaidManager:HandleRaidInitialization(auctioneer)
     LOG:Trace("RaidManager:HandleRaidInitialization()")
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, auctioneer) then
+        LOG:Error("RaidManager:HandleRaidEnd(): Received unauthorized raid initialize from %s", auctioneer)
+        return
+    end
     if not self:IsRaidInProgress() then
         LOG:Message("Raid started by %s", UTILS.ColorCodeText(auctioneer, "FFD100"))
     end
@@ -205,6 +210,10 @@ end
 
 function RaidManager:HandleRaidEnd(auctioneer)
     LOG:Trace("RaidManager:HandleRaidEnd()")
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, auctioneer) then
+        LOG:Error("RaidManager:HandleRaidEnd(): Received unauthorized raid end from %s", auctioneer)
+        return
+    end
     if self:IsRaidInProgress() then
         LOG:Message("Raid ended by %s", UTILS.ColorCodeText(auctioneer, "FFD100"))
     end

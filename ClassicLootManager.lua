@@ -27,7 +27,7 @@ local function Initialize_SavedVariables()
                     changeset = ""
                 },
                 logger = {
-                    severity = CLM.LOG.SEVERITY.WARNING,
+                    severity = CLM.LOG.SEVERITY.ERROR,
                     verbosity = false
                 }
             }
@@ -227,9 +227,8 @@ function CLM_Redo()
     LOG:Warning("Redo not implemented.")
 end
 --@do-not-package@
--- function CORE.Debug()
---     CLM.Debug:Initialize()
---     CLM.Debug:Enable()
---     CLM.Debug:RegisterSlash()
--- end
+function CORE.Debug()
+    CLM.Debug:Initialize()
+    CLM.Debug:RegisterSlash()
+end
 --@end-do-not-package@

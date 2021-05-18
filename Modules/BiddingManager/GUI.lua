@@ -91,14 +91,20 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         base = {
             name = "Base",
             type = "execute",
-            func = (function() self.bid = self.auctionInfo and self.auctionInfo:Base() or 0 end),
+            func = (function()
+                self.bid = self.auctionInfo and self.auctionInfo:Base() or 0
+                BiddingManager:Bid(self.bid)
+            end),
             width = 0.45,
             order = 4
         },
         max = {
             name = "Max",
             type = "execute",
-            func = (function() self.bid = self.auctionInfo and self.auctionInfo:Max() or 0 end),
+            func = (function()
+                self.bid = self.auctionInfo and self.auctionInfo:Max() or 0
+                BiddingManager:Bid(self.bid)
+            end),
             width = 0.45,
             order = 5
         },

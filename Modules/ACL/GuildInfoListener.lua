@@ -41,16 +41,13 @@ function GuildInfoListener:BuildRankCache()
         self.cache.ranks[i].isManager = rankInfo[12]
     end
     -- Add GM
-    self.cache.ranks[0] = { isManager = true, isAssistant = true}
+    -- self.cache.ranks[0] = { isManager = true, isAssistant = true}
 end
 
 function GuildInfoListener:BuildTrustedCache()
     LOG:Trace("GuildInfoListener:BuildTrustedCache()")
     for i=1,GetNumGuildMembers() do
         local name, rankName, rankIndex = GetGuildRosterInfo(i)
-        if rankIndex == 0 then
-            self.cache.guildMaster = name
-        end
         -- https://wowwiki-archive.fandom.com/wiki/API_GetGuildRosterInfo
         -- rankIndex
         -- Number - The number corresponding to the guild's rank.
@@ -65,6 +62,9 @@ function GuildInfoListener:BuildTrustedCache()
             if self.cache.ranks[rankIndex].isManager then
                 self.cache.managers[name] = true
             end
+        end
+        if rankIndex == 1 then
+            self.cache.guildMaster = name
         end
     end
 end
