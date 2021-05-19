@@ -88,9 +88,7 @@ local function CreateBidWindow(self)
         if type(selected) ~= "table" then return false end
         if selected.cols == nil then return false end -- Handle column titles click
         self.awardPlayer = selected.cols[1].value or ""
-        if self.roster:GetConfiguration("useSelectedValue") then
-            self.awardValue = selected.cols[4].value or 0
-        end
+        -- self.awardValue = selected.cols[4].value or 0
         if not self.awardValue or self.awardValue == '' then
             AuctionManagerGUI:UpdateBids(self)
         end
@@ -374,9 +372,7 @@ function AuctionManagerGUI:UpdateAwardValue(self)
             self.awardValue = second.bid
         end
     else
-        if not self.roster:GetConfiguration("useSelectedValue") then
-            self.awardValue = max.bid
-        end
+        self.awardValue = max.bid
     end
 end
 
