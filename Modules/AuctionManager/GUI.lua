@@ -90,7 +90,7 @@ local function CreateBidWindow(self)
         self.awardPlayer = selected.cols[1].value or ""
         -- self.awardValue = selected.cols[4].value or 0
         if not self.awardValue or self.awardValue == '' then
-            AuctionManagerGUI:UpdateBids(self)
+            AuctionManagerGUI:UpdateBids()
         end
         if self.awardPlayer and self.awardPlayer:len() > 0 then
             self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
@@ -275,7 +275,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         award_value = {
             name = "Award value",
             type = "input",
-            set = (function(i,v) AuctionManagerGUI:setInputAwardValue(self, v) end),
+            set = (function(i,v) AuctionManagerGUI:setInputAwardValue(v) end),
             get = (function(i) return tostring(self.awardValue) end),
             -- disabled = (function(i) return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end),
             width = 0.75,
@@ -361,7 +361,7 @@ local function GetTopBids()
     return max, second
 end
 
-function AuctionManagerGUI:UpdateAwardValue(self)
+function AuctionManagerGUI:UpdateAwardValue()
     LOG:Trace("AuctionManagerGUI:UpdateAwardValue()")
     local max, second = GetTopBids(self)
     local isVickrey = (self.roster:GetConfiguration("auctionType") ==  CONSTANTS.AUCTION_TYPE.VICKREY)
@@ -376,13 +376,13 @@ function AuctionManagerGUI:UpdateAwardValue(self)
     end
 end
 
-function AuctionManagerGUI:setInputAwardValue(self, v)
+function AuctionManagerGUI:setInputAwardValue(v)
     self.awardValue = tonumber(v) or 0;
     self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
     self:Refresh()
 end
 
-function AuctionManagerGUI:ClearSelectedBid(self)
+function AuctionManagerGUI:ClearSelectedBid()
     LOG:Trace("AuctionManagerGUI:ClearAwardValue()")
     self.awardValue = ""
     self.awardPlayer = ""
@@ -392,7 +392,7 @@ end
 
 function AuctionManagerGUI:UpdateBids()
     LOG:Trace("AuctionManagerGUI:UpdateBids()")
-    AuctionManagerGUI:UpdateAwardValue(self)
+    AuctionManagerGUI:UpdateAwardValue()
     self:Refresh()
 end
 
@@ -427,7 +427,7 @@ function AuctionManagerGUI:Toggle()
     if not self._initialized then return end
     if self.top.frame:IsVisible() or not ACL:IsTrusted() then
         -- Award reset on closing BidWindow.
-        AuctionManagerGUI:ClearSelectedBid(self)
+        AuctionManagerGUI:ClearSelectedBid()
         self.top.frame:Hide()
     else
         self:Refresh()
