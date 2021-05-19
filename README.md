@@ -4,6 +4,7 @@ Classic Loot Manager
 [![Lint](https://github.com/lantisnt/ClassicLootManager/actions/workflows/lint.yml/badge.svg)](https://github.com/lantisnt/ClassicLootManager)
 [![Release](https://img.shields.io/github/v/release/lantisnt/classiclootmanager.svg?color=important)](https://github.com/lantisnt/ClassicLootManager/releases)
 [![Issues](https://img.shields.io/github/issues/lantisnt/classiclootmanager?color=blue)](https://github.com/lantisnt/ClassicLootManager/issues)
+[![Discord](https://img.shields.io/discord/813686248841019392?label=discord)](https://discord.gg/Qjn8KdD8yt)
 
 
 About
