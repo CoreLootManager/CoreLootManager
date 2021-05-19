@@ -83,7 +83,7 @@ function Decay:new(rosterUid, playerList, value, reason)
     value = tonumber(value) or 0
     if value > 100 then value = 100 end
     if value < 0 then value = 0 end
-    o.v = tonumber(value)
+    o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
     return o
 end
