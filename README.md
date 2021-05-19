@@ -1,6 +1,11 @@
 Classic Loot Manager
 ====================
 
+[![Lint](https://github.com/lantisnt/ClassicLootManager/actions/workflows/lint.yml/badge.svg)](https://github.com/lantisnt/ClassicLootManager)
+[![Release](https://img.shields.io/github/v/release/lantisnt/classiclootmanager.svg?color=important)](https://github.com/lantisnt/ClassicLootManager/releases)
+[![Issues](https://img.shields.io/github/issues/lantisnt/classiclootmanager?color=blue)](https://github.com/lantisnt/ClassicLootManager/issues)
+
+
 About
 --------------
 Classic Loot Manager is intended to be a robust Loot Tracking and awarding tool for guilds. 
