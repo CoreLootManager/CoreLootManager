@@ -88,7 +88,9 @@ local function CreateBidWindow(self)
         if type(selected) ~= "table" then return false end
         if selected.cols == nil then return false end -- Handle column titles click
         self.awardPlayer = selected.cols[1].value or ""
-        -- self.awardValue = selected.cols[4].value or 0
+        if self.roster:GetConfiguration("useSelectedValue") then
+            self.awardValue = selected.cols[4].value or 0
+        end
         if not self.awardValue or self.awardValue == '' then
             AuctionManagerGUI:UpdateBids(self)
         end
@@ -293,9 +295,12 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 self:Refresh()
             end),
             confirm = (function()
-                return "Are you sure, you want to award " .. self.itemLink .. 
-                " to " .. UTILS.ColorCodeText(self.awardPlayer, "FFD100") .. 
-                " for " .. tostring(self.awardValue) .. " DKP?"
+                return string.format(
+                    "Are you sure, you want to award %s to %s for %s DKP?",
+                    self.itemLink,
+                    UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
+                    tostring(self.awardValue)
+                )
             end),
             width = 0.75,
             order = 15,
@@ -369,7 +374,9 @@ function AuctionManagerGUI:UpdateAwardValue(self)
             self.awardValue = second.bid
         end
     else
-        self.awardValue = max.bid
+        if not self.roster:GetConfiguration("useSelectedValue") then
+            self.awardValue = max.bid
+        end
     end
 end
 
