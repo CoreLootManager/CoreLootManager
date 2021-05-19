@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+
+function apply_replacements() {
+    # Replace placeholder @project-timestamp@
+    # Replace placeholder @project-version@
+    # Replace placeholder @project-author
+    version=$(git log -1 --format=%D | awk 'NF>1{print $NF}' | tr '/' '-')
+    sed -i "s/@project-timestamp@/`git log -1 --format=%at`/g; s/@project-version@/$version/g; s/@project-author@/`git log -1 --format=%an`/g" $1
+    if [ $? -ne 0 ]; then
+      echo "Sed failed in dir $PWD for file $1"
+      exit 1
+    fi
+}
+
+
+export -f apply_replacements
+
+find $1 -type f \( -iname '*.toc' -o -iname '*.lua' -o -iname '*.xml' \) -execdir bash -c 'apply_replacements "$0"' {} \;
+if [ $? -ne 0 ]; then
+  echo "Some files failed"
+fi
+echo "Done"

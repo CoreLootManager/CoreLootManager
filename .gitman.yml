@@ -22,9 +22,9 @@ sources:
       -
     scripts:
       -
-  - repo: https://github.com/lantisnt/lib-st.git
-    name: lib-st-4.1.2
-    rev: master
+  - repo: https://github.com/ddumont/lib-st
+    name: lib-st
+    rev: v4.1.3
     type: git
     sparse_paths:
       -

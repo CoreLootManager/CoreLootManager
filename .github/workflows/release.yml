@@ -31,6 +31,8 @@ jobs:
         run: pipx install yq
       - name: verify required files recursively
         run: scripts/verify-dependencies ClassicLootManager.toc
+      - name: Apply placeholders
+        run: scripts/replace-placeholders ExternalLibs
       - name: Remove git dirs from gitman deps
         run:  find ExternalLibs -type d -name ".git" -execdir rm -rf {} \; -prune
       - name: Copy gitman deps
