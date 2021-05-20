@@ -46,7 +46,7 @@ local function ST_GetName(row)
 end
 
 local function ST_GetClass(row)
-    return row.cols[2].value
+    return row.cols[3].value
 end
 
 local function GenerateUntrustedOptions(self)
@@ -293,13 +293,14 @@ local function CreateStandingsDisplay(self)
         {   name = "Name",
             width = 100
         },
+        {   name = "DKP",
+            width = 100,
+            sort = ScrollingTable.SORT_DSC
+        },
         {   name = "Class",
             width = 100
         },
         {   name = "Spec",
-            width = 100
-        },
-        {   name = "DKP",
             width = 100
         }
     }
@@ -360,9 +361,9 @@ function StandingsGUI:Refresh(visible)
         if profile then
             local row = {cols = {}}
             row.cols[1] = {value = profile:Name()}
-            row.cols[2] = {value = UTILS.ColorCodeClass(profile:Class())}
-            row.cols[3] = {value = profile:Spec()}
-            row.cols[4] = {value = value}
+            row.cols[2] = {value = value}
+            row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
+            row.cols[4] = {value = profile:Spec()}
             data[rowId] = row
             rowId = rowId + 1
         end
