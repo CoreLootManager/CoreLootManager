@@ -227,8 +227,8 @@ function CLM_Redo()
     LOG:Warning("Redo not implemented.")
 end
 --@do-not-package@
-function CORE.Debug()
-    CLM.Debug:Initialize()
-    CLM.Debug:RegisterSlash()
-end
+-- function CORE.Debug()
+--     CLM.Debug:Initialize()
+--     CLM.Debug:RegisterSlash()
+-- end
 --@end-do-not-package@

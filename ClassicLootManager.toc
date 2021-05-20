@@ -89,5 +89,5 @@ Modules\PointManager\GUI.lua
 MinimapIcon.lua
 Migration.lua
 #@do-not-package@
-Debug.lua
+#Debug.lua
 #@end-do-not-package@
