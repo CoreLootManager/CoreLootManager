@@ -186,7 +186,7 @@ function PointHistoryGUI:Refresh(visible)
             value = value .. "%"
         end
         local awardedBy
-        local creator = ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Entry():creator()))
+        local creator = ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
         if creator then
             awardedBy = ColorCodeText(creator:Name(), GetClassColor(creator:Class()).hex)
         else

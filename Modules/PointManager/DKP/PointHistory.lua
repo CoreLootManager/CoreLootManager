@@ -48,6 +48,10 @@ function PointHistory:Reason()
     return self.entry:reason()
 end
 
+function PointHistory:Creator()
+    return self.entry:creator()
+end
+
 function PointHistory:Entry()
     return self.entry
 end

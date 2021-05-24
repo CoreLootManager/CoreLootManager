@@ -54,14 +54,16 @@ local columns = {
     playerLoot = {
         {name = "Item",  width = 225},
         {name = "Value",  width = 70},
-        {name = "", width = 0},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
+        {name = "", width = 0},
+        {name = "", width = 0},
     },
     raidLoot = {
         {name = "Item",  width = 225},
         {name = "Value",  width = 70},
         {name = "Player",   width = 70},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
+        {name = "", width = 0},
     }
 }
 
@@ -107,7 +109,7 @@ local function CreateLootDisplay(self)
         tooltip:SetHyperlink(itemString)
         local loot = ST_GetLoot(rowData)
         if loot then
-            local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Entry():creator()))
+            local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
             local name
             if profile then
                 name = ColorCodeText(profile:Name(), GetClassColor(profile:Class()).hex)
@@ -196,10 +198,10 @@ function LootGUI:Refresh(visible)
         self.st:SetData({
             {cols = {
                 {value = ""},
+                {value = ""},
                 {value = "Loading..."},
                 {value = ""},
-                {value = ""},
-                {value = ""}
+                -- {value = ""} -- this needs to be nil -> represents the loot itself that is hidden. we use nil check to see if we have data
             }}
         })
         return

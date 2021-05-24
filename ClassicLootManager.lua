@@ -126,6 +126,8 @@ function CORE:_InitializeFrontend()
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
+    -- Initialize Minmap
+    MODULES.Minimap:Initialize()
     -- Hook Minimap Icon
     hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
         if MODULES.LedgerManager:IsInSync() then

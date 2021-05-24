@@ -26,7 +26,7 @@ local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
 
 local FILTER_IN_RAID = 100
--- local FILTER_STANDBY = 102
+local FILTER_STANDBY = 102
 
 local StandingsGUI = {}
 function StandingsGUI:Initialize()
@@ -51,8 +51,8 @@ end
 
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
-    filters[100] = UTILS.ColorCodeText("In Raid", "FFD100")
-    filters[102] = UTILS.ColorCodeText("Standby", "FFD100")
+    filters[FILTER_IN_RAID] = UTILS.ColorCodeText("In Raid", "FFD100")
+    filters[FILTER_STANDBY] = UTILS.ColorCodeText("Standby", "FFD100")
     return {
         filter_header = {
             type = "header",
@@ -431,6 +431,7 @@ function StandingsGUI:Toggle()
     if self.top.frame:IsVisible() then
         self.top.frame:Hide()
     else
+        self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
         self:Refresh()
         self.top.frame:Show()
     end
