@@ -18,7 +18,7 @@ CLM.MinimapDBI = ldb:NewDataObject(addonName, {
 local dropdown = CreateFrame("Frame", "Test_DropDown", UIParent, "UIDropDownMenuTemplate");
 local Minimap = {}
 function Minimap:Initialize()
-    UIDropDownMenu_Initialize(dropdown, (function(self, level)
+    UIDropDownMenu_Initialize(dropdown, (function(_, level)
         local options = {
             {
                 title = "Menu",
@@ -97,9 +97,8 @@ end
 
 do
     function CLM.MinimapDBI.OnTooltipShow(tooltip)
-        local isTrusted = CLM.MODULES.ACL:IsTrusted()
-        tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
         local info
+        tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
         if CLM.MODULES.LedgerManager:IsInitialized() then
             local lag = CLM.MODULES.LedgerManager:Lag()
             local count = CLM.MODULES.LedgerManager:Length()
