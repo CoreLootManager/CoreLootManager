@@ -330,7 +330,9 @@ end
 
 function AuctionManager:MarkAsAuctioneer(auctioneer)
     LOG:Trace("AuctionManager:MarkAsAuctioneer()")
-    LOG:Message("AuctionManager:MarkAsAuctioneer(): Marking %s as auctioneer", tostring(auctioneer))
+    if self.auctioneer ~= auctioneer then
+        LOG:Message("Marking %s as auctioneer", tostring(auctioneer))
+    end
     self.auctioneer = auctioneer or ""
 end
 
