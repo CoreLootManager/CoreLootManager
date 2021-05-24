@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: install discordpy
-        run: pipx install discord.py
+        run: pipx install discord.py --include-deps
       - name: announce
         run: scripts/post_release.py $WEBHOOK_URL
         env:
