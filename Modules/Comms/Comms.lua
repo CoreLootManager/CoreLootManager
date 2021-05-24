@@ -121,31 +121,31 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     end
     -- Validate prefix
     if self.callbacks[prefix] == nil then
-        LOG:Warning("Comms:OnReceive() received message with unsupported prefix")
+        LOG:Warning("Comms:OnReceive() received message with unsupported prefix [%s] from [%s]", prefix, sender)
         return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
     if not ACL:CheckLevel(self.aclLevel[prefix], sender) then
-        LOG:Warning("Received privileged message [%s] from unprivileged sender [%s]",prefix, sender)
+        LOG:Warning("Comms:OnReceive() received privileged message [%s] from unprivileged sender [%s]", prefix, sender)
         return
     end
     -- Decode
     local tmp = codec:DecodeForWoWAddonChannel(message)
     if tmp == nil then
-        LOG:Error("Comms:OnReceive() unable to decode received message")
+        LOG:Error("Comms:OnReceive() unable to decode message [%s] from [%s]", prefix, sender)
         return
     end
     -- Decompress
     tmp = codec:DecompressDeflate(tmp)
     if tmp == nil then
-        LOG:Error("Comms:Send() unable to decompress message")
+        LOG:Error("Comms:OnReceive() unable to decompress message [%s] from [%s]", prefix, sender)
         return
     end
     -- Deserialize
     local success;
     success, tmp = serdes:Deserialize(tmp)
     if not success then
-        LOG:Error("Comms:Send() unable to deserialize message: %s", tmp)
+        LOG:Error("Comms:OnReceive() unable to deserialize message [%s] from [%s]", prefix, sender)
         return
     end
     -- Execute callback
