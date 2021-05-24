@@ -84,16 +84,16 @@ jobs:
           GHR_PATH: ${{ env.artifact }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-discord_announce:
-  needs:
-    - bigwigs_release_classic
-    - bigwigs_release_tbcc
-  name: Post a Discord Announcement
-  runs-on: ubuntu-latest
-  steps:
-    - name: install discordpy
-      run: pipx install discord.py
-    - name: announce
-      run: scripts/post_release.py $WEBHOOK_URL
-      env:
-        WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+  discord_announce:
+    needs:
+      - bigwigs_release_classic
+      - bigwigs_release_tbcc
+    name: Post a Discord Announcement
+    runs-on: ubuntu-latest
+    steps:
+      - name: install discordpy
+        run: pipx install discord.py
+      - name: announce
+        run: scripts/post_release.py $WEBHOOK_URL
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
