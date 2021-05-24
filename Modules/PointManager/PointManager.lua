@@ -258,24 +258,6 @@ CONSTANTS.POINT_MANAGER_ACTION =
 CONSTANTS.POINT_MANAGER_ACTIONS = UTILS.Set({ 0, 1, 2 })
 
 -- DO NOT CHANGE THE ID VALUE MAPPING
-CONSTANTS.POINT_CHANGE_REASONS = {
-    GENERAL = {  -- Exposed through GUI dropdown, can  be localized
-        [1] = "On Time Bonus",
-        [2] = "Boss Kill Bonus",
-        [3] = "Raid Completion Bonus",
-        [4] = "Progression Bonus",
-        [5] = "Standby Bonus",
-        [6] = "Unexcused absence",
-        [7] = "Correcting error",
-        [8] = "Manual adjustment"
-    },
-    INTERNAL = { -- Not exposed directly to GUI
-        [100] = "Import",
-        [101] = "Decay",
-        [102] = "Interval Bonus"
-    }
-}
-
 CONSTANTS.POINT_CHANGE_REASON = {
     ON_TIME_BONUS = 1,
     BOSS_KILL_BONUS = 2,
@@ -289,5 +271,25 @@ CONSTANTS.POINT_CHANGE_REASON = {
     DECAY = 101,
     INTERVAL_BONUS = 102
 }
+
+CONSTANTS.POINT_CHANGE_REASONS = {
+    GENERAL = {  -- Exposed through GUI dropdown, can  be localized
+        [CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS] = "On Time Bonus",
+        [CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS] = "Boss Kill Bonus",
+        [CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS] = "Raid Completion Bonus",
+        [CONSTANTS.POINT_CHANGE_REASON.PROGRESSION_BONUS] = "Progression Bonus",
+        [CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS] = "Standby Bonus",
+        [CONSTANTS.POINT_CHANGE_REASON.UNEXCUSED_ABSENCE] = "Unexcused absence",
+        [CONSTANTS.POINT_CHANGE_REASON.CORRECTING_ERROR] = "Correcting error",
+        [CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT] = "Manual adjustment"
+    },
+    INTERNAL = { -- Not exposed directly to GUI
+        [CONSTANTS.POINT_CHANGE_REASON.IMPORT] = "Import",
+        [CONSTANTS.POINT_CHANGE_REASON.DECAY] = "Decay",
+        [CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS] = "Interval Bonus"
+    }
+}
+
+CONSTANTS.POINT_CHANGE_REASONS.ALL = UTILS.mergeDicts(CONSTANTS.POINT_CHANGE_REASONS.GENERAL, CONSTANTS.POINT_CHANGE_REASONS.INTERNAL)
 
 MODULES.PointManager = PointManager

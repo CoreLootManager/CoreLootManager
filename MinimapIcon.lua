@@ -14,33 +14,91 @@ CLM.MinimapDBI = ldb:NewDataObject(addonName, {
     icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
 })
 
+-- Minimap icon dropdown menu
+local dropdown = CreateFrame("Frame", "Test_DropDown", UIParent, "UIDropDownMenuTemplate");
+local Minimap = {}
+function Minimap:Initialize()
+    UIDropDownMenu_Initialize(dropdown, (function(_, level)
+        local options = {
+            {
+                title = "Menu",
+                isTitle = true
+            },
+            {
+                title = "Standings",
+                func = (function() CLM.GUI.Standings:Toggle() end)
+            },
+            {
+                title = "Loot History",
+                func = (function() CLM.GUI.Loot:Toggle() end)
+            },
+            {
+                title = "Point History",
+                func = (function() CLM.GUI.PointHistory:Toggle() end)
+            },
+            {
+                title = "Bidding",
+                func = (function() CLM.GUI.BiddingManager:Toggle() end)
+            },
+            {
+                title = "Auctioning",
+                func = (function() CLM.GUI.AuctionManager:Toggle() end),
+                trustedOnly = true
+            },
+            {
+                title = "Raid",
+                func = (function() CLM.GUI.RaidManager:Toggle() end),
+                trustedOnly = true
+            },
+            {
+                title = "Profiles",
+                func = (function() CLM.GUI.Profiles:Toggle() end),
+                trustedOnly = true
+            },
+            {
+                title = "Configuration",
+                func = (function()
+                    InterfaceOptionsFrame_OpenToCategory(addonName)
+                    InterfaceOptionsFrame_OpenToCategory(addonName)
+                end)
+            },
+
+        }
+        local trusted = CLM.MODULES.ACL:IsTrusted()
+        for _,k in ipairs(options) do
+            if not k.trustedOnly or (k.trustedOnly and trusted) then
+                local placeholder = UIDropDownMenu_CreateInfo();
+                placeholder.notCheckable = true
+                placeholder.text = k.title
+                placeholder.isTitle = k.isTitle and true or false
+                if k.func then
+                    placeholder.func = k.func
+                end
+                UIDropDownMenu_AddButton(placeholder, level);
+            end
+        end
+    end), "MENU");
+    self._initialized = true
+end
+
+function Minimap:IsInitialized()
+    return self._initialized
+end
+
 function CLM.MinimapDBI.OnClick(self, button)
-    local isTrusted = CLM.MODULES.ACL:IsTrusted()
     if button == "RightButton" then
-        if IsShiftKeyDown() and isTrusted then
-            CLM.GUI.Profiles:Toggle()
-        elseif IsAltKeyDown() and isTrusted then
-            CLM.GUI.RaidManager:Toggle()
-        else
-            CLM.GUI.Loot:Toggle()
+        if Minimap:IsInitialized() then
+            ToggleDropDownMenu(1, nil, dropdown, self, -20, 0)
         end
     else
-        if IsShiftKeyDown() then
-            InterfaceOptionsFrame_OpenToCategory(addonName)
-            InterfaceOptionsFrame_OpenToCategory(addonName)
-        elseif IsAltKeyDown() and isTrusted then
-            CLM.GUI.AuctionManager:Toggle()
-        else
-            CLM.GUI.Standings:Toggle()
-        end
+        CLM.GUI.Standings:Toggle()
     end
 end
 
 do
     function CLM.MinimapDBI.OnTooltipShow(tooltip)
-        local isTrusted = CLM.MODULES.ACL:IsTrusted()
-        tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
         local info
+        tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
         if CLM.MODULES.LedgerManager:IsInitialized() then
             local lag = CLM.MODULES.LedgerManager:Lag()
             local count = CLM.MODULES.LedgerManager:Length()
@@ -59,19 +117,6 @@ do
             tooltip:AddDoubleLine("Sync ongoing", info, 0.6, 0.0, 0.0)
         else -- Unknown state
             tooltip:AddDoubleLine("Unknown sync state", info, 0.4, 0.6, 1)
-        end
-
-        tooltip:AddLine(" ")
-
-        tooltip:AddDoubleLine("|cffcfcfcfLeft Click|r", "Toggle Standings")
-        tooltip:AddDoubleLine("|cffcfcfcfShift + Left Click|r", "Open Configuration")
-        if isTrusted then
-            tooltip:AddDoubleLine("|cffcfcfcfAlt + Left Click|r", "Toggle Auction")
-        end
-        tooltip:AddDoubleLine("|cffcfcfcfRight Click|r", "Toggle Loot")
-        if isTrusted then
-            tooltip:AddDoubleLine("|cffcfcfcfShift + Right Click|r", "Toggle Profiles")
-            tooltip:AddDoubleLine("|cffcfcfcfAlt + Right Click|r", "Toggle Raid")
         end
     end
 end
@@ -93,3 +138,5 @@ f:SetScript("OnEvent", function()
     icon:Register(addonName, CLM.MinimapDBI, CLMLDBIconDB)
 end)
 f:RegisterEvent("PLAYER_LOGIN")
+
+CLM.MODULES.Minimap = Minimap

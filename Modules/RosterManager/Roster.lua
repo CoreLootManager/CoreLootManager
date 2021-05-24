@@ -178,7 +178,6 @@ function Roster:AddRosterPointHistory(history)
     table.insert(self.pointHistory, 1, history)
 end
 
-
 function Roster:GetRaidPointHistory()
     return self.pointHistory or {}
 end

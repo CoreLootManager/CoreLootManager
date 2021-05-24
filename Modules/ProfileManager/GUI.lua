@@ -27,6 +27,8 @@ local LedgerManager = MODULES.LedgerManager
 
 local REGISTRY = "clm_profiles_gui_options"
 
+local FILTER_IN_RAID = 100
+
 local ProfilesGUI = {}
 function ProfilesGUI:Initialize()
     LOG:Trace("ProfilesGUI:Initialize()")
@@ -50,6 +52,7 @@ end
 
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
+    filters[100] = UTILS.ColorCodeText("In Raid", "FFD100")
     return {
         filter_header = {
             type = "header",
@@ -247,6 +250,7 @@ local function CreateManagementOptions(self, container)
     self.selectedMain = ""
     self.selectedRoster = ""
     for _=1,9 do table.insert( self.filterOptions, true ) end
+    self.filterOptions[100] = false
     local options = {
         type = "group",
         args = {}
@@ -259,14 +263,32 @@ local function CreateManagementOptions(self, container)
     LIBS.gui:Open(REGISTRY, ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
 
     self.st:SetFilter((function(stobject, row)
-        -- Check class filter
-        local class = ST_GetClass(row)
-        for id, _class in pairs(GetColorCodedClassDict()) do
-            if class == _class then
-                return self.filterOptions[id]
+        local isInRaid = {}
+        -- Check raid
+        for i=1,MAX_RAID_MEMBERS do
+            local name = GetRaidRosterInfo(i)
+            if name then
+                name = UTILS.RemoveServer(name)
+                isInRaid[name] = true
             end
         end
-        return true;
+        -- Check for standby filter
+        -- FILTER_STANDBY = 102
+        -- Check class filter
+        local playerName = ST_GetName(row)
+        local class = ST_GetClass(row)
+
+        local status
+        for id, _class in pairs(GetColorCodedClassDict()) do
+            if class == _class then
+                status = self.filterOptions[id]
+            end
+        end
+        if status == nil then return false end -- failsafe
+        if self.filterOptions[FILTER_IN_RAID] then
+            status = status and isInRaid[playerName]
+        end
+        return status
     end))
 
     return ManagementOptions
@@ -388,6 +410,7 @@ function ProfilesGUI:Toggle()
     if self.top.frame:IsVisible() or not ACL:IsTrusted() then
         self.top.frame:Hide()
     else
+        self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
         self:Refresh()
         self.top.frame:Show()
     end

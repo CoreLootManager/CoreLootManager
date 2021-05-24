@@ -26,7 +26,7 @@ local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
 
 local FILTER_IN_RAID = 100
--- local FILTER_STANDBY = 102
+local FILTER_STANDBY = 102
 
 local StandingsGUI = {}
 function StandingsGUI:Initialize()
@@ -46,13 +46,13 @@ local function ST_GetName(row)
 end
 
 local function ST_GetClass(row)
-    return row.cols[2].value
+    return row.cols[3].value
 end
 
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
-    filters[100] = UTILS.ColorCodeText("In Raid", "FFD100")
-    filters[102] = UTILS.ColorCodeText("Standby", "FFD100")
+    filters[FILTER_IN_RAID] = UTILS.ColorCodeText("In Raid", "FFD100")
+    filters[FILTER_STANDBY] = UTILS.ColorCodeText("Standby", "FFD100")
     return {
         filter_header = {
             type = "header",
@@ -293,13 +293,14 @@ local function CreateStandingsDisplay(self)
         {   name = "Name",
             width = 100
         },
+        {   name = "DKP",
+            width = 100,
+            sort = ScrollingTable.SORT_DSC
+        },
         {   name = "Class",
             width = 100
         },
         {   name = "Spec",
-            width = 100
-        },
-        {   name = "DKP",
             width = 100
         }
     }
@@ -360,9 +361,9 @@ function StandingsGUI:Refresh(visible)
         if profile then
             local row = {cols = {}}
             row.cols[1] = {value = profile:Name()}
-            row.cols[2] = {value = UTILS.ColorCodeClass(profile:Class())}
-            row.cols[3] = {value = profile:Spec()}
-            row.cols[4] = {value = value}
+            row.cols[2] = {value = value}
+            row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
+            row.cols[4] = {value = profile:Spec()}
             data[rowId] = row
             rowId = rowId + 1
         end
@@ -430,6 +431,7 @@ function StandingsGUI:Toggle()
     if self.top.frame:IsVisible() then
         self.top.frame:Hide()
     else
+        self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
         self:Refresh()
         self.top.frame:Show()
     end

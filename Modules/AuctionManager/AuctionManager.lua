@@ -248,7 +248,7 @@ end
 function AuctionManager:SendBidInfo(name, bid)
     if self.auctionType ~= CONSTANTS.AUCTION_TYPE.OPEN then return end
     local message = AuctionCommStructure:New(
-        CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID,
+        CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
         AuctionCommDistributeBid:New(name, bid)
     )
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)

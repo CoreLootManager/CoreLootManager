@@ -36,6 +36,10 @@ function Loot:OwnerGUID()
     return getGuidFromInteger(self.entry:profile())
 end
 
+function Loot:Creator()
+    return self.entry:creator()
+end
+
 function Loot:Entry()
     return self.entry
 end
