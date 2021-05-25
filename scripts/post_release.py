@@ -32,17 +32,21 @@ if len(releases) == 0:
     exit(20)
 
 try:
+    author = releases[0]["author"]["login"]
     body = releases[0]["body"]
     tag = releases[0]["tag_name"]
+    name = releases[0]["name"]
     prerelease = releases[0]["prerelease"]
 
     embed = {
-        "author": {"name": tag},
-        "title": "New version of Classic Loot Manager has just been released!",
+        "author": {"name": "Classic Loot Manager has been updated!"},
+        "title": name,
         "color": 14464841,
         "fields": [
+            {"name": "**Version**", "value": "`" + tag  + "`", "inline": False},
             {"name": "**CHANGELOG**", "value": "```" + body + "```", "inline": False}
-        ]
+        ],
+        "footer": {"text": "Released by " + author}
     }
 
     if prerelease:

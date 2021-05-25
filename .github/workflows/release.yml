@@ -91,9 +91,10 @@ jobs:
     name: Post a Discord Announcement
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: install discordpy
         run: pipx install discord.py --include-deps
       - name: announce
-        run: python3 $GITHUB_WORKSPACE/scripts/post_release.py $WEBHOOK_URL
+        run: python3 scripts/post_release.py $WEBHOOK_URL
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
