@@ -93,7 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install discordpy
-        run: pip3 install discord.py --include-deps
+        run: pip3 install discord.py
       - name: announce
         run: python3 scripts/post_release.py $WEBHOOK_URL
         env:
