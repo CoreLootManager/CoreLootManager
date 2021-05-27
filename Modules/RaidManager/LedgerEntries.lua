@@ -3,7 +3,6 @@ local _, CLM = ...
 local MODELS = CLM.MODELS
 local UTILS = CLM.UTILS
 
-local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local CreateGUIDList = UTILS.CreateGUIDList
 local mergeLists = UTILS.mergeLists
 
