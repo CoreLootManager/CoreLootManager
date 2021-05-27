@@ -17,7 +17,9 @@ local EventManager = MODULES.EventManager
 local Comms = MODULES.Comms
 
 -- local LEDGER_DKP = MODELS.LEDGER.DKP
+local LEDGER_RAID = CLM.MODELS.LEDGER.RAID
 -- local Profile = MODELS.Profile
+local Raid = MODELS.Raid
 local Roster = MODELS.Roster
 -- local PointHistory = MODELS.PointHistory
 
@@ -29,10 +31,49 @@ local RAID_COMMS_INIT = "i"
 local RAID_COMMS_END = "e"
 local RAID_COMMS_REQUEST_REINIT = "r"
 
-local RaidManager = {}
+local RaidManager = {
+    raids = {}
+}
 
 function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
+
+    -- Register mutators
+    LedgerManager:RegisterEntryType(
+        LEDGER_RAID.Begin,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RaidBegin)")
+            local raidUid = entry:uuid()
+            local name = entry:name()
+            local players = entry:targets()
+            local config = entry:config()
+
+            -- Handle existing raid gracefully
+            local raid = Raid:new(raidUid)
+            raid:AddPlayers(players)
+            raid:SetName(name)
+            raid:SetConfig(config)
+            self.raids[raidUid] = raid
+        end)
+    )
+
+    LedgerManager:RegisterEntryType(
+            LEDGER_RAID.End,
+            (function(entry)
+                LOG:TraceAndCount("mutator(RaidEnd)")
+                local raidUid = entry:raidUid()
+                if type(self.raids[raidUid]) ~= nil then
+                    self.raids[raidUid]:MarkAsEnded()
+                end
+
+            end)
+    )
+
+    LedgerManager:RegisterOnRestart(function()
+        -- raids is private so no one else has a reference
+        self.raids = {}
+    end)
+
     self.status = MODULES.Database:Raid()
     self.isEventHandlingRegistered = false
     if not self:IsRaidInProgress() then

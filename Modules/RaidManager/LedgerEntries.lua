@@ -8,9 +8,15 @@ local mergeLists = UTILS.mergeLists
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
-local Begin = LogEntry:extend("RB");
-local End = LogEntry:extend("RE");
-local Update = LogEntry:extend("RU");
+local Begin = LogEntry:extend("RMB");
+local End = LogEntry:extend("RME");
+local Update = LogEntry:extend("RMU");
+
+MODELS.LEDGER.RAID = {
+    Begin = Begin,
+    End = End,
+    Update = Update
+}
 
 function Begin:new(rosterUid, playerList, name, config)
     local o = LogEntry.new(self);
@@ -78,8 +84,3 @@ local updateFields = mergeLists(LogEntry:fields(), {"r", "l", "j"})
 function Update:fields()
     return updateFields
 end
-
-MODELS.LEDGER.RAID = {
-    Begin = Begin,
-    End = End,
-}
