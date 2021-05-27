@@ -129,30 +129,29 @@ function RaidManager:InitializeRaid(roster)
         LOG:Message("You are not allowed to initialize a raid.")
         return
     end
-    if not IsInRaid() then
-        LOG:Message("You are not in raid.")
-        return
-    end
+
     if self:IsRaidInProgress() then
         LOG:Message("Raid is already in progress.")
         return
     end
     -- Lazy fill raid roster
     RosterManager:AddFromRaidToRoster(roster)
-    -- is RL / ML -> check the loot system ? -- do we need it? maybe everyone can be?
-    self.status.time.raidStart = GetServerTime()
-    self.status.roster = roster:UID()
-    self.roster = roster
 
-    self.status.inProgress = true
+    -- todo populate this list
+    local players = {}
+    local entry = LEDGER_RAID.Begin:new(roster:UID(), players, name, config);
+    LedgerManager:Submit(entry, true)
+    -- Now we expect to have a new raid.
+    if (self.raids[entry:uid()] == nil) then
+        LOG:Warning("Failed to create raid")
+    end
+
     -- Handle ontime bonus and other point stuff
     -- Handle roster change event
     self:SetupRosterUpdateHandling()
-    -- Send comms
-    Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_INIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
     -- Handle internal
     SendChatMessage("Raid started" , "RAID_WARNING")
-    self:MarkAsAuctioneer(UTILS.whoami())
+
 end
 
 function RaidManager:EndRaid()
@@ -172,7 +171,8 @@ end
 function RaidManager:SetupRosterUpdateHandling()
     if self.isEventHandlingRegistered then return end
     EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE"}, (function(...)
-        self:HandleRequestReinit()
+        -- todo implement raid member change update
+
     end))
     self.isEventHandlingRegistered = true
 end
@@ -263,13 +263,6 @@ function RaidManager:HandleRaidEnd(auctioneer)
     self:ClearRaidInfo()
 end
 
-function RaidManager:HandleRequestReinit()
-    LOG:Trace("RaidManager:HandleRequestReinit()")
-    -- I am the raid initiator as my status inprogress is not external
-    if self:AmIRaidManager() then
-        Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_INIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-    end
-end
 
 function RaidManager:HandleIncomingMessage(message, sender)
     LOG:Trace("RaidManager:HandleIncomingMessage()")
