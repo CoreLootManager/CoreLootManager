@@ -139,7 +139,7 @@ function RaidManager:InitializeRaid(roster)
 
     -- todo populate this list
     local players = {}
-    local entry = LEDGER_RAID.Begin:new(roster:UID(), players, name, config);
+    local entry = LEDGER_RAID.Begin:new(roster:UID(), players, "New raid name", {});
     LedgerManager:Submit(entry, true)
     -- Now we expect to have a new raid.
     if (self.raids[entry:uid()] == nil) then
