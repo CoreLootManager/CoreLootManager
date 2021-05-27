@@ -11,15 +11,19 @@ local LogEntry  = LibStub("EventSourcing/LogEntry")
 local Award     = LogEntry:extend("IA")
 local Revoke    = LogEntry:extend("IR")
 
-function Award:new(rosterUid, profile, itemId, value)
+function Award:new(rosterUid, profile, itemId, value, raidUid)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = GetGUIDFromEntry(profile) or 0
     o.i = tonumber(itemId) or 0
     o.v = tonumber(value) or 0
+    o.ra = tonumber(raidUid) or 0
     return o
 end
 
+function Award:raidUid()
+    return self.ra;
+end
 function Award:rosterUid()
     return self.r
 end
