@@ -49,7 +49,7 @@ function RaidManager:Initialize()
             local config = entry:config()
 
             -- Handle existing raid gracefully
-            local raid = Raid:new(raidUid)
+            local raid = Raid:New(raidUid)
             raid:AddPlayers(players)
             raid:SetName(name)
             raid:SetConfig(config)
@@ -91,6 +91,8 @@ function RaidManager:Initialize()
             -- Clear status
             self:ClearRaidInfo()
         end
+
+
     end
 
     Comms:Register(RAID_COMM_PREFIX, (function(message, distribution, sender)
@@ -108,7 +110,13 @@ function RaidManager:Initialize()
     end)
 
     self:RegisterSlash()
+    MODULES.ConfigManager:RegisterUniversalExecutor("raidm", "RaidManager", self)
     self._initialized = true
+
+end
+
+function RaidManager:ListRaids()
+    return self.raids
 end
 
 function RaidManager:IsRaidInProgress()
@@ -142,7 +150,7 @@ function RaidManager:InitializeRaid(roster)
     local entry = LEDGER_RAID.Begin:new(roster:UID(), players, "New raid name", {});
     LedgerManager:Submit(entry, true)
     -- Now we expect to have a new raid.
-    if (self.raids[entry:uid()] == nil) then
+    if (self.raids[entry:uuid()] == nil) then
         LOG:Warning("Failed to create raid")
     end
 

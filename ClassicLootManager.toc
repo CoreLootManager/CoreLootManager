@@ -58,6 +58,8 @@ Modules\LootManager\LedgerEntries.lua
 Modules\LootManager\Loot.lua
 Modules\AuctionManager\AuctionCommStructures.lua
 Modules\BiddingManager\BiddingCommStructures.lua
+Modules\RaidManager\LedgerEntries.lua
+Modules\RaidManager\Raid.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua

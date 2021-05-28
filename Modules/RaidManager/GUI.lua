@@ -2,6 +2,7 @@ local _, CLM = ...
 
 -- Libs
 local AceGUI = LibStub("AceGUI-3.0")
+local ScrollingTable = LibStub("ScrollingTable")
 
 local LIBS =  {
     registry = LibStub("AceConfigRegistry-3.0"),
@@ -177,19 +178,43 @@ local function CreateManagementOptions(self, container)
     return ManagementOptions
 end
 
+local function CreateRaidDisplay(self)
+    -- Profile Scrolling Table
+    local columns = {
+        {name = "Name",  width = 100},
+        {name = "Status", width = 70},
+        --{name = "Spec",  width = 70},
+        --{name = "Main",  width = 70},
+        --{name = "Rank",  width = 70}
+    }
+    local StandingsGroup = AceGUI:Create("SimpleGroup")
+    StandingsGroup:SetLayout("Flow")
+    StandingsGroup:SetHeight(250)
+    StandingsGroup:SetWidth(450)
+    -- Standings
+    self.st = ScrollingTable:CreateST(columns, 10, 18, nil, StandingsGroup.frame, true)
+    self.st:EnableSelection(true)
+    self.st.frame:SetPoint("TOPLEFT", StandingsGroup.frame, "TOPLEFT", 0, -63)
+    self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
+
+    return StandingsGroup
+end
+
 function RaidManagerGUI:Create()
     LOG:Trace("RaidManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
     f:SetTitle("Raid Manager")
+
     f:SetStatusText("")
     f:SetLayout("flow")
-    f:EnableResize(false)
-    f:SetWidth(200)
-    f:SetHeight(500)
+    f:EnableResize(true)
+    f:SetWidth(700)
+    f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
 
+    f:AddChild(CreateRaidDisplay(self))
     f:AddChild(CreateManagementOptions(self))
 
     -- Hide by default
@@ -200,6 +225,20 @@ function RaidManagerGUI:Refresh(visible)
     LOG:Trace("RaidManagerGUI:Refresh()")
     if not self._initialized then return end
     if visible and not self.top.frame:IsVisible() then return end
+
+    local data = {}
+    local rowId = 1
+    for _, raid in pairs(RaidManager.raids) do
+        local row = {cols = {
+            { value = raid.name },
+            { value = raid.status}
+        }};
+        data[rowId] = row
+        rowId = rowId + 1
+
+    end
+
+    self.st:SetData(data)
     if self.selectedRoster == "" then -- workaround for late Raid Initialization due to ledger parsing
         self.selectedRoster = RosterManager:GetRosterNameByUid(RaidManager:GetRosterUid()) or ""
     end
@@ -208,7 +247,9 @@ end
 
 function RaidManagerGUI:Toggle()
     LOG:Trace("RaidManagerGUI:Toggle()")
-    if not self._initialized then return end
+    if not self._initialized then
+        print("not init");
+        return end
     if self.top.frame:IsVisible() or not ACL:IsTrusted() then
         self.top.frame:Hide()
     else
