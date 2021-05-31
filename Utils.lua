@@ -229,18 +229,19 @@ function UTILS.getIntegerGuid(GUID)
 end
 local getIntegerGuid = UTILS.getIntegerGuid
 
-local GUIDPrefix = string.sub(UnitGUID("player"), 1, -9)
+local playerGUID = UnitGUID("player")
+local GUIDPrefix = string.sub(playerGUID, 1, -9)
 function UTILS.getGuidFromInteger(int)
     return GUIDPrefix .. string.format("%08X", tonumber(int) or 0)
-end
-
-function UTILS.DumpTable(t)
-    return DumpTable(t)
 end
 
 local playerName = UTILS.GetUnitName("player")
 function UTILS.whoami()
     return playerName
+end
+
+function UTILS.whoamiGUID()
+    return playerGUID
 end
 
 function UTILS.GetGUIDFromEntry(e)
@@ -270,6 +271,9 @@ function UTILS.CreateGUIDList(playerList)
     return playerGUIDList
 end
 
+function UTILS.DumpTable(t)
+    return DumpTable(t)
+end
 
 function UTILS.inflate(object, data)
     for i, key in ipairs(object:fields(data.v)) do

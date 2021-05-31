@@ -210,7 +210,7 @@ end
 function ProfileManager:FillFromRaid()
     LOG:Trace("ProfileManager:FillFromRaid()")
     if not IsInRaid() then return end
-    for i=1,40 do
+    for i=1,MAX_RAID_MEMBERS do
         local name, _, _, _, _, class = GetRaidRosterInfo(i)
         if name ~= nil then
             name, _ = strsplit("-", name)

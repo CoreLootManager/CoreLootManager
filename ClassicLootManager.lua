@@ -1,6 +1,6 @@
-local name, CLM = ...;
+local name, CLM = ...
 
-CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0");
+CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
 CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
@@ -208,7 +208,7 @@ end
 function CORE:GUILD_ROSTER_UPDATE(...)
     LOG:Trace("GUILD_ROSTER_UPDATE")
     local inGuild = IsInGuild()
-    local numTotal = GetNumGuildMembers();
+    local numTotal = GetNumGuildMembers()
     if inGuild and numTotal ~= 0 then
         self:_Initialize()
     end

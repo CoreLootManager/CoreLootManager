@@ -9,16 +9,10 @@ local CONSTANTS =  CLM.CONSTANTS
 -- local typeof = UTILS.typeof
 
 
-CONSTANTS.RAID_STATUS = {
-    CREATED = 'created',
-    ACTIVE = 'active',
-    ENDED = 'ended'
-}
-
 local Raid = { } -- Raid information
 
 CLM.MODELS.Raid = Raid
-function Raid:New(uid)
+function Raid:New(uid, name, roster, config)
     local o = {}
 
     setmetatable(o, self)
@@ -26,34 +20,55 @@ function Raid:New(uid)
 
     -- Raid Management
     o.uid  = tonumber(uid)
-    o.players = {}
-    o.config = {}
-    o.name = "Raid without name"
-    o.status = CONSTANTS.RAID_STATUS.CREATED;
+    o.roster = roster
 
+    o.config = config
+    o.name = name
+    o.status = CONSTANTS.RAID_STATUS.CREATED
+
+    -- GUID dict
+    o.players = {}
+    o.standby = {}
 
     return o
 end
 
-function Raid:SetName(name)
-    self.name = name
+function Raid:SetStatus(status)
+    self.status = status
 end
 
-function Raid:SetConfig(config)
-    self.config = config
+function Raid:Roster()
+    return self.roster
 end
 
-function Raid:MarkAsEnded()
-    self.status = CONSTANTS.RAID_STATUS.ENDED
+function Raid:Status()
+    return self.status
+end
+
+function Raid:SetPlayers(players)
+    self.players = players
+end
+
+function Raid:AddPlayer(guid)
+    self.players[guid] = true
 end
 
 function Raid:AddPlayers(players)
     for _, guid in ipairs(players) do
-        self.players[guid] = 1;
+        self.players[guid] = true
     end
 end
+
+function Raid:RemovePlayer(guid)
+    self.players[guid] = nil
+end
+
 function Raid:RemovePlayers(players)
     for _, guid in ipairs(players) do
-        self.players[guid] = nil;
+        self.players[guid] = nil
     end
+end
+
+function Raid:IsPlayerInRaid(GUID)
+    return self.players[GUID]
 end

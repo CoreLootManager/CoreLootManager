@@ -96,6 +96,7 @@ function ConfigManager:RegisterSlash(options)
 end
 
 function ConfigManager:RegisterUniversalExecutor(command, name, object)
+    -- @debug@
     local options = {
         [command] = {
             type = "input",
@@ -104,7 +105,7 @@ function ConfigManager:RegisterUniversalExecutor(command, name, object)
             set = function(info, value) UTILS.UniversalCliMethodExecutor(name, object, value) end
         }
     }
-    -- @debug@
+
     self:RegisterSlash(options)
     -- @end-debug@
 end

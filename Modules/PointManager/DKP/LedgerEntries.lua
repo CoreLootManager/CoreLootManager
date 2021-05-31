@@ -12,10 +12,10 @@ local CreateGUIDList = UTILS.CreateGUIDList
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 -- Point DKP X
-local Modify = LogEntry:extend("DM")
-local ModifyRaid = LogEntry:extend("DMR");
-local Set    = LogEntry:extend("DS")
-local Decay  = LogEntry:extend("DD")
+local Modify        = LogEntry:extend("DM")
+local ModifyRaid    = LogEntry:extend("DR");
+local Set           = LogEntry:extend("DS")
+local Decay         = LogEntry:extend("DD")
 
 function Modify:new(rosterUid, playerList, value, reason)
     local o = LogEntry.new(self);

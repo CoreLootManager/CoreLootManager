@@ -15,7 +15,7 @@ CLM.MinimapDBI = ldb:NewDataObject(addonName, {
 })
 
 -- Minimap icon dropdown menu
-local dropdown = CreateFrame("Frame", "Test_DropDown", UIParent, "UIDropDownMenuTemplate");
+local dropdown = CreateFrame("Frame", "Test_DropDown", UIParent, "UIDropDownMenuTemplate")
 local Minimap = {}
 function Minimap:Initialize()
     UIDropDownMenu_Initialize(dropdown, (function(_, level)
@@ -67,17 +67,17 @@ function Minimap:Initialize()
         local trusted = CLM.MODULES.ACL:IsTrusted()
         for _,k in ipairs(options) do
             if not k.trustedOnly or (k.trustedOnly and trusted) then
-                local placeholder = UIDropDownMenu_CreateInfo();
+                local placeholder = UIDropDownMenu_CreateInfo()
                 placeholder.notCheckable = true
                 placeholder.text = k.title
                 placeholder.isTitle = k.isTitle and true or false
                 if k.func then
                     placeholder.func = k.func
                 end
-                UIDropDownMenu_AddButton(placeholder, level);
+                UIDropDownMenu_AddButton(placeholder, level)
             end
         end
-    end), "MENU");
+    end), "MENU")
     self._initialized = true
 end
 
