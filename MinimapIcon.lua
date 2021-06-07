@@ -26,37 +26,49 @@ function Minimap:Initialize()
             },
             {
                 title = "Standings",
+                -- some icon?
+                -- icon = "Interface\\TARGETINGFRAME\\PetBadge-Dragon.blp",
                 func = (function() CLM.GUI.Standings:Toggle() end)
             },
             {
                 title = "Loot History",
+                -- weapons icon
+                -- icon = "Interface\\WORLDSTATEFRAME\\CombatSwordsFlash.blp", -- those looks awful
+                -- icon = "Interface\\Store\\category-icon-weapons.blp",
                 func = (function() CLM.GUI.Loot:Toggle() end)
             },
             {
                 title = "Point History",
+                -- coin icon
                 func = (function() CLM.GUI.PointHistory:Toggle() end)
             },
             {
                 title = "Bidding",
+                -- gold ML icon
                 func = (function() CLM.GUI.BiddingManager:Toggle() end)
             },
             {
                 title = "Auctioning",
+                -- gold ML icon
                 func = (function() CLM.GUI.AuctionManager:Toggle() end),
                 trustedOnly = true
             },
             {
                 title = "Raid",
+                -- gold group icon
+                -- icon = "Interface\\Tooltips\\EliteNameplateIcon.blp",
                 func = (function() CLM.GUI.RaidManager:Toggle() end),
                 trustedOnly = true
             },
             {
                 title = "Profiles",
+                -- gold player icon
                 func = (function() CLM.GUI.Profiles:Toggle() end),
                 trustedOnly = true
             },
             {
                 title = "Configuration",
+                icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga",
                 func = (function()
                     InterfaceOptionsFrame_OpenToCategory(addonName)
                     InterfaceOptionsFrame_OpenToCategory(addonName)
@@ -73,6 +85,9 @@ function Minimap:Initialize()
                 placeholder.isTitle = k.isTitle and true or false
                 if k.func then
                     placeholder.func = k.func
+                end
+                if k.icon then
+                    placeholder.icon = k.icon
                 end
                 UIDropDownMenu_AddButton(placeholder, level)
             end

@@ -235,8 +235,6 @@ function RosterConfiguration:New(i)
     o._.allowNegativeStandings = false
     -- Allow negative bidders
     o._.allowNegativeBidders = false
-    -- Simultaneous Auctions
-    o._.simultaneousAuctions = false
     -- TODO:
     -- Max Bid Behavior ?
     -- Boss Kill Bonus
@@ -259,7 +257,42 @@ function RosterConfiguration:New(i)
 end
 
 function RosterConfiguration:fields()
-    return keys(self._)
+    return {
+        "auctionType",
+        "itemValueMode",
+        "zeroSumBank",
+        "zeroSumBankInflation",
+        "auctionTime",
+        "antiSnipe",
+        "allowNegativeStandings",
+        "allowNegativeBidders",
+        "bossKillBonus",
+        "onTimeBonus",
+        "onTimeBonusValue",
+        "raidCompletionBonus",
+        "raidCompletionBonusValue",
+        "intervalBonus",
+        "intervalBonusTime",
+        "intervalBonusValue"
+    }
+end
+
+function RosterConfiguration:Storage()
+    return self._
+end
+
+function RosterConfiguration:inflate(data)
+    for i, key in ipairs(self:fields()) do
+        self._[key] = data[i]
+    end
+end
+
+function RosterConfiguration:deflate()
+    local result = {}
+    for _, key in ipairs(self:fields()) do
+        table.insert(result, self._[key])
+    end
+    return result
 end
 
 function RosterConfiguration:Copy(o)
@@ -280,7 +313,6 @@ local TRANSFORMS = {
     antiSnipe = transform_number,
     allowNegativeStandings = transform_boolean,
     allowNegativeBidders = transform_boolean,
-    simultaneousAuctions = transform_boolean,
     bossKillBonus = transform_boolean,
     onTimeBonus = transform_boolean,
     onTimeBonusValue = transform_number,
@@ -325,7 +357,6 @@ function RosterConfiguration._validate_itemValueMode(value) return CONSTANTS.ITE
 function RosterConfiguration._validate_zeroSumBank(value) return IsBoolean(value) end
 function RosterConfiguration._validate_allowNegativeStandings(value) return IsBoolean(value) end
 function RosterConfiguration._validate_allowNegativeBidders(value) return IsBoolean(value) end
-function RosterConfiguration._validate_simultaneousAuctions(value) return IsBoolean(value) end
 function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end

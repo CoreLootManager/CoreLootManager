@@ -397,6 +397,7 @@ function RosterManager:AddFromRaidToRoster(roster)
         LOG:Error("RosterManager:AddFromRaidToRoster(): Invalid roster object")
         return
     end
+    if not IsInRaid() then return end
     -- Lazy fill profiles
     ProfileManager:FillFromRaid()
     local missingProfiles = {}
@@ -415,8 +416,10 @@ function RosterManager:AddFromRaidToRoster(roster)
             end
         end
     end
-    LOG:Message("Adding missing %s players to current roster", #missingProfiles)
-    self:AddProfilesToRoster(roster, missingProfiles)
+    if #missingProfiles > 0 then
+        LOG:Message("Adding missing %s players to current roster", #missingProfiles)
+        self:AddProfilesToRoster(roster, missingProfiles)
+    end
 end
 
 function RosterManager:AddLootToRoster(roster, loot, profile)
@@ -506,8 +509,7 @@ function RosterManager:Debug(N)
                 -- bool
                 "zeroSumBank",
                 "allowNegativeStandings",
-                "allowNegativeBidders",
-                "simultaneousAuctions"
+                "allowNegativeBidders"
             }
             local configs = {
                 -- int
@@ -517,8 +519,7 @@ function RosterManager:Debug(N)
                 -- bool
                 ["zeroSumBank"] = 1,
                 ["allowNegativeStandings"] = 1,
-                ["allowNegativeBidders"] = 1,
-                ["simultaneousAuctions"] = 1
+                ["allowNegativeBidders"] = 1
             }
             local config = configList[math.random(1, #configList)]
             local value

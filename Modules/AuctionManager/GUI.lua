@@ -136,8 +136,8 @@ function AuctionManagerGUI:GenerateAuctionOptions()
     if not self.base then self.base = 0 end
     if not self.max then self.max = 0 end
 
-    if RaidManager:IsRaidInProgress() then
-        self.roster = RaidManager:GetRoster()
+    if RaidManager:IsInActiveRaid() then
+        self.roster = RaidManager:GetRaid():Roster()
         if self.roster then
             self.configuration:Copy(self.roster.configuration)
             local v = self.roster:GetItemValue(self.itemId)

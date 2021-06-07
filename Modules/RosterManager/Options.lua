@@ -157,12 +157,6 @@ function RosterManagerOptions:Initialize()
         auction_allow_negative_bidders_set = (function(name, value)
             SetRosterOption(name, "allowNegativeBidders", value)
         end),
-        auction_simultaneous_auctions_get = (function(name)
-            return GetRosterOption(name, "simultaneousAuctions")
-        end),
-        auction_simultaneous_auctions_set = (function(name, value)
-            SetRosterOption(name, "simultaneousAuctions", value)
-        end),
         auction_auction_time_get = (function(name)
             return tostring(GetRosterOption(name, "auctionTime"))
         end),
@@ -428,35 +422,37 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Boss Kill Bonus",
                 type = "toggle",
                 order = 4,
-                disabled = true,
+                -- disabled = true,
                 width = "full"
             },
             on_time_bonus = {
                 name = "On Time Bonus",
                 type = "toggle",
                 order = 5,
-                disabled = true,
+                -- disabled = true,
                 width = 1
             },
             on_time_bonus_value = {
                 name = "On Time Bonus Value",
                 type = "input",
                 order = 6,
-                disabled = true,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                -- disabled = true,
                 width = 1
             },
             raid_completion_bonus = {
                 name = "Raid Completion Bonus",
                 type = "toggle",
                 order = 7,
-                disabled = true,
+                -- disabled = true,
                 width = 1
             },
             raid_completion_bonus_value = {
                 name = "Raid Completion Value",
                 type = "input",
                 order = 8,
-                disabled = true,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                -- disabled = true,
                 width = 1
             },
             interval_bonus = {
@@ -470,14 +466,16 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Interval Time",
                 type = "input",
                 order = 10,
-                disabled = true,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                -- disabled = true,
                 width = 0.6
             },
             interval_bonus_value = {
-                name = "Bonus Value",
+                name = "Interval Bonus Value",
                 type = "input",
                 order = 11,
-                disabled = true,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                -- disabled = true,
                 width = 0.6
             },
             auction = {
@@ -531,13 +529,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         width = "full",
                         order = 8
                     },
-                    -- simultaneous_auctions = {
-                    --     name = "Simultaneous auctions",
-                    --     desc = "Allow multiple simultaneous auction happening at the same time.",
-                    --     type = "toggle",
-                    --     width = "full",
-                    --     order = 9
-                    -- },
                     auction_time = {
                         name = "Auction length",
                         desc = "Auction length in seconds.",

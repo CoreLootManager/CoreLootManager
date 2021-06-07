@@ -13,8 +13,8 @@ local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
 local ACL = MODULES.ACL
--- local CONSTANTS = CLM.CONSTANTS
--- local RESULTS = CLM.CONSTANTS.RESULTS
+local MODELS = CLM.MODELS
+local CONSTANTS = CLM.CONSTANTS
 local GUI = CLM.GUI
 
 local mergeDictsInline = UTILS.mergeDictsInline
@@ -25,11 +25,25 @@ local RosterManager = MODULES.RosterManager
 local LedgerManager = MODULES.LedgerManager
 local RaidManager = MODULES.RaidManager
 
+local buildPlayerListForTooltip = UTILS.buildPlayerListForTooltip
+local DeepCopy = UTILS.DeepCopy
+local GreenYes = UTILS.GreenYes
+local RedNo = UTILS.RedNo
+
+local RosterConfiguration = MODELS.RosterConfiguration
+
 local REGISTRY = "clm_raid_manager_gui_options"
+
+local function ST_GetRaid(row)
+    return row.cols[5].value
+end
 
 local RaidManagerGUI = {}
 function RaidManagerGUI:Initialize()
     LOG:Trace("RaidManagerGUI:Initialize()")
+    self.configuration = RosterConfiguration:New()
+    self.name = ""
+    self.tooltip = CreateFrame("GameTooltip", "CLMRaidListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -41,16 +55,118 @@ function RaidManagerGUI:Initialize()
 end
 
 function RaidManagerGUI:GetRosterOption(option)
-    local roster = RosterManager:GetRosterByName(self.selectedRoster or "")
-    if not roster then return false end
-    return roster:GetConfiguration(option)
+    return self.configuration:Get(option)
+end
+
+function RaidManagerGUI:SetRosterOption(option, value)
+    return self.configuration:Set(option, value)
+end
+
+local function FillConfigurationTooltip(configuration, tooltip)
+    tooltip:AddDoubleLine("Auction Time", configuration:Get("auctionTime"))
+    tooltip:AddDoubleLine("Anti-Snipe", configuration:Get("antiSnipe"))
+    tooltip:AddDoubleLine("Boss Kill Bonus", configuration:Get("bossKillBonus") and GreenYes() or RedNo())
+    local onTimeBonus = configuration:Get("onTimeBonus")
+    tooltip:AddDoubleLine("On Time Bonus", onTimeBonus and GreenYes() or RedNo())
+    if onTimeBonus then
+        tooltip:AddDoubleLine("On Time Bonus Value", configuration:Get("onTimeBonusValue"))
+    end
+    local raidCompletionBonus = configuration:Get("raidCompletionBonus")
+    tooltip:AddDoubleLine("Raid Completion Bonus", raidCompletionBonus and GreenYes() or RedNo())
+    if raidCompletionBonus then
+        tooltip:AddDoubleLine("Raid Completion Bonus Value", configuration:Get("raidCompletionBonusValue"))
+    end
+    local intervalBonus = configuration:Get("intervalBonus")
+    tooltip:AddDoubleLine("Interval Bonus", intervalBonus and GreenYes() or RedNo())
+    if intervalBonus then
+        tooltip:AddDoubleLine("Interval Time", configuration:Get("intervalBonusTime"))
+        tooltip:AddDoubleLine("Interval Bonus Value", configuration:Get("intervalBonusValue"))
+    end
 end
 
 local function GenerateOfficerOptions(self)
     return {
+        information_header = {
+            type = "header",
+            name = "Information",
+            order = 30
+        },
+        boss_kill_bonus = {
+            name = "Boss Kill Bonus",
+            type = "toggle",
+            set = (function(i, v) self:SetRosterOption("bossKillBonus", v) end),
+            get = (function() return self:GetRosterOption("bossKillBonus") end),
+            order = 31,
+            -- disabled = true
+        },
+        on_time_bonus = {
+            name = "On Time Bonus",
+            type = "toggle",
+            set = (function(i, v) self:SetRosterOption("onTimeBonus", v) end),
+            get = (function() return self:GetRosterOption("onTimeBonus")  end),
+            order = 32,
+            -- disabled = true
+        },
+        on_time_bonus_value = {
+            name = "On Time Bonus Value",
+            type = "input",
+            set = (function(i, v) self:SetRosterOption("onTimeBonusValue", tonumber(v)) end),
+            get = (function() return tostring(self:GetRosterOption("onTimeBonusValue")) end),
+            pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+            order = 33,
+            -- disabled = true
+        },
+        raid_completion_bonus = {
+            name = "Raid Completion Bonus",
+            type = "toggle",
+            set = (function(i, v) self:SetRosterOption("raidCompletionBonus", v) end),
+            get = (function() return self:GetRosterOption("raidCompletionBonus") end),
+            order = 34,
+            -- disabled = true
+        },
+        raid_completion_bonus_value = {
+            name = "Raid Completion Value",
+            type = "input",
+            set = (function(i, v) self:SetRosterOption("raidCompletionBonusValue", tonumber(v)) end),
+            get = (function() return tostring(self:GetRosterOption("raidCompletionBonusValue")) end),
+            pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+            order = 35,
+            -- disabled = true
+        },
+        interval_bonus = {
+            name = "Interval Bonus",
+            type = "toggle",
+            set = (function(i, v) self:SetRosterOption("intervalBonus", v) end),
+            get = (function() return self:GetRosterOption("intervalBonus") end),
+            order = 36,
+            -- disabled = true
+        },
+        interval_time = {
+            name = "Interval Time",
+            type = "input",
+            set = (function(i, v) self:SetRosterOption("intervalBonusTime", tonumber(v)) end),
+            get = (function() return tostring(self:GetRosterOption("intervalBonusTime")) end),
+            pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+            order = 37,
+            -- disabled = true
+        },
+        interval_bonus_value = {
+            name = "Interval Bonus Value",
+            type = "input",
+            set = (function(i, v) self:SetRosterOption("intervalBonusValue", tonumber(v)) end),
+            get = (function() return tostring(self:GetRosterOption("intervalBonusValue")) end),
+            pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+            order = 38,
+            -- disabled = true
+        },
+        create_header = {
+            type = "header",
+            name = "Create",
+            order = 7
+        },
         select_roster = {
             name = "Select roster",
-            desc = "Select roster to initialize raid on.",
+            desc = "Select roster to create raid for.",
             type = "select",
             width = "full",
             values = (function()
@@ -61,103 +177,93 @@ local function GenerateOfficerOptions(self)
                 end
                 return values
             end),
-            set = function(i, v) self.selectedRoster = v; self:Refresh() end,
+            set = (function(i, v)
+                self.selectedRoster = v
+                self.roster = RosterManager:GetRosterByName(self.selectedRoster)
+                self.configuration = RosterConfiguration:New(DeepCopy(self.roster.configuration))
+                self:Refresh()
+            end),
             get = function(i) return self.selectedRoster end,
-            disabled = (function() return RaidManager:IsRaidInProgress() end),
-            order = 10
+            disabled = (function() return RaidManager:IsInActiveRaid() end),
+            order = 9
         },
-        information_header = {
-            type = "header",
-            name = "Information",
-            order = 30
-        },
-        boss_kill_bonus = {
-            name = "Boss Kill Bonus",
-            type = "toggle",
-            set = (function() end),
-            get = (function() return self:GetRosterOption("bossKillBonus") end),
-            order = 31,
-            disabled = true
-        },
-        on_time_bonus = {
-            name = "On Time Bonus",
-            type = "toggle",
-            set = (function() end),
-            get = (function() return self:GetRosterOption("onTimeBonus")  end),
-            order = 32,
-            disabled = true
-        },
-        on_time_bonus_value = {
-            name = "On Time Bonus Value",
+        name_raid = {
+            name = "Raid Name",
+            desc = "Set raid name",
             type = "input",
-            set = (function() end),
-            get = (function() return tostring(self:GetRosterOption("onTimeBonusValue")) end),
-            order = 33,
-            disabled = true
+            set = function(i, v) self.name = v end,
+            get = function(i) return self.name end,
+            width = "full",
+            order = 8
         },
-        raid_completion_bonus = {
-            name = "Raid Completion Bonus",
-            type = "toggle",
-            set = (function() end),
-            get = (function() return self:GetRosterOption("raidCompletionBonus") end),
-            order = 34,
-            disabled = true
-        },
-        raid_completion_bonus_value = {
-            name = "Raid Completion Value",
-            type = "input",
-            set = (function() end),
-            get = (function() return tostring(self:GetRosterOption("raidCompletionBonusValue")) end),
-            order = 35,
-            disabled = true
-        },
-        interval_bonus = {
-            name = "Interval Bonus",
-            type = "toggle",
-            set = (function() end),
-            get = (function() return self:GetRosterOption("intervalBonus") end),
-            order = 36,
-            disabled = true
-        },
-        interval_time = {
-            name = "Interval Time",
-            type = "input",
-            set = (function() end),
-            get = (function() return tostring(self:GetRosterOption("intervalBonusTime")) end),
-            order = 37,
-            disabled = true
-        },
-        interval_bonus_value = {
-            name = "Interval Bonus Value",
-            type = "input",
-            set = (function() end),
-            get = (function() return tostring(self:GetRosterOption("intervalBonusValue")) end),
-            order = 38,
-            disabled = true
-        },
-        initialize = {
-            name = "Initialize raid",
+        create_raid = {
+            name = "Create raid",
             type = "execute",
             width = "full",
             func = (function(i)
-                RaidManager:InitializeRaid(RosterManager:GetRosterByName(self.selectedRoster))
+                RaidManager:CreateRaid(self.roster, self.name, self.configuration)
                 self:Refresh()
             end),
-            disabled = (function() return RaidManager:IsRaidInProgress() end),
+            disabled = (function() return RaidManager:IsInActiveRaid() end),
+            confirm = true,
+            order = 10
+        },
+        join_raid = {
+            name = "Join raid",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+                local raid = nil
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    raid = ST_GetRaid(row)
+                end
+                RaidManager:JoinRaid(raid)
+                self:Refresh()
+            end),
+            -- disabled = (function() return not RaidManager:IsInCreatedRaid() end),
             confirm = true,
             order = 11
+        },
+        manage_header = {
+            type = "header",
+            name = "Manage",
+            order = 11
+        },
+        start_raid = {
+            name = "Start raid",
+            type = "execute",
+            width = "full",
+            func = (function(i)
+                local raid = nil
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    raid = ST_GetRaid(row)
+                end
+                RaidManager:StartRaid(raid)
+                -- RaidManager:InitializeRaid(RosterManager:GetRosterByName(self.selectedRoster))
+                self:Refresh()
+            end),
+            -- disabled = (function() return not RaidManager:IsInCreatedRaid() end),
+            confirm = true,
+            order = 12
         },
         end_raid = {
             name = "End raid",
             type = "execute",
             width = "full",
             func = (function(i)
-                RaidManager:EndRaid()
+                local raid = nil
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    raid = ST_GetRaid(row)
+                end
+                RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
                 self:Refresh()
             end),
-            disabled = (function() return not RaidManager:IsRaidInProgress() end),
+            -- disabled = (function() return not RaidManager:IsInProgressingRaid() end),
             confirm = true,
-            order = 12
+            order = 13
         }
     }
 end
@@ -182,21 +288,64 @@ local function CreateRaidDisplay(self)
     -- Profile Scrolling Table
     local columns = {
         {name = "Name",  width = 100},
-        {name = "Status", width = 70},
-        --{name = "Spec",  width = 70},
-        --{name = "Main",  width = 70},
-        --{name = "Rank",  width = 70}
+        {name = "Status", width = 100},
+        {name = "Roster",  width = 100},
+        {name = "Created",  width = 150, sort = ScrollingTable.SORT_DSC}
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
-    StandingsGroup:SetHeight(250)
-    StandingsGroup:SetWidth(450)
+    StandingsGroup:SetHeight(550)
+    StandingsGroup:SetWidth(560)
     -- Standings
-    self.st = ScrollingTable:CreateST(columns, 10, 18, nil, StandingsGroup.frame, true)
+    self.st = ScrollingTable:CreateST(columns, 20, 18, nil, StandingsGroup.frame)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", StandingsGroup.frame, "TOPLEFT", 0, -63)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
-
+    -- OnEnter handler -> on hover
+    local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local rowData = self.st:GetRow(realrow)
+        if not rowData or not rowData.cols then return status end
+        local tooltip = self.tooltip
+        if not tooltip then return end
+        tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
+        local raid = ST_GetRaid(rowData)
+        -- In Raid
+        local profiles = raid:Players()
+        local numProfiles = #profiles
+        tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or "Unknown")
+        tooltip:AddLine(" ")
+        tooltip:AddDoubleLine("In Raid:", tostring(numProfiles))
+        if not profiles or numProfiles == 0 then
+            tooltip:AddLine("None")
+        else
+            buildPlayerListForTooltip(profiles, tooltip)
+        end
+        local standby = raid:Standby()
+        local numStandby = #standby
+        tooltip:AddDoubleLine("Standby:", tostring(numStandby))
+        if not standby or numStandby == 0 then
+            tooltip:AddLine("None")
+        else
+            buildPlayerListForTooltip(standby, tooltip)
+        end
+        tooltip:AddLine(" ")
+        tooltip:AddLine("Configuration:")
+        FillConfigurationTooltip(raid:Configuration(), tooltip)
+        tooltip:Show()
+        return status
+    end)
+    -- OnLeave handler -> on hover out
+    local OnLeaveHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local status = self.st.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        self.tooltip:Hide()
+        return status
+    end)
+    -- end
+    self.st:RegisterEvents({
+        OnEnter = OnEnterHandler,
+        OnLeave = OnLeaveHandler
+    })
     return StandingsGroup
 end
 
@@ -207,15 +356,18 @@ function RaidManagerGUI:Create()
     f:SetTitle("Raid Manager")
 
     f:SetStatusText("")
-    f:SetLayout("flow")
-    f:EnableResize(true)
-    f:SetWidth(700)
+    f:SetLayout("Table")
+    f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
+    f:EnableResize(false)
+    f:SetWidth(800)
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
 
     f:AddChild(CreateRaidDisplay(self))
-    f:AddChild(CreateManagementOptions(self))
+    if ACL:IsTrusted() then
+        f:AddChild(CreateManagementOptions(self))
+    end
 
     -- Hide by default
     f:Hide()
@@ -228,10 +380,13 @@ function RaidManagerGUI:Refresh(visible)
 
     local data = {}
     local rowId = 1
-    for _, raid in pairs(RaidManager.raids) do
+    for _, raid in pairs(RaidManager:ListRaids()) do
         local row = {cols = {
-            { value = raid.name },
-            { value = raid.status}
+            { value = raid:Name() },
+            { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or "Unknown" },
+            { value = RosterManager:GetRosterNameByUid(raid:Roster():UID()) },
+            { value = date("%Y/%m/%d %a %H:%M:%S", raid:CreatedAt()) },
+            { value = raid }
         }};
         data[rowId] = row
         rowId = rowId + 1
@@ -240,8 +395,18 @@ function RaidManagerGUI:Refresh(visible)
 
     self.st:SetData(data)
     if self.selectedRoster == "" then -- workaround for late Raid Initialization due to ledger parsing
-        self.selectedRoster = RosterManager:GetRosterNameByUid(RaidManager:GetRosterUid()) or ""
+        if RaidManager:IsInActiveRaid() then
+            self.selectedRoster = RosterManager:GetRosterNameByUid(RaidManager:GetRaid():Roster():UID()) or ""
+        end
     end
+
+    if RaidManager:IsInActiveRaid() then
+        self.top:SetStatusText("Currently in raid: " .. RaidManager:GetRaid():Name())
+    else
+        self.top:SetStatusText("Not in raid")
+    end
+
+    -- LIBS.registry:NotifyChange(REGISTRY)
     LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 

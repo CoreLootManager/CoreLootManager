@@ -20,22 +20,16 @@ MODELS.LEDGER.RAID = {
     Update = Update
 }
 
-function Create:new(rosterUid, playerList, name, config)
+function Create:new(rosterUid, name, config)
     local o = LogEntry.new(self)
     o.r = tonumber(rosterUid) or 0
-    o.p = CreateGUIDList(playerList)
     o.n = name or ""
-    o.c = config
-
+    o.c = config:deflate()
     return o
 end
 
 function Create:rosterUid()
     return self.r
-end
-
-function Create:targets()
-    return self.p
 end
 
 function Create:name()
@@ -46,14 +40,15 @@ function Create:config()
     return self.c
 end
 
-local CreateFields = mergeLists(LogEntry:fields(), {"r", "p", "n", "c"})
+local CreateFields = mergeLists(LogEntry:fields(), {"r", "n", "c"})
 function Create:fields()
     return CreateFields
 end
 
-function Start:new(raidUid)
+function Start:new(raidUid, players)
     local o = LogEntry.new(self)
     o.r = raidUid
+    o.p = CreateGUIDList(players)
     return o
 end
 
@@ -61,7 +56,11 @@ function Start:raid()
     return self.r
 end
 
-local StartFields = mergeLists(LogEntry:fields(), {"r"})
+function Start:players()
+    return self.p
+end
+
+local StartFields = mergeLists(LogEntry:fields(), {"r", "p"})
 function Start:fields()
     return StartFields
 end

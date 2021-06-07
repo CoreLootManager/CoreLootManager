@@ -11,6 +11,7 @@ local CONSTANTS = CLM.CONSTANTS
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local LootManager = MODULES.LootManager
+local RaidManager = MODULES.RaidManager
 
 local Comms = MODULES.Comms
 
@@ -31,7 +32,6 @@ function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
 
     self.bids = {}
-    self.auctioneer = ""
     self.auctionInProgress = false
 
     Comms:Register(AUCTION_COMM_PREFIX, (function(rawMessage, distribution, sender)
@@ -328,20 +328,6 @@ function AuctionManager:UpdateBid(name, bid)
     GUI.AuctionManager:UpdateBids()
 end
 
-function AuctionManager:MarkAsAuctioneer(auctioneer)
-    LOG:Trace("AuctionManager:MarkAsAuctioneer()")
-    if self.auctioneer ~= auctioneer then
-        LOG:Message("Marking %s as auctioneer", tostring(auctioneer))
-    end
-    self.auctioneer = auctioneer or ""
-end
-
-function AuctionManager:ClearAuctioneer()
-    LOG:Trace("AuctionManager:ClearAuctioneer()")
-    self.auctioneer = ""
-end
-
-
 function AuctionManager:Bids()
     return self.bids
 end
@@ -359,7 +345,7 @@ function AuctionManager:IsAuctioneer(name)
     LOG:Trace("AuctionManager:IsAuctioneer()")
     name = name or UTILS.whoami()
 
-    return (name == self.auctioneer)
+    return RaidManager:IsRaidOwner(name)
 end
 
 function AuctionManager:IsAuctionInProgress()

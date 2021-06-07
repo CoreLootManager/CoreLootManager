@@ -116,7 +116,7 @@ local function CreatePointDisplay(self)
                 end
             end
         end
-		tooltip:Show()
+        tooltip:Show()
         return status
     end)
     -- OnLeave handler -> on hover out

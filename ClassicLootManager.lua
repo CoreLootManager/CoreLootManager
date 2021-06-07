@@ -221,8 +221,9 @@ BINDING_NAME_CLM_UNDO = "Undo action"
 BINDING_NAME_CLM_REDO = "Redo action"
 
 function CLM_Undo()
-    LOG:Message("Executing Undo. Skiping confirmation prompt. Please wait.")
-    MODULES.LedgerManager:CancelLastEntry()
+    -- LOG:Message("Executing Undo. Skiping confirmation prompt. Please wait.")
+    -- MODULES.LedgerManager:CancelLastEntry()
+    LOG:Warning("Undo not implemented.")
 end
 
 function CLM_Redo()

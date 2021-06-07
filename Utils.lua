@@ -32,14 +32,17 @@ function UTILS.GetClassColor(className)
     local color = classColors[string.lower(className)]
     return (color or { r = 0.627, g = 0.627, b = 0.627, hex = "A0A0A0" })
 end
+local GetClassColor = UTILS.GetClassColor
 
 function UTILS.ColorCodeText(text, color)
     return string.format("|cff%s%s|r", color, text);
 end
+local ColorCodeText = UTILS.ColorCodeText
 
 function UTILS.ColorCodeClass(className)
-    return UTILS.ColorCodeText(className, UTILS.GetClassColor(className).hex);
+    return ColorCodeText(className, GetClassColor(className).hex);
 end
+local ColorCodeClass = UTILS.ColorCodeClass
 
 local colorCodedClassList = {}
 do
@@ -390,6 +393,39 @@ end
 function UTILS.GetCutoffTimestamp()
     -- 25 Aug 2019 00:00:00 small bit before Wow Classic release Time
     return 1566684000
+end
+
+function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
+    inLine = inLine or 5
+    local profilesInLine = 0
+    local line = ""
+    local separator = ", "
+    local numProfiles = #profiles
+    local profilesLeft = numProfiles
+    while (profilesLeft > 0) do
+        local currentProfile = profiles[numProfiles - profilesLeft + 1]
+        profilesLeft = profilesLeft - 1
+        if profilesLeft == 0 then
+            separator = ""
+        end
+        line = line .. ColorCodeText(currentProfile:Name(), GetClassColor(currentProfile:Class()).hex) .. separator
+        profilesInLine = profilesInLine + 1
+        if profilesInLine >= inLine or profilesLeft == 0 then
+            tooltip:AddLine(line)
+            line = ""
+            profilesInLine = 0
+        end
+    end
+end
+
+local greenYes = ColorCodeText("Yes", "00cc00")
+function UTILS.GreenYes()
+    return greenYes
+end
+
+local redNo = ColorCodeText("No", "cc0000")
+function UTILS.RedNo()
+    return redNo
 end
 
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
