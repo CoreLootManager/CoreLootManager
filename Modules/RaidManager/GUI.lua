@@ -97,7 +97,7 @@ local function GenerateOfficerOptions(self)
             set = (function(i, v) self:SetRosterOption("bossKillBonus", v) end),
             get = (function() return self:GetRosterOption("bossKillBonus") end),
             order = 31,
-            -- disabled = true
+            disabled = true
         },
         on_time_bonus = {
             name = "On Time Bonus",
@@ -105,7 +105,7 @@ local function GenerateOfficerOptions(self)
             set = (function(i, v) self:SetRosterOption("onTimeBonus", v) end),
             get = (function() return self:GetRosterOption("onTimeBonus")  end),
             order = 32,
-            -- disabled = true
+            disabled = true
         },
         on_time_bonus_value = {
             name = "On Time Bonus Value",
@@ -114,7 +114,7 @@ local function GenerateOfficerOptions(self)
             get = (function() return tostring(self:GetRosterOption("onTimeBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 33,
-            -- disabled = true
+            disabled = true
         },
         raid_completion_bonus = {
             name = "Raid Completion Bonus",
@@ -122,7 +122,7 @@ local function GenerateOfficerOptions(self)
             set = (function(i, v) self:SetRosterOption("raidCompletionBonus", v) end),
             get = (function() return self:GetRosterOption("raidCompletionBonus") end),
             order = 34,
-            -- disabled = true
+            disabled = true
         },
         raid_completion_bonus_value = {
             name = "Raid Completion Value",
@@ -131,7 +131,7 @@ local function GenerateOfficerOptions(self)
             get = (function() return tostring(self:GetRosterOption("raidCompletionBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 35,
-            -- disabled = true
+            disabled = true
         },
         interval_bonus = {
             name = "Interval Bonus",
@@ -139,7 +139,7 @@ local function GenerateOfficerOptions(self)
             set = (function(i, v) self:SetRosterOption("intervalBonus", v) end),
             get = (function() return self:GetRosterOption("intervalBonus") end),
             order = 36,
-            -- disabled = true
+            disabled = true
         },
         interval_time = {
             name = "Interval Time",
@@ -148,7 +148,7 @@ local function GenerateOfficerOptions(self)
             get = (function() return tostring(self:GetRosterOption("intervalBonusTime")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 37,
-            -- disabled = true
+            disabled = true
         },
         interval_bonus_value = {
             name = "Interval Bonus Value",
@@ -157,7 +157,7 @@ local function GenerateOfficerOptions(self)
             get = (function() return tostring(self:GetRosterOption("intervalBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 38,
-            -- disabled = true
+            disabled = true
         },
         create_header = {
             type = "header",
@@ -204,7 +204,7 @@ local function GenerateOfficerOptions(self)
                 RaidManager:CreateRaid(self.roster, self.name, self.configuration)
                 self:Refresh()
             end),
-            disabled = (function() return RaidManager:IsInActiveRaid() end),
+            -- disabled = (function() return RaidManager:IsInActiveRaid() end),
             confirm = true,
             order = 10
         },
@@ -223,12 +223,12 @@ local function GenerateOfficerOptions(self)
             end),
             -- disabled = (function() return not RaidManager:IsInCreatedRaid() end),
             confirm = true,
-            order = 11
+            order = 4
         },
         manage_header = {
             type = "header",
             name = "Manage",
-            order = 11
+            order = 1
         },
         start_raid = {
             name = "Start raid",
@@ -246,7 +246,7 @@ local function GenerateOfficerOptions(self)
             end),
             -- disabled = (function() return not RaidManager:IsInCreatedRaid() end),
             confirm = true,
-            order = 12
+            order = 2
         },
         end_raid = {
             name = "End raid",
@@ -263,7 +263,7 @@ local function GenerateOfficerOptions(self)
             end),
             -- disabled = (function() return not RaidManager:IsInProgressingRaid() end),
             confirm = true,
-            order = 13
+            order = 3
         }
     }
 end
@@ -294,8 +294,8 @@ local function CreateRaidDisplay(self)
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
-    StandingsGroup:SetHeight(550)
-    StandingsGroup:SetWidth(560)
+    StandingsGroup:SetHeight(600)
+    StandingsGroup:SetWidth(520)
     -- Standings
     self.st = ScrollingTable:CreateST(columns, 20, 18, nil, StandingsGroup.frame)
     self.st:EnableSelection(true)
@@ -311,7 +311,7 @@ local function CreateRaidDisplay(self)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         local raid = ST_GetRaid(rowData)
         -- In Raid
-        local profiles = raid:Players()
+        local profiles = raid:Profiles()
         local numProfiles = #profiles
         tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or "Unknown")
         tooltip:AddLine(" ")
@@ -360,7 +360,7 @@ function RaidManagerGUI:Create()
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
     f:SetWidth(800)
-    f:SetHeight(600)
+    f:SetHeight(640)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
 

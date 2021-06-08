@@ -8,7 +8,7 @@ function Profile:New(name, class, spec, main)
     setmetatable(o, self)
     self.__index = self
 
-    o.iGUID = ""
+    o._GUID = ""
     o.name  = (name ~= nil) and tostring(name) or ""
     o.class = (class ~= nil) and tostring(class) or ""
     o.spec  = (spec ~= nil) and tostring(spec) or ""
@@ -42,11 +42,11 @@ function Profile:ClearMain()
 end
 
 function Profile:SetGUID(GUID)
-    self.iGUID = GUID
+    self._GUID = GUID
 end
 
 function Profile:GUID()
-    return self.iGUID
+    return self._GUID
 end
 
 CLM.MODELS.Profile = Profile

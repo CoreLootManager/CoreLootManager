@@ -13,6 +13,8 @@ local capitalize = UTILS.capitalize
 local getGuidFromInteger = UTILS.getGuidFromInteger
 local NumberToClass = UTILS.NumberToClass
 
+local whoamiGUID = UTILS.whoamiGUID
+
 local Profile = CLM.MODELS.Profile
 
 local LedgerManager = MODULES.LedgerManager
@@ -236,6 +238,11 @@ end
 function ProfileManager:WipeAll()
     LOG:Trace("ProfileManager:WipeAll()")
     self.cache = { profilesGuidMap = {}, profiles = {} }
+end
+
+function ProfileManager:GetMyProfile()
+    LOG:Trace("ProfileManager:GetMyProfile()")
+    self:GetProfileByGUID(whoamiGUID())
 end
 
 -- Utility

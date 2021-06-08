@@ -35,6 +35,8 @@ function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
 
     self:WipeAll()
+    self.lastRosterUpdateTime = 0
+
     self.RaidLeader = ""
     self.MasterLooter = ""
     self.IsMasterLootSystem = false
@@ -303,6 +305,28 @@ function RaidManager:EndRaid(raid)
     end
 end
 
+function RaidManager:JoinRaid(raid)
+    LOG:Trace("RaidManager:JoinRaid()")
+    if not typeof(raid, Raid) then
+        LOG:Message("Missing valid raid")
+        return
+    end
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message("You are not allowed to join raid.")
+        return
+    end
+    if not raid:IsActive() then
+        LOG:Message("You can only join an active raid.")
+        return
+    end
+    if raid == self:GetRaid() then
+        LOG:Message("You can only join different raid than your current one.")
+        return
+    end
+
+    LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), {ProfileManager:GetMyProfile()}, {}), true)
+end
+
 function RaidManager:RegisterEventHandling()
     if self.isEventHandlingRegistered then return end
     EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE"}, (function(...)
@@ -324,7 +348,7 @@ function RaidManager:HandleRosterUpdateEvent()
             local name, rank = GetRaidRosterInfo(i)
             if name then
                 if rank == 2 then
-                    self.RaidLeader = name
+                    self.RaidLeader = RemoveServer(name)
                     break
                 end
             end
@@ -335,9 +359,37 @@ function RaidManager:HandleRosterUpdateEvent()
         self:UpdateRaiderList()
     end
 end
--- Dont execute this more often than every 1s
+
 function RaidManager:UpdateRaiderList()
-    -- TODO
+    local raid = self:GetRaid()
+    if not raid then return end
+    -- Dont execute this more often than every 1s
+    if GetServerTime() - self.lastRosterUpdateTime < 1 then return end
+    self.lastRosterUpdateTime = GetServerTime()
+    local previous, joiners, leavers = {}, {}, {}
+    -- Detect joiners; build previous set
+    for i=1,MAX_RAID_MEMBERS do
+        local name = GetRaidRosterInfo(i)
+        if name then
+            name = RemoveServer(name)
+            previous[name] = true
+            local profile = ProfileManager:GetProfileByName(name)
+            if profile then
+                if not raid:IsPlayerInRaid(profile:GUID()) then
+                    table.insert(joiners,  profile)
+                end
+            end
+        end
+    end
+    -- Detect leavers
+    for _,profile in ipairs(raid:Profiles()) do
+        if not previous[profile:Name()] then
+            table.insert(leavers, profile)
+        end
+    end
+    if #joiners > 0 or #leavers > 0 then
+        LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), joiners, leavers))
+    end
 end
 
 function RaidManager:IsRaidOwner(name)

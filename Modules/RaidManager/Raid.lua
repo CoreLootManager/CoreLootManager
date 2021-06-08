@@ -7,6 +7,7 @@ local UTILS = CLM.UTILS
 -- local ShallowCopy = UTILS.ShallowCopy
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
+local keys = UTILS.keys
 -- local whoami = UTILS.whoami
 -- local typeof = UTILS.typeof
 
@@ -127,6 +128,10 @@ function Raid:IsActive()
 end
 
 function Raid:Players()
+    return keys(self.players)
+end
+
+function Raid:Profiles()
     self.playerProfileCache = {}
     for player,_ in pairs(self.players) do
         -- The code below breaks Model-View-Controller rule as it accessess Managers

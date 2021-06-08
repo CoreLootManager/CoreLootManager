@@ -24,7 +24,7 @@ local Roster = CLM.MODELS.Roster
 
 local RosterManager = { } -- Roster Manager Module
 
-local function GenerateName()
+function RosterManager:GenerateName()
     local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX)]
     local suffix = CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX)]
     return capitalize(prefix).. " " .. capitalize(suffix)
@@ -244,9 +244,9 @@ end
 function RosterManager:NewRoster(pointType, name)
     LOG:Trace("RosterManager:NewRoster()")
 
-    name = name or GenerateName()
+    name = name or self:GenerateName()
     while self.cache.rosters[name] ~= nil do
-        name = GenerateName()
+        name = self:GenerateName()
     end
 
     local uid = GetServerTime()
@@ -482,7 +482,7 @@ function RosterManager:Debug(N)
             genRosterNames()
         end),
         ["rename"] =  (function()
-            self:RenameRoster(rosterNames[math.random(1, #rosterNames)], GenerateName() .. tostring(math.random(1,999999999)))
+            self:RenameRoster(rosterNames[math.random(1, #rosterNames)], self:GenerateName() .. tostring(math.random(1,999999999)))
             genRosterNames()
         end),
         ["copy"] =  (function()
