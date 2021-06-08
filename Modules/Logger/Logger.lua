@@ -63,7 +63,7 @@ function Logger:GetVerbosity()
 end
 
 function Logger:Wipe()
-    local db = LOG:GetDatabase()
+    local db = LOG:GetDatabase() -- luacheck: ignore
     db = {}
     collectgarbage()
 end

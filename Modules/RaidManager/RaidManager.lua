@@ -24,7 +24,7 @@ local Roster = MODELS.Roster
 local RosterConfiguration = MODELS.RosterConfiguration
 -- local PointHistory = MODELS.PointHistory
 
-local whoami = UTILS.whoami
+-- local whoami = UTILS.whoami
 local whoamiGUID = UTILS.whoamiGUID
 local RemoveServer = UTILS.RemoveServer
 local typeof = UTILS.typeof
@@ -159,7 +159,6 @@ end
 function RaidManager:ParseStatus()
     if not self._initialized then
         -- Mark raids as stale
-        local GUID = whoamiGUID()
         for raid in ipairs(self.cache.raids) do
             if raid:IsActive() then
                 local referenceTime = raid:StartTime()
@@ -259,7 +258,7 @@ function RaidManager:StartRaid(raid)
     --     LOG:Message("You are not in a raid.")
     --     return
     -- end
-    
+
     -- Lazy fill raid roster
     RosterManager:AddFromRaidToRoster(raid:Roster())
 

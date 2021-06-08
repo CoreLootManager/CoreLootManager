@@ -42,7 +42,6 @@ local ColorCodeText = UTILS.ColorCodeText
 function UTILS.ColorCodeClass(className)
     return ColorCodeText(className, GetClassColor(className).hex);
 end
-local ColorCodeClass = UTILS.ColorCodeClass
 
 local colorCodedClassList = {}
 do

@@ -6,7 +6,7 @@ local UTILS = CLM.UTILS
 
 -- local ShallowCopy = UTILS.ShallowCopy
 
-local getGuidFromInteger = UTILS.getGuidFromInteger
+-- local getGuidFromInteger = UTILS.getGuidFromInteger
 local keys = UTILS.keys
 -- local whoami = UTILS.whoami
 -- local typeof = UTILS.typeof
