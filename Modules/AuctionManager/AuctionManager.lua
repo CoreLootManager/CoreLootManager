@@ -16,6 +16,7 @@ local RaidManager = MODULES.RaidManager
 local Comms = MODULES.Comms
 
 local Roster = MODELS.Roster
+local Raid = MODELS.Raid
 local RosterConfiguration =  MODELS.RosterConfiguration
 
 local typeof = UTILS.typeof
@@ -59,7 +60,7 @@ function AuctionManager:GetQuickAuction()
 end
 
 -- We pass configuration separately as it can be overriden on per-auction basis
-function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxValue, note, roster, configuration)
+function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxValue, note, raid, configuration)
     LOG:Trace("AuctionManager:StartAuction()")
     if self.auctionInProgress then
         LOG:Warning("AuctionManager:StartAuction(): Auction in progress")
@@ -71,49 +72,49 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     end
     -- Auction parameters sanity checks
     note = note or ""
-    if not typeof(roster, Roster) then
-        LOG:Warning("RosterManager:StartAuction(): Invalid roster object")
+    if not typeof(raid, Raid) then
+        LOG:Warning("AuctionManager:StartAuction(): Invalid raid object")
         return false
     end
-    self.roster = roster
+    self.raid = raid
     if not tonumber(itemId) then
-        LOG:Warning("RosterManager:StartAuction(): invalid item id")
+        LOG:Warning("AuctionManager:StartAuction(): invalid item id")
         return false
     end
     if not itemLink then
-        LOG:Warning("RosterManager:StartAuction(): invalid item link")
+        LOG:Warning("AuctionManager:StartAuction(): invalid item link")
         return false
     end
     self.itemLink = itemLink
     if not (tonumber(baseValue) and tonumber(maxValue)) then
-        LOG:Warning("RosterManager:StartAuction(): invalid values [%s] [%s]", tostring(baseValue), tostring(maxValue))
+        LOG:Warning("AuctionManager:StartAuction(): invalid values [%s] [%s]", tostring(baseValue), tostring(maxValue))
         return false
     end
     if not typeof(configuration, RosterConfiguration) then
-        LOG:Warning("RosterManager:StartAuction(): Invalid roster object")
+        LOG:Warning("AuctionManager:StartAuction(): Invalid roster configuration object")
         return false
     end
     -- Auction Settings sanity checks
     local auctionTime = configuration:Get("auctionTime")
     if auctionTime <= 0 then
-        LOG:Warning("RosterManager:StartAuction(): 0s auction time")
+        LOG:Warning("AuctionManager:StartAuction(): 0s auction time")
         return false
     end
     if auctionTime < 10 then
-        LOG:Warning("RosterManager:StartAuction(): Very short (below 10s) auction time")
+        LOG:Warning("AuctionManager:StartAuction(): Very short (below 10s) auction time")
     end
     self.auctionTime = auctionTime
     self.itemValueMode = configuration:Get("itemValueMode")
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         if maxValue > 0 and baseValue > maxValue then
-            LOG:Warning("RosterManager:StartAuction(): base value must be smaller or equal to max values")
+            LOG:Warning("AuctionManager:StartAuction(): base value must be smaller or equal to max values")
             return false
         end
     end
     self.baseValue = baseValue or 0
     self.maxValue = maxValue or 0
     if self.auctionTime <= 0 then
-        LOG:Warning("RosterManager:StartAuction(): Auction time must be greater than 0 seconds")
+        LOG:Warning("AuctionManager:StartAuction(): Auction time must be greater than 0 seconds")
         return false
     end
     self.allowNegativeBidders = configuration:Get("allowNegativeBidders")
@@ -145,9 +146,9 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     -- Get Auction Type info
     self.auctionType = configuration:Get("auctionType")
     -- if baseValue / maxValue are different than current (or default if no override) item value we will need to update the config
-    local current = roster:GetItemValue(itemId)
+    local current = self.raid:Roster():GetItemValue(itemId)
     if current.base ~= baseValue or current.max ~= maxValue then
-        RosterManager:SetRosterItemValue(self.roster, itemId, baseValue, maxValue)
+        RosterManager:SetRosterItemValue(self.raid:Roster(), itemId, baseValue, maxValue)
     end
     -- clear bids
     self.bids = {}
@@ -288,9 +289,9 @@ function AuctionManager:ValidateBid(name, bid)
     local profile = ProfileManager:GetProfileByName(name)
     if not profile then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
     local GUID = profile:GUID()
-    if not self.roster:IsProfileInRoster(GUID) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
+    if not self.raid:Roster():IsProfileInRoster(GUID) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
     -- allow negative bidders
-    local current = self.roster:Standings(GUID)
+    local current = self.raid:Roster():Standings(GUID)
     if current < 0 and not self.allowNegativeBidders then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_BIDDER end
     -- allow negative standings after bid
     local new = current - bid
@@ -338,13 +339,12 @@ end
 
 function AuctionManager:Award(itemId, price, name)
     LOG:Trace("AuctionManager:Award()")
-    LootManager:AwardItem(self.roster, name, self.itemLink, itemId, price)
+    LootManager:AwardItem(self.raid, name, self.itemLink, itemId, price)
 end
 
 function AuctionManager:IsAuctioneer(name)
     LOG:Trace("AuctionManager:IsAuctioneer()")
     name = name or UTILS.whoami()
-
     return RaidManager:IsRaidOwner(name)
 end
 

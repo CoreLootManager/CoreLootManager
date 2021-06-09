@@ -176,6 +176,8 @@ function RaidManager:ParseStatus()
             end
         end
 
+        self:HandleRosterUpdateEvent()
+
         self._initialized = true
     end
 end
