@@ -11,7 +11,6 @@ local MODELS =  CLM.MODELS
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
-local RaidManager = MODULES.RaidManager
 
 local LEDGER_LOOT = MODELS.LEDGER.LOOT
 local Profile = MODELS.Profile
@@ -57,7 +56,7 @@ function LootManager:Initialize()
         LEDGER_LOOT.RaidAward,
         (function(entry)
             LOG:TraceAndCount("mutator(LootRaidAward)")
-            local raid = RaidManager:GetRaidByUid(entry:raidUid())
+            local raid = MODULES.RaidManager:GetRaidByUid(entry:raidUid())
             if not raid then
                 LOG:Debug("PointManager mutator(): Unknown raid uid %s", entry:raidUid())
                 return
@@ -93,7 +92,11 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
     end
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     if roster:IsProfileInRoster(profile:GUID()) then
-        LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
+        if isRaid then
+            LedgerManager:Submit(LEDGER_LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value), forceInstant)
+        else
+            LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
+        end
         local message = string.format("%s awarded to %s for %s DKP", itemLink, name, value)
         SendChatMessage(message, "RAID_WARNING")
         SendChatMessage(message, "GUILD")

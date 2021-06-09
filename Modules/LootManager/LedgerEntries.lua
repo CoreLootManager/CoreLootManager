@@ -44,7 +44,7 @@ end
 
 function RaidAward:new(raidUid, profile, itemId, value)
     local o = LogEntry.new(self);
-    o.r = tonumber(raidUid) or 0
+    o.r = raidUid or ""
     o.p = GetGUIDFromEntry(profile) or 0
     o.i = tonumber(itemId) or 0
     o.v = tonumber(value) or 0

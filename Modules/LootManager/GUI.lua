@@ -116,7 +116,7 @@ local function CreateLootDisplay(self)
             else
                 name = "Unknown"
             end
-            local raid = RaidManager:GetRaidByUid(loot:Raid())
+            local raid = RaidManager:GetRaidByUid(loot:RaidUid())
             if raid then
                 tooltip:AddLine(raid:Name())
             end

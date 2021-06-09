@@ -54,14 +54,17 @@ function GlobalSlashCommands:Initialize()
                     return
                 end
                 -- Roster --
+                local isRaid = false
+                local raid
                 local rosterName = values[3]
                 local roster
                 if not rosterName or rosterName == "" then
-                    local raid = RaidManager:GetRaid()
+                    raid = RaidManager:GetRaid()
                     if not raid then
                         LOG:Message("Missing roster name and you are not in raid")
                         return
                     else
+                        isRaid = true
                         LOG:Info("Missing roster name. Using Raid Info")
                         roster = raid:Roster()
                         LOG:Info("Raid: %s Roster: %s", raid:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
@@ -88,7 +91,7 @@ function GlobalSlashCommands:Initialize()
                     return
                 end
                 -- Award --
-                LootManager:AwardItem(roster, name, itemLink, itemId, value)
+                LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
             end)
         }
     }
