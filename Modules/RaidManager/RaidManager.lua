@@ -138,7 +138,13 @@ function RaidManager:Initialize()
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
                 return
             end
+
             raid:End(entry:time())
+
+            local players = raid:Players()
+            for _,GUID in ipairs(players) do
+                self:UpdateProfileCurentRaid(GUID, nil)
+            end
         end)
     )
 
@@ -152,7 +158,6 @@ function RaidManager:Initialize()
     end)
 
     self:RegisterEventHandling()
-    self:RegisterSlash()
     MODULES.ConfigManager:RegisterUniversalExecutor("raidm", "RaidManager", self)
 end
 
@@ -254,10 +259,12 @@ function RaidManager:StartRaid(raid)
         LOG:Message("You can only start a freshly created raid.")
         return
     end
-    if (self:GetRaid() ~= raid) or not IsInRaid() then
-        LOG:Message("You are not in the raid.")
-        return
-    end
+    -- @no-debug@
+    -- if (self:GetRaid() ~= raid) or not IsInRaid() then
+    --     LOG:Message("You are not in the raid.")
+    --     return
+    -- end
+    -- @end-no-debug@
 
     -- Lazy fill raid roster
     RosterManager:AddFromRaidToRoster(raid:Roster())
@@ -422,24 +429,6 @@ function RaidManager:WipeAll()
         raids = {},
         profileRaidInfo = {}
     }
-end
-
-function RaidManager:RegisterSlash()
-    -- local options = {
-    --     raidresync = {
-    --         type = "execute",
-    --         name = "Resync raid",
-    --         desc = "Failsafe to resync raid after you were Initiator and did disconnect after which raid was restarted",
-    --         func = (function()
-    --             if IsInRaid() and self:AmIRaidManager() then
-    --                 LOG:Message("Requesting resynchronisation")
-    --                 self:ClearRaidInfo()
-    --                 Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-    --             end
-    --         end)
-    --     }
-    -- }
-    -- MODULES.ConfigManager:RegisterSlash(options)
 end
 
 CONSTANTS.RAID_STATUS =

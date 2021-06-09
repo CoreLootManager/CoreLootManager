@@ -86,6 +86,7 @@ end
 
 function UTILS.GetItemIdFromLink(itemLink)
     -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+    itemLink = itemLink or ""
     local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
     return tonumber(itemId) or 0
 end
@@ -201,6 +202,7 @@ end
 
 function UTILS.GetUnitName(unit)
     local name = GetUnitName(unit)
+    name = name or ""
     return UTILS.RemoveServer(name)
 end
 

@@ -35,7 +35,7 @@ function Raid:New(uid, name, roster, config, creator, entry)
     o.endTime = 0
 
     -- GUID dict
-    o.players = { }
+    o.players = { [creator] = true } -- for raid mangement we check sometimes if creator is part of raid
     o.standby = { }
 
     return o

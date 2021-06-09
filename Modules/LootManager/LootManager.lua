@@ -235,7 +235,7 @@ function LootManager:Debug(N)
                         " and value " .. tostring(value)
                     )
                     if entryType == 0 then -- Award
-                        self:AwardItem(roster, profile, itemId, value, true)
+                        self:AwardItem(roster, profile:Name(), itemId, value, true)
                     elseif entryType == 1 then -- Revoke
                         self:RevokeItem(profileLoot[math.random(1, numLoot)], true)
                     elseif entryType == 2 then -- Transfer
