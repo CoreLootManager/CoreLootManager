@@ -11,14 +11,32 @@ local MODELS =  CLM.MODELS
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
+local RaidManager = MODULES.RaidManager
 
 local LEDGER_LOOT = MODELS.LEDGER.LOOT
 local Profile = MODELS.Profile
 local Roster = MODELS.Roster
+local Raid = MODELS.Raid
 local Loot = MODELS.Loot
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
+
+local function mutateLootAward(entry, roster)
+    local GUID = getGuidFromInteger(entry:profile())
+    if roster:IsProfileInRoster(GUID) then
+        local profile = ProfileManager:GetProfileByGUID(GUID)
+        if not profile then
+            LOG:Debug("mutateLootAward(): Profile with guid [%s] does not exist", GUID)
+            return
+        end
+        local loot = Loot:New(entry, profile)
+        RosterManager:AddLootToRoster(roster, loot, profile)
+    else
+        LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+        return
+    end
+end
 
 local LootManager = {}
 function LootManager:Initialize()
@@ -26,35 +44,39 @@ function LootManager:Initialize()
     LedgerManager:RegisterEntryType(
         LEDGER_LOOT.Award,
         (function(entry)
-            LOG:TraceAndCount("mutator(LOOTAward)")
+            LOG:TraceAndCount("mutator(LootAward)")
             local roster = RosterManager:GetRosterByUid(entry:rosterUid())
             if not roster then
                 LOG:Debug("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
                 return
             end
-            local GUID = getGuidFromInteger(entry:profile())
-            if roster:IsProfileInRoster(GUID) then
-                local profile = ProfileManager:GetProfileByGUID(GUID)
-                if not profile then
-                    LOG:Debug("PointManager mutator(): Profile with guid [%s] does not exist", GUID)
-                    return
-                end
-                local loot = Loot:New(entry, profile)
-                RosterManager:AddLootToRoster(roster, loot, profile)
-            else
-                LOG:Debug("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+            mutateLootAward(entry, roster)
+        end))
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_LOOT.RaidAward,
+        (function(entry)
+            LOG:TraceAndCount("mutator(LootRaidAward)")
+            local raid = RaidManager:GetRaidByUid(entry:raidUid())
+            if not raid then
+                LOG:Debug("PointManager mutator(): Unknown raid uid %s", entry:raidUid())
                 return
             end
+            mutateLootAward(entry, raid:Roster())
         end))
 
         MODULES.ConfigManager:RegisterUniversalExecutor("lm", "LootManager", self)
 end
 
-function LootManager:AwardItem(roster, name, itemLink, itemId, value, forceInstant)
+function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forceInstant)
     LOG:Trace("LootManager:AwardItem()")
-    if not typeof(roster, Roster) then
-        LOG:Error("LootManager:AwardItem(): Missing valid roster")
-        return
+    local isRaid = true
+    if not typeof(raidOrRoster, Raid) then
+        isRaid = false
+        if not typeof(raidOrRoster, Roster) then
+            LOG:Error("raidOrRoster:AwardItem(): Missing valid raid / roster")
+            return
+        end
     end
     local profile = ProfileManager:GetProfileByName(name)
     if not typeof(profile, Profile) then
@@ -69,6 +91,7 @@ function LootManager:AwardItem(roster, name, itemLink, itemId, value, forceInsta
         LOG:Error("LootManager:AwardItem(): Invalid Value")
         return
     end
+    local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     if roster:IsProfileInRoster(profile:GUID()) then
         LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
         local message = string.format("%s awarded to %s for %s DKP", itemLink, name, value)

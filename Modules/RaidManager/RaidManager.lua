@@ -254,10 +254,10 @@ function RaidManager:StartRaid(raid)
         LOG:Message("You can only start a freshly created raid.")
         return
     end
-    -- if not self:IsInActiveRaid() or not IsInRaid() then
-    --     LOG:Message("You are not in a raid.")
-    --     return
-    -- end
+    if (self:GetRaid() ~= raid) or not IsInRaid() then
+        LOG:Message("You are not in the raid.")
+        return
+    end
 
     -- Lazy fill raid roster
     RosterManager:AddFromRaidToRoster(raid:Roster())
@@ -276,7 +276,6 @@ function RaidManager:StartRaid(raid)
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
 
     SendChatMessage(string.format("Raid [%s] started", raid:Name()) , "RAID_WARNING")
-
 end
 
 function RaidManager:EndRaid(raid)

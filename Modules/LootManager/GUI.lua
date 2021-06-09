@@ -25,7 +25,7 @@ local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
--- local PointManager = MODULES.PointManager
+local RaidManager = MODULES.RaidManager
 local LedgerManager = MODULES.LedgerManager
 local EventManager = MODULES.EventManager
 
@@ -115,6 +115,10 @@ local function CreateLootDisplay(self)
                 name = ColorCodeText(profile:Name(), GetClassColor(profile:Class()).hex)
             else
                 name = "Unknown"
+            end
+            local raid = RaidManager:GetRaidByUid(loot:Raid())
+            if raid then
+                tooltip:AddLine(raid:Name())
             end
             tooltip:AddDoubleLine("Awarded by", name)
         end

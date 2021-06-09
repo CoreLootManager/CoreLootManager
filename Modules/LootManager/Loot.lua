@@ -44,4 +44,13 @@ function Loot:Entry()
     return self.entry
 end
 
+function Loot:RaidUid()
+    if not self.raidUid then
+        if self.entry.raidUid then
+            self.raidUid = self.entry:raidUid()
+        end
+    end
+    return self.raidUid
+end
+
 CLM.MODELS.Loot = Loot

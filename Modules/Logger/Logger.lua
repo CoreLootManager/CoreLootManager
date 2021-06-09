@@ -70,6 +70,3 @@ end
 
 -- Publish API
 MODULES.Logger = Logger
-
-
-
