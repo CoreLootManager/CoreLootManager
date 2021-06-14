@@ -242,7 +242,7 @@ end
 
 function ProfileManager:GetMyProfile()
     LOG:Trace("ProfileManager:GetMyProfile()")
-    self:GetProfileByGUID(whoamiGUID())
+    return self:GetProfileByGUID(whoamiGUID())
 end
 
 -- Utility
