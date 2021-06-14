@@ -70,17 +70,16 @@ function RaidManager:Initialize()
         LEDGER_RAID.Update,
         (function(entry)
             LOG:TraceAndCount("mutator(RaidUpdate)")
-            local raidUid = entry:uuid()
+            local raidUid = entry:raid()
             local joiners = entry:joiners()
             local leavers = entry:leavers()
-
             local raid = self:GetRaidByUid(raidUid)
             if not raid then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
                 return
             end
             -- Add joiners
-            for iGUID in ipairs(joiners) do
+            for _, iGUID in ipairs(joiners) do
                 local GUID = getGuidFromInteger(iGUID)
                 local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
@@ -89,7 +88,7 @@ function RaidManager:Initialize()
                 end
             end
             -- Remove leavers
-            for iGUID in ipairs(leavers) do
+            for _, iGUID in ipairs(leavers) do
                 local GUID = getGuidFromInteger(iGUID)
                 local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
@@ -331,7 +330,11 @@ function RaidManager:JoinRaid(raid)
         return
     end
 
-    LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), {ProfileManager:GetMyProfile()}, {}), true)
+    local myProfile = ProfileManager:GetMyProfile()
+    if myProfile == nil then
+        error("My profile is nil")
+    end
+    LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), {}, {ProfileManager:GetMyProfile()}), true)
 end
 
 function RaidManager:RegisterEventHandling()
