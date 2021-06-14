@@ -21,7 +21,7 @@ function GlobalSlashCommands:Initialize()
             desc = "Award item without auctioning it.",
             set = (function(i, args)
                 -- Formats:
-                
+
                 -- Award linked item to player in named roster for value:
                 --          /clm award Item Link/Value/Roster Name/Player
                 -- Example: /clm award [Hearthstone]/15/Mighty Geese/Bluntlighter

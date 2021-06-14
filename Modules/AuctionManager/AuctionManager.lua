@@ -15,7 +15,7 @@ local RaidManager = MODULES.RaidManager
 
 local Comms = MODULES.Comms
 
-local Roster = MODELS.Roster
+-- local Roster = MODELS.Roster
 local Raid = MODELS.Raid
 local RosterConfiguration =  MODELS.RosterConfiguration
 
