@@ -85,6 +85,9 @@ function Update:new(raidUid, leavers, joiners)
     o.r = raidUid or 0
     o.l = CreateGUIDList(leavers)
     o.j = CreateGUIDList(joiners)
+    if #o.l + #o.j == 0 then
+        error("Must provide at least one leaver or joiner")
+    end
     return o
 end
 
