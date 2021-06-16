@@ -35,7 +35,7 @@ function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
 
     self:WipeAll()
-    self.lastRosterUpdateTime = 0
+    -- self.lastRosterUpdateTime = 0
 
     self.RaidLeader = ""
     self.MasterLooter = ""
@@ -339,7 +339,7 @@ end
 
 function RaidManager:RegisterEventHandling()
     if self.isEventHandlingRegistered then return end
-    EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE"}, (function(...)
+    EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, (function(...)
         self:HandleRosterUpdateEvent()
     end))
     self.isEventHandlingRegistered = true
@@ -374,8 +374,8 @@ function RaidManager:UpdateRaiderList()
     local raid = self:GetRaid()
     if not raid then return end
     -- Dont execute this more often than every 1s
-    if GetServerTime() - self.lastRosterUpdateTime < 1 then return end
-    self.lastRosterUpdateTime = GetServerTime()
+    -- if GetServerTime() - self.lastRosterUpdateTime < 1 then return end
+    -- self.lastRosterUpdateTime = GetServerTime()
     local previous, joiners, leavers = {}, {}, {}
     -- Detect joiners; build previous set
     for i=1,MAX_RAID_MEMBERS do
