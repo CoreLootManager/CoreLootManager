@@ -32,13 +32,15 @@ function UTILS.GetClassColor(className)
     local color = classColors[string.lower(className)]
     return (color or { r = 0.627, g = 0.627, b = 0.627, hex = "A0A0A0" })
 end
+local GetClassColor = UTILS.GetClassColor
 
 function UTILS.ColorCodeText(text, color)
     return string.format("|cff%s%s|r", color, text);
 end
+local ColorCodeText = UTILS.ColorCodeText
 
 function UTILS.ColorCodeClass(className)
-    return UTILS.ColorCodeText(className, UTILS.GetClassColor(className).hex);
+    return ColorCodeText(className, GetClassColor(className).hex);
 end
 
 local colorCodedClassList = {}
@@ -84,6 +86,7 @@ end
 
 function UTILS.GetItemIdFromLink(itemLink)
     -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+    itemLink = itemLink or ""
     local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
     return tonumber(itemId) or 0
 end
@@ -199,6 +202,7 @@ end
 
 function UTILS.GetUnitName(unit)
     local name = GetUnitName(unit)
+    name = name or ""
     return UTILS.RemoveServer(name)
 end
 
@@ -229,18 +233,19 @@ function UTILS.getIntegerGuid(GUID)
 end
 local getIntegerGuid = UTILS.getIntegerGuid
 
-local GUIDPrefix = string.sub(UnitGUID("player"), 1, -9)
+local playerGUID = UnitGUID("player")
+local GUIDPrefix = string.sub(playerGUID, 1, -9)
 function UTILS.getGuidFromInteger(int)
     return GUIDPrefix .. string.format("%08X", tonumber(int) or 0)
-end
-
-function UTILS.DumpTable(t)
-    return DumpTable(t)
 end
 
 local playerName = UTILS.GetUnitName("player")
 function UTILS.whoami()
     return playerName
+end
+
+function UTILS.whoamiGUID()
+    return playerGUID
 end
 
 function UTILS.GetGUIDFromEntry(e)
@@ -270,6 +275,9 @@ function UTILS.CreateGUIDList(playerList)
     return playerGUIDList
 end
 
+function UTILS.DumpTable(t)
+    return DumpTable(t)
+end
 
 function UTILS.inflate(object, data)
     for i, key in ipairs(object:fields(data.v)) do
@@ -386,6 +394,39 @@ end
 function UTILS.GetCutoffTimestamp()
     -- 25 Aug 2019 00:00:00 small bit before Wow Classic release Time
     return 1566684000
+end
+
+function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
+    inLine = inLine or 5
+    local profilesInLine = 0
+    local line = ""
+    local separator = ", "
+    local numProfiles = #profiles
+    local profilesLeft = numProfiles
+    while (profilesLeft > 0) do
+        local currentProfile = profiles[numProfiles - profilesLeft + 1]
+        profilesLeft = profilesLeft - 1
+        if profilesLeft == 0 then
+            separator = ""
+        end
+        line = line .. ColorCodeText(currentProfile:Name(), GetClassColor(currentProfile:Class()).hex) .. separator
+        profilesInLine = profilesInLine + 1
+        if profilesInLine >= inLine or profilesLeft == 0 then
+            tooltip:AddLine(line)
+            line = ""
+            profilesInLine = 0
+        end
+    end
+end
+
+local greenYes = ColorCodeText("Yes", "00cc00")
+function UTILS.GreenYes()
+    return greenYes
+end
+
+local redNo = ColorCodeText("No", "cc0000")
+function UTILS.RedNo()
+    return redNo
 end
 
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"

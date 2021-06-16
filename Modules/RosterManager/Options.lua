@@ -42,6 +42,7 @@ end
 
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
+    self.rosterName = RosterManager:GenerateName()
     self.readOnly = not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     self.handlers = {
         name_get = (function(name)
@@ -156,12 +157,6 @@ function RosterManagerOptions:Initialize()
         end),
         auction_allow_negative_bidders_set = (function(name, value)
             SetRosterOption(name, "allowNegativeBidders", value)
-        end),
-        auction_simultaneous_auctions_get = (function(name)
-            return GetRosterOption(name, "simultaneousAuctions")
-        end),
-        auction_simultaneous_auctions_set = (function(name, value)
-            SetRosterOption(name, "simultaneousAuctions", value)
         end),
         auction_auction_time_get = (function(name)
             return tostring(GetRosterOption(name, "auctionTime"))
@@ -442,6 +437,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "On Time Bonus Value",
                 type = "input",
                 order = 6,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 1
             },
@@ -456,6 +452,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Raid Completion Value",
                 type = "input",
                 order = 8,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 1
             },
@@ -470,13 +467,15 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Interval Time",
                 type = "input",
                 order = 10,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 0.6
             },
             interval_bonus_value = {
-                name = "Bonus Value",
+                name = "Interval Bonus Value",
                 type = "input",
                 order = 11,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 0.6
             },
@@ -531,13 +530,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         width = "full",
                         order = 8
                     },
-                    -- simultaneous_auctions = {
-                    --     name = "Simultaneous auctions",
-                    --     desc = "Allow multiple simultaneous auction happening at the same time.",
-                    --     type = "toggle",
-                    --     width = "full",
-                    --     order = 9
-                    -- },
                     auction_time = {
                         name = "Auction length",
                         desc = "Auction length in seconds.",
@@ -582,9 +574,19 @@ function RosterManagerOptions:UpdateOptions()
             name = "Create",
             desc = "Creates new roster with default configuration",
             type = "execute",
-            func = function() RosterManager:NewRoster(self.pointType) end,
+            func = function() RosterManager:NewRoster(self.pointType, self.rosterName); self.rosterName = RosterManager:GenerateName() end,
             disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
             order = 1
+        },
+        roster_name = {
+            name = "Roster name",
+            desc = "Roster Name",
+            type = "input",
+            set = (function(i, v) self.rosterName = v end),
+            get = (function(i) return self.rosterName end),
+            pattern = ".+",
+            order = 2,
+            -- disabled = true,--(function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
         },
         point_type = {
             name = "Point type",
@@ -592,10 +594,10 @@ function RosterManagerOptions:UpdateOptions()
             type = "select",
             set = (function(i, v) self.pointType = v end),
             get = (function(i) return self.pointType end),
-            order = 2,
+            order = 3,
             disabled = true,--(function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
             values = CONSTANTS.POINT_TYPES_GUI
-        }
+        },
     }
     local rosters = MODULES.RosterManager:GetRosters()
     for name, _ in pairs(rosters) do
@@ -605,10 +607,3 @@ function RosterManagerOptions:UpdateOptions()
 end
 
 OPTIONS.RosterManager = RosterManagerOptions
-
-
--- local function GameTooltip_OnTooltipSetItem(tooltip)
---     tooltip:AddLine("DUPA 8 DEBUG")
---     tooltip:Show()
--- end
--- tooltip:HookScript("OnTooltipSetItem", GameTooltip_OnTooltipSetItem)

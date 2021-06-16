@@ -12,9 +12,10 @@ local CreateGUIDList = UTILS.CreateGUIDList
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 -- Point DKP X
-local Modify = LogEntry:extend("DM")
-local Set    = LogEntry:extend("DS")
-local Decay  = LogEntry:extend("DD")
+local Modify        = LogEntry:extend("DM")
+local ModifyRaid    = LogEntry:extend("DR");
+local Set           = LogEntry:extend("DS")
+local Decay         = LogEntry:extend("DD")
 
 function Modify:new(rosterUid, playerList, value, reason)
     local o = LogEntry.new(self);
@@ -44,6 +45,31 @@ end
 local modifyFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e"})
 function Modify:fields()
     return modifyFields
+end
+
+function ModifyRaid:new(raidUid, value, reason)
+    local o = LogEntry.new(self);
+    o.r = tonumber(raidUid) or 0
+    o.v = tonumber(value) or 0
+    o.e = tonumber(reason) or 0
+    return o
+end
+
+function ModifyRaid:raidUid()
+    return self.r
+end
+
+function ModifyRaid:value()
+    return self.v
+end
+
+function ModifyRaid:reason()
+    return self.e
+end
+
+local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e"})
+function ModifyRaid:fields()
+    return modifyRaidFields
 end
 
 function Set:new(rosterUid, playerList, value, reason)

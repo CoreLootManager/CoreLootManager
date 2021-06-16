@@ -13,257 +13,446 @@ local ACL = MODULES.ACL
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local EventManager = MODULES.EventManager
--- local ProfileManager = MODULES.ProfileManager
-local Comms = MODULES.Comms
+local ProfileManager = MODULES.ProfileManager
+-- local Comms = MODULES.Comms
 
 -- local LEDGER_DKP = MODELS.LEDGER.DKP
+local LEDGER_RAID = CLM.MODELS.LEDGER.RAID
 -- local Profile = MODELS.Profile
+local Raid = MODELS.Raid
 local Roster = MODELS.Roster
+local RosterConfiguration = MODELS.RosterConfiguration
 -- local PointHistory = MODELS.PointHistory
 
+-- local whoami = UTILS.whoami
+local whoamiGUID = UTILS.whoamiGUID
+local RemoveServer = UTILS.RemoveServer
 local typeof = UTILS.typeof
--- local getGuidFromInteger = UTILS.getGuidFromInteger
-
-local RAID_COMM_PREFIX = "raid"
-local RAID_COMMS_INIT = "i"
-local RAID_COMMS_END = "e"
-local RAID_COMMS_REQUEST_REINIT = "r"
+local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local RaidManager = {}
-
 function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
-    self.status = MODULES.Database:Raid()
-    self.isEventHandlingRegistered = false
-    if not self:IsRaidInProgress() then
-        LOG:Debug("No raid in Progress")
-        -- We dont have any inProgress information stored or it's false (raid is not in progress)
-        self:ClearRaidInfo()
-    else
-        -- Raid in progress -> we had a /reload or disconnect and user was ML
-        -- Check if user logged back when raid was still in progress
-        if IsInRaid() then
-            LOG:Debug("Raid in Progress")
-            -- We need to handle the stored info
-            self.restoreRaid = true
-        else
-            -- Clear status
-            self:ClearRaidInfo()
-        end
-    end
 
-    Comms:Register(RAID_COMM_PREFIX, (function(message, distribution, sender)
-        if distribution ~= CONSTANTS.COMMS.DISTRIBUTION.RAID then return end
-        self:HandleIncomingMessage(message, sender)
-    end), CONSTANTS.ACL.LEVEL.PLEBS)
+    self:WipeAll()
+    -- self.lastRosterUpdateTime = 0
+
+    self.RaidLeader = ""
+    self.MasterLooter = ""
+    self.IsMasterLootSystem = false
+
+    -- Register mutators
+    LedgerManager:RegisterEntryType(
+        LEDGER_RAID.Create,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RaidCreate)")
+            local raidUid = entry:uuid()
+            local name = entry:name()
+            local config = RosterConfiguration:New()
+            config:inflate(entry:config())
+            local rosterUid = entry:rosterUid()
+
+            local roster = RosterManager:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("RaidManager mutator(): Unknown roster uid %s", rosterUid)
+                return
+            end
+            -- Handle existing raid gracefully
+            local creator = getGuidFromInteger(entry:creator())
+            local raid = Raid:New(raidUid, name, roster, config, creator, entry)
+            LOG:Debug("RaidManager mutator(): New raid %s(%s) from %s", name, raidUid, creator)
+            self.cache.raids[raidUid] = raid
+            self:UpdateProfileCurentRaid(creator, raidUid)
+        end)
+    )
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_RAID.Update,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RaidUpdate)")
+            local raidUid = entry:raid()
+            local joiners = entry:joiners()
+            local leavers = entry:leavers()
+            local raid = self:GetRaidByUid(raidUid)
+            if not raid then
+                LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
+                return
+            end
+            -- Add joiners
+            for _, iGUID in ipairs(joiners) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    self:UpdateProfileCurentRaid(GUID, raidUid)
+                    raid:AddPlayer(GUID)
+                end
+            end
+            -- Remove leavers
+            for _, iGUID in ipairs(leavers) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    self:UpdateProfileCurentRaid(GUID, nil)
+                    raid:RemovePlayer(GUID)
+                end
+            end
+        end)
+    )
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_RAID.Start,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RaidStart)")
+            local raidUid = entry:raid()
+            local players = entry:players()
+            local raid = self:GetRaidByUid(raidUid)
+            if not raid then
+                LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
+                return
+            end
+            -- Add players
+            for _,iGUID in ipairs(players) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    self:UpdateProfileCurentRaid(GUID, raidUid)
+                    raid:AddPlayer(GUID)
+                else
+                    LOG:Debug("RaidManager mutator(): Missing profile for: %s", GUID)
+                end
+            end
+            raid:Start(entry:time())
+            -- Handle ontime bonus and other point stuff
+        end)
+    )
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_RAID.End,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RaidEnd)")
+            local raidUid = entry:raid()
+
+            local raid = self:GetRaidByUid(raidUid)
+            if not raid then
+                LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
+                return
+            end
+
+            raid:End(entry:time())
+
+            local players = raid:Players()
+            for _,GUID in ipairs(players) do
+                self:UpdateProfileCurentRaid(GUID, nil)
+            end
+        end)
+    )
 
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
-        if lag == 0 and uncommitted == 0 then
-            if self.restoreRaid then
-                self:RestoreRaidInfo()
-                self.restoreRaid = false
-            end
-        end
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        self:ParseStatus()
     end)
 
-    self:RegisterSlash()
-    self._initialized = true
+    LedgerManager:RegisterOnRestart(function()
+        self:WipeAll()
+    end)
+
+    self:RegisterEventHandling()
+    MODULES.ConfigManager:RegisterUniversalExecutor("raidm", "RaidManager", self)
 end
 
-function RaidManager:IsRaidInProgress()
-    return self.status and (self.status.inProgress or self.status.inProgressExternal)
+function RaidManager:ParseStatus()
+    if not self._initialized then
+        -- Mark raids as stale
+        for raid in ipairs(self.cache.raids) do
+            if raid:IsActive() then
+                local referenceTime = raid:StartTime()
+                if referenceTime == 0 then
+                    referenceTime = raid:CreatedAt()
+                end
+                if (GetServerTime() - referenceTime) > 86400 then
+                    raid:SetStale()
+                end
+            end
+        end
+
+        self:HandleRosterUpdateEvent()
+
+        self._initialized = true
+    end
 end
 
-function RaidManager:AmIRaidManager()
-    return self.status and self.status.inProgress and not self.status.inProgressExternal
+function RaidManager:ListRaids()
+    return self.cache.raids
 end
 
-function RaidManager:InitializeRaid(roster)
-    LOG:Trace("RaidManager:InitializeRaid()")
+function RaidManager:GetRaidByUid(raidUid)
+    return self.cache.raids[raidUid]
+end
+
+function RaidManager:IsInRaid()
+    return self.cache.profileRaidInfo[whoamiGUID()] and true or false
+end
+
+function RaidManager:IsInActiveRaid()
+    return self:IsInRaid() and self:GetRaid():IsActive() or false
+end
+
+function RaidManager:IsInCreatedRaid()
+    return self:IsInRaid() and (CONSTANTS.RAID_STATUS.CREATED == self:GetRaid():Status())
+end
+
+function RaidManager:IsInProgressingRaid()
+    return self:IsInRaid() and (CONSTANTS.RAID_STATUS.IN_PROGRESS == self:GetRaid():Status())
+end
+
+-- handles connection of user with newest ledger raid entity
+function RaidManager:UpdateProfileCurentRaid(GUID, raidUid)
+    LOG:Debug("RaidManager:UpdateProfileCurentRaid(%s, %s)", GUID, raidUid)
+    if ProfileManager:GetProfileByGUID(GUID) then
+        local old = self.cache.profileRaidInfo[GUID]
+        self.cache.profileRaidInfo[GUID] = self.cache.raids[raidUid]
+        if old and old:IsActive() then
+            old:RemovePlayer(GUID)
+        end
+    end
+end
+
+function RaidManager:GetProfileRaid(GUID)
+    return self.cache.profileRaidInfo[GUID]
+end
+
+function RaidManager:CreateRaid(roster, name, config)
+    LOG:Trace("RaidManager:CreateRaid()")
     if not typeof(roster, Roster) then
-        LOG:Error("RaidManager:InitializeRaid(): Missing valid roster")
+        LOG:Error("RaidManager:CreateRaid(): Missing valid roster")
+        return
+    end
+
+    if not typeof(config, RosterConfiguration) then
+        LOG:Error("RaidManager:CreateRaid(): Missing valid configuration")
+        return
+    end
+
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message("You are not allowed to create raids.")
+        return
+    end
+
+    if self:IsInActiveRaid() then
+        LOG:Message("You are already in an active raid. Leave or finish it before creating new one.")
+        return
+    end
+
+    LedgerManager:Submit(LEDGER_RAID.Create:new(roster:UID(), name, config))
+end
+
+function RaidManager:StartRaid(raid)
+    LOG:Trace("RaidManager:StartRaid()")
+    if not typeof(raid, Raid) then
+        LOG:Message("Missing valid raid")
         return
     end
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message("You are not allowed to initialize a raid.")
+        LOG:Message("You are not allowed to start raid.")
         return
     end
-    if not IsInRaid() then
-        LOG:Message("You are not in raid.")
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATED then
+        LOG:Message("You can only start a freshly created raid.")
         return
     end
-    if self:IsRaidInProgress() then
-        LOG:Message("Raid is already in progress.")
-        return
-    end
+    -- @no-debug@
+    -- if (self:GetRaid() ~= raid) or not IsInRaid() then
+    --     LOG:Message("You are not in the raid.")
+    --     return
+    -- end
+    -- @end-no-debug@
+
     -- Lazy fill raid roster
-    RosterManager:AddFromRaidToRoster(roster)
-    -- is RL / ML -> check the loot system ? -- do we need it? maybe everyone can be?
-    self.status.time.raidStart = GetServerTime()
-    self.status.roster = roster:UID()
-    self.roster = roster
+    RosterManager:AddFromRaidToRoster(raid:Roster())
 
-    self.status.inProgress = true
-    -- Handle ontime bonus and other point stuff
-    -- Handle roster change event
-    self:SetupRosterUpdateHandling()
-    -- Send comms
-    Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_INIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-    -- Handle internal
-    SendChatMessage("Raid started" , "RAID_WARNING")
-    self:MarkAsAuctioneer(UTILS.whoami())
+    local players = {}
+    for i=1,MAX_RAID_MEMBERS do
+        local name = GetRaidRosterInfo(i)
+        if name then
+            local profile = ProfileManager:GetProfileByName(RemoveServer(name))
+            if profile then
+                table.insert(players, profile)
+            end
+        end
+    end
+
+    LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
+
+    SendChatMessage(string.format("Raid [%s] started", raid:Name()) , "RAID_WARNING")
 end
 
-function RaidManager:EndRaid()
+function RaidManager:EndRaid(raid)
     LOG:Trace("RaidManager:EndRaid()")
-    if self:IsRaidInProgress() then -- implies being in raid in release version
-        -- Handle raid completion bonus
-        --
-        -- Send comms
-        Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_END, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-        -- Handle end of raid
-        SendChatMessage("Raid ended" , "RAID_WARNING")
-        self:ClearAuctioneer()
-        self:ClearRaidInfo()
+    if not typeof(raid, Raid) then
+        LOG:Message("Missing valid raid")
+        return
+    end
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message("You are not allowed to start raid.")
+        return
+    end
+    if not raid:IsActive() then
+        LOG:Message("You can only end an active raid.")
+        return
+    end
+    -- if not self:IsInActiveRaid() then
+    --     LOG:Message("You are not in an active raid.")
+    --     return
+    -- end
+    LedgerManager:Submit(LEDGER_RAID.End:new(raid:UID()), true)
+
+    if IsInRaid() then
+        SendChatMessage(string.format("Raid [%s] ended", raid:Name()) , "RAID_WARNING")
     end
 end
 
-function RaidManager:SetupRosterUpdateHandling()
+function RaidManager:JoinRaid(raid)
+    LOG:Trace("RaidManager:JoinRaid()")
+    if not typeof(raid, Raid) then
+        LOG:Message("Missing valid raid")
+        return
+    end
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message("You are not allowed to join raid.")
+        return
+    end
+    if not raid:IsActive() then
+        LOG:Message("You can only join an active raid.")
+        return
+    end
+    if raid == self:GetRaid() then
+        LOG:Message("You can only join different raid than your current one.")
+        return
+    end
+
+    local myProfile = ProfileManager:GetMyProfile()
+    if myProfile == nil then
+        error("My profile is nil")
+    end
+    LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), {}, {ProfileManager:GetMyProfile()}), true)
+end
+
+function RaidManager:RegisterEventHandling()
     if self.isEventHandlingRegistered then return end
-    EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE"}, (function(...)
-        self:HandleRequestReinit()
+    EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, (function(...)
+        self:HandleRosterUpdateEvent()
     end))
     self.isEventHandlingRegistered = true
 end
 
-function RaidManager:MarkAsAuctioneer(name)
-    LOG:Trace("RaidManager:MarkAsAuctioneer()")
-    MODULES.AuctionManager:MarkAsAuctioneer(name)
-end
-
-function RaidManager:ClearAuctioneer()
-    LOG:Trace("RaidManager:ClearAuctioneer()")
-    MODULES.AuctionManager:ClearAuctioneer()
-end
-
-function RaidManager:RestoreRaidInfo()
-    LOG:Trace("RaidManager:RestoreRaidInfo()")
-    if IsInRaid() then
-        if self.status.inProgressExternal then
-            Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-        else
-            -- restore roster
-            self.roster = RosterManager:GetRosterByUid(self.status.roster)
-            -- pass info to auction manager
-            self:MarkAsAuctioneer(UTILS.whoami())
-            -- restore event handling
-            -- Handle roster change event
-            self:SetupRosterUpdateHandling()
-            -- check if we have some pending auto awards to do
+function RaidManager:HandleRosterUpdateEvent()
+    if not IsInRaid() then return end
+    -- Update wow raid information
+    local lootmethod, _, masterlooterRaidID = GetLootMethod()
+    if lootmethod == "master" then
+        self.IsMasterLootSystem = true
+        self.MasterLooter = GetRaidRosterInfo(masterlooterRaidID)
+    else
+        self.IsMasterLootSystem = false
+        for i=1,MAX_RAID_MEMBERS do
+            local name, rank = GetRaidRosterInfo(i)
+            if name then
+                if rank == 2 then
+                    self.RaidLeader = RemoveServer(name)
+                    break
+                end
+            end
         end
     end
-end
-
-function RaidManager:ClearRaidInfo()
-    LOG:Trace("RaidManager:ClearRaidInfo()")
-    -- Do not do self.status = {} as we are referencing here directly to DB and that would break the reference
-    self.status.inProgress = false
-    self.status.inProgressExternal = false
-    self.status.roster = 0
-    self.status.time = {
-        raidStart = 0,
-        awardInterval = 0,
-        lastAwardTime = 0 -- for unfortunate reloads during award time
-    }
-    self.status.loot = {
-        isPlayerMasterLooter = false,
-        masterLooter = "",
-        lootSystem = ""
-    }
-    self.status.points = {
-        awardIntervalBonus = false,
-        awardBossKillBonus = false
-    }
-end
-
-function RaidManager:GetRoster()
-    return self.roster
-end
-
-function RaidManager:GetRosterUid()
-    return self.status.roster
-end
-
-function RaidManager:HandleRaidInitialization(auctioneer)
-    LOG:Trace("RaidManager:HandleRaidInitialization()")
-    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, auctioneer) then
-        LOG:Error("RaidManager:HandleRaidEnd(): Received unauthorized raid initialize from %s", auctioneer)
-        return
-    end
-    if not self:IsRaidInProgress() then
-        LOG:Message("Raid started by %s", UTILS.ColorCodeText(auctioneer, "FFD100"))
-    end
-    self.status.inProgressExternal = true
-    -- We allow overwriting just in case
-    self:MarkAsAuctioneer(auctioneer)
-end
-
-function RaidManager:HandleRaidEnd(auctioneer)
-    LOG:Trace("RaidManager:HandleRaidEnd()")
-    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, auctioneer) then
-        LOG:Error("RaidManager:HandleRaidEnd(): Received unauthorized raid end from %s", auctioneer)
-        return
-    end
-    if self:IsRaidInProgress() then
-        LOG:Message("Raid ended by %s", UTILS.ColorCodeText(auctioneer, "FFD100"))
-    end
-    self.status.inProgressExternal = false
-    self:ClearAuctioneer()
-    self:ClearRaidInfo()
-end
-
-function RaidManager:HandleRequestReinit()
-    LOG:Trace("RaidManager:HandleRequestReinit()")
-    -- I am the raid initiator as my status inprogress is not external
-    if self:AmIRaidManager() then
-        Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_INIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+    -- Handle roster update
+    if self:IsRaidOwner() and self:IsInProgressingRaid() then
+        self:UpdateRaiderList()
     end
 end
 
-function RaidManager:HandleIncomingMessage(message, sender)
-    LOG:Trace("RaidManager:HandleIncomingMessage()")
-    if type(message) ~= "string" then
-        LOG:Debug("RaidManager:HandleIncomingMessage(): Received unsupported message type")
-        return
-    end
-
-    if message == RAID_COMMS_INIT then
-        self:HandleRaidInitialization(sender)
-    elseif message == RAID_COMMS_END then
-        self:HandleRaidEnd(sender)
-    elseif message == RAID_COMMS_REQUEST_REINIT then
-        self:HandleRequestReinit()
-    else
-        LOG:Debug("RaidManager:HandleIncomingMessage(): Received unsupported message %s", tostring(message))
-    end
-end
-
-function RaidManager:RegisterSlash()
-    local options = {
-        raidresync = {
-            type = "execute",
-            name = "Resync raid",
-            desc = "Failsafe to resync raid after you were Initiator and did disconnect after which raid was restarted",
-            func = (function()
-                if IsInRaid() and self:AmIRaidManager() then
-                    LOG:Message("Requesting resynchronisation")
-                    self:ClearRaidInfo()
-                    Comms:Send(RAID_COMM_PREFIX, RAID_COMMS_REQUEST_REINIT, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+function RaidManager:UpdateRaiderList()
+    local raid = self:GetRaid()
+    if not raid then return end
+    -- Dont execute this more often than every 1s
+    -- if GetServerTime() - self.lastRosterUpdateTime < 1 then return end
+    -- self.lastRosterUpdateTime = GetServerTime()
+    local previous, joiners, leavers = {}, {}, {}
+    -- Detect joiners; build previous set
+    for i=1,MAX_RAID_MEMBERS do
+        local name = GetRaidRosterInfo(i)
+        if name then
+            name = RemoveServer(name)
+            previous[name] = true
+            local profile = ProfileManager:GetProfileByName(name)
+            if profile then
+                if not raid:IsPlayerInRaid(profile:GUID()) then
+                    table.insert(joiners,  profile)
                 end
-            end)
-        }
-    }
-    MODULES.ConfigManager:RegisterSlash(options)
+            end
+        end
+    end
+    -- Detect leavers
+    for _,profile in ipairs(raid:Profiles()) do
+        if not previous[profile:Name()] then
+            table.insert(leavers, profile)
+        end
+    end
+    if #joiners > 0 or #leavers > 0 then
+        LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), joiners, leavers))
+    end
 end
+
+function RaidManager:IsRaidOwner(name)
+    LOG:Trace("RaidManager:IsRaidOwner()")
+    local allow
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
+        allow = false
+    else
+        if self.IsMasterLootSystem then
+            allow = (self.MasterLooter == name)
+        else
+            allow = (self.RaidLeader == name)
+        end
+    end
+    if not allow then
+        LOG:Debug("%s is not raid owner.", name)
+    end
+    return allow
+end
+
+function RaidManager:GetRaid()
+    return self.cache.profileRaidInfo[whoamiGUID()]
+end
+
+function RaidManager:WipeAll()
+    self.cache = {
+        current = {
+            raid = nil,
+            isRaidManager = false,
+            raidManager = "",
+        },
+        raids = {},
+        profileRaidInfo = {}
+    }
+end
+
+CONSTANTS.RAID_STATUS =
+{
+    CREATED = 0,
+    IN_PROGRESS = 1,
+    FINISHED = 2,
+    STALE = 3
+}
+
+CONSTANTS.RAID_STATUS_GUI = {
+    [CONSTANTS.RAID_STATUS.CREATED] = 'Created',
+    [CONSTANTS.RAID_STATUS.IN_PROGRESS] = 'In Progress',
+    [CONSTANTS.RAID_STATUS.FINISHED] = 'Finished',
+    [CONSTANTS.RAID_STATUS.STALE] = 'Stale'
+}
+
+CONSTANTS.RAID_STATUS_ACTIVE = UTILS.Set({ 0, 1 })
+
+CONSTANTS.RAID_STATUSES = UTILS.Set({ 0, 1, 2, 3 })
 
 MODULES.RaidManager = RaidManager

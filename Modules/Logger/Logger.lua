@@ -32,6 +32,14 @@ function Logger:Initialize()
             get = function(i) return self:GetVerbosity() end,
             order = 102
           },
+          logger_wipe = {
+            name = "Wipe",
+            desc = "Wipes the log history",
+            type = "execute",
+            confirm = true,
+            func = function(i, v) self:Wipe() end,
+            order = 103
+          }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
@@ -54,8 +62,11 @@ function Logger:GetVerbosity()
     return LOG:GetVerbosity()
 end
 
+function Logger:Wipe()
+    local db = LOG:GetDatabase() -- luacheck: ignore
+    db = {}
+    collectgarbage()
+end
+
 -- Publish API
 MODULES.Logger = Logger
-
-
-

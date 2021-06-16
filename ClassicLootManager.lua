@@ -1,6 +1,6 @@
-local name, CLM = ...;
+local name, CLM = ...
 
-CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0");
+CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
 CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
@@ -115,6 +115,8 @@ function CORE:_InitializeFeatures()
     MODULES.BiddingManager:Initialize()
     -- Initialize Migration
     CLM.Migration:Initialize()
+    -- Initialize global slash handlers
+    CLM.GlobalSlashCommands:Initialize()
 end
 
 function CORE:_InitializeFrontend()
@@ -208,7 +210,7 @@ end
 function CORE:GUILD_ROSTER_UPDATE(...)
     LOG:Trace("GUILD_ROSTER_UPDATE")
     local inGuild = IsInGuild()
-    local numTotal = GetNumGuildMembers();
+    local numTotal = GetNumGuildMembers()
     if inGuild and numTotal ~= 0 then
         self:_Initialize()
     end
@@ -221,8 +223,9 @@ BINDING_NAME_CLM_UNDO = "Undo action"
 BINDING_NAME_CLM_REDO = "Redo action"
 
 function CLM_Undo()
-    LOG:Message("Executing Undo. Skiping confirmation prompt. Please wait.")
-    MODULES.LedgerManager:CancelLastEntry()
+    -- LOG:Message("Executing Undo. Skiping confirmation prompt. Please wait.")
+    -- MODULES.LedgerManager:CancelLastEntry()
+    LOG:Warning("Undo not implemented.")
 end
 
 function CLM_Redo()
