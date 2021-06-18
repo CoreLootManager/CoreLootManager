@@ -37,7 +37,7 @@ function LedgerManager:Initialize()
         (function(data, distribution, target, progressCallback)
             return Comms:Send(prefixData, data, distribution, target, "BULK")
         end), -- sendLargeMessage
-        0, 50, LOG
+        0, 100, LOG
     )
     self.ledger.addSyncStateChangedListener(function(_, status)
         self:UpdateSyncState(status) -- there is still something fishy about the Icon (securehook) and I don't know what
@@ -53,7 +53,7 @@ function LedgerManager:IsInitialized()
 end
 
 function LedgerManager:Enable()
-    self.ledger.getStateManager():setUpdateInterval(100)
+    self.ledger.getStateManager():setUpdateInterval(50)
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         self.ledger.enableSending()
     end

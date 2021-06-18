@@ -24,7 +24,7 @@ local Roster = MODELS.Roster
 local RosterConfiguration = MODELS.RosterConfiguration
 -- local PointHistory = MODELS.PointHistory
 
--- local whoami = UTILS.whoami
+local whoami = UTILS.whoami
 local whoamiGUID = UTILS.whoamiGUID
 local RemoveServer = UTILS.RemoveServer
 local typeof = UTILS.typeof
@@ -346,9 +346,19 @@ function RaidManager:RegisterEventHandling()
 end
 
 function RaidManager:HandleRosterUpdateEvent()
+    LOG:Trace("RaidManager:HandleRosterUpdateEvent()")
     if not IsInRaid() then return end
     -- Update wow raid information
+    self:UpdateGameRaidInformation()
+    -- Handle roster update
+    if self:IsRaidOwner() and self:IsInProgressingRaid() then
+        self:UpdateRaiderList()
+    end
+end
+
+function RaidManager:UpdateGameRaidInformation()
     local lootmethod, _, masterlooterRaidID = GetLootMethod()
+    LOG:Debug("Loot method: %s", lootmethod)
     if lootmethod == "master" then
         self.IsMasterLootSystem = true
         self.MasterLooter = GetRaidRosterInfo(masterlooterRaidID)
@@ -359,59 +369,71 @@ function RaidManager:HandleRosterUpdateEvent()
             if name then
                 if rank == 2 then
                     self.RaidLeader = RemoveServer(name)
+                    LOG:Debug("Raid Leader: %s", self.RaidLeader)
                     break
                 end
             end
         end
     end
-    -- Handle roster update
-    if self:IsRaidOwner() and self:IsInProgressingRaid() then
-        self:UpdateRaiderList()
-    end
 end
 
 function RaidManager:UpdateRaiderList()
+    LOG:Trace("RaidManager:UpdateRaiderList()")
     local raid = self:GetRaid()
-    if not raid then return end
+    if not raid then
+        LOG:Debug("Not in raid")
+        return
+    end
     -- Dont execute this more often than every 1s
     -- if GetServerTime() - self.lastRosterUpdateTime < 1 then return end
     -- self.lastRosterUpdateTime = GetServerTime()
-    local previous, joiners, leavers = {}, {}, {}
-    -- Detect joiners; build previous set
+
+    -- Fill missing profiles from roster as in this raid
+    RosterManager:AddFromRaidToRoster(self:GetRaid():Roster())
+
+    local current, joiners, leavers = {}, {}, {}
+    -- Detect leavers; build current set
     for i=1,MAX_RAID_MEMBERS do
         local name = GetRaidRosterInfo(i)
         if name then
             name = RemoveServer(name)
-            previous[name] = true
+            current[name] = true
             local profile = ProfileManager:GetProfileByName(name)
             if profile then
                 if not raid:IsPlayerInRaid(profile:GUID()) then
-                    table.insert(joiners,  profile)
+                    table.insert(leavers,  profile)
                 end
             end
         end
     end
-    -- Detect leavers
+
+    -- Detect joiners
     for _,profile in ipairs(raid:Profiles()) do
-        if not previous[profile:Name()] then
-            table.insert(leavers, profile)
+        if not current[profile:Name()] then
+            table.insert(joiners, profile)
         end
     end
-    if #joiners > 0 or #leavers > 0 then
-        LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), joiners, leavers))
+
+    LOG:Debug("RaidManager:UpdateRaiderList(): +%d -%d", #joiners, #leavers)
+    if (#joiners > 0) or (#leavers > 0) then
+        LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), joiners, leavers), true) -- force update
     end
 end
 
 function RaidManager:IsRaidOwner(name)
     LOG:Trace("RaidManager:IsRaidOwner()")
+    name = name or whoami()
     local allow
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
         allow = false
+        LOG:Debug("Not Assistant")
     else
         if self.IsMasterLootSystem then
             allow = (self.MasterLooter == name)
+            LOG:Debug("ML system %s/%s", self.MasterLooter, name)
         else
             allow = (self.RaidLeader == name)
+            LOG:Debug("Not ML system %s/%s", self.RaidLeader, name)
         end
     end
     if not allow then
