@@ -53,7 +53,10 @@ try:
         embed["description"] = "_This is a beta version and may still contain bugs_"
 
     webhook = Webhook.from_url(sys.argv[1], adapter = RequestsWebhookAdapter())
-    webhook.send(embed = Embed.from_dict(embed))
+    if prerelease:
+        webhook.send(embed = Embed.from_dict(embed))
+    else:
+        webhook.send(content = "<@&852049281959591947>", embed = Embed.from_dict(embed))
 except Exception as e:
     print(str(e))
     exit(30)
