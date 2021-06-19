@@ -205,7 +205,7 @@ function LootGUI:Refresh(visible)
                 {value = ""},
                 {value = "Loading..."},
                 {value = ""},
-                -- {value = ""} -- this needs to be nil -> represents the loot itself that is hidden. we use nil check to see if we have data
+                {value = nil}
             }}
         })
         return

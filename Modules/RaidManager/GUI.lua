@@ -356,10 +356,10 @@ local function CreateRaidDisplay(self)
     -- end
     -- OnClick handler 
     local OnClickHandler = function(...)
-        self.st.DefaultEvents["OnClick"](...)
+        local status = self.st.DefaultEvents["OnClick"](...)
         LIBS.gui:Open(REGISTRY, self.ManagementOptions)
         -- prevent library from triggering default handler
-        return false
+        return status
     end
     -- end
     self.st:RegisterEvents({
