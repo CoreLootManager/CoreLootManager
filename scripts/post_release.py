@@ -34,6 +34,8 @@ if len(releases) == 0:
 try:
     author = releases[0]["author"]["login"]
     body = releases[0]["body"]
+    if len(body) > 1023:
+        multibody = body.split("\r\n\r\n")
     tag = releases[0]["tag_name"]
     name = releases[0]["name"]
     prerelease = releases[0]["prerelease"]
@@ -43,12 +45,20 @@ try:
         "title": name,
         "color": 14464841,
         "fields": [
-            {"name": "**Version**", "value": "`" + tag  + "`", "inline": False},
-            {"name": "**CHANGELOG**", "value": "```" + body + "```", "inline": False}
+            {"name": "**Version**", "value": "`" + tag  + "`", "inline": False}
         ],
         "footer": {"text": "Released by " + author}
     }
-
+    if multibody is not None:
+        first = True
+        for body in multibody:
+            if len(body) > 0:
+                title = "**CHANGELOG**" if first else "\u200b"
+                embed["fields"].append({"name": title, "value": "```" + body + "```", "inline": False})
+                first = False
+    else:
+        if len(body) > 0:
+            embed["fields"].append({"name": "**CHANGELOG**", "value": "```" + body + "```", "inline": False})
     if prerelease:
         embed["description"] = "_This is a beta version and may still contain bugs_"
 
