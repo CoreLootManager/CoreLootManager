@@ -193,6 +193,7 @@ local function GenerateOfficerOptions(self)
             type = "input",
             set = function(i, v) self.name = v end,
             get = function(i) return self.name end,
+            disabled = (function() return RaidManager:IsInActiveRaid() end),
             width = "full",
             order = 8
         },
@@ -205,7 +206,7 @@ local function GenerateOfficerOptions(self)
                 RaidManager:CreateRaid(self.roster, self.name, self.configuration)
                 self:Refresh()
             end),
-            -- disabled = (function() return RaidManager:IsInActiveRaid() end),
+            disabled = (function() return RaidManager:IsInActiveRaid() end),
             confirm = true,
             order = 10
         },
@@ -234,7 +235,7 @@ local function GenerateOfficerOptions(self)
         },
         start_raid = {
             name = "Start raid",
-            desc = "Start selected raid. If you are in ingame raid, then this raid will be populated with your raiders. If you are in another CLM raid then you will be moved to the selected raid.",
+            desc = "Start selected raid. You and your raid group will be added to this raid.",
             type = "execute",
             width = "full",
             func = (function(i)
@@ -247,7 +248,14 @@ local function GenerateOfficerOptions(self)
                 -- RaidManager:InitializeRaid(RosterManager:GetRosterByName(self.selectedRoster))
                 self:Refresh()
             end),
-            -- disabled = (function() return not RaidManager:IsInCreatedRaid() end),
+            disabled = (function() 
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    return ST_GetRaid(row):Status() ~= CONSTANTS.RAID_STATUS.CREATED
+                end
+
+                return false
+            end),
             confirm = true,
             order = 2
         },
@@ -346,9 +354,18 @@ local function CreateRaidDisplay(self)
         return status
     end)
     -- end
+    -- OnClick handler 
+    local OnClickHandler = function(...)
+        self.st.DefaultEvents["OnClick"](...)
+        LIBS.gui:Open(REGISTRY, self.ManagementOptions)
+        -- prevent library from triggering default handler
+        return false
+    end
+    -- end
     self.st:RegisterEvents({
         OnEnter = OnEnterHandler,
-        OnLeave = OnLeaveHandler
+        OnLeave = OnLeaveHandler,
+        OnClick = OnClickHandler
     })
     return StandingsGroup
 end
