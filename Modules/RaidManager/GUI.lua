@@ -248,7 +248,7 @@ local function GenerateOfficerOptions(self)
                 -- RaidManager:InitializeRaid(RosterManager:GetRosterByName(self.selectedRoster))
                 self:Refresh()
             end),
-            disabled = (function() 
+            disabled = (function()
                 local row = self.st:GetRow(self.st:GetSelection())
                 if row then
                     return ST_GetRaid(row):Status() ~= CONSTANTS.RAID_STATUS.CREATED
@@ -354,7 +354,7 @@ local function CreateRaidDisplay(self)
         return status
     end)
     -- end
-    -- OnClick handler 
+    -- OnClick handler
     local OnClickHandler = function(...)
         local status = self.st.DefaultEvents["OnClick"](...)
         LIBS.gui:Open(REGISTRY, self.ManagementOptions)
