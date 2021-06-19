@@ -198,6 +198,7 @@ local function GenerateOfficerOptions(self)
         },
         create_raid = {
             name = "Create raid",
+            desc = "Create new raid with provided name. You will automatically join this raid and leave any other you are part of.",
             type = "execute",
             width = "full",
             func = (function(i)
@@ -210,6 +211,7 @@ local function GenerateOfficerOptions(self)
         },
         join_raid = {
             name = "Join raid",
+            desc = "Join selected raid. This is intended to join a raid without any trusted player so it can be overtaken and continued.",
             type = "execute",
             width = "full",
             func = (function(i)
@@ -232,6 +234,7 @@ local function GenerateOfficerOptions(self)
         },
         start_raid = {
             name = "Start raid",
+            desc = "Start selected raid. If you are in ingame raid, then this raid will be populated with your raiders. If you are in another CLM raid then you will be moved to the selected raid.",
             type = "execute",
             width = "full",
             func = (function(i)
@@ -250,6 +253,7 @@ local function GenerateOfficerOptions(self)
         },
         end_raid = {
             name = "End raid",
+            desc = "End selected raid. You will not be moved to the ending raid.",
             type = "execute",
             width = "full",
             func = (function(i)
@@ -359,7 +363,7 @@ function RaidManagerGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(800)
+    f:SetWidth(760)
     f:SetHeight(640)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
