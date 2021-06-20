@@ -169,6 +169,7 @@ function RaidManager:ParseStatus()
                 if referenceTime == 0 then
                     referenceTime = raid:CreatedAt()
                 end
+
                 if (GetServerTime() - referenceTime) > 86400 then
                     raid:SetStale()
                 end

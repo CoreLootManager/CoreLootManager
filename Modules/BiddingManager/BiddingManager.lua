@@ -187,6 +187,7 @@ function BiddingManager:HandleDistributeBid(data, sender)
         LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
         return
     end
+    GUI.BiddingManager:UpdateCurrentBidValue((tonumber(data) or 0) + 1)
 end
 
 CONSTANTS.BIDDING_COMM = {

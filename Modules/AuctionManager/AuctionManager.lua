@@ -32,7 +32,7 @@ local AuctionManager = {}
 function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
 
-    self.bids = {}
+    self:ClearBids()
     self.auctionInProgress = false
 
     Comms:Register(AUCTION_COMM_PREFIX, (function(rawMessage, distribution, sender)
@@ -151,7 +151,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         RosterManager:SetRosterItemValue(self.raid:Roster(), itemId, baseValue, maxValue)
     end
     -- clear bids
-    self.bids = {}
+    self:ClearBids()
     -- calculate server end time
     self.auctionEndTime = GetServerTime() + self.auctionTime
     self.auctionTimeLeft = self.auctionEndTime
@@ -247,12 +247,20 @@ function AuctionManager:SendBidDenied(name, reason)
 end
 
 function AuctionManager:SendBidInfo(name, bid)
-    if self.auctionType ~= CONSTANTS.AUCTION_TYPE.OPEN then return end
     local message = AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
         AuctionCommDistributeBid:New(name, bid)
     )
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+end
+
+function AuctionManager:AnnounceHighestBidder(name, bid)
+    if self.auctionType ~= CONSTANTS.AUCTION_TYPE.OPEN then return end
+    if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
+    if not bid then return end
+    self:SendBidInfo(name, bid)
+    local message = string.format("New highest bidder: %s (%d DKP)", name, bid)
+    SendChatMessage(message, "RAID_WARNING")
 end
 
 function AuctionManager:HandleIncomingMessage(message, distribution, sender)
@@ -303,6 +311,12 @@ function AuctionManager:ValidateBid(name, bid)
         if self.baseValue > 0 and bid < self.baseValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
         if self.maxValue > 0 and bid > self.maxValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
+        -- open bid ascending
+        if self.auctionType == CONSTANTS.AUCTION_TYPE.OPEN then
+            if bid <= self.highestBid then
+                return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
+            end
+        end
     else
         -- single-priced
         if self.baseValue ~= bid then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
@@ -317,16 +331,21 @@ function AuctionManager:UpdateBid(name, bid)
     if not self:IsAuctionInProgress() then return end
     local accept, reason = self:ValidateBid(name, bid)
     if accept then
-        self.bids[name] = bid
-        if bid then
-            self:AntiSnipe()
-        end
+        self:UpdateBidsInternal(name, bid)
         self:SendBidAccepted(name)
-        self:SendBidInfo(name, bid)
+        self:AnnounceHighestBidder(name, bid)
     else
         self:SendBidDenied(name, reason)
     end
     GUI.AuctionManager:UpdateBids()
+end
+
+function AuctionManager:UpdateBidsInternal(name, bid)
+    self.bids[name] = bid
+    if bid then
+        if bid > self.highestBid then self.highestBid = bid end
+        self:AntiSnipe()
+    end
 end
 
 function AuctionManager:Bids()
@@ -335,6 +354,7 @@ end
 
 function AuctionManager:ClearBids()
     self.bids = {}
+    self.highestBid = 0
 end
 
 function AuctionManager:Award(itemId, price, name)
