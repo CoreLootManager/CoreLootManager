@@ -57,17 +57,18 @@ function BiddingManager:Initialize()
     self.db = db.bidding
 
     local options = {
-        bidding_header = {
-            type = "header",
-            name = "Bidding GUI",
-            order = 20
-        },
+        -- bidding_header = {
+        --     type = "header",
+        --     name = "Bidding GUI",
+        --     order = 20
+        -- },
         bidding_auto_open = {
-            name = "Auto-Open",
-            desc = "Enables / disables auto open and auto close on auction start and stop",
+            name = "Toggle Bidding auto-open",
+            desc = "Toggle auto open and auto close on auction start and stop",
             type = "toggle",
             set = function(i, v) self:SetAutoOpen(v) end,
             get = function(i) return self:GetAutoOpen() end,
+            width = "double",
             order = 21
           }
     }

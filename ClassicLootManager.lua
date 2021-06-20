@@ -115,6 +115,8 @@ function CORE:_InitializeFeatures()
     MODULES.BiddingManager:Initialize()
     -- Initialize Migration
     CLM.Migration:Initialize()
+    -- Initialize global configs
+    CLM.GlobalConfigs:Initialize()
     -- Initialize global slash handlers
     CLM.GlobalSlashCommands:Initialize()
 end

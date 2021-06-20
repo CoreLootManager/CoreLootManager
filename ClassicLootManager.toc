@@ -89,6 +89,7 @@ Modules\PointManager\GUI.lua
 
 # Extra
 GlobalSlashCommands.lua
+GlobalConfigs.lua
 MinimapIcon.lua
 Migration.lua
 #@do-not-package@
