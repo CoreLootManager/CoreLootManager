@@ -57,11 +57,6 @@ function BiddingManager:Initialize()
     self.db = db.bidding
 
     local options = {
-        -- bidding_header = {
-        --     type = "header",
-        --     name = "Bidding GUI",
-        --     order = 20
-        -- },
         bidding_auto_open = {
             name = "Toggle Bidding auto-open",
             desc = "Toggle auto open and auto close on auction start and stop",
@@ -69,7 +64,7 @@ function BiddingManager:Initialize()
             set = function(i, v) self:SetAutoOpen(v) end,
             get = function(i) return self:GetAutoOpen() end,
             width = "double",
-            order = 21
+            order = 9
           }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)

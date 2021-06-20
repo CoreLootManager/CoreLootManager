@@ -429,5 +429,31 @@ function UTILS.RedNo()
     return redNo
 end
 
+local menuCounter = 0
+function UTILS.GenerateDropDownMenu(structure, isTrusted, frame)
+    frame = frame or CreateFrame("Frame", "CLM_Generic_Menu_DropDown" .. tostring(menuCounter), UIParent, "UIDropDownMenuTemplate")
+    menuCounter = menuCounter + 1
+
+    UIDropDownMenu_Initialize(frame, (function(_, level)
+        for _,k in ipairs(structure) do
+            if not k.trustedOnly or (k.trustedOnly and isTrusted) then
+                local placeholder = UIDropDownMenu_CreateInfo()
+                placeholder.notCheckable = true
+                placeholder.text = k.title
+                placeholder.isTitle = k.isTitle and true or false
+                if k.func then
+                    placeholder.func = k.func
+                end
+                if k.icon then
+                    placeholder.icon = k.icon
+                end
+                UIDropDownMenu_AddButton(placeholder, level)
+            end
+        end
+    end), "MENU")
+
+    return frame
+end
+
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"

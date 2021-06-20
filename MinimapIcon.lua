@@ -15,84 +15,58 @@ CLM.MinimapDBI = ldb:NewDataObject(addonName, {
 })
 
 -- Minimap icon dropdown menu
-local dropdown = CreateFrame("Frame", "Test_DropDown", UIParent, "UIDropDownMenuTemplate")
+local dropdown -- = CreateFrame("Frame", "CLM_Minimap_DropDown", UIParent, "UIDropDownMenuTemplate")
 local Minimap = {}
 function Minimap:Initialize()
-    UIDropDownMenu_Initialize(dropdown, (function(_, level)
-        local options = {
-            {
-                title = "Menu",
-                isTitle = true
-            },
-            {
-                title = "Standings",
-                -- some icon?
-                -- icon = "Interface\\TARGETINGFRAME\\PetBadge-Dragon.blp",
-                func = (function() CLM.GUI.Standings:Toggle() end)
-            },
-            {
-                title = "Loot History",
-                -- weapons icon
-                -- icon = "Interface\\WORLDSTATEFRAME\\CombatSwordsFlash.blp", -- those looks awful
-                -- icon = "Interface\\Store\\category-icon-weapons.blp",
-                func = (function() CLM.GUI.Loot:Toggle() end)
-            },
-            {
-                title = "Point History",
-                -- coin icon
-                func = (function() CLM.GUI.PointHistory:Toggle() end)
-            },
-            {
-                title = "Bidding",
-                -- gold ML icon
-                func = (function() CLM.GUI.BiddingManager:Toggle() end)
-            },
-            {
-                title = "Auctioning",
-                -- gold ML icon
-                func = (function() CLM.GUI.AuctionManager:Toggle() end),
-                trustedOnly = true
-            },
-            {
-                title = "Raid",
-                -- gold group icon
-                -- icon = "Interface\\Tooltips\\EliteNameplateIcon.blp",
-                func = (function() CLM.GUI.RaidManager:Toggle() end),
-                trustedOnly = true
-            },
-            {
-                title = "Profiles",
-                -- gold player icon
-                func = (function() CLM.GUI.Profiles:Toggle() end),
-                trustedOnly = true
-            },
-            {
-                title = "Configuration",
-                icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga",
-                func = (function()
-                    InterfaceOptionsFrame_OpenToCategory(addonName)
-                    InterfaceOptionsFrame_OpenToCategory(addonName)
-                end)
-            },
+    local options = {
+        {
+            title = "Menu",
+            isTitle = true
+        },
+        {
+            title = "Standings",
+            func = (function() CLM.GUI.Standings:Toggle() end)
+        },
+        {
+            title = "Loot History",
+            func = (function() CLM.GUI.Loot:Toggle() end)
+        },
+        {
+            title = "Point History",
+            func = (function() CLM.GUI.PointHistory:Toggle() end)
+        },
+        {
+            title = "Bidding",
+            func = (function() CLM.GUI.BiddingManager:Toggle() end)
+        },
+        {
+            title = "Auctioning",
+            func = (function() CLM.GUI.AuctionManager:Toggle() end),
+            trustedOnly = true
+        },
+        {
+            title = "Raid",
+            func = (function() CLM.GUI.RaidManager:Toggle() end),
+            trustedOnly = true
+        },
+        {
+            title = "Profiles",
+            func = (function() CLM.GUI.Profiles:Toggle() end),
+            trustedOnly = true
+        },
+        {
+            title = "Configuration",
+            icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga",
+            func = (function()
+                InterfaceOptionsFrame_OpenToCategory(addonName)
+                InterfaceOptionsFrame_OpenToCategory(addonName)
+            end)
+        },
 
-        }
-        local trusted = CLM.MODULES.ACL:IsTrusted()
-        for _,k in ipairs(options) do
-            if not k.trustedOnly or (k.trustedOnly and trusted) then
-                local placeholder = UIDropDownMenu_CreateInfo()
-                placeholder.notCheckable = true
-                placeholder.text = k.title
-                placeholder.isTitle = k.isTitle and true or false
-                if k.func then
-                    placeholder.func = k.func
-                end
-                if k.icon then
-                    placeholder.icon = k.icon
-                end
-                UIDropDownMenu_AddButton(placeholder, level)
-            end
-        end
-    end), "MENU")
+    }
+
+    dropdown = CLM.UTILS.GenerateDropDownMenu(options, CLM.MODULES.ACL:IsTrusted())
+
     self._initialized = true
 end
 
