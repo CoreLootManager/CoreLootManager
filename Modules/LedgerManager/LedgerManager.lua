@@ -156,6 +156,15 @@ function LedgerManager:CancelLastEntry()
     end
 end
 
+function LedgerManager:Wipe()
+    if not self._initialized then return end
+    self:DisableAdvertising()
+    local db = MODULES.Database:Ledger()
+    wipe(db)
+    collectgarbage()
+    self:Enable()
+end
+
 --@do-not-package@
 function LedgerManager:Reset()
     self.ledger.reset()

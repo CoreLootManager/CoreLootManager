@@ -64,7 +64,7 @@ end
 
 function Logger:Wipe()
     local db = LOG:GetDatabase() -- luacheck: ignore
-    db = {}
+    wipe(db)
     collectgarbage()
 end
 

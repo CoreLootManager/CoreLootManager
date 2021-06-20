@@ -99,7 +99,9 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         end
         local message = string.format("%s awarded to %s for %s DKP", itemLink, name, value)
         SendChatMessage(message, "RAID_WARNING")
-        SendChatMessage(message, "GUILD")
+        if CLM.GlobalConfigs:GetAnnounceLootToGuild() then
+            SendChatMessage(message, "GUILD")
+        end
     else
         LOG:Error("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
     end
