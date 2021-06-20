@@ -224,7 +224,10 @@ local function GenerateOfficerOptions(self)
                 RaidManager:JoinRaid(raid)
                 self:Refresh()
             end),
-            -- disabled = (function() return not RaidManager:IsInCreatedRaid() end),
+            disabled = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                return row and true or false
+            end),
             confirm = true,
             order = 4
         },
@@ -245,7 +248,6 @@ local function GenerateOfficerOptions(self)
                     raid = ST_GetRaid(row)
                 end
                 RaidManager:StartRaid(raid)
-                -- RaidManager:InitializeRaid(RosterManager:GetRosterByName(self.selectedRoster))
                 self:Refresh()
             end),
             disabled = (function()
@@ -273,7 +275,14 @@ local function GenerateOfficerOptions(self)
                 RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
                 self:Refresh()
             end),
-            -- disabled = (function() return not RaidManager:IsInProgressingRaid() end),
+            disabled = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    return not ST_GetRaid(row):IsActive()
+                end
+
+                return false
+            end),
             confirm = true,
             order = 3
         }
@@ -415,11 +424,6 @@ function RaidManagerGUI:Refresh(visible)
     end
 
     self.st:SetData(data)
-    if self.selectedRoster == "" then -- workaround for late Raid Initialization due to ledger parsing
-        if RaidManager:IsInActiveRaid() then
-            self.selectedRoster = RosterManager:GetRosterNameByUid(RaidManager:GetRaid():Roster():UID()) or ""
-        end
-    end
 
     if RaidManager:IsInActiveRaid() then
         self.top:SetStatusText("Currently in raid: " .. RaidManager:GetRaid():Name())
