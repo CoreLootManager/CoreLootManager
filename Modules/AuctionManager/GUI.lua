@@ -58,10 +58,19 @@ local function HookBagSlots()
     hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", FillAuctionWindowFromTooltip)
 end
 
+local function HookCorpseSlots()
+    for buttonIndex = 1, LOOTFRAME_NUMBUTTONS do
+        local button = getglobal("LootButton" .. buttonIndex)
+
+        button:HookScript("OnClick", FillAuctionWindowFromTooltip)
+    end
+end
+
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     self:Create()
     HookBagSlots()
+    HookCorpseSlots()
     self:RegisterSlash()
     self._initialized = true
 end
