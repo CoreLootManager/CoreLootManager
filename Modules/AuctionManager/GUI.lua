@@ -22,6 +22,7 @@ local mergeDictsInline = UTILS.mergeDictsInline
 local AuctionManager = MODULES.AuctionManager
 local ProfileManager = MODULES.ProfileManager
 local RaidManager = MODULES.RaidManager
+local EventManager =  MODULES.EventManager
 
 local RosterConfiguration = MODELS.RosterConfiguration
 
@@ -58,11 +59,24 @@ local function HookBagSlots()
     hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", FillAuctionWindowFromTooltip)
 end
 
-local function HookCorpseSlots()
-    for buttonIndex = 1, LOOTFRAME_NUMBUTTONS do
-        local button = getglobal("LootButton" .. buttonIndex)
+local function HookCorpseSlots(hookedSlots)
+    local UIs = {
+        wow = "",
+        elv = "Elv"
+    }
 
-        button:HookScript("OnClick", FillAuctionWindowFromTooltip)
+    local numLootItems = GetNumLootItems();
+
+    for ui, prefix in pairs(UIs) do
+        for buttonIndex = 1, numLootItems do
+            if not hookedSlots[ui][buttonIndex] then
+                local button = getglobal(prefix .. "LootButton" .. buttonIndex)
+                if button then
+                    button:HookScript("OnClick", FillAuctionWindowFromTooltip)
+                    hookedSlots.[ui][buttonIndex] = true
+                end
+            end
+        end
     end
 end
 
@@ -70,10 +84,24 @@ function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     self:Create()
     HookBagSlots()
-    HookCorpseSlots()
+    self.hookedSlots = { wow = {}, elv =  {}}
+    self:RegisterLootOpenedEvent()
     self:RegisterSlash()
     self._initialized = true
 end
+
+function AuctionManagerGUI:RegisterLootOpenedEvent()
+    EventManager:RegisterEvent({"LOOT_OPENED"}, (function(...)
+        self:HandleLootOpenedEvent()
+    end))
+end
+
+function AuctionManagerGUI:HandleLootOpenedEvent()
+    -- Post loot to raid chat
+    -- Hook slots
+    HookCorpseSlots(self.hookedSlots)
+end
+
 
 local function CreateBidWindow(self)
     local BidWindowGroup = AceGUI:Create("SimpleGroup")
