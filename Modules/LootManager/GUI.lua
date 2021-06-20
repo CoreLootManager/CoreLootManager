@@ -58,7 +58,8 @@ function LootGUI:Initialize()
                     local loot = ST_GetLoot(row)
                     LedgerManager:Remove(loot:Entry(), true)
                 end
-            end)
+            end),
+            trustedOnly = true
         }
     }, CLM.MODULES.ACL:IsTrusted())
 

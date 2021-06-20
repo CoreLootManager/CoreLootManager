@@ -66,6 +66,7 @@ function RaidManagerGUI:Initialize()
                 RaidManager:StartRaid(raid)
                 self:Refresh()
             end),
+            trustedOnly = true
         },
         {
             title = "End selected raid",
@@ -78,6 +79,7 @@ function RaidManagerGUI:Initialize()
                 RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
                 self:Refresh()
             end),
+            trustedOnly = true
         },
         {
             title = "Join selected raid",
@@ -90,6 +92,7 @@ function RaidManagerGUI:Initialize()
                 RaidManager:JoinRaid(raid)
                 self:Refresh()
             end),
+            trustedOnly = true
         },
         {
             title = "Remove selected raid",
@@ -99,7 +102,8 @@ function RaidManagerGUI:Initialize()
                     local raid = ST_GetRaid(row)
                     LedgerManager:Remove(raid:Entry(), true)
                 end
-            end)
+            end),
+            trustedOnly = true
         }
     }, CLM.MODULES.ACL:IsTrusted())
 

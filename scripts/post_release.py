@@ -37,6 +37,7 @@ try:
     multibody = None
     if len(body) > 1000:
         multibody = body.split("\r\n\r\n")
+
     tag = releases[0]["tag_name"]
     name = releases[0]["name"]
     prerelease = releases[0]["prerelease"]

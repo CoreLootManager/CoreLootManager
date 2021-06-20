@@ -56,7 +56,8 @@ function PointHistoryGUI:Initialize()
                     local history = ST_GetPointHistory(row)
                     LedgerManager:Remove(history:Entry(), true)
                 end
-            end)
+            end),
+            trustedOnly = true
         }
     }, CLM.MODULES.ACL:IsTrusted())
 
