@@ -58,6 +58,7 @@ globals = {
 	"GameTooltip_OnLoad",
 	"GameTooltip_SetDefaultAnchor",
 	"GameTooltip_UnitColor",
+	"LOOTFRAME_NUMBUTTONS",
 	"Mixin",
 	"ObjectiveTracker_Collapse",
 	"ObjectiveTracker_Expand",

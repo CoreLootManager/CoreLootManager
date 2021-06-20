@@ -22,6 +22,7 @@ local mergeDictsInline = UTILS.mergeDictsInline
 local AuctionManager = MODULES.AuctionManager
 local ProfileManager = MODULES.ProfileManager
 local RaidManager = MODULES.RaidManager
+local EventManager =  MODULES.EventManager
 
 local RosterConfiguration = MODELS.RosterConfiguration
 
@@ -58,13 +59,68 @@ local function HookBagSlots()
     hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", FillAuctionWindowFromTooltip)
 end
 
+local function HookCorpseSlots(hookedSlots)
+    local UIs = {
+        wow = "",
+        elv = "Elv"
+    }
+
+    local numLootItems = GetNumLootItems()
+
+    for ui, prefix in pairs(UIs) do
+        for buttonIndex = 1, numLootItems do
+            if not hookedSlots[ui][buttonIndex] then
+                local button = getglobal(prefix .. "LootButton" .. buttonIndex)
+                if button then
+                    button:HookScript("OnClick", FillAuctionWindowFromTooltip)
+                    hookedSlots[ui][buttonIndex] = true
+                end
+            end
+        end
+    end
+end
+
+local function PostLootToRaidChat()
+    if not IsInRaid() then return end
+    if not ACL:IsTrusted() then return end
+    if CLM.GlobalConfigs:GetAnnounceLootToRaid() then
+        local numLootItems = GetNumLootItems()
+
+        for lootIndex = 1, numLootItems do
+            local _, _, _, rarity = GetLootSlotInfo(lootIndex)
+            local itemLink = GetLootSlotLink(lootIndex)
+            if itemLink then
+                if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then -- post Blue Purple and Legendary to Raid -- 3 -blue
+                    SendChatMessage(lootIndex .. ". " .. itemLink, "RAID")
+                end
+            end
+        end
+    end
+end
+
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     self:Create()
     HookBagSlots()
+    self.hookedSlots = { wow = {}, elv =  {}}
+    self:RegisterLootOpenedEvent()
     self:RegisterSlash()
     self._initialized = true
 end
+
+function AuctionManagerGUI:RegisterLootOpenedEvent()
+    EventManager:RegisterEvent({"LOOT_OPENED"}, (function(...)
+        self:HandleLootOpenedEvent()
+    end))
+end
+
+function AuctionManagerGUI:HandleLootOpenedEvent()
+    -- Post loot to raid chat
+    PostLootToRaidChat()
+    -- Hook slots
+    HookCorpseSlots(self.hookedSlots)
+end
+
 
 local function CreateBidWindow(self)
     local BidWindowGroup = AceGUI:Create("SimpleGroup")
