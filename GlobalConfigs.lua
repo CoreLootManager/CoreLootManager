@@ -68,7 +68,7 @@ function GlobalConfigs:Initialize()
             type = "execute",
             confirm = true,
             func = function() LedgerManager:Wipe() end,
-            order = 4
+            order = 10
         }
     }
     ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)

@@ -37,6 +37,8 @@ local function ST_GetLoot(row)
     return row.cols[5].value
 end
 
+local RightClickMenu
+
 local LootGUI = {}
 function LootGUI:Initialize()
     self:Create()
@@ -46,6 +48,20 @@ function LootGUI:Initialize()
         self:Refresh(true)
     end)
     self.tooltip = CreateFrame("GameTooltip", "CLMLootGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+        {
+            title = "Remove selected",
+            func = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    local loot = ST_GetLoot(row)
+                    LedgerManager:Remove(loot:Entry(), true)
+                end
+            end)
+        }
+    }, CLM.MODULES.ACL:IsTrusted())
+
     EventManager:RegisterBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
     self._initialized = true
 end
@@ -132,9 +148,23 @@ local function CreateLootDisplay(self)
         return status
     end)
     -- end
+    -- OnClick handler
+    local OnClickHandler = function(...)
+        local status = self.st.DefaultEvents["OnClick"](...)
+        local args = { ... }
+        local cellFrame = args[2]
+        local button = args[9]
+        if button == "RightButton" then
+            ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+        end
+        return status
+    end
+    -- end
+
     self.st:RegisterEvents({
         OnEnter = OnEnterHandler,
-        OnLeave = OnLeaveHandler
+        OnLeave = OnLeaveHandler,
+        OnClick = OnClickHandler
     })
     return StandingsGroup
 end

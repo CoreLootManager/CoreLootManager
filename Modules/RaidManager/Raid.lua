@@ -165,4 +165,8 @@ function Raid:Standby()
     return self.standbyProfileCache
 end
 
+function Raid:Entry()
+    return self.entry
+end
+
 CLM.MODELS.Raid = Raid

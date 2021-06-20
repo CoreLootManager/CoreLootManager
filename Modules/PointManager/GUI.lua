@@ -35,6 +35,8 @@ local function ST_GetPointHistory(row)
     return row.cols[5].value
 end
 
+local RightClickMenu
+
 local PointHistoryGUI = {}
 function PointHistoryGUI:Initialize()
     self:Create()
@@ -44,6 +46,20 @@ function PointHistoryGUI:Initialize()
         self:Refresh(true)
     end)
     self.tooltip = CreateFrame("GameTooltip", "CLMPointHistoryGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+        {
+            title = "Remove selected",
+            func = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    local history = ST_GetPointHistory(row)
+                    LedgerManager:Remove(history:Entry(), true)
+                end
+            end)
+        }
+    }, CLM.MODULES.ACL:IsTrusted())
+
     self._initialized = true
 end
 
@@ -126,9 +142,22 @@ local function CreatePointDisplay(self)
         return status
     end)
     -- end
+    -- OnClick handler
+    local OnClickHandler = function(...)
+        local status = self.st.DefaultEvents["OnClick"](...)
+        local args = { ... }
+        local cellFrame = args[2]
+        local button = args[9]
+        if button == "RightButton" then
+            ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+        end
+        return status
+    end
+    -- end
     self.st:RegisterEvents({
         OnEnter = OnEnterHandler,
-        OnLeave = OnLeaveHandler
+        OnLeave = OnLeaveHandler,
+        OnClick = OnClickHandler
     })
     return StandingsGroup
 end
