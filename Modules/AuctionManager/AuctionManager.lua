@@ -256,6 +256,7 @@ end
 
 function AuctionManager:AnnounceHighestBidder(name, bid)
     if self.auctionType ~= CONSTANTS.AUCTION_TYPE.OPEN then return end
+    if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not bid then return end
     self:SendBidInfo(name, bid)
     local message = string.format("New highest bidder: %s (%d DKP)", name, bid)

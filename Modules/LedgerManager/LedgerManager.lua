@@ -156,4 +156,10 @@ function LedgerManager:CancelLastEntry()
     end
 end
 
+--@do-not-package@
+function LedgerManager:Reset()
+    self.ledger.reset()
+end
+--@end-do-not-package@
+
 MODULES.LedgerManager = LedgerManager
