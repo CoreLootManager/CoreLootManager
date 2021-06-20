@@ -34,7 +34,8 @@ if len(releases) == 0:
 try:
     author = releases[0]["author"]["login"]
     body = releases[0]["body"]
-    if len(body) > 1023:
+    multibody = None
+    if len(body) > 1000:
         multibody = body.split("\r\n\r\n")
     tag = releases[0]["tag_name"]
     name = releases[0]["name"]
