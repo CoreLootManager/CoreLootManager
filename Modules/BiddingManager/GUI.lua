@@ -145,6 +145,11 @@ function BiddingManagerGUI:Create()
     f:Hide()
 end
 
+function BiddingManagerGUI:UpdateCurrentBidValue(value)
+    self.bid = tonumber(value or 0)
+    self:Refresh(true)
+end
+
 function BiddingManagerGUI:RecolorBar()
     local currentPercentageLeft = (self.bar.remaining / self.duration)
     local percentageChange = self.barPreviousPercentageLeft - currentPercentageLeft
