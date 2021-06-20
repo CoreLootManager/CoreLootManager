@@ -330,7 +330,7 @@ function AuctionManager:UpdateBid(name, bid)
     if not self:IsAuctionInProgress() then return end
     local accept, reason = self:ValidateBid(name, bid)
     if accept then
-        self:UpdateBidsInternal(bid)
+        self:UpdateBidsInternal(name, bid)
         self:SendBidAccepted(name)
         self:AnnounceHighestBidder(name, bid)
     else
@@ -339,7 +339,7 @@ function AuctionManager:UpdateBid(name, bid)
     GUI.AuctionManager:UpdateBids()
 end
 
-function AuctionManager:UpdateBidsInternal(bid)
+function AuctionManager:UpdateBidsInternal(name, bid)
     self.bids[name] = bid
     if bid then
         if bid > self.highestBid then self.highestBid = bid end
