@@ -178,7 +178,7 @@ function ProfileManager:FillFromGuild(selectedRank, minLevel)
     local rankFilterFn, minLevelFn
     if type(selectedRank) == "number" and selectedRank >= 0 then
         rankFilterFn = (function(rankIndex)
-            return selectedRank == rankIndex
+            return (selectedRank - 1) == rankIndex
         end)
     else
         rankFilterFn = (function(rankIndex)
