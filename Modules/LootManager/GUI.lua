@@ -55,7 +55,7 @@ function LootGUI:Initialize()
             func = (function()
                 local row = self.st:GetRow(self.st:GetSelection())
                 if row then
-                    loot = ST_GetLoot(row)
+                    local loot = ST_GetLoot(row)
                     LedgerManager:Remove(loot:Entry(), true)
                 end
             end)

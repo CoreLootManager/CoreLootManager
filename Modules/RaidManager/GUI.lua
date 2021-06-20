@@ -38,6 +38,8 @@ local function ST_GetRaid(row)
     return row.cols[5].value
 end
 
+local RightClickMenu
+
 local RaidManagerGUI = {}
 function RaidManagerGUI:Initialize()
     LOG:Trace("RaidManagerGUI:Initialize()")
@@ -51,6 +53,55 @@ function RaidManagerGUI:Initialize()
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
     end)
+
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+        {
+            title = "Start selected raid",
+            func = (function(i)
+                local raid = nil
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    raid = ST_GetRaid(row)
+                end
+                RaidManager:StartRaid(raid)
+                self:Refresh()
+            end),
+        },
+        {
+            title = "End selected raid",
+            func = (function(i)
+                local raid = nil
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    raid = ST_GetRaid(row)
+                end
+                RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
+                self:Refresh()
+            end),
+        },
+        {
+            title = "Join selected raid",
+            func = (function(i)
+                local raid = nil
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    raid = ST_GetRaid(row)
+                end
+                RaidManager:JoinRaid(raid)
+                self:Refresh()
+            end),
+        },
+        {
+            title = "Remove selected raid",
+            func = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    local raid = ST_GetRaid(row)
+                    LedgerManager:Remove(raid:Entry(), true)
+                end
+            end)
+        }
+    }, CLM.MODULES.ACL:IsTrusted())
 
 end
 
@@ -209,82 +260,6 @@ local function GenerateOfficerOptions(self)
             disabled = (function() return RaidManager:IsInActiveRaid() end),
             confirm = true,
             order = 10
-        },
-        join_raid = {
-            name = "Join raid",
-            desc = "Join selected raid. This is intended to join a raid without any trusted player so it can be overtaken and continued.",
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:JoinRaid(raid)
-                self:Refresh()
-            end),
-            disabled = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                return row and true or false
-            end),
-            confirm = true,
-            order = 4
-        },
-        manage_header = {
-            type = "header",
-            name = "Manage",
-            order = 1
-        },
-        start_raid = {
-            name = "Start raid",
-            desc = "Start selected raid. You and your raid group will be added to this raid.",
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:StartRaid(raid)
-                self:Refresh()
-            end),
-            disabled = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    return ST_GetRaid(row):Status() ~= CONSTANTS.RAID_STATUS.CREATED
-                end
-
-                return false
-            end),
-            confirm = true,
-            order = 2
-        },
-        end_raid = {
-            name = "End raid",
-            desc = "End selected raid. You will not be moved to the ending raid.",
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
-                self:Refresh()
-            end),
-            disabled = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    return not ST_GetRaid(row):IsActive()
-                end
-
-                return false
-            end),
-            confirm = true,
-            order = 3
         }
     }
 end
@@ -318,7 +293,7 @@ local function CreateRaidDisplay(self)
     StandingsGroup:SetHeight(600)
     StandingsGroup:SetWidth(520)
     -- Standings
-    self.st = ScrollingTable:CreateST(columns, 20, 18, nil, StandingsGroup.frame)
+    self.st = ScrollingTable:CreateST(columns, 25, 18, nil, StandingsGroup.frame)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", StandingsGroup.frame, "TOPLEFT", 0, -63)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
@@ -366,8 +341,13 @@ local function CreateRaidDisplay(self)
     -- OnClick handler
     local OnClickHandler = function(...)
         local status = self.st.DefaultEvents["OnClick"](...)
-        LIBS.gui:Open(REGISTRY, self.ManagementOptions)
-        -- prevent library from triggering default handler
+        local args = { ... }
+        local cellFrame = args[2]
+        local button = args[9]
+        if button == "RightButton" then
+            ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+        end
+        -- LIBS.gui:Open(REGISTRY, self.ManagementOptions)
         return status
     end
     -- end
