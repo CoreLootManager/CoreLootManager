@@ -99,7 +99,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         end
         local message = string.format("%s awarded to %s for %s DKP", itemLink, name, value)
         SendChatMessage(message, "RAID_WARNING")
-        if CLM.GlobalConfigs:GetAnnounceLootToGuild() then
+        if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
             SendChatMessage(message, "GUILD")
         end
     else
