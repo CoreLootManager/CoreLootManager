@@ -21,10 +21,10 @@ local PointHistory = MODELS.PointHistory
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
-local function mutator(entry, mutate)
+local function apply_mutator(entry, mutate)
     local roster = RosterManager:GetRosterByUid(entry:rosterUid())
     if not roster then
-        LOG:Debug("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
+        LOG:Debug("PointManager apply_mutator(): Unknown roster uid %s", entry:rosterUid())
         return
     end
     local value = entry:value()
@@ -42,21 +42,21 @@ local function mutator(entry, mutate)
                 roster:AddProfilePointHistory(pointHistoryEntry, profile)
             end
         else
-            LOG:Debug("PointManager mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+            LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
             return
         end
     end
 end
 
-local function mutate_pdm(current, value)
+local function mutate_add_points(current, value)
     return current + value
 end
 
-local function mutate_pds(current, value)
+local function mutate_set_points(current, value)
     return value
 end
 
-local function mutate_pdd(current, value)
+local function mutate_percentage_decay(current, value)
     return (current * (100 - value)) / 100
 end
 
@@ -68,20 +68,20 @@ function PointManager:Initialize()
         LEDGER_DKP.Modify,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModify)")
-            mutator(entry, mutate_pdm) end))
+            apply_mutator(entry, mutate_add_points) end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Set,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPSet)")
-            mutator(entry, mutate_pds)
+            apply_mutator(entry, mutate_set_points)
         end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Decay,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPDecay)")
-            mutator(entry, mutate_pdd)
+            apply_mutator(entry, mutate_percentage_decay)
         end))
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
