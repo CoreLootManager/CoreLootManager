@@ -138,5 +138,6 @@ end
 MODELS.LEDGER.DKP = {
     Modify = Modify,
     Set = Set,
-    Decay = Decay
+    Decay = Decay,
+    ModifyRaid = ModifyRaid
 }
