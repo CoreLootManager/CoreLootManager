@@ -253,6 +253,12 @@ function RosterConfiguration:New(i)
     o._.intervalBonusTime = 0
     -- Interval Bonus Value
     o._.intervalBonusValue = 0
+    -- Hard Point Cap:
+    o._.hardPointCap = 0
+    -- Weekly Cap:
+    o._.weeklyPointCap = 0
+    -- Weekly reset:
+    o._.weeklyReset = 0
     return o
 end
 
@@ -273,7 +279,10 @@ function RosterConfiguration:fields()
         "raidCompletionBonusValue",
         "intervalBonus",
         "intervalBonusTime",
-        "intervalBonusValue"
+        "intervalBonusValue",
+        "hardPointCap",
+        "weeklyPointCap",
+        "weeklyReset"
     }
 end
 
@@ -321,6 +330,9 @@ local TRANSFORMS = {
     intervalBonus = transform_boolean,
     intervalBonusTime = transform_number,
     intervalBonusValue = transform_number,
+    hardPointCap = transform_number,
+    weeklyPointCap = transform_number,
+    weeklyReset = transform_number
 }
 
 function RosterConfiguration:Get(option)
@@ -368,41 +380,33 @@ function RosterConfiguration._validate_raidCompletionBonusValue(value) value = t
 function RosterConfiguration._validate_intervalBonus(value) return IsBoolean(value) end
 function RosterConfiguration._validate_intervalBonusTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_intervalBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_hardPointCap(value) return value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_weeklyPointCap(value) return value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration
 
 -- Constants
-CONSTANTS.POINT_TYPES = UTILS.Set({
-    0, -- DKP
-    1, -- EPGP
-    2, -- ROLL
-    3  -- SK
-})
-
-CONSTANTS.POINT_TYPES_GUI = {
-    [0] = "DKP",
-    [1] = "EPGP",
-    [2] = "ROLL",
-    [3] = "SK"
-}
-
 CONSTANTS.POINT_TYPE = {
     DKP = 0,
     EPGP = 1,
     ROLL = 2,
     SK = 3
 }
-CONSTANTS.AUCTION_TYPES = UTILS.Set({
-    0, -- OPEN
-    1, -- SEALED
-    2  -- VICKREY
+
+CONSTANTS.POINT_TYPES = UTILS.Set({
+    CONSTANTS.POINT_TYPE.DKP, -- DKP
+    CONSTANTS.POINT_TYPE.EPGP, -- EPGP
+    CONSTANTS.POINT_TYPE.ROLL, -- ROLL
+    CONSTANTS.POINT_TYPE.SK  -- SK
 })
 
-CONSTANTS.AUCTION_TYPES_GUI = {
-    [0] = "Open",
-    [1] = "Sealed",
-    [2] = "Vickrey"
+CONSTANTS.POINT_TYPES_GUI = {
+    [CONSTANTS.POINT_TYPE.DKP] = "DKP",
+    [CONSTANTS.POINT_TYPE.EPGP] = "EPGP",
+    [CONSTANTS.POINT_TYPE.ROLL] = "ROLL",
+    [CONSTANTS.POINT_TYPE.SK] = "SK"
 }
 
 CONSTANTS.AUCTION_TYPE = {
@@ -411,20 +415,33 @@ CONSTANTS.AUCTION_TYPE = {
     VICKREY = 2
 }
 
-CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
-    0, -- SINGLE_PRICED
-    1  -- ASCENDING
+CONSTANTS.AUCTION_TYPES = UTILS.Set({
+    CONSTANTS.AUCTION_TYPE.OPEN, -- OPEN
+    CONSTANTS.AUCTION_TYPE.SEALED, -- SEALED
+    CONSTANTS.AUCTION_TYPE.VICKREY  -- VICKREY
 })
 
-CONSTANTS.ITEM_VALUE_MODES_GUI = {
-    [0] = "Single-Priced",
-    [1] = "Ascending"
+CONSTANTS.AUCTION_TYPES_GUI = {
+    [CONSTANTS.AUCTION_TYPE.OPEN] = "Open",
+    [CONSTANTS.AUCTION_TYPE.SEALED] = "Sealed",
+    [CONSTANTS.AUCTION_TYPE.VICKREY] = "Vickrey"
 }
 
 CONSTANTS.ITEM_VALUE_MODE = {
     SINGLE_PRICED = 0,
     ASCENDING = 1
 }
+
+CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
+    CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED, -- SINGLE_PRICED
+    CONSTANTS.ITEM_VALUE_MODE.ASCENDING  -- ASCENDING
+})
+
+CONSTANTS.ITEM_VALUE_MODES_GUI = {
+    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = "Single-Priced",
+    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = "Ascending"
+}
+
 
 CONSTANTS.INVENTORY_TYPES = {
     "INVTYPE_NON_EQUIP",
@@ -490,4 +507,18 @@ CONSTANTS.INVENTORY_TYPES_SORTED = {
     { type = "INVTYPE_THROWN",          name = "Thrown",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
     { type = "INVTYPE_QUIVER",          name = "Quiver",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
     { type = "INVTYPE_RELIC",           name = "Relic",             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
+}
+
+CONSTANTS.WEEKLY_RESET = {
+    EU = 0,
+    US = 1
+}
+
+CONSTANTS.WEEKLY_RESETS = UTILS.Set({
+    CONSTANTS.WEEKLY_RESET.EU, CONSTANTS.WEEKLY_RESET.US
+})
+
+CONSTANTS.WEEKLY_RESETS_GUI = {
+    [CONSTANTS.WEEKLY_RESET.EU] = "Europe (Wednesday 9:00)",
+    [CONSTANTS.WEEKLY_RESET.US] = "Americas (Tuesday 9:00)"
 }
