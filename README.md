@@ -1,9 +1,9 @@
 Classic Loot Manager
 ====================
 
-[![Lint](https://github.com/lantisnt/ClassicLootManager/actions/workflows/lint.yml/badge.svg)](https://github.com/lantisnt/ClassicLootManager)
-[![Release](https://img.shields.io/github/v/release/lantisnt/classiclootmanager.svg?color=important)](https://github.com/lantisnt/ClassicLootManager/releases)
-[![Issues](https://img.shields.io/github/issues/lantisnt/classiclootmanager?color=blue)](https://github.com/lantisnt/ClassicLootManager/issues)
+[![Lint](https://github.com/ClassicLootManager/ClassicLootManager/actions/workflows/lint.yml/badge.svg)](https://github.com/ClassicLootManager/ClassicLootManager)
+[![Release](https://img.shields.io/github/v/release/ClassicLootManager/classiclootmanager.svg?color=important)](https://github.com/ClassicLootManager/ClassicLootManager/releases)
+[![Issues](https://img.shields.io/github/issues/ClassicLootManager/classiclootmanager?color=blue)](https://github.com/ClassicLootManager/ClassicLootManager/issues)
 [![Discord](https://img.shields.io/discord/813686248841019392?label=discord)](https://discord.gg/Qjn8KdD8yt)
 
 
@@ -63,19 +63,17 @@ Each roster has separate configuration located under `ESC -> Interface -> AddOns
 * DKP system
 * Point, roster and loot management
 * Multiple rosters (teams) support
-* Closed and Vickrey bid systems
+* Open, Closed and Vickrey bid systems
 * Static and ascending price value systems
 * Default item values per slot
 * Item value overriding
 * Auctioning and bidding (with anti-snipe protection)
 * Raid management and auto-creating profiles and filling roster when initializing raid
-* Most GUIs
 * Multi-level logging for better issue handling
+* Auctioning from bag and corpse
+* Award item without auction through slash command
 ### Missing / planned
 * Zero-Sum Bank mode + inflation
-* Open auction mode
-* Point history GUI + invalid entry removal management
-* Loot history invalid entry removal management
 * Weekly point hard-cap
 * Auto-standby list (user to subscribe to it)
 * All auto-dkp management during raid (on time / boss kill / interval / end bonuses)
@@ -83,8 +81,6 @@ Each roster has separate configuration located under `ESC -> Interface -> AddOns
 * Naming and `/clm command` cleanup
 * Better and more descriptive options
 * Auto loot award for single winner (the only one highest bid)
-* Auctioning from corpse + auto award for Master Looter
+* Auto award for Master Looter
 * Player spec communication mechanism
-* Award item without auction through CLI `/clm award itemLink value [playerName]`
 * GUI fixes to be more content aware
-* Right click on bids to mark them as invalid (and gray them out). Also all the max/2nd price calculation would skip those

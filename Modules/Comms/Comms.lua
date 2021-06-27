@@ -96,7 +96,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return false
     end
     -- Compress
-    tmp = codec:CompressDeflate(tmp, { level = 9 })
+    tmp = codec:CompressDeflate(tmp, { level = 4 })
     if tmp == nil then
         LOG:Error("Comms:Send() unable to compress message: %s", message)
         return false
