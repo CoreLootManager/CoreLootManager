@@ -455,5 +455,24 @@ function UTILS.GenerateDropDownMenu(structure, isTrusted, frame)
     return frame
 end
 
+function UTILS.WeekNumber(unixtimestamp, offset)
+    offset = offset or 0
+    local week = 1 + math.floor((unixtimestamp - offset) / 604800)
+    if week < 1 then week = 1 end
+    return week
+end
+
+function UTILS.WeekStart(week, offset)
+    return ((week * 604800) + (offset or 0))
+end
+
+function UTILS.GetWeekOffsetEU()
+    return 543600
+end
+
+function UTILS.GetWeekOffsetUS()
+    return 486000
+end
+
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"

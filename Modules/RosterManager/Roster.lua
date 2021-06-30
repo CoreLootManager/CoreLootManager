@@ -254,16 +254,17 @@ function RosterConfiguration:New(i)
     -- Interval Bonus Value
     o._.intervalBonusValue = 0
     -- Hard Point Cap:
-    o._.hardPointCap = 0
+    o._.hardCap = 0
     -- Weekly Cap:
-    o._.weeklyPointCap = 0
+    o._.weeklyCap = 0
     -- Weekly reset:
-    o._.weeklyReset = 0
+    o._.weeklyReset = CONSTANTS.WEEKLY_RESET.EU
     return o
 end
 
 function RosterConfiguration:fields()
     return {
+        -- basic options
         "auctionType",
         "itemValueMode",
         "zeroSumBank",
@@ -272,6 +273,7 @@ function RosterConfiguration:fields()
         "antiSnipe",
         "allowNegativeStandings",
         "allowNegativeBidders",
+        -- bonuses not yet in place
         "bossKillBonus",
         "onTimeBonus",
         "onTimeBonusValue",
@@ -280,8 +282,9 @@ function RosterConfiguration:fields()
         "intervalBonus",
         "intervalBonusTime",
         "intervalBonusValue",
-        "hardPointCap",
-        "weeklyPointCap",
+        -- caps
+        "hardCap",
+        "weeklyCap",
         "weeklyReset"
     }
 end
@@ -330,8 +333,8 @@ local TRANSFORMS = {
     intervalBonus = transform_boolean,
     intervalBonusTime = transform_number,
     intervalBonusValue = transform_number,
-    hardPointCap = transform_number,
-    weeklyPointCap = transform_number,
+    hardCap = transform_number,
+    weeklyCap = transform_number,
     weeklyReset = transform_number
 }
 
@@ -380,8 +383,8 @@ function RosterConfiguration._validate_raidCompletionBonusValue(value) value = t
 function RosterConfiguration._validate_intervalBonus(value) return IsBoolean(value) end
 function RosterConfiguration._validate_intervalBonusTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_intervalBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_hardPointCap(value) return value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_weeklyPointCap(value) return value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_hardCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_weeklyCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
 
 CLM.MODELS.Roster = Roster
@@ -515,10 +518,11 @@ CONSTANTS.WEEKLY_RESET = {
 }
 
 CONSTANTS.WEEKLY_RESETS = UTILS.Set({
-    CONSTANTS.WEEKLY_RESET.EU, CONSTANTS.WEEKLY_RESET.US
+    CONSTANTS.WEEKLY_RESET.EU,
+    CONSTANTS.WEEKLY_RESET.US
 })
 
 CONSTANTS.WEEKLY_RESETS_GUI = {
-    [CONSTANTS.WEEKLY_RESET.EU] = "Europe (Wednesday 9:00)",
-    [CONSTANTS.WEEKLY_RESET.US] = "Americas (Tuesday 9:00)"
+    [CONSTANTS.WEEKLY_RESET.EU] = "Europe",
+    [CONSTANTS.WEEKLY_RESET.US] = "Americas"
 }
