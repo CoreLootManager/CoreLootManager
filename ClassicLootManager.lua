@@ -113,6 +113,7 @@ function CORE:_InitializeFeatures()
     MODULES.RaidManager:Initialize()
     MODULES.AuctionManager:Initialize()
     MODULES.BiddingManager:Initialize()
+    MODULES.VersioningManager:Initialize()
     -- Initialize Migration
     CLM.Migration:Initialize()
     -- Initialize global configs

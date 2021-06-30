@@ -13,6 +13,12 @@ function Profile:New(name, class, spec, main)
     o.class = (class ~= nil) and tostring(class) or ""
     o.spec  = (spec ~= nil) and tostring(spec) or ""
     o.main  = (main ~= nil) and tostring(main) or ""
+    o.version = {
+        major = 0,
+        minor = 0,
+        patch = 0,
+        changeset = ""
+    }
 
     return o
 end
@@ -47,6 +53,29 @@ end
 
 function Profile:GUID()
     return self._GUID
+end
+
+function Profile:SetVersion(major, minor, patch, changeset)
+    self.version.major = tonumber(major) or 0
+    self.version.minor = tonumber(minor) or 0
+    self.version.patch = tonumber(patch) or 0
+    changeset = changeset or ""
+    self.version.changeset = tostring(changeset)
+end
+
+function Profile:Version()
+    return self.version
+end
+
+function Profile:VersionString()
+    if not self._versionString then
+        if changeset == "" then
+            self._versionString = string.format("v%d.%d.%d", self.version.major, self.version.minor, self.version.patch)
+        else
+            self._versionString = string.format("v%d.%d.%d-%s", self.version.major, self.version.minor, self.version.patch, self.version.changeset)
+        end
+    end
+    return self._versionString
 end
 
 CLM.MODELS.Profile = Profile
