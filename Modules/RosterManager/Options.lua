@@ -1,10 +1,8 @@
 local _, CLM = ...
--- local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local OPTIONS = CLM.OPTIONS
 local MODULES = CLM.MODULES
 local ACL = MODULES.ACL
--- local UTILS = CLM.UTILS
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
 local LedgerManager = MODULES.LedgerManager
@@ -73,6 +71,7 @@ function RosterManagerOptions:Initialize()
         copy_source_set = (function(name, value)
             self.copy_source_name = value
         end),
+        -- Bonuses
         boss_kill_bonus_get = (function(name)
             return GetRosterOption(name, "bossKillBonus")
         end),
@@ -120,6 +119,25 @@ function RosterManagerOptions:Initialize()
         end),
         interval_bonus_time_set = (function(name, value)
             SetRosterOption(name, "intervalBonusTime", value)
+        end),
+        -- Caps
+        weekly_reset_timezone_get = (function(name)
+            return GetRosterOption(name, "weeklyReset")
+        end),
+        weekly_reset_timezone_set = (function(name, value)
+            SetRosterOption(name, "weeklyReset", value)
+        end),
+        weekly_cap_get = (function(name)
+            return tostring(GetRosterOption(name, "weeklyCap"))
+        end),
+        weekly_cap_set = (function(name, value)
+            SetRosterOption(name, "weeklyCap", value)
+        end),
+        hard_cap_get = (function(name)
+            return tostring(GetRosterOption(name, "hardCap"))
+        end),
+        hard_cap_set = (function(name, value)
+            SetRosterOption(name, "hardCap", value)
         end),
         -- Auction
         auction_auction_type_get = (function(name)
@@ -419,24 +437,31 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 101
             },
+            --
+            bonuses_header = {
+                name = "Bonuses",
+                type = "header",
+                order = 4,
+                width = "full"
+            },
             boss_kill_bonus = {
                 name = "Boss Kill Bonus",
                 type = "toggle",
-                order = 4,
+                order = 5,
                 disabled = true,
                 width = "full"
             },
             on_time_bonus = {
                 name = "On Time Bonus",
                 type = "toggle",
-                order = 5,
+                order = 6,
                 disabled = true,
                 width = 1
             },
             on_time_bonus_value = {
                 name = "On Time Bonus Value",
                 type = "input",
-                order = 6,
+                order = 7,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 1
@@ -444,14 +469,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             raid_completion_bonus = {
                 name = "Raid Completion Bonus",
                 type = "toggle",
-                order = 7,
+                order = 8,
                 disabled = true,
                 width = 1
             },
             raid_completion_bonus_value = {
                 name = "Raid Completion Value",
                 type = "input",
-                order = 8,
+                order = 9,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 1
@@ -459,14 +484,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             interval_bonus = {
                 name = "Interval Bonus",
                 type = "toggle",
-                order = 9,
+                order = 10,
                 disabled = true,
                 width = 1
             },
             interval_bonus_time = {
                 name = "Interval Time",
                 type = "input",
-                order = 10,
+                order = 11,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 0.6
@@ -474,11 +499,43 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             interval_bonus_value = {
                 name = "Interval Bonus Value",
                 type = "input",
-                order = 11,
+                order = 12,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 0.6
             },
+            --
+            point_caps_header = {
+                name = "Point caps",
+                type = "header",
+                order = 13,
+                width = "full"
+            },
+            weekly_reset_timezone = {
+                name = "Weekly reset timezone",
+                desc = "Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT",
+                type = "select",
+                style = "radio",
+                order = 14,
+                values = CONSTANTS.WEEKLY_RESETS_GUI
+            },
+            weekly_cap = {
+                name = "Weekly cap",
+                desc = "Maximum point cap player can receive per raid week. Set to 0 to disable.",
+                type = "input",
+                order = 15,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                -- width = 0.6
+            },
+            hard_cap = {
+                name = "Hard cap",
+                desc = "Maximum point cap that player can have. Set to 0 to disable.",
+                type = "input",
+                order = 16,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                -- width = 0.6
+            },
+            --
             auction = {
                 name = "Auction settings",
                 type = "group",
