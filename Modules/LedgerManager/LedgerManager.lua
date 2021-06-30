@@ -21,9 +21,10 @@ local function authorize(entry, sender)
     return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
 end
 
+local prefixSync = "SLedger"
+local prefixData = "DLedger"
+
 function LedgerManager:Initialize()
-    local prefixSync = "SLedger"
-    local prefixData = "DLedger"
     self.ledger = LedgerLib.createLedger(
         MODULES.Database:Ledger(),
         (function(data, distribution, target, callbackFn, callbackArg)
@@ -57,6 +58,13 @@ function LedgerManager:Enable()
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         self.ledger.enableSending()
     end
+end
+
+-- This is not reversable until reload
+function LedgerManager:Cutoff()
+    self.ledger.disableSending()
+    Comms:Suspend(prefixSync)
+    Comms:Suspend(prefixData)
 end
 
 function LedgerManager:DisableAdvertising()

@@ -76,6 +76,11 @@ function Comms:Suspend(prefix)
     self.suspended[prefix] = true
 end
 
+function Comms:RevokeSuspension(prefix)
+    prefix = _prefix(prefix)
+    self.suspended[prefix] = nil
+end
+
 function Comms:Send(prefix, message, distribution, target, priority)
     -- LOG:Trace("Comms:Send()") -- SPAM
     if not self.enabled then return false end
