@@ -310,47 +310,10 @@ function RosterConfiguration:New(i)
     o._.weeklyCap = 0
     -- Weekly reset:
     o._.weeklyReset = CONSTANTS.WEEKLY_RESET.EU
-<<<<<<< HEAD
 
     -- Additional settings
     o.hasHardCap = false
     o.hasWeeklyCap = false
-=======
-
-    -- Additional settings
-    o.hasHardCap = false
-    o.hasWeeklyCap = false
-
-    return o
-end
-
-function RosterConfiguration:fields()
-    return {
-        -- basic options
-        "auctionType",
-        "itemValueMode",
-        "zeroSumBank",
-        "zeroSumBankInflation",
-        "auctionTime",
-        "antiSnipe",
-        "allowNegativeStandings",
-        "allowNegativeBidders",
-        -- bonuses not yet in place
-        "bossKillBonus",
-        "onTimeBonus",
-        "onTimeBonusValue",
-        "raidCompletionBonus",
-        "raidCompletionBonusValue",
-        "intervalBonus",
-        "intervalBonusTime",
-        "intervalBonusValue",
-        -- caps
-        "hardCap",
-        "weeklyCap",
-        "weeklyReset"
-    }
-end
->>>>>>> origin/feature-point-hard-weekly-cap
 
     return o
 end
@@ -468,50 +431,13 @@ function RosterConfiguration:Set(option, value)
         -- No validator means always valid
         if validator == nil or validator(value) then
             self._[option] = TRANSFORMS[option](value)
-<<<<<<< HEAD
             PostProcess(self, option)
-=======
-            self:PostProcess(option)
->>>>>>> origin/feature-point-hard-weekly-cap
         end
     end
 end
 
 
 
-<<<<<<< HEAD
-=======
-function RosterConfiguration:PostProcess(option)
-    if option == "hardCap" then
-        self.hasHardCap = (self._[option] > 0)
-    elseif option == "weeklyCap" then
-        self.hasWeeklyCap = (self._[option] > 0)
-    end
-end
-
-local function IsBoolean(value) return type(value) == "boolean" end
-local function IsNumeric(value) return type(value) == "number" end
-local function IsPositive(value) return value >= 0 end
-function RosterConfiguration._validate_auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
-function RosterConfiguration._validate_itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
-function RosterConfiguration._validate_zeroSumBank(value) return IsBoolean(value) end
-function RosterConfiguration._validate_allowNegativeStandings(value) return IsBoolean(value) end
-function RosterConfiguration._validate_allowNegativeBidders(value) return IsBoolean(value) end
-function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_bossKillBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_onTimeBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_onTimeBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_raidCompletionBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_raidCompletionBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_intervalBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_intervalBonusTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_intervalBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_hardCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_weeklyCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
->>>>>>> origin/feature-point-hard-weekly-cap
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration
