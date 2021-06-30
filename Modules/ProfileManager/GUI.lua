@@ -341,7 +341,6 @@ function ProfilesGUI:Refresh(visible)
     LOG:Trace("ProfilesGUI:Refresh()")
     if not self._initialized then return end
     if visible and not self.top.frame:IsVisible() then return end
-    LOG:Debug("%s / %s", visible, not self.top.frame:IsVisible())
     self.st:ClearSelection()
 
     local rowId = 1
