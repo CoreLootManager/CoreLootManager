@@ -400,7 +400,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 width = "half",
                 values = CONSTANTS.POINT_TYPES_GUI
             },
-            
             copy = {
                 name = "Copy settings",
                 desc = "Copy settings from selected roster.",
@@ -440,7 +439,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 101
             },
-            -- 
+            --
             bonuses_header = {
                 name = "Bonuses",
                 type = "header",

@@ -12,6 +12,10 @@ local DeepCopy = UTILS.DeepCopy
 -- local typeof = UTILS.typeof
 local keys = UTILS.keys
 
+local WeekNumber = UTILS.WeekNumber
+local weekOffsetEU = UTILS.GetWeekOffsetEU()
+local weekOffsetUS = UTILS.GetWeekOffsetUS()
+
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
@@ -39,6 +43,8 @@ function Roster:New(uid, pointType)
     o.raidLoot = {}
     -- Loot received by players (dict of lists). Time descending per player
     o.profileLoot = {}
+    -- Weekly point gains per player
+    o.weeklyGains = {}
 
     return o
 end
@@ -51,6 +57,7 @@ function Roster:AddProfileByGUID(GUID)
     LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     if self:IsProfileInRoster(GUID) then return end
     self.standings[GUID] = 0
+    self.weeklyGains[GUID] = {}
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
 end
@@ -58,6 +65,7 @@ end
 function Roster:RemoveProfileByGUID(GUID)
     LOG:Debug("Remove profile [%s] from roster [%s]", GUID, self:UID())
     self.standings[GUID] = nil
+    self.weeklyGains[GUID] = nil
     self.profileLoot[GUID] = nil
     self.profilePointHistory[GUID] = nil
     -- TODO remove raidloot history for the person? how?
@@ -81,6 +89,54 @@ function Roster:Standings(GUID)
     else
         return self.standings[GUID] or 0
     end
+end
+
+function Roster:WeeklyGains(GUID, week)
+    if type(GUID) ~= "string" then
+        return self.weeklyGains or {}
+    end
+    if type(week) ~= "number" then
+        return self.weeklyGains[GUID] or {}
+    end
+    return self.weeklyGains[GUID][week] or 0
+end
+
+function Roster:UpdateStandings(GUID, value, timestamp)
+    local offset = (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS
+    local week = WeekNumber(timestamp, offset)
+    -- We do not remove points if they are over during newly introduced cap
+    if self.configuration.hasHardCap and (self:Standings(GUID) >  self.configuration._.hardCap) and (value > 0) then
+        return
+    end
+    self.standings[GUID] = self:Standings(GUID) + value
+    -- Weekly Cap
+    if self.configuration.hasWeeklyCap and timestamp then
+        self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) + value
+        local overCap = self:WeeklyGains(GUID, week) - self.configuration._.weeklyCap
+        if overCap > 0 then
+            self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) - overCap
+            self.standings[GUID] = self:Standings(GUID) - overCap
+        end
+    end
+    -- Hard Cap
+    if self.configuration.hasHardCap then
+        if self.standings[GUID] > self.configuration._.hardCap then
+            self.standings[GUID] = self.configuration._.hardCap
+        end
+    end
+end
+
+function Roster:SetStandings(GUID, value)
+    self.standings[GUID] = value
+    if self.configuration._.hardCap > 0 then
+        if self.standings[GUID] > self.configuration._.hardCap then
+            self.standings[GUID] = self.configuration._.hardCap
+        end
+    end
+end
+
+function Roster:DecayStandings(GUID, value)
+    self.standings[GUID] = (self:Standings(GUID) * (100 - value)) / 100
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
@@ -259,6 +315,11 @@ function RosterConfiguration:New(i)
     o._.weeklyCap = 0
     -- Weekly reset:
     o._.weeklyReset = CONSTANTS.WEEKLY_RESET.EU
+
+    -- Additional settings
+    o.hasHardCap = false
+    o.hasWeeklyCap = false
+
     return o
 end
 
@@ -350,6 +411,7 @@ function RosterConfiguration:Set(option, value)
     if self._[option] ~= nil then
         if self:Validate(option, value) then
             self._[option] = TRANSFORMS[option](value)
+            self:PostProcess(option)
         end
     end
 end
@@ -362,6 +424,14 @@ function RosterConfiguration:Validate(option, value)
     end
 
     return true -- TODO: true or false?
+end
+
+function RosterConfiguration:PostProcess(option)
+    if option == "hardCap" then
+        self.hasHardCap = (self._[option] > 0)
+    elseif option == "weeklyCap" then
+        self.hasWeeklyCap = (self._[option] > 0)
+    end
 end
 
 local function IsBoolean(value) return type(value) == "boolean" end

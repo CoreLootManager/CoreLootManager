@@ -325,7 +325,7 @@ function RosterManager:SetRosterConfiguration(name, option, value)
     end
     if type(current) == "number" then
         value = tonumber(value)
-    elseif type(curent) == "string" then
+    elseif type(current) == "string" then
         value = tostring(value)
     elseif type(current) == "boolean" then
         value = value and true or false
@@ -334,7 +334,6 @@ function RosterManager:SetRosterConfiguration(name, option, value)
         LOG:Fatal("RosterManager:SetRosterConfiguration(): Invalid value type")
         return
     end
-    
     if current == value then
         LOG:Debug("RosterManager:SetRosterConfiguration(): No change to option [%s]. Skipping.", option)
         return
