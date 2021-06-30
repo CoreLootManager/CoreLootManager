@@ -3,14 +3,14 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local UTILS =  CLM.UTILS
 local CONSTANTS =  CLM.CONSTANTS
--- local MODELS = CLM.MODELS
 
 local DeepCopy = UTILS.DeepCopy
--- local ShallowCopy = UTILS.ShallowCopy
 
--- local whoami = UTILS.whoami
--- local typeof = UTILS.typeof
 local keys = UTILS.keys
+
+local WeekNumber = UTILS.WeekNumber
+local weekOffsetEU = UTILS.GetWeekOffsetEU()
+local weekOffsetUS = UTILS.GetWeekOffsetUS()
 
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
@@ -39,6 +39,8 @@ function Roster:New(uid, pointType)
     o.raidLoot = {}
     -- Loot received by players (dict of lists). Time descending per player
     o.profileLoot = {}
+    -- Weekly point gains per player
+    o.weeklyGains = {}
 
     return o
 end
@@ -51,6 +53,7 @@ function Roster:AddProfileByGUID(GUID)
     LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     if self:IsProfileInRoster(GUID) then return end
     self.standings[GUID] = 0
+    self.weeklyGains[GUID] = {}
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
 end
@@ -58,6 +61,7 @@ end
 function Roster:RemoveProfileByGUID(GUID)
     LOG:Debug("Remove profile [%s] from roster [%s]", GUID, self:UID())
     self.standings[GUID] = nil
+    self.weeklyGains[GUID] = nil
     self.profileLoot[GUID] = nil
     self.profilePointHistory[GUID] = nil
     -- TODO remove raidloot history for the person? how?
@@ -81,6 +85,53 @@ function Roster:Standings(GUID)
     else
         return self.standings[GUID] or 0
     end
+end
+
+function Roster:WeeklyGains(GUID, week)
+    if type(GUID) ~= "string" then
+        return self.weeklyGains or {}
+    end
+    if type(week) ~= "number" then
+        return self.weeklyGains[GUID] or {}
+    end
+    return self.weeklyGains[GUID][week] or 0
+end
+
+function Roster:UpdateStandings(GUID, value, timestamp)
+    local offset = (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS
+    local week = WeekNumber(timestamp, offset)
+    local hardCap = self.configuration._.hardCap
+    local isPositiveChange = (value > 0)
+    -- We do not remove points if they are over during newly introduced cap
+    if self.configuration.hasHardCap and (self:Standings(GUID) >  hardCap) and isPositiveChange then
+        return
+    end
+    self.standings[GUID] = self:Standings(GUID) + value
+    if isPositiveChange then
+        -- Weekly Cap
+        if self.configuration.hasWeeklyCap and timestamp then
+            self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) + value
+            local overCap = self:WeeklyGains(GUID, week) - self.configuration._.weeklyCap
+            if overCap > 0 then
+                self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) - overCap
+                self.standings[GUID] = self:Standings(GUID) - overCap
+            end
+        end
+        -- Hard Cap
+        if self.configuration.hasHardCap then
+            if self.standings[GUID] > hardCap then
+                self.standings[GUID] = hardCap
+            end
+        end
+    end
+end
+
+function Roster:SetStandings(GUID, value)
+    self.standings[GUID] = value
+end
+
+function Roster:DecayStandings(GUID, value)
+    self.standings[GUID] = (self:Standings(GUID) * (100 - value)) / 100
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
@@ -253,53 +304,59 @@ function RosterConfiguration:New(i)
     o._.intervalBonusTime = 0
     -- Interval Bonus Value
     o._.intervalBonusValue = 0
+    -- Hard Point Cap:
+    o._.hardCap = 0
+    -- Weekly Cap:
+    o._.weeklyCap = 0
+    -- Weekly reset:
+    o._.weeklyReset = CONSTANTS.WEEKLY_RESET.EU
+
+    -- Additional settings
+    o.hasHardCap = false
+    o.hasWeeklyCap = false
+
     return o
 end
 
-function RosterConfiguration:fields()
-    return {
-        "auctionType",
-        "itemValueMode",
-        "zeroSumBank",
-        "zeroSumBankInflation",
-        "auctionTime",
-        "antiSnipe",
-        "allowNegativeStandings",
-        "allowNegativeBidders",
-        "bossKillBonus",
-        "onTimeBonus",
-        "onTimeBonusValue",
-        "raidCompletionBonus",
-        "raidCompletionBonusValue",
-        "intervalBonus",
-        "intervalBonusTime",
-        "intervalBonusValue"
-    }
-end
-
-function RosterConfiguration:Storage()
-    return self._
-end
+local fields ={
+    -- basic options
+    "auctionType",
+    "itemValueMode",
+    "zeroSumBank",
+    "zeroSumBankInflation",
+    "auctionTime",
+    "antiSnipe",
+    "allowNegativeStandings",
+    "allowNegativeBidders",
+    -- bonuses not yet in place
+    "bossKillBonus",
+    "onTimeBonus",
+    "onTimeBonusValue",
+    "raidCompletionBonus",
+    "raidCompletionBonusValue",
+    "intervalBonus",
+    "intervalBonusTime",
+    "intervalBonusValue",
+    -- caps
+    "hardCap",
+    "weeklyCap",
+    "weeklyReset"
+}
 
 function RosterConfiguration:inflate(data)
-    for i, key in ipairs(self:fields()) do
+    for i, key in ipairs(fields) do
         self._[key] = data[i]
     end
 end
 
 function RosterConfiguration:deflate()
     local result = {}
-    for _, key in ipairs(self:fields()) do
+    for _, key in ipairs(fields) do
         table.insert(result, self._[key])
     end
     return result
 end
 
-function RosterConfiguration:Copy(o)
-    for k,v in pairs(o._) do
-        self._[k] = v
-    end
-end
 
 local function transform_boolean(value) return value and true or false end
 local function transform_number(value) return tonumber(value) end
@@ -321,6 +378,9 @@ local TRANSFORMS = {
     intervalBonus = transform_boolean,
     intervalBonusTime = transform_number,
     intervalBonusValue = transform_number,
+    hardCap = transform_number,
+    weeklyCap = transform_number,
+    weeklyReset = transform_number
 }
 
 function RosterConfiguration:Get(option)
@@ -330,79 +390,78 @@ function RosterConfiguration:Get(option)
     return nil
 end
 
+local function IsBoolean(value) return type(value) == "boolean" end
+local function IsNumeric(value) return type(value) == "number" end
+local function IsPositive(value) return IsNumeric(value) and value >= 0 end
+local validators = {
+    auctionType = function(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end,
+    itemValueMode = function(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end,
+    zeroSumBank = IsBoolean,
+    allowNegativeStandings = IsBoolean,
+    allowNegativeBidders = IsBoolean,
+    zeroSumBankInflation = IsPositive,
+    auctionTime = IsPositive,
+    antiSnipe = IsPositive,
+    bossKillBonus = IsBoolean,
+    onTimeBonus = IsBoolean,
+    onTimeBonusValue = IsPositive,
+    raidCompletionBonus = IsBoolean,
+    raidCompletionBonusValue = IsPositive,
+    intervalBonus = IsBoolean,
+    intervalBonusTime = IsPositive,
+    intervalBonusValue = IsPositive,
+    hardCap = IsPositive,
+    weeklyCap = IsPositive,
+    weeklyReset = function(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
+
+}
+
+local function PostProcess(self, option)
+    if option == "hardCap" then
+        self.hasHardCap = (self._[option] > 0)
+    elseif option == "weeklyCap" then
+        self.hasWeeklyCap = (self._[option] > 0)
+    end
+end
+
 function RosterConfiguration:Set(option, value)
     if option == nil then return end
     if self._[option] ~= nil then
-        if self:Validate(option, value) then
+        local validator = validators[option]
+        -- No validator means always valid
+        if validator == nil or validator(value) then
             self._[option] = TRANSFORMS[option](value)
+            PostProcess(self, option)
         end
     end
 end
 
-function RosterConfiguration:Validate(option, value)
-    local callback = "_validate_" .. option
-    if type(self[callback]) == "function" then
-        local r = self[callback](value)
-        return r
-    end
 
-    return true -- TODO: true or false?
-end
 
-local function IsBoolean(value) return type(value) == "boolean" end
-local function IsNumeric(value) return type(value) == "number" end
-local function IsPositive(value) return value >= 0 end
-function RosterConfiguration._validate_auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
-function RosterConfiguration._validate_itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
-function RosterConfiguration._validate_zeroSumBank(value) return IsBoolean(value) end
-function RosterConfiguration._validate_allowNegativeStandings(value) return IsBoolean(value) end
-function RosterConfiguration._validate_allowNegativeBidders(value) return IsBoolean(value) end
-function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_bossKillBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_onTimeBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_onTimeBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_raidCompletionBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_raidCompletionBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_intervalBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_intervalBonusTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_intervalBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration
 
 -- Constants
-CONSTANTS.POINT_TYPES = UTILS.Set({
-    0, -- DKP
-    1, -- EPGP
-    2, -- ROLL
-    3  -- SK
-})
-
-CONSTANTS.POINT_TYPES_GUI = {
-    [0] = "DKP",
-    [1] = "EPGP",
-    [2] = "ROLL",
-    [3] = "SK"
-}
-
 CONSTANTS.POINT_TYPE = {
     DKP = 0,
     EPGP = 1,
     ROLL = 2,
     SK = 3
 }
-CONSTANTS.AUCTION_TYPES = UTILS.Set({
-    0, -- OPEN
-    1, -- SEALED
-    2  -- VICKREY
+
+CONSTANTS.POINT_TYPES = UTILS.Set({
+    CONSTANTS.POINT_TYPE.DKP, -- DKP
+    CONSTANTS.POINT_TYPE.EPGP, -- EPGP
+    CONSTANTS.POINT_TYPE.ROLL, -- ROLL
+    CONSTANTS.POINT_TYPE.SK  -- SK
 })
 
-CONSTANTS.AUCTION_TYPES_GUI = {
-    [0] = "Open",
-    [1] = "Sealed",
-    [2] = "Vickrey"
+CONSTANTS.POINT_TYPES_GUI = {
+    [CONSTANTS.POINT_TYPE.DKP] = "DKP",
+    [CONSTANTS.POINT_TYPE.EPGP] = "EPGP",
+    [CONSTANTS.POINT_TYPE.ROLL] = "ROLL",
+    [CONSTANTS.POINT_TYPE.SK] = "SK"
 }
 
 CONSTANTS.AUCTION_TYPE = {
@@ -411,20 +470,33 @@ CONSTANTS.AUCTION_TYPE = {
     VICKREY = 2
 }
 
-CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
-    0, -- SINGLE_PRICED
-    1  -- ASCENDING
+CONSTANTS.AUCTION_TYPES = UTILS.Set({
+    CONSTANTS.AUCTION_TYPE.OPEN, -- OPEN
+    CONSTANTS.AUCTION_TYPE.SEALED, -- SEALED
+    CONSTANTS.AUCTION_TYPE.VICKREY  -- VICKREY
 })
 
-CONSTANTS.ITEM_VALUE_MODES_GUI = {
-    [0] = "Single-Priced",
-    [1] = "Ascending"
+CONSTANTS.AUCTION_TYPES_GUI = {
+    [CONSTANTS.AUCTION_TYPE.OPEN] = "Open",
+    [CONSTANTS.AUCTION_TYPE.SEALED] = "Sealed",
+    [CONSTANTS.AUCTION_TYPE.VICKREY] = "Vickrey"
 }
 
 CONSTANTS.ITEM_VALUE_MODE = {
     SINGLE_PRICED = 0,
     ASCENDING = 1
 }
+
+CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
+    CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED, -- SINGLE_PRICED
+    CONSTANTS.ITEM_VALUE_MODE.ASCENDING  -- ASCENDING
+})
+
+CONSTANTS.ITEM_VALUE_MODES_GUI = {
+    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = "Single-Priced",
+    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = "Ascending"
+}
+
 
 CONSTANTS.INVENTORY_TYPES = {
     "INVTYPE_NON_EQUIP",
@@ -490,4 +562,19 @@ CONSTANTS.INVENTORY_TYPES_SORTED = {
     { type = "INVTYPE_THROWN",          name = "Thrown",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
     { type = "INVTYPE_QUIVER",          name = "Quiver",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
     { type = "INVTYPE_RELIC",           name = "Relic",             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
+}
+
+CONSTANTS.WEEKLY_RESET = {
+    EU = 0,
+    US = 1
+}
+
+CONSTANTS.WEEKLY_RESETS = UTILS.Set({
+    CONSTANTS.WEEKLY_RESET.EU,
+    CONSTANTS.WEEKLY_RESET.US
+})
+
+CONSTANTS.WEEKLY_RESETS_GUI = {
+    [CONSTANTS.WEEKLY_RESET.EU] = "Europe",
+    [CONSTANTS.WEEKLY_RESET.US] = "Americas"
 }
