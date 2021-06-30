@@ -104,35 +104,34 @@ end
 function Roster:UpdateStandings(GUID, value, timestamp)
     local offset = (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS
     local week = WeekNumber(timestamp, offset)
+    local hardCap = self.configuration._.hardCap
+    local isPositiveChange = (value > 0)
     -- We do not remove points if they are over during newly introduced cap
-    if self.configuration.hasHardCap and (self:Standings(GUID) >  self.configuration._.hardCap) and (value > 0) then
+    if self.configuration.hasHardCap and (self:Standings(GUID) >  hardCap) and isPositiveChange then
         return
     end
     self.standings[GUID] = self:Standings(GUID) + value
-    -- Weekly Cap
-    if self.configuration.hasWeeklyCap and timestamp then
-        self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) + value
-        local overCap = self:WeeklyGains(GUID, week) - self.configuration._.weeklyCap
-        if overCap > 0 then
-            self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) - overCap
-            self.standings[GUID] = self:Standings(GUID) - overCap
+    if isPositiveChange then
+        -- Weekly Cap
+        if self.configuration.hasWeeklyCap and timestamp then
+            self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) + value
+            local overCap = self:WeeklyGains(GUID, week) - self.configuration._.weeklyCap
+            if overCap > 0 then
+                self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) - overCap
+                self.standings[GUID] = self:Standings(GUID) - overCap
+            end
         end
-    end
-    -- Hard Cap
-    if self.configuration.hasHardCap then
-        if self.standings[GUID] > self.configuration._.hardCap then
-            self.standings[GUID] = self.configuration._.hardCap
+        -- Hard Cap
+        if self.configuration.hasHardCap then
+            if self.standings[GUID] > hardCap then
+                self.standings[GUID] = hardCap
+            end
         end
     end
 end
 
 function Roster:SetStandings(GUID, value)
     self.standings[GUID] = value
-    if self.configuration._.hardCap > 0 then
-        if self.standings[GUID] > self.configuration._.hardCap then
-            self.standings[GUID] = self.configuration._.hardCap
-        end
-    end
 end
 
 function Roster:DecayStandings(GUID, value)
