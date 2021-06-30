@@ -7,8 +7,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local MODELS = CLM.MODELS
 
--- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
-
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
@@ -28,7 +26,6 @@ local function apply_mutator(entry, mutate)
         return
     end
     local value = entry:value()
-    -- local standings = roster:Standings()
     local targets = entry:targets()
     local timestamp = entry:time()
     local pointHistoryEntry = PointHistory:New(entry)
@@ -37,7 +34,6 @@ local function apply_mutator(entry, mutate)
         -- TODO: Main alt linking support: We need to account for the link not blindly pass profile
         local GUID = getGuidFromInteger(target)
         if roster:IsProfileInRoster(GUID) then
-            -- standings[GUID] = mutate(standings[GUID], value)
             mutate(roster, GUID, value, timestamp)
             local profile = ProfileManager:GetProfileByGUID(GUID)
             if profile then

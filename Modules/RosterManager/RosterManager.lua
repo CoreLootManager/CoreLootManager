@@ -5,7 +5,6 @@ local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local MODULES = CLM.MODULES
 local MODELS = CLM.MODELS
--- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 local LEDGER_ROSTER = CLM.MODELS.LEDGER.ROSTER
 local UTILS = CLM.UTILS
 
@@ -15,7 +14,6 @@ local ProfileManager = MODULES.ProfileManager
 local Profile = MODELS.Profile
 local Loot = MODELS.Loot
 
--- local whoami = UTILS.whoami
 local typeof = UTILS.typeof
 local capitalize = UTILS.capitalize
 local getGuidFromInteger = UTILS.getGuidFromInteger
@@ -518,162 +516,6 @@ function RosterManager:WipeAll()
         rosters = {}
     }
     collectgarbage()
-end
-
-function RosterManager:Debug(N)
-    N = N or 10
-    local actions = {"create", --[["delete",]] "rename", "copy", "set", "override", "profile"}
-    local rosterNames = {}
-    local genRosterNames = (function()
-        rosterNames = {}
-        local rosters = self:GetRosters()
-        local i = 0
-        for k,_ in pairs(rosters) do
-            i = i+ 1
-            table.insert(rosterNames, k)
-        end
-        -- print("=== We have " .. i .. " rosters ===")
-    end)
-    genRosterNames()
-    local profiles = ProfileManager:GetProfiles()
-    local actionHandlers = {
-        ["create"] =  (function()
-            self:NewRoster(CONSTANTS.POINT_TYPE.DKP)
-            genRosterNames()
-        end),
-        ["delete"] =  (function()
-            self:DeleteRosterByName(rosterNames[math.random(1, #rosterNames)])
-            genRosterNames()
-        end),
-        ["rename"] =  (function()
-            self:RenameRoster(rosterNames[math.random(1, #rosterNames)], self:GenerateName() .. tostring(math.random(1,999999999)))
-            genRosterNames()
-        end),
-        ["copy"] =  (function()
-            local config = false
-            if math.random(0, 1) == 1 then config = true end
-            local defaults = false
-            if math.random(0, 1) == 1 then defaults = true end
-            local overrides = false
-            if math.random(0, 1) == 1 then overrides = true end
-            local copyProfiles = false
-            if math.random(0, 1) == 1 then copyProfiles = true end
-            self:Copy(
-                rosterNames[math.random(1, #rosterNames)],
-                rosterNames[math.random(1, #rosterNames)],
-                config, defaults, overrides, copyProfiles
-            )
-        end),
-        ["set"] =  (function()
-            local configList = {
-                -- int
-                "pointType",
-                "auctionType",
-                "itemValueMode",
-                -- bool
-                "zeroSumBank",
-                "allowNegativeStandings",
-                "allowNegativeBidders"
-            }
-            local configs = {
-                -- int
-                ["pointType"] = 0, -- 0 1
-                ["auctionType"] = 2, -- 0 1 2
-                ["itemValueMode"] = 0, -- 0 1
-                -- bool
-                ["zeroSumBank"] = 1,
-                ["allowNegativeStandings"] = 1,
-                ["allowNegativeBidders"] = 1
-            }
-            local config = configList[math.random(1, #configList)]
-            local value
-            if configs[config] == 0 then
-                value = math.random(0, 1)
-            elseif configs[config] == 1 then
-                if math.random(0,1) == 1 then
-                    value = true
-                else
-                    value = false
-                end
-            elseif configs[config] == 2 then
-                value = math.random(0, 2)
-            else
-                return
-            end
-            self:SetRosterConfiguration(rosterNames[math.random(1, #rosterNames)], config, value)
-        end),
-        ["override"] =  (function()
-            local isBase = false
-            if math.random(0, 1) == 1 then
-                isBase = true
-            end
-            self:SetRosterDefaultSlotValue(rosterNames[math.random(1, #rosterNames)], CONSTANTS.INVENTORY_TYPES[math.random(1, #CONSTANTS.INVENTORY_TYPES)], 1000000*math.random(), isBase)
-        end),
-        ["profile"] = (function()
-            local profileList = {}
-            for GUID, _ in pairs(profiles) do
-                if math.random(0,1) == 1 then
-                    table.insert(profileList, GUID)
-                end
-            end
-            local _roster = self:GetRosterByName(rosterNames[math.random(1, #rosterNames)])
-            if math.random(0,1) == 1 then
-                self:AddProfilesToRoster(_roster, profileList)
-            else
-                self:RemoveProfilesFromRoster(_roster, profileList)
-            end
-        end),
-    }
-
-    print("Generating total of  " .. N .. " roster operation entries")
-
-    local actionCount = {}
-    -- pregenerate 1 roster
-    if #rosterNames == 0 then
-        actionHandlers["create"]()
-    end
-
-    for _=1,N do
-        local action = actions[math.random(1, #actions)]
-        if actionCount[action] == nil then
-            actionCount[action] = 1
-        else
-            actionCount[action] = actionCount[action] +  1
-        end
-        actionHandlers[action]()
-    end
-
-    -- for action, count in pairs(actionCount) do
-    --     print(tostring(action) .. ": " .. tostring(count))
-    -- end
-
-end
-
-function RosterManager:Debug2(N)
-    N = N or 10
-    local rosterNames = {}
-    local genRosterNames = (function()
-        rosterNames = {}
-        local rosters = self:GetRosters()
-        local i = 0
-        for k,_ in pairs(rosters) do
-            i = i+1
-            table.insert(rosterNames, k)
-        end
-    end)
-    genRosterNames()
-    local name = rosterNames[math.random(1, #rosterNames)]
-    local roster = self:GetRosterByName(name)
-    print("Adding items to roster " .. name)
-    for _=1,N do
-        local id
-        local icon
-        while icon == nil do
-            id = math.random(1100, 23328)
-            _, _, _, _, icon = GetItemInfoInstant(id)
-        end
-        self:SetRosterItemValue(roster, id, math.random()*1000, math.random()*1000)
-    end
 end
 
 -- -- Publish API

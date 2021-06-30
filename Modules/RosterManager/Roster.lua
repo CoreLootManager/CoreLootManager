@@ -3,13 +3,9 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local UTILS =  CLM.UTILS
 local CONSTANTS =  CLM.CONSTANTS
--- local MODELS = CLM.MODELS
 
 local DeepCopy = UTILS.DeepCopy
--- local ShallowCopy = UTILS.ShallowCopy
 
--- local whoami = UTILS.whoami
--- local typeof = UTILS.typeof
 local keys = UTILS.keys
 
 local WeekNumber = UTILS.WeekNumber

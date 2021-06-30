@@ -1,10 +1,8 @@
 local _, CLM = ...
--- local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local OPTIONS = CLM.OPTIONS
 local MODULES = CLM.MODULES
 local ACL = MODULES.ACL
--- local UTILS = CLM.UTILS
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
 local LedgerManager = MODULES.LedgerManager
