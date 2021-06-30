@@ -310,6 +310,35 @@ function RosterManager:SetRosterConfiguration(name, option, value)
         LOG:Error("RosterManager:SetRosterConfiguration(): Unknown roster name %s", name)
         return
     end
+    if not option then
+        LOG:Error("RosterManager:SetRosterConfiguration(): Missing option")
+        return
+    end
+    if value == nil then
+        LOG:Error("RosterManager:SetRosterConfiguration(): Missing value")
+        return
+    end
+    local current = roster:GetConfiguration(option)
+    if current == nil then
+        LOG:Error("RosterManager:SetRosterConfiguration(): Invalid option [%s]", option)
+        return
+    end
+    if type(current) == "number" then
+        value = tonumber(value)
+    elseif type(curent) == "string" then
+        value = tostring(value)
+    elseif type(current) == "boolean" then
+        value = value and true or false
+    end
+    if value == nil then
+        LOG:Fatal("RosterManager:SetRosterConfiguration(): Invalid value type")
+        return
+    end
+    
+    if current == value then
+        LOG:Debug("RosterManager:SetRosterConfiguration(): No change to option [%s]. Skipping.", option)
+        return
+    end
 
     LedgerManager:Submit(LEDGER_ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
 end
@@ -326,8 +355,28 @@ function RosterManager:SetRosterDefaultSlotValue(nameOrRoster, slot, value, isBa
         LOG:Error("RosterManager:SetRosterDefaultSlotValue(): Invalid roster object or name")
         return nil
     end
+    if not value then
+        LOG:Error("RosterManager:SetRosterDefaultSlotValue(): Missing value")
+        return
+    end
+    if not slot then
+        LOG:Error("RosterManager:SetRosterDefaultSlotValue(): Missing slot")
+        return
+    end
     local v = roster:GetDefaultSlotValue(slot)
-    if isBase then v.base = value else v.max = value end
+    if isBase then
+        if v.base == tonumber(value) then
+            LOG:Debug("RosterManager:SetRosterDefaultSlotValue(): No change to value. Skipping.")
+            return
+        end
+        v.base = value
+    else
+        if v.max == tonumber(value) then
+            LOG:Debug("RosterManager:SetRosterDefaultSlotValue(): No change to value. Skipping.")
+            return
+        end
+        v.max = value
+    end
 
     LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, v.base, v.max), true)
 end
@@ -344,7 +393,23 @@ function RosterManager:SetRosterItemValue(nameOrRoster, itemId, base, max)
         LOG:Error("RosterManager:SetRosterItemValue(): Invalid roster object or name")
         return nil
     end
-
+    if not itemId then
+        LOG:Error("RosterManager:SetRosterItemValue(): Missing itemId")
+        return
+    end
+    if not tonumber(base) then
+        LOG:Error("RosterManager:SetRosterItemValue(): Missing base")
+        return
+    end
+    if not tonumber(max) then
+        LOG:Error("RosterManager:SetRosterItemValue(): Missing max")
+        return
+    end
+    local itemValue = roster:GetItemValue(itemId)
+    if (itemValue.base == base) and (itemValue.max == max) then
+        LOG:Debug("RosterManager:SetRosterItemValue(): No change to value. Skipping.")
+        return
+    end
     LedgerManager:Submit(LEDGER_ROSTER.UpdateOverrides:new(roster:UID(), itemId, base, max), true)
 end
 
