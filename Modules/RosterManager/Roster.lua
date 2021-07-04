@@ -96,12 +96,16 @@ function Roster:GetWeeklyGainsForPlayer(GUID)
 end
 
 function Roster:GetWeeklyGainsForPlayerWeek(GUID, week)
-    local weeklyGains = self.weeklyGains[GUID] or {}
-    return weeklyGains[week] or 0
+    local weeklyGains = self.weeklyGains[GUID]
+    if not weeklyGains then
+        self.weeklyGains[GUID] = {}
+    end
+    return self.weeklyGains[GUID][week] or 0
 end
 
 function Roster:UpdateStandings(GUID, value, timestamp)
     timestamp = timestamp or 0
+    LOG:Debug("Roster:UpdateStandings(%s, %s, %s)", GUID, self.uid, value)
     local isPointGain = (value > 0)
     local standings = self:Standings(GUID)
     if isPointGain then
@@ -111,32 +115,42 @@ function Roster:UpdateStandings(GUID, value, timestamp)
             local hardCap = self.configuration._.hardCap
             -- We do not modify points if they are already exceeded during newly introduced cap
             if (standings >= hardCap) then
+                LOG:Debug("(standings >= hardCap) %s >= %s", standings, hardCap)
                 return
             end
             local maxGain = hardCap - standings
-            if maxGain <= 0 then -- sanity check
-                LOG:Fatal("Roster:UpdateStandings(): maxGain is lower than 0 for hard cap")
+            LOG:Debug("hardCap maxGain %s", maxGain)
+            if maxGain <= 0 then -- sanity check (here it shouldn't be be 0 due to above check)
+                LOG:Debug("Roster:UpdateStandings(): maxGain %d for %s(%s) is lower than 0 for hard cap", maxGain, GUID, self.uid)
                 return
             end
             -- Saturate the initial value
             if value > maxGain then value = maxGain end
+            LOG:Debug("new value %s", value)
         end
         -- Weekly Cap
         if self.configuration.hasWeeklyCap then
+            local weeklyCap = self.configuration._.weeklyCap
+            LOG:Debug("--- HAS WEEKLY CAP (%s) ---", weeklyCap)
             local offset = (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS
             local week = WeekNumber(timestamp, offset)
             local weeklyGains = self:GetWeeklyGainsForPlayerWeek(GUID, week)
+            LOG:Debug("weeklyGain %s", weeklyGains)
             local maxGain = self.configuration._.weeklyCap - weeklyGains
-            if maxGain <= 0 then -- sanity check
-                LOG:Fatal("Roster:UpdateStandings(): maxGain is lower than 0 for weekly cap")
+            LOG:Debug("weeklyCap maxGain %s", maxGain)
+            if maxGain < 0 then -- sanity check (here it can be 0 and this can happen if cap was lowered before awarding dkp)
+                LOG:Debug("Roster:UpdateStandings(): maxGain %d for %s(%s) is lower than 0 for weekly cap", maxGain, GUID, self.uid)
                 return
             end
             if value > maxGain then value = maxGain end
+            LOG:Debug("new value %s", value)
             self.weeklyGains[GUID][week] = weeklyGains + value
+            LOG:Debug("new weeklyGains %s", self.weeklyGains[GUID][week])
         end
     end
     -- Handle the standings update
     self.standings[GUID] = standings + value
+    LOG:Debug("new standings %s", self.standings[GUID])
 end
 
 function Roster:SetStandings(GUID, value)
