@@ -87,43 +87,56 @@ function Roster:Standings(GUID)
     end
 end
 
-function Roster:WeeklyGains(GUID, week)
-    if type(GUID) ~= "string" then
-        return self.weeklyGains or {}
-    end
-    if type(week) ~= "number" then
-        return self.weeklyGains[GUID] or {}
-    end
-    return self.weeklyGains[GUID][week] or 0
+function Roster:GetAllWeeklyGains()
+    return self.weeklyGains or {}
+end
+
+function Roster:GetWeeklyGainsForPlayer(GUID)
+    return self.weeklyGains[GUID] or {}
+end
+
+function Roster:GetWeeklyGainsForPlayerWeek(GUID, week)
+    local weeklyGains = self.weeklyGains[GUID] or {}
+    return weeklyGains[week] or 0
 end
 
 function Roster:UpdateStandings(GUID, value, timestamp)
-    local offset = (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS
-    local week = WeekNumber(timestamp, offset)
-    local hardCap = self.configuration._.hardCap
-    local isPositiveChange = (value > 0)
-    -- We do not remove points if they are over during newly introduced cap
-    if self.configuration.hasHardCap and (self:Standings(GUID) >  hardCap) and isPositiveChange then
-        return
-    end
-    self.standings[GUID] = self:Standings(GUID) + value
-    if isPositiveChange then
-        -- Weekly Cap
-        if self.configuration.hasWeeklyCap and timestamp then
-            self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) + value
-            local overCap = self:WeeklyGains(GUID, week) - self.configuration._.weeklyCap
-            if overCap > 0 then
-                self.weeklyGains[GUID][week] = self:WeeklyGains(GUID, week) - overCap
-                self.standings[GUID] = self:Standings(GUID) - overCap
-            end
-        end
+    timestamp = timestamp or 0
+    local isPointGain = (value > 0)
+    local standings = self:Standings(GUID)
+    if isPointGain then
+        -- Handle the caps if the update was a positive (gain)
         -- Hard Cap
         if self.configuration.hasHardCap then
-            if self.standings[GUID] > hardCap then
-                self.standings[GUID] = hardCap
+            local hardCap = self.configuration._.hardCap
+            -- We do not modify points if they are already exceeded during newly introduced cap
+            if (standings >= hardCap) then
+                return
             end
+            local maxGain = hardCap - standings
+            if maxGain <= 0 then -- sanity check
+                LOG:Fatal("Roster:UpdateStandings(): maxGain is lower than 0 for hard cap")
+                return
+            end
+            -- Saturate the initial value
+            if value > maxGain then value = maxGain end
+        end
+        -- Weekly Cap
+        if self.configuration.hasWeeklyCap then
+            local offset = (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS
+            local week = WeekNumber(timestamp, offset)
+            local weeklyGains = self:GetWeeklyGainsForPlayerWeek(GUID, week)
+            local maxGain = self.configuration._.weeklyCap - weeklyGains
+            if maxGain <= 0 then -- sanity check
+                LOG:Fatal("Roster:UpdateStandings(): maxGain is lower than 0 for weekly cap")
+                return
+            end
+            if value > maxGain then value = maxGain end
+            self.weeklyGains[GUID][week] = weeklyGains + value
         end
     end
+    -- Handle the standings update
+    self.standings[GUID] = standings + value
 end
 
 function Roster:SetStandings(GUID, value)
@@ -198,11 +211,12 @@ function Roster:WipeLoot()
 end
 
 function Roster:AddLoot(loot, profile)
-    -- history store
+    -- History store
     table.insert(self.profileLoot[profile:GUID()], loot)
     table.insert(self.raidLoot, loot)
-    -- charging for the item
-    self.standings[profile:GUID()] = self.standings[profile:GUID()] - loot:Value()
+    -- Charging for the item
+    -- self.standings[profile:GUID()] = self.standings[profile:GUID()] - loot:Value()
+    self:UpdateStandings(profile:GUID(), -loot:Value(), 0)
 end
 
 function Roster:GetRaidLoot()
