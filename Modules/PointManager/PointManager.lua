@@ -7,8 +7,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local MODELS = CLM.MODELS
 
--- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
-
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
@@ -28,15 +26,15 @@ local function apply_mutator(entry, mutate)
         return
     end
     local value = entry:value()
-    local standings = roster:Standings()
     local targets = entry:targets()
+    local timestamp = entry:time()
     local pointHistoryEntry = PointHistory:New(entry)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         -- TODO: Main alt linking support: We need to account for the link not blindly pass profile
         local GUID = getGuidFromInteger(target)
         if roster:IsProfileInRoster(GUID) then
-            standings[GUID] = mutate(standings[GUID], value)
+            mutate(roster, GUID, value, timestamp)
             local profile = ProfileManager:GetProfileByGUID(GUID)
             if profile then
                 roster:AddProfilePointHistory(pointHistoryEntry, profile)
@@ -48,16 +46,16 @@ local function apply_mutator(entry, mutate)
     end
 end
 
-local function mutate_add_points(current, value)
-    return current + value
+local function mutate_update_standings(roster, GUID, value, timestamp)
+    roster:UpdateStandings(GUID, value, timestamp)
 end
 
-local function mutate_set_points(current, value)
-    return value
+local function mutate_set_standings(roster, GUID, value, timestamp)
+    roster:SetStandings(GUID, value)
 end
 
-local function mutate_percentage_decay(current, value)
-    return (current * (100 - value)) / 100
+local function mutate_decay_standings(roster, GUID, value, timestamp)
+    roster:DecayStandings(GUID, value)
 end
 
 local PointManager = {}
@@ -68,20 +66,20 @@ function PointManager:Initialize()
         LEDGER_DKP.Modify,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModify)")
-            apply_mutator(entry, mutate_add_points) end))
+            apply_mutator(entry, mutate_update_standings) end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Set,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPSet)")
-            apply_mutator(entry, mutate_set_points)
+            apply_mutator(entry, mutate_set_standings)
         end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Decay,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPDecay)")
-            apply_mutator(entry, mutate_percentage_decay)
+            apply_mutator(entry, mutate_decay_standings)
         end))
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
