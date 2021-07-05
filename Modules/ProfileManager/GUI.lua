@@ -368,6 +368,7 @@ function ProfilesGUI:Refresh(visible)
         row.cols[3] = {value = object:Spec()}
         row.cols[4] = {value = main}
         row.cols[5] = {value = rank}
+        row.cols[6] = {value = object:VersionString()}
         data[rowId] = row
         rowId = rowId + 1
 

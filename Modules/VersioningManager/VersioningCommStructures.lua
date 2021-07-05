@@ -24,10 +24,10 @@ end
 
 function VersioningCommAnnounceVersion:Version()
     return {
-        major = o.m,
-        minor = o.i,
-        patch = o.p,
-        changeset = o.c
+        major = self.m,
+        minor = self.i,
+        patch = self.p,
+        changeset = self.c
     }
 end
 

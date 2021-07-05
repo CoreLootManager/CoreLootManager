@@ -4,7 +4,7 @@ local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
 local MODELS = CLM.MODELS
-local ACL = CLM.ACL
+local ACL = MODULES.ACL
 local UTILS = CLM.UTILS
 
 local Comms = MODULES.Comms
@@ -46,7 +46,7 @@ function VersioningManager:Initialize()
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
             LOG:Message("Classic Loot Manager %s initialization complete.", ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
-            C_Timer.After(math.random(5, 15), function()
+            C_Timer.After(math.random(1, 5), function()
                 self:AnnounceVersion()
             end)
             self._initialized = true
@@ -60,14 +60,14 @@ function VersioningManager:AnnounceVersion()
     LOG:Trace("VersioningManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
     local message = VersioningCommStructure:New(
-        CONSTANTS.VERSIONNING_COMM.ANNOUNCE_VERSION, 
+        CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION,
         VersioningCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 function VersioningManager:RequestVersion()
     LOG:Trace("VersioningManager:RequestVersion()")
-    local message = VersioningCommStructure:New(CONSTANTS.VERSIONNING_COMM.REQUEST_VERSION, {})
+    local message = VersioningCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
@@ -75,7 +75,7 @@ function VersioningManager:DirectSendVersion(target)
     LOG:Trace("VersioningManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
     local message = VersioningCommStructure:New(
-        CONSTANTS.VERSIONNING_COMM.ANNOUNCE_VERSION, 
+        CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION,
         VersioningCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, target)
 end
@@ -93,14 +93,14 @@ function VersioningManager:OutOfDate(version, disable)
     local currentTime = GetServerTime()
     if disable then
         if currentTime - self._lastDisplayedMessageD > 300 then
-            CLM:Message("Your Classic Loot Manager is significantly out of date. Version (%s) is available. AddOn communication has been disabled. Please update as soon as possible.", ColorCodeText(stringifyVersion(version), "00cc00"))
+            LOG:Message("|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible.", ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessageD = currentTime
         end
-        LedgerManager:CutOff()
+        LedgerManager:Cutoff()
         Comms:Disable()
     else
         if currentTime - self._lastDisplayedMessage > 300 then
-            CLM:Message("New version of Classic Loot Manager (%s) is available. For best experience please update the AddOn.", ColorCodeText(stringifyVersion(version), "00cc00"))
+            LOG:Message("New version %s of Classic Loot Manager is available. For best experience please update the AddOn.", ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessage = currentTime
         end
     end
@@ -110,9 +110,6 @@ function VersioningManager:HandleAnnounceVersion(data, sender)
     LOG:Trace("VersioningManager:HandleAnnounceVersion()")
     local currentVersion = CLM.CORE:GetVersion()
     local receivedVersion = data:Version()
-
-    UTILS.DumpTable(currentVersion)
-    UTILS.DumpTable(receivedVersion)
 
     -- Check if we have older version
     if currentVersion.major < receivedVersion.major then

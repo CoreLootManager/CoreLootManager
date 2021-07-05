@@ -19,6 +19,7 @@ function Profile:New(name, class, spec, main)
         patch = 0,
         changeset = ""
     }
+    self._versionString = "Unknown"
 
     return o
 end
@@ -61,6 +62,13 @@ function Profile:SetVersion(major, minor, patch, changeset)
     self.version.patch = tonumber(patch) or 0
     changeset = changeset or ""
     self.version.changeset = tostring(changeset)
+
+    if self.version.changeset == "" then
+        self._versionString = string.format("v%d.%d.%d", self.version.major, self.version.minor, self.version.patch)
+    else
+        self._versionString = string.format("v%d.%d.%d-%s", self.version.major, self.version.minor, self.version.patch, self.version.changeset)
+    end
+
 end
 
 function Profile:Version()
@@ -68,13 +76,6 @@ function Profile:Version()
 end
 
 function Profile:VersionString()
-    if not self._versionString then
-        if changeset == "" then
-            self._versionString = string.format("v%d.%d.%d", self.version.major, self.version.minor, self.version.patch)
-        else
-            self._versionString = string.format("v%d.%d.%d-%s", self.version.major, self.version.minor, self.version.patch, self.version.changeset)
-        end
-    end
     return self._versionString
 end
 

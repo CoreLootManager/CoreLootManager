@@ -82,6 +82,8 @@ function Comms:RevokeSuspension(prefix)
 end
 
 function Comms:Disable()
+    LOG:Trace("Comms:Disable()")
+    LOG:Debug("Disabling Comms. This operation is not reversible until UI reload.")
     self.enabled = false
 end
 
