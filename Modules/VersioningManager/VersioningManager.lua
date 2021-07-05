@@ -126,14 +126,7 @@ function VersioningManager:HandleAnnounceVersion(data, sender)
             end
         end
     end
-    -- Check if we have newer version
-    if ACL:IsTrusted() then
-        if  (currentVersion.major > receivedVersion.major) or
-            (currentVersion.minor > receivedVersion.minor) or
-            (currentVersion.patch > receivedVersion.patch) then
 
-        end
-    end
     -- Store received data
     local profile = ProfileManager:GetProfileByName(sender)
     if profile then
