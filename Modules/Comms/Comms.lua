@@ -161,20 +161,20 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     -- Decode
     local tmp = codec:DecodeForWoWAddonChannel(message)
     if tmp == nil then
-        LOG:Error("Comms:OnReceive() unable to decode message [%s] from [%s]", prefix, sender)
+        LOG:Debug("Comms:OnReceive() unable to decode message [%s] from [%s]", prefix, sender)
         return
     end
     -- Decompress
     tmp = codec:DecompressDeflate(tmp)
     if tmp == nil then
-        LOG:Error("Comms:OnReceive() unable to decompress message [%s] from [%s]", prefix, sender)
+        LOG:Debug("Comms:OnReceive() unable to decompress message [%s] from [%s]", prefix, sender)
         return
     end
     -- Deserialize
     local success;
     success, tmp = serdes:Deserialize(tmp)
     if not success then
-        LOG:Error("Comms:OnReceive() unable to deserialize message [%s] from [%s]", prefix, sender)
+        LOG:Debug("Comms:OnReceive() unable to deserialize message [%s] from [%s]", prefix, sender)
         return
     end
     -- Execute callback

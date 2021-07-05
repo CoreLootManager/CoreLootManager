@@ -27,6 +27,7 @@ function VersioningManager:Initialize()
     LOG:Trace("VersioningManager:Initialize()")
     self._initialized = false
 
+    self._lastRequestResponse = 0
     self._lastDisplayedMessage = 0
     self._lastDisplayedMessageD = 0
 
@@ -44,6 +45,7 @@ function VersioningManager:Initialize()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
+            LOG:Message("Classic Loot Manager %s initialization complete.", ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
             C_Timer.After(math.random(5, 15), function()
                 self:AnnounceVersion()
             end)
@@ -56,7 +58,7 @@ end
 
 function VersioningManager:AnnounceVersion()
     LOG:Trace("VersioningManager:AnnounceVersion()")
-    local version = CLM:GetVersion()
+    local version = CLM.CORE:GetVersion()
     local message = VersioningCommStructure:New(
         CONSTANTS.VERSIONNING_COMM.ANNOUNCE_VERSION, 
         VersioningCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
@@ -67,6 +69,15 @@ function VersioningManager:RequestVersion()
     LOG:Trace("VersioningManager:RequestVersion()")
     local message = VersioningCommStructure:New(CONSTANTS.VERSIONNING_COMM.REQUEST_VERSION, {})
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+end
+
+function VersioningManager:DirectSendVersion(target)
+    LOG:Trace("VersioningManager:AnnounceVersion()")
+    local version = CLM.CORE:GetVersion()
+    local message = VersioningCommStructure:New(
+        CONSTANTS.VERSIONNING_COMM.ANNOUNCE_VERSION, 
+        VersioningCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
+    Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, target)
 end
 
 function VersioningManager:HandleIncomingMessage(message, distribution, sender)
@@ -97,35 +108,49 @@ end
 
 function VersioningManager:HandleAnnounceVersion(data, sender)
     LOG:Trace("VersioningManager:HandleAnnounceVersion()")
-    local current_version = CLM:GetVersion()
-    local received_version = data:Version()
+    local currentVersion = CLM.CORE:GetVersion()
+    local receivedVersion = data:Version()
 
-    UTILS.DumpTable(current_version)
-    UTILS.DumpTable(received_version)
+    UTILS.DumpTable(currentVersion)
+    UTILS.DumpTable(receivedVersion)
 
     -- Check if we have older version
-    if current_version.major < received_version.major then
-        self:OutOfDate(received_version, true)
+    if currentVersion.major < receivedVersion.major then
+        self:OutOfDate(receivedVersion, true)
     else -- equal majors
-        if current_version.minor < received_version.minor then
+        if currentVersion.minor < receivedVersion.minor then
             -- older minor
-            self:OutOfDate(received_version, false)
-        elseif current_version.patch < received_version.patch then
-            if received_version.changeset == "" then -- changeset = unofficial or beta. We don't care about that
-                self:OutOfDate(received_version, false)
+            self:OutOfDate(receivedVersion, false)
+        elseif currentVersion.patch < receivedVersion.patch then
+            if receivedVersion.changeset == "" then -- changeset = unofficial or beta. We don't care about that
+                self:OutOfDate(receivedVersion, false)
+            else
+                LOG:Debug("Received version %s-%s", stringifyVersion(receivedVersion), receivedVersion.changeset)
             end
+        end
+    end
+    -- Check if we have newer version
+    if ACL:IsTrusted() then
+        if  (currentVersion.major > receivedVersion.major) or
+            (currentVersion.minor > receivedVersion.minor) or
+            (currentVersion.patch > receivedVersion.patch) then
+
         end
     end
     -- Store received data
     local profile = ProfileManager:GetProfileByName(sender)
     if profile then
-        profile:SetVersion(received_version.major, received_version.minor, received_version.patch, received_version.changeset)
+        profile:SetVersion(receivedVersion.major, receivedVersion.minor, receivedVersion.patch, receivedVersion.changeset)
     end
 end
 
 function VersioningManager:HandleRequestVersion(data, sender)
     LOG:Trace("VersioningManager:HandleRequestVersion()")
-    self:AnnounceVersion()
+    local currentTime = GetServerTime()
+    if (currentTime - self._lastRequestResponse) > 30  then
+        self:AnnounceVersion()
+        self._lastRequestResponse = currentTime
+    end
 end
 
 CONSTANTS.VERSIONNING_COMM = {

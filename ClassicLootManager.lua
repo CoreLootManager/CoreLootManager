@@ -163,7 +163,7 @@ function CORE:_SequentialInitialize(stage)
         self:_InitializeFrontend()
     elseif stage >= 4 then
         self:_Enable()
-        LOG:Info("Initialization complete")
+        LOG:Info("Boot complete")
         return
     end
     C_Timer.After(0.1, function() CORE:_SequentialInitialize(stage + 1) end)
