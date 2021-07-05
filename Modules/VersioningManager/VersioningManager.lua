@@ -4,7 +4,6 @@ local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
 local MODELS = CLM.MODELS
-local ACL = MODULES.ACL
 local UTILS = CLM.UTILS
 
 local Comms = MODULES.Comms
