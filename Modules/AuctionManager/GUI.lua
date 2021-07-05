@@ -395,6 +395,7 @@ function AuctionManagerGUI:Create()
 end
 
 function AuctionManagerGUI:StartAuction()
+    self:ClearSelectedBid()
     AuctionManager:ClearBids()
     AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.base, self.max, self.note, self.raid, self.configuration)
 end

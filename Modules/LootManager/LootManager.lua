@@ -32,7 +32,7 @@ local function mutateLootAward(entry, roster)
         local loot = Loot:New(entry, profile)
         RosterManager:AddLootToRoster(roster, loot, profile)
     else
-        LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+        LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
         return
     end
 end
