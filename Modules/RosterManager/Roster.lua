@@ -170,7 +170,10 @@ function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
-    local s = self.defaultSlotValues[itemEquipLoc or "INVTYPE_NON_EQUIP"]
+    if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then
+        itemEquipLoc = "INVTYPE_NON_EQUIP"
+    end
+    local s = self.defaultSlotValues[itemEquipLoc]
     return s or {base = 0, max = 0}
 end
 
@@ -570,6 +573,8 @@ CONSTANTS.INVENTORY_TYPES = {
     "INVTYPE_QUIVER",
     "INVTYPE_RELIC",
 }
+
+CONSTANTS.INVENTORY_TYPES_SET = UTILS.Set(CONSTANTS.INVENTORY_TYPES)
 
 
 local PAPERDOLL = "Interface\\AddOns\\ClassicLootManager\\Media\\Paperdoll\\"

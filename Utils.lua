@@ -447,6 +447,24 @@ function UTILS.GenerateDropDownMenu(structure, isTrusted, frame)
                 if k.icon then
                     placeholder.icon = k.icon
                 end
+                if k.color then
+                    placeholder.colorCode = "|cFF" .. k.color
+                end
+                if k.separator then
+                    placeholder.isTitle = true
+                    placeholder.disabled = true
+                    placeholder.icon = "Interface\\Common\\UI-TooltipDivider-Transparent"
+                    placeholder.iconOnly = true
+                    placeholder.iconInfo = {
+                        tCoordLeft = 0,
+                        tCoordRight = 1,
+                        tCoordTop = 0,
+                        tCoordBottom = 1,
+                        tSizeX = 0,
+                        tSizeY = 8,
+                        tFitDropDownSizeX = true
+                    }
+                end
                 UIDropDownMenu_AddButton(placeholder, level)
             end
         end
