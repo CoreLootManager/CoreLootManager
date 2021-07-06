@@ -2,7 +2,9 @@ local  _, CLM = ...
 
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
+local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
+local ACL = MODULES.ACL
 
 local ConfigManager = MODULES.ConfigManager
 local LootManager = MODULES.LootManager
@@ -95,6 +97,20 @@ function GlobalSlashCommands:Initialize()
             end)
         }
     }
+    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
+        options.ignore = {
+            type = "input",
+            name = "Ignore entry",
+            set = (function(i, id)
+                id = tonumber(id) or 0
+                local realEntry = MODULES.LedgerManager.ledger.getSortedList():entries()[id]
+                if realEntry then
+                    MODULES.LedgerManager:Remove(realEntry)
+                end
+            end),
+            confirm = true
+        }
+    end
     ConfigManager:RegisterSlash(options)
 end
 
