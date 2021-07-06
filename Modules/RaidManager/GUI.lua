@@ -410,7 +410,7 @@ end
 
 function RaidManagerGUI:RestoreLocation()
     if self.db.location then
-        f:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
 
