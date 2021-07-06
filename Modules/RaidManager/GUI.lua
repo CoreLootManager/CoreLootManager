@@ -348,11 +348,11 @@ local function CreateRaidDisplay(self)
     -- end
     -- OnClick handler
     local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
-        if button == "RightButton" then
+        local rightButton = (button == "RightButton")
+        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        if rightButton then
             ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
-        -- LIBS.gui:Open(REGISTRY, self.ManagementOptions)
         return status
     end
     -- end
