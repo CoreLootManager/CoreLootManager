@@ -435,6 +435,7 @@ function StandingsGUI:Toggle()
         self:Refresh()
         self.top.frame:Show()
     end
+    print(self.top:GetPoint())
 end
 
 function StandingsGUI:RegisterSlash()

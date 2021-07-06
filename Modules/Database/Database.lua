@@ -21,6 +21,9 @@ function DB:Initialize()
     if type(CLM_DB[self.server_faction_guild]['personal']) ~= "table" then
         CLM_DB[self.server_faction_guild]['personal'] = {}
     end
+    if type(CLM_DB[self.server_faction_guild]['personal']['gui']) ~= "table" then
+        CLM_DB[self.server_faction_guild]['personal']['gui'] = {}
+    end
     if type(CLM_DB[self.server_faction_guild]['guild']) ~= "table" then
         CLM_DB[self.server_faction_guild]['guild'] = {}
     end
@@ -48,12 +51,8 @@ function DB:Personal()
     return CLM_DB[self.server_faction_guild]['personal']
 end
 
-function DB:Guild()
-    return CLM_DB[self.server_faction_guild]['guild']
-end
-
-function DB:Raid()
-    return CLM_DB[self.server_faction_guild]['raid']
+function DB:GUI()
+    return CLM_DB[self.server_faction_guild]['personal']['gui']
 end
 
 function DB:Ledger()
