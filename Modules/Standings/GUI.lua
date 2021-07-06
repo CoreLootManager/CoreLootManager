@@ -362,7 +362,7 @@ function StandingsGUI:Create()
 end
 
 function StandingsGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint(i) }
+    self.db.location = { self.top:GetPoint() }
 end
 
 function StandingsGUI:RestoreLocation()

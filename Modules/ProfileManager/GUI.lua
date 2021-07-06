@@ -354,7 +354,7 @@ function ProfilesGUI:Create()
 end
 
 function ProfilesGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint(i) }
+    self.db.location = { self.top:GetPoint() }
 end
 
 function ProfilesGUI:RestoreLocation()

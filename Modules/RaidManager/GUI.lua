@@ -405,7 +405,7 @@ function RaidManagerGUI:Create()
 end
 
 function RaidManagerGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint(i) }
+    self.db.location = { self.top:GetPoint() }
 end
 
 function RaidManagerGUI:RestoreLocation()

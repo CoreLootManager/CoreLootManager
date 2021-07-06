@@ -201,7 +201,7 @@ function PointHistoryGUI:Create()
 end
 
 function PointHistoryGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint(i) }
+    self.db.location = { self.top:GetPoint() }
 end
 
 function PointHistoryGUI:RestoreLocation()
