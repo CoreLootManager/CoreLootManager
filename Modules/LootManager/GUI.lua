@@ -59,7 +59,8 @@ function LootGUI:Initialize()
                     LedgerManager:Remove(loot:Entry(), true)
                 end
             end),
-            trustedOnly = true
+            trustedOnly = true,
+            color = "cc0000"
         }
     }, CLM.MODULES.ACL:IsTrusted())
 
@@ -150,11 +151,8 @@ local function CreateLootDisplay(self)
     end)
     -- end
     -- OnClick handler
-    local OnClickHandler = function(...)
-        local status = self.st.DefaultEvents["OnClick"](...)
-        local args = { ... }
-        local cellFrame = args[2]
-        local button = args[9]
+    local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
         if button == "RightButton" then
             ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
