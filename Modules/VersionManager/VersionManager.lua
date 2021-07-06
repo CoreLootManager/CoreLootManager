@@ -12,8 +12,8 @@ local ProfileManager = MODULES.ProfileManager
 
 local ColorCodeText = UTILS.ColorCodeText
 
-local VersioningCommStructure = MODELS.VersioningCommStructure
-local VersioningCommAnnounceVersion = MODELS.VersioningCommAnnounceVersion
+local VersionCommStructure = MODELS.VersionCommStructure
+local VersionCommAnnounceVersion = MODELS.VersionCommAnnounceVersion
 
 local VERSION_COMM_PREFIX = "Version"
 
@@ -21,9 +21,9 @@ local function stringifyVersion(version)
     return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
 end
 
-local VersioningManager = {}
-function VersioningManager:Initialize()
-    LOG:Trace("VersioningManager:Initialize()")
+local VersionManager = {}
+function VersionManager:Initialize()
+    LOG:Trace("VersionManager:Initialize()")
     self._initialized = false
 
     self._lastRequestResponse = 0
@@ -36,7 +36,7 @@ function VersioningManager:Initialize()
     }
 
     Comms:Register(VERSION_COMM_PREFIX, (function(rawMessage, distribution, sender)
-        local message = VersioningCommStructure:New(rawMessage)
+        local message = VersionCommStructure:New(rawMessage)
         if CONSTANTS.VERSIONNING_COMM.TYPES[message:Type()] == nil then return end
         self:HandleIncomingMessage(message, distribution, sender)
     end), CONSTANTS.ACL.LEVEL.PLEBS, true)
@@ -52,43 +52,43 @@ function VersioningManager:Initialize()
         end
     end)
 
-    MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Versioning", self)
+    MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
 end
 
-function VersioningManager:AnnounceVersion()
-    LOG:Trace("VersioningManager:AnnounceVersion()")
+function VersionManager:AnnounceVersion()
+    LOG:Trace("VersionManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
-    local message = VersioningCommStructure:New(
+    local message = VersionCommStructure:New(
         CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION,
-        VersioningCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
+        VersionCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
-function VersioningManager:RequestVersion()
-    LOG:Trace("VersioningManager:RequestVersion()")
-    local message = VersioningCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
+function VersionManager:RequestVersion()
+    LOG:Trace("VersionManager:RequestVersion()")
+    local message = VersionCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
-function VersioningManager:DirectSendVersion(target)
-    LOG:Trace("VersioningManager:AnnounceVersion()")
+function VersionManager:DirectSendVersion(target)
+    LOG:Trace("VersionManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
-    local message = VersioningCommStructure:New(
+    local message = VersionCommStructure:New(
         CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION,
-        VersioningCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
+        VersionCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, target)
 end
 
-function VersioningManager:HandleIncomingMessage(message, distribution, sender)
-    LOG:Trace("VersioningManager:HandleIncomingMessage()")
+function VersionManager:HandleIncomingMessage(message, distribution, sender)
+    LOG:Trace("VersionManager:HandleIncomingMessage()")
     local mtype = message:Type() or 0
     if self.handlers[mtype] then
         self[self.handlers[mtype]](self, message:Data(), sender)
     end
 end
 
-function VersioningManager:OutOfDate(version, disable)
-    LOG:Trace("VersioningManager:OutOfDate()")
+function VersionManager:OutOfDate(version, disable)
+    LOG:Trace("VersionManager:OutOfDate()")
     local currentTime = GetServerTime()
     if disable then
         if currentTime - self._lastDisplayedMessageD > 300 then
@@ -105,8 +105,8 @@ function VersioningManager:OutOfDate(version, disable)
     end
 end
 
-function VersioningManager:HandleAnnounceVersion(data, sender)
-    LOG:Trace("VersioningManager:HandleAnnounceVersion()")
+function VersionManager:HandleAnnounceVersion(data, sender)
+    LOG:Trace("VersionManager:HandleAnnounceVersion()")
     local currentVersion = CLM.CORE:GetVersion()
     local receivedVersion = data:Version()
 
@@ -133,8 +133,8 @@ function VersioningManager:HandleAnnounceVersion(data, sender)
     end
 end
 
-function VersioningManager:HandleRequestVersion(data, sender)
-    LOG:Trace("VersioningManager:HandleRequestVersion()")
+function VersionManager:HandleRequestVersion(data, sender)
+    LOG:Trace("VersionManager:HandleRequestVersion()")
     local currentTime = GetServerTime()
     if (currentTime - self._lastRequestResponse) > 30  then
         self:AnnounceVersion()
@@ -150,4 +150,4 @@ CONSTANTS.VERSIONNING_COMM = {
     TYPES = UTILS.Set({ 1, 2 })
 }
 
-MODULES.VersioningManager = VersioningManager
+MODULES.VersionManager = VersionManager
