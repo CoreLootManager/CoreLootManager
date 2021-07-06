@@ -170,7 +170,10 @@ function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
-    local s = self.defaultSlotValues[itemEquipLoc or "INVTYPE_NON_EQUIP"]
+    if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then
+        itemEquipLoc = "INVTYPE_NON_EQUIP"
+    end
+    local s = self.defaultSlotValues[itemEquipLoc]
     return s or {base = 0, max = 0}
 end
 
@@ -570,6 +573,38 @@ CONSTANTS.INVENTORY_TYPES = {
     "INVTYPE_QUIVER",
     "INVTYPE_RELIC",
 }
+
+CONSTANTS.INVENTORY_TYPES_SET = UTILS.Set({
+    "INVTYPE_NON_EQUIP",
+    "INVTYPE_HEAD",
+    "INVTYPE_NECK",
+    "INVTYPE_SHOULDER",
+    "INVTYPE_BODY",
+    "INVTYPE_CHEST",
+    "INVTYPE_WAIST",
+    "INVTYPE_LEGS",
+    "INVTYPE_FEET",
+    "INVTYPE_WRIST",
+    "INVTYPE_HAND",
+    "INVTYPE_FINGER",
+    "INVTYPE_TRINKET",
+    "INVTYPE_WEAPON",
+    "INVTYPE_SHIELD",
+    "INVTYPE_RANGED",
+    "INVTYPE_CLOAK",
+    "INVTYPE_2HWEAPON",
+    "INVTYPE_BAG",
+    "INVTYPE_TABARD",
+    "INVTYPE_ROBE",
+    "INVTYPE_WEAPONMAINHAND",
+    "INVTYPE_WEAPONOFFHAND",
+    "INVTYPE_HOLDABLE",
+    "INVTYPE_AMMO",
+    "INVTYPE_THROWN",
+    "INVTYPE_RANGEDRIGHT",
+    "INVTYPE_QUIVER",
+    "INVTYPE_RELIC",
+})
 
 
 local PAPERDOLL = "Interface\\AddOns\\ClassicLootManager\\Media\\Paperdoll\\"
