@@ -100,12 +100,28 @@ end
 
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
+    self:InitializeDB()
+    self:RegisterPlayerLogoutEvent()
     self:Create()
     HookBagSlots()
     self.hookedSlots = { wow = {}, elv =  {}}
     self:RegisterLootOpenedEvent()
     self:RegisterSlash()
     self._initialized = true
+end
+
+function AuctionManagerGUI:InitializeDB()
+    local db = MODULES.Database:GUI()
+    if not db.auction then
+        db.auction = { }
+    end
+    self.db = db.auction
+end
+
+function AuctionManagerGUI:RegisterPlayerLogoutEvent()
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...)
+        self:StoreLocation()
+    end))
 end
 
 function AuctionManagerGUI:RegisterLootOpenedEvent()
@@ -390,8 +406,19 @@ function AuctionManagerGUI:Create()
     -- Clear active bid on close
     f:SetCallback('OnClose', function() AuctionManagerGUI:ClearSelectedBid(self) end)
 
+    self:RestoreLocation()
     -- Hide by default
     f:Hide()
+end
+
+function AuctionManagerGUI:StoreLocation()
+    self.db.location = { self.top:GetPoint() }
+end
+
+function AuctionManagerGUI:RestoreLocation()
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
 end
 
 function AuctionManagerGUI:StartAuction()
