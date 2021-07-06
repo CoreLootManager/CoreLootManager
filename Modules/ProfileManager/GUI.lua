@@ -24,6 +24,7 @@ local GuildInfoListener = MODULES.GuildInfoListener
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local LedgerManager = MODULES.LedgerManager
+local EventManager = MODULES.EventManager
 
 local REGISTRY = "clm_profiles_gui_options"
 
@@ -32,6 +33,8 @@ local FILTER_IN_RAID = 100
 local ProfilesGUI = {}
 function ProfilesGUI:Initialize()
     LOG:Trace("ProfilesGUI:Initialize()")
+    self:InitializeDB()
+    self:RegisterPlayerLogoutEvent()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -39,7 +42,20 @@ function ProfilesGUI:Initialize()
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
     end)
+end
 
+function ProfilesGUI:InitializeDB()
+    local db = MODULES.Database:GUI()
+    if not db.profiles then
+        db.profiles = { }
+    end
+    self.db = db.profiles
+end
+
+function ProfilesGUI:RegisterPlayerLogoutEvent()
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...)
+        self:StoreLocation()
+    end))
 end
 
 local function ST_GetName(row)
@@ -332,9 +348,19 @@ function ProfilesGUI:Create()
 
     f:AddChild(CreateStandingsDisplay(self))
     f:AddChild(CreateManagementOptions(self))
-
+    self:RestoreLocation()
     -- Hide by default
     f:Hide()
+end
+
+function ProfilesGUI:StoreLocation()
+    self.db.location = { self.top:GetPoint(i) }
+end
+
+function ProfilesGUI:RestoreLocation()
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
 end
 
 function ProfilesGUI:Refresh(visible)
