@@ -42,13 +42,32 @@ end
 local RightClickMenu
 
 local RaidManagerGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.raid then
+        db.raid = { }
+    end
+    self.db = db.raid
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function RaidManagerGUI:Initialize()
     LOG:Trace("RaidManagerGUI:Initialize()")
     self.configuration = RosterConfiguration:New()
     self.name = ""
     self.tooltip = CreateFrame("GameTooltip", "CLMRaidListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
-    self:InitializeDB()
-    self:RegisterPlayerLogoutEvent()
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -110,20 +129,6 @@ function RaidManagerGUI:Initialize()
         }
     }, CLM.MODULES.ACL:IsTrusted())
 
-end
-
-function RaidManagerGUI:InitializeDB()
-    local db = MODULES.Database:GUI()
-    if not db.raid then
-        db.raid = { }
-    end
-    self.db = db.raid
-end
-
-function RaidManagerGUI:RegisterPlayerLogoutEvent()
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...)
-        self:StoreLocation()
-    end))
 end
 
 function RaidManagerGUI:GetRosterOption(option)
@@ -399,19 +404,9 @@ function RaidManagerGUI:Create()
     if ACL:IsTrusted() then
         f:AddChild(CreateManagementOptions(self))
     end
-    self:RestoreLocation()
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
-end
-
-function RaidManagerGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint() }
-end
-
-function RaidManagerGUI:RestoreLocation()
-    if self.db.location then
-        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
-    end
 end
 
 function RaidManagerGUI:Refresh(visible)

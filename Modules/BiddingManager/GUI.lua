@@ -50,16 +50,8 @@ local function CreateOptions(self)
 end
 
 local BiddingManagerGUI = {}
-function BiddingManagerGUI:Initialize()
-    LOG:Trace("BiddingManagerGUI:Initialize()")
-    self:InitializeDB()
-    self:RegisterPlayerLogoutEvent()
-    self:Create()
-    self:RegisterSlash()
-    self._initialized = true
-end
 
-function BiddingManagerGUI:InitializeDB()
+local function InitializeDB(self)
     local db = MODULES.Database:GUI()
     if not db.bidding then
         db.bidding = { }
@@ -67,10 +59,23 @@ function BiddingManagerGUI:InitializeDB()
     self.db = db.bidding
 end
 
-function BiddingManagerGUI:RegisterPlayerLogoutEvent()
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...)
-        self:StoreLocation()
-    end))
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
+function BiddingManagerGUI:Initialize()
+    LOG:Trace("BiddingManagerGUI:Initialize()")
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    self:Create()
+    self:RegisterSlash()
+    self._initialized = true
 end
 
 function BiddingManagerGUI:GenerateAuctionOptions()
@@ -158,19 +163,9 @@ function BiddingManagerGUI:Create()
     self.barPreviousPercentageLeft = 1
     self.duration = 1
     f:AddChild(CreateOptions(self))
-    self:RestoreLocation()
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
-end
-
-function BiddingManagerGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint() }
-end
-
-function BiddingManagerGUI:RestoreLocation()
-    if self.db.location then
-        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
-    end
 end
 
 function BiddingManagerGUI:UpdateCurrentBidValue(value)

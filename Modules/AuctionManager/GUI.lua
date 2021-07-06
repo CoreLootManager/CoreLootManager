@@ -98,19 +98,7 @@ local function PostLootToRaidChat()
     end
 end
 
-function AuctionManagerGUI:Initialize()
-    LOG:Trace("AuctionManagerGUI:Initialize()")
-    self:InitializeDB()
-    self:RegisterPlayerLogoutEvent()
-    self:Create()
-    HookBagSlots()
-    self.hookedSlots = { wow = {}, elv =  {}}
-    self:RegisterLootOpenedEvent()
-    self:RegisterSlash()
-    self._initialized = true
-end
-
-function AuctionManagerGUI:InitializeDB()
+local function InitializeDB(self)
     local db = MODULES.Database:GUI()
     if not db.auction then
         db.auction = { }
@@ -118,16 +106,26 @@ function AuctionManagerGUI:InitializeDB()
     self.db = db.auction
 end
 
-function AuctionManagerGUI:RegisterPlayerLogoutEvent()
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...)
-        self:StoreLocation()
-    end))
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
 end
 
-function AuctionManagerGUI:RegisterLootOpenedEvent()
-    EventManager:RegisterEvent({"LOOT_OPENED"}, (function(...)
-        self:HandleLootOpenedEvent()
-    end))
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
+function AuctionManagerGUI:Initialize()
+    LOG:Trace("AuctionManagerGUI:Initialize()")
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    self:Create()
+    HookBagSlots()
+    self.hookedSlots = { wow = {}, elv =  {}}
+    EventManager:RegisterEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
+    self:RegisterSlash()
+    self._initialized = true
 end
 
 function AuctionManagerGUI:HandleLootOpenedEvent()
@@ -406,19 +404,9 @@ function AuctionManagerGUI:Create()
     -- Clear active bid on close
     f:SetCallback('OnClose', function() AuctionManagerGUI:ClearSelectedBid(self) end)
 
-    self:RestoreLocation()
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
-end
-
-function AuctionManagerGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint() }
-end
-
-function AuctionManagerGUI:RestoreLocation()
-    if self.db.location then
-        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
-    end
 end
 
 function AuctionManagerGUI:StartAuction()

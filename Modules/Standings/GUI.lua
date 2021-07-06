@@ -30,9 +30,28 @@ local FILTER_IN_RAID = 100
 local FILTER_STANDBY = 102
 
 local StandingsGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.standings then
+        db.standings = { }
+    end
+    self.db = db.standings
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function StandingsGUI:Initialize()
-    self:InitializeDB()
-    self:RegisterPlayerLogoutEvent()
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -42,20 +61,6 @@ function StandingsGUI:Initialize()
         self:Refresh(true)
     end)
 
-end
-
-function StandingsGUI:InitializeDB()
-    local db = MODULES.Database:GUI()
-    if not db.standings then
-        db.standings = { }
-    end
-    self.db = db.standings
-end
-
-function StandingsGUI:RegisterPlayerLogoutEvent()
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...)
-        self:StoreLocation()
-    end))
 end
 
 local function ST_GetName(row)
@@ -356,19 +361,9 @@ function StandingsGUI:Create()
 
     f:AddChild(CreateStandingsDisplay(self))
     f:AddChild(CreateManagementOptions(self))
-    self:RestoreLocation()
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
-end
-
-function StandingsGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint() }
-end
-
-function StandingsGUI:RestoreLocation()
-    if self.db.location then
-        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
-    end
 end
 
 function StandingsGUI:Refresh(visible)

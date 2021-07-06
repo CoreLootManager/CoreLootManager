@@ -39,9 +39,28 @@ end
 local RightClickMenu
 
 local PointHistoryGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.point then
+        db.point = { }
+    end
+    self.db = db.point
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function PointHistoryGUI:Initialize()
-    self:InitializeDB()
-    self:RegisterPlayerLogoutEvent()
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
@@ -65,20 +84,6 @@ function PointHistoryGUI:Initialize()
     }, CLM.MODULES.ACL:IsTrusted())
 
     self._initialized = true
-end
-
-function PointHistoryGUI:InitializeDB()
-    local db = MODULES.Database:GUI()
-    if not db.points then
-        db.points = { }
-    end
-    self.db = db.points
-end
-
-function PointHistoryGUI:RegisterPlayerLogoutEvent()
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...)
-        self:StoreLocation()
-    end))
 end
 
 local columns = {
@@ -195,19 +200,9 @@ function PointHistoryGUI:Create()
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_PointHistory_GUI")
     self.requestRefreshProfiles = true
     f:AddChild(CreatePointDisplay(self))
-    self:RestoreLocation()
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
-end
-
-function PointHistoryGUI:StoreLocation()
-    self.db.location = { self.top:GetPoint() }
-end
-
-function PointHistoryGUI:RestoreLocation()
-    if self.db.location then
-        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
-    end
 end
 
 function PointHistoryGUI:Refresh(visible)
