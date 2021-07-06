@@ -11,7 +11,6 @@ local LedgerManager = MODULES.LedgerManager
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
     local db = MODULES.Database:Personal()
-
     if not db.global then
         db.global = {
             announce_award_to_guild = true,

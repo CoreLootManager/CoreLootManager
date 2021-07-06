@@ -30,6 +30,7 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 -- local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
+local EventManager = MODULES.EventManager
 
 local function ST_GetPointHistory(row)
     return row.cols[5].value
@@ -38,7 +39,28 @@ end
 local RightClickMenu
 
 local PointHistoryGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.point then
+        db.point = { }
+    end
+    self.db = db.point
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function PointHistoryGUI:Initialize()
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
@@ -176,8 +198,8 @@ function PointHistoryGUI:Create()
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_PointHistory_GUI")
     self.requestRefreshProfiles = true
-
     f:AddChild(CreatePointDisplay(self))
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
 end

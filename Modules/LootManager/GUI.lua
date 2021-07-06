@@ -40,7 +40,28 @@ end
 local RightClickMenu
 
 local LootGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.loot then
+        db.loot = { }
+    end
+    self.db = db.loot
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function LootGUI:Initialize()
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
@@ -183,8 +204,8 @@ function LootGUI:Create()
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Loot_GUI")
     self.requestRefreshProfiles = true
-
     f:AddChild(CreateLootDisplay(self))
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
 end
