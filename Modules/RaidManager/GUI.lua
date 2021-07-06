@@ -24,6 +24,7 @@ local mergeDictsInline = UTILS.mergeDictsInline
 local RosterManager = MODULES.RosterManager
 local LedgerManager = MODULES.LedgerManager
 local RaidManager = MODULES.RaidManager
+local EventManager = MODULES.EventManager
 
 local buildPlayerListForTooltip = UTILS.buildPlayerListForTooltip
 local DeepCopy = UTILS.DeepCopy
@@ -46,6 +47,8 @@ function RaidManagerGUI:Initialize()
     self.configuration = RosterConfiguration:New()
     self.name = ""
     self.tooltip = CreateFrame("GameTooltip", "CLMRaidListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+    self:InitializeDB()
+    self:RegisterPlayerLogoutEvent()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -107,6 +110,20 @@ function RaidManagerGUI:Initialize()
         }
     }, CLM.MODULES.ACL:IsTrusted())
 
+end
+
+function RaidManagerGUI:InitializeDB()
+    local db = MODULES.Database:GUI()
+    if not db.raid then
+        db.raid = { }
+    end
+    self.db = db.raid
+end
+
+function RaidManagerGUI:RegisterPlayerLogoutEvent()
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...)
+        self:StoreLocation()
+    end))
 end
 
 function RaidManagerGUI:GetRosterOption(option)
@@ -382,9 +399,19 @@ function RaidManagerGUI:Create()
     if ACL:IsTrusted() then
         f:AddChild(CreateManagementOptions(self))
     end
-
+    self:RestoreLocation()
     -- Hide by default
     f:Hide()
+end
+
+function RaidManagerGUI:StoreLocation()
+    self.db.location = { self.top:GetPoint(i) }
+end
+
+function RaidManagerGUI:RestoreLocation()
+    if self.db.location then
+        f:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
 end
 
 function RaidManagerGUI:Refresh(visible)
