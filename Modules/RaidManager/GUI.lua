@@ -95,6 +95,10 @@ function RaidManagerGUI:Initialize()
             trustedOnly = true
         },
         {
+            separator = true,
+            trustedOnly = true
+        },
+        {
             title = "Remove selected raid",
             func = (function()
                 local row = self.st:GetRow(self.st:GetSelection())
@@ -103,10 +107,10 @@ function RaidManagerGUI:Initialize()
                     LedgerManager:Remove(raid:Entry(), true)
                 end
             end),
-            trustedOnly = true
+            trustedOnly = true,
+            color = "cc0000"
         }
     }, CLM.MODULES.ACL:IsTrusted())
-
 end
 
 function RaidManagerGUI:GetRosterOption(option)
@@ -343,15 +347,12 @@ local function CreateRaidDisplay(self)
     end)
     -- end
     -- OnClick handler
-    local OnClickHandler = function(...)
-        local status = self.st.DefaultEvents["OnClick"](...)
-        local args = { ... }
-        local cellFrame = args[2]
-        local button = args[9]
-        if button == "RightButton" then
+    local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+        local rightButton = (button == "RightButton")
+        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        if rightButton then
             ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
-        -- LIBS.gui:Open(REGISTRY, self.ManagementOptions)
         return status
     end
     -- end
