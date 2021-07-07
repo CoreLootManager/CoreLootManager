@@ -24,12 +24,34 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
+local EventManager = MODULES.EventManager
 
 local FILTER_IN_RAID = 100
 local FILTER_STANDBY = 102
 
 local StandingsGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.standings then
+        db.standings = { }
+    end
+    self.db = db.standings
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function StandingsGUI:Initialize()
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -339,7 +361,7 @@ function StandingsGUI:Create()
 
     f:AddChild(CreateStandingsDisplay(self))
     f:AddChild(CreateManagementOptions(self))
-
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
 end

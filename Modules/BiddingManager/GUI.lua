@@ -19,6 +19,7 @@ local MODULES = CLM.MODULES
 local GUI = CLM.GUI
 
 local BiddingManager = MODULES.BiddingManager
+local EventManager = MODULES.EventManager
 
 local mergeDictsInline = UTILS.mergeDictsInline
 
@@ -49,8 +50,29 @@ local function CreateOptions(self)
 end
 
 local BiddingManagerGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.bidding then
+        db.bidding = { }
+    end
+    self.db = db.bidding
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function BiddingManagerGUI:Initialize()
     LOG:Trace("BiddingManagerGUI:Initialize()")
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -141,6 +163,7 @@ function BiddingManagerGUI:Create()
     self.barPreviousPercentageLeft = 1
     self.duration = 1
     f:AddChild(CreateOptions(self))
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
 end

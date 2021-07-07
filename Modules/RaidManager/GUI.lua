@@ -24,6 +24,7 @@ local mergeDictsInline = UTILS.mergeDictsInline
 local RosterManager = MODULES.RosterManager
 local LedgerManager = MODULES.LedgerManager
 local RaidManager = MODULES.RaidManager
+local EventManager = MODULES.EventManager
 
 local buildPlayerListForTooltip = UTILS.buildPlayerListForTooltip
 local DeepCopy = UTILS.DeepCopy
@@ -41,11 +42,32 @@ end
 local RightClickMenu
 
 local RaidManagerGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.raid then
+        db.raid = { }
+    end
+    self.db = db.raid
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function RaidManagerGUI:Initialize()
     LOG:Trace("RaidManagerGUI:Initialize()")
     self.configuration = RosterConfiguration:New()
     self.name = ""
     self.tooltip = CreateFrame("GameTooltip", "CLMRaidListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -95,6 +117,10 @@ function RaidManagerGUI:Initialize()
             trustedOnly = true
         },
         {
+            separator = true,
+            trustedOnly = true
+        },
+        {
             title = "Remove selected raid",
             func = (function()
                 local row = self.st:GetRow(self.st:GetSelection())
@@ -103,10 +129,10 @@ function RaidManagerGUI:Initialize()
                     LedgerManager:Remove(raid:Entry(), true)
                 end
             end),
-            trustedOnly = true
+            trustedOnly = true,
+            color = "cc0000"
         }
     }, CLM.MODULES.ACL:IsTrusted())
-
 end
 
 function RaidManagerGUI:GetRosterOption(option)
@@ -343,15 +369,12 @@ local function CreateRaidDisplay(self)
     end)
     -- end
     -- OnClick handler
-    local OnClickHandler = function(...)
-        local status = self.st.DefaultEvents["OnClick"](...)
-        local args = { ... }
-        local cellFrame = args[2]
-        local button = args[9]
-        if button == "RightButton" then
+    local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+        local rightButton = (button == "RightButton")
+        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        if rightButton then
             ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
-        -- LIBS.gui:Open(REGISTRY, self.ManagementOptions)
         return status
     end
     -- end
@@ -382,7 +405,7 @@ function RaidManagerGUI:Create()
     if ACL:IsTrusted() then
         f:AddChild(CreateManagementOptions(self))
     end
-
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
 end

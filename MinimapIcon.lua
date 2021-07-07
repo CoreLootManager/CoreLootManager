@@ -111,10 +111,9 @@ do
 end
 
 local f = CreateFrame("Frame")
-local CLMLDBIconDB = {}
 f:SetScript("OnEvent", function()
-    if not CLMLDBIconDB then CLMLDBIconDB = {} end
-    icon:Register(addonName, CLM.MinimapDBI, CLMLDBIconDB)
+    if not CLM_MinimapIcon then CLM_MinimapIcon = {} end
+    icon:Register(addonName, CLM.MinimapDBI, CLM_MinimapIcon)
 end)
 f:RegisterEvent("PLAYER_LOGIN")
 

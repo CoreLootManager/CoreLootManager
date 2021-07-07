@@ -50,7 +50,6 @@ function BiddingManager:Initialize()
     }
 
     local db = MODULES.Database:Personal()
-
     if not db.bidding then
         db.bidding = { autoOpen = true }
     end

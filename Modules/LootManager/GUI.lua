@@ -40,7 +40,28 @@ end
 local RightClickMenu
 
 local LootGUI = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:GUI()
+    if not db.loot then
+        db.loot = { }
+    end
+    self.db = db.loot
+end
+
+local function StoreLocation(self)
+    self.db.location = { self.top:GetPoint() }
+end
+
+local function RestoreLocation(self)
+    if self.db.location then
+        self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+end
+
 function LootGUI:Initialize()
+    InitializeDB(self)
+    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
@@ -59,7 +80,8 @@ function LootGUI:Initialize()
                     LedgerManager:Remove(loot:Entry(), true)
                 end
             end),
-            trustedOnly = true
+            trustedOnly = true,
+            color = "cc0000"
         }
     }, CLM.MODULES.ACL:IsTrusted())
 
@@ -150,12 +172,10 @@ local function CreateLootDisplay(self)
     end)
     -- end
     -- OnClick handler
-    local OnClickHandler = function(...)
-        local status = self.st.DefaultEvents["OnClick"](...)
-        local args = { ... }
-        local cellFrame = args[2]
-        local button = args[9]
-        if button == "RightButton" then
+    local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+        local rightButton = (button == "RightButton")
+        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        if rightButton then
             ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
         return status
@@ -184,8 +204,8 @@ function LootGUI:Create()
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Loot_GUI")
     self.requestRefreshProfiles = true
-
     f:AddChild(CreateLootDisplay(self))
+    RestoreLocation(self)
     -- Hide by default
     f:Hide()
 end
