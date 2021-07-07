@@ -9,6 +9,7 @@ local UTILS = CLM.UTILS
 local Comms = MODULES.Comms
 local LedgerManager = MODULES.LedgerManager
 local ProfileManager = MODULES.ProfileManager
+local EventManager = MODULES.EventManager
 
 local ColorCodeText = UTILS.ColorCodeText
 
@@ -22,40 +23,9 @@ local function stringifyVersion(version)
 end
 
 local VersionManager = {}
-function VersionManager:Initialize()
-    LOG:Trace("VersionManager:Initialize()")
-    self._initialized = false
 
-    self._lastRequestResponse = 0
-    self._lastDisplayedMessage = 0
-    self._lastDisplayedMessageD = 0
 
-    self.handlers = {
-        [CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION]  = "HandleAnnounceVersion",
-        [CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION]   = "HandleRequestVersion",
-    }
-
-    Comms:Register(VERSION_COMM_PREFIX, (function(rawMessage, distribution, sender)
-        local message = VersionCommStructure:New(rawMessage)
-        if CONSTANTS.VERSIONNING_COMM.TYPES[message:Type()] == nil then return end
-        self:HandleIncomingMessage(message, distribution, sender)
-    end), CONSTANTS.ACL.LEVEL.PLEBS, true)
-
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
-        if lag ~= 0 or uncommitted ~= 0 then return end
-        if not self._initialized then
-            LOG:Message("Classic Loot Manager %s initialization complete.", ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
-            C_Timer.After(math.random(1, 5), function()
-                self:AnnounceVersion()
-            end)
-            self._initialized = true
-        end
-    end)
-
-    MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
-end
-
-function VersionManager:AnnounceVersion()
+local function AnnounceVersion()
     LOG:Trace("VersionManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
     local message = VersionCommStructure:New(
@@ -64,30 +34,13 @@ function VersionManager:AnnounceVersion()
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
-function VersionManager:RequestVersion()
-    LOG:Trace("VersionManager:RequestVersion()")
-    local message = VersionCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
-    Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
-end
+-- local function RequestVersion()
+--     LOG:Trace("VersionManager:RequestVersion()")
+--     local message = VersionCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
+--     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+-- end
 
-function VersionManager:DirectSendVersion(target)
-    LOG:Trace("VersionManager:AnnounceVersion()")
-    local version = CLM.CORE:GetVersion()
-    local message = VersionCommStructure:New(
-        CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION,
-        VersionCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
-    Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, target)
-end
-
-function VersionManager:HandleIncomingMessage(message, distribution, sender)
-    LOG:Trace("VersionManager:HandleIncomingMessage()")
-    local mtype = message:Type() or 0
-    if self.handlers[mtype] then
-        self[self.handlers[mtype]](self, message:Data(), sender)
-    end
-end
-
-function VersionManager:OutOfDate(version, disable)
+local function OutOfDate(self, version, disable)
     LOG:Trace("VersionManager:OutOfDate()")
     local currentTime = GetServerTime()
     if disable then
@@ -105,21 +58,29 @@ function VersionManager:OutOfDate(version, disable)
     end
 end
 
-function VersionManager:HandleAnnounceVersion(data, sender)
+local function HandleIncomingMessage(self, message, distribution, sender)
+    LOG:Trace("VersionManager:HandleIncomingMessage()")
+    local mtype = message:Type() or 0
+    if self.handlers[mtype] then
+        self.handlers[mtype](self, message:Data(), sender)
+    end
+end
+
+local function HandleAnnounceVersion(self, data, sender)
     LOG:Trace("VersionManager:HandleAnnounceVersion()")
     local currentVersion = CLM.CORE:GetVersion()
     local receivedVersion = data:Version()
 
     -- Check if we have older version
     if currentVersion.major < receivedVersion.major then
-        self:OutOfDate(receivedVersion, true)
+        OutOfDate(self, receivedVersion, true)
     else -- equal majors
         if currentVersion.minor < receivedVersion.minor then
             -- older minor
-            self:OutOfDate(receivedVersion, false)
+            OutOfDate(self, receivedVersion, false)
         elseif currentVersion.patch < receivedVersion.patch then
             if receivedVersion.changeset == "" then -- changeset = unofficial or beta. We don't care about that
-                self:OutOfDate(receivedVersion, false)
+                OutOfDate(self, receivedVersion, false)
             else
                 LOG:Debug("Received version %s-%s", stringifyVersion(receivedVersion), receivedVersion.changeset)
             end
@@ -133,13 +94,48 @@ function VersionManager:HandleAnnounceVersion(data, sender)
     end
 end
 
-function VersionManager:HandleRequestVersion(data, sender)
-    LOG:Trace("VersionManager:HandleRequestVersion()")
-    local currentTime = GetServerTime()
-    if (currentTime - self._lastRequestResponse) > 30  then
-        self:AnnounceVersion()
-        self._lastRequestResponse = currentTime
-    end
+-- local function HandleRequestVersion(self, data, sender)
+--     LOG:Trace("VersionManager:HandleRequestVersion()")
+--     local currentTime = GetServerTime()
+--     if (currentTime - self._lastRequestResponse) > 30  then
+--         AnnounceVersion(self)
+--         self._lastRequestResponse = currentTime
+--     end
+-- end
+
+function VersionManager:Initialize()
+    LOG:Trace("VersionManager:Initialize()")
+    self._initialized = false
+
+    self._lastRequestResponse = 0
+    self._lastDisplayedMessage = 0
+    self._lastDisplayedMessageD = 0
+
+    self.handlers = {
+        [CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
+        -- [CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
+    }
+
+    Comms:Register(VERSION_COMM_PREFIX, (function(rawMessage, distribution, sender)
+        local message = VersionCommStructure:New(rawMessage)
+        if CONSTANTS.VERSIONNING_COMM.TYPES[message:Type()] == nil then return end
+        HandleIncomingMessage(self, message, distribution, sender)
+    end), CONSTANTS.ACL.LEVEL.PLEBS, true)
+
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        if not self._initialized then
+            LOG:Message("Classic Loot Manager %s initialization complete.", ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
+            C_Timer.After(math.random(1, 5), function()
+                AnnounceVersion(self)
+            end)
+            self._initialized = true
+        end
+    end)
+
+    EventManager:RegisterEvent("READY_CHECK", (function(...) AnnounceVersion(self) end))
+
+    MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
 end
 
 CONSTANTS.VERSIONNING_COMM = {
