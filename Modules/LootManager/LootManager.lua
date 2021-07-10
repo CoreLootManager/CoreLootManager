@@ -23,6 +23,10 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local function mutateLootAward(entry, roster)
     local GUID = getGuidFromInteger(entry:profile())
+    if not roster then
+        LOG:Debug("mutateLootAward(): Roster does not exist")
+        return
+    end
     if roster:IsProfileInRoster(GUID) then
         local profile = ProfileManager:GetProfileByGUID(GUID)
         if not profile then
