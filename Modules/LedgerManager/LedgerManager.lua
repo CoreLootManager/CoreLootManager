@@ -21,22 +21,22 @@ local function authorize(entry, sender)
     return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
 end
 
-local prefixSync = "SLedger"
-local prefixData = "DLedger"
+local LEDGER_SYNC_COMM_PREFIX = "LedgerS001"
+local LEDGER_DATA_COMM_PREFIX = "LedgerD001"
 
 function LedgerManager:Initialize()
     self.ledger = LedgerLib.createLedger(
         MODULES.Database:Ledger(),
         (function(data, distribution, target, callbackFn, callbackArg)
-            return Comms:Send(prefixSync, data, distribution, target, "BULK")
+            return Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- send
         (function(callback)
-            Comms:Register(prefixSync, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-            Comms:Register(prefixData, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
+            Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
+            Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
         end), -- registerReceiveHandler
         authorize, -- authorizationHandler
         (function(data, distribution, target, progressCallback)
-            return Comms:Send(prefixData, data, distribution, target, "BULK")
+            return Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- sendLargeMessage
         0, 100, LOG
     )
@@ -63,8 +63,8 @@ end
 -- This is not reversable until reload
 function LedgerManager:Cutoff()
     self.ledger.disableSending()
-    Comms:Suspend(prefixSync)
-    Comms:Suspend(prefixData)
+    Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
+    Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
 end
 
 function LedgerManager:DisableAdvertising()

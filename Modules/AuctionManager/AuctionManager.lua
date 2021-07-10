@@ -26,7 +26,7 @@ local AuctionCommStartAuction = MODELS.AuctionCommStartAuction
 local AuctionCommDenyBid = MODELS.AuctionCommDenyBid
 local AuctionCommDistributeBid = MODELS.AuctionCommDistributeBid
 
-local AUCTION_COMM_PREFIX = "Auction"
+local AUCTION_COMM_PREFIX = "Auction001"
 
 local AuctionManager = {}
 function AuctionManager:Initialize()
