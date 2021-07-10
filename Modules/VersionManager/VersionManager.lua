@@ -16,7 +16,7 @@ local ColorCodeText = UTILS.ColorCodeText
 local VersionCommStructure = MODELS.VersionCommStructure
 local VersionCommAnnounceVersion = MODELS.VersionCommAnnounceVersion
 
-local VERSION_COMM_PREFIX = "Version"
+local VERSION_COMM_PREFIX = "Version001"
 
 local function stringifyVersion(version)
     return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
