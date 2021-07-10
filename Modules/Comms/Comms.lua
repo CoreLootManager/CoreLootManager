@@ -23,6 +23,7 @@ function Comms:Initialize()
     self.callbacks = {}
     self.aclLevel = {}
     self.allowSelfReceive = {}
+    self.suspended = {}
     self.enabled = false
 end
 
@@ -31,7 +32,7 @@ function Comms:Enable()
 end
 
 local function _prefix(prefix)
-    return CommsPrefix .. string.sub(prefix, 0, 12)
+    return CommsPrefix .. string.sub(prefix or "", 0, 12)
 end
 
 function Comms:Register(prefix, callback, aclLevel, allowSelfReceive)
@@ -66,14 +67,39 @@ function Comms:Register(prefix, callback, aclLevel, allowSelfReceive)
     self:RegisterComm(prefix, "OnReceive")
 end
 
+function Comms:Suspend(prefix)
+    LOG:Trace("Comms:Suspend()")
+    if not self.enabled then return false end
+    -- Prefix
+    prefix = _prefix(prefix)
+    LOG:Debug("Suspending %s", prefix)
+    self.suspended[prefix] = true
+end
+
+function Comms:RevokeSuspension(prefix)
+    prefix = _prefix(prefix)
+    self.suspended[prefix] = nil
+end
+
+function Comms:Disable()
+    LOG:Trace("Comms:Disable()")
+    LOG:Debug("Disabling Comms. This operation is not reversible until UI reload.")
+    self.enabled = false
+end
+
 function Comms:Send(prefix, message, distribution, target, priority)
-    -- LOG:Trace("Comms:Send()")
+    -- LOG:Trace("Comms:Send()") -- SPAM
     if not self.enabled then return false end
     -- Prefix
     prefix = _prefix(prefix)
     if not type(self.callbacks[prefix]) == "function" then
         LOG:Error("Comms:Send() unregistered prefix: %s", prefix)
         return false
+    end
+    -- Check if prefix comms are suspended
+    if self.suspended[prefix] then
+        LOG:Debug("Comms:Send() blocked suspended prefix %s", prefix)
+        return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
     if not ACL:CheckLevel(self.aclLevel[prefix]) then
@@ -113,7 +139,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
 end
 
 function Comms:OnReceive(prefix, message, distribution, sender)
-    -- LOG:Trace("Comms:OnReceive() %s", prefix)
+    -- LOG:Trace("Comms:OnReceive() %s", prefix) --  SPAM
     if not self.enabled then return false end
     -- Ignore messages from self if not allowing them specifically
     if not self.allowSelfReceive[prefix] and (sender == self.who) then
@@ -124,6 +150,11 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         LOG:Warning("Comms:OnReceive() received message with unsupported prefix [%s] from [%s]", prefix, sender)
         return
     end
+    -- Check if prefix comms are suspended
+    if self.suspended[prefix] then
+        LOG:Debug("Comms:OnReceive() ignoring suspended prefix %s", prefix)
+        return
+    end
     -- Check ACL before working on data to prevent UI Freeze DoS
     if not ACL:CheckLevel(self.aclLevel[prefix], sender) then
         LOG:Warning("Comms:OnReceive() received privileged message [%s] from unprivileged sender [%s]", prefix, sender)
@@ -132,20 +163,20 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     -- Decode
     local tmp = codec:DecodeForWoWAddonChannel(message)
     if tmp == nil then
-        LOG:Error("Comms:OnReceive() unable to decode message [%s] from [%s]", prefix, sender)
+        LOG:Debug("Comms:OnReceive() unable to decode message [%s] from [%s]", prefix, sender)
         return
     end
     -- Decompress
     tmp = codec:DecompressDeflate(tmp)
     if tmp == nil then
-        LOG:Error("Comms:OnReceive() unable to decompress message [%s] from [%s]", prefix, sender)
+        LOG:Debug("Comms:OnReceive() unable to decompress message [%s] from [%s]", prefix, sender)
         return
     end
     -- Deserialize
     local success;
     success, tmp = serdes:Deserialize(tmp)
     if not success then
-        LOG:Error("Comms:OnReceive() unable to deserialize message [%s] from [%s]", prefix, sender)
+        LOG:Debug("Comms:OnReceive() unable to deserialize message [%s] from [%s]", prefix, sender)
         return
     end
     -- Execute callback

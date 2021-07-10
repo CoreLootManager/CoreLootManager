@@ -60,6 +60,7 @@ Modules\AuctionManager\AuctionCommStructures.lua
 Modules\BiddingManager\BiddingCommStructures.lua
 Modules\RaidManager\LedgerEntries.lua
 Modules\RaidManager\Raid.lua
+Modules\VersionManager\VersionCommStructures.lua
 
 # Addon modules (Controllers)
 Modules\Database\Database.lua
@@ -76,6 +77,7 @@ Modules\LootManager\LootManager.lua
 Modules\RaidManager\RaidManager.lua
 Modules\AuctionManager\AuctionManager.lua
 Modules\BiddingManager\BiddingManager.lua
+Modules\VersionManager\VersionManager.lua
 
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua

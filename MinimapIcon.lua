@@ -110,16 +110,6 @@ do
     end
 end
 
--- function CLM.MinimapDBI:UpdateState(inSync, syncOngoing)
---     if inSync then
---         CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierGreen"
---     elseif syncOngoing then
---         CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierRed"
---     else -- Unknown state
---         CLM.MinimapDBI.icon = "Interface\\ICONS\\Inv_Misc_SummerFest_BrazierBlue"
---     end
--- end
-
 local f = CreateFrame("Frame")
 f:SetScript("OnEvent", function()
     if not CLM_MinimapIcon then CLM_MinimapIcon = {} end

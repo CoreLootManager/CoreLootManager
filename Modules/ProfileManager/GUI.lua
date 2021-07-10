@@ -322,12 +322,13 @@ local function CreateStandingsDisplay(self)
         {name = "Class", width = 70},
         {name = "Spec",  width = 70},
         {name = "Main",  width = 70},
-        {name = "Rank",  width = 70}
+        {name = "Rank",  width = 70},
+        {name = "Version",  width = 100},
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(550)
-    StandingsGroup:SetWidth(450)
+    StandingsGroup:SetWidth(550)
     -- Standings
     self.st = ScrollingTable:CreateST(columns, 25, 18, nil, StandingsGroup.frame, true)
     self.st:EnableSelection(true)
@@ -346,7 +347,7 @@ function ProfilesGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(700)
+    f:SetWidth(800)
     f:SetHeight(675)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Profiles_GUI")
@@ -388,6 +389,7 @@ function ProfilesGUI:Refresh(visible)
         row.cols[3] = {value = object:Spec()}
         row.cols[4] = {value = main}
         row.cols[5] = {value = rank}
+        row.cols[6] = {value = object:VersionString()}
         data[rowId] = row
         rowId = rowId + 1
 
