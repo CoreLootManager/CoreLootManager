@@ -25,6 +25,7 @@ globals = {
 	-- Saved Variable
 	"CLM_DB",
 	"CLM_Logs",
+	"CLM_MinimapIcon",
 	-- Bindings
 	"CLM_Undo",
 	"CLM_Redo",
