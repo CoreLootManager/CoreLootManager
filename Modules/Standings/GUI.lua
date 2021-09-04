@@ -379,11 +379,13 @@ function StandingsGUI:Refresh(visible)
     local rowId = 1
     local data = {}
     for GUID,value in pairs(roster:Standings()) do
+        -- Round display value to only three decimal places
+        local roundedValue = math.floor((value * 10^3 +0.5))/10^3
         local profile = ProfileManager:GetProfileByGUID(GUID)
         if profile then
             local row = {cols = {}}
             row.cols[1] = {value = profile:Name()}
-            row.cols[2] = {value = value}
+            row.cols[2] = {value = roundedValue}
             row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
             row.cols[4] = {value = profile:Spec()}
             data[rowId] = row
