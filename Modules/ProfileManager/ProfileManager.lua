@@ -263,5 +263,33 @@ function ProfileManager:GetProfileByName(name)
     return self.cache.profiles[self.cache.profilesGuidMap[name]]
 end
 
+function ProfileManager:SearchMultipleProfilesByName(conditions)
+    if type(conditions) ~= "table" then
+        return {}
+    end
+
+    local queries = {}
+    for _,condition  in ipairs(conditions) do
+        table.insert(queries, condition:lower())
+    end
+    local isMatching = (function(value)
+        value = (value or ""):lower()
+        for _,query  in ipairs(queries) do
+            if strfind(value, query) then
+                return true
+            end
+        end
+        return false
+    end)
+
+    local found = {}
+    for name,_ in pairs(self.cache.profiles) do
+        if isMatching(name) then
+            table.insert(found)
+        end
+    end
+    return found
+end
+
 -- Publis API
 MODULES.ProfileManager = ProfileManager

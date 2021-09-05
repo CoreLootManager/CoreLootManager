@@ -110,13 +110,13 @@ local function CreatePointDisplay(self)
     self.RosterSelectorDropDown = RosterSelectorDropDown
     StandingsGroup:AddChild(RosterSelectorDropDown)
     -- Profile selector
-    local ProfileSelectorDropDown = AceGUI:Create("Dropdown")
-    ProfileSelectorDropDown:SetLabel("Select player")
-    ProfileSelectorDropDown:SetCallback("OnValueChanged", function()
+    local ProfileSearchBox = AceGUI:Create("EditBox")
+    ProfileSearchBox:SetLabel("Search player")
+    ProfileSearchBox:SetCallback("OnValueChanged", function()-- OnEnterPressed -- this is the accept event
         self:Refresh()
     end)
-    self.ProfileSelectorDropDown = ProfileSelectorDropDown
-    StandingsGroup:AddChild(ProfileSelectorDropDown)
+    self.ProfileSearchBox = ProfileSearchBox
+    StandingsGroup:AddChild(ProfileSearchBox)
     -- Standings
     self.st = ScrollingTable:CreateST(columns, 25, 18, nil, StandingsGroup.frame)
     self.st:EnableSelection(true)
@@ -203,7 +203,7 @@ function PointHistoryGUI:Create()
     -- Hide by default
     f:Hide()
 end
-
+-- TODO: update the whole profile handling
 function PointHistoryGUI:Refresh(visible)
     LOG:Trace("PointHistoryGUI:Refresh()")
     if not self._initialized then return end
@@ -217,7 +217,7 @@ function PointHistoryGUI:Refresh(visible)
 
     local roster = self:GetCurrentRoster()
     if roster == nil then return end
-    local profile = self:GetCurrentProfile()
+    local profile = self:SearchForProfiles()
     local isProfileHistory = (profile and roster:IsProfileInRoster(profile:GUID()))
 
     local pointList
@@ -260,8 +260,13 @@ function PointHistoryGUI:GetCurrentRoster()
     return RosterManager:GetRosterByUid(self.RosterSelectorDropDown:GetValue())
 end
 
-function PointHistoryGUI:GetCurrentProfile()
-    return ProfileManager:GetProfileByName(self.ProfileSelectorDropDown:GetValue())
+local function GetSearchList(input)
+    return { strsplit(",", input or "") }
+end
+
+function PointHistoryGUI:SearchForProfiles()
+    local searchList = GetSearchList(self.ProfileSearchBox:GetValue())
+    return ProfileManager:SearchMultipleProfilesByName(searchList)
 end
 
 function PointHistoryGUI:RefreshRosters()
@@ -296,12 +301,12 @@ function PointHistoryGUI:RefreshProfiles()
         end
     end
     table.sort(profileList)
-    self.ProfileSelectorDropDown:SetList(profileNameMap, profileList)
-    if not self.ProfileSelectorDropDown:GetValue() then
-        if #profileList > 0 then
-            self.ProfileSelectorDropDown:SetValue(profileList[1])
-        end
-    end
+    -- self.ProfileSearchBox:SetList(profileNameMap, profileList)
+    -- if not self.ProfileSearchBox:GetValue() then
+    --     if #profileList > 0 then
+    --         self.ProfileSearchBox:SetValue(profileList[1])
+    --     end
+    -- end
 end
 
 
