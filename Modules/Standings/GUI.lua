@@ -225,7 +225,7 @@ local function GenerateOfficerOptions(self)
                 -- Decay Value
                 local decayValue = tonumber(self.decayValue)
                 if not decayValue then LOG:Debug("StandingsGUI(Decay): missing decay value"); return end
-                if decayValue > 100 or decayValue <= 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
+                if decayValue > 100 or decayValue < 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
                 -- Selected: roster, profiles
                 local filter
                 if not self.includeNegative then
