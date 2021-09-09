@@ -139,6 +139,12 @@ function RosterManagerOptions:Initialize()
         hard_cap_set = (function(name, value)
             SetRosterOption(name, "hardCap", value)
         end),
+        round_decimals_get = (function(name)
+            return GetRosterOption(name, "roundDecimals")
+        end),
+        round_decimals_set = (function(name, value)
+            SetRosterOption(name, "roundDecimals", value)
+        end),
         -- Auction
         auction_auction_type_get = (function(name)
             return GetRosterOption(name, "auctionType")
@@ -534,6 +540,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 16,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 -- width = 0.6
+            },
+            round_decimals = {
+                name = "Rounding",
+                desc = "Round to selected number of decimals",
+                type = "select",
+                style = "radio",
+                order = 17,
+                values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
             },
             --
             auction = {

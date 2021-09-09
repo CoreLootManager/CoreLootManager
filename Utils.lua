@@ -492,5 +492,10 @@ function UTILS.GetWeekOffsetUS()
     return 486000
 end
 
+function UTILS.round(number, decimals)
+    local factor = 10 ^ decimals
+    return math.floor(number * factor + 0.5) / factor
+end
+
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"
