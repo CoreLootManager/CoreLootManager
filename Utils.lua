@@ -5,6 +5,8 @@ CLM.UTILS = {}
 local UTILS = CLM.UTILS
 local CONSTANTS = CLM.CONSTANTS
 
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
+UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
 local function capitalize(string)
@@ -434,10 +436,10 @@ function UTILS.GenerateDropDownMenu(structure, isTrusted, frame)
     frame = frame or CreateFrame("Frame", "CLM_Generic_Menu_DropDown" .. tostring(menuCounter), UIParent, "UIDropDownMenuTemplate")
     menuCounter = menuCounter + 1
 
-    UIDropDownMenu_Initialize(frame, (function(_, level)
+    LibDD:UIDropDownMenu_Initialize(frame, (function(_, level)
         for _,k in ipairs(structure) do
             if not k.trustedOnly or (k.trustedOnly and isTrusted) then
-                local placeholder = UIDropDownMenu_CreateInfo()
+                local placeholder = LibDD:UIDropDownMenu_CreateInfo()
                 placeholder.notCheckable = true
                 placeholder.text = k.title
                 placeholder.isTitle = k.isTitle and true or false
@@ -465,7 +467,7 @@ function UTILS.GenerateDropDownMenu(structure, isTrusted, frame)
                         tFitDropDownSizeX = true
                     }
                 end
-                UIDropDownMenu_AddButton(placeholder, level)
+                LibDD:UIDropDownMenu_AddButton(placeholder, level)
             end
         end
     end), "MENU")
@@ -490,11 +492,6 @@ end
 
 function UTILS.GetWeekOffsetUS()
     return 486000
-end
-
-function UTILS.round(number, decimals)
-    local factor = 10 ^ decimals
-    return math.floor(number * factor + 0.5) / factor
 end
 
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"

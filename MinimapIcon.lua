@@ -15,7 +15,7 @@ CLM.MinimapDBI = ldb:NewDataObject(addonName, {
 })
 
 -- Minimap icon dropdown menu
-local dropdown -- = CreateFrame("Frame", "CLM_Minimap_DropDown", UIParent, "UIDropDownMenuTemplate")
+local dropdown
 local Minimap = {}
 function Minimap:Initialize()
     local options = {
@@ -77,7 +77,7 @@ end
 function CLM.MinimapDBI.OnClick(self, button)
     if button == "RightButton" then
         if Minimap:IsInitialized() then
-            ToggleDropDownMenu(1, nil, dropdown, self, -20, 0)
+            CLM.UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdown, self, -20, 0)
         end
     else
         CLM.GUI.Standings:Toggle()

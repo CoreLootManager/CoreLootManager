@@ -171,7 +171,7 @@ local function CreatePointDisplay(self)
         local rightButton = (button == "RightButton")
         local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
         if rightButton then
-            ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+            UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
         return status
     end
