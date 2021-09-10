@@ -185,8 +185,7 @@ local function GenerateOfficerOptions(self)
             type = "toggle",
             set = (function(i, v) self:SetRosterOption("onTimeBonus", v) end),
             get = (function() return self:GetRosterOption("onTimeBonus")  end),
-            order = 32,
-            disabled = true
+            order = 32
         },
         on_time_bonus_value = {
             name = "On Time Bonus Value",
@@ -194,16 +193,14 @@ local function GenerateOfficerOptions(self)
             set = (function(i, v) self:SetRosterOption("onTimeBonusValue", tonumber(v)) end),
             get = (function() return tostring(self:GetRosterOption("onTimeBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-            order = 33,
-            disabled = true
+            order = 33
         },
         raid_completion_bonus = {
             name = "Raid Completion Bonus",
             type = "toggle",
             set = (function(i, v) self:SetRosterOption("raidCompletionBonus", v) end),
             get = (function() return self:GetRosterOption("raidCompletionBonus") end),
-            order = 34,
-            disabled = true
+            order = 34
         },
         raid_completion_bonus_value = {
             name = "Raid Completion Value",
@@ -211,8 +208,7 @@ local function GenerateOfficerOptions(self)
             set = (function(i, v) self:SetRosterOption("raidCompletionBonusValue", tonumber(v)) end),
             get = (function() return tostring(self:GetRosterOption("raidCompletionBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-            order = 35,
-            disabled = true
+            order = 35
         },
         interval_bonus = {
             name = "Interval Bonus",

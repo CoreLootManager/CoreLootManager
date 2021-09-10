@@ -455,7 +455,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "On Time Bonus",
                 type = "toggle",
                 order = 6,
-                disabled = true,
                 width = 1
             },
             on_time_bonus_value = {
@@ -463,14 +462,12 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "input",
                 order = 7,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = true,
                 width = 1
             },
             raid_completion_bonus = {
                 name = "Raid Completion Bonus",
                 type = "toggle",
                 order = 8,
-                disabled = true,
                 width = 1
             },
             raid_completion_bonus_value = {
@@ -478,7 +475,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "input",
                 order = 9,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = true,
                 width = 1
             },
             interval_bonus = {

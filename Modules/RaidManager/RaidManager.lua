@@ -14,6 +14,7 @@ local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local EventManager = MODULES.EventManager
 local ProfileManager = MODULES.ProfileManager
+local PointManager = MODULES.PointManager
 -- local Comms = MODULES.Comms
 
 -- local LEDGER_DKP = MODELS.LEDGER.DKP
@@ -282,6 +283,14 @@ function RaidManager:StartRaid(raid)
         end
     end
 
+    -- Auto reward on-time bonus if set
+    if raid:Configuration():Get("raidCompletionBonus") then
+        LOG:Debug(string.format("[%s]: [%s]", CONSTANTS.POINT_CHANGE_REASONS.GENERAL[CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS], raid:Configuration():Get("onTimeBonusValue")))
+        PointManager:UpdatePoints(raid:Roster(), players, raid:Configuration():Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, 0, true)
+    else
+        LOG:Debug("On Time Bonus not enabled")
+    end
+
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
 
     SendChatMessage(string.format("Raid [%s] started", raid:Name()) , "RAID_WARNING")
@@ -305,6 +314,16 @@ function RaidManager:EndRaid(raid)
     --     LOG:Message("You are not in an active raid.")
     --     return
     -- end
+
+    
+    -- Auto reward Raid Completion bonus if set
+    if raid:Configuration():Get("onTimeBonus") then
+        LOG:Debug(string.format("[%s]: [%s]", CONSTANTS.POINT_CHANGE_REASONS.GENERAL[CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS], raid:Configuration():Get("raidCompletionBonusValue")))
+        PointManager:UpdatePoints(raid:Roster(), players, raid:Configuration():Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, 0, true)
+    else
+        LOG:Debug("Raid Completion Bonus not enabled")
+    end
+
     LedgerManager:Submit(LEDGER_RAID.End:new(raid:UID()), true)
 
     if IsInRaid() then
