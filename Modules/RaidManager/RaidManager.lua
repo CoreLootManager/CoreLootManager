@@ -315,11 +315,35 @@ function RaidManager:EndRaid(raid)
     --     return
     -- end
 
-    
+    -- Rebuild player list for current status of raid
+    local players = {}
+    for i=1,MAX_RAID_MEMBERS do
+        local name = GetRaidRosterInfo(i)
+        if name then
+            local profile = ProfileManager:GetProfileByName(RemoveServer(name))
+            if profile then
+                table.insert(players, profile)
+            end
+        end
+    end
+
     -- Auto reward Raid Completion bonus if set
-    if raid:Configuration():Get("onTimeBonus") then
-        LOG:Debug(string.format("[%s]: [%s]", CONSTANTS.POINT_CHANGE_REASONS.GENERAL[CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS], raid:Configuration():Get("raidCompletionBonusValue")))
-        PointManager:UpdatePoints(raid:Roster(), players, raid:Configuration():Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, 0, true)
+    if raid:Configuration():Get("raidCompletionBonus") then
+        LOG:Debug(
+            string.format(
+                "[%s]: [%s]", 
+                CONSTANTS.POINT_CHANGE_REASONS.GENERAL[CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS], 
+                raid:Configuration():Get("raidCompletionBonusValue")
+            )
+        )
+        PointManager:UpdatePoints(
+            raid:Roster(), 
+            players, 
+            raid:Configuration():Get("raidCompletionBonusValue"), 
+            CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, 
+            0, 
+            true
+        )
     else
         LOG:Debug("Raid Completion Bonus not enabled")
     end
