@@ -19,6 +19,7 @@ function Profile:New(name, class, spec, main)
         patch = 0,
         changeset = ""
     }
+    o.altCount = 0
     self._versionString = "Unknown"
 
     return o
@@ -46,6 +47,18 @@ end
 
 function Profile:ClearMain()
     self.main = ""
+end
+
+function Profile:AltCount()
+    return self.altCount
+end
+
+function Profile:AddAlt()
+    self.altCount = self.altCount + 1
+end
+
+function Profile:RemoveAlt()
+    self.altCount = self.altCount - 1
 end
 
 function Profile:SetGUID(GUID)

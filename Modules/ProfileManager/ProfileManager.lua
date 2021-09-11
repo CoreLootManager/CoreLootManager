@@ -65,7 +65,7 @@ function ProfileManager:Initialize()
                 local profile = Profile:New(name, class, spec, main)
                 profile:SetGUID(GUID)
                 self.cache.profiles[GUID] = profile
-                self.cache.profilesGuidMap[name] = GUID
+                self.cache.profilesGuidMap[strlower(name)] = GUID
             end
         end))
 
@@ -94,10 +94,24 @@ function ProfileManager:Initialize()
             local altProfile = self:GetProfileByGUID(GUID)
             if not typeof(altProfile, Profile) then return end
             local mainProfile = self:GetProfileByGUID(main)
+            -- Unlink
             if not typeof(mainProfile, Profile) then
+                -- Check if our main exists
+                local currentMainProfile = self:GetProfileByName(altProfile:Main())
+                if not typeof(currentMainProfile, Profile) then return end
+                -- Remove main from this alt
                 altProfile:ClearMain()
-            else
+                -- Decrement alt count from main
+                currentMainProfile:RemoveAlt()
+            else -- Link
+                -- Do not allow alt chaining if main is alt
+                if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
+                -- Do not allow alt chaining if alt has alts
+                if altProfile:AltCount() > 0 then return end
+                -- Set new main of this alt
                 altProfile:SetMain(main)
+                -- Increment alt count for our main
+                mainProfile:AddAlt()
             end
         end))
 
@@ -260,7 +274,7 @@ function ProfileManager:GetProfileByGUID(GUID)
 end
 
 function ProfileManager:GetProfileByName(name)
-    return self.cache.profiles[self.cache.profilesGuidMap[name]]
+    return self.cache.profiles[self.cache.profilesGuidMap[strlower(name)]]
 end
 
 -- Publis API
