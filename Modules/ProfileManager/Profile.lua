@@ -1,6 +1,13 @@
 local _, CLM = ...
 
+local UTILS = CLM.UTILS
+local keys = UTILS.keys
+
 local Profile = {}
+
+local function UpdateAltList(self)
+    self.altList = keys(self.alts)
+end
 
 function Profile:New(name, class, spec, main)
     local o = {}
@@ -19,6 +26,8 @@ function Profile:New(name, class, spec, main)
         patch = 0,
         changeset = ""
     }
+    o.alts = {}
+    o.altList = {}
     o.altCount = 0
     self._versionString = "Unknown"
 
@@ -49,16 +58,28 @@ function Profile:ClearMain()
     self.main = ""
 end
 
+function Profile:Alts()
+    return self.altList
+end
+
 function Profile:AltCount()
     return self.altCount
 end
 
-function Profile:AddAlt()
-    self.altCount = self.altCount + 1
+function Profile:AddAlt(GUID)
+    if not self.alts[GUID] then
+        self.alts[GUID] = true
+        self.altCount = self.altCount + 1
+        UpdateAltList(self)
+    end
 end
 
-function Profile:RemoveAlt()
-    self.altCount = self.altCount - 1
+function Profile:RemoveAlt(GUID)
+    if self.alts[GUID] then
+        self.alts[GUID] = nil
+        self.altCount = self.altCount - 1
+        UpdateAltList(self)
+    end
 end
 
 function Profile:SetGUID(GUID)

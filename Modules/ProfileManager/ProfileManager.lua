@@ -94,15 +94,14 @@ function ProfileManager:Initialize()
             local altProfile = self:GetProfileByGUID(GUID)
             if not typeof(altProfile, Profile) then return end
             local mainProfile = self:GetProfileByGUID(main)
-            -- Unlink
-            if not typeof(mainProfile, Profile) then
+            if not typeof(mainProfile, Profile) then -- Unlink
                 -- Check if our main exists
                 local currentMainProfile = self:GetProfileByName(altProfile:Main())
                 if not typeof(currentMainProfile, Profile) then return end
                 -- Remove main from this alt
                 altProfile:ClearMain()
-                -- Decrement alt count from main
-                currentMainProfile:RemoveAlt()
+                -- Remove alt count from main
+                currentMainProfile:RemoveAlt(altProfile:GUID())
             else -- Link
                 -- Do not allow alt chaining if main is alt
                 if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
@@ -110,8 +109,11 @@ function ProfileManager:Initialize()
                 if altProfile:AltCount() > 0 then return end
                 -- Set new main of this alt
                 altProfile:SetMain(main)
-                -- Increment alt count for our main
-                mainProfile:AddAlt()
+                -- Add alt to our main
+                mainProfile:AddAlt(altProfile:GUID())
+                -- Sum the standings for each roster both are in
+                -- If Main is missing from roster: add it 
+                -- TODO
             end
         end))
 

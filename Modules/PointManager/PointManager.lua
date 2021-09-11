@@ -30,19 +30,24 @@ local function apply_mutator(entry, mutate)
     local timestamp = entry:time()
     local pointHistoryEntry = PointHistory:New(entry)
     roster:AddRosterPointHistory(pointHistoryEntry)
+    local alreadyApplied = {}
     for _,target in ipairs(targets) do
-        -- TODO: Main alt linking support: We need to account for the link not blindly pass profile
         local GUID = getGuidFromInteger(target)
+        local targetProfile = ProfileManager:GetProfileByGUID(GUID)
+        if targetProfile then
+            roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
+            -- Get main GUID
+            -- Apply only once per GUID in single mutator
+
+        end
+        -- TODO: Main alt linking support: We need to account for the link not blindly pass profile
         if roster:IsProfileInRoster(GUID) then
             mutate(roster, GUID, value, timestamp)
-            local profile = ProfileManager:GetProfileByGUID(GUID)
-            if profile then
-                roster:AddProfilePointHistory(pointHistoryEntry, profile)
-            end
         else
             LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
             return
         end
+        -- Mirror alt standings from main
     end
 end
 

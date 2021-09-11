@@ -85,7 +85,7 @@ function GlobalSlashCommands:Initialize()
             type = "input",
             name = "Link Main-Alt",
             set = (function(i, mainAlt)
-
+                -- TODO
             end),
             confirm = true
         }
@@ -93,7 +93,7 @@ function GlobalSlashCommands:Initialize()
             type = "input",
             name = "Unlink Alt",
             set = (function(i, alt)
-
+                -- TODO
             end),
             confirm = true
         }
