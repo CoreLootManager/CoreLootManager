@@ -149,35 +149,28 @@ function ProfileManager:RemoveProfile(GUID)
     LOG:Debug("Remove profile: [%s]", GUID)
     LedgerManager:Submit(LEDGER_PROFILE.Remove:new(GUID), true)
 end
- -- TODO to do with the markings if profile is removed
-function ProfileManager:MarkAsAltByNames(main, alt)
+
+function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
-    local mainProfile = self:GetProfileByName(main)
-    if not typeof(mainProfile, Profile) then
-        LOG:Error("MarkAsAltByNames(): Invalid main")
-        return
-    end
     local altProfile = self:GetProfileByName(alt)
     if not typeof(altProfile, Profile) then
         LOG:Error("MarkAsAltByNames(): Invalid alt")
         return
     end
-    -- TODO: Protect from circular references / multi-level alt nesting
-    if alt == main then
-        if altProfile:Main() == "" then
-            LOG:Error("Removal of empty main for %s", alt)
-            return
-        else
-            -- Remove link
+    local mainProfile = self:GetProfileByName(main)
+    -- Unlink
+    if not typeof(mainProfile, Profile) then
+        if altProfile:Main() ~= "" then
             LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), nil), true)
         end
-    else
-        if mainProfile:Main() ~= "" then
-            LOG:Error("Alt -> Main chain for %s -> %s", alt, main)
-            return
+    else -- Link
+        -- Do not allow alt chaining if main is alt
+        if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
+        -- Do not allow alt chaining if alt has alts
+        if altProfile:AltCount() > 0 then return end
+        if strlower(altProfile:Main()) ~= strlower(mainProfile:Name()) then
+            LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
         end
-        LOG:Debug("Alt -> Main linking for %s -> %s", alt, main)
-        LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
     end
 end
 
