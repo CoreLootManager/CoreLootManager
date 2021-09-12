@@ -421,6 +421,7 @@ local function GetTopBids()
     LOG:Trace("AuctionManagerGUI:GetTopBids()")
     local max = {name = "", bid = 0}
     for name,bid in pairs(AuctionManager:Bids()) do
+        bid = tonumber(bid) or 0
         if bid > max.bid then
             max.bid = bid
             max.name = name
@@ -428,6 +429,7 @@ local function GetTopBids()
     end
     local second = {name = "", bid = 0}
     for name,bid in pairs(AuctionManager:Bids()) do
+        bid = tonumber(bid) or 0
         if bid > second.bid and name ~= max.name then
             second.bid = bid
             second.name = name

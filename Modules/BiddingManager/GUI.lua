@@ -40,7 +40,7 @@ end
 local function CreateOptions(self)
     local OptionsGroup = AceGUI:Create("SimpleGroup")
     OptionsGroup:SetLayout("Flow")
-    OptionsGroup:SetWidth(435)
+    OptionsGroup:SetWidth(505)
     self.OptionsGroup = OptionsGroup
     UpdateOptions(self)
     LIBS.registry:RegisterOptionsTable(REGISTRY, guiOptions)
@@ -98,12 +98,13 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "input",
             get = (function(i) return itemLink or "" end),
             set = (function(i,v) end), -- Intentionally: do not override
-            width = 1.8,
+            width = 2,
             order = 2,
             itemLink = "item:" .. tostring(itemId),
         },
         bid_value = {
             name = "Bid value",
+            desc = "Value you want to bid. Press Enter or click Okay button to accept.",
             type = "input",
             set = (function(i,v) self.bid = tonumber(v) or 0 end),
             get = (function(i) return tostring(self.bid) end),
@@ -112,37 +113,49 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         },
         base = {
             name = "Base",
+            desc = "Immediately bid base item value.",
             type = "execute",
             func = (function()
                 self.bid = self.auctionInfo and self.auctionInfo:Base() or 0
                 BiddingManager:Bid(self.bid)
             end),
             width = 0.45,
-            order = 4
+            order = 5
         },
         max = {
             name = "Max",
+            desc = "Immediately bid max item value.",
             type = "execute",
             func = (function()
                 self.bid = self.auctionInfo and self.auctionInfo:Max() or 0
                 BiddingManager:Bid(self.bid)
             end),
             width = 0.45,
-            order = 5
+            order = 6
         },
         bid = {
             name = "Bid",
+            desc = "Bid input value.",
             type = "execute",
             func = (function() BiddingManager:Bid(self.bid) end),
             width = 0.45,
-            order = 6
+            order = 4
         },
         cancel = {
             name = "Cancel",
+            desc = "Cancel your bid.",
             type = "execute",
             func = (function() BiddingManager:CancelBid() end),
             width = 0.45,
             order = 7
+        },
+        pass = {
+            name = "Pass",
+            desc = "Notify that you are passing on the item. Cancels any existing bids.",
+            type = "execute",
+            func = (function() BiddingManager:NotifyPass() end),
+            width = 0.45,
+            order = 8
         }
     }
 end
@@ -155,7 +168,7 @@ function BiddingManagerGUI:Create()
     f:SetStatusText("")
     f:SetLayout("flow")
     f:EnableResize(false)
-    f:SetWidth(435)
+    f:SetWidth(505)
     f:SetHeight(175)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Bidding_GUI")
