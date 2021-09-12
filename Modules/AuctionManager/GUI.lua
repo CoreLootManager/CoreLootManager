@@ -145,8 +145,8 @@ local function CreateBidWindow(self)
         {name = "Name",     width = 70},
         {name = "Class",    width = 60},
         {name = "Spec",     width = 60},
-        {name = "Bid",      width = 60},
-        {name = "Current",  width = 60},
+        {name = "Bid",      width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}, sort = ScrollingTable.SORT_DSC },
+        {name = "Current",  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}, sort = ScrollingTable.SORT_DSC},
     }
     self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame)
     self.st:EnableSelection(true)

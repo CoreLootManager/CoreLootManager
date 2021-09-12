@@ -90,7 +90,7 @@ end
 local columns = {
     {name = "Reason",  width = 150},
     {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
-    {name = "Value",  width = 70},
+    {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
     {name = "Awarded By",  width = 70},
 }
 

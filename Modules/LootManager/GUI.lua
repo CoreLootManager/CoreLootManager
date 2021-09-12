@@ -92,14 +92,14 @@ end
 local columns = {
     playerLoot = {
         {name = "Item",  width = 225},
-        {name = "Value",  width = 70},
+        {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
         {name = "", width = 0},
         {name = "", width = 0},
     },
     raidLoot = {
         {name = "Item",  width = 225},
-        {name = "Value",  width = 70},
+        {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = "Player",   width = 70},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
         {name = "", width = 0},

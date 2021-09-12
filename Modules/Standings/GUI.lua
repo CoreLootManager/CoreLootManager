@@ -312,19 +312,10 @@ end
 local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
-        {   name = "Name",
-            width = 100
-        },
-        {   name = "DKP",
-            width = 100,
-            sort = ScrollingTable.SORT_DSC
-        },
-        {   name = "Class",
-            width = 100
-        },
-        {   name = "Spec",
-            width = 100
-        }
+        {   name = "Name", width = 100 },
+        {   name = "DKP", width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+        {   name = "Class", width = 100 },
+        {   name = "Spec", width = 100 }
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
