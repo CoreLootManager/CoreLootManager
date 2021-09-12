@@ -262,6 +262,7 @@ local function GenerateOfficerOptions(self)
                 self.selectedRoster = v
                 self.roster = RosterManager:GetRosterByName(self.selectedRoster)
                 self.configuration = RosterConfiguration:New(DeepCopy(self.roster.configuration))
+                self.db.selectedRoster = self.selectedRoster
                 self:Refresh()
             end),
             get = function(i) return self.selectedRoster end,
@@ -299,7 +300,7 @@ local function CreateManagementOptions(self, container)
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(200)
     self.ManagementOptions = ManagementOptions
-    self.selectedRoster = ""
+    self.selectedRoster = self.db.selectedRoster or ""
     local options = {
         type = "group",
         args = {}

@@ -386,7 +386,8 @@ function StandingsGUI:Refresh(visible)
 end
 
 function StandingsGUI:GetCurrentRoster()
-    return RosterManager:GetRosterByUid(self.RosterSelectorDropDown:GetValue())
+    self.db.selectedRosterUid = self.RosterSelectorDropDown:GetValue()
+    return RosterManager:GetRosterByUid(self.db.selectedRosterUid)
 end
 
 function StandingsGUI:GetSelected(filter)
@@ -426,14 +427,20 @@ function StandingsGUI:RefreshRosters()
     local rosters = RosterManager:GetRosters()
     local rosterUidMap = {}
     local rosterList = {}
+    local positionOfSavedRoster = 1
+    local n = 1
     for name, roster in pairs(rosters) do
         rosterUidMap[roster:UID()] = name
-        table.insert(rosterList, roster:UID())
+        rosterList[n] = roster:UID()
+        if roster:UID() == self.db.selectedRosterUid then
+            positionOfSavedRoster = n
+        end
+        n = n + 1
     end
     self.RosterSelectorDropDown:SetList(rosterUidMap, rosterList)
     if not self.RosterSelectorDropDown:GetValue() then
         if #rosterList > 0 then
-            self.RosterSelectorDropDown:SetValue(rosterList[1])
+            self.RosterSelectorDropDown:SetValue(rosterList[positionOfSavedRoster])
         end
     end
 end
