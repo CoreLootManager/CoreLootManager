@@ -259,13 +259,13 @@ function ProfileManager:PruneBelowLevel(minLevel, nop)
     local prune
     if nop then
         LOG:Info("Prunning: No operation")
-        prune = (function(GUID, log)
+        prune = (function(GUID, _log)
             local profile = self.cache.profiles[GUID]
             if not profile then return end
-            log:Add(profile:Name())
+            _log:Add(profile:Name())
         end)
     else
-        prune = (function(GUID, log) self:PruneProfile(GUID, log) end)
+        prune = (function(GUID, _log) self:PruneProfile(GUID, _log) end)
     end
     local prunned = 0
     for i=1,GetNumGuildMembers() do
@@ -279,19 +279,19 @@ function ProfileManager:PruneBelowLevel(minLevel, nop)
     LOG:Info("Prunned %s profiles below level %s", prunned, minLevel)
 end
 
-function ProfileManager:PruneRank(rank)
+function ProfileManager:PruneRank(rank, nop)
     LOG:Trace("ProfileManager:PruneRank()")
     local log = PruneLog:New("rank", nop)
     local prune
     if nop then
         LOG:Info("Prunning: No operation")
-        prune = (function(GUID, log)
+        prune = (function(GUID, _log)
             local profile = self.cache.profiles[GUID]
             if not profile then return end
-            log:Add(profile:Name())
+            _log:Add(profile:Name())
         end)
     else
-        prune = (function(GUID, log) self:PruneProfile(GUID, log) end)
+        prune = (function(GUID, _log) self:PruneProfile(GUID, _log) end)
     end
     local check
     if type(rank) == "number" then
@@ -316,18 +316,19 @@ function ProfileManager:PruneRank(rank)
     LOG:Info("Prunned %s profiles with rank %s", prunned, rank)
 end
 
-function ProfileManager:PruneUnguilded()
+function ProfileManager:PruneUnguilded(nop)
     LOG:Trace("ProfileManager:PruneBelowLevel()")
     local log = PruneLog:New("unguilded", nop)
+    local prune
     if nop then
         LOG:Info("Prunning: No operation")
-        prune = (function(GUID, log)
+        prune = (function(GUID, _log)
             local profile = self.cache.profiles[GUID]
             if not profile then return end
             log:Add(profile:Name())
         end)
     else
-        prune = (function(GUID, log) self:PruneProfile(GUID, log) end)
+        prune = (function(GUID, _log) self:PruneProfile(GUID, _log) end)
     end
     local GUIDs = {}
     local prunned = 0
