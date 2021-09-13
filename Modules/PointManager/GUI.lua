@@ -140,7 +140,14 @@ local function CreatePointDisplay(self)
             local profilesInLine = 0
             local line = ""
             local separator = ", "
-            local profilesLeft = numProfiles
+            local profilesLeft
+            local notIncludedProfiles = 0
+            if numProfiles > 40 then
+                notIncludedProfiles = numProfiles - 40
+                numProfiles = 40
+            end
+            profilesLeft = numProfiles
+
             while (profilesLeft > 0) do
                 local currentProfile = profiles[numProfiles - profilesLeft + 1]
                 profilesLeft = profilesLeft - 1
@@ -154,6 +161,9 @@ local function CreatePointDisplay(self)
                     line = ""
                     profilesInLine = 0
                 end
+            end
+            if notIncludedProfiles > 0 then
+                tooltip:AddLine(notIncludedProfiles .. " more")
             end
         end
         tooltip:Show()
@@ -169,8 +179,13 @@ local function CreatePointDisplay(self)
     -- OnClick handler
     local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
         local rightButton = (button == "RightButton")
-        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        local status
+        local selected = self.st:GetSelection()
+        if selected ~= realrow then
+            status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        end
         if rightButton then
+            UTILS.LibDD:CloseDropDownMenus()
             UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
         return status
