@@ -7,6 +7,7 @@
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
 ## X-WoWI-ID: 26001
+## X-Wago-ID: vEGPw4K1
 # OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, LibLogger, AceAddon-3.0
 ## SavedVariables: CLM_DB, CLM_Logs, CLM_MinimapIcon
 ## LoadOnDemand: 0
