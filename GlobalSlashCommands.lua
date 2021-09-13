@@ -116,17 +116,18 @@ function GlobalSlashCommands:Initialize()
             type = "input",
             name = "Prune profiles",
             set = (function(i, input)
-                local command, parameter = strsplit("/", input)
+                local command, parameter, nop = strsplit("/", input)
                 command = strlower(command or "")
+                nop = nop and true or false
                 if command == "level" then
                     parameter = tonumber(parameter) or 0
-                    ProfileManager:PruneBelowLevel(parameter)
+                    ProfileManager:PruneBelowLevel(parameter, nop)
                 elseif command == "rank" then
                     parameter = parameter or ""
                     parameter = tonumber(parameter) or parameter
-                    ProfileManager:PruneRank(parameter)
+                    ProfileManager:PruneRank(parameter, nop)
                 elseif command == "unguilded" then
-                    ProfileManager:PruneUnguilded()
+                    ProfileManager:PruneUnguilded(nop)
                 end
             end),
             confirm = true
