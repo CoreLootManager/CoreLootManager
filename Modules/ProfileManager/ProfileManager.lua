@@ -64,6 +64,7 @@ function ProfileManager:Initialize()
             else
                 local profile = Profile:New(name, class, spec, main)
                 profile:SetGUID(GUID)
+                profile:SetEntry(entry)
                 self.cache.profiles[GUID] = profile
                 self.cache.profilesGuidMap[name] = GUID
             end
@@ -135,6 +136,15 @@ function ProfileManager:RemoveProfile(GUID)
     LOG:Debug("Remove profile: [%s]", GUID)
     LedgerManager:Submit(LEDGER_PROFILE.Remove:new(GUID), true)
 end
+
+function ProfileManager:PruneProfile(GUID)
+    local profile = self.cache.profiles[GUID]
+    if not profile then return end
+    local entry = profile:Entry()
+    if not entry then return end
+    LedgerManager:Remove(entry)
+end
+
  -- TODO to do with the markings if profile is removed
 function ProfileManager:MarkAsAltByNames(main, alt)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
@@ -233,6 +243,60 @@ function ProfileManager:AddTarget()
     else
         LOG:Warning("Your target must be a player.")
     end
+end
+
+function ProfileManager:PruneBelowLevel(minLevel)
+    LOG:Trace("ProfileManager:PruneBelowLevel()")
+    local prunned = 0
+    for i=1,GetNumGuildMembers() do
+        local _, _, _, level, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+        if level < minLevel then
+            self:PruneProfile(GUID)
+            prunned = prunned + 1
+        end
+    end
+    LOG:Info("Prunned %s profiles below level %s", prunned, minLevel)
+end
+
+function ProfileManager:PruneRank(rank)
+    LOG:Trace("ProfileManager:PruneRank()")
+    local check
+    if type(rank) == "number" then
+        check = (function(_rankName, _rankIndex, _rank)
+            return (_rankIndex == _rank)
+        end)
+    else
+        rank = strlower(rank or "")
+        check = (function(_rankName, _rankIndex, _rank)
+            return (strlower(_rankName) == _rank)
+        end)
+    end
+    local prunned = 0
+    for i=1,GetNumGuildMembers() do
+        local _, rankName, rankIndex, _, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+        if check(rankName, rankIndex, rank) then
+            self:PruneProfile(GUID)
+            prunned = prunned + 1
+        end
+    end
+    LOG:Info("Prunned %s profiles with rank %s", prunned, rank)
+end
+
+function ProfileManager:PruneUnguilded()
+    LOG:Trace("ProfileManager:PruneBelowLevel()")
+    local prunned = 0
+    local GUIDs = {}
+    for i=1,GetNumGuildMembers() do
+        local _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+        GUIDs[GUID] = true
+    end
+    for GUID in pairs(self.cache.profiles) do
+        if not GUIDs[GUID] then
+            self:PruneProfile(GUID)
+            prunned = prunned + 1
+        end
+    end
+    LOG:Info("Prunned %s unguilded profiles", prunned)
 end
 
 function ProfileManager:WipeAll()

@@ -79,4 +79,12 @@ function Profile:VersionString()
     return self._versionString
 end
 
+function Profile:Entry()
+    return self.entry
+end
+
+function Profile:SetEntry(entry)
+    self.entry = entry
+end
+
 CLM.MODELS.Profile = Profile

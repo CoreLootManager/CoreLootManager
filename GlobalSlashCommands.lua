@@ -111,6 +111,27 @@ function GlobalSlashCommands:Initialize()
             confirm = true
         }
     end
+    if ACL:IsTrusted() then
+        options.prune = {
+            type = "input",
+            name = "Prune profiles",
+            set = (function(i, input)
+                local command, parameter = strsplit("/", input)
+                command = strlower(command or "")
+                if command == "level" then
+                    parameter = tonumber(parameter) or 0
+                    ProfileManager:PruneBelowLevel(parameter)
+                elseif command == "rank" then
+                    parameter = parameter or ""
+                    parameter = tonumber(parameter) or parameter
+                    ProfileManager:PruneRank(parameter)
+                elseif command == "unguilded" then
+                    ProfileManager:PruneUnguilded()
+                end
+            end),
+            confirm = true
+        }
+    end
     ConfigManager:RegisterSlash(options)
 end
 
