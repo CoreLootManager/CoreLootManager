@@ -2,13 +2,14 @@ local _, CLM = ...
 
 local Profile = {}
 
-function Profile:New(name, class, spec, main)
+function Profile:New(entry, name, class, spec, main)
     local o = {}
 
     setmetatable(o, self)
     self.__index = self
 
     o._GUID = ""
+    o.entry = entry
     o.name  = (name ~= nil) and tostring(name) or ""
     o.class = (class ~= nil) and tostring(class) or ""
     o.spec  = (spec ~= nil) and tostring(spec) or ""
@@ -81,10 +82,6 @@ end
 
 function Profile:Entry()
     return self.entry
-end
-
-function Profile:SetEntry(entry)
-    self.entry = entry
 end
 
 CLM.MODELS.Profile = Profile
