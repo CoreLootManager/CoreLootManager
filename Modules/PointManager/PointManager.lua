@@ -8,13 +8,14 @@ local UTILS = CLM.UTILS
 local MODELS = CLM.MODELS
 
 local LedgerManager = MODULES.LedgerManager
-local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
+local RosterManager = MODULES.RosterManager
 
 local LEDGER_DKP = MODELS.LEDGER.DKP
-local Profile = MODELS.Profile
-local Roster = MODELS.Roster
 local PointHistory = MODELS.PointHistory
+local Profile = MODELS.Profile
+local Raid = MODELS.Raid
+local Roster = MODELS.Roster
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
@@ -132,13 +133,31 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
     LedgerManager:Submit(entry, forceInstant)
 end
 
+function PointManager:AwardFromRaid(raid, value, reason, forceInstant)
+    LOG:Trace("PointManager:AwardFromRaid()")
+    if not typeof(raid, Raid) then
+        LOG:Error("PointManager:AwardFromRaid(): Missing valid Raid")
+        return
+    end
+    if type(value) ~= "number" then
+        LOG:Error("PointManager:AwardFromRaid(): Value is not a number")
+        return
+    end
+
+    -- Get players from Raid
+    local targets = raid:Players() -- TODO: test for joiners/leavers
+
+    local entry = LEDGER_DKP.Modify:new(raid:Roster():UID(), targets, value, reason)
+    LedgerManager:Submit(entry, forceInstant)
+end
+
 function PointManager:RemovePointChange(pointHistory, forceInstant)
     LOG:Trace("PointManager:RemovePointChange()")
     if not typeof(pointHistory, PointHistory) then
         LOG:Error("PointManager:RemovePointChange(): Missing valid point history")
         return
     end
-    -- TODO: Add entry to track who removed?
+    -- TODO: Add entry to track who left/got removed?
     LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 

@@ -284,9 +284,9 @@ function RaidManager:StartRaid(raid)
     end
 
     -- Auto reward on-time bonus if set
-    if raid:Configuration():Get("raidCompletionBonus") then
+    if raid:Configuration():Get("onTimeBonus") then
         LOG:Debug(string.format("[%s]: [%s]", CONSTANTS.POINT_CHANGE_REASONS.GENERAL[CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS], raid:Configuration():Get("onTimeBonusValue")))
-        PointManager:UpdatePoints(raid:Roster(), players, raid:Configuration():Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, 0, true)
+        PointManager:AwardFromRaid(raid, raid:Configuration():Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, true)
     else
         LOG:Debug("On Time Bonus not enabled")
     end
