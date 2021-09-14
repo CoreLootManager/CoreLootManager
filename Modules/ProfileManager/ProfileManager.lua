@@ -258,25 +258,25 @@ function ProfileManager:PruneBelowLevel(minLevel, nop)
     local log = PruneLog:New("level", nop)
     local prune
     if nop then
-        LOG:Info("Prunning: No operation")
-        prune = (function(GUID, _log)
+        LOG:Info("Pruning: No operation")
+        prune = (function(GUID)
             local profile = self.cache.profiles[GUID]
             if not profile then return end
-            _log:Add(profile:Name())
+            log:Add(profile:Name())
         end)
     else
         prune = (function(GUID, _log) self:PruneProfile(GUID, _log) end)
     end
-    local prunned = 0
+    local pruned = 0
     for i=1,GetNumGuildMembers() do
         local _, _, _, level, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
         if level < minLevel then
-            prune(GUID, log)
-            prunned = prunned + 1
+            prune(GUID)
+            pruned = pruned + 1
         end
     end
-    if prunned > 0 then table.insert(self.db.pruneLog, log) end
-    LOG:Info("Prunned %s profiles below level %s", prunned, minLevel)
+    if pruned > 0 then table.insert(self.db.pruneLog, log) end
+    LOG:Info("Prunned %s profiles below level %s", pruned, minLevel)
 end
 
 function ProfileManager:PruneRank(rank, nop)
