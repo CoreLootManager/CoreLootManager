@@ -144,9 +144,7 @@ function PointManager:AwardFromRaid(raid, value, reason, forceInstant)
         return
     end
 
-    -- Get players from Raid
-    local targets = raid:Players() -- TODO: test for joiners/leavers
-
+    local targets = raid:Players()
     local entry = LEDGER_DKP.Modify:new(raid:Roster():UID(), targets, value, reason)
     LedgerManager:Submit(entry, forceInstant)
 end
@@ -157,7 +155,7 @@ function PointManager:RemovePointChange(pointHistory, forceInstant)
         LOG:Error("PointManager:RemovePointChange(): Missing valid point history")
         return
     end
-    -- TODO: Add entry to track who left/got removed?
+    -- TODO: Add entry to track who removed?
     LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 
