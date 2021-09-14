@@ -174,8 +174,13 @@ local function CreateLootDisplay(self)
     -- OnClick handler
     local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
         local rightButton = (button == "RightButton")
-        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        local status
+        local selected = self.st:GetSelection()
+        if selected ~= realrow then
+            status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        end
         if rightButton then
+            UTILS.LibDD:CloseDropDownMenus()
             UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
         return status
