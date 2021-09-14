@@ -258,6 +258,7 @@ local function GenerateOfficerOptions(self)
                 self.selectedRoster = v
                 self.roster = RosterManager:GetRosterByName(self.selectedRoster)
                 self.configuration = RosterConfiguration:New(DeepCopy(self.roster.configuration))
+                self.db.selectedRoster = self.selectedRoster
                 self:Refresh()
             end),
             get = function(i) return self.selectedRoster end,
@@ -295,7 +296,7 @@ local function CreateManagementOptions(self, container)
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(200)
     self.ManagementOptions = ManagementOptions
-    self.selectedRoster = ""
+    self.selectedRoster = self.db.selectedRoster or ""
     local options = {
         type = "group",
         args = {}
@@ -367,9 +368,14 @@ local function CreateRaidDisplay(self)
     -- OnClick handler
     local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
         local rightButton = (button == "RightButton")
-        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        local status
+        local selected = self.st:GetSelection()
+        if selected ~= realrow then
+            status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        end
         if rightButton then
-            ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+            UTILS.LibDD:CloseDropDownMenus()
+            UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
         return status
     end

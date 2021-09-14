@@ -92,14 +92,14 @@ end
 local columns = {
     playerLoot = {
         {name = "Item",  width = 225},
-        {name = "Value",  width = 70},
+        {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
         {name = "", width = 0},
         {name = "", width = 0},
     },
     raidLoot = {
         {name = "Item",  width = 225},
-        {name = "Value",  width = 70},
+        {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = "Player",   width = 70},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
         {name = "", width = 0},
@@ -174,9 +174,14 @@ local function CreateLootDisplay(self)
     -- OnClick handler
     local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
         local rightButton = (button == "RightButton")
-        local status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        local status
+        local selected = self.st:GetSelection()
+        if selected ~= realrow then
+            status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        end
         if rightButton then
-            ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+            UTILS.LibDD:CloseDropDownMenus()
+            UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
         return status
     end
@@ -282,7 +287,8 @@ function LootGUI:Refresh(visible)
 end
 
 function LootGUI:GetCurrentRoster()
-    return RosterManager:GetRosterByUid(self.RosterSelectorDropDown:GetValue())
+    self.db.selectedRosterUid = self.RosterSelectorDropDown:GetValue()
+    return RosterManager:GetRosterByUid(self.db.selectedRosterUid)
 end
 
 function LootGUI:GetCurrentProfile()
@@ -294,14 +300,20 @@ function LootGUI:RefreshRosters()
     local rosters = RosterManager:GetRosters()
     local rosterUidMap = {}
     local rosterList = {}
+    local positionOfSavedRoster = 1
+    local n = 1
     for name, roster in pairs(rosters) do
         rosterUidMap[roster:UID()] = name
-        table.insert(rosterList, roster:UID())
+        rosterList[n] = roster:UID()
+        if roster:UID() == self.db.selectedRosterUid then
+            positionOfSavedRoster = n
+        end
+        n = n + 1
     end
     self.RosterSelectorDropDown:SetList(rosterUidMap, rosterList)
     if not self.RosterSelectorDropDown:GetValue() then
         if #rosterList > 0 then
-            self.RosterSelectorDropDown:SetValue(rosterList[1])
+            self.RosterSelectorDropDown:SetValue(rosterList[positionOfSavedRoster])
         end
     end
 end

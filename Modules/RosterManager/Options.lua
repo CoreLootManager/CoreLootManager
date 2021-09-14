@@ -139,6 +139,12 @@ function RosterManagerOptions:Initialize()
         hard_cap_set = (function(name, value)
             SetRosterOption(name, "hardCap", value)
         end),
+        round_decimals_get = (function(name)
+            return GetRosterOption(name, "roundDecimals")
+        end),
+        round_decimals_set = (function(name, value)
+            SetRosterOption(name, "roundDecimals", value)
+        end),
         -- Auction
         auction_auction_type_get = (function(name)
             return GetRosterOption(name, "auctionType")
@@ -512,6 +518,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = "Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT",
                 type = "select",
                 style = "radio",
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 14,
                 values = CONSTANTS.WEEKLY_RESETS_GUI
             },
@@ -519,6 +526,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Weekly cap",
                 desc = "Maximum point cap player can receive per raid week. Set to 0 to disable.",
                 type = "input",
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 15,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 -- width = 0.6
@@ -527,9 +535,19 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Hard cap",
                 desc = "Maximum point cap that player can have. Set to 0 to disable.",
                 type = "input",
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 16,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 -- width = 0.6
+            },
+            round_decimals = {
+                name = "Rounding",
+                desc = "Round to selected number of decimals",
+                type = "select",
+                style = "radio",
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                order = 17,
+                values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
             },
             --
             auction = {

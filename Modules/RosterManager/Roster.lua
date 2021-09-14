@@ -11,6 +11,7 @@ local keys = UTILS.keys
 local WeekNumber = UTILS.WeekNumber
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
+local round = UTILS.round
 
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
@@ -143,6 +144,7 @@ function Roster:UpdateStandings(GUID, value, timestamp)
                 return
             end
             if value > maxGain then value = maxGain end
+            value = round(value, self.configuration._.roundDecimals)
             LOG:Debug("new value %s", value)
             self.weeklyGains[GUID][week] = weeklyGains + value
             LOG:Debug("new weeklyGains %s", self.weeklyGains[GUID][week])
@@ -154,11 +156,11 @@ function Roster:UpdateStandings(GUID, value, timestamp)
 end
 
 function Roster:SetStandings(GUID, value)
-    self.standings[GUID] = value
+    self.standings[GUID] = round(value, self.configuration._.roundDecimals)
 end
 
 function Roster:DecayStandings(GUID, value)
-    self.standings[GUID] = (self:Standings(GUID) * (100 - value)) / 100
+    self.standings[GUID] = round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
 end
 
 function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
@@ -341,6 +343,8 @@ function RosterConfiguration:New(i)
     o._.weeklyCap = 0
     -- Weekly reset:
     o._.weeklyReset = CONSTANTS.WEEKLY_RESET.EU
+    -- Round Decimals
+    o._.roundDecimals = 10
 
     -- Additional settings
     o.hasHardCap = false
@@ -372,7 +376,8 @@ function RosterConfiguration:fields()
         -- caps
         "hardCap",
         "weeklyCap",
-        "weeklyReset"
+        "weeklyReset",
+        "roundDecimals"
     }
 end
 
@@ -422,7 +427,8 @@ local TRANSFORMS = {
     intervalBonusValue = transform_number,
     hardCap = transform_number,
     weeklyCap = transform_number,
-    weeklyReset = transform_number
+    weeklyReset = transform_number,
+    roundDecimals = transform_number
 }
 
 function RosterConfiguration:Get(option)
@@ -482,6 +488,7 @@ function RosterConfiguration._validate_intervalBonusValue(value) value = tonumbe
 function RosterConfiguration._validate_hardCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_weeklyCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
+function RosterConfiguration._validate_roundDecimals(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration
@@ -623,4 +630,14 @@ CONSTANTS.WEEKLY_RESETS = UTILS.Set({
 CONSTANTS.WEEKLY_RESETS_GUI = {
     [CONSTANTS.WEEKLY_RESET.EU] = "Europe",
     [CONSTANTS.WEEKLY_RESET.US] = "Americas"
+}
+
+CONSTANTS.ALLOWED_ROUNDINGS = UTILS.Set({
+    0, 1, 2
+})
+
+CONSTANTS.ALLOWED_ROUNDINGS_GUI = {
+    [0] = "1",
+    [1] = "0.1",
+    [2] = "0.01",
 }

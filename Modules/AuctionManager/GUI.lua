@@ -121,7 +121,9 @@ function AuctionManagerGUI:Initialize()
     InitializeDB(self)
     EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
-    HookBagSlots()
+    if ACL:IsTrusted() then
+        HookBagSlots()
+    end
     self.hookedSlots = { wow = {}, elv =  {}}
     EventManager:RegisterEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
     self:RegisterSlash()
@@ -143,8 +145,8 @@ local function CreateBidWindow(self)
         {name = "Name",     width = 70},
         {name = "Class",    width = 60},
         {name = "Spec",     width = 60},
-        {name = "Bid",      width = 60},
-        {name = "Current",  width = 60},
+        {name = "Bid",      width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}, sort = ScrollingTable.SORT_DSC },
+        {name = "Current",  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}, sort = ScrollingTable.SORT_DSC},
     }
     self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame)
     self.st:EnableSelection(true)
@@ -419,6 +421,7 @@ local function GetTopBids()
     LOG:Trace("AuctionManagerGUI:GetTopBids()")
     local max = {name = "", bid = 0}
     for name,bid in pairs(AuctionManager:Bids()) do
+        bid = tonumber(bid) or 0
         if bid > max.bid then
             max.bid = bid
             max.name = name
@@ -426,6 +429,7 @@ local function GetTopBids()
     end
     local second = {name = "", bid = 0}
     for name,bid in pairs(AuctionManager:Bids()) do
+        bid = tonumber(bid) or 0
         if bid > second.bid and name ~= max.name then
             second.bid = bid
             second.name = name
