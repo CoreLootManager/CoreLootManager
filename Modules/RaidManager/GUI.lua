@@ -61,18 +61,33 @@ local function RestoreLocation(self)
     end
 end
 
+local function UpdateRaid(self, name)
+    self.roster = RosterManager:GetRosterByName(name)
+    if self.roster then
+        self.configuration = RosterConfiguration:New(DeepCopy(self.roster.configuration))
+        return true
+    end
+    return false
+end
+
 function RaidManagerGUI:Initialize()
     LOG:Trace("RaidManagerGUI:Initialize()")
     self.configuration = RosterConfiguration:New()
     self.name = ""
     self.tooltip = CreateFrame("GameTooltip", "CLMRaidListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     InitializeDB(self)
+    self.selectedRoster = ""
     EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
+        if UpdateRaid(self, self.db.selectedRoster) then
+            self.selectedRoster =  self.db.selectedRoster
+        else
+            self.selectedRoster = ""
+        end
         self:Refresh(true)
     end)
 
@@ -142,6 +157,8 @@ end
 function RaidManagerGUI:SetRosterOption(option, value)
     return self.configuration:Set(option, value)
 end
+
+
 
 local function FillConfigurationTooltip(configuration, tooltip)
     tooltip:AddDoubleLine("Auction Time", configuration:Get("auctionTime"))
@@ -260,8 +277,7 @@ local function GenerateOfficerOptions(self)
             end),
             set = (function(i, v)
                 self.selectedRoster = v
-                self.roster = RosterManager:GetRosterByName(self.selectedRoster)
-                self.configuration = RosterConfiguration:New(DeepCopy(self.roster.configuration))
+                UpdateRaid(self, self.selectedRoster)
                 self.db.selectedRoster = self.selectedRoster
                 self:Refresh()
             end),
@@ -300,7 +316,7 @@ local function CreateManagementOptions(self, container)
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(200)
     self.ManagementOptions = ManagementOptions
-    self.selectedRoster = self.db.selectedRoster or ""
+
     local options = {
         type = "group",
         args = {}
