@@ -1,7 +1,6 @@
 local _, CLM = ...
 
 local UTILS = CLM.UTILS
-local keys = UTILS.keys
 
 local Profile = {}
 
@@ -57,7 +56,7 @@ function Profile:Alts()
     return self.alts
 end
 
-function Profile:HasAlts() 
+function Profile:HasAlts()
     return not rawequal(next(self.alts), nil)
 end
 

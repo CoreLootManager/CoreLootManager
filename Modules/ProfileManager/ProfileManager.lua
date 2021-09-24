@@ -83,7 +83,23 @@ function ProfileManager:Initialize()
             local GUID = entry:GUID()
             if type(GUID) ~= "number" then return end
             GUID = getGuidFromInteger(GUID)
-            if self.cache.profiles[GUID] then
+            local profile = self.cache.profiles[GUID]
+            if profile then
+                -- Check alt-main linking before removing
+                if profile:HasAlts() then
+                    for altGUID in pairs(profile:Alts()) then
+                        local altProfile = self:GetProfileByGUID(altGUID)
+                        if altProfile then
+                            altProfile:SetMain("")
+                        end
+                    end
+                elseif(profile:Main() != "")
+                    local mainProfile = self:GetProfileByGUID(profile:Main())
+                    if mainProfile then
+                        mainProfile:RemoveAlt(GUID)
+                    end
+                end
+                -- Remove
                 self.cache.profiles[GUID] = nil
             end
         end))
@@ -134,8 +150,10 @@ function ProfileManager:Initialize()
                         end
                         -- 3) Set new Main standings
                         roster:SetStandings(mainGUID, pointSum)
-                        -- 4) Mirror standings and weekly gains from main to alts
-                        roster:MirrorStandings(mainGUID, mainProfile:Alts())
+                        -- 4) Mirror standings from main to alts
+                        roster:MirrorStandings(mainGUID, mainProfile:Alts(), true)
+                        -- 5) Mirror weekly gains from main to alts
+                        roster:MirrorWeeklyGains(mainGUID, mainProfile:Alts(), true)
                     end
                 end
             end

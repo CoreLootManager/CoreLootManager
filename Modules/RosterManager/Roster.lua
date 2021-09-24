@@ -92,8 +92,14 @@ function Roster:GetAllWeeklyGains()
     return self.weeklyGains or {}
 end
 
+
 function Roster:GetWeeklyGainsForPlayer(GUID)
     return self.weeklyGains[GUID] or {}
+end
+
+function Roster:GetCurrentGainsForPlayer(GUID)
+    local week = WeekNumber(GetServerTime(), (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
+    return self:GetWeeklyGainsForPlayerWeek(GUID, week)
 end
 
 function Roster:GetWeeklyGainsForPlayerWeek(GUID, week)
@@ -133,8 +139,7 @@ function Roster:UpdateStandings(GUID, value, timestamp)
         if self.configuration.hasWeeklyCap then
             local weeklyCap = self.configuration._.weeklyCap
             LOG:Debug("--- HAS WEEKLY CAP (%s) ---", weeklyCap)
-            local offset = (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS
-            local week = WeekNumber(timestamp, offset)
+            local week = WeekNumber(timestamp, (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
             local weeklyGains = self:GetWeeklyGainsForPlayerWeek(GUID, week)
             LOG:Debug("weeklyGain %s", weeklyGains)
             local maxGain = self.configuration._.weeklyCap - weeklyGains
@@ -164,14 +169,8 @@ function Roster:DecayStandings(GUID, value)
 end
 
 local function mirrorStandings(self, source, target)
+    if source == target then return end -- to prevent circular updates
     self.standings[target] = self.standings[source]
-    local gains = self:GetWeeklyGainsForPlayer(source)
-    if self.weeklyGains[target] then
-        for week, gain in ipairs(gains) do
-            self:GetWeeklyGainsForPlayerWeek(target, week)
-            self.weeklyGains[target][week] = gain
-        end
-    end
 end
 
 function Roster:MirrorStandings(source, targets, isArray)
@@ -182,6 +181,29 @@ function Roster:MirrorStandings(source, targets, isArray)
     else
         for _, target in ipairs(targets) do
             mirrorStandings(self, source, target)
+        end
+    end
+end
+
+local function mirrorWeeklyGains(self, source, target)
+    if source == target then return end -- to prevent circular updates
+    local gains = self:GetWeeklyGainsForPlayer(source)
+    if self.weeklyGains[target] then
+        for week, gain in ipairs(gains) do
+            self:GetWeeklyGainsForPlayerWeek(target, week)
+            self.weeklyGains[target][week] = gain
+        end
+    end
+end
+
+function Roster:MirrorWeeklyGains(source, targets, isArray)
+    if isArray then
+        for target, _ in pairs(targets) do
+            mirrorWeeklyGains(self, source, target)
+        end
+    else
+        for _, target in ipairs(targets) do
+            mirrorWeeklyGains(self, source, target)
         end
     end
 end
