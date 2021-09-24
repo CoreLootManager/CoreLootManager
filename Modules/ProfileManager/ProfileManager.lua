@@ -16,6 +16,7 @@ local NumberToClass = UTILS.NumberToClass
 local whoamiGUID = UTILS.whoamiGUID
 
 local Profile = CLM.MODELS.Profile
+local PruneLog = CLM.MODELS.ProfilePruneLog
 
 local LedgerManager = MODULES.LedgerManager
 
@@ -30,6 +31,12 @@ function ProfileManager:Initialize()
         profilesGuidMap = {},
         profiles = {}
     }
+
+    local db = MODULES.Database:Personal()
+    if not db.profileManager then
+        db.profileManager = { pruneLog = {} }
+    end
+    self.db = db.profileManager
 
     -- Register mutators
     LedgerManager:RegisterEntryType(
@@ -62,7 +69,7 @@ function ProfileManager:Initialize()
                 profileInternal.spec = spec
                 profileInternal.main = main
             else
-                local profile = Profile:New(name, class, spec, main)
+                local profile = Profile:New(entry, name, class, spec, main)
                 profile:SetGUID(GUID)
                 self.cache.profiles[GUID] = profile
                 self.cache.profilesGuidMap[strlower(name)] = GUID
@@ -169,6 +176,16 @@ function ProfileManager:RemoveProfile(GUID)
     LedgerManager:Submit(LEDGER_PROFILE.Remove:new(GUID), true)
 end
 
+local function PruneProfile(self, GUID, log)
+    local profile = self.cache.profiles[GUID]
+    if not profile then return end
+    local entry = profile:Entry()
+    if not entry then return end
+    log:Add(profile:Name())
+    LedgerManager:Remove(entry)
+end
+
+ -- TODO to do with the markings if profile is removed
 function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local altProfile = self:GetProfileByName(alt)
@@ -259,6 +276,99 @@ function ProfileManager:AddTarget()
     else
         LOG:Warning("Your target must be a player.")
     end
+end
+
+function ProfileManager:PruneBelowLevel(minLevel, nop)
+    LOG:Trace("ProfileManager:PruneBelowLevel()")
+    local log = PruneLog:New("level", nop)
+    local prune
+    if nop then
+        LOG:Info("Pruning: No operation")
+        prune = (function(GUID)
+            local profile = self.cache.profiles[GUID]
+            if not profile then return end
+            log:Add(profile:Name())
+        end)
+    else
+        prune = (function(GUID) PruneProfile(self, GUID, log) end)
+    end
+    local pruned = 0
+    for i=1,GetNumGuildMembers() do
+        local _, _, _, level, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+        if level < minLevel then
+            prune(GUID)
+            pruned = pruned + 1
+        end
+    end
+    if pruned > 0 then table.insert(self.db.pruneLog, log) end
+    LOG:Info("Pruned %s profiles below level %s", pruned, minLevel)
+end
+
+function ProfileManager:PruneRank(rank, nop)
+    LOG:Trace("ProfileManager:PruneRank()")
+    local log = PruneLog:New("rank", nop)
+    local prune
+    if nop then
+        LOG:Info("Pruning: No operation")
+        prune = (function(GUID)
+            local profile = self.cache.profiles[GUID]
+            if not profile then return end
+            log:Add(profile:Name())
+        end)
+    else
+        prune = (function(GUID) PruneProfile(self, GUID, log) end)
+    end
+    local check
+    if type(rank) == "number" then
+        check = (function(_rankName, _rankIndex, _rank)
+            return (_rankIndex == _rank)
+        end)
+    else
+        rank = strlower(rank or "")
+        check = (function(_rankName, _rankIndex, _rank)
+            return (strlower(_rankName) == _rank)
+        end)
+    end
+    local pruned = 0
+    for i=1,GetNumGuildMembers() do
+        local _, rankName, rankIndex, _, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+        if check(rankName, rankIndex, rank) then
+            prune(GUID)
+            pruned = pruned + 1
+        end
+    end
+    if pruned > 0 then table.insert(self.db.pruneLog, log) end
+    LOG:Info("Pruned %s profiles with rank %s", pruned, rank)
+end
+
+function ProfileManager:PruneUnguilded(nop)
+    LOG:Trace("ProfileManager:PruneUnguilded()")
+    local log = PruneLog:New("unguilded", nop)
+    local prune
+    if nop then
+        LOG:Info("Pruning: No operation")
+        prune = (function(GUID)
+            local profile = self.cache.profiles[GUID]
+            if not profile then return end
+            log:Add(profile:Name())
+        end)
+    else
+        prune = (function(GUID) PruneProfile(self, GUID, log) end)
+    end
+    local GUIDs = {}
+    local pruned = 0
+    for i=1,GetNumGuildMembers() do
+        local _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+        GUIDs[GUID] = true
+    end
+    for GUID in pairs(self.cache.profiles) do
+        if not GUIDs[GUID] then
+            prune(GUID, log)
+            pruned = pruned + 1
+        end
+    end
+    if pruned > 0 then table.insert(self.db.pruneLog, log) end
+    LOG:Info("Pruned %s unguilded profiles", pruned)
 end
 
 function ProfileManager:WipeAll()

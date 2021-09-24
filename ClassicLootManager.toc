@@ -1,12 +1,13 @@
-## Interface: 11307
+## Interface: 20502
 ## Interface-Classic: 11307
-## Interface-BCC: 20501
+## Interface-BCC: 20502
 ## Title: Classic Loot Manager
 ## Notes: Robust, point based Loot Manager system  (DKP / EPGP / SK / ROLL)
 ## Author: Lantis (WoW: Mirage Raceway EU <Essential> Alliance)
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
 ## X-WoWI-ID: 26001
+## X-Wago-ID: vEGPw4K1
 # OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, LibLogger, AceAddon-3.0
 ## SavedVariables: CLM_DB, CLM_Logs, CLM_MinimapIcon
 ## LoadOnDemand: 0
@@ -50,6 +51,7 @@ Modules\Logger\Logger.lua
 
 # Addon models
 Modules\ProfileManager\Profile.lua
+Modules\ProfileManager\PruneLog.lua
 Modules\RosterManager\Roster.lua
 Modules\ProfileManager\LedgerEntries.lua
 Modules\RosterManager\LedgerEntries.lua

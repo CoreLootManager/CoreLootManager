@@ -28,6 +28,8 @@ local AuctionCommDistributeBid = MODELS.AuctionCommDistributeBid
 
 local AUCTION_COMM_PREFIX = "Auction001"
 
+local BID_PASS = "PASS"
+
 local AuctionManager = {}
 function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
@@ -45,7 +47,8 @@ function AuctionManager:Initialize()
 
     self.handlers = {
         [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]    = "HandleSubmitBid",
-        [CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID]    = "HandleCancelBid"
+        [CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID]    = "HandleCancelBid",
+        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS]   = "HandleNotifyPass",
     }
 
     self._initialized = true
@@ -258,6 +261,7 @@ function AuctionManager:AnnounceHighestBidder(name, bid)
     if self.auctionType ~= CONSTANTS.AUCTION_TYPE.OPEN then return end
     if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not bid then return end
+    if bid == BID_PASS then return end
     self:SendBidInfo(name, bid)
     local message = string.format("New highest bidder: %s (%d DKP)", name, bid)
     SendChatMessage(message, "RAID_WARNING")
@@ -290,9 +294,20 @@ function AuctionManager:HandleCancelBid(data, sender)
     self:UpdateBid(sender, nil)
 end
 
+function AuctionManager:HandleNotifyPass(data, sender)
+    LOG:Trace("AuctionManager:HandleNotifyPass()")
+    if not self.IsAuctionInProgress then
+        LOG:Debug("Received pass from %s while no auctions are in progress", sender)
+        return
+    end
+    self:UpdateBid(sender, BID_PASS)
+end
+
 function AuctionManager:ValidateBid(name, bid)
     -- allow bid cancelling
     if bid == nil then return true end
+    -- allow bid passing
+    if bid == BID_PASS then return true end
     -- sanity check
     local profile = ProfileManager:GetProfileByName(name)
     if not profile then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
@@ -342,6 +357,7 @@ end
 
 function AuctionManager:UpdateBidsInternal(name, bid)
     self.bids[name] = bid
+    if bid == BID_PASS then return end
     if bid then
         if bid > self.highestBid then self.highestBid = bid end
         self:AntiSnipe()

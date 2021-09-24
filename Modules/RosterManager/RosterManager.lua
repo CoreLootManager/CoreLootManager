@@ -515,7 +515,6 @@ function RosterManager:WipeAll()
         rostersUidMap = {},
         rosters = {}
     }
-    collectgarbage()
 end
 
 -- -- Publish API

@@ -103,6 +103,14 @@ function BiddingManager:CancelBid()
     Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
+function BiddingManager:NotifyPass()
+    LOG:Trace("BiddingManager:NotifyPass()")
+    if not self.auctionInProgress then return end
+    self.lastBid = "Pass"
+    local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
+    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+end
+
 function BiddingManager:ClearAuctionInfo()
     self.auctionInfo = nil
     self.auctioneer = nil
@@ -186,12 +194,14 @@ end
 
 CONSTANTS.BIDDING_COMM = {
     TYPE = {
-        SUBMIT_BID = 1,
-        CANCEL_BID = 2
+        SUBMIT_BID  = 1,
+        CANCEL_BID  = 2,
+        NOTIFY_PASS = 3
     },
     TYPES = UTILS.Set({
         1, -- SUBMIT BID
         2, -- CANCEL BID
+        3, -- NOTIFY_PASS
     })
 }
 
