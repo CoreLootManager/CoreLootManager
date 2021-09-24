@@ -163,6 +163,29 @@ function Roster:DecayStandings(GUID, value)
     self.standings[GUID] = round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
 end
 
+local function mirrorStandings(self, source, target)
+    self.standings[target] = self.standings[source]
+    local gains = self:GetWeeklyGainsForPlayer(source)
+    if self.weeklyGains[target] then
+        for week, gain in ipairs(gains) do
+            self:GetWeeklyGainsForPlayerWeek(target, week)
+            self.weeklyGains[target][week] = gain
+        end
+    end
+end
+
+function Roster:MirrorStandings(source, targets, isArray)
+    if isArray then
+        for target, _ in pairs(targets) do
+            mirrorStandings(self, source, target)
+        end
+    else
+        for _, target in ipairs(targets) do
+            mirrorStandings(self, source, target)
+        end
+    end
+end
+
 function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
     LOG:Debug("Set Default Slot Value: [%s]: [%s] [%s] for roster [%s]", itemEquipLoc, base, maximum, self:UID())
     self.defaultSlotValues[itemEquipLoc] = {

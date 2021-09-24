@@ -85,15 +85,15 @@ function ProfileManager:Initialize()
         LEDGER_PROFILE.Link,
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLink)")
-            local GUID = entry:GUID()
-            if type(GUID) ~= "number" then return end
-            GUID = getGuidFromInteger(GUID)
-            local main = entry:main()
-            if type(main) ~= "number" then return end
-            main = getGuidFromInteger(main)
-            local altProfile = self:GetProfileByGUID(GUID)
+            local altGUID = entry:GUID()
+            if type(altGUID) ~= "number" then return end
+            altGUID = getGuidFromInteger(altGUID)
+            local mainGUID = entry:main()
+            if type(mainGUID) ~= "number" then return end
+            mainGUID = getGuidFromInteger(mainGUID)
+            local altProfile = self:GetProfileByGUID(altGUID)
             if not typeof(altProfile, Profile) then return end
-            local mainProfile = self:GetProfileByGUID(main)
+            local mainProfile = self:GetProfileByGUID(mainGUID)
             if not typeof(mainProfile, Profile) then -- Unlink
                 -- Check if our main exists
                 local currentMainProfile = self:GetProfileByName(altProfile:Main())
@@ -101,19 +101,36 @@ function ProfileManager:Initialize()
                 -- Remove main from this alt
                 altProfile:ClearMain()
                 -- Remove alt count from main
-                currentMainProfile:RemoveAlt(altProfile:GUID())
+                currentMainProfile:RemoveAlt(altGUID)
             else -- Link
                 -- Do not allow alt chaining if main is alt
                 if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
                 -- Do not allow alt chaining if alt has alts
-                if altProfile:AltCount() > 0 then return end
+                if altProfile:HasAlts() then return end
                 -- Set new main of this alt
-                altProfile:SetMain(main)
+                altProfile:SetMain(mainGUID)
                 -- Add alt to our main
-                mainProfile:AddAlt(altProfile:GUID())
-                -- Sum the standings for each roster both are in
-                -- If Main is missing from roster: add it 
-                -- TODO
+                mainProfile:AddAlt(altGUID)
+                -- Handle consequences of linking:
+                -- For each roster this alt is present in:
+                local rosters = MODULES.RosterManager:GetRosters()
+                for _,roster in pairs(rosters) do
+                    if roster:IsProfileInRoster(altGUID) then
+                        -- 1) Add main if not present in roster
+                        if not roster:IsProfileInRoster(mainGUID) then
+                            roster:AddProfileByGUID(mainGUID)
+                        end
+                        local pointSum = roster:Standings(mainGUID)
+                        -- 2) Sum points for all characters
+                        for _altGUID in pairs(mainProfile:Alts()) do
+                            pointSum = pointSum + (roster:Standings(_altGUID) or 0)
+                        end
+                        -- 3) Set new Main standings
+                        roster:SetStandings(mainGUID, pointSum)
+                        -- 4) Mirror standings and weekly gains from main to alts
+                        roster:MirrorStandings(mainGUID, mainProfile:Alts())
+                    end
+                end
             end
         end))
 
@@ -169,7 +186,7 @@ function ProfileManager:MarkAsAltByNames(alt, main)
         -- Do not allow alt chaining if main is alt
         if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
         -- Do not allow alt chaining if alt has alts
-        if altProfile:AltCount() > 0 then return end
+        if altProfile:HasAlts() then return end
         if strlower(altProfile:Main()) ~= strlower(mainProfile:Name()) then
             LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
         end

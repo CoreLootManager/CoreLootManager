@@ -5,10 +5,6 @@ local keys = UTILS.keys
 
 local Profile = {}
 
-local function UpdateAltList(self)
-    self.altList = keys(self.alts)
-end
-
 function Profile:New(name, class, spec, main)
     local o = {}
 
@@ -27,8 +23,6 @@ function Profile:New(name, class, spec, main)
         changeset = ""
     }
     o.alts = {}
-    o.altList = {}
-    o.altCount = 0
     self._versionString = "Unknown"
 
     return o
@@ -59,26 +53,22 @@ function Profile:ClearMain()
 end
 
 function Profile:Alts()
-    return self.altList
+    return self.alts
 end
 
-function Profile:AltCount()
-    return self.altCount
+function Profile:HasAlts() 
+    return not rawequal(next(self.alts), nil)
 end
 
 function Profile:AddAlt(GUID)
     if not self.alts[GUID] then
         self.alts[GUID] = true
-        self.altCount = self.altCount + 1
-        UpdateAltList(self)
     end
 end
 
 function Profile:RemoveAlt(GUID)
     if self.alts[GUID] then
         self.alts[GUID] = nil
-        self.altCount = self.altCount - 1
-        UpdateAltList(self)
     end
 end
 
