@@ -113,19 +113,22 @@ function ProfileManager:Initialize()
             altGUID = getGuidFromInteger(altGUID)
             local mainGUID = entry:main()
             if type(mainGUID) ~= "number" then return end
+            if altGUID == mainGUID then return end
             mainGUID = getGuidFromInteger(mainGUID)
             local altProfile = self:GetProfileByGUID(altGUID)
             if not typeof(altProfile, Profile) then return end
             local mainProfile = self:GetProfileByGUID(mainGUID)
             if not typeof(mainProfile, Profile) then -- Unlink
                 -- Check if our main exists
-                local currentMainProfile = self:GetProfileByName(altProfile:Main())
+                local currentMainProfile = self:GetProfileByGUID(altProfile:Main())
                 if not typeof(currentMainProfile, Profile) then return end
                 -- Remove main from this alt
                 altProfile:ClearMain()
                 -- Remove alt count from main
                 currentMainProfile:RemoveAlt(altGUID)
             else -- Link
+                -- Sanity check if not setting existing one
+                if altProfile:Main() == mainProfile:GUID() then return end
                 -- Do not allow alt chaining if main is alt
                 if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
                 -- Do not allow alt chaining if alt has alts
@@ -139,10 +142,9 @@ function ProfileManager:Initialize()
                 local rosters = MODULES.RosterManager:GetRosters()
                 for _,roster in pairs(rosters) do
                     if roster:IsProfileInRoster(altGUID) then
+                        print("alt in roster oi")
                         -- 1) Add main if not present in roster
-                        if not roster:IsProfileInRoster(mainGUID) then
-                            roster:AddProfileByGUID(mainGUID)
-                        end
+                        roster:AddProfileByGUID(mainGUID)
                         local pointSum = roster:Standings(mainGUID)
                         -- 2) Sum points for all characters
                         for _altGUID in pairs(mainProfile:Alts()) do
@@ -221,9 +223,11 @@ function ProfileManager:MarkAsAltByNames(alt, main)
         if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
         -- Do not allow alt chaining if alt has alts
         if altProfile:HasAlts() then return end
-        if strlower(altProfile:Main()) ~= strlower(mainProfile:Name()) then
-            LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
-        end
+        -- Don't allow self setting
+        if altProfile:GUID() == mainProfile:GUID() then return end
+        -- Don't allow re-setting
+        if altProfile:Main() == mainProfile:GUID() then return end
+        LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
     end
 end
 

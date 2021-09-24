@@ -369,11 +369,23 @@ function StandingsGUI:Refresh(visible)
 
     local rowId = 1
     local data = {}
+    -- local weeklyCap = roster:GetConfiguration("weeklyCap")
+    -- local buildValue
+    -- if weeklyCap > 0 then
+    --     buildValue = (function(roster, GUID, value)
+    --         return value .. " (" .. roster:GetCurrentGainsForPlayer(GUID) .. "/" .. weeklyCap .. ")"
+    --     end)
+    -- else
+    --     buildValue = (function(roster, GUID, value)
+    --         return value
+    --     end)
+    -- end
     for GUID,value in pairs(roster:Standings()) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
         if profile then
             local row = {cols = {}}
             row.cols[1] = {value = profile:Name()}
+            -- row.cols[2] = {value = buildValue(roster, GUID, value)}
             row.cols[2] = {value = value}
             row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
             row.cols[4] = {value = profile:Spec()}

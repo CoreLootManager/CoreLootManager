@@ -34,8 +34,13 @@ local function apply_mutator(entry, mutate)
     for _,target in ipairs(targets) do
         local mainProfile = nil
         local GUID = getGuidFromInteger(target)
+        if not roster:IsProfileInRoster(GUID) then
+            LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+            return
+        end
         local targetProfile = ProfileManager:GetProfileByGUID(GUID)
-        if targetProfile then
+        if targetProfile and roster:IsProfileInRoster(GUID) then
+            print(GUID, targetProfile:Name())
             roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
         end
         -- Check if we have main-alt linking

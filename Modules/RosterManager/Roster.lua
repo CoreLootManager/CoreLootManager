@@ -51,8 +51,14 @@ function Roster:GetPointType()
 end
 
 function Roster:AddProfileByGUID(GUID)
+    if GUID == "Player-4454-009AD9A5" then
+        print("-- ADDING TO ROSTER --")
+    end
     LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     if self:IsProfileInRoster(GUID) then return end
+    if GUID == "Player-4454-009AD9A5" then
+        print("-- REALLY REALLY ADDING TO ROSTER --")
+    end
     self.standings[GUID] = 0
     self.weeklyGains[GUID] = {}
     self.profileLoot[GUID] = {}
@@ -60,6 +66,9 @@ function Roster:AddProfileByGUID(GUID)
 end
 
 function Roster:RemoveProfileByGUID(GUID)
+    if GUID == "Player-4454-009AD9A5" then
+        print("-- REMOVING FROM ROSTER --")
+    end
     LOG:Debug("Remove profile [%s] from roster [%s]", GUID, self:UID())
     self.standings[GUID] = nil
     self.weeklyGains[GUID] = nil
@@ -69,7 +78,14 @@ function Roster:RemoveProfileByGUID(GUID)
 end
 
 function Roster:IsProfileInRoster(GUID)
-    return self.standings[GUID]
+    if GUID == "Player-4454-009AD9A5" then
+        if self.standings[GUID] ~= nil then
+            print("Cobb in roster", self.standings[GUID])
+        else
+            print("Cobb NOT IN ROSTER", self.standings[GUID])
+        end
+    end
+    return (self.standings[GUID] ~= nil)
 end
 
 function Roster:UID()
@@ -156,6 +172,9 @@ function Roster:UpdateStandings(GUID, value, timestamp)
         end
     end
     -- Handle the standings update
+    if self.standings[GUID] == nil then
+        print(" WTF?!?!!?")
+    end
     self.standings[GUID] = standings + value
     LOG:Debug("new standings %s", self.standings[GUID])
 end
@@ -170,6 +189,7 @@ end
 
 local function mirrorStandings(self, source, target)
     if source == target then return end -- to prevent circular updates
+    if not self.standings[target] == nil then return end
     self.standings[target] = self.standings[source]
 end
 
@@ -187,6 +207,7 @@ end
 
 local function mirrorWeeklyGains(self, source, target)
     if source == target then return end -- to prevent circular updates
+    if not self.standings[target] == nil then return end
     local gains = self:GetWeeklyGainsForPlayer(source)
     if self.weeklyGains[target] then
         for week, gain in ipairs(gains) do
@@ -300,6 +321,9 @@ function Roster:WipeHistory()
 end
 
 function Roster:AddProfilePointHistory(history, profile)
+    if profile:GUID() == "Player-4454-009AD9A5" then
+        print(profile:GUID(), self.profilePointHistory[profile:GUID()])
+    end
     table.insert(self.profilePointHistory[profile:GUID()], 1, history)
 end
 

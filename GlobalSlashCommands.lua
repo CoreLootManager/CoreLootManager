@@ -94,7 +94,7 @@ function GlobalSlashCommands:Initialize()
             type = "input",
             name = "Unlink Alt",
             set = (function(i, input)
-                ProfileManager:MarkAsAltByNames(input)
+                ProfileManager:MarkAsAltByNames(input, "")
             end),
             confirm = true
         }
