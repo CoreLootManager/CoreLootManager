@@ -39,7 +39,7 @@ local function apply_mutator(entry, mutate)
             roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
         end
         -- Check if we have main-alt linking
-        if targetProfile:Main() == "") then -- is main
+        if targetProfile:Main() == "" then -- is main
             if targetProfile:HasAlts() then -- has alts
                 mainProfile = targetProfile
             end

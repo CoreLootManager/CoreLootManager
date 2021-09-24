@@ -87,13 +87,13 @@ function ProfileManager:Initialize()
             if profile then
                 -- Check alt-main linking before removing
                 if profile:HasAlts() then
-                    for altGUID in pairs(profile:Alts()) then
+                    for altGUID in pairs(profile:Alts()) do
                         local altProfile = self:GetProfileByGUID(altGUID)
                         if altProfile then
                             altProfile:SetMain("")
                         end
                     end
-                elseif(profile:Main() != "")
+                elseif (profile:Main() ~= "") then
                     local mainProfile = self:GetProfileByGUID(profile:Main())
                     if mainProfile then
                         mainProfile:RemoveAlt(GUID)
@@ -203,7 +203,6 @@ local function PruneProfile(self, GUID, log)
     LedgerManager:Remove(entry)
 end
 
- -- TODO to do with the markings if profile is removed
 function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local altProfile = self:GetProfileByName(alt)

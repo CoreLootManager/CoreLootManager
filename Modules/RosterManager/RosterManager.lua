@@ -225,7 +225,7 @@ function RosterManager:Initialize()
                         if profile then
                             roster:AddProfileByGUID(GUID)
                             -- If it is an alt of a linked main - set its standings and gains from main
-                            if profile:Main() != "" then
+                            if profile:Main() ~= "" then
                                 roster:MirrorStandings(GUID, { profile:Main() })
                                 roster:MirrorWeeklyGains(GUID, { profile:Main() })
                             end

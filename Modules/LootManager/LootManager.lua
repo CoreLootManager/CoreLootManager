@@ -38,7 +38,7 @@ local function mutateLootAward(entry, roster)
         local loot = Loot:New(entry, profile)
         RosterManager:AddLootToRoster(roster, loot, profile)
         local main
-        if profile:Main() == "") then -- is main
+        if profile:Main() == "" then -- is main
             if profile:HasAlts() then -- has alts
                 main = profile
             end

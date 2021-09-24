@@ -84,16 +84,17 @@ function GlobalSlashCommands:Initialize()
         options.link = {
             type = "input",
             name = "Link Main-Alt",
-            set = (function(i, mainAlt)
-                -- TODO
+            set = (function(i, input)
+                local alt, main = strsplit(" ", input)
+                ProfileManager:MarkAsAltByNames(alt, main)
             end),
             confirm = true
         }
         options.unlink = {
             type = "input",
             name = "Unlink Alt",
-            set = (function(i, alt)
-                -- TODO
+            set = (function(i, input)
+                ProfileManager:MarkAsAltByNames(input)
             end),
             confirm = true
         }
