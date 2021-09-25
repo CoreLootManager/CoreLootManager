@@ -26,7 +26,7 @@ local RosterManager = MODULES.RosterManager
 
 local mergeDictsInline = UTILS.mergeDictsInline
 
-whoamiGUID = UTILS.whoamiGUID
+local whoamiGUID = UTILS.whoamiGUID
 
 local guiOptions = {
     type = "group",
@@ -253,7 +253,6 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     local hasMax = (self.auctionInfo:Max() > 0)
 
     local statusText = ""
-    local separatorAdded = true
     local myProfile = ProfileManager:GetMyProfile()
     if myProfile then
         local roster = RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
