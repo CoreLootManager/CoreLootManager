@@ -142,7 +142,6 @@ function ProfileManager:Initialize()
                 local rosters = MODULES.RosterManager:GetRosters()
                 for _,roster in pairs(rosters) do
                     if roster:IsProfileInRoster(altGUID) then
-                        print("alt in roster oi")
                         -- 1) Add main if not present in roster
                         roster:AddProfileByGUID(mainGUID)
                         local pointSum = roster:Standings(mainGUID)

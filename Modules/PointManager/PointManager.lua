@@ -40,7 +40,6 @@ local function apply_mutator(entry, mutate)
         end
         local targetProfile = ProfileManager:GetProfileByGUID(GUID)
         if targetProfile and roster:IsProfileInRoster(GUID) then
-            print(GUID, targetProfile:Name())
             roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
         end
         -- Check if we have main-alt linking
