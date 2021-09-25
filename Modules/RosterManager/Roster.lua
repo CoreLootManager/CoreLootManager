@@ -30,6 +30,8 @@ function Roster:New(uid, pointType)
     o.itemValues = {}
 
     -- Roster data
+    -- Profile is at all in roster
+    o.inRoster = {}
     -- Profile standing in roster (dict)
     o.standings = {}
     -- Point changes in  roster (list)
@@ -63,6 +65,7 @@ function Roster:AddProfileByGUID(GUID)
     self.weeklyGains[GUID] = {}
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
+    self.inRoster[GUID] = true
 end
 
 function Roster:RemoveProfileByGUID(GUID)
@@ -74,18 +77,19 @@ function Roster:RemoveProfileByGUID(GUID)
     self.weeklyGains[GUID] = nil
     self.profileLoot[GUID] = nil
     self.profilePointHistory[GUID] = nil
+    self.inRoster[GUID] = nil
     -- TODO remove raidloot history for the person? how?
 end
 
 function Roster:IsProfileInRoster(GUID)
     if GUID == "Player-4454-009AD9A5" then
-        if self.standings[GUID] ~= nil then
+        if self.inRoster[GUID] ~= nil then
             print("Cobb in roster", self.standings[GUID])
         else
             print("Cobb NOT IN ROSTER", self.standings[GUID])
         end
     end
-    return (self.standings[GUID] ~= nil)
+    return (self.inRoster[GUID] ~= nil)
 end
 
 function Roster:UID()
@@ -189,7 +193,7 @@ end
 
 local function mirrorStandings(self, source, target)
     if source == target then return end -- to prevent circular updates
-    if not self.standings[target] == nil then return end
+    -- if not self.standings[target] == nil then return end
     self.standings[target] = self.standings[source]
 end
 
