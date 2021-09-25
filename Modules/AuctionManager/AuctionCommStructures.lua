@@ -5,7 +5,7 @@ local MODELS = CLM.MODELS
 local CONSTANTS = CLM.CONSTANTS
 
 local AuctionCommStartAuction = {}
-function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, itemLink, time, endtime, antiSnipe, note)
+function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, itemLink, time, endtime, antiSnipe, note, rosterUid)
     local isCopyConstructor = (type(typeOrObject) == "table")
 
     local o = isCopyConstructor and typeOrObject or {}
@@ -24,6 +24,7 @@ function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, ite
     o.d = endtime
     o.s = antiSnipe
     o.n = note
+    o.r = rosterUid
 
     return o
 end
@@ -62,6 +63,10 @@ end
 
 function AuctionCommStartAuction:Note()
     return self.n or ""
+end
+
+function AuctionCommStartAuction:RosterUid()
+    return self.r or 0
 end
 
 local AuctionCommDenyBid = {}
