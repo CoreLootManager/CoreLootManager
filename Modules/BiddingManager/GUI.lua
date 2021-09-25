@@ -26,8 +26,6 @@ local RosterManager = MODULES.RosterManager
 
 local mergeDictsInline = UTILS.mergeDictsInline
 
-local whoamiGUID = UTILS.whoamiGUID
-
 local guiOptions = {
     type = "group",
     args = {}
