@@ -119,6 +119,13 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                 self.bid = self.auctionInfo and self.auctionInfo:Base() or 0
                 BiddingManager:Bid(self.bid)
             end),
+            disabled = (function() 
+                if self.auctionInfo then
+                    return (self.auctionInfo:Base() == 0)
+                else
+                    return true
+                end
+            end),
             width = 0.45,
             order = 5
         },
@@ -129,6 +136,13 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             func = (function()
                 self.bid = self.auctionInfo and self.auctionInfo:Max() or 0
                 BiddingManager:Bid(self.bid)
+            end),
+            disabled = (function() 
+                if self.auctionInfo then
+                    return (self.auctionInfo:Max() == 0)
+                else
+                    return true
+                end
             end),
             width = 0.45,
             order = 6
