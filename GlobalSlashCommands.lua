@@ -83,7 +83,7 @@ function GlobalSlashCommands:Initialize()
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
         options.link = {
             type = "input",
-            name = "Link Main-Alt",
+            name = "Link Alt to Main",
             set = (function(i, input)
                 local alt, main = strsplit(" ", input)
                 ProfileManager:MarkAsAltByNames(alt, main)
