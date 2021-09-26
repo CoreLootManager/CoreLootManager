@@ -59,7 +59,14 @@ local function SetProfileVersion(name, version)
 end
 
 local function StoreProfileVersion(self, name, version)
-    self.db[name] = version
+    if not self.db[name] then
+        self.db[name] = {}
+    end
+    self.db[name].version = {
+        major = version.major or 0,
+        minor = version.minor or 0,
+        patch = version.patch or 0
+    }
 end
 
 local function HandleIncomingMessage(self, message, distribution, sender)
@@ -105,8 +112,8 @@ local function HandleRequestVersion(self, data, sender)
 end
 
 local function RestoreVersions(self)
-    for name, version in pairs(self.db) do
-        SetProfileVersion(name, version)
+    for name, info in pairs(self.db) do
+        SetProfileVersion(name, info.version)
     end
 end
 
@@ -119,10 +126,16 @@ function ProfileInfoManager:Initialize()
     self._lastDisplayedMessageD = 0
 
     local db = MODULES.Database:Personal()
-    if not db.version then
-        db.version = {}
+    if not db.profileInfo then
+        db.profileInfo = {}
+        -- migration
+        if db.version then
+            for player, version in pairs(db.version) then
+                db.profileInfo[player] = { version = version }
+            end
+        end
     end
-    self.db = db.version
+    self.db = db.profileInfo
 
     self.handlers = {
         [CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,

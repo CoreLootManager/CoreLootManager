@@ -4,8 +4,8 @@ local MODELS = CLM.MODELS
 local CONSTANTS = CLM.CONSTANTS
 
 
-local VersionCommAnnounceVersion = {}
-function VersionCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)
+local ProfileInfoCommAnnounceVersion = {}
+function ProfileInfoCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)
     local isCopyConstructor = (type(majorOrObject) == "table")
     local o = isCopyConstructor and majorOrObject or {}
 
@@ -22,7 +22,7 @@ function VersionCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)
     return o
 end
 
-function VersionCommAnnounceVersion:Version()
+function ProfileInfoCommAnnounceVersion:Version()
     return {
         major = self.m,
         minor = self.i,
@@ -31,8 +31,8 @@ function VersionCommAnnounceVersion:Version()
     }
 end
 
-local VersionCommStructure = {}
-function VersionCommStructure:New(typeOrObject, data)
+local ProfileInfoCommStructure = {}
+function ProfileInfoCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
 
     local o = isCopyConstructor and typeOrObject or {}
@@ -42,7 +42,7 @@ function VersionCommStructure:New(typeOrObject, data)
 
     if isCopyConstructor then
         if o.t == CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION then
-            o.d = VersionCommAnnounceVersion:New(o.d)
+            o.d = ProfileInfoCommAnnounceVersion:New(o.d)
         end
         return o
     end
@@ -53,13 +53,13 @@ function VersionCommStructure:New(typeOrObject, data)
     return o
 end
 
-function VersionCommStructure:Type()
+function ProfileInfoCommStructure:Type()
     return self.t or 0
 end
 
-function VersionCommStructure:Data()
+function ProfileInfoCommStructure:Data()
     return self.d
 end
 
-MODELS.VersionCommStructure = VersionCommStructure
-MODELS.VersionCommAnnounceVersion = VersionCommAnnounceVersion
+MODELS.ProfileInfoCommStructure = ProfileInfoCommStructure
+MODELS.ProfileInfoCommAnnounceVersion = ProfileInfoCommAnnounceVersion
