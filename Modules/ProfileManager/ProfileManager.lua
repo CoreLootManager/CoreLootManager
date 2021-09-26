@@ -50,7 +50,6 @@ function ProfileManager:Initialize()
             if empty(name) then return end
 
             local class = capitalize(NumberToClass(entry:ingameClass()))
-            local spec = entry:spec()
             local main = entry:main()
             main =  (type(main) == "number" and main ~= 0) and getGuidFromInteger(main) or ""
             -- Check if it's an update
@@ -59,17 +58,13 @@ function ProfileManager:Initialize()
                 if empty(class) then
                     class = profileInternal:Class()
                 end
-                if empty(spec) then
-                    spec = profileInternal:Spec()
-                end
                 if empty(main) then
                     main = profileInternal:Main()
                 end
                 profileInternal.class = class
-                profileInternal.spec = spec
                 profileInternal.main = main
             else
-                local profile = Profile:New(entry, name, class, spec, main)
+                local profile = Profile:New(entry, name, class, main)
                 profile:SetGUID(GUID)
                 self.cache.profiles[GUID] = profile
                 self.cache.profilesGuidMap[name] = GUID

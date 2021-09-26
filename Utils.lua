@@ -499,5 +499,13 @@ function UTILS.round(number, decimals)
     return math.floor(number * factor + 0.5) / factor
 end
 
+function UTILS.GetMyTalents()
+    local one, two, three
+    _, _, _, _, one   = GetTalentTabInfo(1)
+    _, _, _, _, two   = GetTalentTabInfo(2)
+    _, _, _, _, three = GetTalentTabInfo(3)
+    return one, two, three
+end
+
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"

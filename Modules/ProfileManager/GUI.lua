@@ -386,7 +386,7 @@ function ProfilesGUI:Refresh(visible)
         end
         row.cols[1] = {value = name}
         row.cols[2] = {value = UTILS.ColorCodeClass(object:Class())}
-        row.cols[3] = {value = object:Spec()}
+        row.cols[3] = {value = object:SpecString()}
         row.cols[4] = {value = main}
         row.cols[5] = {value = rank}
         row.cols[6] = {value = object:VersionString()}

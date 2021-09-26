@@ -416,7 +416,7 @@ function StandingsGUI:Refresh(visible)
             row.cols[1] = {value = profile:Name()}
             row.cols[2] = {value = value}
             row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
-            row.cols[4] = {value = profile:Spec()}
+            row.cols[4] = {value = profile:SpecString()}
             -- not displayed
             row.cols[5] = {value = roster:GetCurrentGainsForPlayer(GUID)}
             row.cols[6] = {value = weeklyCap}

@@ -485,7 +485,7 @@ function AuctionManagerGUI:Refresh()
                 local row = {cols = {}}
                 table.insert(row.cols, {value = profile:Name()})
                 table.insert(row.cols, {value = UTILS.ColorCodeClass(profile:Class())})
-                table.insert(row.cols, {value = profile:Spec()})
+                table.insert(row.cols, {value = profile:SpecString()})
                 table.insert(row.cols, {value = bid})
                 table.insert(row.cols, {value = self.roster:Standings(profile:GUID())})
                 table.insert(data, row)

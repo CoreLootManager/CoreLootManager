@@ -2623,6 +2623,7 @@ globals = {
 	"GetTalentInfoBySpecialization",
 	"GetTalentLink",
 	"GetTalentTierInfo",
+	"GetTalentTabInfo",
 	"GetTargetCorpseMapPosition",
 	"GetTargetTradeCurrency",
 	"GetTargetTradeMoney",

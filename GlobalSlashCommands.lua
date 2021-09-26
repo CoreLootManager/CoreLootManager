@@ -138,8 +138,18 @@ function GlobalSlashCommands:Initialize()
         options.version = {
             type = "execute",
             name = "Version check in guild",
-            set = (function()
+            func = (function()
                 ProfileInfoManager:RequestVersion()
+            end),
+            confirm = true
+        }
+    end
+    if ACL:IsTrusted() then
+        options.spec = {
+            type = "execute",
+            name = "Spec guild request",
+            func = (function()
+                ProfileInfoManager:RequestSpec()
             end),
             confirm = true
         }

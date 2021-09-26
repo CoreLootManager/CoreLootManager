@@ -2,7 +2,7 @@ local _, CLM = ...
 
 local Profile = {}
 
-function Profile:New(entry, name, class, spec, main)
+function Profile:New(entry, name, class, main)
     local o = {}
 
     setmetatable(o, self)
@@ -12,7 +12,6 @@ function Profile:New(entry, name, class, spec, main)
     o.entry = entry
     o.name  = (name ~= nil) and tostring(name) or ""
     o.class = (class ~= nil) and tostring(class) or ""
-    o.spec  = (spec ~= nil) and tostring(spec) or ""
     o.main  = (main ~= nil) and tostring(main) or ""
     o.version = {
         major = 0,
@@ -20,6 +19,7 @@ function Profile:New(entry, name, class, spec, main)
         patch = 0,
         changeset = ""
     }
+    o:SetSpec()
     self._versionString = "Unknown"
 
     return o
@@ -35,6 +35,18 @@ end
 
 function Profile:Spec()
     return self.spec
+end
+
+function Profile:SetSpec(one, two, three)
+    self.spec = {
+        one = one or 0,
+        two = two or 0,
+        three = three or 0
+    }
+end
+
+function Profile:SpecString()
+    return self.spec.one .. "/" .. self.spec.two .. "/" .. self.spec.three
 end
 
 function Profile:Main()

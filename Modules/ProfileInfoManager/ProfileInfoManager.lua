@@ -12,25 +12,46 @@ local ProfileManager = MODULES.ProfileManager
 local EventManager = MODULES.EventManager
 
 local ColorCodeText = UTILS.ColorCodeText
+local GetMyTalents = UTILS.GetMyTalents
+local ProfileInfoCommStructure = MODELS.ProfileInfoCommStructure
+local ProfileInfoCommAnnounceVersion = MODELS.ProfileInfoCommAnnounceVersion
+local ProfileInfoCommAnnounceSpec = MODELS.ProfileInfoCommAnnounceSpec
 
-local VersionCommStructure = MODELS.VersionCommStructure
-local VersionCommAnnounceVersion = MODELS.VersionCommAnnounceVersion
-
-local VERSION_COMM_PREFIX = "Version001"
+local PROFILEINFO_COMM_PREFIX = "Version001" -- TODO: Rename when going to v1.0.0
 
 local function stringifyVersion(version)
     return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
 end
 
-local ProfileInfoManager = {}
+local function GetProfileDb(self, name)
+    if not self.db[name] then
+        self.db[name] = {
+            version = {
+                major = 0,
+                minor = 0,
+                patch = 0,
+                changeset = ""
+            },
+            spec = {
+                one = 0,
+                two = 0,
+                three = 0
+            }
+        }
+    end
+    return self.db[name]
+end
 
+--[[
+    --- VERSION ---
+]]
 local function AnnounceVersion()
     LOG:Trace("ProfileInfoManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
-    local message = VersionCommStructure:New(
-        CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION,
-        VersionCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
-    Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    local message = ProfileInfoCommStructure:New(
+        CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION,
+        ProfileInfoCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
+    Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 local function OutOfDate(self, version, disable)
@@ -59,21 +80,13 @@ local function SetProfileVersion(name, version)
 end
 
 local function StoreProfileVersion(self, name, version)
-    if not self.db[name] then
-        self.db[name] = {}
-    end
-    self.db[name].version = {
-        major = version.major or 0,
-        minor = version.minor or 0,
-        patch = version.patch or 0
-    }
+    GetProfileDb(self, name).version = version
+    -- self.db[name].version = version
 end
 
-local function HandleIncomingMessage(self, message, distribution, sender)
-    LOG:Trace("ProfileInfoManager:HandleIncomingMessage()")
-    local mtype = message:Type() or 0
-    if self.handlers[mtype] then
-        self.handlers[mtype](self, message:Data(), sender)
+local function RestoreVersions(self)
+    for name, info in pairs(self.db) do
+        SetProfileVersion(name, info.version)
     end
 end
 
@@ -105,23 +118,80 @@ end
 local function HandleRequestVersion(self, data, sender)
     LOG:Trace("ProfileInfoManager:HandleRequestVersion()")
     local currentTime = GetServerTime()
-    if (currentTime - self._lastRequestResponse) > 30  then
+    if (currentTime - self._lastRequestResponse.version) > 30  then
         AnnounceVersion(self)
-        self._lastRequestResponse = currentTime
+        self._lastRequestResponse.version = currentTime
     end
 end
 
-local function RestoreVersions(self)
+--[[
+    --- SPEC ---
+]]
+local function AnnounceSpec()
+    LOG:Trace("ProfileInfoManager:AnnounceSpec()")
+    local one, two, three = GetMyTalents()
+    local message = ProfileInfoCommStructure:New(
+        CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC,
+        ProfileInfoCommAnnounceSpec:New(one, two, three))
+    Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+end
+
+local function SetProfileSpec(name, spec)
+    local profile = ProfileManager:GetProfileByName(name)
+    if profile then
+        profile:SetSpec(spec.one, spec.two, spec.three)
+    end
+end
+
+local function StoreProfileSpec(self, name, spec)
+    GetProfileDb(self, name).spec = spec
+    -- self.db[name].spec = spec
+end
+
+local function RestoreSpecs(self)
     for name, info in pairs(self.db) do
-        SetProfileVersion(name, info.version)
+        SetProfileSpec(name, info.spec)
     end
 end
 
+local function HandleAnnounceSpec(self, data, sender)
+    LOG:Trace("ProfileInfoManager:HandleAnnounceSpec()")
+    local receivedSpec = data:Spec()
+    SetProfileSpec(sender, receivedSpec)
+    StoreProfileSpec(self, sender, receivedSpec)
+end
+
+local function HandleRequestSpec(self, data, sender)
+    LOG:Trace("ProfileInfoManager:HandleRequestSpec()")
+    local currentTime = GetServerTime()
+    if (currentTime - self._lastRequestResponse.spec) > 30  then
+        AnnounceSpec(self)
+        self._lastRequestResponse.spec = currentTime
+    end
+end
+
+--[[
+    --- General ---
+]]
+
+local function HandleIncomingMessage(self, message, distribution, sender)
+    LOG:Trace("ProfileInfoManager:HandleIncomingMessage()")
+    local mtype = message:Type() or 0
+    if self.handlers[mtype] then
+        self.handlers[mtype](self, message:Data(), sender)
+    end
+end
+
+--[[
+    --- PUBLIC ---
+]]
+
+local ProfileInfoManager = {}
 function ProfileInfoManager:Initialize()
     LOG:Trace("ProfileInfoManager:Initialize()")
     self._initialized = false
 
-    self._lastRequestResponse = 0
+    self._lastRequestResponse = { version = 0, spec = 0 }
     self._lastDisplayedMessage = 0
     self._lastDisplayedMessageD = 0
 
@@ -130,31 +200,37 @@ function ProfileInfoManager:Initialize()
         db.profileInfo = {}
         -- migration
         if db.version then
-            for player, version in pairs(db.version) then
-                db.profileInfo[player] = { version = version }
+            for player, version in pairs(db.version) do
+                db.profileInfo[player] = { version = version, spec = { one = 0, two = 0, three = 0} }
             end
         end
     end
     self.db = db.profileInfo
 
     self.handlers = {
-        [CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
-        [CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC]     = HandleAnnounceSpec,
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]     = HandleRequestSpec
     }
 
-    Comms:Register(VERSION_COMM_PREFIX, (function(rawMessage, distribution, sender)
-        local message = VersionCommStructure:New(rawMessage)
-        if CONSTANTS.VERSIONNING_COMM.TYPES[message:Type()] == nil then return end
+    Comms:Register(PROFILEINFO_COMM_PREFIX, (function(rawMessage, distribution, sender)
+        local message = ProfileInfoCommStructure:New(rawMessage)
+        if CONSTANTS.PROFILE_INFO_COMM.TYPES[message:Type()] == nil then return end
         HandleIncomingMessage(self, message, distribution, sender)
     end), CONSTANTS.ACL.LEVEL.PLEBS, true)
 
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
-            RestoreVersions(self)
             LOG:Message("Classic Loot Manager %s initialization complete.", ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
-            C_Timer.After(math.random(1, 5), function()
+            C_Timer.After(1, function()
+                RestoreVersions(self)
+                RestoreSpecs(self)
+            end)
+            C_Timer.After(math.random(2, 5), function()
                 AnnounceVersion(self)
+                AnnounceSpec(self)
             end)
             self._initialized = true
         end
@@ -167,16 +243,24 @@ end
 
 function ProfileInfoManager:RequestVersion()
     LOG:Trace("ProfileInfoManager:RequestVersion()")
-    local message = VersionCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
-    Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    local message = ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION, {})
+    Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
-CONSTANTS.VERSIONNING_COMM = {
+function ProfileInfoManager:RequestSpec()
+    LOG:Trace("ProfileInfoManager:RequestSpec()")
+    local message = ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC, {})
+    Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+end
+
+CONSTANTS.PROFILE_INFO_COMM = {
     TYPE = {
         ANNOUNCE_VERSION    = 1,
-        REQUEST_VERSION     = 2
+        REQUEST_VERSION     = 2,
+        ANNOUNCE_SPEC       = 3,
+        REQUEST_SPEC        = 4
     },
-    TYPES = UTILS.Set({ 1, 2 })
+    TYPES = UTILS.Set({ 1, 2, 3, 4 })
 }
 
 MODULES.ProfileInfoManager = ProfileInfoManager
