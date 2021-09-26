@@ -52,6 +52,7 @@ end
 function StandingsGUI:Initialize()
     InitializeDB(self)
     EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    self.tooltip = CreateFrame("GameTooltip", "CLMStandingsListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -69,6 +70,14 @@ end
 
 local function ST_GetClass(row)
     return row.cols[3].value
+end
+
+local function ST_GetWeeklyGains(row)
+    return row.cols[5].value
+end
+
+local function ST_GetWeeklyCap(row)
+    return row.cols[6].value
 end
 
 local function GenerateUntrustedOptions(self)
@@ -333,6 +342,37 @@ local function CreateStandingsDisplay(self)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
 
+    -- OnEnter handler -> on hover
+    local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local rowData = self.st:GetRow(realrow)
+        if not rowData or not rowData.cols then return status end
+        local tooltip = self.tooltip
+        if not tooltip then return end
+        tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
+        local weeklyGain = ST_GetWeeklyGains(rowData)
+        local weeklyCap = ST_GetWeeklyCap(rowData)
+        tooltip:AddLine("Weekly gains:")
+        local gains = weeklyGain
+        if weeklyCap > 0 then
+            gains = gains .. " / " .. weeklyCap
+        end
+        tooltip:AddLine(gains)
+        tooltip:Show()
+        return status
+    end)
+    -- OnLeave handler -> on hover out
+    local OnLeaveHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        local status = self.st.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        self.tooltip:Hide()
+        return status
+    end)
+    -- end
+    self.st:RegisterEvents({
+        OnEnter = OnEnterHandler,
+        OnLeave = OnLeaveHandler
+    })
+
     return StandingsGroup
 end
 
@@ -366,7 +406,7 @@ function StandingsGUI:Refresh(visible)
 
     local roster = self:GetCurrentRoster()
     if not roster then return end
-
+    local weeklyCap = roster:GetConfiguration("weeklyCap")
     local rowId = 1
     local data = {}
     -- local weeklyCap = roster:GetConfiguration("weeklyCap")
@@ -389,6 +429,9 @@ function StandingsGUI:Refresh(visible)
             row.cols[2] = {value = value}
             row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
             row.cols[4] = {value = profile:Spec()}
+            -- not displayed
+            row.cols[5] = {value = roster:GetCurrentGainsForPlayer(GUID)}
+            row.cols[6] = {value = weeklyCap}
             data[rowId] = row
             rowId = rowId + 1
         end

@@ -21,6 +21,9 @@ local GUI = CLM.GUI
 local BiddingManager = MODULES.BiddingManager
 local EventManager = MODULES.EventManager
 
+local ProfileManager = MODULES.ProfileManager
+local RosterManager = MODULES.RosterManager
+
 local mergeDictsInline = UTILS.mergeDictsInline
 
 local guiOptions = {
@@ -119,6 +122,13 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                 self.bid = self.auctionInfo and self.auctionInfo:Base() or 0
                 BiddingManager:Bid(self.bid)
             end),
+            disabled = (function()
+                if self.auctionInfo then
+                    return (self.auctionInfo:Base() == 0)
+                else
+                    return true
+                end
+            end),
             width = 0.45,
             order = 5
         },
@@ -129,6 +139,13 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             func = (function()
                 self.bid = self.auctionInfo and self.auctionInfo:Max() or 0
                 BiddingManager:Bid(self.bid)
+            end),
+            disabled = (function()
+                if self.auctionInfo then
+                    return (self.auctionInfo:Max() == 0)
+                else
+                    return true
+                end
             end),
             width = 0.45,
             order = 6
@@ -229,12 +246,30 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     if duration < 0 then return end
     self.duration = duration
     self:BuildBar(duration)
+
+    local hasBase = (self.auctionInfo:Base() > 0)
+    local hasMax = (self.auctionInfo:Max() > 0)
+
     local statusText = ""
-    if self.auctionInfo:Base() > 0 then
+    local myProfile = ProfileManager:GetMyProfile()
+    if myProfile then
+        local roster = RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
+        if roster then
+            if roster:IsProfileInRoster(myProfile:GUID()) then
+                local standings = roster:Standings(myProfile:GUID())
+                statusText = standings .. " DKP "
+                if hasBase or hasMax then
+                    statusText = statusText .. " >>> "
+                end
+            end
+        end
+    end
+
+    if hasBase then
         statusText = statusText .. "Base: " .. self.auctionInfo:Base() .. " "
         self.bid = self.auctionInfo:Base()
     end
-    if self.auctionInfo:Max() > 0 then
+    if hasMax then
         statusText = statusText .. "Max: " .. self.auctionInfo:Max() .. " "
     end
     if self.auctionInfo:Note():len() > 0 then

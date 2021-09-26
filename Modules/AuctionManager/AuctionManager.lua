@@ -159,7 +159,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.auctionEndTime = GetServerTime() + self.auctionTime
     self.auctionTimeLeft = self.auctionEndTime
     -- Send auction information
-    self:SendAuctionStart()
+    self:SendAuctionStart(self.raid:Roster():UID())
     -- Start Auction Ticker
     self.lastCountdownValue = 5
     self.ticker = C_Timer.NewTicker(0.1, (function()
@@ -209,7 +209,7 @@ function AuctionManager:AntiSnipe()
     end
 end
 
-function AuctionManager:SendAuctionStart()
+function AuctionManager:SendAuctionStart(rosterUid)
     local message = AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION,
         AuctionCommStartAuction:New(
@@ -221,7 +221,9 @@ function AuctionManager:SendAuctionStart()
             self.auctionTime,
             self.auctionEndTime,
             self.antiSnipe,
-            self.note)
+            self.note,
+            rosterUid
+        )
     )
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
