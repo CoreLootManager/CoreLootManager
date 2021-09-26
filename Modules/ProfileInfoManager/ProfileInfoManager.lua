@@ -22,10 +22,10 @@ local function stringifyVersion(version)
     return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
 end
 
-local VersionManager = {}
+local ProfileInfoManager = {}
 
 local function AnnounceVersion()
-    LOG:Trace("VersionManager:AnnounceVersion()")
+    LOG:Trace("ProfileInfoManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
     local message = VersionCommStructure:New(
         CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION,
@@ -34,7 +34,7 @@ local function AnnounceVersion()
 end
 
 local function OutOfDate(self, version, disable)
-    LOG:Trace("VersionManager:OutOfDate()")
+    LOG:Trace("ProfileInfoManager:OutOfDate()")
     local currentTime = GetServerTime()
     if disable then
         if currentTime - self._lastDisplayedMessageD > 300 then
@@ -63,7 +63,7 @@ local function StoreProfileVersion(self, name, version)
 end
 
 local function HandleIncomingMessage(self, message, distribution, sender)
-    LOG:Trace("VersionManager:HandleIncomingMessage()")
+    LOG:Trace("ProfileInfoManager:HandleIncomingMessage()")
     local mtype = message:Type() or 0
     if self.handlers[mtype] then
         self.handlers[mtype](self, message:Data(), sender)
@@ -71,7 +71,7 @@ local function HandleIncomingMessage(self, message, distribution, sender)
 end
 
 local function HandleAnnounceVersion(self, data, sender)
-    LOG:Trace("VersionManager:HandleAnnounceVersion()")
+    LOG:Trace("ProfileInfoManager:HandleAnnounceVersion()")
     local currentVersion = CLM.CORE:GetVersion()
     local receivedVersion = data:Version()
 
@@ -96,7 +96,7 @@ local function HandleAnnounceVersion(self, data, sender)
 end
 
 local function HandleRequestVersion(self, data, sender)
-    LOG:Trace("VersionManager:HandleRequestVersion()")
+    LOG:Trace("ProfileInfoManager:HandleRequestVersion()")
     local currentTime = GetServerTime()
     if (currentTime - self._lastRequestResponse) > 30  then
         AnnounceVersion(self)
@@ -110,8 +110,8 @@ local function RestoreVersions(self)
     end
 end
 
-function VersionManager:Initialize()
-    LOG:Trace("VersionManager:Initialize()")
+function ProfileInfoManager:Initialize()
+    LOG:Trace("ProfileInfoManager:Initialize()")
     self._initialized = false
 
     self._lastRequestResponse = 0
@@ -152,8 +152,8 @@ function VersionManager:Initialize()
     MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
 end
 
-function VersionManager:RequestVersion()
-    LOG:Trace("VersionManager:RequestVersion()")
+function ProfileInfoManager:RequestVersion()
+    LOG:Trace("ProfileInfoManager:RequestVersion()")
     local message = VersionCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
@@ -166,4 +166,4 @@ CONSTANTS.VERSIONNING_COMM = {
     TYPES = UTILS.Set({ 1, 2 })
 }
 
-MODULES.VersionManager = VersionManager
+MODULES.ProfileInfoManager = ProfileInfoManager

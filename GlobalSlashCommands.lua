@@ -11,7 +11,7 @@ local LootManager = MODULES.LootManager
 local RaidManager = MODULES.RaidManager
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
-local VersionManager = MODULES.VersionManager
+local ProfileInfoManager = MODULES.ProfileInfoManager
 
 local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
@@ -139,7 +139,7 @@ function GlobalSlashCommands:Initialize()
             type = "execute",
             name = "Version check in guild",
             set = (function()
-                VersionManager:RequestVersion()
+                ProfileInfoManager:RequestVersion()
             end),
             confirm = true
         }
