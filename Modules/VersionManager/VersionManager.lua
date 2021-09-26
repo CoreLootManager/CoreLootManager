@@ -33,12 +33,6 @@ local function AnnounceVersion()
     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
--- local function RequestVersion()
---     LOG:Trace("VersionManager:RequestVersion()")
---     local message = VersionCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
---     Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
--- end
-
 local function OutOfDate(self, version, disable)
     LOG:Trace("VersionManager:OutOfDate()")
     local currentTime = GetServerTime()
@@ -101,14 +95,14 @@ local function HandleAnnounceVersion(self, data, sender)
     StoreProfileVersion(self, sender, receivedVersion)
 end
 
--- local function HandleRequestVersion(self, data, sender)
---     LOG:Trace("VersionManager:HandleRequestVersion()")
---     local currentTime = GetServerTime()
---     if (currentTime - self._lastRequestResponse) > 30  then
---         AnnounceVersion(self)
---         self._lastRequestResponse = currentTime
---     end
--- end
+local function HandleRequestVersion(self, data, sender)
+    LOG:Trace("VersionManager:HandleRequestVersion()")
+    local currentTime = GetServerTime()
+    if (currentTime - self._lastRequestResponse) > 30  then
+        AnnounceVersion(self)
+        self._lastRequestResponse = currentTime
+    end
+end
 
 local function RestoreVersions(self)
     for name, version in pairs(self.db) do
@@ -132,7 +126,7 @@ function VersionManager:Initialize()
 
     self.handlers = {
         [CONSTANTS.VERSIONNING_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
-        -- [CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
+        [CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion
     }
 
     Comms:Register(VERSION_COMM_PREFIX, (function(rawMessage, distribution, sender)
@@ -156,6 +150,12 @@ function VersionManager:Initialize()
     EventManager:RegisterEvent("READY_CHECK", (function(...) AnnounceVersion(self) end))
 
     MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
+end
+
+function VersionManager:RequestVersion()
+    LOG:Trace("VersionManager:RequestVersion()")
+    local message = VersionCommStructure:New(CONSTANTS.VERSIONNING_COMM.TYPE.REQUEST_VERSION, {})
+    Comms:Send(VERSION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 CONSTANTS.VERSIONNING_COMM = {
