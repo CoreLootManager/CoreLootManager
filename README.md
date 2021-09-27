@@ -39,7 +39,8 @@ Additional point systems are planned:
 * Multi-level logging for better issue handling
 * Auctioning from bag and corpse
 * Award item without auction through slash command
-* Weeklyand hard point cap
+* Weekly and hard point cap
+* Main-Alt linking
 ### Big planned features
 * Zero-Sum Bank mode + inflation
 * Auto-standby list (user to subscribe to it)
