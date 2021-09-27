@@ -38,9 +38,6 @@ local function dec2hex(num)
 end
 
 local function GetPlayerGuid(self, name)
-    if not self.playerCache[name] then
-        self.playerCache[name] = dec2hex(math.random(1, 2000000000))
-    end
     return self.playerCache[name]
 end
 
@@ -50,10 +47,10 @@ function Migration:Migrate()
     LOG:Message("Executing Addon Migration")
     self.timestamp = UTILS.GetCutoffTimestamp()
     self.playerCache = {}
-    -- for i=1,GetNumGuildMembers() do
-    --     local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
-    --     self.playerCache[UTILS.RemoveServer(name)] = GUID
-    -- end
+    for i=1,GetNumGuildMembers() do
+        local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+        self.playerCache[UTILS.RemoveServer(name)] = GUID
+    end
     self.migrationOngoing = true
 
     self:MigrateMonolithDKP()
