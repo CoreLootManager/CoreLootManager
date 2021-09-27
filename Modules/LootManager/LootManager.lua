@@ -35,6 +35,8 @@ local function mutateLootAward(entry, roster)
         end
         local loot = Loot:New(entry, profile)
         RosterManager:AddLootToRoster(roster, loot, profile)
+        -- Force caching loot from server
+        GetItemInfo(loot:Id())
     else
         LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
         return

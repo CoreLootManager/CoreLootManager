@@ -15,7 +15,8 @@ function GlobalConfigs:Initialize()
         db.global = {
             announce_award_to_guild = true,
             announce_loot_to_raid = false,
-            announce_loot_to_raid_level = 3
+            announce_loot_to_raid_level = 3,
+            wowdkpbot_integration = false
         }
     end
     self.db = db.global
@@ -61,6 +62,15 @@ function GlobalConfigs:Initialize()
             get = function(i) return self:GetAnnounceLootToRaidLevel() end,
             order = 3
         },
+        global_wodkpbot_integration = {
+            name = "WoW DKP Bot Integration",
+            desc = "Enble WoW DKP Bot Integration. This will result in additional data stored upon logout.",
+            type = "toggle",
+            set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
+            get = function(i) return self:GetWoWDKPBotIntegration() end,
+            width = "double",
+            order = 4
+        },
         global_wipe_ledger = {
             name = "Wipe events",
             desc = "Wipes all events from memory. This will trigger resyncing from other users.",
@@ -97,6 +107,12 @@ function GlobalConfigs:GetAnnounceLootToRaidLevel()
     return self.db.announce_loot_to_raid_level
 end
 
+function GlobalConfigs:SetWoWDKPBotIntegration(value)
+    self.db.wowdkpbot_integration = value and true or false
+end
 
+function GlobalConfigs:GetWoWDKPBotIntegration()
+    return self.db.wowdkpbot_integration
+end
 
 CLM.GlobalConfigs = GlobalConfigs
