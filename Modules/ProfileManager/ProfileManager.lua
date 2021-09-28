@@ -67,7 +67,7 @@ function ProfileManager:Initialize()
                 local profile = Profile:New(entry, name, class, main)
                 profile:SetGUID(GUID)
                 self.cache.profiles[GUID] = profile
-                self.cache.profilesGuidMap[name] = GUID
+                self.cache.profilesGuidMap[strlower(name)] = GUID
             end
         end))
 
@@ -78,7 +78,23 @@ function ProfileManager:Initialize()
             local GUID = entry:GUID()
             if type(GUID) ~= "number" then return end
             GUID = getGuidFromInteger(GUID)
-            if self.cache.profiles[GUID] then
+            local profile = self.cache.profiles[GUID]
+            if profile then
+                -- Check alt-main linking before removing
+                if profile:HasAlts() then
+                    for altGUID in pairs(profile:Alts()) do
+                        local altProfile = self:GetProfileByGUID(altGUID)
+                        if altProfile then
+                            altProfile:SetMain("")
+                        end
+                    end
+                elseif (profile:Main() ~= "") then
+                    local mainProfile = self:GetProfileByGUID(profile:Main())
+                    if mainProfile then
+                        mainProfile:RemoveAlt(GUID)
+                    end
+                end
+                -- Remove
                 self.cache.profiles[GUID] = nil
             end
         end))
@@ -87,19 +103,55 @@ function ProfileManager:Initialize()
         LEDGER_PROFILE.Link,
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLink)")
-            local GUID = entry:GUID()
-            if type(GUID) ~= "number" then return end
-            GUID = getGuidFromInteger(GUID)
-            local main = entry:main()
-            if type(main) ~= "number" then return end
-            main = getGuidFromInteger(main)
-            local altProfile = self:GetProfileByGUID(GUID)
+            local altGUID = entry:GUID()
+            if type(altGUID) ~= "number" then return end
+            altGUID = getGuidFromInteger(altGUID)
+            local mainGUID = entry:main()
+            if type(mainGUID) ~= "number" then return end
+            if altGUID == mainGUID then return end
+            mainGUID = getGuidFromInteger(mainGUID)
+            local altProfile = self:GetProfileByGUID(altGUID)
             if not typeof(altProfile, Profile) then return end
-            local mainProfile = self:GetProfileByGUID(main)
-            if not typeof(mainProfile, Profile) then
+            local mainProfile = self:GetProfileByGUID(mainGUID)
+            if not typeof(mainProfile, Profile) then -- Unlink
+                -- Check if our main exists
+                local currentMainProfile = self:GetProfileByGUID(altProfile:Main())
+                if not typeof(currentMainProfile, Profile) then return end
+                -- Remove main from this alt
                 altProfile:ClearMain()
-            else
-                altProfile:SetMain(main)
+                -- Remove alt count from main
+                currentMainProfile:RemoveAlt(altGUID)
+            else -- Link
+                -- Sanity check if not setting existing one
+                if altProfile:Main() == mainProfile:GUID() then return end
+                -- Do not allow alt chaining if main is alt
+                if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
+                -- Do not allow alt chaining if alt has alts
+                if altProfile:HasAlts() then return end
+                -- Set new main of this alt
+                altProfile:SetMain(mainGUID)
+                -- Add alt to our main
+                mainProfile:AddAlt(altGUID)
+                -- Handle consequences of linking:
+                -- For each roster this alt is present in:
+                local rosters = MODULES.RosterManager:GetRosters()
+                for _,roster in pairs(rosters) do
+                    if roster:IsProfileInRoster(altGUID) then
+                        -- 1) Add main if not present in roster
+                        roster:AddProfileByGUID(mainGUID)
+                        local pointSum = roster:Standings(mainGUID)
+                        -- 2) Sum points for all characters
+                        for _altGUID in pairs(mainProfile:Alts()) do
+                            pointSum = pointSum + (roster:Standings(_altGUID) or 0)
+                        end
+                        -- 3) Set new Main standings
+                        roster:SetStandings(mainGUID, pointSum)
+                        -- 4) Mirror standings from main to alts
+                        roster:MirrorStandings(mainGUID, mainProfile:Alts(), true)
+                        -- 5) Mirror weekly gains from main to alts
+                        roster:MirrorWeeklyGains(mainGUID, mainProfile:Alts(), true)
+                    end
+                end
             end
         end))
 
@@ -147,34 +199,28 @@ local function PruneProfile(self, GUID, log)
     LedgerManager:Remove(entry)
 end
 
- -- TODO to do with the markings if profile is removed
-function ProfileManager:MarkAsAltByNames(main, alt)
+function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
-    local mainProfile = self:GetProfileByName(main)
-    if not typeof(mainProfile, Profile) then
-        LOG:Error("MarkAsAltByNames(): Invalid main")
-        return
-    end
     local altProfile = self:GetProfileByName(alt)
     if not typeof(altProfile, Profile) then
         LOG:Error("MarkAsAltByNames(): Invalid alt")
         return
     end
-    -- TODO: Protect from circular references / multi-level alt nesting
-    if alt == main then
-        if altProfile:Main() == "" then
-            LOG:Error("Removal of empty main for %s", alt)
-            return
-        else
-            -- Remove link
+    local mainProfile = self:GetProfileByName(main)
+    -- Unlink
+    if not typeof(mainProfile, Profile) then
+        if altProfile:Main() ~= "" then
             LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), nil), true)
         end
-    else
-        if mainProfile:Main() ~= "" then
-            LOG:Error("Alt -> Main chain for %s -> %s", alt, main)
-            return
-        end
-        LOG:Debug("Alt -> Main linking for %s -> %s", alt, main)
+    else -- Link
+        -- Do not allow alt chaining if main is alt
+        if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
+        -- Do not allow alt chaining if alt has alts
+        if altProfile:HasAlts() then return end
+        -- Don't allow self setting
+        if altProfile:GUID() == mainProfile:GUID() then return end
+        -- Don't allow re-setting
+        if altProfile:Main() == mainProfile:GUID() then return end
         LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
     end
 end
@@ -365,7 +411,7 @@ function ProfileManager:GetProfileByGUID(GUID)
 end
 
 function ProfileManager:GetProfileByName(name)
-    return self.cache.profiles[self.cache.profilesGuidMap[name]]
+    return self.cache.profiles[self.cache.profilesGuidMap[strlower(name)]]
 end
 
 -- Publis API

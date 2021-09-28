@@ -1,5 +1,7 @@
 local _, CLM = ...
 
+-- local UTILS = CLM.UTILS
+
 local Profile = {}
 
 function Profile:New(entry, name, class, main)
@@ -20,6 +22,8 @@ function Profile:New(entry, name, class, main)
         changeset = ""
     }
     o:SetSpec()
+    o.alts = {}
+
     self._versionString = "Unknown"
 
     return o
@@ -59,6 +63,26 @@ end
 
 function Profile:ClearMain()
     self.main = ""
+end
+
+function Profile:Alts()
+    return self.alts
+end
+
+function Profile:HasAlts()
+    return not rawequal(next(self.alts), nil)
+end
+
+function Profile:AddAlt(GUID)
+    if not self.alts[GUID] then
+        self.alts[GUID] = true
+    end
+end
+
+function Profile:RemoveAlt(GUID)
+    if self.alts[GUID] then
+        self.alts[GUID] = nil
+    end
 end
 
 function Profile:SetGUID(GUID)

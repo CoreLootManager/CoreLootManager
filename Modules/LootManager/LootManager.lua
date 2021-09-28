@@ -21,6 +21,8 @@ local Loot = MODELS.Loot
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
+local keys = UTILS.keys
+
 local function mutateLootAward(entry, roster)
     local GUID = getGuidFromInteger(entry:profile())
     if not roster then
@@ -35,6 +37,21 @@ local function mutateLootAward(entry, roster)
         end
         local loot = Loot:New(entry, profile)
         RosterManager:AddLootToRoster(roster, loot, profile)
+        local main
+        if profile:Main() == "" then -- is main
+            if profile:HasAlts() then -- has alts
+                main = profile
+            end
+        else -- is alt
+            main = ProfileManager:GetProfileByGUID(profile:Main())
+        end
+        if main then
+            -- points are already awarded to alt in AddLoot
+            -- mirror them from the alt to all other alts + main
+            local mirrorTargets = keys(profile:Alts())
+            table.insert(mirrorTargets, main:GUID())
+            roster:MirrorStandings(profile:GUID(), mirrorTargets)
+        end
     else
         LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
         return

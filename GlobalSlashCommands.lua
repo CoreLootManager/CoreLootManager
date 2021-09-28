@@ -17,30 +17,13 @@ local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
 local GlobalSlashCommands = {}
 function GlobalSlashCommands:Initialize()
-    local options = {
-        award = {
+    local options = {}
+    if ACL:IsTrusted() then
+        options.award = {
             type = "input",
             name = "Award item",
             desc = "Award item without auctioning it.",
             set = (function(i, args)
-                -- Formats:
-
-                -- Award linked item to player in named roster for value:
-                --          /clm award Item Link/Value/Roster Name/Player
-                -- Example: /clm award [Hearthstone]/15/Mighty Geese/Bluntlighter
-
-                -- Award linked item to currently targeted player in named roster for value:
-                --          /clm award Item Link/Value/Roster Name
-                -- Example: /clm award [Hearthstone]/15/Mighty Geese
-
-                -- While being in active raid award linked item to targeted player for value:
-                --          /clm award Item Link/Value
-                -- Example: /clm award [Hearthstone]/15
-
-                -- While being in active raid award linked item to targeted player for 0:
-                --          /clm award Item Link
-                -- Example: /clm award [Hearthstone]
-
                 args = args or ""
                 local values = {strsplit("/", args)}
                 -- Item --
@@ -97,7 +80,26 @@ function GlobalSlashCommands:Initialize()
                 LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
             end)
         }
-    }
+    end
+    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+        options.link = {
+            type = "input",
+            name = "Link Alt to Main",
+            set = (function(i, input)
+                local alt, main = strsplit(" ", input)
+                ProfileManager:MarkAsAltByNames(alt, main)
+            end),
+            confirm = true
+        }
+        options.unlink = {
+            type = "input",
+            name = "Unlink Alt",
+            set = (function(i, input)
+                ProfileManager:MarkAsAltByNames(input, "")
+            end),
+            confirm = true
+        }
+    end
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
         options.ignore = {
             type = "input",
