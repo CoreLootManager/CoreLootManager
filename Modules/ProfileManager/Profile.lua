@@ -1,8 +1,10 @@
 local _, CLM = ...
 
+-- local UTILS = CLM.UTILS
+
 local Profile = {}
 
-function Profile:New(entry, name, class, spec, main)
+function Profile:New(entry, name, class, main)
     local o = {}
 
     setmetatable(o, self)
@@ -12,7 +14,6 @@ function Profile:New(entry, name, class, spec, main)
     o.entry = entry
     o.name  = (name ~= nil) and tostring(name) or ""
     o.class = (class ~= nil) and tostring(class) or ""
-    o.spec  = (spec ~= nil) and tostring(spec) or ""
     o.main  = (main ~= nil) and tostring(main) or ""
     o.version = {
         major = 0,
@@ -20,6 +21,9 @@ function Profile:New(entry, name, class, spec, main)
         patch = 0,
         changeset = ""
     }
+    o:SetSpec()
+    o.alts = {}
+
     self._versionString = "Unknown"
 
     return o
@@ -37,6 +41,18 @@ function Profile:Spec()
     return self.spec
 end
 
+function Profile:SetSpec(one, two, three)
+    self.spec = {
+        one = one or 0,
+        two = two or 0,
+        three = three or 0
+    }
+end
+
+function Profile:SpecString()
+    return self.spec.one .. "/" .. self.spec.two .. "/" .. self.spec.three
+end
+
 function Profile:Main()
     return self.main
 end
@@ -47,6 +63,26 @@ end
 
 function Profile:ClearMain()
     self.main = ""
+end
+
+function Profile:Alts()
+    return self.alts
+end
+
+function Profile:HasAlts()
+    return not rawequal(next(self.alts), nil)
+end
+
+function Profile:AddAlt(GUID)
+    if not self.alts[GUID] then
+        self.alts[GUID] = true
+    end
+end
+
+function Profile:RemoveAlt(GUID)
+    if self.alts[GUID] then
+        self.alts[GUID] = nil
+    end
 end
 
 function Profile:SetGUID(GUID)

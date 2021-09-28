@@ -96,7 +96,7 @@ function ConfigManager:RegisterSlash(options)
 end
 
 function ConfigManager:RegisterUniversalExecutor(command, name, object)
-    -- @debug@
+    --@debug@
     local options = {
         [command] = {
             type = "input",
@@ -107,7 +107,7 @@ function ConfigManager:RegisterUniversalExecutor(command, name, object)
     }
 
     self:RegisterSlash(options)
-    -- @end-debug@
+    --@end-debug@
 end
 
 function ConfigManager:UpdateOptions(group, register)
