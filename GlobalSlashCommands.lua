@@ -11,7 +11,7 @@ local LootManager = MODULES.LootManager
 local RaidManager = MODULES.RaidManager
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
-local VersionManager = MODULES.VersionManager
+local ProfileInfoManager = MODULES.ProfileInfoManager
 
 local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
@@ -140,8 +140,18 @@ function GlobalSlashCommands:Initialize()
         options.version = {
             type = "execute",
             name = "Version check in guild",
-            set = (function()
-                VersionManager:RequestVersion()
+            func = (function()
+                ProfileInfoManager:RequestVersion()
+            end),
+            confirm = true
+        }
+    end
+    if ACL:IsTrusted() then
+        options.spec = {
+            type = "execute",
+            name = "Spec guild request",
+            func = (function()
+                ProfileInfoManager:RequestSpec()
             end),
             confirm = true
         }
