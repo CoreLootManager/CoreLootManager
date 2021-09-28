@@ -9,7 +9,7 @@ Classic Loot Manager
 
 About
 --------------
-Classic Loot Manager is intended to be a robust Loot Tracking and awarding tool for guilds. 
+Classic Loot Manager is intended to be a robust Loot Tracking and awarding tool for guilds.
 It's designed to superseed old WoW Classic DKP AddOns and its derivatives and solves it's biggest painpoints by focusing on optimial communication and storage. CLM implements Event Sourcing and MVC programming models to achieve those targets. All data is synchronised automatically.
 
 ### Wiki
@@ -17,7 +17,7 @@ Be sure to check our [Wiki](https://github.com/ClassicLootManager/ClassicLootMan
 
 ### Point Systems
 Classic Loot Manager currently supports:
-* DKP  
+* DKP
 
 Additional point systems are planned:
 * SK (Suicide Kings)
@@ -47,3 +47,9 @@ Additional point systems are planned:
 * Boss kill bonus options configuration
 * Auto award for Master Looter
 * Player spec communication mechanism
+
+License
+--------------
+
+This project is licensed under the MIT license, see the `LICENSE` file. In-tree third party libraries in the `Libs` folder are subject to their own licenses.
+Any third party files included during the build process are also subject to their own licenses.
