@@ -11,6 +11,7 @@ local LootManager = MODULES.LootManager
 local RaidManager = MODULES.RaidManager
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
+local VersionManager = MODULES.VersionManager
 
 local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
@@ -107,6 +108,38 @@ function GlobalSlashCommands:Initialize()
                 if realEntry then
                     MODULES.LedgerManager:Remove(realEntry)
                 end
+            end),
+            confirm = true
+        }
+    end
+    if ACL:IsTrusted() then
+        options.prune = {
+            type = "input",
+            name = "Prune profiles",
+            set = (function(i, input)
+                local command, parameter, nop = strsplit("/", input)
+                command = strlower(command or "")
+                nop = nop and true or false
+                if command == "level" then
+                    parameter = tonumber(parameter) or 0
+                    ProfileManager:PruneBelowLevel(parameter, nop)
+                elseif command == "rank" then
+                    parameter = parameter or ""
+                    parameter = tonumber(parameter) or parameter
+                    ProfileManager:PruneRank(parameter, nop)
+                elseif command == "unguilded" then
+                    ProfileManager:PruneUnguilded(nop)
+                end
+            end),
+            confirm = true
+        }
+    end
+    if ACL:IsTrusted() then
+        options.version = {
+            type = "execute",
+            name = "Version check in guild",
+            set = (function()
+                VersionManager:RequestVersion()
             end),
             confirm = true
         }

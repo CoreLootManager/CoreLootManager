@@ -96,6 +96,11 @@ function Roster:GetWeeklyGainsForPlayer(GUID)
     return self.weeklyGains[GUID] or {}
 end
 
+function Roster:GetCurrentGainsForPlayer(GUID)
+    local week = WeekNumber(GetServerTime(), (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
+    return self:GetWeeklyGainsForPlayerWeek(GUID, week)
+end
+
 function Roster:GetWeeklyGainsForPlayerWeek(GUID, week)
     local weeklyGains = self.weeklyGains[GUID]
     if not weeklyGains then
