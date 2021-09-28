@@ -95,17 +95,35 @@ function Debug:AddOptionDump()
     self.options.debug.args.dump = {
         name = "Dump",
         desc = "Dump current addon state to a readable form to the Saved Variable file (requires reload).",
-        type = "execute",
+        type = "input",
         handler = self,
-        func = "Dump"
+        set = "Dump",
+        get = (function() end)
+    }
+    self.options.debug.args.clean = {
+        name = "Clean",
+        desc = "Clean current state dump.",
+        type = "input",
+        func = (function()
+            local db = CLM.MODULES.Database:Personal()
+            db.stateDump = {}
+        end)
     }
 end
 
-function Debug:Dump()
+function Debug:Dump(i, modulename)
     local db = CLM.MODULES.Database:Personal()
     db.stateDump = {}
-    for k,_ in pairs(MODULES) do
-        db.stateDump[k] = MODULES[k]
+    if (not modulename or (modulename == "")) then
+        for k,_ in pairs(MODULES) do
+            db.stateDump[k] = MODULES[k]
+        end
+    else
+        for k,_ in pairs(MODULES) do
+            if strlower(k) == strlower(modulename) then
+                db.stateDump[k] = MODULES[k]
+            end
+        end
     end
 end
 
