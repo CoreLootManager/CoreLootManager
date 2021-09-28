@@ -22,21 +22,29 @@ function Migration:Initialize()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag == 0 and uncommitted == 0 then
             if self.migrationOngoing then
-                LOG:Info("All migration entries were commited and executed. Congratulations!")
+                LOG:Message("All migration entries were commited and executed. Congratulations!")
                 self.migrationOngoing = false
             end
             return
         end
         if self.migrationOngoing then
-            LOG:Info("Migration ongoing: %s(%s)", lag, uncommitted)
+            LOG:Message("Migration ongoing: %s(%s)", lag, uncommitted)
         end
     end)
+end
+
+local function dec2hex(num)
+    return string.format("%X", num or 0)
+end
+
+local function GetPlayerGuid(self, name)
+    return self.playerCache[name]
 end
 
 local timestampCounter = {}
 function Migration:Migrate()
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
-    LOG:Warning("Executing Addon Migration")
+    LOG:Message("Executing Addon Migration")
     self.timestamp = UTILS.GetCutoffTimestamp()
     self.playerCache = {}
     for i=1,GetNumGuildMembers() do
@@ -44,10 +52,10 @@ function Migration:Migrate()
         self.playerCache[UTILS.RemoveServer(name)] = GUID
     end
     self.migrationOngoing = true
-    -- self:MigrateMonolithDKP()
-    self:MigrateEssentialDKP()
-    -- self:MigrateCommunityDKP()
 
+    self:MigrateMonolithDKP()
+    self:MigrateEssentialDKP()
+    self:MigrateCommunityDKP()
 end
 
 function Migration:GetOldTimestampUnique()
@@ -57,25 +65,23 @@ end
 
 function Migration:MigrateMonolithDKP()
     LOG:Trace("Migration:MigrateMoolithDKP()")
-    LOG:Warning("Migrating MonolithDKP")
     self:_MigrateMonolithEssential("MonolithDKP")
 end
 
 function Migration:MigrateEssentialDKP()
     LOG:Trace("Migration:MigrateEssentialDKP()")
-    LOG:Warning("Migrating EssentalDKP")
     self:_MigrateMonolithEssential("EssentialDKP")
 end
 
 function Migration:MigrateCommunityDKP()
     LOG:Trace("Migration:MigrateCommunityDKP()")
-    LOG:Warning("Migrating CommunityDKP - TBD")
+    self:_MigrateCommunity()
 end
 
 local function NewRoster(name)
     local timestamp = Migration:GetOldTimestampUnique()
     local roster = LEDGER_ROSTER.Create:new(timestamp, name, CONSTANTS.POINT_TYPE.DKP)
-    LOG:Info("New roster: [%s]", name)
+    LOG:Message("New roster: [%s]", name)
     roster:setTime(timestamp)
     LedgerManager:Submit(roster)
     return name, timestamp
@@ -109,7 +115,7 @@ local function UpdatePoints(uid, targets, value)
 
     local t = entry:targets()
     if not t or (#t == 0) then
-        LOG:Warning("UpdatePoints(): Empty targets list")
+        LOG:Message("UpdatePoints(): Empty targets list")
         return
     end
 
@@ -124,25 +130,34 @@ local function AwardItem(uid, GUID, itemId, value, timestamp)
     LedgerManager:Submit(loot)
 end
 
-function Migration:_MigrateMonolithEssential(addonName)
-	local _, _, _, _, reason = GetAddOnInfo(addonName)
-	if reason == "MISSING" or reason == "DISABLED" then
-		return -- Missing or globally disabled
+local function ValidateAddon(addonName)
+	local _, _, _, enabled, reason = GetAddOnInfo(addonName)
+	if reason == "MISSING" or reason == "DISABLED" or not enabled then
+		return false -- Missing or globally disabled
 	end
 
 	local loaded, finished = IsAddOnLoaded(addonName)
 	if not loaded then
-		return -- Disabled for the current character
+		return false -- Disabled for the current character
 	end
 
 	if not finished then
 		CLM:Error(addonName .. " has not finished loading!")
-		return -- Should not happen
+		return false -- Should not happen
 	end
+    return true
+end
+
+function Migration:_MigrateMonolithEssential(addonName)
+	if not ValidateAddon(addonName) then
+        LOG:Message("Skipping " .. addonName)
+        return
+    end
     if not MonDKP_DKPTable then return end
     if not MonDKP_Loot then return end
+    LOG:Message("Migrating " .. addonName)
     -- Import profiles
-    LOG:Info("Importing %s entries from DKPTable", #MonDKP_DKPTable)
+    LOG:Message("Importing %s entries from DKPTable", #MonDKP_DKPTable)
     self.playerDKP = {}
     self.playerList = {}
     local rosterCreated = false
@@ -153,7 +168,7 @@ function Migration:_MigrateMonolithEssential(addonName)
             local class = entry.class or ""
             -- local spec = entry.spec or ""
             local dkp = entry.dkp or 0
-            if self.playerCache[name] then
+            if GetPlayerGuid(self, name) then
                 -- Lazy create roster if at least one profile exists
                 -- Create Roster
                 if not rosterCreated then
@@ -161,8 +176,8 @@ function Migration:_MigrateMonolithEssential(addonName)
                     rosterCreated = true
                 end
                 -- Create Profile
-                NewProfile(self.playerCache[name], name, class)
-                table.insert(self.playerList, self.playerCache[name])
+                NewProfile(GetPlayerGuid(self, name), name, class)
+                table.insert(self.playerList, GetPlayerGuid(self, name))
                 self.playerDKP[name] = dkp
             end
         end
@@ -172,7 +187,7 @@ function Migration:_MigrateMonolithEssential(addonName)
         return
     end
     -- Add profiles to roster
-    LOG:Info("Adding %s profiles to %s", #self.playerList, rosterName)
+    LOG:Message("Adding %s profiles to %s", #self.playerList, rosterName)
     AddProfilesToRoster(rosterUid, self.playerList)
     -- Import Loot History
     for _,entry in ipairs(MonDKP_Loot) do
@@ -181,17 +196,136 @@ function Migration:_MigrateMonolithEssential(addonName)
         local itemId = UTILS.GetItemIdFromLink(itemLink)
         local value = math.abs(entry.cost or 0)
         local timestamp = entry.date
-        if not (entry.deletedby and entry.deletes) then
-            if self.playerCache[name] and itemId > 0 then
-                AwardItem(rosterUid, self.playerCache[name], itemId, value, timestamp)
+        if not (entry.deletedby or entry.deletes) then
+            if GetPlayerGuid(self, name) and itemId > 0 then
+                AwardItem(rosterUid, GetPlayerGuid(self, name), itemId, value, timestamp)
             end
         end
     end
     -- Set player DKP
     for name,dkp in pairs(self.playerDKP) do
-        UpdatePoints(rosterUid, self.playerCache[name], dkp)
+        UpdatePoints(rosterUid, GetPlayerGuid(self, name), dkp)
     end
-    LOG:Warning("Import complete")
+    LOG:Message("Import complete")
+end
+
+local function CommDKP_GetRealmName()
+	return GetRealmName() .."-"..UnitFactionGroup(UnitName("player"))
+end
+
+function Migration:_MigrateCommunity()
+    if not ValidateAddon("CommunityDKP") then
+        LOG:Message("Skipping CommunityDKP")
+        return
+    end
+    if not CommDKP_DB then return end
+    if not CommDKP_DKPTable then return end
+    if not CommDKP_Loot then return end
+    
+    LOG:Message("Migrating CommunityDKP")
+
+    local realmFaction = CommDKP_GetRealmName()
+    local guild = GetGuildInfo("player") or ""
+
+    -- Verify existence of all needed variables and prepare
+    if not CommDKP_DB[realmFaction] then return end
+    if not CommDKP_DB[realmFaction][guild] then return end
+    local DB = CommDKP_DB[realmFaction][guild]
+
+    if not CommDKP_DKPTable[realmFaction] then return end
+    if not CommDKP_DKPTable[realmFaction][guild] then return end
+    local DKPTable = CommDKP_DKPTable[realmFaction][guild]
+
+    if not CommDKP_Loot[realmFaction] then return end
+    if not CommDKP_Loot[realmFaction][guild] then return end
+    local Loot = CommDKP_Loot[realmFaction][guild]
+    -- Get Existing teams
+    local teams = {}
+    for id, teamInfo in pairs(DB.teams) do
+        table.insert(teams, {id = id, name = teamInfo.name})
+    end
+    if #teams == 0 then
+        LOG:Error("Migration failure: Detected 0 teams")
+        return
+    end
+    -- Import profiles
+    local playerDKP = {}
+    local playerProfiles = {}
+    local teamProfiles = {}
+    local teamRoster = {}
+    LOG:Message("Importing profiles from DKPTable")
+    for _, team in ipairs(teams) do
+        local rosterCreated = false
+        local rosterName, rosterUid
+        if DKPTable[team.id] then
+            teamProfiles[team.name] = {}
+            playerDKP[team.name] = {}
+            for key, entry in pairs(DKPTable[team.id]) do
+                if tonumber(key) then -- skip seed
+                    local name = entry.player or ""
+                    local class = entry.class or ""
+                    local dkp = entry.dkp or 0
+                    if GetPlayerGuid(self, name) then -- import only existing guild members
+                        if not rosterCreated then -- lazy create roster if at least one profile exists
+                            rosterName, rosterUid = NewRoster(team.name)
+                            teamRoster[rosterName] = rosterUid
+                            rosterCreated = true
+                        end
+                        -- Create Profile if not existing
+                        if not playerProfiles[name] then
+                            NewProfile(GetPlayerGuid(self, name), name, class)
+                            playerProfiles[name] = true
+                            playerDKP[team.name][name] = dkp
+                            table.insert(teamProfiles[team.name], GetPlayerGuid(self, name))
+                        end
+                    end
+                end
+            end
+        end
+    end
+    if rawequal(next(playerProfiles), nil) then
+        LOG:Error("Migration failure: Unable to create profiles")
+        return
+    end
+    -- Add profiles to rosters
+    for _, team in ipairs(teams) do
+        if DKPTable[team.id] then
+            if #teamProfiles[team.name] > 0 then
+                LOG:Message("Adding %s profiles to %s", #teamProfiles[team.name], team.name)
+                AddProfilesToRoster(teamRoster[team.name], teamProfiles[team.name])
+            end
+        end
+    end
+    -- Import Loot History
+    for _, team in ipairs(teams) do
+        if Loot[team.id] then
+            local lootCount = 0
+            for _,entry in ipairs(Loot[team.id]) do
+                local name = entry.player or ""
+                local itemLink = entry.loot or ""
+                local itemId = UTILS.GetItemIdFromLink(itemLink)
+                local value = math.abs(entry.cost or 0)
+                local timestamp = entry.date
+                if not (entry.deletedby or entry.deletes) then
+                    lootCount = lootCount + 1
+                    if GetPlayerGuid(self, name) and itemId > 0 then
+                        AwardItem(teamRoster[team.name], GetPlayerGuid(self, name), itemId, value, timestamp)
+                    end
+                end
+            end
+            LOG:Message("Adding %s loot entries for team to %s", lootCount, team.name)
+        end
+    end
+    -- Set player DKP
+    for teamName, data in pairs(playerDKP) do
+        local dkpSet = 0
+        for name,dkp in pairs(data) do
+            UpdatePoints(teamRoster[teamName], GetPlayerGuid(self, name), dkp)
+            dkpSet = dkpSet + 1
+        end
+        LOG:Message("Set DKP for %s players for team to %s", dkpSet, teamName)
+    end
+    LOG:Message("Import complete")
 end
 
 function Migration:RegisterSlash()
