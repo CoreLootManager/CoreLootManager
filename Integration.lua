@@ -32,6 +32,7 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 local EventManager = MODULES.EventManager
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
+local ProfileInfoManager = MODULES.ProfileInfoManager
 
 local Integration = {}
 
@@ -68,7 +69,8 @@ local function StoreWoWDKPBotData()
             db.rosters[name][GUID] = {
                 dkp = value, -- set standings
                 loot = {},
-                history = {}
+                history = {},
+                rounding = roster:GetConfiguration("roundDecimals")
             }
             local data = db.rosters[name][GUID]
             -- set loot
@@ -103,9 +105,18 @@ local function ClearWoWDKPBotData()
     wipe(db)
 end
 
+local function RequestWoWDKPBotData()
+    if not CLM.GlobalConfigs:GetWoWDKPBotIntegration() then return end
+    ProfileInfoManager:RequestSpec()
+    ProfileInfoManager:RequestVersion()
+end
+
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
     ClearWoWDKPBotData()
+
+    C_Timer.After(10, RequestWoWDKPBotData)
+
     EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData()
     end))
