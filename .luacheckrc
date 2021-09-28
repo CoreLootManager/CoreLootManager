@@ -29,9 +29,12 @@ globals = {
 	-- Bindings
 	"CLM_Undo",
 	"CLM_Redo",
-	-- Monolith and Essential
+	-- Monolith and Essential and Community
 	"MonDKP_DKPTable",
 	"MonDKP_Loot",
+	"CommDKP_DKPTable",
+	"CommDKP_Loot",
+	"CommDKP_DB",
 	-- WoW 
 	"_G",
 	"MAX_RAID_MEMBERS",
@@ -2623,6 +2626,7 @@ globals = {
 	"GetTalentInfoBySpecialization",
 	"GetTalentLink",
 	"GetTalentTierInfo",
+	"GetTalentTabInfo",
 	"GetTargetCorpseMapPosition",
 	"GetTargetTradeCurrency",
 	"GetTargetTradeMoney",

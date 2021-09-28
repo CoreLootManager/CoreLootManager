@@ -467,7 +467,6 @@ end
 function RaidManagerGUI:Toggle()
     LOG:Trace("RaidManagerGUI:Toggle()")
     if not self._initialized then
-        print("not init");
         return end
     if self.top.frame:IsVisible() or not ACL:IsTrusted() then
         self.top.frame:Hide()

@@ -206,11 +206,32 @@ function RosterManager:Initialize()
 
                 if entry:remove() then
                     for _, iGUID in ipairs(profiles) do
-                        roster:RemoveProfileByGUID(getGuidFromInteger(iGUID))
+                        local GUID = getGuidFromInteger(iGUID)
+                        local profile = ProfileManager:GetProfileByGUID(GUID)
+                        if profile then
+                            roster:RemoveProfileByGUID(GUID)
+                            -- If it is a main with linked alts - remove all alts
+                            if profile:HasAlts() then
+                                for altGUID, _ in pairs(profile:Alts()) do
+                                    roster:RemoveProfileByGUID(altGUID)
+                                end
+                            end
+                        end
                     end
                 else
                     for _, iGUID in ipairs(profiles) do
-                        roster:AddProfileByGUID(getGuidFromInteger(iGUID))
+                        local GUID = getGuidFromInteger(iGUID)
+                        local profile = ProfileManager:GetProfileByGUID(GUID)
+                        if profile then
+                            roster:AddProfileByGUID(GUID)
+                            -- If it is an alt of a linked main - set its standings and gains from main
+                            if profile:Main() ~= "" then
+                                -- add main in case it isnt there
+                                roster:AddProfileByGUID(profile:Main())
+                                roster:MirrorStandings(GUID, { profile:Main() })
+                                roster:MirrorWeeklyGains(GUID, { profile:Main() })
+                            end
+                        end
                     end
                 end
             end))
