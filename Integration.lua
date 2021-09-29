@@ -41,13 +41,16 @@ local function StoreWoWDKPBotData()
     db.rosters = {}
     for name,roster in pairs(RosterManager:GetRosters()) do
         db.rosters[name] = {}
+        -- Config
+        local rounding = roster:GetConfiguration("roundDecimals")
+        if rounding > 2 then rounding = 2 end -- fix for default 10-digit rounding
+        db.rosters[name].rounding = rounding
         -- For each profile in roster
         for GUID, value in pairs(roster.standings) do
             db.rosters[name][GUID] = {
                 dkp = value, -- set standings
                 loot = {},
-                history = {},
-                rounding = roster:GetConfiguration("roundDecimals")
+                history = {}
             }
             local data = db.rosters[name][GUID]
             -- set loot
