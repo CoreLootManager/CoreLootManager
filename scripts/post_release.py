@@ -34,33 +34,24 @@ if len(releases) == 0:
 try:
     author = releases[0]["author"]["login"]
     body = releases[0]["body"]
-    multibody = None
-    if len(body) > 1000:
-        multibody = body.split("\r\n\r\n")
 
     tag = releases[0]["tag_name"]
     name = releases[0]["name"]
     prerelease = releases[0]["prerelease"]
+    url = releases[0]["html_url"]# 2F3136 dcb749
 
     embed = {
         "author": {"name": "Classic Loot Manager has been updated!"},
         "title": name,
         "color": 14464841,
         "fields": [
-            {"name": "**Version**", "value": "`" + tag  + "`", "inline": False}
+            {"name": "**Version**", "value": "`" + tag  + "`", "inline": False},
+            {"name": "**CHANGELOG**", "value": "```" + body[:1014] + ("..." if len(body) > 1014 else "") + "```", "inline": False},
+            {"name": "\u200b", "value": "For more information check out the full [release notes](" + url + ").", "inline": False}
         ],
         "footer": {"text": "Released by " + author}
     }
-    if multibody is not None:
-        first = True
-        for body in multibody:
-            if len(body) > 0:
-                title = "**CHANGELOG**" if first else "\u200b"
-                embed["fields"].append({"name": title, "value": "```" + body + "```", "inline": False})
-                first = False
-    else:
-        if len(body) > 0:
-            embed["fields"].append({"name": "**CHANGELOG**", "value": "```" + body + "```", "inline": False})
+
     if prerelease:
         embed["description"] = "_This is a beta version and may still contain bugs_"
 
