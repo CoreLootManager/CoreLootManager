@@ -97,6 +97,7 @@ GlobalSlashCommands.lua
 GlobalConfigs.lua
 MinimapIcon.lua
 Migration.lua
+Integration.lua
 #@do-not-package@
 Debug.lua
 #@end-do-not-package@

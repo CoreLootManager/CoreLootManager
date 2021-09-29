@@ -156,6 +156,16 @@ function GlobalSlashCommands:Initialize()
             confirm = true
         }
     end
+    if ACL:IsTrusted() then
+        options.export = {
+            type = "execute",
+            name = "Export data",
+            func = (function()
+                CLM.Integration:Export()
+            end),
+            confirm = true
+        }
+    end
     ConfigManager:RegisterSlash(options)
 end
 

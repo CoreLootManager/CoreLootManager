@@ -120,6 +120,8 @@ function CORE:_InitializeFeatures()
     CLM.GlobalConfigs:Initialize()
     -- Initialize global slash handlers
     CLM.GlobalSlashCommands:Initialize()
+    -- Initialize external (to wow) integrations
+    CLM.Integration:Initialize()
 end
 
 function CORE:_InitializeFrontend()

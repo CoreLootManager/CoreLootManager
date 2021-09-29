@@ -37,6 +37,7 @@ local function mutateLootAward(entry, roster)
         end
         local loot = Loot:New(entry, profile)
         RosterManager:AddLootToRoster(roster, loot, profile)
+
         local main
         if profile:Main() == "" then -- is main
             if profile:HasAlts() then -- has alts
@@ -52,6 +53,10 @@ local function mutateLootAward(entry, roster)
             table.insert(mirrorTargets, main:GUID())
             roster:MirrorStandings(profile:GUID(), mirrorTargets)
         end
+
+        -- Force caching loot from server
+        GetItemInfo(loot:Id())
+
     else
         LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
         return
