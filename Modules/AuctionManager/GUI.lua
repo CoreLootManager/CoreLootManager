@@ -61,8 +61,8 @@ end
 
 local function HookCorpseSlots(hookedSlots)
     local UIs = {
-        wow = "",
-        elv = "Elv"
+        wow = "LootButton",
+        elv = "ElvLootSlot"
     }
 
     local numLootItems = GetNumLootItems()
@@ -70,7 +70,7 @@ local function HookCorpseSlots(hookedSlots)
     for ui, prefix in pairs(UIs) do
         for buttonIndex = 1, numLootItems do
             if not hookedSlots[ui][buttonIndex] then
-                local button = getglobal(prefix .. "LootButton" .. buttonIndex)
+                local button = getglobal(prefix .. buttonIndex)
                 if button then
                     button:HookScript("OnClick", FillAuctionWindowFromTooltip)
                     hookedSlots[ui][buttonIndex] = true
