@@ -46,7 +46,7 @@ try:
         "color": 14464841,
         "fields": [
             {"name": "**Version**", "value": "`" + tag  + "`", "inline": False},
-            {"name": "**CHANGELOG**", "value": "```" + body[:1014] + ("..." if len(body) > 1014 else "") + "```", "inline": False},
+            {"name": "**CHANGELOG**", "value": "```" + body[:1012] + ("..." if len(body) > 1013 else "") + "```", "inline": False},
             {"name": "\u200b", "value": "For more information check out the full [release notes](" + url + ").", "inline": False}
         ],
         "footer": {"text": "Released by " + author}
