@@ -33,10 +33,6 @@ function Migration:Initialize()
     end)
 end
 
-local function dec2hex(num)
-    return string.format("%X", num or 0)
-end
-
 local function GetPlayerGuid(self, name)
     return self.playerCache[name]
 end
@@ -221,7 +217,7 @@ function Migration:_MigrateCommunity()
     if not CommDKP_DB then return end
     if not CommDKP_DKPTable then return end
     if not CommDKP_Loot then return end
-    
+
     LOG:Message("Migrating CommunityDKP")
 
     local realmFaction = CommDKP_GetRealmName()

@@ -147,7 +147,7 @@ local function CreateBidWindow(self)
         {name = "Spec",     width = 60},
         {name = "Bid",      width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
             sort = ScrollingTable.SORT_DSC,
-            comparesort = (function(self, rowa, rowb, sortbycol)
+            comparesort = (function(self, rowa, rowb, sortbycol) -- luacheck: ignore
                 -- Workaround for sorting PASS at the end
                 -- we trick system into thinking its emtpy string ""
                 -- then we restore it
