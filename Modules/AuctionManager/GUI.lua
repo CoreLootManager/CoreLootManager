@@ -145,8 +145,26 @@ local function CreateBidWindow(self)
         {name = "Name",     width = 70},
         {name = "Class",    width = 60},
         {name = "Spec",     width = 60},
-        {name = "Bid",      width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}, sort = ScrollingTable.SORT_DSC },
-        {name = "Current",  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}, sort = ScrollingTable.SORT_DSC},
+        {name = "Bid",      width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
+            sort = ScrollingTable.SORT_DSC,
+            comparesort = (function(self, rowa, rowb, sortbycol)
+                -- Workaround for sorting PASS at the end
+                -- we trick system into thinking its emtpy string ""
+                -- then we restore it
+                local a1, b1 = self:GetCell(rowa, sortbycol), self:GetCell(rowb, sortbycol);
+                local a1_value, b1_value = a1.value, b1.value
+                if a1.value == "PASS" then a1.value = "" end
+                if b1.value == "PASS" then b1.value = "" end
+                -- sort
+                local result = self:CompareSort(rowa, rowb, sortbycol)
+                -- restore
+                a1.value = a1_value
+                b1.value = b1_value
+                -- return
+                return result
+            end)},
+        {name = "Current",  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
+            sort = ScrollingTable.SORT_DSC},
     }
     self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame)
     self.st:EnableSelection(true)
