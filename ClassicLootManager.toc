@@ -48,6 +48,7 @@ ClassicLootManager.lua
 Utils.lua
 
 Modules\Logger\Logger.lua
+Modules\Changelog\Changelog.lua
 
 # Addon models
 Modules\ProfileManager\Profile.lua
@@ -91,6 +92,7 @@ Modules\AuctionManager\GUI.lua
 Modules\BiddingManager\GUI.lua
 Modules\LootManager\GUI.lua
 Modules\PointManager\GUI.lua
+Modules\Changelog\GUI.lua
 
 # Extra
 GlobalSlashCommands.lua
