@@ -39,33 +39,35 @@ local function apply_mutator(entry, mutate)
             return
         end
         local targetProfile = ProfileManager:GetProfileByGUID(GUID)
-        if targetProfile and roster:IsProfileInRoster(GUID) then
-            roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
-        end
-        -- Check if we have main-alt linking
-        if targetProfile:Main() == "" then -- is main
-            if targetProfile:HasAlts() then -- has alts
-                mainProfile = targetProfile
+        if targetProfile then
+            if roster:IsProfileInRoster(GUID) then
+                roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
             end
-        else -- is alt
-            mainProfile = ProfileManager:GetProfileByGUID(targetProfile:Main())
-        end
-        -- If we have a linked case then we alter the GUID to mains guid
-        if mainProfile then
-            GUID = mainProfile:GUID()
-        end
-        if roster:IsProfileInRoster(GUID) then
-            if not alreadyApplied[GUID] then
-                mutate(roster, GUID, value, timestamp)
-                alreadyApplied[GUID] = true
-                if mainProfile then
-                    -- if we have a linked case then we need to mirror the change to all alts
-                    roster:MirrorStandings(GUID, mainProfile:Alts(), true)
+            -- Check if we have main-alt linking
+            if targetProfile:Main() == "" then -- is main
+                if targetProfile:HasAlts() then -- has alts
+                    mainProfile = targetProfile
                 end
+            else -- is alt
+                mainProfile = ProfileManager:GetProfileByGUID(targetProfile:Main())
             end
-        else
-            LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
-            return
+            -- If we have a linked case then we alter the GUID to mains guid
+            if mainProfile then
+                GUID = mainProfile:GUID()
+            end
+            if roster:IsProfileInRoster(GUID) then
+                if not alreadyApplied[GUID] then
+                    mutate(roster, GUID, value, timestamp)
+                    alreadyApplied[GUID] = true
+                    if mainProfile then
+                        -- if we have a linked case then we need to mirror the change to all alts
+                        roster:MirrorStandings(GUID, mainProfile:Alts(), true)
+                    end
+                end
+            else
+                LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+                return
+            end
         end
     end
 end
