@@ -221,9 +221,9 @@ function RosterManager:Initialize()
                 else
                     for _, iGUID in ipairs(profiles) do
                         local GUID = getGuidFromInteger(iGUID)
+                        roster:AddProfileByGUID(GUID)
                         local profile = ProfileManager:GetProfileByGUID(GUID)
                         if profile then
-                            roster:AddProfileByGUID(GUID)
                             -- If it is an alt of a linked main - set its standings and gains from main
                             if profile:Main() ~= "" then
                                 -- add main in case it isnt there
