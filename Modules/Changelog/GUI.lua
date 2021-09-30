@@ -108,6 +108,7 @@ function ChangelogGUI:Create()
     if sameVersion and self.db.do_not_show then
         f:Hide()
     end
+    self.db.lastVersion = version
 end
 
 function ChangelogGUI:Toggle()
