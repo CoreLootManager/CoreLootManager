@@ -18,6 +18,7 @@ local PointHistory = MODELS.PointHistory
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
+local whoamiGUID = UTILS.whoamiGUID
 
 local function apply_mutator(entry, mutate)
     local roster = RosterManager:GetRosterByUid(entry:rosterUid())
@@ -50,6 +51,14 @@ local function apply_mutator(entry, mutate)
                 end
             else -- is alt
                 mainProfile = ProfileManager:GetProfileByGUID(targetProfile:Main())
+            end
+            -- Check if we should schedule it for alert
+            if entry:reason() ~= CONSTANTS.POINT_CHANGE_REASON.DECAY then
+                if GUID == whoamiGUID() then
+                    if (GetServerTime() - entry:time()) < 30 then
+                        CLM.ALERTS.DKPReceivedAlertSystem:AddAlert(value)
+                    end
+                end
             end
             -- If we have a linked case then we alter the GUID to mains guid
             if mainProfile then
