@@ -87,6 +87,8 @@ function BiddingManagerGUI:GenerateAuctionOptions()
     local itemLink = self.auctionInfo and self.auctionInfo:ItemLink() or nil
     if itemLink then
         itemId, _, _, _, icon = GetItemInfoInstant(self.auctionInfo:ItemLink())
+        -- Force caching loot from server
+        GetItemInfo(itemId)
     end
     return {
         icon = {
