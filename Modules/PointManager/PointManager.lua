@@ -56,7 +56,7 @@ local function apply_mutator(entry, mutate)
             if entry:reason() ~= CONSTANTS.POINT_CHANGE_REASON.DECAY then
                 if GUID == whoamiGUID() then
                     if (GetServerTime() - entry:time()) < 30 then
-                        CLM.ALERTS.DKPReceivedAlertSystem:AddAlert(value)
+                        CLM.ALERTS.DKPReceived(value)
                     end
                 end
             end
