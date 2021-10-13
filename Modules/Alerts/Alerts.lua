@@ -4,10 +4,10 @@ local eventDispatcher = LibStub("EventDispatcher")
 
 local CLM_RECEIVED_POINTS = 'CLM_RECEIVED_POINTS'
 
-CLM.ALERTS.DKPReceived = function(amount)
-	eventDispatcher.dispatchEvent(CLM_RECEIVED_POINTS, {
+CLM.ALERTS.DKPReceived = function(amount, timestamp)
+	eventDispatcher.dispatchEventWithTTL(CLM_RECEIVED_POINTS, {
 		amount = amount
-	});
+	}, timestamp);
 end
 
 

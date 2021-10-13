@@ -54,11 +54,7 @@ local function apply_mutator(entry, mutate)
             end
             -- Check if we should schedule it for alert
             if entry:reason() ~= CONSTANTS.POINT_CHANGE_REASON.DECAY then
-                if GUID == whoamiGUID() then
-                    if (GetServerTime() - entry:time()) < 30 then
-                        CLM.ALERTS.DKPReceived(value)
-                    end
-                end
+                CLM.ALERTS.DKPReceived(value, GUID, entry:time())
             end
             -- If we have a linked case then we alter the GUID to mains guid
             if mainProfile then
