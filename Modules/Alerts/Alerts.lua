@@ -4,6 +4,7 @@ local eventDispatcher = LibStub("EventDispatcher")
 
 
 local CLM_USER_RECEIVED_POINTS = 'CLM_USER_RECEIVED_POINTS'
+local CLM_USER_RECEIVED_ITEM = 'CLM_USER_RECEIVED_ITEM'
 local CLM_RAID_RECEIVED_POINTS = 'CLM_RAID_RECEIVED_POINTS'
 
 -- storing reference to value not function, this value doesn't change
@@ -12,7 +13,7 @@ local myGUID = CLM.UTILS.whoamiGUID()
 
 --[[
 	This module exposes an internal API for CLM to allow it to trigger events.
-	Events might be for the current user or someone else. This module will decide if / how and when to 
+	Events might be for the current user or someone else. This module will decide if / how and when to
 	dispatch an event through the dispatcher.
 ]]
 
@@ -45,11 +46,16 @@ CLM.ALERTS.DKPReceived = function(amount, guid, timestamp)
 	end
 end
 
-
-
-
-
-
+--[[ Note there is no listener for this event yet ]]
+CLM.ALERTS.LootAwarded = function(item, guid, price, timestamp)
+	if (guid == myGUID) then
+		eventDispatcher.dispatchEventWithTTL(CLM_USER_RECEIVED_ITEM, {
+			item = item,
+			price = price
+		}, timestamp)
+		return
+	end
+end
 
 
 

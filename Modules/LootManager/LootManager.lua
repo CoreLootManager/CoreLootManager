@@ -20,7 +20,6 @@ local Loot = MODELS.Loot
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
-local whoamiGUID = UTILS.whoamiGUID
 local keys = UTILS.keys
 
 local function mutateLootAward(entry, roster)
@@ -57,11 +56,7 @@ local function mutateLootAward(entry, roster)
         -- Force caching loot from server
         GetItemInfo(loot:Id())
         -- Check if we should schedule it for alert
-        if GUID == whoamiGUID() then
-            if (GetServerTime() - entry:time()) < 30 then
-                LootAlertSystem:AddAlert("item: " .. loot:Id(), 1)
-            end
-        end
+        CLM.ALERTS.LootAwarded(loot:Id(), GUID, entry:time())
     else
         LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
         return
