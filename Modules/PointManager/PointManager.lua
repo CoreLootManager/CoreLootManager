@@ -10,6 +10,7 @@ local MODELS = CLM.MODELS
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
+local EventManager = MODULES.EventManager
 
 local LEDGER_DKP = MODELS.LEDGER.DKP
 local Profile = MODELS.Profile
@@ -51,6 +52,8 @@ local function apply_mutator(entry, mutate)
             else -- is alt
                 mainProfile = ProfileManager:GetProfileByGUID(targetProfile:Main())
             end
+            -- Check if we should schedule it for alert
+            EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = entry:reason() }, entry:time(), GUID)
             -- If we have a linked case then we alter the GUID to mains guid
             if mainProfile then
                 GUID = mainProfile:GUID()

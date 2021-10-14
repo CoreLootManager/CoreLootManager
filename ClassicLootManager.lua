@@ -7,6 +7,7 @@ CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
+CLM.ALERTS = {}
 
 CLM.AUTOVERSION = "@project-version@"
 

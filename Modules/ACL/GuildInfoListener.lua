@@ -11,7 +11,7 @@ function GuildInfoListener:Initialize()
     LOG:Trace("GuildInfoListener:Initialize()")
     self:WipeAll()
     self:BuildCache()
-    MODULES.EventManager:RegisterEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
+    MODULES.EventManager:RegisterWoWEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
         LOG:Debug("Rebuild trust cache after event")
         if self.cacheUpdateRequired then
             GuildRoster()

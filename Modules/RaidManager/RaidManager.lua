@@ -340,7 +340,7 @@ end
 
 function RaidManager:RegisterEventHandling()
     if self.isEventHandlingRegistered then return end
-    EventManager:RegisterEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, (function(...)
+    EventManager:RegisterWoWEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, (function(...)
         self:HandleRosterUpdateEvent()
     end))
     self.isEventHandlingRegistered = true

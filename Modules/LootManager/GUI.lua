@@ -61,7 +61,7 @@ end
 
 function LootGUI:Initialize()
     InitializeDB(self)
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
@@ -85,7 +85,7 @@ function LootGUI:Initialize()
         }
     }, CLM.MODULES.ACL:IsTrusted())
 
-    EventManager:RegisterBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
+    EventManager:RegisterWoWBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
     self._initialized = true
 end
 

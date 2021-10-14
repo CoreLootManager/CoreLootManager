@@ -3,7 +3,7 @@ local  _, CLM = ...
 local LOG = CLM.LOG
 
 local MODULES =  CLM.MODULES
--- local CONSTANTS = CLM.CONSTANTS
+local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local MODELS =  CLM.MODELS
 -- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
@@ -11,6 +11,7 @@ local MODELS =  CLM.MODELS
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local ProfileManager = MODULES.ProfileManager
+local EventManager = MODULES.EventManager
 
 local LEDGER_LOOT = MODELS.LEDGER.LOOT
 local Profile = MODELS.Profile
@@ -20,7 +21,6 @@ local Loot = MODELS.Loot
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
-
 local keys = UTILS.keys
 
 local function mutateLootAward(entry, roster)
@@ -56,7 +56,7 @@ local function mutateLootAward(entry, roster)
 
         -- Force caching loot from server
         GetItemInfo(loot:Id())
-
+        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_ITEM, { id = loot:Id() }, entry:time(), GUID)
     else
         LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
         return
