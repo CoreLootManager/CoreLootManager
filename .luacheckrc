@@ -38,6 +38,7 @@ globals = {
 	-- WoW 
 	"_G",
 	"MAX_RAID_MEMBERS",
+	"LootAlertSystem",
 
 	-- FrameXML misc
 	"ALTERNATE_POWER_INDEX",

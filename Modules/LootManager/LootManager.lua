@@ -21,7 +21,6 @@ local Loot = MODELS.Loot
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
-local whoamiGUID = UTILS.whoamiGUID
 local keys = UTILS.keys
 
 local function mutateLootAward(entry, roster)

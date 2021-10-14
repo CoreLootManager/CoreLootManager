@@ -82,7 +82,7 @@ function EventManager:RegisterWoWBucketEvent(event, interval, functionOrObject, 
 end
 
 function EventManager:DispatchEvent(event, params, timestamp, guid)
-    
+
     local dispatch = true
 
     -- If we pass guid then it's a self only event
@@ -90,7 +90,7 @@ function EventManager:DispatchEvent(event, params, timestamp, guid)
         dispatch = (myGUID == guid)
     end
     if not dispatch then return end
-   
+
     -- If we pass timestamp then it should be dispatched only if meets TTL
     if timestamp then
         timestamp = timestamp + CLM_HISTORICAL_TTL

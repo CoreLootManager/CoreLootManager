@@ -19,7 +19,6 @@ local PointHistory = MODELS.PointHistory
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
-local whoamiGUID = UTILS.whoamiGUID
 
 local function apply_mutator(entry, mutate)
     local roster = RosterManager:GetRosterByUid(entry:rosterUid())
