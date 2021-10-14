@@ -18,6 +18,7 @@ Libs\LibDeflate\lib.xml
 Libs\LibSerialize\lib.xml
 ExternalLibs\LibLogger\lib.xml
 ExternalLibs\lua-eventsourcing\LibEventSourcing.xml
+ExternalLibs\LibEventDispatcher\LibEventDispatcher.xml
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 Libs\LibDBIcon-1.0\lib.xml

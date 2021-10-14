@@ -119,13 +119,13 @@ end
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     InitializeDB(self)
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     if ACL:IsTrusted() then
         HookBagSlots()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
-    EventManager:RegisterEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
+    EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
     self:RegisterSlash()
     self._initialized = true
 end
