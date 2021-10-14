@@ -1,30 +1,37 @@
 local _, CLM = ...
+local eventDispatcher = LibStub("EventDispatcher")
 
 local CORE = CLM.CORE
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
+local CONSTANTS = CLM.CONSTANTS
+
+local myGUID = CLM.UTILS.whoamiGUID()
+
+local CLM_HISTORICAL_TTL = 5
 
 local EventManager = {}
-
 function EventManager:Initialize()
     LOG:Trace("EventManager:Initialize()")
+    -- WoW
     self.callbacks = {}
     self.bucketCallbacks = {}
+    -- External API
 end
 
-function EventManager:RegisterEvent(events, functionOrObject, methodName)
-    LOG:Trace("EventManager:RegisterEvent()")
+function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
+    LOG:Trace("EventManager:RegisterWoWEvent()")
     local callback
     if type(functionOrObject) == "table" and type(methodName) == "string" then
         callback = (function(...) return functionOrObject[methodName](functionOrObject, ...) end)
     elseif type(functionOrObject) == "function" then
         callback = functionOrObject
     else
-        LOG:Fatal("EventManager:RegisterEvent(): Invalid handler input")
+        LOG:Fatal("EventManager:RegisterWoWEvent(): Invalid handler input")
         return
     end
     if not events then
-        LOG:Fatal("EventManager:RegisterEvent(): Invalid event")
+        LOG:Fatal("EventManager:RegisterWoWEvent(): Invalid event")
         return
     end
     if type(events) == "string" then events = { events } end
@@ -47,15 +54,15 @@ function EventManager:RegisterEvent(events, functionOrObject, methodName)
     end
 end
 
-function EventManager:RegisterBucketEvent(event, interval, functionOrObject, methodName)
-    LOG:Trace("EventManager:RegisterBucketEvent()")
+function EventManager:RegisterWoWBucketEvent(event, interval, functionOrObject, methodName)
+    LOG:Trace("EventManager:RegisterWoWBucketEvent()")
     local callback
     if type(functionOrObject) == "table" and type(methodName) == "string" then
         callback = (function(...) return functionOrObject[methodName](functionOrObject, ...) end)
     elseif type(functionOrObject) == "function" then
         callback = functionOrObject
     else
-        LOG:Error("EventManager:RegisterBucketEvent(): Invalid handler input")
+        LOG:Error("EventManager:RegisterWoWBucketEvent(): Invalid handler input")
     end
     if not self.bucketCallbacks[event] then-- lazy load event handlers
         self.bucketCallbacks[event] = {}
@@ -73,5 +80,32 @@ function EventManager:RegisterBucketEvent(event, interval, functionOrObject, met
     end
     table.insert(self.bucketCallbacks[event], callback)
 end
+
+function EventManager:DispatchEvent(event, params, timestamp, guid)
+
+    local dispatch = true
+
+    -- If we pass guid then it's a self only event
+    if guid then
+        dispatch = (myGUID == guid)
+    end
+    if not dispatch then return end
+
+    -- If we pass timestamp then it should be dispatched only if meets TTL
+    if timestamp then
+        timestamp = timestamp + CLM_HISTORICAL_TTL
+        dispatch = (timestamp >= GetServerTime())
+    end
+    if not dispatch then return end
+
+    eventDispatcher.dispatchEventWithTTL(event, params, timestamp)
+end
+
+CONSTANTS.EVENTS = {
+    USER_RECEIVED_ITEM = "CLM_USER_RECEIVED_ITEM",
+    USER_RECEIVED_POINTS = "CLM_USER_RECEIVED_POINTS",
+    USER_BID_ACCEPTED = "CLM_BID_ACCEPTED",
+    USER_BID_DENIED = "CLM_BID_DENIED"
+}
 
 MODULES.EventManager = EventManager

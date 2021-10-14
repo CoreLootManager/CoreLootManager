@@ -102,7 +102,7 @@ function Integration:Initialize()
 
     C_Timer.After(10, RequestWoWDKPBotData)
 
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function()
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData()
     end))
 end

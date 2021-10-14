@@ -53,7 +53,7 @@ end
 function ProfilesGUI:Initialize()
     LOG:Trace("ProfilesGUI:Initialize()")
     InitializeDB(self)
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true

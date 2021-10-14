@@ -51,7 +51,7 @@ end
 
 function StandingsGUI:Initialize()
     InitializeDB(self)
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self.tooltip = CreateFrame("GameTooltip", "CLMStandingsListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     self:Create()
     self:RegisterSlash()

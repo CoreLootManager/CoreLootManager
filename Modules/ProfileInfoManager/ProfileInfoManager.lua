@@ -236,7 +236,7 @@ function ProfileInfoManager:Initialize()
         end
     end)
 
-    EventManager:RegisterEvent("READY_CHECK", (function(...) AnnounceVersion(self) end))
+    EventManager:RegisterWoWEvent("READY_CHECK", (function(...) AnnounceVersion(self) end))
 
     MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
 end

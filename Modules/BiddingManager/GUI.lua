@@ -75,7 +75,7 @@ end
 function BiddingManagerGUI:Initialize()
     LOG:Trace("BiddingManagerGUI:Initialize()")
     InitializeDB(self)
-    EventManager:RegisterEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -87,6 +87,8 @@ function BiddingManagerGUI:GenerateAuctionOptions()
     local itemLink = self.auctionInfo and self.auctionInfo:ItemLink() or nil
     if itemLink then
         itemId, _, _, _, icon = GetItemInfoInstant(self.auctionInfo:ItemLink())
+        -- Force caching loot from server
+        GetItemInfo(itemId)
     end
     return {
         icon = {
