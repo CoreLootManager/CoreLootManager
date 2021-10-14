@@ -96,8 +96,8 @@ Modules\PointManager\GUI.lua
 Modules\Changelog\GUI.lua
 
 # Alerts
-Modules\Alerts\Alerts.xml
-Modules\Alerts\Alerts.lua
+Alerts\Alerts.xml
+Alerts\Alerts.lua
 
 # Extra
 GlobalSlashCommands.lua

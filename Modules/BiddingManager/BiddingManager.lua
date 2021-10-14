@@ -8,7 +8,7 @@ local MODELS = CLM.MODELS
 local GUI = CLM.GUI
 local CONSTANTS = CLM.CONSTANTS
 
--- local ProfileManager = MODULES.ProfileManager
+local EventManager = MODULES.EventManager
 
 local Comms = MODULES.Comms
 
@@ -171,6 +171,7 @@ function BiddingManager:HandleAcceptBid(data, sender)
         LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
         return
     end
+    EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = self.lastBid or "cancel" })
     LOG:Message("Your bid (%s) was |cff00cc00accepted|r", self.lastBid or "cancel")
 end
 
@@ -180,6 +181,7 @@ function BiddingManager:HandleDenyBid(data, sender)
         LOG:Debug("Received deny bid from %s while no auctions are in progress", sender)
         return
     end
+    EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = self.lastBid, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or "Unknown" })
     LOG:Message("Your bid (%s) was denied: |cffcc0000%s|r", self.lastBid, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or "Unknown")
 end
 
