@@ -501,9 +501,9 @@ end
 
 function UTILS.GetMyTalents()
     local one, two, three
-    _, _, _, _, one   = GetTalentTabInfo(1)
-    _, _, _, _, two   = GetTalentTabInfo(2)
-    _, _, _, _, three = GetTalentTabInfo(3)
+    _, _, one   = GetTalentTabInfo(1)
+    _, _, two   = GetTalentTabInfo(2)
+    _, _, three = GetTalentTabInfo(3)
     return one, two, three
 end
 
