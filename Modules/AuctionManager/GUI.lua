@@ -142,11 +142,12 @@ local function CreateBidWindow(self)
     local BidWindowGroup = AceGUI:Create("SimpleGroup")
     BidWindowGroup:SetLayout("Flow")
     local columns = {
-        {name = "Name",     width = 70},
-        {name = "Class",    width = 60},
-        {name = "Spec",     width = 60},
-        {name = "Bid",      width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
+        {name = "Name",  width = 70},
+        {name = "Class", width = 60},
+        {name = "Spec",  width = 60},
+        {name = "Bid",   width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
             sort = ScrollingTable.SORT_DSC,
+            sortnext = 5,
             comparesort = (function(self, rowa, rowb, sortbycol) -- luacheck: ignore
                 -- Workaround for sorting PASS at the end
                 -- we trick system into thinking its emtpy string ""
