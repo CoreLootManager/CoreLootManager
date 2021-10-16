@@ -256,7 +256,7 @@ function PointHistoryGUI:Refresh(visible)
         if creator then
             awardedBy = ColorCodeText(creator:Name(), GetClassColor(creator:Class()).hex)
         else
-            awardedBy = "Unknown"
+            awardedBy = ""
         end
         local row = {cols = {}}
         row.cols[1] = {value = POINT_CHANGE_REASONS_ALL[reason] or ""}

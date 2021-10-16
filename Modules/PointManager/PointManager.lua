@@ -17,11 +17,12 @@ local Profile = MODELS.Profile
 local Roster = MODELS.Roster
 local Raid = MODELS.Raid
 local PointHistory = MODELS.PointHistory
+local FakePointHistory = MODELS.FakePointHistory
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
-local function _apply_mutator_internal(mutate, roster, targets, value, reason, timestamp, pointHistoryEntry, isGUID)
+local function update_profile_standings(mutate, roster, targets, value, reason, timestamp, pointHistoryEntry, isGUID)
     local alreadyApplied = {}
     local getGUID
     if isGUID then
@@ -82,7 +83,7 @@ local function apply_mutator(entry, mutate)
     local pointHistoryEntry = PointHistory:New(entry)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    _apply_mutator_internal(mutate, roster, entry:targets(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry)
+    update_profile_standings(mutate, roster, entry:targets(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry)
 end
 
 local function apply_roster_mutator(entry, mutate)
@@ -95,7 +96,7 @@ local function apply_roster_mutator(entry, mutate)
     local pointHistoryEntry = PointHistory:New(entry, roster:Profiles())
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    _apply_mutator_internal(mutate, roster, roster:Profiles(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+    update_profile_standings(mutate, roster, roster:Profiles(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
 end
 
 local function apply_raid_mutator(entry, mutate)
@@ -113,7 +114,7 @@ local function apply_raid_mutator(entry, mutate)
     local pointHistoryEntry = PointHistory:New(entry, raid:Players())
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    _apply_mutator_internal(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+    update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
 end
 
 local function mutate_update_standings(roster, GUID, value, timestamp)
@@ -292,6 +293,19 @@ function PointManager:RemovePointChange(pointHistory, forceInstant)
     LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 
+function PointManager:UpdatePointsDirectly(roster, targets, value, reason, timestamp)
+    LOG:Trace("PointManager:UpdatePointsDirectly()")
+    if not roster then
+        LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
+        return
+    end
+
+    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason)
+    roster:AddRosterPointHistory(pointHistoryEntry)
+
+    update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, pointHistoryEntry, true)
+end
+
 function PointManager:Debug(N)
     N = N or 10
     local rosters = RosterManager:GetRosters()
@@ -415,6 +429,7 @@ CONSTANTS.POINT_CHANGE_REASON = {
     UNEXCUSED_ABSENCE = 6,
     CORRECTING_ERROR = 7,
     MANUAL_ADJUSTMENT = 8,
+    ZERO_SUM_AWARD = 9,
     IMPORT = 100,
     DECAY = 101,
     INTERVAL_BONUS = 102
@@ -429,7 +444,8 @@ CONSTANTS.POINT_CHANGE_REASONS = {
         [CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS] = "Standby Bonus",
         [CONSTANTS.POINT_CHANGE_REASON.UNEXCUSED_ABSENCE] = "Unexcused absence",
         [CONSTANTS.POINT_CHANGE_REASON.CORRECTING_ERROR] = "Correcting error",
-        [CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT] = "Manual adjustment"
+        [CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT] = "Manual adjustment",
+        [CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD] = "Zero-Sum award",
     },
     INTERNAL = { -- Not exposed directly to GUI
         [CONSTANTS.POINT_CHANGE_REASON.IMPORT] = "Import",
