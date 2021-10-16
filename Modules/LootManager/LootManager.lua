@@ -10,6 +10,7 @@ local MODELS =  CLM.MODELS
 
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
+local PointManager = MODULES.PointManager
 local ProfileManager = MODULES.ProfileManager
 local EventManager = MODULES.EventManager
 
@@ -57,6 +58,22 @@ local function mutateLootAward(entry, roster)
         -- Force caching loot from server
         GetItemInfo(loot:Id())
         EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_ITEM, { id = loot:Id() }, entry:time(), GUID)
+        -- Handle Zero-Sum Bank mode
+        if roster:GetConfiguration("zeroSumBank") then
+            local raid = MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
+            if not raid then
+                LOG:Debug("mutateLootAward(): Loot not awarded to raid. Skipping handling zero-sum bank.")
+                return
+            end
+            local num_players = #raid:Players()
+            if num_players > 0 then
+                local value = (loot:Value()/num_players) + roster:GetConfiguration("zeroSumBankInflation")
+                PointManager:UpdatePointsDirectly(roster, raid:Players(), value, CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD, loot:Timestamp())
+            else
+                LOG:Debug("mutateLootAward(): Empty player list in raid.")
+                return
+            end
+        end
     else
         LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
         return
