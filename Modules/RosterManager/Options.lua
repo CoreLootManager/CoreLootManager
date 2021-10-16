@@ -579,16 +579,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = "Enable paid value splitting amongst raiders.",
                         type = "toggle",
                         width = 1,
-                        disabled = true,
                         order = 6
                     },
                     zero_sum_bank_inflation_value = {
                         name = "Zero-Sum Inflation Value",
-                        desc = "Enable paid value splitting amongst raiders.",
+                        desc = "Additional points to be given to players atop of the split value.",
                         type = "input",
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1,
-                        disabled = true,
                         order = 6
                     },
                     allow_negative_standings = {

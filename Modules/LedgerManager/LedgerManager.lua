@@ -141,6 +141,7 @@ end
 
 function LedgerManager:Submit(entry, catchup)
     LOG:Trace("LedgerManager:Submit()")
+    if not entry then return end
     self.lastEntry = entry
     self.ledger.submitEntry(entry)
     if catchup then
@@ -150,6 +151,7 @@ end
 
 function LedgerManager:Remove(entry, catchup)
     LOG:Trace("LedgerManager:Remove()")
+    if not entry then return end
     self.ledger.ignoreEntry(entry)
     if catchup then
         self.ledger.catchup()

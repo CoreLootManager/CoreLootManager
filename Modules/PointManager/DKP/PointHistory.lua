@@ -3,14 +3,16 @@ local _, CLM = ...
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
 local PointHistory = {}
+local FakePointHistory = {}
 
-function PointHistory:New(entry)
+function PointHistory:New(entry, targets)
     local o = {}
 
     setmetatable(o, self)
     self.__index = self
 
     o.entry = entry -- ledger entry reference
+    o.targets = targets or entry:targets()
 
     return o
 end
@@ -19,12 +21,15 @@ function PointHistory:Profiles()
     -- lazy loaded cache
     if self.profiles == nil then
         self.profiles = {}
-        local targets = self.entry:targets()
+        local targets = self.targets
         for _,target in ipairs(targets) do
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this
             local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            if not profile then
+                profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
+            end
             if profile then
                 table.insert(self.profiles, profile)
             end
@@ -56,4 +61,64 @@ function PointHistory:Entry()
     return self.entry
 end
 
+
+function FakePointHistory:New(targets, timestamp, value, reason)
+    local o = {}
+
+    setmetatable(o, self)
+    self.__index = self
+
+    o.targets = targets
+    o.time = timestamp
+    o.value = value
+    o.reason = reason
+
+    return o
+end
+
+function FakePointHistory:Profiles()
+    -- lazy loaded cache
+    if self.profiles == nil then
+        self.profiles = {}
+        local targets = self.targets
+        for _,target in ipairs(targets) do
+            -- The code below breaks Model-View-Controller rule as it accessess Managers
+            -- Maybe the caching should be done in GUI module?
+            -- TODO: resolve this
+            local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            if not profile then
+                profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
+            end
+            if profile then
+                table.insert(self.profiles, profile)
+            end
+        end
+        table.sort(self.profiles, (function(first, second)
+            return first:Name() < second:Name()
+        end))
+    end
+    return self.profiles
+end
+
+function FakePointHistory:Timestamp()
+    return self.time
+end
+
+function FakePointHistory:Value()
+    return self.value
+end
+
+function FakePointHistory:Reason()
+    return self.reason
+end
+
+function FakePointHistory:Creator()
+    return ""
+end
+
+function FakePointHistory:Entry()
+    return nil
+end
+
 CLM.MODELS.PointHistory = PointHistory
+CLM.MODELS.FakePointHistory = FakePointHistory

@@ -15,28 +15,26 @@ local EventManager = MODULES.EventManager
 local LEDGER_DKP = MODELS.LEDGER.DKP
 local Profile = MODELS.Profile
 local Roster = MODELS.Roster
+local Raid = MODELS.Raid
 local PointHistory = MODELS.PointHistory
+local FakePointHistory = MODELS.FakePointHistory
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
-local function apply_mutator(entry, mutate)
-    local roster = RosterManager:GetRosterByUid(entry:rosterUid())
-    if not roster then
-        LOG:Debug("PointManager apply_mutator(): Unknown roster uid %s", entry:rosterUid())
-        return
-    end
-    local value = entry:value()
-    local targets = entry:targets()
-    local timestamp = entry:time()
-    local pointHistoryEntry = PointHistory:New(entry)
-    roster:AddRosterPointHistory(pointHistoryEntry)
+local function update_profile_standings(mutate, roster, targets, value, reason, timestamp, pointHistoryEntry, isGUID)
     local alreadyApplied = {}
+    local getGUID
+    if isGUID then
+        getGUID = (function(i) return i end)
+    else
+        getGUID = (function(i) return getGuidFromInteger(i) end)
+    end
     for _,target in ipairs(targets) do
         local mainProfile = nil
-        local GUID = getGuidFromInteger(target)
+        local GUID = getGUID(target)
         if not roster:IsProfileInRoster(GUID) then
-            LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+            LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
             return
         end
         local targetProfile = ProfileManager:GetProfileByGUID(GUID)
@@ -53,7 +51,7 @@ local function apply_mutator(entry, mutate)
                 mainProfile = ProfileManager:GetProfileByGUID(targetProfile:Main())
             end
             -- Check if we should schedule it for alert
-            EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = entry:reason() }, entry:time(), GUID)
+            EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason }, timestamp, GUID)
             -- If we have a linked case then we alter the GUID to mains guid
             if mainProfile then
                 GUID = mainProfile:GUID()
@@ -68,11 +66,55 @@ local function apply_mutator(entry, mutate)
                     end
                 end
             else
-                LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, entry:rosterUid())
+                LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
                 return
             end
         end
     end
+end
+
+local function apply_mutator(entry, mutate)
+    local roster = RosterManager:GetRosterByUid(entry:rosterUid())
+    if not roster then
+        LOG:Debug("PointManager apply_mutator(): Unknown roster uid %s", entry:rosterUid())
+        return
+    end
+
+    local pointHistoryEntry = PointHistory:New(entry)
+    roster:AddRosterPointHistory(pointHistoryEntry)
+
+    update_profile_standings(mutate, roster, entry:targets(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry)
+end
+
+local function apply_roster_mutator(entry, mutate)
+    local roster = RosterManager:GetRosterByUid(entry:rosterUid())
+    if not roster then
+        LOG:Debug("PointManager apply_roster_mutator(): Unknown roster uid %s", entry:rosterUid())
+        return
+    end
+
+    local pointHistoryEntry = PointHistory:New(entry, roster:Profiles())
+    roster:AddRosterPointHistory(pointHistoryEntry)
+
+    update_profile_standings(mutate, roster, roster:Profiles(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+end
+
+local function apply_raid_mutator(entry, mutate)
+    local raid = MODULES.RaidManager:GetRaidByUid(entry:raidUid())
+    if not raid then
+        LOG:Debug("PointManager apply_raid_mutator(): Unknown raid uid %s", entry:raidUid())
+        return
+    end
+    local roster = raid:Roster()
+    if not roster then
+        LOG:Debug("PointManager apply_raid_mutator(): Unknown roster")
+        return
+    end
+
+    local pointHistoryEntry = PointHistory:New(entry, raid:Players())
+    roster:AddRosterPointHistory(pointHistoryEntry)
+
+    update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
 end
 
 local function mutate_update_standings(roster, GUID, value, timestamp)
@@ -95,7 +137,8 @@ function PointManager:Initialize()
         LEDGER_DKP.Modify,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModify)")
-            apply_mutator(entry, mutate_update_standings) end))
+            apply_mutator(entry, mutate_update_standings)
+        end))
 
     LedgerManager:RegisterEntryType(
         LEDGER_DKP.Set,
@@ -109,6 +152,27 @@ function PointManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(DKPDecay)")
             apply_mutator(entry, mutate_decay_standings)
+        end))
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_DKP.ModifyRoster,
+        (function(entry)
+            LOG:TraceAndCount("mutator(DKPModifyRoster)")
+            apply_roster_mutator(entry, mutate_update_standings)
+        end))
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_DKP.DecayRoster,
+        (function(entry)
+            LOG:TraceAndCount("mutator(DKPDecayRoster)")
+            apply_roster_mutator(entry, mutate_decay_standings)
+        end))
+
+    LedgerManager:RegisterEntryType(
+        LEDGER_DKP.ModifyRaid,
+        (function(entry)
+            LOG:TraceAndCount("mutator(DKPModifyRaid)")
+            apply_raid_mutator(entry, mutate_update_standings)
         end))
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
@@ -161,6 +225,64 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
     LedgerManager:Submit(entry, forceInstant)
 end
 
+function PointManager:UpdateRosterPoints(roster, value, reason, action, forceInstant)
+    LOG:Trace("PointManager:UpdateRosterPoints()")
+    if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
+        LOG:Error("PointManager:UpdateRosterPoints(): Unknown action")
+        return
+    end
+    if type(value) ~= "number" then
+        LOG:Error("PointManager:UpdateRosterPoints(): Value is not a number")
+        return
+    end
+    if not typeof(roster, Roster) then
+        LOG:Error("PointManager:UpdateRosterPoints(): Missing valid roster")
+        return
+    end
+
+    local uid = roster:UID()
+
+    local entry
+    if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
+        entry = LEDGER_DKP.ModifyRoster:new(uid, value, reason)
+    -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
+    --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
+    elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
+        entry = LEDGER_DKP.DecayRoster:new(uid, value, reason)
+    end
+
+    LedgerManager:Submit(entry, forceInstant)
+end
+
+function PointManager:UpdateRaidPoints(raid, value, reason, action, forceInstant)
+    LOG:Trace("PointManager:UpdateRaidPoints()")
+    if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
+        LOG:Error("PointManager:UpdateRaidPoints(): Unknown action")
+        return
+    end
+    if type(value) ~= "number" then
+        LOG:Error("PointManager:UpdateRaidPoints(): Value is not a number")
+        return
+    end
+    if not typeof(raid, Raid) then
+        LOG:Error("PointManager:UpdateRaidPoints(): Missing valid raid")
+        return
+    end
+
+    local uid = raid:UID()
+    print(uid)
+    local entry
+    if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
+        entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason)
+    -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
+    --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
+    -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
+    --     entry = LEDGER_DKP.DecayRoster:new(uid, value, reason)
+    end
+
+    LedgerManager:Submit(entry, forceInstant)
+end
+
 function PointManager:RemovePointChange(pointHistory, forceInstant)
     LOG:Trace("PointManager:RemovePointChange()")
     if not typeof(pointHistory, PointHistory) then
@@ -169,6 +291,19 @@ function PointManager:RemovePointChange(pointHistory, forceInstant)
     end
     -- TODO: Add entry to track who removed?
     LedgerManager:Remove(pointHistory:Entry(), forceInstant)
+end
+
+function PointManager:UpdatePointsDirectly(roster, targets, value, reason, timestamp)
+    LOG:Trace("PointManager:UpdatePointsDirectly()")
+    if not roster then
+        LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
+        return
+    end
+
+    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason)
+    roster:AddRosterPointHistory(pointHistoryEntry)
+
+    update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, pointHistoryEntry, true)
 end
 
 function PointManager:Debug(N)
@@ -294,6 +429,7 @@ CONSTANTS.POINT_CHANGE_REASON = {
     UNEXCUSED_ABSENCE = 6,
     CORRECTING_ERROR = 7,
     MANUAL_ADJUSTMENT = 8,
+    ZERO_SUM_AWARD = 9,
     IMPORT = 100,
     DECAY = 101,
     INTERVAL_BONUS = 102
@@ -308,7 +444,8 @@ CONSTANTS.POINT_CHANGE_REASONS = {
         [CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS] = "Standby Bonus",
         [CONSTANTS.POINT_CHANGE_REASON.UNEXCUSED_ABSENCE] = "Unexcused absence",
         [CONSTANTS.POINT_CHANGE_REASON.CORRECTING_ERROR] = "Correcting error",
-        [CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT] = "Manual adjustment"
+        [CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT] = "Manual adjustment",
+        [CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD] = "Zero-Sum award",
     },
     INTERNAL = { -- Not exposed directly to GUI
         [CONSTANTS.POINT_CHANGE_REASON.IMPORT] = "Import",

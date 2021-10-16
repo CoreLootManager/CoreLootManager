@@ -13,9 +13,11 @@ local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 -- Point DKP X
 local Modify        = LogEntry:extend("DM")
-local ModifyRaid    = LogEntry:extend("DR");
+local ModifyRaid    = LogEntry:extend("DR")
+local ModifyRoster  = LogEntry:extend("DO")
 local Set           = LogEntry:extend("DS")
 local Decay         = LogEntry:extend("DD")
+local DecayRoster   = LogEntry:extend("DT")
 
 function Modify:new(rosterUid, playerList, value, reason)
     local o = LogEntry.new(self);
@@ -49,7 +51,7 @@ end
 
 function ModifyRaid:new(raidUid, value, reason)
     local o = LogEntry.new(self);
-    o.r = tonumber(raidUid) or 0
+    o.r = raidUid or ""
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
     return o
@@ -70,6 +72,31 @@ end
 local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e"})
 function ModifyRaid:fields()
     return modifyRaidFields
+end
+
+function ModifyRoster:new(rosterUid, value, reason)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.v = tonumber(value) or 0
+    o.e = tonumber(reason) or 0
+    return o
+end
+
+function ModifyRoster:rosterUid()
+    return self.r
+end
+
+function ModifyRoster:value()
+    return self.v
+end
+
+function ModifyRoster:reason()
+    return self.e
+end
+
+local modifyRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e"})
+function ModifyRoster:fields()
+    return modifyRosterFields
 end
 
 function Set:new(rosterUid, playerList, value, reason)
@@ -135,9 +162,39 @@ function Decay:fields()
     return decayFields
 end
 
+function DecayRoster:new(rosterUid, value, reason)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    value = tonumber(value) or 0
+    if value > 100 then value = 100 end
+    if value < 0 then value = 0 end
+    o.v = tonumber(value) or 0
+    o.e = tonumber(reason) or 0
+    return o
+end
+
+function DecayRoster:rosterUid()
+    return self.r
+end
+
+function DecayRoster:value()
+    return self.v
+end
+
+function DecayRoster:reason()
+    return self.e
+end
+
+local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e"})
+function DecayRoster:fields()
+    return decayRosterFields
+end
+
 MODELS.LEDGER.DKP = {
     Modify = Modify,
     Set = Set,
     Decay = Decay,
-    ModifyRaid = ModifyRaid
+    ModifyRaid = ModifyRaid,
+    ModifyRoster = ModifyRoster,
+    DecayRoster = DecayRoster
 }
