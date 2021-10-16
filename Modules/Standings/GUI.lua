@@ -97,7 +97,34 @@ local function GenerateUntrustedOptions(self)
             get = function(i, v) return self.filterOptions[tonumber(v)] end,
             values = filters,
             width = "half",
+            disabled = function() return self.searchMethod and true or false end,
             order = 1
+        },
+        filter_search = {
+            name = "Search",
+            desc = "Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering.",
+            type = "input",
+            set = (function(i, v)
+                self.searchString = v
+                if v and v ~= "" and strlen(v) >= 3 then
+                    local searchList = { strsplit(",", v) }
+                    self.searchMethod = (function(playerName)
+                        for _, searchString in ipairs(searchList) do
+                            searchString = ".*" .. strlower(searchString) .. ".*"
+                            if(string.find(strlower(playerName), searchString)) then
+                                return true
+                            end
+                        end
+                        return false
+                    end)
+                else
+                    self.searchMethod = nil
+                end
+                self:Refresh()
+            end),
+            get = (function(i) return self.searchString end),
+            width = "full",
+            order = 2,
         }
     }
 end
@@ -265,6 +292,8 @@ local function CreateManagementOptions(self, container)
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(200)
     self.filterOptions = {}
+    self.searchString = ""
+    self.searchMethod = nil
     self.decayValue = nil
     self.includeNegative = false
     self.awardValue = nil
@@ -288,6 +317,15 @@ local function CreateManagementOptions(self, container)
     LIBS.gui:Open("clm_standings_gui_options", ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
     self.st:SetFilter((function(stobject, row)
         local isInRaid = {}
+
+        local playerName = ST_GetName(row)
+        local class = ST_GetClass(row)
+
+        -- Check Search first, discard others
+        if self.searchMethod then
+            return self.searchMethod(playerName)
+        end
+
         -- Check raid
         for i=1,MAX_RAID_MEMBERS do
             local name = GetRaidRosterInfo(i)
@@ -299,8 +337,6 @@ local function CreateManagementOptions(self, container)
         -- Check for standby filter
         -- FILTER_STANDBY = 102
         -- Check class filter
-        local playerName = ST_GetName(row)
-        local class = ST_GetClass(row)
 
         local status
         for id, _class in pairs(GetColorCodedClassDict()) do
