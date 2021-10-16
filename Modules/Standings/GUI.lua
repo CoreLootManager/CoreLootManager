@@ -25,6 +25,7 @@ local RosterManager = MODULES.RosterManager
 local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
 local EventManager = MODULES.EventManager
+local RaidManager = MODULES.RaidManager
 
 local FILTER_IN_RAID = 100
 local FILTER_STANDBY = 102
@@ -154,8 +155,28 @@ local function GenerateManagerOptions(self)
                     LOG:Debug("StandingsGUI(Award): profiles == 0")
                     return
                 end
+                -- Roster award
+                if #profiles == #roster:Profiles() then
+                    PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                elseif RaidManager:IsInActiveRaid() then
+                    local raidAward = false
+                    local raid = RaidManager:GetRaid()
+                    if #profiles == #raid:Players() then
+                        raidAward = true
+                        for _, profile in ipairs(profiles) do
+                            raidAward = raidAward and raid:IsPlayerInRaid(profile:GUID())
+                        end
+                    end
+                    if raidAward then
+                        PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                    else
+                        PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                    end
+                else
+                    PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                end
                 -- Update points
-                PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                -- PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
             end),
             confirm = true,
             order = 13
@@ -251,8 +272,11 @@ local function GenerateOfficerOptions(self)
                     LOG:Debug("StandingsGUI(Decay): profiles == 0")
                     return
                 end
-                -- Update points
-                PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                if #profiles == #roster:Profiles() then
+                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                else
+                    PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                end
             end),
             confirm = true,
             order = 23
