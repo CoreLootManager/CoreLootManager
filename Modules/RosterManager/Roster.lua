@@ -81,7 +81,7 @@ function Roster:UID()
 end
 
 function Roster:Profiles()
-    return keys(self.standings)
+    return keys(self.inRoster)
 end
 
 function Roster:Standings(GUID)
