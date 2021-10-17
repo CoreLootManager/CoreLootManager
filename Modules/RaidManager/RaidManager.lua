@@ -298,8 +298,8 @@ function RaidManager:StartRaid(raid)
     end
 
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
-
     SendChatMessage(string.format("Raid [%s] started", raid:Name()) , "RAID_WARNING")
+    self:HandleRosterUpdateEvent()
 end
 
 function RaidManager:EndRaid(raid)
@@ -381,16 +381,16 @@ function RaidManager:EnableAutoAwarding()
     local bossKillBonus = roster:GetConfiguration("bossKillBonus")
     local intervalBonus = roster:GetConfiguration("intervalBonus")
 
+    if bossKillBonus or intervalBonus then
+        MODULES.AutoAwardManager:Enable()
+    end
+
     if bossKillBonus then
         MODULES.AutoAwardManager:EnableBossKillBonusAwarding()
     end
 
     if intervalBonus then
         MODULES.AutoAwardManager:EnableIntervalBonusAwarding()
-    end
-
-    if bossKillBonus or intervalBonus then
-        MODULES.AutoAwardManager:Enable()
     end
 end
 

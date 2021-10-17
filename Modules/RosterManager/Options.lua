@@ -542,7 +542,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             },
             interval_bonus_time = {
                 name = "Interval Time",
-                desc = "Interval in [minutes] to award bonus points"
+                desc = "Interval in [minutes] to award bonus points",
                 type = "input",
                 order = 12,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
