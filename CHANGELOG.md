@@ -1,3 +1,6 @@
+# Classic Loot Manager v0.10.1
+Hotfix version check for lower patch version in bigger minor
+
 # Classic Loot Manager v0.10.0
 ## Features
 ### Zero-Sum DKP
