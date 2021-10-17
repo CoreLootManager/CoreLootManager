@@ -25,6 +25,7 @@ local RosterUpdateOverrides         = LogEntry:extend("R7")
 local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
 local RosterUpdateProfiles          = LogEntry:extend("R9")
 local RosterCopyData                = LogEntry:extend("RC")
+local RosterBossKillBonus           = LogEntry:extend("RB")
 
 -- ------------ --
 -- RosterCreate --
@@ -330,6 +331,34 @@ function RosterCopyData:fields()
     return RosterCopyDataFields
 end
 
+-- -------------------- --
+-- RosterBossKillBonus --
+-- -------------------- --
+function RosterBossKillBonus:new(rosterUid, encounterId, value)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.e = tonumber(encounterId) or 0
+    o.v = tonumber(value) or 0
+    return o
+end
+
+function RosterBossKillBonus:rosterUid()
+    return self.r
+end
+
+function RosterBossKillBonus:encounterId()
+    return self.e
+end
+
+function RosterBossKillBonus:value()
+    return self.v
+end
+
+local RosterBossKillBonusFields = mergeLists(LogEntry:fields(), {"r", "e", "v"})
+function RosterBossKillBonus:fields()
+    return RosterBossKillBonusFields
+end
+
 MODELS.LEDGER.ROSTER = {
     Create                  = RosterCreate,
     Delete                  = RosterDelete,
@@ -342,4 +371,5 @@ MODELS.LEDGER.ROSTER = {
     UpdateOverridesSingle   = RosterUpdateOverridesSingle,
     UpdateProfiles          = RosterUpdateProfiles,
     CopyData                = RosterCopyData,
+    BossKillBonus           = RosterBossKillBonus,
 }

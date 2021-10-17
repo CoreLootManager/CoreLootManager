@@ -14,6 +14,7 @@ local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local EventManager = MODULES.EventManager
 local ProfileManager = MODULES.ProfileManager
+local PointManager = MODULES.PointManager
 -- local Comms = MODULES.Comms
 
 -- local LEDGER_DKP = MODELS.LEDGER.DKP
@@ -121,8 +122,15 @@ function RaidManager:Initialize()
                     LOG:Debug("RaidManager mutator(): Missing profile for: %s", GUID)
                 end
             end
+
             raid:Start(entry:time())
-            -- Handle ontime bonus and other point stuff
+
+            local roster = raid:Roster()
+            if roster then
+                if roster:GetConfiguration("onTimeBonus") then
+                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time())
+                end
+            end
         end)
     )
 
@@ -136,6 +144,13 @@ function RaidManager:Initialize()
             if not raid then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
                 return
+            end
+
+            local roster = raid:Roster()
+            if roster then
+                if roster:GetConfiguration("raidCompletionBonus") then
+                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time())
+                end
             end
 
             raid:End(entry:time())
@@ -351,10 +366,34 @@ function RaidManager:HandleRosterUpdateEvent()
     if not IsInRaid() then return end
     -- Update wow raid information
     self:UpdateGameRaidInformation()
+    -- Auto award handling removal in case of raid owner change
+    self:DisableAutoAwarding()
     -- Handle roster update
     if self:IsRaidOwner() and self:IsInProgressingRaid() then
         self:UpdateRaiderList()
+        self:EnableAutoAwarding()
     end
+end
+
+function RaidManager:EnableAutoAwarding()
+    LOG:Trace("RaidManager:EnableAutoAwarding()")
+    local roster = self:GetRaid():Roster()
+    local bossKillBonus = roster:GetConfiguration("bossKillBonus")
+    local intervalBonus = roster:GetConfiguration("intervalBonus")
+
+    if bossKillBonus then
+        MODULES.AutoAwardManager:EnableBossKillBonusAwarding()
+    end
+
+    if bossKillBonus or intervalBonus then
+        MODULES.AutoAwardManager:Enable()
+    end
+end
+
+function RaidManager:DisableAutoAwarding()
+    LOG:Trace("RaidManager:DisableAutoAwarding()")
+    MODULES.AutoAwardManager:DisableBossKillBonusAwarding()
+    MODULES.AutoAwardManager:Disable()
 end
 
 function RaidManager:UpdateGameRaidInformation()

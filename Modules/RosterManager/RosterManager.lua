@@ -236,6 +236,20 @@ function RosterManager:Initialize()
                 end
             end))
 
+            LedgerManager:RegisterEntryType(
+                LEDGER_ROSTER.BossKillBonus,
+                (function(entry)
+                    LOG:TraceAndCount("mutator(RosterBossKillBonus)")
+                    local rosterUid = entry:rosterUid()
+
+                    local roster = self:GetRosterByUid(rosterUid)
+                    if not roster then
+                        LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                        return
+                    end
+                    roster:SetBossKillBonusValue(entry:encounterId(), entry:value())
+                end))
+
         LedgerManager:RegisterOnRestart(function()
             self:WipeAll()
         end)
@@ -429,6 +443,34 @@ function RosterManager:SetRosterItemValue(nameOrRoster, itemId, base, max)
         return
     end
     LedgerManager:Submit(LEDGER_ROSTER.UpdateOverrides:new(roster:UID(), itemId, base, max), true)
+end
+
+function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, value)
+    LOG:Trace("RosterManager:SetRosterBossKillBonusValue()")
+    local roster
+    if typeof(nameOrRoster, Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterBossKillBonusValue(): Invalid roster object or name")
+        return nil
+    end
+    if not tonumber(encounterId) then
+        LOG:Error("RosterManager:SetRosterBossKillBonusValue(): Missing encounterId")
+        return
+    end
+    if not tonumber(value) then
+        LOG:Error("RosterManager:SetRosterBossKillBonusValue(): Missing value")
+        return
+    end
+    local currentBonus = roster:GetBossKillBonusValue(encounterId)
+    if currentBonus == value then
+        LOG:Debug("RosterManager:SetRosterBossKillBonusValue(): No change to value. Skipping.")
+        return
+    end
+    LedgerManager:Submit(LEDGER_ROSTER.BossKillBonus:new(roster:UID(), encounterId, value), true)
 end
 
 function RosterManager:AddProfilesToRoster(roster, profiles)

@@ -270,7 +270,6 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, forceInstant
     end
 
     local uid = raid:UID()
-    print(uid)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
         entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason)
