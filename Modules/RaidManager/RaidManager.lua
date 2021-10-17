@@ -261,12 +261,12 @@ function RaidManager:StartRaid(raid)
         LOG:Message("You can only start a freshly created raid.")
         return
     end
-    --@no-debug@
-    -- if (self:GetRaid() ~= raid) or not IsInRaid() then
-    --     LOG:Message("You are not in the raid.")
-    --     return
-    -- end
-    --@end-no-debug@
+    --[===[@non-debug@
+    if (self:GetRaid() ~= raid) or not IsInRaid() then
+        LOG:Message("You are not in the raid.")
+        return
+    end
+    --@end-non-debug@]===]
 
     -- Lazy fill raid roster
     RosterManager:AddFromRaidToRoster(raid:Roster())
@@ -360,19 +360,18 @@ end
 function RaidManager:UpdateGameRaidInformation()
     local lootmethod, _, masterlooterRaidID = GetLootMethod()
     LOG:Debug("Loot method: %s", lootmethod)
+    self.IsMasterLootSystem = false
     if lootmethod == "master" then
         self.IsMasterLootSystem = true
         self.MasterLooter = GetRaidRosterInfo(masterlooterRaidID)
-    else
-        self.IsMasterLootSystem = false
-        for i=1,MAX_RAID_MEMBERS do
-            local name, rank = GetRaidRosterInfo(i)
-            if name then
-                if rank == 2 then
-                    self.RaidLeader = RemoveServer(name)
-                    LOG:Debug("Raid Leader: %s", self.RaidLeader)
-                    break
-                end
+    end
+    for i=1,MAX_RAID_MEMBERS do
+        local name, rank = GetRaidRosterInfo(i)
+        if name then
+            if rank == 2 then
+                self.RaidLeader = RemoveServer(name)
+                LOG:Debug("Raid Leader: %s", self.RaidLeader)
+                break
             end
         end
     end
@@ -439,6 +438,29 @@ function RaidManager:IsRaidOwner(name)
     end
     if not allow then
         LOG:Debug("%s is not raid owner.", name)
+    end
+    return allow
+end
+
+function RaidManager:IsAllowedToAuction(name, relaxed)
+    LOG:Trace("RaidManager:IsRaidIsAllowedToAuctionOwner()")
+    name = name or whoami()
+    local allow = false
+    if not relaxed then -- Relaxed requirements: doesn't need to be assitant (for out of guild checks)
+        if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
+            LOG:Debug("Not Assistant")
+            return false
+        end
+    end
+
+    if self.IsMasterLootSystem then
+        allow = (self.MasterLooter == name)
+    end
+
+    allow = allow or (self.RaidLeader == name)
+
+    if not allow then
+        LOG:Debug("%s is not allowed to auction.", name)
     end
     return allow
 end

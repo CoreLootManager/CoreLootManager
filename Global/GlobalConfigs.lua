@@ -16,7 +16,8 @@ function GlobalConfigs:Initialize()
             announce_award_to_guild = true,
             announce_loot_to_raid = false,
             announce_loot_to_raid_level = 3,
-            wowdkpbot_integration = false
+            wowdkpbot_integration = false,
+            chat_commands = false
         }
     end
     self.db = db.global
@@ -71,6 +72,15 @@ function GlobalConfigs:Initialize()
             width = "double",
             order = 4
         },
+        global_chat_commands = {
+            name = "Enable chat commands",
+            desc = "Enble !dkp and !bid through whisper / raid. Change requires /reload.",
+            type = "toggle",
+            set = function(i, v) self:SetAllowChatCommands(v) end,
+            get = function(i) return self:GetAllowChatCommands() end,
+            width = "double",
+            order = 5
+        },
         global_wipe_ledger = {
             name = "Wipe events",
             desc = "Wipes all events from memory. This will trigger resyncing from other users.",
@@ -113,6 +123,14 @@ end
 
 function GlobalConfigs:GetWoWDKPBotIntegration()
     return self.db.wowdkpbot_integration
+end
+
+function GlobalConfigs:SetAllowChatCommands(value)
+    self.db.chat_commands = value and true or false
+end
+
+function GlobalConfigs:GetAllowChatCommands()
+    return self.db.chat_commands
 end
 
 CLM.GlobalConfigs = GlobalConfigs
