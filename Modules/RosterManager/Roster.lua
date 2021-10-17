@@ -396,6 +396,8 @@ function RosterConfiguration:New(i)
     o._.weeklyReset = CONSTANTS.WEEKLY_RESET.EU
     -- Round Decimals
     o._.roundDecimals = 10
+    -- Minimal bid increment for open auction
+    o._.minimalIncrement = 1
 
     -- Additional settings
     o.hasHardCap = false
@@ -428,7 +430,9 @@ function RosterConfiguration:fields()
         "hardCap",
         "weeklyCap",
         "weeklyReset",
-        "roundDecimals"
+        --
+        "roundDecimals",
+        "minimalIncrement"
     }
 end
 
@@ -479,7 +483,8 @@ local TRANSFORMS = {
     hardCap = transform_number,
     weeklyCap = transform_number,
     weeklyReset = transform_number,
-    roundDecimals = transform_number
+    roundDecimals = transform_number,
+    minimalIncrement = transform_number
 }
 
 function RosterConfiguration:Get(option)
@@ -540,6 +545,7 @@ function RosterConfiguration._validate_hardCap(value) value = tonumber(value); r
 function RosterConfiguration._validate_weeklyCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
 function RosterConfiguration._validate_roundDecimals(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
+function RosterConfiguration._validate_minimalIncrement(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration
