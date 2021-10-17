@@ -78,6 +78,12 @@ function RosterManagerOptions:Initialize()
         boss_kill_bonus_set = (function(name, value)
             SetRosterOption(name, "bossKillBonus", value)
         end),
+        boss_kill_bonus_value_get = (function(name)
+            return tostring(GetRosterOption(name, "bossKillBonusValue"))
+        end),
+        boss_kill_bonus_value_set = (function(name, value)
+            SetRosterOption(name, "bossKillBonusValue", value)
+        end),
         on_time_bonus_get = (function(name)
             return GetRosterOption(name, "onTimeBonus")
         end),
@@ -86,6 +92,9 @@ function RosterManagerOptions:Initialize()
         end),
         on_time_bonus_value_get = (function(name)
             return tostring(GetRosterOption(name, "onTimeBonusValue"))
+        end),
+        on_time_bonus_value_set = (function(name, value)
+            SetRosterOption(name, "onTimeBonusValue", value)
         end),
         raid_completion_bonus_get = (function(name)
             return GetRosterOption(name, "raidCompletionBonus")
@@ -98,9 +107,6 @@ function RosterManagerOptions:Initialize()
         end),
         raid_completion_bonus_value_set = (function(name, value)
             SetRosterOption(name, "raidCompletionBonusValue", value)
-        end),
-        on_time_bonus_value_set = (function(name, value)
-            SetRosterOption(name, "onTimeBonusValue", value)
         end),
         interval_bonus_get = (function(name)
             return GetRosterOption(name, "intervalBonus")
@@ -376,7 +382,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 args = {}
             }
         }
-        order = 1
+        local order = 1
         for _, data in ipairs(CLM.EncounterIDs.TBC) do
             order = order + 1
             args.tbc.args["encounter_header_" .. data.name] = {
@@ -390,10 +396,15 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 args.tbc.args["encounter" .. info.id] = {
                     name = info.name,
                     type = "input",
-                    set = (function() end),
-                    get = (function() end),
                     width = "full",
-                    order = order
+                    order = order,
+                    set = (function(i, v)
+                        if self.readOnly then return end
+                        RosterManager:SetRosterBossKillBonusValue(name, info.id, v)
+                    end),
+                    get = (function(i)
+                        return tostring(roster:GetBossKillBonusValue(info.id))
+                    end)
                 }
             end
         end
@@ -481,20 +492,28 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Boss Kill Bonus",
                 type = "toggle",
                 order = 5,
-                disabled = true,
-                width = "full"
+                -- disabled = true,
+                width = 1
+            },
+            boss_kill_bonus_value = {
+                name = "Default Boss Kill Bonus Value",
+                type = "input",
+                order = 6,
+                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                -- disabled = true,
+                width = 1
             },
             on_time_bonus = {
                 name = "On Time Bonus",
                 type = "toggle",
-                order = 6,
+                order = 7,
                 disabled = true,
                 width = 1
             },
             on_time_bonus_value = {
                 name = "On Time Bonus Value",
                 type = "input",
-                order = 7,
+                order = 8,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 1
@@ -502,14 +521,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             raid_completion_bonus = {
                 name = "Raid Completion Bonus",
                 type = "toggle",
-                order = 8,
+                order = 9,
                 disabled = true,
                 width = 1
             },
             raid_completion_bonus_value = {
                 name = "Raid Completion Value",
                 type = "input",
-                order = 9,
+                order = 10,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 1
@@ -517,14 +536,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             interval_bonus = {
                 name = "Interval Bonus",
                 type = "toggle",
-                order = 10,
+                order = 11,
                 disabled = true,
                 width = 1
             },
             interval_bonus_time = {
                 name = "Interval Time",
                 type = "input",
-                order = 11,
+                order = 12,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 0.6
@@ -532,7 +551,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             interval_bonus_value = {
                 name = "Interval Bonus Value",
                 type = "input",
-                order = 12,
+                order = 13,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = true,
                 width = 0.6
@@ -541,7 +560,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             point_caps_header = {
                 name = "Point caps",
                 type = "header",
-                order = 13,
+                order = 14,
                 width = "full"
             },
             weekly_reset_timezone = {
@@ -550,7 +569,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "select",
                 style = "radio",
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 14,
+                order = 15,
                 values = CONSTANTS.WEEKLY_RESETS_GUI
             },
             weekly_cap = {
@@ -558,7 +577,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = "Maximum point cap player can receive per raid week. Set to 0 to disable.",
                 type = "input",
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 15,
+                order = 16,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 -- width = 0.6
             },
@@ -567,7 +586,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = "Maximum point cap that player can have. Set to 0 to disable.",
                 type = "input",
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 16,
+                order = 17,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 -- width = 0.6
             },
@@ -577,7 +596,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "select",
                 style = "radio",
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 17,
+                order = 18,
                 values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
             },
             --
@@ -690,8 +709,6 @@ function RosterManagerOptions:UpdateOptions()
             name = "Roster name",
             desc = "Roster Name",
             type = "input",
-            set = (function(i, v) self.rosterName = v end),
-            get = (function(i) return self.rosterName end),
             pattern = ".+",
             order = 2,
             -- disabled = true,--(function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),

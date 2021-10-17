@@ -8,7 +8,7 @@ CLM.EncounterIDs.TBC = {
     -- { id = 666, name = "" },
     -- { id = 668, name = "" },
     -- { id = 667, name = "" },
-    -- { id = 669, name = "" }, 
+    -- { id = 669, name = "" },
     -- { id = 670, name = "" },
     -- { id = 671, name = "" },
     -- { id = 672, name = "" },
@@ -19,7 +19,7 @@ CLM.EncounterIDs.TBC = {
     -- { id = 613, name = "" },
     -- { id = 614, name = "" },
     -- { id = 615, name = "" },
-    -- { id = 616, name = "" }, 
+    -- { id = 616, name = "" },
     -- { id = 617, name = "" },
     -- -- AQ40
     -- { id = 709, name = "" },
@@ -60,7 +60,7 @@ CLM.EncounterIDs.TBC = {
     -- { id = 788, name = "" },
     -- -- AQ20
     -- { id = 722, name = "" },
-    -- { id = 721, name = "" }, 
+    -- { id = 721, name = "" },
     -- { id = 719, name = "" },
     -- { id = 718, name = "" },
     -- { id = 720, name = "" },
@@ -100,7 +100,7 @@ CLM.EncounterIDs.TBC = {
         }
     },
     -- SSC
-    { 
+    {
         name = "Serpentshrine Cavern",
         data = {
             { id = 623, name = "Hydross the Unstable" }, -- "Hydross the Unstable",
@@ -163,7 +163,7 @@ CLM.EncounterIDs.TBC = {
     {
         name = "Sunwell Plateau",
         data = {
-            { id = 724, name = "Kalecgos" }, -- "Kalecgos", 
+            { id = 724, name = "Kalecgos" }, -- "Kalecgos",
             { id = 725, name = "Brutallus" }, -- "Brutallus",
             { id = 726, name = "Felmyst" }, -- "Felmyst",
             { id = 727, name = "Eredar Twins" }, -- "Eredar Twins",

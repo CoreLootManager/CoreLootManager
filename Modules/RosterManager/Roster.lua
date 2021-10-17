@@ -44,6 +44,8 @@ function Roster:New(uid, pointType)
     o.profileLoot = {}
     -- Weekly point gains per player
     o.weeklyGains = {}
+    -- Boss Kill Bonus values
+    o.bossKillBonusValues = {}
 
     return o
 end
@@ -321,6 +323,14 @@ function Roster:GetProfilePointHistoryByGUID(GUID)
     return self.profilePointHistory[GUID] or {}
 end
 
+function Roster:SetBossKillBonusValue(encounterId, value)
+    self.bossKillBonusValues[encounterId] = tonumber(value)
+end
+
+function Roster:GetBossKillBonusValue(encounterId)
+    return self.bossKillBonusValues[encounterId] or self.configuration._.bossKillBonusValue
+end
+
 -- Copies. Hope I didn't fk it up
 
 function Roster:CopyItemValues(s)
@@ -333,6 +343,7 @@ end
 
 function Roster:CopyConfiguration(s)
     self.configuration = RosterConfiguration:New(DeepCopy(s.configuration))
+    self.bossKillBonusValues = DeepCopy(s.bossKillBonusValues)
 end
 
 function Roster:CopyProfiles(s)
@@ -374,6 +385,8 @@ function RosterConfiguration:New(i)
     -- Max Bid Behavior ?
     -- Boss Kill Bonus
     o._.bossKillBonus = false
+    -- Default Boss Kill Bonus value
+    o._.bossKillBonusValue = 0
     -- On time Bonus
     o._.onTimeBonus = false
     -- On Time Bonus Value
@@ -419,6 +432,7 @@ function RosterConfiguration:fields()
         "allowNegativeBidders",
         -- bonuses not yet in place
         "bossKillBonus",
+        "bossKillBonusValue",
         "onTimeBonus",
         "onTimeBonusValue",
         "raidCompletionBonus",
@@ -475,6 +489,7 @@ local TRANSFORMS = {
     bossKillBonus = transform_boolean,
     onTimeBonus = transform_boolean,
     onTimeBonusValue = transform_number,
+    bossKillBonusValue = transform_number,
     raidCompletionBonus = transform_boolean,
     raidCompletionBonusValue = transform_number,
     intervalBonus = transform_boolean,
@@ -536,6 +551,7 @@ function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value);
 function RosterConfiguration._validate_bossKillBonus(value) return IsBoolean(value) end
 function RosterConfiguration._validate_onTimeBonus(value) return IsBoolean(value) end
 function RosterConfiguration._validate_onTimeBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_bossKillBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_raidCompletionBonus(value) return IsBoolean(value) end
 function RosterConfiguration._validate_raidCompletionBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_intervalBonus(value) return IsBoolean(value) end

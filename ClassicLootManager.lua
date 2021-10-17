@@ -115,16 +115,13 @@ function CORE:_InitializeFeatures()
     MODULES.AuctionManager:Initialize()
     MODULES.BiddingManager:Initialize()
     MODULES.ProfileInfoManager:Initialize()
-    -- Initialize Migration
-    CLM.Migration:Initialize()
-    -- Initialize global configs
-    CLM.GlobalConfigs:Initialize()
-    -- Initialize global slash handlers
-    CLM.GlobalSlashCommands:Initialize()
-    -- Initialize global chat message handlers
-    CLM.GlboalChatMessageHandlers:Initialize()
-    -- Initialize external (to wow) integrations
-    CLM.Integration:Initialize()
+    MODULES.AutoAwardManager:Initialize()
+    -- Globals
+    CLM.Migration:Initialize() -- Initialize Migration
+    CLM.GlobalConfigs:Initialize() -- Initialize global configs
+    CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
+    CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
+    CLM.Integration:Initialize() -- Initialize external (to wow) integrations
 end
 
 function CORE:_InitializeFrontend()

@@ -351,10 +351,36 @@ function RaidManager:HandleRosterUpdateEvent()
     if not IsInRaid() then return end
     -- Update wow raid information
     self:UpdateGameRaidInformation()
+    -- Auto award handling removal in case of raid owner change
+    self:DisableAutoAwarding()
     -- Handle roster update
     if self:IsRaidOwner() and self:IsInProgressingRaid() then
         self:UpdateRaiderList()
+        self:EnableAutoAwarding()
     end
+end
+
+function RaidManager:EnableAutoAwarding()
+    LOG:Trace("RaidManager:EnableAutoAwarding()")
+    local roster = self:GetRaid():Roster()
+    local bossKillBonus = roster:GetConfiguration("bossKillBonus")
+    local onTimeBonus = roster:GetConfiguration("onTimeBonus")
+    local raidCompletionBonus = roster:GetConfiguration("raidCompletionBonus")
+    local intervalBonus = roster:GetConfiguration("intervalBonus")
+
+    if bossKillBonus then
+        MODULES.AutoAwardManager:EnableBossKillBonusAwarding()
+    end
+
+    if bossKillBonus or onTimeBonus or raidCompletionBonus or intervalBonus then
+        MODULES.AutoAwardManager:Enable()
+    end
+end
+
+function RaidManager:DisableAutoAwarding()
+    LOG:Trace("RaidManager:DisableAutoAwarding()")
+    MODULES.AutoAwardManager:DisableBossKillBonusAwarding()
+    MODULES.AutoAwardManager:Disable()
 end
 
 function RaidManager:UpdateGameRaidInformation()
