@@ -9,6 +9,10 @@ local PointManager = MODULES.PointManager
 local RaidManager = MODULES.RaidManager
 local EventManager = MODULES.EventManager
 
+local HYDROSS_ENCOUNTER_ID = 623
+local HYDROSS_ENCOUNTER_NAME = "Hydross the Unstable"
+local HYDROSS_NPC_ID = 21216
+
 local function handleEncounterStart(self, addon, event, id, name, difficulty, groupSize)
     LOG:Info("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and not self:EncounterInProgress() then
@@ -31,6 +35,18 @@ local function handleEncounterEnd(self, addon, event, id, name, difficulty, grou
     end
 end
 
+local function handleHydrossWorkaround(self, addon, event)
+    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and (self.encounterInProgress == HYDROSS_ENCOUNTER_ID) then
+        local _, subevent, _, _, _, _, _, guid, name   = CombatLogGetCurrentEventInfo()
+        if subevent == "UNIT_DIED" then
+            local _, _, _, _, _, npc_id = strsplit("-", guid)
+            if tonumber(npc_id) == HYDROSS_NPC_ID then
+                handleEncounterEnd(self, addon, "ENCOUNTER_END", HYDROSS_ENCOUNTER_ID, HYDROSS_ENCOUNTER_NAME, 176, 25, 1)
+            end
+        end
+    end
+end
+
 local AutoAwardManager = {}
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")
@@ -42,6 +58,10 @@ function AutoAwardManager:Initialize()
     end))
     EventManager:RegisterWoWEvent({"ENCOUNTER_END"}, (function(...)
         handleEncounterEnd(self, ...)
+    end))
+    -- Hydross workaround
+    EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
+        handleHydrossWorkaround(self, ...)
     end))
     MODULES.ConfigManager:RegisterUniversalExecutor("aam", "AutoAwardManager", self)
 end
