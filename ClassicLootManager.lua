@@ -121,6 +121,8 @@ function CORE:_InitializeFeatures()
     CLM.GlobalConfigs:Initialize()
     -- Initialize global slash handlers
     CLM.GlobalSlashCommands:Initialize()
+    -- Initialize global chat message handlers
+    CLM.GlboalChatMessageHandlers:Initialize()
     -- Initialize external (to wow) integrations
     CLM.Integration:Initialize()
 end

@@ -28,8 +28,6 @@ local AuctionCommDistributeBid = MODELS.AuctionCommDistributeBid
 
 local AUCTION_COMM_PREFIX = "Auction001"
 
-local BID_PASS = "PASS"
-
 local AuctionManager = {}
 function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
@@ -263,7 +261,7 @@ function AuctionManager:AnnounceHighestBidder(name, bid)
     if self.auctionType ~= CONSTANTS.AUCTION_TYPE.OPEN then return end
     if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not bid then return end
-    if bid == BID_PASS then return end
+    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
     self:SendBidInfo(name, bid)
     local message = string.format("New highest bidder: %s (%d DKP)", name, bid)
     SendChatMessage(message, "RAID_WARNING")
@@ -302,14 +300,14 @@ function AuctionManager:HandleNotifyPass(data, sender)
         LOG:Debug("Received pass from %s while no auctions are in progress", sender)
         return
     end
-    self:UpdateBid(sender, BID_PASS)
+    self:UpdateBid(sender, CONSTANTS.AUCTION_COMM.BID_PASS)
 end
 
 function AuctionManager:ValidateBid(name, bid)
     -- allow bid cancelling
     if bid == nil then return true end
     -- allow bid passing
-    if bid == BID_PASS then return true end
+    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return true end
     -- sanity check
     local profile = ProfileManager:GetProfileByName(name)
     if not profile then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
@@ -354,12 +352,15 @@ function AuctionManager:UpdateBid(name, bid)
     else
         self:SendBidDenied(name, reason)
     end
+
     GUI.AuctionManager:UpdateBids()
+
+    return accept, reason
 end
 
 function AuctionManager:UpdateBidsInternal(name, bid)
     self.bids[name] = bid
-    if bid == BID_PASS then return end
+    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
     if bid then
         if bid > self.highestBid then self.highestBid = bid end
         self:AntiSnipe()
@@ -380,10 +381,10 @@ function AuctionManager:Award(itemId, price, name)
     LootManager:AwardItem(self.raid, name, self.itemLink, itemId, price)
 end
 
-function AuctionManager:IsAuctioneer(name)
+function AuctionManager:IsAuctioneer(name, relaxed)
     LOG:Trace("AuctionManager:IsAuctioneer()")
     name = name or UTILS.whoami()
-    return RaidManager:IsRaidOwner(name)
+    return RaidManager:IsAllowedToAuction(name, relaxed)
 end
 
 function AuctionManager:IsAuctionInProgress()
@@ -391,6 +392,7 @@ function AuctionManager:IsAuctionInProgress()
 end
 
 CONSTANTS.AUCTION_COMM = {
+    BID_PASS  = "PASS",
     TYPE = {
         START_AUCTION = 1,
         STOP_AUCTION = 2,
