@@ -261,12 +261,12 @@ function RaidManager:StartRaid(raid)
         LOG:Message("You can only start a freshly created raid.")
         return
     end
-    --@no-debug@
-    -- if (self:GetRaid() ~= raid) or not IsInRaid() then
-    --     LOG:Message("You are not in the raid.")
-    --     return
-    -- end
-    --@end-no-debug@
+    --[===[@non-debug@
+    if (self:GetRaid() ~= raid) or not IsInRaid() then
+        LOG:Message("You are not in the raid.")
+        return
+    end
+    --@end-non-debug@]===]
 
     -- Lazy fill raid roster
     RosterManager:AddFromRaidToRoster(raid:Roster())

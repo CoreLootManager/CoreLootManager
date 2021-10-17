@@ -14,23 +14,37 @@ local RaidManager = MODULES.RaidManager
 
 local GlboalChatMessageHandlers = {}
 
+local whoami = UTILS.whoami()
+
+local function trim(s)
+    return string.gsub(s, "^%s*(.-)%s*$", "%1")
+end
+
 function GlboalChatMessageHandlers:Initialize()
     if not ACL:IsTrusted() then return end
-    EventManager.RegisterWoWEvent({"CHAT_MSG_WHISPER", "CHAT_MSG_RAID"},
-    (function(event, text, playerName, ...)
+    EventManager:RegisterWoWEvent({"CHAT_MSG_WHISPER", "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER"},
+    (function(addon, event, text, playerName, ...)
         playerName = UTILS.RemoveServer(playerName)
+        --[===[@non-debug@
+        if playerName == whoami then return end
+        --@end-non-debug@]===]
         local params = { strsplit(" ", text) }
         local command = params[1]
         if command then
-            local responseChannel
-            if event == "CHAT_MSG_RAID" then
+            local responseChannel, target
+            if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
                 responseChannel = "RAID"
+                target = nil
             else -- fallback to whisper always - safer option
                 responseChannel = "WHISPER"
+                target = playerName
             end
 
             if command == "!bid" then
-                local value = params[2]
+                local value
+                if params[2] then
+                    value = trim(params[2])
+                end
                 if not AuctionManager:IsAuctionInProgress() then
                     LOG:Debug("Received submit bid from %s while no auctions are in progress", playerName)
                     return
@@ -48,53 +62,54 @@ function GlboalChatMessageHandlers:Initialize()
                 end
 
                 SendChatMessage(
-                    "CLM: Your bid (" .. tostring(value) .. ") was " .. (accept and "accepted" or ("denied:" .. reason)) .. ".",
-                    responseChannel
+                    "<CLM> Your bid (" .. tostring(value) .. ") was " .. (accept and "accepted" or ("denied: " .. CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or "Unknown")) .. ".",
+                    responseChannel, nil, target
                 )
 
             elseif command == "!dkp" then
-                local player, rosterName = UTILS.whoami(), ""
-                if #params > 1 then
-                    for _,param in ipairs(params) do
-                        local var,val = strsplit("=",param)
-                        if var == "player" then
-                            player = val or ""
-                        elseif var == "roster" then
-                            rosterName = val or ""
-                        end
-                    end
+                local player
+                if params[2] then
+                    params[2] = trim(params[2])
+                end
+                if not params[2] or params[2] == "" then
+                    player = whoami
+                else
+                    player = params[2]
                 end
                 local profile = ProfileManager:GetProfileByName(player)
                 if not profile then
-                    SendChatMessage("CLM: Missing profile for player" .. tostring(player) .. ".", responseChannel)
+                    SendChatMessage("<CLM> Missing profile for player" .. tostring(player) .. ".", responseChannel, nil, target)
                     return
                 end
-                local roster
-                if rosterName == "" then
-                    if RaidManager:IsInRaid() then
-                        local raid = RaidManager:GetRaid()
-                        if raid then
-                            roster = raid:Roster()
-                        end
+                local rosters = {}
+                if RaidManager:IsInActiveRaid() then
+                    local raid = RaidManager:GetRaid()
+                    if raid then
+                        rosters["_"] = raid:Roster()
                     end
                 else
-                    roster = RosterManager:GetRosterByName(rosterName)
+                    rosters = RosterManager:GetRosters()
                 end
-                if not roster then
-                    SendChatMessage("CLM: Missing roster information.", responseChannel)
-                    return
+                local rostersWithPlayer = {}
+                for _, roster in pairs(rosters) do
+                    if roster and roster:IsProfileInRoster(profile:GUID()) then
+                        table.insert(rostersWithPlayer, roster)
+                    end
                 end
-                if not roster:IsProfileInRoster(profile:GUID()) then
-                    SendChatMessage("CLM: " .. profile:Name() .. " not in " .. RosterManager:GetRosterNameByUid(roster:UID()) .. "roster.", responseChannel)
-                    return
+                if #rostersWithPlayer == 0 then
+                    SendChatMessage("<CLM> " .. profile:Name() .. " not present in any roster.", responseChannel, nil, target)
+                else
+                    SendChatMessage("<CLM> " .. profile:Name() .. " standings in " .. #rostersWithPlayer .. " roster" .. ((#rostersWithPlayer == 1) and "" or "s") ..  ":", responseChannel, nil, target)
                 end
-                local standings = roster:Standings(profile:GUID())
-                local weeklyGains = roster:GetCurrentGainsForPlayer(profile:GUID())
-                local weeklyCap = roster:GetConfiguration("weeklyCap")
-                if weeklyCap > 0 then
-                    weeklyGains = weeklyGains .. " / " .. weeklyCap
+                for _, roster in ipairs(rostersWithPlayer) do
+                    local standings = roster:Standings(profile:GUID())
+                    local weeklyGains = roster:GetCurrentGainsForPlayer(profile:GUID())
+                    local weeklyCap = roster:GetConfiguration("weeklyCap")
+                    if weeklyCap > 0 then
+                        weeklyGains = weeklyGains .. " / " .. weeklyCap
+                    end
+                    SendChatMessage("<CLM> " .. RosterManager:GetRosterNameByUid(roster:UID()) .. ":  " .. standings .. " DKP (" .. weeklyGains .. " this week).", responseChannel, nil, target)
                 end
-                SendChatMessage("CLM: " .. profile:Name() .. ":  " .. standings .. " DKP (" .. weeklyGains .. " this week).", responseChannel)
             end
         end
     end))
