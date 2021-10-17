@@ -257,7 +257,6 @@ function AuctionManager:SendBidDenied(name, reason)
 end
 
 function AuctionManager:SendBidInfo(name, bid)
-    print("send bid info: ", name,bid)
     local message = AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
         AuctionCommDistributeBid:New(name, bid)

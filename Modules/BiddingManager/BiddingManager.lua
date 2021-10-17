@@ -192,7 +192,6 @@ function BiddingManager:HandleDistributeBid(data, sender)
         return
     end
     local value = (tonumber(data:Value()) or 0) + self.auctionInfo:Increment()
-    print("handle", data, tonumber(data), value)
     GUI.BiddingManager:UpdateCurrentBidValue(value)
 end
 
