@@ -376,6 +376,27 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 args = {}
             }
         }
+        order = 1
+        for _, data in ipairs(CLM.EncounterIDs.TBC) do
+            order = order + 1
+            args.tbc.args["encounter_header_" .. data.name] = {
+                name = data.name,
+                type = "header",
+                order = order,
+                width = "full"
+            }
+            for _, info in ipairs(data.data) do
+                order = order + 1
+                args.tbc.args["encounter" .. info.id] = {
+                    name = info.name,
+                    type = "input",
+                    set = (function() end),
+                    get = (function() end),
+                    width = "full",
+                    order = order
+                }
+            end
+        end
         return args
     end)()
 
