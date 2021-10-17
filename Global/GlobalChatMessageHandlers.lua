@@ -22,6 +22,7 @@ end
 
 function GlboalChatMessageHandlers:Initialize()
     if not ACL:IsTrusted() then return end
+    if not CLM.GlobalConfigs:GetAllowChatCommands() then return end
     EventManager:RegisterWoWEvent({"CHAT_MSG_WHISPER", "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER"},
     (function(addon, event, text, playerName, ...)
         playerName = UTILS.RemoveServer(playerName)
