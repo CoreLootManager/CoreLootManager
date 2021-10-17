@@ -102,7 +102,7 @@ local function HandleAnnounceVersion(self, data, sender)
         if currentVersion.minor < receivedVersion.minor then
             -- older minor
             OutOfDate(self, receivedVersion, false)
-        elseif currentVersion.patch < receivedVersion.patch then
+        elseif (currentVersion.minor == receivedVersion.minor) and (currentVersion.patch < receivedVersion.patch) then
             if receivedVersion.changeset == "" then -- changeset = unofficial or beta. We don't care about that
                 OutOfDate(self, receivedVersion, false)
             else
