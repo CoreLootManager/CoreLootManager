@@ -492,7 +492,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Boss Kill Bonus",
                 type = "toggle",
                 order = 5,
-                -- disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 1
             },
             boss_kill_bonus_value = {
@@ -500,14 +500,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "input",
                 order = 6,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                -- disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 1
             },
             on_time_bonus = {
                 name = "On Time Bonus",
                 type = "toggle",
                 order = 7,
-                disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 1
             },
             on_time_bonus_value = {
@@ -515,14 +515,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "input",
                 order = 8,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 1
             },
             raid_completion_bonus = {
                 name = "Raid Completion Bonus",
                 type = "toggle",
                 order = 9,
-                disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 1
             },
             raid_completion_bonus_value = {
@@ -530,7 +530,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "input",
                 order = 10,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 1
             },
             interval_bonus = {

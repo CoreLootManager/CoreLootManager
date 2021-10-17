@@ -14,6 +14,7 @@ local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local EventManager = MODULES.EventManager
 local ProfileManager = MODULES.ProfileManager
+local PointManager = MODULES.PointManager
 -- local Comms = MODULES.Comms
 
 -- local LEDGER_DKP = MODELS.LEDGER.DKP
@@ -121,8 +122,15 @@ function RaidManager:Initialize()
                     LOG:Debug("RaidManager mutator(): Missing profile for: %s", GUID)
                 end
             end
+
             raid:Start(entry:time())
-            -- Handle ontime bonus and other point stuff
+
+            local roster = raid:Roster()
+            if roster then
+                if roster:GetConfiguration("onTimeBonus") then
+                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time())
+                end
+            end
         end)
     )
 
@@ -136,6 +144,13 @@ function RaidManager:Initialize()
             if not raid then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
                 return
+            end
+
+            local roster = raid:Roster()
+            if roster then
+                if roster:GetConfiguration("raidCompletionBonus") then
+                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time())
+                end
             end
 
             raid:End(entry:time())
@@ -364,15 +379,13 @@ function RaidManager:EnableAutoAwarding()
     LOG:Trace("RaidManager:EnableAutoAwarding()")
     local roster = self:GetRaid():Roster()
     local bossKillBonus = roster:GetConfiguration("bossKillBonus")
-    local onTimeBonus = roster:GetConfiguration("onTimeBonus")
-    local raidCompletionBonus = roster:GetConfiguration("raidCompletionBonus")
     local intervalBonus = roster:GetConfiguration("intervalBonus")
 
     if bossKillBonus then
         MODULES.AutoAwardManager:EnableBossKillBonusAwarding()
     end
 
-    if bossKillBonus or onTimeBonus or raidCompletionBonus or intervalBonus then
+    if bossKillBonus or intervalBonus then
         MODULES.AutoAwardManager:Enable()
     end
 end
