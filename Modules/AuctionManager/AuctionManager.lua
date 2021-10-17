@@ -381,10 +381,10 @@ function AuctionManager:Award(itemId, price, name)
     LootManager:AwardItem(self.raid, name, self.itemLink, itemId, price)
 end
 
-function AuctionManager:IsAuctioneer(name)
+function AuctionManager:IsAuctioneer(name, relaxed)
     LOG:Trace("AuctionManager:IsAuctioneer()")
     name = name or UTILS.whoami()
-    return RaidManager:IsRaidOwner(name)
+    return RaidManager:IsAllowedToAuction(name, relaxed)
 end
 
 function AuctionManager:IsAuctionInProgress()
