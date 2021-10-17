@@ -182,6 +182,12 @@ function RosterManagerOptions:Initialize()
         auction_allow_negative_bidders_set = (function(name, value)
             SetRosterOption(name, "allowNegativeBidders", value)
         end),
+        auction_minimal_increment_get = (function(name)
+            return tostring(GetRosterOption(name, "minimalIncrement"))
+        end),
+        auction_minimal_increment_set = (function(name, value)
+            SetRosterOption(name, "minimalIncrement", value)
+        end),
         auction_auction_time_get = (function(name)
             return tostring(GetRosterOption(name, "auctionTime"))
         end),
@@ -602,6 +608,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "toggle",
                         width = "full",
                         order = 8
+                    },
+                    minimal_increment = {
+                        name = "Minimal increment",
+                        desc = "Minimal value increment for open auction mode.",
+                        type = "input",
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        width = 1.5,
+                        order = 9
                     },
                     auction_time = {
                         name = "Auction length",

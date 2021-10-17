@@ -5,7 +5,7 @@ local MODELS = CLM.MODELS
 local CONSTANTS = CLM.CONSTANTS
 
 local AuctionCommStartAuction = {}
-function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, itemLink, time, endtime, antiSnipe, note, rosterUid)
+function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, itemLink, time, endtime, antiSnipe, note, increment, rosterUid)
     local isCopyConstructor = (type(typeOrObject) == "table")
 
     local o = isCopyConstructor and typeOrObject or {}
@@ -24,6 +24,7 @@ function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, ite
     o.d = endtime
     o.s = antiSnipe
     o.n = note
+    o.c = increment
     o.r = rosterUid
 
     return o
@@ -38,11 +39,11 @@ function AuctionCommStartAuction:Mode()
 end
 
 function AuctionCommStartAuction:Base()
-    return self.b or 0
+    return tonumber(self.b) or 0
 end
 
 function AuctionCommStartAuction:Max()
-    return self.m or 0
+    return tonumber(self.m) or 0
 end
 
 function AuctionCommStartAuction:ItemLink()
@@ -50,19 +51,23 @@ function AuctionCommStartAuction:ItemLink()
 end
 
 function AuctionCommStartAuction:Time()
-    return self.e or 0
+    return tonumber(self.e) or 0
 end
 
 function AuctionCommStartAuction:EndTime()
-    return self.d or 0
+    return tonumber(self.d) or 0
 end
 
 function AuctionCommStartAuction:AntiSnipe()
-    return self.s or 0
+    return tonumber(self.s) or 0
 end
 
 function AuctionCommStartAuction:Note()
     return self.n or ""
+end
+
+function AuctionCommStartAuction:Increment()
+    return tonumber(self.c) or 1
 end
 
 function AuctionCommStartAuction:RosterUid()
