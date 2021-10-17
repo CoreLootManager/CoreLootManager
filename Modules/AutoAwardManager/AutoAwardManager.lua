@@ -99,7 +99,6 @@ local function handleIntervalBonus(self)
             end
         end
     end
-    LOG:Message("AutoAwardManager handleIntervalBonus() award: %s", award and "true" or "false");
     if award then
         PointManager:UpdateRaidPoints(raid, value, CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
     end
