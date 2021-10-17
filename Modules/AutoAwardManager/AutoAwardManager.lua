@@ -37,7 +37,7 @@ end
 
 local function handleHydrossWorkaround(self, addon, event)
     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and (self.encounterInProgress == HYDROSS_ENCOUNTER_ID) then
-        local _, subevent, _, _, _, _, _, guid, name   = CombatLogGetCurrentEventInfo()
+        local _, subevent, _, _, _, _, _, guid, _   = CombatLogGetCurrentEventInfo()
         if subevent == "UNIT_DIED" then
             local _, _, _, _, _, npc_id = strsplit("-", guid)
             if tonumber(npc_id) == HYDROSS_NPC_ID then
