@@ -385,6 +385,10 @@ function RaidManager:EnableAutoAwarding()
         MODULES.AutoAwardManager:EnableBossKillBonusAwarding()
     end
 
+    if intervalBonus then
+        MODULES.AutoAwardManager:EnableIntervalBonusAwarding()
+    end
+
     if bossKillBonus or intervalBonus then
         MODULES.AutoAwardManager:Enable()
     end
@@ -393,6 +397,7 @@ end
 function RaidManager:DisableAutoAwarding()
     LOG:Trace("RaidManager:DisableAutoAwarding()")
     MODULES.AutoAwardManager:DisableBossKillBonusAwarding()
+    MODULES.AutoAwardManager:DisableIntervalBonusAwarding()
     MODULES.AutoAwardManager:Disable()
 end
 

@@ -537,15 +537,16 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = "Interval Bonus",
                 type = "toggle",
                 order = 11,
-                disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 1
             },
             interval_bonus_time = {
                 name = "Interval Time",
+                desc = "Interval in [minutes] to award bonus points"
                 type = "input",
                 order = 12,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 0.6
             },
             interval_bonus_value = {
@@ -553,7 +554,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "input",
                 order = 13,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = true,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 0.6
             },
             --
