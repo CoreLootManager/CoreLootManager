@@ -158,6 +158,12 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     -- calculate server end time
     self.auctionEndTime = GetServerTime() + self.auctionTime
     self.auctionTimeLeft = self.auctionEndTime
+    -- minimal increment
+    self.minimalIncrement = self.raid:Roster():GetConfiguration("minimalIncrement")
+    -- workaround for open bid to allow 0 bid
+    if self.auctionType == CONSTANTS.AUCTION_TYPE.OPEN then
+        self.highestBid = self.baseValue - self.minimalIncrement
+    end
     -- Send auction information
     self:SendAuctionStart(self.raid:Roster():UID())
     -- Start Auction Ticker
@@ -222,6 +228,7 @@ function AuctionManager:SendAuctionStart(rosterUid)
             self.auctionEndTime,
             self.antiSnipe,
             self.note,
+            self.minimalIncrement,
             rosterUid
         )
     )
@@ -252,6 +259,7 @@ function AuctionManager:SendBidDenied(name, reason)
 end
 
 function AuctionManager:SendBidInfo(name, bid)
+    print("send bid info: ", name,bid)
     local message = AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
         AuctionCommDistributeBid:New(name, bid)
@@ -332,6 +340,9 @@ function AuctionManager:ValidateBid(name, bid)
         if self.auctionType == CONSTANTS.AUCTION_TYPE.OPEN then
             if bid <= self.highestBid then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
+            end
+            if (bid - self.highestBid) < self.minimalIncrement then
+                return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_INCREMENT_TOO_LOW
             end
         end
     else
@@ -414,6 +425,7 @@ CONSTANTS.AUCTION_COMM = {
         BID_VALUE_TOO_LOW = 4,
         BID_VALUE_TOO_HIGH = 5,
         BID_VALUE_INVALID = 6,
+        BID_INCREMENT_TOO_LOW = 7
     },
     DENY_BID_REASONS = UTILS.Set({
         1, -- NOT_IN_ROSTER
@@ -421,7 +433,8 @@ CONSTANTS.AUCTION_COMM = {
         3, -- NEGATIVE_STANDING_AFTER
         4, -- BID_VALUE_TOO_LOW
         5, -- BID_VALUE_TOO_HIGH
-        6  -- BID_VALUE_INVALID
+        6, -- BID_VALUE_INVALID
+        7  -- BID_INCREMENT_TOO_LOW
     }),
     DENY_BID_REASONS_STRING = {
         [1] = "Not in a roster",
@@ -429,7 +442,8 @@ CONSTANTS.AUCTION_COMM = {
         [3] = "Bidding over current standings not allowed",
         [4] = "Bid too low",
         [5] = "Bid too high",
-        [6] = "Invalid bid value"
+        [6] = "Invalid bid value",
+        [7] = "Bid increment too low"
     }
 
 }
