@@ -31,7 +31,7 @@ Additional point systems are planned:
 * Point, roster and loot management
 * Multiple rosters (teams) support
 * Open, Closed and Vickrey bid systems
-* Static and ascending price value systems
+* Static and Ascending price value systems
 * Default item values per slot
 * Item value overriding
 * Auctioning and bidding (with anti-snipe protection)
@@ -39,14 +39,17 @@ Additional point systems are planned:
 * Multi-level logging for better issue handling
 * Auctioning from bag and corpse
 * Award item without auction through slash command
-* Weeklyand hard point cap
-### Big planned features
+* Weekly and hard point cap
 * Zero-Sum Bank mode + inflation
+* Minimum bid increment for open bid mode
+* Whisper / Raid `!dkp` and `!bid` commands for bidding without using addon
+* Out of guild bidding using commands or CLM
+* Player spec communication mechanism
+* WoW DKP Discord Bot integration
+### Big planned features
 * Auto-standby list (user to subscribe to it)
 * All auto-dkp management during raid (on time / boss kill / interval / end bonuses)
 * Boss kill bonus options configuration
-* Auto award for Master Looter
-* Player spec communication mechanism
 
 License
 --------------
