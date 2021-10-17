@@ -99,9 +99,12 @@ Modules\Changelog\GUI.lua
 Alerts\Alerts.xml
 Alerts\Alerts.lua
 
+# Global
+Global\GlobalSlashCommands.lua
+Global\GlobalConfigs.lua
+Global\GlobalChatMessageHandlers.lua
+
 # Extra
-GlobalSlashCommands.lua
-GlobalConfigs.lua
 MinimapIcon.lua
 Migration.lua
 Integration.lua
