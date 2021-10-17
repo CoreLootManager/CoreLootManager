@@ -54,6 +54,19 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
     end
 end
 
+function EventManager:UnregisterWoWEvent(events)
+    LOG:Trace("EventManager:RegisterWoWEvent()")
+    if not events then
+        LOG:Fatal("EventManager:UnregisterWoWEvent(): Invalid events")
+        return
+    end
+    if type(events) == "string" then events = { events } end
+    for _,event in ipairs(events) do
+        CORE:UnregisterEvent(event)
+        self.callbacks[event] = nil
+    end
+end
+
 function EventManager:RegisterWoWBucketEvent(event, interval, functionOrObject, methodName)
     LOG:Trace("EventManager:RegisterWoWBucketEvent()")
     local callback
