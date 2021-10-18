@@ -90,12 +90,12 @@ local function handleIntervalBonus(self)
         -- if history would know if its a select/roster/raid we would not need to touch entry
         -- TODO: this ^
         if entry then
-            -- if its raid award entry
-            if entry:class() == RAID_AWARD_LEDGER_CLASS then
-                if entry:raidUid() == raid:UID() then
-                    award = false
-                    break
-                end
+            -- if its raid award entry to our raid for interval
+            if  (entry:class() == RAID_AWARD_LEDGER_CLASS) and
+                (entry:raidUid() == raid:UID()) and
+                (pointHistoryEntry:Reason() == CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS) then -- skip only for interval awards
+                award = false
+                break
             end
         end
     end
