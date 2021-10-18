@@ -292,14 +292,14 @@ function PointManager:RemovePointChange(pointHistory, forceInstant)
     LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 
-function PointManager:UpdatePointsDirectly(roster, targets, value, reason, timestamp, creator)
+function PointManager:UpdatePointsDirectly(roster, targets, value, reason, timestamp, creator, type, extra)
     LOG:Trace("PointManager:UpdatePointsDirectly()")
     if not roster then
         LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
         return
     end
 
-    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator)
+    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator, type, extra)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, pointHistoryEntry, true)
@@ -451,6 +451,12 @@ CONSTANTS.POINT_CHANGE_REASONS = {
         [CONSTANTS.POINT_CHANGE_REASON.DECAY] = "Decay",
         [CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS] = "Interval Bonus"
     }
+}
+
+CONSTANT.POINT_HISTORY_SOURCE = {
+    DIRECT = 1,
+    LOOT = 2,
+    RAID_AWARD = 3
 }
 
 CONSTANTS.POINT_CHANGE_REASONS.ALL = UTILS.mergeDicts(CONSTANTS.POINT_CHANGE_REASONS.GENERAL, CONSTANTS.POINT_CHANGE_REASONS.INTERNAL)

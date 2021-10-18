@@ -1,5 +1,7 @@
 local _, CLM = ...
 
+local CONSTANTS = CLM.CONSTANTS
+
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
 local PointHistory = {}
@@ -61,8 +63,15 @@ function PointHistory:Entry()
     return self.entry
 end
 
+function PointHistory:Type()
+    return CONSTANTS.POINT_HISTORY_SOURCE.DIRECT
+end
 
-function FakePointHistory:New(targets, timestamp, value, reason, creator)
+function PointHistory:Extra()
+    return nil
+end
+
+function FakePointHistory:New(targets, timestamp, value, reason, creator, type, extra)
     local o = {}
 
     setmetatable(o, self)
@@ -72,7 +81,9 @@ function FakePointHistory:New(targets, timestamp, value, reason, creator)
     o.time = timestamp
     o.value = value
     o.reason = reason
-    o.creator = creator or ""
+    o.creator = creator
+    o.type = type
+    o.extra = extra
 
     return o
 end
@@ -119,6 +130,14 @@ end
 
 function FakePointHistory:Entry()
     return nil
+end
+
+function PointHistory:Type()
+    return self.type
+end
+
+function PointHistory:Extra()
+    return self.extra
 end
 
 CLM.MODELS.PointHistory = PointHistory

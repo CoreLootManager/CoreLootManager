@@ -80,22 +80,14 @@ local function handleIntervalBonus(self)
     -- Check History
     for _,pointHistoryEntry in ipairs(pointHistory) do
         -- If we are already so deep in history we missed the interval
-        if now - pointHistoryEntry:Timestamp() >= interval then
+        if now - pointHistoryEntry:Timestamp() >= interval then 
             break
         end
-        local entry = pointHistoryEntry:Entry()
-        -- zero-sum and start/end raid dkp dont have directly related entries at this point
-        -- and are also not considered for this calculation
-        -- also this is a bit of workaround:
-        -- if history would know if its a select/roster/raid we would not need to touch entry
-        -- TODO: this ^
-        if entry then
-            -- if its raid award entry
-            if entry:class() == RAID_AWARD_LEDGER_CLASS then
-                if entry:raidUid() == raid:UID() then
-                    award = false
-                    break
-                end
+        -- Check for raid awards
+        if pointHistoryEntry:Type() == CONSTANTS.POINT_HISTORY_SOURCE.RAID_AWARD then
+            if pointHistoryEntry:Extra() == raid:UID() then
+                award = false
+                break
             end
         end
     end

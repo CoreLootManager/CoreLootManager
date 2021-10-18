@@ -68,7 +68,15 @@ local function mutateLootAward(entry, roster)
             local num_players = #raid:Players()
             if num_players > 0 then
                 local value = (loot:Value()/num_players) + roster:GetConfiguration("zeroSumBankInflation")
-                PointManager:UpdatePointsDirectly(roster, raid:Players(), value, CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD, loot:Timestamp(), entry:creator())
+                PointManager:UpdatePointsDirectly(
+                    roster,
+                    raid:Players(),
+                    value,
+                    CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD,
+                    loot:Timestamp(),
+                    entry:creator(),
+                    CONSTANTS.POINT_HISTORY_SOURCE.LOOT
+                )
             else
                 LOG:Debug("mutateLootAward(): Empty player list in raid.")
                 return
