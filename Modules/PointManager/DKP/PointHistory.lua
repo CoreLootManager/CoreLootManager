@@ -62,7 +62,7 @@ function PointHistory:Entry()
 end
 
 
-function FakePointHistory:New(targets, timestamp, value, reason)
+function FakePointHistory:New(targets, timestamp, value, reason, creator)
     local o = {}
 
     setmetatable(o, self)
@@ -72,6 +72,7 @@ function FakePointHistory:New(targets, timestamp, value, reason)
     o.time = timestamp
     o.value = value
     o.reason = reason
+    o.creator = creator or ""
 
     return o
 end
@@ -113,7 +114,7 @@ function FakePointHistory:Reason()
 end
 
 function FakePointHistory:Creator()
-    return ""
+    return self.creator
 end
 
 function FakePointHistory:Entry()
