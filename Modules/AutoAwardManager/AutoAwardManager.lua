@@ -13,6 +13,8 @@ local HYDROSS_ENCOUNTER_ID = 623
 local HYDROSS_ENCOUNTER_NAME = "Hydross the Unstable"
 local HYDROSS_NPC_ID = 21216
 
+local RAID_AWARD_LEDGER_CLASS = "DR"
+
 local function handleEncounterStart(self, addon, event, id, name, difficulty, groupSize)
     LOG:Info("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and not self:EncounterInProgress() then
@@ -27,7 +29,10 @@ local function handleEncounterEnd(self, addon, event, id, name, difficulty, grou
             if RaidManager:IsInActiveRaid() and success == 1 then
                 local roster = RaidManager:GetRaid():Roster()
                 if roster:GetConfiguration("bossKillBonus") then
-                    PointManager:UpdateRaidPoints(RaidManager:GetRaid(), roster:GetBossKillBonusValue(id), CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                    local value = roster:GetBossKillBonusValue(id)
+                    if value > 0 then
+                        PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                    end
                 end
             end
             self.encounterInProgress = 0
@@ -47,12 +52,65 @@ local function handleHydrossWorkaround(self, addon, event)
     end
 end
 
+local function handleIntervalBonus(self)
+    LOG:Trace("AutoAwardManager handleIntervalBonus()")
+    if not IsInRaid() then return end
+    if not self:IsEnabled() then return end
+    if not self:IsIntervalBonusAwardingEnabled() then return end
+    if not RaidManager:IsInProgressingRaid() then return end
+    -- Validate roster
+    local raid = RaidManager:GetRaid()
+    local roster = raid:Roster()
+    if not roster then
+        LOG:Warning("No roster in raid for handleIntervalBonus()")
+        return
+    end
+    -- Validate settings
+    if not roster:GetConfiguration("intervalBonus") then return end
+    local interval = roster:GetConfiguration("intervalBonusTime")
+    if interval <= 0 then return end
+    local value = roster:GetConfiguration("intervalBonusValue")
+    if value <= 0 then return end
+    interval = interval * 60 -- minutes in seconds
+    local now = GetServerTime()
+    local pointHistory = roster:GetRaidPointHistory()
+    local award = true
+    -- Check if at least interval passed since raid start
+    if now - raid:StartTime() < interval then return end
+    -- Check History
+    for _,pointHistoryEntry in ipairs(pointHistory) do
+        -- If we are already so deep in history we missed the interval
+        if now - pointHistoryEntry:Timestamp() >= interval then
+            break
+        end
+        local entry = pointHistoryEntry:Entry()
+        -- zero-sum and start/end raid dkp dont have directly related entries at this point
+        -- and are also not considered for this calculation
+        -- also this is a bit of workaround:
+        -- if history would know if its a select/roster/raid we would not need to touch entry
+        -- TODO: this ^
+        if entry then
+            -- if its raid award entry to our raid for interval
+            if  (entry:class() == RAID_AWARD_LEDGER_CLASS) and
+                (entry:raidUid() == raid:UID()) and
+                (pointHistoryEntry:Reason() == CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS) then -- skip only for interval awards
+                award = false
+                break
+            end
+        end
+    end
+    if award then
+        PointManager:UpdateRaidPoints(raid, value, CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+    end
+end
+
 local AutoAwardManager = {}
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")
     if not ACL:IsTrusted() then return end
     self.enabled = false
     self:DisableBossKillBonusAwarding()
+    self:DisableIntervalBonusAwarding()
     EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(...)
         handleEncounterStart(self, ...)
     end))
@@ -100,6 +158,27 @@ end
 function AutoAwardManager:IsBossKillBonusAwardingEnabled()
     LOG:Trace("AutoAwardManager:IsBossKillBonusAwardingEnabled()")
     return self.bossKillBonusAwardingEnabled
+end
+
+function AutoAwardManager:EnableIntervalBonusAwarding()
+    LOG:Trace("AutoAwardManager:EnableIntervalBonusAwarding()")
+    self.intervalBonusAwardingEnabled = true
+    handleIntervalBonus(self) -- additional handle for cases of relogs / reloads if time has already passed
+    if not self.intervalTimer then
+        self.intervalTimer = C_Timer.NewTicker(60, function()
+            handleIntervalBonus(self)
+        end)
+    end
+end
+
+function AutoAwardManager:DisableIntervalBonusAwarding()
+    LOG:Trace("AutoAwardManager:DisableIntervalBonusAwarding()")
+    self.intervalBonusAwardingEnabled = false
+end
+
+function AutoAwardManager:IsIntervalBonusAwardingEnabled()
+    LOG:Trace("AutoAwardManager:IsIntervalBonusAwardingEnabled()")
+    return self.intervalBonusAwardingEnabled
 end
 
 --@debug@

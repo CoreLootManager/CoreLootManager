@@ -292,14 +292,14 @@ function PointManager:RemovePointChange(pointHistory, forceInstant)
     LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 
-function PointManager:UpdatePointsDirectly(roster, targets, value, reason, timestamp)
+function PointManager:UpdatePointsDirectly(roster, targets, value, reason, timestamp, creator)
     LOG:Trace("PointManager:UpdatePointsDirectly()")
     if not roster then
         LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
         return
     end
 
-    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason)
+    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, pointHistoryEntry, true)

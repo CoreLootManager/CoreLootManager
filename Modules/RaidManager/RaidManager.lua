@@ -128,7 +128,7 @@ function RaidManager:Initialize()
             local roster = raid:Roster()
             if roster then
                 if roster:GetConfiguration("onTimeBonus") then
-                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time())
+                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
                 end
             end
         end)
@@ -149,7 +149,7 @@ function RaidManager:Initialize()
             local roster = raid:Roster()
             if roster then
                 if roster:GetConfiguration("raidCompletionBonus") then
-                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time())
+                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
                 end
             end
 
@@ -298,8 +298,8 @@ function RaidManager:StartRaid(raid)
     end
 
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
-
     SendChatMessage(string.format("Raid [%s] started", raid:Name()) , "RAID_WARNING")
+    self:HandleRosterUpdateEvent()
 end
 
 function RaidManager:EndRaid(raid)
@@ -381,18 +381,23 @@ function RaidManager:EnableAutoAwarding()
     local bossKillBonus = roster:GetConfiguration("bossKillBonus")
     local intervalBonus = roster:GetConfiguration("intervalBonus")
 
+    if bossKillBonus or intervalBonus then
+        MODULES.AutoAwardManager:Enable()
+    end
+
     if bossKillBonus then
         MODULES.AutoAwardManager:EnableBossKillBonusAwarding()
     end
 
-    if bossKillBonus or intervalBonus then
-        MODULES.AutoAwardManager:Enable()
+    if intervalBonus then
+        MODULES.AutoAwardManager:EnableIntervalBonusAwarding()
     end
 end
 
 function RaidManager:DisableAutoAwarding()
     LOG:Trace("RaidManager:DisableAutoAwarding()")
     MODULES.AutoAwardManager:DisableBossKillBonusAwarding()
+    MODULES.AutoAwardManager:DisableIntervalBonusAwarding()
     MODULES.AutoAwardManager:Disable()
 end
 
