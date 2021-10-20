@@ -1,5 +1,4 @@
-Classic Loot Manager
-====================
+# Classic Loot Manager
 
 [![Lint](https://github.com/ClassicLootManager/ClassicLootManager/actions/workflows/lint.yml/badge.svg)](https://github.com/ClassicLootManager/ClassicLootManager)
 [![Release](https://img.shields.io/github/v/release/ClassicLootManager/classiclootmanager.svg?color=important)](https://github.com/ClassicLootManager/ClassicLootManager/releases)
@@ -7,9 +6,8 @@ Classic Loot Manager
 [![Discord](https://img.shields.io/discord/813686248841019392?label=discord)](https://discord.gg/Qjn8KdD8yt)
 
 
-About
---------------
-Classic Loot Manager is intended to be a robust Loot Tracking and awarding tool for guilds.
+# About
+Classic Loot Manager is a robust Loot Tracking and awarding tool for guilds.
 It's designed to superseed old WoW Classic DKP AddOns and its derivatives and solves it's biggest painpoints by focusing on optimial communication and storage. CLM implements Event Sourcing and MVC programming models to achieve those targets. All data is synchronised automatically.
 
 ### Wiki
@@ -24,32 +22,57 @@ Additional point systems are planned:
 * Roll based (`/random`)
 * EPGP
 
-### Implemented features
-* Mulit-level Access Control
-* Auto-magical synchronisation
-* DKP system
-* Point, roster and loot management
-* Multiple rosters (teams) support
-* Open, Closed and Vickrey bid systems
-* Static and Ascending price value systems
-* Default item values per slot
-* Item value overriding
-* Auctioning and bidding (with anti-snipe protection)
-* Raid management and auto-creating profiles and filling roster when initializing raid
-* Multi-level logging for better issue handling
-* Auctioning from bag and corpse
-* Award item without auction through slash command
-* Weekly and hard point cap
+# Implemented features
+## Mulit-level Access Control
+* Managers can control every aspect of the AddOn.
+* Assistants can award loot and DKP but can't control roster 
+settings.
+
+## Auto-magical synchronisation
+## DKP point system
+* Fine-grained configurable awarding and decaying
+* Configurable weekly and hard point caps
 * Zero-Sum Bank mode + inflation
-* Minimum bid increment for open bid mode
-* Whisper / Raid `!dkp` and `!bid` commands for bidding without using addon
+## Multiple auction modes
+* Open auction with configurable minimum bid increment and announcements
+* Closed and Vickrey bid systems
+* Configurable per-slot min and max item values
+* Configurable per-item min and max item values
+* Static (constant) and Ascending item value systems for bidding
+## Multiple roster (teams) support
+## Alt-main linking
+## History tracking and management
+* Fine grained point history
+* Item awards with all related information (when, who, how much)
+## Extensive Auctioning system
+### Auctioning
+* Configurable Anti-Snipe protection
+* Auction from corpse or bag (with alt-click)
+* Simple item awarding
+* Award item without auction through slash command
+### Bidding
+* Value increments (open bid mode only)
+* Alerts and notifications
+## Automated DKP awards
+* All options are configurable
+* On-time bonus - awarded when starting raid
+* Raid completion bonus - awarded when ending raid
+* Interval bonus - awarded every interval minutes
+* Boss kill bonus - configurable per boss and through global value
+## Multiple simultaneous Raids maangement
+* Raid management and auto-creating profiles and filling roster when initializing raid
+
+* Multi-level logging for better issue handling
+## Chat commands
+
+* Send `!dkp` and `!bid` Whisper or Raid commands for bidding without using addon
 * Out of guild bidding using commands or CLM
-* Player spec communication mechanism
-* WoW DKP Discord Bot integration
-### Big planned features
-* Auto-standby list (user to subscribe to it)
-* All auto-dkp management during raid (on time / boss kill / interval / end bonuses)
-* Boss kill bonus options configuration
+
+## Utilities
+
+* Auto-posting loot to raid channel
+* Player spec tracking
+* [WoW DKP Discord Bot integration](http://tiny.one/wowdkpbot-discord)
 
 License
 --------------

@@ -1,3 +1,15 @@
+# Classic Loot Manager v1.0.0
+## Full release of the AddOn
+## Features
+### Auto-DKP awarding
+* On-time bonus - awarded when starting raid
+* Raid completion bonus - awarded when ending raid
+* Interval bonus - awarded every interval minutes
+* Boss kill bonus - configurable per boss and through global value
+
+## Fixes
+* `!dkp` without parameters should now return requester standings
+* Removed odd alerts when using `!bid` chat command while CLM was enabled (still not recommended).
 # Classic Loot Manager v0.10.1
 Hotfix version check for lower patch version in bigger minor
 
