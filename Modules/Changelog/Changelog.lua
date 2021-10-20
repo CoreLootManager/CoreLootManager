@@ -1,12 +1,12 @@
 local  _, CLM = ...
 
 CLM.ChangelogData = {
-    {
-        name = "Developers note",
-        data = {
-            {header = "Full release of the AddOn", body = "Thank you everyone for contributions, feedback and patience during the last 10 months of |cff00cc00Classic Loot Manager|r development. This AddOn started as a hobby project for single guild, but scaled up very fast. Thank you for using it. All your support is welcome!"},
-        }
-    },
+    -- {
+    --     name = "Developers note",
+    --     data = {
+    --         {header = "Full release of the AddOn", body = "Thank you everyone for contributions, feedback and patience during the last 10 months of |cff00cc00Classic Loot Manager|r development. This AddOn started as a hobby project for single guild, but scaled up very fast. Thank you for using it. All your support is welcome!"},
+    --     }
+    -- },
     {
         name = "Features - auto awards",
         data = {

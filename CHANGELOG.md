@@ -1,5 +1,4 @@
-# Classic Loot Manager v1.0.0
-## Full release of the AddOn
+# Classic Loot Manager v0.11.0
 ## Features
 ### Auto-DKP awarding
 * On-time bonus - awarded when starting raid
