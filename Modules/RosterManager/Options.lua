@@ -382,7 +382,35 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 args = {}
             }
         }
+        -- Classic
         local order = 1
+        for _, data in ipairs(CLM.EncounterIDs.Classic) do
+            order = order + 1
+            args.classic.args["encounter_header_" .. data.name] = {
+                name = data.name,
+                type = "header",
+                order = order,
+                width = "full"
+            }
+            for _, info in ipairs(data.data) do
+                order = order + 1
+                args.classic.args["encounter" .. info.id] = {
+                    name = info.name,
+                    type = "input",
+                    width = "full",
+                    order = order,
+                    set = (function(i, v)
+                        if self.readOnly then return end
+                        RosterManager:SetRosterBossKillBonusValue(name, info.id, v)
+                    end),
+                    get = (function(i)
+                        return tostring(roster:GetBossKillBonusValue(info.id))
+                    end)
+                }
+            end
+        end
+        -- TBC
+        order = 1
         for _, data in ipairs(CLM.EncounterIDs.TBC) do
             order = order + 1
             args.tbc.args["encounter_header_" .. data.name] = {

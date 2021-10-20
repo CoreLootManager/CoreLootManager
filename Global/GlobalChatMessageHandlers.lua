@@ -14,7 +14,7 @@ local RaidManager = MODULES.RaidManager
 
 local GlboalChatMessageHandlers = {}
 
-local whoami = UTILS.whoami()
+local whoami = UTILS.whoami() --luacheck: ignore
 
 local function trim(s)
     return string.gsub(s, "^%s*(.-)%s*$", "%1")
