@@ -49,14 +49,13 @@ end
 
 local function handleBossKill(self, addon, event, id, name)
     LOG:Debug("[%s %s]: <%s %s>", addon, event, id, name)
-    -- if not self:EncounterInProgress() then
-    awardBossKillBonus(id)
-    -- end
+    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
+        awardBossKillBonus(id)
+    end
 end
 
 local function handleHydrossWorkaround(self, addon, event)
-    -- if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and (self.encounterInProgress == HYDROSS_ENCOUNTER_ID) then
-    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
+    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and (self.encounterInProgress == HYDROSS_ENCOUNTER_ID) then
         local _, subevent, _, _, _, _, _, guid, _   = CombatLogGetCurrentEventInfo()
         if subevent == "UNIT_DIED" then
             local _, _, _, _, _, npc_id = strsplit("-", guid)
