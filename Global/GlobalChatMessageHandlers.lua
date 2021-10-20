@@ -74,7 +74,7 @@ function GlboalChatMessageHandlers:Initialize()
                     params[2] = trim(params[2])
                 end
                 if not params[2] or params[2] == "" then
-                    player = whoami
+                    player = playerName
                 else
                     player = params[2]
                 end

@@ -28,6 +28,7 @@ function BiddingManager:Initialize()
 
     self.bids = {}
     self.lastBid = 0
+    self.guiBid = false -- hiding responses for bidding through chat command (which shouldnt be used anyway)
     self.auctionInProgress = false
 
     Comms:Register(BIDDING_COMM_PREFIX, (function(rawMessage, distribution, sender)
@@ -88,6 +89,7 @@ function BiddingManager:Bid(value)
     end
     value = tonumber(value) or 0
     self.lastBid = value
+    self.guiBid = true
     local message = BiddingCommStructure:New(
         CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
         BiddingCommSubmitBid:New(value)
@@ -115,6 +117,7 @@ function BiddingManager:ClearAuctionInfo()
     self.auctionInfo = nil
     self.auctioneer = nil
     self.lastBid = 0
+    self.guiBid = false
 end
 
 function BiddingManager:HandleIncomingMessage(message, distribution, sender)
@@ -171,8 +174,11 @@ function BiddingManager:HandleAcceptBid(data, sender)
         LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
         return
     end
-    EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = self.lastBid or "cancel" })
-    LOG:Message("Your bid (%s) was |cff00cc00accepted|r", self.lastBid or "cancel")
+    if self.guiBid then
+        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = self.lastBid or "cancel" })
+        LOG:Message("Your bid (%s) was |cff00cc00accepted|r", self.lastBid or "cancel")
+        self.guiBid = false
+    end
 end
 
 function BiddingManager:HandleDenyBid(data, sender)
@@ -181,8 +187,11 @@ function BiddingManager:HandleDenyBid(data, sender)
         LOG:Debug("Received deny bid from %s while no auctions are in progress", sender)
         return
     end
-    EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = self.lastBid, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or "Unknown" })
-    LOG:Message("Your bid (%s) was denied: |cffcc0000%s|r", self.lastBid, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or "Unknown")
+    if self.guiBid then
+        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = self.lastBid, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or "Unknown" })
+        LOG:Message("Your bid (%s) was denied: |cffcc0000%s|r", self.lastBid, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or "Unknown")
+        self.guiBid = false
+    end
 end
 
 function BiddingManager:HandleDistributeBid(data, sender)
