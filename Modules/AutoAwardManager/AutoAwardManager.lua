@@ -15,28 +15,42 @@ local HYDROSS_NPC_ID = 21216
 
 local RAID_AWARD_LEDGER_CLASS = "DR"
 
+local function awardBossKillBonus(id)
+    LOG:Info("Award Boss Kill Bonus for %s", id)
+    if RaidManager:IsInActiveRaid() then
+        local roster = RaidManager:GetRaid():Roster()
+        if roster:GetConfiguration("bossKillBonus") then
+            local value = roster:GetBossKillBonusValue(id)
+            if value > 0 then
+                PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+            end
+        end
+    end
+end
+
 local function handleEncounterStart(self, addon, event, id, name, difficulty, groupSize)
-    LOG:Info("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
-    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and not self:EncounterInProgress() then
+    LOG:Debug("[%s %s]: <%s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
+    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
         self.encounterInProgress = id
     end
 end
 
 local function handleEncounterEnd(self, addon, event, id, name, difficulty, groupSize, success)
-    LOG:Info("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize, success)
+    LOG:Debug("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize, success)
     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and self:EncounterInProgress() then
         if self.encounterInProgress == id then
-            if RaidManager:IsInActiveRaid() and success == 1 then
-                local roster = RaidManager:GetRaid():Roster()
-                if roster:GetConfiguration("bossKillBonus") then
-                    local value = roster:GetBossKillBonusValue(id)
-                    if value > 0 then
-                        PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
-                    end
-                end
+            if success == 1 then
+                awardBossKillBonus(id)
             end
             self.encounterInProgress = 0
         end
+    end
+end
+
+local function handleBossKill(self, addon, event, id, name)
+    LOG:Debug("[%s %s]: <%s %s>", addon, event, id, name)
+    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
+        awardBossKillBonus(id)
     end
 end
 
@@ -46,6 +60,7 @@ local function handleHydrossWorkaround(self, addon, event)
         if subevent == "UNIT_DIED" then
             local _, _, _, _, _, npc_id = strsplit("-", guid)
             if tonumber(npc_id) == HYDROSS_NPC_ID then
+                handleEncounterStart(self, addon, "ENCOUNTER_START", HYDROSS_ENCOUNTER_ID, HYDROSS_ENCOUNTER_NAME, 176, 25)
                 handleEncounterEnd(self, addon, "ENCOUNTER_END", HYDROSS_ENCOUNTER_ID, HYDROSS_ENCOUNTER_NAME, 176, 25, 1)
             end
         end
@@ -111,11 +126,15 @@ function AutoAwardManager:Initialize()
     self.enabled = false
     self:DisableBossKillBonusAwarding()
     self:DisableIntervalBonusAwarding()
-    EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(...)
-        handleEncounterStart(self, ...)
-    end))
-    EventManager:RegisterWoWEvent({"ENCOUNTER_END"}, (function(...)
-        handleEncounterEnd(self, ...)
+    -- EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(...)
+    --     handleEncounterStart(self, ...)
+    -- end))
+    -- EventManager:RegisterWoWEvent({"ENCOUNTER_END"}, (function(...)
+    --     handleEncounterEnd(self, ...)
+    -- end))
+    -- Handle boss kill when not in encounter
+    EventManager:RegisterWoWEvent({"BOSS_KILL"}, (function(...)
+        handleBossKill(self, ...)
     end))
     -- Hydross workaround
     EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
@@ -192,6 +211,10 @@ end
 
 function AutoAwardManager:FakeEncounterFail()
     handleEncounterEnd(self, "CLM", "ENCOUNTER_END", 123456, "Fake Encounter", 0, 25, 0)
+end
+
+function AutoAwardManager:FakeBossKill()
+    handleBossKill(self, "CLM", "BOSS_KILL", 123456, "Fake Encounter")
 end
 --@end-debug@
 
