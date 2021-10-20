@@ -1,72 +1,110 @@
 local _, CLM = ...
 CLM.EncounterIDs = {}
+CLM.EncounterIDs.Classic = {
+    -- Onyxia
+    {
+        name = "Onyxia's Lair",
+        data = {
+	        { id = 1084, order =  1, name = "Onyxia" },
+        },
+    },
+    -- MC
+    {
+        name = "Molten Core",
+        data = {
+            { id = 663, name = "Lucifron" },
+            { id = 664, name = "Magmadar" },
+            { id = 665, name = "Gehennas" },
+            { id = 666, name = "Garr" },
+            { id = 668, name = "Baron Geddon" },
+            { id = 667, name = "Shazzrah" },
+            { id = 669, name = "Sulfuron Harbinger" },
+            { id = 670, name = "Golemagg the Incinerator" },
+            { id = 671, name = "Majordomo Executus" },
+            { id = 672, name = "Ragnaros" },
+        },
+    },
+    -- BWL
+    {
+        name = "Blackwing Lair",
+        data = {
+            { id = 610, name = "Razorgore the Untamed" },
+            { id = 611, name = "Vaelastrasz the Corrupt" },
+            { id = 612, name = "Broodlord Lashlayer" },
+            { id = 613, name = "Firemaw" },
+            { id = 614, name = "Ebonroc" },
+            { id = 615, name = "Flamegor" },
+            { id = 616, name = "Chromaggus" },
+            { id = 617, name = "Nefarian" },
+        },
+    },
+    -- AQ40
+    {
+        name = "Temple of Ahn'Qiraj",
+        data = {
+            { id = 709, name = "The Prophet Skeram" },
+            { id = 710, name = "Silithid Royalty" },
+            { id = 711, name = "Battleguard Sartura" },
+            { id = 712, name = "Fankriss the Unyielding" },
+            { id = 713, name = "Viscidus" },
+            { id = 714, name = "Princess Huhuran" },
+            { id = 715, name = "Twin Emperors" },
+            { id = 716, name = "Ouro" },
+            { id = 717, name = "C'Thun" },
+        },
+    },
+    -- Naxx
+    {
+        name = "Naxxramas",
+        data = {
+            { id = 1107, name = "Anub'Rekhan" },
+            { id = 1110, name = "Grand Widow Faerlina" },
+            { id = 1116, name = "Maexxna" },
+            { id = 1118, name = "Patchwerk" },
+            { id = 1111, name = "Grobbulus" },
+            { id = 1108, name = "Gluth" },
+            { id = 1120, name = "Thaddius" },
+            { id = 1117, name = "Noth the Plaguebringer" },
+            { id = 1112, name = "Heigan the Unclean" },
+            { id = 1115, name = "Loatheb" },
+            { id = 1113, name = "Instructor Razuvious" },
+            { id = 1109, name = "Gothik the Harvester" },
+            { id = 1121, name = "The Four Horsemen" },
+            { id = 1119, name = "Sapphiron" },
+            { id = 1114, name = "Kel'Thuzad" },
+        },
+    },
+    -- ZG
+    {
+        name = "Zul'Gurub",
+        data = {
+            { id = 789, name = "High Priest Thekal" },
+            { id = 784, name = "High Priest Venoxis" },
+            { id = 791, name = "High Priestess Arlokk" },
+            { id = 785, name = "High Priestess Jeklik" },
+            { id = 786, name = "High Priestess Mar'li" },
+            { id = 787, name = "Bloodlord Mandokir" },
+            { id = 792, name = "Jin'do the Hexxer" },
+            { id = 793, name = "Hakkar" },
+            { id = 788, name = "Edge of Madness" },
+            { id = 790, name = "Gahz'ranka" },
+        },
+    },
+    -- AQ20
+    {
+        name = "Ruins of Ahn'Qiraj",
+        data = {
+            { id = 718, name = "Kurinnaxx" },
+            { id = 719, name = "General Rajaxx" },
+            { id = 720, name = "Moam" },
+            { id = 721, name = "Buru the Gorger" },
+            { id = 722, name = "Ayamiss the Hunter" },
+            { id = 723, name = "Ossirian the Unscarred" },
+        },
+    },
+}
+
 CLM.EncounterIDs.TBC = {
-    -- -- MC
-    -- { id = 663, name = "" },
-    -- { id = 664, name = "" },
-    -- { id = 665, name = "" },
-    -- { id = 666, name = "" },
-    -- { id = 668, name = "" },
-    -- { id = 667, name = "" },
-    -- { id = 669, name = "" },
-    -- { id = 670, name = "" },
-    -- { id = 671, name = "" },
-    -- { id = 672, name = "" },
-    -- -- BWL
-    -- { id = 610, name = "" },
-    -- { id = 611, name = "" },
-    -- { id = 612, name = "" },
-    -- { id = 613, name = "" },
-    -- { id = 614, name = "" },
-    -- { id = 615, name = "" },
-    -- { id = 616, name = "" },
-    -- { id = 617, name = "" },
-    -- -- AQ40
-    -- { id = 709, name = "" },
-    -- { id = 711, name = "" },
-    -- { id = 712, name = "" },
-    -- { id = 714, name = "" },
-    -- { id = 715, name = "" },
-    -- { id = 717, name = "" },
-    -- { id = 710, name = "" },
-    -- { id = 713, name = "" },
-    -- { id = 716, name = "" },
-    -- -- Naxx
-    -- { id = 1107, name = "" },
-    -- { id = 1110, name = "" },
-    -- { id = 1116, name = "" },
-    -- { id = 1117, name = "" },
-    -- { id = 1112, name = "" },
-    -- { id = 1115, name = "" },
-    -- { id = 1113, name = "" },
-    -- { id = 1109, name = "" },
-    -- { id = 1121, name = "" },
-    -- { id = 1118, name = "" },
-    -- { id = 1111, name = "" },
-    -- { id = 1108, name = "" },
-    -- { id = 1120, name = "" },
-    -- { id = 1119, name = "" },
-    -- { id = 1114, name = "" },
-    -- -- ZG
-    -- { id = 787, name = "" },
-    -- { id = 790, name = "" },
-    -- { id = 793, name = "" },
-    -- { id = 789, name = "" },
-    -- { id = 784, name = "" },
-    -- { id = 791, name = "" },
-    -- { id = 785, name = "" },
-    -- { id = 792, name = "" },
-    -- { id = 786, name = "" },
-    -- { id = 788, name = "" },
-    -- -- AQ20
-    -- { id = 722, name = "" },
-    -- { id = 721, name = "" },
-    -- { id = 719, name = "" },
-    -- { id = 718, name = "" },
-    -- { id = 720, name = "" },
-    -- { id = 723, name = "" },
-    -- -- Onyxia
-	-- { id = 1084, order =  1, name = "" },
     -- Karazhan
     {
         name = "Karazhan",
