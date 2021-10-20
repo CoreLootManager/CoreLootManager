@@ -14,7 +14,7 @@ local RaidManager = MODULES.RaidManager
 
 local GlboalChatMessageHandlers = {}
 
-local whoami = UTILS.whoami()
+local whoami = UTILS.whoami() --luacheck: ignore
 
 local function trim(s)
     return string.gsub(s, "^%s*(.-)%s*$", "%1")
@@ -74,7 +74,7 @@ function GlboalChatMessageHandlers:Initialize()
                     params[2] = trim(params[2])
                 end
                 if not params[2] or params[2] == "" then
-                    player = whoami
+                    player = playerName
                 else
                     player = params[2]
                 end
