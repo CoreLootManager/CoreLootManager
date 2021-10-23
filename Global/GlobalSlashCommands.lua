@@ -14,6 +14,7 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local ProfileInfoManager = MODULES.ProfileInfoManager
 
+local ColorCodeText = UTILS.ColorCodeText
 local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
 local GlobalSlashCommands = {}
@@ -173,7 +174,7 @@ function GlobalSlashCommands:Initialize()
             name = "Toggle on/off all addon comms. Enables local experimentation without sharing data.",
             func = (function()
                 if (Comms:IsEnabled()) then
-                    LOG:Message("Disabling addon communication. Type %s to reenable.", Utils.ColorCodeText("/clm comms", "00cc00"))
+                    LOG:Message("Disabling addon communication. Type %s to reenable.", ColorCodeText("/clm comms", "00cc00"))
                     Comms:Disable()
                 else
                     LOG:Message("Addon communication has been reenabled.")
