@@ -8,6 +8,9 @@ local MODELS = CLM.MODELS
 
 local ACL = MODULES.ACL
 local LedgerManager = MODULES.LedgerManager
+local Comms = MODULES.Comms
+
+local ColorCodeText = UTILS.ColorCodeText
 
 local LEDGER_ROSTER = MODELS.LEDGER.ROSTER
 local LEDGER_PROFILE = MODELS.LEDGER.PROFILE
@@ -40,7 +43,8 @@ end
 local timestampCounter = {}
 function Migration:Migrate()
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
-    LOG:Message("Executing Addon Migration")
+    Comms:Disable()
+    LOG:Message("Executing Addon Migration with comms disabled.")
     self.timestamp = UTILS.GetCutoffTimestamp()
     self.playerCache = {}
     for i=1,GetNumGuildMembers() do
@@ -52,6 +56,9 @@ function Migration:Migrate()
     self:MigrateMonolithDKP()
     self:MigrateEssentialDKP()
     self:MigrateCommunityDKP()
+    LOG:Message("Migration complete. %s to apply and sync with others or go to %s to discard.", 
+        ColorCodeText("/reload", "00cc00"),
+        ColorCodeText("Minimap Icon -> Configuration -> Wipe events", "6699ff"))
 end
 
 function Migration:GetOldTimestampUnique()
