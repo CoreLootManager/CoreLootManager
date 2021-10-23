@@ -163,6 +163,7 @@ end
 local function FillConfigurationTooltip(configuration, tooltip)
     tooltip:AddDoubleLine("Auction Time", configuration:Get("auctionTime"))
     tooltip:AddDoubleLine("Anti-Snipe", configuration:Get("antiSnipe"))
+    tooltip:AddDoubleLine("Auto-open", configuration:Get("autoOpen"))
     tooltip:AddDoubleLine("Boss Kill Bonus", configuration:Get("bossKillBonus") and GreenYes() or RedNo())
     local onTimeBonus = configuration:Get("onTimeBonus")
     tooltip:AddDoubleLine("On Time Bonus", onTimeBonus and GreenYes() or RedNo())

@@ -174,6 +174,8 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         end
         if self.auctionTimeLeft < 0.1 then
             self:StopAuctionTimed()
+            -- Open Awarding window on auction end
+            GUI.AuctionManager.Open()
             return
         end
     end))

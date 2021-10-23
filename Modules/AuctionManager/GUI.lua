@@ -176,11 +176,13 @@ local function CreateBidWindow(self)
     local OnClickHandler = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local selected = self.st:GetRow(self.st:GetSelection())
+        local isSealed = (self.roster:GetConfiguration("auctionType") ==  CONSTANTS.AUCTION_TYPE.SEALED) 
         if type(selected) ~= "table" then return false end
         if selected.cols == nil then return false end -- Handle column titles click
         self.awardPlayer = selected.cols[1].value or ""
-        -- self.awardValue = selected.cols[4].value or 0
-        if not self.awardValue or self.awardValue == '' then
+        if isSealed then -- Can be awarded to other than highest bid
+            self.awardValue = selected.cols[4].value or 0
+        elseif not self.awardValue or self.awardValue == '' then
             AuctionManagerGUI:UpdateBids()
         end
         if self.awardPlayer and self.awardPlayer:len() > 0 then
@@ -526,9 +528,15 @@ function AuctionManagerGUI:Toggle()
         AuctionManagerGUI:ClearSelectedBid()
         self.top.frame:Hide()
     else
-        self:Refresh()
-        self.top.frame:Show()
+        AuctionManagerGUI:Open()
     end
+end
+
+function AuctionManagerGUI:Open()
+    LOG:Trace("AuctionManagerGUI:Open()")
+    if not self._initialized then return end
+    self:Refresh()
+    self.top.frame:Show()
 end
 
 function AuctionManagerGUI:RegisterSlash()

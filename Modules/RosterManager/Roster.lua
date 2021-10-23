@@ -367,6 +367,8 @@ function RosterConfiguration:New(i)
     o._.auctionTime = 30
     -- Anti snipe time seconds (0 = disabled)
     o._.antiSnipe = 0
+    -- Auto-open Award window on auction end(0 = disabled)
+    o._.auctionTime = 0
     -- Allow negative standings
     o._.allowNegativeStandings = false
     -- Allow negative bidders
@@ -417,6 +419,7 @@ function RosterConfiguration:fields()
         "zeroSumBank",
         "zeroSumBankInflation",
         "auctionTime",
+        "autoOpen",
         "antiSnipe",
         "allowNegativeStandings",
         "allowNegativeBidders",
@@ -473,6 +476,7 @@ local TRANSFORMS = {
     zeroSumBank = transform_boolean,
     zeroSumBankInflation = transform_number,
     auctionTime = transform_number,
+    autoOpen = transform_boolean,
     antiSnipe = transform_number,
     allowNegativeStandings = transform_boolean,
     allowNegativeBidders = transform_boolean,
@@ -537,6 +541,7 @@ function RosterConfiguration._validate_allowNegativeStandings(value) return IsBo
 function RosterConfiguration._validate_allowNegativeBidders(value) return IsBoolean(value) end
 function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_autoOpen(value) return IsBoolean(value) end
 function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_bossKillBonus(value) return IsBoolean(value) end
 function RosterConfiguration._validate_onTimeBonus(value) return IsBoolean(value) end

@@ -205,6 +205,12 @@ function RosterManagerOptions:Initialize()
         end),
         auction_antisnipe_time_set = (function(name, value)
             SetRosterOption(name, "antiSnipe", value)
+        end),
+        auction_autoopen_toggle_get = (function(name)
+            return tostring(GetRosterOption(name, "autoOpen"))
+        end),
+        auction_autoopen_toggle_set = (function(name, value)
+            SetRosterOption(name, "autoOpen", value)
         end)
     }
     -- Handlers for Minimum / Maximum setting
@@ -701,6 +707,13 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1,
                         order = 11
+                    },
+                    autoopen_on_end = {
+                        name = "Auto-open Award window",
+                        desc = "Toggle if the Item Award window should automatically show again when auction ends.",
+                        type = "toggle",
+                        width = 1,
+                        order = 12
                     },
                 }
             },
