@@ -31,6 +31,10 @@ function Comms:Enable()
     self.enabled = true
 end
 
+function Comms:IsEnabled()
+    return self.enabled
+end
+
 local function _prefix(prefix)
     return CommsPrefix .. string.sub(prefix or "", 0, 12)
 end
@@ -83,7 +87,7 @@ end
 
 function Comms:Disable()
     LOG:Trace("Comms:Disable()")
-    LOG:Debug("Disabling Comms. This operation is not reversible until UI reload.")
+    LOG:Info("Disabling Comms.")
     self.enabled = false
 end
 
