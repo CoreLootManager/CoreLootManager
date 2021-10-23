@@ -142,7 +142,6 @@ function Roster:UpdateStandings(GUID, value, timestamp)
         local week = WeekNumber(timestamp, (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
         local weeklyGains = self:GetWeeklyGainsForPlayerWeek(GUID, week)
         if self.configuration.hasWeeklyCap then
-            local weeklyCap = self.configuration._.weeklyCap
             local maxGain = self.configuration._.weeklyCap - weeklyGains
             if maxGain < 0 then -- sanity check (here it can be 0 and this can happen if cap was lowered before awarding dkp)
                 LOG:Debug("Roster:UpdateStandings(): maxGain %d for %s(%s) is lower than 0 for weekly cap", maxGain, GUID, self.uid)
