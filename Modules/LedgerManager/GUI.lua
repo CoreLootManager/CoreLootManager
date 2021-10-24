@@ -42,6 +42,10 @@ local function safeItemIdToLink(itemId)
     return itemLink or safeToString(itemId)
 end
 
+local function decodeReason(reason)
+    return CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""
+end
+
 local function CreateHistoryDisplay(self)
     local columns = {
         {name = "Num",          width = 75, sort = ScrollingTable.SORT_DSC},
@@ -158,9 +162,9 @@ local function decodeBossKillBonus(encounterId, value)
     end
     for _, expack in pairs(CLM.EncounterIDs) do
         for _,instance in ipairs(expack) do
-            for _,encounter in ipairs(instance.data) do
-                if encounter.id == encounterId then
-                    return safeToString(encounter.name), safeToString(value)
+            for _,encounterInfo in ipairs(instance.data) do
+                if encounterInfo.id == encounterId then
+                    return safeToString(encounterInfo.name), safeToString(value)
                 end
             end
         end
@@ -266,7 +270,7 @@ local describeFunctions  = {
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Roster Update Profiles]: " ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
-            (entry:remove() and "Remove" or "Add") .. " " .. #entry:profiles() .. " profile(s)"
+            (entry:remove() and "Remove" or "Add") .. " " .. safeToString(#entry:profiles()) .. " profile(s)"
 
     end),
     ["RC"] = (function(entry)
@@ -290,13 +294,57 @@ local describeFunctions  = {
 
     end),
     -- Points
+    ["DM"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        return "[Point Award]: " ..
+            "Awarded " .. safeToString(entry:value()) .. " DKP to " ..
+            safeToString(#entry:targets()) " players for " ..
+            decodeReason(entry:reason()) .. " in " ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+    end),
+    ["DD"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        return "[Point Decay]: " ..
+            "Decayed " .. safeToString(entry:value()) .. "% DKP to " ..
+            safeToString(#entry:targets()) " players in " ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+    end),
+    ["DO"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        return "[Point Award to roster]: " ..
+            "Awarded " .. safeToString(entry:value()) .. " DKP to all players for " ..
+            decodeReason(entry:reason()) .. " in " ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+    end),
+    ["DR"] = (function(entry)
+        local raid = RaidManager:GetRaidByUid(entry:raidUid())
+        return "[Point Award to raid]: " ..
+            "Awarded " .. safeToString(entry:value()) .. " DKP to all players in raid  " ..
+            decodeReason(entry:reason()) .. " in " ..
+            raid and ("(" .. raid:Name() .. ")") or "" ..
+            "<" .. ColorCodeText(raid and raid:Name() or entry:raidUid(), "ebb434") .. ">"
+    end),
+    ["DT"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        return "[Point Decay for roster]: " ..
+            "Decayed " .. safeToString(entry:value()) .. "% DKP to all players in " ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+    end),
+    ["DS"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        return "[Point Set]: " ..
+            "Set " .. safeToString(entry:value()) .. " DKP to " ..
+            safeToString(#entry:targets()) " players for " ..
+            decodeReason(entry:reason()) .. " in " ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+    end),
     -- Loot
     ["IA"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         local guid = getGuidFromInteger(entry:profile())
         local profile = ProfileManager:GetProfileByGUID(guid)
         return "[Item Award]: " ..
-            safeItemIdToLink(entry:item()) .. " to " .. 
+            safeItemIdToLink(entry:item()) .. " to " ..
             profile and profile:Name() or guid .. " for " ..
             safeToString(entry:value()) .. " in " ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
@@ -307,7 +355,7 @@ local describeFunctions  = {
         local profile = ProfileManager:GetProfileByGUID(guid)
         local raid = RaidManager:GetRaidByUid(entry:raidUid())
         return "[Item Award in Raid]: " ..
-            safeItemIdToLink(entry:item()) .. " to " .. 
+            safeItemIdToLink(entry:item()) .. " to " ..
             profile and profile:Name() or guid .. " for " ..
             safeToString(entry:value()) .. " in " ..
             raid and ("(" .. raid:Name() .. ")") or "" ..
