@@ -9,8 +9,8 @@ local PointManager = MODULES.PointManager
 local RaidManager = MODULES.RaidManager
 local EventManager = MODULES.EventManager
 
-local HYDROSS_ENCOUNTER_ID = 623
-local HYDROSS_ENCOUNTER_NAME = "Hydross the Unstable"
+-- local HYDROSS_ENCOUNTER_ID = 623
+-- local HYDROSS_ENCOUNTER_NAME = "Hydross the Unstable"
 local HYDROSS_NPC_ID = 21216
 
 local RAID_AWARD_LEDGER_CLASS = "DR"
