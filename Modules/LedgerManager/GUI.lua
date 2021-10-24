@@ -25,6 +25,7 @@ local NumberToClass = UTILS.NumberToClass
 local ACL = MODULES.ACL
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
+local RaidManager = MODULES.RaidManager
 -- local PointManager = MODULES.PointManager
 -- local LedgerManager = MODULES.LedgerManager
 
@@ -36,13 +37,18 @@ local function boolToString(value)
     return value and "True" or "False"
 end
 
+local function safeItemIdToLink(itemId)
+    local _, itemLink = GetItemInfo(itemId)
+    return itemLink or safeToString(itemId)
+end
+
 local function CreateHistoryDisplay(self)
     local columns = {
-        {name = "Num",          width = 75},
-        {name = "UUID",         width = 150},
+        {name = "Num",          width = 75, sort = ScrollingTable.SORT_DSC},
+        -- {name = "UUID",         width = 150},
         {name = "Time",         width = 150},
         {name = "Type",         width = 50},
-        {name = "Description",  width = 400},
+        {name = "Description",  width = 550},
         {name = "Author",       width = 100}
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
@@ -141,8 +147,25 @@ local function decodeSlotValueConfig(slot, base, max)
 end
 
 local function decodeItemValueOverride(itemId, base, max)
-    local _, itemLink = GetItemInfo(itemId)
-    return itemLink or safeToString(itemId), safeToString(base), safeToString(max)
+    return safeItemIdToLink(itemId), safeToString(base), safeToString(max)
+end
+
+local function decodeBossKillBonus(encounterId, value)
+    local encounter = "Unknown"
+    value = tonumber(value) or 0
+    if value == 0 then
+        return encounter, ""
+    end
+    for _, expack in pairs(CLM.EncounterIDs) do
+        for _,instance in ipairs(expack) do
+            for _,encounter in ipairs(instance.data) do
+                if encounter.id == encounterId then
+                    return safeToString(encounter.name), safeToString(value)
+                end
+            end
+        end
+    end
+    return "", safeToString(value)
 end
 
 local describeFunctions  = {
@@ -154,13 +177,10 @@ local describeFunctions  = {
         end
         return description
     end),
-    -- ["XXX"] = (function(entry)
-    --     return ""
-    -- end),
-    -- Profiles
+    -- Profile
     ["P0"] = (function(entry)
         return "[Update Profile]: " ..
-            ColorCodeText(getGuidFromInteger(entry:GUID()), "ebb434") ..
+            ColorCodeText(getGuidFromInteger(entry:GUID()), "6699ff") ..
             " " ..
             ColorCodeText(entry:name(), GetClassColor(NumberToClass(entry:ingameClass())).hex)
     end),
@@ -169,7 +189,7 @@ local describeFunctions  = {
         local profile = ProfileManager:GetProfileByGUID(guid)
         return "[Remove Profile]: " ..
             ColorCodeText(profile and profile:Name() or guid,
-                          profile and GetClassColor(profile:Class()).hex or "ebb434")
+                          profile and GetClassColor(profile:Class()).hex or "6699ff")
     end),
     ["P2"] = (function(entry)
         local guid = getGuidFromInteger(entry:GUID())
@@ -179,14 +199,14 @@ local describeFunctions  = {
         if entry:main() ~= 0 then
             return "[Alt-Main Link]: " ..
                 ColorCodeText(profile and profile:Name() or guid,
-                            profile and GetClassColor(profile:Class()).hex or "ebb434") ..
+                            profile and GetClassColor(profile:Class()).hex or "6699ff") ..
                 " alt of: " ..
                 ColorCodeText(mainProfile and mainProfile:Name() or mainGuid,
-                            mainProfile and GetClassColor(mainProfile:Class()).hex or "ebb434")
+                            mainProfile and GetClassColor(mainProfile:Class()).hex or "6699ff")
         else
             return "[Alt-Main Link]: Remove linking of " ..
                 ColorCodeText(profile and profile:Name() or guid,
-                            profile and GetClassColor(profile:Class()).hex or "ebb434")
+                            profile and GetClassColor(profile:Class()).hex or "6699ff")
         end
     end),
     -- Roster
@@ -242,19 +262,57 @@ local describeFunctions  = {
     ["R8"] = (function(entry)
         return "[Roster Item Value Override]: " .. " UNUSED"
     end),
-    -- ["XXX"] = (function(entry)
-    --     return ""
-    -- end),
-    -- ["XXX"] = (function(entry)
-    --     return ""
-    -- end),
-    -- ["XXX"] = (function(entry)
-    --     return ""
-    -- end),
-    -- ["XXX"] = (function(entry)
-    --     return ""
-    -- end),
+    ["R9"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        return "[Roster Update Profiles]: " ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
+            (entry:remove() and "Remove" or "Add") .. " " .. #entry:profiles() .. " profile(s)"
+
+    end),
+    ["RC"] = (function(entry)
+        local source = RosterManager:GetRosterNameByUid(entry:sourceRosterUid())
+        local target = RosterManager:GetRosterNameByUid(entry:targetRosterUid())
+        return "[Roster Copy]: " ..
+            "From <" .. ColorCodeText(source or entry:sourceRosterUid(), "ebb434") .. "> " ..
+            "to <" .. ColorCodeText(target or entry:targetRosterUid(), "ebb434") .. ">: " ..
+            (entry:config() and "[config] " or "") ..
+            (entry:defaults() and "[slot defaults] " or "") ..
+            (entry:overrides() and "[item values] " or "") ..
+            (entry:profiles() and "[profiles] " or "")
+
+    end),
+    ["RB"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local encounter, value = decodeBossKillBonus(entry:encounterId(), entry:value())
+        return "[Roster Boss Kill Bonus]: " ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
+            encounter .. ": " .. value
+
+    end),
+    -- Points
     -- Loot
+    ["IA"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local guid = getGuidFromInteger(entry:profile())
+        local profile = ProfileManager:GetProfileByGUID(guid)
+        return "[Item Award]: " ..
+            safeItemIdToLink(entry:item()) .. " to " .. 
+            profile and profile:Name() or guid .. " for " ..
+            safeToString(entry:value()) .. " in " ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+    end),
+    ["II"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local guid = getGuidFromInteger(entry:profile())
+        local profile = ProfileManager:GetProfileByGUID(guid)
+        local raid = RaidManager:GetRaidByUid(entry:raidUid())
+        return "[Item Award in Raid]: " ..
+            safeItemIdToLink(entry:item()) .. " to " .. 
+            profile and profile:Name() or guid .. " for " ..
+            safeToString(entry:value()) .. " in " ..
+            raid and ("(" .. raid:Name() .. ")") or "" ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+    end),
     -- Raid
 }
 
@@ -265,33 +323,33 @@ end
 
 local function getEntryInfo(entry)
     -- Common info
-    local uuid = entry:uuid()
     local time = date("%d/%m/%Y %H:%M:%S", entry:time())
     local type = entry:class()
     local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(entry:creator()))
     local author = profile and profile:Name() or ""
-    -- Specialised info
     local description = describeEntry(entry)
-    --
-    return uuid, time, type, description, author
+    return time, type, description, author
 end
 
 local function buildEntryRow(entry, id)
     local row = {cols = {}}
-    local uuid, time, type, description, author = getEntryInfo(entry)
-    table.insert(row.cols, {value = id})
-    table.insert(row.cols, {value = uuid})
-    table.insert(row.cols, {value = time})
-    table.insert(row.cols, {value = type})
-    table.insert(row.cols, {value = description})
-    table.insert(row.cols, {value = author})
+    local time, type, description, author = getEntryInfo(entry)
+    row.cols[1] = {value = tonumber(id)}
+    row.cols[2] = {value = time}
+    row.cols[3] = {value = type}
+    row.cols[4] = {value = description}
+    row.cols[5] = {value = author}
+    -- Hidden
+    row.cols[6] = {value = entry}
     return row
 end
 
 local AuditGUI = {}
 function AuditGUI:Initialize()
     LOG:Trace("AuditGUI:Initialize()")
+    --[===[@non-debug@
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then return end
+    --@end-non-debug@]===]
     self:Create()
     self:RegisterSlash()
     self._initialized = true
