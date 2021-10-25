@@ -128,42 +128,32 @@ function Roster:UpdateStandings(GUID, value, timestamp)
             local hardCap = self.configuration._.hardCap
             -- We do not modify points if they are already exceeded during newly introduced cap
             if (standings >= hardCap) then
-                LOG:Debug("(standings >= hardCap) %s >= %s", standings, hardCap)
                 return
             end
             local maxGain = hardCap - standings
-            LOG:Debug("hardCap maxGain %s", maxGain)
             if maxGain <= 0 then -- sanity check (here it shouldn't be be 0 due to above check)
                 LOG:Debug("Roster:UpdateStandings(): maxGain %d for %s(%s) is lower than 0 for hard cap", maxGain, GUID, self.uid)
                 return
             end
             -- Saturate the initial value
             if value > maxGain then value = maxGain end
-            LOG:Debug("new value %s", value)
         end
         -- Weekly Cap
+        local week = WeekNumber(timestamp, (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
+        local weeklyGains = self:GetWeeklyGainsForPlayerWeek(GUID, week)
         if self.configuration.hasWeeklyCap then
-            local weeklyCap = self.configuration._.weeklyCap
-            LOG:Debug("--- HAS WEEKLY CAP (%s) ---", weeklyCap)
-            local week = WeekNumber(timestamp, (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
-            local weeklyGains = self:GetWeeklyGainsForPlayerWeek(GUID, week)
-            LOG:Debug("weeklyGain %s", weeklyGains)
             local maxGain = self.configuration._.weeklyCap - weeklyGains
-            LOG:Debug("weeklyCap maxGain %s", maxGain)
             if maxGain < 0 then -- sanity check (here it can be 0 and this can happen if cap was lowered before awarding dkp)
                 LOG:Debug("Roster:UpdateStandings(): maxGain %d for %s(%s) is lower than 0 for weekly cap", maxGain, GUID, self.uid)
                 return
             end
             if value > maxGain then value = maxGain end
             value = round(value, self.configuration._.roundDecimals)
-            LOG:Debug("new value %s", value)
-            self.weeklyGains[GUID][week] = weeklyGains + value
-            LOG:Debug("new weeklyGains %s", self.weeklyGains[GUID][week])
         end
+        self.weeklyGains[GUID][week] = weeklyGains + value
     end
     -- Handle the standings update
     self.standings[GUID] = standings + value
-    LOG:Debug("new standings %s", self.standings[GUID])
 end
 
 function Roster:SetStandings(GUID, value)
