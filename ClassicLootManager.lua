@@ -221,6 +221,22 @@ function CORE:GUILD_ROSTER_UPDATE(...)
     end
 end
 
+function CORE:EnableSandbox()
+    -- CLM.MODULES.Comms:Disable()
+    -- CLM.MODULES.LedgerManager:EnableSandbox()
+    self.isSandbox = true
+end
+
+function CORE:DisableSandbox()
+    -- CLM.MODULES.LedgerManager:DisableSandbox()
+    -- CLM.MODULES.Comms:Enable()
+    self.isSandbox = false
+end
+
+function CORE:IsSandbox()
+    return self.isSandbox and true or false
+end
+
 -- Globals: Keybinds
 
 BINDING_HEADER_CLM = "Classic Loot Manager"
