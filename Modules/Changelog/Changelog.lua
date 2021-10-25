@@ -19,7 +19,7 @@ CLM.ChangelogData = {
             {header = "Migration", body = "Migration is now executed with comms disabled and is reversible by wiping entries."},
             {header = "Hydross DKP award", body = "Hydross DKP boss kill bonus award workaround is now fixed."},
             {header = "Weekly gains display", body = "Weekly gains are now tracked and displayed even if there is no weekly cap."},
-            {header = "Roster Decay", body = "Roster decay should now use proper, optimised entties. While this is a backwards compatible fix there is marginal chance to lead to DKP difference if profile that had DKP in multiple rosters was removed and then added again. Please double check the values when upgrading to this version."},
+            {header = "Roster Decay", body = "Roster decay should now use proper, optimised entries. While this is a backwards compatible fix there is marginal chance to lead to DKP difference if profile that had DKP in multiple rosters was removed and then added again. Please double check the values when upgrading to this version."},
         }
     },
 }
