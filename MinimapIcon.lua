@@ -55,6 +55,11 @@ function Minimap:Initialize()
             trustedOnly = true
         },
         {
+            title = "Audit",
+            func = (function() CLM.GUI.Audit:Toggle() end),
+            trustedOnly = true
+        },
+        {
             title = "Configuration",
             icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga",
             func = (function()

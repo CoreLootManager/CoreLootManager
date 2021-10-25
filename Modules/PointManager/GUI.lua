@@ -71,17 +71,6 @@ function PointHistoryGUI:Initialize()
 
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
         {
-            title = "Timetravel",
-            func = (function()
-            end),
-            trustedOnly = true,
-            color = "00cc00"
-        },
-        {
-            separator = true,
-            trustedOnly = true
-        },
-        {
             title = "Remove selected",
             func = (function()
                 local row = self.st:GetRow(self.st:GetSelection())

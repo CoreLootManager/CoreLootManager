@@ -4,30 +4,23 @@ local _, CLM = ...
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 
--- local LIBS =  {
---     registry = LibStub("AceConfigRegistry-3.0"),
---     gui = LibStub("AceConfigDialog-3.0")
--- }
-
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
 
--- local mergeDictsInline = UTILS.mergeDictsInline
--- local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
 local getGuidFromInteger = UTILS.getGuidFromInteger
--- local ColorCodeClass = UTILS.ColorCodeClass
 local GetClassColor = UTILS.GetClassColor
 local ColorCodeText = UTILS.ColorCodeText
 local NumberToClass = UTILS.NumberToClass
 
-local ACL = MODULES.ACL -- luacheck: ignore
+local ACL = MODULES.ACL
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local RaidManager = MODULES.RaidManager
--- local PointManager = MODULES.PointManager
--- local LedgerManager = MODULES.LedgerManager
+local LedgerManager = MODULES.LedgerManager
+
+local RightClickMenu
 
 local function safeToString(value)
     return tostring(value) or ""
@@ -62,7 +55,25 @@ local function CreateHistoryDisplay(self)
     self.st = ScrollingTable:CreateST(columns, 25, 15, nil, StandingsGroup.frame, false)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", StandingsGroup.frame, "TOPLEFT", 0, -60)
-    self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
+    self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 1)
+
+    local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+        local rightButton = (button == "RightButton")
+        local status
+        local selected = self.st:GetSelection()
+        if selected ~= realrow then
+            status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        end
+        if rightButton then
+            UTILS.LibDD:CloseDropDownMenus()
+            UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+        end
+        return status
+    end
+
+    self.st:RegisterEvents({
+        OnClick = OnClickHandler
+    })
 
     return StandingsGroup
 end
@@ -317,11 +328,11 @@ local describeFunctions  = {
     end),
     ["DR"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raidUid())
+
         return "[Point Award to raid]: " ..
-            "Awarded " .. safeToString(entry:value()) .. " DKP to all players in raid  " ..
-            decodeReason(entry:reason()) .. " in " ..
-            (raid and ("(" .. ColorCodeText(raid:Name(), "d99212") .. ")") or "") ..
-            "<" .. ColorCodeText(raid and raid:Name() or entry:raidUid(), "ebb434") .. ">"
+            "Awarded " .. safeToString(entry:value()) .. " DKP for " ..
+            decodeReason(entry:reason()) .." to all players in raid " ..
+            (raid and ("(" .. ColorCodeText(raid:Name(), "d99212") .. ")") or "")
     end),
     ["DT"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
@@ -362,7 +373,9 @@ local describeFunctions  = {
     ["AC"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Raid Create]: Create raid " ..
-            ColorCodeText(entry:name(), "d99212") .. " in " ..
+            ColorCodeText(entry:name(), "d99212") ..
+            " " .. safeToString(entry:uuid()) ..
+            " in " ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
     end),
     ["AS"] = (function(entry)
@@ -373,7 +386,7 @@ local describeFunctions  = {
     ["AU"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raid())
         return "[Raid Update]: Updated raid " ..
-            ColorCodeText(raid and raid:Name() or entry:raid(), "d99212") .. " "
+            ColorCodeText(raid and raid:Name() or entry:raid(), "d99212") .. " " ..
             safeToString(#entry:joiners()) .. " players joined, " ..
             safeToString(#entry:leavers()) .. " players left "
     end),
@@ -383,7 +396,7 @@ local describeFunctions  = {
             ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")
     end),
     ["IGN"] = (function(entry)
-        return "[IGNORE]: Ignoring entry  " .. safeToString(entry.ref)
+        return "[IGNORE]: Ignoring entry  "
     end),
 }
 
@@ -402,6 +415,8 @@ local function getEntryInfo(entry)
     return time, type, description, author
 end
 
+local ignoreCache = {}
+
 local function buildEntryRow(entry, id)
     local row = {cols = {}}
     local time, type, description, author = getEntryInfo(entry)
@@ -415,15 +430,41 @@ local function buildEntryRow(entry, id)
     return row
 end
 
+local function ST_GetEntry(row)
+    return row.cols[6].value
+end
+
 local AuditGUI = {}
 function AuditGUI:Initialize()
     LOG:Trace("AuditGUI:Initialize()")
-    --[===[@non-debug@
-    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then return end
-    --@end-non-debug@]===]
+    if not ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
-    self._initialized = true
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+        {
+            title = "Timetravel",
+            func = (function()
+            end),
+            trustedOnly = true,
+            color = "00cc00"
+        },
+        {
+            title = "Remove selected",
+            func = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    LedgerManager:Remove(ST_GetEntry(row), true)
+                end
+            end),
+            trustedOnly = true,
+            color = "cc0000"
+        }
+    }, CLM.MODULES.ACL:IsTrusted())
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        self._initialized = true
+        self:Refresh(true)
+    end)
 end
 
 function AuditGUI:Create()
@@ -436,7 +477,7 @@ function AuditGUI:Create()
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
     f:SetWidth(1000)
-    f:SetHeight(600)
+    f:SetHeight(550)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Ledger_Entries_Inspection_GUI")
 
@@ -446,12 +487,21 @@ function AuditGUI:Create()
     f:Hide()
 end
 
-function AuditGUI:Refresh()
+function AuditGUI:Refresh(visible)
     LOG:Trace("AuditGUI:Refresh()")
     if not self._initialized then return end
+    if visible and not self.top.frame:IsVisible() then return end
     local data = {}
     for i,entry in ipairs(MODULES.Database:Ledger()) do
         table.insert(data, buildEntryRow(entry, i))
+        local ignCacheId = ignoreCache[entry:uuid()]
+        if entry:class() == "IGN" then
+            ignoreCache[entry.ref] = i
+        elseif ignCacheId then
+            local description = data[ignCacheId].cols[4].value
+            description = description .. ColorCodeText(safeToString(i), "44ff44")
+            data[ignCacheId].cols[4].value  = description
+        end
     end
 
     self.st:SetData(data)

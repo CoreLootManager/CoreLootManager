@@ -136,17 +136,6 @@ function RaidManagerGUI:Initialize()
             trustedOnly = true
         },
         {
-            title = "Timetravel",
-            func = (function()
-            end),
-            trustedOnly = true,
-            color = "00cc00"
-        },
-        {
-            separator = true,
-            trustedOnly = true
-        },
-        {
             title = "Remove selected raid",
             func = (function()
                 local row = self.st:GetRow(self.st:GetSelection())
