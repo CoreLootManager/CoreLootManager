@@ -55,6 +55,11 @@ function Minimap:Initialize()
             trustedOnly = true
         },
         {
+            title = "Audit",
+            func = (function() CLM.GUI.Audit:Toggle() end),
+            trustedOnly = true
+        },
+        {
             title = "Configuration",
             icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga",
             func = (function()
@@ -100,12 +105,16 @@ do
         else
             info = string.format("Loading events...")
         end
-        if CLM.MODULES.LedgerManager:IsInSync() then
-            tooltip:AddDoubleLine("In-Sync", info, 0.0, 0.8, 0.0)
-        elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
-            tooltip:AddDoubleLine("Sync ongoing", info, 0.6, 0.0, 0.0)
-        else -- Unknown state
-            tooltip:AddDoubleLine("Unknown sync state", info, 0.4, 0.6, 1)
+        if CLM.CORE:IsSandbox() then
+            tooltip:AddDoubleLine("Sandbox mode", info, 1, 1, 1)
+        else
+            if CLM.MODULES.LedgerManager:IsInSync() then
+                tooltip:AddDoubleLine("In-Sync", info, 0.0, 0.8, 0.0)
+            elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
+                tooltip:AddDoubleLine("Sync ongoing", info, 0.6, 0.0, 0.0)
+            else -- Unknown state
+                tooltip:AddDoubleLine("Unknown sync state", info, 0.4, 0.6, 1)
+            end
         end
     end
 end

@@ -98,10 +98,10 @@ local columns = {
         {name = "", width = 0},
     },
     raidLoot = {
-        {name = "Item",  width = 225},
-        {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
-        {name = "Player",   width = 70},
+        {name = "Item", width = 225},
+        {name = "Value", width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
+        {name = "Player", width = 70},
         {name = "", width = 0},
     }
 }
@@ -276,8 +276,8 @@ function LootGUI:Refresh(visible)
         local row = {cols = {}}
         row.cols[1] = {value = lootData[2]}
         row.cols[2] = {value = loot:Value()}
-        row.cols[3] = {value = lootData[3]}
-        row.cols[4] = {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())}
+        row.cols[3] = {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())}
+        row.cols[4] = {value = lootData[3]}
         row.cols[5] = {value = loot}
         data[rowId] =  row
         rowId = rowId + 1
