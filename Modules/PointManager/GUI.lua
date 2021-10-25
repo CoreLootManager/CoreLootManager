@@ -69,20 +69,24 @@ function PointHistoryGUI:Initialize()
     end)
     self.tooltip = CreateFrame("GameTooltip", "CLMPointHistoryGUIDialogTooltip", UIParent, "GameTooltipTemplate")
 
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            title = "Remove selected",
-            func = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    local history = ST_GetPointHistory(row)
-                    LedgerManager:Remove(history:Entry(), true)
-                end
-            end),
-            trustedOnly = true,
-            color = "cc0000"
-        }
-    }, CLM.MODULES.ACL:IsTrusted())
+            {
+                title = "Remove selected",
+                func = (function()
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        local history = ST_GetPointHistory(row)
+                        LedgerManager:Remove(history:Entry(), true)
+                    end
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            }
+        },
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
 
     self._initialized = true
 end

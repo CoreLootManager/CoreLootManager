@@ -4,19 +4,11 @@ local _, CLM = ...
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 
--- local LIBS =  {
---     registry = LibStub("AceConfigRegistry-3.0"),
---     gui = LibStub("AceConfigDialog-3.0")
--- }
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
--- local CONSTANTS = CLM.CONSTANTS
--- local RESULTS = CLM.CONSTANTS.RESULTS
+local CONSTANTS = CLM.CONSTANTS
 local GUI = CLM.GUI
-
--- local mergeDictsInline = UTILS.mergeDictsInline
--- local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
 local GetClassColor = UTILS.GetClassColor
@@ -70,20 +62,24 @@ function LootGUI:Initialize()
     end)
     self.tooltip = CreateFrame("GameTooltip", "CLMLootGUIDialogTooltip", UIParent, "GameTooltipTemplate")
 
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            title = "Remove selected",
-            func = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    local loot = ST_GetLoot(row)
-                    LedgerManager:Remove(loot:Entry(), true)
-                end
-            end),
-            trustedOnly = true,
-            color = "cc0000"
-        }
-    }, CLM.MODULES.ACL:IsTrusted())
+            {
+                title = "Remove selected",
+                func = (function()
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        local loot = ST_GetLoot(row)
+                        LedgerManager:Remove(loot:Entry(), true)
+                    end
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            }
+        },
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
 
     EventManager:RegisterWoWBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
     self._initialized = true

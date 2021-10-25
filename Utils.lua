@@ -432,13 +432,21 @@ function UTILS.RedNo()
 end
 
 local menuCounter = 0
-function UTILS.GenerateDropDownMenu(structure, isTrusted, frame)
+function UTILS.GenerateDropDownMenu(structure, isAssistant, isManager, frame)
     frame = frame or CreateFrame("Frame", "CLM_Generic_Menu_DropDown" .. tostring(menuCounter), UIParent, "UIDropDownMenuTemplate")
     menuCounter = menuCounter + 1
-
+    local isTrusted = isAssistant or isManager
     LibDD:UIDropDownMenu_Initialize(frame, (function(_, level)
         for _,k in ipairs(structure) do
-            if not k.trustedOnly or (k.trustedOnly and isTrusted) then
+            local include = not k.trustedOnly
+            if k.trustedOnly then
+                if k.managerOnly then
+                    include = isManager
+                else
+                    include = isTrusted
+                end
+            end
+            if include then
                 local placeholder = LibDD:UIDropDownMenu_CreateInfo()
                 placeholder.notCheckable = true
                 placeholder.text = k.title

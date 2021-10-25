@@ -343,7 +343,8 @@ local describeFunctions  = {
     ["DT"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Point Decay for roster]: " ..
-            "Decayed " .. safeToString(entry:value()) .. "% DKP to all players in " ..
+            "Decayed " .. safeToString(entry:value()) .. "% DKP to all players " ..
+            (entry:ignoreNegatives() and "excluding negatives " or "") .. "in " ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
     end),
     ["DS"] = (function(entry)
@@ -489,26 +490,30 @@ function AuditGUI:Initialize()
     if not ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
-        -- {
-        --     title = "Timetravel",
-        --     func = (function()
-        --     end),
-        --     trustedOnly = true,
-        --     color = "00cc00"
-        -- },
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            title = "Remove selected",
-            func = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    LedgerManager:Remove(ST_GetEntry(row), true)
-                end
-            end),
-            trustedOnly = true,
-            color = "cc0000"
-        }
-    }, CLM.MODULES.ACL:IsTrusted())
+            -- {
+            --     title = "Timetravel",
+            --     func = (function()
+            --     end),
+            --     trustedOnly = true,
+            --     color = "00cc00"
+            -- },
+            {
+                title = "Remove selected",
+                func = (function()
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        LedgerManager:Remove(ST_GetEntry(row), true)
+                    end
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            }
+        },
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self._initialized = true

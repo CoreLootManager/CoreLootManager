@@ -91,63 +91,69 @@ function RaidManagerGUI:Initialize()
         self:Refresh(true)
     end)
 
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            title = "Start selected raid",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:StartRaid(raid)
-                self:Refresh()
-            end),
-            trustedOnly = true
+            {
+                title = "Start selected raid",
+                func = (function(i)
+                    local raid = nil
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        raid = ST_GetRaid(row)
+                    end
+                    RaidManager:StartRaid(raid)
+                    self:Refresh()
+                end),
+                trustedOnly = true
+            },
+            {
+                title = "End selected raid",
+                func = (function(i)
+                    local raid = nil
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        raid = ST_GetRaid(row)
+                    end
+                    RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
+                    self:Refresh()
+                end),
+                trustedOnly = true
+            },
+            {
+                title = "Join selected raid",
+                func = (function(i)
+                    local raid = nil
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        raid = ST_GetRaid(row)
+                    end
+                    RaidManager:JoinRaid(raid)
+                    self:Refresh()
+                end),
+                trustedOnly = true
+            },
+            {
+                separator = true,
+                trustedOnly = true,
+                managerOnly = true
+            },
+            {
+                title = "Remove selected raid",
+                func = (function()
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        local raid = ST_GetRaid(row)
+                        LedgerManager:Remove(raid:Entry(), true)
+                    end
+                end),
+                trustedOnly = true,
+                managerOnly = true,
+                color = "cc0000"
+            }
         },
-        {
-            title = "End selected raid",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
-                self:Refresh()
-            end),
-            trustedOnly = true
-        },
-        {
-            title = "Join selected raid",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:JoinRaid(raid)
-                self:Refresh()
-            end),
-            trustedOnly = true
-        },
-        {
-            separator = true,
-            trustedOnly = true
-        },
-        {
-            title = "Remove selected raid",
-            func = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    local raid = ST_GetRaid(row)
-                    LedgerManager:Remove(raid:Entry(), true)
-                end
-            end),
-            trustedOnly = true,
-            color = "cc0000"
-        }
-    }, CLM.MODULES.ACL:IsTrusted())
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
 end
 
 function RaidManagerGUI:GetRosterOption(option)
