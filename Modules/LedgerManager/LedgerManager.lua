@@ -71,6 +71,14 @@ function LedgerManager:DisableAdvertising()
     self.ledger.disableSending()
 end
 
+function LedgerManager:EnableSandbox()
+    self:UpdateSyncState()
+end
+
+function LedgerManager:DisableSandbox()
+    self:UpdateSyncState()
+end
+
 function LedgerManager:RegisterEntryType(class, mutatorFn)
     if self.entryExtensions[class] then
         LOG:Error("Class %s already exists in Ledger Entries.", class)

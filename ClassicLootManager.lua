@@ -137,12 +137,16 @@ function CORE:_InitializeFrontend()
     MODULES.Minimap:Initialize()
     -- Hook Minimap Icon
     hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
-        if MODULES.LedgerManager:IsInSync() then
-            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
-        elseif MODULES.LedgerManager:IsSyncOngoing() then
-            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-nok-32.tga"
-        else -- Unknown state
-            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
+        if self:IsSandbox() then
+            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sandbox-32.tga"
+        else
+            if MODULES.LedgerManager:IsInSync() then
+                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
+            elseif MODULES.LedgerManager:IsSyncOngoing() then
+                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-nok-32.tga"
+            else -- Unknown state
+                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
+            end
         end
     end)
 end
@@ -222,15 +226,15 @@ function CORE:GUILD_ROSTER_UPDATE(...)
 end
 
 function CORE:EnableSandbox()
-    -- CLM.MODULES.Comms:Disable()
-    -- CLM.MODULES.LedgerManager:EnableSandbox()
     self.isSandbox = true
+    CLM.MODULES.Comms:Disable()
+    CLM.MODULES.LedgerManager:EnableSandbox()
 end
 
 function CORE:DisableSandbox()
-    -- CLM.MODULES.LedgerManager:DisableSandbox()
-    -- CLM.MODULES.Comms:Enable()
     self.isSandbox = false
+    CLM.MODULES.LedgerManager:DisableSandbox()
+    CLM.MODULES.Comms:Enable()
 end
 
 function CORE:IsSandbox()

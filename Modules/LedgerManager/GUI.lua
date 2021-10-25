@@ -460,21 +460,21 @@ local function CreateManagementOptions(self, container)
                     end
                 end),
                 order = 1,
-                -- disabled = true
+                disabled = true
             },
             apply_changes = {
                 name = "Apply changes",
                 type = "execute",
                 func = (function(i) end),
                 order = 2,
-                -- disabled = true
+                disabled = (function() return not CLM.CORE:IsSandbox() end)
             },
             discard_changes = {
                 name = "Discard changes",
                 type = "execute",
                 func = (function(i) end),
                 order = 3,
-                -- disabled = true
+                disabled = (function() return not CLM.CORE:IsSandbox() end)
             },
         }
     }

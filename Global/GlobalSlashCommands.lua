@@ -168,25 +168,7 @@ function GlobalSlashCommands:Initialize()
             confirm = true
         }
     end
-    if ACL:IsTrusted() then
-        options.comms = {
-            type = "execute",
-            name = "Toggle on/off all addon comms. Enables local experimentation without sharing data.",
-            func = (function()
-                if (Comms:IsEnabled()) then
-                    LOG:Message("Disabling addon communication. Type %s to reenable.", ColorCodeText("/clm comms", "00cc00"))
-                    Comms:Disable()
-                else
-                    LOG:Message("Addon communication has been reenabled.")
-                    Comms:Enable()
-                end
-            end),
-            confirm = true
-        }
-    end
     ConfigManager:RegisterSlash(options)
 end
-
-
 
 CLM.GlobalSlashCommands = GlobalSlashCommands
