@@ -6,7 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local ACL = MODULES.ACL
 
-local Comms = MODULES.Comms
 local ConfigManager = MODULES.ConfigManager
 local LootManager = MODULES.LootManager
 local RaidManager = MODULES.RaidManager
@@ -14,7 +13,6 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local ProfileInfoManager = MODULES.ProfileInfoManager
 
-local ColorCodeText = UTILS.ColorCodeText
 local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
 local GlobalSlashCommands = {}

@@ -343,7 +343,8 @@ local describeFunctions  = {
     ["DT"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Point Decay for roster]: " ..
-            "Decayed " .. safeToString(entry:value()) .. "% DKP to all players in " ..
+            "Decayed " .. safeToString(entry:value()) .. "% DKP to all players " ..
+            (entry:ignoreNegatives() and "excluding negatives " or "") .. "in " ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
     end),
     ["DS"] = (function(entry)

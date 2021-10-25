@@ -93,10 +93,22 @@ local function apply_roster_mutator(entry, mutate)
         return
     end
 
-    local pointHistoryEntry = PointHistory:New(entry, roster:Profiles())
+    local profiles = roster:Profiles()
+    if entry:ignoreNegatives() then
+        local positiveProfiles = {}
+        for _, GUID in ipairs(profiles) do
+            local standings = roster:Standings(GUID)
+            if standings and standings >= 0 then
+                table.insert(positiveProfiles, GUID)
+            end
+        end
+        profiles = positiveProfiles
+    end
+
+    local pointHistoryEntry = PointHistory:New(entry, profiles)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    update_profile_standings(mutate, roster, roster:Profiles(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+    update_profile_standings(mutate, roster, profiles, entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
 end
 
 local function apply_raid_mutator(entry, mutate)
@@ -225,7 +237,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
     LedgerManager:Submit(entry, forceInstant)
 end
 
-function PointManager:UpdateRosterPoints(roster, value, reason, action, forceInstant)
+function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, forceInstant)
     LOG:Trace("PointManager:UpdateRosterPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdateRosterPoints(): Unknown action")
@@ -248,7 +260,7 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, forceIns
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
     --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = LEDGER_DKP.DecayRoster:new(uid, value, reason)
+        entry = LEDGER_DKP.DecayRoster:new(uid, value, reason, ignoreNegatives)
     end
 
     LedgerManager:Submit(entry, forceInstant)

@@ -94,6 +94,11 @@ function ModifyRoster:reason()
     return self.e
 end
 
+-- Required for proper decay handling in common mutator
+function ModifyRoster:ignoreNegatives()
+    return false
+end
+
 local modifyRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e"})
 function ModifyRoster:fields()
     return modifyRosterFields
@@ -162,7 +167,7 @@ function Decay:fields()
     return decayFields
 end
 
-function DecayRoster:new(rosterUid, value, reason)
+function DecayRoster:new(rosterUid, value, reason, ignoreNegatives)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     value = tonumber(value) or 0
@@ -170,6 +175,7 @@ function DecayRoster:new(rosterUid, value, reason)
     if value < 0 then value = 0 end
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
+    o.n = ignoreNegatives and true or false
     return o
 end
 
@@ -185,7 +191,11 @@ function DecayRoster:reason()
     return self.e
 end
 
-local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e"})
+function DecayRoster:ignoreNegatives()
+    return self.n
+end
+
+local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "n"})
 function DecayRoster:fields()
     return decayRosterFields
 end

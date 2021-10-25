@@ -284,13 +284,7 @@ local function GenerateOfficerOptions(self)
                 if not decayValue then LOG:Debug("StandingsGUI(Decay): missing decay value"); return end
                 if decayValue > 100 or decayValue < 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
                 -- Selected: roster, profiles
-                local filter
-                if not self.includeNegative then
-                    filter = (function(roster, profile)
-                        return (roster:Standings(profile:GUID()) >= 0)
-                    end)
-                end
-                local roster, profiles = self:GetSelected(filter)
+                local roster, profiles = self:GetSelected()
                 if roster == nil then
                     LOG:Debug("StandingsGUI(Decay): roster == nil")
                     return
@@ -300,8 +294,19 @@ local function GenerateOfficerOptions(self)
                     return
                 end
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
                 else
+                    local filter
+                    if not self.includeNegative then
+                        filter = (function(_roster, profile)
+                            return (_roster:Standings(profile:GUID()) >= 0)
+                        end)
+                    end
+                    roster, profiles = self:GetSelected(filter)
+                    if not profiles or #profiles == 0 then
+                        LOG:Debug("StandingsGUI(Decay): profiles == 0")
+                        return
+                    end
                     PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
                 end
             end),
