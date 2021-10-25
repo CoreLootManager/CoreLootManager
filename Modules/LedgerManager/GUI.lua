@@ -548,7 +548,8 @@ function AuditGUI:Refresh(visible)
         local ignCacheId = ignoreCache[entry:uuid()]
         if entry:class() == "IGN" then
             ignoreCache[entry.ref] = i
-        elseif ignCacheId then
+        end
+        if ignCacheId then
             local description = data[ignCacheId].cols[4].value
             description = description .. ColorCodeText(safeToString(i), "44ff44")
             data[ignCacheId].cols[4].value  = description
