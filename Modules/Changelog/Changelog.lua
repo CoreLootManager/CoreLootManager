@@ -8,18 +8,18 @@ CLM.ChangelogData = {
     --     }
     -- },
     {
-        name = "Features - auto awards",
+        name = "Features",
         data = {
-            {header = "Raid bonuses", body = "On-time bonus - awarded when starting raid and Raid completion bonus - awarded when ending raid"},
-            {header = "Interval bonus", body = "Bonus is awarded every configured interval [minutes]"},
-            {header = "Boss kill bonus", body = "Configurable per boss and through global value"},
+            {header = "Auditing", body = "Introducing new auditing UI for managers. You can now check every entry created by ledger and restore already ignored entries by ignoring (removing) the original ignore."},
         }
     },
     {
         name = "Fixes",
         data = {
-            {header = "!dkp response", body = "|cff00cc00!dkp|r without parameters should now return requester standings"},
-            {header = "!bid response", body = "Removed odd alerts when using |cff00cc00!bid|r chat command while CLM was enabled (still not recommended)."},
+            {header = "Migration", body = "Migration is now executed with comms disabled and is reversible by wiping entries."},
+            {header = "Hydross DKP award", body = "Hydross DKP boss kill bonus award workaround is now fixed."},
+            {header = "Weekly gains display", body = "Weekly gains are now tracked and displayed even if there is no weekly cap."},
+            {header = "Roster Decay", body = "Roster decay should now use proper, optimised entties. While this is a backwards compatible fix there is marginal chance to lead to DKP difference if profile that had DKP in multiple rosters was removed and then added again. Please double check the values when upgrading to this version."},
         }
     },
 }
