@@ -20,6 +20,12 @@ local RosterManager = MODULES.RosterManager
 local RaidManager = MODULES.RaidManager
 local LedgerManager = MODULES.LedgerManager
 
+local LIBS =  {
+    registry = LibStub("AceConfigRegistry-3.0"),
+    gui = LibStub("AceConfigDialog-3.0")
+}
+local REGISTRY = "clm_audit_management_gui_options"
+
 local RightClickMenu
 
 local function safeToString(value)
@@ -49,7 +55,7 @@ local function CreateHistoryDisplay(self)
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
-    StandingsGroup:SetHeight(600)
+    StandingsGroup:SetHeight(500)
     StandingsGroup:SetWidth(950)
     -- Standings
     self.st = ScrollingTable:CreateST(columns, 25, 15, nil, StandingsGroup.frame, false)
@@ -434,6 +440,49 @@ local function ST_GetEntry(row)
     return row.cols[6].value
 end
 
+local function CreateManagementOptions(self, container)
+    local ManagementOptions = AceGUI:Create("SimpleGroup")
+    ManagementOptions:SetLayout("Flow")
+    ManagementOptions:SetWidth(950)
+    self.ManagementOptions = ManagementOptions
+
+    local options = {
+        type = "group",
+        args = {
+            toggle_sandbox = {
+                name = (function() return CLM.CORE:IsSandbox() and "Disable Sandbox" or "Enable Sandbox" end),
+                type = "execute",
+                func = (function(i)
+                    if CLM.CORE:IsSandbox() then
+                        CLM.CORE:DisableSandbox()
+                    else
+                        CLM.CORE:EnableSandbox()
+                    end
+                end),
+                order = 1,
+                disabled = true
+            },
+            apply_changes = {
+                name = "Apply changes",
+                type = "execute",
+                func = (function(i) end),
+                order = 2,
+                disabled = (function() return not CLM.CORE:IsSandbox() end)
+            },
+            discard_changes = {
+                name = "Discard changes",
+                type = "execute",
+                func = (function(i) end),
+                order = 3,
+                disabled = (function() return not CLM.CORE:IsSandbox() end)
+            },
+        }
+    }
+    LIBS.registry:RegisterOptionsTable(REGISTRY, options)
+    LIBS.gui:Open(REGISTRY, ManagementOptions)
+    return ManagementOptions
+end
+
 local AuditGUI = {}
 function AuditGUI:Initialize()
     LOG:Trace("AuditGUI:Initialize()")
@@ -441,13 +490,13 @@ function AuditGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
-        {
-            title = "Timetravel",
-            func = (function()
-            end),
-            trustedOnly = true,
-            color = "00cc00"
-        },
+        -- {
+        --     title = "Timetravel",
+        --     func = (function()
+        --     end),
+        --     trustedOnly = true,
+        --     color = "00cc00"
+        -- },
         {
             title = "Remove selected",
             func = (function()
@@ -471,16 +520,18 @@ function AuditGUI:Create()
     LOG:Trace("AuditGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Ledger Entries Inspection")
+    f:SetTitle("Ledger Entries Audit")
     f:SetStatusText("")
-    f:SetLayout("Table")
+    f:SetLayout("flow")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
     f:SetWidth(1000)
     f:SetHeight(550)
     self.top = f
-    UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Ledger_Entries_Inspection_GUI")
 
+    UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Ledger_Entries_Audit_GUI")
+
+    f:AddChild(CreateManagementOptions(self))
     f:AddChild(CreateHistoryDisplay(self))
 
     -- Hide by default
@@ -505,6 +556,8 @@ function AuditGUI:Refresh(visible)
     end
 
     self.st:SetData(data)
+
+    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 
 
