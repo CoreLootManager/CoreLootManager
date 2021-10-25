@@ -71,6 +71,26 @@ function LedgerManager:DisableAdvertising()
     self.ledger.disableSending()
 end
 
+function LedgerManager:TimeTravel(timestamp)
+    self.timeTravelTarget = timestamp
+    self.ledger.getStateManager():travelToTime(timestamp)
+    self:UpdateSyncState()
+end
+
+function LedgerManager:EndTimeTravel()
+    self.ledger.getStateManager():stopTimeTravel()
+    self.ledger.getStateManager():restart() -- Not done in this version in lib
+    self:UpdateSyncState()
+end
+
+function LedgerManager:IsTimeTraveling()
+    return self.ledger.getStateManager():isTimeTraveling()
+end
+
+function LedgerManager:GetTimeTravelTarget()
+    return self.timeTravelTarget
+end
+
 function LedgerManager:EnableSandbox()
     self:UpdateSyncState()
 end

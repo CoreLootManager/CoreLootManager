@@ -139,6 +139,8 @@ function CORE:_InitializeFrontend()
     hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
         if self:IsSandbox() then
             CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sandbox-32.tga"
+        elseif  MODULES.LedgerManager:IsTimeTraveling() then
+            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-timetravel-32.tga"
         else
             if MODULES.LedgerManager:IsInSync() then
                 CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
@@ -183,6 +185,12 @@ end
 
 function CORE:_Initialize()
     LOG:Trace("CORE:_Initialize()")
+    -- Block direct lib timetravel
+    --[===[@non-debug@
+    if SLASH_LibEventSourcing_TimeTravel1 then
+        SLASH_LibEventSourcing_TimeTravel1 = nil
+    end
+    --@end-non-debug@]===]
     if not self._initialize_fired then
         CORE:_ExecuteInitialize()
         self:UnregisterEvent("GUILD_ROSTER_UPDATE")

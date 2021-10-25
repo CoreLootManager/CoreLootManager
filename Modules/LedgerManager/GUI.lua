@@ -450,7 +450,8 @@ local function CreateManagementOptions(self, container)
         type = "group",
         args = {
             toggle_sandbox = {
-                name = (function() return CLM.CORE:IsSandbox() and "Disable Sandbox" or "Enable Sandbox" end),
+                name = (function() return CLM.CORE:IsSandbox() and "Leave sandbox" or "Enter sandbox" end),
+                desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes without exiting sandbox mode. Click Discard to undo changes without exiting sandbox mode. Exiting sandbox mode will discard changes. /reload will apply changes.",
                 type = "execute",
                 func = (function(i)
                     if CLM.CORE:IsSandbox() then
@@ -460,10 +461,11 @@ local function CreateManagementOptions(self, container)
                     end
                 end),
                 order = 1,
-                disabled = true
+                -- disabled = true
             },
             apply_changes = {
                 name = "Apply changes",
+                desc = "Applies all changes",
                 type = "execute",
                 func = (function(i) end),
                 order = 2,
@@ -471,10 +473,23 @@ local function CreateManagementOptions(self, container)
             },
             discard_changes = {
                 name = "Discard changes",
+                desc = "Discards all changes",
                 type = "execute",
                 func = (function(i) end),
                 order = 3,
                 disabled = (function() return not CLM.CORE:IsSandbox() end)
+            },
+            sandbox_info = {
+                name = (function() return ColorCodeText(CLM.CORE:IsSandbox() and " Sandbox" or "", "00cc00") end),
+                fontSize = "large",
+                width = 0.5,
+                type = "description"
+            },
+            timetravel_info = {
+                name = (function() return ColorCodeText(LedgerManager:IsTimeTraveling() and "Time Traveling" or "", "00cc00") end),
+                fontSize = "large",
+                width = 0.75,
+                type = "description"
             },
         }
     }
@@ -490,13 +505,27 @@ function AuditGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
-        -- {
-        --     title = "Timetravel",
-        --     func = (function()
-        --     end),
-        --     trustedOnly = true,
-        --     color = "00cc00"
-        -- },
+        {
+            title = "Timetravel",
+            func = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    LedgerManager:TimeTravel(ST_GetEntry(row):time())
+                end
+            end),
+            trustedOnly = true,
+            color = "00cc00"
+        },
+        {
+            title = "End Timetravel",
+            func = (function()
+                if LedgerManager:IsTimeTraveling() then
+                    LedgerManager:EndTimeTravel()
+                end
+            end),
+            trustedOnly = true,
+            color = "00cc00"
+        },
         {
             title = "Remove selected",
             func = (function()
@@ -543,8 +572,7 @@ function AuditGUI:Refresh(visible)
     if not self._initialized then return end
     if visible and not self.top.frame:IsVisible() then return end
     local data = {}
-    for i,entry in ipairs(MODULES.Database:Ledger()) do
-        table.insert(data, buildEntryRow(entry, i))
+    local fillIGNData = (function(i, entry)
         local ignCacheId = ignoreCache[entry:uuid()]
         if entry:class() == "IGN" then
             ignoreCache[entry.ref] = i
@@ -553,6 +581,22 @@ function AuditGUI:Refresh(visible)
             local description = data[ignCacheId].cols[4].value
             description = description .. ColorCodeText(safeToString(i), "44ff44")
             data[ignCacheId].cols[4].value  = description
+        end
+    end)
+
+    if LedgerManager:IsTimeTraveling() then
+        local timeTravelTarget = LedgerManager:GetTimeTravelTarget()
+        for i,entry in ipairs(MODULES.Database:Ledger()) do
+            if entry:time() > timeTravelTarget then
+                break
+            end
+            table.insert(data, buildEntryRow(entry, i))
+            fillIGNData(i, entry)
+        end
+    else
+        for i,entry in ipairs(MODULES.Database:Ledger()) do
+            table.insert(data, buildEntryRow(entry, i))
+            fillIGNData(i, entry)
         end
     end
 
