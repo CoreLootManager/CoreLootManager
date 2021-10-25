@@ -528,10 +528,12 @@ function AuditGUI:Create()
     f:SetWidth(1000)
     f:SetHeight(550)
     self.top = f
+
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Ledger_Entries_Audit_GUI")
 
     f:AddChild(CreateManagementOptions(self))
     f:AddChild(CreateHistoryDisplay(self))
+
     -- Hide by default
     f:Hide()
 end
@@ -554,6 +556,7 @@ function AuditGUI:Refresh(visible)
     end
 
     self.st:SetData(data)
+
     LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 
