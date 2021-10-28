@@ -89,7 +89,7 @@ Modules\AutoAwardManager\EncounterIDs.lua
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua
 Modules\RosterManager\Options.lua
-Modules\Standings\GUI.lua
+Modules\RosterManager\GUI.lua
 Modules\RaidManager\GUI.lua
 Modules\AuctionManager\GUI.lua
 Modules\BiddingManager\GUI.lua

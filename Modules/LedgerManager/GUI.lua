@@ -415,8 +415,9 @@ local function getEntryInfo(entry)
     -- Common info
     local time = date("%d/%m/%Y %H:%M:%S", entry:time())
     local type = entry:class()
-    local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(entry:creator()))
-    local author = profile and profile:Name() or ""
+    local guid = getGuidFromInteger(entry:creator())
+    local profile = ProfileManager:GetProfileByGUID(guid)
+    local author = profile and profile:Name() or guid
     local description = describeEntry(entry)
     return time, type, description, author
 end
@@ -461,7 +462,7 @@ local function CreateManagementOptions(self, container)
                     end
                 end),
                 order = 1,
-                -- disabled = true
+                disabled = (function() return self.timeTravelInProgress end)
             },
             apply_changes = {
                 name = "Apply changes",
@@ -469,7 +470,7 @@ local function CreateManagementOptions(self, container)
                 type = "execute",
                 func = (function(i) end),
                 order = 2,
-                disabled = (function() return not CLM.CORE:IsSandbox() end)
+                disabled = (function() return self.timeTravelInProgress or not CLM.CORE:IsSandbox() end)
             },
             discard_changes = {
                 name = "Discard changes",
@@ -477,18 +478,28 @@ local function CreateManagementOptions(self, container)
                 type = "execute",
                 func = (function(i) end),
                 order = 3,
-                disabled = (function() return not CLM.CORE:IsSandbox() end)
+                disabled = (function() return self.timeTravelInProgress or not CLM.CORE:IsSandbox() end)
             },
             sandbox_info = {
-                name = (function() return ColorCodeText(CLM.CORE:IsSandbox() and " Sandbox" or "", "00cc00") end),
+                name = (function() return ColorCodeText(CLM.CORE:IsSandbox() and " Sandbox" or "", "FFFFFF") end),
                 fontSize = "large",
                 width = 0.5,
+                order = 4,
                 type = "description"
             },
             timetravel_info = {
-                name = (function() return ColorCodeText(LedgerManager:IsTimeTraveling() and "Time Traveling" or "", "00cc00") end),
+                name = (function()
+                    local info = ""
+                    if self.timeTravelInProgress then
+                        info = ColorCodeText("Loading...", "eeee00")
+                    elseif LedgerManager:IsTimeTraveling() then
+                        info = ColorCodeText("Time Travel", "eeee00")
+                    end
+                    return info
+                end),
                 fontSize = "large",
                 width = 0.75,
+                order = 5,
                 type = "description"
             },
         }
@@ -510,21 +521,25 @@ function AuditGUI:Initialize()
             func = (function()
                 local row = self.st:GetRow(self.st:GetSelection())
                 if row then
+                    self.timeTravelInProgress = true
                     LedgerManager:TimeTravel(ST_GetEntry(row):time())
+                    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
                 end
             end),
             trustedOnly = true,
-            color = "00cc00"
+            color = "eeee00"
         },
         {
             title = "End Timetravel",
             func = (function()
                 if LedgerManager:IsTimeTraveling() then
+                    self.timeTravelInProgress = true
                     LedgerManager:EndTimeTravel()
+                    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
                 end
             end),
             trustedOnly = true,
-            color = "00cc00"
+            color = "eeee00"
         },
         {
             title = "Remove selected",
@@ -541,6 +556,7 @@ function AuditGUI:Initialize()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self._initialized = true
+        self.timeTravelInProgress = false
         self:Refresh(true)
     end)
 end
