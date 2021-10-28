@@ -19,6 +19,7 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local RaidManager = MODULES.RaidManager
 local LedgerManager = MODULES.LedgerManager
+local SandboxManager = MODULES.SandboxManager
 
 local LIBS =  {
     registry = LibStub("AceConfigRegistry-3.0"),
@@ -451,34 +452,28 @@ local function CreateManagementOptions(self, container)
         type = "group",
         args = {
             toggle_sandbox = {
-                name = (function() return CLM.CORE:IsSandbox() and "Leave sandbox" or "Enter sandbox" end),
+                name = "Enter sandbox",
                 desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes without exiting sandbox mode. Click Discard to undo changes without exiting sandbox mode. Exiting sandbox mode will discard changes. /reload will apply changes.",
                 type = "execute",
-                func = (function(i)
-                    if CLM.CORE:IsSandbox() then
-                        CLM.CORE:DisableSandbox()
-                    else
-                        CLM.CORE:EnableSandbox()
-                    end
-                end),
+                func = (function(i) SandboxManager:EnterSandbox() end),
                 order = 1,
-                disabled = (function() return self.timeTravelInProgress end)
+                disabled = (function() return SandboxManager:IsSandbox() end)
             },
             apply_changes = {
                 name = "Apply changes",
-                desc = "Applies all changes",
+                desc = "Applies all changes and exits sandbox mode",
                 type = "execute",
-                func = (function(i) end),
+                func = (function(i) SandboxManager:ApplyChanges() end),
                 order = 2,
-                disabled = (function() return self.timeTravelInProgress or not CLM.CORE:IsSandbox() end)
+                disabled = (function() return not SandboxManager:IsSandbox() end)
             },
             discard_changes = {
                 name = "Discard changes",
-                desc = "Discards all changes",
+                desc = "Discards all changes and exits sandbox mode",
                 type = "execute",
-                func = (function(i) end),
+                func = (function() SandboxManager:DiscardChanges() end),
                 order = 3,
-                disabled = (function() return self.timeTravelInProgress or not CLM.CORE:IsSandbox() end)
+                disabled = (function() return not SandboxManager:IsSandbox() end)
             },
             sandbox_info = {
                 name = (function() return ColorCodeText(CLM.CORE:IsSandbox() and " Sandbox" or "", "FFFFFF") end),

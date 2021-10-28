@@ -83,6 +83,7 @@ Modules\RaidManager\RaidManager.lua
 Modules\AuctionManager\AuctionManager.lua
 Modules\BiddingManager\BiddingManager.lua
 Modules\ProfileInfoManager\ProfileInfoManager.lua
+Modules\SandboxManager\SandboxManager.lua
 Modules\AutoAwardManager\AutoAwardManager.lua
 Modules\AutoAwardManager\EncounterIDs.lua
 
