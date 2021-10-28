@@ -64,7 +64,7 @@ function GlobalConfigs:Initialize()
             get = function(i) return self:GetAnnounceLootToRaidLevel() end,
             order = 3
         },
-        global_raid_loot_announcement_level = {
+        global_tracked_loot_level = {
             name = "Tracked loot rarity",
             desc = "Select loot rarity for the tracking unauctioned loot.",
             type = "select",

@@ -10,7 +10,7 @@ local whoami = CLM.UTILS.whoami()
 
 local LootQueueManager = {}
 
-local function HandleLootMessage(self, message, playerName, ...)
+local function HandleLootMessage(self, addon, event, message, _, _, _, playerName, ...)
     print(message, playerName)
     if playerName ~= whoami then return end
 
@@ -76,7 +76,16 @@ function LootQueueManager:Remove(id)
         if self.iterator > #self.queue then
             self.iterator = 1
         end
+        CLM.GUI.LootQueue:Refresh(true)
     end
+end
+
+function LootQueueManager:Wipe()
+    while(#self.queue > 0) do
+        table.remove(self.queue)
+    end
+    CLM.GUI.LootQueue:Refresh(true)
+    self.iterator = 1
 end
 
 function LootQueueManager:DebugAddItem(link)

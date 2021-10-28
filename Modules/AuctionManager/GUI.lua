@@ -28,6 +28,8 @@ local RosterConfiguration = MODELS.RosterConfiguration
 
 local REGISTRY = "clm_auction_manager_gui_options"
 
+local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
+
 local guiOptions = {
     type = "group",
     args = {}
@@ -39,18 +41,10 @@ local function FillAuctionWindowFromTooltip(frame, button)
     if GameTooltip and IsAltKeyDown() and not AuctionManager:IsAuctionInProgress() then
         local _, itemLink = GameTooltip:GetItem()
         if itemLink then
-            AuctionManagerGUI.itemLink = itemLink
-            AuctionManagerGUI:Refresh()
-            if button == "RightButton" then
-                AuctionManagerGUI:StartAuction()
-                if AuctionManagerGUI.top.frame:IsVisible() then
-                    AuctionManagerGUI.top.frame:Hide()
-                end
-            else
-                if not AuctionManagerGUI.top.frame:IsVisible() then
-                    AuctionManagerGUI.top.frame:Show()
-                end
-            end
+            EventManager:DispatchEvent(EVENT_FILL_AUCTION_WINDOW, {
+                link = itemLink,
+                start = (button == "RightButton")
+            })
         end
     end
 end
@@ -126,6 +120,20 @@ function AuctionManagerGUI:Initialize()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
     EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
+    EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
+        self.itemLink = data.link
+        self:Refresh()
+        if data.start then
+            self:StartAuction()
+            if self.top.frame:IsVisible() then
+                self.top.frame:Hide()
+            end
+        else
+            if not self.top.frame:IsVisible() then
+                self.top.frame:Show()
+            end
+        end
+    end)
     self:RegisterSlash()
     self._initialized = true
 end
