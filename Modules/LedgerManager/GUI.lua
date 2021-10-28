@@ -13,6 +13,7 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 local GetClassColor = UTILS.GetClassColor
 local ColorCodeText = UTILS.ColorCodeText
 local NumberToClass = UTILS.NumberToClass
+local mergeDictsInline = UTILS.mergeDictsInline
 
 local ACL = MODULES.ACL
 local ProfileManager = MODULES.ProfileManager
@@ -441,44 +442,52 @@ local function ST_GetEntry(row)
     return row.cols[6].value
 end
 
+local function GenerateOfficerOptions(self)
+    return {
+        toggle_sandbox = {
+            name = (function() return CLM.CORE:IsSandbox() and "Disable Sandbox" or "Enable Sandbox" end),
+            type = "execute",
+            func = (function(i)
+                if CLM.CORE:IsSandbox() then
+                    CLM.CORE:DisableSandbox()
+                else
+                    CLM.CORE:EnableSandbox()
+                end
+            end),
+            order = 1,
+            disabled = true
+        },
+        apply_changes = {
+            name = "Apply changes",
+            type = "execute",
+            func = (function(i) end),
+            order = 2,
+            disabled = (function() return not CLM.CORE:IsSandbox() end)
+        },
+        discard_changes = {
+            name = "Discard changes",
+            type = "execute",
+            func = (function(i) end),
+            order = 3,
+            disabled = (function() return not CLM.CORE:IsSandbox() end)
+        }
+    }
+end
+
 local function CreateManagementOptions(self, container)
     local ManagementOptions = AceGUI:Create("SimpleGroup")
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(950)
     self.ManagementOptions = ManagementOptions
-
+    
     local options = {
         type = "group",
-        args = {
-            toggle_sandbox = {
-                name = (function() return CLM.CORE:IsSandbox() and "Disable Sandbox" or "Enable Sandbox" end),
-                type = "execute",
-                func = (function(i)
-                    if CLM.CORE:IsSandbox() then
-                        CLM.CORE:DisableSandbox()
-                    else
-                        CLM.CORE:EnableSandbox()
-                    end
-                end),
-                order = 1,
-                disabled = true
-            },
-            apply_changes = {
-                name = "Apply changes",
-                type = "execute",
-                func = (function(i) end),
-                order = 2,
-                disabled = (function() return not CLM.CORE:IsSandbox() end)
-            },
-            discard_changes = {
-                name = "Discard changes",
-                type = "execute",
-                func = (function(i) end),
-                order = 3,
-                disabled = (function() return not CLM.CORE:IsSandbox() end)
-            },
-        }
+        args = {}
     }
+
+    if ACL:IsTrusted() then
+        mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    end
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
     LIBS.gui:Open(REGISTRY, ManagementOptions)
     return ManagementOptions
@@ -487,7 +496,6 @@ end
 local AuditGUI = {}
 function AuditGUI:Initialize()
     LOG:Trace("AuditGUI:Initialize()")
-    if not ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
