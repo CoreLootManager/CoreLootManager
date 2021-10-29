@@ -12,7 +12,6 @@ local CONSTANTS = CLM.CONSTANTS
 local GUI = CLM.GUI
 
 local EventManager = MODULES.EventManager
-local AuctionManager = MODULES.AuctionManager
 local LootQueueManager = MODULES.LootQueueManager
 
 local RightClickMenu
@@ -33,6 +32,7 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
@@ -60,15 +60,13 @@ function LootQueueGUI:Initialize()
             {
                 title = "Auction item",
                 func = (function()
-                    if not AuctionManager:IsAuctionInProgress() then
-                        local rowData = self.st:GetRow(self.st:GetSelection())
-                        if not rowData or not rowData.cols then return end
-                        EventManager:DispatchEvent("CLM_AUCTION_WINDOW_FILL", {
-                            link = ST_GetItemLink(rowData),
-                            start = false
-                        })
-                    end
-                end),
+                    local rowData = self.st:GetRow(self.st:GetSelection())
+                    if not rowData or not rowData.cols then return end
+                    EventManager:DispatchEvent("CLM_AUCTION_WINDOW_FILL", {
+                        link = ST_GetItemLink(rowData),
+                        start = false
+                    })
+            end),
                 trustedOnly = true,
                 color = "00cc00"
             },
@@ -103,13 +101,13 @@ function LootQueueGUI:Initialize()
     EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:RegisterSlash()
     self._initialized = true
+    self:Refresh()
 end
 
 local ROW_HEIGHT = 18
 local MIN_HEIGHT = 105
 
 local function CreateLootDisplay(self)
-    -- Profile Scrolling Table
     local columns = {
         {name = "",  width = 200},
     }
@@ -159,7 +157,7 @@ local function CreateLootDisplay(self)
             UTILS.LibDD:CloseDropDownMenus()
             UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         else
-            if IsAltKeyDown() and not AuctionManager:IsAuctionInProgress() then
+            if IsAltKeyDown() then
                 local rowData = self.st:GetRow(realrow)
                 if not rowData or not rowData.cols then return status end
                 EventManager:DispatchEvent("CLM_AUCTION_WINDOW_FILL", {
@@ -197,7 +195,8 @@ function LootQueueGUI:Create()
     f:AddChild(CreateLootDisplay(self))
     RestoreLocation(self)
     -- Hide by default
-    f:Hide()
+    -- f:Hide()
+    MODULES.ConfigManager:RegisterUniversalExecutor("lqg", "Loot Queue GUI", self)
 end
 
 function LootQueueGUI:Refresh(visible)
@@ -220,8 +219,8 @@ function LootQueueGUI:Refresh(visible)
             data[rowId] = row
             rowId = rowId + 1
         end
-        local previousRows = self.previousRows or 1
         local rows = (#queue < 10) and #queue or 10
+        local previousRows = self.previousRows or rows
         self.previousRows = rows
         local height = MIN_HEIGHT + ROW_HEIGHT*(rows-1)
         local _, _, point, x, y = self.top:GetPoint()
@@ -229,7 +228,8 @@ function LootQueueGUI:Refresh(visible)
         self.LootQueueGroup:SetHeight(height)
         self.st:SetDisplayRows(rows, ROW_HEIGHT)
         if (rows > 1) and (rows ~= previousRows) then
-            self.top:SetPoint(point, x, y - ROW_HEIGHT/2) -- fakes growing down instead of omnidirectional
+            -- makes it grow down instead of omnidirectional
+            self.top:SetPoint(point, x, y - ROW_HEIGHT/2)
         end
     end
     self.st:SetData(data)

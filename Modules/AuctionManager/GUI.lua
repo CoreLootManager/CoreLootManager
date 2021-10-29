@@ -35,10 +35,8 @@ local guiOptions = {
     args = {}
 }
 
-local AuctionManagerGUI = {}
-
 local function FillAuctionWindowFromTooltip(frame, button)
-    if GameTooltip and IsAltKeyDown() and not AuctionManager:IsAuctionInProgress() then
+    if GameTooltip and IsAltKeyDown() then
         local _, itemLink = GameTooltip:GetItem()
         if itemLink then
             EventManager:DispatchEvent(EVENT_FILL_AUCTION_WINDOW, {
@@ -106,10 +104,12 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
 
+local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     InitializeDB(self)
@@ -121,16 +121,18 @@ function AuctionManagerGUI:Initialize()
     self.hookedSlots = { wow = {}, elv =  {}}
     EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
     EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
-        self.itemLink = data.link
-        self:Refresh()
-        if data.start then
-            self:StartAuction()
-            if self.top.frame:IsVisible() then
-                self.top.frame:Hide()
-            end
-        else
-            if not self.top.frame:IsVisible() then
-                self.top.frame:Show()
+        if not AuctionManager:IsAuctionInProgress() then
+            self.itemLink = data.link
+            self:Refresh()
+            if data.start then
+                self:StartAuction()
+                if self.top.frame:IsVisible() then
+                    self.top.frame:Hide()
+                end
+            else
+                if not self.top.frame:IsVisible() then
+                    self.top.frame:Show()
+                end
             end
         end
     end)
