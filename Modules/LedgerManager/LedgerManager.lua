@@ -24,16 +24,29 @@ end
 local LEDGER_SYNC_COMM_PREFIX = "LedgerS001"
 local LEDGER_DATA_COMM_PREFIX = "LedgerD001"
 
-local function createLedger(database)
+local previousCallback = nil
+local function registerReceiveCallback(callback)
+    if not previousCallback then
+        previousCallback = callback
+    end
+    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
+    Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
+end
+
+local function restoreReceiveCallback()
+    if previousCallback then
+        registerReceiveCallback(previousCallback)
+        previousCallback = nil
+    end
+end
+
+local function createLedger(self, database)
     local ledger = LedgerLib.createLedger(
         database,
         (function(data, distribution, target, callbackFn, callbackArg)
             return Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- send
-        (function(callback)
-            Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-            Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
-        end), -- registerReceiveHandler
+        registerReceiveCallback, -- registerReceiveHandler
         authorize, -- authorizationHandler
         (function(data, distribution, target, progressCallback)
             return Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
@@ -48,29 +61,32 @@ local function createLedger(database)
 end
 
 local function createLedgerAndRegisterCallbacks(self, database)
-    local ledger = createLedger(database)
+    local ledger = createLedger(self, database)
+
     -- Mutators
     for class, mutatorFn in pairs(self.mutatorCallbacks) do
         ledger.registerMutator(class, mutatorFn)
     end
+
     -- Update Handlers
     for _, callback in ipairs(self.onUpdateCallbacks) do
         ledger.addStateChangedListener(callback)
     end
+
     -- Restart Handlers
-    for _,callbacks in iparis(self.onRestartCallbacks) do
+    for _,callback in ipairs(self.onRestartCallbacks) do
         ledger.addStateRestartListener(callback)
     end
+
     return ledger
 end
 
 function LedgerManager:Initialize()
     self.activeDatabase = MODULES.Database:Ledger()
-    self.activeLedger = createLedger(self.activeDatabase)
+    self.activeLedger = createLedger(self, self.activeDatabase)
     self.mutatorCallbacks = {}
     self.onUpdateCallbacks = {}
     self.onRestartCallbacks = {}
-    self.temporaryEntries = {}
     self._initialized = true
 
     MODULES.ConfigManager:RegisterUniversalExecutor("ledger", "LedgerManager", self)
@@ -111,6 +127,7 @@ function LedgerManager:EndTimeTravel()
 end
 
 function LedgerManager:IsTimeTraveling()
+    if not self._initialized then return false end
     return self.activeLedger.getStateManager():isTimeTraveling()
 end
 
@@ -119,7 +136,11 @@ function LedgerManager:GetTimeTravelTarget()
 end
 
 function LedgerManager:EnterSandbox()
+    LOG:Trace("LedgerManager:EnterSandbox()")
     -- Finalize everything on current ledger
+    if self:IsTimeTraveling() then
+        self:EndTimeTravel()
+    end
     self.activeLedger.catchup()
     -- Backup database reference
     self._originalDatabase = self.activeDatabase
@@ -131,6 +152,10 @@ function LedgerManager:EnterSandbox()
     self.activeLedger = createLedgerAndRegisterCallbacks(self, self.activeDatabase)
     -- Mark as sandbox mode
     self.isSandbox = true
+    -- Restarts
+    for _,callback in ipairs(self.onRestartCallbacks) do
+        callback()
+    end
     -- Enable
     self:Enable()
     -- Update status
@@ -138,23 +163,26 @@ function LedgerManager:EnterSandbox()
 end
 
 function LedgerManager:ExitSandbox(apply)
+    LOG:Trace("LedgerManager:ExitSandbox()")
     if apply then
         -- If we apply we simply keep the new ledger and discard old one
         -- We only update the database storage
         MODULES.Database:UpdateLedger(self.activeDatabase)
-        self._originalLedger = nil
         self._originalDatabase = nil
+        self._originalLedger = nil
     else
-        -- We simply return the active from original ones
+        -- Return the active from original ones
         self.activeDatabase = self._originalDatabase
         self.activeLedger = self._originalLedger
+        -- Restore comm callbacks to the original
+        restoreReceiveCallback()
     end
-    -- Reset temporary entries list
-    self.temporaryEntries = {}
     -- Mark as active mode
     self.isSandbox = false
     -- Update status
     self:UpdateSyncState()
+    -- restart
+    self.activeLedger.getStateManager():restart()
 end
 
 function LedgerManager:RegisterEntryType(class, mutatorFn)
@@ -201,7 +229,6 @@ function LedgerManager:UpdateSyncState(status)
         self.inSync = false
         self.syncOngoing = false
     end
-    -- CLM.MinimapDBI:UpdateState(self.inSync, self.syncOngoing)
 end
 
 function LedgerManager:IsInSync()
@@ -219,8 +246,13 @@ end
 function LedgerManager:Hash()
     return self.activeLedger.getStateManager():stateHash()
 end
+
 function LedgerManager:Length()
     return self.activeLedger.getSortedList():length()
+end
+
+function LedgerManager:GetData()
+    return self.activeLedger.getSortedList():entries()
 end
 
 function LedgerManager:RequestPeerStatusFromRaid()
@@ -231,9 +263,6 @@ function LedgerManager:Submit(entry, catchup)
     LOG:Trace("LedgerManager:Submit()")
     if not entry then return end
     self.lastEntry = entry
-    if self.isSandbox then
-        table.insert(self.temporaryEntries, entry)
-    end
     self.activeLedger.submitEntry(entry)
     if catchup then
         self.activeLedger.catchup()
@@ -243,10 +272,6 @@ end
 function LedgerManager:Remove(entry, catchup)
     LOG:Trace("LedgerManager:Remove()")
     if not entry then return end
-    if self.isSandbox then
-        -- TODO can we remove those permantently?
-        -- should we?
-    end
     self.activeLedger.ignoreEntry(entry)
     if catchup then
         self.activeLedger.catchup()

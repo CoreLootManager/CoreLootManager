@@ -453,7 +453,7 @@ local function CreateManagementOptions(self, container)
         args = {
             toggle_sandbox = {
                 name = "Enter sandbox",
-                desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes without exiting sandbox mode. Click Discard to undo changes without exiting sandbox mode. Exiting sandbox mode will discard changes. /reload will apply changes.",
+                desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel.",
                 type = "execute",
                 func = (function(i) SandboxManager:EnterSandbox() end),
                 order = 1,
@@ -476,7 +476,7 @@ local function CreateManagementOptions(self, container)
                 disabled = (function() return not SandboxManager:IsSandbox() end)
             },
             sandbox_info = {
-                name = (function() return ColorCodeText(CLM.CORE:IsSandbox() and " Sandbox" or "", "FFFFFF") end),
+                name = (function() return ColorCodeText(SandboxManager:IsSandbox() and " Sandbox" or "", "FFFFFF") end),
                 fontSize = "large",
                 width = 0.5,
                 order = 4,
@@ -549,6 +549,7 @@ function AuditGUI:Initialize()
         }
     }, CLM.MODULES.ACL:IsTrusted())
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        print("audit", lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self._initialized = true
         self.timeTravelInProgress = false
@@ -581,7 +582,7 @@ end
 function AuditGUI:Refresh(visible)
     LOG:Trace("AuditGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     local data = {}
     local fillIGNData = (function(i, entry)
         local ignCacheId = ignoreCache[entry:uuid()]
@@ -597,7 +598,7 @@ function AuditGUI:Refresh(visible)
 
     if LedgerManager:IsTimeTraveling() then
         local timeTravelTarget = LedgerManager:GetTimeTravelTarget()
-        for i,entry in ipairs(MODULES.Database:Ledger()) do
+        for i,entry in ipairs(MODULES.LedgerManager:GetData()) do
             if entry:time() > timeTravelTarget then
                 break
             end
@@ -605,7 +606,7 @@ function AuditGUI:Refresh(visible)
             fillIGNData(i, entry)
         end
     else
-        for i,entry in ipairs(MODULES.Database:Ledger()) do
+        for i,entry in ipairs(MODULES.LedgerManager:GetData()) do
             table.insert(data, buildEntryRow(entry, i))
             fillIGNData(i, entry)
         end
