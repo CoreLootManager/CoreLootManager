@@ -91,7 +91,7 @@ function RaidManagerGUI:Initialize()
         end
         self:Refresh(true)
     end)
-
+    -- Trusted only
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
@@ -328,7 +328,9 @@ local function CreateManagementOptions(self, container)
         type = "group",
         args = {}
     }
-    mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    if ACL:IsTrusted() then
+        mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    end
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
     LIBS.gui:Open(REGISTRY, ManagementOptions)
     return ManagementOptions
@@ -409,9 +411,13 @@ local function CreateRaidDisplay(self)
     -- end
     self.st:RegisterEvents({
         OnEnter = OnEnterHandler,
-        OnLeave = OnLeaveHandler,
-        OnClick = OnClickHandler
+        OnLeave = OnLeaveHandler
     })
+    if ACL:IsTrusted() then
+        self.st:RegisterEvents({
+            OnClick = OnClickHandler
+        })
+    end
     return StandingsGroup
 end
 
@@ -431,9 +437,8 @@ function RaidManagerGUI:Create()
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
 
     f:AddChild(CreateRaidDisplay(self))
-    if ACL:IsTrusted() then
-        f:AddChild(CreateManagementOptions(self))
-    end
+    f:AddChild(CreateManagementOptions(self))
+
     RestoreLocation(self)
     -- Hide by default
     f:Hide()
@@ -475,7 +480,7 @@ function RaidManagerGUI:Toggle()
     LOG:Trace("RaidManagerGUI:Toggle()")
     if not self._initialized then
         return end
-    if self.top:IsVisible() or not ACL:IsTrusted() then
+    if self.top:IsVisible() then
         self.top:Hide()
     else
         self:Refresh()

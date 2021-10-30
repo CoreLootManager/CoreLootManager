@@ -228,8 +228,8 @@ function RosterManager:Initialize()
                             if profile:Main() ~= "" then
                                 -- add main in case it isnt there
                                 roster:AddProfileByGUID(profile:Main())
-                                roster:MirrorStandings(GUID, { profile:Main() })
-                                roster:MirrorWeeklyGains(GUID, { profile:Main() })
+                                roster:MirrorStandings(profile:Main(), { GUID })
+                                roster:MirrorWeeklyGains(profile:Main(), { GUID })
                             end
                         end
                     end

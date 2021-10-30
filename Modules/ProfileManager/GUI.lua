@@ -278,9 +278,11 @@ local function CreateManagementOptions(self, container)
         args = {}
     }
     mergeDictsInline(options.args, GenerateUntrustedOptions(self))
-    mergeDictsInline(options.args, GenerateAssistantOptions(self))
-    mergeDictsInline(options.args, GenerateManagerOptions(self))
-    mergeDictsInline(options.args, GenerateGMOptions(self))
+    if ACL:IsTrusted() then
+        mergeDictsInline(options.args, GenerateAssistantOptions(self))
+        mergeDictsInline(options.args, GenerateManagerOptions(self))
+        mergeDictsInline(options.args, GenerateGMOptions(self))
+    end
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
     LIBS.gui:Open(REGISTRY, ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
 
@@ -431,7 +433,7 @@ end
 function ProfilesGUI:Toggle()
     LOG:Trace("ProfilesGUI:Toggle()")
     if not self._initialized then return end
-    if self.top:IsVisible() or not ACL:IsTrusted() then
+    if self.top:IsVisible() then
         self.top:Hide()
     else
         self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
