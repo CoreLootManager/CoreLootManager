@@ -554,7 +554,7 @@ end
 function AuditGUI:Refresh(visible)
     LOG:Trace("AuditGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     local data = {}
     for i,entry in ipairs(MODULES.Database:Ledger()) do
         table.insert(data, buildEntryRow(entry, i))
@@ -578,11 +578,11 @@ end
 function AuditGUI:Toggle()
     LOG:Trace("AuditGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

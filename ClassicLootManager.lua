@@ -116,6 +116,7 @@ function CORE:_InitializeFeatures()
     MODULES.BiddingManager:Initialize()
     MODULES.ProfileInfoManager:Initialize()
     MODULES.AutoAwardManager:Initialize()
+    MODULES.LootQueueManager:Initialize()
     -- Globals
     CLM.Migration:Initialize() -- Initialize Migration
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
