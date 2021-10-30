@@ -126,12 +126,12 @@ function AuctionManagerGUI:Initialize()
             self:Refresh()
             if data.start then
                 self:StartAuction()
-                if self.top.frame:IsVisible() then
-                    self.top.frame:Hide()
+                if self.top:IsVisible() then
+                    self.top:Hide()
                 end
             else
-                if not self.top.frame:IsVisible() then
-                    self.top.frame:Show()
+                if not self.top:IsVisible() then
+                    self.top:Show()
                 end
             end
         end
@@ -531,13 +531,13 @@ end
 function AuctionManagerGUI:Toggle()
     LOG:Trace("AuctionManagerGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() or not ACL:IsTrusted() then
+    if self.top:IsVisible() or not ACL:IsTrusted() then
         -- Award reset on closing BidWindow.
         AuctionManagerGUI:ClearSelectedBid()
-        self.top.frame:Hide()
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

@@ -2,22 +2,24 @@ local _, CLM = ...
 
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
+local UTILS = CLM.UTILS
 
 local ACL = MODULES.ACL
 local EventManager = MODULES.EventManager
 
-local whoami = CLM.UTILS.whoami()
+local whoami = UTILS.whoami()
+
+local EVENT_START_AUCTION = "CLM_AUCTION_START"
 
 local LootQueueManager = {}
 
 local function HandleLootMessage(self, addon, event, message, _, _, _, playerName, ...)
-    print(message, playerName)
     if playerName ~= whoami then return end
-
+    if not message then return end
     local itemId = string.match(message, 'Hitem:(%d*):')
-    local _, itemLink, rarity = GetItemInfo(itemId);
-
-    if rarity >= CLM.GlobalConfigs:GetTrackedLootLevel() then
+    itemId = tonumber(itemId) or 0
+    local _, itemLink, rarity = GetItemInfo(itemId)
+    if itemLink and (rarity >= CLM.GlobalConfigs:GetTrackedLootLevel()) then
         table.insert(self.queue, {
             id = itemId,
             link = itemLink
@@ -33,12 +35,25 @@ function LootQueueManager:Initialize()
     if not db.lootQueue then
         db.lootQueue = {}
     end
+    -- Wipe on login / reload if not in raid
+    --[===[@non-debug@
+    if not IsInRaid() then
+        db.lootQueue = {}
+    end
+    --@end-non-debug@]===]
     self.queue = db.lootQueue
-    -- todo wipe queue
     self.iterator = 1
     EventManager:RegisterWoWEvent({"CHAT_MSG_LOOT"}, (function(...)
         HandleLootMessage(self, ...)
     end))
+    EventManager:RegisterEvent(EVENT_START_AUCTION, function(event, data)
+        for i, entry in ipairs(self.queue) do
+            if entry.id == data.itemId then
+                self:Remove(i)
+                return
+            end
+        end
+    end)
     MODULES.ConfigManager:RegisterUniversalExecutor("lq", "Loot Queue", self)
 end
 
@@ -88,8 +103,8 @@ function LootQueueManager:Wipe()
     self.iterator = 1
 end
 
-function LootQueueManager:DebugAddItem(link)
-    HandleLootMessage(self, link, whoami)
+function LootQueueManager:DAI(link)
+    HandleLootMessage(self, nil, nil, link, nil, nil, nil, whoami)
 end
 
 MODULES.LootQueueManager = LootQueueManager

@@ -442,7 +442,7 @@ end
 function RaidManagerGUI:Refresh(visible)
     LOG:Trace("RaidManagerGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
 
     local data = {}
     local rowId = 1
@@ -475,11 +475,11 @@ function RaidManagerGUI:Toggle()
     LOG:Trace("RaidManagerGUI:Toggle()")
     if not self._initialized then
         return end
-    if self.top.frame:IsVisible() or not ACL:IsTrusted() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() or not ACL:IsTrusted() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

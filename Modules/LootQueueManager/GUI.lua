@@ -121,7 +121,9 @@ local function CreateLootDisplay(self)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", LootQueueGroup.frame, "TOPLEFT", 0, 0)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
-
+    self.st:SetData({})
+    -- fix weird behavior when scaling down list and scrollbar not hiding
+    self.st.scrollframe:SetScript("OnHide", function() end)
     -- OnEnter handler -> on hover
     local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -195,41 +197,56 @@ function LootQueueGUI:Create()
     f:AddChild(CreateLootDisplay(self))
     RestoreLocation(self)
     -- Hide by default
-    -- f:Hide()
+    f:Hide()
     MODULES.ConfigManager:RegisterUniversalExecutor("lqg", "Loot Queue GUI", self)
 end
 
 function LootQueueGUI:Refresh(visible)
     LOG:Trace("LootQueueGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
 
     local data = {}
-    local rowId = 1
     local queue = LootQueueManager:GetQueue()
-    if #queue > 0 then
-        for seq, item in ipairs(queue) do
-            local row = {
-                cols = {
-                    { value = item.link },
-                    { value = item.id },
-                    { value = seq }
-                }
+    -- if #queue > 0 then
+    -- Data
+    local rowId = 1
+    for seq, item in ipairs(queue) do
+        local row = {
+            cols = {
+                { value = item.link },
+                { value = item.id },
+                { value = seq }
             }
-            data[rowId] = row
-            rowId = rowId + 1
-        end
-        local rows = (#queue < 10) and #queue or 10
-        local previousRows = self.previousRows or rows
-        self.previousRows = rows
-        local height = MIN_HEIGHT + ROW_HEIGHT*(rows-1)
-        local _, _, point, x, y = self.top:GetPoint()
-        self.top:SetHeight(height)
-        self.LootQueueGroup:SetHeight(height)
-        self.st:SetDisplayRows(rows, ROW_HEIGHT)
-        if (rows > 1) and (rows ~= previousRows) then
-            -- makes it grow down instead of omnidirectional
-            self.top:SetPoint(point, x, y - ROW_HEIGHT/2)
+        }
+        data[rowId] = row
+        rowId = rowId + 1
+    end
+    -- View
+    local rows = (#queue < 10) and #queue or 10
+    local previousRows = self.previousRows or rows
+    local rowDiff = rows - previousRows
+    self.previousRows = rows
+
+    local height = MIN_HEIGHT + ROW_HEIGHT*(rows-1)
+    if height < MIN_HEIGHT then height = MIN_HEIGHT end
+    local _, _, point, x, y = self.top:GetPoint()
+    self.top:SetHeight(height)
+    self.LootQueueGroup:SetHeight(height)
+    self.st:SetDisplayRows((rows == 0) and 1 or rows, ROW_HEIGHT)
+
+    -- Makes it grow down / shorten up instead of omnidirectional
+    if (rows == 0 and previousRows == 1) then -- Removed last one
+        -- do nothing
+    elseif (rows == 0 and previousRows > 0) then -- Removed all
+        self.top:SetPoint(point, x, y + ((-rowDiff - 1)*ROW_HEIGHT/2))
+    elseif (rows == 1 and previousRows == 0) then -- Added first
+        -- do nothing
+    else
+        if (rowDiff > 0) then
+            self.top:SetPoint(point, x, y - (rowDiff*ROW_HEIGHT/2))
+        elseif (rowDiff < 0) then
+            self.top:SetPoint(point, x, y + (-rowDiff*ROW_HEIGHT/2))
         end
     end
     self.st:SetData(data)
@@ -238,11 +255,11 @@ end
 function LootQueueGUI:Toggle()
     LOG:Trace("LootQueueGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

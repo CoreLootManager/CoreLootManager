@@ -466,7 +466,7 @@ end
 function StandingsGUI:Refresh(visible)
     LOG:Trace("StandingsGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     self.st:ClearSelection()
     self:RefreshRosters()
 
@@ -557,12 +557,12 @@ end
 function StandingsGUI:Toggle()
     LOG:Trace("StandingsGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

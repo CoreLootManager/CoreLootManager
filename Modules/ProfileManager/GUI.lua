@@ -363,7 +363,7 @@ end
 function ProfilesGUI:Refresh(visible)
     LOG:Trace("ProfilesGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     self.st:ClearSelection()
 
     local rowId = 1
@@ -431,12 +431,12 @@ end
 function ProfilesGUI:Toggle()
     LOG:Trace("ProfilesGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() or not ACL:IsTrusted() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() or not ACL:IsTrusted() then
+        self.top:Hide()
     else
         self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

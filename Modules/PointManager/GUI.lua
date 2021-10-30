@@ -227,7 +227,7 @@ end
 function PointHistoryGUI:Refresh(visible)
     LOG:Trace("PointHistoryGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     self.st:ClearSelection()
     self:RefreshRosters()
     if self.requestRefreshProfiles then
@@ -335,11 +335,11 @@ end
 function PointHistoryGUI:Toggle()
     LOG:Trace("PointHistoryGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

@@ -64,23 +64,6 @@ function GlobalConfigs:Initialize()
             get = function(i) return self:GetAnnounceLootToRaidLevel() end,
             order = 3
         },
-        global_tracked_loot_level = {
-            name = "Tracked loot rarity",
-            desc = "Select loot rarity for the tracking unauctioned loot.",
-            type = "select",
-            -- width = "double",
-            values = {
-                [0] = ColorCodeText("Poor", "9d9d9d"),
-                [1] = ColorCodeText("Common", "ffffff"),
-                [2] = ColorCodeText("Uncommon", "1eff00"),
-                [3] = ColorCodeText("Rare", "0070dd"),
-                [4] = ColorCodeText("Epic", "a335ee"),
-                [5] = ColorCodeText("Legendary", "ff8000"),
-            },
-            set = function(i, v) self:SetTrackedLootLevel(v) end,
-            get = function(i) return self:GetTrackedLootLevel() end,
-            order = 3
-        },
         global_wodkpbot_integration = {
             name = "WoW DKP Bot Integration",
             desc = "Enble WoW DKP Bot Integration. This will result in additional data stored upon logout.",
@@ -106,7 +89,24 @@ function GlobalConfigs:Initialize()
             confirm = true,
             func = function() LedgerManager:Wipe() end,
             order = 10
-        }
+        },
+        global_tracked_loot_level = {
+            name = "Tracked loot rarity",
+            desc = "Select loot rarity for the tracking unauctioned loot.",
+            type = "select",
+            -- width = "double",
+            values = {
+                [0] = ColorCodeText("Poor", "9d9d9d"),
+                [1] = ColorCodeText("Common", "ffffff"),
+                [2] = ColorCodeText("Uncommon", "1eff00"),
+                [3] = ColorCodeText("Rare", "0070dd"),
+                [4] = ColorCodeText("Epic", "a335ee"),
+                [5] = ColorCodeText("Legendary", "ff8000"),
+            },
+            set = function(i, v) self:SetTrackedLootLevel(v) end,
+            get = function(i) return self:GetTrackedLootLevel() end,
+            order = 20
+        },
     }
     ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
