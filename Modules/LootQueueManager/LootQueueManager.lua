@@ -30,7 +30,6 @@ end
 
 function LootQueueManager:Initialize()
     LOG:Trace("LootQueueManager:Initialize()")
-    if not ACL:IsTrusted() then return end
     local db = MODULES.Database:Personal()
     if not db.lootQueue then
         db.lootQueue = {}

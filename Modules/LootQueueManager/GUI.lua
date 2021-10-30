@@ -11,6 +11,7 @@ local CONSTANTS = CLM.CONSTANTS
 -- local RESULTS = CLM.CONSTANTS.RESULTS
 local GUI = CLM.GUI
 
+local ACL = MODULES.ACL
 local EventManager = MODULES.EventManager
 local LootQueueManager = MODULES.LootQueueManager
 
@@ -77,7 +78,6 @@ function LootQueueGUI:Initialize()
                     if not rowData or not rowData.cols then return end
                     LootQueueManager:Remove(ST_GetItemSeq(rowData))
                 end),
-                trustedOnly = true,
                 color = "cc0000"
             },
             {
@@ -89,7 +89,6 @@ function LootQueueGUI:Initialize()
                 func = (function()
                     LootQueueManager:Wipe()
                 end),
-                trustedOnly = true,
                 color = "cc0000"
             }
         },
@@ -159,7 +158,7 @@ local function CreateLootDisplay(self)
             UTILS.LibDD:CloseDropDownMenus()
             UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         else
-            if IsAltKeyDown() then
+            if IsAltKeyDown() and ACL:IsTrusted() then
                 local rowData = self.st:GetRow(realrow)
                 if not rowData or not rowData.cols then return status end
                 EventManager:DispatchEvent("CLM_AUCTION_WINDOW_FILL", {
