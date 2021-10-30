@@ -479,7 +479,7 @@ local function CreateManagementOptions(self, container)
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(950)
     self.ManagementOptions = ManagementOptions
-    
+
     local options = {
         type = "group",
         args = {}
