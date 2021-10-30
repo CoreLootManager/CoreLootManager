@@ -4,7 +4,6 @@ local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
 
-local ACL = MODULES.ACL
 local EventManager = MODULES.EventManager
 
 local whoami = UTILS.whoami()
