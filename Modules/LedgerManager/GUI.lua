@@ -423,8 +423,6 @@ local function getEntryInfo(entry)
     return time, type, description, author
 end
 
-local ignoreCache = {}
-
 local function buildEntryRow(entry, id)
     local row = {cols = {}}
     local time, type, description, author = getEntryInfo(entry)
@@ -549,7 +547,6 @@ function AuditGUI:Initialize()
         }
     }, CLM.MODULES.ACL:IsTrusted())
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
-        print("audit", lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self._initialized = true
         self.timeTravelInProgress = false
@@ -584,6 +581,7 @@ function AuditGUI:Refresh(visible)
     if not self._initialized then return end
     if visible and not self.top:IsVisible() then return end
     local data = {}
+    local ignoreCache = {}
     local fillIGNData = (function(i, entry)
         local ignCacheId = ignoreCache[entry:uuid()]
         if entry:class() == "IGN" then
