@@ -101,8 +101,4 @@ function LootQueueManager:Wipe()
     self.iterator = 1
 end
 
-function LootQueueManager:DAI(link)
-    HandleLootMessage(self, nil, nil, link, nil, nil, nil, whoami)
-end
-
 MODULES.LootQueueManager = LootQueueManager
