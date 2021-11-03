@@ -186,7 +186,6 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     -- UI
     GUI.AuctionManager:UpdateBids()
     -- Event
-    print("DE ", EVENT_START_AUCTION, itemId)
     EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = itemId })
     return true
 end
