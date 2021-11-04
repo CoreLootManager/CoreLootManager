@@ -99,7 +99,7 @@ local function CreatePointDisplay(self)
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(500)
-    StandingsGroup:SetWidth(600)
+    StandingsGroup:SetWidth(550)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel("Select roster")
