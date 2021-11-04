@@ -71,7 +71,20 @@ function Roster:RemoveProfileByGUID(GUID)
     self.profileLoot[GUID] = nil
     self.profilePointHistory[GUID] = nil
     self.inRoster[GUID] = nil
-    -- TODO remove raidloot history for the person? how?
+end
+
+function Roster:MarkAsConditionallyRemoved(GUID)
+    -- Used for backwards compatibility in profiles - marks as removed but doesnt remove any data
+    self.inRoster[GUID] = nil
+end
+
+function Roster:RestoreConditionallyRemoved(GUID)
+    -- Used for backwards compatibility in profiles - marks as removed but doesnt remove any data
+    self.inRoster[GUID] = true
+end
+
+function Roster:IsConditinallyRemoved(GUID)
+    return self.standings[GUID] and not self.inRoster[GUID]
 end
 
 function Roster:IsProfileInRoster(GUID)
@@ -678,6 +691,38 @@ CONSTANTS.INVENTORY_TYPES_SORTED = {
     { type = "INVTYPE_THROWN",          name = "Thrown",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
     { type = "INVTYPE_QUIVER",          name = "Quiver",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
     { type = "INVTYPE_RELIC",           name = "Relic",             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
+}
+
+CONSTANTS.INVENTORY_TYPES_GUI = {
+    ["INVTYPE_HEAD"] = "Head",
+    ["INVTYPE_NECK"] = "Neck",
+    ["INVTYPE_SHOULDER"] = "Shoulder",
+    ["INVTYPE_BODY"] = "Shirt",
+    ["INVTYPE_CLOAK"] = "Back",
+    ["INVTYPE_CHEST"] = "Chest",
+    ["INVTYPE_ROBE"] = "Chest (robes)",
+    ["INVTYPE_TABARD"] = "Tabard",
+    ["INVTYPE_WRIST"] = "Wrist",
+    ["INVTYPE_HAND"] = "Hands",
+    ["INVTYPE_WAIST"] = "Waist",
+    ["INVTYPE_LEGS"] = "Legs",
+    ["INVTYPE_FEET"] = "Feet",
+    ["INVTYPE_FINGER"] = "Finger",
+    ["INVTYPE_TRINKET"] = "Trinket",
+    ["INVTYPE_WEAPON"] = "One-Hand",
+    ["INVTYPE_WEAPONMAINHAND"] = "Main Hand",
+    ["INVTYPE_WEAPONOFFHAND"] = "Off Hand",
+    ["INVTYPE_HOLDABLE"] = "Held In Off-hand",
+    ["INVTYPE_2HWEAPON"] = "Two-Hand",
+    ["INVTYPE_SHIELD"] = "Shield",
+    ["INVTYPE_RANGED"] = "Ranged",
+    ["INVTYPE_RANGEDRIGHT"] = "Ranged (wands)",
+    ["INVTYPE_NON_EQUIP"] = "Non-equippable",
+    ["INVTYPE_BAG"] = "Bag",
+    ["INVTYPE_AMMO"] = "Ammo",
+    ["INVTYPE_THROWN"] = "Thrown",
+    ["INVTYPE_QUIVER"] = "Quiver",
+    ["INVTYPE_RELIC"] = "Relic"
 }
 
 CONSTANTS.WEEKLY_RESET = {

@@ -116,6 +116,7 @@ function CORE:_InitializeFeatures()
     MODULES.BiddingManager:Initialize()
     MODULES.ProfileInfoManager:Initialize()
     MODULES.AutoAwardManager:Initialize()
+    MODULES.LootQueueManager:Initialize()
     -- Globals
     CLM.Migration:Initialize() -- Initialize Migration
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
@@ -137,12 +138,16 @@ function CORE:_InitializeFrontend()
     MODULES.Minimap:Initialize()
     -- Hook Minimap Icon
     hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
-        if MODULES.LedgerManager:IsInSync() then
-            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
-        elseif MODULES.LedgerManager:IsSyncOngoing() then
-            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-nok-32.tga"
-        else -- Unknown state
-            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
+        if self:IsSandbox() then
+            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sandbox-32.tga"
+        else
+            if MODULES.LedgerManager:IsInSync() then
+                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
+            elseif MODULES.LedgerManager:IsSyncOngoing() then
+                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-nok-32.tga"
+            else -- Unknown state
+                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
+            end
         end
     end)
 end
@@ -219,6 +224,22 @@ function CORE:GUILD_ROSTER_UPDATE(...)
     if inGuild and numTotal ~= 0 then
         self:_Initialize()
     end
+end
+
+function CORE:EnableSandbox()
+    self.isSandbox = true
+    CLM.MODULES.Comms:Disable()
+    CLM.MODULES.LedgerManager:EnableSandbox()
+end
+
+function CORE:DisableSandbox()
+    self.isSandbox = false
+    CLM.MODULES.LedgerManager:DisableSandbox()
+    CLM.MODULES.Comms:Enable()
+end
+
+function CORE:IsSandbox()
+    return self.isSandbox and true or false
 end
 
 -- Globals: Keybinds

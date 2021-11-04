@@ -114,6 +114,10 @@ function EventManager:DispatchEvent(event, params, timestamp, guid)
     eventDispatcher.dispatchEventWithTTL(event, params, timestamp)
 end
 
+function EventManager:RegisterEvent(event, callback)
+    eventDispatcher.addEventListener(event, callback)
+end
+
 CONSTANTS.EVENTS = {
     USER_RECEIVED_ITEM = "CLM_USER_RECEIVED_ITEM",
     USER_RECEIVED_POINTS = "CLM_USER_RECEIVED_POINTS",

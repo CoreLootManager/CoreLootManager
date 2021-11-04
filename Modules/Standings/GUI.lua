@@ -46,6 +46,7 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
@@ -284,13 +285,7 @@ local function GenerateOfficerOptions(self)
                 if not decayValue then LOG:Debug("StandingsGUI(Decay): missing decay value"); return end
                 if decayValue > 100 or decayValue < 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
                 -- Selected: roster, profiles
-                local filter
-                if not self.includeNegative then
-                    filter = (function(roster, profile)
-                        return (roster:Standings(profile:GUID()) >= 0)
-                    end)
-                end
-                local roster, profiles = self:GetSelected(filter)
+                local roster, profiles = self:GetSelected()
                 if roster == nil then
                     LOG:Debug("StandingsGUI(Decay): roster == nil")
                     return
@@ -300,8 +295,19 @@ local function GenerateOfficerOptions(self)
                     return
                 end
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
                 else
+                    local filter
+                    if not self.includeNegative then
+                        filter = (function(_roster, profile)
+                            return (_roster:Standings(profile:GUID()) >= 0)
+                        end)
+                    end
+                    roster, profiles = self:GetSelected(filter)
+                    if not profiles or #profiles == 0 then
+                        LOG:Debug("StandingsGUI(Decay): profiles == 0")
+                        return
+                    end
                     PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
                 end
             end),
@@ -460,7 +466,7 @@ end
 function StandingsGUI:Refresh(visible)
     LOG:Trace("StandingsGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     self.st:ClearSelection()
     self:RefreshRosters()
 
@@ -551,12 +557,12 @@ end
 function StandingsGUI:Toggle()
     LOG:Trace("StandingsGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

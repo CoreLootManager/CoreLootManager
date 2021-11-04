@@ -68,6 +68,13 @@ function ProfileManager:Initialize()
                 profile:SetGUID(GUID)
                 self.cache.profiles[GUID] = profile
                 self.cache.profilesGuidMap[strlower(name)] = GUID
+                -- Check for conditional restore
+                local rosters = MODULES.RosterManager:GetRosters()
+                for _, roster in pairs(rosters) do
+                    if roster:IsConditinallyRemoved(GUID) then
+                        roster:RestoreConditionallyRemoved(GUID)
+                    end
+                end
             end
         end))
 
@@ -96,6 +103,13 @@ function ProfileManager:Initialize()
                 end
                 -- Remove
                 self.cache.profiles[GUID] = nil
+                -- Conditonally remove for backwards compatibility
+                local rosters = MODULES.RosterManager:GetRosters()
+                for _, roster in pairs(rosters) do
+                    if roster:IsProfileInRoster(GUID) then
+                        roster:MarkAsConditionallyRemoved(GUID)
+                    end
+                end
             end
         end))
 

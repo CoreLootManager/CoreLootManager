@@ -93,10 +93,22 @@ local function apply_roster_mutator(entry, mutate)
         return
     end
 
-    local pointHistoryEntry = PointHistory:New(entry, roster:Profiles())
+    local profiles = roster:Profiles()
+    if entry:ignoreNegatives() then
+        local positiveProfiles = {}
+        for _, GUID in ipairs(profiles) do
+            local standings = roster:Standings(GUID)
+            if standings and standings >= 0 then
+                table.insert(positiveProfiles, GUID)
+            end
+        end
+        profiles = positiveProfiles
+    end
+
+    local pointHistoryEntry = PointHistory:New(entry, profiles)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    update_profile_standings(mutate, roster, roster:Profiles(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+    update_profile_standings(mutate, roster, profiles, entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
 end
 
 local function apply_raid_mutator(entry, mutate)
@@ -225,7 +237,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
     LedgerManager:Submit(entry, forceInstant)
 end
 
-function PointManager:UpdateRosterPoints(roster, value, reason, action, forceInstant)
+function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, forceInstant)
     LOG:Trace("PointManager:UpdateRosterPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdateRosterPoints(): Unknown action")
@@ -248,7 +260,7 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, forceIns
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
     --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = LEDGER_DKP.DecayRoster:new(uid, value, reason)
+        entry = LEDGER_DKP.DecayRoster:new(uid, value, reason, ignoreNegatives)
     end
 
     LedgerManager:Submit(entry, forceInstant)
@@ -303,110 +315,6 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, times
     roster:AddRosterPointHistory(pointHistoryEntry)
 
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, pointHistoryEntry, true)
-end
-
-function PointManager:Debug(N)
-    N = N or 10
-    local rosters = RosterManager:GetRosters()
-    local numRosters = 0
-    local rosterLookup = {}
-    local numProfiles = {}
-    local profileLookup = {}
-    for name, roster in pairs(rosters) do
-        local standings = roster:Standings()
-        numProfiles[name] = 0
-        profileLookup[name] = {}
-        for GUID,_ in pairs(standings) do
-            numProfiles[name] = numProfiles[name] + 1
-            table.insert(profileLookup[name], GUID)
-        end
-        if numProfiles[name] > 0 then
-            numRosters = numRosters + 1
-            table.insert(rosterLookup, name)
-        end
-    end
-
-    -- print("Detected " .. tonumber(numRosters) .. " rosters with profiles")
-    -- for name, value in pairs(numProfiles) do
-    --     print("  " .. name .. ": " .. tostring(value) .. " profiles")
-    -- end
-
-    if numRosters == 0 then
-        return
-    end
-
-    print("Generating total of  " .. N .. " entries")
-
-    for _=1,N do
-        local selectedRoster = rosterLookup[math.random(1, numRosters)]
-        local roster = rosters[selectedRoster]
-        if roster == nil then
-            -- print("=== Wrong roster selection ===")
-        else
-            local raidPointHistory = roster:GetRaidPointHistory()
-            local removeEntry = false
-            if #raidPointHistory > 0 then
-                if math.random(1, 10) == 1 then
-                    removeEntry = true
-                end
-            end
-            if removeEntry then
-                local removeEntryId = math.random(1, #raidPointHistory)
-                -- print(
-                --     "Iteration: " .. tostring(iteration) ..
-                --     " removing entry  " .. tostring(removeEntryId) .. " " ..
-                --     " in roster " .. selectedRoster
-                -- )
-                self:RemovePointChange(raidPointHistory[removeEntryId], true)
-            else
-                local entryType = math.random(0, 2)
-                local selectedNumberOfProfiles = math.random(1, numProfiles[selectedRoster])
-                local value = math.random(-100, 100)
-                local playerList = {}
-                local transformProfile = (function(GUID)
-                    local type = math.random(1, 3)
-                    if type == 1 then
-                        return GUID
-                    end
-                    if type == 2 then
-                        return CLM.UTILS.getIntegerGuid(GUID)
-                    end
-                    if type == 3 then
-                        return ProfileManager:GetProfileByGUID(GUID)
-                    end
-
-                    return GUID
-                end)
-
-                if selectedNumberOfProfiles == 1 then
-                    playerList = transformProfile(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
-                else
-                    for _ = 1,selectedNumberOfProfiles do
-                        local profile = transformProfile(profileLookup[selectedRoster][math.random(1, numProfiles[selectedRoster])])
-                        table.insert(playerList, profile)
-                    end
-                end
-                -- print(
-                --     "Generated entry: " .. tostring(iteration) ..
-                --     " of type " .. tostring(entryType) ..
-                --     " for " .. tostring(selectedNumberOfProfiles) .. " profiles" ..
-                --     " in roster " .. selectedRoster .. " " ..
-                --     " with value " .. tostring(value)
-                -- )
-                PointManager:UpdatePoints(roster, playerList, value, math.random(1,9), entryType, true)
-            end
-        end
-    end
-end
-
-function PointManager:Debug2()
-    local rosters = RosterManager:GetRosters()
-    for _,roster in pairs(rosters) do
-        local raidhistory = roster:GetRaidPointHistory()
-        for _,history in ipairs(raidhistory) do
-            history:Profiles()
-        end
-    end
 end
 
 CONSTANTS.POINT_MANAGER_ACTION =

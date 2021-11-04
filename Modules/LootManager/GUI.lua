@@ -4,19 +4,11 @@ local _, CLM = ...
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 
--- local LIBS =  {
---     registry = LibStub("AceConfigRegistry-3.0"),
---     gui = LibStub("AceConfigDialog-3.0")
--- }
 local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
--- local CONSTANTS = CLM.CONSTANTS
--- local RESULTS = CLM.CONSTANTS.RESULTS
+local CONSTANTS = CLM.CONSTANTS
 local GUI = CLM.GUI
-
--- local mergeDictsInline = UTILS.mergeDictsInline
--- local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
 local GetClassColor = UTILS.GetClassColor
@@ -55,6 +47,7 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
@@ -70,20 +63,24 @@ function LootGUI:Initialize()
     end)
     self.tooltip = CreateFrame("GameTooltip", "CLMLootGUIDialogTooltip", UIParent, "GameTooltipTemplate")
 
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            title = "Remove selected",
-            func = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    local loot = ST_GetLoot(row)
-                    LedgerManager:Remove(loot:Entry(), true)
-                end
-            end),
-            trustedOnly = true,
-            color = "cc0000"
-        }
-    }, CLM.MODULES.ACL:IsTrusted())
+            {
+                title = "Remove selected",
+                func = (function()
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        local loot = ST_GetLoot(row)
+                        LedgerManager:Remove(loot:Entry(), true)
+                    end
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            }
+        },
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
 
     EventManager:RegisterWoWBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
     self._initialized = true
@@ -98,10 +95,10 @@ local columns = {
         {name = "", width = 0},
     },
     raidLoot = {
-        {name = "Item",  width = 225},
-        {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
-        {name = "Player",   width = 70},
+        {name = "Item", width = 225},
+        {name = "Value", width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
+        {name = "Player", width = 70},
         {name = "", width = 0},
     }
 }
@@ -218,7 +215,7 @@ end
 function LootGUI:Refresh(visible)
     LOG:Trace("LootGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     self.st:ClearSelection()
     self:RefreshRosters()
     if self.requestRefreshProfiles then
@@ -276,8 +273,8 @@ function LootGUI:Refresh(visible)
         local row = {cols = {}}
         row.cols[1] = {value = lootData[2]}
         row.cols[2] = {value = loot:Value()}
-        row.cols[3] = {value = lootData[3]}
-        row.cols[4] = {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())}
+        row.cols[3] = {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())}
+        row.cols[4] = {value = lootData[3]}
         row.cols[5] = {value = loot}
         data[rowId] =  row
         rowId = rowId + 1
@@ -363,11 +360,11 @@ end
 function LootGUI:Toggle()
     LOG:Trace("LootGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

@@ -28,29 +28,21 @@ local RosterConfiguration = MODELS.RosterConfiguration
 
 local REGISTRY = "clm_auction_manager_gui_options"
 
+local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
+
 local guiOptions = {
     type = "group",
     args = {}
 }
 
-local AuctionManagerGUI = {}
-
 local function FillAuctionWindowFromTooltip(frame, button)
-    if GameTooltip and IsAltKeyDown() and not AuctionManager:IsAuctionInProgress() then
+    if GameTooltip and IsAltKeyDown() then
         local _, itemLink = GameTooltip:GetItem()
         if itemLink then
-            AuctionManagerGUI.itemLink = itemLink
-            AuctionManagerGUI:Refresh()
-            if button == "RightButton" then
-                AuctionManagerGUI:StartAuction()
-                if AuctionManagerGUI.top.frame:IsVisible() then
-                    AuctionManagerGUI.top.frame:Hide()
-                end
-            else
-                if not AuctionManagerGUI.top.frame:IsVisible() then
-                    AuctionManagerGUI.top.frame:Show()
-                end
-            end
+            EventManager:DispatchEvent(EVENT_FILL_AUCTION_WINDOW, {
+                link = itemLink,
+                start = (button == "RightButton")
+            })
         end
     end
 end
@@ -112,10 +104,12 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
 
+local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     InitializeDB(self)
@@ -126,6 +120,22 @@ function AuctionManagerGUI:Initialize()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
     EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
+    EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
+        if not AuctionManager:IsAuctionInProgress() then
+            self.itemLink = data.link
+            self:Refresh()
+            if data.start then
+                self:StartAuction()
+                if self.top:IsVisible() then
+                    self.top:Hide()
+                end
+            else
+                if not self.top:IsVisible() then
+                    self.top:Show()
+                end
+            end
+        end
+    end)
     self:RegisterSlash()
     self._initialized = true
 end
@@ -521,13 +531,13 @@ end
 function AuctionManagerGUI:Toggle()
     LOG:Trace("AuctionManagerGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() or not ACL:IsTrusted() then
+    if self.top:IsVisible() or not ACL:IsTrusted() then
         -- Award reset on closing BidWindow.
         AuctionManagerGUI:ClearSelectedBid()
-        self.top.frame:Hide()
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

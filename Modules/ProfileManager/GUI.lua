@@ -46,6 +46,7 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
@@ -277,9 +278,11 @@ local function CreateManagementOptions(self, container)
         args = {}
     }
     mergeDictsInline(options.args, GenerateUntrustedOptions(self))
-    mergeDictsInline(options.args, GenerateAssistantOptions(self))
-    mergeDictsInline(options.args, GenerateManagerOptions(self))
-    mergeDictsInline(options.args, GenerateGMOptions(self))
+    if ACL:IsTrusted() then
+        mergeDictsInline(options.args, GenerateAssistantOptions(self))
+        mergeDictsInline(options.args, GenerateManagerOptions(self))
+        mergeDictsInline(options.args, GenerateGMOptions(self))
+    end
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
     LIBS.gui:Open(REGISTRY, ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
 
@@ -362,7 +365,7 @@ end
 function ProfilesGUI:Refresh(visible)
     LOG:Trace("ProfilesGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     self.st:ClearSelection()
 
     local rowId = 1
@@ -430,12 +433,12 @@ end
 function ProfilesGUI:Toggle()
     LOG:Trace("ProfilesGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() or not ACL:IsTrusted() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

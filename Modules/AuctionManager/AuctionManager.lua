@@ -12,6 +12,7 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local LootManager = MODULES.LootManager
 local RaidManager = MODULES.RaidManager
+local EventManager = MODULES.EventManager
 
 local Comms = MODULES.Comms
 
@@ -27,6 +28,8 @@ local AuctionCommDenyBid = MODELS.AuctionCommDenyBid
 local AuctionCommDistributeBid = MODELS.AuctionCommDistributeBid
 
 local AUCTION_COMM_PREFIX = "Auction001"
+
+local EVENT_START_AUCTION = "CLM_AUCTION_START"
 
 local AuctionManager = {}
 function AuctionManager:Initialize()
@@ -67,10 +70,10 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         LOG:Warning("AuctionManager:StartAuction(): Auction in progress")
         return
     end
-    if not self:IsAuctioneer() then
-        LOG:Message("You are not allowed to auction items")
-        return
-    end
+    -- if not self:IsAuctioneer() then
+    --     LOG:Message("You are not allowed to auction items")
+    --     return
+    -- end
     -- Auction parameters sanity checks
     note = note or ""
     if not typeof(raid, Raid) then
@@ -78,7 +81,8 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         return false
     end
     self.raid = raid
-    if not tonumber(itemId) then
+    itemId = tonumber(itemId)
+    if not itemId then
         LOG:Warning("AuctionManager:StartAuction(): invalid item id")
         return false
     end
@@ -181,6 +185,8 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.auctionInProgress = true
     -- UI
     GUI.AuctionManager:UpdateBids()
+    -- Event
+    EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = itemId })
     return true
 end
 

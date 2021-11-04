@@ -10,7 +10,6 @@ local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 local Award     = LogEntry:extend("IA")
 local RaidAward = LogEntry:extend("II")
-local Revoke    = LogEntry:extend("IR")
 
 function Award:new(rosterUid, profile, itemId, value)
     local o = LogEntry.new(self);
@@ -72,38 +71,7 @@ function RaidAward:fields()
     return raidAwardFields
 end
 
-function Revoke:new(rosterUid, profile, itemId, value)
-    local o = LogEntry.new(self);
-    o.r = tonumber(rosterUid) or 0
-    o.p = GetGUIDFromEntry(profile) or 0
-    o.i = tonumber(itemId) or 0
-    o.v = tonumber(value) or 0
-    return o
-end
-
-function Revoke:rosterUid()
-    return self.r
-end
-
-function Revoke:profile()
-    return self.p
-end
-
-function Revoke:item()
-    return self.i
-end
-
-function Revoke:value()
-    return self.v
-end
-
-local revokeFields = mergeLists(LogEntry:fields(), {"r", "p", "i", "v"})
-function Revoke:fields()
-    return revokeFields
-end
-
 MODELS.LEDGER.LOOT = {
     Award = Award,
-    RaidAward = RaidAward,
-    Revoke = Revoke
+    RaidAward = RaidAward
 }

@@ -68,6 +68,7 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
@@ -280,7 +281,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     self.top:SetStatusText(statusText)
     if show then
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 
@@ -293,7 +294,7 @@ function BiddingManagerGUI:EndAuction()
     self.bar = nil
     self.barPreviousPercentageLeft = 1
     self.duration = 1
-    self.top.frame:Hide()
+    self.top:Hide()
 end
 
 function BiddingManagerGUI:AntiSnipe()
@@ -312,11 +313,11 @@ end
 function BiddingManagerGUI:Toggle()
     LOG:Trace("BiddingManagerGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

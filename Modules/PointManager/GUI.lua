@@ -54,6 +54,7 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
@@ -69,20 +70,24 @@ function PointHistoryGUI:Initialize()
     end)
     self.tooltip = CreateFrame("GameTooltip", "CLMPointHistoryGUIDialogTooltip", UIParent, "GameTooltipTemplate")
 
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            title = "Remove selected",
-            func = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    local history = ST_GetPointHistory(row)
-                    LedgerManager:Remove(history:Entry(), true)
-                end
-            end),
-            trustedOnly = true,
-            color = "cc0000"
-        }
-    }, CLM.MODULES.ACL:IsTrusted())
+            {
+                title = "Remove selected",
+                func = (function()
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        local history = ST_GetPointHistory(row)
+                        LedgerManager:Remove(history:Entry(), true)
+                    end
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            }
+        },
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
 
     self._initialized = true
 end
@@ -222,7 +227,7 @@ end
 function PointHistoryGUI:Refresh(visible)
     LOG:Trace("PointHistoryGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
     self.st:ClearSelection()
     self:RefreshRosters()
     if self.requestRefreshProfiles then
@@ -330,11 +335,11 @@ end
 function PointHistoryGUI:Toggle()
     LOG:Trace("PointHistoryGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

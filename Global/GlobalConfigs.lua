@@ -16,6 +16,7 @@ function GlobalConfigs:Initialize()
             announce_award_to_guild = true,
             announce_loot_to_raid = false,
             announce_loot_to_raid_level = 3,
+            tracked_loot_level = 4,
             wowdkpbot_integration = false,
             chat_commands = false
         }
@@ -47,7 +48,7 @@ function GlobalConfigs:Initialize()
             order = 2
         },
         global_raid_loot_announcement_level = {
-            name = "Select loot rarity",
+            name = "Announcement loot rarity",
             desc = "Select loot rarity for the annoucement to raid.",
             type = "select",
             -- width = "double",
@@ -88,7 +89,24 @@ function GlobalConfigs:Initialize()
             confirm = true,
             func = function() LedgerManager:Wipe() end,
             order = 10
-        }
+        },
+        global_tracked_loot_level = {
+            name = "Tracked loot rarity",
+            desc = "Select loot rarity for the tracking unauctioned loot.",
+            type = "select",
+            -- width = "double",
+            values = {
+                [0] = ColorCodeText("Poor", "9d9d9d"),
+                [1] = ColorCodeText("Common", "ffffff"),
+                [2] = ColorCodeText("Uncommon", "1eff00"),
+                [3] = ColorCodeText("Rare", "0070dd"),
+                [4] = ColorCodeText("Epic", "a335ee"),
+                [5] = ColorCodeText("Legendary", "ff8000"),
+            },
+            set = function(i, v) self:SetTrackedLootLevel(v) end,
+            get = function(i) return self:GetTrackedLootLevel() end,
+            order = 20
+        },
     }
     ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
@@ -114,7 +132,15 @@ function GlobalConfigs:SetAnnounceLootToRaidLevel(value)
 end
 
 function GlobalConfigs:GetAnnounceLootToRaidLevel()
-    return self.db.announce_loot_to_raid_level
+    return self.db.announce_loot_to_raid_level or 3
+end
+
+function GlobalConfigs:SetTrackedLootLevel(value)
+    self.db.tracked_loot_level = tonumber(value)
+end
+
+function GlobalConfigs:GetTrackedLootLevel()
+    return self.db.tracked_loot_level or 4
 end
 
 function GlobalConfigs:SetWoWDKPBotIntegration(value)

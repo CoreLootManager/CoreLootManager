@@ -56,7 +56,7 @@ function Migration:Migrate()
     self:MigrateMonolithDKP()
     self:MigrateEssentialDKP()
     self:MigrateCommunityDKP()
-    LOG:Message("Migration complete. %s to apply and sync with others or go to %s to discard.", 
+    LOG:Message("Migration complete. %s to apply and sync with others or go to %s to discard.",
         ColorCodeText("/reload", "00cc00"),
         ColorCodeText("Minimap Icon -> Configuration -> Wipe events", "6699ff"))
 end

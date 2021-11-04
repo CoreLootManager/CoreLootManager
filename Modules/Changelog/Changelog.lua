@@ -1,25 +1,24 @@
 local  _, CLM = ...
 
 CLM.ChangelogData = {
-    -- {
-    --     name = "Developers note",
-    --     data = {
-    --         {header = "Full release of the AddOn", body = "Thank you everyone for contributions, feedback and patience during the last 10 months of |cff00cc00Classic Loot Manager|r development. This AddOn started as a hobby project for single guild, but scaled up very fast. Thank you for using it. All your support is welcome!"},
-    --     }
-    -- },
     {
-        name = "Features - auto awards",
+        name = "Features",
         data = {
-            {header = "Raid bonuses", body = "On-time bonus - awarded when starting raid and Raid completion bonus - awarded when ending raid"},
-            {header = "Interval bonus", body = "Bonus is awarded every configured interval [minutes]"},
-            {header = "Boss kill bonus", body = "Configurable per boss and through global value"},
-        }
+            {header = "Loot Queue", body = "You can now track items that you have looted into the inventory and auction them from a convenient list. Toggle it through |cff00cc00/clm queue|r. Tracked loot quality can be changed in configuration."},
+        },
     },
     {
         name = "Fixes",
         data = {
-            {header = "!dkp response", body = "|cff00cc00!dkp|r without parameters should now return requester standings"},
-            {header = "!bid response", body = "Removed odd alerts when using |cff00cc00!bid|r chat command while CLM was enabled (still not recommended)."},
-        }
+            {header = "Alt-Main linking points fix", body = "When alt-main linking in case of alt missing in roster, when that alt was added to roster, there was an error that did set both main and alts standings to 0 instead of keeping current. |cffeeccccPlease double check point values if using alt-main linking when moving to this version.|r"},
+            {header = "Untrusted window display", body = "Profiles, Raid and Audit window are now read-only accessible to all users through |cff00cc00/clm commands|r"},
+            {header = "Window location storing", body = "Window location is now properly stored and restored when window is moved to the right side of the screen."}
+        },
+    },
+    {
+        name = "Notes",
+        data = {
+            {header = "Event based communication", body = "Auction Manager now uses events to communication. This is a needed step to allow further AddOn / WeakAuras integration."},
+        },
     },
 }
