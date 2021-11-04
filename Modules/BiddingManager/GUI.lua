@@ -113,7 +113,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "input",
             set = (function(i,v) self.bid = tonumber(v) or 0 end),
             get = (function(i) return tostring(self.bid) end),
-            width = 0.5,
+            width = 0.45,
             order = 3
         },
         base = {
@@ -131,7 +131,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                     return true
                 end
             end),
-            width = 0.45,
+            width = 0.44,
             order = 5
         },
         max = {
@@ -149,7 +149,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                     return true
                 end
             end),
-            width = 0.45,
+            width = 0.44,
             order = 6
         },
         bid = {
@@ -157,7 +157,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = "Bid input value.",
             type = "execute",
             func = (function() BiddingManager:Bid(self.bid) end),
-            width = 0.45,
+            width = 0.44,
             order = 4
         },
         cancel = {
@@ -165,7 +165,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = "Cancel your bid.",
             type = "execute",
             func = (function() BiddingManager:CancelBid() end),
-            width = 0.45,
+            width = 0.44,
             order = 7
         },
         pass = {
@@ -173,7 +173,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = "Notify that you are passing on the item. Cancels any existing bids.",
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
-            width = 0.45,
+            width = 0.44,
             order = 8
         }
     }
