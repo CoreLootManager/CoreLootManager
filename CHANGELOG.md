@@ -1,3 +1,8 @@
+# Classic Loot Manager v0.13.1
+## Fixes
+### ElvUI compatibility
+Fix for ElvUI users which, after patch 2.19, handles UI differently, thus resulting in very weird button placements.
+
 # Classic Loot Manager v0.13.0
 While this is a backwards compatible fix there is marginal chance to lead to DKP difference when using alt-main linking. Please double check the values when upgrading to this version.
 
@@ -17,6 +22,7 @@ Window location is now properly stored and restored when window is moved to the 
 ## Notes
 ### Event based communication
 Auction Manager now uses events to communication. This is a needed step to allow further AddOn / WeakAuras integration.
+
 # Classic Loot Manager v0.12.0
 While this is a backwards compatible fix there is marginal chance to lead to DKP difference if profile that had DKP in multiple rosters was removed and then added again. Please double check the values when upgrading to this version.
 
