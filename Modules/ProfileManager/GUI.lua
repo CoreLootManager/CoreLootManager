@@ -87,7 +87,7 @@ local function GenerateUntrustedOptions(self)
             set = function(i, k, v) self.filterOptions[tonumber(k)] = v; self:Refresh() end,
             get = function(i, v) return self.filterOptions[tonumber(v)] end,
             values = filters,
-            width = "half",
+            width = 0.49,
             order = 1
         }
     }

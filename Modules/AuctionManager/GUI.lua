@@ -272,7 +272,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 self:Refresh()
             end),
             disabled = (function() return AuctionManager:IsAuctionInProgress() end),
-            width = 1.5,
+            width = 1.4,
             order = 2,
             itemLink = "item:" .. tostring(self.itemId),
         },
@@ -288,7 +288,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             set = (function(i,v) self.note = tostring(v) end),
             get = (function(i) return self.note end),
             disabled = (function() return AuctionManager:IsAuctionInProgress() end),
-            width = 1.5,
+            width = 1.4,
             order = 4
         },
         value_label = {
@@ -307,7 +307,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             get = (function(i) return tostring(self.base) end),
             disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
-            width = 0.75,
+            width = 0.7,
             order = 6
         },
         value_max = {
@@ -320,7 +320,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             get = (function(i) return tostring(self.max) end),
             disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
-            width = 0.75,
+            width = 0.7,
             order = 7
         },
         time_label = {
@@ -336,7 +336,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             get = (function(i) return tostring(self.configuration:Get("auctionTime")) end),
             disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
-            width = 0.75,
+            width = 0.7,
             order = 9
         },
         time_antiSnipe = {
@@ -346,7 +346,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             get = (function(i) return tostring(self.configuration:Get("antiSnipe")) end),
             disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
-            width = 0.75,
+            width = 0.7,
             order = 10
         },
         auction = {
@@ -380,7 +380,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             set = (function(i,v) AuctionManagerGUI:setInputAwardValue(v) end),
             get = (function(i) return tostring(self.awardValue) end),
             -- disabled = (function(i) return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end),
-            width = 0.75,
+            width = 0.7,
             order = 14
         },
         award = {
@@ -402,7 +402,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                     tostring(self.awardValue)
                 )
             end),
-            width = 0.75,
+            width = 0.7,
             order = 15,
             disabled = (function() return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end)
         },
