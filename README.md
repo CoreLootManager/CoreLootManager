@@ -23,12 +23,13 @@ Additional point systems are planned:
 * EPGP
 
 # Implemented features
+## Auto-magical synchronisation
+## Multiple roster (teams) support
+## Alt-main linking
 ## Mulit-level Access Control
 * Managers can control every aspect of the AddOn.
 * Assistants can award loot and DKP but can't control roster 
 settings.
-
-## Auto-magical synchronisation
 ## DKP point system
 * Fine-grained configurable awarding and decaying
 * Configurable weekly and hard point caps
@@ -39,8 +40,6 @@ settings.
 * Configurable per-slot min and max item values
 * Configurable per-item min and max item values
 * Static (constant) and Ascending item value systems for bidding
-## Multiple roster (teams) support
-## Alt-main linking
 ## History tracking and management
 * Fine grained point history
 * Item awards with all related information (when, who, how much)
@@ -61,15 +60,15 @@ settings.
 * Boss kill bonus - configurable per boss and through global value
 ## Multiple simultaneous Raids maangement
 * Raid management and auto-creating profiles and filling roster when initializing raid
-
 * Multi-level logging for better issue handling
 ## Chat commands
-
 * Send `!dkp` and `!bid` Whisper or Raid commands for bidding without using addon
 * Out of guild bidding using commands or CLM
-
+## Administration
+* Time travel mode - correct errors and add entries in history to keep the data in place
+* Sandbox mode - check out options, do trainings, and experiment without affecting other players
 ## Utilities
-
+* Loot tracking queue for fast auctioning
 * Auto-posting loot to raid channel
 * Player spec tracking
 * [WoW DKP Discord Bot integration](http://tiny.one/wowdkpbot-discord)
