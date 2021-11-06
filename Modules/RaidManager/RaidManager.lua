@@ -243,19 +243,20 @@ function RaidManager:CreateRaid(roster, name, config)
         LOG:Error("RaidManager:CreateRaid(): Missing valid roster")
         return
     end
-
     if not typeof(config, RosterConfiguration) then
         LOG:Error("RaidManager:CreateRaid(): Missing valid configuration")
         return
     end
-
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         LOG:Message("You are not allowed to create raids.")
         return
     end
-
     if self:IsInActiveRaid() then
         LOG:Message("You are already in an active raid. Leave or finish it before creating new one.")
+        return
+    end
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message("Raid management is disabled during time traveling.")
         return
     end
 
