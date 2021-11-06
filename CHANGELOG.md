@@ -1,3 +1,43 @@
+# Classic Loot Manager v0.13.1
+## Fixes
+### ElvUI compatibility
+Fix for ElvUI users which, after patch 2.19, handles UI differently, thus resulting in very weird button placements.
+
+# Classic Loot Manager v0.13.0
+While this is a backwards compatible fix there is marginal chance to lead to DKP difference when using alt-main linking. Please double check the values when upgrading to this version.
+
+## Features
+### Loot Queue
+You can now track items that you have looted into the inventory and auction them from a convenient list. Toggle it through `/clm queue`. Tracked loot quality can be changed in configuration.
+
+## Fixes
+### Alt-Main linking points fix
+When alt-main linking in case of alt missing in roster, when that alt was added to roster, there was an error that did set both main and alts standings to 0 instead of keeping current. **Please double check point values if using alt-main linking when moving to this version.**
+### Untrusted window display
+Profiles, Raid and Audit window are now read-only accessible to all users through `/clm commands`
+
+### Window location storing
+Window location is now properly stored and restored when window is moved to the right side of the screen."}
+
+## Notes
+### Event based communication
+Auction Manager now uses events to communication. This is a needed step to allow further AddOn / WeakAuras integration.
+
+# Classic Loot Manager v0.12.0
+While this is a backwards compatible fix there is marginal chance to lead to DKP difference if profile that had DKP in multiple rosters was removed and then added again. Please double check the values when upgrading to this version.
+
+## Features
+Introducing new auditing UI for managers. You can now check every entry created by ledger and restore already ignored entries by ignoring (removing) the original ignore.
+## Fixes
+### Migration
+Migration is now executed with comms disabled and is reversible by wiping entries.
+### Hydross DKP award
+Hydross DKP boss kill bonus award workaround is now fixed.
+### Weekly gains display
+Weekly gains are now tracked and displayed even if there is no weekly cap.
+### Roster Decay
+Roster decay should now use proper, optimised entries.
+
 # Classic Loot Manager v0.11.0
 ## Features
 ### Auto-DKP awarding

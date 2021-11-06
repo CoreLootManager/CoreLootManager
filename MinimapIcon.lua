@@ -57,7 +57,8 @@ function Minimap:Initialize()
         {
             title = "Audit",
             func = (function() CLM.GUI.Audit:Toggle() end),
-            trustedOnly = true
+            trustedOnly = true,
+            managerOnly = true
         },
         {
             title = "Configuration",
@@ -70,7 +71,11 @@ function Minimap:Initialize()
 
     }
 
-    dropdown = CLM.UTILS.GenerateDropDownMenu(options, CLM.MODULES.ACL:IsTrusted())
+    dropdown = CLM.UTILS.GenerateDropDownMenu(
+        options,
+        CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
+    )
 
     self._initialized = true
 end

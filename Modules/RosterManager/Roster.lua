@@ -71,7 +71,20 @@ function Roster:RemoveProfileByGUID(GUID)
     self.profileLoot[GUID] = nil
     self.profilePointHistory[GUID] = nil
     self.inRoster[GUID] = nil
-    -- TODO remove raidloot history for the person? how?
+end
+
+function Roster:MarkAsConditionallyRemoved(GUID)
+    -- Used for backwards compatibility in profiles - marks as removed but doesnt remove any data
+    self.inRoster[GUID] = nil
+end
+
+function Roster:RestoreConditionallyRemoved(GUID)
+    -- Used for backwards compatibility in profiles - marks as removed but doesnt remove any data
+    self.inRoster[GUID] = true
+end
+
+function Roster:IsConditinallyRemoved(GUID)
+    return self.standings[GUID] and not self.inRoster[GUID]
 end
 
 function Roster:IsProfileInRoster(GUID)

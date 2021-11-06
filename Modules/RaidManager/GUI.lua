@@ -57,6 +57,7 @@ end
 
 local function RestoreLocation(self)
     if self.db.location then
+        self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
@@ -90,64 +91,70 @@ function RaidManagerGUI:Initialize()
         end
         self:Refresh(true)
     end)
-
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+    -- Trusted only
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            title = "Start selected raid",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:StartRaid(raid)
-                self:Refresh()
-            end),
-            trustedOnly = true
+            {
+                title = "Start selected raid",
+                func = (function(i)
+                    local raid = nil
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        raid = ST_GetRaid(row)
+                    end
+                    RaidManager:StartRaid(raid)
+                    self:Refresh()
+                end),
+                trustedOnly = true
+            },
+            {
+                title = "End selected raid",
+                func = (function(i)
+                    local raid = nil
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        raid = ST_GetRaid(row)
+                    end
+                    RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
+                    self:Refresh()
+                end),
+                trustedOnly = true
+            },
+            {
+                title = "Join selected raid",
+                func = (function(i)
+                    local raid = nil
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        raid = ST_GetRaid(row)
+                    end
+                    RaidManager:JoinRaid(raid)
+                    self:Refresh()
+                end),
+                trustedOnly = true
+            },
+            {
+                separator = true,
+                trustedOnly = true,
+                managerOnly = true
+            },
+            {
+                title = "Remove selected raid",
+                func = (function()
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        local raid = ST_GetRaid(row)
+                        LedgerManager:Remove(raid:Entry(), true)
+                    end
+                end),
+                trustedOnly = true,
+                managerOnly = true,
+                color = "cc0000"
+            }
         },
-        {
-            title = "End selected raid",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
-                self:Refresh()
-            end),
-            trustedOnly = true
-        },
-        {
-            title = "Join selected raid",
-            func = (function(i)
-                local raid = nil
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    raid = ST_GetRaid(row)
-                end
-                RaidManager:JoinRaid(raid)
-                self:Refresh()
-            end),
-            trustedOnly = true
-        },
-        {
-            separator = true,
-            trustedOnly = true
-        },
-        {
-            title = "Remove selected raid",
-            func = (function()
-                local row = self.st:GetRow(self.st:GetSelection())
-                if row then
-                    local raid = ST_GetRaid(row)
-                    LedgerManager:Remove(raid:Entry(), true)
-                end
-            end),
-            trustedOnly = true,
-            color = "cc0000"
-        }
-    }, CLM.MODULES.ACL:IsTrusted())
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
 end
 
 function RaidManagerGUI:GetRosterOption(option)
@@ -321,7 +328,9 @@ local function CreateManagementOptions(self, container)
         type = "group",
         args = {}
     }
-    mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    if ACL:IsTrusted() then
+        mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    end
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
     LIBS.gui:Open(REGISTRY, ManagementOptions)
     return ManagementOptions
@@ -402,9 +411,13 @@ local function CreateRaidDisplay(self)
     -- end
     self.st:RegisterEvents({
         OnEnter = OnEnterHandler,
-        OnLeave = OnLeaveHandler,
-        OnClick = OnClickHandler
+        OnLeave = OnLeaveHandler
     })
+    if ACL:IsTrusted() then
+        self.st:RegisterEvents({
+            OnClick = OnClickHandler
+        })
+    end
     return StandingsGroup
 end
 
@@ -424,9 +437,8 @@ function RaidManagerGUI:Create()
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
 
     f:AddChild(CreateRaidDisplay(self))
-    if ACL:IsTrusted() then
-        f:AddChild(CreateManagementOptions(self))
-    end
+    f:AddChild(CreateManagementOptions(self))
+
     RestoreLocation(self)
     -- Hide by default
     f:Hide()
@@ -435,7 +447,7 @@ end
 function RaidManagerGUI:Refresh(visible)
     LOG:Trace("RaidManagerGUI:Refresh()")
     if not self._initialized then return end
-    if visible and not self.top.frame:IsVisible() then return end
+    if visible and not self.top:IsVisible() then return end
 
     local data = {}
     local rowId = 1
@@ -468,11 +480,11 @@ function RaidManagerGUI:Toggle()
     LOG:Trace("RaidManagerGUI:Toggle()")
     if not self._initialized then
         return end
-    if self.top.frame:IsVisible() or not ACL:IsTrusted() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 

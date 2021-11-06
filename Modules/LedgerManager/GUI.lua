@@ -13,6 +13,7 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 local GetClassColor = UTILS.GetClassColor
 local ColorCodeText = UTILS.ColorCodeText
 local NumberToClass = UTILS.NumberToClass
+local mergeDictsInline = UTILS.mergeDictsInline
 
 local ACL = MODULES.ACL
 local ProfileManager = MODULES.ProfileManager
@@ -344,7 +345,8 @@ local describeFunctions  = {
     ["DT"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Point Decay for roster]: " ..
-            "Decayed " .. safeToString(entry:value()) .. "% DKP to all players in " ..
+            "Decayed " .. safeToString(entry:value()) .. "% DKP to all players " ..
+            (entry:ignoreNegatives() and "excluding negatives " or "") .. "in " ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
     end),
     ["DS"] = (function(entry)
@@ -440,6 +442,38 @@ local function ST_GetEntry(row)
     return row.cols[6].value
 end
 
+local function GenerateOfficerOptions(self)
+    return {
+        toggle_sandbox = {
+            name = (function() return CLM.CORE:IsSandbox() and "Disable Sandbox" or "Enable Sandbox" end),
+            type = "execute",
+            func = (function(i)
+                if CLM.CORE:IsSandbox() then
+                    CLM.CORE:DisableSandbox()
+                else
+                    CLM.CORE:EnableSandbox()
+                end
+            end),
+            order = 1,
+            disabled = true
+        },
+        apply_changes = {
+            name = "Apply changes",
+            type = "execute",
+            func = (function(i) end),
+            order = 2,
+            disabled = (function() return not CLM.CORE:IsSandbox() end)
+        },
+        discard_changes = {
+            name = "Discard changes",
+            type = "execute",
+            func = (function(i) end),
+            order = 3,
+            disabled = (function() return not CLM.CORE:IsSandbox() end)
+        }
+    }
+end
+
 local function CreateManagementOptions(self, container)
     local ManagementOptions = AceGUI:Create("SimpleGroup")
     ManagementOptions:SetLayout("Flow")
@@ -497,6 +531,10 @@ local function CreateManagementOptions(self, container)
             },
         }
     }
+
+    if ACL:IsTrusted() then
+        mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    end
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
     LIBS.gui:Open(REGISTRY, ManagementOptions)
     return ManagementOptions
@@ -505,7 +543,6 @@ end
 local AuditGUI = {}
 function AuditGUI:Initialize()
     LOG:Trace("AuditGUI:Initialize()")
-    if not ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
@@ -544,8 +581,11 @@ function AuditGUI:Initialize()
             end),
             trustedOnly = true,
             color = "cc0000"
-        }
-    }, CLM.MODULES.ACL:IsTrusted())
+        },
+    },
+    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self._initialized = true
@@ -619,11 +659,11 @@ end
 function AuditGUI:Toggle()
     LOG:Trace("AuditGUI:Toggle()")
     if not self._initialized then return end
-    if self.top.frame:IsVisible() then
-        self.top.frame:Hide()
+    if self.top:IsVisible() then
+        self.top:Hide()
     else
         self:Refresh()
-        self.top.frame:Show()
+        self.top:Show()
     end
 end
 
