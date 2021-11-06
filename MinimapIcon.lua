@@ -37,6 +37,9 @@ function Minimap:Initialize()
         },
         -- Raid
         {
+            separator = true,
+        },
+        {
             title = "Raid",
             func = (function() CLM.GUI.RaidManager:Toggle() end),
             trustedOnly = true
@@ -56,6 +59,9 @@ function Minimap:Initialize()
             func = (function() CLM.GUI.BiddingManager:Toggle() end)
         },
         -- Management
+        {
+            separator = true,
+        },
         {
             title = "Profiles",
             func = (function() CLM.GUI.Profiles:Toggle() end),

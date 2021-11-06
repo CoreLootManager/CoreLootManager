@@ -42,8 +42,7 @@ function ACL:CheckLevel(level, name)
     end
     -- Check for Officer
     if level >= CONSTANTS.ACL.LEVEL.MANAGER then
-        -- return isManager or isGuildMaster
-        return true
+        return isManager or isGuildMaster
     end
     -- Check for Managers
     if level >= CONSTANTS.ACL.LEVEL.ASSISTANT then
