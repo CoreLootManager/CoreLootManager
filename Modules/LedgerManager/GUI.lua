@@ -445,31 +445,50 @@ end
 local function GenerateOfficerOptions(self)
     return {
         toggle_sandbox = {
-            name = (function() return CLM.CORE:IsSandbox() and "Disable Sandbox" or "Enable Sandbox" end),
+            name = "Enter sandbox",
+            desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel.",
             type = "execute",
-            func = (function(i)
-                if CLM.CORE:IsSandbox() then
-                    CLM.CORE:DisableSandbox()
-                else
-                    CLM.CORE:EnableSandbox()
-                end
-            end),
+            func = (function(i) SandboxManager:EnterSandbox() end),
             order = 1,
-            disabled = true
+            disabled = (function() return SandboxManager:IsSandbox() end)
         },
         apply_changes = {
             name = "Apply changes",
+            desc = "Applies all changes and exits sandbox mode",
             type = "execute",
-            func = (function(i) end),
+            func = (function(i) SandboxManager:ApplyChanges() end),
             order = 2,
-            disabled = (function() return not CLM.CORE:IsSandbox() end)
+            disabled = (function() return not SandboxManager:IsSandbox() end)
         },
         discard_changes = {
             name = "Discard changes",
+            desc = "Discards all changes and exits sandbox mode",
             type = "execute",
-            func = (function(i) end),
+            func = (function() SandboxManager:DiscardChanges() end),
             order = 3,
-            disabled = (function() return not CLM.CORE:IsSandbox() end)
+            disabled = (function() return not SandboxManager:IsSandbox() end)
+        },
+        sandbox_info = {
+            name = (function() return ColorCodeText(SandboxManager:IsSandbox() and " Sandbox" or "", "FFFFFF") end),
+            fontSize = "large",
+            width = 0.5,
+            order = 4,
+            type = "description"
+        },
+        timetravel_info = {
+            name = (function()
+                local info = ""
+                if self.timeTravelInProgress then
+                    info = ColorCodeText("Loading...", "eeee00")
+                elseif LedgerManager:IsTimeTraveling() then
+                    info = ColorCodeText("Time Travel", "eeee00")
+                end
+                return info
+            end),
+            fontSize = "large",
+            width = 0.75,
+            order = 5,
+            type = "description"
         }
     }
 end
@@ -482,54 +501,7 @@ local function CreateManagementOptions(self, container)
 
     local options = {
         type = "group",
-        args = {
-            toggle_sandbox = {
-                name = "Enter sandbox",
-                desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel.",
-                type = "execute",
-                func = (function(i) SandboxManager:EnterSandbox() end),
-                order = 1,
-                disabled = (function() return SandboxManager:IsSandbox() end)
-            },
-            apply_changes = {
-                name = "Apply changes",
-                desc = "Applies all changes and exits sandbox mode",
-                type = "execute",
-                func = (function(i) SandboxManager:ApplyChanges() end),
-                order = 2,
-                disabled = (function() return not SandboxManager:IsSandbox() end)
-            },
-            discard_changes = {
-                name = "Discard changes",
-                desc = "Discards all changes and exits sandbox mode",
-                type = "execute",
-                func = (function() SandboxManager:DiscardChanges() end),
-                order = 3,
-                disabled = (function() return not SandboxManager:IsSandbox() end)
-            },
-            sandbox_info = {
-                name = (function() return ColorCodeText(SandboxManager:IsSandbox() and " Sandbox" or "", "FFFFFF") end),
-                fontSize = "large",
-                width = 0.5,
-                order = 4,
-                type = "description"
-            },
-            timetravel_info = {
-                name = (function()
-                    local info = ""
-                    if self.timeTravelInProgress then
-                        info = ColorCodeText("Loading...", "eeee00")
-                    elseif LedgerManager:IsTimeTraveling() then
-                        info = ColorCodeText("Time Travel", "eeee00")
-                    end
-                    return info
-                end),
-                fontSize = "large",
-                width = 0.75,
-                order = 5,
-                type = "description"
-            },
-        }
+        args = {}
     }
 
     if ACL:IsTrusted() then

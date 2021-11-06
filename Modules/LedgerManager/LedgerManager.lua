@@ -122,7 +122,6 @@ end
 
 function LedgerManager:EndTimeTravel()
     self.activeLedger.getStateManager():stopTimeTravel()
-    self.activeLedger.getStateManager():restart() -- Not done in this version in lib
     self:UpdateSyncState()
 end
 
