@@ -110,8 +110,11 @@ do
         else
             info = string.format("Loading events...")
         end
-        if CLM.CORE:IsSandbox() then
-            tooltip:AddDoubleLine("Sandbox mode", info, 1, 1, 1)
+        if CLM.MODULES.SandboxManager:IsSandbox() then
+            local timetravelInfo = CLM.MODULES.LedgerManager:IsTimeTraveling() and " and Time Traveling" or ""
+            tooltip:AddDoubleLine("Sandbox mode" .. timetravelInfo, info, 1, 1, 1)
+        elseif CLM.MODULES.LedgerManager:IsTimeTraveling() then
+            tooltip:AddDoubleLine("Time Traveling", info, 0.45, 0.45, 0)
         else
             if CLM.MODULES.LedgerManager:IsInSync() then
                 tooltip:AddDoubleLine("In-Sync", info, 0.0, 0.8, 0.0)

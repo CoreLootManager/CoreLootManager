@@ -243,19 +243,20 @@ function RaidManager:CreateRaid(roster, name, config)
         LOG:Error("RaidManager:CreateRaid(): Missing valid roster")
         return
     end
-
     if not typeof(config, RosterConfiguration) then
         LOG:Error("RaidManager:CreateRaid(): Missing valid configuration")
         return
     end
-
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         LOG:Message("You are not allowed to create raids.")
         return
     end
-
     if self:IsInActiveRaid() then
         LOG:Message("You are already in an active raid. Leave or finish it before creating new one.")
+        return
+    end
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message("Raid management is disabled during time traveling.")
         return
     end
 
@@ -274,6 +275,10 @@ function RaidManager:StartRaid(raid)
     end
     if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATED then
         LOG:Message("You can only start a freshly created raid.")
+        return
+    end
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message("Raid management is disabled during time traveling.")
         return
     end
     --[===[@non-debug@
@@ -316,6 +321,10 @@ function RaidManager:EndRaid(raid)
         LOG:Message("You can only end an active raid.")
         return
     end
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message("Raid management is disabled during time traveling.")
+        return
+    end
     -- if not self:IsInActiveRaid() then
     --     LOG:Message("You are not in an active raid.")
     --     return
@@ -345,7 +354,10 @@ function RaidManager:JoinRaid(raid)
         LOG:Message("You can only join different raid than your current one.")
         return
     end
-
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message("Raid management is disabled during time traveling.")
+        return
+    end
     local myProfile = ProfileManager:GetMyProfile()
     if myProfile == nil then
         error("My profile is nil")
@@ -364,6 +376,7 @@ end
 function RaidManager:HandleRosterUpdateEvent()
     LOG:Trace("RaidManager:HandleRosterUpdateEvent()")
     if not IsInRaid() then return end
+    if LedgerManager:IsTimeTraveling() then return end
     -- Update wow raid information
     self:UpdateGameRaidInformation()
     -- Auto award handling removal in case of raid owner change

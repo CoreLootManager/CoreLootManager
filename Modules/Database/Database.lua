@@ -59,4 +59,8 @@ function DB:Ledger()
     return CLM_DB[self.server_faction_guild]['ledger']
 end
 
+function DB:UpdateLedger(ledger)
+    CLM_DB[self.server_faction_guild]['ledger'] = ledger
+end
+
 MODULES.Database = DB

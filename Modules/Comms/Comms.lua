@@ -93,7 +93,10 @@ end
 
 function Comms:Send(prefix, message, distribution, target, priority)
     -- LOG:Trace("Comms:Send()") -- SPAM
-    if not self.enabled then return false end
+    if not self.enabled then
+        LOG:Debug("Comms:Send(): Disabled")
+        return false
+    end
     -- Prefix
     prefix = _prefix(prefix)
     if not type(self.callbacks[prefix]) == "function" then
@@ -144,7 +147,10 @@ end
 
 function Comms:OnReceive(prefix, message, distribution, sender)
     -- LOG:Trace("Comms:OnReceive() %s", prefix) --  SPAM
-    if not self.enabled then return false end
+    if not self.enabled then
+        LOG:Debug("Comms:OnReceive(): Disabled")
+        return false
+    end
     -- Ignore messages from self if not allowing them specifically
     if not self.allowSelfReceive[prefix] and (sender == self.who) then
         return false

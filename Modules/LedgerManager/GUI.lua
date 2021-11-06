@@ -20,6 +20,7 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local RaidManager = MODULES.RaidManager
 local LedgerManager = MODULES.LedgerManager
+local SandboxManager = MODULES.SandboxManager
 
 local LIBS =  {
     registry = LibStub("AceConfigRegistry-3.0"),
@@ -417,13 +418,12 @@ local function getEntryInfo(entry)
     -- Common info
     local time = date("%d/%m/%Y %H:%M:%S", entry:time())
     local type = entry:class()
-    local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(entry:creator()))
-    local author = profile and profile:Name() or ""
+    local guid = getGuidFromInteger(entry:creator())
+    local profile = ProfileManager:GetProfileByGUID(guid)
+    local author = profile and profile:Name() or guid
     local description = describeEntry(entry)
     return time, type, description, author
 end
-
-local ignoreCache = {}
 
 local function buildEntryRow(entry, id)
     local row = {cols = {}}
@@ -445,31 +445,50 @@ end
 local function GenerateOfficerOptions(self)
     return {
         toggle_sandbox = {
-            name = (function() return CLM.CORE:IsSandbox() and "Disable Sandbox" or "Enable Sandbox" end),
+            name = "Enter sandbox",
+            desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel.",
             type = "execute",
-            func = (function(i)
-                if CLM.CORE:IsSandbox() then
-                    CLM.CORE:DisableSandbox()
-                else
-                    CLM.CORE:EnableSandbox()
-                end
-            end),
+            func = (function(i) SandboxManager:EnterSandbox() end),
             order = 1,
-            disabled = true
+            disabled = (function() return SandboxManager:IsSandbox() end)
         },
         apply_changes = {
             name = "Apply changes",
+            desc = "Applies all changes and exits sandbox mode",
             type = "execute",
-            func = (function(i) end),
+            func = (function(i) SandboxManager:ApplyChanges() end),
             order = 2,
-            disabled = (function() return not CLM.CORE:IsSandbox() end)
+            disabled = (function() return not SandboxManager:IsSandbox() end)
         },
         discard_changes = {
             name = "Discard changes",
+            desc = "Discards all changes and exits sandbox mode",
             type = "execute",
-            func = (function(i) end),
+            func = (function() SandboxManager:DiscardChanges() end),
             order = 3,
-            disabled = (function() return not CLM.CORE:IsSandbox() end)
+            disabled = (function() return not SandboxManager:IsSandbox() end)
+        },
+        sandbox_info = {
+            name = (function() return ColorCodeText(SandboxManager:IsSandbox() and " Sandbox" or "", "FFFFFF") end),
+            fontSize = "large",
+            width = 0.5,
+            order = 4,
+            type = "description"
+        },
+        timetravel_info = {
+            name = (function()
+                local info = ""
+                if self.timeTravelInProgress then
+                    info = ColorCodeText("Loading...", "eeee00")
+                elseif LedgerManager:IsTimeTraveling() then
+                    info = ColorCodeText("Time Travel", "eeee00")
+                end
+                return info
+            end),
+            fontSize = "large",
+            width = 0.75,
+            order = 5,
+            type = "description"
         }
     }
 end
@@ -498,35 +517,54 @@ function AuditGUI:Initialize()
     LOG:Trace("AuditGUI:Initialize()")
     self:Create()
     self:RegisterSlash()
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
+    RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
         {
-            -- {
-            --     title = "Timetravel",
-            --     func = (function()
-            --     end),
-            --     trustedOnly = true,
-            --     color = "00cc00"
-            -- },
-            {
-                title = "Remove selected",
-                func = (function()
-                    local row = self.st:GetRow(self.st:GetSelection())
-                    if row then
-                        LedgerManager:Remove(ST_GetEntry(row), true)
-                    end
-                end),
-                trustedOnly = true,
-                color = "cc0000"
-            }
+            title = "Timetravel",
+            func = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    self.timeTravelInProgress = true
+                    LedgerManager:TimeTravel(ST_GetEntry(row):time())
+                    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+                end
+            end),
+            trustedOnly = true,
+            color = "eeee00"
         },
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        {
+            title = "End Timetravel",
+            func = (function()
+                if LedgerManager:IsTimeTraveling() then
+                    self.timeTravelInProgress = true
+                    LedgerManager:EndTimeTravel()
+                    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+                end
+            end),
+            trustedOnly = true,
+            color = "eeee00"
+        },
+        {
+            title = "Remove selected",
+            func = (function()
+                local row = self.st:GetRow(self.st:GetSelection())
+                if row then
+                    LedgerManager:Remove(ST_GetEntry(row), true)
+                end
+            end),
+            trustedOnly = true,
+            color = "cc0000"
+        },
+    },
+    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self._initialized = true
+        self.timeTravelInProgress = false
         self:Refresh(true)
     end)
+
 end
 
 function AuditGUI:Create()
@@ -556,8 +594,8 @@ function AuditGUI:Refresh(visible)
     if not self._initialized then return end
     if visible and not self.top:IsVisible() then return end
     local data = {}
-    for i,entry in ipairs(MODULES.Database:Ledger()) do
-        table.insert(data, buildEntryRow(entry, i))
+    local ignoreCache = {}
+    local fillIGNData = (function(i, entry)
         local ignCacheId = ignoreCache[entry:uuid()]
         if entry:class() == "IGN" then
             ignoreCache[entry.ref] = i
@@ -566,6 +604,22 @@ function AuditGUI:Refresh(visible)
             local description = data[ignCacheId].cols[4].value
             description = description .. ColorCodeText(safeToString(i), "44ff44")
             data[ignCacheId].cols[4].value  = description
+        end
+    end)
+
+    if LedgerManager:IsTimeTraveling() then
+        local timeTravelTarget = LedgerManager:GetTimeTravelTarget()
+        for i,entry in ipairs(MODULES.LedgerManager:GetData()) do
+            if entry:time() > timeTravelTarget then
+                break
+            end
+            table.insert(data, buildEntryRow(entry, i))
+            fillIGNData(i, entry)
+        end
+    else
+        for i,entry in ipairs(MODULES.LedgerManager:GetData()) do
+            table.insert(data, buildEntryRow(entry, i))
+            fillIGNData(i, entry)
         end
     end
 

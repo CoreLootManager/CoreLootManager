@@ -5,13 +5,13 @@ local LOG = CLM.LOG
 local Comms = MODULES.Comms
 local CONSTANTS = CLM.CONSTANTS
 local ACL = MODULES.ACL
--- local UTILS = CLM.UTILS
+local UTILS = CLM.UTILS
 
 local STATUS_SYNCED = "synced"
 local STATUS_OUT_OF_SYNC = "out_of_sync"
 -- local STATUS_UNKNOWN = "unknown"
 
--- local getGuidFromInteger = UTILS.getGuidFromInteger
+local DeepCopy = UTILS.DeepCopy
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
@@ -24,26 +24,69 @@ end
 local LEDGER_SYNC_COMM_PREFIX = "LedgerS001"
 local LEDGER_DATA_COMM_PREFIX = "LedgerD001"
 
-function LedgerManager:Initialize()
-    self.ledger = LedgerLib.createLedger(
-        MODULES.Database:Ledger(),
+local previousCallback = nil
+local function registerReceiveCallback(callback)
+    if not previousCallback then
+        previousCallback = callback
+    end
+    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
+    Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
+end
+
+local function restoreReceiveCallback()
+    if previousCallback then
+        registerReceiveCallback(previousCallback)
+        previousCallback = nil
+    end
+end
+
+local function createLedger(self, database)
+    local ledger = LedgerLib.createLedger(
+        database,
         (function(data, distribution, target, callbackFn, callbackArg)
             return Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- send
-        (function(callback)
-            Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-            Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
-        end), -- registerReceiveHandler
+        registerReceiveCallback, -- registerReceiveHandler
         authorize, -- authorizationHandler
         (function(data, distribution, target, progressCallback)
             return Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- sendLargeMessage
-        0, 100, LOG
-    )
-    self.ledger.addSyncStateChangedListener(function(_, status)
-        self:UpdateSyncState(status) -- there is still something fishy about the Icon (securehook) and I don't know what
-    end)
-    self.entryExtensions = {}
+        0, 100, LOG)
+
+        ledger.addSyncStateChangedListener(function(_, status)
+            self:UpdateSyncState(status)
+        end)
+
+        return ledger
+end
+
+local function createLedgerAndRegisterCallbacks(self, database)
+    local ledger = createLedger(self, database)
+
+    -- Mutators
+    for class, mutatorFn in pairs(self.mutatorCallbacks) do
+        ledger.registerMutator(class, mutatorFn)
+    end
+
+    -- Update Handlers
+    for _, callback in ipairs(self.onUpdateCallbacks) do
+        ledger.addStateChangedListener(callback)
+    end
+
+    -- Restart Handlers
+    for _,callback in ipairs(self.onRestartCallbacks) do
+        ledger.addStateRestartListener(callback)
+    end
+
+    return ledger
+end
+
+function LedgerManager:Initialize()
+    self.activeDatabase = MODULES.Database:Ledger()
+    self.activeLedger = createLedger(self, self.activeDatabase)
+    self.mutatorCallbacks = {}
+    self.onUpdateCallbacks = {}
+    self.onRestartCallbacks = {}
     self._initialized = true
 
     MODULES.ConfigManager:RegisterUniversalExecutor("ledger", "LedgerManager", self)
@@ -54,55 +97,119 @@ function LedgerManager:IsInitialized()
 end
 
 function LedgerManager:Enable()
-    self.ledger.getStateManager():setUpdateInterval(50)
+    self.activeLedger.getStateManager():setUpdateInterval(50)
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        self.ledger.enableSending()
+        self.activeLedger.enableSending()
     end
 end
 
 -- This is not reversable until reload
 function LedgerManager:Cutoff()
-    self.ledger.disableSending()
+    self.activeLedger.disableSending()
     Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
     Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
 end
 
 function LedgerManager:DisableAdvertising()
-    self.ledger.disableSending()
+    self.activeLedger.disableSending()
 end
 
-function LedgerManager:EnableSandbox()
+function LedgerManager:TimeTravel(timestamp)
+    self.timeTravelTarget = timestamp
+    self.activeLedger.getStateManager():travelToTime(timestamp)
     self:UpdateSyncState()
 end
 
-function LedgerManager:DisableSandbox()
+function LedgerManager:EndTimeTravel()
+    self.activeLedger.getStateManager():stopTimeTravel()
     self:UpdateSyncState()
+end
+
+function LedgerManager:IsTimeTraveling()
+    if not self._initialized then return false end
+    return self.activeLedger.getStateManager():isTimeTraveling()
+end
+
+function LedgerManager:GetTimeTravelTarget()
+    return self.timeTravelTarget
+end
+
+function LedgerManager:EnterSandbox()
+    LOG:Trace("LedgerManager:EnterSandbox()")
+    -- Finalize everything on current ledger
+    if self:IsTimeTraveling() then
+        self:EndTimeTravel()
+    end
+    self.activeLedger.catchup()
+    -- Backup database reference
+    self._originalDatabase = self.activeDatabase
+    -- Copy ledger database
+    self.activeDatabase = DeepCopy(self._originalDatabase)
+    -- Backup ledger
+    self._originalLedger = self.activeLedger
+    -- Create new ledger and substitute
+    self.activeLedger = createLedgerAndRegisterCallbacks(self, self.activeDatabase)
+    -- Mark as sandbox mode
+    self.isSandbox = true
+    -- Restarts
+    for _,callback in ipairs(self.onRestartCallbacks) do
+        callback()
+    end
+    -- Enable
+    self:Enable()
+    -- Update status
+    self:UpdateSyncState()
+end
+
+function LedgerManager:ExitSandbox(apply)
+    LOG:Trace("LedgerManager:ExitSandbox()")
+    if apply then
+        -- If we apply we simply keep the new ledger and discard old one
+        -- We only update the database storage
+        MODULES.Database:UpdateLedger(self.activeDatabase)
+        self._originalDatabase = nil
+        self._originalLedger = nil
+    else
+        -- Return the active from original ones
+        self.activeDatabase = self._originalDatabase
+        self.activeLedger = self._originalLedger
+        -- Restore comm callbacks to the original
+        restoreReceiveCallback()
+    end
+    -- Mark as active mode
+    self.isSandbox = false
+    -- Update status
+    self:UpdateSyncState()
+    -- restart
+    self.activeLedger.getStateManager():restart()
 end
 
 function LedgerManager:RegisterEntryType(class, mutatorFn)
-    if self.entryExtensions[class] then
+    if self.mutatorCallbacks[class] then
         LOG:Error("Class %s already exists in Ledger Entries.", class)
         return
     end
-    self.entryExtensions[class] = true
+    self.mutatorCallbacks[class] = mutatorFn
 
-    self.ledger.registerMutator(class, mutatorFn)
+    self.activeLedger.registerMutator(class, mutatorFn)
 end
 
 function LedgerManager:RegisterOnRestart(callback)
-    self.ledger.addStateRestartListener(callback)
+    table.insert(self.onRestartCallbacks, callback)
+    self.activeLedger.addStateRestartListener(callback)
 end
 
 function LedgerManager:RegisterOnUpdate(callback)
-    self.ledger.addStateChangedListener(callback)
+    table.insert(self.onUpdateCallbacks, callback)
+    self.activeLedger.addStateChangedListener(callback)
 end
 
 function LedgerManager:GetPeerStatus()
-    return self.ledger.getPeerStatus()
+    return self.activeLedger.getPeerStatus()
 end
 
 function LedgerManager:RequestPeerStatusFromGuild()
-    self.ledger.requestPeerStatusFromGuild()
+    self.activeLedger.requestPeerStatusFromGuild()
 end
 
 function LedgerManager:UpdateSyncState(status)
@@ -121,7 +228,6 @@ function LedgerManager:UpdateSyncState(status)
         self.inSync = false
         self.syncOngoing = false
     end
-    -- CLM.MinimapDBI:UpdateState(self.inSync, self.syncOngoing)
 end
 
 function LedgerManager:IsInSync()
@@ -133,36 +239,41 @@ function LedgerManager:IsSyncOngoing()
 end
 
 function LedgerManager:Lag()
-    return self.ledger.getStateManager():lag()
+    return self.activeLedger.getStateManager():lag()
 end
 
 function LedgerManager:Hash()
-    return self.ledger.getStateManager():stateHash()
+    return self.activeLedger.getStateManager():stateHash()
 end
+
 function LedgerManager:Length()
-    return self.ledger.getSortedList():length()
+    return self.activeLedger.getSortedList():length()
+end
+
+function LedgerManager:GetData()
+    return self.activeLedger.getSortedList():entries()
 end
 
 function LedgerManager:RequestPeerStatusFromRaid()
-    self.ledger.requestPeerStatusFromRaid()
+    self.activeLedger.requestPeerStatusFromRaid()
 end
 
 function LedgerManager:Submit(entry, catchup)
     LOG:Trace("LedgerManager:Submit()")
     if not entry then return end
     self.lastEntry = entry
-    self.ledger.submitEntry(entry)
+    self.activeLedger.submitEntry(entry)
     if catchup then
-        self.ledger.catchup()
+        self.activeLedger.catchup()
     end
 end
 
 function LedgerManager:Remove(entry, catchup)
     LOG:Trace("LedgerManager:Remove()")
     if not entry then return end
-    self.ledger.ignoreEntry(entry)
+    self.activeLedger.ignoreEntry(entry)
     if catchup then
-        self.ledger.catchup()
+        self.activeLedger.catchup()
     end
 end
 
@@ -185,7 +296,7 @@ end
 
 --@do-not-package@
 function LedgerManager:Reset()
-    self.ledger.reset()
+    self.activeLedger.reset()
 end
 --@end-do-not-package@
 

@@ -117,6 +117,7 @@ function CORE:_InitializeFeatures()
     MODULES.ProfileInfoManager:Initialize()
     MODULES.AutoAwardManager:Initialize()
     MODULES.LootQueueManager:Initialize()
+    MODULES.SandboxManager:Initialize()
     -- Globals
     CLM.Migration:Initialize() -- Initialize Migration
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
@@ -138,8 +139,10 @@ function CORE:_InitializeFrontend()
     MODULES.Minimap:Initialize()
     -- Hook Minimap Icon
     hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
-        if self:IsSandbox() then
+        if MODULES.SandboxManager:IsSandbox() then
             CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sandbox-32.tga"
+        elseif MODULES.LedgerManager:IsTimeTraveling() then
+            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-timetravel-32.tga"
         else
             if MODULES.LedgerManager:IsInSync() then
                 CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
@@ -184,6 +187,12 @@ end
 
 function CORE:_Initialize()
     LOG:Trace("CORE:_Initialize()")
+    -- Block direct lib timetravel
+    --[===[@non-debug@
+    if SLASH_LibEventSourcing_TimeTravel1 then
+        SLASH_LibEventSourcing_TimeTravel1 = nil
+    end
+    --@end-non-debug@]===]
     if not self._initialize_fired then
         CORE:_ExecuteInitialize()
         self:UnregisterEvent("GUILD_ROSTER_UPDATE")
@@ -224,22 +233,6 @@ function CORE:GUILD_ROSTER_UPDATE(...)
     if inGuild and numTotal ~= 0 then
         self:_Initialize()
     end
-end
-
-function CORE:EnableSandbox()
-    self.isSandbox = true
-    CLM.MODULES.Comms:Disable()
-    CLM.MODULES.LedgerManager:EnableSandbox()
-end
-
-function CORE:DisableSandbox()
-    self.isSandbox = false
-    CLM.MODULES.LedgerManager:DisableSandbox()
-    CLM.MODULES.Comms:Enable()
-end
-
-function CORE:IsSandbox()
-    return self.isSandbox and true or false
 end
 
 -- Globals: Keybinds
