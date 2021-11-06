@@ -448,10 +448,7 @@ local function GenerateOfficerOptions(self)
             name = "Enter sandbox",
             desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel.",
             type = "execute",
-            func = (function(i)
-                self.sandboxToggleInProgress = true
-                SandboxManager:EnterSandbox()
-            end),
+            func = (function(i) SandboxManager:EnterSandbox() end),
             order = 1,
             disabled = (function() return SandboxManager:IsSandbox() end)
         },
@@ -472,15 +469,7 @@ local function GenerateOfficerOptions(self)
             disabled = (function() return not SandboxManager:IsSandbox() end)
         },
         sandbox_info = {
-            name = (function()
-                local info = ""
-                if self.sandboxToggleInProgress then
-                    info = ColorCodeText(" Loading...", "FFFFFF")
-                elseif SandboxManager:IsSandbox() then
-                    info = ColorCodeText(" Sandbox", "FFFFFF")
-                end
-                return info
-            end),
+            name = (function() return ColorCodeText(SandboxManager:IsSandbox() and " Sandbox" or "", "FFFFFF") end),
             fontSize = "large",
             width = 0.5,
             order = 4,
@@ -573,7 +562,6 @@ function AuditGUI:Initialize()
         if lag ~= 0 or uncommitted ~= 0 then return end
         self._initialized = true
         self.timeTravelInProgress = false
-        self.sandboxToggleInProgress = false
         self:Refresh(true)
     end)
 
