@@ -24,10 +24,16 @@ function GlobalConfigs:Initialize()
     self.db = db.global
 
     local options = {
+        discord = {
+            type = "description",
+            name = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r",
+            fontSize = "medium",
+            order = 0
+        },
         global_header = {
             type = "header",
             name = "Global",
-            order = 0
+            order = 1
         },
         global_guild_award_announcement = {
             name = "Announce award to Guild",
@@ -36,7 +42,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetAnnounceAwardToGuild(v) end,
             get = function(i) return self:GetAnnounceAwardToGuild() end,
             width = "double",
-            order = 1
+            order = 2
         },
         global_raid_loot_announcement = {
             name = "Announce Loot from corpse to Raid",
@@ -45,7 +51,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetAnnounceLootToRaid(v) end,
             get = function(i) return self:GetAnnounceLootToRaid() end,
             width = "double",
-            order = 2
+            order = 3
         },
         global_raid_loot_announcement_level = {
             name = "Announcement loot rarity",
@@ -62,7 +68,7 @@ function GlobalConfigs:Initialize()
             },
             set = function(i, v) self:SetAnnounceLootToRaidLevel(v) end,
             get = function(i) return self:GetAnnounceLootToRaidLevel() end,
-            order = 3
+            order = 4
         },
         global_wodkpbot_integration = {
             name = "WoW DKP Bot Integration",
@@ -71,7 +77,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
             get = function(i) return self:GetWoWDKPBotIntegration() end,
             width = "double",
-            order = 4
+            order = 5
         },
         global_chat_commands = {
             name = "Enable chat commands",
@@ -80,7 +86,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetAllowChatCommands(v) end,
             get = function(i) return self:GetAllowChatCommands() end,
             width = "double",
-            order = 5
+            order = 6
         },
         global_wipe_ledger = {
             name = "Wipe events",

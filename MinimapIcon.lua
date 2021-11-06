@@ -35,9 +35,16 @@ function Minimap:Initialize()
             title = "Point History",
             func = (function() CLM.GUI.PointHistory:Toggle() end)
         },
+        -- Raid
         {
-            title = "Bidding",
-            func = (function() CLM.GUI.BiddingManager:Toggle() end)
+            title = "Raid",
+            func = (function() CLM.GUI.RaidManager:Toggle() end),
+            trustedOnly = true
+        },
+        {
+            title = "Loot Queue",
+            func = (function() CLM.GUI.LootQueue:Toggle() end),
+            trustedOnly = true
         },
         {
             title = "Auctioning",
@@ -45,10 +52,10 @@ function Minimap:Initialize()
             trustedOnly = true
         },
         {
-            title = "Raid",
-            func = (function() CLM.GUI.RaidManager:Toggle() end),
-            trustedOnly = true
+            title = "Bidding",
+            func = (function() CLM.GUI.BiddingManager:Toggle() end)
         },
+        -- Management
         {
             title = "Profiles",
             func = (function() CLM.GUI.Profiles:Toggle() end),
