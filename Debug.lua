@@ -12,7 +12,7 @@ local Database = MODULES.Database
 local LedgerManager = MODULES.LedgerManager
 local AuctionManager = MODULES.AuctionManager
 
-local COMM_CHANNEL = "debug"
+local COMM_CHANNEL = "Debug1"
 local MESSAGE_KILL_COMMAND = "killCommand"
 
 local function IsAddOptionMethod(methodName)

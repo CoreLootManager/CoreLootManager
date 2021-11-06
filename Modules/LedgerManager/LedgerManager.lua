@@ -21,8 +21,8 @@ local function authorize(entry, sender)
     return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
 end
 
-local LEDGER_SYNC_COMM_PREFIX = "LedgerS001"
-local LEDGER_DATA_COMM_PREFIX = "LedgerD001"
+local LEDGER_SYNC_COMM_PREFIX = "LedgerS1"
+local LEDGER_DATA_COMM_PREFIX = "LedgerD1"
 
 local previousCallback = nil
 local function registerReceiveCallback(callback)

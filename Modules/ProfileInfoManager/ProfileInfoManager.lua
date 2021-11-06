@@ -17,7 +17,7 @@ local ProfileInfoCommStructure = MODELS.ProfileInfoCommStructure
 local ProfileInfoCommAnnounceVersion = MODELS.ProfileInfoCommAnnounceVersion
 local ProfileInfoCommAnnounceSpec = MODELS.ProfileInfoCommAnnounceSpec
 
-local PROFILEINFO_COMM_PREFIX = "Version001" -- TODO: Rename when going to v1.0.0
+local PROFILEINFO_COMM_PREFIX = "Version001" -- Keep it for version sync with older ones
 
 local function stringifyVersion(version)
     return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
@@ -81,7 +81,6 @@ end
 
 local function StoreProfileVersion(self, name, version)
     GetProfileDb(self, name).version = version
-    -- self.db[name].version = version
 end
 
 local function RestoreVersions(self)

@@ -20,7 +20,7 @@ local Comms = MODULES.Comms
 local BiddingCommStructure = MODELS.BiddingCommStructure
 local BiddingCommSubmitBid = MODELS.BiddingCommSubmitBid
 
-local BIDDING_COMM_PREFIX = "Bidding001"
+local BIDDING_COMM_PREFIX = "Bidding1"
 
 local BiddingManager = {}
 function BiddingManager:Initialize()
