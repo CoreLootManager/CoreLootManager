@@ -197,4 +197,133 @@ CLM.ChangelogData = {
             },
         },
     },
+    {
+        version = "v0.8.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    {header = "Configurable rounding", body = "You can now round to 0, 1 or 2 decimal places. If you want to round current standings you can apply 0% Decay after selecting the appropriate rounding."},
+                    {header = "Excplicit pass", body = "You can now explicitly pass on bidding. This will show up as PASS in auction window. Passing will overwrite any previous bids."},
+                    {header = "Profile prunning", body = "Added profile prunning commands to remove profiles in batch - check Wiki for more information."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Selection storage", body = "Last selected rosters are now remembered after relog."},
+                    {header = "Selection fix", body = "Right clicking will no longer unselect selected row in Point / Loot / Raid lists."},
+                    {header = "Sorting", body = "Fixed sorting of some windows and added coloring to point values."},
+                    {header = "LibDD", body = "Changed Right-Click menus to use LibDD to prevent any tainting occuring since previous patch."},
+                },
+            },
+        }
+    },
+    {
+        version = "v0.7.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    {header = "Hard point cap", body = "Per roster hard point cap - maximum DKP points that a player can accumulate at all."},
+                    {header = "Weekly point cap", body = "Weekly point cap - maximum DKP points that a player can get in a weekly reset. The reset day is configurable as either EU or US weekly raid reset day."},
+                    {header = "Version checks", body = "Version control - You can now check what version player is using. This will be refreshed whenever player is online or Raid Ready Check is performed."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Position storage", body = "Windows and Icon will now remember their locations when closed."},
+                    {header = "Selection", body = "Right-clicking on entry in Raid, Point history or Loot history will, in addition to opening menu, select the clicked entry."},
+                    {header = "Tier tokens", body = "Default value for some tier tokens wasn't properly taken from non-equipable type"},
+                },
+            },
+        }
+    },
+    {
+        version = "v0.6.4",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Old data sync", body = "Hotfix for old data sync from eventsourcing lib."},
+                    {header = "Old data handling", body = "Hotfix for mutator for old loot data."},
+                },
+            },
+        }
+    },
+    {
+        version = "v0.6.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Awarding selection", body = "Fix issue which made selection winner for awarding impossible when after second consecutive auction, player to whom awarded originally was still selected during starting of auction."},
+                },
+            },
+        }
+    },
+    {
+        version = "v0.6.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Double data sending", body = "Update lua-eventsourcing v1.4.0 to fix double data send on repeating requests."},
+                    {header = "Compression", body = "Set compression level to more sane value."},
+                },
+            },
+        }
+    },
+    {
+        version = "v0.6.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Menu visibility", body = "Hide remove and management menus for untrusted players."},
+                },
+            },
+        }
+    },
+    {
+        version = "v0.6.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    {header = "Open bid", body = "Open Bid system support."},
+                    {header = "Posting loot to raid", body = "Added posting loot (configurable) to raid after opening corpse."},
+                    {header = "Auctioning from corpse", body = "Added auctioning from corpse (should work in both WoW UI and Elv UI)"},
+                    {header = "Entry removal", body = "Add removal of entries for: Loot History, Point History and Raid Manager"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Guild announcement", body = "Add configuration for posting loot award to Guild channel."},
+                    {header = "Guild rank fix", body = "Fix adding profiles for specific rank in guilds after TBC changes."},
+                    {header = "Lib fix", body = "Update lua-eventsourcing to fix a sync issue skipping first week of data for people starting with no entries."},
+                },
+            },
+        }
+    },
+    {
+        version = "v0.5.0",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    {header = "Public alpha", body = "This is first public release of Classic Loot Manager."},
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    {header = "Multiple raids management", body = "You can now run and manage multiple raids at the same time."},
+                    {header = "Manual item awarding", body = "You can now award items manually through command line: |cff44cc44/clm award [item]/value/roster/name|r."},
+                },
+            },
+        }
+    },
 }
