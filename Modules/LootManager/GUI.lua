@@ -88,17 +88,17 @@ end
 
 local columns = {
     playerLoot = {
-        {name = "Item",  width = 225},
+        {name = "Item",  width = 255},
         {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
         {name = "", width = 0},
         {name = "", width = 0},
     },
     raidLoot = {
-        {name = "Item", width = 225},
+        {name = "Item", width = 255},
         {name = "Value", width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
-        {name = "Player", width = 70},
+        {name = "Player", width = 90},
         {name = "", width = 0},
     }
 }
@@ -108,7 +108,7 @@ local function CreateLootDisplay(self)
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(500)
-    StandingsGroup:SetWidth(550)
+    StandingsGroup:SetWidth(600)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel("Select roster")
@@ -126,11 +126,34 @@ local function CreateLootDisplay(self)
     end)
     self.ProfileSelectorDropDown = ProfileSelectorDropDown
     StandingsGroup:AddChild(ProfileSelectorDropDown)
+    -- Search
+    local SearchInput = AceGUI:Create("EditBox")
+    SearchInput:SetLabel("Search")
+    SearchInput:SetCallback("OnEnterPressed", function()
+        self:Refresh()
+    end)
+    self.SearchInput = SearchInput
+    StandingsGroup:AddChild(SearchInput)
     -- Standings
     self.st = ScrollingTable:CreateST(columns.playerLoot, 25, 18, nil, StandingsGroup.frame)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
+    self.st:SetFilter((function(stobject, row)
+        local item = strlower(ST_GetItemLink(row))
+        local searchKeyword = self.SearchInput:GetText()
+        if searchKeyword and searchKeyword ~= "" and strlen(searchKeyword) >= 3 then
+            local searchList = { strsplit(",", searchKeyword) }
+            for _, searchString in ipairs(searchList) do
+                searchString = ".*" .. strlower(searchString) .. ".*"
+                if (string.find(item, searchString)) then
+                    return true
+                end
+            end
+            return false
+        end
+        return true
+    end))
     -- OnEnter handler -> on hover
     local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -201,7 +224,7 @@ function LootGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(600)
+    f:SetWidth(650)
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Loot_GUI")
