@@ -97,7 +97,7 @@ local function HandleAnnounceVersion(self, data, sender)
     -- Check if we have older version
     if currentVersion.major < receivedVersion.major then
         OutOfDate(self, receivedVersion, true)
-    else -- equal majors
+    elseif (currentVersion.major == receivedVersion.major) then -- equal majors
         if currentVersion.minor < receivedVersion.minor then
             -- older minor
             OutOfDate(self, receivedVersion, false)

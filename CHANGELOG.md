@@ -1,3 +1,11 @@
+# Classic Loot Manager v1.0.1
+## Fixes
+### Roster creation
+Creating roster with provided name now works properly.
+### Version notification
+You will no longer get notification about new version available if the major part is lower than your current, while minor being bigger.
+
+
 # Classic Loot Manager v1.0.0
 **Classic Loot Manager** is now fully complete! Thanks everyone for supporting us through this journey!
 
@@ -256,11 +264,11 @@ AWARD WITHOUT AUCTION
 =====================
 Added slash command to award items without auctioning with the syntax:
 1) Award linked item to player in named roster for value:
-   /clm award Item Link/Value/Roster Name/Player
+   /clm award Item Link/Value/Roster/Player
    Example: /clm award [Hearthstone]/15/Mighty Geese/Bluntlighter
 
 2) Award linked item to currently targeted player in named roster for value:
-   /clm award Item Link/Value/Roster Name
+   /clm award Item Link/Value/Roster
    Example: /clm award [Hearthstone]/15/Mighty Geese
 
 3) While being in active raid award linked item to targeted player for value:
