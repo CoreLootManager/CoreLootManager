@@ -738,9 +738,10 @@ function RosterManagerOptions:UpdateOptions()
             name = "Roster name",
             desc = "Roster Name",
             type = "input",
-            pattern = ".+",
+            set = (function(i, v) self.rosterName = v end),
+            get = (function(i) return self.rosterName end),
+            disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
             order = 2,
-            -- disabled = true,--(function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
         },
         point_type = {
             name = "Point type",

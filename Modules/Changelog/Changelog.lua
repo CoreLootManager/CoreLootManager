@@ -2,6 +2,24 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.0.1",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM is now fully complete!", body = "Thanks everyone for supporting us through this journey! Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Roster creation", body = "Creating roster with provided name now works properly."},
+                    {header = "Version notification", body = "You will no longer get notification about new version available if the major part is lower than your current, while minor being bigger."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.0.0",
         data =
         {
