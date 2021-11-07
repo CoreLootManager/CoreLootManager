@@ -25,7 +25,8 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 
 local mergeDictsInline = UTILS.mergeDictsInline
-
+local IsTooltipTextRed = UTILS.IsTooltipTextRed
+local GetItemIdFromLink = UTILS.GetItemIdFromLink
 local guiOptions = {
     type = "group",
     args = {}
@@ -79,6 +80,21 @@ function BiddingManagerGUI:Initialize()
     EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
+    self.canUseItem = true
+    self.fakeTooltip = CreateFrame("GameTooltip", "CLMBiddingFakeTooltip", UIParent, "GameTooltipTemplate")
+    self.fakeTooltip:SetScript('OnTooltipSetItem', (function(_self)
+        self.canUseItem = true
+        local tooltipName = _self:GetName()
+        for i = 1, _self:NumLines() do
+            local l = _G[tooltipName..'TextLeft'..i]
+            local r = _G[tooltipName..'TextRight'..i]
+            if IsTooltipTextRed(l) or IsTooltipTextRed(r) then
+                self.canUseItem = false
+                break
+            end
+        end
+        _self:Hide()
+    end))
     self._initialized = true
 end
 
@@ -279,7 +295,8 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
         statusText = statusText .. "(" .. self.auctionInfo:Note() .. ")"
     end
     self.top:SetStatusText(statusText)
-    if show then
+    self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
+    if show and self.canUseItem then
         self:Refresh()
         self.top:Show()
     end
