@@ -1,3 +1,11 @@
+# Classic Loot Manager v1.0.1
+## Fixes
+### Roster creation
+Creating roster with provided name now works properly.
+### Version notification
+You will no longer get notification about new version available if the major part is lower than your current, while minor being bigger.
+
+
 # Classic Loot Manager v1.0.0
 **Classic Loot Manager** is now fully complete! Thanks everyone for supporting us through this journey!
 
