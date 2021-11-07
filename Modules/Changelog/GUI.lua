@@ -49,45 +49,50 @@ local function Create(self)
         type = "group",
         args = {}
     }
-    options.args.clm_header = {
-        name = "Classic Loot Manager " .. CLM.CORE:GetVersionString(),
-        type = "header",
-        order = 1
-    }
     options.args.do_not_show = {
         name = "Do not show again",
         desc = "Suppresses changelog display until new version is released",
         type = "toggle",
         set = function(i, v) self.db.do_not_show = v and true or false end,
         get = function(i) return self.db.do_not_show end,
-        order = options.args.clm_header.order + 1
+        order = 1
     }
     local counter = options.args.do_not_show.order + 1
 
-    for _, group in ipairs(CLM.ChangelogData) do
-        local name = group.name
-        options.args[name.."header"] = {
-            name = capitalize(name),
-            type = "header",
-            order = counter
+    for _,versionData in ipairs(CLM.ChangelogData) do
+        local args = {}
+        for _, group in ipairs(versionData.data) do
+            local name = group.name
+            args[name..counter..versionData.version.."bar"] = {
+                name = capitalize(name),
+                type = "header",
+                order = counter
+            }
+            counter = counter + 1
+            for i, data in pairs(group.data) do
+                args[name..i..versionData.version.."header"] = {
+                    name = ColorCodeText(data.header,"6699ff"),
+                    type = "description",
+                    fontSize = "large",
+                    order = counter
+                }
+                counter = counter + 1
+                args[name..i..versionData.version.."body"] = {
+                    name = data.body,
+                    type = "description",
+                    fontSize = "medium",
+                    order = counter
+                }
+                counter = counter + 1
+            end
+        end
+        options.args["version"..counter..versionData.version.."header"] = {
+            name = versionData.version,
+            type = "group",
+            order = counter,
+            args = args
         }
         counter = counter + 1
-        for i, data in pairs(group.data) do
-            options.args[name..i.."header"] = {
-                name = ColorCodeText(data.header,"6699ff"),
-                type = "description",
-                fontSize = "large",
-                order = counter
-            }
-            counter = counter + 1
-            options.args[name..i.."body"] = {
-                name = data.body,
-                type = "description",
-                fontSize = "medium",
-                order = counter
-            }
-            counter = counter + 1
-        end
     end
 
     LIBS.registry:RegisterOptionsTable("Changelog", options)
