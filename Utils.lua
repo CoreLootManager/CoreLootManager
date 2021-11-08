@@ -515,5 +515,13 @@ function UTILS.GetMyTalents()
     return one, two, three
 end
 
+function UTILS.IsTooltipTextRed(text)
+    if text and text:GetText() then
+        local r,g,b = text:GetTextColor()
+        return math.floor(r*256) == 255 and math.floor(g*256) == 32 and math.floor(b*256) == 32
+    end
+    return false
+end
+
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"
