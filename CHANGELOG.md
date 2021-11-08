@@ -1,3 +1,10 @@
+# Classic Loot Manager v1.0.2
+## Fixes
+### Loot search
+Loot history is now searchable.
+### Unusable items ignoring
+Bidding window will no longer auto open if item is not usable by player.
+
 # Classic Loot Manager v1.0.1
 ## Fixes
 ### Roster creation

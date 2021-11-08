@@ -2,6 +2,24 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.0.2",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM is now fully complete!", body = "Thanks everyone for supporting us through this journey! Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Loot search", body = "Loot history is now searchable."},
+                    {header = "Unusable items ignoring", body = "Bidding window will no longer auto open if item is not usable by player."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.0.1",
         data = {
             {
