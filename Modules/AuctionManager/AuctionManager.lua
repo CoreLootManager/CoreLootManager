@@ -359,7 +359,7 @@ end
 function AuctionManager:UpdateBid(name, bid)
     LOG:Trace("AuctionManager:UpdateBid()")
     LOG:Debug("Bid from %s: %s", name, bid)
-    if not self:IsAuctionInProgress() then return end
+    if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local accept, reason = self:ValidateBid(name, bid)
     if accept then
         self:UpdateBidsInternal(name, bid)
@@ -432,7 +432,8 @@ CONSTANTS.AUCTION_COMM = {
         BID_VALUE_TOO_LOW = 4,
         BID_VALUE_TOO_HIGH = 5,
         BID_VALUE_INVALID = 6,
-        BID_INCREMENT_TOO_LOW = 7
+        BID_INCREMENT_TOO_LOW = 7,
+        NO_AUCTION_IN_PROGRESS = 8
     },
     DENY_BID_REASONS = UTILS.Set({
         1, -- NOT_IN_ROSTER
@@ -441,7 +442,8 @@ CONSTANTS.AUCTION_COMM = {
         4, -- BID_VALUE_TOO_LOW
         5, -- BID_VALUE_TOO_HIGH
         6, -- BID_VALUE_INVALID
-        7  -- BID_INCREMENT_TOO_LOW
+        7, -- BID_INCREMENT_TOO_LOW
+        8  -- NO_AUCTION_IN_PROGRESS
     }),
     DENY_BID_REASONS_STRING = {
         [1] = "Not in a roster",
@@ -450,7 +452,8 @@ CONSTANTS.AUCTION_COMM = {
         [4] = "Bid too low",
         [5] = "Bid too high",
         [6] = "Invalid bid value",
-        [7] = "Bid increment too low"
+        [7] = "Bid increment too low",
+        [8] = "No auction in progress"
     }
 
 }

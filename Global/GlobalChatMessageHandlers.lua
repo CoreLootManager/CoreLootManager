@@ -46,24 +46,24 @@ function GlboalChatMessageHandlers:Initialize()
                 if params[2] then
                     value = trim(params[2])
                 end
-                if not AuctionManager:IsAuctionInProgress() then
-                    LOG:Debug("Received submit bid from %s while no auctions are in progress", playerName)
-                    return
-                end
-                local accept, reason = false, "Invalid value provided"
+                -- if not AuctionManager:IsAuctionInProgress() then
+                --     LOG:Debug("Received submit bid from %s while no auctions are in progress", playerName)
+                --     return
+                -- end
+                local accept, reason = false, nil
                 if value == "cancel" then
                     accept, reason = AuctionManager:UpdateBid(playerName, nil)
                 elseif value == "pass" then
                     accept, reason = AuctionManager:UpdateBid(playerName, CONSTANTS.AUCTION_COMM.BID_PASS)
                 else
-                    value = tonumber(value)
-                    if type(value) == "number" then
-                        accept, reason = AuctionManager:UpdateBid(playerName, value)
+                    local numericValue = tonumber(value)
+                    if type(numericValue) == "number" then
+                        accept, reason = AuctionManager:UpdateBid(playerName, numericValue)
                     end
                 end
 
                 SendChatMessage(
-                    "<CLM> Your bid (" .. tostring(value) .. ") was " .. (accept and "accepted" or ("denied: " .. CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or "Unknown")) .. ".",
+                    "<CLM> Your bid (" .. tostring(value) .. ") was " .. (accept and "accepted" or ("denied: " .. (CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or "Invalid value provided"))) .. ".",
                     responseChannel, nil, target
                 )
 
