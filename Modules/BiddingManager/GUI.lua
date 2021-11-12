@@ -351,5 +351,10 @@ function BiddingManagerGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function BiddingManagerGUI:Reset()
+    LOG:Trace("BiddingManagerGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
 
 GUI.BiddingManager = BiddingManagerGUI

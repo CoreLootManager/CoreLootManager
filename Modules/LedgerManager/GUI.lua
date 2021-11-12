@@ -653,4 +653,10 @@ function AuditGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function AuditGUI:Reset()
+    LOG:Trace("AuditGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
+
 CLM.GUI.Audit = AuditGUI

@@ -404,4 +404,10 @@ function LootGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function LootGUI:Reset()
+    LOG:Trace("LootGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
+
 GUI.Loot = LootGUI
