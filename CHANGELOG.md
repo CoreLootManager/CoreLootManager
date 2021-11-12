@@ -1,3 +1,14 @@
+# Classic Loot Manager v1.0.3
+## Fixes
+### Chat bidding
+Chat bidding will no longer result in an error if non-numeric (other than `pass` or `cancel`) value is used.
+### First week sync issues
+Updated sync library to fix problems with syncing of first week after migration. It should take now around 15 minutes for full sync after using `/clm migrate`.
+### ElvUI search issues
+Fixed loot search location issue for ElvUI users
+### GUI position reset
+You can now reset GUI position by typing `/clm guireset`
+
 # Classic Loot Manager v1.0.2
 ## Fixes
 ### Loot search

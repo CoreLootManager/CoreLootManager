@@ -2,6 +2,26 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.0.3",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM is now fully complete!", body = "Thanks everyone for supporting us through this journey! Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Chat bidding", body = "Chat bidding will no longer result in an error if non-numeric (other than |cff44cc44pass|r or |cff44cc44cancel|r) value is used."},
+                    {header = "First week sync issues", body = "Updated sync library to fix problems with syncing of first week after migration. It should take now around 15 minutes for full sync after using |cff44cc44/clm migrate|r."},
+                    {header = "ElvUI search issues", body = "Fixed loot search location issue for ElvUI users."},
+                    {header = "GUI position reset", body = "You can now reset GUI position by typing |cff44cc44/clm guireset|r."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.0.2",
         data = {
             {
