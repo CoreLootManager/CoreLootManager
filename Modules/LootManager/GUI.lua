@@ -88,16 +88,16 @@ end
 
 local columns = {
     playerLoot = {
-        {name = "Item",  width = 255},
+        {name = "Item",  width = 265},
         {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
-        {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
+        {name = "Date", width = 160, sort = ScrollingTable.SORT_DSC},
         {name = "", width = 0},
         {name = "", width = 0},
     },
     raidLoot = {
-        {name = "Item", width = 255},
+        {name = "Item", width = 265},
         {name = "Value", width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
-        {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
+        {name = "Date", width = 160, sort = ScrollingTable.SORT_DSC},
         {name = "Player", width = 90},
         {name = "", width = 0},
     }
@@ -108,7 +108,7 @@ local function CreateLootDisplay(self)
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(500)
-    StandingsGroup:SetWidth(600)
+    StandingsGroup:SetWidth(620)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel("Select roster")
@@ -224,7 +224,7 @@ function LootGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(650)
+    f:SetWidth(670)
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Loot_GUI")
