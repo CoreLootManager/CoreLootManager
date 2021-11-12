@@ -46,10 +46,10 @@ function GlboalChatMessageHandlers:Initialize()
                 if params[2] then
                     value = trim(params[2])
                 end
-                -- if not AuctionManager:IsAuctionInProgress() then
-                --     LOG:Debug("Received submit bid from %s while no auctions are in progress", playerName)
-                --     return
-                -- end
+                if not AuctionManager:IsAuctionInProgress() then
+                    LOG:Debug("Received submit bid from %s while no auctions are in progress", playerName)
+                    return
+                end
                 local accept, reason = false, nil
                 if value == "cancel" then
                     accept, reason = AuctionManager:UpdateBid(playerName, nil)
