@@ -554,4 +554,10 @@ function AuctionManagerGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function AuctionManagerGUI:Reset()
+    LOG:Trace("AuctionManagerGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
+
 GUI.AuctionManager = AuctionManagerGUI

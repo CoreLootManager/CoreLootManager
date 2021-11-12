@@ -356,4 +356,10 @@ function PointHistoryGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function PointHistoryGUI:Reset()
+    LOG:Trace("PointHistoryGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
+
 GUI.PointHistory = PointHistoryGUI

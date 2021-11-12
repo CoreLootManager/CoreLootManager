@@ -501,4 +501,10 @@ function RaidManagerGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function RaidManagerGUI:Reset()
+    LOG:Trace("RaidManagerGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
+
 GUI.RaidManager = RaidManagerGUI

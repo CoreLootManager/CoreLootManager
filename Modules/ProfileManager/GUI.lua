@@ -455,4 +455,10 @@ function ProfilesGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function ProfilesGUI:Reset()
+    LOG:Trace("ProfilesGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
+
 GUI.Profiles = ProfilesGUI

@@ -166,6 +166,18 @@ function GlobalSlashCommands:Initialize()
             confirm = true
         }
     end
+    options.guireset = {
+        type = "execute",
+        name = "Reset gui positions",
+        func = (function()
+            for _,GUI in pairs(CLM.GUI) do
+                if GUI.Reset then
+                    GUI:Reset()
+                end
+            end
+        end),
+        confirm = true
+    }
     ConfigManager:RegisterSlash(options)
 end
 

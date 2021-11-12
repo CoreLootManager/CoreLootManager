@@ -579,4 +579,10 @@ function StandingsGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function StandingsGUI:Reset()
+    LOG:Trace("StandingsGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
+
 GUI.Standings = StandingsGUI

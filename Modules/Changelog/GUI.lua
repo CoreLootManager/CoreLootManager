@@ -139,4 +139,10 @@ function ChangelogGUI:RegisterSlash()
     MODULES.ConfigManager:RegisterSlash(options)
 end
 
+function ChangelogGUI:Reset()
+    LOG:Trace("ChangelogGUI:Reset()")
+    self.top:ClearAllPoints()
+    self.top:SetPoint("CENTER", 0, 0)
+end
+
 CLM.GUI.Changelog = ChangelogGUI
