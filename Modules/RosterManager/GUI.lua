@@ -126,22 +126,32 @@ local function GenerateUntrustedOptions(self)
             end),
             get = (function(i) return self.searchString end),
             width = "full",
+            order = 4,
+        },
+        filter_select_all = {
+            name = "All",
+            desc = "Select all classes.",
+            type = "execute",
+            func = (function()
+                for i=1,9 do
+                    self.filterOptions[i] = true
+                end
+                self:Refresh(true)
+            end),
+            width = 0.55,
             order = 2,
         },
-        filter_select_all = {
-            name = "Select all",
-            desc = "Select all classes.",
-            type = "exec",
-            func = (function() end)
-            width = 0.49,
-            order = 3,
-        },
-        filter_select_all = {
-            name = "Select all",
-            desc = "Select no classes.",
-            type = "exec",
-            func = (function() end)
-            width = 0.49,
+        filter_select_none = {
+            name = "None",
+            desc = "Clear all classes.",
+            type = "execute",
+            func = (function()
+                for i=1,9 do
+                    self.filterOptions[i] = false
+                end
+                self:Refresh(true)
+            end),
+            width = 0.55,
             order = 3,
         },
     }
@@ -508,6 +518,7 @@ function StandingsGUI:Refresh(visible)
         end
     end
     self.st:SetData(data)
+    LIBS.gui:Open("clm_standings_gui_options", self.ManagementOptions)
     self.top:SetStatusText(tostring(#data or 0) .. " players in roster")
 end
 
@@ -578,7 +589,6 @@ function StandingsGUI:Toggle()
         self.top:Hide()
     else
         self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
-        LIBS.gui:Open("clm_standings_gui_options", self.ManagementOptions)
         self:Refresh()
         self.top:Show()
     end

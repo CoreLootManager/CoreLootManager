@@ -89,7 +89,33 @@ local function GenerateUntrustedOptions(self)
             values = filters,
             width = 0.49,
             order = 1
-        }
+        },
+        filter_select_all = {
+            name = "All",
+            desc = "Select all classes.",
+            type = "execute",
+            func = (function()
+                for i=1,9 do
+                    self.filterOptions[i] = true
+                end
+                self:Refresh(true)
+            end),
+            width = 0.55,
+            order = 2,
+        },
+        filter_select_none = {
+            name = "None",
+            desc = "Clear all classes.",
+            type = "execute",
+            func = (function()
+                for i=1,9 do
+                    self.filterOptions[i] = false
+                end
+                self:Refresh(true)
+            end),
+            width = 0.55,
+            order = 3,
+        },
     }
 end
 
@@ -284,7 +310,7 @@ local function CreateManagementOptions(self, container)
         mergeDictsInline(options.args, GenerateGMOptions(self))
     end
     LIBS.registry:RegisterOptionsTable(REGISTRY, options)
-    LIBS.gui:Open(REGISTRY, ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
+    LIBS.gui:Open(REGISTRY, ManagementOptions)
 
     self.st:SetFilter((function(stobject, row)
         local isInRaid = {}
