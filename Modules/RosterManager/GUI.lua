@@ -28,7 +28,7 @@ local EventManager = MODULES.EventManager
 local RaidManager = MODULES.RaidManager
 
 local FILTER_IN_RAID = 100
-local FILTER_STANDBY = 102
+-- local FILTER_STANDBY = 102
 
 local StandingsGUI = {}
 
