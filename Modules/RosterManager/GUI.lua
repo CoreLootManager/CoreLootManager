@@ -85,7 +85,7 @@ end
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText("In Raid", "FFD100")
-    filters[FILTER_STANDBY] = UTILS.ColorCodeText("Standby", "FFD100")
+    -- filters[FILTER_STANDBY] = UTILS.ColorCodeText("Standby", "FFD100")
     return {
         filter_header = {
             type = "header",
@@ -127,7 +127,23 @@ local function GenerateUntrustedOptions(self)
             get = (function(i) return self.searchString end),
             width = "full",
             order = 2,
-        }
+        },
+        filter_select_all = {
+            name = "Select all",
+            desc = "Select all classes.",
+            type = "exec",
+            func = (function() end)
+            width = 0.49,
+            order = 3,
+        },
+        filter_select_all = {
+            name = "Select all",
+            desc = "Select no classes.",
+            type = "exec",
+            func = (function() end)
+            width = 0.49,
+            order = 3,
+        },
     }
 end
 
@@ -321,6 +337,7 @@ local function CreateManagementOptions(self, container)
     local ManagementOptions = AceGUI:Create("SimpleGroup")
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(200)
+    self.ManagementOptions = ManagementOptions
     self.filterOptions = {}
     self.searchString = ""
     self.searchMethod = nil
@@ -344,7 +361,7 @@ local function CreateManagementOptions(self, container)
         mergeDictsInline(options.args, GenerateOfficerOptions(self))
     end
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
-    LIBS.gui:Open("clm_standings_gui_options", ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
+    LIBS.gui:Open("clm_standings_gui_options", ManagementOptions)
     self.st:SetFilter((function(stobject, row)
         local isInRaid = {}
 
@@ -561,6 +578,7 @@ function StandingsGUI:Toggle()
         self.top:Hide()
     else
         self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
+        LIBS.gui:Open("clm_standings_gui_options", self.ManagementOptions)
         self:Refresh()
         self.top:Show()
     end
