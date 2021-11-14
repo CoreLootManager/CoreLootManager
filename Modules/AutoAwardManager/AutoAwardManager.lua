@@ -19,7 +19,8 @@ local function awardBossKillBonus(id)
     LOG:Info("Award Boss Kill Bonus for %s", id)
     if RaidManager:IsInActiveRaid() then
         local roster = RaidManager:GetRaid():Roster()
-        if roster:GetConfiguration("bossKillBonus") then
+        local config = RaidManager:GetRaid():Configuration()
+        if config:GetConfiguration("bossKillBonus") then
             local value = roster:GetBossKillBonusValue(id)
             if value > 0 then
                 PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
@@ -74,16 +75,12 @@ local function handleIntervalBonus(self)
     if not RaidManager:IsInProgressingRaid() then return end
     -- Validate roster
     local raid = RaidManager:GetRaid()
-    local roster = raid:Roster()
-    if not roster then
-        LOG:Warning("No roster in raid for handleIntervalBonus()")
-        return
-    end
+    local config = raid:Configuration()
     -- Validate settings
-    if not roster:GetConfiguration("intervalBonus") then return end
-    local interval = roster:GetConfiguration("intervalBonusTime")
+    if not config:Get("intervalBonus") then return end
+    local interval = config:Get("intervalBonusTime")
     if interval <= 0 then return end
-    local value = roster:GetConfiguration("intervalBonusValue")
+    local value = config:Get("intervalBonusValue")
     if value <= 0 then return end
     interval = interval * 60 -- minutes in seconds
     local now = GetServerTime()
@@ -198,23 +195,5 @@ function AutoAwardManager:IsIntervalBonusAwardingEnabled()
     LOG:Trace("AutoAwardManager:IsIntervalBonusAwardingEnabled()")
     return self.intervalBonusAwardingEnabled
 end
-
---@debug@
-function AutoAwardManager:FakeEncounterStart()
-    handleEncounterStart(self, "CLM", "ENCOUNTER_START", 123456, "Fake Encounter", 0, 25)
-end
-
-function AutoAwardManager:FakeEncounterSuccess()
-    handleEncounterEnd(self, "CLM", "ENCOUNTER_END", 123456, "Fake Encounter", 0, 25, 1)
-end
-
-function AutoAwardManager:FakeEncounterFail()
-    handleEncounterEnd(self, "CLM", "ENCOUNTER_END", 123456, "Fake Encounter", 0, 25, 0)
-end
-
-function AutoAwardManager:FakeBossKill()
-    handleBossKill(self, "CLM", "BOSS_KILL", 123456, "Fake Encounter")
-end
---@end-debug@
 
 MODULES.AutoAwardManager = AutoAwardManager

@@ -124,11 +124,10 @@ function RaidManager:Initialize()
             end
 
             raid:Start(entry:time())
-
-            local roster = raid:Roster()
-            if roster then
-                if roster:GetConfiguration("onTimeBonus") then
-                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
+            local config = raid:Configuration()
+            if config then
+                if config:Get("onTimeBonus") then
+                    PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
                 end
             end
         end)
@@ -146,10 +145,10 @@ function RaidManager:Initialize()
                 return
             end
 
-            local roster = raid:Roster()
-            if roster then
-                if roster:GetConfiguration("raidCompletionBonus") then
-                    PointManager:UpdatePointsDirectly(roster, raid:Players(), roster:GetConfiguration("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
+            local config = raid:Configuration()
+            if config then
+                if config:Get("raidCompletionBonus") then
+                    PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
                 end
             end
 
@@ -390,9 +389,9 @@ end
 
 function RaidManager:EnableAutoAwarding()
     LOG:Trace("RaidManager:EnableAutoAwarding()")
-    local roster = self:GetRaid():Roster()
-    local bossKillBonus = roster:GetConfiguration("bossKillBonus")
-    local intervalBonus = roster:GetConfiguration("intervalBonus")
+    local config = self:GetRaid():Configuration()
+    local bossKillBonus = config:Get("bossKillBonus")
+    local intervalBonus = config:Get("intervalBonus")
 
     if bossKillBonus or intervalBonus then
         MODULES.AutoAwardManager:Enable()
