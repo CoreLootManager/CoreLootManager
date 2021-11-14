@@ -523,5 +523,10 @@ function UTILS.IsTooltipTextRed(text)
     return false
 end
 
+function UTILS.Trim(text)
+    text = text or ""
+    return (string.gsub(text, "^%s*(.-)%s*$", "%1"))
+end
+
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"

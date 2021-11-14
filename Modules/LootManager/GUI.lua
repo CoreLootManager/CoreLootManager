@@ -14,6 +14,7 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 local GetClassColor = UTILS.GetClassColor
 local ColorCodeText = UTILS.ColorCodeText
 local GetItemIdFromLink = UTILS.GetItemIdFromLink
+local Trim = UTILS.Trim
 
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
@@ -142,12 +143,15 @@ local function CreateLootDisplay(self)
     self.st:SetFilter((function(stobject, row)
         local item = strlower(ST_GetItemLink(row))
         local searchKeyword = self.SearchInput:GetText()
-        if searchKeyword and searchKeyword ~= "" and strlen(searchKeyword) >= 3 then
+        if searchKeyword and strlen(searchKeyword) >= 3 then
             local searchList = { strsplit(",", searchKeyword) }
             for _, searchString in ipairs(searchList) do
-                searchString = ".*" .. strlower(searchString) .. ".*"
-                if (string.find(item, searchString)) then
-                    return true
+                searchString = Trim(searchString)
+                if strlen(searchString) >= 3 then
+                    searchString = ".*" .. strlower(searchString) .. ".*"
+                    if (string.find(item, searchString)) then
+                        return true
+                    end
                 end
             end
             return false
