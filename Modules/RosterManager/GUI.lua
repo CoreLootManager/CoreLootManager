@@ -142,6 +142,7 @@ local function GenerateUntrustedOptions(self)
                 end
                 self:Refresh(true)
             end),
+            disabled = function() return self.searchMethod and true or false end,
             width = 0.55,
             order = 2,
         },
@@ -155,6 +156,7 @@ local function GenerateUntrustedOptions(self)
                 end
                 self:Refresh(true)
             end),
+            disabled = function() return self.searchMethod and true or false end,
             width = 0.55,
             order = 3,
         },
