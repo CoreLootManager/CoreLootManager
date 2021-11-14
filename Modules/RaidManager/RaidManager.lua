@@ -126,7 +126,10 @@ function RaidManager:Initialize()
             raid:Start(entry:time())
             local config = raid:Configuration()
             local roster = raid:Roster()
-            if config and roster then
+            if roster then
+                if not config then
+                    config = roster.configuration
+                end
                 if config:Get("onTimeBonus") then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
                 end
@@ -148,7 +151,10 @@ function RaidManager:Initialize()
 
             local config = raid:Configuration()
             local roster = raid:Roster()
-            if config and roster then
+            if roster then
+                if not config then
+                    config = roster.configuration
+                end
                 if config:Get("raidCompletionBonus") then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
                 end
