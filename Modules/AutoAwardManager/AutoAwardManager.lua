@@ -29,24 +29,24 @@ local function awardBossKillBonus(id)
     end
 end
 
-local function handleEncounterStart(self, addon, event, id, name, difficulty, groupSize)
-    LOG:Debug("[%s %s]: <%s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
-    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
-        self.encounterInProgress = id
-    end
-end
+-- local function handleEncounterStart(self, addon, event, id, name, difficulty, groupSize)
+--     LOG:Debug("[%s %s]: <%s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
+--     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
+--         self.encounterInProgress = id
+--     end
+-- end
 
-local function handleEncounterEnd(self, addon, event, id, name, difficulty, groupSize, success)
-    LOG:Debug("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize, success)
-    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and self:EncounterInProgress() then
-        if self.encounterInProgress == id then
-            if success == 1 then
-                awardBossKillBonus(id)
-            end
-            self.encounterInProgress = 0
-        end
-    end
-end
+-- local function handleEncounterEnd(self, addon, event, id, name, difficulty, groupSize, success)
+--     LOG:Debug("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize, success)
+--     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and self:EncounterInProgress() then
+--         if self.encounterInProgress == id then
+--             if success == 1 then
+--                 awardBossKillBonus(id)
+--             end
+--             self.encounterInProgress = 0
+--         end
+--     end
+-- end
 
 local function handleBossKill(self, addon, event, id, name)
     LOG:Debug("[%s %s]: <%s %s>", addon, event, id, name)
@@ -75,6 +75,11 @@ local function handleIntervalBonus(self)
     if not RaidManager:IsInProgressingRaid() then return end
     -- Validate roster
     local raid = RaidManager:GetRaid()
+    local roster = raid:Roster()
+    if not roster then
+        LOG:Warning("No roster in raid for handleIntervalBonus()")
+        return
+    end
     local config = raid:Configuration()
     -- Validate settings
     if not config:Get("intervalBonus") then return end
