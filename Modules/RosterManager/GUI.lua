@@ -19,6 +19,7 @@ local GUI = CLM.GUI
 
 local mergeDictsInline = UTILS.mergeDictsInline
 local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
+local Trim = UTILS.Trim
 
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
@@ -108,13 +109,16 @@ local function GenerateUntrustedOptions(self)
             type = "input",
             set = (function(i, v)
                 self.searchString = v
-                if v and v ~= "" and strlen(v) >= 3 then
+                if v and strlen(v) >= 3 then
                     local searchList = { strsplit(",", v) }
                     self.searchMethod = (function(playerName)
                         for _, searchString in ipairs(searchList) do
-                            searchString = ".*" .. strlower(searchString) .. ".*"
-                            if(string.find(strlower(playerName), searchString)) then
-                                return true
+                            searchString = Trim(searchString)
+                            if strlen(searchString) >= 3 then
+                                searchString = ".*" .. strlower(searchString) .. ".*"
+                                if(string.find(strlower(playerName), searchString)) then
+                                    return true
+                                end
                             end
                         end
                         return false
@@ -138,6 +142,7 @@ local function GenerateUntrustedOptions(self)
                 end
                 self:Refresh(true)
             end),
+            disabled = function() return self.searchMethod and true or false end,
             width = 0.55,
             order = 2,
         },
@@ -151,6 +156,7 @@ local function GenerateUntrustedOptions(self)
                 end
                 self:Refresh(true)
             end),
+            disabled = function() return self.searchMethod and true or false end,
             width = 0.55,
             order = 3,
         },
