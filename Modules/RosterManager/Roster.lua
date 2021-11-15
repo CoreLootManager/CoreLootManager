@@ -433,7 +433,6 @@ function RosterConfiguration:fields()
         "antiSnipe",
         "allowNegativeStandings",
         "allowNegativeBidders",
-        -- bonuses not yet in place
         "bossKillBonus",
         "bossKillBonusValue",
         "onTimeBonus",
@@ -468,6 +467,11 @@ function RosterConfiguration:deflate()
     for _, key in ipairs(self:fields()) do
         table.insert(result, self._[key])
     end
+    -- Fix for old data type bug with bossKillBonusValue being bool instead of number
+    if type(self._.bossKillBonusValue) ~= "number" then
+        self._.bossKillBonusValue = 0
+    end
+
     return result
 end
 
