@@ -460,16 +460,16 @@ function RosterConfiguration:inflate(data)
     for i, key in ipairs(self:fields()) do
         self._[key] = data[i]
     end
+    -- Fix for old data type bug with bossKillBonusValue being bool instead of number
+    if type(self._.bossKillBonusValue) ~= "number" then
+        self._.bossKillBonusValue = 0
+    end
 end
 
 function RosterConfiguration:deflate()
     local result = {}
     for _, key in ipairs(self:fields()) do
         table.insert(result, self._[key])
-    end
-    -- Fix for old data type bug with bossKillBonusValue being bool instead of number
-    if type(self._.bossKillBonusValue) ~= "number" then
-        self._.bossKillBonusValue = 0
     end
 
     return result
