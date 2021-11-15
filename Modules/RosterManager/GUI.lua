@@ -19,6 +19,7 @@ local GUI = CLM.GUI
 
 local mergeDictsInline = UTILS.mergeDictsInline
 local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
+local Trim = UTILS.Trim
 
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
@@ -28,7 +29,7 @@ local EventManager = MODULES.EventManager
 local RaidManager = MODULES.RaidManager
 
 local FILTER_IN_RAID = 100
-local FILTER_STANDBY = 102
+-- local FILTER_STANDBY = 102
 
 local StandingsGUI = {}
 
@@ -85,7 +86,7 @@ end
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText("In Raid", "FFD100")
-    filters[FILTER_STANDBY] = UTILS.ColorCodeText("Standby", "FFD100")
+    -- filters[FILTER_STANDBY] = UTILS.ColorCodeText("Standby", "FFD100")
     return {
         filter_header = {
             type = "header",
@@ -108,13 +109,16 @@ local function GenerateUntrustedOptions(self)
             type = "input",
             set = (function(i, v)
                 self.searchString = v
-                if v and v ~= "" and strlen(v) >= 3 then
+                if v and strlen(v) >= 3 then
                     local searchList = { strsplit(",", v) }
                     self.searchMethod = (function(playerName)
                         for _, searchString in ipairs(searchList) do
-                            searchString = ".*" .. strlower(searchString) .. ".*"
-                            if(string.find(strlower(playerName), searchString)) then
-                                return true
+                            searchString = Trim(searchString)
+                            if strlen(searchString) >= 3 then
+                                searchString = ".*" .. strlower(searchString) .. ".*"
+                                if(string.find(strlower(playerName), searchString)) then
+                                    return true
+                                end
                             end
                         end
                         return false
@@ -126,8 +130,36 @@ local function GenerateUntrustedOptions(self)
             end),
             get = (function(i) return self.searchString end),
             width = "full",
+            order = 4,
+        },
+        filter_select_all = {
+            name = "All",
+            desc = "Select all classes.",
+            type = "execute",
+            func = (function()
+                for i=1,9 do
+                    self.filterOptions[i] = true
+                end
+                self:Refresh(true)
+            end),
+            disabled = function() return self.searchMethod and true or false end,
+            width = 0.55,
             order = 2,
-        }
+        },
+        filter_select_none = {
+            name = "None",
+            desc = "Clear all classes.",
+            type = "execute",
+            func = (function()
+                for i=1,9 do
+                    self.filterOptions[i] = false
+                end
+                self:Refresh(true)
+            end),
+            disabled = function() return self.searchMethod and true or false end,
+            width = 0.55,
+            order = 3,
+        },
     }
 end
 
@@ -321,6 +353,7 @@ local function CreateManagementOptions(self, container)
     local ManagementOptions = AceGUI:Create("SimpleGroup")
     ManagementOptions:SetLayout("Flow")
     ManagementOptions:SetWidth(200)
+    self.ManagementOptions = ManagementOptions
     self.filterOptions = {}
     self.searchString = ""
     self.searchMethod = nil
@@ -344,7 +377,7 @@ local function CreateManagementOptions(self, container)
         mergeDictsInline(options.args, GenerateOfficerOptions(self))
     end
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
-    LIBS.gui:Open("clm_standings_gui_options", ManagementOptions) -- this doesnt directly open but it feeds it to the container -> tricky ^^
+    LIBS.gui:Open("clm_standings_gui_options", ManagementOptions)
     self.st:SetFilter((function(stobject, row)
         local isInRaid = {}
 
@@ -491,6 +524,7 @@ function StandingsGUI:Refresh(visible)
         end
     end
     self.st:SetData(data)
+    LIBS.gui:Open("clm_standings_gui_options", self.ManagementOptions)
     self.top:SetStatusText(tostring(#data or 0) .. " players in roster")
 end
 
