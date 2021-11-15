@@ -70,10 +70,10 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         LOG:Warning("AuctionManager:StartAuction(): Auction in progress")
         return
     end
-    -- if not self:IsAuctioneer() then
-    --     LOG:Message("You are not allowed to auction items")
-    --     return
-    -- end
+    if not self:IsAuctioneer() then
+        LOG:Message("You are not allowed to auction items")
+        return
+    end
     -- Auction parameters sanity checks
     note = note or ""
     if not typeof(raid, Raid) then
