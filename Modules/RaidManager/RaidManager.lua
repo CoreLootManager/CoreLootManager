@@ -131,6 +131,9 @@ function RaidManager:Initialize()
                     config = roster.configuration
                 end
                 if config:Get("onTimeBonus") then
+                    for k,v in pairs(config._) do
+                        print(k,v)
+                    end
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
                 end
             end

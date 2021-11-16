@@ -422,9 +422,11 @@ function RosterConfiguration:New(i)
     return o
 end
 
+-- ------------------------ --
+-- ADD NEW  ONLY AT THE END --
+-- ------------------------ --
 function RosterConfiguration:fields()
     return {
-        -- basic options
         "auctionType",
         "itemValueMode",
         "zeroSumBank",
@@ -442,11 +444,9 @@ function RosterConfiguration:fields()
         "intervalBonus",
         "intervalBonusTime",
         "intervalBonusValue",
-        -- caps
         "hardCap",
         "weeklyCap",
         "weeklyReset",
-        --
         "roundDecimals",
         "minimalIncrement"
     }
@@ -457,6 +457,11 @@ function RosterConfiguration:Storage()
 end
 
 function RosterConfiguration:inflate(data)
+    --  Fix for bossKillBonusValue fuckup with adding in between
+    if #data < 22 then
+        print("size:", #data)
+        -- table.insert(data, 0, 10)
+    end
     for i, key in ipairs(self:fields()) do
         self._[key] = data[i]
     end
