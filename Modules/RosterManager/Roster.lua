@@ -460,10 +460,11 @@ function RosterConfiguration:inflate(data)
     --  Fix for bossKillBonusValue fuckup with adding in between
     if #data < 22 then
         print("size:", #data)
-        -- table.insert(data, 0, 10)
+        table.insert(data, 10, 0)
     end
     for i, key in ipairs(self:fields()) do
-        self._[key] = data[i]
+        -- self._[key] = data[i]
+        self._[key] = TRANSFORMS[key](data[i])
     end
 end
 
@@ -483,7 +484,7 @@ function RosterConfiguration:Copy(o)
 end
 
 local function transform_boolean(value) return value and true or false end
-local function transform_number(value) return tonumber(value) end
+local function transform_number(value) return tonumber(value) or 0 end
 
 local TRANSFORMS = {
     auctionType = transform_number,
