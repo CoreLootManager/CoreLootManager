@@ -32,19 +32,87 @@ local guiOptions = {
     args = {}
 }
 
+local BASE_WIDTH = 505
+
 local REGISTRY = "clm_bidding_manager_gui_options"
+
+local CUSTOM_BUTTON = {}
+CUSTOM_BUTTON.MODE = {
+    DISABLED = 1,
+    ALL_IN = 2,
+    CUSTOM_VALUE = 3
+}
+CUSTOM_BUTTON.MODES = UTILS.Set(CUSTOM_BUTTON.MODE)
+CUSTOM_BUTTON.MODES_GUI = {
+    [CUSTOM_BUTTON.MODE.DISABLED] = "Disabled",
+    [CUSTOM_BUTTON.MODE.ALL_IN] = "All in",
+    [CUSTOM_BUTTON.MODE.CUSTOM_VALUE] = "Custom value"
+}
+
+local function GetCustomButtonMode(self)
+    return self.db.customButton.mode
+end
+
+local function SetCustomButtonMode(self, mode)
+    self.db.customButton.mode = CUSTOM_BUTTON.MODES[mode] and mode or CUSTOM_BUTTON.MODE.DISABLED
+end
+
+local function GetCustomButtonValue(self)
+    return self.db.customButton.value
+end
+
+local function SetCustomButtonValue(self, value)
+    self.db.customButton.value = tonumber(value) or 1
+end
 
 local function UpdateOptions(self)
     for k,_ in pairs(guiOptions.args) do
         guiOptions.args[k] = nil
     end
     mergeDictsInline(guiOptions.args, self:GenerateAuctionOptions())
+    if GetCustomButtonMode(self) == CUSTOM_BUTTON.MODE.ALL_IN then
+        mergeDictsInline(guiOptions.args, {
+            custom = {
+                name = "All In",
+                desc = "Bid your current DKP (" .. tostring(self.standings) ..  ").",
+                type = "execute",
+                func = (function()
+                    self.bid = self.standings
+                    BiddingManager:Bid(self.bid)
+                end),
+                width = 0.44,
+                order = 9
+            }
+        })
+        self.top:SetWidth(BASE_WIDTH + 30)
+        self.OptionsGroup:SetWidth(BASE_WIDTH + 30)
+    elseif GetCustomButtonMode(self) == CUSTOM_BUTTON.MODE.CUSTOM_VALUE then
+        local value = GetCustomButtonValue(self)
+        mergeDictsInline(guiOptions.args, {
+            custom = {
+                name = tostring(value),
+                desc = "Bid your preset value.",
+                type = "execute",
+                func = (function()
+                    self.bid = value
+                    BiddingManager:Bid(self.bid)
+                end),
+                width = 0.44,
+                order = 9
+            }
+        })
+        self.top:SetWidth(BASE_WIDTH + 30)
+        self.OptionsGroup:SetWidth(BASE_WIDTH + 30)
+    else
+        self.top:SetWidth(BASE_WIDTH)
+        self.OptionsGroup:SetWidth(BASE_WIDTH)
+    end
 end
 
 local function CreateOptions(self)
     local OptionsGroup = AceGUI:Create("SimpleGroup")
     OptionsGroup:SetLayout("Flow")
-    OptionsGroup:SetWidth(505)
+    OptionsGroup:SetWidth(BASE_WIDTH)
     self.OptionsGroup = OptionsGroup
     UpdateOptions(self)
     LIBS.registry:RegisterOptionsTable(REGISTRY, guiOptions)
@@ -61,6 +129,12 @@ local function InitializeDB(self)
         db.bidding = { }
     end
     self.db = db.bidding
+    if not self.db.customButton then
+        self.db.customButton = {
+            mode = CUSTOM_BUTTON.MODE.DISABLED,
+            value = 1,
+        }
+    end
 end
 
 local function StoreLocation(self)
@@ -74,12 +148,47 @@ local function RestoreLocation(self)
     end
 end
 
+local function CreateConfigs(self)
+    local options = {
+        bidding_header = {
+            type = "header",
+            name = "Logging",
+            order = 90
+        },
+        bidding_mode = {
+            name = "Custom button mode",
+            desc = "Select custom button mode",
+            type = "select",
+            values = CUSTOM_BUTTON.MODES_GUI,
+            set = function(i, v) SetCustomButtonMode(self, tonumber(v)) end,
+            get = function(i) return GetCustomButtonMode(self) end,
+            order = 91
+        },
+        bidding_value = {
+            name = "Custom value",
+            desc = "Value to use in custom mode",
+            type = "range",
+            min = 1,
+            max = 1000000,
+            softMin = 1,
+            softMax = 10000,
+            step = 0.01,
+            set = function(i, v) SetCustomButtonValue(self, v) end,
+            get = function(i) return GetCustomButtonValue(self) end,
+            order = 92
+          }
+    }
+    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+end
+
 function BiddingManagerGUI:Initialize()
     LOG:Trace("BiddingManagerGUI:Initialize()")
     InitializeDB(self)
     EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
+    CreateConfigs(self)
     self:RegisterSlash()
+    self.standings = 0
     self.canUseItem = true
     self.fakeTooltip = CreateFrame("GameTooltip", "CLMBiddingFakeTooltip", UIParent, "GameTooltipTemplate")
     self.fakeTooltip:SetScript('OnTooltipSetItem', (function(_self)
@@ -133,6 +242,14 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             width = 0.45,
             order = 3
         },
+        bid = {
+            name = "Bid",
+            desc = "Bid input value.",
+            type = "execute",
+            func = (function() BiddingManager:Bid(self.bid) end),
+            width = 0.44,
+            order = 4
+        },
         base = {
             name = "Base",
             desc = "Immediately bid base item value.",
@@ -169,21 +286,13 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             width = 0.44,
             order = 6
         },
-        bid = {
-            name = "Bid",
-            desc = "Bid input value.",
-            type = "execute",
-            func = (function() BiddingManager:Bid(self.bid) end),
-            width = 0.44,
-            order = 4
-        },
         cancel = {
             name = "Cancel",
             desc = "Cancel your bid.",
             type = "execute",
             func = (function() BiddingManager:CancelBid() end),
             width = 0.44,
-            order = 7
+            order = 8
         },
         pass = {
             name = "Pass",
@@ -191,7 +300,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
             width = 0.44,
-            order = 8
+            order = 9
         }
     }
 end
@@ -204,7 +313,7 @@ function BiddingManagerGUI:Create()
     f:SetStatusText("")
     f:SetLayout("flow")
     f:EnableResize(false)
-    f:SetWidth(505)
+    f:SetWidth(BASE_WIDTH)
     f:SetHeight(175)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Bidding_GUI")
@@ -275,8 +384,8 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
         local roster = RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
             if roster:IsProfileInRoster(myProfile:GUID()) then
-                local standings = roster:Standings(myProfile:GUID())
-                statusText = standings .. " DKP "
+                self.standings = roster:Standings(myProfile:GUID())
+                statusText = self.standings .. " DKP "
                 if hasBase or hasMax then
                     statusText = statusText .. " >>> "
                 end
@@ -295,6 +404,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
         statusText = statusText .. "(" .. self.auctionInfo:Note() .. ")"
     end
     self.top:SetStatusText(statusText)
+
     if not show then return end
 
     if C_Item.IsItemDataCachedByID(self.auctionInfo:ItemLink()) then
