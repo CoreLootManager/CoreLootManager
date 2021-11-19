@@ -80,12 +80,13 @@ local function UpdateOptions(self)
                     self.bid = self.standings
                     BiddingManager:Bid(self.bid)
                 end),
-                width = 0.44,
+                width = 0.43,
                 order = 9
             }
         })
-        self.top:SetWidth(BASE_WIDTH + 30)
-        self.OptionsGroup:SetWidth(BASE_WIDTH + 30)
+        guiOptions.args.item.width = 2.3
+        self.top:SetWidth(BASE_WIDTH + 65)
+        self.OptionsGroup:SetWidth(BASE_WIDTH + 65)
     elseif GetCustomButtonMode(self) == CUSTOM_BUTTON.MODE.CUSTOM_VALUE then
         local value = GetCustomButtonValue(self)
         mergeDictsInline(guiOptions.args, {
@@ -97,13 +98,15 @@ local function UpdateOptions(self)
                     self.bid = value
                     BiddingManager:Bid(self.bid)
                 end),
-                width = 0.44,
+                width = 0.43,
                 order = 9
             }
         })
-        self.top:SetWidth(BASE_WIDTH + 30)
-        self.OptionsGroup:SetWidth(BASE_WIDTH + 30)
+        guiOptions.args.item.width = 2.3
+        self.top:SetWidth(BASE_WIDTH + 65)
+        self.OptionsGroup:SetWidth(BASE_WIDTH + 65)
     else
+        guiOptions.args.item.width = 2.15
         self.top:SetWidth(BASE_WIDTH)
         self.OptionsGroup:SetWidth(BASE_WIDTH)
     end
@@ -229,7 +232,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "input",
             get = (function(i) return itemLink or "" end),
             set = (function(i,v) end), -- Intentionally: do not override
-            width = 2,
+            width = 2.2,
             order = 2,
             itemLink = "item:" .. tostring(itemId),
         },
@@ -247,7 +250,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = "Bid input value.",
             type = "execute",
             func = (function() BiddingManager:Bid(self.bid) end),
-            width = 0.44,
+            width = 0.43,
             order = 4
         },
         base = {
@@ -265,7 +268,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                     return true
                 end
             end),
-            width = 0.44,
+            width = 0.43,
             order = 5
         },
         max = {
@@ -283,7 +286,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                     return true
                 end
             end),
-            width = 0.44,
+            width = 0.43,
             order = 6
         },
         cancel = {
@@ -291,7 +294,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = "Cancel your bid.",
             type = "execute",
             func = (function() BiddingManager:CancelBid() end),
-            width = 0.44,
+            width = 0.43,
             order = 8
         },
         pass = {
@@ -299,7 +302,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = "Notify that you are passing on the item. Cancels any existing bids.",
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
-            width = 0.44,
+            width = 0.43,
             order = 9
         }
     }
