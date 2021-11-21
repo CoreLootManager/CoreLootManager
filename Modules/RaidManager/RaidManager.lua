@@ -130,10 +130,7 @@ function RaidManager:Initialize()
                 if not config then
                     config = roster.configuration
                 end
-                if config:Get("onTimeBonus") then
-                    for k,v in pairs(config._) do
-                        print(k,v)
-                    end
+                if config:Get("onTimeBonus") and config:Get("onTimeBonusValue") > 0 then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
                 end
             end
@@ -158,7 +155,7 @@ function RaidManager:Initialize()
                 if not config then
                     config = roster.configuration
                 end
-                if config:Get("raidCompletionBonus") then
+                if config:Get("raidCompletionBonus") and config:Get("raidCompletionBonusValue") > 0 then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
                 end
             end

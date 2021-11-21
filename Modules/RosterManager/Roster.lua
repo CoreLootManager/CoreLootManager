@@ -456,33 +456,6 @@ function RosterConfiguration:Storage()
     return self._
 end
 
-function RosterConfiguration:inflate(data)
-    --  Fix for bossKillBonusValue fuckup with adding in between
-    if #data < 22 then
-        print("size:", #data)
-        table.insert(data, 10, 0)
-    end
-    for i, key in ipairs(self:fields()) do
-        -- self._[key] = data[i]
-        self._[key] = TRANSFORMS[key](data[i])
-    end
-end
-
-function RosterConfiguration:deflate()
-    local result = {}
-    for _, key in ipairs(self:fields()) do
-        table.insert(result, self._[key])
-    end
-
-    return result
-end
-
-function RosterConfiguration:Copy(o)
-    for k,v in pairs(o._) do
-        self._[k] = v
-    end
-end
-
 local function transform_boolean(value) return value and true or false end
 local function transform_number(value) return tonumber(value) or 0 end
 
@@ -510,6 +483,32 @@ local TRANSFORMS = {
     roundDecimals = transform_number,
     minimalIncrement = transform_number
 }
+
+function RosterConfiguration:inflate(data)
+    --  Fix for bossKillBonusValue fuckup with adding in between
+    if #data < 22 then
+        table.insert(data, 10, 0)
+    end
+    for i, key in ipairs(self:fields()) do
+        -- self._[key] = data[i]
+        self._[key] = TRANSFORMS[key](data[i])
+    end
+end
+
+function RosterConfiguration:deflate()
+    local result = {}
+    for _, key in ipairs(self:fields()) do
+        table.insert(result, self._[key])
+    end
+
+    return result
+end
+
+function RosterConfiguration:Copy(o)
+    for k,v in pairs(o._) do
+        self._[k] = v
+    end
+end
 
 function RosterConfiguration:Get(option)
     if option ~= nil then
