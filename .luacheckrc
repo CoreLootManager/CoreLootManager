@@ -700,6 +700,8 @@ globals = {
 	"C_Heirloom.SetUncollectedHeirloomFilter",
 	"C_Heirloom.ShouldShowHeirloomHelp",
 	"C_Heirloom.UpgradeHeirloom",
+	"C_Item",
+	"C_Item.IsItemDataCachedByID",
 	"C_LFGList",
 	"C_LFGList.AcceptInvite",
 	"C_LFGList.ApplyToGroup",

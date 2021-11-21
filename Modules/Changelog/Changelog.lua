@@ -2,6 +2,25 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.0.4",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM is now fully complete!", body = "Thanks everyone for supporting us through this journey! Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Bidding popup", body = "Bidding UI should now properly popup based on item data received, and in case of missing info popup by default."},
+                    {header = "In Raid tick", body = "In Raid filter tick should now be properly checked when in ingame raid thus not requiring clicking twice to remove it."},
+                    {header = "Search filter", body = "Search should now properly ignore any additional commas or spaces."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.0.3",
         data = {
             {

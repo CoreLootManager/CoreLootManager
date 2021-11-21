@@ -295,10 +295,27 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
         statusText = statusText .. "(" .. self.auctionInfo:Note() .. ")"
     end
     self.top:SetStatusText(statusText)
-    self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
-    if show and self.canUseItem then
-        self:Refresh()
-        self.top:Show()
+    if not show then return end
+
+    if C_Item.IsItemDataCachedByID(self.auctionInfo:ItemLink()) then
+        self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
+        if self.canUseItem then
+            self:Refresh()
+            self.top:Show()
+        end
+    else
+        GetItemInfo(self.auctionInfo:ItemLink())
+        C_Timer.After(0.5, function()
+            if C_Item.IsItemDataCachedByID(self.auctionInfo:ItemLink()) then
+                self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
+            else
+                self.canUseItem = true -- fallback
+            end
+            if self.canUseItem then
+                self:Refresh()
+                self.top:Show()
+            end
+        end)
     end
 end
 

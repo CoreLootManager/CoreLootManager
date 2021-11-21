@@ -1,3 +1,11 @@
+# Classic Loot Manager v1.0.4
+## Fixes
+### Bidding popup
+Bidding UI should now properly popup based on item data received, and in case of missing info popup by default.
+### In Raid tick
+In Raid filter tick should now be properly checked when in ingame raid thus not requiring clicking twice to remove it.
+### Search filter
+Search should now properly ignore any additional commas or spaces.
 # Classic Loot Manager v1.0.3
 ## Fixes
 ### Chat bidding
