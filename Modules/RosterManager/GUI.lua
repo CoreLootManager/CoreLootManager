@@ -241,10 +241,19 @@ local function GenerateManagerOptions(self)
             confirm = true,
             order = 13
         },
+        award_dkp_note = {
+            name = "Note",
+            desc = "Note to be added to award. Only 64 characters will be used. It is recommended to not include date nor selected reason here.",
+            type = "input",
+            set = function(i, v) self.note = v end,
+            get = function(i) return self.note end,
+            width = "full",
+            order = 24
+        },
         roster_players_header = {
             type = "header",
             name = "Players",
-            order = 24
+            order = 25
         },
         add_from_raid = {
             name = "Add from raid",
@@ -260,7 +269,7 @@ local function GenerateManagerOptions(self)
                 RosterManager:AddFromRaidToRoster(roster)
             end),
             confirm = true,
-            order = 25
+            order = 26
         },
         remove_from_roster = {
             name = "Remove from roster",
@@ -280,7 +289,7 @@ local function GenerateManagerOptions(self)
                 RosterManager:RemoveProfilesFromRoster(roster, profiles)
             end),
             confirm = true,
-            order = 26
+            order = 27
         }
     }
 end
@@ -304,7 +313,7 @@ local function GenerateOfficerOptions(self)
             set = function(i, v) self.includeNegative = v end,
             get = function(i) return self.includeNegative end,
             width = "half",
-            order = 21
+            order = 22
         },
         decay_dkp = {
             name = "Decay",
@@ -360,6 +369,7 @@ local function CreateManagementOptions(self, container)
     self.decayValue = nil
     self.includeNegative = false
     self.awardValue = nil
+    self.note = ""
     self.awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
     for _=1,9 do table.insert( self.filterOptions, true ) end
     self.filterOptions[100] = false
@@ -427,7 +437,7 @@ local function CreateStandingsDisplay(self)
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
-    StandingsGroup:SetHeight(550)
+    StandingsGroup:SetHeight(560)
     StandingsGroup:SetWidth(450)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
@@ -485,7 +495,7 @@ function StandingsGUI:Create()
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
     f:SetWidth(700)
-    f:SetHeight(675)
+    f:SetHeight(685)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
 
