@@ -171,6 +171,13 @@ local function CreatePointDisplay(self)
                 tooltip:AddLine(notIncludedProfiles .. " more")
             end
         end
+        if history:Entry() then
+            local note = history:Entry():note()
+            if note ~= "" then
+                tooltip:AddLine("Note:")
+                tooltip:AddLine(note)
+            end
+        end
         tooltip:Show()
         return status
     end)

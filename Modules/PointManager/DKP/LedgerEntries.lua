@@ -147,6 +147,10 @@ function Set:reason()
     return self.e
 end
 
+function Set:note()
+    return ""
+end
+
 local setFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e"})
 function Set:fields()
     return setFields
