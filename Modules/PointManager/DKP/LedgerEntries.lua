@@ -19,12 +19,14 @@ local Set           = LogEntry:extend("DS")
 local Decay         = LogEntry:extend("DD")
 local DecayRoster   = LogEntry:extend("DT")
 
-function Modify:new(rosterUid, playerList, value, reason)
+function Modify:new(rosterUid, playerList, value, reason, note)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
+    note = note or ""
+    o.t = tostring(note)
     return o
 end
 
@@ -44,16 +46,22 @@ function Modify:reason()
     return self.e
 end
 
-local modifyFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e"})
+function Modify:note()
+    return self.t or ""
+end
+
+local modifyFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t"})
 function Modify:fields()
     return modifyFields
 end
 
-function ModifyRaid:new(raidUid, value, reason)
+function ModifyRaid:new(raidUid, value, reason, note)
     local o = LogEntry.new(self);
     o.r = raidUid or ""
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
+    note = note or ""
+    o.t = tostring(note)
     return o
 end
 
@@ -69,16 +77,22 @@ function ModifyRaid:reason()
     return self.e
 end
 
-local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e"})
+function ModifyRaid:note()
+    return self.t or ""
+end
+
+local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t"})
 function ModifyRaid:fields()
     return modifyRaidFields
 end
 
-function ModifyRoster:new(rosterUid, value, reason)
+function ModifyRoster:new(rosterUid, value, reason, note)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
+    note = note or ""
+    o.t = tostring(note)
     return o
 end
 
@@ -94,12 +108,16 @@ function ModifyRoster:reason()
     return self.e
 end
 
+function ModifyRoster:note()
+    return self.t or ""
+end
+
 -- Required for proper decay handling in common mutator
 function ModifyRoster:ignoreNegatives()
     return false
 end
 
-local modifyRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e"})
+local modifyRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t"})
 function ModifyRoster:fields()
     return modifyRosterFields
 end
@@ -134,7 +152,7 @@ function Set:fields()
     return setFields
 end
 
-function Decay:new(rosterUid, playerList, value, reason)
+function Decay:new(rosterUid, playerList, value, reason, note)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
@@ -143,6 +161,8 @@ function Decay:new(rosterUid, playerList, value, reason)
     if value < 0 then value = 0 end
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
+    note = note or ""
+    o.t = tostring(note)
     return o
 end
 
@@ -162,12 +182,16 @@ function Decay:reason()
     return self.e
 end
 
-local decayFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e"})
+function Decay:note()
+    return self.t or ""
+end
+
+local decayFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t"})
 function Decay:fields()
     return decayFields
 end
 
-function DecayRoster:new(rosterUid, value, reason, ignoreNegatives)
+function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     value = tonumber(value) or 0
@@ -176,6 +200,8 @@ function DecayRoster:new(rosterUid, value, reason, ignoreNegatives)
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
     o.n = ignoreNegatives and true or false
+    note = note or ""
+    o.t = tostring(note)
     return o
 end
 
@@ -195,7 +221,11 @@ function DecayRoster:ignoreNegatives()
     return self.n
 end
 
-local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "n"})
+function DecayRoster:note()
+    return self.t or ""
+end
+
+local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "n", "t"})
 function DecayRoster:fields()
     return decayRosterFields
 end
