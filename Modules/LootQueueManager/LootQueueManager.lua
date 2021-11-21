@@ -15,7 +15,7 @@ local LootQueueManager = {}
 local function HandleLootMessage(self, addon, event, message, _, _, _, playerName, ...)
     if playerName ~= whoami then return end
     if not message then return end
-    local itemId = string.match(message, 'Hitem:(%d*):')
+    local itemId = string.match(message, "Hitem:(%d*):")
     itemId = tonumber(itemId) or 0
     local _, itemLink, rarity = GetItemInfo(itemId)
     if itemLink and (rarity >= CLM.GlobalConfigs:GetTrackedLootLevel()) then
