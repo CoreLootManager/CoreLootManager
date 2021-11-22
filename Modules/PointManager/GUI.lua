@@ -174,8 +174,7 @@ local function CreatePointDisplay(self)
         if history:Entry() then
             local note = history:Entry():note()
             if note ~= "" then
-                tooltip:AddLine("Note:")
-                tooltip:AddLine(note)
+                tooltip:AddDoubleLine("Note:", note)
             end
         end
         tooltip:Show()

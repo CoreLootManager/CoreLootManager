@@ -217,7 +217,7 @@ local function GenerateManagerOptions(self)
                 end
                 -- Roster award
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                    PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
                 elseif RaidManager:IsInActiveRaid() then
                     local raidAward = false
                     local raid = RaidManager:GetRaid()
@@ -243,7 +243,7 @@ local function GenerateManagerOptions(self)
         },
         award_dkp_note = {
             name = "Note",
-            desc = "Note to be added to award. Only 64 characters will be used. It is recommended to not include date nor selected reason here.",
+            desc = "Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here.",
             type = "input",
             set = function(i, v) self.note = v end,
             get = function(i) return self.note end,

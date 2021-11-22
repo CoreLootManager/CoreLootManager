@@ -22,8 +22,9 @@ local FakePointHistory = MODELS.FakePointHistory
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
-local function substr32(s)
-    return substr(tostring(s or ""), 1, 32)
+local function strsub32(s)
+    print(s, strsub(tostring(s or ""), 1, 32))
+    return strsub(tostring(s or ""), 1, 32)
 end
 
 local function update_profile_standings(mutate, roster, targets, value, reason, timestamp, pointHistoryEntry, isGUID)
@@ -223,7 +224,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
         return
     end
 
-    note = substr32(note)
+    note = strsub32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
         entry = LEDGER_DKP.Modify:new(uid, targets, value, reason, note)
@@ -259,7 +260,7 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNe
 
     local uid = roster:UID()
 
-    note = substr32(note)
+    note = strsub32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
         entry = LEDGER_DKP.ModifyRoster:new(uid, value, reason, note)
@@ -287,7 +288,7 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceI
         return
     end
 
-    note = substr32(note)
+    note = strsub32(note)
     local uid = raid:UID()
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
