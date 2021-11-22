@@ -217,7 +217,7 @@ local function GenerateManagerOptions(self)
                 end
                 -- Roster award
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                    PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                 elseif RaidManager:IsInActiveRaid() then
                     local raidAward = false
                     local raid = RaidManager:GetRaid()
@@ -228,12 +228,12 @@ local function GenerateManagerOptions(self)
                         end
                     end
                     if raidAward then
-                        PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                        PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                     else
-                        PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                        PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                     end
                 else
-                    PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                    PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                 end
                 -- Update points
                 -- PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
@@ -336,7 +336,7 @@ local function GenerateOfficerOptions(self)
                     return
                 end
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
+                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative, self.note)
                 else
                     local filter
                     if not self.includeNegative then
@@ -349,7 +349,7 @@ local function GenerateOfficerOptions(self)
                         LOG:Debug("StandingsGUI(Decay): profiles == 0")
                         return
                     end
-                    PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                    PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, self.note)
                 end
             end),
             confirm = true,

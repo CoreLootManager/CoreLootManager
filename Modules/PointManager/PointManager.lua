@@ -22,6 +22,10 @@ local FakePointHistory = MODELS.FakePointHistory
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
+local function substr32(s)
+    return substr(tostring(s or ""), 1, 32)
+end
+
 local function update_profile_standings(mutate, roster, targets, value, reason, timestamp, pointHistoryEntry, isGUID)
     local alreadyApplied = {}
     local getGUID
@@ -190,7 +194,7 @@ function PointManager:Initialize()
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
 end
 
-function PointManager:UpdatePoints(roster, targets, value, reason, action, forceInstant)
+function PointManager:UpdatePoints(roster, targets, value, reason, action, note, forceInstant)
     LOG:Trace("PointManager:UpdatePoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdatePoints(): Unknown action")
@@ -219,13 +223,14 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
         return
     end
 
+    note = substr32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.Modify:new(uid, targets, value, reason)
+        entry = LEDGER_DKP.Modify:new(uid, targets, value, reason, note)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
+        entry = LEDGER_DKP.Set:new(uid, targets, value, reason, note)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = LEDGER_DKP.Decay:new(uid, targets, value, reason)
+        entry = LEDGER_DKP.Decay:new(uid, targets, value, reason, note)
     end
 
     local t = entry:targets()
@@ -237,7 +242,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, force
     LedgerManager:Submit(entry, forceInstant)
 end
 
-function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, forceInstant)
+function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, note, forceInstant)
     LOG:Trace("PointManager:UpdateRosterPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdateRosterPoints(): Unknown action")
@@ -254,19 +259,20 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNe
 
     local uid = roster:UID()
 
+    note = substr32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.ModifyRoster:new(uid, value, reason)
+        entry = LEDGER_DKP.ModifyRoster:new(uid, value, reason, note)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
     --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = LEDGER_DKP.DecayRoster:new(uid, value, reason, ignoreNegatives)
+        entry = LEDGER_DKP.DecayRoster:new(uid, value, reason, ignoreNegatives, note)
     end
 
     LedgerManager:Submit(entry, forceInstant)
 end
 
-function PointManager:UpdateRaidPoints(raid, value, reason, action, forceInstant)
+function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceInstant)
     LOG:Trace("PointManager:UpdateRaidPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdateRaidPoints(): Unknown action")
@@ -281,10 +287,11 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, forceInstant
         return
     end
 
+    note = substr32(note)
     local uid = raid:UID()
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason)
+        entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason, note)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
     --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
