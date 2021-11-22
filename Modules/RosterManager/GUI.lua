@@ -176,9 +176,18 @@ local function GenerateManagerOptions(self)
             type = "input",
             set = function(i, v) self.awardValue = v end,
             get = function(i) return self.awardValue end,
-            width = "full",
+            width = 0.6,
             pattern = CONSTANTS.REGEXP_FLOAT,
             order = 11
+        },
+        award_dkp_note = {
+            name = "Note",
+            desc = "Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name.",
+            type = "input",
+            set = function(i, v) self.note = v end,
+            get = function(i) return self.note end,
+            width = 0.5,
+            order = 12
         },
         award_reason = {
             name = "Reason",
@@ -186,7 +195,7 @@ local function GenerateManagerOptions(self)
             values = CONSTANTS.POINT_CHANGE_REASONS.GENERAL,
             set = function(i, v) self.awardReason = v end,
             get = function(i) return self.awardReason end,
-            order = 12
+            order = 13
         },
         award_dkp = {
             name = "Award",
@@ -239,16 +248,7 @@ local function GenerateManagerOptions(self)
                 -- PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
             end),
             confirm = true,
-            order = 13
-        },
-        award_dkp_note = {
-            name = "Note",
-            desc = "Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here.",
-            type = "input",
-            set = function(i, v) self.note = v end,
-            get = function(i) return self.note end,
-            width = "full",
-            order = 24
+            order = 14
         },
         roster_players_header = {
             type = "header",
@@ -336,7 +336,7 @@ local function GenerateOfficerOptions(self)
                     return
                 end
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative, self.note)
+                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
                 else
                     local filter
                     if not self.includeNegative then
@@ -349,7 +349,7 @@ local function GenerateOfficerOptions(self)
                         LOG:Debug("StandingsGUI(Decay): profiles == 0")
                         return
                     end
-                    PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, self.note)
+                    PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
                 end
             end),
             confirm = true,

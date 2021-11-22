@@ -23,7 +23,6 @@ local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local function strsub32(s)
-    print(s, strsub(tostring(s or ""), 1, 32))
     return strsub(tostring(s or ""), 1, 32)
 end
 
