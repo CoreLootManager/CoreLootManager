@@ -34,6 +34,8 @@ function Roster:New(uid, pointType)
     o.inRoster = {}
     -- Profile standing in roster (dict)
     o.standings = {}
+    -- Lifetime gains in roster (dict)
+    o.lifetimeGains = {}
     -- Point changes in  roster (list)
     o.pointHistory = {}
     -- Point changes in to players in roster (dict of lists)
@@ -58,6 +60,7 @@ function Roster:AddProfileByGUID(GUID)
     LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     if self:IsProfileInRoster(GUID) then return end
     self.standings[GUID] = 0
+    self.lifetimeGains[GUID] = 0
     self.weeklyGains[GUID] = {}
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
@@ -163,6 +166,7 @@ function Roster:UpdateStandings(GUID, value, timestamp)
             if value > maxGain then value = maxGain end
             value = round(value, self.configuration._.roundDecimals)
         end
+        self.lifetimeGains[GUID] = self.lifetimeGains[GUID] + value
         self.weeklyGains[GUID][week] = weeklyGains + value
     end
     -- Handle the standings update

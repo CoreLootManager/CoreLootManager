@@ -96,6 +96,19 @@ local function RequestWoWDKPBotData()
     ProfileInfoManager:RequestVersion()
 end
 
+local function StoreCSVData()
+    local db = InitializeDB("csv")
+    for name,roster in pairs(RosterManager:GetRosters()) do
+        db[name] = ""
+        for GUID,gain in pairs(roster.lifetimeGains) do
+            local profile = ProfileManager:GetProfileByGUID(GUID)
+            if profile then
+                db[name] = db[name] .. profile:Name() ..","..tostring(gain).."\r\n"
+            end
+        end
+    end
+end
+
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
     ClearWoWDKPBotData()
@@ -109,6 +122,7 @@ end
 
 function Integration:Export()
     StoreWoWDKPBotData()
+    StoreCSVData()
 end
 
 
