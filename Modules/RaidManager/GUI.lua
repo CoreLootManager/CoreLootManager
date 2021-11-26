@@ -115,7 +115,7 @@ function RaidManagerGUI:Initialize()
                     if row then
                         raid = ST_GetRaid(row)
                     end
-                    RaidManager:EndRaid(raid) -- TODO: after ending raid cant create new one heh
+                    RaidManager:EndRaid(raid)
                     self:Refresh()
                 end),
                 trustedOnly = true
@@ -157,11 +157,11 @@ function RaidManagerGUI:Initialize()
     )
 end
 
-function RaidManagerGUI:GetRosterOption(option)
+function RaidManagerGUI:GetRaidConfigurationOption(option)
     return self.configuration:Get(option)
 end
 
-function RaidManagerGUI:SetRosterOption(option, value)
+function RaidManagerGUI:SetRaidConfigurationOption(option, value)
     return self.configuration:Set(option, value)
 end
 
@@ -193,76 +193,68 @@ local function GenerateOfficerOptions(self)
     return {
         information_header = {
             type = "header",
-            name = "Information",
+            name = "Overrides",
             order = 30
         },
         boss_kill_bonus = {
             name = "Boss Kill Bonus",
             type = "toggle",
-            set = (function(i, v) self:SetRosterOption("bossKillBonus", v) end),
-            get = (function() return self:GetRosterOption("bossKillBonus") end),
+            set = (function(i, v) self:SetRaidConfigurationOption("bossKillBonus", v) end),
+            get = (function() return self:GetRaidConfigurationOption("bossKillBonus") end),
             order = 31,
-            disabled = true
         },
         on_time_bonus = {
             name = "On Time Bonus",
             type = "toggle",
-            set = (function(i, v) self:SetRosterOption("onTimeBonus", v) end),
-            get = (function() return self:GetRosterOption("onTimeBonus")  end),
+            set = (function(i, v) self:SetRaidConfigurationOption("onTimeBonus", v) end),
+            get = (function() return self:GetRaidConfigurationOption("onTimeBonus")  end),
             order = 32,
-            disabled = true
         },
         on_time_bonus_value = {
             name = "On Time Bonus Value",
             type = "input",
-            set = (function(i, v) self:SetRosterOption("onTimeBonusValue", tonumber(v)) end),
-            get = (function() return tostring(self:GetRosterOption("onTimeBonusValue")) end),
+            set = (function(i, v) self:SetRaidConfigurationOption("onTimeBonusValue", tonumber(v)) end),
+            get = (function() return tostring(self:GetRaidConfigurationOption("onTimeBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 33,
-            disabled = true
         },
         raid_completion_bonus = {
             name = "Raid Completion Bonus",
             type = "toggle",
-            set = (function(i, v) self:SetRosterOption("raidCompletionBonus", v) end),
-            get = (function() return self:GetRosterOption("raidCompletionBonus") end),
+            set = (function(i, v) self:SetRaidConfigurationOption("raidCompletionBonus", v) end),
+            get = (function() return self:GetRaidConfigurationOption("raidCompletionBonus") end),
             order = 34,
-            disabled = true
         },
         raid_completion_bonus_value = {
             name = "Raid Completion Value",
             type = "input",
-            set = (function(i, v) self:SetRosterOption("raidCompletionBonusValue", tonumber(v)) end),
-            get = (function() return tostring(self:GetRosterOption("raidCompletionBonusValue")) end),
+            set = (function(i, v) self:SetRaidConfigurationOption("raidCompletionBonusValue", tonumber(v)) end),
+            get = (function() return tostring(self:GetRaidConfigurationOption("raidCompletionBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 35,
-            disabled = true
         },
         interval_bonus = {
             name = "Interval Bonus",
             type = "toggle",
-            set = (function(i, v) self:SetRosterOption("intervalBonus", v) end),
-            get = (function() return self:GetRosterOption("intervalBonus") end),
+            set = (function(i, v) self:SetRaidConfigurationOption("intervalBonus", v) end),
+            get = (function() return self:GetRaidConfigurationOption("intervalBonus") end),
             order = 36,
-            disabled = true
         },
         interval_time = {
             name = "Interval Time",
             type = "input",
-            set = (function(i, v) self:SetRosterOption("intervalBonusTime", tonumber(v)) end),
-            get = (function() return tostring(self:GetRosterOption("intervalBonusTime")) end),
+            set = (function(i, v) self:SetRaidConfigurationOption("intervalBonusTime", tonumber(v)) end),
+            get = (function() return tostring(self:GetRaidConfigurationOption("intervalBonusTime")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 37,
-            disabled = true
         },
         interval_bonus_value = {
             name = "Interval Bonus Value",
             type = "input",
-            set = (function(i, v) self:SetRosterOption("intervalBonusValue", tonumber(v)) end),
-            get = (function() return tostring(self:GetRosterOption("intervalBonusValue")) end),
+            set = (function(i, v) self:SetRaidConfigurationOption("intervalBonusValue", tonumber(v)) end),
+            get = (function() return tostring(self:GetRaidConfigurationOption("intervalBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 38,
-            disabled = true
         },
         create_header = {
             type = "header",
