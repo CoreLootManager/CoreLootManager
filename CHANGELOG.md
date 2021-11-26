@@ -1,3 +1,20 @@
+# Classic Loot Manager v1.1.0
+## Features
+### Per-raid config overrides
+You can now override configuration on raid basis, when creating it, without altering global roster settings. This way roster settings become default ones.
+### DKP award notes
+You can now add a visible note to any DKP award. It will be displayed in point history.
+### Boss Kill Bonus info
+Boss kill bonus should now have boss name displayed in the note. You can also add it when adding points manually by specifying encounter id in the note field. Addon will take care of the rest.
+### Custom bid button
+You can now enable an additional bidding button, that is configurable. You can set it to an All-In (all of your DKP), Custom value (1 - 10000) or disable it (default).
+### Automated bid value increase
+Automated bid value increase is an opt-in feature for Open Bidding mode that will increase your bid by min. increment automatically. Disabled by default.
+## Fixes
+### Script errors on zoning
+Fixed sporadic script errors related to zoning and guild cache.
+### Lib-ST collision
+There should be no more collision with other addons using older version of Lib-ST. This includes Classic Loot Assistant, Gargul, MizusRaidTracker and many more.
 # Classic Loot Manager v1.0.4
 ## Fixes
 ### Bidding popup
