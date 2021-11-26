@@ -217,8 +217,8 @@ function BiddingManager:HandleDistributeBid(data, sender)
         LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
         return
     end
-    local value = (tonumber(data:Value()) or 0) + self.auctionInfo:Increment()
     if self:GetAutoUpdateBidValue() then
+        local value = (tonumber(data:Value()) or 0) + self.auctionInfo:Increment()
         GUI.BiddingManager:UpdateCurrentBidValue(value)
     end
 end
