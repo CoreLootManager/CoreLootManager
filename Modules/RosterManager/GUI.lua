@@ -488,7 +488,6 @@ function StandingsGUI:Create()
     f:SetHeight(675)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
-
     f:AddChild(CreateStandingsDisplay(self))
     f:AddChild(CreateManagementOptions(self))
     RestoreLocation(self)
