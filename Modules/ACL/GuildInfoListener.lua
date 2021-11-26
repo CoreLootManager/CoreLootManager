@@ -48,23 +48,25 @@ function GuildInfoListener:BuildTrustedCache()
     LOG:Trace("GuildInfoListener:BuildTrustedCache()")
     for i=1,GetNumGuildMembers() do
         local name, rankName, rankIndex = GetGuildRosterInfo(i)
-        -- https://wowwiki-archive.fandom.com/wiki/API_GetGuildRosterInfo
-        -- rankIndex
-        -- Number - The number corresponding to the guild's rank.
-        -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
-        rankIndex = rankIndex + 1
-        name = RemoveServer(name)
-        self.cache.ranks[rankIndex].name = rankName
-        if self.cache.ranks[rankIndex] then
-            if self.cache.ranks[rankIndex].isAssistant then
-                self.cache.assistants[name] = true
+        if name then
+            -- https://wowwiki-archive.fandom.com/wiki/API_GetGuildRosterInfo
+            -- rankIndex
+            -- Number - The number corresponding to the guild's rank.
+            -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
+            rankIndex = rankIndex + 1
+            name = RemoveServer(name)
+            self.cache.ranks[rankIndex].name = rankName
+            if self.cache.ranks[rankIndex] then
+                if self.cache.ranks[rankIndex].isAssistant then
+                    self.cache.assistants[name] = true
+                end
+                if self.cache.ranks[rankIndex].isManager then
+                    self.cache.managers[name] = true
+                end
             end
-            if self.cache.ranks[rankIndex].isManager then
-                self.cache.managers[name] = true
+            if rankIndex == 1 then
+                self.cache.guildMaster = name
             end
-        end
-        if rankIndex == 1 then
-            self.cache.guildMaster = name
         end
     end
 end
