@@ -118,7 +118,7 @@ CLM.EncounterIDs.Classic = {
     {
         name = "Onyxia's Lair",
         data = {
-	        { id = 1084, order =  1, name = "Onyxia" },
+	        { id = 1084, order =  1, name = EncounterIDsMap[1084] },
         },
     },
     -- MC
