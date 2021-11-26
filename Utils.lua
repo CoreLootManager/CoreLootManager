@@ -198,7 +198,7 @@ function UTILS.DeepCopy(orig, copies)
 end
 
 function UTILS.RemoveServer(name)
-    name, _ = strsplit("-", name)
+    name, _ = strsplit("-", name or "")
     return name
 end
 
