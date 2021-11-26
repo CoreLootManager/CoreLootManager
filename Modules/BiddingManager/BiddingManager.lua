@@ -52,7 +52,7 @@ function BiddingManager:Initialize()
 
     local db = MODULES.Database:Personal()
     if not db.bidding then
-        db.bidding = { autoOpen = true }
+        db.bidding = { autoOpen = true, autoUpdateBidValue = false }
     end
     self.db = db.bidding
 
@@ -65,6 +65,15 @@ function BiddingManager:Initialize()
             get = function(i) return self:GetAutoOpen() end,
             width = "double",
             order = 9
+          },
+          bidding_auto_update = {
+            name = "Enable auto-update bid values",
+            desc = "Enable auto-update bid values when current highest bid changes (open auction only).",
+            type = "toggle",
+            set = function(i, v) self:SetAutoUpdateBidValue(v) end,
+            get = function(i) return self:GetAutoUpdateBidValue() end,
+            width = "double",
+            order = 10
           }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
@@ -79,6 +88,14 @@ end
 
 function BiddingManager:GetAutoOpen()
     return self.db.autoOpen
+end
+
+function BiddingManager:SetAutoUpdateBidValue(value)
+    self.db.autoUpdateBidValue = value and true or false
+end
+
+function BiddingManager:GetAutoUpdateBidValue()
+    return self.db.autoUpdateBidValue
 end
 
 function BiddingManager:Bid(value)
@@ -200,8 +217,10 @@ function BiddingManager:HandleDistributeBid(data, sender)
         LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
         return
     end
-    local value = (tonumber(data:Value()) or 0) + self.auctionInfo:Increment()
-    GUI.BiddingManager:UpdateCurrentBidValue(value)
+    if self:GetAutoUpdateBidValue() then
+        local value = (tonumber(data:Value()) or 0) + self.auctionInfo:Increment()
+        GUI.BiddingManager:UpdateCurrentBidValue(value)
+    end
 end
 
 CONSTANTS.BIDDING_COMM = {
