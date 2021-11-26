@@ -1,8 +1,5 @@
 local _, CLM = ...
------------
---- ALL ---
------------
-CLM.EncounterIDsMap = {
+local EncounterIDsMap = {
     [1084] = "Onyxia",
     [663] = "Lucifron",
     [664] = "Magmadar",
@@ -113,107 +110,109 @@ CLM.EncounterIDsMap = {
     [728] = "M'uru", -- "M'uru",
     [729] = "Kil'jaeden", -- "Kil'jaeden"
 }
+CLM.EncounterIDsMap = EncounterIDsMap
+
 CLM.EncounterIDs = {}
 CLM.EncounterIDs.Classic = {
     -- Onyxia
     {
         name = "Onyxia's Lair",
         data = {
-	        { id = 1084, order =  1, name = CLM.EncounterIDsMap[1084] },
+	        { id = 1084, order =  1, name = "Onyxia" },
         },
     },
     -- MC
     {
         name = "Molten Core",
         data = {
-            [663] = CLM.EncounterIDsMap[663],
-            [664] = CLM.EncounterIDsMap[664],
-            [665] = CLM.EncounterIDsMap[665],
-            [666] = CLM.EncounterIDsMap[666],
-            [668] = CLM.EncounterIDsMap[668],
-            [667] = CLM.EncounterIDsMap[667],
-            [669] = CLM.EncounterIDsMap[669],
-            [670] = CLM.EncounterIDsMap[670],
-            [671] = CLM.EncounterIDsMap[671],
-            [672] = CLM.EncounterIDsMap[672],
+            { id = 663, name = EncounterIDsMap[663] },
+            { id = 664, name = EncounterIDsMap[664] },
+            { id = 665, name = EncounterIDsMap[665] },
+            { id = 666, name = EncounterIDsMap[666] },
+            { id = 668, name = EncounterIDsMap[668] },
+            { id = 667, name = EncounterIDsMap[667] },
+            { id = 669, name = EncounterIDsMap[669] },
+            { id = 670, name = EncounterIDsMap[670] },
+            { id = 671, name = EncounterIDsMap[671] },
+            { id = 672, name = EncounterIDsMap[672] },
         },
     },
     -- BWL
     {
         name = "Blackwing Lair",
         data = {
-            [610] = CLM.EncounterIDsMap[610],
-            [611] = CLM.EncounterIDsMap[611],
-            [612] = CLM.EncounterIDsMap[612],
-            [613] = CLM.EncounterIDsMap[613],
-            [614] = CLM.EncounterIDsMap[614],
-            [615] = CLM.EncounterIDsMap[615],
-            [616] = CLM.EncounterIDsMap[616],
-            [617] = CLM.EncounterIDsMap[617],
+            { id = 610, name = EncounterIDsMap[610] },
+            { id = 611, name = EncounterIDsMap[611] },
+            { id = 612, name = EncounterIDsMap[612] },
+            { id = 613, name = EncounterIDsMap[613] },
+            { id = 614, name = EncounterIDsMap[614] },
+            { id = 615, name = EncounterIDsMap[615] },
+            { id = 616, name = EncounterIDsMap[616] },
+            { id = 617, name = EncounterIDsMap[617] },
         },
     },
     -- AQ40
     {
         name = "Temple of Ahn'Qiraj",
         data = {
-            [709] = CLM.EncounterIDsMap[709],
-            [710] = CLM.EncounterIDsMap[710],
-            [711] = CLM.EncounterIDsMap[711],
-            [712] = CLM.EncounterIDsMap[712],
-            [713] = CLM.EncounterIDsMap[713],
-            [714] = CLM.EncounterIDsMap[714],
-            [715] = CLM.EncounterIDsMap[715],
-            [716] = CLM.EncounterIDsMap[716],
-            [717] = CLM.EncounterIDsMap[717],
+            { id = 709, name = EncounterIDsMap[709] },
+            { id = 710, name = EncounterIDsMap[710] },
+            { id = 711, name = EncounterIDsMap[711] },
+            { id = 712, name = EncounterIDsMap[712] },
+            { id = 713, name = EncounterIDsMap[713] },
+            { id = 714, name = EncounterIDsMap[714] },
+            { id = 715, name = EncounterIDsMap[715] },
+            { id = 716, name = EncounterIDsMap[716] },
+            { id = 717, name = EncounterIDsMap[717] },
         },
     },
     -- Naxx
     {
         name = "Naxxramas",
         data = {
-            [1107] = CLM.EncounterIDsMap[1107],
-            [1110] = CLM.EncounterIDsMap[1110],
-            [1116] = CLM.EncounterIDsMap[1116],
-            [1118] = CLM.EncounterIDsMap[1118],
-            [1111] = CLM.EncounterIDsMap[1111],
-            [1108] = CLM.EncounterIDsMap[1108],
-            [1120] = CLM.EncounterIDsMap[1120],
-            [1117] = CLM.EncounterIDsMap[1117],
-            [1112] = CLM.EncounterIDsMap[1112],
-            [1115] = CLM.EncounterIDsMap[1115],
-            [1113] = CLM.EncounterIDsMap[1113],
-            [1109] = CLM.EncounterIDsMap[1109],
-            [1121] = CLM.EncounterIDsMap[1121],
-            [1119] = CLM.EncounterIDsMap[1119],
-            [1114] = CLM.EncounterIDsMap[1114],
+            { id = 1107, name = EncounterIDsMap[1107] },
+            { id = 1110, name = EncounterIDsMap[1110] },
+            { id = 1116, name = EncounterIDsMap[1116] },
+            { id = 1118, name = EncounterIDsMap[1118] },
+            { id = 1111, name = EncounterIDsMap[1111] },
+            { id = 1108, name = EncounterIDsMap[1108] },
+            { id = 1120, name = EncounterIDsMap[1120] },
+            { id = 1117, name = EncounterIDsMap[1117] },
+            { id = 1112, name = EncounterIDsMap[1112] },
+            { id = 1115, name = EncounterIDsMap[1115] },
+            { id = 1113, name = EncounterIDsMap[1113] },
+            { id = 1109, name = EncounterIDsMap[1109] },
+            { id = 1121, name = EncounterIDsMap[1121] },
+            { id = 1119, name = EncounterIDsMap[1119] },
+            { id = 1114, name = EncounterIDsMap[1114] },
         },
     },
     -- ZG
     {
         name = "Zul'Gurub",
         data = {
-            [789] = CLM.EncounterIDsMap[789],
-            [784] = CLM.EncounterIDsMap[784],
-            [791] = CLM.EncounterIDsMap[791],
-            [785] = CLM.EncounterIDsMap[785],
-            [786] = CLM.EncounterIDsMap[786],
-            [787] = CLM.EncounterIDsMap[787],
-            [792] = CLM.EncounterIDsMap[792],
-            [793] = CLM.EncounterIDsMap[793],
-            [788] = CLM.EncounterIDsMap[788],
-            [790] = CLM.EncounterIDsMap[790],
+            { id = 789, name = EncounterIDsMap[789] },
+            { id = 784, name = EncounterIDsMap[784] },
+            { id = 791, name = EncounterIDsMap[791] },
+            { id = 785, name = EncounterIDsMap[785] },
+            { id = 786, name = EncounterIDsMap[786] },
+            { id = 787, name = EncounterIDsMap[787] },
+            { id = 792, name = EncounterIDsMap[792] },
+            { id = 793, name = EncounterIDsMap[793] },
+            { id = 788, name = EncounterIDsMap[788] },
+            { id = 790, name = EncounterIDsMap[790] },
         },
     },
     -- AQ20
     {
         name = "Ruins of Ahn'Qiraj",
         data = {
-            [718] = CLM.EncounterIDsMap[718],
-            [719] = CLM.EncounterIDsMap[719],
-            [720] = CLM.EncounterIDsMap[720],
-            [721] = CLM.EncounterIDsMap[721],
-            [722] = CLM.EncounterIDsMap[722],
-            [723] = CLM.EncounterIDsMap[723],
+            { id = 718, name = EncounterIDsMap[718] },
+            { id = 719, name = EncounterIDsMap[719] },
+            { id = 720, name = EncounterIDsMap[720] },
+            { id = 721, name = EncounterIDsMap[721] },
+            { id = 722, name = EncounterIDsMap[722] },
+            { id = 723, name = EncounterIDsMap[723] },
         },
     },
 }
@@ -223,104 +222,104 @@ CLM.EncounterIDs.TBC = {
     {
         name = "Karazhan",
         data = {
-            [652] = CLM.EncounterIDsMap[652], -- "Attumen the Huntsman",
-            [653] = CLM.EncounterIDsMap[653], -- "Moroes",
-            [654] = CLM.EncounterIDsMap[654], -- "Maiden of Virtue",
-            [655] = CLM.EncounterIDsMap[655], -- "Opera Hall",
-            [656] = CLM.EncounterIDsMap[656], -- "The Curator",
-            [657] = CLM.EncounterIDsMap[657], -- "Terestian Illhoof",
-            [658] = CLM.EncounterIDsMap[658], -- "Shade of Aran",
-            [659] = CLM.EncounterIDsMap[659], -- "Netherspite",
-            [660] = CLM.EncounterIDsMap[660], -- "Chess Event",
-            [661] = CLM.EncounterIDsMap[661], -- "Prince Malchezaar",
-            [662] = CLM.EncounterIDsMap[662], -- "Nightbane"
+            { id = 652, name = EncounterIDsMap[652] }, -- "Attumen the Huntsman",
+            { id = 653, name = EncounterIDsMap[653] }, -- "Moroes",
+            { id = 654, name = EncounterIDsMap[654] }, -- "Maiden of Virtue",
+            { id = 655, name = EncounterIDsMap[655] }, -- "Opera Hall",
+            { id = 656, name = EncounterIDsMap[656] }, -- "The Curator",
+            { id = 657, name = EncounterIDsMap[657] }, -- "Terestian Illhoof",
+            { id = 658, name = EncounterIDsMap[658] }, -- "Shade of Aran",
+            { id = 659, name = EncounterIDsMap[659] }, -- "Netherspite",
+            { id = 660, name = EncounterIDsMap[660] }, -- "Chess Event",
+            { id = 661, name = EncounterIDsMap[661] }, -- "Prince Malchezaar",
+            { id = 662, name = EncounterIDsMap[662] }, -- "Nightbane"
         }
     },
     -- Gruul's Lair
     {
         name = "Gruul's Lair",
         data = {
-            [649] = CLM.EncounterIDsMap[649], -- "High King Maulgar",
-            [650] = CLM.EncounterIDsMap[650], -- "Gruul the Dragonkiller"
+            { id = 649, name = EncounterIDsMap[649] }, -- "High King Maulgar",
+            { id = 650, name = EncounterIDsMap[650] }, -- "Gruul the Dragonkiller"
         }
     },
     --  Magtheridon
     {
         name = "Magtheridon",
         data = {
-            [651] = CLM.EncounterIDsMap[651], -- "Magtheridon"
+            { id = 651, name = EncounterIDsMap[651] }, -- "Magtheridon"
         }
     },
     -- SSC
     {
         name = "Serpentshrine Cavern",
         data = {
-            [623] = CLM.EncounterIDsMap[623], -- "Hydross the Unstable",
-            [624] = CLM.EncounterIDsMap[624], -- "The Lurker Below",
-            [625] = CLM.EncounterIDsMap[625], -- "Leotheras the Blind",
-            [626] = CLM.EncounterIDsMap[626], -- "Fathom-Lord Karathress",
-            [627] = CLM.EncounterIDsMap[627], -- "Morogrim Tidewalker",
-            [628] = CLM.EncounterIDsMap[628], -- "Lady Vashj"
+            { id = 623, name = EncounterIDsMap[623] }, -- "Hydross the Unstable",
+            { id = 624, name = EncounterIDsMap[624] }, -- "The Lurker Below",
+            { id = 625, name = EncounterIDsMap[625] }, -- "Leotheras the Blind",
+            { id = 626, name = EncounterIDsMap[626] }, -- "Fathom-Lord Karathress",
+            { id = 627, name = EncounterIDsMap[627] }, -- "Morogrim Tidewalker",
+            { id = 628, name = EncounterIDsMap[628] }, -- "Lady Vashj"
         }
     },
     -- TK
     {
         name = "Tempest Keep",
         data = {
-            [730] = CLM.EncounterIDsMap[730], -- "Al'ar",
-            [731] = CLM.EncounterIDsMap[731], -- "Void Reaver",
-            [732] = CLM.EncounterIDsMap[732], -- "High Astromancer Solarian",
-            [733] = CLM.EncounterIDsMap[733], -- "Kael'thas Sunstrider"
+            { id = 730, name = EncounterIDsMap[730] }, -- "Al'ar",
+            { id = 731, name = EncounterIDsMap[731] }, -- "Void Reaver",
+            { id = 732, name = EncounterIDsMap[732] }, -- "High Astromancer Solarian",
+            { id = 733, name = EncounterIDsMap[733] }, -- "Kael'thas Sunstrider"
         }
     },
     -- Black Temple
     {
         name = "Black Temple",
         data = {
-            [601] = CLM.EncounterIDsMap[601], -- High Warlord Naj'entus,
-            [602] = CLM.EncounterIDsMap[602], -- Supremus
-            [603] = CLM.EncounterIDsMap[603], -- Shade of Akama
-            [604] = CLM.EncounterIDsMap[604], -- Teron Gorefiend,
-            [605] = CLM.EncounterIDsMap[605], -- Gurtogg Bloodboil
-            [606] = CLM.EncounterIDsMap[606], -- Reliquary of Souls
-            [607] = CLM.EncounterIDsMap[607], -- Mother Shahraz
-            [608] = CLM.EncounterIDsMap[608], -- The Illidari Council
-            [609] = CLM.EncounterIDsMap[609], -- Illidan Stormrage
+            { id = 601, name = EncounterIDsMap[601] }, -- High Warlord Naj'entus,
+            { id = 602, name = EncounterIDsMap[602] }, -- Supremus
+            { id = 603, name = EncounterIDsMap[603] }, -- Shade of Akama
+            { id = 604, name = EncounterIDsMap[604] }, -- Teron Gorefiend,
+            { id = 605, name = EncounterIDsMap[605] }, -- Gurtogg Bloodboil
+            { id = 606, name = EncounterIDsMap[606] }, -- Reliquary of Souls
+            { id = 607, name = EncounterIDsMap[607] }, -- Mother Shahraz
+            { id = 608, name = EncounterIDsMap[608] }, -- The Illidari Council
+            { id = 609, name = EncounterIDsMap[609] }, -- Illidan Stormrage
         }
     },
     -- Hyjal Summit
     {
         name = "Hyjal Summit",
         data = {
-            [618] = CLM.EncounterIDsMap[618], -- High Warlord Naj'entus,
-            [619] = CLM.EncounterIDsMap[619], -- Supremus
-            [620] = CLM.EncounterIDsMap[620], -- Shade of Akama
-            [621] = CLM.EncounterIDsMap[621], -- Teron Gorefiend,
-            [622] = CLM.EncounterIDsMap[622], -- Gurtogg Bloodboil
+            { id = 618, name = EncounterIDsMap[618] }, -- High Warlord Naj'entus,
+            { id = 619, name = EncounterIDsMap[619] }, -- Supremus
+            { id = 620, name = EncounterIDsMap[620] }, -- Shade of Akama
+            { id = 621, name = EncounterIDsMap[621] }, -- Teron Gorefiend,
+            { id = 622, name = EncounterIDsMap[622] }, -- Gurtogg Bloodboil
         }
     },
     -- Zul'Aman
     {
         name = "Zul'Aman",
         data = {
-            [1189] = CLM.EncounterIDsMap[1189], -- "Akil'zon"
-            [1190] = CLM.EncounterIDsMap[1190], -- Nalorakk
-            [1191] = CLM.EncounterIDsMap[1191], -- Jan'alai
-            [1192] = CLM.EncounterIDsMap[1192], -- Halazzi,
-            [1193] = CLM.EncounterIDsMap[1193], -- Hex Lord Malacrass
-            [1194] = CLM.EncounterIDsMap[1194], -- Daakara
+            { id = 1189, name = EncounterIDsMap[1189] }, -- "Akil'zon"
+            { id = 1190, name = EncounterIDsMap[1190] }, -- Nalorakk
+            { id = 1191, name = EncounterIDsMap[1191] }, -- Jan'alai
+            { id = 1192, name = EncounterIDsMap[1192] }, -- Halazzi,
+            { id = 1193, name = EncounterIDsMap[1193] }, -- Hex Lord Malacrass
+            { id = 1194, name = EncounterIDsMap[1194] }, -- Daakara
         }
     },
     -- Sunwell
     {
         name = "Sunwell Plateau",
         data = {
-            [724] = CLM.EncounterIDsMap[724], -- "Kalecgos",
-            [725] = CLM.EncounterIDsMap[725], -- "Brutallus",
-            [726] = CLM.EncounterIDsMap[726], -- "Felmyst",
-            [727] = CLM.EncounterIDsMap[727], -- "Eredar Twins",
-            [728] = CLM.EncounterIDsMap[728], -- "M'uru",
-            [729] = CLM.EncounterIDsMap[729], -- "Kil'jaeden"
+            { id = 724, name = EncounterIDsMap[724] }, -- "Kalecgos",
+            { id = 725, name = EncounterIDsMap[725] }, -- "Brutallus",
+            { id = 726, name = EncounterIDsMap[726] }, -- "Felmyst",
+            { id = 727, name = EncounterIDsMap[727] }, -- "Eredar Twins",
+            { id = 728, name = EncounterIDsMap[728] }, -- "M'uru",
+            { id = 729, name = EncounterIDsMap[729] } -- "Kil'jaeden"
         }
     }
 }
