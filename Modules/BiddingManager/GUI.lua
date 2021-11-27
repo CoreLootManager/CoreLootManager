@@ -44,9 +44,9 @@ CUSTOM_BUTTON.MODE = {
 }
 CUSTOM_BUTTON.MODES = UTILS.Set(CUSTOM_BUTTON.MODE)
 CUSTOM_BUTTON.MODES_GUI = {
-    [CUSTOM_BUTTON.MODE.DISABLED] = "Disabled",
-    [CUSTOM_BUTTON.MODE.ALL_IN] = "All in",
-    [CUSTOM_BUTTON.MODE.CUSTOM_VALUE] = "Custom value"
+    [CUSTOM_BUTTON.MODE.DISABLED] = CLM.L["Disabled"],
+    [CUSTOM_BUTTON.MODE.ALL_IN] = CLM.L["All in"],
+    [CUSTOM_BUTTON.MODE.CUSTOM_VALUE] = CLM.L["Custom value"]
 }
 
 local function GetCustomButtonMode(self)
@@ -73,8 +73,8 @@ local function UpdateOptions(self)
     if GetCustomButtonMode(self) == CUSTOM_BUTTON.MODE.ALL_IN then
         mergeDictsInline(guiOptions.args, {
             custom = {
-                name = "All In",
-                desc = string.format("Bid your current DKP (%s).", tostring(self.standings)),
+                name = CLM.L["All In"],
+                desc = string.format(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
                 type = "execute",
                 func = (function()
                     self.bid = self.standings
@@ -92,7 +92,7 @@ local function UpdateOptions(self)
         mergeDictsInline(guiOptions.args, {
             custom = {
                 name = tostring(value),
-                desc = "Bid your preset value.",
+                desc = CLM.L["Bid your preset value."],
                 type = "execute",
                 func = (function()
                     self.bid = value
@@ -155,12 +155,12 @@ local function CreateConfigs(self)
     local options = {
         bidding_header = {
             type = "header",
-            name = "Logging",
+            name = CLM.L["Logging"],
             order = 90
         },
         bidding_mode = {
-            name = "Custom button mode",
-            desc = "Select custom button mode",
+            name = CLM.L["Custom button mode"],
+            desc = CLM.L["Select custom button mode"],
             type = "select",
             values = CUSTOM_BUTTON.MODES_GUI,
             set = function(i, v) SetCustomButtonMode(self, tonumber(v)) end,
@@ -168,8 +168,8 @@ local function CreateConfigs(self)
             order = 91
         },
         bidding_value = {
-            name = "Custom value",
-            desc = "Value to use in custom mode",
+            name = CLM.L["Custom value"],
+            desc = CLM.L["Value to use in custom mode"],
             type = "range",
             min = 1,
             max = 1000000,
@@ -228,7 +228,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             order = 1
         },
         item = {
-            name = "Item",
+            name = CLM.L["Item"],
             type = "input",
             get = (function(i) return itemLink or "" end),
             set = (function(i,v) end), -- Intentionally: do not override
@@ -237,8 +237,8 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             itemLink = "item:" .. tostring(itemId),
         },
         bid_value = {
-            name = "Bid value",
-            desc = "Value you want to bid. Press Enter or click Okay button to accept.",
+            name = CLM.L["Bid value"],
+            desc = CLM.L["Value you want to bid. Press Enter or click Okay button to accept."],
             type = "input",
             set = (function(i,v) self.bid = tonumber(v) or 0 end),
             get = (function(i) return tostring(self.bid) end),
@@ -246,16 +246,16 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             order = 3
         },
         bid = {
-            name = "Bid",
-            desc = "Bid input value.",
+            name = CLM.L["Bid"],
+            desc = CLM.L["Bid input value."],
             type = "execute",
             func = (function() BiddingManager:Bid(self.bid) end),
             width = 0.43,
             order = 4
         },
         base = {
-            name = "Base",
-            desc = "Immediately bid base item value.",
+            name = CLM.L["Base"],
+            desc = CLM.L["Immediately bid base item value."],
             type = "execute",
             func = (function()
                 self.bid = self.auctionInfo and self.auctionInfo:Base() or 0
@@ -272,8 +272,8 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             order = 5
         },
         max = {
-            name = "Max",
-            desc = "Immediately bid max item value.",
+            name = CLM.L["Max"],
+            desc = CLM.L["Immediately bid max item value."],
             type = "execute",
             func = (function()
                 self.bid = self.auctionInfo and self.auctionInfo:Max() or 0
@@ -290,16 +290,16 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             order = 6
         },
         cancel = {
-            name = "Cancel",
-            desc = "Cancel your bid.",
+            name = CLM.L["Cancel"],
+            desc = CLM.L["Cancel your bid."],
             type = "execute",
             func = (function() BiddingManager:CancelBid() end),
             width = 0.43,
             order = 8
         },
         pass = {
-            name = "Pass",
-            desc = "Notify that you are passing on the item. Cancels any existing bids.",
+            name = CLM.L["Pass"],
+            desc = CLM.L["Notify that you are passing on the item. Cancels any existing bids."],
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
             width = 0.43,
@@ -388,7 +388,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
         if roster then
             if roster:IsProfileInRoster(myProfile:GUID()) then
                 self.standings = roster:Standings(myProfile:GUID())
-                statusText = self.standings .. " DKP "
+                statusText = self.standings .. CLM.L[" DKP "]
                 if hasBase or hasMax then
                     statusText = statusText .. " >>> "
                 end
@@ -397,11 +397,11 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     end
 
     if hasBase then
-        statusText = statusText .. string.format("Base: %d ", self.auctionInfo:Base())
+        statusText = statusText .. string.format(CLM.L["Base: %d "], self.auctionInfo:Base())
         self.bid = self.auctionInfo:Base()
     end
     if hasMax then
-        statusText = statusText .. string.format("Max: %d ", self.auctionInfo:Max())
+        statusText = statusText .. string.format(CLM.L["Max: %d "], self.auctionInfo:Max())
     end
     if self.auctionInfo:Note():len() > 0 then
         statusText = statusText .. "(" .. self.auctionInfo:Note() .. ")"
@@ -472,8 +472,8 @@ function BiddingManagerGUI:RegisterSlash()
     local options = {
         bid = {
             type = "execute",
-            name = "Bidding",
-            desc = "Toggle Bidding window display",
+            name = CLM.L["Bidding"],
+            desc = CLM.L["Toggle Bidding window display"],
             handler = self,
             func = "Toggle",
         }

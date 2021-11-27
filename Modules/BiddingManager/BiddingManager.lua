@@ -58,8 +58,8 @@ function BiddingManager:Initialize()
 
     local options = {
         bidding_auto_open = {
-            name = "Toggle Bidding auto-open",
-            desc = "Toggle auto open and auto close on auction start and stop",
+            name = CLM.L["Toggle Bidding auto-open"],
+            desc = CLM.L["Toggle auto open and auto close on auction start and stop"],
             type = "toggle",
             set = function(i, v) self:SetAutoOpen(v) end,
             get = function(i) return self:GetAutoOpen() end,
@@ -67,8 +67,8 @@ function BiddingManager:Initialize()
             order = 9
           },
           bidding_auto_update = {
-            name = "Enable auto-update bid values",
-            desc = "Enable auto-update bid values when current highest bid changes (open auction only).",
+            name = CLM.L["Enable auto-update bid values"],
+            desc = CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."],
             type = "toggle",
             set = function(i, v) self:SetAutoUpdateBidValue(v) end,
             get = function(i) return self:GetAutoUpdateBidValue() end,
@@ -125,7 +125,7 @@ end
 function BiddingManager:NotifyPass()
     LOG:Trace("BiddingManager:NotifyPass()")
     if not self.auctionInProgress then return end
-    self.lastBid = "Pass"
+    self.lastBid = CLM.L["PASS"]
     local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
     Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
@@ -159,7 +159,7 @@ function BiddingManager:HandleStartAuction(data, sender)
     self.auctioneer = sender
     PlaySound(12889)
     GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
-    LOG:Message("Auction of " .. self.auctionInfo:ItemLink())
+    LOG:Message(CLM.L["Auction of "] .. self.auctionInfo:ItemLink())
     self.auctionInProgress = true
 end
 
@@ -173,7 +173,7 @@ function BiddingManager:HandleStopAuction(data, sender)
     self:ClearAuctionInfo()
     PlaySound(12867)
     GUI.BiddingManager:EndAuction()
-    LOG:Message("Auction finished")
+    LOG:Message(CLM.L["Auction finished"])
 end
 
 function BiddingManager:HandleAntiSnipe(data, sender)
@@ -192,8 +192,8 @@ function BiddingManager:HandleAcceptBid(data, sender)
         return
     end
     if self.guiBid then
-        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = self.lastBid or "cancel" })
-        LOG:Message("Your bid (%s) was |cff00cc00accepted|r", self.lastBid or "cancel")
+        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = self.lastBid or CLM.L["cancel"] })
+        LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], self.lastBid or CLM.L["cancel"])
         self.guiBid = false
     end
 end
@@ -205,8 +205,8 @@ function BiddingManager:HandleDenyBid(data, sender)
         return
     end
     if self.guiBid then
-        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = self.lastBid, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or "Unknown" })
-        LOG:Message("Your bid (%s) was denied: |cffcc0000%s|r", self.lastBid, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or "Unknown")
+        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = self.lastBid, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
+        LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], self.lastBid, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"])
         self.guiBid = false
     end
 end
