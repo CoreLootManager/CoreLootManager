@@ -74,7 +74,7 @@ local function UpdateOptions(self)
         mergeDictsInline(guiOptions.args, {
             custom = {
                 name = "All In",
-                desc = "Bid your current DKP (" .. tostring(self.standings) ..  ").",
+                desc = string.format("Bid your current DKP (%s).", tostring(self.standings)),
                 type = "execute",
                 func = (function()
                     self.bid = self.standings
@@ -397,11 +397,11 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     end
 
     if hasBase then
-        statusText = statusText .. "Base: " .. self.auctionInfo:Base() .. " "
+        statusText = statusText .. string.format("Base: %d ", self.auctionInfo:Base())
         self.bid = self.auctionInfo:Base()
     end
     if hasMax then
-        statusText = statusText .. "Max: " .. self.auctionInfo:Max() .. " "
+        statusText = statusText .. string.format("Max: %d ". self.auctionInfo:Max())
     end
     if self.auctionInfo:Note():len() > 0 then
         statusText = statusText .. "(" .. self.auctionInfo:Note() .. ")"
