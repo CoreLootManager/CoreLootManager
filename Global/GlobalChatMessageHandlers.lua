@@ -61,11 +61,12 @@ function GlboalChatMessageHandlers:Initialize()
                         accept, reason = AuctionManager:UpdateBid(playerName, numericValue)
                     end
                 end
-
-                SendChatMessage(
-                    "<CLM> Your bid (" .. tostring(value) .. ") was " .. (accept and "accepted" or ("denied: " .. (CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or "Invalid value provided"))) .. ".",
-                    responseChannel, nil, target
-                )
+                local reasonString = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or "Invalid value provided"
+                local message = string.format("<CLM> Your bid (%s) was %s%s.",
+                    tostring(value),
+                    accept and "accepted" or "denied",
+                    accept and "" or (": ".. reasonString))
+                SendChatMessage(message, responseChannel, nil, target)
 
             elseif command == "!dkp" then
                 responseChannel = "WHISPER" -- always respond in whisper to protect from spam
@@ -80,7 +81,7 @@ function GlboalChatMessageHandlers:Initialize()
                 end
                 local profile = ProfileManager:GetProfileByName(player)
                 if not profile then
-                    SendChatMessage("<CLM> Missing profile for player" .. tostring(player) .. ".", responseChannel, nil, target)
+                    SendChatMessage(string.format("<CLM> Missing profile for player %s.", tostring(player)), responseChannel, nil, target)
                     return
                 end
                 local rosters = {}
@@ -99,9 +100,9 @@ function GlboalChatMessageHandlers:Initialize()
                     end
                 end
                 if #rostersWithPlayer == 0 then
-                    SendChatMessage("<CLM> " .. profile:Name() .. " not present in any roster.", responseChannel, nil, target)
+                    SendChatMessage(string.format("<CLM> %s not present in any roster.", profile:Name()), responseChannel, nil, target)
                 else
-                    SendChatMessage("<CLM> " .. profile:Name() .. " standings in " .. #rostersWithPlayer .. " roster" .. ((#rostersWithPlayer == 1) and "" or "s") ..  ":", responseChannel, nil, target)
+                    SendChatMessage(string.format("<CLM> %s standings in %d roster%s:", profile:Name(), #rostersWithPlayer, (#rostersWithPlayer == 1) and "" or "s"), responseChannel, nil, target)
                 end
                 for _, roster in ipairs(rostersWithPlayer) do
                     local standings = roster:Standings(profile:GUID())
@@ -110,7 +111,7 @@ function GlboalChatMessageHandlers:Initialize()
                     if weeklyCap > 0 then
                         weeklyGains = weeklyGains .. " / " .. weeklyCap
                     end
-                    SendChatMessage("<CLM> " .. RosterManager:GetRosterNameByUid(roster:UID()) .. ":  " .. standings .. " DKP (" .. weeklyGains .. " this week).", responseChannel, nil, target)
+                    SendChatMessage(string.format("<CLM> %s: %d DKP (%d this week).", RosterManager:GetRosterNameByUid(roster:UID()), standings, weeklyGains), responseChannel, nil, target)
                 end
             end
         end

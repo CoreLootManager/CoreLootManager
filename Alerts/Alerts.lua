@@ -10,9 +10,9 @@ local POINT_CHANGE_REASON_DECAY = 101
 
 local function DKPReceivedAlertFrame_SetUp(self, data)
     if data.reason ~= POINT_CHANGE_REASON_DECAY then
-        self.Amount:SetText(data.value .. " DKP")
+        self.Amount:SetText(string.format("%d DKP", data.value))
     else
-        self.Amount:SetText(data.value .. "% DKP decay")
+        self.Amount:SetText(string.format("%d %% DKP decay", data.value))
     end
     PlaySound(SOUNDKIT.UI_EPICLOOT_TOAST)
 end
@@ -20,13 +20,13 @@ end
 local DKPReceivedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("DKPReceivedAlertFrameTemplate", DKPReceivedAlertFrame_SetUp, 6, math.huge)
 
 local function BidAcceptedAlertFrame_SetUp(self, data)
-    self.Amount:SetText("Bid " .. data.value .. " accepted!")
+    self.Amount:SetText(string.format("Bid %d accepted!", data.value))
 end
 
 local BidAcceptedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidAcceptedAlertFrameTemplate", BidAcceptedAlertFrame_SetUp, 6, math.huge)
 
 local function BidDeniedAlertFrame_SetUp(self, data)
-    self.Amount:SetText("Bid " .. data.value .. " denied!")
+    self.Amount:SetText(string.format("Bid %d denied!", data.value))
 end
 
 local BidDeniedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidDeniedAlertFrameTemplate", BidDeniedAlertFrame_SetUp, 6, math.huge)
