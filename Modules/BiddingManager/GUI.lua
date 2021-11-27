@@ -401,7 +401,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
         self.bid = self.auctionInfo:Base()
     end
     if hasMax then
-        statusText = statusText .. string.format("Max: %d ". self.auctionInfo:Max())
+        statusText = statusText .. string.format("Max: %d ", self.auctionInfo:Max())
     end
     if self.auctionInfo:Note():len() > 0 then
         statusText = statusText .. "(" .. self.auctionInfo:Note() .. ")"
