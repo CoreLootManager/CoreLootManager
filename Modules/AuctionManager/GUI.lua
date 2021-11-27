@@ -194,7 +194,7 @@ local function CreateBidWindow(self)
             AuctionManagerGUI:UpdateBids()
         end
         if self.awardPlayer and self.awardPlayer:len() > 0 then
-            self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
+            self.top:SetStatusText(string.format("Awarding to %s for %d.", self.awardPlayer, self.awardValue))
         else
             self.top:SetStatusText("")
         end
@@ -484,7 +484,7 @@ end
 
 function AuctionManagerGUI:setInputAwardValue(v)
     self.awardValue = tonumber(v) or 0;
-    self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
+    self.top:SetStatusText(string.format("Awarding to %s for %d.", self.awardPlayer, self.awardValue))
     self:Refresh()
 end
 

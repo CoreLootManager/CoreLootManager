@@ -126,7 +126,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.allowNegativeStandings = configuration:Get("allowNegativeStandings")
     -- Auctioning
     -- Start Auction Messages
-    local auctionMessage = "Auction of " .. itemLink
+    local auctionMessage = string.format("Auction of %s", itemLink)
     if note:len() > 0 then
         auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
     end
@@ -135,15 +135,15 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     SendChatMessage(auctionMessage , "RAID_WARNING")
     auctionMessage = ""
     if baseValue > 0 then
-        auctionMessage = auctionMessage .. "Minimum bid: " .. tostring(baseValue) .. ". "
+        auctionMessage = auctionMessage .. string.format("Minimum bid: %s.", tostring(baseValue))
     end
     if maxValue > 0 then
-        auctionMessage = auctionMessage .. "Maximum bid: " .. tostring(maxValue) .. ". "
+        auctionMessage = auctionMessage .. string.format("Maximum bid: %s.", tostring(maxValue))
     end
-    auctionMessage = auctionMessage .. "Auction time: " .. tostring(auctionTime) .. ". "
+    auctionMessage = auctionMessage .. string.format("Auction time: %s.", tostring(auctionTime))
     self.antiSnipe = configuration:Get("antiSnipe")
     if self.antiSnipe > 0 then
-        auctionMessage = auctionMessage .. "Anti-snipe time: " .. tostring(self.antiSnipe) .. ". "
+        auctionMessage = auctionMessage .. string.format("Anti-snipe time: %s.", tostring(self.antiSnipe))
     end
     SendChatMessage(auctionMessage , "RAID_WARNING")
     -- AntiSnipe settings
