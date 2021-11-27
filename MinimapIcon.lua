@@ -20,19 +20,19 @@ local Minimap = {}
 function Minimap:Initialize()
     local options = {
         {
-            title = "Menu",
+            title = CLM.L["Menu"],
             isTitle = true
         },
         {
-            title = "Standings",
+            title = CLM.L["Standings"],
             func = (function() CLM.GUI.Standings:Toggle() end)
         },
         {
-            title = "Loot History",
+            title = CLM.L["Loot History"],
             func = (function() CLM.GUI.Loot:Toggle() end)
         },
         {
-            title = "Point History",
+            title = CLM.L["Point History"],
             func = (function() CLM.GUI.PointHistory:Toggle() end)
         },
         -- Raid
@@ -40,22 +40,22 @@ function Minimap:Initialize()
             separator = true,
         },
         {
-            title = "Raid",
+            title = CLM.L["Raid"],
             func = (function() CLM.GUI.RaidManager:Toggle() end),
             trustedOnly = true
         },
         {
-            title = "Loot Queue",
+            title = CLM.L["Loot Queue"],
             func = (function() CLM.GUI.LootQueue:Toggle() end),
             trustedOnly = true
         },
         {
-            title = "Auctioning",
+            title = CLM.L["Auctioning"],
             func = (function() CLM.GUI.AuctionManager:Toggle() end),
             trustedOnly = true
         },
         {
-            title = "Bidding",
+            title = CLM.L["Bidding"],
             func = (function() CLM.GUI.BiddingManager:Toggle() end)
         },
         -- Management
@@ -63,18 +63,18 @@ function Minimap:Initialize()
             separator = true,
         },
         {
-            title = "Profiles",
+            title = CLM.L["Profiles"],
             func = (function() CLM.GUI.Profiles:Toggle() end),
             trustedOnly = true
         },
         {
-            title = "Audit",
+            title = CLM.L["Audit"],
             func = (function() CLM.GUI.Audit:Toggle() end),
             trustedOnly = true,
             managerOnly = true
         },
         {
-            title = "Configuration",
+            title = CLM.L["Configuration"],
             icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga",
             func = (function()
                 InterfaceOptionsFrame_OpenToCategory(addonName)
