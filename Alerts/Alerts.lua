@@ -1,4 +1,5 @@
--- Intentionally separated from CLM to use as a separate addon through dispatcher
+local _, CLM = ...
+
 local eventDispatcher = LibStub("EventDispatcher")
 
 local USER_RECEIVED_ITEM = "CLM_USER_RECEIVED_ITEM"
