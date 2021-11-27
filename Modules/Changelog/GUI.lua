@@ -50,8 +50,8 @@ local function Create(self)
         args = {}
     }
     options.args.do_not_show = {
-        name = "Do not show again",
-        desc = "Suppresses changelog display until new version is released",
+        name = CLM.L["Do not show again"],
+        desc = CLM.L["Suppresses changelog display until new version is released"],
         type = "toggle",
         set = function(i, v) self.db.do_not_show = v and true or false end,
         get = function(i) return self.db.do_not_show end,
@@ -95,8 +95,8 @@ local function Create(self)
         counter = counter + 1
     end
 
-    LIBS.registry:RegisterOptionsTable("Changelog", options)
-    LIBS.gui:Open("Changelog", parent)
+    LIBS.registry:RegisterOptionsTable(CLM.L["Changelog"], options)
+    LIBS.gui:Open(CLM.L["Changelog"], parent)
 
     return parent
 end
@@ -117,7 +117,7 @@ function ChangelogGUI:Create()
 end
 
 function ChangelogGUI:Toggle()
-    LOG:Trace("StandingsGUI:Toggle()")
+    LOG:Trace("ChangelogGUI:Toggle()")
     if not self._initialized then return end
     if self.top:IsVisible() then
         self.top:Hide()
@@ -131,7 +131,7 @@ function ChangelogGUI:RegisterSlash()
         changelog = {
             type = "execute",
             name = "Changelog",
-            desc = "Toggle changelog window display",
+            desc = CLM.L["Toggle changelog window display"],
             handler = self,
             func = "Toggle",
         }
