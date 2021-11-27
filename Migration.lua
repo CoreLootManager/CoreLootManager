@@ -145,7 +145,7 @@ local function ValidateAddon(addonName)
 	end
 
 	if not finished then
-		CLM:Error(addonName .. " has not finished loading!")
+		CLM:Error("%s has not finished loading!", addonName)
 		return false -- Should not happen
 	end
     return true
@@ -153,12 +153,12 @@ end
 
 function Migration:_MigrateMonolithEssential(addonName)
 	if not ValidateAddon(addonName) then
-        LOG:Message("Skipping " .. addonName)
+        LOG:Message("Skipping %s", addonName)
         return
     end
     if not MonDKP_DKPTable then return end
     if not MonDKP_Loot then return end
-    LOG:Message("Migrating " .. addonName)
+    LOG:Message("Migrating %s", addonName)
     -- Import profiles
     LOG:Message("Importing %s entries from DKPTable", #MonDKP_DKPTable)
     self.playerDKP = {}
