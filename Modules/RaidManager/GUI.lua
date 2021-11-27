@@ -169,7 +169,7 @@ end
 
 local function FillConfigurationTooltip(configuration, tooltip)
     tooltip:AddDoubleLine("Auction Time", configuration:Get("auctionTime"))
-    tooltip:AddDoubleLine("Anti-Snipe", configuration:Get("antiSnipe"))
+    tooltip:AddDoubleLine("Anti-snipe", configuration:Get("antiSnipe"))
     tooltip:AddDoubleLine("Boss Kill Bonus", configuration:Get("bossKillBonus") and GreenYes() or RedNo())
     local onTimeBonus = configuration:Get("onTimeBonus")
     tooltip:AddDoubleLine("On Time Bonus", onTimeBonus and GreenYes() or RedNo())
@@ -359,7 +359,7 @@ local function CreateRaidDisplay(self)
         local numProfiles = #profiles
         tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or "Unknown")
         tooltip:AddLine(" ")
-        tooltip:AddDoubleLine("In Raid:", tostring(numProfiles))
+        tooltip:AddDoubleLine("In Raid" .. ":", tostring(numProfiles))
         if not profiles or numProfiles == 0 then
             tooltip:AddLine("None")
         else
@@ -367,14 +367,14 @@ local function CreateRaidDisplay(self)
         end
         local standby = raid:Standby()
         local numStandby = #standby
-        tooltip:AddDoubleLine("Standby:", tostring(numStandby))
+        tooltip:AddDoubleLine("Standby" .. ":", tostring(numStandby))
         if not standby or numStandby == 0 then
             tooltip:AddLine("None")
         else
             buildPlayerListForTooltip(standby, tooltip)
         end
         tooltip:AddLine(" ")
-        tooltip:AddLine("Configuration:")
+        tooltip:AddLine("Configuration" .. ":")
         FillConfigurationTooltip(raid:Configuration(), tooltip)
         tooltip:Show()
         return status

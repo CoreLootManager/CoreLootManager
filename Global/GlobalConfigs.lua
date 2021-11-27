@@ -45,7 +45,7 @@ function GlobalConfigs:Initialize()
             order = 2
         },
         global_raid_loot_announcement = {
-            name = "Announce Loot from corpse to Raid",
+            name = "Announce loot from corpse to Raid",
             desc = "Toggles loot announcement to raid",
             type = "toggle",
             set = function(i, v) self:SetAnnounceLootToRaid(v) end,

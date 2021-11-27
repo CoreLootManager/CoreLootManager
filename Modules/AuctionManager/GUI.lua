@@ -330,7 +330,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 8
         },
         time_auction = {
-            name = "Auction length [s]",
+            name = "Auction length",
             type = "input",
             set = (function(i,v) self.configuration:Set("auctionTime", v or 0) end),
             get = (function(i) return tostring(self.configuration:Get("auctionTime")) end),
@@ -340,7 +340,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 9
         },
         time_antiSnipe = {
-            name = "AntiSnipe [s]",
+            name = "Anti-snipe",
             type = "input",
             set = (function(i,v) self.configuration:Set("antiSnipe", v or 0) end),
             get = (function(i) return tostring(self.configuration:Get("antiSnipe")) end),

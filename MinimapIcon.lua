@@ -121,7 +121,7 @@ do
                 info = string.format("%s events", count)
             end
         else
-            info = string.format("Loading events...")
+            info = string.format("Loading...")
         end
         if CLM.MODULES.SandboxManager:IsSandbox() then
             local timetravelInfo = CLM.MODULES.LedgerManager:IsTimeTraveling() and " and Time Traveling" or ""

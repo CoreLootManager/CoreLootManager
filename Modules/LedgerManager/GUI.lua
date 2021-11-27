@@ -107,7 +107,7 @@ local configDecodeFunctions = {
         return "Auction Time", safeToString(value)
     end),
     antiSnipe = (function(value)
-        return "Anti-Snipe", safeToString(value)
+        return "Anti-snipe", safeToString(value)
     end),
     allowNegativeStandings = (function(value)
         return "Allow going below 0  DKP", boolToString(value)
@@ -122,10 +122,10 @@ local configDecodeFunctions = {
         return "Default Boss Kill Bonus value", safeToString(value)
     end),
     onTimeBonus = (function(value)
-        return "On-Time Bonus", boolToString(value)
+        return "On Time Bonus", boolToString(value)
     end),
     onTimeBonusValue = (function(value)
-        return "On-Time Bonus value", safeToString(value)
+        return "On Time Bonus value", safeToString(value)
     end),
     raidCompletionBonus = (function(value)
         return "Raid Completion Bonus", boolToString(value)

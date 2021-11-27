@@ -178,7 +178,7 @@ local function CreatePointDisplay(self)
                 if numNote then
                     note = CLM.EncounterIDsMap[numNote] or note
                 end
-                tooltip:AddDoubleLine("Note:", note)
+                tooltip:AddDoubleLine("Note" .. "", note)
             end
         end
         tooltip:Show()
