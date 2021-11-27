@@ -315,47 +315,50 @@ local describeFunctions  = {
     ["DM"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Point Award]: " ..
-            "Awarded " .. safeToString(entry:value()) .. " DKP to " ..
-            safeToString(#entry:targets()) .. " players for " ..
-            decodeReason(entry:reason()) .. " in " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+            string.format("Awarded %s DKP to %s players for %s in <%s>",
+                safeToString(entry:value()), safeToString(#entry:targets()),
+                decodeReason(entry:reason()), ColorCodeText(name or entry:rosterUid(), "ebb434")
+            )
     end),
     ["DD"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Point Decay]: " ..
-            "Decayed " .. safeToString(entry:value()) .. "% DKP to " ..
-            safeToString(#entry:targets()) .. " players in " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+            string.format("Decayed %s%% DKP to %s players in <%s>",
+                safeToString(entry:value()), safeToString(#entry:targets()),
+                ColorCodeText(name or entry:rosterUid(), "ebb434")
+            )
     end),
     ["DO"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Point Award to roster]: " ..
-            "Awarded " .. safeToString(entry:value()) .. " DKP to all players for " ..
-            decodeReason(entry:reason()) .. " in " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+            string.format("Awarded %s DKP to all players for %s in <%s>",
+                safeToString(entry:value()), decodeReason(entry:reason()),
+                ColorCodeText(name or entry:rosterUid(), "ebb434")
+            )
     end),
     ["DR"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raidUid())
-
         return "[Point Award to raid]: " ..
-            "Awarded " .. safeToString(entry:value()) .. " DKP for " ..
-            decodeReason(entry:reason()) .." to all players in raid " ..
-            (raid and ("(" .. ColorCodeText(raid:Name(), "d99212") .. ")") or "")
+            string.format("Awarded %s DKP for %s to all players in raid %s",
+                safeToString(entry:value()), decodeReason(entry:reason()),
+                (raid and ("(" .. ColorCodeText(raid:Name(), "d99212") .. ")") or "")
+            )
     end),
     ["DT"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Point Decay for roster]: " ..
-            "Decayed " .. safeToString(entry:value()) .. "% DKP to all players " ..
-            (entry:ignoreNegatives() and "excluding negatives " or "") .. "in " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+            string.format("Decayed %s%% DKP to all players %sin <%s>",
+                safeToString(entry:value()), (entry:ignoreNegatives() and "excluding negatives " or ""),
+                ColorCodeText(name or entry:rosterUid(), "ebb434")
+            )
     end),
     ["DS"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return "[Point Set]: " ..
-            "Set " .. safeToString(entry:value()) .. " DKP to " ..
-            safeToString(#entry:targets()) .. " players for " ..
-            decodeReason(entry:reason()) .. " in " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+            string.format("Set %s DKP to %s players for %s in <%s>",
+                safeToString(entry:value()), safeToString(#entry:targets()),
+                decodeReason(entry:reason()), ColorCodeText(name or entry:rosterUid(), "ebb434")
+            )
     end),
     -- Loot
     ["IA"] = (function(entry)
@@ -363,49 +366,55 @@ local describeFunctions  = {
         local guid = getGuidFromInteger(entry:profile())
         local profile = ProfileManager:GetProfileByGUID(guid)
         return "[Item Award]: " ..
-            safeItemIdToLink(entry:item()) .. " to " ..
-            (profile and profile:Name() or guid) .. " for " ..
-            safeToString(entry:value()) .. " in " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+            string.format("%s to %s for %s in <%s>",
+                safeItemIdToLink(entry:item()), (profile and profile:Name() or guid),
+                safeToString(entry:value()), ColorCodeText(name or entry:rosterUid(), "ebb434")
+            )
     end),
     ["II"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raidUid())
         local guid = getGuidFromInteger(entry:profile())
         local profile = ProfileManager:GetProfileByGUID(guid)
         return "[Item Award in Raid]: " ..
-            safeItemIdToLink(entry:item()) .. " to " ..
-            (profile and profile:Name() or guid) .. " for " ..
-            safeToString(entry:value()) .. " in " ..
-            "<" .. ColorCodeText(raid and raid:Name() or entry:raidUid(), "ebb434") .. ">"
+            string.format("%s to %s for %s in <%s>",
+                safeItemIdToLink(entry:item()), (profile and profile:Name() or guid),
+                safeToString(entry:value()), ColorCodeText(raid and raid:Name() or entry:raidUid(), "ebb434")
+            )
     end),
     -- Raid
     ["AC"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[Raid Create]: Create raid " ..
-            ColorCodeText(entry:name(), "d99212") ..
-            " " .. safeToString(entry:uuid()) ..
-            " in " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">"
+        return "[Raid Create]: " ..
+            string.format(
+                "Create raid %s %s in <%s>",
+                ColorCodeText(entry:name(), "d99212"), safeToString(entry:uuid()),
+                ColorCodeText(name or entry:rosterUid(), "ebb434")
+            )
     end),
     ["AS"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raid())
-        return "[Raid Start]: Started raid " ..
-            ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")
+        return "[Raid Start]: " ..
+            string.format("Started raid %s",
+                ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")
+            )
     end),
     ["AU"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raid())
-        return "[Raid Update]: Updated raid " ..
-            ColorCodeText(raid and raid:Name() or entry:raid(), "d99212") .. " " ..
-            safeToString(#entry:joiners()) .. " players joined, " ..
-            safeToString(#entry:leavers()) .. " players left "
+        return "[Raid Update]: " ..
+            string.format("Updated raid <%s> %s players joined, %s players left",
+                ColorCodeText(raid and raid:Name() or entry:raid(), "d99212"),
+                safeToString(#entry:joiners()), safeToString(#entry:leavers())
+            )
     end),
     ["AE"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raid())
-        return "[Raid Finish]: Finished raid " ..
-            ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")
-    end),
+        return "[Raid Finish]: " ..
+            string.format("Finished raid %s",
+                ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")
+            )
+        end),
     ["IGN"] = (function(entry)
-        return "[IGNORE]: Ignoring entry  "
+        return "[IGNORE]: Ignoring entry"
     end),
 }
 
