@@ -26,18 +26,18 @@ function GlobalConfigs:Initialize()
     local options = {
         discord = {
             type = "description",
-            name = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r",
+            name = CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"],
             fontSize = "medium",
             order = 0
         },
         global_header = {
             type = "header",
-            name = "Global",
+            name = CLM.L["Global"],
             order = 1
         },
         global_guild_award_announcement = {
-            name = "Announce award to Guild",
-            desc = "Toggles loot award announcement to guild",
+            name = CLM.L["Announce award to Guild"],
+            desc = CLM.L["Toggles loot award announcement to guild"],
             type = "toggle",
             set = function(i, v) self:SetAnnounceAwardToGuild(v) end,
             get = function(i) return self:GetAnnounceAwardToGuild() end,
@@ -45,8 +45,8 @@ function GlobalConfigs:Initialize()
             order = 2
         },
         global_raid_loot_announcement = {
-            name = "Announce loot from corpse to Raid",
-            desc = "Toggles loot announcement to raid",
+            name = CLM.L["Announce loot from corpse to Raid"],
+            desc = CLM.L["Toggles loot announcement to raid"],
             type = "toggle",
             set = function(i, v) self:SetAnnounceLootToRaid(v) end,
             get = function(i) return self:GetAnnounceLootToRaid() end,
@@ -54,25 +54,25 @@ function GlobalConfigs:Initialize()
             order = 3
         },
         global_raid_loot_announcement_level = {
-            name = "Announcement loot rarity",
-            desc = "Select loot rarity for the annoucement to raid.",
+            name = CLM.L["Announcement loot rarity"],
+            desc = CLM.L["Select loot rarity for the annoucement to raid."],
             type = "select",
             -- width = "double",
             values = {
-                [0] = ColorCodeText("Poor", "9d9d9d"),
-                [1] = ColorCodeText("Common", "ffffff"),
-                [2] = ColorCodeText("Uncommon", "1eff00"),
-                [3] = ColorCodeText("Rare", "0070dd"),
-                [4] = ColorCodeText("Epic", "a335ee"),
-                [5] = ColorCodeText("Legendary", "ff8000"),
+                [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
+                [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
+                [2] = ColorCodeText(CLM.L["Uncommon"], "1eff00"),
+                [3] = ColorCodeText(CLM.L["Rare"], "0070dd"),
+                [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
+                [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
             },
             set = function(i, v) self:SetAnnounceLootToRaidLevel(v) end,
             get = function(i) return self:GetAnnounceLootToRaidLevel() end,
             order = 4
         },
         global_wodkpbot_integration = {
-            name = "WoW DKP Bot Integration",
-            desc = "Enble WoW DKP Bot Integration. This will result in additional data stored upon logout.",
+            name = CLM.L["WoW DKP Bot Integration"],
+            desc = CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."],
             type = "toggle",
             set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
             get = function(i) return self:GetWoWDKPBotIntegration() end,
@@ -80,8 +80,8 @@ function GlobalConfigs:Initialize()
             order = 5
         },
         global_chat_commands = {
-            name = "Enable chat commands",
-            desc = "Enble !dkp and !bid through whisper / raid. Change requires /reload.",
+            name = CLM.L["Enable chat commands"],
+            desc = CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."],
             type = "toggle",
             set = function(i, v) self:SetAllowChatCommands(v) end,
             get = function(i) return self:GetAllowChatCommands() end,
@@ -89,25 +89,25 @@ function GlobalConfigs:Initialize()
             order = 6
         },
         global_wipe_ledger = {
-            name = "Wipe events",
-            desc = "Wipes all events from memory. This will trigger resyncing from other users.",
+            name = CLM.L["Wipe events"],
+            desc = CLM.L["Wipes all events from memory. This will trigger resyncing from other users."],
             type = "execute",
             confirm = true,
             func = function() LedgerManager:Wipe() end,
             order = 10
         },
         global_tracked_loot_level = {
-            name = "Tracked loot rarity",
-            desc = "Select loot rarity for the tracking unauctioned loot.",
+            name = CLM.L["Tracked loot rarity"],
+            desc = CLM.L["Select loot rarity for the tracking unauctioned loot."],
             type = "select",
             -- width = "double",
             values = {
-                [0] = ColorCodeText("Poor", "9d9d9d"),
-                [1] = ColorCodeText("Common", "ffffff"),
-                [2] = ColorCodeText("Uncommon", "1eff00"),
-                [3] = ColorCodeText("Rare", "0070dd"),
-                [4] = ColorCodeText("Epic", "a335ee"),
-                [5] = ColorCodeText("Legendary", "ff8000"),
+                [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
+                [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
+                [2] = ColorCodeText(CLM.L["Uncommon"], "1eff00"),
+                [3] = ColorCodeText(CLM.L["Rare"], "0070dd"),
+                [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
+                [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
             },
             set = function(i, v) self:SetTrackedLootLevel(v) end,
             get = function(i) return self:GetTrackedLootLevel() end,
