@@ -2,6 +2,23 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.1.1",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Auto Awarding", body = "Auto awarding should now work properly again."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.1.0",
         data = {
             {

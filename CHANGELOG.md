@@ -1,4 +1,9 @@
+# Classic Loot Manager v1.1.1
+## Fixes
+### Auto Awarding
+Auto awarding should now work properly again.
 # Classic Loot Manager v1.1.0
+
 ## Features
 ### Per-raid config overrides
 You can now override configuration on raid basis, when creating it, without altering global roster settings. This way roster settings become default ones.
