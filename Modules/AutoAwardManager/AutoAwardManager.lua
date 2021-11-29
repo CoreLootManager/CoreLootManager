@@ -20,7 +20,7 @@ local function awardBossKillBonus(id)
     if RaidManager:IsInActiveRaid() then
         local roster = RaidManager:GetRaid():Roster()
         local config = RaidManager:GetRaid():Configuration()
-        if config:GetConfiguration("bossKillBonus") then
+        if config:Get("bossKillBonus") then
             local value = roster:GetBossKillBonusValue(id)
             if value > 0 then
                 PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
