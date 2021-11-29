@@ -9,7 +9,7 @@ local PointManager = MODULES.PointManager
 local RaidManager = MODULES.RaidManager
 local EventManager = MODULES.EventManager
 
--- local HYDROSS_ENCOUNTER_ID = 623
+local HYDROSS_ENCOUNTER_ID = 623
 -- local HYDROSS_ENCOUNTER_NAME = "Hydross the Unstable"
 local HYDROSS_NPC_ID = 21216
 
@@ -20,7 +20,7 @@ local function awardBossKillBonus(id)
     if RaidManager:IsInActiveRaid() then
         local roster = RaidManager:GetRaid():Roster()
         local config = RaidManager:GetRaid():Configuration()
-        if config:GetConfiguration("bossKillBonus") then
+        if config:Get("bossKillBonus") then
             local value = roster:GetBossKillBonusValue(id)
             if value > 0 then
                 PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
@@ -61,7 +61,7 @@ local function handleHydrossWorkaround(self, addon, event)
         if subevent == "UNIT_DIED" then
             local _, _, _, _, _, npc_id = strsplit("-", guid)
             if tonumber(npc_id) == HYDROSS_NPC_ID then
-                awardBossKillBonus(HYDROSS_NPC_ID)
+                awardBossKillBonus(HYDROSS_ENCOUNTER_ID)
             end
         end
     end
