@@ -95,7 +95,7 @@ function RaidManagerGUI:Initialize()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
-                title = "Start selected raid",
+                title = CLM.L["Start selected raid"],
                 func = (function(i)
                     local raid = nil
                     local row = self.st:GetRow(self.st:GetSelection())
@@ -108,7 +108,7 @@ function RaidManagerGUI:Initialize()
                 trustedOnly = true
             },
             {
-                title = "End selected raid",
+                title = CLM.L["End selected raid"],
                 func = (function(i)
                     local raid = nil
                     local row = self.st:GetRow(self.st:GetSelection())
@@ -121,7 +121,7 @@ function RaidManagerGUI:Initialize()
                 trustedOnly = true
             },
             {
-                title = "Join selected raid",
+                title = CLM.L["Join selected raid"],
                 func = (function(i)
                     local raid = nil
                     local row = self.st:GetRow(self.st:GetSelection())
@@ -139,7 +139,7 @@ function RaidManagerGUI:Initialize()
                 managerOnly = true
             },
             {
-                title = "Remove selected raid",
+                title = CLM.L["Remove selected raid"],
                 func = (function()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
@@ -168,24 +168,24 @@ end
 
 
 local function FillConfigurationTooltip(configuration, tooltip)
-    tooltip:AddDoubleLine("Auction Time", configuration:Get("auctionTime"))
-    tooltip:AddDoubleLine("Anti-snipe", configuration:Get("antiSnipe"))
-    tooltip:AddDoubleLine("Boss Kill Bonus", configuration:Get("bossKillBonus") and GreenYes() or RedNo())
+    tooltip:AddDoubleLine(CLM.L["Auction Time"], configuration:Get("auctionTime"))
+    tooltip:AddDoubleLine(CLM.L["Anti-snipe"], configuration:Get("antiSnipe"))
+    tooltip:AddDoubleLine(CLM.L["Boss Kill Bonus"], configuration:Get("bossKillBonus") and GreenYes() or RedNo())
     local onTimeBonus = configuration:Get("onTimeBonus")
-    tooltip:AddDoubleLine("On Time Bonus", onTimeBonus and GreenYes() or RedNo())
+    tooltip:AddDoubleLine(CLM.L["On Time Bonus"], onTimeBonus and GreenYes() or RedNo())
     if onTimeBonus then
-        tooltip:AddDoubleLine("On Time Bonus Value", configuration:Get("onTimeBonusValue"))
+        tooltip:AddDoubleLine(CLM.L["On Time Bonus Value"], configuration:Get("onTimeBonusValue"))
     end
     local raidCompletionBonus = configuration:Get("raidCompletionBonus")
-    tooltip:AddDoubleLine("Raid Completion Bonus", raidCompletionBonus and GreenYes() or RedNo())
+    tooltip:AddDoubleLine(CLM.L["Raid Completion Bonus"], raidCompletionBonus and GreenYes() or RedNo())
     if raidCompletionBonus then
-        tooltip:AddDoubleLine("Raid Completion Bonus Value", configuration:Get("raidCompletionBonusValue"))
+        tooltip:AddDoubleLine(CLM.L["Raid Completion Bonus Value"], configuration:Get("raidCompletionBonusValue"))
     end
     local intervalBonus = configuration:Get("intervalBonus")
-    tooltip:AddDoubleLine("Interval Bonus", intervalBonus and GreenYes() or RedNo())
+    tooltip:AddDoubleLine(CLM.L["Interval Bonus"], intervalBonus and GreenYes() or RedNo())
     if intervalBonus then
-        tooltip:AddDoubleLine("Interval Time", configuration:Get("intervalBonusTime"))
-        tooltip:AddDoubleLine("Interval Bonus Value", configuration:Get("intervalBonusValue"))
+        tooltip:AddDoubleLine(CLM.L["Interval Time"], configuration:Get("intervalBonusTime"))
+        tooltip:AddDoubleLine(CLM.L["Interval Bonus Value"], configuration:Get("intervalBonusValue"))
     end
 end
 
@@ -193,25 +193,25 @@ local function GenerateOfficerOptions(self)
     return {
         information_header = {
             type = "header",
-            name = "Overrides",
+            name = CLM.L["Overrides"],
             order = 30
         },
         boss_kill_bonus = {
-            name = "Boss Kill Bonus",
+            name = CLM.L["Boss Kill Bonus"],
             type = "toggle",
             set = (function(i, v) self:SetRaidConfigurationOption("bossKillBonus", v) end),
             get = (function() return self:GetRaidConfigurationOption("bossKillBonus") end),
             order = 31,
         },
         on_time_bonus = {
-            name = "On Time Bonus",
+            name = CLM.L["On Time Bonus"],
             type = "toggle",
             set = (function(i, v) self:SetRaidConfigurationOption("onTimeBonus", v) end),
             get = (function() return self:GetRaidConfigurationOption("onTimeBonus")  end),
             order = 32,
         },
         on_time_bonus_value = {
-            name = "On Time Bonus Value",
+            name = CLM.L["On Time Bonus Value"],
             type = "input",
             set = (function(i, v) self:SetRaidConfigurationOption("onTimeBonusValue", tonumber(v)) end),
             get = (function() return tostring(self:GetRaidConfigurationOption("onTimeBonusValue")) end),
@@ -219,14 +219,14 @@ local function GenerateOfficerOptions(self)
             order = 33,
         },
         raid_completion_bonus = {
-            name = "Raid Completion Bonus",
+            name = CLM.L["Raid Completion Bonus"],
             type = "toggle",
             set = (function(i, v) self:SetRaidConfigurationOption("raidCompletionBonus", v) end),
             get = (function() return self:GetRaidConfigurationOption("raidCompletionBonus") end),
             order = 34,
         },
         raid_completion_bonus_value = {
-            name = "Raid Completion Value",
+            name = CLM.L["Raid Completion Value"],
             type = "input",
             set = (function(i, v) self:SetRaidConfigurationOption("raidCompletionBonusValue", tonumber(v)) end),
             get = (function() return tostring(self:GetRaidConfigurationOption("raidCompletionBonusValue")) end),
@@ -234,14 +234,14 @@ local function GenerateOfficerOptions(self)
             order = 35,
         },
         interval_bonus = {
-            name = "Interval Bonus",
+            name = CLM.L["Interval Bonus"],
             type = "toggle",
             set = (function(i, v) self:SetRaidConfigurationOption("intervalBonus", v) end),
             get = (function() return self:GetRaidConfigurationOption("intervalBonus") end),
             order = 36,
         },
         interval_time = {
-            name = "Interval Time",
+            name = CLM.L["Interval Time"],
             type = "input",
             set = (function(i, v) self:SetRaidConfigurationOption("intervalBonusTime", tonumber(v)) end),
             get = (function() return tostring(self:GetRaidConfigurationOption("intervalBonusTime")) end),
@@ -249,7 +249,7 @@ local function GenerateOfficerOptions(self)
             order = 37,
         },
         interval_bonus_value = {
-            name = "Interval Bonus Value",
+            name = CLM.L["Interval Bonus Value"],
             type = "input",
             set = (function(i, v) self:SetRaidConfigurationOption("intervalBonusValue", tonumber(v)) end),
             get = (function() return tostring(self:GetRaidConfigurationOption("intervalBonusValue")) end),
@@ -258,12 +258,12 @@ local function GenerateOfficerOptions(self)
         },
         create_header = {
             type = "header",
-            name = "Create",
+            name = CLM.L["Create"],
             order = 7
         },
         select_roster = {
-            name = "Select roster",
-            desc = "Select roster to create raid for.",
+            name = CLM.L["Select roster"],
+            desc = CLM.L["Select roster to create raid for."],
             type = "select",
             width = "full",
             values = (function()
@@ -285,8 +285,8 @@ local function GenerateOfficerOptions(self)
             order = 9
         },
         name_raid = {
-            name = "Raid Name",
-            desc = "Set raid name",
+            name = CLM.L["Raid Name"],
+            desc = CLM.L["Set raid name"],
             type = "input",
             set = function(i, v) self.name = v end,
             get = function(i) return self.name end,
@@ -295,8 +295,8 @@ local function GenerateOfficerOptions(self)
             order = 8
         },
         create_raid = {
-            name = "Create raid",
-            desc = "Create new raid with provided name. You will automatically join this raid and leave any other you are part of.",
+            name = CLM.L["Create raid"],
+            desc = CLM.L["Create new raid with provided name. You will automatically join this raid and leave any other you are part of."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -331,10 +331,10 @@ end
 local function CreateRaidDisplay(self)
     -- Profile Scrolling Table
     local columns = {
-        {name = "Name",  width = 100},
-        {name = "Status", width = 100},
-        {name = "Roster",  width = 100},
-        {name = "Created",  width = 150, sort = ScrollingTable.SORT_DSC}
+        {name = CLM.L["Name"],  width = 100},
+        {name = CLM.L["Status"], width = 100},
+        {name = CLM.L["Roster"],  width = 100},
+        {name = CLM.L["Created"],  width = 150, sort = ScrollingTable.SORT_DSC}
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
@@ -357,9 +357,9 @@ local function CreateRaidDisplay(self)
         -- In Raid
         local profiles = raid:Profiles()
         local numProfiles = #profiles
-        tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or "Unknown")
+        tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"])
         tooltip:AddLine(" ")
-        tooltip:AddDoubleLine("In Raid" .. ":", tostring(numProfiles))
+        tooltip:AddDoubleLine(CLM.L["In Raid"] .. ":", tostring(numProfiles))
         if not profiles or numProfiles == 0 then
             tooltip:AddLine("None")
         else
@@ -367,14 +367,14 @@ local function CreateRaidDisplay(self)
         end
         local standby = raid:Standby()
         local numStandby = #standby
-        tooltip:AddDoubleLine("Standby" .. ":", tostring(numStandby))
+        tooltip:AddDoubleLine(CLM.L["Standby"] .. ":", tostring(numStandby))
         if not standby or numStandby == 0 then
-            tooltip:AddLine("None")
+            tooltip:AddLine(CLM.L["None"])
         else
             buildPlayerListForTooltip(standby, tooltip)
         end
         tooltip:AddLine(" ")
-        tooltip:AddLine("Configuration" .. ":")
+        tooltip:AddLine(CLM.L["Configuration"] .. ":")
         FillConfigurationTooltip(raid:Configuration(), tooltip)
         tooltip:Show()
         return status
@@ -417,7 +417,7 @@ function RaidManagerGUI:Create()
     LOG:Trace("RaidManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Raid Manager")
+    f:SetTitle(CLM.L["Raid Manager"])
 
     f:SetStatusText("")
     f:SetLayout("Table")
@@ -446,9 +446,9 @@ function RaidManagerGUI:Refresh(visible)
     for _, raid in pairs(RaidManager:ListRaids()) do
         local row = {cols = {
             { value = raid:Name() },
-            { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or "Unknown" },
+            { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"] },
             { value = RosterManager:GetRosterNameByUid(raid:Roster():UID()) },
-            { value = date("%Y/%m/%d %a %H:%M:%S", raid:CreatedAt()) },
+            { value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], raid:CreatedAt()) },
             { value = raid }
         }};
         data[rowId] = row
@@ -459,9 +459,9 @@ function RaidManagerGUI:Refresh(visible)
     self.st:SetData(data)
 
     if RaidManager:IsInActiveRaid() then
-        self.top:SetStatusText("Currently in raid: " .. RaidManager:GetRaid():Name())
+        self.top:SetStatusText(CLM.L["Currently in raid: "] .. RaidManager:GetRaid():Name())
     else
-        self.top:SetStatusText("Not in raid")
+        self.top:SetStatusText(CLM.L["Not in raid"])
     end
 
     -- LIBS.registry:NotifyChange(REGISTRY)
@@ -485,7 +485,7 @@ function RaidManagerGUI:RegisterSlash()
         raid = {
             type = "execute",
             name = "Raid Manager",
-            desc = "Toggle Raid Manager window display",
+            desc = CLM.L["Toggle Raid Manager window display"],
             handler = self,
             func = "Toggle",
         }
