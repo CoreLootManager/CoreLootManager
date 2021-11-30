@@ -35,7 +35,7 @@ local function safeToString(value)
 end
 
 local function boolToString(value)
-    return value and "True" or "False"
+    return value and CLM.L["True"] or CLM.L["False"]
 end
 
 local function safeItemIdToLink(itemId)
@@ -49,11 +49,11 @@ end
 
 local function CreateHistoryDisplay(self)
     local columns = {
-        {name = "Num",          width = 75, sort = ScrollingTable.SORT_DSC},
-        {name = "Time",         width = 150},
-        {name = "Type",         width = 50},
-        {name = "Description",  width = 550},
-        {name = "Author",       width = 100}
+        {name = CLM.L["Num"],          width = 75, sort = ScrollingTable.SORT_DSC},
+        {name = CLM.L["Time"],         width = 150},
+        {name = CLM.L["Type"],         width = 50},
+        {name = CLM.L["Description"],  width = 550},
+        {name = CLM.L["Author"],       width = 100}
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
@@ -92,70 +92,70 @@ local configDecodeFunctions = {
     end),
     ---
     auctionType = (function(value)
-        return "Auction Type", CONSTANTS.AUCTION_TYPES_GUI[value] or ""
+        return CLM.L["Auction Type"], CONSTANTS.AUCTION_TYPES_GUI[value] or ""
     end),
     itemValueMode = (function(value)
-        return "Item Value Mode", CONSTANTS.ITEM_VALUE_MODES_GUI[value] or ""
+        return CLM.L["Item Value Mode"], CONSTANTS.ITEM_VALUE_MODES_GUI[value] or ""
     end),
     zeroSumBank = (function(value)
-        return "Zero-Sum Bank", boolToString(value)
+        return CLM.L["Zero-Sum Bank"], boolToString(value)
     end),
     zeroSumBankInflation = (function(value)
-        return "Zero-Sum Bank Inflation", safeToString(value)
+        return CLM.L["Zero-Sum Bank Inflation"], safeToString(value)
     end),
     auctionTime = (function(value)
-        return "Auction Time", safeToString(value)
+        return CLM.L["Auction Time"], safeToString(value)
     end),
     antiSnipe = (function(value)
-        return "Anti-snipe", safeToString(value)
+        return CLM.L["Anti-snipe"], safeToString(value)
     end),
     allowNegativeStandings = (function(value)
-        return "Allow going below 0  DKP", boolToString(value)
+        return CLM.L["Allow going below 0  DKP"], boolToString(value)
     end),
     allowNegativeBidders = (function(value)
-        return "Allow bidding below 0 DKP", boolToString(value)
+        return CLM.L["Allow bidding below 0 DKP"], boolToString(value)
     end),
     bossKillBonus = (function(value)
-        return "Boss Kill Bonus", boolToString(value)
+        return CLM.L["Boss Kill Bonus"], boolToString(value)
     end),
     bossKillBonusValue = (function(value)
-        return "Default Boss Kill Bonus value", safeToString(value)
+        return CLM.L["Default Boss Kill Bonus value"], safeToString(value)
     end),
     onTimeBonus = (function(value)
-        return "On Time Bonus", boolToString(value)
+        return CLM.L["On Time Bonus"], boolToString(value)
     end),
     onTimeBonusValue = (function(value)
-        return "On Time Bonus value", safeToString(value)
+        return CLM.L["On Time Bonus value"], safeToString(value)
     end),
     raidCompletionBonus = (function(value)
-        return "Raid Completion Bonus", boolToString(value)
+        return CLM.L["Raid Completion Bonus"], boolToString(value)
     end),
     raidCompletionBonusValue = (function(value)
-        return "Raid Completion Bonus value", safeToString(value)
+        return CLM.L["Raid Completion Bonus value"], safeToString(value)
     end),
     intervalBonus = (function(value)
-        return "Interval Bonus", boolToString(value)
+        return CLM.L["Interval Bonus"], boolToString(value)
     end),
     intervalBonusTime = (function(value)
-        return "Interval Bonus time", safeToString(value)
+        return CLM.L["Interval Bonus time"], safeToString(value)
     end),
     intervalBonusValue = (function(value)
-        return "Interval Bonus value", safeToString(value)
+        return CLM.L["Interval Bonus value"], safeToString(value)
     end),
     hardCap = (function(value)
-        return "Hard DKP cap", safeToString(value)
+        return CLM.L["Hard DKP cap"], safeToString(value)
     end),
     weeklyCap = (function(value)
-        return "Weekly DKP cap", safeToString(value)
+        return CLM.L["Weekly DKP cap"], safeToString(value)
     end),
     weeklyReset = (function(value)
-        return "Weekly reset", CONSTANTS.WEEKLY_RESETS_GUI[value] or ""
+        return CLM.L["Weekly reset"], CONSTANTS.WEEKLY_RESETS_GUI[value] or ""
     end),
     roundDecimals = (function(value)
-        return "Round to", safeToString(value)
+        return CLM.L["Round to"], safeToString(value)
     end),
     minimalIncrement = (function(value)
-        return "Min bid increment", safeToString(value)
+        return CLM.L["Min bid increment"], safeToString(value)
     end)
 }
 
@@ -173,7 +173,7 @@ local function decodeItemValueOverride(itemId, base, max)
 end
 
 local function decodeBossKillBonus(encounterId, value)
-    local encounter = "Unknown"
+    local encounter = CLM.L["Unknown"]
     value = tonumber(value) or 0
     if value == 0 then
         return encounter, ""
@@ -201,7 +201,7 @@ local describeFunctions  = {
     end),
     -- Profile
     ["P0"] = (function(entry)
-        return "[Update Profile]: " ..
+        return CLM.L["[Update Profile]: "] ..
             ColorCodeText(getGuidFromInteger(entry:GUID()), "6699ff") ..
             " " ..
             ColorCodeText(entry:name(), GetClassColor(NumberToClass(entry:ingameClass())).hex)
@@ -209,7 +209,7 @@ local describeFunctions  = {
     ["P1"] = (function(entry)
         local guid = getGuidFromInteger(entry:GUID())
         local profile = ProfileManager:GetProfileByGUID(guid)
-        return "[Remove Profile]: " ..
+        return CLM.L["[Remove Profile]: "] ..
             ColorCodeText(profile and profile:Name() or guid,
                           profile and GetClassColor(profile:Class()).hex or "6699ff")
     end),
@@ -219,94 +219,94 @@ local describeFunctions  = {
         local profile = ProfileManager:GetProfileByGUID(guid)
         local mainProfile = ProfileManager:GetProfileByGUID(mainGuid)
         if entry:main() ~= 0 then
-            return "[Alt-Main Link]: " ..
+            return CLM.L["[Alt-Main Link]: "] ..
                 ColorCodeText(profile and profile:Name() or guid,
                             profile and GetClassColor(profile:Class()).hex or "6699ff") ..
-                " alt of: " ..
+                CLM.L[" alt of: "] ..
                 ColorCodeText(mainProfile and mainProfile:Name() or mainGuid,
                             mainProfile and GetClassColor(mainProfile:Class()).hex or "6699ff")
         else
-            return "[Alt-Main Link]: Remove linking of " ..
+            return CLM.L["[Alt-Main Link]: "] .. CLM.L["Remove linking of "] ..
                 ColorCodeText(profile and profile:Name() or guid,
                             profile and GetClassColor(profile:Class()).hex or "6699ff")
         end
     end),
     -- Roster
     ["R0"] = (function(entry)
-        return "[Create Roster]: " ..
+        return CLM.L["[Create Roster]: "] ..
             entry:rosterUid() ..
             " <" .. ColorCodeText(entry:name(), "ebb434") .. "> "  ..
             (CONSTANTS.POINT_TYPES_GUI[entry:pointType()] or "")
     end),
     ["R1"] = (function(entry)
-        return "[Delete Roster]: " ..
+        return CLM.L["[Delete Roster]: "] ..
             "<" .. ColorCodeText(entry:rosterUid(), "ebb434") ..">"
     end),
     ["R2"] = (function(entry)
-        return "[Rename Roster]: " ..
+        return CLM.L["[Rename Roster]: "] ..
             entry:rosterUid() ..
             " <" .. ColorCodeText(entry:name(), "ebb434") .. ">"
     end),
     ["R3"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[All Roster Configs]: " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. " Too much data to display"
+        return CLM.L["[All Roster Configs]: "] ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. CLM.L[" Too much data to display"]
 
     end),
     ["R4"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         local config, value = decodeRosterConfig(entry:config(), entry:value())
-        return "[Roster Config]: " ..
+        return CLM.L["[Roster Config]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             config .. ": " .. value
     end),
     ["R5"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[All Roster Default Slot Values]: " ..
-            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. " Too much data to display"
+        return CLM.L["[All Roster Default Slot Values]: "] ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. CLM.L[" Too much data to display"]
 
     end),
     ["R6"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         local slot, base, max = decodeSlotValueConfig(entry:config(), entry:base(), entry:max())
-        return "[Roster Default Slot Value]: " ..
+        return CLM.L["[Roster Default Slot Value]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             slot .. ": " .. base .. " / " .. max
     end),
     ["R7"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         local link, base, max = decodeItemValueOverride(entry:itemId(), entry:base(), entry:max())
-        return "[Roster Item Value Override]: " ..
+        return CLM.L["[Roster Item Value Override]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             link .. ": " .. base .. " / " .. max
 
     end),
     ["R8"] = (function(entry)
-        return "[Roster Item Value Override]: " .. " UNUSED"
+        return CLM.L["[Roster Item Value Override]: "] .. CLM.L[" UNUSED"]
     end),
     ["R9"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[Roster Update Profiles]: " ..
+        return CLM.L["[Roster Update Profiles]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
-            (entry:remove() and "Remove" or "Add") .. " " .. safeToString(#entry:profiles()) .. " profile(s)"
+            (entry:remove() and CLM.L["Remove"] or CLM.L["Add"]) .. " " .. safeToString(#entry:profiles()) .. CLM.L[" profile(s)"]
 
     end),
     ["RC"] = (function(entry)
         local source = RosterManager:GetRosterNameByUid(entry:sourceRosterUid())
         local target = RosterManager:GetRosterNameByUid(entry:targetRosterUid())
-        return "[Roster Copy]: " ..
+        return CLM.L["[Roster Copy]: "] ..
             "From <" .. ColorCodeText(source or entry:sourceRosterUid(), "ebb434") .. "> " ..
             "to <" .. ColorCodeText(target or entry:targetRosterUid(), "ebb434") .. ">: " ..
-            (entry:config() and "[config] " or "") ..
-            (entry:defaults() and "[slot defaults] " or "") ..
-            (entry:overrides() and "[item values] " or "") ..
-            (entry:profiles() and "[profiles] " or "")
+            (entry:config() and CLM.L["[config] "] or "") ..
+            (entry:defaults() and CLM.L["[slot defaults] "] or "") ..
+            (entry:overrides() and CLM.L["[item values] "] or "") ..
+            (entry:profiles() and CLM.L["[profiles] "] or "")
 
     end),
     ["RB"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         local encounter, value = decodeBossKillBonus(entry:encounterId(), entry:value())
-        return "[Roster Boss Kill Bonus]: " ..
+        return CLM.L["[Roster Boss Kill Bonus]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             encounter .. ": " .. value
 
@@ -314,48 +314,48 @@ local describeFunctions  = {
     -- Points
     ["DM"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[Point Award]: " ..
-            string.format("Awarded %s DKP to %s players for %s in <%s>",
+        return CLM.L["[Point Award]: "] ..
+            string.format(CLM.L["Awarded %s DKP to %s players for %s in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
                 decodeReason(entry:reason()), ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
     end),
     ["DD"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[Point Decay]: " ..
-            string.format("Decayed %s%% DKP to %s players in <%s>",
+        return CLM.L["[Point Decay]: "] ..
+            string.format(CLM.L["Decayed %s%% DKP to %s players in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
                 ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
     end),
     ["DO"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[Point Award to roster]: " ..
-            string.format("Awarded %s DKP to all players for %s in <%s>",
+        return CLM.L["[Point Award to roster]: "] ..
+            string.format(CLM.L["Awarded %s DKP to all players for %s in <%s>"],
                 safeToString(entry:value()), decodeReason(entry:reason()),
                 ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
     end),
     ["DR"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raidUid())
-        return "[Point Award to raid]: " ..
-            string.format("Awarded %s DKP for %s to all players in raid %s",
+        return CLM.L["[Point Award to raid]: "] ..
+            string.format(CLM.L["Awarded %s DKP for %s to all players in raid %s"],
                 safeToString(entry:value()), decodeReason(entry:reason()),
                 (raid and ("(" .. ColorCodeText(raid:Name(), "d99212") .. ")") or "")
             )
     end),
     ["DT"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[Point Decay for roster]: " ..
-            string.format("Decayed %s%% DKP to all players %sin <%s>",
-                safeToString(entry:value()), (entry:ignoreNegatives() and "excluding negatives " or ""),
+        return CLM.L["[Point Decay for roster]: "] ..
+            string.format(CLM.L["Decayed %s%% DKP to all players %sin <%s>"],
+                safeToString(entry:value()), (entry:ignoreNegatives() and CLM.L["excluding negatives "] or ""),
                 ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
     end),
     ["DS"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[Point Set]: " ..
-            string.format("Set %s DKP to %s players for %s in <%s>",
+        return CLM.L["[Point Set]: "] ..
+            string.format(CLM.L["Set %s DKP to %s players for %s in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
                 decodeReason(entry:reason()), ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
@@ -365,8 +365,8 @@ local describeFunctions  = {
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         local guid = getGuidFromInteger(entry:profile())
         local profile = ProfileManager:GetProfileByGUID(guid)
-        return "[Item Award]: " ..
-            string.format("%s to %s for %s in <%s>",
+        return CLM.L["[Item Award]: "] ..
+            string.format(CLM.L["%s to %s for %s in <%s>"],
                 safeItemIdToLink(entry:item()), (profile and profile:Name() or guid),
                 safeToString(entry:value()), ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
@@ -375,8 +375,8 @@ local describeFunctions  = {
         local raid = RaidManager:GetRaidByUid(entry:raidUid())
         local guid = getGuidFromInteger(entry:profile())
         local profile = ProfileManager:GetProfileByGUID(guid)
-        return "[Item Award in Raid]: " ..
-            string.format("%s to %s for %s in <%s>",
+        return CLM.L["[Item Award in Raid]: "] ..
+            string.format(CLM.L["%s to %s for %s in <%s>"],
                 safeItemIdToLink(entry:item()), (profile and profile:Name() or guid),
                 safeToString(entry:value()), ColorCodeText(raid and raid:Name() or entry:raidUid(), "ebb434")
             )
@@ -384,37 +384,37 @@ local describeFunctions  = {
     -- Raid
     ["AC"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        return "[Raid Create]: " ..
+        return CLM.L["[Raid Create]: "] ..
             string.format(
-                "Create raid %s %s in <%s>",
+                CLM.L["Create raid %s %s in <%s>"],
                 ColorCodeText(entry:name(), "d99212"), safeToString(entry:uuid()),
                 ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
     end),
     ["AS"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raid())
-        return "[Raid Start]: " ..
-            string.format("Started raid %s",
+        return CLM.L["[Raid Start]: "] ..
+            string.format(CLM.L["Started raid %s"],
                 ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")
             )
     end),
     ["AU"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raid())
-        return "[Raid Update]: " ..
-            string.format("Updated raid <%s> %s players joined, %s players left",
+        return CLM.L["[Raid Update]: "] ..
+            string.format(CLM.L["Updated raid <%s> %s players joined, %s players left"],
                 ColorCodeText(raid and raid:Name() or entry:raid(), "d99212"),
                 safeToString(#entry:joiners()), safeToString(#entry:leavers())
             )
     end),
     ["AE"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raid())
-        return "[Raid Finish]: " ..
-            string.format("Finished raid %s",
+        return CLM.L["[Raid Finish]: "] ..
+            string.format(CLM.L["Finished raid %s"],
                 ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")
             )
         end),
     ["IGN"] = (function(entry)
-        return "[IGNORE]: Ignoring entry"
+        return CLM.L["[IGNORE]: Ignoring entry"]
     end),
 }
 
@@ -425,7 +425,7 @@ end
 
 local function getEntryInfo(entry)
     -- Common info
-    local time = date("%d/%m/%Y %H:%M:%S", entry:time())
+    local time = date(CLM.L["%d/%m/%Y %H:%M:%S"], entry:time())
     local type = entry:class()
     local guid = getGuidFromInteger(entry:creator())
     local profile = ProfileManager:GetProfileByGUID(guid)
@@ -454,31 +454,31 @@ end
 local function GenerateOfficerOptions(self)
     return {
         toggle_sandbox = {
-            name = "Enter sandbox",
-            desc = "In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel.",
+            name = CLM.L["Enter sandbox"],
+            desc = CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."],
             type = "execute",
             func = (function(i) SandboxManager:EnterSandbox() end),
             order = 1,
             disabled = (function() return SandboxManager:IsSandbox() end)
         },
         apply_changes = {
-            name = "Apply changes",
-            desc = "Applies all changes and exits sandbox mode",
+            name = CLM.L["Apply changes"],
+            desc = CLM.L["Applies all changes and exits sandbox mode"],
             type = "execute",
             func = (function(i) SandboxManager:ApplyChanges() end),
             order = 2,
             disabled = (function() return not SandboxManager:IsSandbox() end)
         },
         discard_changes = {
-            name = "Discard changes",
-            desc = "Discards all changes and exits sandbox mode",
+            name = CLM.L["Discard changes"],
+            desc = CLM.L["Discards all changes and exits sandbox mode"],
             type = "execute",
             func = (function() SandboxManager:DiscardChanges() end),
             order = 3,
             disabled = (function() return not SandboxManager:IsSandbox() end)
         },
         sandbox_info = {
-            name = (function() return ColorCodeText(SandboxManager:IsSandbox() and " Sandbox" or "", "FFFFFF") end),
+            name = (function() return ColorCodeText(SandboxManager:IsSandbox() and CLM.L[" Sandbox"] or "", "FFFFFF") end),
             fontSize = "large",
             width = 0.5,
             order = 4,
@@ -488,9 +488,9 @@ local function GenerateOfficerOptions(self)
             name = (function()
                 local info = ""
                 if self.timeTravelInProgress then
-                    info = ColorCodeText("Loading...", "eeee00")
+                    info = ColorCodeText(CLM.L["Loading..."], "eeee00")
                 elseif LedgerManager:IsTimeTraveling() then
-                    info = ColorCodeText("Time Travel", "eeee00")
+                    info = ColorCodeText(CLM.L["Time Travel"], "eeee00")
                 end
                 return info
             end),
@@ -528,7 +528,7 @@ function AuditGUI:Initialize()
     self:RegisterSlash()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
         {
-            title = "Timetravel",
+            title = CLM.L["Timetravel"],
             func = (function()
                 local row = self.st:GetRow(self.st:GetSelection())
                 if row then
@@ -541,7 +541,7 @@ function AuditGUI:Initialize()
             color = "eeee00"
         },
         {
-            title = "End Timetravel",
+            title = CLM.L["End Timetravel"],
             func = (function()
                 if LedgerManager:IsTimeTraveling() then
                     self.timeTravelInProgress = true
@@ -553,7 +553,7 @@ function AuditGUI:Initialize()
             color = "eeee00"
         },
         {
-            title = "Remove selected",
+            title = CLM.L["Remove selected"],
             func = (function()
                 local row = self.st:GetRow(self.st:GetSelection())
                 if row then
@@ -580,7 +580,7 @@ function AuditGUI:Create()
     LOG:Trace("AuditGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Ledger Entries Audit")
+    f:SetTitle(CLM.L["Ledger Entries Audit"])
     f:SetStatusText("")
     f:SetLayout("flow")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
@@ -654,7 +654,7 @@ function AuditGUI:RegisterSlash()
         audit = {
             type = "execute",
             name = "audit",
-            desc = "Toggle all ledger events audit window",
+            desc = CLM.L["Toggle all ledger events audit window"],
             handler = self,
             func = "Toggle",
         }
