@@ -59,7 +59,7 @@ function LootQueueGUI:Initialize()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
-                title = "Auction item",
+                title = CLM.L["Auction item"],
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
@@ -72,7 +72,7 @@ function LootQueueGUI:Initialize()
                 color = "00cc00"
             },
             {
-                title = "Remove item",
+                title = CLM.L["Remove item"],
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
@@ -85,7 +85,7 @@ function LootQueueGUI:Initialize()
                 trustedOnly = true,
             },
             {
-                title = "Remove all",
+                title = CLM.L["Remove all"],
                 func = (function()
                     LootQueueManager:Wipe()
                 end),
@@ -184,7 +184,7 @@ function LootQueueGUI:Create()
     LOG:Trace("LootQueueGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Loot Queue")
+    f:SetTitle(CLM.L["Loot Queue"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
@@ -267,7 +267,7 @@ function LootQueueGUI:RegisterSlash()
         queue = {
             type = "execute",
             name = "Loot Queue",
-            desc = "Toggle Loot Queue window display",
+            desc = CLM.L["Toggle Loot Queue window display"],
             handler = self,
             func = "Toggle",
         }

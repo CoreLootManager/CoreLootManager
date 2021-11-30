@@ -67,7 +67,7 @@ function LootGUI:Initialize()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
-                title = "Remove selected",
+                title = CLM.L["Remove selected"],
                 func = (function()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
@@ -89,17 +89,17 @@ end
 
 local columns = {
     playerLoot = {
-        {name = "Item",  width = 265},
-        {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
-        {name = "Date", width = 160, sort = ScrollingTable.SORT_DSC},
+        {name = CLM.L["Item"],  width = 265},
+        {name = CLM.L["Value"],  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
+        {name = CLM.L["Date"], width = 160, sort = ScrollingTable.SORT_DSC},
         {name = "", width = 0},
         {name = "", width = 0},
     },
     raidLoot = {
-        {name = "Item", width = 265},
-        {name = "Value", width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
-        {name = "Date", width = 160, sort = ScrollingTable.SORT_DSC},
-        {name = "Player", width = 90},
+        {name = CLM.L["Item"], width = 265},
+        {name = CLM.L["Value"], width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
+        {name = CLM.L["Date"], width = 160, sort = ScrollingTable.SORT_DSC},
+        {name = CLM.L["Player"], width = 90},
         {name = "", width = 0},
     }
 }
@@ -112,7 +112,7 @@ local function CreateLootDisplay(self)
     StandingsGroup:SetWidth(620)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
-    RosterSelectorDropDown:SetLabel("Select roster")
+    RosterSelectorDropDown:SetLabel(CLM.L["Select roster"])
     RosterSelectorDropDown:SetCallback("OnValueChanged", function()
         self.requestRefreshProfiles = true
         self:Refresh()
@@ -121,7 +121,7 @@ local function CreateLootDisplay(self)
     StandingsGroup:AddChild(RosterSelectorDropDown)
     -- Profile selector
     local ProfileSelectorDropDown = AceGUI:Create("Dropdown")
-    ProfileSelectorDropDown:SetLabel("Select player")
+    ProfileSelectorDropDown:SetLabel(CLM.L["Select player"])
     ProfileSelectorDropDown:SetCallback("OnValueChanged", function()
         self:Refresh()
     end)
@@ -129,7 +129,7 @@ local function CreateLootDisplay(self)
     StandingsGroup:AddChild(ProfileSelectorDropDown)
     -- Search
     local SearchInput = AceGUI:Create("EditBox")
-    SearchInput:SetLabel("Search")
+    SearchInput:SetLabel(CLM.L["Search"])
     SearchInput:SetCallback("OnEnterPressed", function()
         self:Refresh()
     end)
@@ -177,13 +177,13 @@ local function CreateLootDisplay(self)
             if profile then
                 name = ColorCodeText(profile:Name(), GetClassColor(profile:Class()).hex)
             else
-                name = "Unknown"
+                name = CLM.L["Unknown"]
             end
             local raid = RaidManager:GetRaidByUid(loot:RaidUid())
             if raid then
                 tooltip:AddLine(raid:Name())
             end
-            tooltip:AddDoubleLine("Awarded by", name)
+            tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
         end
 		tooltip:Show()
         return status
@@ -223,7 +223,7 @@ function LootGUI:Create()
     LOG:Trace("LootGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Loot History")
+    f:SetTitle(CLM.L["Loot History"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
@@ -283,7 +283,7 @@ function LootGUI:Refresh(visible)
             {cols = {
                 {value = ""},
                 {value = ""},
-                {value = "Loading..."},
+                {value = CLM.L["Loading..."]},
                 {value = ""},
                 {value = nil}
             }}
@@ -300,7 +300,7 @@ function LootGUI:Refresh(visible)
         local row = {cols = {}}
         row.cols[1] = {value = lootData[2]}
         row.cols[2] = {value = loot:Value()}
-        row.cols[3] = {value = date("%Y/%m/%d %a %H:%M:%S", loot:Timestamp())}
+        row.cols[3] = {value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], loot:Timestamp())}
         row.cols[4] = {value = lootData[3]}
         row.cols[5] = {value = loot}
         data[rowId] =  row
@@ -347,8 +347,8 @@ function LootGUI:RefreshProfiles()
     local roster = self:GetCurrentRoster()
     if not roster then return end
     local profiles = roster:Profiles()
-    local profileNameMap = { ["-- Raid Loot --"] = "-- Raid Loot --"}
-    local profileList = {"-- Raid Loot --"}
+    local profileNameMap = { [CLM.L["-- Raid Loot --"]] = CLM.L["-- Raid Loot --"]}
+    local profileList = {CLM.L["-- Raid Loot --"]}
     for _, GUID in ipairs(profiles) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
         if profile then
@@ -399,8 +399,8 @@ function LootGUI:RegisterSlash()
     local options = {
         loot = {
             type = "execute",
-            name = "Standings",
-            desc = "Toggle loot window display",
+            name = CLM.L["Standings"],
+            desc = CLM.L["Toggle loot window display"],
             handler = self,
             func = "Toggle",
         }
