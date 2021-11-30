@@ -12,12 +12,12 @@ function Logger:Initialize()
     local options = {
         logger_header = {
             type = "header",
-            name = "Logging",
+            name = CLM.L["Logging"],
             order = 100
         },
         logger_severity = {
-            name = "Logging level",
-            desc = "Select logging level for troubleshooting",
+            name = CLM.L["Logging level"],
+            desc = CLM.L["Select logging level for troubleshooting"],
             type = "select",
             values = LOG.SEVERITY_LEVEL,
             set = function(i, v) self:SetSeverity(v) end,
@@ -25,16 +25,16 @@ function Logger:Initialize()
             order = 101
         },
         logger_verbose = {
-            name = "Verbose",
-            desc = "Enables / disables verbose data printing during logging",
+            name = CLM.L["Verbose"],
+            desc = CLM.L["Enables / disables verbose data printing during logging"],
             type = "toggle",
             set = function(i, v) self:SetVerbosity(v) end,
             get = function(i) return self:GetVerbosity() end,
             order = 102
           },
           logger_wipe = {
-            name = "Wipe",
-            desc = "Wipes the log history",
+            name = CLM.L["Wipe"],
+            desc = CLM.L["Wipes the log history"],
             type = "execute",
             confirm = true,
             func = function(i, v) self:Wipe() end,
