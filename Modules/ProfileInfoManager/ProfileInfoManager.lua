@@ -59,14 +59,14 @@ local function OutOfDate(self, version, disable)
     local currentTime = GetServerTime()
     if disable then
         if currentTime - self._lastDisplayedMessageD > 300 then
-            LOG:Message("|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible.", ColorCodeText(stringifyVersion(version), "00cc00"))
+            LOG:Message(CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."], ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessageD = currentTime
         end
         LedgerManager:Cutoff()
         Comms:Disable()
     else
         if currentTime - self._lastDisplayedMessage > 300 then
-            LOG:Message("New version %s of Classic Loot Manager is available. For best experience please update the AddOn.", ColorCodeText(stringifyVersion(version), "00cc00"))
+            LOG:Message(CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."], ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessage = currentTime
         end
     end
@@ -222,7 +222,7 @@ function ProfileInfoManager:Initialize()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
-            LOG:Message("Classic Loot Manager %s initialization complete.", ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
+            LOG:Message(CLM.L["Classic Loot Manager %s initialization complete."], ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
             C_Timer.After(1, function()
                 RestoreVersions(self)
                 RestoreSpecs(self)
