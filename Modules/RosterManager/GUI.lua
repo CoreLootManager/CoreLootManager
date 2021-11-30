@@ -85,16 +85,16 @@ end
 
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
-    filters[FILTER_IN_RAID] = UTILS.ColorCodeText("In Raid", "FFD100")
-    -- filters[FILTER_STANDBY] = UTILS.ColorCodeText("Standby", "FFD100")
+    filters[FILTER_IN_RAID] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
+    -- filters[FILTER_STANDBY] = UTILS.ColorCodeText(CLM.L["Standby"], "FFD100")
     return {
         filter_header = {
             type = "header",
-            name = "Filtering",
+            name = CLM.L["Filtering"],
             order = 0
         },
         filter_display = {
-            name = "Filter",
+            name = CLM.L["Filter"],
             type = "multiselect",
             set = function(i, k, v) self.filterOptions[tonumber(k)] = v; self:Refresh() end,
             get = function(i, v) return self.filterOptions[tonumber(v)] end,
@@ -104,8 +104,8 @@ local function GenerateUntrustedOptions(self)
             order = 1
         },
         filter_search = {
-            name = "Search",
-            desc = "Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering.",
+            name = CLM.L["Search"],
+            desc = CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."],
             type = "input",
             set = (function(i, v)
                 self.searchString = v
@@ -133,8 +133,8 @@ local function GenerateUntrustedOptions(self)
             order = 4,
         },
         filter_select_all = {
-            name = "All",
-            desc = "Select all classes.",
+            name = CLM.L["All"],
+            desc = CLM.L["Select all classes."],
             type = "execute",
             func = (function()
                 for i=1,9 do
@@ -147,8 +147,8 @@ local function GenerateUntrustedOptions(self)
             order = 2,
         },
         filter_select_none = {
-            name = "None",
-            desc = "Clear all classes.",
+            name = CLM.L["None"],
+            desc = CLM.L["Clear all classes."],
             type = "execute",
             func = (function()
                 for i=1,9 do
@@ -167,12 +167,12 @@ local function GenerateManagerOptions(self)
     return {
         award_header = {
             type = "header",
-            name = "Management",
+            name = CLM.L["Management"],
             order = 10
         },
         award_dkp_value = {
-            name = "Award DKP value",
-            desc = "DKP value that will be awarded.",
+            name = CLM.L["Award DKP value"],
+            desc = CLM.L["DKP value that will be awarded."],
             type = "input",
             set = function(i, v) self.awardValue = v end,
             get = function(i) return self.awardValue end,
@@ -181,8 +181,8 @@ local function GenerateManagerOptions(self)
             order = 11
         },
         award_dkp_note = {
-            name = "Note",
-            desc = "Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name.",
+            name = CLM.L["Note"],
+            desc = CLM.L["Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."],
             type = "input",
             set = function(i, v) self.note = v end,
             get = function(i) return self.note end,
@@ -190,7 +190,7 @@ local function GenerateManagerOptions(self)
             order = 12
         },
         award_reason = {
-            name = "Reason",
+            name = CLM.L["Reason"],
             type = "select",
             values = CONSTANTS.POINT_CHANGE_REASONS.GENERAL,
             set = function(i, v) self.awardReason = v end,
@@ -198,8 +198,8 @@ local function GenerateManagerOptions(self)
             order = 13
         },
         award_dkp = {
-            name = "Award",
-            desc = "Award DKP to selected players or everyone if none selected.",
+            name = CLM.L["Award"],
+            desc = CLM.L["Award DKP to selected players or everyone if none selected."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -252,12 +252,12 @@ local function GenerateManagerOptions(self)
         },
         roster_players_header = {
             type = "header",
-            name = "Players",
+            name = CLM.L["Players"],
             order = 25
         },
         add_from_raid = {
-            name = "Add from raid",
-            desc = "Adds players from current raid to the roster. Creates profiles if not exists.",
+            name = CLM.L["Add from raid"],
+            desc = CLM.L["Adds players from current raid to the roster. Creates profiles if not exists."],
             type = "execute",
             width = "full",
             func = (function()
@@ -272,8 +272,8 @@ local function GenerateManagerOptions(self)
             order = 26
         },
         remove_from_roster = {
-            name = "Remove from roster",
-            desc = "Removes selected players from roster or everyone if none selected.",
+            name = CLM.L["Remove from roster"],
+            desc = CLM.L["Removes selected players from roster or everyone if none selected."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -297,8 +297,8 @@ end
 local function GenerateOfficerOptions(self)
     return {
         decay_dkp_value = {
-            name = "Decay DKP %",
-            desc = "DKP % that will be decayed.",
+            name = CLM.L["Decay DKP %"],
+            desc = CLM.L["DKP % that will be decayed."],
             type = "input",
             set = function(i, v) self.decayValue = v end,
             get = function(i) return self.decayValue end,
@@ -307,8 +307,8 @@ local function GenerateOfficerOptions(self)
             order = 21
         },
         decay_negative = {
-            name = "Negatives",
-            desc = "Include players with negative standings.",
+            name = CLM.L["Negatives"],
+            desc = CLM.L["Include players with negative standings."],
             type = "toggle",
             set = function(i, v) self.includeNegative = v end,
             get = function(i) return self.includeNegative end,
@@ -316,8 +316,8 @@ local function GenerateOfficerOptions(self)
             order = 22
         },
         decay_dkp = {
-            name = "Decay",
-            desc = "Execute decay for selected players or everyone if none selected.",
+            name = CLM.L["Decay"],
+            desc = CLM.L["Execute decay for selected players or everyone if none selected."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -430,10 +430,10 @@ end
 local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
-        {   name = "Name", width = 100 },
-        {   name = "DKP", width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-        {   name = "Class", width = 100 },
-        {   name = "Spec", width = 100 }
+        {   name = CLM.L["Name"], width = 100 },
+        {   name = CLM.L["DKP"], width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+        {   name = CLM.L["Class"], width = 100 },
+        {   name = CLM.L["Spec"], width = 100 }
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
@@ -441,7 +441,7 @@ local function CreateStandingsDisplay(self)
     StandingsGroup:SetWidth(450)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
-    RosterSelectorDropDown:SetLabel("Select roster")
+    RosterSelectorDropDown:SetLabel(CLM.L["Select roster"])
     RosterSelectorDropDown:SetCallback("OnValueChanged", function() self:Refresh() end)
     self.RosterSelectorDropDown = RosterSelectorDropDown
     StandingsGroup:AddChild(RosterSelectorDropDown)
@@ -461,7 +461,7 @@ local function CreateStandingsDisplay(self)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         local weeklyGain = ST_GetWeeklyGains(rowData)
         local weeklyCap = ST_GetWeeklyCap(rowData)
-        tooltip:AddLine("Weekly gains:")
+        tooltip:AddLine(CLM.L["Weekly gains:"])
         local gains = weeklyGain
         if weeklyCap > 0 then
             gains = gains .. " / " .. weeklyCap
@@ -489,7 +489,7 @@ function StandingsGUI:Create()
     LOG:Trace("StandingsGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Rosters")
+    f:SetTitle(CLM.L["Rosters"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
@@ -534,7 +534,7 @@ function StandingsGUI:Refresh(visible)
     end
     self.st:SetData(data)
     LIBS.gui:Open("clm_standings_gui_options", self.ManagementOptions)
-    self.top:SetStatusText(tostring(#data or 0) .. " players in roster")
+    self.top:SetStatusText(tostring(#data or 0) .. CLM.L[" players in roster"])
 end
 
 function StandingsGUI:GetCurrentRoster()
@@ -614,7 +614,7 @@ function StandingsGUI:RegisterSlash()
         standings = {
             type = "execute",
             name = "Standings",
-            desc = "Toggle standings window display",
+            desc = CLM.L["Toggle standings window display"],
             handler = self,
             func = "Toggle",
         }
