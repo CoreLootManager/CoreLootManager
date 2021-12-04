@@ -275,13 +275,14 @@ function AuctionManager:AnnounceHighestBidder(name, bid)
     if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not bid then return end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
-    self:SendBidInfo(name, bid)
     local message = ""
     local nameModdified = ""
     if self.auctionType == CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN then
         nameModdified = "(" .. name .. ")"
+        self:SendBidInfo("", bid)
     else
         nameModdified = name
+        self:SendBidInfo(name, bid)
     end
     message = string.format("New highest bid: %d DKP %s", bid, nameModdified)
     SendChatMessage(message, "RAID_WARNING")
