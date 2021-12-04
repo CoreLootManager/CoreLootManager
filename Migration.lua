@@ -173,7 +173,7 @@ function Migration:_MigrateMonolithEssential(addonName)
             end
         end
     end
-    self.timestamp = oldestTimestamp - 10000 -- Since we increment it later on then we want to have a buffer
+    self.timestamp = oldestTimestamp - 86400 -- Since we increment it later on then we want to have a buffer
     -- Import profiles
     LOG:Message("Importing %s entries from DKPTable", #MonDKP_DKPTable)
     self.playerDKP = {}
@@ -280,7 +280,7 @@ function Migration:_MigrateCommunity()
             end
         end
     end
-    self.timestamp = oldestTimestamp - 10000 -- Since we increment it later on then we want to have a buffer
+    self.timestamp = oldestTimestamp - 86400 -- Since we increment it later on then we want to have a buffer
     -- Import profiles
     local playerDKP = {}
     local playerProfiles = {}
