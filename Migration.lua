@@ -43,9 +43,13 @@ end
 local timestampCounter = {}
 function Migration:Migrate()
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
+    if LedgerManager:Length() > 0 then
+        LOG:Message("Unable to execute migration. Entries already exist.")
+        return
+    end
     Comms:Disable()
     LOG:Message("Executing Addon Migration with comms disabled.")
-    self.timestamp = UTILS.GetCutoffTimestamp()
+    -- self.timestamp = UTILS.GetCutoffTimestamp()
     self.playerCache = {}
     for i=1,GetNumGuildMembers() do
         local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
@@ -159,6 +163,17 @@ function Migration:_MigrateMonolithEssential(addonName)
     if not MonDKP_DKPTable then return end
     if not MonDKP_Loot then return end
     LOG:Message("Migrating " .. addonName)
+    -- Detect oldest timestamp
+    local oldestTimestamp = GetServerTime()
+    for _,entry in ipairs(MonDKP_Loot) do
+        local timestamp = tonumber(entry.date)
+        if timestamp then
+            if timestamp < oldestTimestamp then
+                oldestTimestamp = timestamp
+            end
+        end
+    end
+    self.timestamp = oldestTimestamp - 86400 -- Since we increment it later on then we want to have a buffer
     -- Import profiles
     LOG:Message("Importing %s entries from DKPTable", #MonDKP_DKPTable)
     self.playerDKP = {}
@@ -251,6 +266,21 @@ function Migration:_MigrateCommunity()
         LOG:Error("Migration failure: Detected 0 teams")
         return
     end
+    -- Detect oldest timestamp
+    local oldestTimestamp = GetServerTime()
+    for _, team in ipairs(teams) do
+        if Loot[team.id] then
+            for _,entry in ipairs(Loot[team.id]) do
+                local timestamp = tonumber(entry.date)
+                if timestamp then
+                    if timestamp < oldestTimestamp then
+                        oldestTimestamp = timestamp
+                    end
+                end
+            end
+        end
+    end
+    self.timestamp = oldestTimestamp - 86400 -- Since we increment it later on then we want to have a buffer
     -- Import profiles
     local playerDKP = {}
     local playerProfiles = {}
