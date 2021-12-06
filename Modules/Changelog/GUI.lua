@@ -37,15 +37,15 @@ local function CreateConfigs(self)
         changelog_header = {
             type = "header",
             name = "Changelog",
-            order = 50
+            order = 80
         },
         changelog_never_show = {
             name = "Never show changelog",
             desc = "Disables display of the changelog for any new version.",
-            type = "select",
+            type = "toggle",
             set = function(i, v) self.db.never_show = v and true or false end,
             get = function(i) return self.db.never_show end,
-            order = 51
+            order = 81
         },
         changelog_toggle = {
             name = "Toggle changelog",
@@ -53,7 +53,7 @@ local function CreateConfigs(self)
             type = "execute",
             handler = self,
             func = "Toggle",
-            order = 52
+            order = 82
           }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
