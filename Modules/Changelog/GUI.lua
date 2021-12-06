@@ -25,10 +25,38 @@ local function InitializeDB(self)
                 minor = 0,
                 patch = 0
             },
-            do_not_show = false
+            do_not_show = false,
+            never_show = false
     }
     end
     self.db = db.changelog
+end
+
+local function CreateConfigs(self)
+    local options = {
+        changelog_header = {
+            type = "header",
+            name = "Changelog",
+            order = 80
+        },
+        changelog_never_show = {
+            name = "Never show changelog",
+            desc = "Disables display of the changelog for any new version.",
+            type = "toggle",
+            set = function(i, v) self.db.never_show = v and true or false end,
+            get = function(i) return self.db.never_show end,
+            order = 81
+        },
+        changelog_toggle = {
+            name = "Toggle changelog",
+            desc = "Toggle changelog window display",
+            type = "execute",
+            handler = self,
+            func = "Toggle",
+            order = 82
+          }
+    }
+    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 local ChangelogGUI = {}
@@ -36,6 +64,7 @@ function ChangelogGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     InitializeDB(self)
     self:Create()
+    CreateConfigs(self)
     self:RegisterSlash()
     self._initialized = true
 end
@@ -110,7 +139,7 @@ function ChangelogGUI:Create()
     -- Display based on config
     local version = CLM.CORE:GetVersion()
     local sameVersion = (self.db.lastVersion.major == version.major) and (self.db.lastVersion.minor == version.minor) and (self.db.lastVersion.patch == version.patch)
-    if sameVersion and self.db.do_not_show then
+    if self.db.never_show or (sameVersion and self.db.do_not_show) then
         f:Hide()
     end
     self.db.lastVersion = version
