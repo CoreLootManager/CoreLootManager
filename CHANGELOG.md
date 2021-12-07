@@ -1,3 +1,12 @@
+# Classic Loot Manager v1.1.2
+## Fixes
+### Migration
+First sync after migration should now take significantly shorter time for new migrations but in worst case it can still take around 15 min.
+### Chat commands
+Chat commands should now work properly through raid channel.
+### Changelog
+You can now disable changelog pop-up permanently in Configuration.
+                
 # Classic Loot Manager v1.1.1
 ## Fixes
 ### Auto Awarding

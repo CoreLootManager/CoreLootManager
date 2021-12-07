@@ -2,6 +2,25 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.1.2",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Migration", body = "First sync after migration should now take significantly shorter time for new migrations but in worst case it can still take around 15 min."},
+                    {header = "Chat commands", body = "Chat commands should now work properly through raid channel."},
+                    {header = "Changelog", body = "You can now disable changelog pop-up permanently in Configuration."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.1.1",
         data = {
             {
