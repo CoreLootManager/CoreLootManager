@@ -309,8 +309,8 @@ function Migration:_MigrateCommunity()
                             NewProfile(GetPlayerGuid(self, name), name, class)
                             playerProfiles[name] = true
                             playerDKP[team.name][name] = dkp
-                            table.insert(teamProfiles[team.name], GetPlayerGuid(self, name))
                         end
+                        table.insert(teamProfiles[team.name], GetPlayerGuid(self, name))
                     end
                 end
             end
