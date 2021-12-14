@@ -2,6 +2,25 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.1.3",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Migration", body = "CommunityDKP migration should now properly add players to multiple teams."},
+                    {header = "Loot award with multiple linked alts", body = "Points should now be properly distributed when awarding loot to alt, whose main has multiple alts."},
+                    {header = "Profile creation", body = "You can now create profiles from guild by name through |cff44cc44/clm addprofile NAME|r."}
+                },
+            },
+        }
+    },
+    {
         version = "v1.1.2",
         data = {
             {
