@@ -9,7 +9,7 @@ local PointManager = MODULES.PointManager
 local RaidManager = MODULES.RaidManager
 local EventManager = MODULES.EventManager
 
--- local HYDROSS_ENCOUNTER_ID = 623
+local HYDROSS_ENCOUNTER_ID = 623
 -- local HYDROSS_ENCOUNTER_NAME = "Hydross the Unstable"
 local HYDROSS_NPC_ID = 21216
 
@@ -19,33 +19,34 @@ local function awardBossKillBonus(id)
     LOG:Info("Award Boss Kill Bonus for %s", id)
     if RaidManager:IsInActiveRaid() then
         local roster = RaidManager:GetRaid():Roster()
-        if roster:GetConfiguration("bossKillBonus") then
+        local config = RaidManager:GetRaid():Configuration()
+        if config:Get("bossKillBonus") then
             local value = roster:GetBossKillBonusValue(id)
             if value > 0 then
-                PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
             end
         end
     end
 end
 
-local function handleEncounterStart(self, addon, event, id, name, difficulty, groupSize)
-    LOG:Debug("[%s %s]: <%s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
-    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
-        self.encounterInProgress = id
-    end
-end
+-- local function handleEncounterStart(self, addon, event, id, name, difficulty, groupSize)
+--     LOG:Debug("[%s %s]: <%s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
+--     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
+--         self.encounterInProgress = id
+--     end
+-- end
 
-local function handleEncounterEnd(self, addon, event, id, name, difficulty, groupSize, success)
-    LOG:Debug("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize, success)
-    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and self:EncounterInProgress() then
-        if self.encounterInProgress == id then
-            if success == 1 then
-                awardBossKillBonus(id)
-            end
-            self.encounterInProgress = 0
-        end
-    end
-end
+-- local function handleEncounterEnd(self, addon, event, id, name, difficulty, groupSize, success)
+--     LOG:Debug("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize, success)
+--     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and self:EncounterInProgress() then
+--         if self.encounterInProgress == id then
+--             if success == 1 then
+--                 awardBossKillBonus(id)
+--             end
+--             self.encounterInProgress = 0
+--         end
+--     end
+-- end
 
 local function handleBossKill(self, addon, event, id, name)
     LOG:Debug("[%s %s]: <%s %s>", addon, event, id, name)
@@ -60,7 +61,7 @@ local function handleHydrossWorkaround(self, addon, event)
         if subevent == "UNIT_DIED" then
             local _, _, _, _, _, npc_id = strsplit("-", guid)
             if tonumber(npc_id) == HYDROSS_NPC_ID then
-                awardBossKillBonus(HYDROSS_NPC_ID)
+                awardBossKillBonus(HYDROSS_ENCOUNTER_ID)
             end
         end
     end
@@ -79,11 +80,12 @@ local function handleIntervalBonus(self)
         LOG:Warning("No roster in raid for handleIntervalBonus()")
         return
     end
+    local config = raid:Configuration()
     -- Validate settings
-    if not roster:GetConfiguration("intervalBonus") then return end
-    local interval = roster:GetConfiguration("intervalBonusTime")
+    if not config:Get("intervalBonus") then return end
+    local interval = config:Get("intervalBonusTime")
     if interval <= 0 then return end
-    local value = roster:GetConfiguration("intervalBonusValue")
+    local value = config:Get("intervalBonusValue")
     if value <= 0 then return end
     interval = interval * 60 -- minutes in seconds
     local now = GetServerTime()
@@ -198,23 +200,5 @@ function AutoAwardManager:IsIntervalBonusAwardingEnabled()
     LOG:Trace("AutoAwardManager:IsIntervalBonusAwardingEnabled()")
     return self.intervalBonusAwardingEnabled
 end
-
---@debug@
-function AutoAwardManager:FakeEncounterStart()
-    handleEncounterStart(self, "CLM", "ENCOUNTER_START", 123456, "Fake Encounter", 0, 25)
-end
-
-function AutoAwardManager:FakeEncounterSuccess()
-    handleEncounterEnd(self, "CLM", "ENCOUNTER_END", 123456, "Fake Encounter", 0, 25, 1)
-end
-
-function AutoAwardManager:FakeEncounterFail()
-    handleEncounterEnd(self, "CLM", "ENCOUNTER_END", 123456, "Fake Encounter", 0, 25, 0)
-end
-
-function AutoAwardManager:FakeBossKill()
-    handleBossKill(self, "CLM", "BOSS_KILL", 123456, "Fake Encounter")
-end
---@end-debug@
 
 MODULES.AutoAwardManager = AutoAwardManager

@@ -176,9 +176,18 @@ local function GenerateManagerOptions(self)
             type = "input",
             set = function(i, v) self.awardValue = v end,
             get = function(i) return self.awardValue end,
-            width = "full",
+            width = 0.6,
             pattern = CONSTANTS.REGEXP_FLOAT,
             order = 11
+        },
+        award_dkp_note = {
+            name = "Note",
+            desc = "Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name.",
+            type = "input",
+            set = function(i, v) self.note = v end,
+            get = function(i) return self.note end,
+            width = 0.5,
+            order = 12
         },
         award_reason = {
             name = "Reason",
@@ -186,7 +195,7 @@ local function GenerateManagerOptions(self)
             values = CONSTANTS.POINT_CHANGE_REASONS.GENERAL,
             set = function(i, v) self.awardReason = v end,
             get = function(i) return self.awardReason end,
-            order = 12
+            order = 13
         },
         award_dkp = {
             name = "Award",
@@ -217,7 +226,7 @@ local function GenerateManagerOptions(self)
                 end
                 -- Roster award
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                    PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
                 elseif RaidManager:IsInActiveRaid() then
                     local raidAward = false
                     local raid = RaidManager:GetRaid()
@@ -228,23 +237,23 @@ local function GenerateManagerOptions(self)
                         end
                     end
                     if raidAward then
-                        PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                        PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                     else
-                        PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                        PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                     end
                 else
-                    PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                    PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                 end
                 -- Update points
                 -- PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
             end),
             confirm = true,
-            order = 13
+            order = 14
         },
         roster_players_header = {
             type = "header",
             name = "Players",
-            order = 24
+            order = 25
         },
         add_from_raid = {
             name = "Add from raid",
@@ -260,7 +269,7 @@ local function GenerateManagerOptions(self)
                 RosterManager:AddFromRaidToRoster(roster)
             end),
             confirm = true,
-            order = 25
+            order = 26
         },
         remove_from_roster = {
             name = "Remove from roster",
@@ -280,7 +289,7 @@ local function GenerateManagerOptions(self)
                 RosterManager:RemoveProfilesFromRoster(roster, profiles)
             end),
             confirm = true,
-            order = 26
+            order = 27
         }
     }
 end
@@ -304,7 +313,7 @@ local function GenerateOfficerOptions(self)
             set = function(i, v) self.includeNegative = v end,
             get = function(i) return self.includeNegative end,
             width = "half",
-            order = 21
+            order = 22
         },
         decay_dkp = {
             name = "Decay",
@@ -360,6 +369,7 @@ local function CreateManagementOptions(self, container)
     self.decayValue = nil
     self.includeNegative = false
     self.awardValue = nil
+    self.note = ""
     self.awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
     for _=1,9 do table.insert( self.filterOptions, true ) end
     self.filterOptions[100] = false
@@ -427,7 +437,7 @@ local function CreateStandingsDisplay(self)
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
-    StandingsGroup:SetHeight(550)
+    StandingsGroup:SetHeight(560)
     StandingsGroup:SetWidth(450)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
@@ -485,10 +495,9 @@ function StandingsGUI:Create()
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
     f:SetWidth(700)
-    f:SetHeight(675)
+    f:SetHeight(685)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
-
     f:AddChild(CreateStandingsDisplay(self))
     f:AddChild(CreateManagementOptions(self))
     RestoreLocation(self)

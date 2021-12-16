@@ -2,6 +2,89 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.1.3",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Migration", body = "CommunityDKP migration should now properly add players to multiple teams."},
+                    {header = "Loot award with multiple linked alts", body = "Points should now be properly distributed when awarding loot to alt, whose main has multiple alts."},
+                    {header = "Profile creation", body = "You can now create profiles from guild by name through |cff44cc44/clm addprofile NAME|r."}
+                },
+            },
+        }
+    },
+    {
+        version = "v1.1.2",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Migration", body = "First sync after migration should now take significantly shorter time for new migrations but in worst case it can still take around 15 min."},
+                    {header = "Chat commands", body = "Chat commands should now work properly through raid channel."},
+                    {header = "Changelog", body = "You can now disable changelog pop-up permanently in Configuration."},
+                },
+            },
+        }
+    },
+    {
+        version = "v1.1.1",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Auto Awarding", body = "Auto awarding should now work properly again."},
+                },
+            },
+        }
+    },
+    {
+        version = "v1.1.0",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    {header = "Per-raid config overrides", body = "You can now override configuration on raid basis, when creating it, without altering global roster settings. This way roster settings become default ones."},
+                    {header = "DKP award notes", body = "You can now add a visible note to any DKP award. It will be displayed in point history."},
+                    {header = "Boss Kill Bonus info", body = "Boss kill bonus should now have boss name displayed in the note. You can also add it when adding points manually by specifying encounter id in the note field. Addon will take care of the rest."},
+                    {header = "Custom bid button", body = "You can now enable an additional bidding button, that is configurable. You can set it to an All-In (all of your DKP), Custom value (1 - 10000) or disable it (default)."},
+                    {header = "Automated bid value increase", body = "Automated bid value increase is an opt-in feature for Open Bidding mode that will increase your bid by min. increment automatically. Disabled by default."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Script errors on zoning", body = "Fixed sporadic script errors related to zoning and guild cache."},
+                    {header = "Lib-ST collision", body = "There should be no more collision with other addons using older version of Lib-ST. This includes Classic Loot Assistant, Gargul, MizusRaidTracker and many more."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.0.4",
         data = {
             {
