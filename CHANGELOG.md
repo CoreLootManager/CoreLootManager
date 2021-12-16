@@ -1,3 +1,20 @@
+# Classic Loot Manager v1.1.3
+## Fixes
+### Migration
+CommunityDKP migration should now properly add players to multiple teams.
+### Loot award with multiple linked alts
+Points should now be properly distributed when awarding loot to alt, whose main has multiple alts.
+### Profile creation
+You can now create profiles from guild by name through `/clm addprofile NAME`.
+# Classic Loot Manager v1.1.2
+## Fixes
+### Migration
+First sync after migration should now take significantly shorter time for new migrations but in worst case it can still take around 15 min.
+### Chat commands
+Chat commands should now work properly through raid channel.
+### Changelog
+You can now disable changelog pop-up permanently in Configuration.
+                
 # Classic Loot Manager v1.1.1
 ## Fixes
 ### Auto Awarding
