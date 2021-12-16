@@ -166,6 +166,34 @@ function GlobalSlashCommands:Initialize()
             confirm = true
         }
     end
+    if ACL:IsTrusted() then
+        options.addprofile = {
+            type = "input",
+            name = "Add Profile By Name",
+            set = (function(_, inputName)
+                inputName = UTILS.Trim(strlower(inputName or ""))
+                LOG:Message(CLM.L["Input name: %s"], inputName)
+                for i=1,GetNumGuildMembers() do
+                    local name, _, _, _, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+                    name, _ = strsplit("-", name)
+                    if strlower(name) == inputName then
+                        LOG:Message(CLM.L["Found %s in guild."], name)
+                        local profile = ProfileManager:GetProfileByName(name)
+                        if profile then
+                            LOG:Message(CLM.L["%s profile exists."], name)
+                        else
+                            LOG:Message(CLM.L["%s profile missing. Adding."], name)
+                            ProfileManager:NewProfile(GUID, name, class)
+                        end
+                        return
+                    end
+                end
+                LOG:Message(CLM.L["%s was not found in guild."], inputName)
+            end),
+            get = (function() end),
+            confirm = true
+        }
+    end
     options.guireset = {
         type = "execute",
         name = CLM.L["Reset gui positions"],

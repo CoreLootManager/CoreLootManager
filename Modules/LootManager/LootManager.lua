@@ -50,7 +50,7 @@ local function mutateLootAward(entry, roster)
         if main then
             -- points are already awarded to alt in AddLoot
             -- mirror them from the alt to all other alts + main
-            local mirrorTargets = keys(profile:Alts())
+            local mirrorTargets = keys(main:Alts())
             table.insert(mirrorTargets, main:GUID())
             roster:MirrorStandings(profile:GUID(), mirrorTargets)
         end

@@ -156,7 +156,7 @@ local function CreateConfigs(self)
         bidding_header = {
             type = "header",
             name = CLM.L["Logging"],
-            order = 90
+            order = 50
         },
         bidding_mode = {
             name = CLM.L["Custom button mode"],
@@ -165,7 +165,7 @@ local function CreateConfigs(self)
             values = CUSTOM_BUTTON.MODES_GUI,
             set = function(i, v) SetCustomButtonMode(self, tonumber(v)) end,
             get = function(i) return GetCustomButtonMode(self) end,
-            order = 91
+            order = 51
         },
         bidding_value = {
             name = CLM.L["Custom value"],
@@ -178,7 +178,7 @@ local function CreateConfigs(self)
             step = 0.01,
             set = function(i, v) SetCustomButtonValue(self, v) end,
             get = function(i) return GetCustomButtonValue(self) end,
-            order = 92
+            order = 52
           }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)

@@ -70,6 +70,7 @@ function GlboalChatMessageHandlers:Initialize()
 
             elseif command == CLM.L["!dkp"] then
                 responseChannel = "WHISPER" -- always respond in whisper to protect from spam
+                target = playerName
                 local player
                 if params[2] then
                     params[2] = trim(params[2])
