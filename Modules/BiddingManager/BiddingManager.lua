@@ -193,7 +193,7 @@ function BiddingManager:HandleAcceptBid(data, sender)
     end
     if self.guiBid then
         EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = self.lastBid or CLM.L["cancel"] })
-        LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], self.lastBid or CLM.L["cancel"])
+        LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], self.lastBid or CLM.L["canceled"])
         self.guiBid = false
     end
 end

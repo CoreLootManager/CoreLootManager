@@ -96,7 +96,7 @@ local columns = {
     {name = CLM.L["Reason"],  width = 150},
     {name = CLM.L["Date"], width = 150, sort = ScrollingTable.SORT_DSC},
     {name = CLM.L["Value"],  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {name = CLM.L["Awarded By"],  width = 70},
+    {name = CLM.L["Awarded by"],  width = 70},
 }
 
 local function CreatePointDisplay(self)
