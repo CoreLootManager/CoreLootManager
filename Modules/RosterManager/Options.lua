@@ -306,7 +306,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     type = "input",
                     order = order,
                     desc = desc,
-                    name = type,
+                    name = CLM.L[type],
                     pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 }
                 order = order + 1

@@ -36,7 +36,7 @@ local function CreateConfigs(self)
     local options = {
         changelog_header = {
             type = "header",
-            name = "Changelog",
+            name = CLM.L["Changelog"],
             order = 80
         },
         changelog_never_show = {
