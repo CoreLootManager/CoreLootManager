@@ -20,19 +20,19 @@ local Minimap = {}
 function Minimap:Initialize()
     local options = {
         {
-            title = "Menu",
+            title = CLM.L["Menu"],
             isTitle = true
         },
         {
-            title = "Standings",
+            title = CLM.L["Standings"],
             func = (function() CLM.GUI.Standings:Toggle() end)
         },
         {
-            title = "Loot History",
+            title = CLM.L["Loot History"],
             func = (function() CLM.GUI.Loot:Toggle() end)
         },
         {
-            title = "Point History",
+            title = CLM.L["Point History"],
             func = (function() CLM.GUI.PointHistory:Toggle() end)
         },
         -- Raid
@@ -40,22 +40,22 @@ function Minimap:Initialize()
             separator = true,
         },
         {
-            title = "Raid",
+            title = CLM.L["Raid"],
             func = (function() CLM.GUI.RaidManager:Toggle() end),
             trustedOnly = true
         },
         {
-            title = "Loot Queue",
+            title = CLM.L["Loot Queue"],
             func = (function() CLM.GUI.LootQueue:Toggle() end),
             trustedOnly = true
         },
         {
-            title = "Auctioning",
+            title = CLM.L["Auctioning"],
             func = (function() CLM.GUI.AuctionManager:Toggle() end),
             trustedOnly = true
         },
         {
-            title = "Bidding",
+            title = CLM.L["Bidding"],
             func = (function() CLM.GUI.BiddingManager:Toggle() end)
         },
         -- Management
@@ -63,18 +63,18 @@ function Minimap:Initialize()
             separator = true,
         },
         {
-            title = "Profiles",
+            title = CLM.L["Profiles"],
             func = (function() CLM.GUI.Profiles:Toggle() end),
             trustedOnly = true
         },
         {
-            title = "Audit",
+            title = CLM.L["Audit"],
             func = (function() CLM.GUI.Audit:Toggle() end),
             trustedOnly = true,
             managerOnly = true
         },
         {
-            title = "Configuration",
+            title = CLM.L["Configuration"],
             icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga",
             func = (function()
                 InterfaceOptionsFrame_OpenToCategory(addonName)
@@ -116,25 +116,25 @@ do
             local count = CLM.MODULES.LedgerManager:Length()
             -- hash = CLM.MODULES.LedgerManager:Hash()
             if lag > 0 then
-                info = string.format("%s events (%s pending)", count, lag)
+                info = string.format(CLM.L["%s events (%s pending)"], count, lag)
             else
-                info = string.format("%s events", count)
+                info = string.format(CLM.L["%s events"], count)
             end
         else
-            info = string.format("Loading events...")
+            info = string.format(CLM.L["Loading..."])
         end
         if CLM.MODULES.SandboxManager:IsSandbox() then
-            local timetravelInfo = CLM.MODULES.LedgerManager:IsTimeTraveling() and " and Time Traveling" or ""
-            tooltip:AddDoubleLine("Sandbox mode" .. timetravelInfo, info, 1, 1, 1)
+            local timetravelInfo = CLM.MODULES.LedgerManager:IsTimeTraveling() and CLM.L[" and Time Traveling"] or ""
+            tooltip:AddDoubleLine(CLM.L["Sandbox mode"] .. timetravelInfo, info, 1, 1, 1)
         elseif CLM.MODULES.LedgerManager:IsTimeTraveling() then
-            tooltip:AddDoubleLine("Time Traveling", info, 0.45, 0.45, 0)
+            tooltip:AddDoubleLine(CLM.L["Time Traveling"], info, 0.45, 0.45, 0)
         else
             if CLM.MODULES.LedgerManager:IsInSync() then
-                tooltip:AddDoubleLine("In-Sync", info, 0.0, 0.8, 0.0)
+                tooltip:AddDoubleLine(CLM.L["In-Sync"], info, 0.0, 0.8, 0.0)
             elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
-                tooltip:AddDoubleLine("Sync ongoing", info, 0.6, 0.0, 0.0)
+                tooltip:AddDoubleLine(CLM.L["Sync ongoing"], info, 0.6, 0.0, 0.0)
             else -- Unknown state
-                tooltip:AddDoubleLine("Unknown sync state", info, 0.4, 0.6, 1)
+                tooltip:AddDoubleLine(CLM.L["Unknown sync state"], info, 0.4, 0.6, 1)
             end
         end
     end

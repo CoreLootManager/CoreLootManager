@@ -255,15 +255,15 @@ function RaidManager:CreateRaid(roster, name, config)
         return
     end
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message("You are not allowed to create raids.")
+        LOG:Message(CLM.L["You are not allowed to create raids."])
         return
     end
     if self:IsInActiveRaid() then
-        LOG:Message("You are already in an active raid. Leave or finish it before creating new one.")
+        LOG:Message(CLM.L["You are already in an active raid. Leave or finish it before creating new one."])
         return
     end
     if LedgerManager:IsTimeTraveling() then
-        LOG:Message("Raid management is disabled during time traveling.")
+        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
         return
     end
 
@@ -273,24 +273,24 @@ end
 function RaidManager:StartRaid(raid)
     LOG:Trace("RaidManager:StartRaid()")
     if not typeof(raid, Raid) then
-        LOG:Message("Missing valid raid")
+        LOG:Message(CLM.L["Missing valid raid"])
         return
     end
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message("You are not allowed to start raid.")
+        LOG:Message(CLM.L["You are not allowed to start raid."])
         return
     end
     if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATED then
-        LOG:Message("You can only start a freshly created raid.")
+        LOG:Message(CLM.L["You can only start a freshly created raid."])
         return
     end
     if LedgerManager:IsTimeTraveling() then
-        LOG:Message("Raid management is disabled during time traveling.")
+        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
         return
     end
     --[===[@non-debug@
     if (self:GetRaid() ~= raid) or not IsInRaid() then
-        LOG:Message("You are not in the raid.")
+        LOG:Message(CLM.L["You are not in the raid."])
         return
     end
     --@end-non-debug@]===]
@@ -310,59 +310,59 @@ function RaidManager:StartRaid(raid)
     end
 
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
-    SendChatMessage(string.format("Raid [%s] started", raid:Name()) , "RAID_WARNING")
+    SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
     self:HandleRosterUpdateEvent()
 end
 
 function RaidManager:EndRaid(raid)
     LOG:Trace("RaidManager:EndRaid()")
     if not typeof(raid, Raid) then
-        LOG:Message("Missing valid raid")
+        LOG:Message(CLM.L["Missing valid raid"])
         return
     end
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message("You are not allowed to start raid.")
+        LOG:Message(CLM.L["You are not allowed to start raid."])
         return
     end
     if not raid:IsActive() then
-        LOG:Message("You can only end an active raid.")
+        LOG:Message(CLM.L["You can only end an active raid."])
         return
     end
     if LedgerManager:IsTimeTraveling() then
-        LOG:Message("Raid management is disabled during time traveling.")
+        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
         return
     end
     -- if not self:IsInActiveRaid() then
-    --     LOG:Message("You are not in an active raid.")
+    --     LOG:Message(CLM.L["You are not in an active raid."])
     --     return
     -- end
     LedgerManager:Submit(LEDGER_RAID.End:new(raid:UID()), true)
 
     if IsInRaid() then
-        SendChatMessage(string.format("Raid [%s] ended", raid:Name()) , "RAID_WARNING")
+        SendChatMessage(string.format(CLM.L["Raid [%s] ended"], raid:Name()) , "RAID_WARNING")
     end
 end
 
 function RaidManager:JoinRaid(raid)
     LOG:Trace("RaidManager:JoinRaid()")
     if not typeof(raid, Raid) then
-        LOG:Message("Missing valid raid")
+        LOG:Message(CLM.L["Missing valid raid"])
         return
     end
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message("You are not allowed to join raid.")
+        LOG:Message(CLM.L["You are not allowed to join raid."])
         return
     end
     if not raid:IsActive() then
-        LOG:Message("You can only join an active raid.")
+        LOG:Message(CLM.L["You can only join an active raid."])
         return
     end
     if raid == self:GetRaid() then
-        LOG:Message("You can only join different raid than your current one.")
+        LOG:Message(CLM.L["You can only join different raid than your current one."])
         return
     end
     if LedgerManager:IsTimeTraveling() then
-        LOG:Message("Raid management is disabled during time traveling.")
+        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
         return
     end
     local myProfile = ProfileManager:GetMyProfile()

@@ -152,10 +152,10 @@ local function CreateBidWindow(self)
     local BidWindowGroup = AceGUI:Create("SimpleGroup")
     BidWindowGroup:SetLayout("Flow")
     local columns = {
-        {name = "Name",  width = 70},
-        {name = "Class", width = 60},
-        {name = "Spec",  width = 60},
-        {name = "Bid",   width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
+        {name = CLM.L["Name"],  width = 70},
+        {name = CLM.L["Class"], width = 60},
+        {name = CLM.L["Spec"],  width = 60},
+        {name = CLM.L["Bid"],   width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
             sort = ScrollingTable.SORT_DSC,
             sortnext = 5,
             comparesort = (function(self, rowa, rowb, sortbycol) -- luacheck: ignore
@@ -164,8 +164,8 @@ local function CreateBidWindow(self)
                 -- then we restore it
                 local a1, b1 = self:GetCell(rowa, sortbycol), self:GetCell(rowb, sortbycol);
                 local a1_value, b1_value = a1.value, b1.value
-                if a1.value == "PASS" then a1.value = "" end
-                if b1.value == "PASS" then b1.value = "" end
+                if a1.value == CLM.L["PASS"] then a1.value = "" end
+                if b1.value == CLM.L["PASS"] then b1.value = "" end
                 -- sort
                 local result = self:CompareSort(rowa, rowb, sortbycol)
                 -- restore
@@ -174,7 +174,7 @@ local function CreateBidWindow(self)
                 -- return
                 return result
             end)},
-        {name = "Current",  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
+        {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
             sort = ScrollingTable.SORT_DSC},
     }
     self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame)
@@ -194,7 +194,7 @@ local function CreateBidWindow(self)
             AuctionManagerGUI:UpdateBids()
         end
         if self.awardPlayer and self.awardPlayer:len() > 0 then
-            self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
+            self.top:SetStatusText(string.format(CLM.L["Awarding to %s for %d."], self.awardPlayer, self.awardValue))
         else
             self.top:SetStatusText("")
         end
@@ -257,7 +257,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 1
         },
         item = {
-            name = "Item",
+            name = CLM.L["Item"],
             type = "input",
             get = (function(i)
                 return self.itemLink or ""
@@ -277,13 +277,13 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             itemLink = "item:" .. tostring(self.itemId),
         },
         note_label = {
-            name = "Note",
+            name = CLM.L["Note"],
             type = "description",
             width = 0.5,
             order = 3
         },
         note = {
-            name = "Note",
+            name = CLM.L["Note"],
             type = "input",
             set = (function(i,v) self.note = tostring(v) end),
             get = (function(i) return self.note end),
@@ -292,13 +292,13 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 4
         },
         value_label = {
-            name = "Value ranges",
+            name = CLM.L["Value ranges"],
             type = "description",
             width = 0.5,
             order = 5
         },
         value_base = {
-            name = "Base",
+            name = CLM.L["Base"],
             type = "input",
             set = (function(i,v)
                 self.base = tonumber(v) or 0
@@ -311,7 +311,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 6
         },
         value_max = {
-            name = "Max",
+            name = CLM.L["Max"],
             type = "input",
             set = (function(i,v)
                 self.max = tonumber(v) or 0
@@ -324,13 +324,13 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 7
         },
         time_label = {
-            name = "Time settings",
+            name = CLM.L["Time settings"],
             type = "description",
             width = 0.5,
             order = 8
         },
         time_auction = {
-            name = "Auction length [s]",
+            name = CLM.L["Auction length"],
             type = "input",
             set = (function(i,v) self.configuration:Set("auctionTime", v or 0) end),
             get = (function(i) return tostring(self.configuration:Get("auctionTime")) end),
@@ -340,7 +340,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 9
         },
         time_antiSnipe = {
-            name = "AntiSnipe [s]",
+            name = CLM.L["Anti-snipe"],
             type = "input",
             set = (function(i,v) self.configuration:Set("antiSnipe", v or 0) end),
             get = (function(i) return tostring(self.configuration:Get("antiSnipe")) end),
@@ -350,7 +350,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 10
         },
         auction = {
-            name = (function() return AuctionManager:IsAuctionInProgress() and "Stop" or "Start" end),
+            name = (function() return AuctionManager:IsAuctionInProgress() and CLM.L["Stop"] or CLM.L["Start"] end),
             type = "execute",
             func = (function()
                 if not AuctionManager:IsAuctionInProgress() then
@@ -364,18 +364,18 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             disabled = (function() return not ((self.itemLink or false) and RaidManager:IsInProgressingRaid()) end)
         },
         auction_results = {
-            name = "Auction Results",
+            name = CLM.L["Auction Results"],
             type = "header",
             order = 12
         },
         award_label = {
-            name = "Award item",
+            name = CLM.L["Award item"],
             type = "description",
             width = 0.5,
             order = 13
         },
         award_value = {
-            name = "Award value",
+            name = CLM.L["Award value"],
             type = "input",
             set = (function(i,v) AuctionManagerGUI:setInputAwardValue(v) end),
             get = (function(i) return tostring(self.awardValue) end),
@@ -384,7 +384,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 14
         },
         award = {
-            name = "Award",
+            name = CLM.L["Award"],
             type = "execute",
             func = (function()
                 AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
@@ -396,7 +396,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             end),
             confirm = (function()
                 return string.format(
-                    "Are you sure, you want to award %s to %s for %s DKP?",
+                    CLM.L["Are you sure, you want to award %s to %s for %s DKP?"],
                     self.itemLink,
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
                     tostring(self.awardValue)
@@ -413,7 +413,7 @@ function AuctionManagerGUI:Create()
     LOG:Trace("AuctionManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Auctioning")
+    f:SetTitle(CLM.L["Auctioning"])
     f:SetStatusText("")
     f:SetLayout("flow")
     f:EnableResize(false)
@@ -484,7 +484,7 @@ end
 
 function AuctionManagerGUI:setInputAwardValue(v)
     self.awardValue = tonumber(v) or 0;
-    self.top:SetStatusText("Awarding to " .. self.awardPlayer .. " for " .. self.awardValue)
+    self.top:SetStatusText(string.format(CLM.L["Awarding to %s for %d."], self.awardPlayer, self.awardValue))
     self:Refresh()
 end
 
@@ -546,7 +546,7 @@ function AuctionManagerGUI:RegisterSlash()
         auction = {
             type = "execute",
             name = "Auctioning",
-            desc = "Toggle Auctioning window display",
+            desc = CLM.L["Toggle Auctioning window display"],
             handler = self,
             func = "Toggle",
         }

@@ -45,7 +45,7 @@ settings.
 * Item awards with all related information (when, who, how much)
 ## Extensive Auctioning system
 ### Auctioning
-* Configurable Anti-Snipe protection
+* Configurable Anti-snipe protection
 * Auction from corpse or bag (with alt-click)
 * Simple item awarding
 * Award item without auction through slash command

@@ -74,15 +74,15 @@ end
 
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
-    filters[100] = UTILS.ColorCodeText("In Raid", "FFD100")
+    filters[100] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
     return {
         filter_header = {
             type = "header",
-            name = "Filtering",
+            name = CLM.L["Filtering"],
             order = 0
         },
         filter_display = {
-            name = "Filter",
+            name = CLM.L["Filter"],
             type = "multiselect",
             set = function(i, k, v) self.filterOptions[tonumber(k)] = v; self:Refresh() end,
             get = function(i, v) return self.filterOptions[tonumber(v)] end,
@@ -91,8 +91,8 @@ local function GenerateUntrustedOptions(self)
             order = 1
         },
         filter_select_all = {
-            name = "All",
-            desc = "Select all classes.",
+            name = CLM.L["All"],
+            desc = CLM.L["Select all classes."],
             type = "execute",
             func = (function()
                 for i=1,9 do
@@ -104,8 +104,8 @@ local function GenerateUntrustedOptions(self)
             order = 2,
         },
         filter_select_none = {
-            name = "None",
-            desc = "Clear all classes.",
+            name = CLM.L["None"],
+            desc = CLM.L["Clear all classes."],
             type = "execute",
             func = (function()
                 for i=1,9 do
@@ -129,15 +129,15 @@ local function GenerateAssistantOptions(self)
     for i,o in pairs(ranks) do
         rankOptions[i] = o.name
     end
-    rankOptions[-1] = "Any"
+    rankOptions[-1] = CLM.L["Any"]
     return {
         management_header = {
             type = "header",
-            name = "Management",
+            name = CLM.L["Management"],
             order = 20
         },
         fill_from_guild_ranks = {
-            name = "Ranks",
+            name = CLM.L["Ranks"],
             type = "select",
             set = function(i, v) self.rank = v end,
             get = function(i) return self.rank end,
@@ -146,8 +146,8 @@ local function GenerateAssistantOptions(self)
             order = 21
         },
         fill_from_guild_min_level = {
-            name = "Minimum Level",
-            desc = "Minimum level of players to fill from guild.",
+            name = CLM.L["Minimum Level"],
+            desc = CLM.L["Minimum level of players to fill from guild."],
             type = "range",
             min  = 0,
             max  = 70,
@@ -159,8 +159,8 @@ local function GenerateAssistantOptions(self)
             order = 22
         },
         fill_from_guild = {
-            name = "Fill from Guild",
-            desc = "Fill profile list with players with the minimum level and ranks.",
+            name = CLM.L["Fill from Guild"],
+            desc = CLM.L["Fill profile list with players with the minimum level and ranks."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -172,8 +172,8 @@ local function GenerateAssistantOptions(self)
             order = 23
         },
         fill_from_raid_roster = {
-            name = "Fill from Raid Roster",
-            desc = "Fill profile list with players in current raid roster.",
+            name = CLM.L["Fill from Raid Roster"],
+            desc = CLM.L["Fill profile list with players in current raid roster."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -185,8 +185,8 @@ local function GenerateAssistantOptions(self)
             order = 23
         },
         add_target = {
-            name = "Add target",
-            desc = "Add currently selected target to list.",
+            name = CLM.L["Add target"],
+            desc = CLM.L["Add currently selected target to list."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -197,8 +197,8 @@ local function GenerateAssistantOptions(self)
             order = 24
         },
         remove_selected = {
-            name = "Remove",
-            desc = "Removes selected profiles or everyone if none selected.",
+            name = CLM.L["Remove"],
+            desc = CLM.L["Removes selected profiles or everyone if none selected."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -211,8 +211,8 @@ local function GenerateAssistantOptions(self)
             order = 25
         },
         -- select_main = {
-        --     name = "Select main",
-        --     desc = "Select character to be marked as main for alt-main linking.",
+        --     name = CLM.L["Select main"],
+        --     desc = CLM.L["Select character to be marked as main for alt-main linking."],
         --     type = "select",
         --     width = "full",
         --     values = {}, --self.profilesList, -- not used for now. causes a lot of lag with big profile lists
@@ -222,8 +222,8 @@ local function GenerateAssistantOptions(self)
         --     order = 28
         -- },
         -- mark_as_alt = {
-        --     name = "Mark as alt",
-        --     desc = "Marks selected profiles or everyone if none selected as alts of choosen player (from dropdown).",
+        --     name = CLM.L["Mark as alt"],
+        --     desc = CLM.L["Marks selected profiles or everyone if none selected as alts of choosen player (from dropdown)."],
         --     type = "execute",
         --     width = "full",
         --     func = (function(i)
@@ -237,8 +237,8 @@ local function GenerateAssistantOptions(self)
         --     order = 29
         -- },
         -- clear_main = {
-        --     name = "Clear mains",
-        --     desc = "Clears selected profiles mains.",
+        --     name = CLM.L["Clear mains"],
+        --     desc = CLM.L["Clears selected profiles mains."],
         --     type = "execute",
         --     width = "full",
         --     func = (function(i)
@@ -252,8 +252,8 @@ local function GenerateAssistantOptions(self)
         --     order = 30
         -- },
         select_roster = {
-            name = "Select roster",
-            desc = "Select roster to add profiles to.",
+            name = CLM.L["Select roster"],
+            desc = CLM.L["Select roster to add profiles to."],
             type = "select",
             width = "full",
             values = (function()
@@ -269,8 +269,8 @@ local function GenerateAssistantOptions(self)
             order = 31
         },
         add_to_roster = {
-            name = "Add to roster",
-            desc = "Adds selected players or everyone if none selected to the selected roster (from dropdown).",
+            name = CLM.L["Add to roster"],
+            desc = CLM.L["Adds selected players or everyone if none selected to the selected roster (from dropdown)."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -347,12 +347,12 @@ end
 local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
-        {name = "Name",  width = 100},
-        {name = "Class", width = 70},
-        {name = "Spec",  width = 70},
-        {name = "Main",  width = 70},
-        {name = "Rank",  width = 70},
-        {name = "Version",  width = 100},
+        {name = CLM.L["Name"],  width = 100},
+        {name = CLM.L["Class"], width = 70},
+        {name = CLM.L["Spec"],  width = 70},
+        {name = CLM.L["Main"],  width = 70},
+        {name = CLM.L["Rank"],  width = 70},
+        {name = CLM.L["Version"],  width = 100},
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
@@ -371,7 +371,7 @@ function ProfilesGUI:Create()
     LOG:Trace("ProfilesGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Profiles")
+    f:SetTitle(CLM.L["Profiles"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
@@ -407,11 +407,11 @@ function ProfilesGUI:Refresh(visible)
         local name = object:Name()
         local rank = ""
         if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER, name) then
-            rank = "GM"
+            rank = CLM.L["GM"]
         elseif ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name) then
-            rank = "Manager"
+            rank = CLM.L["Manager"]
         elseif ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
-            rank = "Assistant"
+            rank = CLM.L["Assistant"]
         end
         row.cols[1] = {value = name}
         row.cols[2] = {value = UTILS.ColorCodeClass(object:Class())}
@@ -444,7 +444,7 @@ function ProfilesGUI:GetSelected(filter)
         if profile then
             table.insert(profiles, profile)
         else
-            LOG:Debug("No profile for " .. tostring(ST_GetName(self.st:GetRow(s))))
+            LOG:Debug(CLM.L["No profile for "] .. tostring(ST_GetName(self.st:GetRow(s))))
         end
     end
     local profiles_filtered = {}
@@ -473,7 +473,7 @@ function ProfilesGUI:RegisterSlash()
         profiles = {
             type = "execute",
             name = "Profiles",
-            desc = "Toggle Profiles window display",
+            desc = CLM.L["Toggle Profiles window display"],
             handler = self,
             func = "Toggle",
         }
