@@ -163,7 +163,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     -- minimal increment
     self.minimalIncrement = self.raid:Roster():GetConfiguration("minimalIncrement")
     -- workaround for open bid to allow 0 bid
-    if self.auctionType == CONSTANTS.AUCTION_TYPE.OPEN then
+    if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
         self.highestBid = self.baseValue - self.minimalIncrement
     end
     -- Send auction information
@@ -271,12 +271,22 @@ function AuctionManager:SendBidInfo(name, bid)
 end
 
 function AuctionManager:AnnounceHighestBidder(name, bid)
-    if self.auctionType ~= CONSTANTS.AUCTION_TYPE.OPEN then return end
+    if not CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then return end
     if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not bid then return end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
-    self:SendBidInfo(name, bid)
-    local message = string.format(CLM.L["New highest bidder: %s (%d DKP)"], name, bid)
+
+    local message
+    local nameModdified
+    if self.auctionType == CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN then
+        nameModdified = ""
+        self:SendBidInfo("", bid)
+    else
+        nameModdified = "(" .. name .. ")"
+        self:SendBidInfo(name, bid)
+    end
+    message = string.format(CLM.L["New highest bid: %d DKP %s"], bid, nameModdified)
+
     SendChatMessage(message, "RAID_WARNING")
 end
 
@@ -340,7 +350,7 @@ function AuctionManager:ValidateBid(name, bid)
         -- max
         if self.maxValue > 0 and bid > self.maxValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
         -- open bid ascending
-        if self.auctionType == CONSTANTS.AUCTION_TYPE.OPEN then
+        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             if bid <= self.highestBid then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
             end

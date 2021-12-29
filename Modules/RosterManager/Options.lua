@@ -635,7 +635,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 args = {
                     auction_type = {
                         name = CLM.L["Auction type"],
-                        desc = CLM.L["Type of auction used: Open, Sealed, Vickrey (Sealed with second-highest pay price)."],
+                        desc = CLM.L["Type of auction used: Open, Anonymous Open, Sealed, Vickrey (Sealed with second-highest pay price)."],
                         type = "select",
                         style = "radio",
                         order = 4,
