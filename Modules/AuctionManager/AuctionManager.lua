@@ -146,10 +146,10 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], tostring(self.antiSnipe))
     end
     SendChatMessage(auctionMessage , "RAID_WARNING")
-    -- AntiSnipe settings
-    self.antiSnipeLimit = (self.antiSnipe > 0) and (CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and 100 or 3) or 0
     -- Get Auction Type info
     self.auctionType = configuration:Get("auctionType")
+    -- AntiSnipe settings
+    self.antiSnipeLimit = (self.antiSnipe > 0) and (CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and 100 or 3) or 0
     -- if baseValue / maxValue are different than current (or default if no override) item value we will need to update the config
     local current = self.raid:Roster():GetItemValue(itemId)
     if current.base ~= baseValue or current.max ~= maxValue then
@@ -215,6 +215,12 @@ function AuctionManager:AntiSnipe()
             self.auctionEndTime = self.auctionEndTime + self.antiSnipe
             self.antiSnipeLimit = self.antiSnipeLimit - 1
             self:SendAntiSnipe()
+            -- Cheeky update the warning countdown, but only if above 3/5s
+            if self.antiSnipe >= 5 then
+                self.lastCountdownValue = 5
+            elseif self.antiSnipe >= 3 then
+                self.lastCountdownValue = 3
+            end
         end
     end
 end
