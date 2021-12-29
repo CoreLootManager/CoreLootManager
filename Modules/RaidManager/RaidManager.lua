@@ -507,7 +507,7 @@ function RaidManager:IsRaidOwner(name)
 end
 
 function RaidManager:IsAllowedToAuction(name, relaxed)
-    LOG:Trace("RaidManager:IsRaidIsAllowedToAuctionOwner()")
+    LOG:Trace("RaidManager:IsAllowedToAuction()")
     name = name or whoami()
     local allow = false
     if not relaxed then -- Relaxed requirements: doesn't need to be assitant (for out of guild checks)
@@ -517,11 +517,16 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
         end
     end
 
-    if self.IsMasterLootSystem then
-        allow = (self.MasterLooter == name)
+    name = strlower(name)
+    for i=1,MAX_RAID_MEMBERS do
+        local memberName, rank = GetRaidRosterInfo(i)
+        if rank and rank > 0 then
+            if strlower(memberName) == name then
+                allow = true
+                break
+            end
+        end
     end
-
-    allow = allow or (self.RaidLeader == name)
 
     if not allow then
         LOG:Debug("%s is not allowed to auction.", name)

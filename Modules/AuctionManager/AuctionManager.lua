@@ -44,7 +44,7 @@ function AuctionManager:Initialize()
         -- Auction Manager is owner of the channel
         -- pass handling to BidManager
         MODULES.BiddingManager:HandleIncomingMessage(message, distribution, sender)
-    end), CONSTANTS.ACL.LEVEL.ASSISTANT, true)
+    end), CONSTANTS.ACL.LEVEL.PLEBS, true) -- TODO: I need to cover the ASSISTANT check by IsAllowedToAuction in Bidding manager
 
     self.handlers = {
         [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]    = "HandleSubmitBid",
