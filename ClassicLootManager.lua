@@ -173,7 +173,7 @@ function CORE:_SequentialInitialize(stage)
         self:_InitializeFrontend()
     elseif stage >= 4 then
         self:_Enable()
-        LOG:Info("Boot complete")
+        LOG:Info(CLM.L["Boot complete"])
         return
     end
     C_Timer.After(0.1, function() CORE:_SequentialInitialize(stage + 1) end)
@@ -238,8 +238,8 @@ end
 -- Globals: Keybinds
 
 BINDING_HEADER_CLM = "Classic Loot Manager"
-BINDING_NAME_CLM_UNDO = "Undo action"
-BINDING_NAME_CLM_REDO = "Redo action"
+BINDING_NAME_CLM_UNDO = CLM.L["Undo action"]
+BINDING_NAME_CLM_REDO = CLM.L["Redo action"]
 
 function CLM_Undo()
     -- LOG:Message("Executing Undo. Skiping confirmation prompt. Please wait.")

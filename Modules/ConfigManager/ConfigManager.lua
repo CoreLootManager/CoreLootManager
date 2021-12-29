@@ -129,18 +129,18 @@ CONSTANTS.CONFIGS = {
         "Classic Loot Manager",
         -- "Personal",
         -- "Guild",
-        "Rosters"
+        CLM.L["Rosters"]
     }),
     ORDERED_GROUPS = {
         "Classic Loot Manager",
         -- "Personal",
         -- "Guild",
-        "Rosters"
+        CLM.L["Rosters"]
     },
     GROUP = {
         GLOBAL = "Classic Loot Manager",
         -- PERSONAL = "Personal",
         -- GUILD = "Guild",
-        ROSTER = "Rosters"
+        ROSTER = CLM.L["Rosters"]
     },
 }

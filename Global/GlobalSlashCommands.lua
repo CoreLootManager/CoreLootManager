@@ -21,8 +21,8 @@ function GlobalSlashCommands:Initialize()
     if ACL:IsTrusted() then
         options.award = {
             type = "input",
-            name = "Award item",
-            desc = "Award item without auctioning it.",
+            name = CLM.L["Award item"],
+            desc = CLM.L["Award item without auctioning it."],
             set = (function(i, args)
                 args = args or ""
                 local values = {strsplit("/", args)}
@@ -30,13 +30,13 @@ function GlobalSlashCommands:Initialize()
                 local itemLink = values[1]
                 local itemId = GetItemIdFromLink(itemLink)
                 if not itemId or itemId == 0 then
-                    LOG:Message("Invalid item link")
+                    LOG:Message(CLM.L["Invalid item link"])
                     return
                 end
                 -- Value --
                 local value = tonumber(values[2] or 0)
                 if value < 0 then
-                    LOG:Message("Item value must be positive")
+                    LOG:Message(CLM.L["Item value must be positive"])
                     return
                 end
                 -- Roster --
@@ -47,18 +47,18 @@ function GlobalSlashCommands:Initialize()
                 if not rosterName or rosterName == "" then
                     raid = RaidManager:GetRaid()
                     if not raid then
-                        LOG:Message("Missing roster name and you are not in raid")
+                        LOG:Message(CLM.L["Missing roster name and you are not in raid"])
                         return
                     else
                         isRaid = true
-                        LOG:Info("Missing roster name. Using Raid Info")
+                        LOG:Info(CLM.L["Missing roster name. Using Raid Info"])
                         roster = raid:Roster()
-                        LOG:Info("Raid: %s Roster: %s", raid:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
+                        LOG:Info(CLM.L["Raid: %s Roster: %s"], raid:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
                     end
                 else
                     roster = RosterManager:GetRosterByName(rosterName)
                     if not roster then
-                        LOG:Message("Unknown roster %s", rosterName)
+                        LOG:Message(CLM.L["Unknown roster %s"], rosterName)
                         return
                     end
                 end
@@ -69,11 +69,11 @@ function GlobalSlashCommands:Initialize()
                 end
                 local profile = ProfileManager:GetProfileByName(name)
                 if not profile then
-                    LOG:Message("Missing profile %s", name)
+                    LOG:Message(CLM.L["Missing profile %s"], name)
                     return
                 end
                 if not roster:IsProfileInRoster(profile:GUID()) then
-                    LOG:Message("%s is not part of the %s roster", profile:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
+                    LOG:Message(CLM.L["%s is not part of the %s roster"], profile:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
                     return
                 end
                 -- Award --
@@ -84,7 +84,7 @@ function GlobalSlashCommands:Initialize()
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
         options.link = {
             type = "input",
-            name = "Link Alt to Main",
+            name = CLM.L["Link Alt to Main"],
             set = (function(i, input)
                 local alt, main = strsplit(" ", input)
                 ProfileManager:MarkAsAltByNames(alt, main)
@@ -93,7 +93,7 @@ function GlobalSlashCommands:Initialize()
         }
         options.unlink = {
             type = "input",
-            name = "Unlink Alt",
+            name = CLM.L["Unlink Alt"],
             set = (function(i, input)
                 ProfileManager:MarkAsAltByNames(input, "")
             end),
@@ -103,7 +103,7 @@ function GlobalSlashCommands:Initialize()
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
         options.ignore = {
             type = "input",
-            name = "Ignore entry",
+            name = CLM.L["Ignore entry"],
             set = (function(i, id)
                 id = tonumber(id) or 0
                 local realEntry = MODULES.LedgerManager.ledger.getSortedList():entries()[id]
@@ -117,19 +117,19 @@ function GlobalSlashCommands:Initialize()
     if ACL:IsTrusted() then
         options.prune = {
             type = "input",
-            name = "Prune profiles",
+            name = CLM.L["Prune profiles"],
             set = (function(i, input)
                 local command, parameter, nop = strsplit("/", input)
                 command = strlower(command or "")
                 nop = nop and true or false
-                if command == "level" then
+                if command == CLM.L["level"] then
                     parameter = tonumber(parameter) or 0
                     ProfileManager:PruneBelowLevel(parameter, nop)
-                elseif command == "rank" then
+                elseif command == CLM.L["rank"] then
                     parameter = parameter or ""
                     parameter = tonumber(parameter) or parameter
                     ProfileManager:PruneRank(parameter, nop)
-                elseif command == "unguilded" then
+                elseif command == CLM.L["unguilded"] then
                     ProfileManager:PruneUnguilded(nop)
                 end
             end),
@@ -139,7 +139,7 @@ function GlobalSlashCommands:Initialize()
     if ACL:IsTrusted() then
         options.version = {
             type = "execute",
-            name = "Version check in guild",
+            name = CLM.L["Version check in guild"],
             func = (function()
                 ProfileInfoManager:RequestVersion()
             end),
@@ -149,7 +149,7 @@ function GlobalSlashCommands:Initialize()
     if ACL:IsTrusted() then
         options.spec = {
             type = "execute",
-            name = "Spec guild request",
+            name = CLM.L["Spec guild request"],
             func = (function()
                 ProfileInfoManager:RequestSpec()
             end),
@@ -159,7 +159,7 @@ function GlobalSlashCommands:Initialize()
     if ACL:IsTrusted() then
         options.export = {
             type = "execute",
-            name = "Export data",
+            name = CLM.L["Export data"],
             func = (function()
                 CLM.Integration:Export()
             end),
@@ -172,23 +172,23 @@ function GlobalSlashCommands:Initialize()
             name = "Add Profile By Name",
             set = (function(_, inputName)
                 inputName = UTILS.Trim(strlower(inputName or ""))
-                LOG:Message("Input name: %s", inputName)
+                LOG:Message(CLM.L["Input name: %s"], inputName)
                 for i=1,GetNumGuildMembers() do
-                    local name, _, rankIndex, level, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+                    local name, _, _, _, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
                     name, _ = strsplit("-", name)
                     if strlower(name) == inputName then
-                        LOG:Message("Found %s in guild.", name)
+                        LOG:Message(CLM.L["Found %s in guild."], name)
                         local profile = ProfileManager:GetProfileByName(name)
                         if profile then
-                            LOG:Message("%s profile exists.", name)
+                            LOG:Message(CLM.L["%s profile exists."], name)
                         else
-                            LOG:Message("%s profile missing. Adding.", name)
+                            LOG:Message(CLM.L["%s profile missing. Adding."], name)
                             ProfileManager:NewProfile(GUID, name, class)
                         end
                         return
                     end
                 end
-                LOG:Message("%s was not found in guild.", inputName)
+                LOG:Message(CLM.L["%s was not found in guild."], inputName)
             end),
             get = (function() end),
             confirm = true
@@ -196,7 +196,7 @@ function GlobalSlashCommands:Initialize()
     end
     options.guireset = {
         type = "execute",
-        name = "Reset gui positions",
+        name = CLM.L["Reset gui positions"],
         func = (function()
             for _,GUI in pairs(CLM.GUI) do
                 if GUI.Reset then

@@ -42,7 +42,7 @@ end
 local ColorCodeText = UTILS.ColorCodeText
 
 function UTILS.ColorCodeClass(className)
-    return ColorCodeText(className, GetClassColor(className).hex);
+    return ColorCodeText(CLM.L[className], GetClassColor(className).hex);
 end
 
 local colorCodedClassList = {}
@@ -421,12 +421,12 @@ function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
     end
 end
 
-local greenYes = ColorCodeText("Yes", "00cc00")
+local greenYes = ColorCodeText(CLM.L["Yes"], "00cc00")
 function UTILS.GreenYes()
     return greenYes
 end
 
-local redNo = ColorCodeText("No", "cc0000")
+local redNo = ColorCodeText(CLM.L["No"], "cc0000")
 function UTILS.RedNo()
     return redNo
 end

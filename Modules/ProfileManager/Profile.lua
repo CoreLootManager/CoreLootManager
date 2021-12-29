@@ -24,7 +24,7 @@ function Profile:New(entry, name, class, main)
     o:SetSpec()
     o.alts = {}
 
-    self._versionString = "Unknown"
+    self._versionString = CLM.L["Unknown"]
 
     return o
 end

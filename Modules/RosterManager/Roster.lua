@@ -590,10 +590,10 @@ CONSTANTS.POINT_TYPES = UTILS.Set({
 })
 
 CONSTANTS.POINT_TYPES_GUI = {
-    [CONSTANTS.POINT_TYPE.DKP] = "DKP",
-    [CONSTANTS.POINT_TYPE.EPGP] = "EPGP",
-    [CONSTANTS.POINT_TYPE.ROLL] = "ROLL",
-    [CONSTANTS.POINT_TYPE.SK] = "SK"
+    [CONSTANTS.POINT_TYPE.DKP] = CLM.L["DKP"],
+    [CONSTANTS.POINT_TYPE.EPGP] = CLM.L["EPGP"],
+    [CONSTANTS.POINT_TYPE.ROLL] = CLM.L["ROLL"],
+    [CONSTANTS.POINT_TYPE.SK] = CLM.L["SK"]
 }
 
 CONSTANTS.AUCTION_TYPE = {
@@ -611,10 +611,10 @@ CONSTANTS.AUCTION_TYPES = UTILS.Set({
 })
 
 CONSTANTS.AUCTION_TYPES_GUI = {
-    [CONSTANTS.AUCTION_TYPE.OPEN] = "Open",
-    [CONSTANTS.AUCTION_TYPE.SEALED] = "Sealed",
-    [CONSTANTS.AUCTION_TYPE.VICKREY] = "Vickrey",
-    [CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN] = "Anonymous Open"
+    [CONSTANTS.AUCTION_TYPE.OPEN] = CLM.L["Open"],
+    [CONSTANTS.AUCTION_TYPE.SEALED] = CLM.L["Sealed"],
+    [CONSTANTS.AUCTION_TYPE.VICKREY] = CLM.L["Vickrey"],
+    [CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN] = CLM.L["Anonymous Open"]
 }
 
 CONSTANTS.AUCTION_TYPES_OPEN = UTILS.Set({
@@ -633,8 +633,8 @@ CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
 })
 
 CONSTANTS.ITEM_VALUE_MODES_GUI = {
-    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = "Single-Priced",
-    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = "Ascending"
+    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = CLM.L["Single-Priced"],
+    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = CLM.L["Ascending"]
 }
 
 
@@ -675,67 +675,67 @@ CONSTANTS.INVENTORY_TYPES_SET = UTILS.Set(CONSTANTS.INVENTORY_TYPES)
 
 local PAPERDOLL = "Interface\\AddOns\\ClassicLootManager\\Media\\Paperdoll\\"
 CONSTANTS.INVENTORY_TYPES_SORTED = {
-    { type = "INVTYPE_HEAD",            name = "Head",              icon = PAPERDOLL .. "Ui-paperdoll-slot-head.blp" },
-    { type = "INVTYPE_NECK",            name = "Neck",              icon = PAPERDOLL .. "Ui-paperdoll-slot-neck.blp" },
-    { type = "INVTYPE_SHOULDER",        name = "Shoulder",          icon = PAPERDOLL .. "Ui-paperdoll-slot-shoulder.blp" },
-    { type = "INVTYPE_BODY",            name = "Shirt",             icon = PAPERDOLL .. "Ui-paperdoll-slot-shirt.blp" },
-    { type = "INVTYPE_CLOAK",           name = "Back",              icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_CHEST",           name = "Chest",             icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_ROBE",            name = "Chest (robes)",     icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_TABARD",          name = "Tabard",            icon = PAPERDOLL .. "Ui-paperdoll-slot-tabard.blp" },
-    { type = "INVTYPE_WRIST",           name = "Wrist",             icon = PAPERDOLL .. "Ui-paperdoll-slot-wrists.blp" },
-    { type = "INVTYPE_HAND",            name = "Hands",             icon = PAPERDOLL .. "Ui-paperdoll-slot-hands.blp" },
-    { type = "INVTYPE_WAIST",           name = "Waist",             icon = PAPERDOLL .. "Ui-paperdoll-slot-waist.blp" },
-    { type = "INVTYPE_LEGS",            name = "Legs",              icon = PAPERDOLL .. "Ui-paperdoll-slot-legs.blp" },
-    { type = "INVTYPE_FEET",            name = "Feet",              icon = PAPERDOLL .. "Ui-paperdoll-slot-feet.blp" },
-    { type = "INVTYPE_FINGER",          name = "Finger",            icon = PAPERDOLL .. "Ui-paperdoll-slot-finger.blp" },
-    { type = "INVTYPE_TRINKET",         name = "Trinket",           icon = PAPERDOLL .. "Ui-paperdoll-slot-trinket.blp" },
-    { type = "INVTYPE_WEAPON",          name = "One-Hand",          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_WEAPONMAINHAND",  name = "Main Hand",         icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_WEAPONOFFHAND",   name = "Off Hand",          icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_HOLDABLE",        name = "Held In Off-hand",  icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_2HWEAPON",        name = "Two-Hand",          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_SHIELD",          name = "Shield",            icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_RANGED",          name = "Ranged",            icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
-    { type = "INVTYPE_RANGEDRIGHT",     name = "Ranged (wands)",    icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
-    { type = "INVTYPE_NON_EQUIP",       name = "Non-equippable",    icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_BAG",             name = "Bag",               icon = PAPERDOLL .. "Ui-paperdoll-slot-bag.blp" },
-    { type = "INVTYPE_AMMO",            name = "Ammo",              icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_THROWN",          name = "Thrown",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_QUIVER",          name = "Quiver",            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_RELIC",           name = "Relic",             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
+    { type = "INVTYPE_HEAD",            name = CLM.L["Head"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-head.blp" },
+    { type = "INVTYPE_NECK",            name = CLM.L["Neck"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-neck.blp" },
+    { type = "INVTYPE_SHOULDER",        name = CLM.L["Shoulder"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-shoulder.blp" },
+    { type = "INVTYPE_BODY",            name = CLM.L["Shirt"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-shirt.blp" },
+    { type = "INVTYPE_CLOAK",           name = CLM.L["Back"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_CHEST",           name = CLM.L["Chest"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_ROBE",            name = CLM.L["Chest (robes)"],     icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_TABARD",          name = CLM.L["Tabard"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-tabard.blp" },
+    { type = "INVTYPE_WRIST",           name = CLM.L["Wrist"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-wrists.blp" },
+    { type = "INVTYPE_HAND",            name = CLM.L["Hands"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-hands.blp" },
+    { type = "INVTYPE_WAIST",           name = CLM.L["Waist"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-waist.blp" },
+    { type = "INVTYPE_LEGS",            name = CLM.L["Legs"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-legs.blp" },
+    { type = "INVTYPE_FEET",            name = CLM.L["Feet"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-feet.blp" },
+    { type = "INVTYPE_FINGER",          name = CLM.L["Finger"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-finger.blp" },
+    { type = "INVTYPE_TRINKET",         name = CLM.L["Trinket"],           icon = PAPERDOLL .. "Ui-paperdoll-slot-trinket.blp" },
+    { type = "INVTYPE_WEAPON",          name = CLM.L["One-Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_WEAPONMAINHAND",  name = CLM.L["Main Hand"],         icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_WEAPONOFFHAND",   name = CLM.L["Off Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_HOLDABLE",        name = CLM.L["Held In Off-hand"],  icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_2HWEAPON",        name = CLM.L["Two-Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_SHIELD",          name = CLM.L["Shield"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_RANGED",          name = CLM.L["Ranged"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
+    { type = "INVTYPE_RANGEDRIGHT",     name = CLM.L["Ranged (wands)"],    icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
+    { type = "INVTYPE_NON_EQUIP",       name = CLM.L["Non-equippable"],    icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_BAG",             name = CLM.L["Bag"],               icon = PAPERDOLL .. "Ui-paperdoll-slot-bag.blp" },
+    { type = "INVTYPE_AMMO",            name = CLM.L["Ammo"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_THROWN",          name = CLM.L["Thrown"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_QUIVER",          name = CLM.L["Quiver"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_RELIC",           name = CLM.L["Relic"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
 }
 
 CONSTANTS.INVENTORY_TYPES_GUI = {
-    ["INVTYPE_HEAD"] = "Head",
-    ["INVTYPE_NECK"] = "Neck",
-    ["INVTYPE_SHOULDER"] = "Shoulder",
-    ["INVTYPE_BODY"] = "Shirt",
-    ["INVTYPE_CLOAK"] = "Back",
-    ["INVTYPE_CHEST"] = "Chest",
-    ["INVTYPE_ROBE"] = "Chest (robes)",
-    ["INVTYPE_TABARD"] = "Tabard",
-    ["INVTYPE_WRIST"] = "Wrist",
-    ["INVTYPE_HAND"] = "Hands",
-    ["INVTYPE_WAIST"] = "Waist",
-    ["INVTYPE_LEGS"] = "Legs",
-    ["INVTYPE_FEET"] = "Feet",
-    ["INVTYPE_FINGER"] = "Finger",
-    ["INVTYPE_TRINKET"] = "Trinket",
-    ["INVTYPE_WEAPON"] = "One-Hand",
-    ["INVTYPE_WEAPONMAINHAND"] = "Main Hand",
-    ["INVTYPE_WEAPONOFFHAND"] = "Off Hand",
-    ["INVTYPE_HOLDABLE"] = "Held In Off-hand",
-    ["INVTYPE_2HWEAPON"] = "Two-Hand",
-    ["INVTYPE_SHIELD"] = "Shield",
-    ["INVTYPE_RANGED"] = "Ranged",
-    ["INVTYPE_RANGEDRIGHT"] = "Ranged (wands)",
-    ["INVTYPE_NON_EQUIP"] = "Non-equippable",
-    ["INVTYPE_BAG"] = "Bag",
-    ["INVTYPE_AMMO"] = "Ammo",
-    ["INVTYPE_THROWN"] = "Thrown",
-    ["INVTYPE_QUIVER"] = "Quiver",
-    ["INVTYPE_RELIC"] = "Relic"
+    ["INVTYPE_HEAD"] = CLM.L["Head"],
+    ["INVTYPE_NECK"] = CLM.L["Neck"],
+    ["INVTYPE_SHOULDER"] = CLM.L["Shoulder"],
+    ["INVTYPE_BODY"] = CLM.L["Shirt"],
+    ["INVTYPE_CLOAK"] = CLM.L["Back"],
+    ["INVTYPE_CHEST"] = CLM.L["Chest"],
+    ["INVTYPE_ROBE"] = CLM.L["Chest (robes)"],
+    ["INVTYPE_TABARD"] = CLM.L["Tabard"],
+    ["INVTYPE_WRIST"] = CLM.L["Wrist"],
+    ["INVTYPE_HAND"] = CLM.L["Hands"],
+    ["INVTYPE_WAIST"] = CLM.L["Waist"],
+    ["INVTYPE_LEGS"] = CLM.L["Legs"],
+    ["INVTYPE_FEET"] = CLM.L["Feet"],
+    ["INVTYPE_FINGER"] = CLM.L["Finger"],
+    ["INVTYPE_TRINKET"] = CLM.L["Trinket"],
+    ["INVTYPE_WEAPON"] = CLM.L["One-Hand"],
+    ["INVTYPE_WEAPONMAINHAND"] = CLM.L["Main Hand"],
+    ["INVTYPE_WEAPONOFFHAND"] = CLM.L["Off Hand"],
+    ["INVTYPE_HOLDABLE"] = CLM.L["Held In Off-hand"],
+    ["INVTYPE_2HWEAPON"] = CLM.L["Two-Hand"],
+    ["INVTYPE_SHIELD"] = CLM.L["Shield"],
+    ["INVTYPE_RANGED"] = CLM.L["Ranged"],
+    ["INVTYPE_RANGEDRIGHT"] = CLM.L["Ranged (wands)"],
+    ["INVTYPE_NON_EQUIP"] = CLM.L["Non-equippable"],
+    ["INVTYPE_BAG"] = CLM.L["Bag"],
+    ["INVTYPE_AMMO"] = CLM.L["Ammo"],
+    ["INVTYPE_THROWN"] = CLM.L["Thrown"],
+    ["INVTYPE_QUIVER"] = CLM.L["Quiver"],
+    ["INVTYPE_RELIC"] = CLM.L["Relic"]
 }
 
 CONSTANTS.WEEKLY_RESET = {
@@ -749,8 +749,8 @@ CONSTANTS.WEEKLY_RESETS = UTILS.Set({
 })
 
 CONSTANTS.WEEKLY_RESETS_GUI = {
-    [CONSTANTS.WEEKLY_RESET.EU] = "Europe",
-    [CONSTANTS.WEEKLY_RESET.US] = "Americas"
+    [CONSTANTS.WEEKLY_RESET.EU] = CLM.L["Europe"],
+    [CONSTANTS.WEEKLY_RESET.US] = CLM.L["Americas"]
 }
 
 CONSTANTS.ALLOWED_ROUNDINGS = UTILS.Set({
