@@ -73,7 +73,7 @@ function PointHistoryGUI:Initialize()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
-                title = "Remove selected",
+                title = CLM.L["Remove selected"],
                 func = (function()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
@@ -93,10 +93,10 @@ function PointHistoryGUI:Initialize()
 end
 
 local columns = {
-    {name = "Reason",  width = 150},
-    {name = "Date", width = 150, sort = ScrollingTable.SORT_DSC},
-    {name = "Value",  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {name = "Awarded By",  width = 70},
+    {name = CLM.L["Reason"],  width = 150},
+    {name = CLM.L["Date"], width = 150, sort = ScrollingTable.SORT_DSC},
+    {name = CLM.L["Value"],  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {name = CLM.L["Awarded by"],  width = 70},
 }
 
 local function CreatePointDisplay(self)
@@ -107,7 +107,7 @@ local function CreatePointDisplay(self)
     StandingsGroup:SetWidth(550)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
-    RosterSelectorDropDown:SetLabel("Select roster")
+    RosterSelectorDropDown:SetLabel(CLM.L["Select roster"])
     RosterSelectorDropDown:SetCallback("OnValueChanged", function()
         self.requestRefreshProfiles = true
         self:Refresh()
@@ -116,7 +116,7 @@ local function CreatePointDisplay(self)
     StandingsGroup:AddChild(RosterSelectorDropDown)
     -- Profile selector
     local ProfileSelectorDropDown = AceGUI:Create("Dropdown")
-    ProfileSelectorDropDown:SetLabel("Select player")
+    ProfileSelectorDropDown:SetLabel(CLM.L["Select player"])
     ProfileSelectorDropDown:SetCallback("OnValueChanged", function()
         self:Refresh()
     end)
@@ -138,9 +138,9 @@ local function CreatePointDisplay(self)
         local history = ST_GetPointHistory(rowData)
         local profiles = history:Profiles()
         local numProfiles = #profiles
-        tooltip:AddDoubleLine("Affected players:", tostring(numProfiles))
+        tooltip:AddDoubleLine(CLM.L["Affected players:"], tostring(numProfiles))
         if not profiles or numProfiles == 0 then
-            tooltip:AddLine("None")
+            tooltip:AddLine(CLM.L["None"])
         else
             local profilesInLine = 0
             local line = ""
@@ -168,7 +168,7 @@ local function CreatePointDisplay(self)
                 end
             end
             if notIncludedProfiles > 0 then
-                tooltip:AddLine(notIncludedProfiles .. " more")
+                tooltip:AddLine(notIncludedProfiles .. CLM.L[" more"])
             end
         end
         if history:Entry() then
@@ -178,7 +178,7 @@ local function CreatePointDisplay(self)
                 if numNote then
                     note = CLM.EncounterIDsMap[numNote] or note
                 end
-                tooltip:AddDoubleLine("Note:", note)
+                tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
             end
         end
         tooltip:Show()
@@ -218,7 +218,7 @@ function PointHistoryGUI:Create()
     LOG:Trace("PointHistoryGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle("Point History")
+    f:SetTitle(CLM.L["Point History"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
@@ -275,7 +275,7 @@ function PointHistoryGUI:Refresh(visible)
         end
         local row = {cols = {}}
         row.cols[1] = {value = POINT_CHANGE_REASONS_ALL[reason] or ""}
-        row.cols[2] = {value = date("%Y/%m/%d %a %H:%M:%S", history:Timestamp())}
+        row.cols[2] = {value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], history:Timestamp())}
         row.cols[3] = {value = value}
         row.cols[4] = {value = awardedBy}
         row.cols[5] = {value = history}
@@ -323,8 +323,8 @@ function PointHistoryGUI:RefreshProfiles()
     local roster = self:GetCurrentRoster()
     if not roster then return end
     local profiles = roster:Profiles()
-    local profileNameMap = { ["-- History --"] = "-- History --"}
-    local profileList = {"-- History --"}
+    local profileNameMap = { [CLM.L["-- History --"]] = CLM.L["-- History --"]}
+    local profileList = {CLM.L["-- History --"]}
     for _, GUID in ipairs(profiles) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
         if profile then
@@ -358,7 +358,7 @@ function PointHistoryGUI:RegisterSlash()
         history = {
             type = "execute",
             name = "Point History",
-            desc = "Toggle point history window display",
+            desc = CLM.L["Toggle point history window display"],
             handler = self,
             func = "Toggle",
         }

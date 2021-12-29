@@ -50,7 +50,7 @@ local function mutateLootAward(entry, roster)
         if main then
             -- points are already awarded to alt in AddLoot
             -- mirror them from the alt to all other alts + main
-            local mirrorTargets = keys(profile:Alts())
+            local mirrorTargets = keys(main:Alts())
             table.insert(mirrorTargets, main:GUID())
             roster:MirrorStandings(profile:GUID(), mirrorTargets)
         end
@@ -140,7 +140,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         else
             LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
         end
-        local message = string.format("%s awarded to %s for %s DKP", itemLink, name, value)
+        local message = string.format(CLM.L["%s awarded to %s for %s DKP"], itemLink, name, value)
         SendChatMessage(message, "RAID_WARNING")
         if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
             SendChatMessage(message, "GUILD")

@@ -542,7 +542,7 @@ function RosterManager:AddFromRaidToRoster(roster)
         end
     end
     if #missingProfiles > 0 then
-        LOG:Message("Adding missing %s players to current roster", #missingProfiles)
+        LOG:Message(CLM.L["Adding missing %s players to current roster"], #missingProfiles)
         self:AddProfilesToRoster(roster, missingProfiles)
     end
 end

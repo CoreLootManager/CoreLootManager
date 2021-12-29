@@ -71,7 +71,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         return
     end
     if not self:IsAuctioneer() then
-        LOG:Message("You are not allowed to auction items")
+        LOG:Message(CLM.L["You are not allowed to auction items"])
         return
     end
     -- Auction parameters sanity checks
@@ -126,7 +126,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.allowNegativeStandings = configuration:Get("allowNegativeStandings")
     -- Auctioning
     -- Start Auction Messages
-    local auctionMessage = "Auction of " .. itemLink
+    local auctionMessage = string.format(CLM.L["Auction of %s"], itemLink)
     if note:len() > 0 then
         auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
     end
@@ -135,15 +135,15 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     SendChatMessage(auctionMessage , "RAID_WARNING")
     auctionMessage = ""
     if baseValue > 0 then
-        auctionMessage = auctionMessage .. "Minimum bid: " .. tostring(baseValue) .. ". "
+        auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."], tostring(baseValue))
     end
     if maxValue > 0 then
-        auctionMessage = auctionMessage .. "Maximum bid: " .. tostring(maxValue) .. ". "
+        auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."], tostring(maxValue))
     end
-    auctionMessage = auctionMessage .. "Auction time: " .. tostring(auctionTime) .. ". "
+    auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."], tostring(auctionTime))
     self.antiSnipe = configuration:Get("antiSnipe")
     if self.antiSnipe > 0 then
-        auctionMessage = auctionMessage .. "Anti-snipe time: " .. tostring(self.antiSnipe) .. ". "
+        auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], tostring(self.antiSnipe))
     end
     SendChatMessage(auctionMessage , "RAID_WARNING")
     -- AntiSnipe settings
@@ -194,7 +194,7 @@ function AuctionManager:StopAuctionTimed()
     LOG:Trace("AuctionManager:StopAuctionTimed()")
     self.auctionInProgress = false
     self.ticker:Cancel()
-    SendChatMessage("Auction complete", "RAID_WARNING")
+    SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
     self:SendAuctionEnd()
     GUI.AuctionManager:UpdateBids()
 end
@@ -203,7 +203,7 @@ function AuctionManager:StopAuctionManual()
     LOG:Trace("AuctionManager:StopAuctionManual()")
     self.auctionInProgress = false
     self.ticker:Cancel()
-    SendChatMessage("Auction stopped by Master Looter", "RAID_WARNING")
+    SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
     self:SendAuctionEnd()
     GUI.AuctionManager:UpdateBids()
 end
@@ -276,7 +276,7 @@ function AuctionManager:AnnounceHighestBidder(name, bid)
     if not bid then return end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
     self:SendBidInfo(name, bid)
-    local message = string.format("New highest bidder: %s (%d DKP)", name, bid)
+    local message = string.format(CLM.L["New highest bidder: %s (%d DKP)"], name, bid)
     SendChatMessage(message, "RAID_WARNING")
 end
 
@@ -408,7 +408,7 @@ function AuctionManager:IsAuctionInProgress()
 end
 
 CONSTANTS.AUCTION_COMM = {
-    BID_PASS  = "PASS",
+    BID_PASS  = CLM.L["PASS"],
     TYPE = {
         START_AUCTION = 1,
         STOP_AUCTION = 2,
@@ -446,14 +446,14 @@ CONSTANTS.AUCTION_COMM = {
         8  -- NO_AUCTION_IN_PROGRESS
     }),
     DENY_BID_REASONS_STRING = {
-        [1] = "Not in a roster",
-        [2] = "Negative bidders not allowed",
-        [3] = "Bidding over current standings not allowed",
-        [4] = "Bid too low",
-        [5] = "Bid too high",
-        [6] = "Invalid bid value",
-        [7] = "Bid increment too low",
-        [8] = "No auction in progress"
+        [1] = CLM.L["Not in a roster"],
+        [2] = CLM.L["Negative bidders not allowed"],
+        [3] = CLM.L["Bidding over current standings not allowed"],
+        [4] = CLM.L["Bid too low"],
+        [5] = CLM.L["Bid too high"],
+        [6] = CLM.L["Invalid bid value"],
+        [7] = CLM.L["Bid increment too low"],
+        [8] = CLM.L["No auction in progress"]
     }
 
 }

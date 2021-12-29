@@ -44,6 +44,13 @@ Libs\lib-st\lib-st.xml
 # Additional
 Libs\LibCandyBar-3.0\lib.xml
 
+# Locale
+Locale\enUS.lua
+#Locale\deDE.lua
+Locale\ruRU.lua
+#Locale\frFR.lua
+#Locale\itIT.lua
+
 # Addon Core
 ClassicLootManager.lua
 Utils.lua

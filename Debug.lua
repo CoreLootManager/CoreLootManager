@@ -179,7 +179,7 @@ function Debug:HandleKillCommand(source)
     db.ledger = {}
     -- CreatePopup()-- not working
     -- StaticPopup_Show("KILL_COMMAND_RELOAD", tostring(source)) -- not working
-    LOG:Message("You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI.", UTILS.ColorCodeText(source, "FFD100"))
+    LOG:Message(CLM.L["You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI."], UTILS.ColorCodeText(source, "FFD100"))
 end
 
 --
