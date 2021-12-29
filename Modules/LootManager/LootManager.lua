@@ -129,6 +129,10 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         LOG:Error("LootManager:AwardItem(): Invalid ItemId")
         return
     end
+    if not GetItemInfoInstant(itemId) then
+        LOG:Error("LootManager:AwardItem(): Item does not exist")
+        return
+    end
     if type(value) ~= "number" then
         LOG:Error("LootManager:AwardItem(): Invalid Value")
         return
