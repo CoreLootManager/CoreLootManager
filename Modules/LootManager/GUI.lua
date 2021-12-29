@@ -269,12 +269,14 @@ function LootGUI:Refresh(visible)
     self.pendingLoot = false
 
     for _,loot in ipairs(lootList) do
-        local _, itemLink = GetItemInfo(loot:Id())
-        if not itemLink then
-            self.pendingLoot = true
-        elseif not self.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
-            local owner = loot:Owner()
-            table.insert(self.displayedLoot, {loot, itemLink, ColorCodeText(owner:Name(), GetClassColor(owner:Class()).hex)})
+        if GetItemInfoInstant(loot:Id()) then
+            local _, itemLink = GetItemInfo(loot:Id())
+            if not itemLink then
+                self.pendingLoot = true
+            elseif not self.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
+                local owner = loot:Owner()
+                table.insert(self.displayedLoot, {loot, itemLink, ColorCodeText(owner:Name(), GetClassColor(owner:Class()).hex)})
+            end
         end
     end
 
