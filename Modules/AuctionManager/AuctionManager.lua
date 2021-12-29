@@ -279,10 +279,10 @@ function AuctionManager:AnnounceHighestBidder(name, bid)
     local message
     local nameModdified
     if self.auctionType == CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN then
-        nameModdified = "(" .. name .. ")"
+        nameModdified = ""
         self:SendBidInfo("", bid)
     else
-        nameModdified = name
+        nameModdified = "(" .. name .. ")"
         self:SendBidInfo(name, bid)
     end
     message = string.format(CLM.L["New highest bid: %d DKP %s"], bid, nameModdified)
