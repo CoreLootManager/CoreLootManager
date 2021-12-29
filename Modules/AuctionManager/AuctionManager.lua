@@ -147,7 +147,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     end
     SendChatMessage(auctionMessage , "RAID_WARNING")
     -- AntiSnipe settings
-    self.antiSnipeLimit = (self.antiSnipe > 0) and 3 or 0
+    self.antiSnipeLimit = (self.antiSnipe > 0) and (CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and 100 or 3) or 0
     -- Get Auction Type info
     self.auctionType = configuration:Get("auctionType")
     -- if baseValue / maxValue are different than current (or default if no override) item value we will need to update the config
