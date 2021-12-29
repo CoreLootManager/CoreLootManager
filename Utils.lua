@@ -42,7 +42,7 @@ end
 local ColorCodeText = UTILS.ColorCodeText
 
 function UTILS.ColorCodeClass(className)
-    return ColorCodeText(className, GetClassColor(className).hex);
+    return ColorCodeText(CLM.L[className], GetClassColor(className).hex);
 end
 
 local colorCodedClassList = {}
