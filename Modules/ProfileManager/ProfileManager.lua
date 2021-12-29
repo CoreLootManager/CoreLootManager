@@ -153,11 +153,8 @@ function ProfileManager:Initialize()
                     if roster:IsProfileInRoster(altGUID) then
                         -- 1) Add main if not present in roster
                         roster:AddProfileByGUID(mainGUID)
-                        local pointSum = roster:Standings(mainGUID)
-                        -- 2) Sum points for all characters
-                        for _altGUID in pairs(mainProfile:Alts()) do
-                            pointSum = pointSum + (roster:Standings(_altGUID) or 0)
-                        end
+                        -- 2) Sum points of the pool and new alt
+                        local pointSum = roster:Standings(mainGUID) + roster:Standings(altGUID)
                         -- 3) Set new Main standings
                         roster:SetStandings(mainGUID, pointSum)
                         -- 4) Mirror standings from main to alts
