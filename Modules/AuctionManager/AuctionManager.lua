@@ -38,13 +38,18 @@ function AuctionManager:Initialize()
     self:ClearBids()
     self.auctionInProgress = false
 
-    Comms:Register(AUCTION_COMM_PREFIX, (function(rawMessage, distribution, sender)
+    Comms:Register(AUCTION_COMM_PREFIX,
+    (function(rawMessage, distribution, sender)
         local message = AuctionCommStructure:New(rawMessage)
         if CONSTANTS.AUCTION_COMM.TYPES[message:Type()] == nil then return end
         -- Auction Manager is owner of the channel
         -- pass handling to BidManager
         MODULES.BiddingManager:HandleIncomingMessage(message, distribution, sender)
-    end), CONSTANTS.ACL.LEVEL.PLEBS, true) -- TODO: I need to cover the ASSISTANT check by IsAllowedToAuction in Bidding manager
+    end),
+    (function(name)
+        return self:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
+    end),
+    true)
 
     self.handlers = {
         [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]    = "HandleSubmitBid",
