@@ -126,6 +126,10 @@ function CORE:_InitializeFeatures()
     CLM.Integration:Initialize() -- Initialize external (to wow) integrations
 end
 
+local function getIcon(name)
+    return "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-" .. name .. "-32.tga"
+end
+
 function CORE:_InitializeFrontend()
     LOG:Trace("CORE:_InitializeFrontend()")
     -- No GUI / OPTIONS should be dependent on each other ever, only on the managers
@@ -139,19 +143,32 @@ function CORE:_InitializeFrontend()
     MODULES.Minimap:Initialize()
     -- Hook Minimap Icon
     hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
-        if MODULES.SandboxManager:IsSandbox() then
-            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sandbox-32.tga"
-        elseif MODULES.LedgerManager:IsTimeTraveling() then
-            CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-timetravel-32.tga"
-        else
-            if MODULES.LedgerManager:IsInSync() then
-                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
-            elseif MODULES.LedgerManager:IsSyncOngoing() then
-                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-nok-32.tga"
-            else -- Unknown state
-                CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
-            end
+        local icon
+        if MODULES.LedgerManager:IsInIncoherentState() then
+            icon = getIcon("red")
+        elseif MODULES.LedgerManager:IsInSync() then
+            icon = getIcon("green")
+        elseif MODULES.LedgerManager:IsSyncOngoing() then
+            icon = getIcon("yellow")
+        elseif MODULES.SandboxManager:IsSandbox() or MODULES.LedgerManager:IsTimeTraveling() then
+            icon = getIcon("white")
+        else -- Unknown state
+            icon = getIcon("blue")
         end
+        CLM.MinimapDBI.icon = icon
+        -- if MODULES.SandboxManager:IsSandbox() then
+        --     CLM.MinimapDBI.icon = "clm-sandbox-32.tga"
+        -- elseif MODULES.LedgerManager:IsTimeTraveling() then
+        --     CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-timetravel-32.tga"
+        -- else
+        --     if MODULES.LedgerManager:IsInSync() then
+        --         CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
+        --     elseif MODULES.LedgerManager:IsSyncOngoing() then
+        --         CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-nok-32.tga"
+        --     else -- Unknown state
+        --         CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
+        --     end
+        -- end
     end)
 end
 

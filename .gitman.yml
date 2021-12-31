@@ -2,12 +2,9 @@ location: ExternalLibs
 sources:
   - repo: https://github.com/SamMousa/lua-eventsourcing.git
     name: lua-eventsourcing
-    rev: v1.6.10
+    rev: v1.8.0
     type: git
     sparse_paths:
-      -
-    link:
-    links:
       -
     scripts:
       -
@@ -17,9 +14,6 @@ sources:
     type: git
     sparse_paths:
       -
-    link:
-    links:
-      -
     scripts:
       -
   - repo: https://github.com/lantisnt/LibLogger.git
@@ -27,9 +21,6 @@ sources:
     rev: v1.2.1
     type: git
     sparse_paths:
-      -
-    link:
-    links:
       -
     scripts:
       -

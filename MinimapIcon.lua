@@ -111,31 +111,36 @@ do
     function CLM.MinimapDBI.OnTooltipShow(tooltip)
         local info
         tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
+
         if CLM.MODULES.LedgerManager:IsInitialized() then
             local lag = CLM.MODULES.LedgerManager:Lag()
             local count = CLM.MODULES.LedgerManager:Length()
-            -- hash = CLM.MODULES.LedgerManager:Hash()
+            local hash = CLM.MODULES.LedgerManager:Hash()
             if lag > 0 then
                 info = string.format(CLM.L["%s events (%s pending)"], count, lag)
             else
-                info = string.format(CLM.L["%s events"], count)
+                info = string.format(CLM.L["%s events (0x%x)"], count, hash)
             end
         else
             info = string.format(CLM.L["Loading..."])
         end
+
+        if CLM.MODULES.LedgerManager:IsInIncoherentState() then
+            tooltip:AddDoubleLine(CLM.L["Incoherent state"], info, 0.6, 0.0, 0.0) -- RED
+        elseif CLM.MODULES.LedgerManager:IsInSync() then
+            tooltip:AddDoubleLine(CLM.L["In-Sync"], info, 0.0, 0.8, 0.0) -- GREEN
+        elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
+            tooltip:AddDoubleLine(CLM.L["Sync ongoing"], info, 0.45, 0.45, 0.0) -- YELLOW
+        else -- Unknown state
+            tooltip:AddDoubleLine(CLM.L["Unknown sync state"], info, 0.4, 0.6, 1) -- BLUE
+        end
+
         if CLM.MODULES.SandboxManager:IsSandbox() then
-            local timetravelInfo = CLM.MODULES.LedgerManager:IsTimeTraveling() and CLM.L[" and Time Traveling"] or ""
-            tooltip:AddDoubleLine(CLM.L["Sandbox mode"] .. timetravelInfo, info, 1, 1, 1)
-        elseif CLM.MODULES.LedgerManager:IsTimeTraveling() then
-            tooltip:AddDoubleLine(CLM.L["Time Traveling"], info, 0.45, 0.45, 0)
-        else
-            if CLM.MODULES.LedgerManager:IsInSync() then
-                tooltip:AddDoubleLine(CLM.L["In-Sync"], info, 0.0, 0.8, 0.0)
-            elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
-                tooltip:AddDoubleLine(CLM.L["Sync ongoing"], info, 0.6, 0.0, 0.0)
-            else -- Unknown state
-                tooltip:AddDoubleLine(CLM.L["Unknown sync state"], info, 0.4, 0.6, 1)
-            end
+            tooltip:AddLine(CLM.L["Sandbox mode"], 1, 1, 1)
+        end
+
+        if CLM.MODULES.LedgerManager:IsTimeTraveling() then
+            tooltip:AddLine(CLM.L["Time Traveling"], 1, 1, 1)
         end
     end
 end

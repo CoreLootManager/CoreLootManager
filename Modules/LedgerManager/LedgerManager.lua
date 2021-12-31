@@ -10,6 +10,7 @@ local UTILS = CLM.UTILS
 local STATUS_SYNCED = "synced"
 local STATUS_OUT_OF_SYNC = "out_of_sync"
 -- local STATUS_UNKNOWN = "unknown"
+local STATUS_UNKNOWN_TYPE = "unknown_type"
 
 local DeepCopy = UTILS.DeepCopy
 
@@ -55,6 +56,11 @@ local function createLedger(self, database)
 
         ledger.addSyncStateChangedListener(function(_, status)
             self:UpdateSyncState(status)
+        end)
+
+        ledger.setDefaultHandler(function()
+            self:UpdateSyncState(STATUS_UNKNOWN_TYPE)
+            LOG:Warning("LegerManager: Entering incoherent state.")
         end)
 
         return ledger
@@ -213,21 +219,22 @@ function LedgerManager:RequestPeerStatusFromGuild()
 end
 
 function LedgerManager:UpdateSyncState(status)
+    self.incoherentState = false
+    self.inSync = false
+    self.syncOngoing = false
     if self._initialized then
-        if status == STATUS_SYNCED then
+        if status == STATUS_UNKNOWN_TYPE then
+            self.incoherentState = true
+        elseif status == STATUS_SYNCED then
             self.inSync = true
-            self.syncOngoing = false
         elseif status == STATUS_OUT_OF_SYNC then
-            self.inSync = false
             self.syncOngoing = true
-        else
-            self.inSync = false
-            self.syncOngoing = false
         end
-    else
-        self.inSync = false
-        self.syncOngoing = false
     end
+end
+
+function LedgerManager:IsInIncoherentState()
+    return self.incoherentState
 end
 
 function LedgerManager:IsInSync()
