@@ -126,8 +126,8 @@ function CORE:_InitializeFeatures()
     CLM.Integration:Initialize() -- Initialize external (to wow) integrations
 end
 
-local function getIcon(name)
-    return "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-" .. name .. "-32.tga"
+local function getIcon(icon)
+    return "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-" .. icon .. "-32.tga"
 end
 
 function CORE:_InitializeFrontend()
