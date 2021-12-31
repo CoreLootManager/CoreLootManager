@@ -21,7 +21,7 @@ function Comms:Initialize()
     LOG:Trace("Comms:Initialize()")
     self.who = whoami()
     self.callbacks = {}
-    self.aclLevel = {}
+    self.securityCallbacks = {}
     self.allowSelfReceive = {}
     self.suspended = {}
     self.enabled = false
@@ -39,7 +39,7 @@ local function _prefix(prefix)
     return CommsPrefix .. string.sub(prefix or "", 0, 12)
 end
 
-function Comms:Register(prefix, callback, aclLevel, allowSelfReceive)
+function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfReceive)
     LOG:Trace("Comms:Register()")
     if type(callback) ~= "function" then
         LOG:Error("Comms:Register(): callback is not a function")
@@ -60,13 +60,16 @@ function Comms:Register(prefix, callback, aclLevel, allowSelfReceive)
         LOG:Warning("Comms:Register(): Re-registering prefix %s", prefix)
     end
 
-    if type(aclLevel) ~= "number" then
-        LOG:Warning("Comms:Register(): Unknown ACL Level  %s. Setting to any.", aclLevel)
-        aclLevel = 0
+    if type(securityCallbackOrLevel) == "function" then
+        self.securityCallbacks[prefix] = securityCallbackOrLevel
+    elseif type(securityCallbackOrLevel) == "number" then
+        self.securityCallbacks[prefix] = (function(name) return ACL:CheckLevel(securityCallbackOrLevel, name) end)
+    else
+        LOG:Fatal("Comms:Register(): Unknown security callback or ACL Level. Setting to any.")
+        self.securityCallbacks[prefix] = (function() return true end)
     end
 
     self.callbacks[prefix] = callback
-    self.aclLevel[prefix] = aclLevel
     self.allowSelfReceive[prefix] = allowSelfReceive
     self:RegisterComm(prefix, "OnReceive")
 end
@@ -109,7 +112,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
-    if not ACL:CheckLevel(self.aclLevel[prefix]) then
+    if not self.securityCallbacks[prefix]() then
         LOG:Warning("Trying to send privileged message [%s]", prefix)
         return false
     end
@@ -166,7 +169,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
-    if not ACL:CheckLevel(self.aclLevel[prefix], sender) then
+    if not self.securityCallbacks[prefix](sender) then
         LOG:Warning("Comms:OnReceive() received privileged message [%s] from unprivileged sender [%s]", prefix, sender)
         return
     end

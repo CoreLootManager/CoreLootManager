@@ -41,6 +41,7 @@ function RaidManager:Initialize()
     self.RaidLeader = ""
     self.MasterLooter = ""
     self.IsMasterLootSystem = false
+    self.RaidAssistants = {}
 
     -- Register mutators
     LedgerManager:RegisterEntryType(
@@ -179,6 +180,7 @@ function RaidManager:Initialize()
     end)
 
     self:RegisterEventHandling()
+    C_Timer.After(20, function() self:ParseStatus() end) -- backup in case of 0 entries
     MODULES.ConfigManager:RegisterUniversalExecutor("raidm", "RaidManager", self)
 end
 
@@ -377,6 +379,9 @@ function RaidManager:RegisterEventHandling()
     EventManager:RegisterWoWEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, (function(...)
         self:HandleRosterUpdateEvent()
     end))
+    EventManager:RegisterWoWEvent({"PLAYER_ROLES_ASSIGNED"}, (function(...)
+        self:UpdateGameRaidInformation() -- we dont need to check others; im not even sure if we need to do this
+    end))
     self.isEventHandlingRegistered = true
 end
 
@@ -424,18 +429,29 @@ end
 function RaidManager:UpdateGameRaidInformation()
     local lootmethod, _, masterlooterRaidID = GetLootMethod()
     LOG:Debug("Loot method: %s", lootmethod)
+    self.RaidAssistants = {}
     self.IsMasterLootSystem = false
     if lootmethod == "master" then
-        self.IsMasterLootSystem = true
-        self.MasterLooter = GetRaidRosterInfo(masterlooterRaidID)
+        local name = GetRaidRosterInfo(masterlooterRaidID)
+        if name then
+            name = RemoveServer(name)
+            self.IsMasterLootSystem = true
+            self.MasterLooter = name
+            self.RaidAssistants[name] = true -- we add it in case ML is not an assistant
+            LOG:Debug("Master Looter: %s", name)
+        end
     end
+
     for i=1,MAX_RAID_MEMBERS do
         local name, rank = GetRaidRosterInfo(i)
         if name then
+            name = RemoveServer(name)
+            if rank >= 1 then
+                self.RaidAssistants[name] = true
+            end
             if rank == 2 then
-                self.RaidLeader = RemoveServer(name)
+                self.RaidLeader = name
                 LOG:Debug("Raid Leader: %s", self.RaidLeader)
-                break
             end
         end
     end
@@ -507,9 +523,9 @@ function RaidManager:IsRaidOwner(name)
 end
 
 function RaidManager:IsAllowedToAuction(name, relaxed)
-    LOG:Trace("RaidManager:IsRaidIsAllowedToAuctionOwner()")
+    LOG:Trace("RaidManager:IsAllowedToAuction()")
     name = name or whoami()
-    local allow = false
+
     if not relaxed then -- Relaxed requirements: doesn't need to be assitant (for out of guild checks)
         if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             LOG:Debug("Not Assistant")
@@ -517,12 +533,7 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
         end
     end
 
-    if self.IsMasterLootSystem then
-        allow = (self.MasterLooter == name)
-    end
-
-    allow = allow or (self.RaidLeader == name)
-
+    local allow = self.RaidAssistants[name]
     if not allow then
         LOG:Debug("%s is not allowed to auction.", name)
     end
