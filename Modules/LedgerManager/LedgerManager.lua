@@ -29,7 +29,12 @@ local function registerReceiveCallback(callback)
     if not previousCallback then
         previousCallback = callback
     end
-    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
+
+    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
+
+        return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.PLEBS, name)
+    end
+    )
     Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
 end
 
