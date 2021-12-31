@@ -145,30 +145,17 @@ function CORE:_InitializeFrontend()
     hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
         local icon
         if MODULES.LedgerManager:IsInIncoherentState() then
-            icon = getIcon("red")
+            icon = "red"
         elseif MODULES.LedgerManager:IsInSync() then
-            icon = getIcon("green")
+            icon = "green"
         elseif MODULES.LedgerManager:IsSyncOngoing() then
-            icon = getIcon("yellow")
+            icon = "yellow"
         elseif MODULES.SandboxManager:IsSandbox() or MODULES.LedgerManager:IsTimeTraveling() then
-            icon = getIcon("white")
+            icon = "white"
         else -- Unknown state
-            icon = getIcon("blue")
+            icon = "blue"
         end
-        CLM.MinimapDBI.icon = icon
-        -- if MODULES.SandboxManager:IsSandbox() then
-        --     CLM.MinimapDBI.icon = "clm-sandbox-32.tga"
-        -- elseif MODULES.LedgerManager:IsTimeTraveling() then
-        --     CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-timetravel-32.tga"
-        -- else
-        --     if MODULES.LedgerManager:IsInSync() then
-        --         CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-ok-32.tga"
-        --     elseif MODULES.LedgerManager:IsSyncOngoing() then
-        --         CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-nok-32.tga"
-        --     else -- Unknown state
-        --         CLM.MinimapDBI.icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-sync-32.tga"
-        --     end
-        -- end
+        CLM.MinimapDBI.icon = getIcon(icon)
     end)
 end
 
