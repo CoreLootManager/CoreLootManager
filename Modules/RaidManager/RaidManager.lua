@@ -525,7 +525,7 @@ end
 function RaidManager:IsAllowedToAuction(name, relaxed)
     LOG:Trace("RaidManager:IsAllowedToAuction()")
     name = name or whoami()
-    local allow = false
+
     if not relaxed then -- Relaxed requirements: doesn't need to be assitant (for out of guild checks)
         if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             LOG:Debug("Not Assistant")
@@ -533,7 +533,7 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
         end
     end
 
-    allow = self.RaidAssistants[name]
+    local allow = self.RaidAssistants[name]
     if not allow then
         LOG:Debug("%s is not allowed to auction.", name)
     end
