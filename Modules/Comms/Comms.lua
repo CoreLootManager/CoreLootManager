@@ -169,7 +169,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
-    if not self.securityCallbacks[prefix](sender) then
+    if not self.securityCallbacks[prefix](sender, #message) then
         LOG:Warning("Comms:OnReceive() received privileged message [%s] from unprivileged sender [%s]", prefix, sender)
         return
     end
