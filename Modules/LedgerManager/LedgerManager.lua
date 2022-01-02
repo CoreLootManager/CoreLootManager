@@ -18,10 +18,6 @@ local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
 local LedgerManager = { _initialized = false}
 
-local function authorize(entry, sender)
-    return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
-end
-
 local LEDGER_SYNC_COMM_PREFIX = "LedgerS1"
 local LEDGER_DATA_COMM_PREFIX = "LedgerD1"
 
@@ -51,7 +47,9 @@ local function createLedger(self, database)
             return Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
-        authorize, -- authorizationHandler
+        (function(sender)
+            return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
+        end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
             return Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- sendLargeMessage
