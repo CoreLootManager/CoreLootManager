@@ -112,7 +112,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
-    if not self.securityCallbacks[prefix]() then
+    if not self.securityCallbacks[prefix](self.who, message and #message or 0) then
         LOG:Warning("Trying to send privileged message [%s]", prefix)
         return false
     end
@@ -169,7 +169,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
-    if not self.securityCallbacks[prefix](sender, #message) then
+    if not self.securityCallbacks[prefix](sender, message and #message or 0) then
         LOG:Warning("Comms:OnReceive() received privileged message [%s] from unprivileged sender [%s]", prefix, sender)
         return
     end
