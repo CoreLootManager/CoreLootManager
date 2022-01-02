@@ -8,7 +8,7 @@ CLM.ChangelogData = {
                 name = "Developers note",
                 data = {
                     {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
-                    {header = "Happy new Year!", body = "It has been a year. Our journey with CLM began in January. Thank you all and don't hesitate to |cff44cc44support us|r!"},
+                    {header = "Happy new Year!", body = "It has been a year. Our journey with CLM began in January 2021. Thank you all and don't hesitate to |cff44cc44support us|r!"},
                     {header = "DKP-backwards incompatible changes", body = "|cffcc4444This version alters how DKP was calculated|r. When migrating to it please check the changelong notes and correct values accordingly."},
                 },
             },

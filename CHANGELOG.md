@@ -1,6 +1,6 @@
 # Classic Loot Manager v1.2.0
 ## Happy new Year
-It has been a year. Our journey with CLM began in January. Thank you all and don't hesitate to `support us`!
+It has been a year. Our journey with CLM began in January 2021. Thank you all and don't hesitate to `support us`!
 ## DKP-backwards incompatible changes
 **This version alters how DKP was calculated. When migrating to it please check the changelong notes and correct values accordingly.**
 
