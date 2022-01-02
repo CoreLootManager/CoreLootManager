@@ -1,3 +1,27 @@
+# Classic Loot Manager v1.2.0
+## Happy new Year
+It has been a year. Our journey with CLM began in January. Thank you all and don't hesitate to `support us`!
+## DKP-backwards incompatible changes
+**This version alters how DKP was calculated. When migrating to it please check the changelong notes.**
+
+## Features
+### Localization
+CLM supports now localization. First one to come is `russian`. If you are interesting in adding other ones please contact us on discord!
+### Anonymous Open Auction
+New auction type - Anonymous Open. In this mode bidder name will not get posted.
+### Reworked color signaling
+During syncing icon will now turn orange. Red icon means error in internal state of the AddOn.
+### Relaxed auctioning
+Auctioning is no longer limited to RL and ML, but is also allowed for Raid Assists (as long as they are trusted in guild).
+### Cross-guild bidding
+You can now bid through UI even if you are not in the same guild as auctioneer.
+## Fixes
+### Loot GUI stuck
+Loot GUI should no longer get stuck on `Loading...` if there was an entry with non-existent item. Those entries should also no longer be allowed to be created.
+### Multiple linked alts standings
+When linking multiple alts to a main, there was an error that resulted in artificially increasing the standings of linked characters. This is fixed now. `If you have multiple alts linked, their standings will now be incorrect. You are required to manually correct it.`
+### Anti-Snipe limits
+Anti-Snipe will be now semi-unlimited (100 times instead of 3) for all Open auction modes.
 # Classic Loot Manager v1.1.3
 ## Fixes
 ### Migration

@@ -2,6 +2,37 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.2.0",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                    {header = "Happy new Year!", body = "It has been a year. Our journey with CLM began in January. Thank you all and don't hesitate to |cff44cc44support us|r!"},
+                    {header = "DKP-backwards incompatible changes", body = "This version alters how DKP was calculated. When migrating to it please check the changelong notes."},
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    {header = "Localization", body = "CLM supports now localization. First one to come is |cff44cc44russian|r. If you are interesting in adding other ones please contact us on discord!"},
+                    {header = "Anonymous Open Auction", body = "New auction type - Anonymous Open. In this mode bidder name will not get posted."},
+                    {header = "Reworked color signaling", body = "During syncing icon will now turn orange. Red icon means error in internal state of the AddOn."},
+                    {header = "Relaxed auctioning", body = "Auctioning is no longer limited to RL and ML, but is also allowed for Raid Assists (as long as they are trusted in guild)."},
+                    {header = "Cross-guild bidding", body = "You can now bid through UI even if you are not in the same guild as auctioneer"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Loot GUI stuck", body = "Loot GUI should no longer get stuck on |cff44cc44Loading...|r if there was an entry with non-existent item. Those entries should also no longer be allowed to be created."},
+                    {header = "Multiple linked alts standings", body = "When linking multiple alts to a main, there was an error that resulted in artificially increasing the standings of linked characters. This is fixed now. |cff44cc44If you have multiple alts linked, their standings will now be incorrect. You are required to manually correct it.|r"},
+                    {header = "Anti-Snipe limits", body = "Anti-Snipe will be now semi-unlimited (100 times instead of 3) for all Open auction modes."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.1.3",
         data = {
             {
