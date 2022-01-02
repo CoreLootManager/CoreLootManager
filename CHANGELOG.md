@@ -2,7 +2,7 @@
 ## Happy new Year
 It has been a year. Our journey with CLM began in January. Thank you all and don't hesitate to `support us`!
 ## DKP-backwards incompatible changes
-**This version alters how DKP was calculated. When migrating to it please check the changelong notes.**
+**This version alters how DKP was calculated. When migrating to it please check the changelong notes and correct values accordingly.**
 
 ## Features
 ### Localization
