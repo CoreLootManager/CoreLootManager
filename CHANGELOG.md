@@ -22,6 +22,8 @@ Loot GUI should no longer get stuck on `Loading...` if there was an entry with n
 When linking multiple alts to a main, there was an error that resulted in artificially increasing the standings of linked characters. This is fixed now. `If you have multiple alts linked, their standings will now be incorrect. You are required to manually correct it.`
 ### Anti-Snipe limits
 Anti-Snipe will be now semi-unlimited (100 times instead of 3) for all Open auction modes.
+### State ID
+State ID (data hash) is now visible on the tooltip for easy comparison of data sets between users.
 # Classic Loot Manager v1.1.3
 ## Fixes
 ### Migration

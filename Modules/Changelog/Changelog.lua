@@ -9,7 +9,7 @@ CLM.ChangelogData = {
                 data = {
                     {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
                     {header = "Happy new Year!", body = "It has been a year. Our journey with CLM began in January. Thank you all and don't hesitate to |cff44cc44support us|r!"},
-                    {header = "DKP-backwards incompatible changes", body = "This version alters how DKP was calculated. When migrating to it please check the changelong notes."},
+                    {header = "DKP-backwards incompatible changes", body = "|cffcc4444This version alters how DKP was calculated|r. When migrating to it please check the changelong notes."},
                 },
             },
             {
@@ -28,6 +28,7 @@ CLM.ChangelogData = {
                     {header = "Loot GUI stuck", body = "Loot GUI should no longer get stuck on |cff44cc44Loading...|r if there was an entry with non-existent item. Those entries should also no longer be allowed to be created."},
                     {header = "Multiple linked alts standings", body = "When linking multiple alts to a main, there was an error that resulted in artificially increasing the standings of linked characters. This is fixed now. |cff44cc44If you have multiple alts linked, their standings will now be incorrect. You are required to manually correct it.|r"},
                     {header = "Anti-Snipe limits", body = "Anti-Snipe will be now semi-unlimited (100 times instead of 3) for all Open auction modes."},
+                    {header = "State ID", body = "State ID (data hash) is now visible on the tooltip for easy comparison of data sets between users."},
                 },
             },
         }
