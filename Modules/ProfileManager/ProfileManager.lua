@@ -3,16 +3,15 @@ local _, CLM = ...
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
--- local CONSTANTS = CLM.CONSTANTS
+local CONSTANTS = CLM.CONSTANTS
 -- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
 
--- local keys = UTILS.keys
+local keys = UTILS.keys
 local typeof = UTILS.typeof
 local empty = UTILS.empty
 local capitalize = UTILS.capitalize
 local getGuidFromInteger = UTILS.getGuidFromInteger
 local NumberToClass = UTILS.NumberToClass
-
 local whoamiGUID = UTILS.whoamiGUID
 
 local Profile = CLM.MODELS.Profile
@@ -161,6 +160,10 @@ function ProfileManager:Initialize()
                         roster:MirrorStandings(mainGUID, mainProfile:Alts(), true)
                         -- 5) Mirror weekly gains from main to alts
                         roster:MirrorWeeklyGains(mainGUID, mainProfile:Alts(), true)
+                        -- 6) History entry
+                        local targets = keys(mainProfile:Alts())
+                        table.insert(targets, 1, mainGUID)
+                        MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
                     end
                 end
             end
