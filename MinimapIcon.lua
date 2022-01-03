@@ -11,7 +11,7 @@ if not icon then return end
 CLM.MinimapDBI = ldb:NewDataObject(addonName, {
     type = "data source",
     text = "0",
-    icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-green-32.tga"
+    icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-blue-32.tga"
 })
 
 -- Minimap icon dropdown menu
