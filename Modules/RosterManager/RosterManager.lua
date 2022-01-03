@@ -230,6 +230,7 @@ function RosterManager:Initialize()
                                 roster:AddProfileByGUID(profile:Main())
                                 roster:MirrorStandings(profile:Main(), { GUID })
                                 roster:MirrorWeeklyGains(profile:Main(), { GUID })
+                                MODULES.PointManager:AddFakePointHistory(roster, { GUID }, roster:Standings(profile:Main()), CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
                             end
                         end
                     end
