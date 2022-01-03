@@ -130,7 +130,7 @@ do
         elseif CLM.MODULES.LedgerManager:IsInSync() then
             tooltip:AddDoubleLine(CLM.L["In-Sync"], info, 0.0, 0.8, 0.0) -- GREEN
         elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
-            tooltip:AddDoubleLine(CLM.L["Sync ongoing"], info, 0.45, 0.45, 0.0) -- YELLOW
+            tooltip:AddDoubleLine(CLM.L["Sync ongoing"], info, 0.75, 0.75, 0.0) -- YELLOW
         else -- Unknown state
             tooltip:AddDoubleLine(CLM.L["Unknown sync state"], info, 0.4, 0.6, 1) -- BLUE
         end

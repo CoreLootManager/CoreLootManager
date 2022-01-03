@@ -16,6 +16,8 @@ You can now bid through UI even if you are not in the same guild as auctioneer.
 ## Fixes
 ### Multiple linked alts standings
 When linking multiple alts to a main, there was an error that resulted in artificially increasing the standings of linked characters. This is fixed now. `If you have multiple alts linked, their standings will now be incorrect. You are required to manually correct it.`
+### Linking display in Point history
+Alt-main linking will now display in point history as `Linking override`.
 ### Loot GUI stuck
 Loot GUI should no longer get stuck on `Loading...` if there was an entry with non-existent item. Those entries should also no longer be allowed to be created.
 ### Anti-Snipe limits
@@ -23,7 +25,7 @@ Anti-Snipe will be now semi-unlimited (100 times instead of 3) for all Open auct
 ### State ID
 State ID (data hash) is now visible on the tooltip for easy comparison of data sets between users.
 ### Reworked color signaling
-During syncing icon will now turn orange. Red icon means error in internal state of the AddOn.
+During syncing icon will now turn yellow. Red icon means error in internal state of the AddOn.
 # Classic Loot Manager v1.1.3
 ## Fixes
 ### Migration

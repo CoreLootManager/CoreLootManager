@@ -25,10 +25,11 @@ CLM.ChangelogData = {
                 name = "Fixes",
                 data = {
                     {header = "Multiple linked alts standings", body = "When linking multiple alts to a main, there was an error that resulted in artificially increasing the standings of linked characters. This is fixed now. |cff44cc44If you have multiple alts linked, their standings will now be incorrect. You are required to manually correct it.|r"},
+                    {header = "Linking display in Point history", body = "Alt-main linking will now display in point history as |cff44cc44Linking override|r."},
                     {header = "Loot GUI stuck", body = "Loot GUI should no longer get stuck on |cff44cc44Loading...|r if there was an entry with non-existent item. Those entries should also no longer be allowed to be created."},
                     {header = "Anti-Snipe limits", body = "Anti-Snipe will be now semi-unlimited (100 times instead of 3) for all Open auction modes."},
                     {header = "State ID", body = "State ID (data hash) is now visible on the tooltip for easy comparison of data sets between users."},
-                    {header = "Reworked color signaling", body = "During syncing icon will now turn orange. Red icon means error in internal state of the AddOn."},
+                    {header = "Reworked color signaling", body = "During syncing icon will now turn |cffc0c000yellow|r. |cff990000Red|r icon means error in internal state of the AddOn."},
                 },
             },
         }
