@@ -27,9 +27,10 @@ local function registerReceiveCallback(callback)
         previousCallback = callback
     end
 
-    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
-        return length < 4096
-    end)
+    -- Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
+    --     return length < 4096
+    -- end)
+    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
     Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
 end
 
@@ -47,7 +48,7 @@ local function createLedger(self, database)
             return Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
-        (function(sender)
+        (function(entry, sender)
             return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
