@@ -60,10 +60,10 @@ local function createLedger(self, database)
             self:UpdateSyncState(status)
         end)
 
-        ledger.setDefaultHandler(function()
-            self:UpdateSyncState(STATUS_UNKNOWN_TYPE)
-            LOG:Warning("LegerManager: Entering incoherent state.")
-        end)
+        -- ledger.setDefaultHandler(function()
+        --     self:UpdateSyncState(STATUS_UNKNOWN_TYPE)
+        --     LOG:Warning("LegerManager: Entering incoherent state.")
+        -- end)
 
         return ledger
 end
