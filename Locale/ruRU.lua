@@ -629,10 +629,10 @@ CLM.L["Rogue"] = "Разбойник"
 CLM.L["Warlock"] = "Чернокнижник"
 CLM.L["Shaman"] = "Шаман"
 
-CLM.L[" profile(s)"] = " profile(s)"
-CLM.L['Created']  = "Created"
-CLM.L['In Progress'] = "In Progress"
-CLM.L['Finished'] = "Finished"
-CLM.L['Stale'] = "Stale"
+CLM.L[" profile(s)"] = " профиль(-ей)"
+CLM.L['Created']  = "Создано"
+CLM.L['In Progress'] = "В процессе"
+CLM.L['Finished'] = "Завершено"
+CLM.L['Stale'] = "Устаревший"
 
 end
