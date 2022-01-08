@@ -98,6 +98,10 @@ function BiddingManager:GetAutoUpdateBidValue()
     return self.db.autoUpdateBidValue
 end
 
+function BiddingManager:GetLastBidValue()
+    return self.lastBid
+end
+
 function BiddingManager:Bid(value)
     LOG:Trace("BiddingManager:Bid()")
     if not self.auctionInProgress then
