@@ -90,6 +90,13 @@ local function PostLootToRaidChat()
     end
 end
 
+local autoAwardIgnore = UTILS.Set({
+    22726, -- Splinter of Atiesh
+    30183, -- Nether Vortex
+    29434, -- Badge of Justice
+    23572, -- Primal Nether
+})
+
 local function AutoAwardMasterLooterItem(itemId, player)
     for itemIndex = 1, GetNumLootItems() do
         local _, _, _, _, _, locked = GetLootSlotInfo(itemIndex)
@@ -412,7 +419,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 local awarded = AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
-                if awarded and self.lootWindowIsOpen then
+                if awarded and not autoAwardIgnore[self.itemId] and self.lootWindowIsOpen then
                     AutoAwardMasterLooterItem(self.itemId, self.awardPlayer)
                 end
                 self.itemLink = nil

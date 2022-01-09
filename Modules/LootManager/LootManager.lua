@@ -139,7 +139,6 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
     end
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     if roster:IsProfileInRoster(profile:GUID()) then
-        local isAwarded
         if isRaid then
             LedgerManager:Submit(LEDGER_LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value), forceInstant)
         else
