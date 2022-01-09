@@ -404,8 +404,6 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
                     statusText = statusText .. " >>> "
                 end
             end
-        else
-            self.auctionType = ""
         end
     end
 
