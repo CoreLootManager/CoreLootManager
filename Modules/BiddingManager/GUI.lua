@@ -308,7 +308,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                 else
                     return CLM.L["Notify that you are passing on the item. Cancels any existing bids."]
                 end
-			end),
+            end),
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
             disabled = (function()
