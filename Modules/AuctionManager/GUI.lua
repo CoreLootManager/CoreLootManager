@@ -90,6 +90,23 @@ local function PostLootToRaidChat()
     end
 end
 
+local function AutoAwardMasterLooterItem(itemId, player)
+    for itemIndex = 1, GetNumLootItems() do
+        local _, _, _, _, _, locked = GetLootSlotInfo(itemIndex)
+        if not locked then
+            local slotItemId = GetItemInfoInstant(GetLootSlotLink(itemIndex))
+            if slotItemId == itemId then
+                for playerIndex = 1, GetNumGroupMembers() do
+                    if (GetMasterLootCandidate(itemIndex, playerIndex) == player) then
+                        GiveMasterLoot(itemIndex, playerIndex)
+                        return
+                    end
+                end
+            end
+        end
+    end
+end
+
 local function InitializeDB(self)
     local db = MODULES.Database:GUI()
     if not db.auction then
@@ -120,6 +137,7 @@ function AuctionManagerGUI:Initialize()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
     EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
+    EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function(...)self:HandleLootClosedEvent() end))
     EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
         if not AuctionManager:IsAuctionInProgress() then
             self.itemLink = data.link
@@ -141,10 +159,16 @@ function AuctionManagerGUI:Initialize()
 end
 
 function AuctionManagerGUI:HandleLootOpenedEvent()
+    -- Set window open
+    self.lootWindowIsOpen = true
     -- Post loot to raid chat
     PostLootToRaidChat()
     -- Hook slots
     HookCorpseSlots(self.hookedSlots)
+end
+
+function AuctionManagerGUI:HandleLootClosedEvent()
+    self.lootWindowIsOpen = false
 end
 
 
@@ -387,7 +411,10 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             name = CLM.L["Award"],
             type = "execute",
             func = (function()
-                AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
+                local awarded = AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
+                if awarded and self.lootWindowIsOpen then
+                    AutoAwardMasterLooterItem(self.itemId, self.awardPlayer)
+                end
                 self.itemLink = nil
                 self.itemId = 0
                 self.awardValue = 0

@@ -117,28 +117,29 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         isRaid = false
         if not typeof(raidOrRoster, Roster) then
             LOG:Error("raidOrRoster:AwardItem(): Missing valid raid / roster")
-            return
+            return false
         end
     end
     local profile = ProfileManager:GetProfileByName(name)
     if not typeof(profile, Profile) then
         LOG:Error("LootManager:AwardItem(): Missing valid profile")
-        return
+        return false
     end
     if type(itemId) ~= "number" then
         LOG:Error("LootManager:AwardItem(): Invalid ItemId")
-        return
+        return false
     end
     if not GetItemInfoInstant(itemId) then
         LOG:Error("LootManager:AwardItem(): Item does not exist")
-        return
+        return false
     end
     if type(value) ~= "number" then
         LOG:Error("LootManager:AwardItem(): Invalid Value")
-        return
+        return false
     end
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     if roster:IsProfileInRoster(profile:GUID()) then
+        local isAwarded
         if isRaid then
             LedgerManager:Submit(LEDGER_LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value), forceInstant)
         else
@@ -149,9 +150,11 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
             SendChatMessage(message, "GUILD")
         end
+        return true
     else
         LOG:Error("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
     end
+    return false
 end
 
 function LootManager:RevokeItem(loot, forceInstant)

@@ -429,7 +429,7 @@ end
 
 function AuctionManager:Award(itemId, price, name)
     LOG:Trace("AuctionManager:Award()")
-    LootManager:AwardItem(self.raid, name, self.itemLink, itemId, price)
+    return LootManager:AwardItem(self.raid, name, self.itemLink, itemId, price)
 end
 
 function AuctionManager:IsAuctioneer(name, relaxed)
