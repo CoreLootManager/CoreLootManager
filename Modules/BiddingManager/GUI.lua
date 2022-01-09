@@ -294,9 +294,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = CLM.L["Cancel your bid."],
             type = "execute",
             func = (function() BiddingManager:CancelBid() end),
-            disabled = (function()
-			    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType]
-			end),
+            disabled = (function() return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] end),
             width = 0.43,
             order = 8
         },
@@ -312,8 +310,8 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
             disabled = (function()
-			    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and not (BiddingManager:GetLastBidValue() == 0)
-			end),
+                    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (BiddingManager:GetLastBidValue() ~= 0)
+            end),
             width = 0.43,
             order = 9
         }
