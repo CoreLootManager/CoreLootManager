@@ -627,5 +627,8 @@ CLM.L["Paladin"] = "Паладин"
 CLM.L["Rogue"] = "Разбойник"
 CLM.L["Warlock"] = "Чернокнижник"
 CLM.L["Shaman"] = "Шаман"
+  
+CLM.L["Bid cancelling not allowed"] = "Отмена ставок запрещена"
+CLM.L["Passing after bidding not allowed"] = "Пас после ставки запрещен"
 
 end
