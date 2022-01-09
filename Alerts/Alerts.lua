@@ -21,13 +21,13 @@ end
 local DKPReceivedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("DKPReceivedAlertFrameTemplate", DKPReceivedAlertFrame_SetUp, 6, math.huge)
 
 local function BidAcceptedAlertFrame_SetUp(self, data)
-    self.Amount:SetText(string.format(CLM.L["Bid %d accepted!"], data.value))
+    self.Amount:SetText(string.format(CLM.L["Bid %s accepted!"], tostring(data.value)))
 end
 
 local BidAcceptedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidAcceptedAlertFrameTemplate", BidAcceptedAlertFrame_SetUp, 6, math.huge)
 
 local function BidDeniedAlertFrame_SetUp(self, data)
-    self.Amount:SetText(string.format(CLM.L["Bid %d denied!"], data.value))
+    self.Amount:SetText(string.format(CLM.L["Bid %s denied!"], tostring(data.value)))
 end
 
 local BidDeniedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidDeniedAlertFrameTemplate", BidDeniedAlertFrame_SetUp, 6, math.huge)

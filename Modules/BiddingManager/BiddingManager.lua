@@ -122,6 +122,7 @@ function BiddingManager:CancelBid()
     LOG:Trace("BiddingManager:CancelBid()")
     if not self.auctionInProgress then return end
     self.lastBid = nil
+    self.guiBid = true
     local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID, {})
     Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
@@ -130,6 +131,7 @@ function BiddingManager:NotifyPass()
     LOG:Trace("BiddingManager:NotifyPass()")
     if not self.auctionInProgress then return end
     self.lastBid = CLM.L["PASS"]
+    self.guiBid = true
     local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
     Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
@@ -137,7 +139,7 @@ end
 function BiddingManager:ClearAuctionInfo()
     self.auctionInfo = nil
     self.auctioneer = nil
-    self.lastBid = 0
+    self.lastBid = nil
     self.guiBid = false
 end
 
@@ -196,8 +198,9 @@ function BiddingManager:HandleAcceptBid(data, sender)
         return
     end
     if self.guiBid then
-        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = self.lastBid or CLM.L["cancel"] })
-        LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], self.lastBid or CLM.L["canceled"])
+        local value =  self.lastBid or CLM.L["cancel"]
+        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
+        LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], value)
         self.guiBid = false
     end
 end
@@ -209,8 +212,9 @@ function BiddingManager:HandleDenyBid(data, sender)
         return
     end
     if self.guiBid then
-        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = self.lastBid, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
-        LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], self.lastBid, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"])
+        local value = self.lastBid or CLM.L["cancel"]
+        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
+        LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], value, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"])
         self.guiBid = false
     end
 end

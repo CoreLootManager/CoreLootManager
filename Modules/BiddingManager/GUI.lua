@@ -310,7 +310,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
             disabled = (function()
-                    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (BiddingManager:GetLastBidValue() ~= 0)
+                    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (BiddingManager:GetLastBidValue() ~= nil)
             end),
             width = 0.43,
             order = 9
