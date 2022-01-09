@@ -45,6 +45,7 @@ local function CreateConfigs(self)
             type = "toggle",
             set = function(i, v) self.db.never_show = v and true or false end,
             get = function(i) return self.db.never_show end,
+            width = "double",
             order = 81
         },
         changelog_toggle = {

@@ -204,6 +204,8 @@ function CORE:_Initialize()
 end
 
 function CORE:OnInitialize()
+    -- Fix ML UI issue - https://bit.ly/3tc8nvw
+    hooksecurefunc(MasterLooterFrame, 'Hide', function(self) self:ClearAllPoints() end);
     -- Initialize SavedVariables
     Initialize_SavedVariables()
     --  Early Initialize logger
