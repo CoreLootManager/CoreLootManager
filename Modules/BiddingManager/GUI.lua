@@ -294,14 +294,24 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = CLM.L["Cancel your bid."],
             type = "execute",
             func = (function() BiddingManager:CancelBid() end),
+            disabled = (function() return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] end),
             width = 0.43,
             order = 8
         },
         pass = {
             name = CLM.L["Pass"],
-            desc = CLM.L["Notify that you are passing on the item. Cancels any existing bids."],
+            desc = (function()
+                if CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+                    return CLM.L["Notify that you are passing on the item."]
+                else
+                    return CLM.L["Notify that you are passing on the item. Cancels any existing bids."]
+                end
+            end),
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
+            disabled = (function()
+                    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (BiddingManager:GetLastBidValue() ~= 0)
+            end),
             width = 0.43,
             order = 9
         }
@@ -386,6 +396,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     if myProfile then
         local roster = RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
+            self.auctionType = roster:GetConfiguration("auctionType")
             if roster:IsProfileInRoster(myProfile:GUID()) then
                 self.standings = roster:Standings(myProfile:GUID())
                 statusText = self.standings .. CLM.L[" DKP "]

@@ -338,9 +338,23 @@ function AuctionManager:HandleNotifyPass(data, sender)
 end
 
 function AuctionManager:ValidateBid(name, bid)
-    -- allow bid cancelling
-    if bid == nil then return true end
-    -- allow bid passing
+    -- bid cancelling
+    if bid == nil then
+        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+            return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.CANCELLING_NOT_ALLOWED
+        else
+            return true
+        end
+    end
+    -- bid passing
+    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
+        -- only allow passing if no bids have been placed in open auctions
+        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and self.bids[name] then
+            return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.PASSING_NOT_ALLOWED
+        else
+            return true
+        end
+    end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return true end
     -- sanity check
     local profile = ProfileManager:GetProfileByName(name)
@@ -454,7 +468,9 @@ CONSTANTS.AUCTION_COMM = {
         BID_VALUE_TOO_HIGH = 5,
         BID_VALUE_INVALID = 6,
         BID_INCREMENT_TOO_LOW = 7,
-        NO_AUCTION_IN_PROGRESS = 8
+        NO_AUCTION_IN_PROGRESS = 8,
+        CANCELLING_NOT_ALLOWED = 9,
+        PASSING_NOT_ALLOWED = 10,
     },
     DENY_BID_REASONS = UTILS.Set({
         1, -- NOT_IN_ROSTER
@@ -464,7 +480,9 @@ CONSTANTS.AUCTION_COMM = {
         5, -- BID_VALUE_TOO_HIGH
         6, -- BID_VALUE_INVALID
         7, -- BID_INCREMENT_TOO_LOW
-        8  -- NO_AUCTION_IN_PROGRESS
+        8, -- NO_AUCTION_IN_PROGRESS
+        9, -- CANCELLING_NOT_ALLOWED
+        10 -- PASSING_NOT_ALLOWED
     }),
     DENY_BID_REASONS_STRING = {
         [1] = CLM.L["Not in a roster"],
@@ -474,9 +492,10 @@ CONSTANTS.AUCTION_COMM = {
         [5] = CLM.L["Bid too high"],
         [6] = CLM.L["Invalid bid value"],
         [7] = CLM.L["Bid increment too low"],
-        [8] = CLM.L["No auction in progress"]
+        [8] = CLM.L["No auction in progress"],
+        [9] = CLM.L["Bid cancelling not allowed"],
+        [10] = CLM.L["Passing after bidding not allowed"]
     }
-
 }
 
 MODULES.AuctionManager = AuctionManager

@@ -405,6 +405,7 @@ CLM.L["Note to be added to award. Max 32 characters. It is recommended to not in
 CLM.L["Note"] = "Заметка"
 CLM.L["Noth the Plaguebringer"] = "Нот Чумной"
 CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Уведомьте, что вы пасуете на предмет. Отменяет любые текущие ставки."
+CLM.L["Notify that you are passing on the item."] = "Уведомьте, что вы пасуете на предмет."
 CLM.L["Num"] = "Значение"
 CLM.L["Off Hand"] = "Левая рука"
 CLM.L["On Time Bonus value"] = "Значение бонуса за приход вовремя"
@@ -628,7 +629,9 @@ CLM.L["Paladin"] = "Паладин"
 CLM.L["Rogue"] = "Разбойник"
 CLM.L["Warlock"] = "Чернокнижник"
 CLM.L["Shaman"] = "Шаман"
-
+  
+CLM.L["Bid cancelling not allowed"] = "Отмена ставок запрещена"
+CLM.L["Passing after bidding not allowed"] = "Пас после ставки запрещен"
 CLM.L[" profile(s)"] = " профиль(-ей)"
 CLM.L['Created']  = "Создано"
 CLM.L['In Progress'] = "В процессе"
