@@ -493,7 +493,7 @@ CONSTANTS.AUCTION_COMM = {
         [6] = CLM.L["Invalid bid value"],
         [7] = CLM.L["Bid increment too low"],
         [8] = CLM.L["No auction in progress"],
-        [9] = CLM.L["Bid cancellation not allowed"],
+        [9] = CLM.L["Bid cancelling not allowed"],
         [10] = CLM.L["Passing after bidding not allowed"]
     }
 }
