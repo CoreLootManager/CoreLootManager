@@ -160,7 +160,7 @@ local function CreateConfigs(self)
             values = CUSTOM_BUTTON.MODES_GUI,
             set = function(i, v) SetCustomButtonMode(self, tonumber(v)) end,
             get = function(i) return GetCustomButtonMode(self) end,
-            order = 55
+            order = 75
         },
         bidding_value = {
             name = CLM.L["Custom value"],
@@ -173,7 +173,7 @@ local function CreateConfigs(self)
             step = 0.01,
             set = function(i, v) SetCustomButtonValue(self, v) end,
             get = function(i) return GetCustomButtonValue(self) end,
-            order = 56
+            order = 76
           }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)

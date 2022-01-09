@@ -32,8 +32,19 @@ local AUCTION_COMM_PREFIX = "Auction1"
 local EVENT_START_AUCTION = "CLM_AUCTION_START"
 
 local AuctionManager = {}
+
+local function InitializeDB(self)
+    local db = MODULES.Database:Personal()
+    if not db.auction then
+        db.auction = { autoAward = true, autoTrade = true }
+    end
+    self.db = db.auction
+end
+
 function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
+
+    InitializeDB(self)
 
     self:ClearBids()
     self.auctionInProgress = false
@@ -57,15 +68,68 @@ function AuctionManager:Initialize()
         [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS]   = "HandleNotifyPass",
     }
 
+    local options = {
+        auctioning_header = {
+            type = "header",
+            name = CLM.L["Auctioning"],
+            order = 30
+        },
+        auctioning_guild_award_announcement = {
+            name = CLM.L["Announce award to Guild"],
+            desc = CLM.L["Toggles loot award announcement to guild"],
+            type = "toggle",
+            set = function(i, v) CLM.GlobalConfigs:SetAnnounceAwardToGuild(v) end,
+            get = function(i) return CLM.GlobalConfigs:GetAnnounceAwardToGuild() end,
+            width = "double",
+            order = 31
+        },
+        auctioning_chat_commands = {
+            name = CLM.L["Enable chat commands"],
+            desc = CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."],
+            type = "toggle",
+            set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
+            get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
+            -- width = "double",
+            order = 32
+        },
+        auctioning_enable_auto_award_from_corpse = {
+            name = CLM.L["Auto-award from corpse"],
+            desc = CLM.L["Enable loot auto-award (Master Looter UI) from corpse when item is awarded"],
+            type = "toggle",
+            set = function(i, v) self:SetAutoAward(v) end,
+            get = function(i) return self:GetAutoAward() end,
+            width = "double",
+            order = 33
+        },
+        auctioning_enable_auto_trade = {
+            name = CLM.L["Auto-trade after award"],
+            desc = CLM.L["Enables auto-trade awarded loot after auctioning from bag"],
+            type = "toggle",
+            set = function(i, v) self:SetAutoTrade(v) end,
+            get = function(i) return self:GetAutoTrade() end,
+            -- width = "double",
+            order = 34
+        },
+    }
+    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+
     self._initialized = true
 end
 
-function AuctionManager:SetQuickAuction(value)
-    self.db.quickAuction = value and true or false
+function AuctionManager:SetAutoAward(value)
+    self.db.autoAward = value and true or false
 end
 
-function AuctionManager:GetQuickAuction()
-    return self.db.quickAuction
+function AuctionManager:GetAutoAward()
+    return self.db.autoAward
+end
+
+function AuctionManager:SetAutoTrade(value)
+    self.db.autoTrade = value and true or false
+end
+
+function AuctionManager:GetAutoTrade()
+    return self.db.autoTrade
 end
 
 -- We pass configuration separately as it can be overriden on per-auction basis

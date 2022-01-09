@@ -35,15 +35,6 @@ function GlobalConfigs:Initialize()
             name = CLM.L["Global"],
             order = 1
         },
-        global_guild_award_announcement = {
-            name = CLM.L["Announce award to Guild"],
-            desc = CLM.L["Toggles loot award announcement to guild"],
-            type = "toggle",
-            set = function(i, v) self:SetAnnounceAwardToGuild(v) end,
-            get = function(i) return self:GetAnnounceAwardToGuild() end,
-            width = "double",
-            order = 2
-        },
         global_raid_loot_announcement = {
             name = CLM.L["Announce loot from corpse to Raid"],
             desc = CLM.L["Toggles loot announcement to raid"],
@@ -79,15 +70,6 @@ function GlobalConfigs:Initialize()
             width = "double",
             order = 5
         },
-        global_chat_commands = {
-            name = CLM.L["Enable chat commands"],
-            desc = CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."],
-            type = "toggle",
-            set = function(i, v) self:SetAllowChatCommands(v) end,
-            get = function(i) return self:GetAllowChatCommands() end,
-            width = "double",
-            order = 6
-        },
         global_wipe_ledger = {
             name = CLM.L["Wipe events"],
             desc = CLM.L["Wipes all events from memory. This will trigger resyncing from other users."],
@@ -95,6 +77,11 @@ function GlobalConfigs:Initialize()
             confirm = true,
             func = function() LedgerManager:Wipe() end,
             order = 10
+        },
+        global_tracked_loot = {
+            type = "header",
+            name = CLM.L["Loot Queue"],
+            order = 110
         },
         global_tracked_loot_level = {
             name = CLM.L["Tracked loot rarity"],
@@ -111,7 +98,7 @@ function GlobalConfigs:Initialize()
             },
             set = function(i, v) self:SetTrackedLootLevel(v) end,
             get = function(i) return self:GetTrackedLootLevel() end,
-            order = 20
+            order = 111
         },
     }
     ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)

@@ -60,7 +60,7 @@ function BiddingManager:Initialize()
         bidding_header = {
             type = "header",
             name = CLM.L["Bidding"],
-            order = 50
+            order = 70
         },
         bidding_auto_open = {
             name = CLM.L["Toggle Bidding auto-open"],
@@ -69,7 +69,7 @@ function BiddingManager:Initialize()
             set = function(i, v) self:SetAutoOpen(v) end,
             get = function(i) return self:GetAutoOpen() end,
             width = "full",
-            order = 51
+            order = 71
           },
           bidding_auto_update = {
             name = CLM.L["Enable auto-update bid values"],
@@ -78,7 +78,7 @@ function BiddingManager:Initialize()
             set = function(i, v) self:SetAutoUpdateBidValue(v) end,
             get = function(i) return self:GetAutoUpdateBidValue() end,
             width = "full",
-            order = 52
+            order = 72
           }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)

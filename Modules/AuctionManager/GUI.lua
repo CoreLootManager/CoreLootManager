@@ -419,8 +419,12 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 local awarded = AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
-                if awarded and not autoAwardIgnore[self.itemId] and self.lootWindowIsOpen then
-                    AutoAwardMasterLooterItem(self.itemId, self.awardPlayer)
+                if awarded and not autoAwardIgnore[self.itemId] then
+                    if AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
+                        AutoAwardMasterLooterItem(self.itemId, self.awardPlayer)
+                    else
+                        -- TODO: Always Track items to trade?
+                    end
                 end
                 self.itemLink = nil
                 self.itemId = 0

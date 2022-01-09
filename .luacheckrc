@@ -4124,6 +4124,7 @@ globals = {
 	"LockPetActionBar",
 	"LowerFrameLevel",
 	"ManageBackpackTokenFrame",
+	"MasterLooterFrame",
 	"MicroButtonPulse",
 	"MicroButtonPulseStop",
 	"MicroButtonTooltipText",
