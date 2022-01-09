@@ -219,7 +219,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         -- Force caching loot from server
         GetItemInfo(itemId)
     end
-    local auctionOptions = {
+    return {
         icon = {
             name = "",
             type = "description",
@@ -289,29 +289,29 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             width = 0.43,
             order = 6
         },
+        cancel = {
+            name = CLM.L["Cancel"],
+            desc = CLM.L["Cancel your bid."],
+            type = "execute",
+            func = (function() BiddingManager:CancelBid() end),
+            disabled = (function()
+			    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType]
+			end),
+            width = 0.43,
+            order = 8
+        },
         pass = {
             name = CLM.L["Pass"],
             desc = CLM.L["Notify that you are passing on the item. Cancels any existing bids."],
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
             disabled = (function()
-				return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and BiddingManager:GetLastBidValue() > 0
+			    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and BiddingManager:GetLastBidValue() > 0
 			end),
             width = 0.43,
             order = 9
         }
     }
-    if not CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
-        auctionOptions.cancel = {
-            name = CLM.L["Cancel"],
-            desc = CLM.L["Cancel your bid."],
-            type = "execute",
-            func = (function() BiddingManager:CancelBid() end),
-            width = 0.43,
-            order = 8
-        }
-    end
-    return auctionOptions
 end
 
 function BiddingManagerGUI:Create()
@@ -400,6 +400,8 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
                     statusText = statusText .. " >>> "
                 end
             end
+        else
+            self.auctionType = ""
         end
     end
 

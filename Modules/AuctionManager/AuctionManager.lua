@@ -349,7 +349,7 @@ function AuctionManager:ValidateBid(name, bid)
     -- bid passing
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
         -- only allow passing if no bids have been placed in open auctions
-        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and self.highestBid > 0 then
+        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and self.bids[name] then
             return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.PASSING_NOT_ALLOWED
         else
             return true
@@ -496,7 +496,6 @@ CONSTANTS.AUCTION_COMM = {
         [9] = CLM.L["Bid cancellation not allowed"],
         [10] = CLM.L["Passing after bidding not allowed"]
     }
-
 }
 
 MODULES.AuctionManager = AuctionManager
