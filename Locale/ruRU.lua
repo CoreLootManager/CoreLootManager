@@ -404,6 +404,7 @@ CLM.L["Note to be added to award. Max 32 characters. It is recommended to not in
 CLM.L["Note"] = "Заметка"
 CLM.L["Noth the Plaguebringer"] = "Нот Чумной"
 CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Уведомьте, что вы пасуете на предмет. Отменяет любые текущие ставки."
+CLM.L["Notify that you are passing on the item."] = "Уведомьте, что вы пасуете на предмет."
 CLM.L["Num"] = "Значение"
 CLM.L["Off Hand"] = "Левая рука"
 CLM.L["On Time Bonus value"] = "Значение бонуса за приход вовремя"

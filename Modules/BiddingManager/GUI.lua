@@ -302,7 +302,13 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         },
         pass = {
             name = CLM.L["Pass"],
-            desc = CLM.L["Notify that you are passing on the item. Cancels any existing bids."],
+            desc = (function()
+                if CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+                    return CLM.L["Notify that you are passing on the item."]
+                else
+                    return CLM.L["Notify that you are passing on the item. Cancels any existing bids."]
+                end
+			end),
             type = "execute",
             func = (function() BiddingManager:NotifyPass() end),
             disabled = (function()
