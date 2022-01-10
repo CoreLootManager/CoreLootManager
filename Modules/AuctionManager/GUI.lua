@@ -23,6 +23,7 @@ local AuctionManager = MODULES.AuctionManager
 local ProfileManager = MODULES.ProfileManager
 local RaidManager = MODULES.RaidManager
 local EventManager =  MODULES.EventManager
+local AutoAward = MODULES.AutoAward
 
 local RosterConfiguration = MODELS.RosterConfiguration
 
@@ -84,30 +85,6 @@ local function PostLootToRaidChat()
             if itemLink then
                 if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then -- post Blue Purple and Legendary to Raid -- 3 -blue
                     SendChatMessage(lootIndex .. ". " .. itemLink, "RAID")
-                end
-            end
-        end
-    end
-end
-
-local autoAwardIgnore = UTILS.Set({
-    22726, -- Splinter of Atiesh
-    30183, -- Nether Vortex
-    29434, -- Badge of Justice
-    23572, -- Primal Nether
-})
-
-local function AutoAwardMasterLooterItem(itemId, player)
-    for itemIndex = 1, GetNumLootItems() do
-        local _, _, _, _, _, locked = GetLootSlotInfo(itemIndex)
-        if not locked then
-            local slotItemId = GetItemInfoInstant(GetLootSlotLink(itemIndex))
-            if slotItemId == itemId then
-                for playerIndex = 1, GetNumGroupMembers() do
-                    if (GetMasterLootCandidate(itemIndex, playerIndex) == player) then
-                        GiveMasterLoot(itemIndex, playerIndex)
-                        return
-                    end
                 end
             end
         end
@@ -419,11 +396,11 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 local awarded = AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
-                if awarded and not autoAwardIgnore[self.itemId] then
+                if awarded and not AutoAward:IsIgnored(self.itemId) then
                     if AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
-                        AutoAwardMasterLooterItem(self.itemId, self.awardPlayer)
+                        AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
                     else
-                        -- TODO: Always Track items to trade?
+                        AutoAward:Track(self.itemId, self.awardPlayer)
                     end
                 end
                 self.itemLink = nil
