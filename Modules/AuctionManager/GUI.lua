@@ -399,7 +399,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 if awarded and not AutoAward:IsIgnored(self.itemId) then
                     if AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
                         AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
-                    else
+                    elseif AuctionManager:GetAutoTrade() then
                         AutoAward:Track(self.itemId, self.awardPlayer)
                     end
                 end
