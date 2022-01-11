@@ -87,6 +87,7 @@ function RaidManager:Initialize()
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, raidUid)
                     raid:AddPlayer(GUID)
+                    raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
                 end
             end
             -- Remove leavers
@@ -119,6 +120,7 @@ function RaidManager:Initialize()
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, raidUid)
                     raid:AddPlayer(GUID)
+                    raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
                 else
                     LOG:Debug("RaidManager mutator(): Missing profile for: %s", GUID)
                 end

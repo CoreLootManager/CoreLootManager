@@ -75,12 +75,16 @@ local function ST_GetClass(row)
     return row.cols[3].value
 end
 
-local function ST_GetWeeklyGains(row)
+local function ST_GetAttendance(row)
     return row.cols[5].value
 end
 
-local function ST_GetWeeklyCap(row)
+local function ST_GetWeeklyGains(row)
     return row.cols[6].value
+end
+
+local function ST_GetWeeklyCap(row)
+    return row.cols[7].value
 end
 
 local function GenerateUntrustedOptions(self)
@@ -433,12 +437,13 @@ local function CreateStandingsDisplay(self)
         {   name = CLM.L["Name"], width = 100 },
         {   name = CLM.L["DKP"], width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
         {   name = CLM.L["Class"], width = 100 },
-        {   name = CLM.L["Spec"], width = 100 }
+        {   name = CLM.L["Spec"], width = 100 },
+        {   name = CLM.L["Attendance"], width = 100 }
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(560)
-    StandingsGroup:SetWidth(450)
+    StandingsGroup:SetWidth(550)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel(CLM.L["Select roster"])
@@ -494,7 +499,7 @@ function StandingsGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(700)
+    f:SetWidth(800)
     f:SetHeight(685)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
@@ -525,9 +530,10 @@ function StandingsGUI:Refresh(visible)
             row.cols[2] = {value = value}
             row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
             row.cols[4] = {value = profile:SpecString()}
+            row.cols[5] = {value = roster:GetAttendance(GUID)}
             -- not displayed
-            row.cols[5] = {value = roster:GetCurrentGainsForPlayer(GUID)}
-            row.cols[6] = {value = weeklyCap}
+            row.cols[6] = {value = roster:GetCurrentGainsForPlayer(GUID)}
+            row.cols[7] = {value = weeklyCap}
             data[rowId] = row
             rowId = rowId + 1
         end
