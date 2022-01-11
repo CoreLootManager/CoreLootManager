@@ -9,6 +9,8 @@ local DeepCopy = UTILS.DeepCopy
 local keys = UTILS.keys
 
 local WeekNumber = UTILS.WeekNumber
+local weekOffsetEU = UTILS.GetWeekOffsetEU()
+local weekOffsetUS = UTILS.GetWeekOffsetUS()
 local round = UTILS.round
 
 local Roster = { } -- Roster information
@@ -19,7 +21,7 @@ local AttendanceTracker = {}
 function AttendanceTracker:Initialize(raidsPerWeekForFullAttendance, averageWindowWeeks, weeklyReset)
     -- Config
     self.raidsPerWeekForFullAttendance = raidsPerWeekForFullAttendance or 2
-    self.averageWindowWeeks = averageWindowWeeks or 10
+    self.averageWindowWeeks = averageWindowWeeks or 5
     self.weeklyReset = weeklyReset or CONSTANTS.WEEKLY_RESET.EU
     self.currentWeek = WeekNumber(GetServerTime(), (weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
     -- Attendance
@@ -36,6 +38,7 @@ function AttendanceTracker:Update(GUID, raidId, timestamp)
             self.weeklyAttendance[GUID][week] = {}
         end
         self.weeklyAttendance[GUID][week][raidId] = true
+        -- print(self.currentWeek - week, self.averageWindowWeeks, GUID, week, raidId)
     end
 end
 
@@ -46,11 +49,11 @@ function AttendanceTracker:Get(GUID)
         local raids = 0
         for _,_ in pairs(raidDict) do raids = raids + 1 end
         local weeklyAttendance = (raids / self.raidsPerWeekForFullAttendance)
-        if weeklyAttendance > 100 then weeklyAttendance = 100 end
+        if weeklyAttendance > 1 then weeklyAttendance = 1 end
         if weeklyAttendance < 0 then LOG:Fatal("Weekly attendance < 0???") end
         attendance = attendance + weeklyAttendance
     end
-    return (attendance / self.averageWindowWeeks)
+    return 100*(attendance / self.averageWindowWeeks)
 end
 
 function Roster:New(uid, pointType)
@@ -72,7 +75,8 @@ function Roster:New(uid, pointType)
     -- Profile standing in roster (dict)
     o.standings = {}
     -- Profile attendance in roster (dict)
-    o.attendanceTracker = AttendanceTracker:Initialize()
+    AttendanceTracker:Initialize()
+    o.attendanceTracker = AttendanceTracker
     -- Point changes in  roster (list)
     o.pointHistory = {}
     -- Point changes in to players in roster (dict of lists)
@@ -101,7 +105,6 @@ function Roster:AddProfileByGUID(GUID)
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
     self.inRoster[GUID] = true
-    self.attendance[GUID] = 0
 end
 
 function Roster:RemoveProfileByGUID(GUID)
@@ -405,7 +408,7 @@ function Roster:UpdateAttendance(GUID, raidId, timestamp)
 end
 
 function Roster:GetAttendance(GUID)
-    self.attendanceTracker:Get(GUID)
+    return self.attendanceTracker:Get(GUID)
 end
 
 -- ------------------- --

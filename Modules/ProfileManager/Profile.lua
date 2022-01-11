@@ -25,7 +25,7 @@ function Profile:New(entry, name, class, main)
     o.alts = {}
 
     o._versionString = CLM.L["Unknown"]
-zz
+
     return o
 end
 

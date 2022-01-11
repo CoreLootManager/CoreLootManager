@@ -75,9 +75,9 @@ local function ST_GetClass(row)
     return row.cols[3].value
 end
 
-local function ST_GetAttendance(row)
-    return row.cols[5].value
-end
+-- local function ST_GetAttendance(row)
+--     return row.cols[5].value
+-- end
 
 local function ST_GetWeeklyGains(row)
     return row.cols[6].value
@@ -524,13 +524,14 @@ function StandingsGUI:Refresh(visible)
     local data = {}
     for GUID,value in pairs(roster:Standings()) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
+        local attendance = roster:GetAttendance(GUID) or 0
         if profile then
             local row = {cols = {}}
             row.cols[1] = {value = profile:Name()}
             row.cols[2] = {value = value}
             row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
             row.cols[4] = {value = profile:SpecString()}
-            row.cols[5] = {value = roster:GetAttendance(GUID)}
+            row.cols[5] = {value = string.format("%d%%", attendance)}
             -- not displayed
             row.cols[6] = {value = roster:GetCurrentGainsForPlayer(GUID)}
             row.cols[7] = {value = weeklyCap}
