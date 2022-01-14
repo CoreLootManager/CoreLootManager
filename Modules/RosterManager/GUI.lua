@@ -20,6 +20,9 @@ local GUI = CLM.GUI
 local mergeDictsInline = UTILS.mergeDictsInline
 local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
 local Trim = UTILS.Trim
+local round = UTILS.round
+local ColorCodeByPercentage = UTILS.ColorCodeByPercentage
+local RemoveColorCode = UTILS.RemoveColorCode
 
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
@@ -438,7 +441,20 @@ local function CreateStandingsDisplay(self)
         {   name = CLM.L["DKP"], width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
         {   name = CLM.L["Class"], width = 100 },
         {   name = CLM.L["Spec"], width = 100 },
-        {   name = CLM.L["Attendance"], width = 100 }
+        {   name = CLM.L["Attendance [%]"], width = 100,
+            comparesort = (function(_self, rowa, rowb, sortbycol)
+                -- Sorting without colorcoding
+                local a1, b1 = _self:GetCell(rowa, sortbycol), _self:GetCell(rowb, sortbycol)
+                local a1_value, b1_value = a1.value, b1.value
+                a1.value, b1.value = tonumber(RemoveColorCode(a1_value)), tonumber(RemoveColorCode(b1_value))
+                -- sort
+                local result = _self:CompareSort(rowa, rowb, sortbycol)
+                -- restore
+                a1.value, b1.value = a1_value, b1_value
+                -- return
+                return result
+            end)
+        }
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
@@ -524,14 +540,14 @@ function StandingsGUI:Refresh(visible)
     local data = {}
     for GUID,value in pairs(roster:Standings()) do
         local profile = ProfileManager:GetProfileByGUID(GUID)
-        local attendance = roster:GetAttendance(GUID) or 0
+        local attendance = round(roster:GetAttendance(GUID) or 0, 0)
         if profile then
             local row = {cols = {}}
             row.cols[1] = {value = profile:Name()}
             row.cols[2] = {value = value}
             row.cols[3] = {value = UTILS.ColorCodeClass(profile:Class())}
             row.cols[4] = {value = profile:SpecString()}
-            row.cols[5] = {value = string.format("%d%%", attendance)}
+            row.cols[5] = {value = ColorCodeByPercentage(attendance)}
             -- not displayed
             row.cols[6] = {value = roster:GetCurrentGainsForPlayer(GUID)}
             row.cols[7] = {value = weeklyCap}

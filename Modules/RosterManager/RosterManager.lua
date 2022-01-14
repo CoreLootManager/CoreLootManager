@@ -255,6 +255,58 @@ function RosterManager:Initialize()
             self:WipeAll()
         end)
 
+
+    local db = MODULES.Database:Personal()
+    if not db.rosterManager then
+        db.rosterManager = { raidsForFullAttendance = 2, attendanceWeeksWindow = 10}
+    end
+    self.db = db.rosterManager
+
+    local options = {
+        attendance_header = {
+            type = "header",
+            name = CLM.L["Attendance"],
+            order = 130
+        },
+        attendance_max = {
+            name = CLM.L["Raids needed in reset"],
+            desc = CLM.L["Provide number of raids needed for 100% attendance in a weekly reset. Between 1 - 50 raids. Defaults to 2. Requires /reload."],
+            type = "range",
+            min = 1,
+            max = 50,
+            softMin = 1,
+            softMax = 10,
+            step = 1,
+            set = function(i, v)
+                v = tonumber(v) or 1
+                if v < 1 then v = 1 end
+                if v > 50 then v = 50 end
+                self.db.raidsForFullAttendance = v
+            end,
+            get = function(i) return self.db.raidsForFullAttendance end,
+            order = 131
+          },
+          attendance_window = {
+            name = CLM.L["Attendance average window"],
+            desc = CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 - 1000 weeks. Defaults to 10. Requires /reload."],
+            type = "range",
+            min = 1,
+            max = 1000,
+            softMin = 1,
+            softMax = 54,
+            step = 1,
+            set = function(i, v)
+                v = tonumber(v) or 1
+                if v < 1 then v = 1 end
+                if v > 1000 then v = 1000 end
+                self.db.attendanceWeeksWindow = v
+            end,
+            get = function(i) return self.db.attendanceWeeksWindow end,
+            order = 132
+          }
+    }
+    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+
     MODULES.ConfigManager:RegisterUniversalExecutor("rm", "RosterManager", self)
 end
 

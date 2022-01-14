@@ -16,46 +16,6 @@ local round = UTILS.round
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
-local AttendanceTracker = {}
-
-function AttendanceTracker:Initialize(raidsPerWeekForFullAttendance, averageWindowWeeks, weeklyReset)
-    -- Config
-    self.raidsPerWeekForFullAttendance = raidsPerWeekForFullAttendance or 2
-    self.averageWindowWeeks = averageWindowWeeks or 5
-    self.weeklyReset = weeklyReset or CONSTANTS.WEEKLY_RESET.EU
-    self.currentWeek = WeekNumber(GetServerTime(), (weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
-    -- Attendance
-    self.weeklyAttendance = {}
-end
-
-function AttendanceTracker:Update(GUID, raidId, timestamp)
-    local week = WeekNumber(timestamp or 0, self.weeklyReset)
-    if (self.currentWeek - week) <= self.averageWindowWeeks then
-        if not self.weeklyAttendance[GUID] then
-            self.weeklyAttendance[GUID] = {}
-        end
-        if not self.weeklyAttendance[GUID][week] then
-            self.weeklyAttendance[GUID][week] = {}
-        end
-        self.weeklyAttendance[GUID][week][raidId] = true
-        -- print(self.currentWeek - week, self.averageWindowWeeks, GUID, week, raidId)
-    end
-end
-
-function AttendanceTracker:Get(GUID)
-    if not self.weeklyAttendance[GUID] then return 0 end
-    local attendance = 0
-    for _,raidDict in pairs(self.weeklyAttendance[GUID]) do
-        local raids = 0
-        for _,_ in pairs(raidDict) do raids = raids + 1 end
-        local weeklyAttendance = (raids / self.raidsPerWeekForFullAttendance)
-        if weeklyAttendance > 1 then weeklyAttendance = 1 end
-        if weeklyAttendance < 0 then LOG:Fatal("Weekly attendance < 0???") end
-        attendance = attendance + weeklyAttendance
-    end
-    return 100*(attendance / self.averageWindowWeeks)
-end
-
 function Roster:New(uid, pointType)
     local o = {}
 
@@ -75,8 +35,7 @@ function Roster:New(uid, pointType)
     -- Profile standing in roster (dict)
     o.standings = {}
     -- Profile attendance in roster (dict)
-    AttendanceTracker:Initialize()
-    o.attendanceTracker = AttendanceTracker
+    o.attendanceTracker = CLM.MODELS.AttendanceTracker:New()
     -- Point changes in  roster (list)
     o.pointHistory = {}
     -- Point changes in to players in roster (dict of lists)
@@ -311,6 +270,9 @@ end
 
 function Roster:SetConfiguration(option, value)
     self.configuration:Set(option, value)
+    if option == "weeklyReset" then
+        self.attendanceTracker:UpdateWeeklyReset(value)
+    end
 end
 
 function Roster:WipeStandings()

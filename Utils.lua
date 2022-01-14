@@ -55,6 +55,24 @@ function UTILS.GetColorCodedClassDict()
     return colorCodedClassList
 end
 
+function UTILS.ColorCodeByPercentage(percentage)
+    percentage = tonumber(percentage) or 0
+    if percentage < 0 then percentage = 0 end
+    if percentage > 100 then percentage = 100 end
+
+    local red, green, blue = 255, 255, 0
+    if percentage < 50 then
+        green = UTILS.round(255*(percentage * 2)/100, 0)
+    elseif percentage > 50 then
+        red = UTILS.round(255*(100 - percentage)/100, 0)
+    end
+    return string.format("|cff%s%s|r", string.format("%02x%02x%02x", red, green, blue), percentage)
+end
+
+function UTILS.RemoveColorCode(s)
+    return string.sub(s or "", 11, -3)
+end
+
 -- formats:
 -- s: string  "AARRGGBB"
 -- a: string array  = {a = "AA", r = "RR", g = "GG", b = "BB"}
