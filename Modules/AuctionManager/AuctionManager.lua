@@ -57,6 +57,8 @@ function AuctionManager:Initialize()
         [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS]   = "HandleNotifyPass",
     }
 
+    MODULES.ConfigManager:RegisterUniversalExecutor("aum", "AuctionManager", self)
+
     self._initialized = true
 end
 
