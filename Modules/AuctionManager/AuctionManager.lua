@@ -499,3 +499,28 @@ CONSTANTS.AUCTION_COMM = {
 }
 
 MODULES.AuctionManager = AuctionManager
+--@do-not-package@
+function AuctionManager:FakeBids()
+    if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then
+        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+        local profiles = roster:Profiles()
+        local numBids = math.random(1, #profiles)
+        for _=1,numBids do
+            local bidder = ProfileManager:GetProfileByGUID(profiles[math.random(1, #profiles)]):Name()
+            local bidType = math.random(1,4)
+            if     bidType == 1 then -- none
+            elseif bidType == 2 then -- value
+                local min, max = self.baseValue, 10
+                if self.maxValue > 0 then
+                    max = self.maxValue
+                end
+                self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(math.random(min, max)), bidder)
+            elseif bidType == 3 then -- pass
+                self:HandleNotifyPass(nil, bidder)
+            elseif bidType == 4 then -- cancel
+                self:HandleCancelBid(nil, bidder)
+            end
+        end
+    end
+end
+--@end-do-not-package@
