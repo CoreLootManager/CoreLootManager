@@ -266,7 +266,7 @@ function RosterManager:Initialize()
         attendance_header = {
             type = "header",
             name = CLM.L["Attendance"],
-            order = 130
+            order = 20
         },
         attendance_max = {
             name = CLM.L["Raids needed in reset"],
@@ -284,10 +284,10 @@ function RosterManager:Initialize()
                 self.db.raidsForFullAttendance = v
             end,
             get = function(i) return self.db.raidsForFullAttendance end,
-            order = 131
+            order = 21
           },
           attendance_window = {
-            name = CLM.L["Attendance average window"],
+            name = CLM.L["Average weeks"],
             desc = CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 - 1000 weeks. Defaults to 10. Requires /reload."],
             type = "range",
             min = 1,
@@ -302,7 +302,7 @@ function RosterManager:Initialize()
                 self.db.attendanceWeeksWindow = v
             end,
             get = function(i) return self.db.attendanceWeeksWindow end,
-            order = 132
+            order = 22
           }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)

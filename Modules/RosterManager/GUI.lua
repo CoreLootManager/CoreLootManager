@@ -437,23 +437,16 @@ end
 local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
-        {   name = CLM.L["Name"], width = 100 },
-        {   name = CLM.L["DKP"], width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-        {   name = CLM.L["Class"], width = 100 },
-        {   name = CLM.L["Spec"], width = 100 },
+        {   name = CLM.L["Name"],   width = 100 },
+        {   name = CLM.L["DKP"],    width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+        {   name = CLM.L["Class"],  width = 100 },
+        {   name = CLM.L["Spec"],   width = 100 },
         {   name = CLM.L["Attendance [%]"], width = 100,
-            comparesort = (function(_self, rowa, rowb, sortbycol)
-                -- Sorting without colorcoding
-                local a1, b1 = _self:GetCell(rowa, sortbycol), _self:GetCell(rowb, sortbycol)
-                local a1_value, b1_value = a1.value, b1.value
-                a1.value, b1.value = tonumber(RemoveColorCode(a1_value)), tonumber(RemoveColorCode(b1_value))
-                -- sort
-                local result = _self:CompareSort(rowa, rowb, sortbycol)
-                -- restore
-                a1.value, b1.value = a1_value, b1_value
-                -- return
-                return result
-            end)
+            comparesort = UTILS.LibStCompareSortWrapper(
+                (function(a1, b1)
+                    return tonumber(RemoveColorCode(a1)), tonumber(RemoveColorCode(b1))
+                end)
+            )
         }
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")

@@ -63,9 +63,11 @@ function AuctionManager:Initialize()
     true)
 
     self.handlers = {
-        [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]    = "HandleSubmitBid",
-        [CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID]    = "HandleCancelBid",
-        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS]   = "HandleNotifyPass",
+        [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]        = "HandleSubmitBid",
+        [CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID]        = "HandleCancelBid",
+        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS]       = "HandleNotifyPass",
+        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE]       = "HandleNotifyHide",
+        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE]    = "HandleNotifyCantUse",
     }
 
     local options = {
@@ -400,7 +402,26 @@ function AuctionManager:HandleNotifyPass(data, sender)
         LOG:Debug("Received pass from %s while no auctions are in progress", sender)
         return
     end
+    -- Pass (unlike other notifciations) needs to go through update bid since it overwrites bid value
     self:UpdateBid(sender, CONSTANTS.AUCTION_COMM.BID_PASS)
+end
+
+function AuctionManager:HandleNotifyHide(data, sender)
+    LOG:Trace("AuctionManager:HandleNotifyHide()")
+    if not self.IsAuctionInProgress then
+        LOG:Debug("Received hide from %s while no auctions are in progress", sender)
+        return
+    end
+    self.userResponses.hidden[sender] = true
+end
+
+function AuctionManager:HandleNotifyCantUse(data, sender)
+    LOG:Trace("AuctionManager:HandleNotifyCantUse()")
+    if not self.IsAuctionInProgress then
+        LOG:Debug("Received can't use from %s while no auctions are in progress", sender)
+        return
+    end
+    self.userResponses.cantUse[sender] = true
 end
 
 function AuctionManager:ValidateBid(name, bid)
@@ -415,7 +436,7 @@ function AuctionManager:ValidateBid(name, bid)
     -- bid passing
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
         -- only allow passing if no bids have been placed in open auctions
-        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and self.bids[name] then
+        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and self.userResponses.bids[name] then
             return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.PASSING_NOT_ALLOWED
         else
             return true
@@ -476,8 +497,14 @@ function AuctionManager:UpdateBid(name, bid)
 end
 
 function AuctionManager:UpdateBidsInternal(name, bid)
-    self.bids[name] = bid
-    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
+    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
+        -- We remove from the bids list but add to pass list
+        self.userResponses.bids[name] = nil
+        self.userResponses.passes[name] = true
+        return
+    end
+    self.userResponses.bids[name] = bid
+    self.userResponses.passes[name] = nil
     if bid then
         if bid > self.highestBid then self.highestBid = bid end
         self:AntiSnipe()
@@ -485,11 +512,28 @@ function AuctionManager:UpdateBidsInternal(name, bid)
 end
 
 function AuctionManager:Bids()
-    return self.bids
+    return self.userResponses.bids
+end
+
+function AuctionManager:Passes()
+    return self.userResponses.passes
+end
+
+function AuctionManager:CantUse()
+    return self.userResponses.cantUse
+end
+
+function AuctionManager:Hidden()
+    return self.userResponses.hidden
 end
 
 function AuctionManager:ClearBids()
-    self.bids = {}
+    self.userResponses = {
+        bids    = {},
+        passes  = {},
+        cantUse = {},
+        hidden  = {}
+    }
     self.highestBid = 0
 end
 
@@ -573,7 +617,7 @@ function AuctionManager:FakeBids()
         local numBids = math.random(1, #profiles)
         for _=1,numBids do
             local bidder = ProfileManager:GetProfileByGUID(profiles[math.random(1, #profiles)]):Name()
-            local bidType = math.random(1,4)
+            local bidType = math.random(1,6)
             if     bidType == 1 then -- none
             elseif bidType == 2 then -- value
                 local min, max = self.baseValue, 10
@@ -585,6 +629,10 @@ function AuctionManager:FakeBids()
                 self:HandleNotifyPass(nil, bidder)
             elseif bidType == 4 then -- cancel
                 self:HandleCancelBid(nil, bidder)
+            elseif bidType == 5 then -- hide
+                self:HandleNotifyHide(nil, bidder)
+            elseif bidType == 6 then -- cant use
+                self:HandleNotifyCantUse(nil, bidder)
             end
         end
     end

@@ -141,6 +141,20 @@ function BiddingManager:NotifyPass()
     Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
+function BiddingManager:NotifyCantUse()
+    LOG:Trace("BiddingManager:NotifyCantUse()")
+    if not self.auctionInProgress then return end
+    local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE, {})
+    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+end
+
+function BiddingManager:NotifyHide()
+    LOG:Trace("BiddingManager:NotifyHide()")
+    if not self.auctionInProgress then return end
+    local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE, {})
+    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+end
+
 function BiddingManager:ClearAuctionInfo()
     self.auctionInfo = nil
     self.auctioneer = nil
@@ -168,10 +182,10 @@ function BiddingManager:HandleStartAuction(data, sender)
     end
     self.auctionInfo = data
     self.auctioneer = sender
+    self.auctionInProgress = true
     PlaySound(12889)
     GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
     LOG:Message(CLM.L["Auction of "] .. self.auctionInfo:ItemLink())
-    self.auctionInProgress = true
 end
 
 function BiddingManager:HandleStopAuction(data, sender)
@@ -240,12 +254,16 @@ CONSTANTS.BIDDING_COMM = {
     TYPE = {
         SUBMIT_BID  = 1,
         CANCEL_BID  = 2,
-        NOTIFY_PASS = 3
+        NOTIFY_PASS = 3,
+        NOTIFY_HIDE = 4,
+        NOTIFY_CANTUSE = 5
     },
     TYPES = UTILS.Set({
         1, -- SUBMIT BID
         2, -- CANCEL BID
         3, -- NOTIFY_PASS
+        4, -- NOTIFY_HIDE
+        5  -- NOTIFY_CANTUSE
     })
 }
 
