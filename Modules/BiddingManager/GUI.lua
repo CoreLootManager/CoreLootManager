@@ -330,6 +330,12 @@ function BiddingManagerGUI:Create()
     self.duration = 1
     f:AddChild(CreateOptions(self))
     RestoreLocation(self)
+    -- Handle onide information passing
+    local oldOnHide = f.frame:GetScript("OnHide")
+    f.frame:SetScript("OnHide", (function(...)
+        BiddingManager:NotifyHide()
+        oldOnHide(...)
+    end))
     -- Hide by default
     f:Hide()
 end
@@ -375,6 +381,19 @@ function BiddingManagerGUI:BuildBar(duration)
     self.bar:Start(self.auctionInfo:Time())
 end
 
+local function EvaluateItemUsability(self)
+    self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
+end
+
+local function HandleWindowDisplay(self)
+    if self.canUseItem then
+        self:Refresh()
+        self.top:Show()
+    else
+        BiddingManager:NotifyCantUse()
+    end
+end
+
 function BiddingManagerGUI:StartAuction(show, auctionInfo)
     LOG:Trace("BiddingManagerGUI:StartAuction()")
     self.auctionInfo = auctionInfo
@@ -417,23 +436,17 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     if not show then return end
 
     if C_Item.IsItemDataCachedByID(self.auctionInfo:ItemLink()) then
-        self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
-        if self.canUseItem then
-            self:Refresh()
-            self.top:Show()
-        end
+        EvaluateItemUsability(self)
+        HandleWindowDisplay(self)
     else
         GetItemInfo(self.auctionInfo:ItemLink())
         C_Timer.After(0.5, function()
             if C_Item.IsItemDataCachedByID(self.auctionInfo:ItemLink()) then
-                self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
+                EvaluateItemUsability(self)
             else
                 self.canUseItem = true -- fallback
             end
-            if self.canUseItem then
-                self:Refresh()
-                self.top:Show()
-            end
+            HandleWindowDisplay(self)
         end)
     end
 end

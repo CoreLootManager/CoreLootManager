@@ -372,7 +372,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         award_label = {
             name = CLM.L["Award item"],
             type = "description",
-            width = 0.5,
+            width = 0.55,
             order = 13
         },
         award_value = {
@@ -381,7 +381,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             set = (function(i,v) AuctionManagerGUI:setInputAwardValue(v) end),
             get = (function(i) return tostring(self.awardValue) end),
             -- disabled = (function(i) return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end),
-            width = 0.7,
+            width = 0.55,
             order = 14
         },
         award = {
@@ -410,10 +410,106 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                     tostring(self.awardValue)
                 )
             end),
-            width = 0.7,
+            width = 0.55,
             order = 15,
             disabled = (function() return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end)
         },
+        bid_stats_info = {
+            name = "Info",
+            desc = (function()
+                -- if not AuctionManager:IsAuctionInProgress() then return "" end
+                -- Unique did any action dict
+                local didAnyAction = {}
+                -- generateInfo closure
+                local _generateInfo = (function(dataDict, ignoreListOfDicts, prefix, skipAction)
+                    local dataList, userCodedString = {}, ""
+                    for p,_ in pairs(dataDict) do
+                        local inIgnoreList = false
+                        for _,d in ipairs(ignoreListOfDicts) do
+                            if d[p] then
+                                inIgnoreList = true
+                                break
+                            end
+                        end
+                        if not inIgnoreList then
+                            table.insert(dataList, p)
+                            if not skipAction then
+                                didAnyAction[p] = true
+                            end
+                        end
+                    end
+                    local count = #dataList
+                    if count > 0 then
+                        userCodedString = "\n\n" .. UTILS.ColorCodeText(prefix .. ": ", "EAB221")
+                        for i= 1, count do
+                            local profile = ProfileManager:GetProfileByName(dataList[i])
+                            local coloredName = dataList[i]
+                            if profile then
+                                coloredName = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+                            end
+                            userCodedString = userCodedString .. coloredName
+                            if i ~= count then
+                                userCodedString = userCodedString .. ", "
+                            end
+                        end
+                    end
+                    return count, userCodedString
+                end)
+                -- bids count
+                local bidCount = 0
+                for p,_ in pairs(AuctionManager:Bids()) do
+                    bidCount = bidCount + 1
+                    didAnyAction[p] = true
+                end
+                local bidSuffix = (bidCount == 1) and "bid" or "bids"
+                -- passess list
+                local passCount, passed = _generateInfo(
+                                            AuctionManager:Passes(),
+                                            { AuctionManager:Bids() },
+                                            "Passed")
+                local passSuffix = (passCount == 1) and "passed" or "passes"
+                -- cant use actions
+                local cantUseCount, cantUse = _generateInfo(
+                                                AuctionManager:CantUse(),
+                                                { AuctionManager:Bids(), AuctionManager:Passes() },
+                                                "Can't use")
+                -- closed actions
+                local closedCount, closed = _generateInfo(AuctionManager:Hidden(),
+                                            { AuctionManager:Bids(), AuctionManager:Passes(), AuctionManager:CantUse() },
+                                            "Closed")
+                -- no action
+                local raidersDict = {}
+                for _,GUID in ipairs(self.raid:Players()) do
+                    local profile = ProfileManager:GetProfileByGUID(GUID)
+                    if profile then
+                        raidersDict[profile:Name()] = true
+                    end
+                end
+                local _, noAction = _generateInfo(raidersDict,
+                                    { AuctionManager:Bids(), AuctionManager:Passes(), AuctionManager:CantUse(), AuctionManager:Hidden() },
+                                    "No action", true)
+                -- did any actions count
+                local didAnyActionCount = 0
+                for _,_ in pairs(didAnyAction) do didAnyActionCount = didAnyActionCount + 1 end
+                -- Stats
+                -- local stats = string.format(
+                --     "%2d %s\n%2d %s\n%2d %s\n%2d %s\n%2d/%2d %s",
+                --     bidCount, bidSuffix,
+                --     passCount, passSuffix,
+                --     cantUseCount, "can't use",
+                --     closedCount, "closed",
+                --     didAnyActionCount, #self.raid:Players(), "total"
+                -- )
+                local stats = string.format("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
+                -- Result
+                return stats .. passed .. cantUse .. closed .. noAction
+            end),
+            type = "execute",
+            func = (function() end),
+            image = "Interface\\Icons\\INV_Misc_QuestionMark",
+            width = 0.35,
+            order = 16
+        }
     }
 end
 
