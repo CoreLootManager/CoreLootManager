@@ -34,6 +34,8 @@ function Roster:New(uid, pointType)
     o.inRoster = {}
     -- Profile standing in roster (dict)
     o.standings = {}
+    -- Profile attendance in roster (dict)
+    o.attendanceTracker = CLM.MODELS.AttendanceTracker:New()
     -- Point changes in  roster (list)
     o.pointHistory = {}
     -- Point changes in to players in roster (dict of lists)
@@ -268,6 +270,9 @@ end
 
 function Roster:SetConfiguration(option, value)
     self.configuration:Set(option, value)
+    if option == "weeklyReset" then
+        self.attendanceTracker:UpdateWeeklyReset(value)
+    end
 end
 
 function Roster:WipeStandings()
@@ -356,6 +361,18 @@ function Roster:CopyProfiles(s)
         end
     end
 end
+
+-- todo change EU/US weekly reset
+-- function Roster:ChangeAttendance()
+
+function Roster:UpdateAttendance(GUID, raidId, timestamp)
+    self.attendanceTracker:Update(GUID, raidId, timestamp)
+end
+
+function Roster:GetAttendance(GUID)
+    return self.attendanceTracker:Get(GUID)
+end
+
 -- ------------------- --
 -- RosterConfiguration --
 -- ------------------- --

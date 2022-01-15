@@ -83,6 +83,7 @@ Modules\EventManager\EventManager.lua
 Modules\ConfigManager\ConfigManager.lua
 Modules\LedgerManager\LedgerManager.lua
 Modules\ProfileManager\ProfileManager.lua
+Modules\RosterManager\AttendanceTracker.lua
 Modules\RosterManager\RosterManager.lua
 Modules\PointManager\PointManager.lua
 Modules\LootManager\LootManager.lua
