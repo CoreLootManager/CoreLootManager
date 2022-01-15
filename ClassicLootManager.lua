@@ -113,6 +113,7 @@ function CORE:_InitializeFeatures()
     MODULES.LootManager:Initialize()
     MODULES.RaidManager:Initialize()
     MODULES.AuctionManager:Initialize()
+    MODULES.AutoAward:Initialize()
     MODULES.BiddingManager:Initialize()
     MODULES.ProfileInfoManager:Initialize()
     MODULES.AutoAwardManager:Initialize()
@@ -204,6 +205,8 @@ function CORE:_Initialize()
 end
 
 function CORE:OnInitialize()
+    -- Fix ML UI issue - https://bit.ly/3tc8nvw
+    hooksecurefunc(MasterLooterFrame, 'Hide', function(s) s:ClearAllPoints() end);
     -- Initialize SavedVariables
     Initialize_SavedVariables()
     --  Early Initialize logger

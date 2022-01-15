@@ -23,6 +23,7 @@ local AuctionManager = MODULES.AuctionManager
 local ProfileManager = MODULES.ProfileManager
 local RaidManager = MODULES.RaidManager
 local EventManager =  MODULES.EventManager
+local AutoAward = MODULES.AutoAward
 
 local RosterConfiguration = MODELS.RosterConfiguration
 
@@ -120,6 +121,7 @@ function AuctionManagerGUI:Initialize()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
     EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
+    EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function(...)self:HandleLootClosedEvent() end))
     EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
         if not AuctionManager:IsAuctionInProgress() then
             self.itemLink = data.link
@@ -141,10 +143,16 @@ function AuctionManagerGUI:Initialize()
 end
 
 function AuctionManagerGUI:HandleLootOpenedEvent()
+    -- Set window open
+    self.lootWindowIsOpen = true
     -- Post loot to raid chat
     PostLootToRaidChat()
     -- Hook slots
     HookCorpseSlots(self.hookedSlots)
+end
+
+function AuctionManagerGUI:HandleLootClosedEvent()
+    self.lootWindowIsOpen = false
 end
 
 
@@ -398,7 +406,14 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             name = CLM.L["Award"],
             type = "execute",
             func = (function()
-                AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
+                local awarded = AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
+                if awarded and not AutoAward:IsIgnored(self.itemId) then
+                    if AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
+                        AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
+                    elseif AuctionManager:GetAutoTrade() then
+                        AutoAward:Track(self.itemId, self.awardPlayer)
+                    end
+                end
                 self.itemLink = nil
                 self.itemId = 0
                 self.awardValue = 0

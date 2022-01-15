@@ -3,7 +3,8 @@ std = "lua51"
 max_line_length = false
 exclude_files = {
 	"**/Libs/**",
-	"**/ExternalLibs/**"
+	"**/ExternalLibs/**",
+	"**/.git/**"
 }
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
@@ -4123,6 +4124,7 @@ globals = {
 	"LockPetActionBar",
 	"LowerFrameLevel",
 	"ManageBackpackTokenFrame",
+	"MasterLooterFrame",
 	"MicroButtonPulse",
 	"MicroButtonPulseStop",
 	"MicroButtonTooltipText",
