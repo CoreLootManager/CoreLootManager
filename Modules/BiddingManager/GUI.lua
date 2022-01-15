@@ -330,7 +330,7 @@ function BiddingManagerGUI:Create()
     self.duration = 1
     f:AddChild(CreateOptions(self))
     RestoreLocation(self)
-    -- Handle onide information passing
+    -- Handle onHide information passing whenever the UI is closed
     local oldOnHide = f.frame:GetScript("OnHide")
     f.frame:SetScript("OnHide", (function(...)
         BiddingManager:NotifyHide()
