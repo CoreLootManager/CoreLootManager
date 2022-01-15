@@ -33,6 +33,7 @@ local RaidManager = MODULES.RaidManager
 
 local FILTER_IN_RAID = 100
 -- local FILTER_STANDBY = 102
+local FILTER_MAINS_ONLY = 103
 
 local StandingsGUI = {}
 
@@ -93,6 +94,7 @@ end
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
+    filters[FILTER_MAINS_ONLY] = UTILS.ColorCodeText(CLM.L["Mains"], "FFD100")
     -- filters[FILTER_STANDBY] = UTILS.ColorCodeText(CLM.L["Standby"], "FFD100")
     return {
         filter_header = {
@@ -427,6 +429,12 @@ local function CreateManagementOptions(self, container)
         if status == nil then return false end -- failsafe
         if self.filterOptions[FILTER_IN_RAID] then
             status = status and isInRaid[playerName]
+        end
+        if self.filterOptions[FILTER_MAINS_ONLY] then
+            local profile = ProfileManager:GetProfileByName(playerName)
+            if profile then
+                status = status and (profile:Main() == "")
+            end
         end
         return status
     end))
