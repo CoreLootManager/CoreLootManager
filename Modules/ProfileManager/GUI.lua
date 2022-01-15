@@ -29,7 +29,7 @@ local EventManager = MODULES.EventManager
 local REGISTRY = "clm_profiles_gui_options"
 
 local FILTER_IN_RAID = 100
-local FILTER_IN_GUILD = 104
+local FILTER_IN_GUILD = 103
 
 local ProfilesGUI = {}
 

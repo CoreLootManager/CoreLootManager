@@ -34,8 +34,8 @@ local RaidManager = MODULES.RaidManager
 
 local FILTER_IN_RAID = 100
 -- local FILTER_STANDBY = 102
-local FILTER_MAINS_ONLY = 103
-local FILTER_IN_GUILD = 104
+local FILTER_IN_GUILD = 103
+local FILTER_MAINS_ONLY = 104
 
 local StandingsGUI = {}
 
