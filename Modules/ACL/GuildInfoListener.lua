@@ -25,7 +25,7 @@ function GuildInfoListener:BuildCache()
     if not self.cacheUpdateRequired then
         self:WipeAll()
         self:BuildRankCache()
-        self:BuildTrustedCache()
+        self:BuildGuildCache()
         self.cacheUpdateRequired = true
     end
 end
@@ -44,8 +44,8 @@ function GuildInfoListener:BuildRankCache()
     -- self.cache.ranks[0] = { isManager = true, isAssistant = true}
 end
 
-function GuildInfoListener:BuildTrustedCache()
-    LOG:Trace("GuildInfoListener:BuildTrustedCache()")
+function GuildInfoListener:BuildGuildCache()
+    LOG:Trace("GuildInfoListener:BuildGuildCache()")
     for i=1,GetNumGuildMembers() do
         local name, rankName, rankIndex = GetGuildRosterInfo(i)
         if name then
@@ -55,6 +55,7 @@ function GuildInfoListener:BuildTrustedCache()
             -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
             rankIndex = rankIndex + 1
             name = RemoveServer(name)
+            self.cache.guildies[name] = true
             self.cache.ranks[rankIndex].name = rankName
             if self.cache.ranks[rankIndex] then
                 if self.cache.ranks[rankIndex].isAssistant then
@@ -81,9 +82,14 @@ function GuildInfoListener:GetRanks()
     return self.cache.ranks
 end
 
+function GuildInfoListener:GetGuildies()
+    self:BuildCache()
+    return self.cache.guildies
+end
+
 function GuildInfoListener:WipeAll()
     LOG:Trace("GuildInfoListener:WipeAll()")
-    self.cache = { guildMaster = "", managers = {}, assistants = {}, ranks = {} }
+    self.cache = { guildMaster = "", managers = {}, assistants = {}, ranks = {}, guildies = {} }
 end
 
 

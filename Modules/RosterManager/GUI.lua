@@ -24,6 +24,7 @@ local round = UTILS.round
 local ColorCodeByPercentage = UTILS.ColorCodeByPercentage
 local RemoveColorCode = UTILS.RemoveColorCode
 
+local GuildInfoListener = MODULES.GuildInfoListener
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local PointManager = MODULES.PointManager
@@ -427,6 +428,9 @@ local function CreateManagementOptions(self, container)
         if status == nil then return false end -- failsafe
         if self.filterOptions[FILTER_IN_RAID] then
             status = status and isInRaid[playerName]
+        end
+        if self.filterOptions[FILTER_IN_GUILD] then
+            status = status and GuildInfoListener:GetGuildies()[playerName]
         end
         return status
     end))
