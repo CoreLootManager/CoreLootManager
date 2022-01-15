@@ -379,7 +379,7 @@ function RaidManager:RegisterEventHandling()
     EventManager:RegisterWoWEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, (function(...)
         self:HandleRosterUpdateEvent()
     end))
-    EventManager:RegisterWoWEvent({"PLAYER_ROLES_ASSIGNED"}, (function(...)
+    EventManager:RegisterWoWEvent({"PARTY_LOOT_METHOD_CHANGED","PLAYER_ROLES_ASSIGNED"}, (function(...)
         self:UpdateGameRaidInformation() -- we dont need to check others; im not even sure if we need to do this
     end))
     self.isEventHandlingRegistered = true
@@ -428,17 +428,17 @@ end
 
 function RaidManager:UpdateGameRaidInformation()
     local lootmethod, _, masterlooterRaidID = GetLootMethod()
-    LOG:Debug("Loot method: %s", lootmethod)
+    LOG:Info("Loot method: %s (id: %s)", lootmethod, masterlooterRaidID)
     self.RaidAssistants = {}
     self.IsMasterLootSystem = false
-    if lootmethod == "master" then
+    if lootmethod == "master" and masterlooterRaidID then
         local name = GetRaidRosterInfo(masterlooterRaidID)
         if name then
             name = RemoveServer(name)
             self.IsMasterLootSystem = true
             self.MasterLooter = name
             self.RaidAssistants[name] = true -- we add it in case ML is not an assistant
-            LOG:Debug("Master Looter: %s", name)
+            LOG:Info("Master Looter: %s", name)
         end
     end
 
