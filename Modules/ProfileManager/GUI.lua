@@ -29,7 +29,11 @@ local EventManager = MODULES.EventManager
 local REGISTRY = "clm_profiles_gui_options"
 
 local FILTER_IN_RAID = 100
+-- local FILTER_ONLINE = 101
+-- local FILTER_STANDBY = 102
 local FILTER_IN_GUILD = 103
+local FILTER_NOT_IN_GUILD = 104
+-- local FILTER_MAINS_ONLY = 105
 
 local ProfilesGUI = {}
 
@@ -77,6 +81,7 @@ local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
     filters[FILTER_IN_GUILD] = UTILS.ColorCodeText(CLM.L["In Guild"], "FFD100")
+    filters[FILTER_NOT_IN_GUILD] = UTILS.ColorCodeText(CLM.L["External"], "FFD100")
     return {
         filter_header = {
             type = "header",
@@ -302,6 +307,7 @@ local function CreateManagementOptions(self, container)
     for _=1,9 do table.insert( self.filterOptions, true ) end
     self.filterOptions[FILTER_IN_RAID] = false
     self.filterOptions[FILTER_IN_GUILD] = false
+    self.filterOptions[FILTER_NOT_IN_GUILD] = false
     local options = {
         type = "group",
         args = {}
@@ -340,6 +346,9 @@ local function CreateManagementOptions(self, container)
         if status == nil then return false end -- failsafe
         if self.filterOptions[FILTER_IN_RAID] then
             status = status and isInRaid[playerName]
+        end
+        if self.filterOptions[FILTER_NOT_IN_GUILD] then
+            status = status and not GuildInfoListener:GetGuildies()[playerName]
         end
         if self.filterOptions[FILTER_IN_GUILD] then
             status = status and GuildInfoListener:GetGuildies()[playerName]
