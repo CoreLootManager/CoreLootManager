@@ -161,7 +161,13 @@ local function CreateBidWindow(self)
     BidWindowGroup:SetLayout("Flow")
     local columns = {
         {name = CLM.L["Name"],  width = 70},
-        {name = CLM.L["Class"], width = 60},
+        {name = CLM.L["Class"], width = 60,
+            comparesort = UTILS.LibStCompareSortWrapper(
+                (function(a1, b1)
+                    return RemoveColorCode(a1), RemoveColorCode(b1)
+                end)
+            )
+        },
         {name = CLM.L["Spec"],  width = 60},
         {name = CLM.L["Bid"],   width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
             sort = ScrollingTable.SORT_DSC,
