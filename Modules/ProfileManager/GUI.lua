@@ -13,11 +13,11 @@ local LOG = CLM.LOG
 local UTILS = CLM.UTILS
 local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
--- local RESULTS = CLM.CONSTANTS.RESULTS
 local GUI = CLM.GUI
 
 local mergeDictsInline = UTILS.mergeDictsInline
 local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
+local RemoveColorCode = UTILS.RemoveColorCode
 
 local ACL = MODULES.ACL
 local GuildInfoListener = MODULES.GuildInfoListener

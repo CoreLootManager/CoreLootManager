@@ -439,7 +439,7 @@ local function CreateStandingsDisplay(self)
     local columns = {
         {   name = CLM.L["Name"],   width = 100 },
         {   name = CLM.L["DKP"],    width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-        {   name = CLM.L["Class"],  width = 100, 
+        {   name = CLM.L["Class"],  width = 100,
             comparesort = UTILS.LibStCompareSortWrapper(
                 (function(a1, b1)
                     return RemoveColorCode(a1), RemoveColorCode(b1)

@@ -18,6 +18,7 @@ local GUI = CLM.GUI
 local ACL = MODULES.ACL
 
 local mergeDictsInline = UTILS.mergeDictsInline
+local RemoveColorCode = UTILS.RemoveColorCode
 
 local AuctionManager = MODULES.AuctionManager
 local ProfileManager = MODULES.ProfileManager
