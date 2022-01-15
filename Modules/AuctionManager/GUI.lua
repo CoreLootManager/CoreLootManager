@@ -23,6 +23,7 @@ local AuctionManager = MODULES.AuctionManager
 local ProfileManager = MODULES.ProfileManager
 local RaidManager = MODULES.RaidManager
 local EventManager =  MODULES.EventManager
+local AutoAward = MODULES.AutoAward
 
 local RosterConfiguration = MODELS.RosterConfiguration
 
@@ -120,6 +121,7 @@ function AuctionManagerGUI:Initialize()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
     EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
+    EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function(...)self:HandleLootClosedEvent() end))
     EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
         if not AuctionManager:IsAuctionInProgress() then
             self.itemLink = data.link
@@ -141,10 +143,16 @@ function AuctionManagerGUI:Initialize()
 end
 
 function AuctionManagerGUI:HandleLootOpenedEvent()
+    -- Set window open
+    self.lootWindowIsOpen = true
     -- Post loot to raid chat
     PostLootToRaidChat()
     -- Hook slots
     HookCorpseSlots(self.hookedSlots)
+end
+
+function AuctionManagerGUI:HandleLootClosedEvent()
+    self.lootWindowIsOpen = false
 end
 
 
@@ -158,24 +166,35 @@ local function CreateBidWindow(self)
         {name = CLM.L["Bid"],   width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
             sort = ScrollingTable.SORT_DSC,
             sortnext = 5,
-            comparesort = (function(self, rowa, rowb, sortbycol) -- luacheck: ignore
-                -- Workaround for sorting PASS at the end
-                -- we trick system into thinking its emtpy string ""
-                -- then we restore it
-                local a1, b1 = self:GetCell(rowa, sortbycol), self:GetCell(rowb, sortbycol);
+            comparesort = (function(_self, rowa, rowb, sortbycol)
+                -- Sorting PASS at the end
+                local a1, b1 = _self:GetCell(rowa, sortbycol), _self:GetCell(rowb, sortbycol)
                 local a1_value, b1_value = a1.value, b1.value
-                if a1.value == CLM.L["PASS"] then a1.value = "" end
-                if b1.value == CLM.L["PASS"] then b1.value = "" end
+                -- Workaround
+                if a1.value == CLM.L["PASS"] then a1.value = -1 else a1.value = a1.value end
+                if b1.value == CLM.L["PASS"] then b1.value = -1 else b1.value = b1.value end
                 -- sort
-                local result = self:CompareSort(rowa, rowb, sortbycol)
+                local result = _self:CompareSort(rowa, rowb, sortbycol)
                 -- restore
-                a1.value = a1_value
-                b1.value = b1_value
+                a1.value, b1.value  = a1_value, b1_value
                 -- return
                 return result
             end)},
         {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
-            sort = ScrollingTable.SORT_DSC},
+            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
+            comparesort = (function(_self, rowa, rowb, sortbycol)
+                -- Sorting without colorcoding
+                local a1, b1 = _self:GetCell(rowa, sortbycol), _self:GetCell(rowb, sortbycol)
+                local a1_value, b1_value = a1.value, b1.value
+                a1.value, b1.value = a1_value, b1_value
+                -- sort
+                local result = _self:CompareSort(rowa, rowb, sortbycol)
+                -- restore
+                a1.value, b1.value = a1_value, b1_value
+                -- return
+                return result
+            end)
+        },
     }
     self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame)
     self.st:EnableSelection(true)
@@ -387,7 +406,14 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             name = CLM.L["Award"],
             type = "execute",
             func = (function()
-                AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
+                local awarded = AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
+                if awarded and not AutoAward:IsIgnored(self.itemId) then
+                    if AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
+                        AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
+                    elseif AuctionManager:GetAutoTrade() then
+                        AutoAward:Track(self.itemId, self.awardPlayer)
+                    end
+                end
                 self.itemLink = nil
                 self.itemId = 0
                 self.awardValue = 0

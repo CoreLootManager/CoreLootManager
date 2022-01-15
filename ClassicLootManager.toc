@@ -89,6 +89,7 @@ Modules\PointManager\PointManager.lua
 Modules\LootManager\LootManager.lua
 Modules\RaidManager\RaidManager.lua
 Modules\AuctionManager\AuctionManager.lua
+Modules\AuctionManager\AutoAward.lua
 Modules\BiddingManager\BiddingManager.lua
 Modules\ProfileInfoManager\ProfileInfoManager.lua
 Modules\SandboxManager\SandboxManager.lua
