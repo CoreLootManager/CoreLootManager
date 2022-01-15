@@ -165,14 +165,7 @@ local function CreateBidWindow(self)
         {name = CLM.L["Spec"],  width = 60},
         {name = CLM.L["Bid"],   width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
             sort = ScrollingTable.SORT_DSC,
-            sortnext = 5,
-            comparesort = UTILS.LibStCompareSortWrapper(
-                (function(a1, b1)
-                    if a1 == CLM.L["PASS"] then a1 = -1 end
-                    if b1 == CLM.L["PASS"] then b1 = -1 end
-                    return a1, b1
-                end)
-            )
+            sortnext = 5
         },
         {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
@@ -456,25 +449,25 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                     return count, userCodedString
                 end)
                 -- bids count
-                local bidCount = 0
+                -- local bidCount = 0
                 for p,_ in pairs(AuctionManager:Bids()) do
-                    bidCount = bidCount + 1
+                    -- bidCount = bidCount + 1
                     didAnyAction[p] = true
                 end
-                local bidSuffix = (bidCount == 1) and "bid" or "bids"
+                -- local bidSuffix = (bidCount == 1) and "bid" or "bids"
                 -- passess list
-                local passCount, passed = _generateInfo(
+                local _, passed = _generateInfo(
                                             AuctionManager:Passes(),
                                             { AuctionManager:Bids() },
                                             "Passed")
-                local passSuffix = (passCount == 1) and "passed" or "passes"
+                -- local passSuffix = (passCount == 1) and "passed" or "passes"
                 -- cant use actions
-                local cantUseCount, cantUse = _generateInfo(
+                local _, cantUse = _generateInfo(
                                                 AuctionManager:CantUse(),
                                                 { AuctionManager:Bids(), AuctionManager:Passes() },
                                                 "Can't use")
                 -- closed actions
-                local closedCount, closed = _generateInfo(AuctionManager:Hidden(),
+                local _, closed = _generateInfo(AuctionManager:Hidden(),
                                             { AuctionManager:Bids(), AuctionManager:Passes(), AuctionManager:CantUse() },
                                             "Closed")
                 -- no action
