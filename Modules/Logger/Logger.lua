@@ -13,7 +13,7 @@ function Logger:Initialize()
         logger_header = {
             type = "header",
             name = CLM.L["Logging"],
-            order = 100
+            order = 1000
         },
         logger_severity = {
             name = CLM.L["Logging level"],
@@ -22,7 +22,7 @@ function Logger:Initialize()
             values = LOG.SEVERITY_LEVEL,
             set = function(i, v) self:SetSeverity(v) end,
             get = function(i) return self:GetSeverity() end,
-            order = 101
+            order = 1001
         },
         logger_verbose = {
             name = CLM.L["Verbose"],
@@ -30,7 +30,7 @@ function Logger:Initialize()
             type = "toggle",
             set = function(i, v) self:SetVerbosity(v) end,
             get = function(i) return self:GetVerbosity() end,
-            order = 102
+            order = 1002
           },
           logger_wipe = {
             name = CLM.L["Wipe"],
@@ -38,7 +38,7 @@ function Logger:Initialize()
             type = "execute",
             confirm = true,
             func = function(i, v) self:Wipe() end,
-            order = 103
+            order = 1003
           }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)

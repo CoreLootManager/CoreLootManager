@@ -546,5 +546,23 @@ function UTILS.Trim(text)
     return (string.gsub(text, "^%s*(.-)%s*$", "%1"))
 end
 
+function UTILS.LibStCompareSortWrapper(modifierFn)
+    return (function(_self, rowa, rowb, sortbycol)
+        -- Get data
+        local a1, b1 = _self:GetCell(rowa, sortbycol), _self:GetCell(rowb, sortbycol)
+        local a1_value, b1_value = a1.value, b1.value
+        -- Modify Data
+        a1.value, b1.value = modifierFn(a1.value, b1.value)
+        -- sort
+        local result = _self:CompareSort(rowa, rowb, sortbycol)
+        -- restore
+        a1.value, b1.value  = a1_value, b1_value
+        -- return
+        return result
+    end)
+end
+
+
+
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"

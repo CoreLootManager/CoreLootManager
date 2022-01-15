@@ -166,34 +166,16 @@ local function CreateBidWindow(self)
         {name = CLM.L["Bid"],   width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
             sort = ScrollingTable.SORT_DSC,
             sortnext = 5,
-            comparesort = (function(_self, rowa, rowb, sortbycol)
-                -- Sorting PASS at the end
-                local a1, b1 = _self:GetCell(rowa, sortbycol), _self:GetCell(rowb, sortbycol)
-                local a1_value, b1_value = a1.value, b1.value
-                -- Workaround
-                if a1.value == CLM.L["PASS"] then a1.value = -1 else a1.value = a1.value end
-                if b1.value == CLM.L["PASS"] then b1.value = -1 else b1.value = b1.value end
-                -- sort
-                local result = _self:CompareSort(rowa, rowb, sortbycol)
-                -- restore
-                a1.value, b1.value  = a1_value, b1_value
-                -- return
-                return result
-            end)},
+            comparesort = UTILS.LibStCompareSortWrapper(
+                (function(a1, b1)
+                    if a1 == CLM.L["PASS"] then a1 = -1 end
+                    if b1 == CLM.L["PASS"] then b1 = -1 end
+                    return a1, b1
+                end)
+            )
+        },
         {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
-            comparesort = (function(_self, rowa, rowb, sortbycol)
-                -- Sorting without colorcoding
-                local a1, b1 = _self:GetCell(rowa, sortbycol), _self:GetCell(rowb, sortbycol)
-                local a1_value, b1_value = a1.value, b1.value
-                a1.value, b1.value = a1_value, b1_value
-                -- sort
-                local result = _self:CompareSort(rowa, rowb, sortbycol)
-                -- restore
-                a1.value, b1.value = a1_value, b1_value
-                -- return
-                return result
-            end)
         },
     }
     self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame)
