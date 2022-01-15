@@ -410,7 +410,6 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         bid_stats_info = {
             name = "Info",
             desc = (function()
-                -- if not AuctionManager:IsAuctionInProgress() then return "" end
                 -- Unique did any action dict
                 local didAnyAction = {}
                 -- generateInfo closure
@@ -448,19 +447,14 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                     end
                     return count, userCodedString
                 end)
-                -- bids count
-                -- local bidCount = 0
                 for p,_ in pairs(AuctionManager:Bids()) do
-                    -- bidCount = bidCount + 1
                     didAnyAction[p] = true
                 end
-                -- local bidSuffix = (bidCount == 1) and "bid" or "bids"
                 -- passess list
                 local _, passed = _generateInfo(
                                             AuctionManager:Passes(),
                                             { AuctionManager:Bids() },
                                             "Passed")
-                -- local passSuffix = (passCount == 1) and "passed" or "passes"
                 -- cant use actions
                 local _, cantUse = _generateInfo(
                                                 AuctionManager:CantUse(),
@@ -485,14 +479,6 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 local didAnyActionCount = 0
                 for _,_ in pairs(didAnyAction) do didAnyActionCount = didAnyActionCount + 1 end
                 -- Stats
-                -- local stats = string.format(
-                --     "%2d %s\n%2d %s\n%2d %s\n%2d %s\n%2d/%2d %s",
-                --     bidCount, bidSuffix,
-                --     passCount, passSuffix,
-                --     cantUseCount, "can't use",
-                --     closedCount, "closed",
-                --     didAnyActionCount, #self.raid:Players(), "total"
-                -- )
                 local stats = string.format("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
                 -- Result
                 return stats .. passed .. cantUse .. closed .. noAction
