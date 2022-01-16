@@ -29,17 +29,13 @@ end
 
 function LootQueueManager:Initialize()
     LOG:Trace("LootQueueManager:Initialize()")
-    local db = MODULES.Database:Personal()
-    if not db.lootQueue then
-        db.lootQueue = {}
-    end
+    self.queue = MODULES.Database:Personal('lootQueue')
     -- Wipe on login / reload if not in raid
     --[===[@non-debug@
     if not IsInRaid() then
-        db.lootQueue = {}
+        -- TODO
     end
     --@end-non-debug@]===]
-    self.queue = db.lootQueue
     self.iterator = 1
     EventManager:RegisterWoWEvent({"CHAT_MSG_LOOT"}, (function(...)
         HandleLootMessage(self, ...)
