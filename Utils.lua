@@ -8,6 +8,7 @@ local CONSTANTS = CLM.CONSTANTS
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
+local assertType = LibStub("EventSourcing/Util").assertType
 
 local function capitalize(string)
     string = string or ""
@@ -297,6 +298,10 @@ end
 
 function UTILS.DumpTable(t)
     return DumpTable(t)
+end
+
+function UTILS.assertType(arg, name, expectedType, optional)
+    return assertType(arg, name, expectedType, optional)
 end
 
 function UTILS.inflate(object, data)

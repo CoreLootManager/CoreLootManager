@@ -2,6 +2,10 @@ local  _, CLM = ...
 
 local MODULES = CLM.MODULES
 local LOG = CLM.LOG
+local UTILS = CLM.UTILS
+
+local DeepCopy = UTILS.DeepCopy
+local assertType = UTILS.assertType
 
 local DB = {}
 
@@ -25,7 +29,7 @@ local function UpdateSchema(table, schema)
     if type(schema) == "table" then
         for key, value in pairs(schema) do
             if not table[key] then
-                table[key] = value
+                table[key] = DeepCopy(value)
             end
         end
     elseif type(schema) == "function" then
@@ -71,9 +75,7 @@ function DB:Server()
 end
 
 function DB:Personal(table, schema)
-    if not table then
-        return CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL]
-    end
+    assertType(table, 'table', 'string')
 
     if not CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][table] then
         CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][table] = {}
@@ -85,9 +87,7 @@ function DB:Personal(table, schema)
 end
 
 function DB:GUI(table, schema)
-    if not table then
-        return CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI]
-    end
+    assertType(table, 'table', 'string')
 
     if not CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI][table] then
         CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI][table] = {}
