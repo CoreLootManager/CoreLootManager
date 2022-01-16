@@ -19,7 +19,7 @@ local function HandleLootMessage(self, addon, event, message, _, _, _, playerNam
     itemId = tonumber(itemId) or 0
     local _, itemLink, rarity = GetItemInfo(itemId)
     if itemLink and (rarity >= CLM.GlobalConfigs:GetTrackedLootLevel()) then
-        table.insert(self.queue, {
+        table.insert(self.db.queue, {
             id = itemId,
             link = itemLink
         })
@@ -29,11 +29,11 @@ end
 
 function LootQueueManager:Initialize()
     LOG:Trace("LootQueueManager:Initialize()")
-    self.queue = MODULES.Database:Personal('lootQueue')
+    self.db = MODULES.Database:Personal('lootQueue', { queue = {} })
     -- Wipe on login / reload if not in raid
     --[===[@non-debug@
     if not IsInRaid() then
-        -- TODO
+        self.db.queue = {}
     end
     --@end-non-debug@]===]
     self.iterator = 1
@@ -41,7 +41,7 @@ function LootQueueManager:Initialize()
         HandleLootMessage(self, ...)
     end))
     EventManager:RegisterEvent(EVENT_START_AUCTION, function(event, data)
-        for i, entry in ipairs(self.queue) do
+        for i, entry in ipairs(self.db.queue) do
             if entry.id == data.itemId then
                 self:Remove(i)
                 return
@@ -53,27 +53,27 @@ end
 
 function LootQueueManager:Get(id)
     id = tonumber(id) or 0
-    if (id <= #self.queue) and (id >= 1) then
-        return id, self.queue[id]
+    if (id <= #self.db.queue) and (id >= 1) then
+        return id, self.db.queue[id]
     end
     return nil, nil
 end
 
 function LootQueueManager:GetNext()
     self.iterator = self.iterator + 1
-    if self.iterator > #self.queue then
+    if self.iterator > #self.db.queue then
         self.iterator = 1
     end
-    return self.iterator, self.queue[self.iterator]
+    return self.iterator, self.db.queue[self.iterator]
 end
 
 function LootQueueManager:GetQueue()
-    return self.queue
+    return self.db.queue
 end
 
 function LootQueueManager:Remove(id)
     id = tonumber(id) or 0
-    if (id <= #self.queue) and (id >= 1) then
+    if (id <= #self.db.queue) and (id >= 1) then
         if self.iterator > id then
             self.iterator = self.iterator - 1
         -- elseif self.iterator == id then
@@ -81,8 +81,8 @@ function LootQueueManager:Remove(id)
         -- else
         --     -- This doesnt affect us at all
         end
-        table.remove(self.queue, id)
-        if self.iterator > #self.queue then
+        table.remove(self.db.queue, id)
+        if self.iterator > #self.db.queue then
             self.iterator = 1
         end
         CLM.GUI.LootQueue:Refresh(true)
@@ -90,8 +90,8 @@ function LootQueueManager:Remove(id)
 end
 
 function LootQueueManager:Wipe()
-    while(#self.queue > 0) do
-        table.remove(self.queue)
+    while(#self.db.queue > 0) do
+        table.remove(self.db.queue)
     end
     CLM.GUI.LootQueue:Refresh(true)
     self.iterator = 1
