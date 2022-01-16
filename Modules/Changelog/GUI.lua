@@ -17,19 +17,16 @@ local LIBS =  {
 }
 
 local function InitializeDB(self)
-    local db = MODULES.Database:GUI()
-    if not db.changelog then
-        db.changelog = {
-            lastVersion = {
-                major = 0,
-                minor = 0,
-                patch = 0
-            },
-            do_not_show = false,
-            never_show = false
-    }
-    end
-    self.db = db.changelog
+    self.db = MODULES.Database:GUI('changelog', {
+        location = {nil, nil, "CENTER", 0, 0 },
+        lastVersion = {
+            major = 0,
+            minor = 0,
+            patch = 0
+        },
+        do_not_show = false,
+        never_show = false
+    })
 end
 
 local function CreateConfigs(self)

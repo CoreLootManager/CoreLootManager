@@ -42,11 +42,9 @@ local FILTER_MAINS_ONLY = 105
 local StandingsGUI = {}
 
 local function InitializeDB(self)
-    local db = MODULES.Database:GUI()
-    if not db.standings then
-        db.standings = { }
-    end
-    self.db = db.standings
+    self.db = MODULES.Database:GUI('standings', {
+        location = {nil, nil, "CENTER", 0, 0 }
+    })
 end
 
 local function StoreLocation(self)

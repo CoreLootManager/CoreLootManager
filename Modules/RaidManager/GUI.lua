@@ -44,11 +44,9 @@ local RightClickMenu
 local RaidManagerGUI = {}
 
 local function InitializeDB(self)
-    local db = MODULES.Database:GUI()
-    if not db.raid then
-        db.raid = { }
-    end
-    self.db = db.raid
+    self.db = MODULES.Database:GUI('raid', {
+        location = {nil, nil, "CENTER", 0, 0 }
+    })
 end
 
 local function StoreLocation(self)

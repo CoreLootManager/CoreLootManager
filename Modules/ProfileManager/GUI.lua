@@ -38,11 +38,9 @@ local FILTER_NOT_IN_GUILD = 104
 local ProfilesGUI = {}
 
 local function InitializeDB(self)
-    local db = MODULES.Database:GUI()
-    if not db.profile then
-        db.profile = { }
-    end
-    self.db = db.profile
+    self.db = MODULES.Database:GUI('profile', {
+        location = {nil, nil, "CENTER", 0, 0 }
+    })
 end
 
 local function StoreLocation(self)

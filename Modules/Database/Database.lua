@@ -5,9 +5,32 @@ local LOG = CLM.LOG
 
 local DB = {}
 
+-- You really do not want to modify this
+-- vvvvv
+local DB_NAME_PERSONAL = 'personal'
+local DB_NAME_GUI = 'gui'
+local DB_NAME_RAID = 'raid'
+local DB_NAME_GUILD = 'guild'
+local DB_NAME_LEDGER = 'ledger'
+local DB_NAME_LOGGER = 'logger'
+local DB_NAME_GLOBAL = 'global'
+-- ^^^^^
+
 local function UpdateGuild()
     DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. (GetGuildInfo("player") or "unguilded"))
     LOG:Debug("Using database: %s", DB.server_faction_guild)
+end
+
+local function UpdateSchema(table, schema)
+    if type(schema) == "table" then
+        for key, value in pairs(schema) do
+            if not table[key] then
+                table[key] = value
+            end
+        end
+    elseif type(schema) == "function" then
+        schema(table)
+    end
 end
 
 function DB:Initialize()
@@ -18,49 +41,69 @@ function DB:Initialize()
     if type(CLM_DB[self.server_faction_guild]) ~= "table" then
         CLM_DB[self.server_faction_guild] = {}
     end
-    if type(CLM_DB[self.server_faction_guild]['personal']) ~= "table" then
-        CLM_DB[self.server_faction_guild]['personal'] = {}
+    if type(CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL]) ~= "table" then
+        CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL] = {}
     end
-    if type(CLM_DB[self.server_faction_guild]['personal']['gui']) ~= "table" then
-        CLM_DB[self.server_faction_guild]['personal']['gui'] = {}
+    if type(CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI]) ~= "table" then
+        CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI] = {}
     end
-    if type(CLM_DB[self.server_faction_guild]['guild']) ~= "table" then
-        CLM_DB[self.server_faction_guild]['guild'] = {}
+    if type(CLM_DB[self.server_faction_guild][DB_NAME_GUILD]) ~= "table" then
+        CLM_DB[self.server_faction_guild][DB_NAME_GUILD] = {}
     end
-    if type(CLM_DB[self.server_faction_guild]['raid']) ~= "table" then
-        CLM_DB[self.server_faction_guild]['raid'] = {}
+    if type(CLM_DB[self.server_faction_guild][DB_NAME_RAID]) ~= "table" then
+        CLM_DB[self.server_faction_guild][DB_NAME_RAID] = {}
     end
-    if type(CLM_DB[self.server_faction_guild]['ledger']) ~= "table" then
-        CLM_DB[self.server_faction_guild]['ledger'] = {}
+    if type(CLM_DB[self.server_faction_guild][DB_NAME_LEDGER]) ~= "table" then
+        CLM_DB[self.server_faction_guild][DB_NAME_LEDGER] = {}
     end
 end
 
 function DB:Global()
-    return CLM_DB['global']
+    return CLM_DB[DB_NAME_GLOBAL]
 end
 
 function DB:Logger()
-    return CLM_DB['global']['logger']
+    return CLM_DB[DB_NAME_GLOBAL][DB_NAME_LOGGER]
 end
 
 function DB:Server()
     return CLM_DB[self.server_faction_guild]
 end
 
-function DB:Personal()
-    return CLM_DB[self.server_faction_guild]['personal']
+function DB:Personal(table, schema)
+    if not table then
+        return CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL]
+    end
+
+    if not CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][table] then
+        CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][table] = {}
+    end
+
+    UpdateSchema(CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][table], schema)
+
+    return CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][table]
 end
 
-function DB:GUI()
-    return CLM_DB[self.server_faction_guild]['personal']['gui']
+function DB:GUI(table, schema)
+    if not table then
+        return CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI]
+    end
+
+    if not CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI][table] then
+        CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI][table] = {}
+    end
+
+    UpdateSchema(CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI][table], schema)
+
+    return CLM_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI][table]
 end
 
 function DB:Ledger()
-    return CLM_DB[self.server_faction_guild]['ledger']
+    return CLM_DB[self.server_faction_guild][DB_NAME_LEDGER]
 end
 
 function DB:UpdateLedger(ledger)
-    CLM_DB[self.server_faction_guild]['ledger'] = ledger
+    CLM_DB[self.server_faction_guild][DB_NAME_LEDGER] = ledger
 end
 
 MODULES.Database = DB

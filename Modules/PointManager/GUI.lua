@@ -41,11 +41,9 @@ local RightClickMenu
 local PointHistoryGUI = {}
 
 local function InitializeDB(self)
-    local db = MODULES.Database:GUI()
-    if not db.point then
-        db.point = { }
-    end
-    self.db = db.point
+    self.db = MODULES.Database:GUI('point', {
+        location = {nil, nil, "CENTER", 0, 0 }
+    })
 end
 
 local function StoreLocation(self)
