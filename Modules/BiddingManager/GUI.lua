@@ -127,17 +127,13 @@ end
 local BiddingManagerGUI = {}
 
 local function InitializeDB(self)
-    local db = MODULES.Database:GUI()
-    if not db.bidding then
-        db.bidding = { }
-    end
-    self.db = db.bidding
-    if not self.db.customButton then
-        self.db.customButton = {
+    self.db = MODULES.Database:GUI('bidding', {
+        location = {nil, nil, "CENTER", 0, 0 },
+        customButton = {
             mode = CUSTOM_BUTTON.MODE.DISABLED,
-            value = 1,
+            value = 1
         }
-    end
+    })
 end
 
 local function StoreLocation(self)

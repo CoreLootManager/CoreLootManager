@@ -255,12 +255,10 @@ function RosterManager:Initialize()
             self:WipeAll()
         end)
 
-
-    local db = MODULES.Database:Personal()
-    if not db.rosterManager then
-        db.rosterManager = { raidsForFullAttendance = 2, attendanceWeeksWindow = 10}
-    end
-    self.db = db.rosterManager
+    self.db = MODULES.Database:Personal('rosterManager', {
+        raidsForFullAttendance = 2,
+        attendanceWeeksWindow = 10
+    })
 
     local options = {
         attendance_header = {

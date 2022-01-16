@@ -31,11 +31,9 @@ function ProfileManager:Initialize()
         profiles = {}
     }
 
-    local db = MODULES.Database:Personal()
-    if not db.profileManager then
-        db.profileManager = { pruneLog = {} }
-    end
-    self.db = db.profileManager
+    self.db = MODULES.Database:Personal('profileManager', {
+        pruneLog = {}
+    })
 
     -- Register mutators
     LedgerManager:RegisterEntryType(

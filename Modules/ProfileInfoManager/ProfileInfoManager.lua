@@ -144,7 +144,6 @@ end
 
 local function StoreProfileSpec(self, name, spec)
     GetProfileDb(self, name).spec = spec
-    -- self.db[name].spec = spec
 end
 
 local function RestoreSpecs(self)
@@ -194,23 +193,23 @@ function ProfileInfoManager:Initialize()
     self._lastDisplayedMessage = 0
     self._lastDisplayedMessageD = 0
 
-    local db = MODULES.Database:Personal()
-    if not db.profileInfo then
-        db.profileInfo = {}
-        -- migration
-        if db.version then
-            for player, version in pairs(db.version) do
-                db.profileInfo[player] = { version = version, spec = { one = 0, two = 0, three = 0} }
+    self.db = MODULES.Database:Personal('profileInfo', (function(table)
+        -- Migration from version to playerInfo if it is empty
+        if rawequal(next(table), nil) then
+            for player, version in pairs(MODULES.Database:Personal('version')) do
+                table[player] = {
+                    version = version,
+                    spec = { one = 0, two = 0, three = 0}
+                }
             end
         end
-    end
-    self.db = db.profileInfo
+    end))
 
     self.handlers = {
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC]     = HandleAnnounceSpec,
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]     = HandleRequestSpec
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec
     }
 
     Comms:Register(PROFILEINFO_COMM_PREFIX, (function(rawMessage, distribution, sender)

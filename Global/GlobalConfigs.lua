@@ -10,18 +10,14 @@ local LedgerManager = MODULES.LedgerManager
 
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
-    local db = MODULES.Database:Personal()
-    if not db.global then
-        db.global = {
-            announce_award_to_guild = true,
-            announce_loot_to_raid = false,
-            announce_loot_to_raid_level = 3,
-            tracked_loot_level = 4,
-            wowdkpbot_integration = false,
-            chat_commands = false
-        }
-    end
-    self.db = db.global
+    self.db = MODULES.Database:Personal('global', {
+        announce_award_to_guild = true,
+        announce_loot_to_raid = false,
+        announce_loot_to_raid_level = 3,
+        tracked_loot_level = 4,
+        wowdkpbot_integration = false,
+        chat_commands = false
+    })
 
     local options = {
         discord = {

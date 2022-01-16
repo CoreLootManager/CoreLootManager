@@ -14,15 +14,6 @@ local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
 local EventManager = MODULES.EventManager
 
-
--- local function InitializeDB(self)
---     local db = MODULES.Database:Personal()
---     if not db.autoAward then
---         db.autoAward = { }
---     end
---     self.db = db.autoAward
--- end
-
 local function ScanTooltip(self)
     if self._scanned then return end
     local query = BIND_TRADE_TIME_REMAINING:gsub("%%s", ".*")

@@ -93,11 +93,9 @@ local function PostLootToRaidChat()
 end
 
 local function InitializeDB(self)
-    local db = MODULES.Database:GUI()
-    if not db.auction then
-        db.auction = { }
-    end
-    self.db = db.auction
+    self.db = MODULES.Database:GUI('auction', {
+        location = {nil, nil, "CENTER", 0, 0 }
+    })
 end
 
 local function StoreLocation(self)

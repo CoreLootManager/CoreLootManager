@@ -50,11 +50,10 @@ function BiddingManager:Initialize()
         [CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID]    = "HandleDistributeBid"
     }
 
-    local db = MODULES.Database:Personal()
-    if not db.bidding then
-        db.bidding = { autoOpen = true, autoUpdateBidValue = false }
-    end
-    self.db = db.bidding
+    self.db = MODULES.Database:Personal('bidding', {
+        autoOpen = true,
+        autoUpdateBidValue = false
+    })
 
     local options = {
         bidding_header = {

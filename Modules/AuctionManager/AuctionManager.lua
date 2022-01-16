@@ -34,11 +34,10 @@ local EVENT_START_AUCTION = "CLM_AUCTION_START"
 local AuctionManager = {}
 
 local function InitializeDB(self)
-    local db = MODULES.Database:Personal()
-    if not db.auction then
-        db.auction = { autoAward = true, autoTrade = true }
-    end
-    self.db = db.auction
+    self.db = MODULES.Database:Personal('auction', {
+        autoAward = true,
+        autoTrade = true
+    })
 end
 
 function AuctionManager:Initialize()

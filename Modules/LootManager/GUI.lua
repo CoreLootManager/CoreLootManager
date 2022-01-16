@@ -35,11 +35,9 @@ local RightClickMenu
 local LootGUI = {}
 
 local function InitializeDB(self)
-    local db = MODULES.Database:GUI()
-    if not db.loot then
-        db.loot = { }
-    end
-    self.db = db.loot
+    self.db = MODULES.Database:GUI('loot', {
+        location = {nil, nil, "CENTER", 0, 0 }
+    })
 end
 
 local function StoreLocation(self)
