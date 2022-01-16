@@ -1,8 +1,8 @@
 ## Interface: 20502
-## Interface-Classic: 11307
+## Interface-Classic: 11401
 ## Interface-BCC: 20502
 ## Title: Classic Loot Manager
-## Notes: Robust, point based Loot Manager system  (DKP / EPGP / SK / ROLL)
+## Notes: Robust, DKP based Loot Manager system
 ## Author: Lantis (WoW: Mirage Raceway EU <Essential> Alliance)
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
