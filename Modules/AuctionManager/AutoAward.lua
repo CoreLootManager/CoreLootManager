@@ -22,6 +22,9 @@ local function ScanTooltip(self)
         local line = _G["CLMAutoAwardBagItemCheckerFakeTooltipTextLeft" .. i]
         if line then
             line = line:GetText() or ""
+            if line == ITEM_SOULBOUND then
+                self.itemInfo.soulbound = true
+            end
             if line:find(query) then
                 lineWithTimer = line
                 break
@@ -37,6 +40,7 @@ end
 local BagItemChecker = {}
 function BagItemChecker:Initialize()
     self.fakeTooltip = CreateFrame("GameTooltip", "CLMAutoAwardBagItemCheckerFakeTooltip", UIParent, "GameTooltipTemplate")
+    self.fakeTooltip:SetOwner(UIParent, "ANCHOR_NONE");
     self:Clear()
 end
 
@@ -48,7 +52,7 @@ function BagItemChecker:Clear()
         id = -1,
         link = "",
         locked = true,
-        soulbound = true,
+        soulbound = false,
         tradeTimerExpired = true
     }
 
@@ -56,11 +60,12 @@ function BagItemChecker:Clear()
 end
 
 local function BagItemCheck(self)
-    local _, _, locked, _, _, _, itemLink, _, _, itemId, isBound = GetContainerItemInfo(self.bag, self.slot)
+    local _, _, locked, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(self.bag, self.slot)
     self.itemInfo.locked = locked or false
     self.itemInfo.id = itemId or -1
-    self.itemInfo.soulbound = isBound or false
+    self.itemInfo.soulbound = false
     self.itemInfo.link = itemLink or ""
+    ScanTooltip(self)
 end
 
 function BagItemChecker:Set(bag, slot)
@@ -92,7 +97,6 @@ function BagItemChecker:IsSoulbound()
 end
 
 function BagItemChecker:TradeTimerExpired()
-    ScanTooltip(self)
     return self.itemInfo.tradeTimerExpired
 end
 
@@ -116,6 +120,7 @@ local function ScanBagsForItem(itemId, tradeableOnly)
             end
         end
     end
+    return found
 end
 
 local function FindlastTradeTargetItems(self)
@@ -136,7 +141,6 @@ end
 ----
 
 local function Clear(self)
-    self.tracking = {}
     self.lastTradedItems = {}
     self.lastTradeTarget = nil
 end
@@ -182,6 +186,7 @@ end
 local AutoAward = {}
 function AutoAward:Initialize()
     LOG:Trace("AutoAward:Initialize()")
+    self.tracking = {}
     Clear(self)
 
     BagItemChecker:Initialize()
