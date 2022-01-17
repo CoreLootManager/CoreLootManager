@@ -521,7 +521,7 @@ function AuctionManagerGUI:Create()
     f:AddChild(CreateBidWindow(self))
 
     -- Clear active bid on close
-    f:SetCallback('OnClose', function() AuctionManagerGUI:ClearSelectedBid(self) end)
+    f:SetCallback('OnClose', function() AuctionManagerGUI:ClearSelectedBid() end)
 
     RestoreLocation(self)
     -- Hide by default
@@ -557,7 +557,7 @@ end
 
 function AuctionManagerGUI:UpdateAwardValue()
     LOG:Trace("AuctionManagerGUI:UpdateAwardValue()")
-    local max, second = GetTopBids(self)
+    local max, second = GetTopBids()
     local isVickrey = (self.roster:GetConfiguration("auctionType") ==  CONSTANTS.AUCTION_TYPE.VICKREY)
     if isVickrey then
         if second.bid == 0 then

@@ -338,7 +338,7 @@ end
 
 function BiddingManagerGUI:UpdateCurrentBidValue(value)
     self.bid = tonumber(value or 0)
-    self:Refresh(true)
+    self:Refresh()
 end
 
 function BiddingManagerGUI:RecolorBar()
