@@ -237,7 +237,6 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     -- workaround for open bid to allow 0 bid
     if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
         self.highestBid = self.baseValue - self.minimalIncrement
-        self.previousHighestBid = self.highestBid - 1
     end
     -- Send auction information
     self:SendAuctionStart(self.raid:Roster():UID())
@@ -349,12 +348,12 @@ function AuctionManager:SendBidInfo(name, bid)
     Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
 
-function AuctionManager:AnnounceHighestBidder(name, bid)
+function AuctionManager:AnnounceHighestBidder(newHighBid, name, bid)
     if not CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then return end
     if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not bid then return end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
-    if bid <= self.previousHighestBid then return end
+    if not newHighBid then return end
 
     local message
     local nameModdified
@@ -487,9 +486,9 @@ function AuctionManager:UpdateBid(name, bid)
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local accept, reason = self:ValidateBid(name, bid)
     if accept then
-        self:UpdateBidsInternal(name, bid)
+        local newHighBid = self:UpdateBidsInternal(name, bid)
         self:SendBidAccepted(name)
-        self:AnnounceHighestBidder(name, bid)
+        self:AnnounceHighestBidder(newHighBid, name, bid)
     else
         self:SendBidDenied(name, reason)
     end
@@ -508,13 +507,16 @@ function AuctionManager:UpdateBidsInternal(name, bid)
     end
     self.userResponses.bids[name] = bid
     self.userResponses.passes[name] = nil
+
+    local newHighBid = false
     if bid then
         if bid > self.highestBid then
-            self.previousHighestBid = self.highestBid
             self.highestBid = bid
+            newHighBid = true
         end
         self:AntiSnipe()
     end
+    return newHighBid
 end
 
 function AuctionManager:Bids()
@@ -541,7 +543,6 @@ function AuctionManager:ClearBids()
         hidden  = {}
     }
     self.highestBid = 0
-    self.previousHighestBid = 0
 end
 
 function AuctionManager:Award(itemId, price, name)
