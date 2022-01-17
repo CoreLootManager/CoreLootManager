@@ -353,6 +353,7 @@ function AuctionManager:AnnounceHighestBidder(name, bid)
     if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not bid then return end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
+    if bid <= self.highestBid then return end
 
     local message
     local nameModdified
@@ -460,6 +461,8 @@ function AuctionManager:ValidateBid(name, bid)
         if self.baseValue > 0 and bid < self.baseValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
         if self.maxValue > 0 and bid > self.maxValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
+        -- always allow bidding min in ascending mode
+        if self.baseValue == bid then return true end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             if bid <= self.highestBid then
