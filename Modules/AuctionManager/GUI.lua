@@ -288,9 +288,6 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             set = (function(i,v)
                 self.note = tostring(v)
                 if self.itemId then
-                    if not self.db.notes[self.itemId] then
-                        self.db.notes[self.itemId] = {}
-                    end
                     if self.note ~= "" then
                         self.db.notes[self.itemId] = self.note
                     else
