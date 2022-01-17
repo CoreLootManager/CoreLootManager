@@ -1,3 +1,26 @@
+# Classic Loot Manager v1.3.0
+## Features
+### Attendance tracking
+CLM now tracks and reports attendance based on local configuration. You can set 2 parameters: `Max raids per week` and `Week window size`. First one defines the amount of raiders a player must join to have `100%` attendance. The latter determines the number of weeks take into account.
+### Auto Item Award and Auto Trade
+CLM will now auto-give items if awarding them when corpse is open, or will try to auto-trade them otherwise. Both behaviors can be disabled in configuration.
+### Extended auction information
+Addon tracks now various additional bidder behavior: If they did pass, can't use item, closed window without any action or let the timer expire. You can now get those various informations by hovering over `Info` icon. `PASS` has been removed from main bid display. No action might also mean player has not received bid command (was during reload) or has no or outdated addon installed.
+### Open auction alignment
+Players can no longer `cancel` bids in Open Auctions or `pass` if they already bid. Players can now always bid minimum in those auctions. This allows for handling both English and Swedish House Auctions.
+### Item notes
+Item notes are now stored locally per item (they are never synced).
+### New filtering options
+New filters are available in various UIs: Mains only; In Guild only; External (outside of guild) only.
+## Fixes
+### Bid sorting
+Bids will now properly sort in the order of Highest Bid 1st > Total DKP 2nd (on equal bids).
+### Class sorting
+### Classess in various UIs will now properly sort alphabetically.
+### Icon fixes
+Missing CLM Icons should now be visible again.
+### Localisation enhancements
+Multiple localisation enhancements added.
 # Classic Loot Manager v1.2.0
 ## Happy new Year
 It has been a year. Our journey with CLM began in January 2021. Thank you all and don't hesitate to `support us`!

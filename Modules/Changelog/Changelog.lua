@@ -2,6 +2,38 @@ local  _, CLM = ...
 
 CLM.ChangelogData = {
     {
+        version = "v1.3.0",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                    {header = "Happy new Year!", body = "It has been a year. Our journey with CLM began in January 2021. Thank you all and don't hesitate to |cff44cc44support us|r!"},
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    {header = "Attendance tracking", body = "CLM now tracks and reports attendance based on local configuration. You can set 2 parameters: |cffcccc00Max raids per week|r and |cffcccc00Week window size|r. First one defines the amount of raiders a player must join to have |cffcccc00100%|r attendance. The latter determines the number of weeks take into account."},
+                    {header = "Auto Item Award and Auto Trade", body = "CLM will now auto-give items if awarding them when corpse is open, or will try to auto-trade them otherwise. Both behaviors can be disabled in configuration."},
+                    {header = "Extended auction information", body = "Addon tracks now various additional bidder behavior: If they did pass, can't use item, closed window without any action or let the timer expire. You can now get those various informations by hovering over |cffcccc00Info|r icon. |cff44cc44PASS|r has been removed from main bid display. No action might also mean player has not received bid command (was during reload) or has no or outdated addon installed."},
+                    {header = "Open auction alignment", body = "Players can no longer |cffcc0000cancel|r bids in Open Auctions or |cffcccc00pass|r if they already bid. Players can now always bid minimum in those auctions. This allows for handling both English and Swedish House Auctions."},
+                    {header = "Item notes", body = "Item notes are now stored locally per item (they are never synced)."},
+                    {header = "New filtering options", body = "New filters are available in various UIs: Mains only; In Guild only; External (outside of guild) only"},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Bid sorting", body = "Bids will now properly sort in the order of Highest Bid 1st > Total DKP 2nd (on equal bids)."},
+                    {header = "Class sorting", body = "Classess in various UIs will now properly sort alphabetically."},
+                    {header = "Icon fixes", body = "Missing CLM Icons should now be visible again."},
+                    {header = "Localisation enhancements", body = "Multiple localisation enhancements added."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.2.0",
         data = {
             {
