@@ -432,6 +432,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         bid_stats_info = {
             name = "Info",
             desc = (function()
+                if not RaidManager:IsInActiveRaid() then return "Not in raid" end
                 -- Unique did any action dict
                 local didAnyAction = {}
                 -- generateInfo closure
