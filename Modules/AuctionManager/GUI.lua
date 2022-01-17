@@ -94,7 +94,8 @@ end
 
 local function InitializeDB(self)
     self.db = MODULES.Database:GUI('auction', {
-        location = {nil, nil, "CENTER", 0, 0 }
+        location = {nil, nil, "CENTER", 0, 0 },
+        notes = {}
     })
 end
 
@@ -232,7 +233,8 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         self.itemId, _, _, self.itemEquipLoc, icon = GetItemInfoInstant(self.itemLink)
     end
 
-    if not self.note then self.note = "" end
+    -- if not self.note then self.note = "" end
+    self.note = ""
     if not self.base then self.base = 0 end
     if not self.max then self.max = 0 end
 
@@ -284,8 +286,27 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         note = {
             name = CLM.L["Note"],
             type = "input",
-            set = (function(i,v) self.note = tostring(v) end),
-            get = (function(i) return self.note end),
+            set = (function(i,v)
+                self.note = tostring(v)
+                if self.itemId then
+                    if not self.db.notes[self.itemId] then
+                        self.db.notes[self.itemId] = {}
+                    end
+                    if self.note ~= "" then
+                        self.db.notes[self.itemId] = self.note
+                    else
+                        self.db.notes[self.itemId] = nil
+                    end
+                end
+            end),
+            get = (function(i)
+                if self.itemId then
+                    if self.db.notes[self.itemId] then
+                        self.note = self.db.notes[self.itemId]
+                    end
+                end
+                return self.note
+            end),
             disabled = (function() return AuctionManager:IsAuctionInProgress() end),
             width = 1.4,
             order = 4
