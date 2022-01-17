@@ -237,6 +237,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     -- workaround for open bid to allow 0 bid
     if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
         self.highestBid = self.baseValue - self.minimalIncrement
+        self.previousHighestBid = self.highestBid - 1
     end
     -- Send auction information
     self:SendAuctionStart(self.raid:Roster():UID())
@@ -353,7 +354,7 @@ function AuctionManager:AnnounceHighestBidder(name, bid)
     if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not bid then return end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
-    if bid <= self.highestBid then return end
+    if bid <= self.previousHighestBid then return end
 
     local message
     local nameModdified
@@ -508,7 +509,10 @@ function AuctionManager:UpdateBidsInternal(name, bid)
     self.userResponses.bids[name] = bid
     self.userResponses.passes[name] = nil
     if bid then
-        if bid > self.highestBid then self.highestBid = bid end
+        if bid > self.highestBid then
+            self.previousHighestBid = self.highestBid
+            self.highestBid = bid
+        end
         self:AntiSnipe()
     end
 end
@@ -537,6 +541,7 @@ function AuctionManager:ClearBids()
         hidden  = {}
     }
     self.highestBid = 0
+    self.previousHighestBid = 0
 end
 
 function AuctionManager:Award(itemId, price, name)
