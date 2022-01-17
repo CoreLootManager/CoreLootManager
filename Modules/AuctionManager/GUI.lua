@@ -233,7 +233,6 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         self.itemId, _, _, self.itemEquipLoc, icon = GetItemInfoInstant(self.itemLink)
     end
 
-    -- if not self.note then self.note = "" end
     self.note = ""
     if not self.base then self.base = 0 end
     if not self.max then self.max = 0 end
