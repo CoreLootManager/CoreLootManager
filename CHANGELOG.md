@@ -1,8 +1,8 @@
 # Classic Loot Manager v1.3.1
 ## Hotfixes
-- Open Ascending auction should now have the announcements and auto-increments working properly
-- Disabled local configs should now be stored properly. Unfortuantely the original configs are lost and need re-doing
-- Bids will now be cleared only on start of new auction, not when new / same item is added to auctioning window. This will again allow multiples of same items being awarded through auction window.
+- Open Ascending auction should now have the announcements and auto-increments working properly.
+- Disabling local configs should now be stored properly.
+- Bids will now be cleared only on start of new auction, not when new item is added to auctioning window. This will again allow for multiples of same items being awarded through auction window.
 - Fixed typos in localisations.
 
 
