@@ -612,9 +612,9 @@ function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
 
-    if AuctionManager:IsAuctionInProgress() then
+    if RaidManager:IsInActiveRaid() then
         local data = {}
-        for name,bid in pairs(AuctionManager:Bids()) do -- todo currently this has names hmmm
+        for name,bid in pairs(AuctionManager:Bids()) do
             local profile = ProfileManager:GetProfileByName(name)
             if profile then
                 local row = {cols = {}}
