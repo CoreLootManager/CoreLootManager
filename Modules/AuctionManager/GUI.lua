@@ -403,7 +403,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             name = CLM.L["Award"],
             type = "execute",
             func = (function()
-                local awarded = AuctionManager:Award(self.itemId, self.awardValue, self.awardPlayer)
+                local awarded = AuctionManager:Award(self.itemLink, self.itemId, self.awardValue, self.awardPlayer)
                 if awarded and not AutoAward:IsIgnored(self.itemId) then
                     if AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
                         AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
@@ -415,6 +415,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 self.itemId = 0
                 self.awardValue = 0
                 self.awardPlayer = ""
+                self.st:ClearSelection()
                 self:Refresh()
             end),
             confirm = (function()

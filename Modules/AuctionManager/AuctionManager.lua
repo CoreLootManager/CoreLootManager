@@ -545,9 +545,9 @@ function AuctionManager:ClearBids()
     self.highestBid = 0
 end
 
-function AuctionManager:Award(itemId, price, name)
+function AuctionManager:Award(itemLink, itemId, price, name)
     LOG:Trace("AuctionManager:Award()")
-    return LootManager:AwardItem(self.raid, name, self.itemLink, itemId, price)
+    return LootManager:AwardItem(self.raid, name, itemLink, itemId, price)
 end
 
 function AuctionManager:IsAuctioneer(name, relaxed)
