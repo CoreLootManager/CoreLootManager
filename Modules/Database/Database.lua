@@ -28,7 +28,7 @@ end
 local function UpdateSchema(table, schema)
     if type(schema) == "table" then
         for key, value in pairs(schema) do
-            if not table[key] then
+            if table[key] == nil then
                 table[key] = DeepCopy(value)
             end
         end
