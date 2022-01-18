@@ -503,7 +503,7 @@ function AuctionManager:UpdateBidsInternal(name, bid)
         -- We remove from the bids list but add to pass list
         self.userResponses.bids[name] = nil
         self.userResponses.passes[name] = true
-        return
+        return false
     end
     self.userResponses.bids[name] = bid
     self.userResponses.passes[name] = nil
