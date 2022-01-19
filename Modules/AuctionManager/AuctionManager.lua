@@ -111,6 +111,15 @@ function AuctionManager:Initialize()
             -- width = "double",
             order = 34
         },
+        auctioning_raid_warn_countdown = {
+            name = CLM.L["Raid Warning Countdown"],
+            desc = CLM.L["Enables raid-warning countdown for auctions"],
+            type = "toggle",
+            set = function(i, v) self:SetRaidCountdown(v) end,
+            get = function(i) return self:GetRaidCountdown() end,
+            -- width = "double",
+            order = 35
+        }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
@@ -133,6 +142,14 @@ end
 
 function AuctionManager:GetAutoTrade()
     return self.db.autoTrade
+end
+
+function AuctionManager:SetRaidCountdown(value)
+    self.db.raidCountdown = value and true or false
+end
+
+function AuctionManager:GetRaidCountdown()
+    return self.db.raidCountdown
 end
 
 -- We pass configuration separately as it can be overriden on per-auction basis
@@ -218,6 +235,9 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], tostring(self.antiSnipe))
     end
     SendChatMessage(auctionMessage , "RAID_WARNING")
+    if CLM.GlobalConfigs:GetAllowChatCommands() then
+        SendChatMessage("Whisper me '!bid <amount>' to bid. Whisper '!dkp' to check your dkp.", "RAID_WARNING")
+    end
     -- Get Auction Type info
     self.auctionType = configuration:Get("auctionType")
     -- AntiSnipe settings
@@ -244,7 +264,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.lastCountdownValue = 5
     self.ticker = C_Timer.NewTicker(0.1, (function()
         self.auctionTimeLeft = self.auctionEndTime - GetServerTime()
-        if self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5  then
+        if self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5 and self:GetRaidCountdown() then
             SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), "RAID_WARNING")
             self.lastCountdownValue = self.lastCountdownValue - 1
         end
