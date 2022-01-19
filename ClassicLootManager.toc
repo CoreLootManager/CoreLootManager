@@ -96,6 +96,7 @@ Modules\SandboxManager\SandboxManager.lua
 Modules\AutoAwardManager\AutoAwardManager.lua
 Modules\LootQueueManager\LootQueueManager.lua
 Modules\AutoAwardManager\EncounterIDs.lua
+Modules\RaidWarnings\RaidWarnings.lua
 
 # Addon Options and GUIs (View)
 Modules\ProfileManager\GUI.lua
