@@ -119,7 +119,6 @@ function CORE:_InitializeFeatures()
     MODULES.AutoAwardManager:Initialize()
     MODULES.LootQueueManager:Initialize()
     MODULES.SandboxManager:Initialize()
-    MODULES.RaidWarnings:Initialize()
     -- Globals
     CLM.Migration:Initialize() -- Initialize Migration
     CLM.GlobalConfigs:Initialize() -- Initialize global configs

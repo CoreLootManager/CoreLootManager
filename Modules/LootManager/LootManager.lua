@@ -144,7 +144,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         else
             LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
         end
-        if MODULES.RaidWarnings:GetLoot() then
+        if CLM.GlobalConfigs:GetLootWarning() then
             local message = string.format(CLM.L["%s awarded to %s for %s DKP"], itemLink, name, value)
             SendChatMessage(message, "RAID_WARNING")
             if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then

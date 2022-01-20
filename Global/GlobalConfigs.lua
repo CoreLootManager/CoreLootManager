@@ -16,7 +16,13 @@ function GlobalConfigs:Initialize()
         announce_loot_to_raid_level = 3,
         tracked_loot_level = 4,
         wowdkpbot_integration = false,
-        chat_commands = false
+        chat_commands = false,
+        raid_warnings_raid = true,
+        raid_warnings_auction = true,
+        raid_warnings_countdown = true,
+        raid_warnings_bids = true,
+        raid_warnings_loot = true,
+        raid_warnings_commands = false
     })
 
     local options = {
@@ -96,6 +102,65 @@ function GlobalConfigs:Initialize()
             get = function(i) return self:GetTrackedLootLevel() end,
             order = 111
         },
+        raid_warnings_header = {
+            type = "header",
+            name = CLM.L["Raid Warnings"],
+            order = 40
+        },
+        raid_warnings_raid = {
+            name = CLM.L["Raid Start/End"],
+            desc = CLM.L["Enables announcing raid start and end."],
+            type = "toggle",
+            set = function(i, v) self:SetRaidWarning(v) end,
+            get = function(i) return self:GetRaidWarning() end,
+            -- width = "double",
+            order = 41
+        },
+        raid_warnings_auction = {
+            name = CLM.L["Auction Start/End"],
+            desc = CLM.L["Enable announcing auction start and end."],
+            type = "toggle",
+            set = function(i, v) self:SetAuctionWarning(v) end,
+            get = function(i) return self:GetAuctionWarning() end,
+            -- width = "double",
+            order = 42
+        },
+        raid_warnings_commands = {
+            name = CLM.L["Chat Commands"],
+            desc = CLM.L["Enables announcing chat commands at auction start."],
+            type = "toggle",
+            set = function(i, v) self:SetCommandsWarning(v) end,
+            get = function(i) return self:GetCommandsWarning() end,
+            -- width = "double",
+            order = 43
+        },
+        raid_warnings_countdown = {
+            name = CLM.L["Auction End Countdown"],
+            desc = CLM.L["Enables raid-warning countdown for auctions."],
+            type = "toggle",
+            set = function(i, v) self:SetCountdownWarning(v) end,
+            get = function(i) return self:GetCountdownWarning() end,
+            -- width = "double",
+            order = 44
+        },
+        raid_warnings_loot = {
+            name = CLM.L["Loot Awards"],
+            desc = CLM.L["Enables announcing loot awards."],
+            type = "toggle",
+            set = function(i, v) self:SetLootWarning(v) end,
+            get = function(i) return self:GetLootWarning() end,
+            -- width = "double",
+            order = 45
+        },
+        raid_warnings_bids = {
+            name = CLM.L["Bids"],
+            desc = CLM.L["Enables announcing new highest bid (when applicable)."],
+            type = "toggle",
+            set = function(i, v) self:SetBidsWarning(v) end,
+            get = function(i) return self:GetBidsWarning() end,
+            -- width = "double",
+            order = 46
+        }
     }
     ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
@@ -146,6 +211,54 @@ end
 
 function GlobalConfigs:GetAllowChatCommands()
     return self.db.chat_commands
+end
+
+function GlobalConfigs:SetRaidWarning(value)
+    self.db.raid_warnings_raid = value and true or false
+end
+
+function GlobalConfigs:GetRaidWarning()
+    return self.db.raid_warnings_raid
+end
+
+function GlobalConfigs:SetAuctionWarning(value)
+    self.db.raid_warnings_auction = value and true or false
+end
+
+function GlobalConfigs:GetAuctionWarning()
+    return self.db.raid_warnings_auction
+end
+
+function GlobalConfigs:SetCommandsWarning(value)
+    self.db.raid_warnings_commands = value and true or false
+end
+
+function GlobalConfigs:GetCommandsWarning()
+    return self.db.raid_warnings_commands
+end
+
+function GlobalConfigs:SetCountdownWarning(value)
+    self.db.raid_warnings_countdown = value and true or false
+end
+
+function GlobalConfigs:GetCountdownWarning()
+    return self.db.raid_warnings_countdown
+end
+
+function GlobalConfigs:SetLootWarning(value)
+    self.db.raid_warnings_loot = value and true or false
+end
+
+function GlobalConfigs:GetLootWarning()
+    return self.db.raid_warnings_loot
+end
+
+function GlobalConfigs:SetBidsWarning(value)
+    self.db.raid_warnings_bids = value and true or false
+end
+
+function GlobalConfigs:GetBidsWarning()
+    return self.db.raid_warnings_bids
 end
 
 CLM.GlobalConfigs = GlobalConfigs

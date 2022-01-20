@@ -314,7 +314,7 @@ function RaidManager:StartRaid(raid)
     end
 
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
-    if MODULES.RaidWarnings:GetRaid() then
+    if CLM.GlobalConfigs:GetRaidWarning() then
         SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
     end
     self:HandleRosterUpdateEvent()
@@ -344,7 +344,7 @@ function RaidManager:EndRaid(raid)
     -- end
     LedgerManager:Submit(LEDGER_RAID.End:new(raid:UID()), true)
 
-    if MODULES.RaidWarnings:GetRaid() and IsInRaid() then
+    if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
         SendChatMessage(string.format(CLM.L["Raid [%s] ended"], raid:Name()) , "RAID_WARNING")
     end
 end
