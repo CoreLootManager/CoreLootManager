@@ -1,0 +1,14 @@
+name: l10n
+on:
+  push:
+  pull_request:
+jobs:
+  l10n:
+    name: L10n verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6.9'
+      - run: python3 ./scripts/l10n_strings.py
