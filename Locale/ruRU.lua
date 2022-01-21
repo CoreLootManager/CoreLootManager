@@ -1,14 +1,14 @@
 local _, CLM = ...
 if GetLocale() == "ruRU" then
 -- Modules/BiddingManager/GUI.lua:412
---CLM.L[" DKP "] = ""
+CLM.L[" DKP "] = "ДКП"
 -- Modules/LedgerManager/GUI.lua:481
 CLM.L[" Sandbox"] = " Песочница "
 -- Modules/LedgerManager/GUI.lua:253
 -- Modules/LedgerManager/GUI.lua:266
 CLM.L[" Too much data to display"] = " Слишком много данных для отображения "
 -- Modules/LedgerManager/GUI.lua:285
---CLM.L[" UNUSED"] = ""
+CLM.L[" UNUSED"] = "НЕИСПОЛЬЗУЕМОЕ"
 -- Modules/LedgerManager/GUI.lua:225
 CLM.L[" alt of: "] = " альт игрока: "
 -- Modules/PointManager/GUI.lua:169
@@ -47,7 +47,7 @@ CLM.L["%s profile missing. Adding."] = "%s профиль отсутствует
 -- Modules/LedgerManager/GUI.lua:379
 CLM.L["%s to %s for %s in <%s>"] = "%s для %s за %s в <%s>"
 -- Global/GlobalSlashCommands.lua:191
---CLM.L["%s was not found in guild."] = ""
+CLM.L["%s was not found in guild."] = "%s не был найден в гильдии."
 -- Modules/PointManager/GUI.lua:324
 -- Modules/PointManager/GUI.lua:324
 -- Modules/PointManager/GUI.lua:325
@@ -75,7 +75,7 @@ CLM.L["Add target"] = "Добавить цель"
 -- Modules/ProfileManager/GUI.lua:277
 CLM.L["Add to roster"] = "Добавить в состав"
 -- Modules/LedgerManager/GUI.lua:291
---CLM.L["Add"] = ""
+CLM.L["Add"] = "Добавить"
 -- Migration.lua:349
 CLM.L["Adding %s loot entries for team to %s"] = "Добавляю %s добычи для команды %s"
 -- Migration.lua:208
@@ -96,7 +96,7 @@ CLM.L["Akil'zon"] = "Акил"
 -- Modules/AutoAwardManager/EncounterIDs.lua:82
 CLM.L["Al'ar"] = "Ал"
 -- Modules/BiddingManager/GUI.lua:76
---CLM.L["All In"] = ""
+CLM.L["All In"] = "Вабанк"
 -- Modules/BiddingManager/GUI.lua:48
 CLM.L["All in"] = "Вабанк"
 -- Migration.lua:28
@@ -410,7 +410,7 @@ CLM.L["Decayed %s%% DKP to all players %sin <%s>"] = "Сожжено %s%% ДКП
 -- Modules/RosterManager/Options.lua:527
 CLM.L["Default Boss Kill Bonus Value"] = "Значение по умолчанию за убийство босса"
 -- Modules/LedgerManager/GUI.lua:122
---CLM.L["Default Boss Kill Bonus value"] = ""
+CLM.L["Default Boss Kill Bonus value"] = "Значение по умолчанию за убийство босса"
 -- Modules/RosterManager/Options.lua:708
 CLM.L["Default slot values"] = "Значения слотов по умолчанию"
 -- Modules/LedgerManager/GUI.lua:55
@@ -476,7 +476,7 @@ CLM.L["Export data"] = "Экспорт данных"
 -- Modules/ProfileManager/GUI.lua:82
 CLM.L["External"] = "Внешние"
 -- Modules/LedgerManager/GUI.lua:38
---CLM.L["False"] = ""
+CLM.L["False"] = "Ложно"
 -- Modules/AutoAwardManager/EncounterIDs.lua:25
 CLM.L["Fankriss the Unyielding"] = "Фанкрисс Непреклонный"
 -- Modules/AutoAwardManager/EncounterIDs.lua:79
@@ -915,7 +915,7 @@ CLM.L["Ouro"] = "Оуро"
 CLM.L["Overrides"] = "Ручная коррекция"
 -- Modules/BiddingManager/BiddingManager.lua:137
 -- Modules/AuctionManager/AuctionManager.lua:564
---CLM.L["PASS"] = ""
+CLM.L["PASS"] = "ПАС"
 -- .:indirectly
 CLM.L["Paladin"] = "Паладин"
 -- Modules/BiddingManager/GUI.lua:293
@@ -966,7 +966,7 @@ CLM.L["Rage Winterchill"] = "Лютый Хлад"
 -- Modules/AutoAwardManager/EncounterIDs.lua:13
 CLM.L["Ragnaros"] = "Рагнарос"
 -- Modules/RaidManager/GUI.lua:180
---CLM.L["Raid Completion Bonus Value"] = ""
+CLM.L["Raid Completion Bonus Value"] = "Значение бонуса за пройденный рейд"
 -- Modules/LedgerManager/GUI.lua:134
 CLM.L["Raid Completion Bonus value"] = "Значение бонуса за пройденный рейд"
 -- Modules/RaidManager/GUI.lua:178
@@ -1029,7 +1029,7 @@ CLM.L["Remove from roster"] = "Удалить из состава"
 -- Modules/LootQueueManager/GUI.lua:73
 CLM.L["Remove item"] = "Удалить вещь"
 -- Modules/LedgerManager/GUI.lua:229
---CLM.L["Remove linking of "] = ""
+CLM.L["Remove linking of "] = "Убрать связку "
 -- Modules/RaidManager/GUI.lua:140
 CLM.L["Remove selected raid"] = "Удалить выбранный рейд"
 -- Modules/PointManager/GUI.lua:74
@@ -1466,7 +1466,7 @@ CLM.L["accepted"] = "принята"
 -- Global/GlobalChatMessageHandlers.lua:54
 CLM.L["cancel"] = "отмена"
 -- Global/GlobalChatMessageHandlers.lua:67
---CLM.L["denied"] = ""
+CLM.L["denied"] = "отказ"
 -- Modules/LedgerManager/GUI.lua:351
 CLM.L["excluding negatives "] = "исключая отрицательные "
 -- Global/GlobalSlashCommands.lua:125
@@ -1476,9 +1476,9 @@ CLM.L["pass"] = "пас"
 -- Global/GlobalSlashCommands.lua:128
 CLM.L["rank"] = "ранг"
 -- Global/GlobalChatMessageHandlers.lua:106
---CLM.L["roster"] = ""
+CLM.L["roster"] = "состав"
 -- Global/GlobalChatMessageHandlers.lua:106
---CLM.L["rosters"] = ""
+CLM.L["rosters"] = "составы"
 -- Global/GlobalSlashCommands.lua:132
 CLM.L["unguilded"] = "без гильдии"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:62
