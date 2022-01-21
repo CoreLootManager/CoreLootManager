@@ -198,12 +198,13 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.allowNegativeStandings = configuration:Get("allowNegativeStandings")
     -- Auctioning
     -- Start Auction Messages
+    self.note = note
+    self.antiSnipe = configuration:Get("antiSnipe")
     if CLM.GlobalConfigs:GetAuctionWarning() then
         local auctionMessage = string.format(CLM.L["Auction of %s"], itemLink)
         if note:len() > 0 then
             auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
         end
-        self.note = note
         -- Max 2 raid warnings are displayed at the same time
         SendChatMessage(auctionMessage , "RAID_WARNING")
         auctionMessage = ""
@@ -214,7 +215,6 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
             auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."], tostring(maxValue))
         end
         auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."], tostring(auctionTime))
-        self.antiSnipe = configuration:Get("antiSnipe")
         if self.antiSnipe > 0 then
             auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], tostring(self.antiSnipe))
         end
@@ -363,7 +363,6 @@ function AuctionManager:AnnounceHighestBidder(newHighBid, name, bid)
     if not bid then return end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
     if not newHighBid then return end
-    if not CLM.GlobalConfigs:GetBidsWarning() then return end
 
     local message
     local nameModdified
@@ -374,8 +373,9 @@ function AuctionManager:AnnounceHighestBidder(newHighBid, name, bid)
         nameModdified = "(" .. name .. ")"
         self:SendBidInfo(name, bid)
     end
-    message = string.format(CLM.L["New highest bid: %d DKP %s"], bid, nameModdified)
 
+    if not CLM.GlobalConfigs:GetBidsWarning() then return end
+    message = string.format(CLM.L["New highest bid: %d DKP %s"], bid, nameModdified)
     SendChatMessage(message, "RAID_WARNING")
 end
 
