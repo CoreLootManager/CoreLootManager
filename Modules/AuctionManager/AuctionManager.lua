@@ -110,7 +110,7 @@ function AuctionManager:Initialize()
             get = function(i) return self:GetAutoTrade() end,
             -- width = "double",
             order = 34
-        },
+        }
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
@@ -198,26 +198,31 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.allowNegativeStandings = configuration:Get("allowNegativeStandings")
     -- Auctioning
     -- Start Auction Messages
-    local auctionMessage = string.format(CLM.L["Auction of %s"], itemLink)
-    if note:len() > 0 then
-        auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
-    end
     self.note = note
-    -- Max 2 raid warnings are displayed at the same time
-    SendChatMessage(auctionMessage , "RAID_WARNING")
-    auctionMessage = ""
-    if baseValue > 0 then
-        auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."], tostring(baseValue))
-    end
-    if maxValue > 0 then
-        auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."], tostring(maxValue))
-    end
-    auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."], tostring(auctionTime))
     self.antiSnipe = configuration:Get("antiSnipe")
-    if self.antiSnipe > 0 then
-        auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], tostring(self.antiSnipe))
+    if CLM.GlobalConfigs:GetAuctionWarning() then
+        local auctionMessage = string.format(CLM.L["Auction of %s"], itemLink)
+        if note:len() > 0 then
+            auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
+        end
+        -- Max 2 raid warnings are displayed at the same time
+        SendChatMessage(auctionMessage , "RAID_WARNING")
+        auctionMessage = ""
+        if baseValue > 0 then
+            auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."], tostring(baseValue))
+        end
+        if maxValue > 0 then
+            auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."], tostring(maxValue))
+        end
+        auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."], tostring(auctionTime))
+        if self.antiSnipe > 0 then
+            auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], tostring(self.antiSnipe))
+        end
+        SendChatMessage(auctionMessage , "RAID_WARNING")
+        if CLM.GlobalConfigs:GetCommandsWarning() and CLM.GlobalConfigs:GetAllowChatCommands() then
+            SendChatMessage("Whisper me '!bid <amount>' to bid. Whisper '!dkp' to check your dkp.", "RAID_WARNING")
+        end
     end
-    SendChatMessage(auctionMessage , "RAID_WARNING")
     -- Get Auction Type info
     self.auctionType = configuration:Get("auctionType")
     -- AntiSnipe settings
@@ -244,7 +249,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.lastCountdownValue = 5
     self.ticker = C_Timer.NewTicker(0.1, (function()
         self.auctionTimeLeft = self.auctionEndTime - GetServerTime()
-        if self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5  then
+        if CLM.GlobalConfigs:GetCountdownWarning() and self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5 then
             SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), "RAID_WARNING")
             self.lastCountdownValue = self.lastCountdownValue - 1
         end
@@ -266,7 +271,9 @@ function AuctionManager:StopAuctionTimed()
     LOG:Trace("AuctionManager:StopAuctionTimed()")
     self.auctionInProgress = false
     self.ticker:Cancel()
-    SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
+    if CLM.GlobalConfigs:GetAuctionWarning() then
+        SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
+    end
     self:SendAuctionEnd()
     GUI.AuctionManager:UpdateBids()
 end
@@ -275,7 +282,9 @@ function AuctionManager:StopAuctionManual()
     LOG:Trace("AuctionManager:StopAuctionManual()")
     self.auctionInProgress = false
     self.ticker:Cancel()
-    SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
+    if CLM.GlobalConfigs:GetAuctionWarning() then
+        SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
+    end
     self:SendAuctionEnd()
     GUI.AuctionManager:UpdateBids()
 end
@@ -364,8 +373,9 @@ function AuctionManager:AnnounceHighestBidder(newHighBid, name, bid)
         nameModdified = "(" .. name .. ")"
         self:SendBidInfo(name, bid)
     end
-    message = string.format(CLM.L["New highest bid: %d DKP %s"], bid, nameModdified)
 
+    if not CLM.GlobalConfigs:GetBidsWarning() then return end
+    message = string.format(CLM.L["New highest bid: %d DKP %s"], bid, nameModdified)
     SendChatMessage(message, "RAID_WARNING")
 end
 
