@@ -107,7 +107,7 @@ function GlobalConfigs:Initialize()
         rw_header = {
             type = "header",
             name = CLM.L["Raid Warnings"],
-            order = 40
+            order = 120
         },
         rw_raid = {
             name = CLM.L["Raid Start/End"],
@@ -116,7 +116,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetRaidWarning(v) end,
             get = function(i) return self:GetRaidWarning() end,
             -- width = "double",
-            order = 41
+            order = 121
         },
         rw_auction = {
             name = CLM.L["Auction Start/End"],
@@ -125,7 +125,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetAuctionWarning(v) end,
             get = function(i) return self:GetAuctionWarning() end,
             -- width = "double",
-            order = 42
+            order = 122
         },
         rw_commands = {
             name = CLM.L["Chat Commands"],
@@ -134,7 +134,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetCommandsWarning(v) end,
             get = function(i) return self:GetCommandsWarning() end,
             -- width = "double",
-            order = 43
+            order = 123
         },
         rw_countdown = {
             name = CLM.L["Auction End Countdown"],
@@ -143,7 +143,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetCountdownWarning(v) end,
             get = function(i) return self:GetCountdownWarning() end,
             -- width = "double",
-            order = 44
+            order = 124
         },
         rw_loot = {
             name = CLM.L["Loot Awards"],
@@ -152,7 +152,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetLootWarning(v) end,
             get = function(i) return self:GetLootWarning() end,
             -- width = "double",
-            order = 45
+            order = 125
         },
         rw_bids = {
             name = CLM.L["Bids"],
@@ -161,7 +161,7 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetBidsWarning(v) end,
             get = function(i) return self:GetBidsWarning() end,
             -- width = "double",
-            order = 46
+            order = 126
         }
     }
     ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
