@@ -387,7 +387,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         award_label = {
             name = CLM.L["Award item"],
             type = "description",
-            width = 0.55,
+            width = 0.5,
             order = 13
         },
         award_value = {
@@ -433,7 +433,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         bid_stats_info = {
             name = "Info",
             desc = (function()
-                if not RaidManager:IsInActiveRaid() then return "Not in raid" end
+                if not RaidManager:IsInActiveRaid() or self.raid == nil then return "Not in raid" end
                 -- Unique did any action dict
                 local didAnyAction = {}
                 -- generateInfo closure
@@ -510,7 +510,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function() end),
             image = "Interface\\Icons\\INV_Misc_QuestionMark",
-            width = 0.35,
+            width = 0.3,
             order = 16
         }
     }

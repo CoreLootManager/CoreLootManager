@@ -15,7 +15,6 @@ local GetItemIdFromLink = UTILS.GetItemIdFromLink
 local EventManager = MODULES.EventManager
 
 local function ScanTooltip(self)
-    if self._scanned then return end
     local query = BIND_TRADE_TIME_REMAINING:gsub("%%s", ".*")
     local lineWithTimer
     for i = 1, self.fakeTooltip:NumLines() do
@@ -34,7 +33,6 @@ local function ScanTooltip(self)
     if lineWithTimer then
         self.itemInfo.tradeTimerExpired = false
     end
-    self._scanned = true
 end
 
 local BagItemChecker = {}
@@ -55,8 +53,6 @@ function BagItemChecker:Clear()
         soulbound = false,
         tradeTimerExpired = true
     }
-
-    self._scanned = false
 end
 
 local function BagItemCheck(self)
@@ -76,8 +72,6 @@ function BagItemChecker:Set(bag, slot)
     self.fakeTooltip:SetBagItem(self.bag, self.slot)
 
     BagItemCheck(self)
-
-    self._scanned = false
 end
 
 function BagItemChecker:GetItemId()
