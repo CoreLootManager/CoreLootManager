@@ -471,10 +471,12 @@ function AuctionManager:ValidateBid(name, bid)
         if self.baseValue > 0 and bid < self.baseValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
         if self.maxValue > 0 and bid > self.maxValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
-        -- always allow bidding min in ascending mode
-        if self.baseValue == bid then return true end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+            -- always allow bidding min in ascending mode if haven't bid yet
+            if bid == self.baseValue and self.userResponses.bids[name] == nil then
+                return true
+            end
             if bid <= self.highestBid then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
             end
