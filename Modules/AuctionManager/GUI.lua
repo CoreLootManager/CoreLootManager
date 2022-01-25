@@ -81,7 +81,8 @@ local function PostLootToRaidChat()
         local numLootItems = GetNumLootItems()
 
         for lootIndex = 1, numLootItems do
-            local _, _, _, rarity = GetLootSlotInfo(lootIndex)
+            -- lootIcon, lootName, lootQuantity, currencyID, lootQuality, locked, isQuestItem, questID, isActive = GetLootSlotInfo(slot)
+            local _, _, _, _, rarity = GetLootSlotInfo(lootIndex)
             local itemLink = GetLootSlotLink(lootIndex)
             if itemLink then
                 if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then -- post Blue Purple and Legendary to Raid -- 3 -blue
