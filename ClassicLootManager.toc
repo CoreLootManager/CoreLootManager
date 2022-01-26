@@ -48,7 +48,7 @@ Libs\LibCandyBar-3.0\lib.xml
 Locale\enUS.lua
 #Locale\deDE.lua
 Locale\ruRU.lua
-#Locale\frFR.lua
+Locale\frFR.lua
 #Locale\itIT.lua
 
 # Addon Core

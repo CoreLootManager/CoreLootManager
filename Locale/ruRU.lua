@@ -169,7 +169,7 @@ CLM.L["Auction Results"] = "Результаты аукциона"
 CLM.L["Auction Start/End"] = "Старт/стоп аукциона"
 -- Modules/RaidManager/GUI.lua:169
 -- Modules/LedgerManager/GUI.lua:107
-CLM.L["Auction Time"] = "Время аукциона"
+CLM.L["Auction Time"] = "Осталось: "
 -- Modules/LedgerManager/GUI.lua:95
 CLM.L["Auction Type"] = "Тип аукциона"
 -- Modules/AuctionManager/AuctionManager.lua:275
@@ -217,7 +217,7 @@ CLM.L["Award DKP value"] = "Значение ДКП"
 CLM.L["Award item without auctioning it."] = "Отдать вещь без аукциона."
 -- Modules/AuctionManager/GUI.lua:388
 -- Global/GlobalSlashCommands.lua:24
-CLM.L["Award item"] = "Вещь"
+CLM.L["Award item"] = "Отдать за: "
 -- Modules/AuctionManager/GUI.lua:394
 CLM.L["Award value"] = "Стоимость"
 -- Modules/AuctionManager/GUI.lua:403
@@ -314,7 +314,7 @@ CLM.L["Brutallus"] = "Бруталл"
 -- Modules/AutoAwardManager/EncounterIDs.lua:59
 CLM.L["Buru the Gorger"] = "Буру Ненасытный"
 -- Modules/AutoAwardManager/EncounterIDs.lua:30
-CLM.L["C'Thun"] = "К"
+CLM.L["C'Thun"] = "К'тун"
 -- Modules/BiddingManager/GUI.lua:285
 CLM.L["Cancel your bid."] = "Отменить свою ставку."
 -- Modules/BiddingManager/GUI.lua:284
@@ -737,7 +737,7 @@ CLM.L["Logging"] = "Логирование"
 CLM.L["Loot Awards"] = "Вручение наград"
 -- MinimapIcon.lua:31
 -- Modules/LootManager/GUI.lua:224
-CLM.L["Loot History"] = "История добычи"
+CLM.L["Loot History"] = "История лута"
 -- MinimapIcon.lua:48
 -- Modules/LootQueueManager/GUI.lua:185
 -- Global/GlobalConfigs.lua:87
@@ -952,7 +952,7 @@ CLM.L["Player"] = "Игрок"
 CLM.L["Players"] = "Игроки"
 -- MinimapIcon.lua:35
 -- Modules/PointManager/GUI.lua:219
-CLM.L["Point History"] = "История начисления"
+CLM.L["Point History"] = "История ДКП"
 -- Modules/RosterManager/Options.lua:590
 CLM.L["Point caps"] = "Лимит очков"
 -- Modules/RosterManager/Options.lua:459
@@ -1418,9 +1418,9 @@ CLM.L["Zero-Sum Inflation Value"] = "Значение инфляции при н
 -- Modules/PointManager/PointManager.lua:382
 CLM.L["Zero-Sum award"] = "Награда за ноль"
 -- Modules/AutoAwardManager/EncounterIDs.lua:303
-CLM.L["Zul'Aman"] = "Зул"
+CLM.L["Zul'Aman"] = "Зул'Аман"
 -- Modules/AutoAwardManager/EncounterIDs.lua:192
-CLM.L["Zul'Gurub"] = "Зул"
+CLM.L["Zul'Gurub"] = "Зул'Гуруб"
 -- Modules/LedgerManager/GUI.lua:252
 CLM.L["[All Roster Configs]: "] = "[Настройки для всех]: "
 -- Modules/LedgerManager/GUI.lua:265

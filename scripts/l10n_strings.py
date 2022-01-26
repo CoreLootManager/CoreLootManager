@@ -145,9 +145,9 @@ def main(args):
         files.extend(find_files(path, query, True))
 
     # Prepare
-    locales = ["ruRU"]
+    locales = ["ruRU", "frFR"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
-    l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*?)["\']')
+    l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
     storage = L10nStorage(baseDir)
     # Indirectly used strings, e.g. classes
     add_indirectly_used_strings(storage)
