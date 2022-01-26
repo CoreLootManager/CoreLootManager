@@ -81,7 +81,6 @@ local function PostLootToRaidChat()
         local numLootItems = GetNumLootItems()
 
         for lootIndex = 1, numLootItems do
-            -- lootIcon, lootName, lootQuantity, currencyID, lootQuality, locked, isQuestItem, questID, isActive = GetLootSlotInfo(slot)
             local _, _, _, _, rarity = GetLootSlotInfo(lootIndex)
             local itemLink = GetLootSlotLink(lootIndex)
             if itemLink then
