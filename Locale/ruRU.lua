@@ -31,7 +31,7 @@ CLM.L["%d %% DKP decay"] = "%d %% сгорание ДКП"
 CLM.L["%d DKP"] = "%d ДКП"
 -- Modules/LedgerManager/GUI.lua:428
 CLM.L["%d/%m/%Y %H:%M:%S"] = "%d/%m/%Y %H:%M:%S"
--- Modules/LootManager/LootManager.lua:147
+-- Modules/LootManager/LootManager.lua:148
 CLM.L["%s awarded to %s for %s DKP"] = "%s вручена %s за %s ДКП"
 -- MinimapIcon.lua:120
 CLM.L["%s events (%s pending)"] = "%s событий (%s ожидает)"
@@ -125,15 +125,15 @@ CLM.L["Ammo"] = "Патроны"
 CLM.L["Anetheron"] = "Анетерон"
 -- Modules/AuctionManager/AuctionManager.lua:79
 CLM.L["Announce award to Guild"] = "Аннонсировать награды в Гильдию"
--- Global/GlobalConfigs.lua:35
+-- Global/GlobalConfigs.lua:43
 CLM.L["Announce loot from corpse to Raid"] = "Аннонсировать добычу из трупа в Рейд"
--- Global/GlobalConfigs.lua:44
+-- Global/GlobalConfigs.lua:52
 CLM.L["Announcement loot rarity"] = "Аннонсировать редкость добычи"
 -- Modules/RosterManager/Roster.lua:634
 CLM.L["Anonymous Open"] = "Анонимный Открытый"
 -- Modules/RosterManager/Options.lua:698
 CLM.L["Anti-snipe time"] = "Время анти-снайпера"
--- Modules/AuctionManager/AuctionManager.lua:218
+-- Modules/AuctionManager/AuctionManager.lua:219
 CLM.L["Anti-snipe time: %s."] = "Анти-снайпер: %s."
 -- Modules/RaidManager/GUI.lua:170
 -- Modules/AuctionManager/GUI.lua:359
@@ -161,14 +161,18 @@ CLM.L["Attendance [%]"] = "Посещаемость [%]"
 CLM.L["Attendance"] = "Посещаемость"
 -- Modules/AutoAwardManager/EncounterIDs.lua:62
 CLM.L["Attumen the Huntsman"] = "Ловчий Аттумен"
+-- Global/GlobalConfigs.lua:140
+CLM.L["Auction End Countdown"] = "Отсчет конца аукциона"
 -- Modules/AuctionManager/GUI.lua:383
 CLM.L["Auction Results"] = "Результаты аукциона"
+-- Global/GlobalConfigs.lua:122
+CLM.L["Auction Start/End"] = "Старт/стоп аукциона"
 -- Modules/RaidManager/GUI.lua:169
 -- Modules/LedgerManager/GUI.lua:107
 CLM.L["Auction Time"] = "Время аукциона"
 -- Modules/LedgerManager/GUI.lua:95
 CLM.L["Auction Type"] = "Тип аукциона"
--- Modules/AuctionManager/AuctionManager.lua:269
+-- Modules/AuctionManager/AuctionManager.lua:275
 CLM.L["Auction complete"] = "Аукцион завершен"
 -- Modules/BiddingManager/BiddingManager.lua:200
 CLM.L["Auction finished"] = "Аукцион завершен"
@@ -181,13 +185,13 @@ CLM.L["Auction length in seconds."] = "Длительность аукциона
 CLM.L["Auction length"] = "Время аукциона"
 -- Modules/BiddingManager/BiddingManager.lua:187
 CLM.L["Auction of "] = "Аукцион"
--- Modules/AuctionManager/AuctionManager.lua:201
+-- Modules/AuctionManager/AuctionManager.lua:204
 CLM.L["Auction of %s"] = "Аукцион %s"
 -- Modules/RosterManager/Options.lua:633
 CLM.L["Auction settings"] = "Настройки аукциона"
--- Modules/AuctionManager/AuctionManager.lua:278
+-- Modules/AuctionManager/AuctionManager.lua:286
 CLM.L["Auction stopped by Master Looter"] = "Аукцион остановлен Распределяющим добычу"
--- Modules/AuctionManager/AuctionManager.lua:215
+-- Modules/AuctionManager/AuctionManager.lua:217
 CLM.L["Auction time: %s."] = "Время аукциона: %s."
 -- Modules/RosterManager/Options.lua:637
 CLM.L["Auction type"] = "Тип аукциона"
@@ -257,15 +261,15 @@ CLM.L["Battleguard Sartura"] = "Боевой страж Сартура"
 CLM.L["Bid %s accepted!"] = "Ставка %s принята!"
 -- Alerts/Alerts.lua:30
 CLM.L["Bid %s denied!"] = "Ставка %s не принята!"
--- Modules/AuctionManager/AuctionManager.lua:614
+-- Modules/AuctionManager/AuctionManager.lua:626
 CLM.L["Bid cancelling not allowed"] = "Отмена ставок запрещена"
--- Modules/AuctionManager/AuctionManager.lua:612
+-- Modules/AuctionManager/AuctionManager.lua:624
 CLM.L["Bid increment too low"] = "Слишком низкое увеличение ставки"
 -- Modules/BiddingManager/GUI.lua:241
 CLM.L["Bid input value."] = "Поставить текущее значение."
--- Modules/AuctionManager/AuctionManager.lua:610
+-- Modules/AuctionManager/AuctionManager.lua:622
 CLM.L["Bid too high"] = "Ставка слишком высокая"
--- Modules/AuctionManager/AuctionManager.lua:609
+-- Modules/AuctionManager/AuctionManager.lua:621
 CLM.L["Bid too low"] = "Ставка слишком низкая"
 -- Modules/BiddingManager/GUI.lua:231
 CLM.L["Bid value"] = "Ставка"
@@ -276,13 +280,15 @@ CLM.L["Bid your preset value."] = "Поставьте свое текущее з
 -- Modules/BiddingManager/GUI.lua:240
 -- Modules/AuctionManager/GUI.lua:172
 CLM.L["Bid"] = "Ставка"
--- Modules/AuctionManager/AuctionManager.lua:608
+-- Modules/AuctionManager/AuctionManager.lua:620
 CLM.L["Bidding over current standings not allowed"] = "Ставки выше текущей позиции невозможны"
 -- MinimapIcon.lua:58
 -- Modules/BiddingManager/BiddingManager.lua:61
 -- Modules/BiddingManager/GUI.lua:316
 -- Modules/BiddingManager/GUI.lua:490
 CLM.L["Bidding"] = "Ставки"
+-- Global/GlobalConfigs.lua:158
+CLM.L["Bids"] = "Ставки"
 -- Modules/AutoAwardManager/EncounterIDs.lua:277
 CLM.L["Black Temple"] = "Черный храм"
 -- Modules/AutoAwardManager/EncounterIDs.lua:142
@@ -319,6 +325,8 @@ CLM.L["Change roster name."] = "Изменить название состава
 -- Modules/Changelog/GUI.lua:125
 -- Modules/Changelog/GUI.lua:126
 CLM.L["Changelog"] = "Лог изменений"
+-- Global/GlobalConfigs.lua:131
+CLM.L["Chat Commands"] = "Чат команды"
 -- Modules/AutoAwardManager/EncounterIDs.lua:70
 CLM.L["Chess Event"] = "Шахматный турнир"
 -- Modules/RosterManager/Roster.lua:701
@@ -344,8 +352,8 @@ CLM.L["Clear all classes."] = "Убирает все классы."
 CLM.L["Clear mains"] = "Убрать мейнов"
 -- Modules/ProfileManager/GUI.lua:246
 CLM.L["Clears selected profiles mains."] = "Убирает выбранные профили мейнов."
--- Global/GlobalConfigs.lua:50
--- Global/GlobalConfigs.lua:89
+-- Global/GlobalConfigs.lua:58
+-- Global/GlobalConfigs.lua:97
 CLM.L["Common"] = "Обычное"
 -- MinimapIcon.lua:77
 -- Modules/RaidManager/GUI.lua:375
@@ -369,7 +377,7 @@ CLM.L["Create raid"] = "Создать рейд"
 -- Modules/RosterManager/Options.lua:730
 CLM.L["Create"] = "Создать"
 -- Modules/RaidManager/GUI.lua:335
--- Modules/RaidManager/RaidManager.lua:570
+-- Modules/RaidManager/RaidManager.lua:572
 CLM.L["Created"] = "Создано"
 -- Modules/RosterManager/Options.lua:731
 CLM.L["Creates new roster with default configuration"] = "Создает новый состав с настройками по умолчанию"
@@ -433,6 +441,8 @@ CLM.L["EPGP"] = "EPGP"
 CLM.L["Ebonroc"] = "Черноскал"
 -- Modules/AutoAwardManager/EncounterIDs.lua:54
 CLM.L["Edge of Madness"] = "Грань безумия"
+-- Global/GlobalConfigs.lua:123
+CLM.L["Enable announcing auction start and end."] = "Включает оповещения о старте и стопе аукциона"
 -- Modules/BiddingManager/BiddingManager.lua:75
 CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."] = "Включить авто обновление ставок, когда меняется текущая высшая ставка (для открытых аукционов)."
 -- Modules/BiddingManager/BiddingManager.lua:74
@@ -445,11 +455,21 @@ CLM.L["Enable loot auto-award (Master Looter UI) from corpse when item is awarde
 CLM.L["Enable paid value splitting amongst raiders."] = "Включить разделение оплачиваемой стоимости между рейдерами."
 -- Modules/Logger/Logger.lua:29
 CLM.L["Enables / disables verbose data printing during logging"] = "Включает / отключает вывод подробных данных при логировании"
+-- Global/GlobalConfigs.lua:132
+CLM.L["Enables announcing chat commands at auction start."] = "Включает оповещения чат команд о начале аукциона"
+-- Global/GlobalConfigs.lua:150
+CLM.L["Enables announcing loot awards."] = "Включает оповещения вручения наград"
+-- Global/GlobalConfigs.lua:159
+CLM.L["Enables announcing new highest bid (when applicable)."] = "Включает оповещение новой высшей ставки"
+-- Global/GlobalConfigs.lua:114
+CLM.L["Enables announcing raid start and end."] = "Включает оповещения старта и стопа рейда"
 -- Modules/AuctionManager/AuctionManager.lua:107
 CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Включить автоматическую передачу вещи в окне обмена после завершения торгов"
+-- Global/GlobalConfigs.lua:141
+CLM.L["Enables raid-warning countdown for auctions."] = "Включает оповещения отсчета конца аукциона"
 -- Modules/AuctionManager/AuctionManager.lua:89
 CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."] = "Включить !dkp и !bid в личных сообщениях / рейде. Изменения требуют перезагрузки интерфейса."
--- Global/GlobalConfigs.lua:62
+-- Global/GlobalConfigs.lua:70
 CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Включить интеграцию с WoW DKP Bot. Это приведет к сохранению дополнительных данных при выходе из игры."
 -- Modules/LedgerManager/GUI.lua:544
 CLM.L["End Timetravel"] = "Завершить путешествие во времени"
@@ -457,8 +477,8 @@ CLM.L["End Timetravel"] = "Завершить путешествие во вре
 CLM.L["End selected raid"] = "Завершить выбранный рейд"
 -- Modules/LedgerManager/GUI.lua:457
 CLM.L["Enter sandbox"] = "Включить песочницу"
--- Global/GlobalConfigs.lua:53
--- Global/GlobalConfigs.lua:92
+-- Global/GlobalConfigs.lua:61
+-- Global/GlobalConfigs.lua:100
 CLM.L["Epic"] = "Эпическое"
 -- Modules/AutoAwardManager/EncounterIDs.lua:109
 CLM.L["Eredar Twins"] = "Эредарские близнецы"
@@ -509,7 +529,7 @@ CLM.L["Filtering"] = "Фильтрация"
 CLM.L["Finger"] = "Палец"
 -- Modules/LedgerManager/GUI.lua:412
 CLM.L["Finished raid %s"] = "Завершен рейд %s"
--- Modules/RaidManager/RaidManager.lua:572
+-- Modules/RaidManager/RaidManager.lua:574
 CLM.L["Finished"] = "Завершено"
 -- Modules/AutoAwardManager/EncounterIDs.lua:17
 CLM.L["Firemaw"] = "Огнечрев"
@@ -527,7 +547,7 @@ CLM.L["Garr"] = "Гарр"
 CLM.L["Gehennas"] = "Гееннас"
 -- Modules/AutoAwardManager/EncounterIDs.lua:57
 CLM.L["General Rajaxx"] = "Генерал Раджакс"
--- Global/GlobalConfigs.lua:31
+-- Global/GlobalConfigs.lua:39
 CLM.L["Global"] = "Общие"
 -- Modules/AutoAwardManager/EncounterIDs.lua:36
 CLM.L["Gluth"] = "Глут"
@@ -608,7 +628,7 @@ CLM.L["Importing profiles from DKPTable"] = "Импортирую профили
 -- Modules/RosterManager/GUI.lua:101
 -- Modules/ProfileManager/GUI.lua:81
 CLM.L["In Guild"] = "В гильдии"
--- Modules/RaidManager/RaidManager.lua:571
+-- Modules/RaidManager/RaidManager.lua:573
 CLM.L["In Progress"] = "В процессе"
 -- Modules/RaidManager/GUI.lua:360
 -- Modules/RosterManager/GUI.lua:98
@@ -646,7 +666,7 @@ CLM.L["Interval Bonus"] = "Интервальный бонус"
 CLM.L["Interval Time"] = "Временной интервал"
 -- Modules/RosterManager/Options.lua:573
 CLM.L["Interval in [minutes] to award bonus points"] = "Интервал в [минутах] для присуждения бонуса"
--- Modules/AuctionManager/AuctionManager.lua:611
+-- Modules/AuctionManager/AuctionManager.lua:623
 CLM.L["Invalid bid value"] = "Неверное значение ставки"
 -- Global/GlobalSlashCommands.lua:33
 CLM.L["Invalid item link"] = "Неверная ссылка на предмет"
@@ -669,7 +689,7 @@ CLM.L["Item"] = "Предмет"
 CLM.L["Jan'alai"] = "Джан"
 -- Modules/AutoAwardManager/EncounterIDs.lua:52
 CLM.L["Jin'do the Hexxer"] = "Джин"
--- Global/GlobalConfigs.lua:25
+-- Global/GlobalConfigs.lua:33
 CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"] = "Присоединяйтесь к нашему дискорду: |cff44cc44https://tiny.one/clm-discord|r"
 -- Modules/RaidManager/GUI.lua:122
 CLM.L["Join selected raid"] = "Присоединиться к выбранному рейду"
@@ -691,8 +711,8 @@ CLM.L["Kurinnaxx"] = "Куриннакс"
 CLM.L["Lady Vashj"] = "Леди Вайш"
 -- Modules/LedgerManager/GUI.lua:583
 CLM.L["Ledger Entries Audit"] = "Аудит записей таблицы"
--- Global/GlobalConfigs.lua:54
--- Global/GlobalConfigs.lua:93
+-- Global/GlobalConfigs.lua:62
+-- Global/GlobalConfigs.lua:101
 CLM.L["Legendary"] = "Легендарное"
 -- Modules/RosterManager/Roster.lua:706
 -- Modules/RosterManager/Roster.lua:738
@@ -713,12 +733,14 @@ CLM.L["Loatheb"] = "Лотхиб"
 CLM.L["Logging level"] = "Уровень логирования"
 -- Modules/Logger/Logger.lua:15
 CLM.L["Logging"] = "Логирование"
+-- Global/GlobalConfigs.lua:149
+CLM.L["Loot Awards"] = "Вручение наград"
 -- MinimapIcon.lua:31
 -- Modules/LootManager/GUI.lua:224
 CLM.L["Loot History"] = "История добычи"
 -- MinimapIcon.lua:48
 -- Modules/LootQueueManager/GUI.lua:185
--- Global/GlobalConfigs.lua:79
+-- Global/GlobalConfigs.lua:87
 CLM.L["Loot Queue"] = "Очередь добычи"
 -- Modules/AutoAwardManager/EncounterIDs.lua:4
 CLM.L["Lucifron"] = "Люцифрон"
@@ -761,7 +783,7 @@ CLM.L["Marks selected profiles or everyone if none selected as alts of choosen p
 CLM.L["Max"] = "Макс"
 -- Modules/BiddingManager/GUI.lua:425
 CLM.L["Max: %d "] = "Макс: %d "
--- Modules/AuctionManager/AuctionManager.lua:213
+-- Modules/AuctionManager/AuctionManager.lua:215
 CLM.L["Maximum bid: %s."] = "Макс ставка: %s."
 -- Modules/RosterManager/Options.lua:606
 CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."] = "Кап очков, которые игрок может набрать за рейдовую неделю. Поставьте 0 для отключения."
@@ -793,7 +815,7 @@ CLM.L["Minimal value increment for open auction mode."] = "Минимально�
 CLM.L["Minimap Icon -> Configuration -> Wipe events"] = "Иконка на карте -> Настройки -> Стереть"
 -- Modules/ProfileManager/GUI.lua:154
 CLM.L["Minimum Level"] = "Минимальный уровень"
--- Modules/AuctionManager/AuctionManager.lua:210
+-- Modules/AuctionManager/AuctionManager.lua:212
 CLM.L["Minimum bid: %s."] = "Мин ставка: %s."
 -- Modules/ProfileManager/GUI.lua:155
 CLM.L["Minimum level of players to fill from guild."] = "Минимальный уровень игроков для заполнения из гильдии."
@@ -804,8 +826,8 @@ CLM.L["Missing roster name and you are not in raid"] = "Отсутствует �
 -- Global/GlobalSlashCommands.lua:54
 CLM.L["Missing roster name. Using Raid Info"] = "Отсутствует название состава. Использую инфо из рейда"
 -- Modules/RaidManager/RaidManager.lua:280
--- Modules/RaidManager/RaidManager.lua:324
--- Modules/RaidManager/RaidManager.lua:353
+-- Modules/RaidManager/RaidManager.lua:326
+-- Modules/RaidManager/RaidManager.lua:355
 CLM.L["Missing valid raid"] = "Отсутствует корректный рейд"
 -- Modules/AutoAwardManager/EncounterIDs.lua:58
 CLM.L["Moam"] = "Моам"
@@ -832,7 +854,7 @@ CLM.L["Naxxramas"] = "Наксрамас"
 CLM.L["Neck"] = "Шея"
 -- Modules/AutoAwardManager/EncounterIDs.lua:21
 CLM.L["Nefarian"] = "Нефариан"
--- Modules/AuctionManager/AuctionManager.lua:607
+-- Modules/AuctionManager/AuctionManager.lua:619
 CLM.L["Negative bidders not allowed"] = "Игроки с отрицательным дкп не разрешены"
 -- Modules/RosterManager/GUI.lua:323
 CLM.L["Negatives"] = "Отрицательные"
@@ -840,7 +862,7 @@ CLM.L["Negatives"] = "Отрицательные"
 CLM.L["Netherspite"] = "Гнев Пустоты"
 -- Modules/Changelog/GUI.lua:40
 CLM.L["Never show changelog"] = "Никогда не показывать изменения"
--- Modules/AuctionManager/AuctionManager.lua:367
+-- Modules/AuctionManager/AuctionManager.lua:378
 CLM.L["New highest bid: %d DKP %s"] = "Новая наибольшая ставка: %d ДКП %s"
 -- Migration.lua:91
 CLM.L["New roster: [%s]"] = "Новый состав: [%s]"
@@ -848,7 +870,7 @@ CLM.L["New roster: [%s]"] = "Новый состав: [%s]"
 CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."] = "Новая версия %s Classic Loot Manager доступна. Для лучшего опыта использования, пожалуйста, обновите аддон."
 -- Modules/AutoAwardManager/EncounterIDs.lua:72
 CLM.L["Nightbane"] = "Ночная Погибель"
--- Modules/AuctionManager/AuctionManager.lua:613
+-- Modules/AuctionManager/AuctionManager.lua:625
 CLM.L["No auction in progress"] = "Нет аукционов в процессе"
 -- Modules/ProfileManager/GUI.lua:466
 CLM.L["No profile for "] = "Нет профиля для "
@@ -862,7 +884,7 @@ CLM.L["Non-equippable"] = "Неодеваемое"
 -- Modules/PointManager/GUI.lua:141
 -- Modules/ProfileManager/GUI.lua:112
 CLM.L["None"] = "Никто"
--- Modules/AuctionManager/AuctionManager.lua:606
+-- Modules/AuctionManager/AuctionManager.lua:618
 CLM.L["Not in a roster"] = "Не в составе"
 -- Modules/RaidManager/GUI.lua:462
 CLM.L["Not in raid"] = "Не в рейде"
@@ -914,13 +936,13 @@ CLM.L["Ouro"] = "Оуро"
 -- Modules/RaidManager/GUI.lua:194
 CLM.L["Overrides"] = "Ручная коррекция"
 -- Modules/BiddingManager/BiddingManager.lua:137
--- Modules/AuctionManager/AuctionManager.lua:564
+-- Modules/AuctionManager/AuctionManager.lua:576
 CLM.L["PASS"] = "ПАС"
 -- .:indirectly
 CLM.L["Paladin"] = "Паладин"
 -- Modules/BiddingManager/GUI.lua:293
 CLM.L["Pass"] = "Пас"
--- Modules/AuctionManager/AuctionManager.lua:615
+-- Modules/AuctionManager/AuctionManager.lua:627
 CLM.L["Passing after bidding not allowed"] = "Пас после ставки запрещен"
 -- Modules/AutoAwardManager/EncounterIDs.lua:34
 CLM.L["Patchwerk"] = "Лоскутик"
@@ -936,8 +958,8 @@ CLM.L["Point caps"] = "Лимит очков"
 -- Modules/RosterManager/Options.lua:459
 -- Modules/RosterManager/Options.lua:747
 CLM.L["Point type"] = "Тип очков"
--- Global/GlobalConfigs.lua:49
--- Global/GlobalConfigs.lua:88
+-- Global/GlobalConfigs.lua:57
+-- Global/GlobalConfigs.lua:96
 CLM.L["Poor"] = "Низкое"
 -- .:indirectly
 CLM.L["Priest"] = "Жрец"
@@ -982,14 +1004,18 @@ CLM.L["Raid Completion Value"] = "Значение за пройденный р�
 CLM.L["Raid Manager"] = "Менеджер рейда"
 -- Modules/RaidManager/GUI.lua:286
 CLM.L["Raid Name"] = "Имя рейда"
--- Modules/RaidManager/RaidManager.lua:346
-CLM.L["Raid [%s] ended"] = "Рейд [%s] завршен"
--- Modules/RaidManager/RaidManager.lua:317
+-- Global/GlobalConfigs.lua:113
+CLM.L["Raid Start/End"] = "Старт/стоп рейда"
+-- Global/GlobalConfigs.lua:109
+CLM.L["Raid Warnings"] = "Оповещения рейда"
+-- Modules/RaidManager/RaidManager.lua:348
+CLM.L["Raid [%s] ended"] = "Рейд [%s] завершен"
+-- Modules/RaidManager/RaidManager.lua:318
 CLM.L["Raid [%s] started"] = "Рейд [%s] стартовал"
 -- Modules/RaidManager/RaidManager.lua:270
 -- Modules/RaidManager/RaidManager.lua:292
--- Modules/RaidManager/RaidManager.lua:336
--- Modules/RaidManager/RaidManager.lua:369
+-- Modules/RaidManager/RaidManager.lua:338
+-- Modules/RaidManager/RaidManager.lua:371
 CLM.L["Raid management is disabled during time traveling."] = "Управление рейдом выключено в режиме путешествия во времени."
 -- MinimapIcon.lua:43
 CLM.L["Raid"] = "Рейд"
@@ -1007,8 +1033,8 @@ CLM.L["Ranged"] = "Дальний бой"
 CLM.L["Rank"] = "Ранг"
 -- Modules/ProfileManager/GUI.lua:145
 CLM.L["Ranks"] = "Ранги"
--- Global/GlobalConfigs.lua:52
--- Global/GlobalConfigs.lua:91
+-- Global/GlobalConfigs.lua:60
+-- Global/GlobalConfigs.lua:99
 CLM.L["Rare"] = "Редкое"
 -- Modules/AutoAwardManager/EncounterIDs.lua:14
 CLM.L["Razorgore the Untamed"] = "Бритвосмерт Неукротимый"
@@ -1091,9 +1117,9 @@ CLM.L["Select character to be marked as main for alt-main linking."] = "Выбе
 CLM.L["Select custom button mode"] = "Выбрать режим доп. кнопки"
 -- Modules/Logger/Logger.lua:20
 CLM.L["Select logging level for troubleshooting"] = "Выберите уровень логирования для поиска проблем"
--- Global/GlobalConfigs.lua:45
+-- Global/GlobalConfigs.lua:53
 CLM.L["Select loot rarity for the annoucement to raid."] = "Выбрать редкость добычи для оповещений."
--- Global/GlobalConfigs.lua:84
+-- Global/GlobalConfigs.lua:92
 CLM.L["Select loot rarity for the tracking unauctioned loot."] = "Выбрать редкость добычи для трекинга вещей вне аукционов."
 -- Modules/ProfileManager/GUI.lua:219
 CLM.L["Select main"] = "Выберите мейна"
@@ -1153,7 +1179,7 @@ CLM.L["Spec guild request"] = "Запрос специализаций гиль�
 -- Modules/RosterManager/GUI.lua:468
 -- Modules/ProfileManager/GUI.lua:371
 CLM.L["Spec"] = "Спек"
--- Modules/RaidManager/RaidManager.lua:573
+-- Modules/RaidManager/RaidManager.lua:575
 CLM.L["Stale"] = "Устаревший"
 -- Modules/PointManager/PointManager.lua:378
 CLM.L["Standby Bonus"] = "Замена"
@@ -1250,11 +1276,11 @@ CLM.L["Toggle loot window display"] = "Включить отображение �
 CLM.L["Toggle point history window display"] = "Включить отображение окна истории начислений"
 -- Modules/RosterManager/GUI.lua:658
 CLM.L["Toggle standings window display"] = "Включить отображение окна составов"
--- Global/GlobalConfigs.lua:36
+-- Global/GlobalConfigs.lua:44
 CLM.L["Toggles loot announcement to raid"] = "Включить оповещение о добыче в рейд"
 -- Modules/AuctionManager/AuctionManager.lua:80
 CLM.L["Toggles loot award announcement to guild"] = "Включить оповещение о добыче в гильдию"
--- Global/GlobalConfigs.lua:83
+-- Global/GlobalConfigs.lua:91
 CLM.L["Tracked loot rarity"] = "Отслеживаемая редкость"
 -- Modules/RosterManager/Roster.lua:709
 -- Modules/RosterManager/Roster.lua:741
@@ -1272,8 +1298,8 @@ CLM.L["Type of auction used: Open, Anonymous Open, Sealed, Vickrey (Sealed with 
 CLM.L["Type"] = "Тип"
 -- Migration.lua:47
 CLM.L["Unable to execute migration. Entries already exist."] = "Невозможно выполнить миграцию. Записи уже существуют."
--- Global/GlobalConfigs.lua:51
--- Global/GlobalConfigs.lua:90
+-- Global/GlobalConfigs.lua:59
+-- Global/GlobalConfigs.lua:98
 CLM.L["Uncommon"] = "Необычное"
 -- ClassicLootManager.lua:248
 CLM.L["Undo action"] = "Отменить действие"
@@ -1338,15 +1364,15 @@ CLM.L["Weekly gains:"] = "За неделю:"
 CLM.L["Weekly reset timezone"] = "Зона еженедельного сброса"
 -- Modules/LedgerManager/GUI.lua:152
 CLM.L["Weekly reset"] = "Недельный сброс"
--- Global/GlobalConfigs.lua:70
+-- Global/GlobalConfigs.lua:78
 CLM.L["Wipe events"] = "Стереть события"
 -- Modules/Logger/Logger.lua:36
 CLM.L["Wipe"] = "Стереть"
--- Global/GlobalConfigs.lua:71
+-- Global/GlobalConfigs.lua:79
 CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "Стереть все события. Это вызовет пересинхронизацию от других игроков."
 -- Modules/Logger/Logger.lua:37
 CLM.L["Wipes the log history"] = "Стирает историю логов"
--- Global/GlobalConfigs.lua:61
+-- Global/GlobalConfigs.lua:69
 CLM.L["WoW DKP Bot Integration"] = "Интеграция с WoW DKP Bot"
 -- Modules/RosterManager/Roster.lua:703
 -- Modules/RosterManager/Roster.lua:735
@@ -1359,20 +1385,20 @@ CLM.L["You are already in an active raid. Leave or finish it before creating new
 CLM.L["You are not allowed to auction items"] = "Вам запрещено проводить аукционы"
 -- Modules/RaidManager/RaidManager.lua:262
 CLM.L["You are not allowed to create raids."] = "Вам запрещено создавать рейды."
--- Modules/RaidManager/RaidManager.lua:357
+-- Modules/RaidManager/RaidManager.lua:359
 CLM.L["You are not allowed to join raid."] = "Вам запрещено присоединяться к рейдам."
 -- Modules/RaidManager/RaidManager.lua:284
--- Modules/RaidManager/RaidManager.lua:328
+-- Modules/RaidManager/RaidManager.lua:330
 CLM.L["You are not allowed to start raid."] = "Вам запрещено начинать рейды."
--- Modules/RaidManager/RaidManager.lua:340
+-- Modules/RaidManager/RaidManager.lua:342
 CLM.L["You are not in an active raid."] = "Вы не состоите в активном рейде."
 -- Modules/RaidManager/RaidManager.lua:297
 CLM.L["You are not in the raid."] = "Вы не в рейде."
--- Modules/RaidManager/RaidManager.lua:332
+-- Modules/RaidManager/RaidManager.lua:334
 CLM.L["You can only end an active raid."] = "Вы можете завершать только активный рейд."
--- Modules/RaidManager/RaidManager.lua:361
+-- Modules/RaidManager/RaidManager.lua:363
 CLM.L["You can only join an active raid."] = "Вы можете присоединиться только к активному рейду."
--- Modules/RaidManager/RaidManager.lua:365
+-- Modules/RaidManager/RaidManager.lua:367
 CLM.L["You can only join different raid than your current one."] = "Вы можете присоединиться только к отличному от вашего рейду."
 -- Modules/RaidManager/RaidManager.lua:288
 CLM.L["You can only start a freshly created raid."] = "Вы можете запустить только свежесозданный рейд."

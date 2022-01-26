@@ -14,4 +14,4 @@ jobs:
       - name: luacheck
         uses: nebularg/actions-luacheck@v1.1.0
         with:
-          files: ClassicLootManager.lua Utils.lua Modules/
+          files: ClassicLootManager.lua Integration.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Global/ Modules/ Locale/

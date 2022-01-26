@@ -1,3 +1,0 @@
-[submodule "Libs/lua-eventsourcing"]
-	path = Libs/lua-eventsourcing
-	url = https://github.com/SamMousa/lua-eventsourcing.git
