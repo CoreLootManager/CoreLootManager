@@ -16,7 +16,7 @@ CLM.ChangelogData = {
                 name = "Translations",
                 data = {
                     {header = "French", body = "First version of French translation available thanks to |cff44cc44Paracétamole|r."},
-                    {header = "Russian", body = "Minor updates as always thanks to cff44cc44PCyber|r."},
+                    {header = "Russian", body = "Minor updates as always thanks to |cff44cc44Cyber|r."},
                 },
             },
             {
