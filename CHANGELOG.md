@@ -1,3 +1,19 @@
+# Classic Loot Manager v1.4.0
+## Translations
+### French
+First version of French translation available thanks to `Paracétamole`.
+### Russian
+Minor updates as always thanks to `Cyber`.
+## Features
+### Raid Messages
+You can now disable specific messages so they won't be displayed in Raid Warnings or Raid chat. Thank you `grecaun`.
+## Fixes
+### Auctioning
+You are no longer able to bid base value if you already bid in Open Ascending auction.
+### Loot announcement
+Fixed announcement of dropped loot from corpse. Thank you `grecaun`.
+### Auto trade
+Auto trade for soulbound items with trade timer not exipred should now work properly.
 # Classic Loot Manager v1.3.1
 ## Hotfixes
 - Open Ascending auction should now have the announcements and auto-increments working properly.
