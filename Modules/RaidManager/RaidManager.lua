@@ -33,7 +33,7 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local function IsPlayerInPvP()
 	local bg = UnitInBattleground("player")
-	local arena = IsActiveBattlefieldArena("player")
+	local arena = IsActiveBattlefieldArena()
 	return arena or (bg ~= nil)
 end
 
