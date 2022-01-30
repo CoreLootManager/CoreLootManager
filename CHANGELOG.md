@@ -1,3 +1,9 @@
+# Classic Loot Manager v1.4.1
+## Fixes
+### Shade of Akama Boss kill bonus
+AddOn should now properly detect Shade of Akama kill and award Boss kill bonus.
+### PvP
+Joining Battleground / Arena as trusted player in CLM raid should no longer interfere.
 # Classic Loot Manager v1.4.0
 ## Translations
 ### French
