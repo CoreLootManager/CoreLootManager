@@ -31,6 +31,12 @@ local RemoveServer = UTILS.RemoveServer
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
+local function IsPlayerInPvP()
+	local bg = UnitInBattleground("player")
+	local arena = IsActiveBattlefieldArena()
+	return arena or (bg ~= nil)
+end
+
 local RaidManager = {}
 function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
@@ -507,23 +513,27 @@ end
 function RaidManager:IsRaidOwner(name)
     LOG:Trace("RaidManager:IsRaidOwner()")
     name = name or whoami()
-    local allow
+    local isOwner
+    if IsPlayerInPvP() then
+        LOG:Debug("Player in PvP")
+        return false
+    end
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
-        allow = false
+        isOwner = false
         LOG:Debug("Not Assistant")
     else
         if self.IsMasterLootSystem then
-            allow = (self.MasterLooter == name)
+            isOwner = (self.MasterLooter == name)
             LOG:Debug("ML system %s/%s", self.MasterLooter, name)
         else
-            allow = (self.RaidLeader == name)
+            isOwner = (self.RaidLeader == name)
             LOG:Debug("Not ML system %s/%s", self.RaidLeader, name)
         end
     end
-    if not allow then
+    if not isOwner then
         LOG:Debug("%s is not raid owner.", name)
     end
-    return allow
+    return isOwner
 end
 
 function RaidManager:IsAllowedToAuction(name, relaxed)
