@@ -10,8 +10,9 @@ local RaidManager = MODULES.RaidManager
 local EventManager = MODULES.EventManager
 
 local HYDROSS_ENCOUNTER_ID = 623
--- local HYDROSS_ENCOUNTER_NAME = "Hydross the Unstable"
 local HYDROSS_NPC_ID = 21216
+local SHADE_OF_AKAMA_ENCOUNTER_ID = 603
+local SHADE_OF_AKAMA_NPC_ID = 22841
 
 local RAID_AWARD_LEDGER_CLASS = "DR"
 
@@ -55,13 +56,14 @@ local function handleBossKill(self, addon, event, id, name)
     end
 end
 
-local function handleHydrossWorkaround(self, addon, event)
+local function handleBossWorkaround(self, targets)
     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
         local _, subevent, _, _, _, _, _, guid, _   = CombatLogGetCurrentEventInfo()
         if subevent == "UNIT_DIED" then
             local _, _, _, _, _, npc_id = strsplit("-", guid)
-            if tonumber(npc_id) == HYDROSS_NPC_ID then
-                awardBossKillBonus(HYDROSS_ENCOUNTER_ID)
+            local encounterId = targets[tonumber(npc_id)]
+            if encounterId then
+                awardBossKillBonus(encounterId)
             end
         end
     end
@@ -137,9 +139,12 @@ function AutoAwardManager:Initialize()
     EventManager:RegisterWoWEvent({"BOSS_KILL"}, (function(...)
         handleBossKill(self, ...)
     end))
-    -- Hydross workaround
+    -- Hydross and Akama workarounds
     EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
-        handleHydrossWorkaround(self, ...)
+        handleBossWorkaround(self, {
+            [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID,
+            [SHADE_OF_AKAMA_NPC_ID] = SHADE_OF_AKAMA_ENCOUNTER_ID,
+        })
     end))
     MODULES.ConfigManager:RegisterUniversalExecutor("aam", "AutoAwardManager", self)
 end
