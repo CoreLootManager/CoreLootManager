@@ -14,8 +14,6 @@ local RaidManager = MODULES.RaidManager
 
 local GlboalChatMessageHandlers = {}
 
-local whoami = UTILS.whoami() --luacheck: ignore
-
 local function trim(s)
     return string.gsub(s, "^%s*(.-)%s*$", "%1")
 end
@@ -26,9 +24,6 @@ function GlboalChatMessageHandlers:Initialize()
     EventManager:RegisterWoWEvent({"CHAT_MSG_WHISPER", "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER"},
     (function(addon, event, text, playerName, ...)
         playerName = UTILS.RemoveServer(playerName)
-        --[===[@non-debug@
-        if playerName == whoami then return end
-        --@end-non-debug@]===]
         local params = { strsplit(" ", text) }
         local command = params[1]
         if command then
@@ -117,6 +112,24 @@ function GlboalChatMessageHandlers:Initialize()
             end
         end
     end))
+    -- Suppress incoming chat commands
+    if CLM.GlobalConfigs:GetSuppressIncomingChatCommands() then
+        ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", (function(_, _, message, ...)
+            if message:find("!dkp") or message:find("!bid") then
+                return true
+            end
+            return false
+        end))
+    end
+    -- Suppress outgoing CLM responses
+    if CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() then
+        ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", (function(_, _, message, ...)
+            if message:find("<CLM>") then
+                return true
+            end
+            return false
+        end))
+    end
 end
 
 CLM.GlboalChatMessageHandlers = GlboalChatMessageHandlers

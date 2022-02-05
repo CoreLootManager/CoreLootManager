@@ -84,15 +84,6 @@ function AuctionManager:Initialize()
             width = "double",
             order = 31
         },
-        auctioning_chat_commands = {
-            name = CLM.L["Enable chat commands"],
-            desc = CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."],
-            type = "toggle",
-            set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
-            get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
-            -- width = "double",
-            order = 32
-        },
         auctioning_enable_auto_award_from_corpse = {
             name = CLM.L["Auto-award from corpse"],
             desc = CLM.L["Enable loot auto-award (Master Looter UI) from corpse when item is awarded"],
@@ -100,7 +91,7 @@ function AuctionManager:Initialize()
             set = function(i, v) self:SetAutoAward(v) end,
             get = function(i) return self:GetAutoAward() end,
             width = "double",
-            order = 33
+            order = 32
         },
         auctioning_enable_auto_trade = {
             name = CLM.L["Auto-trade after award"],
@@ -109,8 +100,40 @@ function AuctionManager:Initialize()
             set = function(i, v) self:SetAutoTrade(v) end,
             get = function(i) return self:GetAutoTrade() end,
             -- width = "double",
+            order = 33
+        },
+        auctioning_chat_commands_header = {
+            type = "header",
+            name = CLM.L["Auctioning - Chat Commands"],
             order = 34
-        }
+        },
+        auctioning_chat_commands = {
+            name = CLM.L["Enable chat commands"],
+            desc = CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."],
+            type = "toggle",
+            set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
+            get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
+            width = "double",
+            order = 35
+        },
+        auctioning_suppress_incoming = {
+            name = CLM.L["Suppress incoming whispers"],
+            desc = CLM.L["Hides incoming !dkp and !bid whispers. Change requires /reload."],
+            type = "toggle",
+            set = function(i, v) CLM.GlobalConfigs:SetSuppressIncomingChatCommands(v) end,
+            get = function(i) return CLM.GlobalConfigs:GetSuppressIncomingChatCommands() end,
+            width = "double",
+            order = 36
+        },
+        auctioning_suppress_outgoing = {
+            name = CLM.L["Suppress outgoing whispers"],
+            desc = CLM.L["Hides outgoing !dkp and !bid responses. Change requires /reload."],
+            type = "toggle",
+            set = function(i, v) CLM.GlobalConfigs:SetSuppressOutgoingChatCommands(v) end,
+            get = function(i) return CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() end,
+            width = "double",
+            order = 37
+        },
     }
     MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 

@@ -125,9 +125,9 @@ CLM.L["Ammo"] = "Munitions"
 CLM.L["Anetheron"] = "Anetheron"
 -- Modules/AuctionManager/AuctionManager.lua:79
 CLM.L["Announce award to Guild"] = "Annoncer la récompense à la guilde"
--- Global/GlobalConfigs.lua:43
+-- Global/GlobalConfigs.lua:53
 CLM.L["Announce loot from corpse to Raid"] = "Annoncer le butin au raid"
--- Global/GlobalConfigs.lua:52
+-- Global/GlobalConfigs.lua:62
 CLM.L["Announcement loot rarity"] = "Annonce de la rareté du butin"
 -- Modules/RosterManager/Roster.lua:634
 CLM.L["Anonymous Open"] = "Anonyme Ouvert"
@@ -161,11 +161,11 @@ CLM.L["Attendance [%]"] = "Présence [%]"
 CLM.L["Attendance"] = "Présence"
 -- Modules/AutoAwardManager/EncounterIDs.lua:62
 CLM.L["Attumen the Huntsman"] = "Attumen le Veneur"
--- Global/GlobalConfigs.lua:140
+-- Global/GlobalConfigs.lua:150
 CLM.L["Auction End Countdown"] = "Compte à rebours de fin d'enchères"
 -- Modules/AuctionManager/GUI.lua:383
 CLM.L["Auction Results"] = "Résultat des l'enchères"
--- Global/GlobalConfigs.lua:122
+-- Global/GlobalConfigs.lua:132
 CLM.L["Auction Start/End"] = "Début/Fin de l'enchère"
 -- Modules/RaidManager/GUI.lua:169
 -- Modules/LedgerManager/GUI.lua:107
@@ -287,7 +287,7 @@ CLM.L["Bidding over current standings not allowed"] = "Enchérir sur le classeme
 -- Modules/BiddingManager/GUI.lua:316
 -- Modules/BiddingManager/GUI.lua:490
 CLM.L["Bidding"] = "Enchère"
--- Global/GlobalConfigs.lua:158
+-- Global/GlobalConfigs.lua:168
 CLM.L["Bids"] = "Enchères"
 -- Modules/AutoAwardManager/EncounterIDs.lua:277
 CLM.L["Black Temple"] = "Temple noir"
@@ -325,7 +325,7 @@ CLM.L["Change roster name."] = "Chagement du nom du Roster."
 -- Modules/Changelog/GUI.lua:125
 -- Modules/Changelog/GUI.lua:126
 CLM.L["Changelog"] = "Journal des modifications"
--- Global/GlobalConfigs.lua:131
+-- Global/GlobalConfigs.lua:141
 CLM.L["Chat Commands"] = "Commandes de discussion"
 -- Modules/AutoAwardManager/EncounterIDs.lua:70
 CLM.L["Chess Event"] = "Chess Event"
@@ -352,8 +352,8 @@ CLM.L["Clear all classes."] = "Effacer toutes les classes."
 CLM.L["Clear mains"] = "Effacer mains"
 -- Modules/ProfileManager/GUI.lua:246
 CLM.L["Clears selected profiles mains."] = "Efface les profils (mains) sélectionnés."
--- Global/GlobalConfigs.lua:58
--- Global/GlobalConfigs.lua:97
+-- Global/GlobalConfigs.lua:68
+-- Global/GlobalConfigs.lua:107
 CLM.L["Common"] = "Commun"
 -- MinimapIcon.lua:77
 -- Modules/RaidManager/GUI.lua:375
@@ -377,7 +377,7 @@ CLM.L["Create raid"] = "Créer raid"
 -- Modules/RosterManager/Options.lua:730
 CLM.L["Create"] = "Créer"
 -- Modules/RaidManager/GUI.lua:335
--- Modules/RaidManager/RaidManager.lua:572
+-- Modules/RaidManager/RaidManager.lua:582
 CLM.L["Created"] = "Crée"
 -- Modules/RosterManager/Options.lua:731
 CLM.L["Creates new roster with default configuration"] = "Crée une nouvelle liste avec la configuration par défaut"
@@ -395,6 +395,8 @@ CLM.L["Custom button mode"] = "Mode bouton personnalisé"
 CLM.L["Custom value"] = "Valeur personnalisée"
 -- Modules/RosterManager/GUI.lua:314
 CLM.L["DKP % that will be decayed."] = "% DKP qui seront diminué."
+-- Global/GlobalConfigs.lua:44
+--CLM.L["DKP & Loot alerts"] = ""
 -- Modules/RosterManager/GUI.lua:188
 CLM.L["DKP value that will be awarded."] = "Valeur DKP qui sera attribuée."
 -- Modules/RosterManager/Roster.lua:610
@@ -441,7 +443,7 @@ CLM.L["EPGP"] = "EPGP"
 CLM.L["Ebonroc"] = "Rochébène"
 -- Modules/AutoAwardManager/EncounterIDs.lua:54
 CLM.L["Edge of Madness"] = "Frontière de la folie"
--- Global/GlobalConfigs.lua:123
+-- Global/GlobalConfigs.lua:133
 CLM.L["Enable announcing auction start and end."] = "Activer l'annonce du début et de la fin des enchères."
 -- Modules/BiddingManager/BiddingManager.lua:75
 CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."] = "Activer la mise à jour automatique des valeurs d'enchère lorsque l'enchère la plus élevée actuelle change (enchère ouverte uniquement)."
@@ -455,21 +457,21 @@ CLM.L["Enable loot auto-award (Master Looter UI) from corpse when item is awarde
 CLM.L["Enable paid value splitting amongst raiders."] = "Activez la répartition de la valeur payée entre les raiders."
 -- Modules/Logger/Logger.lua:29
 CLM.L["Enables / disables verbose data printing during logging"] = "Active/désactive l'impression de données détaillées dans le journal des logs"
--- Global/GlobalConfigs.lua:132
+-- Global/GlobalConfigs.lua:142
 CLM.L["Enables announcing chat commands at auction start."] = "Permet d'annoncer les commandes de discussion au début de l'enchère."
--- Global/GlobalConfigs.lua:150
+-- Global/GlobalConfigs.lua:160
 CLM.L["Enables announcing loot awards."] = "Permet d'annoncer les récompenses de butin."
--- Global/GlobalConfigs.lua:159
+-- Global/GlobalConfigs.lua:169
 CLM.L["Enables announcing new highest bid (when applicable)."] = "Permet d'annoncer la nouvelle offre la plus élevée (le cas échéant)."
--- Global/GlobalConfigs.lua:114
+-- Global/GlobalConfigs.lua:124
 CLM.L["Enables announcing raid start and end."] = "Permet d'annoncer le début et la fin du raid."
 -- Modules/AuctionManager/AuctionManager.lua:107
 CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Permet l'échange automatique du butin après la vente aux enchères"
--- Global/GlobalConfigs.lua:141
+-- Global/GlobalConfigs.lua:151
 CLM.L["Enables raid-warning countdown for auctions."] = "Active le compte à rebours d'avertissement de raid pour les enchères."
 -- Modules/AuctionManager/AuctionManager.lua:89
 CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."] = "Activez !dkp et !bid via chuchotement / raid. Le changement nécessite /reload."
--- Global/GlobalConfigs.lua:70
+-- Global/GlobalConfigs.lua:80
 CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Activez l'intégration de WoW DKP Bot. Cela entraînera le stockage de données supplémentaires lors de la déconnexion."
 -- Modules/LedgerManager/GUI.lua:544
 CLM.L["End Timetravel"] = "Mettre fin au Timetravel"
@@ -477,8 +479,8 @@ CLM.L["End Timetravel"] = "Mettre fin au Timetravel"
 CLM.L["End selected raid"] = "Mettre fin au raid sélectionnéд"
 -- Modules/LedgerManager/GUI.lua:457
 CLM.L["Enter sandbox"] = "Entrer en mode Sandbox"
--- Global/GlobalConfigs.lua:61
--- Global/GlobalConfigs.lua:100
+-- Global/GlobalConfigs.lua:71
+-- Global/GlobalConfigs.lua:110
 CLM.L["Epic"] = "Epic"
 -- Modules/AutoAwardManager/EncounterIDs.lua:109
 CLM.L["Eredar Twins"] = "Jumelles érédars"
@@ -529,7 +531,7 @@ CLM.L["Filtering"] = "Filtration"
 CLM.L["Finger"] = "Doigt"
 -- Modules/LedgerManager/GUI.lua:412
 CLM.L["Finished raid %s"] = "Raid terminé %s"
--- Modules/RaidManager/RaidManager.lua:574
+-- Modules/RaidManager/RaidManager.lua:584
 CLM.L["Finished"] = "Terminé"
 -- Modules/AutoAwardManager/EncounterIDs.lua:17
 CLM.L["Firemaw"] = "Gueule-de-feu"
@@ -547,7 +549,7 @@ CLM.L["Garr"] = "Garr"
 CLM.L["Gehennas"] = "Gehennas"
 -- Modules/AutoAwardManager/EncounterIDs.lua:57
 CLM.L["General Rajaxx"] = "Général Rajaxx"
--- Global/GlobalConfigs.lua:39
+-- Global/GlobalConfigs.lua:40
 CLM.L["Global"] = "Global"
 -- Modules/AutoAwardManager/EncounterIDs.lua:36
 CLM.L["Gluth"] = "Gluth"
@@ -628,7 +630,7 @@ CLM.L["Importing profiles from DKPTable"] = "Importation de profils depuis la ta
 -- Modules/RosterManager/GUI.lua:101
 -- Modules/ProfileManager/GUI.lua:81
 CLM.L["In Guild"] = "Dans la guilde"
--- Modules/RaidManager/RaidManager.lua:573
+-- Modules/RaidManager/RaidManager.lua:583
 CLM.L["In Progress"] = "En cours"
 -- Modules/RaidManager/GUI.lua:360
 -- Modules/RosterManager/GUI.lua:98
@@ -689,7 +691,7 @@ CLM.L["Item"] = "Objet"
 CLM.L["Jan'alai"] = "Jan'alai"
 -- Modules/AutoAwardManager/EncounterIDs.lua:52
 CLM.L["Jin'do the Hexxer"] = "Jin'do le Maléficieur"
--- Global/GlobalConfigs.lua:33
+-- Global/GlobalConfigs.lua:34
 CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"] = "rejoignez notre discord pour plus d'infos : |cff44cc44https://tiny.one/clm-discord|r"
 -- Modules/RaidManager/GUI.lua:122
 CLM.L["Join selected raid"] = "Rejoindre le raid sélectionné"
@@ -711,8 +713,8 @@ CLM.L["Kurinnaxx"] = "Kurinnaxx"
 CLM.L["Lady Vashj"] = "Dame Vashj"
 -- Modules/LedgerManager/GUI.lua:583
 CLM.L["Ledger Entries Audit"] = "Audit des écritures comptables"
--- Global/GlobalConfigs.lua:62
--- Global/GlobalConfigs.lua:101
+-- Global/GlobalConfigs.lua:72
+-- Global/GlobalConfigs.lua:111
 CLM.L["Legendary"] = "Légendaire"
 -- Modules/RosterManager/Roster.lua:706
 -- Modules/RosterManager/Roster.lua:738
@@ -733,14 +735,14 @@ CLM.L["Loatheb"] = "Horreb"
 CLM.L["Logging level"] = "Niveau Enregistrement"
 -- Modules/Logger/Logger.lua:15
 CLM.L["Logging"] = "Enregistrement"
--- Global/GlobalConfigs.lua:149
+-- Global/GlobalConfigs.lua:159
 CLM.L["Loot Awards"] = "Récompenses de butin"
 -- MinimapIcon.lua:31
 -- Modules/LootManager/GUI.lua:224
 CLM.L["Loot History"] = "Historique du butin"
 -- MinimapIcon.lua:48
 -- Modules/LootQueueManager/GUI.lua:185
--- Global/GlobalConfigs.lua:87
+-- Global/GlobalConfigs.lua:97
 CLM.L["Loot Queue"] = "File d'attente du butin"
 -- Modules/AutoAwardManager/EncounterIDs.lua:4
 CLM.L["Lucifron"] = "Lucifron"
@@ -825,9 +827,9 @@ CLM.L["Missing profile %s"] = "Profil manquant %s"
 CLM.L["Missing roster name and you are not in raid"] = "Nom de la liste manquant et vous n'êtes pas en raid"
 -- Global/GlobalSlashCommands.lua:54
 CLM.L["Missing roster name. Using Raid Info"] = "Nom de liste manquant. Utilisation des informations de raid"
--- Modules/RaidManager/RaidManager.lua:280
--- Modules/RaidManager/RaidManager.lua:326
--- Modules/RaidManager/RaidManager.lua:355
+-- Modules/RaidManager/RaidManager.lua:286
+-- Modules/RaidManager/RaidManager.lua:332
+-- Modules/RaidManager/RaidManager.lua:361
 CLM.L["Missing valid raid"] = "Raid valide manquant"
 -- Modules/AutoAwardManager/EncounterIDs.lua:58
 CLM.L["Moam"] = "Moam"
@@ -958,8 +960,8 @@ CLM.L["Point caps"] = "Point caps"
 -- Modules/RosterManager/Options.lua:459
 -- Modules/RosterManager/Options.lua:747
 CLM.L["Point type"] = "Type de point"
--- Global/GlobalConfigs.lua:57
--- Global/GlobalConfigs.lua:96
+-- Global/GlobalConfigs.lua:67
+-- Global/GlobalConfigs.lua:106
 CLM.L["Poor"] = "Médiocre"
 -- .:indirectly
 CLM.L["Priest"] = "Prêtre"
@@ -1004,18 +1006,18 @@ CLM.L["Raid Completion Value"] = "Valeur de fin de raid"
 CLM.L["Raid Manager"] = "Gestionnaire de raid"
 -- Modules/RaidManager/GUI.lua:286
 CLM.L["Raid Name"] = "Nom du raid"
--- Global/GlobalConfigs.lua:113
+-- Global/GlobalConfigs.lua:123
 CLM.L["Raid Start/End"] = "Début/Fin du Raid"
--- Global/GlobalConfigs.lua:109
+-- Global/GlobalConfigs.lua:119
 CLM.L["Raid Warnings"] = "Avertissements de raid"
--- Modules/RaidManager/RaidManager.lua:348
+-- Modules/RaidManager/RaidManager.lua:354
 CLM.L["Raid [%s] ended"] = "Raid [%s] terminé"
--- Modules/RaidManager/RaidManager.lua:318
+-- Modules/RaidManager/RaidManager.lua:324
 CLM.L["Raid [%s] started"] = "Le raid [%s] a commencé"
--- Modules/RaidManager/RaidManager.lua:270
--- Modules/RaidManager/RaidManager.lua:292
--- Modules/RaidManager/RaidManager.lua:338
--- Modules/RaidManager/RaidManager.lua:371
+-- Modules/RaidManager/RaidManager.lua:276
+-- Modules/RaidManager/RaidManager.lua:298
+-- Modules/RaidManager/RaidManager.lua:344
+-- Modules/RaidManager/RaidManager.lua:377
 CLM.L["Raid management is disabled during time traveling."] = "La gestion des raids est désactivée pendant le Time-traveling"
 -- MinimapIcon.lua:43
 CLM.L["Raid"] = "Raid"
@@ -1033,8 +1035,8 @@ CLM.L["Ranged"] = "À distance"
 CLM.L["Rank"] = "Rang"
 -- Modules/ProfileManager/GUI.lua:145
 CLM.L["Ranks"] = "Rangs"
--- Global/GlobalConfigs.lua:60
--- Global/GlobalConfigs.lua:99
+-- Global/GlobalConfigs.lua:70
+-- Global/GlobalConfigs.lua:109
 CLM.L["Rare"] = "Rare"
 -- Modules/AutoAwardManager/EncounterIDs.lua:14
 CLM.L["Razorgore the Untamed"] = "Tranchetripe l'Indompté"
@@ -1117,9 +1119,9 @@ CLM.L["Select character to be marked as main for alt-main linking."] = "Sélecti
 CLM.L["Select custom button mode"] = "Sélectionnez le mode bouton personnalisé"
 -- Modules/Logger/Logger.lua:20
 CLM.L["Select logging level for troubleshooting"] = "Sélectionnez le niveau du journal pour le dépannage"
--- Global/GlobalConfigs.lua:53
+-- Global/GlobalConfigs.lua:63
 CLM.L["Select loot rarity for the annoucement to raid."] = "Sélectionnez la rareté du butin pour l'annonce du raid."
--- Global/GlobalConfigs.lua:92
+-- Global/GlobalConfigs.lua:102
 CLM.L["Select loot rarity for the tracking unauctioned loot."] = "Sélectionnez la rareté du butin pour le suivi du butin non mis aux enchères."
 -- Modules/ProfileManager/GUI.lua:219
 CLM.L["Select main"] = "Sélectionnez Main"
@@ -1179,7 +1181,7 @@ CLM.L["Spec guild request"] = "Demande spé de la guide"
 -- Modules/RosterManager/GUI.lua:468
 -- Modules/ProfileManager/GUI.lua:371
 CLM.L["Spec"] = "Spécification"
--- Modules/RaidManager/RaidManager.lua:575
+-- Modules/RaidManager/RaidManager.lua:585
 CLM.L["Stale"] = "Périmé"
 -- Modules/PointManager/PointManager.lua:378
 CLM.L["Standby Bonus"] = "Bonus d'attente"
@@ -1276,11 +1278,13 @@ CLM.L["Toggle loot window display"] = "Basculer l'affichage de la fenêtre de bu
 CLM.L["Toggle point history window display"] = "Basculer l'affichage de la fenêtre de l'historique des points"
 -- Modules/RosterManager/GUI.lua:658
 CLM.L["Toggle standings window display"] = "Basculer l'affichage de la fenêtre des classements"
--- Global/GlobalConfigs.lua:44
+-- Global/GlobalConfigs.lua:45
+--CLM.L["Toggles alerts display when receiving DKP or loot."] = ""
+-- Global/GlobalConfigs.lua:54
 CLM.L["Toggles loot announcement to raid"] = "Bascule l'annonce de butin en raid"
 -- Modules/AuctionManager/AuctionManager.lua:80
 CLM.L["Toggles loot award announcement to guild"] = "Bascule l'annonce de récompense de butin à la guilde"
--- Global/GlobalConfigs.lua:91
+-- Global/GlobalConfigs.lua:101
 CLM.L["Tracked loot rarity"] = "Suivi de la rareté du butin"
 -- Modules/RosterManager/Roster.lua:709
 -- Modules/RosterManager/Roster.lua:741
@@ -1298,8 +1302,8 @@ CLM.L["Type of auction used: Open, Anonymous Open, Sealed, Vickrey (Sealed with 
 CLM.L["Type"] = "Type"
 -- Migration.lua:47
 CLM.L["Unable to execute migration. Entries already exist."] = "Impossible d'exécuter la migration. Les entrées existent déjà."
--- Global/GlobalConfigs.lua:59
--- Global/GlobalConfigs.lua:98
+-- Global/GlobalConfigs.lua:69
+-- Global/GlobalConfigs.lua:108
 CLM.L["Uncommon"] = "Commun"
 -- ClassicLootManager.lua:248
 CLM.L["Undo action"] = "Annuler l'action"
@@ -1364,43 +1368,43 @@ CLM.L["Weekly gains:"] = "Gains hebdomadaires :"
 CLM.L["Weekly reset timezone"] = "Fuseau horaire de réinitialisation hebdomadaire"
 -- Modules/LedgerManager/GUI.lua:152
 CLM.L["Weekly reset"] = "Réinitialisation hebdomadaire"
--- Global/GlobalConfigs.lua:78
+-- Global/GlobalConfigs.lua:88
 CLM.L["Wipe events"] = "Effacer les événements"
 -- Modules/Logger/Logger.lua:36
 CLM.L["Wipe"] = "Effacer"
--- Global/GlobalConfigs.lua:79
+-- Global/GlobalConfigs.lua:89
 CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "Efface tous les événements de la mémoire. Cela déclenchera la resynchronisation des autres utilisateurs."
 -- Modules/Logger/Logger.lua:37
 CLM.L["Wipes the log history"] = "Efface l'historique du journal"
--- Global/GlobalConfigs.lua:69
+-- Global/GlobalConfigs.lua:79
 CLM.L["WoW DKP Bot Integration"] = "Intégration WoW DKP Bot"
 -- Modules/RosterManager/Roster.lua:703
 -- Modules/RosterManager/Roster.lua:735
 CLM.L["Wrist"] = "Poignet"
 -- Utils.lua:447
 CLM.L["Yes"] = "Oui"
--- Modules/RaidManager/RaidManager.lua:266
+-- Modules/RaidManager/RaidManager.lua:272
 CLM.L["You are already in an active raid. Leave or finish it before creating new one."] = "Vous êtes déjà dans un raid actif. Laissez-le ou terminez-le avant d'en créer un nouveau."
 -- Modules/AuctionManager/AuctionManager.lua:146
 CLM.L["You are not allowed to auction items"] = "Vous n'êtes pas autorisé à vendre des articles aux enchères"
--- Modules/RaidManager/RaidManager.lua:262
+-- Modules/RaidManager/RaidManager.lua:268
 CLM.L["You are not allowed to create raids."] = "Vous n'êtes pas autorisé à créer des raids."
--- Modules/RaidManager/RaidManager.lua:359
+-- Modules/RaidManager/RaidManager.lua:365
 CLM.L["You are not allowed to join raid."] = "Vous n'êtes pas autorisé à rejoindre le raid."
--- Modules/RaidManager/RaidManager.lua:284
--- Modules/RaidManager/RaidManager.lua:330
+-- Modules/RaidManager/RaidManager.lua:290
+-- Modules/RaidManager/RaidManager.lua:336
 CLM.L["You are not allowed to start raid."] = "Vous n'êtes pas autorisé à démarrer un raid."
--- Modules/RaidManager/RaidManager.lua:342
+-- Modules/RaidManager/RaidManager.lua:348
 CLM.L["You are not in an active raid."] = "Vous n'êtes pas dans un raid actif."
--- Modules/RaidManager/RaidManager.lua:297
+-- Modules/RaidManager/RaidManager.lua:303
 CLM.L["You are not in the raid."] = "Vous n'êtes pas dans un raid."
--- Modules/RaidManager/RaidManager.lua:334
+-- Modules/RaidManager/RaidManager.lua:340
 CLM.L["You can only end an active raid."] = "Vous ne pouvez terminer qu'un raid actif."
--- Modules/RaidManager/RaidManager.lua:363
+-- Modules/RaidManager/RaidManager.lua:369
 CLM.L["You can only join an active raid."] = "Vous ne pouvez rejoindre qu'un raid actif."
--- Modules/RaidManager/RaidManager.lua:367
+-- Modules/RaidManager/RaidManager.lua:373
 CLM.L["You can only join different raid than your current one."] = "Vous ne pouvez rejoindre un raid différent de celui que vous avez actuellement."
--- Modules/RaidManager/RaidManager.lua:288
+-- Modules/RaidManager/RaidManager.lua:294
 CLM.L["You can only start a freshly created raid."] = "Vous ne pouvez démarrer qu'un raid fraîchement créé."
 -- Debug.lua:182
 CLM.L["You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI."] = "Vous venez de recevoir la commande Kill de %s. Toutes les informations du registre ont été effacées. Veuillez recharger l'interface utilisateur."

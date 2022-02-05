@@ -18,6 +18,8 @@ function GlobalConfigs:Initialize()
         wowdkpbot_integration = false,
         chat_commands = false,
         alerts = true,
+        suppress_incoming_chat_commands = false,
+        suppress_outgoing_chat_commands = false,
         raid_warnings = {
             raid = true,
             auction = true,
@@ -231,6 +233,22 @@ end
 
 function GlobalConfigs:GetAllowChatCommands()
     return self.db.chat_commands
+end
+
+function GlobalConfigs:SetSuppressIncomingChatCommands(value)
+    self.db.suppress_incoming_chat_commands = value and true or false
+end
+
+function GlobalConfigs:GetSuppressIncomingChatCommands()
+    return self.db.suppress_incoming_chat_commands
+end
+
+function GlobalConfigs:SetSuppressOutgoingChatCommands(value)
+    self.db.suppress_outgoing_chat_commands = value and true or false
+end
+
+function GlobalConfigs:GetSuppressOutgoingChatCommands()
+    return self.db.suppress_outgoing_chat_commands
 end
 
 function GlobalConfigs:SetRaidWarning(value)
