@@ -143,7 +143,7 @@ function AutoAwardManager:Initialize()
     EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
         handleBossWorkaround(self, {
             [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID,
-            [SHADE_OF_AKAMA_NPC_ID] = SHADE_OF_AKAMA_ENCOUNTER_ID,
+            -- [SHADE_OF_AKAMA_NPC_ID] = SHADE_OF_AKAMA_ENCOUNTER_ID,
         })
     end))
     MODULES.ConfigManager:RegisterUniversalExecutor("aam", "AutoAwardManager", self)
