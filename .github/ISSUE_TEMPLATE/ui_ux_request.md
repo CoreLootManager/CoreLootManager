@@ -1,8 +1,8 @@
 ---
-name: Feature request
-about: Suggest a new feature or a feature change for this project
+name: UI/UX change request
+about: Suggest a new ui/ux change for this project
 title: ''
-labels: feature
+labels: ui/ux
 assignees: ''
 
 ---
