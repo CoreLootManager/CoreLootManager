@@ -33,17 +33,21 @@ end
 local BidDeniedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidDeniedAlertFrameTemplate", BidDeniedAlertFrame_SetUp, 6, math.huge)
 
 eventDispatcher.addEventListener(USER_RECEIVED_POINTS, function(event, data)
+    if not CLM.GlobalConfigs:GetAlerts() then return end
     DKPReceivedAlertSystem:AddAlert(data)
 end)
 
 eventDispatcher.addEventListener(USER_RECEIVED_ITEM, function(event, data)
+    if not CLM.GlobalConfigs:GetAlerts() then return end
     LootAlertSystem:AddAlert("item: " .. data.id, 1)
 end)
 
 eventDispatcher.addEventListener(USER_BID_ACCEPTED, function(event, data)
+    if not CLM.GlobalConfigs:GetAlerts() then return end
     BidAcceptedAlertSystem:AddAlert(data)
 end)
 
 eventDispatcher.addEventListener(USER_BID_DENIED, function(event, data)
+    if not CLM.GlobalConfigs:GetAlerts() then return end
     BidDeniedAlertSystem:AddAlert(data)
 end)
