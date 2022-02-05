@@ -11,8 +11,6 @@ local EventManager = MODULES.EventManager
 
 local HYDROSS_ENCOUNTER_ID = 623
 local HYDROSS_NPC_ID = 21216
-local SHADE_OF_AKAMA_ENCOUNTER_ID = 603
-local SHADE_OF_AKAMA_NPC_ID = 22841
 
 local RAID_AWARD_LEDGER_CLASS = "DR"
 
@@ -142,8 +140,7 @@ function AutoAwardManager:Initialize()
     -- Hydross and Akama workarounds
     EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
         handleBossWorkaround(self, {
-            [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID,
-            -- [SHADE_OF_AKAMA_NPC_ID] = SHADE_OF_AKAMA_ENCOUNTER_ID,
+            [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID
         })
     end))
     MODULES.ConfigManager:RegisterUniversalExecutor("aam", "AutoAwardManager", self)
