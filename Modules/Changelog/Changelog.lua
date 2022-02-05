@@ -3,6 +3,45 @@ local  _, CLM = ...
 -- Auto trade for soulbound items with trade timer not exipred should now work properly.
 CLM.ChangelogData = {
     {
+        version = "v1.4.2",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                    {header = "Mount Hyjal and Black Temple Raids", body = "Good luck everyone with your progress, and may the loot ever be in your favor."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Shade of Akama Boss kill bonus", body = "AddOn will no longer give double DKP for the kill."},
+                    {header = "Chat command responses", body = "You can now suppress incoming and outgoing whispers related to chat commands."},
+                    {header = "DKP & Loot Alerts", body = "You can now disable DKP & Loot alerts if you are experiencing a lag when they are displayed for the first time."},
+                },
+            },
+        }
+    },
+    {
+        version = "v1.4.1",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                    {header = "Mount Hyjal and Black Temple Raids", body = "Good luck everyone with your progress, and may the loot ever be in your favor."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Shade of Akama Boss kill bonus", body = "AddOn should now properly detect Shade of Akama kill and award Boss kill bonus."},
+                    {header = "PvP", body = "Joining Battleground / Arena as trusted player in CLM raid should no longer interfere."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.4.0",
         data = {
             {

@@ -1,3 +1,12 @@
+
+# Classic Loot Manager v1.4.2
+## Fixes
+### Shade of Akama Boss kill bonus
+AddOn will no longer give double DKP for the kill.
+### Chat command responses
+You can now suppress incoming and outgoing whispers related to chat commands.
+### DKP & Loot Alerts
+You can now disable DKP & Loot alerts if you are experiencing a lag when they are displayed for the first time.
 # Classic Loot Manager v1.4.1
 ## Fixes
 ### Shade of Akama Boss kill bonus
