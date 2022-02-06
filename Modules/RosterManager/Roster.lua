@@ -401,8 +401,6 @@ function RosterConfiguration:New(i)
     o._.allowNegativeStandings = false
     -- Allow negative bidders
     o._.allowNegativeBidders = false
-    -- TODO:
-    -- Max Bid Behavior ?
     -- Boss Kill Bonus
     o._.bossKillBonus = false
     -- Default Boss Kill Bonus value
@@ -431,6 +429,12 @@ function RosterConfiguration:New(i)
     o._.roundDecimals = 10
     -- Minimal bid increment for open auction
     o._.minimalIncrement = 1
+    -- Bench players leaving raid
+    o._.autoBenchLeavers = false
+    -- Include bench in auto-awards
+    o._.autoAwardIncludeBench = true
+    -- Include only online players in auto-awards
+    o._.autoAwardOnlineOnly = false
 
     -- Additional settings
     o.hasHardCap = false
@@ -465,7 +469,10 @@ function RosterConfiguration:fields()
         "weeklyCap",
         "weeklyReset",
         "roundDecimals",
-        "minimalIncrement"
+        "minimalIncrement",
+        "autoBenchLeavers",
+        "autoAwardIncludeBench",
+        "autoAwardOnlineOnly"
     }
 end
 
@@ -498,7 +505,10 @@ local TRANSFORMS = {
     weeklyCap = transform_number,
     weeklyReset = transform_number,
     roundDecimals = transform_number,
-    minimalIncrement = transform_number
+    minimalIncrement = transform_number,
+    autoBenchLeavers = transform_boolean,
+    autoAwardIncludeBench = transform_boolean,
+    autoAwardOnlineOnly = transform_boolean,
 }
 
 function RosterConfiguration:inflate(data)
@@ -587,6 +597,9 @@ function RosterConfiguration._validate_weeklyCap(value) value = tonumber(value);
 function RosterConfiguration._validate_weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
 function RosterConfiguration._validate_roundDecimals(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
 function RosterConfiguration._validate_minimalIncrement(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_autoBenchLeavers(value) return IsBoolean(value) end
+function RosterConfiguration._validate_autoAwardIncludeBench(value) return IsBoolean(value) end
+function RosterConfiguration._validate_autoAwardOnlineOnly(value) return IsBoolean(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration
