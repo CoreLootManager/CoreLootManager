@@ -126,19 +126,31 @@ function RosterManagerOptions:Initialize()
         interval_bonus_time_set = (function(name, value)
             SetRosterOption(name, "intervalBonusTime", value)
         end),
-        -- Caps
         weekly_reset_timezone_get = (function(name)
             return GetRosterOption(name, "weeklyReset")
         end),
         weekly_reset_timezone_set = (function(name, value)
             SetRosterOption(name, "weeklyReset", value)
         end),
-        weekly_cap_get = (function(name)
-            return tostring(GetRosterOption(name, "weeklyCap"))
+        auto_bench_leavers_get = (function(name)
+            return GetRosterOption(name, "autoBenchLeavers")
         end),
-        weekly_cap_set = (function(name, value)
-            SetRosterOption(name, "weeklyCap", value)
+        auto_bench_leavers_set = (function(name, value)
+            SetRosterOption(name, "autoBenchLeavers", value)
         end),
+        auto_award_include_bench_get = (function(name)
+            return GetRosterOption(name, "autoAwardIncludeBench")
+        end),
+        auto_award_include_bench_set = (function(name, value)
+            SetRosterOption(name, "autoAwardIncludeBench", value)
+        end),
+        auto_award_online_only_get = (function(name)
+            return GetRosterOption(name, "autoAwardOnlineOnly")
+        end),
+        auto_award_online_only_set = (function(name, value)
+            SetRosterOption(name, "autoAwardOnlineOnly", value)
+        end),
+        -- Caps
         hard_cap_get = (function(name)
             return tostring(GetRosterOption(name, "hardCap"))
         end),
@@ -150,6 +162,12 @@ function RosterManagerOptions:Initialize()
         end),
         round_decimals_set = (function(name, value)
             SetRosterOption(name, "roundDecimals", value)
+        end),
+        weekly_cap_get = (function(name)
+            return tostring(GetRosterOption(name, "weeklyCap"))
+        end),
+        weekly_cap_set = (function(name, value)
+            SetRosterOption(name, "weeklyCap", value)
         end),
         -- Auction
         auction_auction_type_get = (function(name)
@@ -367,7 +385,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             end
         end
         return args
-    end)(roster)
+    end)()
 
     local boss_kill_award_values_args = (function()
         local args = {
@@ -627,6 +645,27 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 18,
                 values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
+            },
+            auto_bench_leavers =  {
+                name = CLM.L["Auto-Bench leavers"],
+                type = "toggle",
+                order = 19,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                width = 1
+            },
+            auto_award_include_bench =  {
+                name = CLM.L["Include bench in auto awards"],
+                type = "toggle",
+                order = 20,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                width = 1
+            },
+            auto_award_online_only =  {
+                name = CLM.L["Auto-award bench to online only"],
+                type = "toggle",
+                order = 19,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                width = 1
             },
             --
             auction = {
