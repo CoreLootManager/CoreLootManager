@@ -34,10 +34,11 @@ local RaidManager = MODULES.RaidManager
 
 local FILTER_IN_RAID = 100
 -- local FILTER_ONLINE = 101
--- local FILTER_STANDBY = 102
+local FILTER_STANDBY = 102
 local FILTER_IN_GUILD = 103
 local FILTER_NOT_IN_GUILD = 104
 local FILTER_MAINS_ONLY = 105
+
 
 local StandingsGUI = {}
 
@@ -99,7 +100,7 @@ local function GenerateUntrustedOptions(self)
     filters[FILTER_MAINS_ONLY] = UTILS.ColorCodeText(CLM.L["Mains"], "FFD100")
     filters[FILTER_NOT_IN_GUILD] = UTILS.ColorCodeText(CLM.L["External"], "FFD100")
     filters[FILTER_IN_GUILD] = UTILS.ColorCodeText(CLM.L["In Guild"], "FFD100")
-    -- filters[FILTER_STANDBY] = UTILS.ColorCodeText(CLM.L["Standby"], "FFD100")
+    filters[FILTER_STANDBY] = UTILS.ColorCodeText(CLM.L["Standby"], "FFD100")
     return {
         filter_header = {
             type = "header",
@@ -489,7 +490,19 @@ local function CreateStandingsDisplay(self)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
-
+    -- Dropdown menu
+    local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+        {
+            title = CLM.L["Add to standby"],
+            func = (function()
+            end),
+            trustedOnly = true,
+            color = "eeee00"
+        }
+    },
+    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
     -- OnEnter handler -> on hover
     local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -515,8 +528,23 @@ local function CreateStandingsDisplay(self)
         self.tooltip:Hide()
         return status
     end)
+    -- OnClick handler -> click
+    local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+        local rightButton = (button == "RightButton")
+        local status
+        local selected = self.st:GetSelection()
+        if selected ~= realrow then
+            status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        end
+        if rightButton then
+            UTILS.LibDD:CloseDropDownMenus()
+            UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+        end
+        return status
+    end
     -- end
     self.st:RegisterEvents({
+        OnClick = OnClickHandler,
         OnEnter = OnEnterHandler,
         OnLeave = OnLeaveHandler
     })

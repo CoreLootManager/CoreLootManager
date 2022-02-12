@@ -45,10 +45,11 @@ function Create:fields()
     return CreateFields
 end
 
-function Start:new(raidUid, players)
+function Start:new(raidUid, players, standby)
     local o = LogEntry.new(self)
     o.r = raidUid
     o.p = CreateGUIDList(players)
+    o.s = CreateGUIDList(standby)
     return o
 end
 
@@ -60,7 +61,11 @@ function Start:players()
     return self.p
 end
 
-local StartFields = mergeLists(LogEntry:fields(), {"r", "p"})
+function Start:standby()
+    return self.s
+end
+
+local StartFields = mergeLists(LogEntry:fields(), {"r", "p","s"})
 function Start:fields()
     return StartFields
 end
@@ -80,7 +85,7 @@ function End:fields()
     return EndFields
 end
 
-function Update:new(raidUid, leavers, joiners, benched, removed)
+function Update:new(raidUid, leavers, joiners, standby, removed)
     local o = LogEntry.new(self)
     o.r = raidUid or 0
     o.l = CreateGUIDList(leavers)
@@ -88,7 +93,7 @@ function Update:new(raidUid, leavers, joiners, benched, removed)
     if #o.l + #o.j == 0 then
         error("Must provide at least one leaver or joiner")
     end
-    o.b = CreateGUIDList(benched)
+    o.s = CreateGUIDList(standby)
     o.e = CreateGUIDList(removed)
     return o
 end
@@ -105,15 +110,15 @@ function Update:joiners()
     return self.j
 end
 
-function Update:benched()
-    return self.b
+function Update:standby()
+    return self.s
 end
 
 function Update:removed()
     return self.e
 end
 
-local updateFields = mergeLists(LogEntry:fields(), {"r", "l", "j", "b", "e"})
+local updateFields = mergeLists(LogEntry:fields(), {"r", "l", "j", "s", "e"})
 function Update:fields()
     return updateFields
 end

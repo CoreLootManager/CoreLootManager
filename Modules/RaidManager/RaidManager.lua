@@ -81,6 +81,8 @@ function RaidManager:Initialize()
             local raidUid = entry:raid()
             local joiners = entry:joiners()
             local leavers = entry:leavers()
+            local standby = entry:standby()
+            local removed = entry:removed()
             local raid = self:GetRaidByUid(raidUid)
             if not raid then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
@@ -96,13 +98,38 @@ function RaidManager:Initialize()
                     raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
                 end
             end
-            -- Remove leavers
+            -- Add standby
+            for _, iGUID in ipairs(standby) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    self:UpdateProfileCurentRaid(GUID, raidUid)
+                    raid:StandbyPlayer(GUID)
+                    raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
+                end
+            end
+            -- Remove / bench leavers
+            local benchLeavers = raid.configuration:Get("autoBenchLeavers")
             for _, iGUID in ipairs(leavers) do
                 local GUID = getGuidFromInteger(iGUID)
                 local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, nil)
                     raid:RemovePlayer(GUID)
+                    if benchLeavers then
+                        -- Bench leavers
+                        raid:StandbyPlayer(GUID)
+                    end
+                end
+            end
+            -- Remove removed
+            for _, iGUID in ipairs(removed) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    self:UpdateProfileCurentRaid(GUID, nil)
+                    raid:RemovePlayer(GUID)
+                    raid:RemoveFromStandbyPlayer(GUID)
                 end
             end
         end)
@@ -114,6 +141,7 @@ function RaidManager:Initialize()
             LOG:TraceAndCount("mutator(RaidStart)")
             local raidUid = entry:raid()
             local players = entry:players()
+            local standby = entry:standby()
             local raid = self:GetRaidByUid(raidUid)
             if not raid then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
@@ -129,6 +157,16 @@ function RaidManager:Initialize()
                     raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
                 else
                     LOG:Debug("RaidManager mutator(): Missing profile for: %s", GUID)
+                end
+            end
+            -- Add standby
+            for _, iGUID in ipairs(standby) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    self:UpdateProfileCurentRaid(GUID, raidUid)
+                    raid:StandbyPlayer(GUID)
+                    raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
                 end
             end
 
