@@ -154,9 +154,13 @@ function Raid:Players()
     return keys(self.players)
 end
 
-function Raid:Profiles()
+function Raid:Profiles(historical)
     self.playerProfileCache = {}
-    for player,_ in pairs(self.players) do
+    local players = self.players
+    if historical then
+        players = self.participated.inRaid
+    end
+    for player,_ in pairs(players) do
         -- The code below breaks Model-View-Controller rule as it accessess Managers
         -- Maybe the caching should be done in GUI module?
         -- TODO: resolve this
@@ -171,9 +175,13 @@ function Raid:Profiles()
     return self.playerProfileCache
 end
 
-function Raid:Standby()
+function Raid:Standby(historical)
     self.standbyProfileCache = {}
-    for player,_ in pairs(self.standby) do
+    local standby = self.standby
+    if historical then
+        standby = self.participated.standby
+    end
+    for player,_ in pairs(standby) do
         -- The code below breaks Model-View-Controller rule as it accessess Managers
         -- Maybe the caching should be done in GUI module?
         -- TODO: resolve this

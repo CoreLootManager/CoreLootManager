@@ -62,7 +62,7 @@ function Start:players()
 end
 
 function Start:standby()
-    return self.s
+    return self.s or {}
 end
 
 local StartFields = mergeLists(LogEntry:fields(), {"r", "p","s"})
@@ -111,11 +111,11 @@ function Update:joiners()
 end
 
 function Update:standby()
-    return self.s
+    return self.s or {}
 end
 
 function Update:removed()
-    return self.e
+    return self.e or {}
 end
 
 local updateFields = mergeLists(LogEntry:fields(), {"r", "l", "j", "s", "e"})

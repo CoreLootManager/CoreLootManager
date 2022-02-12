@@ -353,17 +353,22 @@ local function CreateRaidDisplay(self)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         local raid = ST_GetRaid(rowData)
         -- In Raid
-        local profiles = raid:Profiles()
+        local finished = not raid:IsActive()
+        local profiles = raid:Profiles(finished)
         local numProfiles = #profiles
         tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"])
         tooltip:AddLine(" ")
-        tooltip:AddDoubleLine(CLM.L["In Raid"] .. ":", tostring(numProfiles))
+        if finished then
+            tooltip:AddDoubleLine(CLM.L["Participated"] .. ":", tostring(numProfiles))
+        else
+            tooltip:AddDoubleLine(CLM.L["In Raid"] .. ":", tostring(numProfiles))
+        end
         if not profiles or numProfiles == 0 then
             tooltip:AddLine("None")
         else
             buildPlayerListForTooltip(profiles, tooltip)
         end
-        local standby = raid:Standby()
+        local standby = raid:Standby(finished)
         local numStandby = #standby
         tooltip:AddDoubleLine(CLM.L["Standby"] .. ":", tostring(numStandby))
         if not standby or numStandby == 0 then
