@@ -93,6 +93,22 @@ function RaidManagerGUI:Initialize()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
+                title = CLM.L["Request standby"],
+                func = (function(i)
+                    local raid = nil
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        raid = ST_GetRaid(row)
+                    end
+                    -- RaidManager:StartRaid(raid)
+                    self:Refresh()
+                end)
+            },
+            {
+                separator = true,
+                trustedOnly = true
+            },
+            {
                 title = CLM.L["Start selected raid"],
                 func = (function(i)
                     local raid = nil
