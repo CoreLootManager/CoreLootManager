@@ -25,6 +25,7 @@ local RosterManager = MODULES.RosterManager
 local LedgerManager = MODULES.LedgerManager
 local RaidManager = MODULES.RaidManager
 local EventManager = MODULES.EventManager
+local StandbyStagingManager = MODULES.StandbyStagingManager
 
 local buildPlayerListForTooltip = UTILS.buildPlayerListForTooltip
 local DeepCopy = UTILS.DeepCopy
@@ -95,13 +96,23 @@ function RaidManagerGUI:Initialize()
             {
                 title = CLM.L["Request standby"],
                 func = (function(i)
-                    -- local raid = nil
+                    local raid = nil
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
-                        -- raid = ST_GetRaid(row)
+                        raid = ST_GetRaid(row)
                     end
-                    -- RaidManager:StartRaid(raid)
-                    self:Refresh()
+                    StandbyStagingManager:SignupToStandby(raid:UID())
+                end)
+            },
+            {
+                title = CLM.L["Revoke standby"],
+                func = (function(i)
+                    local raid = nil
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        raid = ST_GetRaid(row)
+                    end
+                    StandbyStagingManager:RevokeStandby(raid:UID())
                 end)
             },
             {

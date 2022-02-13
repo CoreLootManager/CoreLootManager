@@ -31,6 +31,7 @@ local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
 local EventManager = MODULES.EventManager
 local RaidManager = MODULES.RaidManager
+local StandbyStagingManager = MODULES.StandbyStagingManager
 
 local FILTER_IN_RAID = 100
 -- local FILTER_ONLINE = 101
@@ -92,6 +93,10 @@ end
 
 local function ST_GetWeeklyCap(row)
     return row.cols[7].value
+end
+
+local function ST_GetGUID(row)
+    return row.cols[8].value
 end
 
 local function GenerateUntrustedOptions(self)
@@ -511,6 +516,39 @@ local function CreateStandingsDisplay(self)
         {
             title = CLM.L["Add to standby"],
             func = (function()
+                if not RaidManager:IsInRaid() then
+                    LOG:Message(CLM.L["Not in raid"])
+                    return
+                end
+                local roster, profiles = self:GetSelected()
+                local raid = RaidManager:GetRaid()
+                if roster ~= raid:Roster() then
+                    LOG:Message(string.format(
+                        CLM.L["You can only bench players from same roster as the raid (%s)."],
+                        RosterManager:GetRosterNameByUid(raid:Roster():UID())
+                    ))
+                    return
+                end
+
+                if RaidManager:IsInProgressingRaid() then
+                    if #profiles > 10 then
+                        LOG:Message(string.format(
+                            CLM.L["You can add max %d players to standby at the same time to a %s raid."],
+                            10, CLM.L["progressing"]
+                        ))
+                        return
+                    end
+                elseif RaidManager:IsInCreatedRaid() then
+                    if #profiles > 25 then
+                        LOG:Message(string.format(
+                            CLM.L["You can add max %d players to standby at the same time to a %s raid."],
+                            25, CLM.L["created"]
+                        ))
+                        return
+                    end
+                    -- RaidManager:GetRaid():UID()
+                    -- StandbyStagingManager:AddToStandby(RaidManager:GetRadi():UID(), )
+                end
             end),
             trustedOnly = true,
             color = "eeee00"
@@ -613,6 +651,7 @@ function StandingsGUI:Refresh(visible)
             -- not displayed
             row.cols[6] = {value = roster:GetCurrentGainsForPlayer(GUID)}
             row.cols[7] = {value = weeklyCap}
+            row.cols[8] = {value = GUID}
             data[rowId] = row
             rowId = rowId + 1
         end
