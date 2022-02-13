@@ -421,8 +421,6 @@ local function CreateManagementOptions(self, container)
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
     LIBS.gui:Open("clm_standings_gui_options", ManagementOptions)
     self.st:SetFilter((function(stobject, row)
-        local isInRaid = {}
-
         local playerName = ST_GetName(row)
         local class = ST_GetClass(row)
 
@@ -431,16 +429,6 @@ local function CreateManagementOptions(self, container)
             return self.searchMethod(playerName)
         end
 
-        -- Check raid
-        for i=1,MAX_RAID_MEMBERS do
-            local name = GetRaidRosterInfo(i)
-            if name then
-                name = UTILS.RemoveServer(name)
-                isInRaid[name] = true
-            end
-        end
-        -- Check for standby filter
-        -- FILTER_STANDBY = 102
         -- Check class filter
 
         local status
@@ -451,7 +439,31 @@ local function CreateManagementOptions(self, container)
         end
         if status == nil then return false end -- failsafe
         if self.filterOptions[FILTER_IN_RAID] then
+            local isInRaid = {}
+            for i=1,MAX_RAID_MEMBERS do
+                local name = GetRaidRosterInfo(i)
+                if name then
+                    name = UTILS.RemoveServer(name)
+                    isInRaid[name] = true
+                end
+            end
             status = status and isInRaid[playerName]
+        elseif self.filterOptions[FILTER_STANDBY] then
+            if RaidManager:IsInProgressingRaid() then
+                local profile = ProfileManager:GetProfileByName(playerName)
+                if profile then
+                    print("PR:", playerName, RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID()))
+                    status = status and RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID())
+                end
+            elseif RaidManager:IsInCreatedRaid() then
+                local profile = ProfileManager:GetProfileByName(playerName)
+                if profile then
+                    print("CR:", playerName, StandbyStagingManager:IsPlayerOnStandby(RaidManager:GetRaid():UID(), profile:GUID()))
+                    status = status and StandbyStagingManager:IsPlayerOnStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                end
+            else
+                status = false
+            end
         end
         if self.filterOptions[FILTER_MAINS_ONLY] then
             local profile = ProfileManager:GetProfileByName(playerName)
@@ -543,10 +555,12 @@ local function CreateStandingsDisplay(self)
                         ))
                         return
                     end
-                    for profile in profiles do
+                    for _, profile in ipairs(profiles) do
+                        print("ATS: ", profile:Name())
                         StandbyStagingManager:AddToStandby(RaidManager:GetRaid():UID(), profile:GUID())
                     end
                 end
+                self:Refresh(true)
             end),
             trustedOnly = true,
             color = "eeee00"
@@ -585,10 +599,11 @@ local function CreateStandingsDisplay(self)
                         ))
                         return
                     end
-                    for profile in profiles do
+                    for _, profile in ipairs(profiles) do
                         StandbyStagingManager:RemoveFromStandby(RaidManager:GetRaid():UID(), profile:GUID())
                     end
                 end
+                self:Refresh(true)
             end),
             trustedOnly = true,
             color = "eeee00"

@@ -158,6 +158,10 @@ function Raid:PlayersOnStandby()
     return keys(self.standby)
 end
 
+function Raid:IsPlayerOnStandby(GUID)
+    return self.standby[GUID] and true or false
+end
+
 function Raid:Profiles(historical)
     self.playerProfileCache = {}
     local players = self.players

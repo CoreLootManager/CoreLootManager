@@ -97,14 +97,22 @@ function StandbyStagingManager:Clear()
     self.standby = {}
 end
 
+function StandbyStagingManager:IsPlayerOnStandby(raidUid, GUID)
+    LOG:Trace("StandbyStagingManager:IsPlayerOnStandby()")
+    if not self.standby[raidUid] then return false end
+    return self.standby[raidUid][GUID] and true or false
+end
+
 function StandbyStagingManager:AddToStandby(raidUid, GUID)
     LOG:Trace("StandbyStagingManager:AddToStandby()")
+    LOG:Debug("AddToStandby %s: %s", raidUid, GUID)
     if not self.standby[raidUid] then self.standby[raidUid] = {} end
     self.standby[raidUid][GUID] = true
 end
 
 function StandbyStagingManager:RemoveFromStandby(raidUid, GUID)
     LOG:Trace("StandbyStagingManager:RemoveFromStandby()")
+    LOG:Debug("RemoveFromStandby %s: %s", raidUid, GUID)
     if not self.standby[raidUid] then return end
     self.standby[raidUid][GUID] = nil
 end
