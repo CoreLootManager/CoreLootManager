@@ -538,6 +538,7 @@ local function CreateStandingsDisplay(self)
                         ))
                         return
                     end
+                    RaidManager:AddToStandby(RaidManager:GetRaid(), profiles)
                 elseif RaidManager:IsInCreatedRaid() then
                     if #profiles > 25 then
                         LOG:Message(string.format(
@@ -546,8 +547,9 @@ local function CreateStandingsDisplay(self)
                         ))
                         return
                     end
-                    -- RaidManager:GetRaid():UID()
-                    -- StandbyStagingManager:AddToStandby(RaidManager:GetRadi():UID(), )
+                    for profile in profiles do
+                        StandbyStagingManager:AddToStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                    end
                 end
             end),
             trustedOnly = true,

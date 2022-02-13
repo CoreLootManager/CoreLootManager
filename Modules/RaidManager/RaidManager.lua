@@ -402,7 +402,7 @@ function RaidManager:EndRaid(raid)
         LOG:Message(CLM.L["You are not allowed to start raid."])
         return
     end
-    if not raid:IsActive() then
+    if not raid:Status() then
         LOG:Message(CLM.L["You can only end an active raid."])
         return
     end
@@ -448,6 +448,58 @@ function RaidManager:JoinRaid(raid)
         error("My profile is nil")
     end
     LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), {}, {ProfileManager:GetMyProfile()}), true)
+end
+
+function RaidManager:AddToStandby(raid, standby)
+    LOG:Trace("RaidManager:AddToStandby()")
+    if not typeof(raid, Raid) then
+        LOG:Message(CLM.L["Missing valid raid"])
+        return
+    end
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(CLM.L["You are not allowed to control raid."])
+        return
+    end
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.IN_PROGRESS then
+        LOG:Message(CLM.L["You can only add players to standby of a progressing raid."])
+        return
+    end
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+        return
+    end
+    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, standby, {})
+    if #entry:standby() == 0 then
+        LOG:Error("Empty standby list")
+        return
+    end
+    LedgerManager:Submit(entry, true)
+end
+
+function RaidManager:RemoveFromStandby(raid, removed)
+    LOG:Trace("RaidManager:RemoveFromStandby()")
+    if not typeof(raid, Raid) then
+        LOG:Message(CLM.L["Missing valid raid"])
+        return
+    end
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(CLM.L["You are not allowed to control raid."])
+        return
+    end
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.IN_PROGRESS then
+        LOG:Message(CLM.L["You can only add players to standby of a progressing raid."])
+        return
+    end
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+        return
+    end
+    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, {}, removed)
+    if #entry:removed() == 0 then
+        LOG:Error("Empty removed list")
+        return
+    end
+    LedgerManager:Submit(entry, true)
 end
 
 function RaidManager:RegisterEventHandling()
