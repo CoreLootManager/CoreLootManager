@@ -14,7 +14,7 @@ function StandbyStagingCommSubscribe:New(raidUidOrObject)
 
     if isCopyConstructor then return o end
 
-    o.r = tonumber(raidUidOrObject) or 0
+    o.r = raidUidOrObject
 
     return o
 end
@@ -33,7 +33,7 @@ function StandbyStagingCommRevoke:New(raidUidOrObject)
 
     if isCopyConstructor then return o end
 
-    o.r = tonumber(raidUidOrObject) or 0
+    o.r = raidUidOrObject
 
     return o
 end

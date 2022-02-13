@@ -452,13 +452,11 @@ local function CreateManagementOptions(self, container)
             if RaidManager:IsInProgressingRaid() then
                 local profile = ProfileManager:GetProfileByName(playerName)
                 if profile then
-                    print("PR:", playerName, RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID()))
                     status = status and RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID())
                 end
             elseif RaidManager:IsInCreatedRaid() then
                 local profile = ProfileManager:GetProfileByName(playerName)
                 if profile then
-                    print("CR:", playerName, StandbyStagingManager:IsPlayerOnStandby(RaidManager:GetRaid():UID(), profile:GUID()))
                     status = status and StandbyStagingManager:IsPlayerOnStandby(RaidManager:GetRaid():UID(), profile:GUID())
                 end
             else
@@ -556,7 +554,6 @@ local function CreateStandingsDisplay(self)
                         return
                     end
                     for _, profile in ipairs(profiles) do
-                        print("ATS: ", profile:Name())
                         StandbyStagingManager:AddToStandby(RaidManager:GetRaid():UID(), profile:GUID())
                     end
                 end
@@ -781,7 +778,10 @@ function StandingsGUI:Toggle()
     if self.top:IsVisible() then
         self.top:Hide()
     else
-        self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
+        if IsInRaid() then
+            self.filterOptions[FILTER_IN_RAID] = true
+            self.filterOptions[FILTER_STANDBY] = false
+        end
         self:Refresh()
         self.top:Show()
     end

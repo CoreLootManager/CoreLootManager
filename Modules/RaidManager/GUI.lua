@@ -90,7 +90,6 @@ function RaidManagerGUI:Initialize()
         end
         self:Refresh(true)
     end)
-    -- Trusted only
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
@@ -100,8 +99,10 @@ function RaidManagerGUI:Initialize()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
                         raid = ST_GetRaid(row)
+                        StandbyStagingManager:SignupToStandby(raid:UID())
+                    else
+                        LOG:Message()
                     end
-                    StandbyStagingManager:SignupToStandby(raid:UID())
                 end)
             },
             {
@@ -111,8 +112,10 @@ function RaidManagerGUI:Initialize()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
                         raid = ST_GetRaid(row)
+                        StandbyStagingManager:RevokeStandby(raid:UID())
+                    else
+                        LOG:Message()
                     end
-                    StandbyStagingManager:RevokeStandby(raid:UID())
                 end)
             },
             {
@@ -447,7 +450,7 @@ function RaidManagerGUI:Create()
     LOG:Trace("RaidManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle(CLM.L["Raid Manager"])
+    f:SetTitle(CLM.L["Raids"])
 
     f:SetStatusText("")
     f:SetLayout("Table")

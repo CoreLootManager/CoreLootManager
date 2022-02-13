@@ -16,13 +16,6 @@ local StandbyStagingCommRevoke = MODELS.StandbyStagingCommRevoke
 
 local STANDBY_STAGING_COMM_PREFIX = "Standby001"
 
--- local function IsOwnerOfCreatedRaid()
---     if not IsInRaid() then return false end
---     if not RaidManager:IsInCreatedRaid() then return false end
---     if not RaidManager:IsRaidOwner() then return false end
---     return true
--- end
-
 -- local function Respond(raidUid, success)
 --     if IsOwnerOfCreatedRaid() and (RaidManager:GetRaid():UID() == raidUid) then
 --         -- Send response
@@ -41,8 +34,13 @@ local function HandleSubscribe(self, data, sender)
     LOG:Trace("StandbyStagingManager:HandleSubscribe()")
     if not ACL:IsTrusted() then return end
     local raidUid = data:RaidUid()
-    if not RaidManager:GetRaidByUid(raidUid) then
-        LOG:Warning("Non existent raid: %s", raidUid)
+    local raid = RaidManager:GetRaidByUid(raidUid)
+    if not raid then
+        LOG:Debug("Non existent raid: %s", raidUid)
+        return
+    end
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATE then
+        LOG:Debug("Raid %s is not in freshly created", raidUid)
         return
     end
     local profile = ProfileManager:GetProfileByName(sender)
@@ -57,8 +55,12 @@ local function HandleRevoke(self, data, sender)
     LOG:Trace("StandbyStagingManager:HandleRevoke()")
     if not ACL:IsTrusted() then return end
     local raidUid = data:RaidUid()
-    if not RaidManager:GetRaidByUid(raidUid) then
-        LOG:Warning("Non existent raid: %s", raidUid)
+    local raid = RaidManager:GetRaidByUid(raidUid)
+    if not raid then
+        LOG:Debug("Non existent raid: %s", raidUid)
+        return
+    end
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATE then
         return
     end
     local profile = ProfileManager:GetProfileByName(sender)

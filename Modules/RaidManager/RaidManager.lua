@@ -25,6 +25,7 @@ local Roster = MODELS.Roster
 local RosterConfiguration = MODELS.RosterConfiguration
 -- local PointHistory = MODELS.PointHistory
 
+local keys = UTILS.keys
 local whoami = UTILS.whoami
 local whoamiGUID = UTILS.whoamiGUID
 local RemoveServer = UTILS.RemoveServer
@@ -93,10 +94,13 @@ function RaidManager:Initialize()
                 local GUID = getGuidFromInteger(iGUID)
                 local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
-                    self:UpdateProfileCurentRaid(GUID, nil)
-                    self:UpdateProfileCurentStandby(GUID, raidUid)
-                    raid:StandbyPlayer(GUID)
-                    raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
+                    -- Do not do that if player is already in a raid
+                    if self:GetProfileRaid(GUID) then
+                        self:UpdateProfileCurentRaid(GUID, nil)
+                        self:UpdateProfileCurentStandby(GUID, raidUid)
+                        raid:StandbyPlayer(GUID)
+                        raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
+                    end
                 end
             end
             -- Add Joiners
@@ -383,7 +387,7 @@ function RaidManager:StartRaid(raid)
     end
 
     -- Fill Standby
-    local standby = MODULES.StandbyStagingManager:GetStandby(raid:UID())
+    local standby = keys(MODULES.StandbyStagingManager:GetStandby(raid:UID()))
 
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players, standby), true)
     if CLM.GlobalConfigs:GetRaidWarning() then
@@ -470,18 +474,17 @@ function RaidManager:AddToStandby(raid, standby)
     end
     -- Filter out players currently in standby or in raid
     local standby_filtered = {}
-    for profile in standby do
+    for _,profile in ipairs(standby) do
         local GUID = profile:GUID()
         if not (raid.players[GUID] or raid.standby[GUID]) then
             table.insert(standby_filtered, GUID)
         end
     end
-
-    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, standby_filtered, {})
-    if #entry:standby() == 0 then
+    if #standby_filtered == 0 then
         LOG:Warning("Empty standby list")
         return
     end
+    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, standby_filtered, {})
     LedgerManager:Submit(entry, true)
 end
 
@@ -505,17 +508,17 @@ function RaidManager:RemoveFromStandby(raid, removed)
     end
     -- Filter out players currently not on standby
     local removed_filtered = {}
-    for profile in removed do
+    for _,profile in ipairs(removed) do
         local GUID = profile:GUID()
         if raid.standby[GUID] then
             table.insert(removed_filtered, GUID)
         end
     end
-    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, {}, removed_filtered)
-    if #entry:removed() == 0 then
+    if #removed_filtered == 0 then
         LOG:Warning("Empty removed list")
         return
     end
+    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, {}, removed_filtered)
     LedgerManager:Submit(entry, true)
 end
 

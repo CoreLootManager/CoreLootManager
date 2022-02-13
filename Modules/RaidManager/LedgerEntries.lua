@@ -90,11 +90,11 @@ function Update:new(raidUid, leavers, joiners, standby, removed)
     o.r = raidUid or 0
     o.l = CreateGUIDList(leavers)
     o.j = CreateGUIDList(joiners)
-    if #o.l + #o.j == 0 then
-        error("Must provide at least one leaver or joiner")
-    end
     o.s = CreateGUIDList(standby)
     o.e = CreateGUIDList(removed)
+    if #o.l + #o.j + #o.s + #o.e == 0 then
+        error("Must provide at least one profile in any of the categories")
+    end
     return o
 end
 
