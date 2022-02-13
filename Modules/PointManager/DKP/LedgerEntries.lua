@@ -55,13 +55,14 @@ function Modify:fields()
     return modifyFields
 end
 
-function ModifyRaid:new(raidUid, value, reason, note)
+function ModifyRaid:new(raidUid, value, reason, note, includeStandby)
     local o = LogEntry.new(self);
     o.r = raidUid or ""
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
     note = note or ""
     o.t = tostring(note)
+    o.s = includeStandby and true or false
     return o
 end
 
@@ -81,7 +82,11 @@ function ModifyRaid:note()
     return self.t or ""
 end
 
-local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t"})
+function ModifyRaid:standby()
+    return self.s
+end
+
+local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t", "s"})
 function ModifyRaid:fields()
     return modifyRaidFields
 end

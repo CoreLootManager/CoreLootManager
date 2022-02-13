@@ -382,7 +382,10 @@ function RaidManager:StartRaid(raid)
         end
     end
 
-    LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
+    -- Fill Standby
+    local standby = MODULES.StandbyStagingManager:GetStandby(raid:UID())
+
+    LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players, standby), true)
     if CLM.GlobalConfigs:GetRaidWarning() then
         SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
     end

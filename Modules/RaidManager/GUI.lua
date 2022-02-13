@@ -95,10 +95,10 @@ function RaidManagerGUI:Initialize()
             {
                 title = CLM.L["Request standby"],
                 func = (function(i)
-                    local raid = nil
+                    -- local raid = nil
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
-                        raid = ST_GetRaid(row)
+                        -- raid = ST_GetRaid(row)
                     end
                     -- RaidManager:StartRaid(raid)
                     self:Refresh()
