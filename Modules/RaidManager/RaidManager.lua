@@ -468,9 +468,18 @@ function RaidManager:AddToStandby(raid, standby)
         LOG:Message(CLM.L["Raid management is disabled during time traveling."])
         return
     end
-    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, standby, {})
+    -- Filter out players currently in standby or in raid
+    local standby_filtered = {}
+    for profile in standby do
+        local GUID = profile:GUID()
+        if not (raid.players[GUID] or raid.standby[GUID]) then
+            table.insert(standby_filtered, GUID)
+        end
+    end
+
+    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, standby_filtered, {})
     if #entry:standby() == 0 then
-        LOG:Error("Empty standby list")
+        LOG:Warning("Empty standby list")
         return
     end
     LedgerManager:Submit(entry, true)
@@ -494,9 +503,17 @@ function RaidManager:RemoveFromStandby(raid, removed)
         LOG:Message(CLM.L["Raid management is disabled during time traveling."])
         return
     end
-    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, {}, removed)
+    -- Filter out players currently not on standby
+    local removed_filtered = {}
+    for profile in removed do
+        local GUID = profile:GUID()
+        if raid.standby[GUID] then
+            table.insert(removed_filtered, GUID)
+        end
+    end
+    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, {}, removed_filtered)
     if #entry:removed() == 0 then
-        LOG:Error("Empty removed list")
+        LOG:Warning("Empty removed list")
         return
     end
     LedgerManager:Submit(entry, true)

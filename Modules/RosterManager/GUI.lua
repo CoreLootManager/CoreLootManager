@@ -95,10 +95,6 @@ local function ST_GetWeeklyCap(row)
     return row.cols[7].value
 end
 
-local function ST_GetGUID(row)
-    return row.cols[8].value
-end
-
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
@@ -533,8 +529,8 @@ local function CreateStandingsDisplay(self)
                 if RaidManager:IsInProgressingRaid() then
                     if #profiles > 10 then
                         LOG:Message(string.format(
-                            CLM.L["You can add max %d players to standby at the same time to a %s raid."],
-                            10, CLM.L["progressing"]
+                            CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
+                            CLM.L["add"], 10, CLM.L["progressing"]
                         ))
                         return
                     end
@@ -542,13 +538,55 @@ local function CreateStandingsDisplay(self)
                 elseif RaidManager:IsInCreatedRaid() then
                     if #profiles > 25 then
                         LOG:Message(string.format(
-                            CLM.L["You can add max %d players to standby at the same time to a %s raid."],
-                            25, CLM.L["created"]
+                            CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
+                            CLM.L["add"], 25, CLM.L["created"]
                         ))
                         return
                     end
                     for profile in profiles do
                         StandbyStagingManager:AddToStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                    end
+                end
+            end),
+            trustedOnly = true,
+            color = "eeee00"
+        },
+        {
+            title = CLM.L["Remove from standby"],
+            func = (function()
+                if not RaidManager:IsInRaid() then
+                    LOG:Message(CLM.L["Not in raid"])
+                    return
+                end
+                local roster, profiles = self:GetSelected()
+                local raid = RaidManager:GetRaid()
+                if roster ~= raid:Roster() then
+                    LOG:Message(string.format(
+                        CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
+                        RosterManager:GetRosterNameByUid(raid:Roster():UID())
+                    ))
+                    return
+                end
+
+                if RaidManager:IsInProgressingRaid() then
+                    if #profiles > 10 then
+                        LOG:Message(string.format(
+                            CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
+                            CLM.L["remove"], 10, CLM.L["progressing"]
+                        ))
+                        return
+                    end
+                    RaidManager:RemoveFromStandby(RaidManager:GetRaid(), profiles)
+                elseif RaidManager:IsInCreatedRaid() then
+                    if #profiles > 25 then
+                        LOG:Message(string.format(
+                            CLM.L["You can % max %d players from standby at the same time to a %s raid."],
+                            CLM.L["remove"], 25, CLM.L["created"]
+                        ))
+                        return
+                    end
+                    for profile in profiles do
+                        StandbyStagingManager:RemoveFromStandby(RaidManager:GetRaid():UID(), profile:GUID())
                     end
                 end
             end),
@@ -653,7 +691,6 @@ function StandingsGUI:Refresh(visible)
             -- not displayed
             row.cols[6] = {value = roster:GetCurrentGainsForPlayer(GUID)}
             row.cols[7] = {value = weeklyCap}
-            row.cols[8] = {value = GUID}
             data[rowId] = row
             rowId = rowId + 1
         end
