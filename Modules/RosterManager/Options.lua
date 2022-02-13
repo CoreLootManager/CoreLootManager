@@ -603,7 +603,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 0.6
             },
-            --
             point_caps_header = {
                 name = CLM.L["Point caps"],
                 type = "header",
@@ -646,26 +645,32 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 18,
                 values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
             },
+            bench_header = {
+                name = CLM.L["Standby"],
+                type = "header",
+                order = 19,
+                width = "full"
+            },
             auto_bench_leavers =  {
                 name = CLM.L["Auto-Bench leavers"],
                 type = "toggle",
-                order = 19,
+                order = 20,
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
+                width = 2
             },
             auto_award_include_bench =  {
                 name = CLM.L["Include bench in auto awards"],
                 type = "toggle",
-                order = 20,
+                order = 21,
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
+                width = 2
             },
             auto_award_online_only =  {
                 name = CLM.L["Auto-award bench to online only"],
                 type = "toggle",
-                order = 19,
+                order = 22,
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
+                width = 3
             },
             --
             auction = {
