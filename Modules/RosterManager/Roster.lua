@@ -435,6 +435,8 @@ function RosterConfiguration:New(i)
     o._.autoAwardIncludeBench = true
     -- Include only online players in auto-awards
     o._.autoAwardOnlineOnly = false
+    -- Include only players in same zone in auto-awards
+    o._.autoAwardSameZoneOnly = false
 
     -- Additional settings
     o.hasHardCap = false
@@ -472,7 +474,8 @@ function RosterConfiguration:fields()
         "minimalIncrement",
         "autoBenchLeavers",
         "autoAwardIncludeBench",
-        "autoAwardOnlineOnly"
+        "autoAwardOnlineOnly",
+        "autoAwardSameZoneOnly"
     }
 end
 
@@ -509,6 +512,7 @@ local TRANSFORMS = {
     autoBenchLeavers = transform_boolean,
     autoAwardIncludeBench = transform_boolean,
     autoAwardOnlineOnly = transform_boolean,
+    autoAwardSameZoneOnly = transform_boolean
 }
 
 function RosterConfiguration:inflate(data)
@@ -600,6 +604,7 @@ function RosterConfiguration._validate_minimalIncrement(value) value = tonumber(
 function RosterConfiguration._validate_autoBenchLeavers(value) return IsBoolean(value) end
 function RosterConfiguration._validate_autoAwardIncludeBench(value) return IsBoolean(value) end
 function RosterConfiguration._validate_autoAwardOnlineOnly(value) return IsBoolean(value) end
+function RosterConfiguration._validate_autoAwardSameZoneOnly(value) return IsBoolean(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration

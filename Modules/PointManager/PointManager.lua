@@ -289,9 +289,10 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceI
 
     note = strsub32(note)
     local uid = raid:UID()
+    local includeBench = raid:Configuration():Get("autoAwardIncludeBench") and true or false
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason, note)
+        entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason, note, includeBench)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
     --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then

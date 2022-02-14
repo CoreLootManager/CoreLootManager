@@ -189,6 +189,9 @@ function RaidManager:Initialize()
                 end
                 if config:Get("onTimeBonus") and config:Get("onTimeBonusValue") > 0 then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
+                    if config:Get("autoAwardIncludeBench") then
+                        PointManager:UpdatePointsDirectly(roster, raid:PlayersOnStandby(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
+                    end
                 end
             end
         end)
@@ -214,6 +217,9 @@ function RaidManager:Initialize()
                 end
                 if config:Get("raidCompletionBonus") and config:Get("raidCompletionBonusValue") > 0 then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
+                    if config:Get("autoAwardIncludeBench") then
+                        PointManager:UpdatePointsDirectly(roster, raid:PlayersOnStandby(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
+                    end
                 end
             end
 

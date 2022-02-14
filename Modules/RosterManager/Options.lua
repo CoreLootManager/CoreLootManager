@@ -150,6 +150,12 @@ function RosterManagerOptions:Initialize()
         auto_award_online_only_set = (function(name, value)
             SetRosterOption(name, "autoAwardOnlineOnly", value)
         end),
+        auto_award_same_zone_only_get = (function(name)
+            return GetRosterOption(name, "autoAwardSameZoneOnly")
+        end),
+        auto_award_same_zone_only_set = (function(name, value)
+            SetRosterOption(name, "autoAwardSameZoneOnly", value)
+        end),
         -- Caps
         hard_cap_get = (function(name)
             return tostring(GetRosterOption(name, "hardCap"))
@@ -666,9 +672,16 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 width = 2
             },
             auto_award_online_only =  {
-                name = CLM.L["Auto-award bench to online only"],
+                name = CLM.L["Auto-award points only to online players"],
                 type = "toggle",
                 order = 22,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                width = 3
+            },
+            auto_award_same_zone_only =  {
+                name = CLM.L["Auto-award points only to players in same zone"],
+                type = "toggle",
+                order = 23,
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 3
             },
