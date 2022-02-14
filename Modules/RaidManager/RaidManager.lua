@@ -25,7 +25,6 @@ local Roster = MODELS.Roster
 local RosterConfiguration = MODELS.RosterConfiguration
 -- local PointHistory = MODELS.PointHistory
 
-local keys = UTILS.keys
 local whoami = UTILS.whoami
 local whoamiGUID = UTILS.whoamiGUID
 local RemoveServer = UTILS.RemoveServer

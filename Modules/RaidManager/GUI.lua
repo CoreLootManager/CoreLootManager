@@ -95,26 +95,24 @@ function RaidManagerGUI:Initialize()
             {
                 title = CLM.L["Request standby"],
                 func = (function(i)
-                    local raid = nil
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
-                        raid = ST_GetRaid(row)
+                        local raid = ST_GetRaid(row)
                         StandbyStagingManager:SignupToStandby(raid:UID())
                     else
-                        LOG:Message()
+                        LOG:Message(CLM.L["Please select a raid"])
                     end
                 end)
             },
             {
                 title = CLM.L["Revoke standby"],
                 func = (function(i)
-                    local raid = nil
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
-                        raid = ST_GetRaid(row)
+                        local raid = ST_GetRaid(row)
                         StandbyStagingManager:RevokeStandby(raid:UID())
                     else
-                        LOG:Message()
+                        LOG:Message(CLM.L["Please select a raid"])
                     end
                 end)
             },
@@ -133,7 +131,8 @@ function RaidManagerGUI:Initialize()
                     RaidManager:StartRaid(raid)
                     self:Refresh()
                 end),
-                trustedOnly = true
+                trustedOnly = true,
+                color = "eeee00"
             },
             {
                 title = CLM.L["End selected raid"],
@@ -146,7 +145,8 @@ function RaidManagerGUI:Initialize()
                     RaidManager:EndRaid(raid)
                     self:Refresh()
                 end),
-                trustedOnly = true
+                trustedOnly = true,
+                color = "eeee00"
             },
             {
                 title = CLM.L["Join selected raid"],
@@ -159,7 +159,8 @@ function RaidManagerGUI:Initialize()
                     RaidManager:JoinRaid(raid)
                     self:Refresh()
                 end),
-                trustedOnly = true
+                trustedOnly = true,
+                color = "eeee00"
             },
             {
                 separator = true,

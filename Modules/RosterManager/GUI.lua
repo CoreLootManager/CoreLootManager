@@ -280,47 +280,6 @@ local function GenerateManagerOptions(self)
             end),
             confirm = true,
             order = 14
-        },
-        roster_players_header = {
-            type = "header",
-            name = CLM.L["Players"],
-            order = 25
-        },
-        add_from_raid = {
-            name = CLM.L["Add from raid"],
-            desc = CLM.L["Adds players from current raid to the roster. Creates profiles if not exists."],
-            type = "execute",
-            width = "full",
-            func = (function()
-                local roster, _ = self:GetSelected()
-                if roster == nil then
-                    LOG:Debug("StandingsGUI(Remove): roster == nil")
-                    return
-                end
-                RosterManager:AddFromRaidToRoster(roster)
-            end),
-            confirm = true,
-            order = 26
-        },
-        remove_from_roster = {
-            name = CLM.L["Remove from roster"],
-            desc = CLM.L["Removes selected players from roster or everyone if none selected."],
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                local roster, profiles = self:GetSelected()
-                if roster == nil then
-                    LOG:Debug("StandingsGUI(Remove): roster == nil")
-                    return
-                end
-                if not profiles or #profiles == 0 then
-                    LOG:Debug("StandingsGUI(Remove): profiles == 0")
-                    return
-                end
-                RosterManager:RemoveProfilesFromRoster(roster, profiles)
-            end),
-            confirm = true,
-            order = 27
         }
     }
 end
@@ -604,7 +563,35 @@ local function CreateStandingsDisplay(self)
             end),
             trustedOnly = true,
             color = "eeee00"
-        }
+        },
+        {
+            separator = true,
+            trustedOnly = true
+        },
+        {
+            title = CLM.L["Remove from roster"],
+            func = (function(i)
+                local roster, profiles = self:GetSelected()
+                if roster == nil then
+                    LOG:Debug("StandingsGUI(Remove): roster == nil")
+                    return
+                end
+                if not profiles or #profiles == 0 then
+                    LOG:Debug("StandingsGUI(Remove): profiles == 0")
+                    return
+                end
+                if #profiles > 10 then
+                    LOG:Message(string.format(
+                        CLM.L["You can remove max %d players from roster at the same time."],
+                        10
+                    ))
+                    return
+                end
+                RosterManager:RemoveProfilesFromRoster(roster, profiles)
+            end),
+            trustedOnly = true,
+            color = "cc0000"
+        },
     },
     CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
     CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
