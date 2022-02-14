@@ -213,7 +213,7 @@ local function FillConfigurationTooltip(configuration, tooltip)
     tooltip:AddDoubleLine(CLM.L["Interval Bonus"], intervalBonus and GreenYes() or RedNo())
     if intervalBonus then
         tooltip:AddDoubleLine(CLM.L["Interval Time"], configuration:Get("intervalBonusTime"))
-        tooltip:AddDoubleLine(CLM.L["Interval Bonus Value"], configuration:Get("intervalBonusValue"))
+        tooltip:AddDoubleLine(CLM.L["Interval Value"], configuration:Get("intervalBonusValue"))
     end
 end
 
@@ -277,7 +277,7 @@ local function GenerateOfficerOptions(self)
             order = 37,
         },
         interval_bonus_value = {
-            name = CLM.L["Interval Bonus Value"],
+            name = CLM.L["Interval Value"],
             type = "input",
             set = (function(i, v) self:SetRaidConfigurationOption("intervalBonusValue", tonumber(v)) end),
             get = (function() return tostring(self:GetRaidConfigurationOption("intervalBonusValue")) end),

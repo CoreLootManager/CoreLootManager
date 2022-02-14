@@ -43,6 +43,10 @@ local function HandleSubscribe(self, data, sender)
         LOG:Debug("Raid %s is not in freshly created", raidUid)
         return
     end
+    if not raid:Configuration():Get("selfBenchSubscribe") then
+        LOG:Debug("Self-subscribe is disabled")
+        return
+    end
     local profile = ProfileManager:GetProfileByName(sender)
     if profile then
         self:AddToStandby(raidUid, profile:GUID())
@@ -61,6 +65,10 @@ local function HandleRevoke(self, data, sender)
         return
     end
     if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATE then
+        return
+    end
+    if not raid:Configuration():Get("selfBenchSubscribe") then
+        LOG:Debug("Self-subscribe is disabled")
         return
     end
     local profile = ProfileManager:GetProfileByName(sender)

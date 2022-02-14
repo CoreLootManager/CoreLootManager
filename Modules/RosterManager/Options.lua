@@ -483,7 +483,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = CLM.L["Change roster name."],
                 type = "input",
                 width = "full",
-                order = 1
+                order = 0
             },
             point_type = { -- informative
                 name = CLM.L["Point type"],
@@ -495,10 +495,25 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     if not r then return nil end
                     return r:GetPointType()
                 end),
-                order = 2,
+                order = 1,
                 disabled = true,
                 width = "half",
                 values = CONSTANTS.POINT_TYPES_GUI
+            },
+            round_decimals = {
+                name = CLM.L["Rounding"],
+                desc = CLM.L["Round to selected number of decimals"],
+                type = "select",
+                style = "radio",
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                order = 2,
+                values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
+            },
+            copy_header = {
+                name = CLM.L["Copy settings"],
+                type = "header",
+                order = 97,
+                width = "full"
             },
             copy = {
                 name = CLM.L["Copy settings"],
@@ -523,13 +538,19 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 order = 99
             },
-            fill_profiles = {
-                name = CLM.L["Fill profiles"],
-                desc = CLM.L["Fills current roster with all profiles."],
-                type = "execute",
-                confirm = true,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 100
+            -- fill_profiles = {
+            --     name = CLM.L["Fill profiles"],
+            --     desc = CLM.L["Fills current roster with all profiles."],
+            --     type = "execute",
+            --     confirm = true,
+            --     disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+            --     order = 100
+            -- },
+            remove_header = {
+                name = CLM.L["Remove roster"],
+                type = "header",
+                order = 100,
+                width = "full"
             },
             remove = {
                 name = CLM.L["Remove"],
@@ -608,17 +629,43 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 width = 0.6
             },
             interval_bonus_value = {
-                name = CLM.L["Interval Bonus Value"],
+                name = CLM.L["Interval Value"],
                 type = "input",
                 order = 13,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 0.6
             },
+            auto_award_include_bench =  {
+                name = CLM.L["Include bench"],
+                desc = CLM.L["Include benched players in all auto-awards"],
+                type = "toggle",
+                order = 14,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                width = 2
+            },
+            auto_award_online_only =  {
+                name = CLM.L["Online only"],
+                desc = CLM.L["Award points only to online players"],
+                type = "toggle",
+                order = 15,
+                -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                disabled = true,
+                width = 1
+            },
+            auto_award_same_zone_only =  {
+                name = CLM.L["Same zone only"],
+                desc = CLM.L["Award points only to players in same zone"],
+                type = "toggle",
+                order = 16,
+                -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                disabled = true,
+                width = 1
+            },
             point_caps_header = {
                 name = CLM.L["Point caps"],
                 type = "header",
-                order = 14,
+                order = 17,
                 width = "full"
             },
             weekly_reset_timezone = {
@@ -627,7 +674,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "select",
                 style = "radio",
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 15,
+                order = 18,
                 values = CONSTANTS.WEEKLY_RESETS_GUI
             },
             weekly_cap = {
@@ -635,7 +682,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."],
                 type = "input",
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 16,
+                order = 19,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 -- width = 0.6
             },
@@ -644,63 +691,32 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 desc = CLM.L["Maximum point cap that player can have. Set to 0 to disable."],
                 type = "input",
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 17,
+                order = 20,
                 pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                 -- width = 0.6
             },
-            round_decimals = {
-                name = CLM.L["Rounding"],
-                desc = CLM.L["Round to selected number of decimals"],
-                type = "select",
-                style = "radio",
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 18,
-                values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
-            },
             bench_header = {
-                name = CLM.L["Standby"],
+                name = CLM.L["Bench"],
                 type = "header",
-                order = 19,
+                order = 21,
                 width = "full"
             },
             allow_self_bench_subscribe =  {
-                name = CLM.L["Allow bench subscription"],
-                type = "toggle",
-                order = 20,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 2
-            },
-            auto_bench_leavers =  {
-                name = CLM.L["Auto-Bench leavers"],
-                type = "toggle",
-                order = 21,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 2
-            },
-            auto_award_include_bench =  {
-                name = CLM.L["Include bench in auto awards"],
+                name = CLM.L["Allow subscription"],
+                desc = CLM.L["Allow players to subscribe to the bench through Raids menu"],
                 type = "toggle",
                 order = 22,
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 2
+                width = 1
             },
-            auto_award_online_only =  {
-                name = CLM.L["Auto-award points only to online players"],
+            auto_bench_leavers =  {
+                name = CLM.L["Auto bench leavers"],
+                desc = CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."],
                 type = "toggle",
                 order = 23,
-                -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                disabled = true,
-                width = 3
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                width = 1
             },
-            auto_award_same_zone_only =  {
-                name = CLM.L["Auto-award points only to players in same zone"],
-                type = "toggle",
-                order = 24,
-                -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                disabled = true,
-                width = 3
-            },
-            --
             auction = {
                 name = CLM.L["Auction settings"],
                 type = "group",
