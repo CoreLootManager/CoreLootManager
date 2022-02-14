@@ -462,7 +462,9 @@ function RaidManagerGUI:Create()
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
 
     f:AddChild(CreateRaidDisplay(self))
-    f:AddChild(CreateManagementOptions(self))
+    if ACL:IsTrusted() then
+        f:AddChild(CreateManagementOptions(self))
+    end
 
     RestoreLocation(self)
     -- Hide by default
