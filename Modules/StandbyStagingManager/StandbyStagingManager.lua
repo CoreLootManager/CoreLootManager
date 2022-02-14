@@ -39,7 +39,7 @@ local function HandleSubscribe(self, data, sender)
         LOG:Debug("Non existent raid: %s", raidUid)
         return
     end
-    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATE then
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATED then
         LOG:Debug("Raid %s is not in freshly created", raidUid)
         return
     end
@@ -65,7 +65,7 @@ local function HandleRevoke(self, data, sender)
         LOG:Debug("Non existent raid: %s", raidUid)
         return
     end
-    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATE then
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATED then
         return
     end
     if not raid:Configuration():Get("selfBenchSubscribe") then
