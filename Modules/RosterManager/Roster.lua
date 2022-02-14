@@ -477,7 +477,8 @@ function RosterConfiguration:fields()
         "autoBenchLeavers",
         "autoAwardIncludeBench",
         "autoAwardOnlineOnly",
-        "autoAwardSameZoneOnly"
+        "autoAwardSameZoneOnly",
+        "selfBenchSubscribe"
     }
 end
 
@@ -514,7 +515,8 @@ local TRANSFORMS = {
     autoBenchLeavers = transform_boolean,
     autoAwardIncludeBench = transform_boolean,
     autoAwardOnlineOnly = transform_boolean,
-    autoAwardSameZoneOnly = transform_boolean
+    autoAwardSameZoneOnly = transform_boolean,
+    selfBenchSubscribe = transform_boolean
 }
 
 function RosterConfiguration:inflate(data)
@@ -607,6 +609,7 @@ function RosterConfiguration._validate_autoBenchLeavers(value) return IsBoolean(
 function RosterConfiguration._validate_autoAwardIncludeBench(value) return IsBoolean(value) end
 function RosterConfiguration._validate_autoAwardOnlineOnly(value) return IsBoolean(value) end
 function RosterConfiguration._validate_autoAwardSameZoneOnly(value) return IsBoolean(value) end
+function RosterConfiguration._validate_selfBenchSubscribe(value) return IsBoolean(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration

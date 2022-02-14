@@ -88,10 +88,10 @@ end
 function Update:new(raidUid, leavers, joiners, standby, removed)
     local o = LogEntry.new(self)
     o.r = raidUid or 0
-    o.l = CreateGUIDList(leavers)
-    o.j = CreateGUIDList(joiners)
-    o.s = CreateGUIDList(standby)
-    o.e = CreateGUIDList(removed)
+    o.l = CreateGUIDList(leavers or {})
+    o.j = CreateGUIDList(joiners or {})
+    o.s = CreateGUIDList(standby or {})
+    o.e = CreateGUIDList(removed or {})
     if #o.l + #o.j + #o.s + #o.e == 0 then
         error("Must provide at least one profile in any of the categories")
     end
