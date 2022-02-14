@@ -132,6 +132,12 @@ function RosterManagerOptions:Initialize()
         weekly_reset_timezone_set = (function(name, value)
             SetRosterOption(name, "weeklyReset", value)
         end),
+        allow_self_bench_subscribe_get = (function(name)
+            return GetRosterOption(name, "selfBenchSubscribe")
+        end),
+        allow_self_bench_subscribe_set = (function(name, value)
+            SetRosterOption(name, "selfBenchSubscribe", value)
+        end),
         auto_bench_leavers_get = (function(name)
             return GetRosterOption(name, "autoBenchLeavers")
         end),
@@ -657,32 +663,41 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 19,
                 width = "full"
             },
+            allow_self_bench_subscribe =  {
+                name = CLM.L["Allow bench subscription"],
+                type = "toggle",
+                order = 20,
+                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                width = 2
+            },
             auto_bench_leavers =  {
                 name = CLM.L["Auto-Bench leavers"],
                 type = "toggle",
-                order = 20,
+                order = 21,
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 2
             },
             auto_award_include_bench =  {
                 name = CLM.L["Include bench in auto awards"],
                 type = "toggle",
-                order = 21,
+                order = 22,
                 disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                 width = 2
             },
             auto_award_online_only =  {
                 name = CLM.L["Auto-award points only to online players"],
                 type = "toggle",
-                order = 22,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                order = 23,
+                -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                disabled = true,
                 width = 3
             },
             auto_award_same_zone_only =  {
                 name = CLM.L["Auto-award points only to players in same zone"],
                 type = "toggle",
-                order = 23,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                order = 24,
+                -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                disabled = true,
                 width = 3
             },
             --

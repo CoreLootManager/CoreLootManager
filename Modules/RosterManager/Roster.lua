@@ -437,6 +437,8 @@ function RosterConfiguration:New(i)
     o._.autoAwardOnlineOnly = false
     -- Include only players in same zone in auto-awards
     o._.autoAwardSameZoneOnly = false
+    -- Enable self-subscribe
+    o._.selfBenchSubscribe = false
 
     -- Additional settings
     o.hasHardCap = false
