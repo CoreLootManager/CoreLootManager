@@ -190,7 +190,7 @@ function RaidManager:Initialize()
                 if config:Get("onTimeBonus") and config:Get("onTimeBonusValue") > 0 then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
                     if config:Get("autoAwardIncludeBench") then
-                        PointManager:UpdatePointsDirectly(roster, raid:PlayersOnStandby(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
+                        PointManager:UpdatePointsDirectly(roster, raid:PlayersOnStandby(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS, entry:time(), entry:creator())
                     end
                 end
             end
@@ -218,7 +218,7 @@ function RaidManager:Initialize()
                 if config:Get("raidCompletionBonus") and config:Get("raidCompletionBonusValue") > 0 then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
                     if config:Get("autoAwardIncludeBench") then
-                        PointManager:UpdatePointsDirectly(roster, raid:PlayersOnStandby(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
+                        PointManager:UpdatePointsDirectly(roster, raid:PlayersOnStandby(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS, entry:time(), entry:creator())
                     end
                 end
             end
@@ -382,19 +382,26 @@ function RaidManager:StartRaid(raid)
     RosterManager:AddFromRaidToRoster(raid:Roster())
 
     local players = {}
+    local joining_players_guids = {}
     for i=1,MAX_RAID_MEMBERS do
         local name = GetRaidRosterInfo(i)
         if name then
             local profile = ProfileManager:GetProfileByName(RemoveServer(name))
             if profile then
                 table.insert(players, profile)
+                joining_players_guids[profile:GUID()] = true
             end
         end
     end
 
     -- Fill Standby
-    local standby = keys(MODULES.StandbyStagingManager:GetStandby(raid:UID()))
-
+    -- local standby = keys(MODULES.StandbyStagingManager:GetStandby(raid:UID()))
+    local standby = {}
+    for GUID,_ in pairs(MODULES.StandbyStagingManager:GetStandby(raid:UID())) do
+        if not joining_players_guids[GUID] then
+            table.insert(standby, GUID)
+        end
+    end
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players, standby), true)
     if CLM.GlobalConfigs:GetRaidWarning() then
         SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")

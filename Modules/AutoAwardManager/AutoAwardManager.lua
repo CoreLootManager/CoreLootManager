@@ -203,4 +203,9 @@ function AutoAwardManager:IsIntervalBonusAwardingEnabled()
     return self.intervalBonusAwardingEnabled
 end
 
+function AutoAwardManager:FBKB(id)
+    LOG:Message("Fake boss kill bonus")
+    awardBossKillBonus(tonumber(id) or 623)
+end
+
 MODULES.AutoAwardManager = AutoAwardManager

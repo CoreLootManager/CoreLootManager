@@ -5,7 +5,7 @@ local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 local PointHistory = {}
 local FakePointHistory = {}
 
-function PointHistory:New(entry, targets)
+function PointHistory:New(entry, targets, timestamp, value, reason, creator)
     local o = {}
 
     setmetatable(o, self)
@@ -13,6 +13,10 @@ function PointHistory:New(entry, targets)
 
     o.entry = entry -- ledger entry reference
     o.targets = targets or entry:targets()
+    o.timestamp = tonumber(timestamp) or entry:time()
+    o.value = tonumber(value) or entry:value()
+    o.reason = tonumber(reason) or entry:reason()
+    o.creator = creator or entry:creator()
 
     return o
 end
@@ -42,19 +46,19 @@ function PointHistory:Profiles()
 end
 
 function PointHistory:Timestamp()
-    return self.entry:time()
+    return self.timestamp
 end
 
 function PointHistory:Value()
-    return self.entry:value()
+    return self.value
 end
 
 function PointHistory:Reason()
-    return self.entry:reason()
+    return self.reason
 end
 
 function PointHistory:Creator()
-    return self.entry:creator()
+    return self.creator
 end
 
 function PointHistory:Entry()
@@ -81,8 +85,7 @@ function FakePointHistory:Profiles()
     -- lazy loaded cache
     if self.profiles == nil then
         self.profiles = {}
-        local targets = self.targets
-        for _,target in ipairs(targets) do
+        for _,target in ipairs(self.targets) do
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this
