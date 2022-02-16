@@ -626,7 +626,14 @@ local function CreateStandingsDisplay(self)
         local rightButton = (button == "RightButton")
         local status
         local selected = self.st:GetSelection()
-        if selected ~= realrow then
+        local isSelected = false
+        for _, _selected in ipairs(selected) do
+            if _selected == realrow then
+                isSelected = true
+                break
+            end
+        end
+        if not isSelected then
             status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
         end
         if rightButton then
