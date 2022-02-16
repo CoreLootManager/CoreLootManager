@@ -68,6 +68,8 @@ function StandingsGUI:Initialize()
     self:RegisterSlash()
     self._initialized = true
     self.selectedRoster = 0
+    self.numSelected = 0
+    self.numInRoster = 0 
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
@@ -93,6 +95,14 @@ end
 
 local function ST_GetWeeklyCap(row)
     return row.cols[7].value
+end
+
+local function UpdateStatusText(self)
+    local selectCount = self.numSelected
+    if not self.numSelected or self.numSelected == 0 then
+        selectCount = CLM.L["all"]
+    end
+    self.top:SetStatusText(self.numInRoster .. CLM.L[" players in roster"] .. " (" .. selectCount .. " " .. CLM.L["selected"] ..  ")")
 end
 
 local function GenerateUntrustedOptions(self)
@@ -640,6 +650,11 @@ local function CreateStandingsDisplay(self)
             UTILS.LibDD:CloseDropDownMenus()
             UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         end
+         -- Delayed because selection in lib is updated after this function returns
+        C_Timer.After(0.01, function()
+            self.numSelected = #self.st:GetSelection()
+            UpdateStatusText(self)
+        end)
         return status
     end
     -- end
@@ -703,7 +718,8 @@ function StandingsGUI:Refresh(visible)
     end
     self.st:SetData(data)
     LIBS.gui:Open("clm_standings_gui_options", self.ManagementOptions)
-    self.top:SetStatusText(tostring(#data or 0) .. CLM.L[" players in roster"])
+    self.numInRoster = #data
+    UpdateStatusText(self)
 end
 
 function StandingsGUI:GetCurrentRoster()
