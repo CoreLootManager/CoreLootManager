@@ -481,7 +481,11 @@ function RaidManagerGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(760)
+    if ACL:IsTrusted() then
+        f:SetWidth(760)
+    else
+        f:SetWidth(560)
+    end
     f:SetHeight(640)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
