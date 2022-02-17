@@ -51,7 +51,7 @@ function RosterManager:Initialize()
                 return
             end
             if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
-            local roster = Roster:New(uid, pointType)
+            local roster = Roster:New(uid, pointType, self.db.raidsForFullAttendance, self.db.attendanceWeeksWindow)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
         end))
