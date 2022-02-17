@@ -25,10 +25,13 @@ jobs:
         with:
           args: "-o -e -u -m .pkgmeta -g bcc"
       - name: Get name of zip file
-        run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
+        run: echo "artifact=`readlink -f .release/*.zip`" >> $
+      - name: Create name of release
+        run: echo "releasename=`git describe --abbrev=0 --tags HEAD`-$env:GITHUB_SHA"
       - name: Create Release and upload artifact to GitHub
         uses: ncipollo/release-action@v1
         with:
-          name: $env:GITHUB_SHA
-          artifacts: $env:artifact
+          name: ${releasename}
+          tag: ${releasename}
+          artifacts: ${artifact}
           token: ${{ secrets.GITHUB_TOKEN }}
