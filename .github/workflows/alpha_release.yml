@@ -3,19 +3,8 @@ on:
   push:
 
 jobs:
-  create_github_release:
-    name: Create a alpha release object in Github
-    runs-on: ubuntu-latest
-    steps:
-    - uses: ncipollo/release-action@v1
-      with:
-        name: $env:GITHUB_SHA
-        token: ${{ secrets.GITHUB_TOKEN }}
-
   bigwigs_github_alpha_release:
-    needs:
-      - create_github_release
-    name: Build via BigWigs packager for Github Only
+    name: Build via BigWigs packager for GitHub only
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -37,7 +26,7 @@ jobs:
           args: "-o -e -u -m .pkgmeta -g bcc"
       - name: Get name of zip file
         run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
-      - name: Create Release and upload artifact to github
+      - name: Create Release and upload artifact to GitHub
         uses: ncipollo/release-action@v1
         with:
           name: $env:GITHUB_SHA
