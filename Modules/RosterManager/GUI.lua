@@ -69,7 +69,7 @@ function StandingsGUI:Initialize()
     self._initialized = true
     self.selectedRoster = 0
     self.numSelected = 0
-    self.numInRoster = 0 
+    self.numInRoster = 0
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
@@ -677,7 +677,7 @@ function StandingsGUI:Create()
     LOG:Trace("StandingsGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle(CLM.L["Rosters"])
+    f:SetTitle(CLM.L["Standings"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
