@@ -587,6 +587,7 @@ function AuctionManagerGUI:UpdateAwardValue()
     else
         self.awardValue = max.bid
     end
+    self.awardValue = self.awardValue + self.roster:GetConfiguration("tax")
 end
 
 function AuctionManagerGUI:setInputAwardValue(v)

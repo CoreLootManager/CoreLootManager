@@ -224,6 +224,12 @@ function RosterManagerOptions:Initialize()
         auction_minimal_increment_set = (function(name, value)
             SetRosterOption(name, "minimalIncrement", value)
         end),
+        auction_tax_get = (function(name)
+            return tostring(GetRosterOption(name, "tax"))
+        end),
+        auction_tax_set = (function(name, value)
+            SetRosterOption(name, "tax", value)
+        end),
         auction_auction_time_get = (function(name)
             return tostring(GetRosterOption(name, "auctionTime"))
         end),
@@ -771,8 +777,16 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = CLM.L["Minimal value increment for open auction mode."],
                         type = "input",
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                        width = 1.5,
+                        width = 1,
                         order = 9
+                    },
+                    tax = {
+                        name = CLM.L["Tax"],
+                        desc = CLM.L["Additional cost (tax) to add to the award value."],
+                        type = "input",
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        width = 1,
+                        order = 10
                     },
                     auction_time = {
                         name = CLM.L["Auction length"],
@@ -780,7 +794,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "input",
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1,
-                        order = 10
+                        order = 11
                     },
                     antisnipe_time = {
                         name = CLM.L["Anti-snipe time"],
@@ -788,7 +802,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "input",
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1,
-                        order = 11
+                        order = 12
                     },
                 }
             },

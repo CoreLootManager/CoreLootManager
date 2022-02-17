@@ -439,6 +439,8 @@ function RosterConfiguration:New(i)
     o._.autoAwardSameZoneOnly = false
     -- Enable self-subscribe
     o._.selfBenchSubscribe = false
+    -- Additional tax to pay
+    o._.tax = 0
 
     -- Additional settings
     o.hasHardCap = false
@@ -478,7 +480,8 @@ function RosterConfiguration:fields()
         "autoAwardIncludeBench",
         "autoAwardOnlineOnly",
         "autoAwardSameZoneOnly",
-        "selfBenchSubscribe"
+        "selfBenchSubscribe",
+        "tax"
     }
 end
 
@@ -516,7 +519,8 @@ local TRANSFORMS = {
     autoAwardIncludeBench = transform_boolean,
     autoAwardOnlineOnly = transform_boolean,
     autoAwardSameZoneOnly = transform_boolean,
-    selfBenchSubscribe = transform_boolean
+    selfBenchSubscribe = transform_boolean,
+    tax = transform_number,
 }
 
 function RosterConfiguration:inflate(data)
@@ -610,6 +614,7 @@ function RosterConfiguration._validate_autoAwardIncludeBench(value) return IsBoo
 function RosterConfiguration._validate_autoAwardOnlineOnly(value) return IsBoolean(value) end
 function RosterConfiguration._validate_autoAwardSameZoneOnly(value) return IsBoolean(value) end
 function RosterConfiguration._validate_selfBenchSubscribe(value) return IsBoolean(value) end
+function RosterConfiguration._validate_tax(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration
