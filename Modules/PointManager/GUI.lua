@@ -94,7 +94,7 @@ local columns = {
     {name = CLM.L["Reason"],  width = 150},
     {name = CLM.L["Date"], width = 150, sort = ScrollingTable.SORT_DSC},
     {name = CLM.L["Value"],  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {name = CLM.L["Awarded by"],  width = 70},
+    {name = CLM.L["Awarded by"],  width = 100},
 }
 
 local function CreatePointDisplay(self)
@@ -102,7 +102,7 @@ local function CreatePointDisplay(self)
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
     StandingsGroup:SetHeight(500)
-    StandingsGroup:SetWidth(550)
+    StandingsGroup:SetWidth(500)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel(CLM.L["Select roster"])
@@ -221,7 +221,7 @@ function PointHistoryGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(600)
+    f:SetWidth(550)
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_PointHistory_GUI")

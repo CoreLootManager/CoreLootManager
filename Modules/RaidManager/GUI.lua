@@ -375,9 +375,9 @@ local function CreateManagementOptions(self, container)
     }
     if ACL:IsTrusted() then
         mergeDictsInline(options.args, GenerateOfficerOptions(self))
+        LIBS.registry:RegisterOptionsTable(REGISTRY, options)
+        LIBS.gui:Open(REGISTRY, ManagementOptions)
     end
-    LIBS.registry:RegisterOptionsTable(REGISTRY, options)
-    LIBS.gui:Open(REGISTRY, ManagementOptions)
     return ManagementOptions
 end
 
@@ -461,13 +461,9 @@ local function CreateRaidDisplay(self)
     -- end
     self.st:RegisterEvents({
         OnEnter = OnEnterHandler,
-        OnLeave = OnLeaveHandler
+        OnLeave = OnLeaveHandler,
+        OnClick = OnClickHandler
     })
-    if ACL:IsTrusted() then
-        self.st:RegisterEvents({
-            OnClick = OnClickHandler
-        })
-    end
     return StandingsGroup
 end
 
@@ -484,7 +480,7 @@ function RaidManagerGUI:Create()
     if ACL:IsTrusted() then
         f:SetWidth(760)
     else
-        f:SetWidth(560)
+        f:SetWidth(520)
     end
     f:SetHeight(640)
     self.top = f
@@ -528,8 +524,9 @@ function RaidManagerGUI:Refresh(visible)
         self.top:SetStatusText(CLM.L["Not in raid"])
     end
 
-    -- LIBS.registry:NotifyChange(REGISTRY)
-    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+    if ACL:IsTrusted() then
+        LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+    end
 end
 
 function RaidManagerGUI:Toggle()

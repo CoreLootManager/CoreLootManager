@@ -223,7 +223,13 @@ local function GenerateManagerOptions(self)
         },
         award_dkp_note = {
             name = CLM.L["Note"],
-            desc = CLM.L["Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."],
+            desc = (function()
+                local n = CLM.L["Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."]
+                if strlen(self.note) > 0 then
+                    n = n .. "\n\n|cffeeee00Note:|r " .. self.note
+                end
+                return n
+            end),
             type = "input",
             set = function(i, v) self.note = v end,
             get = function(i) return self.note end,
@@ -384,9 +390,9 @@ local function CreateManagementOptions(self, container)
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         mergeDictsInline(options.args, GenerateManagerOptions(self))
     end
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    -- if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
         mergeDictsInline(options.args, GenerateOfficerOptions(self))
-    end
+    -- end
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
     LIBS.gui:Open("clm_standings_gui_options", ManagementOptions)
     self.st:SetFilter((function(stobject, row)
@@ -454,16 +460,16 @@ local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
         {   name = CLM.L["Name"],   width = 100 },
-        {   name = CLM.L["DKP"],    width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-        {   name = CLM.L["Class"],  width = 100,
+        {   name = CLM.L["DKP"],    width = 80, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+        {   name = CLM.L["Class"],  width = 60,
             comparesort = UTILS.LibStCompareSortWrapper(
                 (function(a1, b1)
                     return RemoveColorCode(a1), RemoveColorCode(b1)
                 end)
             )
         },
-        {   name = CLM.L["Spec"],   width = 100 },
-        {   name = CLM.L["Attendance [%]"], width = 100,
+        {   name = CLM.L["Spec"],   width = 60 },
+        {   name = CLM.L["Attendance [%]"], width = 90,
             comparesort = UTILS.LibStCompareSortWrapper(
                 (function(a1, b1)
                     return tonumber(RemoveColorCode(a1)), tonumber(RemoveColorCode(b1))
@@ -473,8 +479,8 @@ local function CreateStandingsDisplay(self)
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
-    StandingsGroup:SetHeight(560)
-    StandingsGroup:SetWidth(550)
+    StandingsGroup:SetHeight(520)
+    StandingsGroup:SetWidth(440)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel(CLM.L["Select roster"])
@@ -676,8 +682,8 @@ function StandingsGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(800)
-    f:SetHeight(685)
+    f:SetWidth(680)
+    f:SetHeight(640)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
     f:AddChild(CreateStandingsDisplay(self))
