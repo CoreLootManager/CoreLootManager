@@ -1,0 +1,47 @@
+name: Alpha Release
+on:
+  push:
+
+jobs:
+  create_github_release:
+    name: Create a release object in Github
+    runs-on: ubuntu-latest
+    steps:
+    - uses: Roang-zero1/github-create-release-action@master
+      with:
+        version_regex: ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$
+        prerelease_regex:  ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+-beta.*$
+        update_existing: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bigwigs_release_github:
+    needs:
+      - create_github_release
+    name: Build via BigWigs packager for Github Only
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install gitman
+        run: pipx install gitman
+      - name: install dependencies
+        run: gitman install
+      - name: install yq
+        run: pipx install yq
+      - name: verify required files recursively
+        run: scripts/verify-dependencies ClassicLootManager.toc
+      - name: Remove git dirs from gitman deps
+        run:  find ExternalLibs -type d -name ".git" -execdir rm -rf {} \; -prune
+      - name: Copy gitman deps
+        run: mkdir -p .release/ClassicLootManager && mv ExternalLibs .release/ClassicLootManager/
+      - name: Bigwigs packager
+        uses: BigWigsMods/packager@master
+        with:
+          args: "-o -e -u -m .pkgmeta -g bcc"
+      - name: Get name of zip file
+        run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
+      - name: Upload artifact to github
+        uses: fnkr/github-action-ghr@v1
+        env:
+          GHR_PATH: ${{ env.artifact }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
