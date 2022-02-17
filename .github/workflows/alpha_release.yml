@@ -31,7 +31,8 @@ jobs:
       - name: Create Release and upload artifact to GitHub
         uses: ncipollo/release-action@v1
         with:
-          name: ${releasename}
-          tag: ${releasename}
-          artifacts: ${artifact}
+          name: $releasename
+          tag: $releasename
+          artifacts: $artifact
+          prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
