@@ -155,6 +155,30 @@ function AuctionHistoryManager:Remove(id)
     end
 end
 
+
+function AuctionHistoryManager:RemoveOld(time)
+    time = tonumber(time) or 2678400 -- 31 days old
+    local cutoff = GetServerTime() - time
+    local toRemove = {}
+    for id, auction in ipairs(self.db.stack) do
+        if auction.time <= cutoff then
+            table.insert(toRemove, id)
+        end
+    end
+    if #toRemove == #self.db.stack then
+        self:Wipe()
+        return
+    end
+    -- Sort to remove in descending order, this way the positions of entries won't be removed
+    if #toRemove > 0 then
+        table.sort(toRemove, function(a, b) return a[1] > b[1] end)
+    end
+    for _,id in ipairs(toRemove) do
+        table.remove(self.db.stack, id)
+    end
+    CLM.GUI.AuctionHistory:Refresh(true)
+end
+
 function AuctionHistoryManager:Wipe()
     while(#self.db.stack > 0) do
         table.remove(self.db.stack)

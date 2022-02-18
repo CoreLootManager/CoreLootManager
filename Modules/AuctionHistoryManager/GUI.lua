@@ -76,17 +76,17 @@ function AuctionHistoryGUI:Initialize()
                 separator = true,
                 trustedOnly = true,
             },
-            -- {
-            --     title = CLM.L["Remove old"],
-            --     func = (function()
-            --         AuctionHistoryManager:RemoveOld()
-            --     end),
-            --     color = "cc0000"
-            -- },
-            -- {
-            --     separator = true,
-            --     trustedOnly = true,
-            -- },
+            {
+                title = CLM.L["Remove old"],
+                func = (function()
+                    AuctionHistoryManager:RemoveOld()
+                end),
+                color = "cc0000"
+            },
+            {
+                separator = true,
+                trustedOnly = true,
+            },
             {
                 title = CLM.L["Remove all"],
                 func = (function()
