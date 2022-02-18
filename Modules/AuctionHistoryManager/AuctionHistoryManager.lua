@@ -41,8 +41,13 @@ function AuctionHistoryManager:Initialize()
         if self:GetPostBids() then
             local channel = CHANNELS[self:GetPostBidsChannel()] or "OFFICER"
             SendChatMessage(data.link, channel)
+            local noBids = true
             for bidder,bid in pairs(data.bids) do
-                SendChatMessage(bidder .. ":" .. tostring(bid) .. CLM.L[" DKP "], channel)
+                noBids = false
+                SendChatMessage(bidder .. ": " .. tostring(bid) .. CLM.L[" DKP "], channel)
+            end
+            if noBids then
+                SendChatMessage(CLM.L["No bids"], channel)
             end
         end
         CLM.GUI.AuctionHistory:Refresh(true)
