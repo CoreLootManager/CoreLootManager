@@ -30,6 +30,7 @@ local AuctionCommDistributeBid = MODELS.AuctionCommDistributeBid
 local AUCTION_COMM_PREFIX = "Auction1"
 
 local EVENT_START_AUCTION = "CLM_AUCTION_START"
+local EVENT_END_AUCTION = "CLM_AUCTION_END"
 
 local AuctionManager = {}
 
@@ -181,6 +182,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         LOG:Warning("AuctionManager:StartAuction(): invalid item id")
         return false
     end
+    self.itemId = itemId
     if not itemLink then
         LOG:Warning("AuctionManager:StartAuction(): invalid item link")
         return false
@@ -286,8 +288,16 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     -- UI
     GUI.AuctionManager:UpdateBids()
     -- Event
-    EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = itemId })
+    EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = self.itemId })
     return true
+end
+
+local function AuctionEnd(self)
+    self:SendAuctionEnd()
+    EventManager:DispatchEvent(EVENT_END_AUCTION, {
+        id = self.itemId,
+        bids = self.userResponses.bids
+     })
 end
 
 function AuctionManager:StopAuctionTimed()
@@ -297,7 +307,7 @@ function AuctionManager:StopAuctionTimed()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
     end
-    self:SendAuctionEnd()
+    AuctionEnd(self)
     GUI.AuctionManager:UpdateBids()
 end
 
@@ -308,7 +318,7 @@ function AuctionManager:StopAuctionManual()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
     end
-    self:SendAuctionEnd()
+    AuctionEnd(self)
     GUI.AuctionManager:UpdateBids()
 end
 

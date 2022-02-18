@@ -118,6 +118,7 @@ function CORE:_InitializeFeatures()
     MODULES.ProfileInfoManager:Initialize()
     MODULES.AutoAwardManager:Initialize()
     MODULES.LootQueueManager:Initialize()
+    MODULES.AuctionHistoryManager:Initialize()
     MODULES.SandboxManager:Initialize()
     -- Globals
     CLM.Migration:Initialize() -- Initialize Migration

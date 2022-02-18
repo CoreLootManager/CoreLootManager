@@ -95,6 +95,7 @@ Modules\ProfileInfoManager\ProfileInfoManager.lua
 Modules\SandboxManager\SandboxManager.lua
 Modules\AutoAwardManager\AutoAwardManager.lua
 Modules\LootQueueManager\LootQueueManager.lua
+Modules\AuctionHistoryManager\AuctionHistoryManager.lua
 Modules\AutoAwardManager\EncounterIDs.lua
 
 # Addon Options and GUIs (View)
@@ -109,6 +110,7 @@ Modules\PointManager\GUI.lua
 Modules\Changelog\GUI.lua
 Modules\LedgerManager\GUI.lua
 Modules\LootQueueManager\GUI.lua
+Modules\AuctionHistoryManager\GUI.lua
 
 # Alerts
 Alerts\Alerts.xml
