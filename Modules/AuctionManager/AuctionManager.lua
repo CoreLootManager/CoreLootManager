@@ -294,9 +294,12 @@ end
 
 local function AuctionEnd(self)
     self:SendAuctionEnd()
+    self.lastAuctionEndTime = GetServerTime()
     EventManager:DispatchEvent(EVENT_END_AUCTION, {
+        link = self.itemLink,
         id = self.itemId,
-        bids = self.userResponses.bids
+        bids = self.userResponses.bids,
+        time = self.lastAuctionEndTime
      })
 end
 
@@ -592,7 +595,11 @@ end
 
 function AuctionManager:Award(itemLink, itemId, price, name)
     LOG:Trace("AuctionManager:Award()")
-    return LootManager:AwardItem(self.raid, name, itemLink, itemId, price)
+    local success, uuid = LootManager:AwardItem(self.raid, name, itemLink, itemId, price)
+    if success then
+        MODULES.AuctionHistoryManager:CorrelateWithLoot(self.lastAuctionEndTime, uuid)
+    end
+    return success
 end
 
 function AuctionManager:IsAuctioneer(name, relaxed)

@@ -139,11 +139,13 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
     end
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     if roster:IsProfileInRoster(profile:GUID()) then
+        local entry
         if isRaid then
-            LedgerManager:Submit(LEDGER_LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value), forceInstant)
+            entry = LEDGER_LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value)
         else
-            LedgerManager:Submit(LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value), forceInstant)
+            entry = LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value)
         end
+        LedgerManager:Submit(entry, forceInstant)
         if CLM.GlobalConfigs:GetLootWarning() then
             local message = string.format(CLM.L["%s awarded to %s for %s DKP"], itemLink, name, value)
             SendChatMessage(message, "RAID_WARNING")
@@ -151,7 +153,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
                 SendChatMessage(message, "GUILD")
             end
         end
-        return true
+        return true, entry:uuid()
     else
         LOG:Error("LootManager:AwardItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
     end

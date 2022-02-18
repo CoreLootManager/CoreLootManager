@@ -39,19 +39,19 @@ end
 
 
 local function ST_GetItemId(row)
-    return row.cols[1].value
-end
-
-local function ST_GetAuctionBids(row)
     return row.cols[2].value
 end
 
-local function ST_GetAuctionTime(row)
+local function ST_GetAuctionBids(row)
     return row.cols[3].value
 end
 
-local function ST_GetItemSeq(row)
+local function ST_GetAuctionTime(row)
     return row.cols[4].value
+end
+
+local function ST_GetItemSeq(row)
+    return row.cols[5].value
 end
 
 function AuctionHistoryGUI:Initialize()
@@ -109,7 +109,7 @@ end
 local ROW_HEIGHT = 18
 local MIN_HEIGHT = 105
 
-local function CreateLootDisplay(self)
+local function CreateAuctionDisplay(self)
     local columns = {
         {name = "",  width = 200},
     }
@@ -137,13 +137,19 @@ local function CreateLootDisplay(self)
         local itemString = "item:" .. tonumber(itemId)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
-        tooltip:AddDoubleLine(CLM.L["Time:"], ST_GetAuctionTime(rowData))
-        for name, bid in pairs(ST_GetAuctionBids(rowData)) do
-            local profile = ProfileManager:GetProfileByName(name)
-            if profile then
-                name = UTILS.ColorCodeText(name, UTILS.GetClassColor(profile:Class()))
+        tooltip:AddLine(ST_GetAuctionTime(rowData))
+        tooltip:AddLine(CLM.L["Bids"])
+        local noBids = true
+        for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
+            noBids = false
+            local bidderProfile = ProfileManager:GetProfileByName(bidder)
+            if bidderProfile then
+                bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
             end
-            tooltip:AddDoubleLine(name, bid)
+            tooltip:AddDoubleLine(bidder, bid)
+        end
+        if noBids then
+            tooltip:AddLine(CLM.L["No bids"])
         end
         tooltip:Show()
         return status
@@ -195,7 +201,7 @@ function AuctionHistoryGUI:Create()
     f:SetHeight(MIN_HEIGHT)
     self.top = f
 
-    f:AddChild(CreateLootDisplay(self))
+    f:AddChild(CreateAuctionDisplay(self))
     RestoreLocation(self)
     -- Hide by default
     f:Hide()
@@ -214,6 +220,7 @@ function AuctionHistoryGUI:Refresh(visible)
     for seq, auction in ipairs(stack) do
         local row = {
             cols = {
+                { value = auction.link},
                 { value = auction.id },
                 { value = auction.bids },
                 { value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], auction.time) },
@@ -268,7 +275,7 @@ function AuctionHistoryGUI:RegisterSlash()
     local options = {
         auction_history = {
             type = "execute",
-            name = "Loot Queue",
+            name = "Auction History",
             desc = CLM.L["Toggle Auction History window display"],
             handler = self,
             func = "Toggle",

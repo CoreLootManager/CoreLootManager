@@ -182,6 +182,17 @@ local function CreateLootDisplay(self)
                 tooltip:AddLine(raid:Name())
             end
             tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+            local auction = MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
+            if auction then
+                tooltip:AddLine(CLM.L["Bids"])
+                for bidder, bid in pairs(auction.bids) do
+                    local bidderProfile = ProfileManager:GetProfileByName(bidder)
+                    if bidderProfile then
+                        bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
+                    end
+                    tooltip:AddDoubleLine(bidder, bid)
+                end
+            end
         end
 		tooltip:Show()
         return status
