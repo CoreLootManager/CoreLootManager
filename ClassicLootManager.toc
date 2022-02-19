@@ -4,6 +4,7 @@
 ## Title: Classic Loot Manager
 ## Notes: Robust, DKP based Loot Manager system
 ## Author: Lantis (WoW: Mirage Raceway EU <Essential> Alliance)
+## Version: @project-version@
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
 ## X-WoWI-ID: 26001

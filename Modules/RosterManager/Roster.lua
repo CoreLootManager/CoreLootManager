@@ -16,7 +16,7 @@ local round = UTILS.round
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
-function Roster:New(uid, pointType)
+function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
     local o = {}
 
     setmetatable(o, self)
@@ -35,7 +35,7 @@ function Roster:New(uid, pointType)
     -- Profile standing in roster (dict)
     o.standings = {}
     -- Profile attendance in roster (dict)
-    o.attendanceTracker = CLM.MODELS.AttendanceTracker:New()
+    o.attendanceTracker = CLM.MODELS.AttendanceTracker:New(raidsForFullAttendance, attendanceWeeksWindow)
     -- Point changes in  roster (list)
     o.pointHistory = {}
     -- Point changes in to players in roster (dict of lists)
