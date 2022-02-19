@@ -81,28 +81,62 @@ function RaidManager:Initialize()
             local raidUid = entry:raid()
             local joiners = entry:joiners()
             local leavers = entry:leavers()
+            local standby = entry:standby()
+            local removed = entry:removed()
             local raid = self:GetRaidByUid(raidUid)
             if not raid then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
                 return
             end
-            -- Add joiners
+            -- Add standby
+            for _, iGUID in ipairs(standby) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    -- Do not do that if player is already in a raid
+                    if self:GetProfileRaid(GUID) then
+                        self:UpdateProfileCurentRaid(GUID, nil)
+                        self:UpdateProfileCurentStandby(GUID, raidUid)
+                        raid:StandbyPlayer(GUID)
+                        raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
+                    end
+                end
+            end
+            -- Add Joiners
             for _, iGUID in ipairs(joiners) do
                 local GUID = getGuidFromInteger(iGUID)
                 local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, raidUid)
+                    self:UpdateProfileCurentStandby(GUID, nil)
                     raid:AddPlayer(GUID)
                     raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
                 end
             end
-            -- Remove leavers
+            -- Remove / bench leavers
+            local benchLeavers = raid:Configuration():Get("autoBenchLeavers")
             for _, iGUID in ipairs(leavers) do
                 local GUID = getGuidFromInteger(iGUID)
                 local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, nil)
                     raid:RemovePlayer(GUID)
+                    if benchLeavers then
+                        -- Bench leavers
+                        raid:StandbyPlayer(GUID)
+                        self:UpdateProfileCurentStandby(GUID, raidUid)
+                    end
+                end
+            end
+            -- Remove removed
+            for _, iGUID in ipairs(removed) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    self:UpdateProfileCurentRaid(GUID, nil)
+                    self:UpdateProfileCurentStandby(GUID, nil)
+                    raid:RemovePlayer(GUID)
+                    raid:RemoveFromStandbyPlayer(GUID)
                 end
             end
         end)
@@ -114,10 +148,23 @@ function RaidManager:Initialize()
             LOG:TraceAndCount("mutator(RaidStart)")
             local raidUid = entry:raid()
             local players = entry:players()
+            local standby = entry:standby()
             local raid = self:GetRaidByUid(raidUid)
             if not raid then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
                 return
+            end
+            -- order here is important just in case someone adds to standby a player in raid
+            -- Add standby
+            for _, iGUID in ipairs(standby) do
+                local GUID = getGuidFromInteger(iGUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
+                if profile then
+                    self:UpdateProfileCurentRaid(GUID, nil)
+                    self:UpdateProfileCurentStandby(GUID, raidUid)
+                    raid:StandbyPlayer(GUID)
+                    raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
+                end
             end
             -- Add players
             for _,iGUID in ipairs(players) do
@@ -125,13 +172,13 @@ function RaidManager:Initialize()
                 local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, raidUid)
+                    self:UpdateProfileCurentStandby(GUID, nil)
                     raid:AddPlayer(GUID)
                     raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
                 else
                     LOG:Debug("RaidManager mutator(): Missing profile for: %s", GUID)
                 end
             end
-
             raid:Start(entry:time())
             local config = raid:Configuration()
             local roster = raid:Roster()
@@ -141,6 +188,9 @@ function RaidManager:Initialize()
                 end
                 if config:Get("onTimeBonus") and config:Get("onTimeBonusValue") > 0 then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
+                    if config:Get("autoAwardIncludeBench") then
+                        PointManager:UpdatePointsDirectly(roster, raid:PlayersOnStandby(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS, entry:time(), entry:creator())
+                    end
                 end
             end
         end)
@@ -166,6 +216,9 @@ function RaidManager:Initialize()
                 end
                 if config:Get("raidCompletionBonus") and config:Get("raidCompletionBonusValue") > 0 then
                     PointManager:UpdatePointsDirectly(roster, raid:Players(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
+                    if config:Get("autoAwardIncludeBench") then
+                        PointManager:UpdatePointsDirectly(roster, raid:PlayersOnStandby(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS, entry:time(), entry:creator())
+                    end
                 end
             end
 
@@ -226,6 +279,10 @@ function RaidManager:IsInRaid()
     return self.cache.profileRaidInfo[whoamiGUID()] and true or false
 end
 
+function RaidManager:IsOnStandby()
+    return self.cache.profileStandbyInfo[whoamiGUID()] and true or false
+end
+
 function RaidManager:IsInActiveRaid()
     return self:IsInRaid() and self:GetRaid():IsActive() or false
 end
@@ -250,8 +307,23 @@ function RaidManager:UpdateProfileCurentRaid(GUID, raidUid)
     end
 end
 
+function RaidManager:UpdateProfileCurentStandby(GUID, raidUid)
+    LOG:Debug("RaidManager:UpdateProfileCurentStandby(%s, %s)", GUID, raidUid)
+    if ProfileManager:GetProfileByGUID(GUID) then
+        local old = self.cache.profileStandbyInfo[GUID]
+        self.cache.profileStandbyInfo[GUID] = self.cache.raids[raidUid]
+        if old and old:IsActive() then
+            old:RemoveFromStandbyPlayer(GUID)
+        end
+    end
+end
+
 function RaidManager:GetProfileRaid(GUID)
     return self.cache.profileRaidInfo[GUID]
+end
+
+function RaidManager:GetProfileStandby(GUID)
+    return self.cache.profileStandbyInfo[GUID]
 end
 
 function RaidManager:CreateRaid(roster, name, config)
@@ -309,17 +381,27 @@ function RaidManager:StartRaid(raid)
     RosterManager:AddFromRaidToRoster(raid:Roster())
 
     local players = {}
+    local joining_players_guids = {}
     for i=1,MAX_RAID_MEMBERS do
         local name = GetRaidRosterInfo(i)
         if name then
             local profile = ProfileManager:GetProfileByName(RemoveServer(name))
             if profile then
                 table.insert(players, profile)
+                joining_players_guids[profile:GUID()] = true
             end
         end
     end
 
-    LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players), true)
+    -- Fill Standby
+    -- local standby = keys(MODULES.StandbyStagingManager:GetStandby(raid:UID()))
+    local standby = {}
+    for GUID,_ in pairs(MODULES.StandbyStagingManager:GetStandby(raid:UID())) do
+        if not joining_players_guids[GUID] then
+            table.insert(standby, GUID)
+        end
+    end
+    LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players, standby), true)
     if CLM.GlobalConfigs:GetRaidWarning() then
         SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
     end
@@ -336,7 +418,7 @@ function RaidManager:EndRaid(raid)
         LOG:Message(CLM.L["You are not allowed to start raid."])
         return
     end
-    if not raid:IsActive() then
+    if not raid:Status() then
         LOG:Message(CLM.L["You can only end an active raid."])
         return
     end
@@ -382,6 +464,74 @@ function RaidManager:JoinRaid(raid)
         error("My profile is nil")
     end
     LedgerManager:Submit(LEDGER_RAID.Update:new(raid:UID(), {}, {ProfileManager:GetMyProfile()}), true)
+end
+
+function RaidManager:AddToStandby(raid, standby)
+    LOG:Trace("RaidManager:AddToStandby()")
+    if not typeof(raid, Raid) then
+        LOG:Message(CLM.L["Missing valid raid"])
+        return
+    end
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(CLM.L["You are not allowed to control raid."])
+        return
+    end
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.IN_PROGRESS then
+        LOG:Message(CLM.L["You can only add players to standby of a progressing raid."])
+        return
+    end
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+        return
+    end
+    -- Filter out players currently in standby or in raid
+    local standby_filtered = {}
+    for _,profile in ipairs(standby) do
+        local GUID = profile:GUID()
+        if not (raid.players[GUID] or raid.standby[GUID]) then
+            table.insert(standby_filtered, GUID)
+        end
+    end
+    if #standby_filtered == 0 then
+        LOG:Warning("Empty standby list")
+        return
+    end
+    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, standby_filtered, {})
+    LedgerManager:Submit(entry, true)
+end
+
+function RaidManager:RemoveFromStandby(raid, removed)
+    LOG:Trace("RaidManager:RemoveFromStandby()")
+    if not typeof(raid, Raid) then
+        LOG:Message(CLM.L["Missing valid raid"])
+        return
+    end
+    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(CLM.L["You are not allowed to control raid."])
+        return
+    end
+    if raid:Status() ~= CONSTANTS.RAID_STATUS.IN_PROGRESS then
+        LOG:Message(CLM.L["You can only add players to standby of a progressing raid."])
+        return
+    end
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+        return
+    end
+    -- Filter out players currently not on standby
+    local removed_filtered = {}
+    for _,profile in ipairs(removed) do
+        local GUID = profile:GUID()
+        if raid.standby[GUID] then
+            table.insert(removed_filtered, GUID)
+        end
+    end
+    if #removed_filtered == 0 then
+        LOG:Warning("Empty removed list")
+        return
+    end
+    local entry = LEDGER_RAID.Update:new(raid:UID(), {}, {}, {}, removed_filtered)
+    LedgerManager:Submit(entry, true)
 end
 
 function RaidManager:RegisterEventHandling()
@@ -558,6 +708,10 @@ function RaidManager:GetRaid()
     return self.cache.profileRaidInfo[whoamiGUID()]
 end
 
+function RaidManager:GetStandby()
+    return self.cache.profileStandbyInfo[whoamiGUID()]
+end
+
 function RaidManager:WipeAll()
     self.cache = {
         current = {
@@ -566,7 +720,8 @@ function RaidManager:WipeAll()
             raidManager = "",
         },
         raids = {},
-        profileRaidInfo = {}
+        profileRaidInfo = {},
+        profileStandbyInfo = {}
     }
 end
 

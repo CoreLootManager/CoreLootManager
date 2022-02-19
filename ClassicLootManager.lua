@@ -1,5 +1,10 @@
 local name, CLM = ...
 
+local LIB_CLM, _ = LibStub:NewLibrary("ClassicLootManager", 1)
+if LIB_CLM then
+    LIB_CLM.CLM = CLM
+end
+
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
 CLM.MODULES = {}
@@ -112,6 +117,7 @@ function CORE:_InitializeFeatures()
     MODULES.PointManager:Initialize()
     MODULES.LootManager:Initialize()
     MODULES.RaidManager:Initialize()
+    MODULES.StandbyStagingManager:Initialize()
     MODULES.AuctionManager:Initialize()
     MODULES.AutoAward:Initialize()
     MODULES.BiddingManager:Initialize()

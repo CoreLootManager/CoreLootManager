@@ -16,7 +16,7 @@ local round = UTILS.round
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
-function Roster:New(uid, pointType)
+function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
     local o = {}
 
     setmetatable(o, self)
@@ -35,7 +35,7 @@ function Roster:New(uid, pointType)
     -- Profile standing in roster (dict)
     o.standings = {}
     -- Profile attendance in roster (dict)
-    o.attendanceTracker = CLM.MODELS.AttendanceTracker:New()
+    o.attendanceTracker = CLM.MODELS.AttendanceTracker:New(raidsForFullAttendance, attendanceWeeksWindow)
     -- Point changes in  roster (list)
     o.pointHistory = {}
     -- Point changes in to players in roster (dict of lists)
@@ -401,8 +401,6 @@ function RosterConfiguration:New(i)
     o._.allowNegativeStandings = false
     -- Allow negative bidders
     o._.allowNegativeBidders = false
-    -- TODO:
-    -- Max Bid Behavior ?
     -- Boss Kill Bonus
     o._.bossKillBonus = false
     -- Default Boss Kill Bonus value
@@ -431,6 +429,18 @@ function RosterConfiguration:New(i)
     o._.roundDecimals = 10
     -- Minimal bid increment for open auction
     o._.minimalIncrement = 1
+    -- Bench players leaving raid
+    o._.autoBenchLeavers = false
+    -- Include bench in auto-awards
+    o._.autoAwardIncludeBench = true
+    -- Include only online players in auto-awards
+    o._.autoAwardOnlineOnly = false
+    -- Include only players in same zone in auto-awards
+    o._.autoAwardSameZoneOnly = false
+    -- Enable self-subscribe
+    o._.selfBenchSubscribe = false
+    -- Additional tax to pay
+    o._.tax = 0
 
     -- Additional settings
     o.hasHardCap = false
@@ -465,7 +475,13 @@ function RosterConfiguration:fields()
         "weeklyCap",
         "weeklyReset",
         "roundDecimals",
-        "minimalIncrement"
+        "minimalIncrement",
+        "autoBenchLeavers",
+        "autoAwardIncludeBench",
+        "autoAwardOnlineOnly",
+        "autoAwardSameZoneOnly",
+        "selfBenchSubscribe",
+        "tax"
     }
 end
 
@@ -498,7 +514,13 @@ local TRANSFORMS = {
     weeklyCap = transform_number,
     weeklyReset = transform_number,
     roundDecimals = transform_number,
-    minimalIncrement = transform_number
+    minimalIncrement = transform_number,
+    autoBenchLeavers = transform_boolean,
+    autoAwardIncludeBench = transform_boolean,
+    autoAwardOnlineOnly = transform_boolean,
+    autoAwardSameZoneOnly = transform_boolean,
+    selfBenchSubscribe = transform_boolean,
+    tax = transform_number,
 }
 
 function RosterConfiguration:inflate(data)
@@ -587,6 +609,12 @@ function RosterConfiguration._validate_weeklyCap(value) value = tonumber(value);
 function RosterConfiguration._validate_weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
 function RosterConfiguration._validate_roundDecimals(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
 function RosterConfiguration._validate_minimalIncrement(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_autoBenchLeavers(value) return IsBoolean(value) end
+function RosterConfiguration._validate_autoAwardIncludeBench(value) return IsBoolean(value) end
+function RosterConfiguration._validate_autoAwardOnlineOnly(value) return IsBoolean(value) end
+function RosterConfiguration._validate_autoAwardSameZoneOnly(value) return IsBoolean(value) end
+function RosterConfiguration._validate_selfBenchSubscribe(value) return IsBoolean(value) end
+function RosterConfiguration._validate_tax(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration

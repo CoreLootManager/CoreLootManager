@@ -657,11 +657,10 @@ CLM.L["Instructor Razuvious"] = "Instructeur Razuvious"
 -- Modules/RaidManager/GUI.lua:186
 -- Modules/RaidManager/GUI.lua:250
 -- Modules/RosterManager/Options.lua:581
-CLM.L["Interval Bonus Value"] = "Valeur du bonus d'intervalle"
+CLM.L["Interval Value"] = "Valeur du bonus d'intervalle"
 -- Modules/LedgerManager/GUI.lua:140
 CLM.L["Interval Bonus time"] = "Intervalle du temps de bonus"
 -- Modules/LedgerManager/GUI.lua:143
-CLM.L["Interval Bonus value"] = "Valeur du bonus d'intervalle"
 -- Modules/RaidManager/GUI.lua:183
 -- Modules/RaidManager/GUI.lua:235
 -- Modules/RosterManager/Options.lua:565

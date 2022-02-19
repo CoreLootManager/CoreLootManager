@@ -1,7 +1,22 @@
 local  _, CLM = ...
--- ### Auto trade
--- Auto trade for soulbound items with trade timer not exipred should now work properly.
 CLM.ChangelogData = {
+    {
+        version = "v1.5.0",
+        data = {
+            {
+                name = "Developers note",
+                data = {
+                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    {header = "Standby aka bench", body = "AddOn will no longer give double DKP for the kill."},
+                },
+            },
+        }
+    },
     {
         version = "v1.4.2",
         data = {

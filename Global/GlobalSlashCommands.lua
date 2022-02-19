@@ -12,6 +12,7 @@ local RaidManager = MODULES.RaidManager
 local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local ProfileInfoManager = MODULES.ProfileInfoManager
+local AutoAward = MODULES.AutoAward
 
 local GetItemIdFromLink = UTILS.GetItemIdFromLink
 
@@ -77,7 +78,12 @@ function GlobalSlashCommands:Initialize()
                     return
                 end
                 -- Award --
-                LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
+                local awarded = LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
+                if awarded and not AutoAward:IsIgnored(itemId) then
+                    if MODULES.AuctionManager:GetAutoTrade() then
+                        AutoAward:Track(itemId, name)
+                    end
+                end
             end)
         }
     end

@@ -140,7 +140,7 @@ local configDecodeFunctions = {
         return CLM.L["Interval Bonus time"], safeToString(value)
     end),
     intervalBonusValue = (function(value)
-        return CLM.L["Interval Bonus value"], safeToString(value)
+        return CLM.L["Interval Value"], safeToString(value)
     end),
     hardCap = (function(value)
         return CLM.L["Hard DKP cap"], safeToString(value)
