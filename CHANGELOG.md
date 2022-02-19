@@ -1,4 +1,23 @@
 
+# Classic Loot Manager v1.5.0
+## Features
+### Bench (aka standby) support
+AddOn now supports automatic bench handling. Player can be benched only in one raid. Linked alts can be benched either in the same raid (no additional DKP gained) or in another (additional DKP is gained). Trusted people can add players to the bench manually. If enabled players can signup for bench while raid is `created` but not `In Progress`. Players leaving raid can be benched automatically (disabled by default). Find out more in configuration!
+### Auction History
+Auction and bid history is now stored locally (not synced between players). They can be viewed in new UI or if item was awarded then bids will be also displayed in the loot tooltip. Additionally system will now be able to post all bids (enabled by default) to a channel of players choice (defaults to `Officer` chat).
+### Taxation
+Additional cost (tax) can be now automatically added to price when awarding after auction. Defaults to 0.
+## Fixes
+### GUI changes
+Multiple GUI windows should now be more compact than earlier. Multiple tooltips have been extended. Selcted player count is now displayed in the Standings window.
+### Attendance tracking
+Attendance tracking is now properly updated after configuration has been changed. Stil requires reload.
+### Auto Trade
+Manually awarded items should now be properly auto-traded.
+### Minimap icon menu
+Minimap icon menu has been slightly reordered to fit new features.
+### Chat commands
+Chat commands are no longer case sensitive.
 # Classic Loot Manager v1.4.2
 ## Fixes
 ### Shade of Akama Boss kill bonus

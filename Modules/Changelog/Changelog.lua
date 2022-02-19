@@ -4,17 +4,23 @@ CLM.ChangelogData = {
         version = "v1.5.0",
         data = {
             {
-                name = "Developers note",
+                name = "Features",
                 data = {
-                    {header = "CLM Discord", body = "Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"},
+                    {header = "Bench (aka standby) support", body = "AddOn now supports automatic bench handling. Player can be benched only in one raid. Linked alts can be benched either in the same raid (no additional DKP gained) or in another (additional DKP is gained). Trusted people can add players to the bench manually. If enabled players can signup for bench while raid is |cff44cc44created|r but not |cffeeee00In Progress|r. Players leaving raid can be benched automatically (disabled by default). Find out more in configuration!"},
+                    {header = "Auction History", body = "Auction and bid history is now stored locally (not synced between players). They can be viewed in new UI or if item was awarded then bids will be also displayed in the loot tooltip. Additionally system will now be able to post all bids (enabled by default) to a channel of players choice (defaults to |cff44cc44Officer|r chat)."},
+                    {header = "Taxation", body = "Additional cost (tax) can be now automatically added to price when awarding after auction. Defaults to 0."},
                 },
             },
             {
-                name = "Features",
+                name = "Fixes",
                 data = {
-                    {header = "Standby aka bench", body = "AddOn will no longer give double DKP for the kill."},
+                    {header = "GUI changes", body = "Multiple GUI windows should now be more compact than earlier. Multiple tooltips have been extended. Selcted player count is now displayed in the Standings window."},
+                    {header = "Attendance tracking", body = "Attendance tracking is now properly updated after configuration has been changed. Stil requires reload."},
+                    {header = "Auto Trade", body = "Manually awarded items should now be properly auto-traded."},
+                    {header = "Minimap icon menu", body = "Minimap icon menu has been slightly reordered to fit new features."},
+                    {header = "Chat commands", body = "Chat commands are no longer case sensitive."},
                 },
-            },
+            },            
         }
     },
     {
