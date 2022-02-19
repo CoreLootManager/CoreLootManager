@@ -20,7 +20,7 @@ CLM.ChangelogData = {
                     {header = "Minimap icon menu", body = "Minimap icon menu has been slightly reordered to fit new features."},
                     {header = "Chat commands", body = "Chat commands are no longer case sensitive."},
                 },
-            },            
+            },
         }
     },
     {
