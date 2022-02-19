@@ -30,6 +30,7 @@ local AuctionCommDistributeBid = MODELS.AuctionCommDistributeBid
 local AUCTION_COMM_PREFIX = "Auction1"
 
 local EVENT_START_AUCTION = "CLM_AUCTION_START"
+local EVENT_END_AUCTION = "CLM_AUCTION_END"
 
 local AuctionManager = {}
 
@@ -181,6 +182,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         LOG:Warning("AuctionManager:StartAuction(): invalid item id")
         return false
     end
+    self.itemId = itemId
     if not itemLink then
         LOG:Warning("AuctionManager:StartAuction(): invalid item link")
         return false
@@ -232,12 +234,12 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         SendChatMessage(auctionMessage , "RAID_WARNING")
         auctionMessage = ""
         if baseValue > 0 then
-            auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."], tostring(baseValue))
+            auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."] .. " ", tostring(baseValue))
         end
         if maxValue > 0 then
-            auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."], tostring(maxValue))
+            auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."] .. " ", tostring(maxValue))
         end
-        auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."], tostring(auctionTime))
+        auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."] .. " ", tostring(auctionTime))
         if self.antiSnipe > 0 then
             auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], tostring(self.antiSnipe))
         end
@@ -286,8 +288,19 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     -- UI
     GUI.AuctionManager:UpdateBids()
     -- Event
-    EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = itemId })
+    EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = self.itemId })
     return true
+end
+
+local function AuctionEnd(self)
+    self:SendAuctionEnd()
+    self.lastAuctionEndTime = GetServerTime()
+    EventManager:DispatchEvent(EVENT_END_AUCTION, {
+        link = self.itemLink,
+        id = self.itemId,
+        bids = self.userResponses.bids,
+        time = self.lastAuctionEndTime
+     })
 end
 
 function AuctionManager:StopAuctionTimed()
@@ -297,7 +310,7 @@ function AuctionManager:StopAuctionTimed()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
     end
-    self:SendAuctionEnd()
+    AuctionEnd(self)
     GUI.AuctionManager:UpdateBids()
 end
 
@@ -308,7 +321,7 @@ function AuctionManager:StopAuctionManual()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
     end
-    self:SendAuctionEnd()
+    AuctionEnd(self)
     GUI.AuctionManager:UpdateBids()
 end
 
@@ -582,7 +595,11 @@ end
 
 function AuctionManager:Award(itemLink, itemId, price, name)
     LOG:Trace("AuctionManager:Award()")
-    return LootManager:AwardItem(self.raid, name, itemLink, itemId, price)
+    local success, uuid = LootManager:AwardItem(self.raid, name, itemLink, itemId, price)
+    if success then
+        MODULES.AuctionHistoryManager:CorrelateWithLoot(self.lastAuctionEndTime, uuid)
+    end
+    return success
 end
 
 function AuctionManager:IsAuctioneer(name, relaxed)
