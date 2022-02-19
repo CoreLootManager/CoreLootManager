@@ -2,6 +2,7 @@ local _, CLM = ...
 
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
+local UTILS = CLM.UTILS
 
 local EventManager = MODULES.EventManager
 
@@ -27,8 +28,7 @@ function AuctionHistoryManager:Initialize()
         -- config
         enable = true,
         post_bids = true,
-        post_bids_channel = 5,
-        comms_announce_bids = false
+        post_bids_channel = 5
     })
     EventManager:RegisterEvent(EVENT_END_AUCTION, function(_, data)
         if not self:GetEnabled() then return end
@@ -160,27 +160,12 @@ function AuctionHistoryManager:Remove(id)
     end
 end
 
-
 function AuctionHistoryManager:RemoveOld(time)
     time = tonumber(time) or 2678400 -- 31 days old
     local cutoff = GetServerTime() - time
-    local toRemove = {}
-    for id, auction in ipairs(self.db.stack) do
-        if auction.time <= cutoff then
-            table.insert(toRemove, id)
-        end
-    end
-    if #toRemove == #self.db.stack then
-        self:Wipe()
-        return
-    end
-    -- Sort to remove in descending order, this way the positions of entries won't be removed
-    if #toRemove > 0 then
-        table.sort(toRemove, function(a, b) return a[1] > b[1] end)
-    end
-    for _,id in ipairs(toRemove) do
-        table.remove(self.db.stack, id)
-    end
+    UTILS.OnePassRemove(self.db.stack, function(t, i, j)
+        return t[i].time > cutoff
+    end)
     CLM.GUI.AuctionHistory:Refresh(true)
 end
 
