@@ -158,6 +158,10 @@ function Raid:PlayersOnStandby()
     return keys(self.standby)
 end
 
+function Raid:AllPlayers()
+    return UTILS.mergeLists(self:Players(), self:PlayersOnStandby())
+end
+
 function Raid:IsPlayerOnStandby(GUID)
     return self.standby[GUID] and true or false
 end
