@@ -566,7 +566,7 @@ local function CreateStandingsDisplay(self)
                 elseif RaidManager:IsInCreatedRaid() then
                     if #profiles > 25 then
                         LOG:Message(string.format(
-                            CLM.L["You can % max %d players from standby at the same time to a %s raid."],
+                            CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
                             CLM.L["remove"], 25, CLM.L["created"]
                         ))
                         return
