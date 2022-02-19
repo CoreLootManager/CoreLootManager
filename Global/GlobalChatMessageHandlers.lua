@@ -27,6 +27,7 @@ function GlboalChatMessageHandlers:Initialize()
         local params = { strsplit(" ", text) }
         local command = params[1]
         if command then
+            command = command:lower()
             local responseChannel, target
             if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
                 responseChannel = "RAID"
@@ -115,6 +116,7 @@ function GlboalChatMessageHandlers:Initialize()
     -- Suppress incoming chat commands
     if CLM.GlobalConfigs:GetSuppressIncomingChatCommands() then
         ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", (function(_, _, message, ...)
+            message = message:lower()
             if message:find("!dkp") or message:find("!bid") then
                 return true
             end
