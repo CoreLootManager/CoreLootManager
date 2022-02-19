@@ -43,8 +43,8 @@ function Minimap:Initialize()
             separator = true,
         },
         {
-            title = CLM.L["Loot Queue"],
-            func = (function() CLM.GUI.LootQueue:Toggle() end),
+            title = CLM.L["Auctioning"],
+            func = (function() CLM.GUI.AuctionManager:Toggle() end),
             trustedOnly = true
         },
         {
@@ -53,8 +53,8 @@ function Minimap:Initialize()
             trustedOnly = true
         },
         {
-            title = CLM.L["Auctioning"],
-            func = (function() CLM.GUI.AuctionManager:Toggle() end),
+            title = CLM.L["Loot Queue"],
+            func = (function() CLM.GUI.LootQueue:Toggle() end),
             trustedOnly = true
         },
         {
