@@ -25,6 +25,7 @@ local RosterManager = MODULES.RosterManager
 local LedgerManager = MODULES.LedgerManager
 local RaidManager = MODULES.RaidManager
 local EventManager = MODULES.EventManager
+local StandbyStagingManager = MODULES.StandbyStagingManager
 
 local buildPlayerListForTooltip = UTILS.buildPlayerListForTooltip
 local DeepCopy = UTILS.DeepCopy
@@ -89,9 +90,36 @@ function RaidManagerGUI:Initialize()
         end
         self:Refresh(true)
     end)
-    -- Trusted only
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
+            {
+                title = CLM.L["Request standby"],
+                func = (function(i)
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        local raid = ST_GetRaid(row)
+                        StandbyStagingManager:SignupToStandby(raid:UID())
+                    else
+                        LOG:Message(CLM.L["Please select a raid"])
+                    end
+                end)
+            },
+            {
+                title = CLM.L["Revoke standby"],
+                func = (function(i)
+                    local row = self.st:GetRow(self.st:GetSelection())
+                    if row then
+                        local raid = ST_GetRaid(row)
+                        StandbyStagingManager:RevokeStandby(raid:UID())
+                    else
+                        LOG:Message(CLM.L["Please select a raid"])
+                    end
+                end)
+            },
+            {
+                separator = true,
+                trustedOnly = true
+            },
             {
                 title = CLM.L["Start selected raid"],
                 func = (function(i)
@@ -103,7 +131,8 @@ function RaidManagerGUI:Initialize()
                     RaidManager:StartRaid(raid)
                     self:Refresh()
                 end),
-                trustedOnly = true
+                trustedOnly = true,
+                color = "eeee00"
             },
             {
                 title = CLM.L["End selected raid"],
@@ -116,7 +145,8 @@ function RaidManagerGUI:Initialize()
                     RaidManager:EndRaid(raid)
                     self:Refresh()
                 end),
-                trustedOnly = true
+                trustedOnly = true,
+                color = "eeee00"
             },
             {
                 title = CLM.L["Join selected raid"],
@@ -129,7 +159,8 @@ function RaidManagerGUI:Initialize()
                     RaidManager:JoinRaid(raid)
                     self:Refresh()
                 end),
-                trustedOnly = true
+                trustedOnly = true,
+                color = "eeee00"
             },
             {
                 separator = true,
@@ -183,7 +214,7 @@ local function FillConfigurationTooltip(configuration, tooltip)
     tooltip:AddDoubleLine(CLM.L["Interval Bonus"], intervalBonus and GreenYes() or RedNo())
     if intervalBonus then
         tooltip:AddDoubleLine(CLM.L["Interval Time"], configuration:Get("intervalBonusTime"))
-        tooltip:AddDoubleLine(CLM.L["Interval Bonus Value"], configuration:Get("intervalBonusValue"))
+        tooltip:AddDoubleLine(CLM.L["Interval Value"], configuration:Get("intervalBonusValue"))
     end
 end
 
@@ -247,12 +278,36 @@ local function GenerateOfficerOptions(self)
             order = 37,
         },
         interval_bonus_value = {
-            name = CLM.L["Interval Bonus Value"],
+            name = CLM.L["Interval Value"],
             type = "input",
             set = (function(i, v) self:SetRaidConfigurationOption("intervalBonusValue", tonumber(v)) end),
             get = (function() return tostring(self:GetRaidConfigurationOption("intervalBonusValue")) end),
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             order = 38,
+        },
+        auto_award_include_bench =  {
+            name = CLM.L["Include bench"],
+            desc = CLM.L["Include benched players in all auto-awards"],
+            type = "toggle",
+            set = (function(i, v) self:SetRaidConfigurationOption("autoAwardIncludeBench", tonumber(v)) end),
+            get = (function() return self:GetRaidConfigurationOption("autoAwardIncludeBench") end),
+            order = 39,
+        },
+        auto_bench_leavers =  {
+            name = CLM.L["Auto bench leavers"],
+            desc = CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."],
+            type = "toggle",
+            set = (function(i, v) self:SetRaidConfigurationOption("autoBenchLeavers", tonumber(v)) end),
+            get = (function() return self:GetRaidConfigurationOption("autoBenchLeavers") end),
+            order = 40,
+        },
+        allow_self_bench_subscribe =  {
+            name = CLM.L["Allow subscription"],
+            desc = CLM.L["Allow players to subscribe to the bench through Raids menu"],
+            type = "toggle",
+            set = (function(i, v) self:SetRaidConfigurationOption("selfBenchSubscribe", tonumber(v)) end),
+            get = (function() return self:GetRaidConfigurationOption("selfBenchSubscribe") end),
+            order = 41,
         },
         create_header = {
             type = "header",
@@ -320,9 +375,9 @@ local function CreateManagementOptions(self, container)
     }
     if ACL:IsTrusted() then
         mergeDictsInline(options.args, GenerateOfficerOptions(self))
+        LIBS.registry:RegisterOptionsTable(REGISTRY, options)
+        LIBS.gui:Open(REGISTRY, ManagementOptions)
     end
-    LIBS.registry:RegisterOptionsTable(REGISTRY, options)
-    LIBS.gui:Open(REGISTRY, ManagementOptions)
     return ManagementOptions
 end
 
@@ -353,17 +408,22 @@ local function CreateRaidDisplay(self)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         local raid = ST_GetRaid(rowData)
         -- In Raid
-        local profiles = raid:Profiles()
+        local finished = not raid:IsActive()
+        local profiles = raid:Profiles(finished)
         local numProfiles = #profiles
         tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"])
         tooltip:AddLine(" ")
-        tooltip:AddDoubleLine(CLM.L["In Raid"] .. ":", tostring(numProfiles))
+        if finished then
+            tooltip:AddDoubleLine(CLM.L["Participated"] .. ":", tostring(numProfiles))
+        else
+            tooltip:AddDoubleLine(CLM.L["In Raid"] .. ":", tostring(numProfiles))
+        end
         if not profiles or numProfiles == 0 then
             tooltip:AddLine("None")
         else
             buildPlayerListForTooltip(profiles, tooltip)
         end
-        local standby = raid:Standby()
+        local standby = raid:Standby(finished)
         local numStandby = #standby
         tooltip:AddDoubleLine(CLM.L["Standby"] .. ":", tostring(numStandby))
         if not standby or numStandby == 0 then
@@ -401,13 +461,9 @@ local function CreateRaidDisplay(self)
     -- end
     self.st:RegisterEvents({
         OnEnter = OnEnterHandler,
-        OnLeave = OnLeaveHandler
+        OnLeave = OnLeaveHandler,
+        OnClick = OnClickHandler
     })
-    if ACL:IsTrusted() then
-        self.st:RegisterEvents({
-            OnClick = OnClickHandler
-        })
-    end
     return StandingsGroup
 end
 
@@ -415,19 +471,25 @@ function RaidManagerGUI:Create()
     LOG:Trace("RaidManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle(CLM.L["Raid Manager"])
+    f:SetTitle(CLM.L["Raids"])
 
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(760)
+    if ACL:IsTrusted() then
+        f:SetWidth(760)
+    else
+        f:SetWidth(520)
+    end
     f:SetHeight(640)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
 
     f:AddChild(CreateRaidDisplay(self))
-    f:AddChild(CreateManagementOptions(self))
+    if ACL:IsTrusted() then
+        f:AddChild(CreateManagementOptions(self))
+    end
 
     RestoreLocation(self)
     -- Hide by default
@@ -462,8 +524,9 @@ function RaidManagerGUI:Refresh(visible)
         self.top:SetStatusText(CLM.L["Not in raid"])
     end
 
-    -- LIBS.registry:NotifyChange(REGISTRY)
-    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+    if ACL:IsTrusted() then
+        LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+    end
 end
 
 function RaidManagerGUI:Toggle()

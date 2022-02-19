@@ -35,14 +35,12 @@ function Minimap:Initialize()
             title = CLM.L["Point History"],
             func = (function() CLM.GUI.PointHistory:Toggle() end)
         },
-        -- Raid
         {
-            separator = true,
+            title = CLM.L["Raids"],
+            func = (function() CLM.GUI.RaidManager:Toggle() end),
         },
         {
-            title = CLM.L["Raid"],
-            func = (function() CLM.GUI.RaidManager:Toggle() end),
-            trustedOnly = true
+            separator = true,
         },
         {
             title = CLM.L["Loot Queue"],

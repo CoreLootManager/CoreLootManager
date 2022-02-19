@@ -89,7 +89,18 @@ local function GenerateUntrustedOptions(self)
         filter_display = {
             name = CLM.L["Filter"],
             type = "multiselect",
-            set = function(i, k, v) self.filterOptions[tonumber(k)] = v; self:Refresh() end,
+            set = function(i, k, v)
+                local n = tonumber(k)
+                self.filterOptions[n] = v
+                if v then
+                    if n == FILTER_IN_GUILD then
+                        self.filterOptions[FILTER_NOT_IN_GUILD] = not v
+                    elseif n == FILTER_NOT_IN_GUILD then
+                        self.filterOptions[FILTER_IN_GUILD] = not v
+                    end
+                end
+                self:Refresh()
+            end,
             get = function(i, v) return self.filterOptions[tonumber(v)] end,
             values = filters,
             width = 0.49,

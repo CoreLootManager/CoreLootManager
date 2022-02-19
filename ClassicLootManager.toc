@@ -73,6 +73,7 @@ Modules\AuctionManager\AuctionCommStructures.lua
 Modules\BiddingManager\BiddingCommStructures.lua
 Modules\RaidManager\LedgerEntries.lua
 Modules\RaidManager\Raid.lua
+Modules\StandbyStagingManager\StandbyStagingCommStructures.lua
 Modules\ProfileInfoManager\ProfileInfoCommStructures.lua
 
 # Addon modules (Controllers)
@@ -89,6 +90,7 @@ Modules\RosterManager\RosterManager.lua
 Modules\PointManager\PointManager.lua
 Modules\LootManager\LootManager.lua
 Modules\RaidManager\RaidManager.lua
+Modules\StandbyStagingManager\StandbyStagingManager.lua
 Modules\AuctionManager\AuctionManager.lua
 Modules\AuctionManager\AutoAward.lua
 Modules\BiddingManager\BiddingManager.lua

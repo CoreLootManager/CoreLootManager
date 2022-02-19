@@ -7,14 +7,16 @@ import re
 from pathlib import Path
 
 import pprint
+from xmlrpc.client import boolean
 pp = pprint.PrettyPrinter(indent=4)
 
 class L10nStorage:
-    def __init__(self, base):
+    def __init__(self, base, parser):
         self.data = {}
-        self.notUsed = {}
+        self.not_used = {}
         self.translations = {}
         self.base = base
+        self.parser = parser
 
     def store(self, l10n_string:string, file:Path, line:int):
         if not self.data.get(l10n_string):
@@ -26,11 +28,14 @@ class L10nStorage:
 
     def translate(self, locale, string, translation):
         if not self.data.get(string):
-            self.notUsed[string] = True
-            print('Not used: {}'.format(string))
+            self.not_used[string] = True
+            if self.parser:
+                print("Info:Locale/{0}.lua:{1} Not Used".format(locale, string))
+            else:
+                print('Not used: {}'.format(string))
             return
-        if self.notUsed.get(string):
-            del self.notUsed[string]
+        if self.not_used.get(string):
+            del self.not_used[string]
         
         if not self.translations.get(locale):
             self.translations[locale] = {}
@@ -120,7 +125,7 @@ def cleanup(filenames):
         except Exception:
             pass
 
-def verify_locales(storage:L10nStorage, locale:string):
+def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean):
     missing_translations = []
     for key in storage.data.keys():
         translation = storage.get_translation(locale, key)
@@ -128,10 +133,14 @@ def verify_locales(storage:L10nStorage, locale:string):
             missing_translations.append(key)
 
     if len(missing_translations) > 0:
-        print("=====================================")
-        print("Missing translations for locale {}:".format(locale))
-        for key in missing_translations:
-            print(key)
+        if parser_format:
+            for key in missing_translations:
+                print("Warning:Locale/{0}.lua:{1} Missing".format(locale, key))
+        else:
+            print("=====================================")
+            print("Missing translations for locale {}:".format(locale))
+            for key in missing_translations:
+                print(key)
         return 1
     return 0
 
@@ -148,7 +157,7 @@ def main(args):
     locales = ["ruRU", "frFR"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
     l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
-    storage = L10nStorage(baseDir)
+    storage = L10nStorage(baseDir, args.parser)
     # Indirectly used strings, e.g. classes
     add_indirectly_used_strings(storage)
     # Scan existing CLM.L use
@@ -162,11 +171,12 @@ def main(args):
     
     status = 0
     for locale in locales:
-        status += verify_locales(storage, locale)
-    
+        status += verify_locales(storage, locale, args.parser)
+
     exit(status)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--regenerate', dest='regenerate', action='store_true')
+    parser.add_argument('--parser', dest='parser', action='store_true')
     main(parser.parse_known_args(sys.argv)[0])

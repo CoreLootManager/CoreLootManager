@@ -118,7 +118,7 @@ local function HandleRequestVersion(self, data, sender)
     LOG:Trace("ProfileInfoManager:HandleRequestVersion()")
     local currentTime = GetServerTime()
     if (currentTime - self._lastRequestResponse.version) > 30  then
-        AnnounceVersion(self)
+        AnnounceVersion()
         self._lastRequestResponse.version = currentTime
     end
 end
@@ -163,7 +163,7 @@ local function HandleRequestSpec(self, data, sender)
     LOG:Trace("ProfileInfoManager:HandleRequestSpec()")
     local currentTime = GetServerTime()
     if (currentTime - self._lastRequestResponse.spec) > 30  then
-        AnnounceSpec(self)
+        AnnounceSpec()
         self._lastRequestResponse.spec = currentTime
     end
 end
@@ -227,14 +227,14 @@ function ProfileInfoManager:Initialize()
                 RestoreSpecs(self)
             end)
             C_Timer.After(math.random(2, 5), function()
-                AnnounceVersion(self)
-                AnnounceSpec(self)
+                AnnounceVersion()
+                AnnounceSpec()
             end)
             self._initialized = true
         end
     end)
 
-    EventManager:RegisterWoWEvent("READY_CHECK", (function(...) AnnounceVersion(self) end))
+    EventManager:RegisterWoWEvent("READY_CHECK", (function(...) AnnounceVersion() end))
 
     MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
 end

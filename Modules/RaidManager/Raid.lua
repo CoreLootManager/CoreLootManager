@@ -35,8 +35,15 @@ function Raid:New(uid, name, roster, config, creator, entry)
     o.endTime = 0
 
     -- GUID dict
+    -- Dynamic status of tje raid
     o.players = { [creator] = true } -- for raid mangement we check sometimes if creator is part of raid
     o.standby = { }
+
+    -- Historical storage of the raid
+    o.participated = {
+        inRaid = {},
+        standby = {}
+    }
 
     return o
 end
@@ -75,25 +82,19 @@ function Raid:Configuration()
     return self.config
 end
 
--- function Raid:Owner()
---     return self.owner
--- end
-
--- function Raid:SetOwner(owner)
---     self.owner = owner
--- end
-
 function Raid:SetPlayers(players)
     self.players = players
 end
 
 function Raid:AddPlayer(guid)
     self.players[guid] = true
+    self.participated.inRaid[guid] = true
+    self:RemoveFromStandbyPlayer(guid)
 end
 
 function Raid:AddPlayers(players)
     for _, guid in ipairs(players) do
-        self.players[guid] = true
+        self:AddPlayer(guid)
     end
 end
 
@@ -103,7 +104,29 @@ end
 
 function Raid:RemovePlayers(players)
     for _, guid in ipairs(players) do
-        self.players[guid] = nil
+        self:RemovePlayer(guid)
+    end
+end
+
+function Raid:StandbyPlayer(guid)
+    self.standby[guid] = true
+    self.participated.standby[guid] = true
+    self:RemovePlayer(guid)
+end
+
+function Raid:StandbyPlayers(players)
+    for _, guid in ipairs(players) do
+        self:StandbyPlayer(guid)
+    end
+end
+
+function Raid:RemoveFromStandbyPlayer(guid)
+    self.standby[guid] = nil
+end
+
+function Raid:RemoveFromStandbyPlayers(players)
+    for _, guid in ipairs(players) do
+        self:RemoveFromStandbyPlayer(guid)
     end
 end
 
@@ -131,9 +154,25 @@ function Raid:Players()
     return keys(self.players)
 end
 
-function Raid:Profiles()
+function Raid:PlayersOnStandby()
+    return keys(self.standby)
+end
+
+function Raid:AllPlayers()
+    return UTILS.mergeLists(self:Players(), self:PlayersOnStandby())
+end
+
+function Raid:IsPlayerOnStandby(GUID)
+    return self.standby[GUID] and true or false
+end
+
+function Raid:Profiles(historical)
     self.playerProfileCache = {}
-    for player,_ in pairs(self.players) do
+    local players = self.players
+    if historical then
+        players = self.participated.inRaid
+    end
+    for player,_ in pairs(players) do
         -- The code below breaks Model-View-Controller rule as it accessess Managers
         -- Maybe the caching should be done in GUI module?
         -- TODO: resolve this
@@ -148,9 +187,13 @@ function Raid:Profiles()
     return self.playerProfileCache
 end
 
-function Raid:Standby()
+function Raid:Standby(historical)
     self.standbyProfileCache = {}
-    for player,_ in pairs(self.standby) do
+    local standby = self.standby
+    if historical then
+        standby = self.participated.standby
+    end
+    for player,_ in pairs(standby) do
         -- The code below breaks Model-View-Controller rule as it accessess Managers
         -- Maybe the caching should be done in GUI module?
         -- TODO: resolve this

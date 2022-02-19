@@ -31,13 +31,15 @@ local PointManager = MODULES.PointManager
 local LedgerManager = MODULES.LedgerManager
 local EventManager = MODULES.EventManager
 local RaidManager = MODULES.RaidManager
+local StandbyStagingManager = MODULES.StandbyStagingManager
 
 local FILTER_IN_RAID = 100
 -- local FILTER_ONLINE = 101
--- local FILTER_STANDBY = 102
+local FILTER_STANDBY = 102
 local FILTER_IN_GUILD = 103
 local FILTER_NOT_IN_GUILD = 104
 local FILTER_MAINS_ONLY = 105
+
 
 local StandingsGUI = {}
 
@@ -66,6 +68,8 @@ function StandingsGUI:Initialize()
     self:RegisterSlash()
     self._initialized = true
     self.selectedRoster = 0
+    self.numSelected = 0
+    self.numInRoster = 0
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
@@ -93,13 +97,21 @@ local function ST_GetWeeklyCap(row)
     return row.cols[7].value
 end
 
+local function UpdateStatusText(self)
+    local selectCount = self.numSelected
+    if not self.numSelected or self.numSelected == 0 then
+        selectCount = CLM.L["all"]
+    end
+    self.top:SetStatusText(self.numInRoster .. CLM.L[" players in roster"] .. " (" .. selectCount .. " " .. CLM.L["selected"] ..  ")")
+end
+
 local function GenerateUntrustedOptions(self)
     local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
     filters[FILTER_MAINS_ONLY] = UTILS.ColorCodeText(CLM.L["Mains"], "FFD100")
     filters[FILTER_NOT_IN_GUILD] = UTILS.ColorCodeText(CLM.L["External"], "FFD100")
     filters[FILTER_IN_GUILD] = UTILS.ColorCodeText(CLM.L["In Guild"], "FFD100")
-    -- filters[FILTER_STANDBY] = UTILS.ColorCodeText(CLM.L["Standby"], "FFD100")
+    filters[FILTER_STANDBY] = UTILS.ColorCodeText(CLM.L["Standby"], "FFD100")
     return {
         filter_header = {
             type = "header",
@@ -109,7 +121,23 @@ local function GenerateUntrustedOptions(self)
         filter_display = {
             name = CLM.L["Filter"],
             type = "multiselect",
-            set = function(i, k, v) self.filterOptions[tonumber(k)] = v; self:Refresh() end,
+            set = function(i, k, v)
+                local n = tonumber(k)
+                self.filterOptions[n] = v
+                if v then
+                    if n == FILTER_IN_RAID then
+                        self.filterOptions[FILTER_STANDBY] = not v
+                    elseif n == FILTER_STANDBY then
+                        self.filterOptions[FILTER_IN_RAID] = not v
+                    end
+                    if n == FILTER_IN_GUILD then
+                        self.filterOptions[FILTER_NOT_IN_GUILD] = not v
+                    elseif n == FILTER_NOT_IN_GUILD then
+                        self.filterOptions[FILTER_IN_GUILD] = not v
+                    end
+                end
+                self:Refresh()
+            end,
             get = function(i, v) return self.filterOptions[tonumber(v)] end,
             values = filters,
             width = 0.49,
@@ -195,7 +223,13 @@ local function GenerateManagerOptions(self)
         },
         award_dkp_note = {
             name = CLM.L["Note"],
-            desc = CLM.L["Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."],
+            desc = (function()
+                local n = CLM.L["Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."]
+                if strlen(self.note) > 0 then
+                    n = n .. "\n\n|cffeeee00Note:|r " .. self.note
+                end
+                return n
+            end),
             type = "input",
             set = function(i, v) self.note = v end,
             get = function(i) return self.note end,
@@ -262,47 +296,6 @@ local function GenerateManagerOptions(self)
             end),
             confirm = true,
             order = 14
-        },
-        roster_players_header = {
-            type = "header",
-            name = CLM.L["Players"],
-            order = 25
-        },
-        add_from_raid = {
-            name = CLM.L["Add from raid"],
-            desc = CLM.L["Adds players from current raid to the roster. Creates profiles if not exists."],
-            type = "execute",
-            width = "full",
-            func = (function()
-                local roster, _ = self:GetSelected()
-                if roster == nil then
-                    LOG:Debug("StandingsGUI(Remove): roster == nil")
-                    return
-                end
-                RosterManager:AddFromRaidToRoster(roster)
-            end),
-            confirm = true,
-            order = 26
-        },
-        remove_from_roster = {
-            name = CLM.L["Remove from roster"],
-            desc = CLM.L["Removes selected players from roster or everyone if none selected."],
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                local roster, profiles = self:GetSelected()
-                if roster == nil then
-                    LOG:Debug("StandingsGUI(Remove): roster == nil")
-                    return
-                end
-                if not profiles or #profiles == 0 then
-                    LOG:Debug("StandingsGUI(Remove): profiles == 0")
-                    return
-                end
-                RosterManager:RemoveProfilesFromRoster(roster, profiles)
-            end),
-            confirm = true,
-            order = 27
         }
     }
 end
@@ -397,14 +390,12 @@ local function CreateManagementOptions(self, container)
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         mergeDictsInline(options.args, GenerateManagerOptions(self))
     end
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    -- if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
         mergeDictsInline(options.args, GenerateOfficerOptions(self))
-    end
+    -- end
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
     LIBS.gui:Open("clm_standings_gui_options", ManagementOptions)
     self.st:SetFilter((function(stobject, row)
-        local isInRaid = {}
-
         local playerName = ST_GetName(row)
         local class = ST_GetClass(row)
 
@@ -413,16 +404,6 @@ local function CreateManagementOptions(self, container)
             return self.searchMethod(playerName)
         end
 
-        -- Check raid
-        for i=1,MAX_RAID_MEMBERS do
-            local name = GetRaidRosterInfo(i)
-            if name then
-                name = UTILS.RemoveServer(name)
-                isInRaid[name] = true
-            end
-        end
-        -- Check for standby filter
-        -- FILTER_STANDBY = 102
         -- Check class filter
 
         local status
@@ -433,7 +414,29 @@ local function CreateManagementOptions(self, container)
         end
         if status == nil then return false end -- failsafe
         if self.filterOptions[FILTER_IN_RAID] then
+            local isInRaid = {}
+            for i=1,MAX_RAID_MEMBERS do
+                local name = GetRaidRosterInfo(i)
+                if name then
+                    name = UTILS.RemoveServer(name)
+                    isInRaid[name] = true
+                end
+            end
             status = status and isInRaid[playerName]
+        elseif self.filterOptions[FILTER_STANDBY] then
+            if RaidManager:IsInProgressingRaid() then
+                local profile = ProfileManager:GetProfileByName(playerName)
+                if profile then
+                    status = status and RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID())
+                end
+            elseif RaidManager:IsInCreatedRaid() then
+                local profile = ProfileManager:GetProfileByName(playerName)
+                if profile then
+                    status = status and StandbyStagingManager:IsPlayerOnStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                end
+            else
+                status = false
+            end
         end
         if self.filterOptions[FILTER_MAINS_ONLY] then
             local profile = ProfileManager:GetProfileByName(playerName)
@@ -457,16 +460,16 @@ local function CreateStandingsDisplay(self)
     -- Profile Scrolling Table
     local columns = {
         {   name = CLM.L["Name"],   width = 100 },
-        {   name = CLM.L["DKP"],    width = 100, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-        {   name = CLM.L["Class"],  width = 100,
+        {   name = CLM.L["DKP"],    width = 80, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+        {   name = CLM.L["Class"],  width = 60,
             comparesort = UTILS.LibStCompareSortWrapper(
                 (function(a1, b1)
                     return RemoveColorCode(a1), RemoveColorCode(b1)
                 end)
             )
         },
-        {   name = CLM.L["Spec"],   width = 100 },
-        {   name = CLM.L["Attendance [%]"], width = 100,
+        {   name = CLM.L["Spec"],   width = 60 },
+        {   name = CLM.L["Attendance [%]"], width = 90,
             comparesort = UTILS.LibStCompareSortWrapper(
                 (function(a1, b1)
                     return tonumber(RemoveColorCode(a1)), tonumber(RemoveColorCode(b1))
@@ -476,8 +479,8 @@ local function CreateStandingsDisplay(self)
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
     StandingsGroup:SetLayout("Flow")
-    StandingsGroup:SetHeight(560)
-    StandingsGroup:SetWidth(550)
+    StandingsGroup:SetHeight(520)
+    StandingsGroup:SetWidth(440)
     -- Roster selector
     local RosterSelectorDropDown = AceGUI:Create("Dropdown")
     RosterSelectorDropDown:SetLabel(CLM.L["Select roster"])
@@ -489,7 +492,126 @@ local function CreateStandingsDisplay(self)
     self.st:EnableSelection(true)
     self.st.frame:SetPoint("TOPLEFT", RosterSelectorDropDown.frame, "TOPLEFT", 0, -60)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
+    -- Dropdown menu
+    local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+        {
+            title = CLM.L["Add to standby"],
+            func = (function()
+                if not RaidManager:IsInRaid() then
+                    LOG:Message(CLM.L["Not in raid"])
+                    return
+                end
+                local roster, profiles = self:GetSelected()
+                local raid = RaidManager:GetRaid()
+                if roster ~= raid:Roster() then
+                    LOG:Message(string.format(
+                        CLM.L["You can only bench players from same roster as the raid (%s)."],
+                        RosterManager:GetRosterNameByUid(raid:Roster():UID())
+                    ))
+                    return
+                end
 
+                if RaidManager:IsInProgressingRaid() then
+                    if #profiles > 10 then
+                        LOG:Message(string.format(
+                            CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
+                            CLM.L["add"], 10, CLM.L["progressing"]
+                        ))
+                        return
+                    end
+                    RaidManager:AddToStandby(RaidManager:GetRaid(), profiles)
+                elseif RaidManager:IsInCreatedRaid() then
+                    if #profiles > 25 then
+                        LOG:Message(string.format(
+                            CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
+                            CLM.L["add"], 25, CLM.L["created"]
+                        ))
+                        return
+                    end
+                    for _, profile in ipairs(profiles) do
+                        StandbyStagingManager:AddToStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                    end
+                end
+                self:Refresh(true)
+            end),
+            trustedOnly = true,
+            color = "eeee00"
+        },
+        {
+            title = CLM.L["Remove from standby"],
+            func = (function()
+                if not RaidManager:IsInRaid() then
+                    LOG:Message(CLM.L["Not in raid"])
+                    return
+                end
+                local roster, profiles = self:GetSelected()
+                local raid = RaidManager:GetRaid()
+                if roster ~= raid:Roster() then
+                    LOG:Message(string.format(
+                        CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
+                        RosterManager:GetRosterNameByUid(raid:Roster():UID())
+                    ))
+                    return
+                end
+
+                if RaidManager:IsInProgressingRaid() then
+                    if #profiles > 10 then
+                        LOG:Message(string.format(
+                            CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
+                            CLM.L["remove"], 10, CLM.L["progressing"]
+                        ))
+                        return
+                    end
+                    RaidManager:RemoveFromStandby(RaidManager:GetRaid(), profiles)
+                elseif RaidManager:IsInCreatedRaid() then
+                    if #profiles > 25 then
+                        LOG:Message(string.format(
+                            CLM.L["You can % max %d players from standby at the same time to a %s raid."],
+                            CLM.L["remove"], 25, CLM.L["created"]
+                        ))
+                        return
+                    end
+                    for _, profile in ipairs(profiles) do
+                        StandbyStagingManager:RemoveFromStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                    end
+                end
+                self:Refresh(true)
+            end),
+            trustedOnly = true,
+            color = "eeee00"
+        },
+        {
+            separator = true,
+            trustedOnly = true
+        },
+        {
+            title = CLM.L["Remove from roster"],
+            func = (function(i)
+                local roster, profiles = self:GetSelected()
+                if roster == nil then
+                    LOG:Debug("StandingsGUI(Remove): roster == nil")
+                    return
+                end
+                if not profiles or #profiles == 0 then
+                    LOG:Debug("StandingsGUI(Remove): profiles == 0")
+                    return
+                end
+                if #profiles > 10 then
+                    LOG:Message(string.format(
+                        CLM.L["You can remove max %d players from roster at the same time."],
+                        10
+                    ))
+                    return
+                end
+                RosterManager:RemoveProfilesFromRoster(roster, profiles)
+            end),
+            trustedOnly = true,
+            color = "cc0000"
+        },
+    },
+    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
     -- OnEnter handler -> on hover
     local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -515,8 +637,35 @@ local function CreateStandingsDisplay(self)
         self.tooltip:Hide()
         return status
     end)
+    -- OnClick handler -> click
+    local OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+        local rightButton = (button == "RightButton")
+        local status
+        local selected = self.st:GetSelection()
+        local isSelected = false
+        for _, _selected in ipairs(selected) do
+            if _selected == realrow then
+                isSelected = true
+                break
+            end
+        end
+        if not isSelected then
+            status = self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
+        end
+        if rightButton then
+            UTILS.LibDD:CloseDropDownMenus()
+            UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+        end
+         -- Delayed because selection in lib is updated after this function returns
+        C_Timer.After(0.01, function()
+            self.numSelected = #self.st:GetSelection()
+            UpdateStatusText(self)
+        end)
+        return status
+    end
     -- end
     self.st:RegisterEvents({
+        OnClick = OnClickHandler,
         OnEnter = OnEnterHandler,
         OnLeave = OnLeaveHandler
     })
@@ -528,13 +677,13 @@ function StandingsGUI:Create()
     LOG:Trace("StandingsGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle(CLM.L["Rosters"])
+    f:SetTitle(CLM.L["Standings"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(800)
-    f:SetHeight(685)
+    f:SetWidth(680)
+    f:SetHeight(640)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Rosters_GUI")
     f:AddChild(CreateStandingsDisplay(self))
@@ -575,7 +724,8 @@ function StandingsGUI:Refresh(visible)
     end
     self.st:SetData(data)
     LIBS.gui:Open("clm_standings_gui_options", self.ManagementOptions)
-    self.top:SetStatusText(tostring(#data or 0) .. CLM.L[" players in roster"])
+    self.numInRoster = #data
+    UpdateStatusText(self)
 end
 
 function StandingsGUI:GetCurrentRoster()
@@ -644,7 +794,10 @@ function StandingsGUI:Toggle()
     if self.top:IsVisible() then
         self.top:Hide()
     else
-        self.filterOptions[FILTER_IN_RAID] = IsInRaid() and true or false
+        if IsInRaid() then
+            self.filterOptions[FILTER_IN_RAID] = true
+            self.filterOptions[FILTER_STANDBY] = false
+        end
         self:Refresh()
         self.top:Show()
     end

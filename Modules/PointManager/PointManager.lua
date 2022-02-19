@@ -129,8 +129,13 @@ local function apply_raid_mutator(entry, mutate)
 
     local pointHistoryEntry = PointHistory:New(entry, raid:Players())
     roster:AddRosterPointHistory(pointHistoryEntry)
-
-    update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+    if entry:standby() then
+        pointHistoryEntry = PointHistory:New(entry, raid:PlayersOnStandby(), nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
+        roster:AddRosterPointHistory(pointHistoryEntry)
+        update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+    else
+        update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+    end
 end
 
 local function mutate_update_standings(roster, GUID, value, timestamp)
@@ -289,9 +294,10 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceI
 
     note = strsub32(note)
     local uid = raid:UID()
+    local includeBench = raid:Configuration():Get("autoAwardIncludeBench") and true or false
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason, note)
+        entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason, note, includeBench)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
     --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
