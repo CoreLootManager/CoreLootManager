@@ -569,8 +569,8 @@ end
 
 function UTILS.OnePassRemove(t, fnKeep)
     local j, n = 1, #t;
-    fnKeep = fnKeep or (function(t, i, j)
-        return t[i] ~= nil
+    fnKeep = fnKeep or (function(_t, _i)
+        return _t[_i] ~= nil
     end)
     for i=1,n do
         if (fnKeep(t, i, j)) then
