@@ -1,5 +1,6 @@
 local _, CLM = ...
 if GetLocale() == "frFR" then
+
 -- Modules/BiddingManager/GUI.lua:412
 CLM.L[" DKP "] = " DKP "
 -- Modules/LedgerManager/GUI.lua:481

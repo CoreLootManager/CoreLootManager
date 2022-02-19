@@ -1,6 +1,52 @@
 local _, CLM = ...
 if GetLocale() == "ruRU" then
 -- Modules/BiddingManager/GUI.lua:412
+CLM.L["Raids"] = "Рейды"
+CLM.L["Auction History"] = "История торгов"
+CLM.L["Request standby"] = "Запрос замены"
+CLM.L["Please select a raid"] = "Выберите рейд"
+CLM.L["Revoke standby"] = "Отзыв замены"
+CLM.L["Include bench"] = "Учитывать замены"
+CLM.L["Include benched players in all auto-awards"] = "Включить всех игроков на замене в авто получение дкп"
+CLM.L["Auto bench leavers"] = "Авто замена при выходе"
+CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."] = "Добавить игроков, которые вышли из рейда на замену, вместо того, чтобы удалять их совсем. Для того, чтобы удалить совсем - необходимо вручную удалить из замены"
+CLM.L["Allow subscription"] = "Разрешить подписку"
+CLM.L["Allow players to subscribe to the bench through Raids menu"] = "Разрешить игрокам подписываться на замену через меню рейда"
+CLM.L["Participated"] = "Участвовавшие"
+CLM.L["You are not allowed to control raid."] = "Вы не можете управлять рейдом"
+CLM.L["You can only add players to standby of a progressing raid."] = "Вы можете добавлять замены только в начавшемся рейде"
+CLM.L["all"] = "все"
+CLM.L["selected"] = "выбранные"
+CLM.L["Add to standby"] = "Добавить на замену"
+CLM.L["You can only bench players from same roster as the raid (%s)."] = "Вы можете добавить на замену только игроков из того же состава, что и рейд (%s)."
+CLM.L["You can %s max %d players to standby at the same time to a %s raid."] = "Вы можете %s макс %d игроков на замену за раз в %s рейд."
+CLM.L["add"] = "добавить"
+CLM.L["progressing"] = "начатый"
+CLM.L["created"] = "создан"
+CLM.L["Remove from standby"] = "Удалить с замены"
+CLM.L["You can only remove from bench players from same roster as the raid (%s)."] = "Вы можете удалить с замены только игроков того же состава, что и рейд (%s)."
+CLM.L["You can %s max %d players from standby at the same time to a %s raid."] = "Вы можете %s макс %d игроков с замены за раз из %s рейда."
+CLM.L["remove"] = "убрать"
+CLM.L["You can remove max %d players from roster at the same time."] = "Вы можете удалить макс %d игроков из состава за раз."
+CLM.L["Remove roster"] = "Удалить состав"
+CLM.L["Online only"] = "В онлайне"
+CLM.L["Award points only to online players"] = "Добавлять дкп только игрокам в онлайне"
+CLM.L["Same zone only"] = "В той же локации"
+CLM.L["Award points only to players in same zone"] = "Начислять дкп только игрокам в той же локации"
+CLM.L["Bench"] = "Замены"
+CLM.L["Tax"] = "Налог"
+CLM.L["Additional cost (tax) to add to the award value."] = "Дополнительная стоимость (налог) для добавления к цене вещи."
+CLM.L["No bids"] = "Нет ставок"
+CLM.L["Auctioning - History"] = "История торгов"
+CLM.L["Store bids"] = "Хранить ставки"
+CLM.L["Store finished auction bids information."] = "Хранить информацию по ставкам в завершенных торгах."
+CLM.L["Post bids"] = "Публиковать ставки"
+CLM.L["Toggles posting bids in selected channel after auction has ended."] = "Включить публикацию ставок в выбранном канале после завершения торгов."
+CLM.L["Post channel"] = "Канал публикации"
+CLM.L["Channel for posting bids."] = "Канал публикации ставок."
+CLM.L["Remove auction"] = "Удалить торги"
+CLM.L["Remove old"] = "Удалить старое"
+CLM.L["Toggle Auction History window display"] = "Включить отображение окна истории торгов"
 CLM.L[" DKP "] = "ДКП"
 -- Modules/LedgerManager/GUI.lua:481
 CLM.L[" Sandbox"] = " Песочница "
@@ -92,9 +138,9 @@ CLM.L["Adds selected players or everyone if none selected to the selected roster
 -- Modules/PointManager/GUI.lua:139
 CLM.L["Affected players:"] = "Затронутые игроки:"
 -- Modules/AutoAwardManager/EncounterIDs.lua:100
-CLM.L["Akil'zon"] = "Акил"
+CLM.L["Akil'zon"] = "Акил'зон"
 -- Modules/AutoAwardManager/EncounterIDs.lua:82
-CLM.L["Al'ar"] = "Ал"
+CLM.L["Al'ar"] = "Ал'ар"
 -- Modules/BiddingManager/GUI.lua:76
 CLM.L["All In"] = "Вабанк"
 -- Modules/BiddingManager/GUI.lua:48
@@ -140,7 +186,7 @@ CLM.L["Anti-snipe time: %s."] = "Анти-снайпер: %s."
 -- Modules/LedgerManager/GUI.lua:110
 CLM.L["Anti-snipe"] = "Анти-снайпер"
 -- Modules/AutoAwardManager/EncounterIDs.lua:31
-CLM.L["Anub'Rekhan"] = "Ануб"
+CLM.L["Anub'Rekhan"] = "Ануб'Рекан"
 -- Modules/ProfileManager/GUI.lua:137
 CLM.L["Any"] = "Любой"
 -- Modules/LedgerManager/GUI.lua:466
@@ -544,7 +590,7 @@ CLM.L["Found %s in guild."] = "Найдено %s в гильдии."
 -- Modules/ProfileManager/GUI.lua:429
 CLM.L["GM"] = "ГМ"
 -- Modules/AutoAwardManager/EncounterIDs.lua:55
-CLM.L["Gahz'ranka"] = "Газ"
+CLM.L["Gahz'ranka"] = "Газ'ранка"
 -- Modules/AutoAwardManager/EncounterIDs.lua:7
 CLM.L["Garr"] = "Гарр"
 -- Modules/AutoAwardManager/EncounterIDs.lua:6
@@ -693,25 +739,25 @@ CLM.L["Item value overrides"] = "Переназначение стоимости
 -- Modules/LootManager/GUI.lua:97
 CLM.L["Item"] = "Предмет"
 -- Modules/AutoAwardManager/EncounterIDs.lua:102
-CLM.L["Jan'alai"] = "Джан"
+CLM.L["Jan'alai"] = "Джан'алай"
 -- Modules/AutoAwardManager/EncounterIDs.lua:52
-CLM.L["Jin'do the Hexxer"] = "Джин"
+CLM.L["Jin'do the Hexxer"] = "Мастер проклятий Джин'до"
 -- Global/GlobalConfigs.lua:36
 CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"] = "Присоединяйтесь к нашему дискорду: |cff44cc44https://tiny.one/clm-discord|r"
 -- Modules/RaidManager/GUI.lua:122
 CLM.L["Join selected raid"] = "Присоединиться к выбранному рейду"
 -- Modules/AutoAwardManager/EncounterIDs.lua:85
-CLM.L["Kael'thas Sunstrider"] = "Кель"
+CLM.L["Kael'thas Sunstrider"] = "Кель'тас Солнечный Скиталец"
 -- Modules/AutoAwardManager/EncounterIDs.lua:106
 CLM.L["Kalecgos"] = "Калесгос"
 -- Modules/AutoAwardManager/EncounterIDs.lua:223
 CLM.L["Karazhan"] = "Каражан"
 -- Modules/AutoAwardManager/EncounterIDs.lua:97
-CLM.L["Kaz'rogal"] = "Каз"
+CLM.L["Kaz'rogal"] = "Каз'рогал"
 -- Modules/AutoAwardManager/EncounterIDs.lua:45
-CLM.L["Kel'Thuzad"] = "Кел"
+CLM.L["Kel'Thuzad"] = "Кел'Тузад"
 -- Modules/AutoAwardManager/EncounterIDs.lua:111
-CLM.L["Kil'jaeden"] = "Кил"
+CLM.L["Kil'jaeden"] = "Кил'джеден"
 -- Modules/AutoAwardManager/EncounterIDs.lua:56
 CLM.L["Kurinnaxx"] = "Куриннакс"
 -- Modules/AutoAwardManager/EncounterIDs.lua:81
@@ -752,7 +798,7 @@ CLM.L["Loot Queue"] = "Очередь добычи"
 -- Modules/AutoAwardManager/EncounterIDs.lua:4
 CLM.L["Lucifron"] = "Люцифрон"
 -- Modules/AutoAwardManager/EncounterIDs.lua:110
-CLM.L["M'uru"] = "М"
+CLM.L["M'uru"] = "М'уру"
 -- Modules/AutoAwardManager/EncounterIDs.lua:33
 CLM.L["Maexxna"] = "Мексна"
 -- .:indirectly
@@ -1101,7 +1147,7 @@ CLM.L["Round to"] = "Округлить до"
 -- Modules/RosterManager/Options.lua:623
 CLM.L["Rounding"] = "Округление"
 -- Modules/AutoAwardManager/EncounterIDs.lua:208
-CLM.L["Ruins of Ahn'Qiraj"] = "Руины Ан"
+CLM.L["Ruins of Ahn'Qiraj"] = "Руины Ан'Кираж"
 -- Modules/RosterManager/Roster.lua:613
 CLM.L["SK"] = "SK"
 -- MinimapIcon.lua:139
@@ -1228,7 +1274,7 @@ CLM.L["Tabard"] = "Гербовая накидка"
 -- Modules/AutoAwardManager/EncounterIDs.lua:267
 CLM.L["Tempest Keep"] = "Крепость Бурь"
 -- Modules/AutoAwardManager/EncounterIDs.lua:156
-CLM.L["Temple of Ahn'Qiraj"] = "Ан"
+CLM.L["Temple of Ahn'Qiraj"] = "Ан'Кираж"
 -- Modules/AutoAwardManager/EncounterIDs.lua:67
 CLM.L["Terestian Illhoof"] = "Терестиан Больное Копыто"
 -- Modules/AutoAwardManager/EncounterIDs.lua:89
