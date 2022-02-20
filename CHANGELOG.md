@@ -1,4 +1,14 @@
 
+# Classic Loot Manager v1.5.1
+## Fixes
+### Decay
+Assistants should no longer see decay options
+### Raid UI
+You should now be able to override standby options through Raid UI
+### Loot Queue
+There is now option to filter out specific item classes. Find out more about the classes at https://wowpedia.fandom.com/wiki/ItemType
+### Audit
+Missing options should now be visible in Audit UI
 # Classic Loot Manager v1.5.0
 ## Features
 ### Bench (aka standby) support
