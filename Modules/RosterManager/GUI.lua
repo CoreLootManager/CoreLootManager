@@ -390,9 +390,9 @@ local function CreateManagementOptions(self, container)
     if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         mergeDictsInline(options.args, GenerateManagerOptions(self))
     end
-    -- if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
         mergeDictsInline(options.args, GenerateOfficerOptions(self))
-    -- end
+    end
     LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
     LIBS.gui:Open("clm_standings_gui_options", ManagementOptions)
     self.st:SetFilter((function(stobject, row)
