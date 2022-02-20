@@ -14,7 +14,6 @@ function GlobalConfigs:Initialize()
         announce_award_to_guild = true,
         announce_loot_to_raid = false,
         announce_loot_to_raid_level = 3,
-        tracked_loot_level = 4,
         wowdkpbot_integration = false,
         chat_commands = false,
         alerts = true,
@@ -93,28 +92,6 @@ function GlobalConfigs:Initialize()
             confirm = true,
             func = function() LedgerManager:Wipe() end,
             order = 10
-        },
-        global_tracked_loot = {
-            type = "header",
-            name = CLM.L["Loot Queue"],
-            order = 110
-        },
-        global_tracked_loot_level = {
-            name = CLM.L["Tracked loot rarity"],
-            desc = CLM.L["Select loot rarity for the tracking unauctioned loot."],
-            type = "select",
-            -- width = "double",
-            values = {
-                [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
-                [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
-                [2] = ColorCodeText(CLM.L["Uncommon"], "1eff00"),
-                [3] = ColorCodeText(CLM.L["Rare"], "0070dd"),
-                [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
-                [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
-            },
-            set = function(i, v) self:SetTrackedLootLevel(v) end,
-            get = function(i) return self:GetTrackedLootLevel() end,
-            order = 111
         },
         rw_header = {
             type = "header",
@@ -209,14 +186,6 @@ end
 
 function GlobalConfigs:GetAnnounceLootToRaidLevel()
     return self.db.announce_loot_to_raid_level or 3
-end
-
-function GlobalConfigs:SetTrackedLootLevel(value)
-    self.db.tracked_loot_level = tonumber(value)
-end
-
-function GlobalConfigs:GetTrackedLootLevel()
-    return self.db.tracked_loot_level or 4
 end
 
 function GlobalConfigs:SetWoWDKPBotIntegration(value)
