@@ -25,16 +25,6 @@ do
     end
 end
 
--- local ItemClassNames = {
---     [Enum.ItemClass.Consumable] = GetItemClassInfo(Enum.ItemClass.Consumable),
---     [Enum.ItemClass.Container] = GetItemClassInfo(Enum.ItemClass.Container),
---     [Enum.ItemClass.Gem] = GetItemClassInfo(Enum.ItemClass.Gem),
---     [Enum.ItemClass.Reagent] = GetItemClassInfo(Enum.ItemClass.Reagent),
---     [Enum.ItemClass.Projectile] = GetItemClassInfo(Enum.ItemClass.Projectile),
---     [Enum.ItemClass.Tradegoods] = GetItemClassInfo(Enum.ItemClass.Tradegoods),
---     [Enum.ItemClass.Recipe] = GetItemClassInfo(Enum.ItemClass.Recipe)
--- }
-
 local LootQueueManager = {}
 
 local function HandleLootMessage(self, addon, event, message, _, _, _, playerName, ...)
@@ -54,7 +44,7 @@ end
 
 function LootQueueManager:Initialize()
     LOG:Trace("LootQueueManager:Initialize()")
-    self.db = MODULES.Database:Personal('lootQueue', { 
+    self.db = MODULES.Database:Personal('lootQueue', {
         queue = {},
         tracked_loot_level = 4,
         ignoredClasses = {}

@@ -11,6 +11,7 @@ ignore = {
 	"11./BINDING_.*", -- Setting an undefined (Keybinding header) global variable
 --	"113/LE_.*", -- Accessing an undefined (Lua ENUM type) global variable
 --	"113/NUM_LE_.*", -- Accessing an undefined (Lua ENUM type) global variable
+	"113/Enum*",
 --	"211", -- Unused local variable
 --	"211/L", -- Unused local variable "L"
 --	"211/CL", -- Unused local variable "CL"
