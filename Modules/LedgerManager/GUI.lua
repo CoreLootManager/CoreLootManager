@@ -156,7 +156,25 @@ local configDecodeFunctions = {
     end),
     minimalIncrement = (function(value)
         return CLM.L["Min bid increment"], safeToString(value)
-    end)
+    end),
+    autoBenchLeavers = (function(value)
+        return CLM.L["Auto bench leavers"], safeToString(value)
+    end),
+    autoAwardIncludeBench = (function(value)
+        return CLM.L["Include bench"], safeToString(value)
+    end),
+    autoAwardOnlineOnly = (function(value)
+        return CLM.L["Online only"], safeToString(value)
+    end),
+    autoAwardSameZoneOnly = (function(value)
+        return CLM.L["Same zone only"], safeToString(value)
+    end),
+    selfBenchSubscribe = (function(value)
+        return CLM.L["Allow subscription"], safeToString(value)
+    end),
+    tax = (function(value)
+        return CLM.L["Tax"], safeToString(value)
+    end),
 }
 
 local function decodeRosterConfig(config, value)
