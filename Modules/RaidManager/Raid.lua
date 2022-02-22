@@ -89,7 +89,6 @@ end
 function Raid:AddPlayer(guid)
     self.players[guid] = true
     self.participated.inRaid[guid] = true
-    self:RemoveFromStandbyPlayer(guid)
 end
 
 function Raid:AddPlayers(players)
@@ -111,7 +110,6 @@ end
 function Raid:StandbyPlayer(guid)
     self.standby[guid] = true
     self.participated.standby[guid] = true
-    self:RemovePlayer(guid)
 end
 
 function Raid:StandbyPlayers(players)
