@@ -70,7 +70,7 @@ jobs:
       - name: Copy gitman deps
         run: mkdir -p .release/ClassicLootManager && mv ExternalLibs .release/ClassicLootManager/
       - name: Bigwigs packager
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@671e9a055942010dda29a24334510ac1aee0d911
         env:
           CF_API_KEY: ${{ secrets.CF_TOKEN }}
           WOWI_API_TOKEN: ${{ secrets.WOWI_TOKEN }}
