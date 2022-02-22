@@ -1,4 +1,17 @@
 
+# Classic Loot Manager v1.5.2
+## Notes
+### Retroactive Fix
+This release is a retroactive fix, which means that `all existing standby auto-awards should be calculated properly`. Please double check your DKP standings and awards and fix them accordingly.
+## Fixes
+### Bench reporting
+Bench should now be properly reported during raid.
+### Adding to bench
+Player adding to bench should now be properly handled during raid `In Progress`.
+### Zero-Sum and bench
+DKP will now be split between players and bench if it's configured to be included. In addition, if alt and main are in same raid (on bench and in raid), only the one participating in raid will be included in the division and award calculation.
+### Empty history entries
+Empty history entries will no longer be created.
 # Classic Loot Manager v1.5.1
 ## Fixes
 ### Decay

@@ -1,6 +1,40 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v1.5.2",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    {header = "Retroactive Fix", body = "This release is a retroactive fix, which means that |cffee4444all existing standby auto-awards should be calculated properly|r. Please double check your DKP standings and awards and fix them accordingly."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Bench reporting", body = "Bench should now be properly reported during raid."},
+                    {header = "Adding to bench", body = "Player adding to bench should now be properly handled during raid |cffeeee00In Progress|r."},
+                    {header = "Zero-Sum and bench", body = "DKP will now be split between players and bench if it's configured to be included. In addition, if alt and main are in same raid (on bench and in raid), only the one participating in raid will be included in the division and award calculation."},
+                    {header = "Empty history entries", body = "Empty history entries will no longer be created."},
+                },
+            },
+        }
+    },
+    {
+        version = "v1.5.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Decay", body = "Assistants should no longer see decay options."},
+                    {header = "Raid UI", body = "You should now be able to override standby options through Raid UI."},
+                    {header = "Loot Queue", body = "There is now option to filter out specific item classes. Find out more about the classes at https://wowpedia.fandom.com/wiki/ItemType"},
+                    {header = "Audit", body = "Missing options should now be visible in Audit UI"},
+                },
+            },
+        }
+    },
+    {
         version = "v1.5.0",
         data = {
             {
