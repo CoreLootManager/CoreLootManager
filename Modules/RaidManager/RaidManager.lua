@@ -178,17 +178,17 @@ function RaidManager:Initialize()
                 end
                 if config:Get("onTimeBonus") and config:Get("onTimeBonusValue") > 0 then
                     PointManager:AddFakePointHistory(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
-                    local players
+                    local _players
                     if config:Get("autoAwardIncludeBench") then
-                        players = raid:AllPlayers()
+                        _players = raid:AllPlayers()
                         local playersOnStandby = raid:PlayersOnStandby()
                         if #playersOnStandby > 0 then
                             PointManager:AddFakePointHistory(roster, playersOnStandby, config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
                         end
                     else
-                        players = raid:Players()
+                        _players = raid:Players()
                     end
-                    PointManager:UpdatePointsDirectlyWithoutHistory(roster, players, config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
+                    PointManager:UpdatePointsDirectlyWithoutHistory(roster, _players, config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
                 end
             end
         end)
