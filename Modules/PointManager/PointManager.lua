@@ -43,7 +43,7 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
         end
         local targetProfile = ProfileManager:GetProfileByGUID(GUID)
         if targetProfile then
-            if roster:IsProfileInRoster(GUID) then
+            if roster:IsProfileInRoster(GUID) and pointHistoryEntry then
                 roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
             end
             -- Check if we have main-alt linking
@@ -129,8 +129,9 @@ local function apply_raid_mutator(entry, mutate)
 
     local pointHistoryEntry = PointHistory:New(entry, raid:Players())
     roster:AddRosterPointHistory(pointHistoryEntry)
-    if entry:standby() then
-        pointHistoryEntry = PointHistory:New(entry, raid:PlayersOnStandby(), nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
+    local playersOnStandby = raid:PlayersOnStandby()
+    if entry:standby() and (#playersOnStandby > 0) then
+        pointHistoryEntry = PointHistory:New(entry, playersOnStandby, nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
         roster:AddRosterPointHistory(pointHistoryEntry)
         update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
     else
@@ -328,6 +329,16 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, times
     roster:AddRosterPointHistory(pointHistoryEntry)
 
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, pointHistoryEntry, true)
+end
+
+function PointManager:UpdatePointsDirectlyWithoutHistory(roster, targets, value, reason, timestamp, creator)
+    LOG:Trace("PointManager:UpdatePointsDirectly()")
+    if not roster then
+        LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
+        return
+    end
+
+    update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, nil, true)
 end
 
 function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator)
