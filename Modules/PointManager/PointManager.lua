@@ -129,8 +129,9 @@ local function apply_raid_mutator(entry, mutate)
 
     local pointHistoryEntry = PointHistory:New(entry, raid:Players())
     roster:AddRosterPointHistory(pointHistoryEntry)
-    if entry:standby() then
-        pointHistoryEntry = PointHistory:New(entry, raid:PlayersOnStandby(), nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
+    local playersOnStandby = raid:PlayersOnStandby()
+    if entry:standby() and (#playersOnStandby > 0) then
+        pointHistoryEntry = PointHistory:New(entry, playersOnStandby, nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
         roster:AddRosterPointHistory(pointHistoryEntry)
         update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
     else
