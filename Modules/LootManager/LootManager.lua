@@ -69,9 +69,9 @@ local function mutateLootAward(entry, roster)
             if raid:Configuration():Get("autoAwardIncludeBench") then
                 players = raid:AllPlayers()
             else
-                players = raid:Player()
+                players = raid:Players()
             end
-            local num_players = #players()
+            local num_players = #players
             if num_players > 0 then
                 local value = (loot:Value()/num_players) + roster:GetConfiguration("zeroSumBankInflation")
                 PointManager:UpdatePointsDirectly(roster, players, value, CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD, loot:Timestamp(), entry:creator())

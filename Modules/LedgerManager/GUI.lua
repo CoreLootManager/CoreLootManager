@@ -413,15 +413,16 @@ local describeFunctions  = {
         local raid = RaidManager:GetRaidByUid(entry:raid())
         return CLM.L["[Raid Start]: "] ..
             string.format(CLM.L["Started raid %s"],
-                ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")
+                ColorCodeText(safeToString(raid and raid:Name() or entry:raid()), "d99212")
             )
     end),
     ["AU"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raid())
         return CLM.L["[Raid Update]: "] ..
-            string.format(CLM.L["Updated raid <%s> %s players joined, %s players left"],
+            string.format(CLM.L["Updated raid <%s> %s joined, %s left, %s benched, %s removed"],
                 ColorCodeText(raid and raid:Name() or entry:raid(), "d99212"),
-                safeToString(#entry:joiners()), safeToString(#entry:leavers())
+                safeToString(#entry:joiners()), safeToString(#entry:leavers()),
+                safeToString(#entry:standby()), safeToString(#entry:removed())
             )
     end),
     ["AE"] = (function(entry)
