@@ -132,6 +132,7 @@ local function apply_raid_mutator(self, entry, mutate)
     local playersOnStandby = raid:PlayersOnStandby()
     if entry:standby() and (#playersOnStandby > 0) then
         pointHistoryEntry = PointHistory:New(entry, playersOnStandby, nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
+        pointHistoryEntry.note = CONSTANTS.POINT_CHANGE_REASONS.ALL[entry:reason()] or ""
         self:AddPointHistory(roster, playersOnStandby, pointHistoryEntry)
         update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), nil, true)
     else
@@ -359,14 +360,14 @@ function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     end
 end
 
-function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator)
+function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note)
     LOG:Trace("PointManager:AddFakePointHistory()")
     if not roster then
         LOG:Debug("PointManager:AddFakePointHistory(): Missing roster")
         return
     end
 
-    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator)
+    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator, note)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then
@@ -405,7 +406,7 @@ CONSTANTS.POINT_CHANGE_REASON = {
 }
 
 CONSTANTS.POINT_CHANGE_REASONS = {
-    GENERAL = {  -- Exposed through GUI dropdown, can  be localized
+    GENERAL = {  -- Exposed through GUI dropdown, can be localized
         [CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS] = CLM.L["On Time Bonus"],
         [CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS] = CLM.L["Boss Kill Bonus"],
         [CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS] = CLM.L["Raid Completion Bonus"],
