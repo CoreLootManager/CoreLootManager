@@ -49,7 +49,12 @@ local function HandleSubscribe(self, data, sender)
     end
     local profile = ProfileManager:GetProfileByName(sender)
     if profile then
-        self:AddToStandby(raidUid, profile:GUID())
+        local updated = self:AddToStandby(raidUid, profile:GUID())
+        if updated then
+            LOG:Message(CLM.L["%s has %s standby"],
+                        UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex),
+                        UTILS.ColorCodeText(CLM.L["requested"], "44cc44"))
+        end
     else
         LOG:Warning("Missing profile for player %s", sender)
     end
@@ -74,7 +79,12 @@ local function HandleRevoke(self, data, sender)
     end
     local profile = ProfileManager:GetProfileByName(sender)
     if profile then
-        self:RemoveFromStandby(raidUid, profile:GUID())
+        local updated = self:RemoveFromStandby(raidUid, profile:GUID())
+        if updated then
+            LOG:Message(CLM.L["%s has %s standby"],
+                        UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex),
+                        UTILS.ColorCodeText(CLM.L["revoked"], "cc4444"))
+        end
     else
         LOG:Warning("Missing profile for player %s", sender)
     end
@@ -119,14 +129,18 @@ function StandbyStagingManager:AddToStandby(raidUid, GUID)
     LOG:Trace("StandbyStagingManager:AddToStandby()")
     LOG:Debug("AddToStandby %s: %s", raidUid, GUID)
     if not self.standby[raidUid] then self.standby[raidUid] = {} end
+    local previous = self.standby[raidUid][GUID]
     self.standby[raidUid][GUID] = true
+    return (previous ~= self.standby[raidUid][GUID])
 end
 
 function StandbyStagingManager:RemoveFromStandby(raidUid, GUID)
     LOG:Trace("StandbyStagingManager:RemoveFromStandby()")
     LOG:Debug("RemoveFromStandby %s: %s", raidUid, GUID)
-    if not self.standby[raidUid] then return end
+    if not self.standby[raidUid] then return false end
+    local previous = self.standby[raidUid][GUID]
     self.standby[raidUid][GUID] = nil
+    return (previous ~= self.standby[raidUid][GUID])
 end
 
 function StandbyStagingManager:GetStandby(raidUid)
@@ -140,6 +154,8 @@ function StandbyStagingManager:SignupToStandby(raidUid)
         CONSTANTS.STANDBY_STAGING_COMM.TYPE.SUBSCRIBE,
         StandbyStagingCommSubscribe:New(raidUid))
     Comms:Send(STANDBY_STAGING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    LOG:Message(CLM.L["Standby %s has been sent"],
+                UTILS.ColorCodeText(CLM.L["request"], "44cc44"))
 end
 
 function StandbyStagingManager:RevokeStandby(raidUid)
@@ -148,6 +164,8 @@ function StandbyStagingManager:RevokeStandby(raidUid)
         CONSTANTS.STANDBY_STAGING_COMM.TYPE.REVOKE,
         StandbyStagingCommRevoke:New(raidUid))
     Comms:Send(STANDBY_STAGING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    LOG:Message(CLM.L["Standby %s has been sent"],
+    UTILS.ColorCodeText(CLM.L["revoke"], "cc4444"))
 end
 
 CONSTANTS.STANDBY_STAGING_COMM = {

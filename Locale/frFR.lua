@@ -23,7 +23,7 @@ CLM.L["!bid"] = "!bid"
 -- Global/GlobalChatMessageHandlers.lua:67
 CLM.L["!dkp"] = "!dkp"
 -- Modules/RaidManager/GUI.lua:511
--- Modules/PointManager/GUI.lua:276
+-- Modules/PointManager/GUI.lua:274
 -- Modules/AuctionHistoryManager/GUI.lua:226
 -- Modules/LootManager/GUI.lua:314
 CLM.L["%Y/%m/%d %a %H:%M:%S"] = "%Y/%m/%d %a %H:%M:%S"
@@ -39,6 +39,9 @@ CLM.L["%s awarded to %s for %s DKP"] = "%s attribué à %s pour %s DKP"
 CLM.L["%s events (%s pending)"] = "%s événements (%s en attente)"
 -- MinimapIcon.lua:125
 CLM.L["%s events (0x%x)"] = "%s événements (0x%x)"
+-- Modules/StandbyStagingManager/StandbyStagingManager.lua:54
+-- Modules/StandbyStagingManager/StandbyStagingManager.lua:84
+CLM.L["%s has %s standby"] = "%s a %s en veille"
 -- Global/GlobalSlashCommands.lua:77
 CLM.L["%s is not part of the %s roster"] = "%s ne fait pas partie  %s du Roster"
 -- Global/GlobalSlashCommands.lua:189
@@ -50,9 +53,9 @@ CLM.L["%s profile missing. Adding."] = "%s profil manquant. Ajouter."
 CLM.L["%s to %s for %s in <%s>"] = "%s à %s pour %s dans <%s>"
 -- Global/GlobalSlashCommands.lua:197
 CLM.L["%s was not found in guild."] = "%s n'a pas été trouvé dans la guilde."
--- Modules/PointManager/GUI.lua:324
--- Modules/PointManager/GUI.lua:324
--- Modules/PointManager/GUI.lua:325
+-- Modules/PointManager/GUI.lua:322
+-- Modules/PointManager/GUI.lua:322
+-- Modules/PointManager/GUI.lua:323
 CLM.L["-- History --"] = "-- Historique --"
 -- Modules/LootManager/GUI.lua:361
 -- Modules/LootManager/GUI.lua:361
@@ -330,7 +333,7 @@ CLM.L["Boot complete"] = "Démarrage terminé"
 -- Modules/RaidManager/GUI.lua:202
 -- Modules/RaidManager/GUI.lua:229
 -- Modules/RosterManager/Options.lua:577
--- Modules/PointManager/PointManager.lua:392
+-- Modules/PointManager/PointManager.lua:411
 -- Modules/LedgerManager/GUI.lua:119
 CLM.L["Boss Kill Bonus"] = "Bonus par boss tué"
 -- Modules/RosterManager/Options.lua:820
@@ -396,7 +399,7 @@ CLM.L["Copy settings from selected roster."] = "Copier les paramètres de la lis
 CLM.L["Copy settings"] = "Copier les paramètres"
 -- Modules/RosterManager/Options.lua:533
 CLM.L["Copy source"] = "Copier la source"
--- Modules/PointManager/PointManager.lua:397
+-- Modules/PointManager/PointManager.lua:416
 CLM.L["Correcting error"] = "Correction d'erreur"
 -- Modules/RaidManager/GUI.lua:352
 CLM.L["Create new raid with provided name. You will automatically join this raid and leave any other you are part of."] = "Créez un nouveau raid avec le nom fourni. Vous rejoindrez automatiquement ce raid et quitterez tout autre dont vous faites partie."
@@ -442,7 +445,7 @@ CLM.L["Date"] = "Date"
 -- Modules/RosterManager/GUI.lua:306
 CLM.L["Decay DKP %"] = "Décroissance DKP %"
 -- Modules/RosterManager/GUI.lua:325
--- Modules/PointManager/PointManager.lua:403
+-- Modules/PointManager/PointManager.lua:422
 CLM.L["Decay"] = "Décroissance"
 -- Modules/LedgerManager/GUI.lua:344
 CLM.L["Decayed %s%% DKP to %s players in <%s>"] = "Dégrader %s%% DKP dégradé pour %s joueurs dans <%s>"
@@ -658,7 +661,7 @@ CLM.L["Immediately bid max item value."] = "Enchérissez immédiatement la valeu
 -- Migration.lua:227
 -- Migration.lua:361
 CLM.L["Import complete"] = "Importation terminée"
--- Modules/PointManager/PointManager.lua:402
+-- Modules/PointManager/PointManager.lua:421
 CLM.L["Import"] = "Importer"
 -- Migration.lua:178
 CLM.L["Importing %s entries from DKPTable"] = "Importation d'entrées %s depuis la table DKP"
@@ -697,7 +700,7 @@ CLM.L["Interval Bonus time"] = "Intervalle du temps de bonus"
 -- Modules/RaidManager/GUI.lua:214
 -- Modules/RaidManager/GUI.lua:266
 -- Modules/RosterManager/Options.lua:622
--- Modules/PointManager/PointManager.lua:404
+-- Modules/PointManager/PointManager.lua:423
 -- Modules/LedgerManager/GUI.lua:137
 CLM.L["Interval Bonus"] = "Bonus d'intervalle"
 -- Modules/RaidManager/GUI.lua:216
@@ -766,7 +769,7 @@ CLM.L["Legs"] = "Jambes"
 CLM.L["Leotheras the Blind"] = "Leotheras l'Aveugle"
 -- Global/GlobalSlashCommands.lua:93
 CLM.L["Link Alt to Main"] = "Lier Reroll au Main"
--- Modules/PointManager/PointManager.lua:405
+-- Modules/PointManager/PointManager.lua:424
 CLM.L["Linking override"] = "Remplacement de la liaison"
 -- MinimapIcon.lua:128
 -- Modules/LootManager/GUI.lua:297
@@ -816,7 +819,7 @@ CLM.L["Majordomo Executus"] = "Chambellan Executus"
 CLM.L["Management"] = "Gestion"
 -- Modules/ProfileManager/GUI.lua:442
 CLM.L["Manager"] = "Gestionnaire"
--- Modules/PointManager/PointManager.lua:398
+-- Modules/PointManager/PointManager.lua:417
 CLM.L["Manual adjustment"] = "Réglage manuel"
 -- Modules/ProfileManager/GUI.lua:241
 CLM.L["Mark as alt"] = "Marquer comme reroll"
@@ -945,7 +948,7 @@ CLM.L["Note to be added to award. Max 32 characters. It is recommended to not in
 -- Modules/AuctionManager/GUI.lua:280
 -- Modules/AuctionManager/GUI.lua:286
 -- Modules/RosterManager/GUI.lua:225
--- Modules/PointManager/GUI.lua:179
+-- Modules/PointManager/GUI.lua:178
 CLM.L["Note"] = "Note"
 -- Modules/AutoAwardManager/EncounterIDs.lua:38
 CLM.L["Noth the Plaguebringer"] = "Noth le Porte-peste"
@@ -967,7 +970,7 @@ CLM.L["On Time Bonus value"] = "Valeur du bonus du temps"
 -- Modules/RaidManager/GUI.lua:204
 -- Modules/RaidManager/GUI.lua:236
 -- Modules/RosterManager/Options.lua:592
--- Modules/PointManager/PointManager.lua:391
+-- Modules/PointManager/PointManager.lua:410
 -- Modules/LedgerManager/GUI.lua:125
 CLM.L["On Time Bonus"] = "Bonus au temps"
 -- Modules/RosterManager/Roster.lua:738
@@ -1009,7 +1012,7 @@ CLM.L["Player"] = "Joueur"
 -- Modules/RaidManager/GUI.lua:115
 CLM.L["Please select a raid"] = "Veuillez sélectionner un raid"
 -- MinimapIcon.lua:35
--- Modules/PointManager/GUI.lua:219
+-- Modules/PointManager/GUI.lua:217
 CLM.L["Point History"] = "Historique des points"
 -- Modules/RosterManager/Options.lua:672
 CLM.L["Point caps"] = "Point caps"
@@ -1032,7 +1035,7 @@ CLM.L["Princess Huhuran"] = "Princesse Huhuran"
 -- MinimapIcon.lua:69
 -- Modules/ProfileManager/GUI.lua:404
 CLM.L["Profiles"] = "Profiles"
--- Modules/PointManager/PointManager.lua:394
+-- Modules/PointManager/PointManager.lua:413
 CLM.L["Progression Bonus"] = "Bonus de progression"
 -- Modules/RosterManager/RosterManager.lua:271
 CLM.L["Provide number of raids needed for 100% attendance in a weekly reset. Between 1 - 50 raids. Defaults to 2. Requires /reload."] = "Indiquez le nombre de raids nécessaires pour une participation à 100 % lors d'une réinitialisation hebdomadaire. Entre 1 et 50 raids. La valeur par défaut est 2. Nécessite /reload."
@@ -1059,7 +1062,7 @@ CLM.L["Raid Completion Bonus value"] = "Valeur du bonus de fin de raid"
 -- Modules/RaidManager/GUI.lua:209
 -- Modules/RaidManager/GUI.lua:251
 -- Modules/RosterManager/Options.lua:607
--- Modules/PointManager/PointManager.lua:393
+-- Modules/PointManager/PointManager.lua:412
 -- Modules/LedgerManager/GUI.lua:131
 CLM.L["Raid Completion Bonus"] = "Bonus de fin de raid"
 -- Modules/RaidManager/GUI.lua:258
@@ -1260,7 +1263,10 @@ CLM.L["Spec guild request"] = "Demande spé de la guide"
 CLM.L["Spec"] = "Spécification"
 -- Modules/RaidManager/RaidManager.lua:805
 CLM.L["Stale"] = "Périmé"
--- Modules/PointManager/PointManager.lua:395
+-- Modules/StandbyStagingManager/StandbyStagingManager.lua:157
+-- Modules/StandbyStagingManager/StandbyStagingManager.lua:167
+CLM.L["Standby %s has been sent"] = "Veille %s a été envoyés"
+-- Modules/PointManager/PointManager.lua:414
 CLM.L["Standby Bonus"] = "Bonus d'attente"
 -- Modules/RaidManager/GUI.lua:428
 -- Modules/RosterManager/GUI.lua:114
@@ -1365,7 +1371,7 @@ CLM.L["Toggle changelog window display"] = "Basculer l'affichage de la fenêtre 
 CLM.L["Toggle changelog"] = "Basculer le journal des modifications"
 -- Modules/LootManager/GUI.lua:414
 CLM.L["Toggle loot window display"] = "Basculer l'affichage de la fenêtre de butin"
--- Modules/PointManager/GUI.lua:359
+-- Modules/PointManager/GUI.lua:357
 CLM.L["Toggle point history window display"] = "Basculer l'affichage de la fenêtre de l'historique des points"
 -- Modules/RosterManager/GUI.lua:811
 CLM.L["Toggle standings window display"] = "Basculer l'affichage de la fenêtre des classements"
@@ -1400,7 +1406,7 @@ CLM.L["Unable to execute migration. Entries already exist."] = "Impossible d'ex�
 CLM.L["Uncommon"] = "Commun"
 -- ClassicLootManager.lua:255
 CLM.L["Undo action"] = "Annuler l'action"
--- Modules/PointManager/PointManager.lua:396
+-- Modules/PointManager/PointManager.lua:415
 CLM.L["Unexcused absence"] = "Absence injustifiée"
 -- Global/GlobalSlashCommands.lua:62
 CLM.L["Unknown roster %s"] = "Liste inconnue %s"
@@ -1530,7 +1536,7 @@ CLM.L["Zero-Sum Bank Inflation"] = "Inflation bancaire à somme nulle"
 CLM.L["Zero-Sum Bank"] = "Banque à somme nulle"
 -- Modules/RosterManager/Options.lua:754
 CLM.L["Zero-Sum Inflation Value"] = "Valeur d'inflation à somme nulle"
--- Modules/PointManager/PointManager.lua:399
+-- Modules/PointManager/PointManager.lua:418
 CLM.L["Zero-Sum award"] = "Prix à somme nulle"
 -- Modules/AutoAwardManager/EncounterIDs.lua:303
 CLM.L["Zul'Aman"] = "Zul'Aman"
@@ -1630,6 +1636,14 @@ CLM.L["rank"] = "rang"
 -- Modules/RosterManager/GUI.lua:561
 -- Modules/RosterManager/GUI.lua:570
 CLM.L["remove"] = "retirer"
+-- Modules/StandbyStagingManager/StandbyStagingManager.lua:158
+CLM.L["request"] = "demande"
+-- Modules/StandbyStagingManager/StandbyStagingManager.lua:56
+CLM.L["requested"] = "demandé"
+-- Modules/StandbyStagingManager/StandbyStagingManager.lua:168
+CLM.L["revoke"] = "révoquer"
+-- Modules/StandbyStagingManager/StandbyStagingManager.lua:86
+CLM.L["revoked"] = "révoqué"
 -- Global/GlobalChatMessageHandlers.lua:102
 CLM.L["roster"] = "liste"
 -- Global/GlobalChatMessageHandlers.lua:102
