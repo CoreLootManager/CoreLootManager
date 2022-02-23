@@ -183,7 +183,7 @@ function RaidManager:Initialize()
                         _players = raid:AllPlayers()
                         local playersOnStandby = raid:PlayersOnStandby()
                         if #playersOnStandby > 0 then
-                            PointManager:AddFakePointHistory(roster, playersOnStandby, config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
+                            PointManager:AddFakePointHistory(roster, playersOnStandby, config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS, entry:time(), entry:creator())
                         end
                     else
                         _players = raid:Players()
@@ -219,7 +219,7 @@ function RaidManager:Initialize()
                         players = raid:AllPlayers()
                         local playersOnStandby = raid:PlayersOnStandby()
                         if #playersOnStandby > 0 then
-                            PointManager:AddFakePointHistory(roster, playersOnStandby, config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
+                            PointManager:AddFakePointHistory(roster, playersOnStandby, config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS, entry:time(), entry:creator())
                         end
                     else
                         players = raid:Players()
