@@ -445,27 +445,27 @@ CLM.L["Decay DKP %"] = "Verfall DKP %"
 -- Modules/PointManager/PointManager.lua:403
 CLM.L["Decay"] = "Verfall"
 -- Modules/LedgerManager/GUI.lua:344
-CLM.L["Decayed %s%% DKP to %s players in <%s>"] = "Verfallene %s%% DKP von %s Spielern <%s>"
+CLM.L["Decayed %s%% DKP to %s players in <%s>"] = "%s%% DKP verfallen von %s Spielern <%s>"
 -- Modules/LedgerManager/GUI.lua:368
-CLM.L["Decayed %s%% DKP to all players %sin <%s>"] = "Dégrader %s%%  pour tous les joueurs %sin <%s>"
+CLM.L["Decayed %s%% DKP to all players %sin <%s>"] = "%s%% DKP verfallen von allen Spielern %s in <%s>"
 -- Modules/RosterManager/Options.lua:584
-CLM.L["Default Boss Kill Bonus Value"] = "Valeur du bonus de fin de raid"
+CLM.L["Default Boss Kill Bonus Value"] = "Standard Boss Kill Bonus"
 -- Modules/LedgerManager/GUI.lua:122
-CLM.L["Default Boss Kill Bonus value"] = "Valeur par défaut du bonus de Boss tué"
+CLM.L["Default Boss Kill Bonus value"] = "Standard Boss Kill Bonus"
 -- Modules/RosterManager/Options.lua:810
-CLM.L["Default slot values"] = "Valeurs d'emplacement par défaut"
+CLM.L["Default slot values"] = "Standard Slot Wert"
 -- Modules/LedgerManager/GUI.lua:55
-CLM.L["Description"] = "Description"
+CLM.L["Description"] = "Beschreibung"
 -- Modules/BiddingManager/GUI.lua:47
-CLM.L["Disabled"] = "Désactivé"
+CLM.L["Disabled"] = "Deaktiviert"
 -- Modules/Changelog/GUI.lua:41
-CLM.L["Disables display of the changelog for any new version."] = "Désactivation de  l'affichage du changelog pour toute nouvelle version."
+CLM.L["Disables display of the changelog for any new version."] = "Deaktiviert die Anzeige des Changelogs für neue Versionen."
 -- Modules/LedgerManager/GUI.lua:492
-CLM.L["Discard changes"] = "Annuler les modifications"
+CLM.L["Discard changes"] = "Änderrungen abbrechen"
 -- Modules/LedgerManager/GUI.lua:493
-CLM.L["Discards all changes and exits sandbox mode"] = "Ignore toutes les modifications et quitte le mode Sandbox"
+CLM.L["Discards all changes and exits sandbox mode"] = "Bricht alle Änderungen ab und verlässt Sandbox Modus"
 -- Modules/Changelog/GUI.lua:80
-CLM.L["Do not show again"] = "Ne pas montrer à nouveau"
+CLM.L["Do not show again"] = "Nicht mehr anzeigen"
 -- .:indirectly
 CLM.L["Druid"] = "Druide"
 -- Modules/RosterManager/Roster.lua:639
@@ -475,101 +475,101 @@ CLM.L["Ebonroc"] = "Rochébène"
 -- Modules/AutoAwardManager/EncounterIDs.lua:54
 CLM.L["Edge of Madness"] = "Frontière de la folie"
 -- Global/GlobalConfigs.lua:112
-CLM.L["Enable announcing auction start and end."] = "Activer l'annonce du début et de la fin des enchères."
+CLM.L["Enable announcing auction start and end."] = "Aktiviert die Ankündigung vom Start und Ende der Auktion."
 -- Modules/BiddingManager/BiddingManager.lua:75
-CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."] = "Activer la mise à jour automatique des valeurs d'enchère lorsque l'enchère la plus élevée actuelle change (enchère ouverte uniquement)."
+CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."] = "Aktiviert das Auto-Update der Gebote wenn sich das höchste Gebot ändert (Open-Auction)."
 -- Modules/BiddingManager/BiddingManager.lua:74
-CLM.L["Enable auto-update bid values"] = "Activer la mise à jour automatique des valeurs d'enchère"
+CLM.L["Enable auto-update bid values"] = "Aktiviert das Auto-Update der Gebote"
 -- Modules/AuctionManager/AuctionManager.lua:112
-CLM.L["Enable chat commands"] = "Activer les commandes de chat"
+CLM.L["Enable chat commands"] = "Aktiviert Chat Kommandos"
 -- Modules/AuctionManager/AuctionManager.lua:90
-CLM.L["Enable loot auto-award (Master Looter UI) from corpse when item is awarded"] = "Activer l'attribution automatique du butin (interface utilisateur Maitre du butin) à partir du cadavre lorsque l'objet est attribué"
+CLM.L["Enable loot auto-award (Master Looter UI) from corpse when item is awarded"] = "Aktiviert das automatische Lootzuweisen (Plündermeister UI) von der Leiche"
 -- Modules/RosterManager/Options.lua:748
-CLM.L["Enable paid value splitting amongst raiders."] = "Activez la répartition de la valeur payée entre les raiders."
+CLM.L["Enable paid value splitting amongst raiders."] = "Aktiviert die Aufteilung an alle Raider."
 -- Modules/Logger/Logger.lua:29
-CLM.L["Enables / disables verbose data printing during logging"] = "Active/désactive l'impression de données détaillées dans le journal des logs"
+CLM.L["Enables / disables verbose data printing during logging"] = "Aktiviert/Deaktiviert ausführliches -data-printing- während des loggen"
 -- Global/GlobalConfigs.lua:121
-CLM.L["Enables announcing chat commands at auction start."] = "Permet d'annoncer les commandes de discussion au début de l'enchère."
+CLM.L["Enables announcing chat commands at auction start."] = "Aktiviert das Ankündigen der Chat Kommandos zum Auktionsstart."
 -- Global/GlobalConfigs.lua:139
-CLM.L["Enables announcing loot awards."] = "Permet d'annoncer les récompenses de butin."
+CLM.L["Enables announcing loot awards."] = "Aktiviert das Ankündigen von Loot."
 -- Global/GlobalConfigs.lua:148
-CLM.L["Enables announcing new highest bid (when applicable)."] = "Permet d'annoncer la nouvelle offre la plus élevée (le cas échéant)."
+CLM.L["Enables announcing new highest bid (when applicable)."] = "Aktiviert das Ankündigen des neuesten höchsten Gebots (wenn anwendbar)."
 -- Global/GlobalConfigs.lua:103
-CLM.L["Enables announcing raid start and end."] = "Permet d'annoncer le début et la fin du raid."
+CLM.L["Enables announcing raid start and end."] = "Aktiviert das Ankündigen von Raid Start/Ende."
 -- Modules/AuctionManager/AuctionManager.lua:99
-CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Permet l'échange automatique du butin après la vente aux enchères"
+CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Aktiviert das automatische Traden von Loot nach Auktion aus Tasche"
 -- Global/GlobalConfigs.lua:130
-CLM.L["Enables raid-warning countdown for auctions."] = "Active le compte à rebours d'avertissement de raid pour les enchères."
+CLM.L["Enables raid-warning countdown for auctions."] = "Aktiviert -raid-warning- für den Countdown der Auktionen."
 -- Modules/AuctionManager/AuctionManager.lua:113
-CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."] = "Activez !dkp et !bid via chuchotement / raid. Le changement nécessite /reload."
+CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."] = "Aktiviert !dkp und !bid über Flüstern/Raid. Änderrung erfordert /reload."
 -- Global/GlobalConfigs.lua:81
-CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Activez l'intégration de WoW DKP Bot. Cela entraînera le stockage de données supplémentaires lors de la déconnexion."
+CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Aktiviert die WoW DKP Bot Integration. Zusätzliche Daten werden bei Logout gespeichert."
 -- Modules/LedgerManager/GUI.lua:563
-CLM.L["End Timetravel"] = "Mettre fin au Timetravel"
+CLM.L["End Timetravel"] = "Beendet Zeitreise"
 -- Modules/RaidManager/GUI.lua:138
-CLM.L["End selected raid"] = "Mettre fin au raid sélectionnéд"
+CLM.L["End selected raid"] = "Beende ausgewählten Raid"
 -- Modules/LedgerManager/GUI.lua:476
-CLM.L["Enter sandbox"] = "Entrer en mode Sandbox"
+CLM.L["Enter sandbox"] = "Aktiviert Sandbox"
 -- Modules/LootQueueManager/LootQueueManager.lua:86
 -- Global/GlobalConfigs.lua:72
-CLM.L["Epic"] = "Epic"
+CLM.L["Epic"] = "Episch"
 -- Modules/AutoAwardManager/EncounterIDs.lua:109
 CLM.L["Eredar Twins"] = "Jumelles érédars"
 -- Modules/RosterManager/Roster.lua:797
-CLM.L["Europe"] = "Europe"
+CLM.L["Europe"] = "Europa"
 -- Modules/RosterManager/GUI.lua:326
-CLM.L["Execute decay for selected players or everyone if none selected."] = "Выполнить сгорание дкп для выбранных игроков или всех, если никто не выбран."
+CLM.L["Execute decay for selected players or everyone if none selected."] = "Führt Verfall für ausgewählte Spieler oder alle falls keiner ausgewählt ist aus."
 -- Migration.lua:369
-CLM.L["Execute migration from MonolithDKP, EssentialDKP or CommunityDKP"] = "Exécuter la migration depuis MonolithDKP, EssentialDKP ou CommunityDKP"
+CLM.L["Execute migration from MonolithDKP, EssentialDKP or CommunityDKP"] = "Führe Migration von MonolithDKP, EssentialDKP oder CommunitiyDKP aus"
 -- Migration.lua:51
-CLM.L["Executing Addon Migration with comms disabled."] = "Exécution de la migration des modules complémentaires avec les communications désactivées."
+CLM.L["Executing Addon Migration with comms disabled."] = "Führe Addon Migration ohne Verbindung aus."
 -- Global/GlobalSlashCommands.lua:168
-CLM.L["Export data"] = "Exporter des données"
+CLM.L["Export data"] = "Exportiere Daten"
 -- Modules/RosterManager/GUI.lua:112
 -- Modules/ProfileManager/GUI.lua:82
 CLM.L["External"] = "Externe"
 -- Modules/LedgerManager/GUI.lua:38
-CLM.L["False"] = "Faux"
+CLM.L["False"] = "Falsch"
 -- Modules/AutoAwardManager/EncounterIDs.lua:25
 CLM.L["Fankriss the Unyielding"] = "Fankriss l'Inflexible"
 -- Modules/AutoAwardManager/EncounterIDs.lua:79
 CLM.L["Fathom-Lord Karathress"] = "Seigneur des fonds Karathress"
 -- Modules/RosterManager/Roster.lua:735
 -- Modules/RosterManager/Roster.lua:767
-CLM.L["Feet"] = "Pieds"
+CLM.L["Feet"] = "Füße"
 -- Modules/AutoAwardManager/EncounterIDs.lua:108
 CLM.L["Felmyst"] = "Gangrebrume"
 -- Modules/ProfileManager/GUI.lua:178
-CLM.L["Fill from Guild"] = "Remplir depuis la guilde"
+CLM.L["Fill from Guild"] = "Fülle von Raid"
 -- Modules/ProfileManager/GUI.lua:191
-CLM.L["Fill from Raid Roster"] = "Remplir à partir de la liste de raid"
+CLM.L["Fill from Raid Roster"] = "Fülle von Raid Roster"
 -- Modules/ProfileManager/GUI.lua:192
-CLM.L["Fill profile list with players in current raid roster."] = "Remplir la liste des profils avec les joueurs de la liste actuelle du raid."
+CLM.L["Fill profile list with players in current raid roster."] = "Fülle Profilliste mit Spielern im aktuellen Raid Roster."
 -- Modules/ProfileManager/GUI.lua:179
-CLM.L["Fill profile list with players with the minimum level and ranks."] = "Remplir la liste des profils avec les joueurs, le niveau et les rangs minimum."
+CLM.L["Fill profile list with players with the minimum level and ranks."] = "Fülle Profilliste mit Spieler mit Minimumlevel und Rang."
 -- Modules/RosterManager/Options.lua:548
-CLM.L["Fill profiles"] = "Remplir les profils"
+CLM.L["Fill profiles"] = "Fülle Profile"
 -- Modules/RosterManager/Options.lua:549
-CLM.L["Fills current roster with all profiles."] = "Remplit la liste actuelle avec tous les profils."
+CLM.L["Fills current roster with all profiles."] = "Füllt aktuellen Roster mit allen Profilen."
 -- Modules/RosterManager/GUI.lua:122
 -- Modules/ProfileManager/GUI.lua:90
-CLM.L["Filter"] = "Filtre"
+CLM.L["Filter"] = "Filter"
 -- Modules/RosterManager/GUI.lua:118
 -- Modules/ProfileManager/GUI.lua:86
-CLM.L["Filtering"] = "Filtration"
+CLM.L["Filtering"] = "Filtern"
 -- Modules/RosterManager/Roster.lua:736
 -- Modules/RosterManager/Roster.lua:768
-CLM.L["Finger"] = "Doigt"
+CLM.L["Finger"] = "Finger"
 -- Modules/LedgerManager/GUI.lua:431
-CLM.L["Finished raid %s"] = "Raid terminé %s"
+CLM.L["Finished raid %s"] = "Raid beendet %s"
 -- Modules/RaidManager/RaidManager.lua:804
-CLM.L["Finished"] = "Terminé"
+CLM.L["Finished"] = "Fertig"
 -- Modules/AutoAwardManager/EncounterIDs.lua:17
 CLM.L["Firemaw"] = "Gueule-de-feu"
 -- Modules/AutoAwardManager/EncounterIDs.lua:19
 CLM.L["Flamegor"] = "Flamegor"
 -- Global/GlobalSlashCommands.lua:186
-CLM.L["Found %s in guild."] = "Trouvé %s dans la guilde."
+CLM.L["Found %s in guild."] = "%s in Gilde gefunden."
 -- Modules/ProfileManager/GUI.lua:440
 CLM.L["GM"] = "GM"
 -- Modules/AutoAwardManager/EncounterIDs.lua:55
@@ -604,14 +604,14 @@ CLM.L["Hakkar"] = "Hakkar"
 CLM.L["Halazzi"] = "Halazzi"
 -- Modules/RosterManager/Roster.lua:732
 -- Modules/RosterManager/Roster.lua:764
-CLM.L["Hands"] = "Mains"
+CLM.L["Hands"] = "Hände"
 -- Modules/LedgerManager/GUI.lua:146
 CLM.L["Hard DKP cap"] = "Hard DKP cap"
 -- Modules/RosterManager/Options.lua:696
 CLM.L["Hard cap"] = "Hard cap"
 -- Modules/RosterManager/Roster.lua:723
 -- Modules/RosterManager/Roster.lua:755
-CLM.L["Head"] = "Tête"
+CLM.L["Head"] = "Kopf"
 -- Modules/AutoAwardManager/EncounterIDs.lua:39
 CLM.L["Heigan the Unclean"] = "Heigan l'Impur"
 -- Modules/RosterManager/Roster.lua:741
