@@ -1,6 +1,25 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v1.5.3",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    {header = "Retroactive Fix", body = "|cff44ee44v1.5.2|r release was a retroactive fix, which means that |cffee4444all existing standby auto-awards should be calculated properly|r. Please double check your DKP standings and awards and fix them accordingly."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Standby notes", body = "Standby will now have related bonus information displayed in notes."},
+                    {header = "Standby point history", body = "Standby will now be properly displayed only in history of players on standby."},
+                    {header = "Standby signup message", body = "Players requesting or revoking signup will get message that the message was sent. All trusted players will get information when new standby request or revoke was received."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.5.2",
         data = {
             {

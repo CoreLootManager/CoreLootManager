@@ -1,4 +1,13 @@
-
+# Classic Loot Manager v1.5.3
+## Retroactive Fix
+`v1.5.2` release was a retroactive fix, which means that **all existing standby auto-awards should be calculated properly**. Please double check your DKP standings and awards and fix them accordingly.
+## Fixes
+### Standby notes
+Standby will now have related bonus information displayed in notes.
+### Standby point history
+Standby will now be properly displayed only in history of players on standby.
+### Standby signup message
+Players requesting or revoking signup will get message that the message was sent. All trusted players will get information when new standby request or revoke was received.
 # Classic Loot Manager v1.5.2
 ## Notes
 ### Retroactive Fix

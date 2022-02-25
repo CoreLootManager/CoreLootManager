@@ -5,7 +5,7 @@ local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 local PointHistory = {}
 local FakePointHistory = {}
 
-function PointHistory:New(entry, targets, timestamp, value, reason, creator)
+function PointHistory:New(entry, targets, timestamp, value, reason, creator, note)
     local o = {}
 
     setmetatable(o, self)
@@ -17,6 +17,7 @@ function PointHistory:New(entry, targets, timestamp, value, reason, creator)
     o.value = tonumber(value) or entry:value()
     o.reason = tonumber(reason) or entry:reason()
     o.creator = creator or entry:creator()
+    o.note = note or entry:note()
 
     return o
 end
@@ -61,12 +62,16 @@ function PointHistory:Creator()
     return self.creator
 end
 
+function PointHistory:Note()
+    return self.note
+end
+
 function PointHistory:Entry()
     return self.entry
 end
 
 
-function FakePointHistory:New(targets, timestamp, value, reason, creator)
+function FakePointHistory:New(targets, timestamp, value, reason, creator, note)
     local o = {}
 
     setmetatable(o, self)
@@ -77,6 +82,7 @@ function FakePointHistory:New(targets, timestamp, value, reason, creator)
     o.value = value
     o.reason = reason
     o.creator = creator or ""
+    o.note = note or ""
 
     return o
 end
@@ -118,6 +124,10 @@ end
 
 function FakePointHistory:Creator()
     return self.creator
+end
+
+function FakePointHistory:Note()
+    return self.note
 end
 
 function FakePointHistory:Entry()

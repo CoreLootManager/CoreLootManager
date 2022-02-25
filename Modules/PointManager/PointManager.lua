@@ -115,7 +115,7 @@ local function apply_roster_mutator(entry, mutate)
     update_profile_standings(mutate, roster, profiles, entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
 end
 
-local function apply_raid_mutator(entry, mutate)
+local function apply_raid_mutator(self, entry, mutate)
     local raid = MODULES.RaidManager:GetRaidByUid(entry:raidUid())
     if not raid then
         LOG:Debug("PointManager apply_raid_mutator(): Unknown raid uid %s", entry:raidUid())
@@ -128,14 +128,15 @@ local function apply_raid_mutator(entry, mutate)
     end
 
     local pointHistoryEntry = PointHistory:New(entry, raid:Players())
-    roster:AddRosterPointHistory(pointHistoryEntry)
+    self:AddPointHistory(roster, raid:Players(), pointHistoryEntry)
     local playersOnStandby = raid:PlayersOnStandby()
     if entry:standby() and (#playersOnStandby > 0) then
         pointHistoryEntry = PointHistory:New(entry, playersOnStandby, nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
-        roster:AddRosterPointHistory(pointHistoryEntry)
-        update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+        pointHistoryEntry.note = CONSTANTS.POINT_CHANGE_REASONS.ALL[entry:reason()] or ""
+        self:AddPointHistory(roster, playersOnStandby, pointHistoryEntry)
+        update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), nil, true)
     else
-        update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
+        update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), nil, true)
     end
 end
 
@@ -194,7 +195,7 @@ function PointManager:Initialize()
         LEDGER_DKP.ModifyRaid,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModifyRaid)")
-            apply_raid_mutator(entry, mutate_update_standings)
+            apply_raid_mutator(self, entry, mutate_update_standings)
         end))
 
     MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
@@ -341,14 +342,32 @@ function PointManager:UpdatePointsDirectlyWithoutHistory(roster, targets, value,
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, nil, true)
 end
 
-function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator)
+function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
+    LOG:Trace("PointManager:AddPointHistory()")
+    if not roster then
+        LOG:Debug("PointManager:AddPointHistory(): Missing roster")
+        return
+    end
+
+    roster:AddRosterPointHistory(pointHistoryEntry)
+    for _,target in ipairs(targets) do
+        if roster:IsProfileInRoster(target) then
+            local targetProfile = ProfileManager:GetProfileByGUID(target)
+            if targetProfile then
+                roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
+            end
+        end
+    end
+end
+
+function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note)
     LOG:Trace("PointManager:AddFakePointHistory()")
     if not roster then
         LOG:Debug("PointManager:AddFakePointHistory(): Missing roster")
         return
     end
 
-    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator)
+    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator, note)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then
@@ -387,7 +406,7 @@ CONSTANTS.POINT_CHANGE_REASON = {
 }
 
 CONSTANTS.POINT_CHANGE_REASONS = {
-    GENERAL = {  -- Exposed through GUI dropdown, can  be localized
+    GENERAL = {  -- Exposed through GUI dropdown, can be localized
         [CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS] = CLM.L["On Time Bonus"],
         [CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS] = CLM.L["Boss Kill Bonus"],
         [CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS] = CLM.L["Raid Completion Bonus"],

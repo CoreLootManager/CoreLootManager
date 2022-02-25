@@ -169,15 +169,13 @@ local function CreatePointDisplay(self)
                 tooltip:AddLine(notIncludedProfiles .. CLM.L[" more"])
             end
         end
-        if history:Entry() then
-            local note = history:Entry():note()
-            if note ~= "" then
-                local numNote = tonumber(note)
-                if numNote then
-                    note = CLM.EncounterIDsMap[numNote] or note
-                end
-                tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
+        local note = history:Note()
+        if note ~= "" then
+            local numNote = tonumber(note)
+            if numNote then
+                note = CLM.EncounterIDsMap[numNote] or note
             end
+            tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
         end
         tooltip:Show()
         return status
