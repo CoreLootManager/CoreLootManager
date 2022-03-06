@@ -76,6 +76,7 @@ local function HookCorpseSlots(hookedSlots)
     end
 end
 
+local alreadyPostedLoot = {}
 local function PostLootToRaidChat()
     if not IsInRaid() then return end
     if not ACL:IsTrusted() then return end
@@ -83,6 +84,10 @@ local function PostLootToRaidChat()
     if CLM.GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
         if not RaidManager:IsRaidOwner(whoami) then return end
     end
+    local targetGuid = UnitGUID("target")
+    if alreadyPostedLoot[targetGuid] then return end
+    alreadyPostedLoot[targetGuid] = true
+
     local numLootItems = GetNumLootItems()
     local num = 1
     for lootIndex = 1, numLootItems do
