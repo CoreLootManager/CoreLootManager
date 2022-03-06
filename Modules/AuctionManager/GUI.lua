@@ -32,6 +32,8 @@ local REGISTRY = "clm_auction_manager_gui_options"
 
 local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
 
+local whoami = UTILS.whoami()
+
 local guiOptions = {
     type = "group",
     args = {}
@@ -77,16 +79,19 @@ end
 local function PostLootToRaidChat()
     if not IsInRaid() then return end
     if not ACL:IsTrusted() then return end
-    if CLM.GlobalConfigs:GetAnnounceLootToRaid() then
-        local numLootItems = GetNumLootItems()
-
-        for lootIndex = 1, numLootItems do
-            local _, _, _, _, rarity = GetLootSlotInfo(lootIndex)
-            local itemLink = GetLootSlotLink(lootIndex)
-            if itemLink then
-                if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then -- post Blue Purple and Legendary to Raid -- 3 -blue
-                    SendChatMessage(lootIndex .. ". " .. itemLink, "RAID")
-                end
+    if not CLM.GlobalConfigs:GetAnnounceLootToRaid() then return end
+    if CLM.GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
+        if not RaidManager:IsRaidOwner(whoami) then return end
+    end
+    local numLootItems = GetNumLootItems()
+    local num = 1
+    for lootIndex = 1, numLootItems do
+        local _, _, _, _, rarity = GetLootSlotInfo(lootIndex)
+        local itemLink = GetLootSlotLink(lootIndex)
+        if itemLink then
+            if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then
+                SendChatMessage(num .. ". " .. itemLink, "RAID")
+                num = num + 1
             end
         end
     end

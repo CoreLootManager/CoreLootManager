@@ -13,6 +13,7 @@ function GlobalConfigs:Initialize()
     self.db = MODULES.Database:Personal('global', {
         announce_award_to_guild = true,
         announce_loot_to_raid = false,
+        announce_loot_to_raid_owner_only = true,
         announce_loot_to_raid_level = 3,
         wowdkpbot_integration = false,
         chat_commands = false,
@@ -50,6 +51,28 @@ function GlobalConfigs:Initialize()
             width = "double",
             order = 2
         },
+        global_wodkpbot_integration = {
+            name = CLM.L["WoW DKP Bot Integration"],
+            desc = CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."],
+            type = "toggle",
+            set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
+            get = function(i) return self:GetWoWDKPBotIntegration() end,
+            width = "double",
+            order = 3
+        },
+        global_wipe_ledger = {
+            name = CLM.L["Wipe events"],
+            desc = CLM.L["Wipes all events from memory. This will trigger resyncing from other users."],
+            type = "execute",
+            confirm = true,
+            func = function() LedgerManager:Wipe() end,
+            order = 4
+        },
+        global_loot_announcement_header = {
+            type = "header",
+            name = CLM.L["Announce loot"],
+            order = 5
+        },
         global_raid_loot_announcement = {
             name = CLM.L["Announce loot from corpse to Raid"],
             desc = CLM.L["Toggles loot announcement to raid"],
@@ -57,7 +80,16 @@ function GlobalConfigs:Initialize()
             set = function(i, v) self:SetAnnounceLootToRaid(v) end,
             get = function(i) return self:GetAnnounceLootToRaid() end,
             width = "double",
-            order = 3
+            order = 6
+        },
+        global_raid_loot_announcement_owner_only = {
+            name = CLM.L["Only when ML/RL"],
+            desc = CLM.L["When enabled, this will make loot announcement display only if you're Master Looter or Raid Leader (if there is no Master Looter)."],
+            type = "toggle",
+            set = function(i, v) self:SetAnnounceLootToRaidOwnerOnly(v) end,
+            get = function(i) return self:GetAnnounceLootToRaidOwnerOnly() end,
+            width = "double",
+            order = 7
         },
         global_raid_loot_announcement_level = {
             name = CLM.L["Announcement loot rarity"],
@@ -74,24 +106,7 @@ function GlobalConfigs:Initialize()
             },
             set = function(i, v) self:SetAnnounceLootToRaidLevel(v) end,
             get = function(i) return self:GetAnnounceLootToRaidLevel() end,
-            order = 4
-        },
-        global_wodkpbot_integration = {
-            name = CLM.L["WoW DKP Bot Integration"],
-            desc = CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."],
-            type = "toggle",
-            set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
-            get = function(i) return self:GetWoWDKPBotIntegration() end,
-            width = "double",
-            order = 5
-        },
-        global_wipe_ledger = {
-            name = CLM.L["Wipe events"],
-            desc = CLM.L["Wipes all events from memory. This will trigger resyncing from other users."],
-            type = "execute",
-            confirm = true,
-            func = function() LedgerManager:Wipe() end,
-            order = 10
+            order = 8
         },
         rw_header = {
             type = "header",
@@ -178,6 +193,14 @@ end
 
 function GlobalConfigs:GetAnnounceLootToRaid()
     return self.db.announce_loot_to_raid
+end
+
+function GlobalConfigs:SetAnnounceLootToRaidOwnerOnly(value)
+    self.db.announce_loot_to_raid_owner_only = value and true or false
+end
+
+function GlobalConfigs:GetAnnounceLootToRaidOwnerOnly()
+    return self.db.announce_loot_to_raid_owner_only
 end
 
 function GlobalConfigs:SetAnnounceLootToRaidLevel(value)
