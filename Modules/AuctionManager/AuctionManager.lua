@@ -292,14 +292,15 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     return true
 end
 
-local function AuctionEnd(self)
+local function AuctionEnd(self, postToChat)
     self:SendAuctionEnd()
     self.lastAuctionEndTime = GetServerTime()
     EventManager:DispatchEvent(EVENT_END_AUCTION, {
         link = self.itemLink,
         id = self.itemId,
         bids = self.userResponses.bids,
-        time = self.lastAuctionEndTime
+        time = self.lastAuctionEndTime,
+        postToChat = postToChat
      })
 end
 
@@ -310,7 +311,7 @@ function AuctionManager:StopAuctionTimed()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
     end
-    AuctionEnd(self)
+    AuctionEnd(self, true)
     GUI.AuctionManager:UpdateBids()
 end
 
@@ -321,7 +322,7 @@ function AuctionManager:StopAuctionManual()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
     end
-    AuctionEnd(self)
+    AuctionEnd(self, false)
     GUI.AuctionManager:UpdateBids()
 end
 
