@@ -97,6 +97,14 @@ local function ST_GetWeeklyCap(row)
     return row.cols[7].value
 end
 
+local function ST_GetPointInfo(row)
+    return row.cols[8].value
+end
+
+local function ST_GetProfileLoot(row)
+    return row.cols[9].value
+end
+
 local function UpdateStatusText(self)
     local selectCount = self.numSelected
     if not self.numSelected or self.numSelected == 0 then
@@ -622,12 +630,36 @@ local function CreateStandingsDisplay(self)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         local weeklyGain = ST_GetWeeklyGains(rowData)
         local weeklyCap = ST_GetWeeklyCap(rowData)
-        tooltip:AddLine(CLM.L["Weekly gains:"])
         local gains = weeklyGain
         if weeklyCap > 0 then
             gains = gains .. " / " .. weeklyCap
         end
-        tooltip:AddLine(gains)
+        local pointInfo = ST_GetPointInfo(rowData)
+        tooltip:AddLine(CLM.L["Informations"])
+        tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
+        tooltip:AddLine("\n")
+        tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
+        tooltip:AddDoubleLine(CLM.L["Total received"], pointInfo.received)
+        tooltip:AddDoubleLine(CLM.L["Total blocked"], pointInfo.blocked)
+        tooltip:AddDoubleLine(CLM.L["Total decayed"], pointInfo.decayed)
+        local lootList = ST_GetProfileLoot(rowData)
+        tooltip:AddLine("\n")
+        if #lootList > 0 then
+            tooltip:AddLine(CLM.L["Latest loot:"])
+            local limit = #lootList - 4 -- inclusive (- 5 + 1)
+            if limit < 1 then
+                limit = 1
+            end
+            for i=#lootList, limit, -1 do
+                local loot = lootList[i]
+                local _, itemLink = GetItemInfo(loot:Id())
+                if itemLink then
+                    tooltip:AddDoubleLine(itemLink, loot:Value() .. CLM.L[" DKP"])
+                end
+            end
+        else
+            tooltip:AddLine(CLM.L["No loot received"])
+        end
         tooltip:Show()
         return status
     end)
@@ -718,6 +750,8 @@ function StandingsGUI:Refresh(visible)
             -- not displayed
             row.cols[6] = {value = roster:GetCurrentGainsForPlayer(GUID)}
             row.cols[7] = {value = weeklyCap}
+            row.cols[8] = {value = roster:GetPointInfoForPlayer(GUID)}
+            row.cols[9] = {value = roster:GetProfileLootByGUID(GUID)}
             data[rowId] = row
             rowId = rowId + 1
         end
