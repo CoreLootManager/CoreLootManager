@@ -133,6 +133,9 @@ function AuctionManagerGUI:Initialize()
     EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
     EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function(...)self:HandleLootClosedEvent() end))
     EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
+        if not RaidManager:IsInProgressingRaid() then
+            return
+        end
         if not AuctionManager:IsAuctionInProgress() then
             self.itemLink = data.link
             self:Refresh()
