@@ -38,7 +38,7 @@ function AuctionHistoryManager:Initialize()
             bids   = data.bids,
             time   = data.time
         })
-        if self:GetPostBids() then
+        if self:GetPostBids() and data.postToChat then
             local channel = CHANNELS[self:GetPostBidsChannel()] or "OFFICER"
             SendChatMessage(data.link, channel)
             local noBids = true
