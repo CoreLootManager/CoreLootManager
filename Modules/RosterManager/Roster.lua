@@ -13,6 +13,8 @@ local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
 local round = UTILS.round
 
+local PointInfo = CLM.MODELS.PointInfo
+
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
@@ -34,6 +36,8 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.inRoster = {}
     -- Profile standing in roster (dict)
     o.standings = {}
+    -- Profile point info
+    o.pointInfo = {}
     -- Profile attendance in roster (dict)
     o.attendanceTracker = CLM.MODELS.AttendanceTracker:New(raidsForFullAttendance, attendanceWeeksWindow)
     -- Point changes in  roster (list)
@@ -64,6 +68,7 @@ function Roster:AddProfileByGUID(GUID)
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
     self.inRoster[GUID] = true
+    self.pointInfo[GUID] = PointInfo:New()
 end
 
 function Roster:RemoveProfileByGUID(GUID)
@@ -123,6 +128,10 @@ function Roster:GetCurrentGainsForPlayer(GUID)
     return self:GetWeeklyGainsForPlayerWeek(GUID, week)
 end
 
+function Roster:GetPointInfoForPlayer(GUID)
+    return self.pointInfo[GUID] or PointInfo:New()
+end
+
 function Roster:GetWeeklyGainsForPlayerWeek(GUID, week)
     local weeklyGains = self.weeklyGains[GUID]
     if not weeklyGains then
@@ -134,6 +143,7 @@ end
 function Roster:UpdateStandings(GUID, value, timestamp)
     timestamp = timestamp or 0
     LOG:Debug("Roster:UpdateStandings(%s, %s, %s)", GUID, self.uid, value)
+    local originalValue = value
     local isPointGain = (value > 0)
     local standings = self:Standings(GUID)
     if isPointGain then
@@ -169,6 +179,8 @@ function Roster:UpdateStandings(GUID, value, timestamp)
     end
     -- Handle the standings update
     self.standings[GUID] = standings + value
+    self.pointInfo[GUID]:AddReceived(value)
+    self.pointInfo[GUID]:AddBlocked(originalValue - value)
 end
 
 function Roster:SetStandings(GUID, value)
@@ -176,7 +188,9 @@ function Roster:SetStandings(GUID, value)
 end
 
 function Roster:DecayStandings(GUID, value)
-    self.standings[GUID] = round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
+    local new = round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
+    self.pointInfo[GUID]:AddDecayed(self.standings[GUID] - new)
+    self.standings[GUID] = new
 end
 
 local function mirrorStandings(self, source, target)
@@ -292,11 +306,14 @@ end
 
 function Roster:AddLoot(loot, profile)
     -- History store
-    table.insert(self.profileLoot[profile:GUID()], loot)
+    local GUID = profile:GUID()
+    table.insert(self.profileLoot[GUID], loot)
     table.insert(self.raidLoot, loot)
     -- Charging for the item
-    -- self.standings[profile:GUID()] = self.standings[profile:GUID()] - loot:Value()
-    self:UpdateStandings(profile:GUID(), -loot:Value(), 0)
+    self:UpdateStandings(GUID, -loot:Value(), 0)
+    self.pointInfo[GUID]:AddSpent(loot:Value())
+    -- Correct for the spending since it will be subtracted in update standings
+    self.pointInfo[GUID]:AddReceived(loot:Value())
 end
 
 function Roster:GetRaidLoot()
