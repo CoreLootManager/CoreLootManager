@@ -635,7 +635,7 @@ local function CreateStandingsDisplay(self)
             gains = gains .. " / " .. weeklyCap
         end
         local pointInfo = ST_GetPointInfo(rowData)
-        tooltip:AddLine(CLM.L["Information"])
+        tooltip:AddLine(CLM.L["Informations"])
         tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
         tooltip:AddLine("\n")
         tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
