@@ -71,6 +71,9 @@ function LootGUI:Initialize()
                     if row then
                         local loot = ST_GetLoot(row)
                         LedgerManager:Remove(loot:Entry(), true)
+                        EventManager:DispatchEvent(CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, {
+                            id = loot:Id(), name = loot:Owner():Name()
+                        }, loot:Timestamp() + 7200) -- only up to 2 hours after loot is created
                     end
                 end),
                 trustedOnly = true,

@@ -117,7 +117,7 @@ local function ScanBagsForItem(itemId, tradeableOnly)
     return found
 end
 
-local function FindlastTradeTargetItems(self)
+local function FindLastTradeTargetItems(self)
     local foundItems = {}
     for _, itemId in ipairs(self.tracking[self.lastTradeTarget]) do
         if not foundItems[itemId] then
@@ -142,17 +142,17 @@ end
 local function HandleTradeShow(self)
     if self.tracking[self.lastTradeTarget] then
         -- Find all items tracked for the requester
-        local foundItems = FindlastTradeTargetItems(self)
+        local foundItems = FindLastTradeTargetItems(self)
         -- Add up to 6 to the trade window
-        local totalAdded = 0
+        local totalQueued = 0
         for _, itemId in ipairs(self.tracking[self.lastTradeTarget]) do
             if foundItems[itemId] and #foundItems[itemId] > 0 then
                 local loc = table.remove(foundItems[itemId])
-
-                UseContainerItem(loc.bag, loc.slot)
-
-                totalAdded = totalAdded + 1
-                if totalAdded == 6 then
+                totalQueued = totalQueued + 1
+                C_Timer.After(0.25*totalQueued, function()
+                    UseContainerItem(loc.bag, loc.slot)
+                end)
+                if totalQueued == 6 then
                     break
                 end
             end
@@ -208,12 +208,15 @@ function AutoAward:Initialize()
         end
         self.lastTradeTarget = nil
     end))
+    EventManager:RegisterEvent(CLM.CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, function(_, data)
+        AutoAward:Remove(data.id, data.name)
+    end)
 end
 
 local autoAwardIgnores = UTILS.Set({
     22726, -- Splinter of Atiesh
     30183, -- Nether Vortex
-    -- 29434, -- Badge of Justice
+    29434, -- Badge of Justice
     -- 23572, -- Primal Nether
 })
 function AutoAward:IsIgnored(itemId)
