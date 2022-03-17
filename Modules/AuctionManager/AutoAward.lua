@@ -267,10 +267,4 @@ function AutoAward:Remove(itemId, player)
     end
 end
 
-function AutoAward:Debug()
-    self.lastTradeTarget = "Bluntlighter"
-    local foundItems = FindLastTradeTargetItems(self)
-    UTILS.DumpTable(foundItems)
-end
-
 MODULES.AutoAward = AutoAward
