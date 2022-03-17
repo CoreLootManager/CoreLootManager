@@ -15,6 +15,7 @@ class L10nStorage:
         self.data = {}
         self.not_used = {}
         self.translations = {}
+        self.do_not_translate = {}
         self.base = base
         self.parser = parser
 
@@ -26,7 +27,7 @@ class L10nStorage:
     def copy(self, source):
         self.data = copy.deepcopy(source.data)
 
-    def translate(self, locale, string, translation):
+    def translate(self, locale, string, translation, do_not_translate):
         if not self.data.get(string):
             self.not_used[string] = True
             if self.parser:
@@ -40,6 +41,16 @@ class L10nStorage:
         if not self.translations.get(locale):
             self.translations[locale] = {}
         self.translations[locale][string] = translation
+
+        if do_not_translate:
+            if not self.do_not_translate.get(locale):
+                self.do_not_translate[locale] = {}
+            self.do_not_translate[locale][string] = True
+
+    def get_if_do_translate(self, locale, string):
+        if not self.do_not_translate.get(locale):
+            return True
+        return not self.do_not_translate[locale].get(string)
 
     def get_translation(self, locale, string):
         if not self.translations.get(locale):
@@ -97,11 +108,12 @@ def scan_file_for_l10n_translation(file:Path, query, storage:L10nStorage, locale
             if not line: # EOF
                 break
             lineNum += 1
-            if not line.startswith("--"):
+            do_not_translate = line.strip().endswith("notranslate")
+            if not line.startswith("--") or do_not_translate:
                 matches = query.findall(line)
                 if matches:
                     for match in matches:
-                        storage.translate(locale, match[0], match[1])
+                        storage.translate(locale, match[0], match[1], do_not_translate)
 
 def output_to_file(filename, storage, locale):
     orderedData = dict(sorted(storage.data.items()))
@@ -113,9 +125,13 @@ def output_to_file(filename, storage, locale):
                 f.write("-- {0}:{1}\n".format(useTuple[0], useTuple[1]))
             translation = storage.get_translation(locale, string)
             prefix = ""
-            if translation == "":
+            suffix = ""
+            do_not_translate = not storage.get_if_do_translate(locale, string)
+            if translation == "" or do_not_translate:
                 prefix = "--"
-            f.write('{0}{1} = "{2}"\n'.format(prefix, string, translation))
+            if do_not_translate:
+                suffix = "--notranslate"
+            f.write('{0}{1} = "{2}"{3}\n'.format(prefix, string, translation, suffix))
         f.write("end")
 
 def cleanup(filenames):
@@ -127,10 +143,15 @@ def cleanup(filenames):
 
 def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean):
     missing_translations = []
+    ignored_translations_count = 0
     for key in storage.data.keys():
         translation = storage.get_translation(locale, key)
-        if translation == "":
-            missing_translations.append(key)
+        do_translate = storage.get_if_do_translate(locale, key)
+        if do_translate:
+            if translation == "":
+                missing_translations.append(key)
+        else:
+            ignored_translations_count = ignored_translations_count + 1
 
     if len(missing_translations) > 0:
         if parser_format:
@@ -142,6 +163,9 @@ def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean):
             for key in missing_translations:
                 print(key)
         return 1
+    if ignored_translations_count > 0:
+        if not parser_format:
+            print("Ignored {} locale translations".format(ignored_translations_count))
     return 0
 
 # Always needs to be run from the top directory of the project!
