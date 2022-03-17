@@ -208,6 +208,9 @@ function AutoAward:Initialize()
         end
         self.lastTradeTarget = nil
     end))
+    EventManager:RegisterEvent(CLM.CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, function(_, data)
+        AutoAward:Remove(data.id, data.name)
+    end)
 end
 
 local autoAwardIgnores = UTILS.Set({
