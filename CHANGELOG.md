@@ -1,5 +1,5 @@
 # Classic Loot Manager v1.5.4
-## Fixes & Changes"
+## Fixes & Changes
 ### Bid posting
 Bids will now be posted only after a successful (timed) auction.
 ### Alt-click auction
@@ -9,7 +9,7 @@ Fixed posted loot numbering. Message should now appear only once per mob. You ca
 ### Auto-trade
 Addon should now properly add all items to the trade window. Removed loot should not get traded.
 ### Player recent information
-When hovering you will now see player DKP statistics in addition to recent point and loot changes
+When hovering you will now see player DKP statistics in addition to recent point and loot changes.
 
 # Classic Loot Manager v1.5.3
 ## Retroactive Fix
