@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v1.5.5",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    {header = "Zul'Aman & Ahn'Qiraj", body = "Update in preparation for Zul'Aman and Ahn'Qiraj (SoM) releases."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.5.4",
         data = {
             {
