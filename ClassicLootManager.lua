@@ -249,6 +249,9 @@ function CORE:GUILD_ROSTER_UPDATE(...)
     end
 end
 
+CLM.PA  = ((GetServerTime() >= 1648771200) and (GetServerTime() <= 1648857600))
+CLM.PAW = ((GetServerTime() >= 1648512000) and (GetServerTime() <= 1649116800))
+
 -- Globals: Keybinds
 
 BINDING_HEADER_CLM = "Classic Loot Manager"
