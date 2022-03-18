@@ -1,3 +1,7 @@
+# Classic Loot Manager v1.5.5
+## Changes
+### Zul'Aman & Ahn'Qiraj
+Update in preparation for Zul'Aman and Ahn'Qiraj (SoM) releases.
 # Classic Loot Manager v1.5.4
 ## Fixes & Changes
 ### Bid posting
