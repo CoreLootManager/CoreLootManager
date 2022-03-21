@@ -24,66 +24,8 @@ function GlobalSlashCommands:Initialize()
             type = "input",
             name = CLM.L["Award item"],
             desc = CLM.L["Award item without auctioning it."],
-            set = (function(i, args)
-                args = args or ""
-                local values = {strsplit("/", args)}
-                -- Item --
-                local itemLink = values[1]
-                local itemId = GetItemIdFromLink(itemLink)
-                if not itemId or itemId == 0 then
-                    LOG:Message(CLM.L["Invalid item link"])
-                    return
-                end
-                -- Value --
-                local value = tonumber(values[2] or 0)
-                if value < 0 then
-                    LOG:Message(CLM.L["Item value must be positive"])
-                    return
-                end
-                -- Roster --
-                local isRaid = false
-                local raid
-                local rosterName = values[3]
-                local roster
-                if not rosterName or rosterName == "" then
-                    raid = RaidManager:GetRaid()
-                    if not raid then
-                        LOG:Message(CLM.L["Missing roster name and you are not in raid"])
-                        return
-                    else
-                        isRaid = true
-                        LOG:Info(CLM.L["Missing roster name. Using Raid Info"])
-                        roster = raid:Roster()
-                        LOG:Info(CLM.L["Raid: %s Roster: %s"], raid:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
-                    end
-                else
-                    roster = RosterManager:GetRosterByName(rosterName)
-                    if not roster then
-                        LOG:Message(CLM.L["Unknown roster %s"], rosterName)
-                        return
-                    end
-                end
-                -- Profile --
-                local name = values[4]
-                if not name or name == "" then
-                    name = UTILS.GetUnitName("target")
-                end
-                local profile = ProfileManager:GetProfileByName(name)
-                if not profile then
-                    LOG:Message(CLM.L["Missing profile %s"], name)
-                    return
-                end
-                if not roster:IsProfileInRoster(profile:GUID()) then
-                    LOG:Message(CLM.L["%s is not part of the %s roster"], profile:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
-                    return
-                end
-                -- Award --
-                local awarded = LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
-                if awarded and not AutoAward:IsIgnored(itemId) then
-                    if MODULES.AuctionManager:GetAutoTrade() then
-                        AutoAward:Track(itemId, name)
-                    end
-                end
+            set = (function(_, args)
+                self:Award(args)
             end)
         }
     end
@@ -213,6 +155,68 @@ function GlobalSlashCommands:Initialize()
         confirm = true
     }
     ConfigManager:RegisterSlash(options)
+end
+
+function GlobalSlashCommands:Award(args)
+    args = args or ""
+    local values = {strsplit("/", args)}
+    -- Item --
+    local itemLink = values[1]
+    local itemId = GetItemIdFromLink(itemLink)
+    if not itemId or itemId == 0 then
+        LOG:Message(CLM.L["Invalid item link"])
+        return
+    end
+    -- Value --
+    local value = tonumber(values[2] or 0)
+    if value < 0 then
+        LOG:Message(CLM.L["Item value must be positive"])
+        return
+    end
+    -- Roster --
+    local isRaid = false
+    local raid
+    local rosterName = values[3]
+    local roster
+    if not rosterName or rosterName == "" then
+        raid = RaidManager:GetRaid()
+        if not raid then
+            LOG:Message(CLM.L["Missing roster name and you are not in raid"])
+            return
+        else
+            isRaid = true
+            LOG:Info(CLM.L["Missing roster name. Using Raid Info"])
+            roster = raid:Roster()
+            LOG:Info(CLM.L["Raid: %s Roster: %s"], raid:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
+        end
+    else
+        roster = RosterManager:GetRosterByName(rosterName)
+        if not roster then
+            LOG:Message(CLM.L["Unknown roster %s"], rosterName)
+            return
+        end
+    end
+    -- Profile --
+    local name = values[4]
+    if not name or name == "" then
+        name = UTILS.GetUnitName("target")
+    end
+    local profile = ProfileManager:GetProfileByName(name)
+    if not profile then
+        LOG:Message(CLM.L["Missing profile %s"], name)
+        return
+    end
+    if not roster:IsProfileInRoster(profile:GUID()) then
+        LOG:Message(CLM.L["%s is not part of the %s roster"], profile:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
+        return
+    end
+    -- Award --
+    local awarded = LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
+    if awarded and not AutoAward:IsIgnored(itemId) then
+        if MODULES.AuctionManager:GetAutoTrade() then
+            AutoAward:Track(itemId, name)
+        end
+    end
 end
 
 CLM.GlobalSlashCommands = GlobalSlashCommands

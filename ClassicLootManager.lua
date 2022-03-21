@@ -249,24 +249,9 @@ function CORE:GUILD_ROSTER_UPDATE(...)
     end
 end
 
-CLM.PA  = ((GetServerTime() >= 1648771200) and (GetServerTime() <= 1648857600))
-CLM.PAW = ((GetServerTime() >= 1648512000) and (GetServerTime() <= 1649116800))
+CLM.PA  = ((GetServerTime() >= 1648771200) and (GetServerTime() <= 1648857600)) and not CLM_DB.DisableFun
+CLM.PAW = ((GetServerTime() >= 1648512000) and (GetServerTime() <= 1649116800)) and not CLM_DB.DisableFun
 
--- Globals: Keybinds
-
-BINDING_HEADER_CLM = "Classic Loot Manager"
-BINDING_NAME_CLM_UNDO = CLM.L["Undo action"]
-BINDING_NAME_CLM_REDO = CLM.L["Redo action"]
-
-function CLM_Undo()
-    -- LOG:Message("Executing Undo. Skiping confirmation prompt. Please wait.")
-    -- MODULES.LedgerManager:CancelLastEntry()
-    LOG:Warning("Undo not implemented.")
-end
-
-function CLM_Redo()
-    LOG:Warning("Redo not implemented.")
-end
 --@do-not-package@
 function CORE.Debug()
     CLM.Debug:Initialize()

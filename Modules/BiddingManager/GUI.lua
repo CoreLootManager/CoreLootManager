@@ -201,6 +201,20 @@ function BiddingManagerGUI:Initialize()
     self._initialized = true
 end
 
+function BiddingManagerGUI:BidBase()
+    self.bid = self.auctionInfo and self.auctionInfo:Base() or 0
+    BiddingManager:Bid(self.bid)
+end
+
+function BiddingManagerGUI:BidMax()
+    self.bid = self.auctionInfo and self.auctionInfo:Max() or 0
+    BiddingManager:Bid(self.bid)
+end
+
+function BiddingManagerGUI:BidCurrent()
+    BiddingManager:Bid(self.bid)
+end
+
 function BiddingManagerGUI:GenerateAuctionOptions()
     local itemId = 0
     local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
@@ -240,7 +254,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             name = CLM.L["Bid"],
             desc = CLM.L["Bid input value."],
             type = "execute",
-            func = (function() BiddingManager:Bid(self.bid) end),
+            func = (function() self:BidCurrent() end),
             width = 0.43,
             order = 4
         },
@@ -249,8 +263,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = CLM.L["Immediately bid base item value."],
             type = "execute",
             func = (function()
-                self.bid = self.auctionInfo and self.auctionInfo:Base() or 0
-                BiddingManager:Bid(self.bid)
+                self:BidBase()
             end),
             disabled = (function()
                 if self.auctionInfo then
@@ -267,8 +280,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             desc = CLM.L["Immediately bid max item value."],
             type = "execute",
             func = (function()
-                self.bid = self.auctionInfo and self.auctionInfo:Max() or 0
-                BiddingManager:Bid(self.bid)
+                self:BidMax()
             end),
             disabled = (function()
                 if self.auctionInfo then

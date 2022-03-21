@@ -124,6 +124,7 @@ Alerts\Alerts.lua
 Global\GlobalSlashCommands.lua
 Global\GlobalConfigs.lua
 Global\GlobalChatMessageHandlers.lua
+Global\GlobalBindings.lua
 
 # Extra
 MinimapIcon.lua

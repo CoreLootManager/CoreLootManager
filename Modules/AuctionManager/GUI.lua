@@ -106,7 +106,7 @@ local function PAW()
     if CLM.PAW then
         if math.random(1,100) > 95 then
             local L, C, D = nil, nil, 0
-            local R = math.random(1,3)
+            local R = math.random(1,4)
             if R == 1 then
                 local _, itemLink= GetItemInfo(19019)
                 if itemLink then
