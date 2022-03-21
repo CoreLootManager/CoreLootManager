@@ -249,7 +249,6 @@ function CORE:GUILD_ROSTER_UPDATE(...)
     end
 end
 
-CLM.PA  = ((GetServerTime() >= 1648771200) and (GetServerTime() <= 1648857600)) and not CLM_DB.DisableFun
 CLM.PAW = ((GetServerTime() >= 1648512000) and (GetServerTime() <= 1649116800)) and not CLM_DB.DisableFun
 
 --@do-not-package@
