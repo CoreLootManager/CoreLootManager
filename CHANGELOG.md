@@ -1,3 +1,11 @@
+
+# Classic Loot Manager v1.6.0
+## Features
+### Bindings
+You can now keybind various CLM related actions: bidding (base, max, current), auctioning when hovering over item (start, quick auction), awarding when hovering over item (base, free) and toggling (all GUIs).
+## Fixes
+### Various
+Various internal fixes related to upcoming patch.
 # Classic Loot Manager v1.5.5
 ## Changes
 ### Zul'Aman & Ahn'Qiraj

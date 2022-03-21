@@ -1,6 +1,23 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v1.6.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    {header = "Bindings", body = "You can now keybind various CLM related actions: bidding (base, max, current), auctioning when hovering over item (start, quick auction), awarding when hovering over item (base, free) and toggling (all GUIs)."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Various", body = "Various internal fixes related to upcoming patch."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.5.5",
         data = {
             {
