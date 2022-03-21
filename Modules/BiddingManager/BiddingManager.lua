@@ -177,10 +177,10 @@ end
 local PlayStartSound, PlayEndSound
 if CLM.PAW then
     PlayStartSound = function()
-        PlaySoundFile("Interface\\AddOns\\ClassicLootManager\\Media\\Audio\\lifestock_auction.ogg")
+        PlaySoundFile("Interface\\AddOns\\ClassicLootManager\\Media\\Audio\\lifestock_auction.ogg", "MASTER")
     end
     PlayEndSound = function()
-        PlaySoundFile("Interface\\AddOns\\ClassicLootManager\\Media\\Audio\\lifestock_auction_sold.ogg")
+        PlaySoundFile("Interface\\AddOns\\ClassicLootManager\\Media\\Audio\\lifestock_auction_sold.ogg", "MASTER")
     end
 else
     PlayStartSound = function()
