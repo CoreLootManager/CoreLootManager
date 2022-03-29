@@ -43,6 +43,8 @@ local function Initialize_SavedVariables()
     if type(CLM_Logs) ~= "table" then
         CLM_Logs = {}
     end
+
+    CLM.PAW = ((GetServerTime() >= 1648512000) and (GetServerTime() <= 1649116800)) and not CLM_DB.DisableFun
 end
 
 local function Initialize_Logger()
@@ -248,8 +250,6 @@ function CORE:GUILD_ROSTER_UPDATE(...)
         self:_Initialize()
     end
 end
-
-CLM.PAW = ((GetServerTime() >= 1648512000) and (GetServerTime() <= 1649116800)) and not CLM_DB.DisableFun
 
 --@do-not-package@
 function CORE.Debug()
