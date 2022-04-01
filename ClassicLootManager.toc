@@ -129,7 +129,11 @@ Global\GlobalBindings.lua
 # Extra
 MinimapIcon.lua
 Migration.lua
-Integration.lua
+
+# Integrations
+Integrations\Integrations.lua
+Integrations\GUI.lua
+
 #@do-not-package@
 Debug.lua
 #@end-do-not-package@
