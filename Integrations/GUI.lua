@@ -4,6 +4,7 @@ local  _, CLM = ...
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
+local CONSTANTS = CLM.CONSTANTS
 
 local capitalize = UTILS.capitalize
 local ColorCodeText = UTILS.ColorCodeText
@@ -18,48 +19,26 @@ local LIBS =  {
 
 local ALL = 0
 
-local EXPORT_DATA_TYPE = {
-    STANDINGS = 0,
-    POINT_HISTORY = 1,
-    LOOT_HISTORY = 2,
-    -- AUCTION_HISTORY = 3,
-    RAIDS = 4
-}
-
 local EXPORT_DATA_TYPE_GUI = {
-    [EXPORT_DATA_TYPE.STANDINGS] = CLM.L["Standings"],
-    [EXPORT_DATA_TYPE.POINT_HISTORY] = CLM.L["Point History"],
-    [EXPORT_DATA_TYPE.LOOT_HISTORY] = CLM.L["Loot History"],
-    -- [EXPORT_DATA_TYPE.AUCTION_HISTORY] = CLM.L["Auction History"],
-    [EXPORT_DATA_TYPE.RAIDS] = CLM.L["Raids"],
-}
-
-local FORMAT_VALUES = {
-    XML = 0,
-    CSV = 1,
-    JSON = 2
+    [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = CLM.L["Standings"],
+    [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = CLM.L["Point History"],
+    [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = CLM.L["Loot History"],
+    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.AUCTION_HISTORY] = CLM.L["Auction History"],
+    [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = CLM.L["Raids"],
 }
 
 local FORMAT_VALUES_GUI =  {
-    [FORMAT_VALUES.XML] = "XML",
-    [FORMAT_VALUES.CSV] = "CSV",
-    [FORMAT_VALUES.JSON] = "JSON"
-}
-
-local TIMEFRAME_SCALE_VALUES = {
-    HOURS = 0,
-    DAYS = 1,
-    WEEKS = 2,
-    MONTHS = 3,
-    YEARS  = 4
+    [CLM.CONSTANTS.FORMAT_VALUE.XML] = "XML",
+    [CLM.CONSTANTS.FORMAT_VALUE.CSV] = "CSV",
+    [CLM.CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
 }
 
 local TIMEFRAME_SCALE_VALUES_GUI =  {
-    [TIMEFRAME_SCALE_VALUES.HOURS] = CLM.L["hours"],
-    [TIMEFRAME_SCALE_VALUES.DAYS] = CLM.L["days"],
-    [TIMEFRAME_SCALE_VALUES.WEEKS] = CLM.L["weeks"],
-    [TIMEFRAME_SCALE_VALUES.MONTHS] = CLM.L["months"],
-    [TIMEFRAME_SCALE_VALUES.YEARS] = CLM.L["years"],
+    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.HOURS] = CLM.L["hours"],
+    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.DAYS] = CLM.L["days"],
+    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS] = CLM.L["weeks"],
+    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.MONTHS] = CLM.L["months"],
+    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.YEARS] = CLM.L["years"],
 }
 
 
@@ -87,9 +66,9 @@ local function InitializeDB(self)
         location = {nil, nil, "CENTER", 0, 0 },
         export_config = {
             data = {},
-            format = FORMAT_VALUES.XML,
+            format = CLM.CONSTANTS.FORMAT_VALUE.XML,
             timeframe = 1,
-            timeframe_scale = TIMEFRAME_SCALE_VALUES.WEEKS
+            timeframe_scale = CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS
         }
     })
 end
@@ -100,6 +79,7 @@ function ExportGUI:Initialize()
     InitializeDB(self)
     self.roster_select_list = { [ALL] = true }
     self.profile_select_list = { [ALL] = true }
+    self.export_data = ""
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -159,7 +139,7 @@ local function Create(self)
             timeframe_scale = {
                 name = CLM.L["Timeframe scale"],
                 type = "select",
-                set = function(i, v) self.db.export_config.timeframe_scale = v end,
+                set = function(i, v) self.db.export_config.timeframe_scale = tonumber(v) end,
                 get = function(i) return self.db.export_config.timeframe_scale end,
                 values = TIMEFRAME_SCALE_VALUES_GUI,
                 order = 4,
@@ -242,14 +222,67 @@ local function Create(self)
                 type = "input",
                 multiline = 10,
                 set = function(i, v) end,
-                get = function(i) end,
+                get = function(i) return self.export_data end,
                 width = "full",
                 order = 1
             },
             execute_export = {
                 name = CLM.L["Export"],
                 type = "execute",
-                func = (function() end),
+                func = (function()
+                    local lastProgress = -1
+
+                    local rosters = {}
+                    if self.roster_select_list[ALL] then
+                        for _, roster in pairs(MODULES.RosterManager:GetRosters()) do
+                            table.insert(rosters, roster:UID())
+                        end
+                    else
+                        for UID, status in pairs(self.roster_select_list) do
+                            if status then
+                                table.insert(rosters, UID)
+                            end
+                        end
+                    end
+                    local profiles = {}
+                    if self.profile_select_list[ALL] then
+                        for GUID, _ in pairs(MODULES.ProfileManager:GetProfiles()) do
+                            table.insert(rosters, GUID)
+                        end
+                    else
+                        for iGUID, status in pairs(self.profile_select_list) do
+                            if status then
+                                table.insert(profiles, UTILS.getGuidFromInteger(iGUID))
+                            end
+                        end
+                    end
+
+                    local config = CLM.MODELS.ExportConfiguration:New(
+                        self.db.export_config.format,   -- Format
+                        self.db.export_config.data,     -- Config
+                        {                               -- Timeframe
+                            ["value"] = self.db.export_config.timeframe,
+                            ["scale"] = self.db.export_config.timeframe_scale,
+                        },
+                        rosters,                        -- Rosters
+                        profiles                        -- Profiles
+                    )
+
+                    CLM.Integration:Export(
+                        config, -- Config
+                        (function(data) -- Complete callback
+                            self.export_data = data
+                            -- Update view
+                            LOG:Message("Export complete: %s [B].", #self.export_data)
+                        end),
+                        (function(progress) -- Update callback
+                            if lastProgress ~= progress then
+                                self:SetStatusText(GetProgressText(progress))
+                                lastProgress = progress
+                            end
+                        end)
+                    )
+                end),
                 order = 2
             }
         },

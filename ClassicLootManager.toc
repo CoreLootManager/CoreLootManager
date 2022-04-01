@@ -132,6 +132,8 @@ Migration.lua
 
 # Integrations
 Integrations\Integrations.lua
+Integrations\Exporter.lua
+Integrations\ExportConfiguration.lua
 Integrations\GUI.lua
 
 #@do-not-package@
