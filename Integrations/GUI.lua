@@ -4,10 +4,6 @@ local  _, CLM = ...
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
-local CONSTANTS = CLM.CONSTANTS
-
-local capitalize = UTILS.capitalize
-local ColorCodeText = UTILS.ColorCodeText
 
 -- Libs
 local AceGUI = LibStub("AceGUI-3.0")
@@ -20,11 +16,12 @@ local LIBS =  {
 local ALL = 0
 
 local EXPORT_DATA_TYPE_GUI = {
+    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = CLM.L["Configuration"],
     [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = CLM.L["Standings"],
     [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = CLM.L["Point History"],
     [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = CLM.L["Loot History"],
-    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.AUCTION_HISTORY] = CLM.L["Auction History"],
     [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = CLM.L["Raids"],
+
 }
 
 local FORMAT_VALUES_GUI =  {

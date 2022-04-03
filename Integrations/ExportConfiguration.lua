@@ -1,6 +1,5 @@
 local _, CLM = ...
 
-local LOG = CLM.LOG
 local MODELS = CLM.MODELS
 
 local ExportConfiguration = {}
