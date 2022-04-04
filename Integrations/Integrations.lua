@@ -110,17 +110,15 @@ function Integration:Initialize()
 end
 
 function Integration:Export(config, completeCallback, updateCallback)
-    -- if self.exportInProgress then
-    --     LOG:Error("Integration: Export in progress")
-    -- end
-    if config.format == CLM.CONSTANTS.FORMAT_VALUE.XML then
-        -- LOG:Warning("Integration: Unsupported format %d", tostring("XML"))
-    elseif config.format == CLM.CONSTANTS.FORMAT_VALUE.CSV then
+    if self.exportInProgress then
+        LOG:Error("Integration: Export in progress")
+        return
+    end
+    if config.format == CLM.CONSTANTS.FORMAT_VALUE.CSV then
         LOG:Warning("Integration: Unsupported format %s", tostring("CSV"))
-    elseif config.format == CLM.CONSTANTS.FORMAT_VALUE.JSON then
-        LOG:Warning("Integration: Unsupported format %s", tostring("JSON"))
-    else
+    elseif not CLM.CONSTANTS.FORMAT_VALUES[config.format] then
         LOG:Error("Integration: Unknown export format %d", tostring(config.format))
+        return
     end
     self.exportInProgress = true
     CLM.MODELS.Exporter:New(config):Run((function(data)
@@ -142,7 +140,7 @@ CLM.CONSTANTS.EXPORT_DATA_TYPE = {
     POINT_HISTORY = 1,
     LOOT_HISTORY = 2,
     RAIDS = 3,
-    -- CONFIGS = 4,
+    CONFIGS = 4,
 }
 
 CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE = {
