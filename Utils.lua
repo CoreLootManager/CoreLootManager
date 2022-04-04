@@ -552,14 +552,14 @@ function UTILS.Trim(text)
 end
 
 function UTILS.LibStCompareSortWrapper(modifierFn)
-    return (function(_self, rowa, rowb, sortbycol)
+    return (function(s, rowa, rowb, sortbycol)
         -- Get data
-        local a1, b1 = _self:GetCell(rowa, sortbycol), _self:GetCell(rowb, sortbycol)
+        local a1, b1 = s:GetCell(rowa, sortbycol), s:GetCell(rowb, sortbycol)
         local a1_value, b1_value = a1.value, b1.value
         -- Modify Data
         a1.value, b1.value = modifierFn(a1.value, b1.value)
         -- sort
-        local result = _self:CompareSort(rowa, rowb, sortbycol)
+        local result = s:CompareSort(rowa, rowb, sortbycol)
         -- restore
         a1.value, b1.value  = a1_value, b1_value
         -- return
@@ -569,8 +569,8 @@ end
 
 function UTILS.OnePassRemove(t, fnKeep)
     local j, n = 1, #t;
-    fnKeep = fnKeep or (function(_t, _i)
-        return _t[_i] ~= nil
+    fnKeep = fnKeep or (function(tab, idx)
+        return tab[idx] ~= nil
     end)
     for i=1,n do
         if (fnKeep(t, i, j)) then

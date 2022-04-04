@@ -63,7 +63,7 @@ function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfRece
     if type(securityCallbackOrLevel) == "function" then
         self.securityCallbacks[prefix] = securityCallbackOrLevel
     elseif type(securityCallbackOrLevel) == "number" then
-        self.securityCallbacks[prefix] = (function(name) return ACL:CheckLevel(securityCallbackOrLevel, name) end)
+        self.securityCallbacks[prefix] = (function(name, _) return ACL:CheckLevel(securityCallbackOrLevel, name) end)
     else
         LOG:Fatal("Comms:Register(): Unknown security callback or ACL Level. Setting to any.")
         self.securityCallbacks[prefix] = (function() return true end)
@@ -102,7 +102,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
     end
     -- Prefix
     prefix = _prefix(prefix)
-    if not type(self.callbacks[prefix]) == "function" then
+    if type(self.callbacks[prefix]) ~= "function" then
         LOG:Error("Comms:Send() unregistered prefix: %s", prefix)
         return false
     end

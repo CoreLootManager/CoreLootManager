@@ -360,8 +360,8 @@ local function GenerateOfficerOptions(self)
                 else
                     local filter
                     if not self.includeNegative then
-                        filter = (function(_roster, profile)
-                            return (_roster:Standings(profile:GUID()) >= 0)
+                        filter = (function(rosterObject, profile)
+                            return (rosterObject:Standings(profile:GUID()) >= 0)
                         end)
                     end
                     roster, profiles = self:GetSelected(filter)

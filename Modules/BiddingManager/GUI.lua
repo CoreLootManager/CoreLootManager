@@ -185,10 +185,10 @@ function BiddingManagerGUI:Initialize()
     self.standings = 0
     self.canUseItem = true
     self.fakeTooltip = CreateFrame("GameTooltip", "CLMBiddingFakeTooltip", UIParent, "GameTooltipTemplate")
-    self.fakeTooltip:SetScript('OnTooltipSetItem', (function(_self)
+    self.fakeTooltip:SetScript('OnTooltipSetItem', (function(s)
         self.canUseItem = true
-        local tooltipName = _self:GetName()
-        for i = 1, _self:NumLines() do
+        local tooltipName = s:GetName()
+        for i = 1, s:NumLines() do
             local l = _G[tooltipName..'TextLeft'..i]
             local r = _G[tooltipName..'TextRight'..i]
             if IsTooltipTextRed(l) or IsTooltipTextRed(r) then
@@ -196,7 +196,7 @@ function BiddingManagerGUI:Initialize()
                 break
             end
         end
-        _self:Hide()
+        s:Hide()
     end))
     self._initialized = true
 end
