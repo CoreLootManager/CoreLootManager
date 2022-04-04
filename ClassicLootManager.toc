@@ -45,6 +45,7 @@ Libs\lib-st\lib-st.xml
 # Additional
 Libs\LibCandyBar-3.0\lib.xml
 Libs\LibJsonLua\LibJsonLua.lua
+Libs\LibLuaXML\LibLuaXML.lua
 
 # Locale
 Locale\enUS.lua

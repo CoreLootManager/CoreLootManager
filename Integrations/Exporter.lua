@@ -6,6 +6,7 @@ local MODULES = CLM.MODULES -- Not typical model since it accessess modules and 
 local MODELS = CLM.MODELS
 
 local json = LibStub:GetLibrary("LibJsonLua")
+local XML = LibStub:GetLibrary("LibLuaXML")
 
 local function dictNotEmpty(dict)
     return not rawequal(next(dict), nil)
@@ -73,7 +74,7 @@ local EXPORT_GROUP_NAME = {
 -- -------- --
 
 local ENCODERS =  {
-    [CLM.CONSTANTS.FORMAT_VALUE.XML]  = (function() return "XML not supported" end),
+    [CLM.CONSTANTS.FORMAT_VALUE.XML]  = (function(output) return XML.encode(output) end),
     [CLM.CONSTANTS.FORMAT_VALUE.CSV]  = (function() return "CSV not supported" end),
     [CLM.CONSTANTS.FORMAT_VALUE.JSON] = (function(output) return json.encode(output) end),
 }

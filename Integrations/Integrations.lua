@@ -126,6 +126,7 @@ function Integration:Export(config, completeCallback, updateCallback)
     CLM.MODELS.Exporter:New(config):Run((function(data)
         completeCallback(data)
         self.exportInProgress = false
+        collectgarbage("collect")
     end), updateCallback)
 end
 
