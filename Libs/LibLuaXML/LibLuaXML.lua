@@ -35,11 +35,11 @@ if XML == nil then return end
 local encode
 
 local escape_char_map = {
-    [ "<" ] = "&#60;",
-    [ ">" ] = "&#62;",
-    [ "&" ] = "&#38;",
-    [ "\""] = "&#34;",
-    [ "'" ] = "&#39;",
+    [ "<" ] = "&lt;",
+    [ ">" ] = "&gt;",
+    [ "&" ] = "&amp;",
+    [ "\""] = "&quot;",
+    [ "'" ] = "&apos;",
 }
 
 local escape_char_map_inv = {}
@@ -48,7 +48,6 @@ for k, v in pairs(escape_char_map) do
 end
 
 local function escape_char(c)
-    -- return "\\" .. (escape_char_map[c] or string.format("u%04x", c:byte()))
     return (escape_char_map[c] or string.format("u%04x", c:byte()))
 end
 
@@ -100,13 +99,14 @@ local function encode_table(val, node, stack)
         end
         stack[val] = nil
         -- return "{" .. table.concat(res, ",") .. "}"
+        output = set_node(output, node)
     end
     return output
 end
 
 
 local function encode_string(val, node)
-    return set_node(val:gsub('[%z\1-\31\\"]', escape_char), node)
+    return set_node(val:gsub('[%z\1-\31\\"\'<>&]', escape_char), node)
 end
 
 
