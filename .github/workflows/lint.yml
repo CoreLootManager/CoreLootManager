@@ -16,4 +16,5 @@ jobs:
         with:
           files: ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
           # config: .luacheckrc
+          args: --config .luacheckrc
           annotate: warning
