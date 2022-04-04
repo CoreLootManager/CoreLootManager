@@ -12,6 +12,7 @@ jobs:
         with:
           luaVersion: "5.1.4"
       - name: luacheck
-        uses: nebularg/actions-luacheck@v1.1.0
+        uses: nebularg/actions-luacheck@v1.1.1
         with:
-          files: ClassicLootManager.lua Integration.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
+          files: ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
+          config: .luacheckrc
