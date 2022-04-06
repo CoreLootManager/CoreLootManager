@@ -30,15 +30,6 @@ local FORMAT_VALUES_GUI =  {
     [CLM.CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
 }
 
--- local TIMEFRAME_SCALE_VALUES_GUI =  {
---     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.HOURS] = CLM.L["hours"],
---     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.DAYS] = CLM.L["days"],
---     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS] = CLM.L["weeks"],
---     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.MONTHS] = CLM.L["months"],
---     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.YEARS] = CLM.L["years"],
--- }
-
-
 -- local function GetProgressText(percent)
 --     percent = percent or 0
 --     if percent > 100 then percent = 100 end
@@ -82,6 +73,25 @@ local function InitializeDB(self)
     })
 end
 
+
+local redoProfileList = false
+local profileList = {}
+local function GetProfileList()
+    if redoProfileList then
+        profileList = {}
+        for _, profile in pairs(MODULES.ProfileManager:GetProfiles()) do
+            -- profile_list[UTILS.getIntegerGuid(guid)] = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff")
+            table.insert(profileList, UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff"))
+        end
+        redoProfileList = false
+    end
+    table.sort(profileList, function(a, b)
+        return UTILS.RemoveColorCode(a) < UTILS.RemoveColorCode(b)
+    end)
+    profileList[ALL] = UTILS.ColorCodeText("Everyone", "6699ff")
+    return profileList
+end
+
 local ExportGUI = {}
 function ExportGUI:Initialize()
     LOG:Trace("ExportGUI:Initialize()")
@@ -92,11 +102,13 @@ function ExportGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    -- MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
-    --     if lag ~= 0 or uncommitted ~= 0 then return end
-    --     self:Refresh(true)
-    -- end)
+    MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        redoProfileList = true
+    end)
 end
+
+
 
 local days_in_month = {
     [1]=31, [2]=28, [3]=31, [4]=30, [5]=31, [6]=30, [7]=31, [8]=31, [9]=30, [10]=31, [11]=30, [12]=31,
@@ -230,23 +242,6 @@ local function Create(self)
                 values = FORMAT_VALUES_GUI,
                 order = 2
             },
-            -- timeframe_input = {
-            --     name = CLM.L["Timeframe"],
-            --     desc = CLM.L["Sets the limit to what time data can be exported"],
-            --     type = "input",
-            --     set = function(i, v) self.db.export_config.timeframe = tonumber(v) end,
-            --     get = function(i) return tostring(self.db.export_config.timeframe) end,
-            --     pattern = "^%d+$",
-            --     order = 3,
-            -- },
-            -- timeframe_scale = {
-            --     name = CLM.L["Timeframe scale"],
-            --     type = "select",
-            --     set = function(i, v) self.db.export_config.timeframe_scale = tonumber(v) end,
-            --     get = function(i) return self.db.export_config.timeframe_scale end,
-            --     values = TIMEFRAME_SCALE_VALUES_GUI,
-            --     order = 4,
-            -- },
             timerange_begin_day = {
                 name = CLM.L["Begin Day"],
                 type = "select",
@@ -388,15 +383,7 @@ local function Create(self)
                     self.profile_select_list[k] = v
                  end,
                 get = function(i, k) return self.profile_select_list[k] end,
-                values = function()
-                    local profile_list = {
-                        [ALL] = UTILS.ColorCodeText("Everyone", "6699ff")
-                    }
-                    for guid, profile in pairs(MODULES.ProfileManager:GetProfiles()) do
-                        profile_list[UTILS.getIntegerGuid(guid)] = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff")
-                    end
-                    return profile_list
-                end,
+                values = function() return GetProfileList() end,
                 order = 3
             }
         },
@@ -440,9 +427,11 @@ local function Create(self)
                             table.insert(rosters, GUID)
                         end
                     else
-                        for iGUID, status in pairs(self.profile_select_list) do
+                        for selectedId, status in pairs(self.profile_select_list) do
                             if status then
-                                table.insert(profiles, UTILS.getGuidFromInteger(iGUID))
+                                local profile = MODULES.ProfileManager:GetProfileByName(UTILS.RemoveColorCode(profileList[selectedId]))
+                                table.insert(profiles, profile:GUID())
+                                -- table.insert(profiles, UTILS.getGuidFromInteger(iGUID))
                             end
                         end
                     end
@@ -483,6 +472,12 @@ local function Create(self)
                     )
                 end),
                 order = 2
+            },
+            clear_output = {
+                name = CLM.L["Clear output"],
+                type = "execute",
+                func = (function() self.export_data = "" end),
+                order = 3
             }
         },
         order = 4

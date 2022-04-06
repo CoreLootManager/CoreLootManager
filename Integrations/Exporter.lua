@@ -40,24 +40,6 @@ function Exporter:TimestampInRange(timestamp)
     return ((timestamp >= self.dataInfo.begin) and (timestamp <= self.dataInfo.finish))
 end
 
-local function GetCutoffTimestamp(timeframe)
-    local multiplier = 1
-
-    if timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.HOURS then
-        multiplier = 3600
-    elseif timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.DAYS then
-        multiplier = (3600 * 24)
-    elseif timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS then
-        multiplier = 604800 -- (3600 * 24) * 7
-    elseif timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.MONTHS then
-        multiplier = 2678400 -- (3600 * 24) * 31
-    elseif timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.YEARS then
-        multiplier = 31536000 --(3600 * 24) * 365
-    end
-    LOG:Info(GetServerTime(), (timeframe.value * multiplier),  (GetServerTime() - (timeframe.value * multiplier)))
-    return (GetServerTime() - (timeframe.value * multiplier))
-end
-
 local function decodeNote(note)
     if note ~= "" then
         local numNote = tonumber(note)

@@ -178,7 +178,8 @@ def main(args):
         files.extend(find_files(path, query, True))
 
     # Prepare
-    locales = ["ruRU", "frFR"]
+    # locales = ["ruRU", "frFR"]
+    locales = ["frFR"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
     l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
     storage = L10nStorage(baseDir, args.parser)
