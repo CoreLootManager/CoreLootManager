@@ -178,7 +178,7 @@ function Roster:UpdateStandings(GUID, value, timestamp)
     -- Handle the standings update
     value = round(value, self.configuration._.roundDecimals)
     if isPointGain and self.configuration.hasWeeklyCap then
-        self.weeklyGains[GUID][week] = self.weeklyGains[GUID][week] + value
+        self.weeklyGains[GUID][week] = self:GetWeeklyGainsForPlayerWeek(GUID, week) + value
     end
     self.standings[GUID] = standings + value
     self.pointInfo[GUID]:AddReceived(value)
