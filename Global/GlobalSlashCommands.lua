@@ -105,16 +105,6 @@ function GlobalSlashCommands:Initialize()
         }
     end
     if ACL:IsTrusted() then
-        options.export = {
-            type = "execute",
-            name = CLM.L["Export data"],
-            func = (function()
-                CLM.Integration:Export()
-            end),
-            confirm = true
-        }
-    end
-    if ACL:IsTrusted() then
         options.addprofile = {
             type = "input",
             name = "Add Profile By Name",

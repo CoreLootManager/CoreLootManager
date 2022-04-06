@@ -43,8 +43,6 @@ local function Initialize_SavedVariables()
     if type(CLM_Logs) ~= "table" then
         CLM_Logs = {}
     end
-
-    CLM.PAW = ((GetServerTime() >= 1648512000) and (GetServerTime() <= 1649116800)) and not CLM_DB.DisableFun
 end
 
 local function Initialize_Logger()

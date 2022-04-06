@@ -77,6 +77,12 @@ function Minimap:Initialize()
             managerOnly = true
         },
         {
+            title = CLM.L["Export"],
+            func = (function() CLM.GUI.Export:Toggle() end),
+            trustedOnly = true,
+            managerOnly = true
+        },
+        {
             title = CLM.L["Configuration"],
             icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-green-32.tga",
             func = (function()

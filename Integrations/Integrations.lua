@@ -99,17 +99,58 @@ end
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
     ClearWoWDKPBotData()
-
+    -- WoW DKP Bot SV Data
     C_Timer.After(10, RequestWoWDKPBotData)
 
     EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData()
     end))
+    -- Generic Data
+    self.exportInProgress = false
 end
 
-function Integration:Export()
-    StoreWoWDKPBotData()
+function Integration:Export(config, completeCallback, updateCallback)
+    if self.exportInProgress then
+        LOG:Error("Integration: Export in progress")
+        return
+    end
+    if config.format == CLM.CONSTANTS.FORMAT_VALUE.CSV then
+        LOG:Warning("Integration: Unsupported format %s", tostring("CSV"))
+    elseif not CLM.CONSTANTS.FORMAT_VALUES[config.format] then
+        LOG:Error("Integration: Unknown export format %d", tostring(config.format))
+        return
+    end
+    self.exportInProgress = true
+    CLM.MODELS.Exporter:New(config):Run((function(data)
+        completeCallback(data)
+        self.exportInProgress = false
+        collectgarbage("collect")
+    end), updateCallback)
 end
 
+CLM.CONSTANTS.FORMAT_VALUE = {
+    XML  = 0,
+    CSV  = 1,
+    JSON = 2
+}
+CLM.CONSTANTS.FORMAT_VALUES = UTILS.Set(CLM.CONSTANTS.FORMAT_VALUE)
+
+CLM.CONSTANTS.EXPORT_DATA_TYPE = {
+    STANDINGS = 0,
+    POINT_HISTORY = 1,
+    LOOT_HISTORY = 2,
+    RAIDS = 3,
+    CONFIGS = 4,
+}
+
+CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE = {
+    HOURS = 0,
+    DAYS = 1,
+    WEEKS = 2,
+    MONTHS = 3,
+    YEARS  = 4
+}
+
+CLM.CONSTANTS.TIMEFRAME_SCALE_VALUES = UTILS.Set(CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE)
 
 CLM.Integration = Integration

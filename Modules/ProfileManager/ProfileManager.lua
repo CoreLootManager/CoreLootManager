@@ -258,14 +258,14 @@ function ProfileManager:FillFromGuild(selectedRank, minLevel)
 
     minLevel = tonumber(minLevel)
     if type(minLevel) == "number" then
-        minLevelFn = (function(level, _minLevel)
-            if level >= _minLevel then
+        minLevelFn = (function(level, minLevelValue)
+            if level >= minLevelValue then
                 return true
             end
             return false
         end)
     else
-        minLevelFn = (function(level, _minLevel)
+        minLevelFn = (function(level, _)
             return true
         end)
     end
@@ -347,13 +347,13 @@ function ProfileManager:PruneRank(rank, nop)
     end
     local check
     if type(rank) == "number" then
-        check = (function(_rankName, _rankIndex, _rank)
-            return (_rankIndex == _rank)
+        check = (function(_, rankIndexValue, rankValue)
+            return (rankIndexValue == rankValue)
         end)
     else
         rank = strlower(rank or "")
-        check = (function(_rankName, _rankIndex, _rank)
-            return (strlower(_rankName) == _rank)
+        check = (function(rankNameValue, _, rankValue)
+            return (strlower(rankNameValue) == rankValue)
         end)
     end
     local pruned = 0
