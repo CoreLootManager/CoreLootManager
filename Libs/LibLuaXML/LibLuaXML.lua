@@ -20,6 +20,8 @@
 -- SOFTWARE.
 --
 
+-- To an extent leveraged json.lua encode flow with stack trace
+
 if LibStub == nil then
     error("LibLuaXML requires LibStub")
 end
@@ -83,22 +85,18 @@ local function encode_table(val, node, stack)
         end
         -- Encode
         for i, v in ipairs(val) do
-            -- table.insert(res, encode(v, stack))
             output = output .. encode(v, node, stack)
         end
         stack[val] = nil
-        -- return "[" .. table.concat(res, ",") .. "]"
     else
         -- Treat as an object
         for k, v in pairs(val) do
             if type(k) ~= "string" then
                 error("invalid table: mixed or invalid key types")
             end
-            -- table.insert(res, encode(k, stack) .. ":" .. encode(v, stack))
             output = output .. encode(v, k, stack)
         end
         stack[val] = nil
-        -- return "{" .. table.concat(res, ",") .. "}"
         output = set_node(output, node)
     end
     return output

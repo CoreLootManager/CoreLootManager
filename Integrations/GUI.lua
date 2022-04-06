@@ -30,33 +30,33 @@ local FORMAT_VALUES_GUI =  {
     [CLM.CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
 }
 
-local TIMEFRAME_SCALE_VALUES_GUI =  {
-    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.HOURS] = CLM.L["hours"],
-    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.DAYS] = CLM.L["days"],
-    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS] = CLM.L["weeks"],
-    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.MONTHS] = CLM.L["months"],
-    [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.YEARS] = CLM.L["years"],
-}
+-- local TIMEFRAME_SCALE_VALUES_GUI =  {
+--     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.HOURS] = CLM.L["hours"],
+--     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.DAYS] = CLM.L["days"],
+--     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS] = CLM.L["weeks"],
+--     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.MONTHS] = CLM.L["months"],
+--     [CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.YEARS] = CLM.L["years"],
+-- }
 
 
-local function GetProgressText(percent)
-    percent = percent or 0
-    if percent > 100 then percent = 100 end
-    local s = string.format("Progress: %d%% | ", percent)
-    local fill = math.floor(percent / 2)
-    local missing = 50 - fill
-    local i = 0
-    while (i < fill) do
-        s = s .. "#"
-        i = i + 1
-    end
-    i = 0
-    while (i < missing) do
-        s = s .. "_"
-        i = i + 1
-    end
-    return s
-end
+-- local function GetProgressText(percent)
+--     percent = percent or 0
+--     if percent > 100 then percent = 100 end
+--     local s = string.format("Progress: %d%% | ", percent)
+--     local fill = math.floor(percent / 2)
+--     local missing = 50 - fill
+--     local i = 0
+--     while (i < fill) do
+--         s = s .. "#"
+--         i = i + 1
+--     end
+--     i = 0
+--     while (i < missing) do
+--         s = s .. "_"
+--         i = i + 1
+--     end
+--     return s
+-- end
 
 local function InitializeDB(self)
     self.db = MODULES.Database:GUI('export', {
@@ -64,9 +64,21 @@ local function InitializeDB(self)
         export_config = {
             data = {},
             format = CLM.CONSTANTS.FORMAT_VALUE.XML,
-            timeframe = 1,
-            timeframe_scale = CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS
-        }
+            -- timeframe = 1,
+            -- timeframe_scale = CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS
+            timerange = {
+                begin = {
+                    day = 1,
+                    month = 1,
+                    year = 2019
+                },
+                finish = {
+                    day = 31,
+                    month = 12,
+                    year = 2022
+                },
+            },
+        },
     })
 end
 
@@ -86,20 +98,114 @@ function ExportGUI:Initialize()
     -- end)
 end
 
+local days_in_month = {
+    [1]=31, [2]=28, [3]=31, [4]=30, [5]=31, [6]=30, [7]=31, [8]=31, [9]=30, [10]=31, [11]=30, [12]=31,
+}
+
+local leap_years = UTILS.Set({2022, 2024})
+
+local function get_days_in_month(month, year)
+    if month == 2 then
+        print(leap_years[year])
+        return leap_years[year] and 29 or 28
+    else
+        return days_in_month[month] or 0
+    end
+end
+
+local timerange_select = {
+    day = {},
+    month = {},
+    year = {}
+}
+
+for i=1,31 do
+    table.insert(timerange_select.day, i)
+end
+
+local MONTHS = {
+    [1]  = CLM.L["January"],
+    [2]  = CLM.L["February"],
+    [3]  = CLM.L["March"],
+    [4]  = CLM.L["April"],
+    [5]  = CLM.L["May"],
+    [6]  = CLM.L["June"],
+    [7]  = CLM.L["July"],
+    [8]  = CLM.L["August"],
+    [9]  = CLM.L["September"],
+    [10] = CLM.L["October"],
+    [11] = CLM.L["November"],
+    [12] = CLM.L["December"],
+}
+
+for i=1,12 do
+    timerange_select.month[i] = MONTHS[i]
+end
+
+for i=2019, tonumber(date("%Y", GetServerTime())) do
+    timerange_select.year[i] = i
+end
+
+local function SanitizeDates(self)
+    -- Check days in the month
+    local begin_days = get_days_in_month(self.db.export_config.timerange.begin.month, self.db.export_config.timerange.begin.year)
+    if self.db.export_config.timerange.begin.day > begin_days then
+        self.db.export_config.timerange.begin.day = begin_days
+    end
+    local finish_days = get_days_in_month(self.db.export_config.timerange.finish.month, self.db.export_config.timerange.finish.year)
+    if self.db.export_config.timerange.finish.day > finish_days then
+        self.db.export_config.timerange.finish.day = finish_days
+    end
+    -- Check if start is later than end or end before start
+    if self.db.export_config.timerange.begin.year > self.db.export_config.timerange.finish.year then
+        -- Begin after Finished
+        -- Set Finish to Begin
+        self.db.export_config.timerange.finish.day   = self.db.export_config.timerange.begin.day
+        self.db.export_config.timerange.finish.month = self.db.export_config.timerange.begin.month
+        self.db.export_config.timerange.finish.year  = self.db.export_config.timerange.begin.year
+    elseif self.db.export_config.timerange.begin.year == self.db.export_config.timerange.finish.year then
+        -- Same year. Check months
+        if self.db.export_config.timerange.begin.month > self.db.export_config.timerange.finish.month then
+            -- Begin after Finished
+            -- Set Finish to Begin
+            self.db.export_config.timerange.finish.day   = self.db.export_config.timerange.begin.day
+            self.db.export_config.timerange.finish.month = self.db.export_config.timerange.begin.month
+        elseif self.db.export_config.timerange.begin.month == self.db.export_config.timerange.finish.month then
+            -- Same year and month, check days
+            if self.db.export_config.timerange.begin.day > self.db.export_config.timerange.finish.day then
+                -- Begin after Finished
+                -- Set Finish to Begin
+                self.db.export_config.timerange.finish.day   = self.db.export_config.timerange.begin.day
+            end
+        end
+    end
+end
+
+local function SetOffsetTime(self, offset)
+    local time = GetServerTime()
+    local d, m, y
+
+    d, m, y = date("%d", time), date("%m", time), date("%Y", time)
+    self.db.export_config.timerange.finish.day     = tonumber(d)
+    self.db.export_config.timerange.finish.month   = tonumber(m)
+    self.db.export_config.timerange.finish.year    = tonumber(y)
+
+    d, m, y = date("%d", time - offset), date("%m", time - offset), date("%Y", time - offset)
+    self.db.export_config.timerange.begin.day     = tonumber(d)
+    self.db.export_config.timerange.begin.month   = tonumber(m)
+    self.db.export_config.timerange.begin.year    = tonumber(y)
+end
+
 local function Create(self)
     local parent = AceGUI:Create("Frame")
     parent:SetLayout("Flow")
     parent:EnableResize(false)
-    -- local body = AceGUI:Create("SimpleGroup")
-    -- parent:AddChild(body)
-    -- body:SetWidth(450)
-    -- body:SetWidth(700)
-    -- body:SetLayout("Flow")
     local options = {
         type = "group",
         childGroups = "tab",
         args = {}
     }
+
     options.args.export_config_group = {
         type = "group",
         name = "Configure",
@@ -124,23 +230,110 @@ local function Create(self)
                 values = FORMAT_VALUES_GUI,
                 order = 2
             },
-            timeframe_input = {
-                name = CLM.L["Timeframe"],
-                desc = CLM.L["Sets the limit to what time data can be exported"],
-                type = "input",
-                set = function(i, v) self.db.export_config.timeframe = tonumber(v) end,
-                get = function(i) return tostring(self.db.export_config.timeframe) end,
-                pattern = "^%d+$",
-                order = 3,
-            },
-            timeframe_scale = {
-                name = CLM.L["Timeframe scale"],
+            -- timeframe_input = {
+            --     name = CLM.L["Timeframe"],
+            --     desc = CLM.L["Sets the limit to what time data can be exported"],
+            --     type = "input",
+            --     set = function(i, v) self.db.export_config.timeframe = tonumber(v) end,
+            --     get = function(i) return tostring(self.db.export_config.timeframe) end,
+            --     pattern = "^%d+$",
+            --     order = 3,
+            -- },
+            -- timeframe_scale = {
+            --     name = CLM.L["Timeframe scale"],
+            --     type = "select",
+            --     set = function(i, v) self.db.export_config.timeframe_scale = tonumber(v) end,
+            --     get = function(i) return self.db.export_config.timeframe_scale end,
+            --     values = TIMEFRAME_SCALE_VALUES_GUI,
+            --     order = 4,
+            -- },
+            timerange_begin_day = {
+                name = CLM.L["Begin Day"],
                 type = "select",
-                set = function(i, v) self.db.export_config.timeframe_scale = tonumber(v) end,
-                get = function(i) return self.db.export_config.timeframe_scale end,
-                values = TIMEFRAME_SCALE_VALUES_GUI,
-                order = 4,
+                set = function(i, v)
+                    self.db.export_config.timerange.begin.day = v
+                    SanitizeDates(self)
+                end,
+                get = function(i) return self.db.export_config.timerange.begin.day end,
+                values = timerange_select.day,
+                order = 5,
             },
+            timerange_begin_month = {
+                name = CLM.L["Begin Month"],
+                type = "select",
+                set = function(i, v)
+                    self.db.export_config.timerange.begin.month = v
+                    SanitizeDates(self)
+                end,
+                get = function(i) return self.db.export_config.timerange.begin.month end,
+                values = timerange_select.month,
+                order = 6,
+            },
+            timerange_begin_year = {
+                name = CLM.L["Begin Year"],
+                type = "select",
+                set = function(i, v)
+                    self.db.export_config.timerange.begin.year = v
+                    SanitizeDates(self)
+                end,
+                get = function(i) return self.db.export_config.timerange.begin.year end,
+                values = timerange_select.year,
+                order = 7,
+            },
+            timerange_finish_day = {
+                name = CLM.L["Finish Day"],
+                type = "select",
+                set = function(i, v)
+                    self.db.export_config.timerange.finish.day = v
+                    SanitizeDates(self)
+                end,
+                get = function(i) return self.db.export_config.timerange.finish.day end,
+                values = timerange_select.day,
+                order = 8,
+            },
+            timerange_finish_month = {
+                name = CLM.L["Finish Month"],
+                type = "select",
+                set = function(i, v)
+                    self.db.export_config.timerange.finish.month = v
+                    SanitizeDates(self)
+                end,
+                get = function(i) return self.db.export_config.timerange.finish.month end,
+                values = timerange_select.month,
+                order = 9,
+            },
+            timerange_finish_year = {
+                name = CLM.L["Finish Year"],
+                type = "select",
+                set = function(i, v)
+                    self.db.export_config.timerange.finish.year = v
+                    SanitizeDates(self)
+                end,
+                get = function(i) return self.db.export_config.timerange.finish.year end,
+                values = timerange_select.year,
+                order = 10,
+            },
+            timerange_set_last_week = {
+                name =  CLM.L["Last week"],
+                desc = string.format(CLM.L["Begin %d days ago, finish today."], 7),
+                type = "execute",
+                func = (function() SetOffsetTime(self, 604800) end),
+                order = 11,
+            },
+            timerange_set_last_month = {
+                name = CLM.L["Last month"],
+                desc = string.format(CLM.L["Begin %d days ago, finish today."], 31),
+                type = "execute",
+                func = (function() SetOffsetTime(self, 2678400) end),
+                order = 12,
+            },
+            timerange_set_last_year = {
+                name =  CLM.L["Last year"],
+                desc = string.format(CLM.L["Begin %d days ago, finish today."], 365),
+                type = "execute",
+                func = (function() SetOffsetTime(self, 31536000) end),
+                order = 13,
+            }
         },
         order = 1
     }
@@ -227,7 +420,7 @@ local function Create(self)
                 name = CLM.L["Export"],
                 type = "execute",
                 func = (function()
-                    local lastProgress = -1
+                    -- local lastProgress = -1
 
                     local rosters = {}
                     if self.roster_select_list[ALL] then
@@ -254,15 +447,24 @@ local function Create(self)
                         end
                     end
 
+                    local begin = time({
+                        year = self.db.export_config.timerange.begin.year,
+                        month = self.db.export_config.timerange.begin.month,
+                        day = self.db.export_config.timerange.begin.day,
+                        hour = 0, min = 0, sec = 0})
+
+                    local finish = time({
+                        year = self.db.export_config.timerange.finish.year,
+                        month = self.db.export_config.timerange.finish.month,
+                        day = self.db.export_config.timerange.finish.day,
+                        hour = 23, min = 59, sec = 59})
+
                     local config = CLM.MODELS.ExportConfiguration:New(
-                        self.db.export_config.format,   -- Format
-                        self.db.export_config.data,     -- Config
-                        {                               -- Timeframe
-                            ["value"] = self.db.export_config.timeframe,
-                            ["scale"] = self.db.export_config.timeframe_scale,
-                        },
-                        rosters,                        -- Rosters
-                        profiles                        -- Profiles
+                        self.db.export_config.format,       -- Format
+                        self.db.export_config.data,         -- Config
+                        { begin = begin, finish = finish }, -- Timerange
+                        rosters,                            -- Rosters
+                        profiles                            -- Profiles
                     )
 
                     CLM.Integration:Export(
@@ -273,10 +475,10 @@ local function Create(self)
                             LOG:Message("Export complete: %s [B].", #self.export_data)
                         end),
                         (function(progress) -- Update callback
-                            if lastProgress ~= progress then
-                                self:SetStatusText(GetProgressText(progress))
-                                lastProgress = progress
-                            end
+                            -- if lastProgress ~= progress then
+                            --     self:SetStatusText(GetProgressText(progress))
+                            --     lastProgress = progress
+                            -- end
                         end)
                     )
                 end),
@@ -287,8 +489,8 @@ local function Create(self)
     }
 
 
-    LIBS.registry:RegisterOptionsTable("clm_export_gui_options", options)
-    LIBS.gui:Open("clm_export_gui_options", parent)
+    LIBS.registry:RegisterOptionsTable(CLM.L["Export"], options)
+    LIBS.gui:Open(CLM.L["Export"], parent)
 
     return parent
 end

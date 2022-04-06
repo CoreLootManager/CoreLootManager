@@ -27,10 +27,17 @@ function Exporter:New(config)
     o.dataInfo = {
         rosters = {},
         profiles = {},
-        cutoffTimestamp = 0
+        -- cutoffTimestamp = 0
+        begin = 0,
+        finish = 0
     }
 
     return o
+end
+
+function Exporter:TimestampInRange(timestamp)
+    timestamp = timestamp or 0
+    return ((timestamp >= self.dataInfo.begin) and (timestamp <= self.dataInfo.finish))
 end
 
 local function GetCutoffTimestamp(timeframe)
@@ -41,11 +48,11 @@ local function GetCutoffTimestamp(timeframe)
     elseif timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.DAYS then
         multiplier = (3600 * 24)
     elseif timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS then
-        multiplier = (3600 * 24) * 7
+        multiplier = 604800 -- (3600 * 24) * 7
     elseif timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.MONTHS then
-        multiplier = (3600 * 24) * 31
+        multiplier = 2678400 -- (3600 * 24) * 31
     elseif timeframe.scale == CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.YEARS then
-        multiplier = (3600 * 24) * 365
+        multiplier = 31536000 --(3600 * 24) * 365
     end
     LOG:Info(GetServerTime(), (timeframe.value * multiplier),  (GetServerTime() - (timeframe.value * multiplier)))
     return (GetServerTime() - (timeframe.value * multiplier))
@@ -156,7 +163,7 @@ local DATA_BUILDERS = {
                     local lootList = roster:GetProfileLootByGUID(GUID)
                     for _, loot in ipairs(lootList) do
                         local profile = MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
-                        if profile then
+                        if profile and self:TimestampInRange(loot:Timestamp()) then
                             local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
                             local itemName, _, itemQuality = GetItemInfo(loot:Id())
                             table.insert(roster_data.lootHistory.item, {
@@ -185,7 +192,7 @@ local DATA_BUILDERS = {
                 local lootList = roster:GetRaidLoot()
                 for _, loot in ipairs(lootList) do
                     local profile = MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
-                    if profile then
+                    if profile and self:TimestampInRange(loot:Timestamp()) then
                         local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
                         local itemName, _, itemQuality = GetItemInfo(loot:Id())
                         table.insert(roster_data.lootHistory.item, {
@@ -221,7 +228,7 @@ local DATA_BUILDERS = {
                     local historyList = roster:GetProfilePointHistoryByGUID(GUID)
                     for _, history in ipairs(historyList) do
                         local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
-                        if profile then
+                        if profile and self:TimestampInRange(history:Timestamp()) then
                             local note = decodeNote(history:Note())
                             local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
                             table.insert(roster_data.pointHistory.point, {
@@ -248,17 +255,19 @@ local DATA_BUILDERS = {
                 }
                 local historyList = roster:GetRaidPointHistory()
                 for _, history in ipairs(historyList) do
-                    for _,profile in ipairs(history:Profiles()) do
-                        local note = decodeNote(history:Note())
-                        local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
-                        table.insert(roster_data.pointHistory.point, {
-                            dkp = history:Value(),
-                            player = profile:Name(),
-                            reason = CLM.CONSTANTS.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
-                            note = note,
-                            awardedBy = awardedBy and awardedBy:Name() or "",
-                            timestamp = history:Timestamp()
-                        })
+                    if self:TimestampInRange(history:Timestamp()) then
+                        for _,profile in ipairs(history:Profiles()) do
+                            local note = decodeNote(history:Note())
+                            local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
+                            table.insert(roster_data.pointHistory.point, {
+                                dkp = history:Value(),
+                                player = profile:Name(),
+                                reason = CLM.CONSTANTS.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
+                                note = note,
+                                awardedBy = awardedBy and awardedBy:Name() or "",
+                                timestamp = history:Timestamp()
+                            })
+                        end
                     end
                 end
                 table.insert(data.roster, roster_data)
@@ -293,8 +302,14 @@ function Exporter:Run(completeCallback, updateCallback)
             self.dataInfo.profiles[GUID] = profile
         end
     end
-    self.dataInfo.cutoffTimestamp = GetCutoffTimestamp(self.config.timeframe)
-    LOG:Info("Cutoff Timestamp %d", self.dataInfo.cutoffTimestamp)
+    -- self.dataInfo.cutoffTimestamp = GetCutoffTimestamp(self.config.timeframe)
+    -- LOG:Info("Cutoff Timestamp %d", self.dataInfo.cutoffTimestamp)
+    LOG:Message("Exporting data between: %s and %s",
+        date(CLM.L["%Y/%m/%d %a %H:%M:%S"], self.config.timerange.begin),
+        date(CLM.L["%Y/%m/%d %a %H:%M:%S"], self.config.timerange.finish)
+    )
+    self.dataInfo.begin = self.config.timerange.begin
+    self.dataInfo.finish = self.config.timerange.finish
     -- Prepare Encoder
     local encoder = ENCODERS[self.config.format]
     if not encoder then
