@@ -55,8 +55,6 @@ local function InitializeDB(self)
         export_config = {
             data = {},
             format = CLM.CONSTANTS.FORMAT_VALUE.XML,
-            -- timeframe = 1,
-            -- timeframe_scale = CLM.CONSTANTS.TIMEFRAME_SCALE_VALUE.WEEKS
             timerange = {
                 begin = {
                     day = 1,
@@ -80,7 +78,6 @@ local function GetProfileList()
     if redoProfileList then
         profileList = {}
         for _, profile in pairs(MODULES.ProfileManager:GetProfiles()) do
-            -- profile_list[UTILS.getIntegerGuid(guid)] = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff")
             table.insert(profileList, UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff"))
         end
         redoProfileList = false
@@ -221,7 +218,6 @@ local function Create(self)
     options.args.export_config_group = {
         type = "group",
         name = "Configure",
-        -- inline = true,
         args = {
             export_data_type = {
                 name = CLM.L["Data"],
@@ -336,7 +332,6 @@ local function Create(self)
     options.args.roster_select_group = {
         type = "group",
         name = "Rosters",
-        -- inline = true,
         args = {
             export_rosters = {
                 name = CLM.L["Select Rosters to export"],
@@ -368,7 +363,6 @@ local function Create(self)
     options.args.profiles_select_group = {
         type = "group",
         name = "Profiles",
-        -- inline = true,
         args = {
             export_rosters = {
                 name = CLM.L["Select Profiles to export"],
@@ -392,7 +386,6 @@ local function Create(self)
     options.args.execute_group = {
         type = "group",
         name = "Export",
-        -- inline = true,
         args = {
             output = {
                 name = CLM.L["Export"],
@@ -407,8 +400,6 @@ local function Create(self)
                 name = CLM.L["Export"],
                 type = "execute",
                 func = (function()
-                    -- local lastProgress = -1
-
                     local rosters = {}
                     if self.roster_select_list[ALL] then
                         for _, roster in pairs(MODULES.RosterManager:GetRosters()) do
@@ -431,7 +422,6 @@ local function Create(self)
                             if status then
                                 local profile = MODULES.ProfileManager:GetProfileByName(UTILS.RemoveColorCode(profileList[selectedId]))
                                 table.insert(profiles, profile:GUID())
-                                -- table.insert(profiles, UTILS.getGuidFromInteger(iGUID))
                             end
                         end
                     end
