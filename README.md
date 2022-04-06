@@ -10,17 +10,11 @@
 Classic Loot Manager is a robust Loot Tracking and awarding tool for guilds.
 It's designed to superseed old WoW Classic DKP AddOns and its derivatives and solves it's biggest painpoints by focusing on optimial communication and storage. CLM implements Event Sourcing and MVC programming models to achieve those targets. All data is synchronised automatically.
 
-### Wiki
+## Wiki
 Be sure to check our [Wiki](https://github.com/ClassicLootManager/ClassicLootManager/wiki) for lots of information.
 
-### Point Systems
-Classic Loot Manager currently supports:
-* DKP
-
-Additional point systems are planned:
-* SK (Suicide Kings)
-* Roll based (`/random`)
-* EPGP
+## Point Systems
+Classic Loot Manager currently supports **DKP**
 
 # Implemented features
 ## Auto-magical synchronisation
@@ -49,6 +43,7 @@ settings.
 * Auction from corpse or bag (with alt-click)
 * Simple item awarding
 * Award item without auction through slash command
+* Optional bid storing and posting to configured channel
 ### Bidding
 * Value increments (open bid mode only)
 * Alerts and notifications
@@ -58,7 +53,7 @@ settings.
 * Raid completion bonus - awarded when ending raid
 * Interval bonus - awarded every interval minutes
 * Boss kill bonus - configurable per boss and through global value
-## Multiple simultaneous Raids maangement
+## Multiple simultaneous Raids management
 * Raid management and auto-creating profiles and filling roster when initializing raid
 * Multi-level logging for better issue handling
 ## Chat commands
@@ -71,7 +66,9 @@ settings.
 * Loot tracking queue for fast auctioning
 * Auto-posting loot to raid channel
 * Player spec tracking
+## External integrations
 * [WoW DKP Discord Bot integration](http://tiny.one/wowdkpbot-discord)
+* XML and JSON Exporting
 
 License
 --------------
