@@ -28,8 +28,10 @@ settings.
 * Fine-grained configurable awarding and decaying
 * Configurable weekly and hard point caps
 * Zero-Sum Bank mode + inflation
+* Taxation options
 ## Multiple auction modes
 * Open auction with configurable minimum bid increment and announcements
+* Support for anonymous bidding
 * Closed and Vickrey bid systems
 * Configurable per-slot min and max item values
 * Configurable per-item min and max item values
@@ -60,9 +62,11 @@ settings.
 * Send `!dkp` and `!bid` Whisper or Raid commands for bidding without using addon
 * Out of guild bidding using commands or CLM
 ## Administration
+* Auditing UI - Check and manage all events that happened in the addon
 * Time travel mode - correct errors and add entries in history to keep the data in place
 * Sandbox mode - check out options, do trainings, and experiment without affecting other players
 ## Utilities
+* Built-in migration from MonolithDKP, EssentialDKP and CommunityDKP
 * Loot tracking queue for fast auctioning
 * Auto-posting loot to raid channel
 * Player spec tracking
