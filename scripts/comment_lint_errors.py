@@ -46,7 +46,10 @@ class GithubInfo:
             raise Exception("SHA is None")
 
     def __str__(self):
-        return "Token: *** Repo: {0} isPR: {1} ({2}) SHA: {3}".format(self.repo, self.isPR, self.PR, self.SHA)
+        if self.isPR:
+            return "Token: *** Repo: {0} isPR: {1} ({2}) SHA: {3}".format(self.repo, self.isPR, self.PR, self.SHA)
+        else:
+            return "Token: *** Repo: {0} isPR: {1} SHA: {3}".format(self.repo, self.isPR, self.PR, self.SHA)
 
 def comment_lines(reports:ErrorReport, info:GithubInfo):
     try:
