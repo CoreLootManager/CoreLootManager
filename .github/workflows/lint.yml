@@ -1,0 +1,25 @@
+name: Lint on push
+on:
+  push:
+jobs:
+  lint:
+    name: Luacheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: leafo/gh-actions-lua@v9.1.0
+        with:
+          luaVersion: "5.1.4"
+      - name: Luacheck Install
+        run: |
+          echo "##[group]Install luacheck"
+          if ! hash luacheck &>/dev/null; then
+            sudo apt-get install -yq luarocks 1>/dev/null || exit 1
+            sudo luarocks install luacheck 1>/dev/null || exit 1
+            sudo luarocks install lanes &>/dev/null || true
+          fi
+          echo "##[command]luacheck --version"
+          luacheck --version
+          echo "##[endgroup]"
+      - name: luacheck
+        run: luacheck -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/

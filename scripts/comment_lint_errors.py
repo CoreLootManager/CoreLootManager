@@ -31,8 +31,8 @@ class GithubInfo:
                 try:
                     print(ref)
                     print(ref.split('/'))
-                    print(ref.split('/')[2].split(":"))
-                    self.PR = int(ref.split('/')[2].split(":")[1])
+                    print(ref.split('/')[2])
+                    self.PR = int(ref.split('/')[2])
                     self.isPR = True
                 except Exception:
                     pass
@@ -52,7 +52,7 @@ class GithubInfo:
         if self.isPR:
             return "Token: *** Repo: {0} isPR: {1} ({2}) SHA: {3}".format(self.repo, self.isPR, self.PR, self.SHA)
         else:
-            return "Token: *** Repo: {0} isPR: {1} SHA: {3}".format(self.repo, self.isPR, self.PR, self.SHA)
+            return "Token: *** Repo: {0} isPR: {1} SHA: {3}".format(self.repo, self.isPR, self.SHA)
 
 def comment_lines(reports:ErrorReport, info:GithubInfo):
     try:
