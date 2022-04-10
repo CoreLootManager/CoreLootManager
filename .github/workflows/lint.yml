@@ -35,7 +35,7 @@ jobs:
         if: steps.luacheck.outcome != 'success'
         run: python3 ./scripts/comment_lint_errors.py --report luacheck_report.txt
         env:
-          GITHUB_COMMENT_TOKEN: ${{ secrets.GITHUB_COMMENT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
       - name: Fail on failures
         if: steps.luacheck.outcome != 'success'
