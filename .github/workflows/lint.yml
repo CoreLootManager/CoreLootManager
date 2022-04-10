@@ -11,7 +11,7 @@ jobs:
       - uses: leafo/gh-actions-lua@v9.1.0
         with:
           luaVersion: "5.1.4"
-      - name: install-luacheck
+      - name: Luacheck Install
         run: |
           echo "##[group]Install luacheck"
           if ! hash luacheck &>/dev/null; then
@@ -31,4 +31,8 @@ jobs:
       - name: luacheck
         run: luacheck -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
         continue-on-error: true
-      # - name: self-comment-on-error
+      - name: Comment errors
+        run: echo "TODO"
+      - name: Check on failures
+        if: steps.hello.outcome != 'success' || steps.world.outcome != 'success'
+        run: exit 1
