@@ -1,6 +1,7 @@
 import sys, os
 import argparse
 import re
+from datetime import datetime, timedelta
 from pathlib import Path
 from github import Github, GithubException
 
@@ -57,7 +58,8 @@ def review_lines(reports:ErrorReport, info:GithubInfo):
         g = Github(info.token)
         repo = g.get_repo(info.repo)
         pull_request = repo.get_pull(info.PR)
-        commit = repo.get_commit(info.SHA)
+        commits = pull_request.get_commits(since=datetime.now() - timedelta(hours=1))
+        commit = commits[0]
         comments = pull_request.get_review_comments()
         already_existing_comments = []
         for comment in comments:

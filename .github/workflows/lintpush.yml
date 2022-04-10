@@ -1,9 +1,9 @@
-name: Lint on push
+name: Lint on Push
 on:
   push:
 jobs:
   lint:
-    name: Luacheck
+    name: Run Luacheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
