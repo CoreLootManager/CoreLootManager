@@ -29,6 +29,9 @@ class GithubInfo:
             ref = os.getenv('GITHUB_REF')
             if ref:
                 try:
+                    print(ref)
+                    print(ref.split('/'))
+                    print(ref.split('/')[2].split(":"))
                     self.PR = int(ref.split('/')[2].split(":")[1])
                     self.isPR = True
                 except Exception:

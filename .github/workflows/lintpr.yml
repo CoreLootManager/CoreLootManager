@@ -1,6 +1,5 @@
-name: Lint
+name: Lint on PR
 on:
-  push:
   pull_request:
     branches:
       - master
