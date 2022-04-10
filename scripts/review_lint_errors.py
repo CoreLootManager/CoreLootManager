@@ -58,7 +58,7 @@ def review_lines(reports:ErrorReport, info:GithubInfo):
         g = Github(info.token)
         repo = g.get_repo(info.repo)
         pull_request = repo.get_pull(info.PR)
-        commits = pull_request.get_commits(since=datetime.now() - timedelta(hours=1))
+        commits = pull_request.get_commits()
         commit = commits[0]
         comments = pull_request.get_review_comments()
         already_existing_comments = []
