@@ -155,7 +155,7 @@ function CORE:_InitializeFrontend()
         if MODULES.LedgerManager:IsInIncoherentState() then
             icon = "red"
         elseif MODULES.LedgerManager:IsInSync() then
-            icon = "green"
+            icon = "green"  
         elseif MODULES.LedgerManager:IsSyncOngoing() then
             icon = "yellow"
         elseif MODULES.SandboxManager:IsSandbox() or MODULES.LedgerManager:IsTimeTraveling() then

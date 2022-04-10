@@ -34,5 +34,5 @@ jobs:
       - name: Comment errors
         run: echo "TODO"
       - name: Check on failures
-        if: steps.hello.outcome != 'success' || steps.world.outcome != 'success'
+        if: steps.luacheck.outcome != 'success'
         run: exit 1
