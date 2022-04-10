@@ -66,7 +66,7 @@ def review_lines(reports:ErrorReport, info:GithubInfo):
             if report.line not in already_existing_comments:
                 pull_request.create_review_comment(
                     body=report.comment,
-                    commit_id=commit._identity,
+                    commit_id=commit,
                     path=report.filepath,
                     position=report.line)
     except GithubException as e:
