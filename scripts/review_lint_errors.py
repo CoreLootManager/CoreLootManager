@@ -3,7 +3,22 @@ import argparse
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from github import Github, GithubException
+from github import Github, GithubException, PullRequest, PullRequestComment
+
+def create_review_comment(pr, body, commit_id, path, line):
+    post_parameters = {
+        "body": body,
+        "commit_id": commit_id._identity,
+        "path": path,
+        "line": line,
+        "side": "RIGHT"
+    }
+    headers, data = pr._requester.requestJsonAndCheck(
+        "POST", f"{pr.url}/comments", input=post_parameters
+    )
+    return PullRequestComment.PullRequestComment(
+        pr._requester, headers, data, completed=True
+    )
 
 class ErrorReport:
     def __init__(self, filepath:str, line:int, comment:str):
@@ -66,7 +81,8 @@ def review_lines(reports:ErrorReport, info:GithubInfo):
             already_existing_comments.append(comment.original_position)
         for report in reports:
             if report.line not in already_existing_comments:
-                pull_request.create_review_comment(
+                # pull_request.create_review_comment(
+                create_review_comment(pull_request,
                     body=report.comment,
                     commit_id=commit,
                     path=report.filepath,

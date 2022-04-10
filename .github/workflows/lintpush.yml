@@ -3,7 +3,7 @@ on:
   push:
 jobs:
   lint:
-    name: Run Luacheck
+    name: Luacheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
