@@ -37,19 +37,23 @@ class GithubInfo:
 
     def verify(self):
         if self.token is None:
-            raise Exception("token is None")
+            raise Exception("Token is None")
         if self.repo is None:
-            raise Exception("repo is None")
+            raise Exception("Repo is None")
         if self.isPR and self.PR is None:
             raise Exception("PR is None")
         if self.SHA is None:
             raise Exception("SHA is None")
+
+    def __str__(self):
+        return("Token: *** Repo: {0} isPR: {1} ({2}) SHA: {3}".format(self.repo, self.isPR, self.PR, self.SHA))
 
 def comment_lines(reports:ErrorReport, info:GithubInfo):
     try:
         g = Github(info.token)
         repo = g.get_repo(info.repo)
         # issue = repo.create_issue(title=title, body=body, labels=labels)
+        print(info)
         for report in reports:
             print(report)
     except GithubException as e:
