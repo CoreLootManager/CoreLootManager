@@ -11,8 +11,24 @@ jobs:
       - uses: leafo/gh-actions-lua@v9.1.0
         with:
           luaVersion: "5.1.4"
+      - name: install-luacheck
+        run: |
+          echo "##[group]Install luacheck"
+          if ! hash luacheck &>/dev/null; then
+            sudo apt-get install -yq luarocks 1>/dev/null || exit 1
+            sudo luarocks install luacheck 1>/dev/null || exit 1
+            sudo luarocks install lanes &>/dev/null || true
+          fi
+          echo "##[command]luacheck --version"
+          luacheck --version
+          echo "##[endgroup]"
+        
+      # - name: luacheck
+      #   uses: nebularg/actions-luacheck@v1.1.1
+      #   with:
+      #     files: ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
+      #     annotate: none
       - name: luacheck
-        uses: nebularg/actions-luacheck@v1.1.1
-        with:
-          files: ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
-          annotate: warning
+        run: luacheck -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
+        continue-on-error: true
+      - name: self-comment-on-error
