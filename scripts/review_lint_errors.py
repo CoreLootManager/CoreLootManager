@@ -86,7 +86,7 @@ def review_lines(reports:ErrorReport, info:GithubInfo):
                     body=report.comment,
                     commit_id=commit,
                     path=report.filepath,
-                    position=report.line)
+                    line=report.line)
     except GithubException as e:
         print(e)
 
