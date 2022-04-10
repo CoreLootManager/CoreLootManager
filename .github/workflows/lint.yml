@@ -31,4 +31,4 @@ jobs:
       - name: luacheck
         run: luacheck -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
         continue-on-error: true
-      - name: self-comment-on-error
+      # - name: self-comment-on-error
