@@ -24,6 +24,10 @@ jobs:
           echo "##[command]luacheck --version"
           luacheck --version
           echo "##[endgroup]"
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - run: pip3 install github
       - name: luacheck
         run: luacheck -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/ | tee luacheck_report.txt
         continue-on-error: true

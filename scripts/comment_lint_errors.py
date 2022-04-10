@@ -23,14 +23,16 @@ class GithubInfo:
         self.token = os.getenv('GITHUB_TOKEN')
         self.repo = os.getenv('GITHUB_REPOSITORY')
         self.event = os.getenv('GITHUB_EVENT_NAME')
+        self.SHA = os.getenv('GITHUB_SHA')
+        self.isPR = False
         if self.event == 'pull_request':
             ref = os.getenv('GITHUB_REF')
             if ref:
                 try:
                     self.PR = int(ref.split('/')[2].split(":")[1])
+                    self.isPR = True
                 except Exception:
                     pass
-        self.SHA = os.getenv('GITHUB_SHA')
         self.verify()
 
     def verify(self):
@@ -38,7 +40,7 @@ class GithubInfo:
             raise Exception("token is None")
         if self.repo is None:
             raise Exception("repo is None")
-        if self.PR is None:
+        if self.isPR and self.PR is None:
             raise Exception("PR is None")
         if self.SHA is None:
             raise Exception("SHA is None")
@@ -73,7 +75,7 @@ def main(args):
         try:
             info = GithubInfo()
         except Exception as e:
-            print (e)
+            print(e)
             exit(0)
         comment_lines(reports, info)
 
