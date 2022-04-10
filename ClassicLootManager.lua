@@ -147,6 +147,8 @@ function CORE:_InitializeFrontend()
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
+    s = 3
+    function(LOG) print(LOG) end)()
     -- Initialize Minmap
     MODULES.Minimap:Initialize()
     -- Hook Minimap Icon

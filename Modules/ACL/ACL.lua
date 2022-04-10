@@ -10,7 +10,7 @@ local whoami = UTILS.whoami
 local GuildInfoListener = MODULES.GuildInfoListener
 
 local ACL = { }
-
+(function(LOG) print(LOG) end)()
 function ACL:Initialize()
     self.guildMaster = IsGuildLeader()
 
