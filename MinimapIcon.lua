@@ -144,10 +144,6 @@ do
             tooltip:AddDoubleLine(CLM.L["Unknown sync state"], info, 0.4, 0.6, 1) -- BLUE
         end
 
-        if CLM.MODULES.SandboxManager:IsSandbox() then
-            tooltip:AddLine(CLM.L["Sandbox mode"], 1, 1, 1)
-        end
-
         if CLM.MODULES.LedgerManager:IsTimeTraveling() then
             tooltip:AddLine(CLM.L["Time Traveling"], 1, 1, 1)
         end

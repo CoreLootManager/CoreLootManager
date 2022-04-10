@@ -4,7 +4,6 @@ if GetLocale() == "ruRU" then
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:47
 CLM.L[" DKP "] = " ДКП "
 -- Modules/LedgerManager/GUI.lua:500
-CLM.L[" Sandbox"] = " Песочница "
 -- Modules/LedgerManager/GUI.lua:271
 -- Modules/LedgerManager/GUI.lua:284
 CLM.L[" Too much data to display"] = " Слишком много данных для отображения "
@@ -158,7 +157,6 @@ CLM.L["Anub'Rekhan"] = "Ануб'Рекан"
 -- Modules/ProfileManager/GUI.lua:148
 CLM.L["Any"] = "Любой"
 -- Modules/LedgerManager/GUI.lua:485
-CLM.L["Applies all changes and exits sandbox mode"] = "Принять все правки и выйти из песочницы"
 -- Modules/LedgerManager/GUI.lua:484
 CLM.L["Apply changes"] = "Принять правки"
 -- Modules/AutoAwardManager/EncounterIDs.lua:99
@@ -467,7 +465,6 @@ CLM.L["Disables display of the changelog for any new version."] = "Отключ�
 -- Modules/LedgerManager/GUI.lua:492
 CLM.L["Discard changes"] = "Отменить изменения"
 -- Modules/LedgerManager/GUI.lua:493
-CLM.L["Discards all changes and exits sandbox mode"] = "Отменить все изменения и выйти из режима песочницы"
 -- Modules/Changelog/GUI.lua:80
 CLM.L["Do not show again"] = "Больше не показывать"
 -- .:indirectly
@@ -513,7 +510,6 @@ CLM.L["End Timetravel"] = "Завершить путешествие во вре
 -- Modules/RaidManager/GUI.lua:138
 CLM.L["End selected raid"] = "Завершить выбранный рейд"
 -- Modules/LedgerManager/GUI.lua:476
-CLM.L["Enter sandbox"] = "Включить песочницу"
 -- Modules/LootQueueManager/LootQueueManager.lua:86
 -- Global/GlobalConfigs.lua:104
 CLM.L["Epic"] = "Эпическое"
@@ -678,7 +674,6 @@ CLM.L["In Progress"] = "В процессе"
 -- Modules/ProfileManager/GUI.lua:80
 CLM.L["In Raid"] = "В рейде"
 -- Modules/LedgerManager/GUI.lua:477
-CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "В режиме песочницы все изменения отключены и изменения локальны до их применения. Нажмите принять изменения чтобы сохранить их и выйти из режима песочницы. Нажмите отменить, чтобы отменить все изменения и выйти из песочницы. /reload отменит все изменения. Вход в песочницы отменит путешествие во времени."
 -- MinimapIcon.lua:134
 CLM.L["In-Sync"] = "Синхронизирован"
 -- Modules/RaidManager/GUI.lua:289
@@ -1191,7 +1186,6 @@ CLM.L["SK"] = "SK"
 -- Modules/LedgerManager/GUI.lua:170
 CLM.L["Same zone only"] = "В той же локации"
 -- MinimapIcon.lua:142
-CLM.L["Sandbox mode"] = "Режим песочницы"
 -- Modules/AutoAwardManager/EncounterIDs.lua:44
 CLM.L["Sapphiron"] = "Сапфирон"
 -- Modules/RosterManager/Roster.lua:677

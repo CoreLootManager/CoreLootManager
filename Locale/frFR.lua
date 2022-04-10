@@ -4,7 +4,6 @@ if GetLocale() == "frFR" then
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:47
 CLM.L[" DKP "] = " DKP "
 -- Modules/LedgerManager/GUI.lua:500
-CLM.L[" Sandbox"] = " Sandbox "
 -- Modules/LedgerManager/GUI.lua:271
 -- Modules/LedgerManager/GUI.lua:284
 CLM.L[" Too much data to display"] = " Trop de données à afficher "
@@ -160,7 +159,6 @@ CLM.L["Anub'Rekhan"] = "Anub'Rekhan"
 -- Modules/ProfileManager/GUI.lua:148
 CLM.L["Any"] = "Tout"
 -- Modules/LedgerManager/GUI.lua:485
-CLM.L["Applies all changes and exits sandbox mode"] = "Applique toutes les modifications et quitte le mode Sandbox"
 -- Modules/LedgerManager/GUI.lua:484
 CLM.L["Apply changes"] = "Appliquer les modifications"
 -- Integrations/GUI.lua:142
@@ -490,7 +488,6 @@ CLM.L["Disables display of the changelog for any new version."] = "Désactivatio
 -- Modules/LedgerManager/GUI.lua:492
 CLM.L["Discard changes"] = "Annuler les modifications"
 -- Modules/LedgerManager/GUI.lua:493
-CLM.L["Discards all changes and exits sandbox mode"] = "Ignore toutes les modifications et quitte le mode Sandbox"
 -- Modules/Changelog/GUI.lua:80
 CLM.L["Do not show again"] = "Ne pas montrer à nouveau"
 -- .:indirectly
@@ -536,7 +533,6 @@ CLM.L["End Timetravel"] = "Mettre fin au Timetravel"
 -- Modules/RaidManager/GUI.lua:138
 CLM.L["End selected raid"] = "Mettre fin au raid sélectionnéд"
 -- Modules/LedgerManager/GUI.lua:476
-CLM.L["Enter sandbox"] = "Entrer en mode Sandbox"
 -- Modules/LootQueueManager/LootQueueManager.lua:86
 -- Global/GlobalConfigs.lua:104
 CLM.L["Epic"] = "Epic"
@@ -715,7 +711,6 @@ CLM.L["In Progress"] = "En cours"
 -- Modules/ProfileManager/GUI.lua:80
 CLM.L["In Raid"] = "En Raid"
 -- Modules/LedgerManager/GUI.lua:477
-CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "En mode Sandbox, toutes les communications sont désactivées et les modifications sont locales jusqu'à ce qu'elles soient appliquées. Cliquez sur Appliquer les modifications pour stocker les modifications et quitter le mode Sandbox. Cliquez sur Ignorer pour annuler les modifications et quitter le mode Sandbox. /reload annulera les modifications. L'entrée en mode Sandbox annulera le Timetravel."
 -- MinimapIcon.lua:140
 CLM.L["In-Sync"] = "En synchronisation"
 -- Modules/RaidManager/GUI.lua:289
@@ -1251,7 +1246,6 @@ CLM.L["SK"] = "SK"
 -- Modules/LedgerManager/GUI.lua:170
 CLM.L["Same zone only"] = "Même zone uniquement"
 -- MinimapIcon.lua:148
-CLM.L["Sandbox mode"] = "Sandbox mode"
 -- Modules/AutoAwardManager/EncounterIDs.lua:44
 CLM.L["Sapphiron"] = "Saphiron"
 -- Modules/RosterManager/Roster.lua:677

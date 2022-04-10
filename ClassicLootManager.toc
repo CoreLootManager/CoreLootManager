@@ -98,7 +98,6 @@ Modules\AuctionManager\AuctionManager.lua
 Modules\AuctionManager\AutoAward.lua
 Modules\BiddingManager\BiddingManager.lua
 Modules\ProfileInfoManager\ProfileInfoManager.lua
-Modules\SandboxManager\SandboxManager.lua
 Modules\AutoAwardManager\AutoAwardManager.lua
 Modules\LootQueueManager\LootQueueManager.lua
 Modules\AuctionHistoryManager\AuctionHistoryManager.lua

@@ -20,7 +20,6 @@ local ProfileManager = MODULES.ProfileManager
 local RosterManager = MODULES.RosterManager
 local RaidManager = MODULES.RaidManager
 local LedgerManager = MODULES.LedgerManager
-local SandboxManager = MODULES.SandboxManager
 
 local LIBS =  {
     registry = LibStub("AceConfigRegistry-3.0"),
@@ -472,37 +471,6 @@ end
 
 local function GenerateOfficerOptions(self)
     return {
-        toggle_sandbox = {
-            name = CLM.L["Enter sandbox"],
-            desc = CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."],
-            type = "execute",
-            func = (function(i) SandboxManager:EnterSandbox() end),
-            order = 1,
-            disabled = (function() return SandboxManager:IsSandbox() end)
-        },
-        apply_changes = {
-            name = CLM.L["Apply changes"],
-            desc = CLM.L["Applies all changes and exits sandbox mode"],
-            type = "execute",
-            func = (function(i) SandboxManager:ApplyChanges() end),
-            order = 2,
-            disabled = (function() return not SandboxManager:IsSandbox() end)
-        },
-        discard_changes = {
-            name = CLM.L["Discard changes"],
-            desc = CLM.L["Discards all changes and exits sandbox mode"],
-            type = "execute",
-            func = (function() SandboxManager:DiscardChanges() end),
-            order = 3,
-            disabled = (function() return not SandboxManager:IsSandbox() end)
-        },
-        sandbox_info = {
-            name = (function() return ColorCodeText(SandboxManager:IsSandbox() and CLM.L[" Sandbox"] or "", "FFFFFF") end),
-            fontSize = "large",
-            width = 0.5,
-            order = 4,
-            type = "description"
-        },
         timetravel_info = {
             name = (function()
                 local info = ""

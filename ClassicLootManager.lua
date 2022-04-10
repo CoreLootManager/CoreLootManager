@@ -125,7 +125,6 @@ function CORE:_InitializeFeatures()
     MODULES.AutoAwardManager:Initialize()
     MODULES.LootQueueManager:Initialize()
     MODULES.AuctionHistoryManager:Initialize()
-    MODULES.SandboxManager:Initialize()
     -- Globals
     CLM.Migration:Initialize() -- Initialize Migration
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
@@ -158,7 +157,7 @@ function CORE:_InitializeFrontend()
             icon = "green"
         elseif MODULES.LedgerManager:IsSyncOngoing() then
             icon = "yellow"
-        elseif MODULES.SandboxManager:IsSandbox() or MODULES.LedgerManager:IsTimeTraveling() then
+        elseif MODULES.LedgerManager:IsTimeTraveling() then
             icon = "white"
         else -- Unknown state
             icon = "blue"

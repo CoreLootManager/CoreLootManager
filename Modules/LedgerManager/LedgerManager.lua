@@ -21,24 +21,12 @@ local LedgerManager = { _initialized = false}
 local LEDGER_SYNC_COMM_PREFIX = "LedgerS1"
 local LEDGER_DATA_COMM_PREFIX = "LedgerD1"
 
-local previousCallback = nil
 local function registerReceiveCallback(callback)
-    if not previousCallback then
-        previousCallback = callback
-    end
-
     -- Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
     --     return length < 4096
     -- end)
     Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
     Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
-end
-
-local function restoreReceiveCallback()
-    if previousCallback then
-        registerReceiveCallback(previousCallback)
-        previousCallback = nil
-    end
 end
 
 local function createLedger(self, database)
@@ -66,27 +54,6 @@ local function createLedger(self, database)
         -- end)
 
         return ledger
-end
-
-local function createLedgerAndRegisterCallbacks(self, database)
-    local ledger = createLedger(self, database)
-
-    -- Mutators
-    for class, mutatorFn in pairs(self.mutatorCallbacks) do
-        ledger.registerMutator(class, mutatorFn)
-    end
-
-    -- Update Handlers
-    for _, callback in ipairs(self.onUpdateCallbacks) do
-        ledger.addStateChangedListener(callback)
-    end
-
-    -- Restart Handlers
-    for _,callback in ipairs(self.onRestartCallbacks) do
-        ledger.addStateRestartListener(callback)
-    end
-
-    return ledger
 end
 
 function LedgerManager:Initialize()
@@ -140,56 +107,6 @@ end
 
 function LedgerManager:GetTimeTravelTarget()
     return self.timeTravelTarget
-end
-
-function LedgerManager:EnterSandbox()
-    LOG:Trace("LedgerManager:EnterSandbox()")
-    -- Finalize everything on current ledger
-    if self:IsTimeTraveling() then
-        self:EndTimeTravel()
-    end
-    self.activeLedger.catchup()
-    -- Backup database reference
-    self._originalDatabase = self.activeDatabase
-    -- Copy ledger database
-    self.activeDatabase = DeepCopy(self._originalDatabase)
-    -- Backup ledger
-    self._originalLedger = self.activeLedger
-    -- Create new ledger and substitute
-    self.activeLedger = createLedgerAndRegisterCallbacks(self, self.activeDatabase)
-    -- Mark as sandbox mode
-    self.isSandbox = true
-    -- Restarts
-    for _,callback in ipairs(self.onRestartCallbacks) do
-        callback()
-    end
-    -- Enable
-    self:Enable()
-    -- Update status
-    self:UpdateSyncState()
-end
-
-function LedgerManager:ExitSandbox(apply)
-    LOG:Trace("LedgerManager:ExitSandbox()")
-    if apply then
-        -- If we apply we simply keep the new ledger and discard old one
-        -- We only update the database storage
-        MODULES.Database:UpdateLedger(self.activeDatabase)
-        self._originalDatabase = nil
-        self._originalLedger = nil
-    else
-        -- Return the active from original ones
-        self.activeDatabase = self._originalDatabase
-        self.activeLedger = self._originalLedger
-        -- Restore comm callbacks to the original
-        restoreReceiveCallback()
-    end
-    -- Mark as active mode
-    self.isSandbox = false
-    -- Update status
-    self:UpdateSyncState()
-    -- restart
-    self.activeLedger.getStateManager():restart()
 end
 
 function LedgerManager:RegisterEntryType(class, mutatorFn)
