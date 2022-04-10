@@ -29,9 +29,6 @@ class GithubInfo:
             ref = os.getenv('GITHUB_REF')
             if ref:
                 try:
-                    print(ref)
-                    print(ref.split('/'))
-                    print(ref.split('/')[2])
                     self.PR = int(ref.split('/')[2])
                     self.isPR = True
                 except Exception:
@@ -54,16 +51,26 @@ class GithubInfo:
         else:
             return "Token: *** Repo: {0} isPR: {1} SHA: {3}".format(self.repo, self.isPR, self.SHA)
 
-def comment_lines(reports:ErrorReport, info:GithubInfo):
+def review_lines(reports:ErrorReport, info:GithubInfo):
     try:
+        print(info)
         g = Github(info.token)
         repo = g.get_repo(info.repo)
-        # issue = repo.create_issue(title=title, body=body, labels=labels)
-        print(info)
+        pull_request = repo.get_pull(info.PR)
+        commit = repo.get_commit(info.SHA)
+        comments = pull_request.get_review_comments()
+        already_existing_comments = []
+        for comment in comments:
+            already_existing_comments.append(comment.original_position)
         for report in reports:
-            print(report)
+            if report.line not in already_existing_comments:
+                pull_request.create_review_comment(
+                    body=report.comment,
+                    commit_id=commit._identity,
+                    path=report.filepath,
+                    position=report.line)
     except GithubException as e:
-        pass
+        print(e)
 
 def main(args):
     pattern = re.compile("^\\s*(.*):(\\d+):(\\d+):\\s*(.*)\\s*$")
@@ -87,7 +94,8 @@ def main(args):
         except Exception as e:
             print(e)
             exit(0)
-        comment_lines(reports, info)
+        if info.isPR:
+            review_lines(reports, info)
 
 
 if __name__ == '__main__':
