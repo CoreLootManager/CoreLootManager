@@ -22,17 +22,12 @@ jobs:
           echo "##[command]luacheck --version"
           luacheck --version
           echo "##[endgroup]"
-        
-      # - name: luacheck
-      #   uses: nebularg/actions-luacheck@v1.1.1
-      #   with:
-      #     files: ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
-      #     annotate: none
       - name: luacheck
-        run: luacheck -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
+        run: luacheck -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/ | tee luacheck_report.txt
         continue-on-error: true
       - name: Comment errors
-        run: echo "TODO"
-      - name: Check on failures
+        if: steps.luacheck.outcome != 'success'
+        run: cat luacheck_report.txt
+      - name: Fail on failures
         if: steps.luacheck.outcome != 'success'
         run: exit 1
