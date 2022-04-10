@@ -10,10 +10,12 @@ local USER_BID_DENIED = "CLM_BID_DENIED"
 local POINT_CHANGE_REASON_DECAY = 101
 
 local function DKPReceivedAlertFrame_SetUp(self, data)
+    local value = tonumber(data.value)
+    value = (value ~= nil) and tostring(value) or tostring(data.value)
     if data.reason ~= POINT_CHANGE_REASON_DECAY then
-        self.Amount:SetText(string.format(CLM.L["%d DKP"], data.value))
+        self.Amount:SetText(string.format(CLM.L["%s DKP"], value))
     else
-        self.Amount:SetText(string.format(CLM.L["%d %% DKP decay"], data.value))
+        self.Amount:SetText(string.format(CLM.L["%s %% DKP decay"], value))
     end
     PlaySound(SOUNDKIT.UI_EPICLOOT_TOAST)
 end
@@ -21,13 +23,17 @@ end
 local DKPReceivedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("DKPReceivedAlertFrameTemplate", DKPReceivedAlertFrame_SetUp, 6, math.huge)
 
 local function BidAcceptedAlertFrame_SetUp(self, data)
-    self.Amount:SetText(string.format(CLM.L["Bid %s accepted!"], tostring(data.value)))
+    local value = tonumber(data.value)
+    value = (value ~= nil) and tostring(value) or tostring(data.value)
+    self.Amount:SetText(string.format(CLM.L["Bid %s accepted!"], value))
 end
 
 local BidAcceptedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidAcceptedAlertFrameTemplate", BidAcceptedAlertFrame_SetUp, 6, math.huge)
 
 local function BidDeniedAlertFrame_SetUp(self, data)
-    self.Amount:SetText(string.format(CLM.L["Bid %s denied!"], tostring(data.value)))
+    local value = tonumber(data.value)
+    value = (value ~= nil) and tostring(value) or tostring(data.value)
+    self.Amount:SetText(string.format(CLM.L["Bid %s denied!"], value))
 end
 
 local BidDeniedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidDeniedAlertFrameTemplate", BidDeniedAlertFrame_SetUp, 6, math.huge)
