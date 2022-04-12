@@ -116,9 +116,8 @@ local function UpdatePoints(uid, targets, value)
     else
         timestampCounter[timestamp] = timestampCounter[timestamp] + 1
     end
-    targets = { targets }
 
-    local entry = LEDGER_DKP.Set:new(uid, targets, value, CONSTANTS.POINT_CHANGE_REASON.IMPORT)
+    local entry = LEDGER_DKP.Set:new(uid, { targets }, value, CONSTANTS.POINT_CHANGE_REASON.IMPORT)
 
     local t = entry:targets()
     if not t or (#t == 0) then
@@ -308,8 +307,8 @@ function Migration:_MigrateCommunity()
                         if not playerProfiles[name] then
                             NewProfile(GetPlayerGuid(self, name), name, class)
                             playerProfiles[name] = true
-                            playerDKP[team.name][name] = dkp
                         end
+                        playerDKP[team.name][name] = dkp
                         table.insert(teamProfiles[team.name], GetPlayerGuid(self, name))
                     end
                 end
