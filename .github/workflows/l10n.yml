@@ -1,7 +1,6 @@
-name: l10n
+name: Locale
 on:
   push:
-  pull_request:
 jobs:
   l10n:
     name: L10n verification
