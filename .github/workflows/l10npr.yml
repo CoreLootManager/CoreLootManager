@@ -28,8 +28,8 @@ jobs:
         if: steps.l10n.outcome != 'success'
         uses: thollander/actions-comment-pull-request@v1
         with: 
-          message: ${{ env.REPORT }}
-          GITHUB_TOKEN: ${{ steps.getreport.outputs.content }}
+          message: ${{ steps.getreport.outputs.content }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Fail on failures
         if: steps.l10n.outcome != 'success'
         run: exit 1
