@@ -23,10 +23,6 @@ jobs:
           echo "##[command]luacheck --version"
           luacheck --version
           echo "##[endgroup]"
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-      - run: pip3 install pygithub
       - name: luacheck
         run: luacheck --formatter=plain -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/ | tee report.log
         continue-on-error: true
@@ -34,7 +30,9 @@ jobs:
         with:
           reviewdog_version: v0.14.0
       - name: review
-        run: cat report.log | reviewdog -f luacheck -diff="git diff FETCH_HEAD"
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: cat report.log | reviewdog -f luacheck -diff="git diff FETCH_HEAD" -reporter=github-pr-review
       - name: Fail on failures
         if: steps.luacheck.outcome != 'success'
         run: exit 1
