@@ -2,3 +2,4 @@
 ExternalLibs
 locales_*
 TESTING
+merger.py

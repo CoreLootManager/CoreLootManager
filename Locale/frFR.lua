@@ -29,12 +29,12 @@ CLM.L["!dkp"] = "!dkp"
 -- Modules/AuctionHistoryManager/GUI.lua:226
 -- Modules/LootManager/GUI.lua:317
 CLM.L["%Y/%m/%d %a %H:%M:%S"] = "%Y/%m/%d %a %H:%M:%S"
--- Alerts/Alerts.lua:16
-CLM.L["%s %% DKP decay"] = "%s %% Décalage DKP"
--- Alerts/Alerts.lua:14
-CLM.L["%s DKP"] = "%s DKP"
 -- Modules/LedgerManager/GUI.lua:447
 CLM.L["%d/%m/%Y %H:%M:%S"] = "%d/%m/%Y %H:%M:%S"
+-- Alerts/Alerts.lua:18
+CLM.L["%s %% DKP decay"] = "%s %% Décalage DKP"
+-- Alerts/Alerts.lua:16
+CLM.L["%s DKP"] = "%s DKP"
 -- Modules/LootManager/LootManager.lua:157
 CLM.L["%s awarded to %s for %s DKP"] = "%s attribué à %s pour %s DKP"
 -- MinimapIcon.lua:129
@@ -304,9 +304,9 @@ CLM.L["Begin Month"] = "Mois de début"
 CLM.L["Begin Year"] = "Année de début"
 -- Modules/RosterManager/Options.lua:705
 CLM.L["Bench"] = "Banc"
--- Alerts/Alerts.lua:24
+-- Alerts/Alerts.lua:28
 CLM.L["Bid %s accepted!"] = "Enchère %s acceptée !"
--- Alerts/Alerts.lua:30
+-- Alerts/Alerts.lua:36
 CLM.L["Bid %s denied!"] = "Enchère %s refusée !"
 -- Modules/AuctionManager/AuctionManager.lua:667
 CLM.L["Bid cancelling not allowed"] = "Annulation d'enchère non autorisée"
