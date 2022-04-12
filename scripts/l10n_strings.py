@@ -193,7 +193,7 @@ def main(args):
 
     # Prepare
     # locales = ["ruRU", "frFR"]
-    locales = ["frFR", "esES"]
+    locales = ["frFR", "esES", "ruRU"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
     l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
     storage = L10nStorage(baseDir, args.parser, args.markdown)
