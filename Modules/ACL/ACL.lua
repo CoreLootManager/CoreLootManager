@@ -1,5 +1,4 @@
-info.token = os.getenv('GITHUB_COMMENT_TOKEN')
-info.repo = os.getenv('GITHUB_REPOSITORY')local _, CLM = ...
+local _, CLM = ...
 
 local MODULES = CLM.MODULES
 local CONSTANTS = CLM.CONSTANTS
