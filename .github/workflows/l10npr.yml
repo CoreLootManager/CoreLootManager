@@ -14,7 +14,9 @@ jobs:
           python-version: '3.10'
       - name: Run l10n script
         id: l10n
-        run: python3 ./scripts/l10n_strings.py | tee report.log
+        run: |
+          set -o pipefail
+          python3 ./scripts/l10n_strings.py | tee report.log
         continue-on-error: true
       - name: Get Report
         id: getreport

@@ -24,7 +24,9 @@ jobs:
           luacheck --version
           echo "##[endgroup]"
       - name: luacheck
-        run: luacheck --formatter=plain -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/ | tee report.log
+        run: |
+          set -o pipefail
+          luacheck --formatter=plain -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/ | tee report.log
         continue-on-error: true
       - uses: reviewdog/action-setup@v1
         with:
