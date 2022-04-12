@@ -1,4 +1,4 @@
--- local  _, CLM = ...
+local  _, CLM = ...
 CLM.ChangelogData = {
     {
         version = "v1.8.0",
@@ -6,7 +6,7 @@ CLM.ChangelogData = {
             {
                 name = "Features",
                 data = {
-                    {header = "Spanish Locale", body = "Spanish locale is now available to use. Big thank you to |cffAA151BStoy|r|cffF1BF00tovi|r|cffAA151Bsiao|r for the contribution."},
+                    {header = "Spanish Locale", body = "Spanish locale is now available to use. Big thank you to |cffAA151BSto|r|cffF1BF00ytovis|r|cffAA151Biao|r for the contribution."},
                 },
             },
             {
@@ -20,23 +20,12 @@ CLM.ChangelogData = {
         }
     },
     {
-        version = "v1.7.2",
-        data = {
-            {
-                name = "Fixes",
-                data = {
-                    {header = "DB Fixes", body = "DB Fixes to enable Aprils Fools' audio."},
-                },
-            },
-        }
-    },
-    {
         version = "v1.7.1",
         data = {
             {
-                name = "Fixes",
+                name = "Hotfix",
                 data = {
-                    {header = "v2.5.4", body = "Update for changes in WoW v2.5.4"},
+                    {header = "Weekly cap", body = "Hotfix script errors for weekly cap."},
                 },
             },
         }
