@@ -71,7 +71,7 @@ function AuctionHistoryManager:Initialize()
             order = 40
         },
         auction_history_post_bids = {
-            name = CLM.L["Post bids"],
+            name = CLM.L["Post bids__"],
             desc = CLM.L["Toggles posting bids in selected channel after auction has ended."],
             type = "toggle",
             set = function(i, v) self:SetPostBids(v) end,

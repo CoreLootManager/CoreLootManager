@@ -1,0 +1,28 @@
+name: l10n
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  l10n:
+    name: L10n verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: l10n
+        run: python3 ./scripts/l10n_strings.py | tee report.log
+        continue-on-error: true
+      - name: getreport
+        runs: echo ":set-output name=report::$(cat report.log)"
+      - name: Comment PR
+        if: steps.l10n.outcome != 'success'
+        uses: thollander/actions-comment-pull-request@v1
+        with: 
+          message: ${{ steps.getreport.outputs.report }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fail on failures
+        if: steps.luacheck.outcome != 'success'
+        run: exit 1
