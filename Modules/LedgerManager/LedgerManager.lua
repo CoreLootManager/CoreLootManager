@@ -106,8 +106,13 @@ end
 
 function LedgerManager:Enable()
     self.activeLedger.getStateManager():setUpdateInterval(50)
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        self.activeLedger.enableSending()
+    if CLM.GlobalConfigs:GetDisableSync() then
+        LedgerManager:Cutoff()
+        LOG:Message("Ledger synchronisation was disabled. Use this at your own risk.")
+    else
+        if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+            self.activeLedger.enableSending()
+        end
     end
 end
 
