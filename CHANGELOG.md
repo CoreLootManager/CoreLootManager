@@ -1,3 +1,14 @@
+# Classic Loot Manager v1.8.0
+## Features
+### Spanish Locale
+Spanish locale is now available to use. Big thank you to Stoytovisiao for the contribution.
+## Fixes
+### CommunityDKP Migration
+CommunityDKP migration for multiple teams in TBC should now properly set the DKP values.
+### Weekly gains
+Weekly gains should now be properly calculated if there is now weekly cap.
+### Alerts
+Alerts should now better display small, fractional values.
 # Classic Loot Manager v1.7.0
 ## Notes
 ### April's Fools

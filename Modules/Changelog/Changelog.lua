@@ -1,5 +1,46 @@
-local  _, CLM = ...
+-- local  _, CLM = ...
 CLM.ChangelogData = {
+    {
+        version = "v1.8.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    {header = "Spanish Locale", body = "Spanish locale is now available to use. Big thank you to |cffAA151BStoy|r|cffF1BF00tovi|r|cffAA151Bsiao|r for the contribution."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "CommunityDKP Migration", body = "CommunityDKP migration for multiple teams in TBC should now properly set the DKP values."},
+                    {header = "Weekly gains", body = "Weekly gains should now be properly calculated if there is now weekly cap."},
+                    {header = "Alerts", body = "Alerts should now better display small, fractional values."},
+                },
+            },
+        }
+    },
+    {
+        version = "v1.7.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "DB Fixes", body = "DB Fixes to enable Aprils Fools' audio."},
+                },
+            },
+        }
+    },
+    {
+        version = "v1.7.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "v2.5.4", body = "Update for changes in WoW v2.5.4"},
+                },
+            },
+        }
+    },
     {
         version = "v1.7.0",
         data = {
