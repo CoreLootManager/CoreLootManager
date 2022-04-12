@@ -30,6 +30,3 @@ jobs:
         with: 
           message: ${{ steps.getreport.outputs.content }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Fail on failures
-        if: steps.l10n.outcome != 'success'
-        run: exit 1

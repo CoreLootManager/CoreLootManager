@@ -35,6 +35,3 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cat report.log | reviewdog -f luacheck -diff="git diff FETCH_HEAD" -reporter=github-pr-review
-      - name: Fail on failures
-        if: steps.luacheck.outcome != 'success'
-        run: exit 1
