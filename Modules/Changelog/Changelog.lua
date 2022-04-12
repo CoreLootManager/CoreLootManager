@@ -20,23 +20,12 @@ CLM.ChangelogData = {
         }
     },
     {
-        version = "v1.7.2",
-        data = {
-            {
-                name = "Fixes",
-                data = {
-                    {header = "DB Fixes", body = "DB Fixes to enable Aprils Fools' audio."},
-                },
-            },
-        }
-    },
-    {
         version = "v1.7.1",
         data = {
             {
-                name = "Fixes",
+                name = "Hotfix",
                 data = {
-                    {header = "v2.5.4", body = "Update for changes in WoW v2.5.4"},
+                    {header = "Weekly cap", body = "Hotfix script errors for weekly cap."},
                 },
             },
         }
