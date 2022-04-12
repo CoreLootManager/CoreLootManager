@@ -18,6 +18,7 @@ function GlobalConfigs:Initialize()
         wowdkpbot_integration = false,
         chat_commands = false,
         alerts = true,
+        disable_sync = false,
         suppress_incoming_chat_commands = false,
         suppress_outgoing_chat_commands = false,
         raid_warnings = {
@@ -166,6 +167,20 @@ function GlobalConfigs:Initialize()
             get = function(i) return self:GetBidsWarning() end,
             -- width = "double",
             order = 126
+        },
+        danger_zone_header = {
+            type = "header",
+            name = CLM.L["Danger Zone - Use at own risk"],
+            order = 10000
+        },
+        danger_zone_disable_sync = {
+            type = "toggle",
+            name = CLM.L["Disable data synchronisation"],
+            desc = CLM.L["Disable data synchronisation. This might lead to unexpected consequences. Use this at your own risk. Requires /reload to apply."],
+            set = function(i, v) self:SetDisableSync(v) end,
+            get = function(i) return self:GetDisableSync() end,
+            width = "full",
+            order = 10001
         }
     }
     ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
@@ -289,6 +304,14 @@ end
 
 function GlobalConfigs:GetBidsWarning()
     return self.db.raid_warnings.bids
+end
+
+function GlobalConfigs:GetDisableSync()
+    return self.db.disable_sync
+end
+
+function GlobalConfigs:SetDisableSync(value)
+    self.db.disable_sync = value and true or false
 end
 
 CLM.GlobalConfigs = GlobalConfigs
