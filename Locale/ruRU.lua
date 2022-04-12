@@ -527,8 +527,6 @@ CLM.L["Execute decay for selected players or everyone if none selected."] = "В�
 CLM.L["Execute migration from MonolithDKP, EssentialDKP or CommunityDKP"] = "Выполнить миграцию с MonolithDKP, EssentialDKP или CommunityDKP"
 -- Migration.lua:51
 CLM.L["Executing Addon Migration with comms disabled."] = "Осуществляю миграцию аддона с выключеными оповещениями."
--- Global/GlobalSlashCommands.lua:110
-CLM.L["Export data"] = "Экспорт данных"
 -- Modules/RosterManager/GUI.lua:126
 -- Modules/ProfileManager/GUI.lua:82
 CLM.L["External"] = "Внешние"
