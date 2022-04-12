@@ -28,14 +28,13 @@ jobs:
           python-version: '3.10'
       - run: pip3 install pygithub
       - name: luacheck
-        run: luacheck --formatter=plain -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/ | tee luacheck_report.txt
+        run: luacheck --formatter=plain -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/ | tee report.log
         continue-on-error: true
-      - name: Comment errors
-        if: steps.luacheck.outcome != 'success'
-        run: python3 ./scripts/review_lint_errors.py --report luacheck_report.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+      - uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: v0.14.0
+      - name: review
+        run: cat report.log | reviewdog -f luacheck -diff="git diff FETCH_HEAD"
       - name: Fail on failures
         if: steps.luacheck.outcome != 'success'
         run: exit 1
