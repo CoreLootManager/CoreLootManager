@@ -16,7 +16,7 @@ jobs:
         run: python3 ./scripts/l10n_strings.py | tee report.log
         continue-on-error: true
       - name: getreport
-        run: echo ":set-output name=report::$(cat report.log)"
+        run: echo "::set-output name=report::$(cat report.log)"
       - name: Comment PR
         if: steps.l10n.outcome != 'success'
         uses: thollander/actions-comment-pull-request@v1
