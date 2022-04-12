@@ -12,17 +12,18 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.10'
-      - name: l10n
-        run: python3 ./scripts/l10n_strings.py | tee report.log
+      - name: Run l10n script
+        id: l10n
+        run: |
+          python3 ./scripts/l10n_strings.py | tee report.log
+          echo "::set-output name=report::$(cat report.log)"
         continue-on-error: true
-      - name: getreport
-        run: echo "::set-output name=report::$(cat report.log)"
       - name: Comment PR
         if: steps.l10n.outcome != 'success'
         uses: thollander/actions-comment-pull-request@v1
         with: 
-          message: ${{ steps.getreport.outputs.report }}
+          message: ${{ steps.l10n.outputs.report }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Fail on failures
-        if: steps.luacheck.outcome != 'success'
+        if: steps.l10n.outcome != 'success'
         run: exit 1
