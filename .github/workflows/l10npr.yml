@@ -14,15 +14,16 @@ jobs:
           python-version: '3.10'
       - name: Run l10n script
         id: l10n
-        run: |
-          python3 ./scripts/l10n_strings.py | tee report.log
-          echo "::set-output name=report::$(cat report.log)"
+        run: python3 ./scripts/l10n_strings.py | tee report.log
         continue-on-error: true
+      - name: Get Report
+        id: getreport
+        run: echo "::set-output name=report::$(cat report.log)"
       - name: Comment PR
         if: steps.l10n.outcome != 'success'
         uses: thollander/actions-comment-pull-request@v1
         with: 
-          message: ${{ steps.l10n.outputs.report }}
+          message: ${{ steps.getreport.outputs.report }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Fail on failures
         if: steps.l10n.outcome != 'success'
