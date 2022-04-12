@@ -53,6 +53,7 @@ Locale\enUS.lua
 Locale\ruRU.lua
 Locale\frFR.lua
 #Locale\itIT.lua
+Locale\esES.lua
 
 # Addon Core
 ClassicLootManager.lua

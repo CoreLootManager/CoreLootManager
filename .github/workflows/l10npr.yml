@@ -1,0 +1,32 @@
+name: Review Locale on Pull Request
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  l10n:
+    name: L10n verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Run l10n script
+        id: l10n
+        run: |
+          set -o pipefail
+          python3 ./scripts/l10n_strings.py --markdown | tee report.log
+        continue-on-error: true
+      - name: Read report.log
+        id: getreport
+        if: steps.l10n.outcome != 'success'
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./report.log
+      - name: Comment PR
+        if: steps.l10n.outcome != 'success'
+        uses: thollander/actions-comment-pull-request@v1
+        with: 
+          message: ${{ steps.getreport.outputs.content }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
