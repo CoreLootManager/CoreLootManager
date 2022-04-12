@@ -1,4 +1,4 @@
-name: l10n
+name: Verify Locale
 on:
   push:
 jobs:
