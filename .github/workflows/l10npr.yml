@@ -18,6 +18,7 @@ jobs:
         continue-on-error: true
       - name: Get Report
         id: getreport
+        if: steps.l10n.outcome != 'success'
         run: echo "::set-output name=report::$(cat report.log)"
       - name: Comment PR
         if: steps.l10n.outcome != 'success'
