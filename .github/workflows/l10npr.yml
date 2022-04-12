@@ -17,16 +17,17 @@ jobs:
         run: |
           set -o pipefail
           python3 ./scripts/l10n_strings.py | tee report.log
+          echo "REPORT=`cat report.log`" >> $GITHUB_ENV
         continue-on-error: true
-      - name: Get Report
-        id: getreport
-        if: steps.l10n.outcome != 'success'
-        run: echo "::set-output name=report::$(cat report.log)"
+      # - name: Get Report
+      #   id: getreport
+      #   if: steps.l10n.outcome != 'success'
+      #   run: echo "::set-output name=report::$(cat report.log)"
       - name: Comment PR
         if: steps.l10n.outcome != 'success'
         uses: thollander/actions-comment-pull-request@v1
         with: 
-          message: ${{ steps.getreport.outputs.report }}
+          message: ${{ env.REPORT }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Fail on failures
         if: steps.l10n.outcome != 'success'
