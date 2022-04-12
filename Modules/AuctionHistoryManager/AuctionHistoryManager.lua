@@ -72,7 +72,7 @@ function AuctionHistoryManager:Initialize()
         },
         auction_history_post_bids = {
             name = CLM.L["Post bids__"],
-            desc = CLM.L["Toggles posting bids in selected channel after auction has ended."],
+            desc = CLM.L["__Toggles posting bids in selected channel after auction has ended."],
             type = "toggle",
             set = function(i, v) self:SetPostBids(v) end,
             get = function(i) return self:GetPostBids() end,
@@ -80,7 +80,7 @@ function AuctionHistoryManager:Initialize()
             order = 41
         },
         auction_history_post_bids_channel = {
-            name = CLM.L["Post channel"],
+            name = CLM.L["Post channel__"],
             desc = CLM.L["Channel for posting bids."],
             type = "select",
             values = CHANNELS,

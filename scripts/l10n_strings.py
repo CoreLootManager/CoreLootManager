@@ -11,13 +11,16 @@ from xmlrpc.client import boolean
 pp = pprint.PrettyPrinter(indent=4)
 
 class L10nStorage:
-    def __init__(self, base, parser):
+    def __init__(self, base, parser, markdown):
         self.data = {}
         self.not_used = {}
         self.translations = {}
         self.do_not_translate = {}
         self.base = base
         self.parser = parser
+        self.markdown = markdown
+
+        self._displayed_not_used_header_markdown = False
 
     def store(self, l10n_string:string, file:Path, line:int):
         if not self.data.get(l10n_string):
@@ -32,6 +35,11 @@ class L10nStorage:
             self.not_used[string] = True
             if self.parser:
                 print("Info:Locale/{0}.lua:{1} Not Used".format(locale, string))
+            elif self.markdown:
+                if  not self._displayed_not_used_header_markdown:
+                    self._displayed_not_used_header_markdown = True
+                    print("## Unused strings:")
+                print('`{}`'.format(string))
             else:
                 print('Not used: {}'.format(string))
             return
@@ -141,7 +149,7 @@ def cleanup(filenames):
         except Exception:
             pass
 
-def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean):
+def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean, markdown_format:boolean):
     missing_translations = []
     ignored_translations_count = 0
     for key in storage.data.keys():
@@ -157,6 +165,10 @@ def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean):
         if parser_format:
             for key in missing_translations:
                 print("Warning:Locale/{0}.lua:{1} Missing".format(locale, key))
+        elif markdown_format:
+            print("## Missing translations for locale {}:".format(locale))
+            for key in missing_translations:
+                print("`" + key + "`")
         else:
             print("=====================================")
             print("Missing translations for locale {}:".format(locale))
@@ -164,7 +176,9 @@ def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean):
                 print(key)
         return 1
     if ignored_translations_count > 0:
-        if not parser_format:
+        if markdown_format:
+            print("**Ignored {} locale translations**".format(ignored_translations_count))
+        elif not parser_format:
             print("Ignored {} locale translations".format(ignored_translations_count))
     return 0
 
@@ -182,7 +196,7 @@ def main(args):
     locales = ["frFR"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
     l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
-    storage = L10nStorage(baseDir, args.parser)
+    storage = L10nStorage(baseDir, args.parser, args.markdown)
     # Indirectly used strings, e.g. classes
     add_indirectly_used_strings(storage)
     # Scan existing CLM.L use
@@ -196,7 +210,7 @@ def main(args):
     
     status = 0
     for locale in locales:
-        status += verify_locales(storage, locale, args.parser)
+        status += verify_locales(storage, locale, args.parser, args.markdown)
 
     exit(status)
 
@@ -204,4 +218,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--regenerate', dest='regenerate', action='store_true')
     parser.add_argument('--parser', dest='parser', action='store_true')
+    parser.add_argument('--markdown', dest='markdown', action='store_true')
     main(parser.parse_known_args(sys.argv)[0])

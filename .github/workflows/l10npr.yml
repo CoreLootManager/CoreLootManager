@@ -16,7 +16,7 @@ jobs:
         id: l10n
         run: |
           set -o pipefail
-          python3 ./scripts/l10n_strings.py | tee report.log
+          python3 ./scripts/l10n_strings.py --markdown | tee report.log
         continue-on-error: true
       - name: Read report.log
         id: getreport
