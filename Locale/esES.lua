@@ -30,9 +30,9 @@ CLM.L["!dkp"] = "!dkp"
 -- Modules/LootManager/GUI.lua:317
 CLM.L["%Y/%m/%d %a %H:%M:%S"] = "%Y/%m/%d %a %H:%M:%S"
 -- Alerts/Alerts.lua:16
-CLM.L["%d %% DKP decay"] = "%d %% Decalage DKP"
+CLM.L["%s %% DKP decay"] = "%s %% Decalage DKP"
 -- Alerts/Alerts.lua:14
-CLM.L["%d DKP"] = "%d DKP"
+CLM.L["%s DKP"] = "%s DKP"
 -- Modules/LedgerManager/GUI.lua:447
 CLM.L["%d/%m/%Y %H:%M:%S"] = "%d/%m/%Y %H:%M:%S"
 -- Modules/LootManager/LootManager.lua:157
