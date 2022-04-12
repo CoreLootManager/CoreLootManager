@@ -1,0 +1,37 @@
+name: Lint and Review on Pull Request
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  lint:
+    name: Auto-Review Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: leafo/gh-actions-lua@v9.1.0
+        with:
+          luaVersion: "5.1.4"
+      - name: Luacheck Install
+        run: |
+          echo "##[group]Install luacheck"
+          if ! hash luacheck &>/dev/null; then
+            sudo apt-get install -yq luarocks 1>/dev/null || exit 1
+            sudo luarocks install luacheck 1>/dev/null || exit 1
+            sudo luarocks install lanes &>/dev/null || true
+          fi
+          echo "##[command]luacheck --version"
+          luacheck --version
+          echo "##[endgroup]"
+      - name: luacheck
+        run: |
+          set -o pipefail
+          luacheck --formatter=plain -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/ | tee report.log
+        continue-on-error: true
+      - uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: v0.14.0
+      - name: review
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: cat report.log | reviewdog -f luacheck -diff="git diff FETCH_HEAD" -reporter=github-pr-review
