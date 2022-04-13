@@ -169,7 +169,7 @@ CLM.L["Attendance [%]"] = "Anwesenheit [%]"
 -- Modules/RosterManager/RosterManager.lua:266
 CLM.L["Attendance"] = "Anwesenheit"
 -- Modules/AutoAwardManager/EncounterIDs.lua:62
-CLM.L["Attumen the Huntsman"] = "XXXXXX"
+CLM.L["Attumen the Huntsman"] = "Attumen der Jäger"
 -- Global/GlobalConfigs.lua:129
 CLM.L["Auction End Countdown"] = "Auktionsende Countdown"
 -- MinimapIcon.lua:51
@@ -189,7 +189,7 @@ CLM.L["Auction complete"] = "Auktion komplett"
 -- Modules/BiddingManager/BiddingManager.lua:200
 CLM.L["Auction finished"] = "Auktion fertig"
 -- Modules/LootQueueManager/GUI.lua:60
-CLM.L["Auction item"] = "Item versteigern"
+CLM.L["Auction item"] = "Gegenstand versteigern"
 -- Modules/RosterManager/Options.lua:793
 CLM.L["Auction length in seconds."] = "Auktionslänge in Sekunden."
 -- Modules/AuctionManager/GUI.lua:349
@@ -198,7 +198,7 @@ CLM.L["Auction length"] = "Auktionslänge"
 -- Modules/BiddingManager/BiddingManager.lua:187
 CLM.L["Auction of "] = "Auktion von"
 -- Modules/AuctionManager/AuctionManager.lua:229
-CLM.L["Auction of %s"] = "Auktion v on %s"
+CLM.L["Auction of %s"] = "Auktion von %s"
 -- Modules/RosterManager/Options.lua:727
 CLM.L["Auction settings"] = "Auktionseinstellungen"
 -- Modules/AuctionManager/AuctionManager.lua:322
@@ -222,15 +222,15 @@ CLM.L["Author"] = "Autor"
 -- Modules/RaidManager/GUI.lua:297
 -- Modules/RosterManager/Options.lua:719
 -- Modules/LedgerManager/GUI.lua:161
-CLM.L["Auto bench leavers"] = "Spieler nach verlassen automatisch benchen"
+CLM.L["Auto bench leavers"] = "Spieler nach verlassen des Raids automatisch auf die Bank setzen"
 -- Modules/AuctionManager/AuctionManager.lua:89
-CLM.L["Auto-award from corpse"] = "Loot automatisch verteilen"
+CLM.L["Auto-award from corpse"] = "Loot automatisch von Leiche verteilen"
 -- Modules/AuctionManager/AuctionManager.lua:98
-CLM.L["Auto-trade after award"] = "Loot automatisch traden"
+CLM.L["Auto-trade after award"] = "Gewonnener Loot automatisch handeln"
 -- Modules/RosterManager/RosterManager.lua:288
 CLM.L["Average weeks"] = "Durchscnittliche Wochen"
 -- Modules/RosterManager/GUI.lua:249
-CLM.L["Award DKP to selected players or everyone if none selected."] = "DKP an ausgewählten Spieler verteilen. An alle wenn keiner selektiert ist."
+CLM.L["Award DKP to selected players or everyone if none selected."] = "DKP an ausgewählte Spieler verteilen oder an alle wenn keiner ausgewählt ist."
 -- Modules/RosterManager/GUI.lua:215
 CLM.L["Award DKP value"] = "DKP vergeben"
 -- Global/GlobalSlashCommands.lua:26
