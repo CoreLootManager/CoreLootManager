@@ -318,15 +318,15 @@ CLM.L["Bidding"] = "Bieten"
 -- Global/GlobalConfigs.lua:147
 CLM.L["Bids"] = "Gebote"
 -- Modules/AutoAwardManager/EncounterIDs.lua:277
-CLM.L["Black Temple"] = "Temple noir"
+CLM.L["Black Temple"] = "Schwarzer Tempel"
 -- Modules/AutoAwardManager/EncounterIDs.lua:142
-CLM.L["Blackwing Lair"] = "Repaire de l'Aile noire"
+CLM.L["Blackwing Lair"] = "Pechschwingenhort"
 -- Modules/AutoAwardManager/EncounterIDs.lua:51
-CLM.L["Bloodlord Mandokir"] = "Seigneur sanglant Mandokir"
+CLM.L["Bloodlord Mandokir"] = "BLutfürst Mandokir"
 -- Modules/RosterManager/Options.lua:571
-CLM.L["Bonuses"] = "Bonus"
+CLM.L["Bonuses"] = "Boni"
 -- ClassicLootManager.lua:188
-CLM.L["Boot complete"] = "Start komplett"
+CLM.L["Boot complete"] = "Start fertig"
 -- Modules/RaidManager/GUI.lua:202
 -- Modules/RaidManager/GUI.lua:229
 -- Modules/RosterManager/Options.lua:577
@@ -336,15 +336,15 @@ CLM.L["Boss Kill Bonus"] = "Boss Kill Bonus"
 -- Modules/RosterManager/Options.lua:820
 CLM.L["Boss kill award values"] = "Boss Kill Wert"
 -- Modules/AutoAwardManager/EncounterIDs.lua:16
-CLM.L["Broodlord Lashlayer"] = "Seigneur des couvées Lanistaire"
+CLM.L["Broodlord Lashlayer"] = "Brutwächter Dreschbringer"
 -- Modules/AutoAwardManager/EncounterIDs.lua:107
 CLM.L["Brutallus"] = "Brutallus"
 -- Modules/AutoAwardManager/EncounterIDs.lua:59
-CLM.L["Buru the Gorger"] = "Buru Grandgosier"
+CLM.L["Buru the Gorger"] = "Buru der Verschlinger"
 -- Modules/AutoAwardManager/EncounterIDs.lua:30
 CLM.L["C'Thun"] = "C'Thun"
 -- Modules/BiddingManager/GUI.lua:285
-CLM.L["Cancel your bid."] = "Gebot abbrechen."
+CLM.L["Cancel your bid."] = "Dein Gebot abbrechen."
 -- Modules/BiddingManager/GUI.lua:284
 CLM.L["Cancel"] = "Abbruch"
 -- Modules/RosterManager/Options.lua:489
@@ -354,11 +354,11 @@ CLM.L["Change roster name."] = "Rostername ändern."
 -- Modules/Changelog/GUI.lua:126
 CLM.L["Changelog"] = "Changelog"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:84
-CLM.L["Channel for posting bids."] = "Kanal zum Posten von Geboten."
+CLM.L["Channel for posting bids."] = "Kanal zum Posten der Geboten."
 -- Global/GlobalConfigs.lua:120
-CLM.L["Chat Commands"] = "Chatkommandos"
+CLM.L["Chat Commands"] = "Chatbefehle"
 -- Modules/AutoAwardManager/EncounterIDs.lua:70
-CLM.L["Chess Event"] = "Chess Event"
+CLM.L["Chess Event"] = "Schachevent"
 -- Modules/RosterManager/Roster.lua:729
 -- Modules/RosterManager/Roster.lua:761
 CLM.L["Chest (robes)"] = "Brust (Roben)"
