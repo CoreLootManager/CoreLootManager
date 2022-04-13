@@ -115,7 +115,7 @@ CLM.L["Allow bidding below 0 DKP"] = "Erlaube Gebote unter 0 DKP"
 -- Modules/RosterManager/Options.lua:763
 CLM.L["Allow biding more than current standings and end up with negative values."] = "Erlaube Gebote über aktuellem Punktestand, auch wenn man mit negativen DKP abschließt."
 -- Modules/RosterManager/Options.lua:770
-CLM.L["Allow biding when current standings are negative values."] = "Erlaube Gebote wenn aktuelle DKP unter 0 (negativ) sind."
+CLM.L["Allow biding when current standings are negative values."] = "Erlaube Gebote mit negativen Punktestand."
 -- Modules/LedgerManager/GUI.lua:113
 CLM.L["Allow going below 0  DKP"] = "Erlaube unter 0 DKP zu gehen"
 -- Modules/RaidManager/GUI.lua:306
@@ -126,14 +126,14 @@ CLM.L["Allow players to subscribe to the bench through Raids menu"] = "Erlaube S
 -- Modules/LedgerManager/GUI.lua:173
 CLM.L["Allow subscription"] = "Erlaube Abo"
 -- Modules/RosterManager/Roster.lua:798
-CLM.L["Americas"] = "Amerika"
+CLM.L["Americas"] = "Amerikas"
 -- Modules/RosterManager/Roster.lua:748
 -- Modules/RosterManager/Roster.lua:780
 CLM.L["Ammo"] = "Munition"
 -- Modules/AutoAwardManager/EncounterIDs.lua:96
 CLM.L["Anetheron"] = "Anetheron"
 -- Modules/AuctionManager/AuctionManager.lua:80
-CLM.L["Announce award to Guild"] = "Gewinnder in Gilde ankündigen"
+CLM.L["Announce award to Guild"] = "Gewinn im Gildenchat posten"
 -- Global/GlobalConfigs.lua:54
 CLM.L["Announce loot from corpse to Raid"] = "XXXXXXXXXXXXXXXXXXXXXXXX"
 -- Global/GlobalConfigs.lua:63
@@ -143,11 +143,11 @@ CLM.L["Anonymous Open"] = "Anonym offen"
 -- Modules/RosterManager/Options.lua:800
 CLM.L["Anti-snipe time"] = "Anti-Snipe Zeit"
 -- Modules/AuctionManager/AuctionManager.lua:244
-CLM.L["Anti-snipe time: %s."] = "Anti-Snipe Zeit : %s."
+CLM.L["Anti-snipe time: %s."] = "Anti-Snipe Zeit: %s."
 -- Modules/RaidManager/GUI.lua:201
 -- Modules/AuctionManager/GUI.lua:359
 -- Modules/LedgerManager/GUI.lua:110
-CLM.L["Anti-snipe"] = "Anti-snipe"
+CLM.L["Anti-snipe"] = "Anti-Snipe"
 -- Modules/AutoAwardManager/EncounterIDs.lua:31
 CLM.L["Anub'Rekhan"] = "Anub'Rekhan"
 -- Modules/ProfileManager/GUI.lua:148
