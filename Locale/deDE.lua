@@ -202,7 +202,7 @@ CLM.L["Auction of %s"] = "Auktion von %s"
 -- Modules/RosterManager/Options.lua:727
 CLM.L["Auction settings"] = "Auktionseinstellungen"
 -- Modules/AuctionManager/AuctionManager.lua:322
-CLM.L["Auction stopped by Master Looter"] = "Auktion wurde von Plündermeister gestoppt"
+CLM.L["Auction stopped by Master Looter"] = "Auktion wurde vom Plündermeister gestoppt"
 -- Modules/AuctionManager/AuctionManager.lua:242
 CLM.L["Auction time: %s."] = "Auktionszeit: %s."
 -- Modules/RosterManager/Options.lua:731
