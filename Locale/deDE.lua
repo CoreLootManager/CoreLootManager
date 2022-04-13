@@ -272,7 +272,7 @@ CLM.L["Bag"] = "Tasche"
 -- Modules/AutoAwardManager/EncounterIDs.lua:8
 CLM.L["Baron Geddon"] = "Baron Geddon"
 -- Modules/RosterManager/Options.lua:318
-CLM.L["Base value for Static-Priced auction. Minimum value for Ascending auction. Set to 0 to ignore."] = "Standardwert für 'Static-Priced' Auktionen. Minimumwert für 'Ascending' Auktionen. 0 zum ignorieren.."
+CLM.L["Base value for Static-Priced auction. Minimum value for Ascending auction. Set to 0 to ignore."] = "Standardwert für 'Static-Priced' Auktionen. Minimumwert für 'Ascending' Auktionen. Auf 0 setzen zum ignorieren."
 -- Modules/BiddingManager/GUI.lua:248
 -- Modules/AuctionManager/GUI.lua:317
 -- Modules/RosterManager/Options.lua:373
@@ -280,13 +280,13 @@ CLM.L["Base"] = "Standard"
 -- Modules/BiddingManager/GUI.lua:421
 CLM.L["Base: %d "] = "Standard: %d "
 -- Modules/AutoAwardManager/EncounterIDs.lua:24
-CLM.L["Battleguard Sartura"] = "Garde de guerre Sartura"
+CLM.L["Battleguard Sartura"] = "Schildwache Sartura"
 -- Modules/RosterManager/Options.lua:705
-CLM.L["Bench"] = "Bench"
+CLM.L["Bench"] = "Bank"
 -- Alerts/Alerts.lua:24
-CLM.L["Bid %s accepted!"] = "Gebot %s akzeptiert !"
+CLM.L["Bid %s accepted!"] = "Gebot %s akzeptiert"
 -- Alerts/Alerts.lua:30
-CLM.L["Bid %s denied!"] = "Gebot %s abgelehnt !"
+CLM.L["Bid %s denied!"] = "Gebot %s abgelehnt!"
 -- Modules/AuctionManager/AuctionManager.lua:666
 CLM.L["Bid cancelling not allowed"] = "Gebotsabbruch is nicht erlaubt"
 -- Modules/AuctionManager/AuctionManager.lua:664
@@ -298,7 +298,7 @@ CLM.L["Bid too high"] = "Gebot zu hoch"
 -- Modules/AuctionManager/AuctionManager.lua:661
 CLM.L["Bid too low"] = "Gebot zu niedrig"
 -- Modules/BiddingManager/GUI.lua:231
-CLM.L["Bid value"] = "VWert des Gebots"
+CLM.L["Bid value"] = "Wert des Gebots"
 -- Modules/BiddingManager/GUI.lua:77
 CLM.L["Bid your current DKP (%s)."] = "Biete deine aktuellen DKP (%s)."
 -- Modules/BiddingManager/GUI.lua:95
