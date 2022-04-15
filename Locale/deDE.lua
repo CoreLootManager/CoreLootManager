@@ -372,19 +372,19 @@ CLM.L["Chromaggus"] = "Chromaggus"
 -- Modules/ProfileManager/GUI.lua:375
 CLM.L["Class"] = "Klasse"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:224
-CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s Initialisierung komplett."
+CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s Initialisierung fertig."
 -- Modules/RosterManager/Options.lua:412
 CLM.L["Classic"] = "Classic"
 -- Modules/RosterManager/GUI.lua:192
 -- Modules/ProfileManager/GUI.lua:124
-CLM.L["Clear all classes."] = "Clear all classes."
+CLM.L["Clear all classes."] = "Alle Klassen löschen."
 -- Modules/ProfileManager/GUI.lua:256
-CLM.L["Clear mains"] = "Clear Mains"
+CLM.L["Clear mains"] = "Mains löschen"
 -- Modules/ProfileManager/GUI.lua:257
-CLM.L["Clears selected profiles mains."] = "Aktuelles Mainprofil clearen."
+CLM.L["Clears selected profiles mains."] = "Löscht ausgewählte Mainprofile."
 -- Modules/LootQueueManager/LootQueueManager.lua:83
 -- Global/GlobalConfigs.lua:69
-CLM.L["Common"] = "Commun"
+CLM.L["Common"] = "Üblich"
 -- MinimapIcon.lua:80
 -- Modules/RaidManager/GUI.lua:435
 CLM.L["Configuration"] = "Konfiguration"
@@ -425,7 +425,7 @@ CLM.L["Custom button mode"] = "Individueller Button Modus"
 -- Modules/BiddingManager/GUI.lua:162
 CLM.L["Custom value"] = "Individueller Wert"
 -- Modules/RosterManager/GUI.lua:307
-CLM.L["DKP % that will be decayed."] = "% DKP welche verfallen werden."
+CLM.L["DKP % that will be decayed."] = "DKP % welche verfallen werden."
 -- Global/GlobalConfigs.lua:45
 CLM.L["DKP & Loot alerts"] = "DKP & Loot Warnungen"
 -- Modules/RosterManager/GUI.lua:216
@@ -445,9 +445,9 @@ CLM.L["Decay DKP %"] = "Verfall DKP %"
 -- Modules/PointManager/PointManager.lua:403
 CLM.L["Decay"] = "Verfall"
 -- Modules/LedgerManager/GUI.lua:344
-CLM.L["Decayed %s%% DKP to %s players in <%s>"] = "%s%% DKP verfallen von %s Spielern <%s>"
+CLM.L["Decayed %s%% DKP to %s players in <%s>"] = "DKP %s%% verfallen von %s Spielern <%s>"
 -- Modules/LedgerManager/GUI.lua:368
-CLM.L["Decayed %s%% DKP to all players %sin <%s>"] = "%s%% DKP verfallen von allen Spielern %s in <%s>"
+CLM.L["Decayed %s%% DKP to all players %sin <%s>"] = "DKP %s%% verfallen von allen Spielern %s in <%s>"
 -- Modules/RosterManager/Options.lua:584
 CLM.L["Default Boss Kill Bonus Value"] = "Standard Boss Kill Bonus"
 -- Modules/LedgerManager/GUI.lua:122
@@ -461,9 +461,9 @@ CLM.L["Disabled"] = "Deaktiviert"
 -- Modules/Changelog/GUI.lua:41
 CLM.L["Disables display of the changelog for any new version."] = "Deaktiviert die Anzeige des Changelogs für neue Versionen."
 -- Modules/LedgerManager/GUI.lua:492
-CLM.L["Discard changes"] = "Änderrungen abbrechen"
+CLM.L["Discard changes"] = "Änderrungen löschen"
 -- Modules/LedgerManager/GUI.lua:493
-CLM.L["Discards all changes and exits sandbox mode"] = "Bricht alle Änderungen ab und verlässt Sandbox Modus"
+CLM.L["Discards all changes and exits sandbox mode"] = "Löscht alle Änderungen und verlässt Sandbox Modus"
 -- Modules/Changelog/GUI.lua:80
 CLM.L["Do not show again"] = "Nicht mehr anzeigen"
 -- .:indirectly
@@ -471,25 +471,25 @@ CLM.L["Druid"] = "Druide"
 -- Modules/RosterManager/Roster.lua:639
 CLM.L["EPGP"] = "EPGP"
 -- Modules/AutoAwardManager/EncounterIDs.lua:18
-CLM.L["Ebonroc"] = "Rochébène"
+CLM.L["Ebonroc"] = "Schattenschwinge"
 -- Modules/AutoAwardManager/EncounterIDs.lua:54
-CLM.L["Edge of Madness"] = "Frontière de la folie"
+CLM.L["Edge of Madness"] = "Mojowahnsinn der Gurubashi"
 -- Global/GlobalConfigs.lua:112
 CLM.L["Enable announcing auction start and end."] = "Aktiviert die Ankündigung vom Start und Ende der Auktion."
 -- Modules/BiddingManager/BiddingManager.lua:75
-CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."] = "Aktiviert das Auto-Update der Gebote wenn sich das höchste Gebot ändert (Open-Auction)."
+CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."] = "Aktiviert das Auto-Update der Gebote wenn sich das höchste Gebot ändert (Nur für offene Auktion)."
 -- Modules/BiddingManager/BiddingManager.lua:74
-CLM.L["Enable auto-update bid values"] = "Aktiviert das Auto-Update der Gebote"
+CLM.L["Enable auto-update bid values"] = "Aktiviert Auto-Update der Gebote"
 -- Modules/AuctionManager/AuctionManager.lua:112
-CLM.L["Enable chat commands"] = "Aktiviert Chat Kommandos"
+CLM.L["Enable chat commands"] = "Aktiviert Chatbefehle"
 -- Modules/AuctionManager/AuctionManager.lua:90
 CLM.L["Enable loot auto-award (Master Looter UI) from corpse when item is awarded"] = "Aktiviert das automatische Lootzuweisen (Plündermeister UI) von der Leiche"
 -- Modules/RosterManager/Options.lua:748
-CLM.L["Enable paid value splitting amongst raiders."] = "Aktiviert die Aufteilung an alle Raider."
+CLM.L["Enable paid value splitting amongst raiders."] = "Aufteilung des bezahlten Gebotes auf alle Raider."
 -- Modules/Logger/Logger.lua:29
-CLM.L["Enables / disables verbose data printing during logging"] = "Aktiviert/Deaktiviert ausführliches -data-printing- während des loggen"
+CLM.L["Enables / disables verbose data printing during logging"] = "Aktiviert / Deaktiviert ausführliche Druckdaten während der Logaufzeichnung"
 -- Global/GlobalConfigs.lua:121
-CLM.L["Enables announcing chat commands at auction start."] = "Aktiviert das Ankündigen der Chat Kommandos zum Auktionsstart."
+CLM.L["Enables announcing chat commands at auction start."] = "Aktiviert das Ankündigen der Chatbefehle zum Auktionsstart."
 -- Global/GlobalConfigs.lua:139
 CLM.L["Enables announcing loot awards."] = "Aktiviert das Ankündigen von Loot."
 -- Global/GlobalConfigs.lua:148
