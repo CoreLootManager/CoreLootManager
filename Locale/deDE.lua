@@ -491,64 +491,64 @@ CLM.L["Enables / disables verbose data printing during logging"] = "Aktiviert / 
 -- Global/GlobalConfigs.lua:121
 CLM.L["Enables announcing chat commands at auction start."] = "Aktiviert das Ankündigen der Chatbefehle zum Auktionsstart."
 -- Global/GlobalConfigs.lua:139
-CLM.L["Enables announcing loot awards."] = "Aktiviert das Ankündigen von Loot."
+CLM.L["Enables announcing loot awards."] = "Aktiviert das Ankündigen von Loot Gewinnen."
 -- Global/GlobalConfigs.lua:148
 CLM.L["Enables announcing new highest bid (when applicable)."] = "Aktiviert das Ankündigen des neuesten höchsten Gebots (wenn anwendbar)."
 -- Global/GlobalConfigs.lua:103
-CLM.L["Enables announcing raid start and end."] = "Aktiviert das Ankündigen von Raid Start/Ende."
+CLM.L["Enables announcing raid start and end."] = "Aktiviert das Ankündigen von Raid Start und Ende."
 -- Modules/AuctionManager/AuctionManager.lua:99
-CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Aktiviert das automatische Traden von Loot nach Auktion aus Tasche"
+CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Aktiviert das automatische Handeln von Loot nach Auktion aus der Tasche"
 -- Global/GlobalConfigs.lua:130
-CLM.L["Enables raid-warning countdown for auctions."] = "Aktiviert -raid-warning- für den Countdown der Auktionen."
+CLM.L["Enables raid-warning countdown for auctions."] = "Aktiviert Raidwarnungenscountdown der Auktionen."
 -- Modules/AuctionManager/AuctionManager.lua:113
-CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."] = "Aktiviert !dkp und !bid über Flüstern/Raid. Änderrung erfordert /reload."
+CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."] = "Aktiviert !dkp und !bid über Flüstern / Raidchat. Änderrung erfordert /reload."
 -- Global/GlobalConfigs.lua:81
-CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Aktiviert die WoW DKP Bot Integration. Zusätzliche Daten werden bei Logout gespeichert."
+CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Aktiviert die WoW DKP Bot Integration. Zusätzliche Daten werden nachdem Logout gespeichert."
 -- Modules/LedgerManager/GUI.lua:563
 CLM.L["End Timetravel"] = "Beendet Zeitreise"
 -- Modules/RaidManager/GUI.lua:138
-CLM.L["End selected raid"] = "Beende ausgewählten Raid"
+CLM.L["End selected raid"] = "Beendet ausgewählten Raid"
 -- Modules/LedgerManager/GUI.lua:476
 CLM.L["Enter sandbox"] = "Aktiviert Sandbox"
 -- Modules/LootQueueManager/LootQueueManager.lua:86
 -- Global/GlobalConfigs.lua:72
 CLM.L["Epic"] = "Episch"
 -- Modules/AutoAwardManager/EncounterIDs.lua:109
-CLM.L["Eredar Twins"] = "Jumelles érédars"
+CLM.L["Eredar Twins"] = "Eredarzwillinge"
 -- Modules/RosterManager/Roster.lua:797
 CLM.L["Europe"] = "Europa"
 -- Modules/RosterManager/GUI.lua:326
-CLM.L["Execute decay for selected players or everyone if none selected."] = "Führt Verfall für ausgewählte Spieler oder alle falls keiner ausgewählt ist aus."
+CLM.L["Execute decay for selected players or everyone if none selected."] = "Führt Verfall für ausgewählte Spieler oder alle, falls keiner ausgewählt ist, aus."
 -- Migration.lua:369
 CLM.L["Execute migration from MonolithDKP, EssentialDKP or CommunityDKP"] = "Führe Migration von MonolithDKP, EssentialDKP oder CommunitiyDKP aus"
 -- Migration.lua:51
 CLM.L["Executing Addon Migration with comms disabled."] = "Führe Addon Migration ohne Verbindung aus."
 -- Global/GlobalSlashCommands.lua:168
-CLM.L["Export data"] = "Exportiere Daten"
+CLM.L["Export data"] = "Daten exportieren"
 -- Modules/RosterManager/GUI.lua:112
 -- Modules/ProfileManager/GUI.lua:82
 CLM.L["External"] = "Externe"
 -- Modules/LedgerManager/GUI.lua:38
 CLM.L["False"] = "Falsch"
 -- Modules/AutoAwardManager/EncounterIDs.lua:25
-CLM.L["Fankriss the Unyielding"] = "Fankriss l'Inflexible"
+CLM.L["Fankriss the Unyielding"] = "Fankriss der Unnachgiebige"
 -- Modules/AutoAwardManager/EncounterIDs.lua:79
-CLM.L["Fathom-Lord Karathress"] = "Seigneur des fonds Karathress"
+CLM.L["Fathom-Lord Karathress"] = "Tiefenlord Karathress"
 -- Modules/RosterManager/Roster.lua:735
 -- Modules/RosterManager/Roster.lua:767
 CLM.L["Feet"] = "Füße"
 -- Modules/AutoAwardManager/EncounterIDs.lua:108
-CLM.L["Felmyst"] = "Gangrebrume"
+CLM.L["Felmyst"] = "Teufelsruch"
 -- Modules/ProfileManager/GUI.lua:178
-CLM.L["Fill from Guild"] = "Fülle von Raid"
+CLM.L["Fill from Guild"] = "Von Gilde auffüllen"
 -- Modules/ProfileManager/GUI.lua:191
-CLM.L["Fill from Raid Roster"] = "Fülle von Raid Roster"
+CLM.L["Fill from Raid Roster"] = "Von Raid Roster auffüllen"
 -- Modules/ProfileManager/GUI.lua:192
 CLM.L["Fill profile list with players in current raid roster."] = "Fülle Profilliste mit Spielern im aktuellen Raid Roster."
 -- Modules/ProfileManager/GUI.lua:179
-CLM.L["Fill profile list with players with the minimum level and ranks."] = "Fülle Profilliste mit Spieler mit Minimumlevel und Rang."
+CLM.L["Fill profile list with players with the minimum level and ranks."] = "Fülle Profilliste mit Spieler mit Minimumlevel und Rängen."
 -- Modules/RosterManager/Options.lua:548
-CLM.L["Fill profiles"] = "Fülle Profile"
+CLM.L["Fill profiles"] = "Profile ausfüllen"
 -- Modules/RosterManager/Options.lua:549
 CLM.L["Fills current roster with all profiles."] = "Füllt aktuellen Roster mit allen Profilen."
 -- Modules/RosterManager/GUI.lua:122
@@ -561,13 +561,13 @@ CLM.L["Filtering"] = "Filtern"
 -- Modules/RosterManager/Roster.lua:768
 CLM.L["Finger"] = "Finger"
 -- Modules/LedgerManager/GUI.lua:431
-CLM.L["Finished raid %s"] = "Raid beendet %s"
+CLM.L["Finished raid %s"] = "Beendeter Raid %s"
 -- Modules/RaidManager/RaidManager.lua:804
-CLM.L["Finished"] = "Fertig"
+CLM.L["Finished"] = "Beendet"
 -- Modules/AutoAwardManager/EncounterIDs.lua:17
-CLM.L["Firemaw"] = "Gueule-de-feu"
+CLM.L["Firemaw"] = "Feuerschwinge"
 -- Modules/AutoAwardManager/EncounterIDs.lua:19
-CLM.L["Flamegor"] = "Flamegor"
+CLM.L["Flamegor"] = "Flammenmaul"
 -- Global/GlobalSlashCommands.lua:186
 CLM.L["Found %s in guild."] = "%s in Gilde gefunden."
 -- Modules/ProfileManager/GUI.lua:440
@@ -579,25 +579,25 @@ CLM.L["Garr"] = "Garr"
 -- Modules/AutoAwardManager/EncounterIDs.lua:6
 CLM.L["Gehennas"] = "Gehennas"
 -- Modules/AutoAwardManager/EncounterIDs.lua:57
-CLM.L["General Rajaxx"] = "Général Rajaxx"
+CLM.L["General Rajaxx"] = "General Rajaxx"
 -- Global/GlobalConfigs.lua:41
 CLM.L["Global"] = "Global"
 -- Modules/AutoAwardManager/EncounterIDs.lua:36
 CLM.L["Gluth"] = "Gluth"
 -- Modules/AutoAwardManager/EncounterIDs.lua:11
-CLM.L["Golemagg the Incinerator"] = "Golemagg l'Incinérateur"
+CLM.L["Golemagg the Incinerator"] = "Golemagg der Verbrenner"
 -- Modules/AutoAwardManager/EncounterIDs.lua:42
-CLM.L["Gothik the Harvester"] = "Gothik le Moissonneur"
+CLM.L["Gothik the Harvester"] = "Gothik der Seelenjäger"
 -- Modules/AutoAwardManager/EncounterIDs.lua:32
-CLM.L["Grand Widow Faerlina"] = "Grande veuve Faerlina"
+CLM.L["Grand Widow Faerlina"] = "Großwitwe Faerlina"
 -- Modules/AutoAwardManager/EncounterIDs.lua:35
 CLM.L["Grobbulus"] = "Grobbulus"
 -- Modules/AutoAwardManager/EncounterIDs.lua:74
-CLM.L["Gruul the Dragonkiller"] = "Gruul le Tue-dragon"
+CLM.L["Gruul the Dragonkiller"] = "Gruul der Drachenschlächter"
 -- Modules/AutoAwardManager/EncounterIDs.lua:240
-CLM.L["Gruul's Lair"] = "Repaire de Gruul"
+CLM.L["Gruul's Lair"] = "Gruuls Unterschlupf"
 -- Modules/AutoAwardManager/EncounterIDs.lua:90
-CLM.L["Gurtogg Bloodboil"] = "Gurtogg Fièvresang"
+CLM.L["Gurtogg Bloodboil"] = "Gurtogg Siedeblut"
 -- Modules/AutoAwardManager/EncounterIDs.lua:53
 CLM.L["Hakkar"] = "Hakkar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:103
