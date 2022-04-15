@@ -616,27 +616,27 @@ CLM.L["Head"] = "Kopf"
 CLM.L["Heigan the Unclean"] = "Heigan der Unreine"
 -- Modules/RosterManager/Roster.lua:741
 -- Modules/RosterManager/Roster.lua:773
-CLM.L["Held In Off-hand"] = "Tenu en main gauche"
+CLM.L["Held In Off-hand"] = "In Schildhand geführt"
 -- Modules/AutoAwardManager/EncounterIDs.lua:104
-CLM.L["Hex Lord Malacrass"] = "Seigneur des maléfices Malacrass"
+CLM.L["Hex Lord Malacrass"] = "Hexlord Malacrass"
 -- Modules/AuctionManager/AuctionManager.lua:122
-CLM.L["Hides incoming !dkp and !bid whispers. Change requires /reload."] = "Masque les chuchotements entrants !dkp et !bid. Le changement nécessite /reload."
+CLM.L["Hides incoming !dkp and !bid whispers. Change requires /reload."] = "Verdeckt Whisper von Spielern durch !dkp und !bid. Änderung erfordert /reload."
 -- Modules/AuctionManager/AuctionManager.lua:131
-CLM.L["Hides outgoing !dkp and !bid responses. Change requires /reload."] = "Masque les réponses sortantes !dkp et !bid. La modification nécessite /reload."
+CLM.L["Hides outgoing !dkp and !bid responses. Change requires /reload."] = "Verdeckt Antworten im Whisper an Spieler durch !dkp und !bid. Änderung erfordert /reload."
 -- Modules/AutoAwardManager/EncounterIDs.lua:84
-CLM.L["High Astromancer Solarian"] = "Grande astromancienne Solarian"
+CLM.L["High Astromancer Solarian"] = "Hochastromantin Solarian"
 -- Modules/AutoAwardManager/EncounterIDs.lua:73
-CLM.L["High King Maulgar"] = "Haut Roi Maulgar"
+CLM.L["High King Maulgar"] = "Hochkönig Maulgar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:46
-CLM.L["High Priest Thekal"] = "Grand prêtre Thekal"
+CLM.L["High Priest Thekal"] = "Hohepriester Thekal"
 -- Modules/AutoAwardManager/EncounterIDs.lua:47
-CLM.L["High Priest Venoxis"] = "Grand prêtre Venoxis"
+CLM.L["High Priest Venoxis"] = "Hohepriester Venoxis"
 -- Modules/AutoAwardManager/EncounterIDs.lua:48
-CLM.L["High Priestess Arlokk"] = "Grande prêtresse Arlokk"
+CLM.L["High Priestess Arlokk"] = "Hohepriesterin Arlokk"
 -- Modules/AutoAwardManager/EncounterIDs.lua:49
-CLM.L["High Priestess Jeklik"] = "Grande prêtresse Jeklik"
+CLM.L["High Priestess Jeklik"] = "Hohepriesterin Jeklik"
 -- Modules/AutoAwardManager/EncounterIDs.lua:50
-CLM.L["High Priestess Mar'li"] = "Grande prêtresse Mar'li"
+CLM.L["High Priestess Mar'li"] = "Hohepriesterin Mar'li"
 -- Modules/AutoAwardManager/EncounterIDs.lua:86
 CLM.L["High Warlord Naj'entus"] = "Grand seigneur de guerre Naj'entus"
 -- .:indirectly
