@@ -676,60 +676,60 @@ CLM.L["In Raid"] = "Im Raid"
 -- Modules/LedgerManager/GUI.lua:477
 CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "Im Sandbos Modus wird jegliche Kommunikation ausgeschaltet und lokal angewandt. Klicke auf Änderungen anwenden um sie zu speichern und verlasse den Sandbox Modus. Klicke verwerfen an um die Änderungen wieder rückgängig zu machen und verlassen den Sandbox Modus. /reload verwirft die Änderungen. Geht man in den Sandbox Modus verlässt man den Zeitreise Modus."
 -- MinimapIcon.lua:134
-CLM.L["In-Sync"] = "En synchronisation"
+CLM.L["In-Sync"] = "Synchronisiert"
 -- Modules/RaidManager/GUI.lua:289
 -- Modules/RosterManager/Options.lua:646
 -- Modules/LedgerManager/GUI.lua:164
-CLM.L["Include bench"] = "Inclure banc"
+CLM.L["Include bench"] = "Bank mit einbeziehen"
 -- Modules/RaidManager/GUI.lua:290
 -- Modules/RosterManager/Options.lua:647
-CLM.L["Include benched players in all auto-awards"] = "Inclure les joueurs sur le banc dans toutes les récompenses automatiques"
+CLM.L["Include benched players in all auto-awards"] = "Beziehe die Bank in alle automatischen DKP mit ein"
 -- Modules/RosterManager/GUI.lua:317
-CLM.L["Include players with negative standings."] = "Inclure les joueurs avec des classements négatifs."
+CLM.L["Include players with negative standings."] = "Beziehe Spieler mit negativen DKP Ständen mit ein"
 -- MinimapIcon.lua:132
-CLM.L["Incoherent state"] = "État incohérent"
+CLM.L["Incoherent state"] = "Zumsammenhangsloser Zustand"
 -- Global/GlobalSlashCommands.lua:181
-CLM.L["Input name: %s"] = "Nom d'entrée : %s"
+CLM.L["Input name: %s"] = "Füge Namen ein: %s"
 -- Modules/AutoAwardManager/EncounterIDs.lua:41
-CLM.L["Instructor Razuvious"] = "Instructeur Razuvious"
+CLM.L["Instructor Razuvious"] = "Instrukteur Razuvious"
 -- Modules/LedgerManager/GUI.lua:140
-CLM.L["Interval Bonus time"] = "Intervalle du temps de bonus"
+CLM.L["Interval Bonus time"] = "Intervall Bonuszeit"
 -- Modules/RaidManager/GUI.lua:214
 -- Modules/RaidManager/GUI.lua:266
 -- Modules/RosterManager/Options.lua:622
 -- Modules/PointManager/PointManager.lua:404
 -- Modules/LedgerManager/GUI.lua:137
-CLM.L["Interval Bonus"] = "Bonus d'intervalle"
+CLM.L["Interval Bonus"] = "Intervall Bonus"
 -- Modules/RaidManager/GUI.lua:216
 -- Modules/RaidManager/GUI.lua:273
 -- Modules/RosterManager/Options.lua:629
-CLM.L["Interval Time"] = "Temps d'interval"
+CLM.L["Interval Time"] = "Intervall Zeitreise"
 -- Modules/RaidManager/GUI.lua:217
 -- Modules/RaidManager/GUI.lua:281
 -- Modules/RosterManager/Options.lua:638
 -- Modules/LedgerManager/GUI.lua:143
-CLM.L["Interval Value"] = "Valeur du bonus d'intervalle"
+CLM.L["Interval Value"] = "Intervall Wert"
 -- Modules/RosterManager/Options.lua:630
-CLM.L["Interval in [minutes] to award bonus points"] = "Intervalle en [minutes] pour attribuer des points bonus"
+CLM.L["Interval in [minutes] to award bonus points"] = "Intervall in [Minuten] um Bonuspunkte zu gewehren"
 -- Modules/AuctionManager/AuctionManager.lua:663
-CLM.L["Invalid bid value"] = "Valeur d'enchère non valide"
+CLM.L["Invalid bid value"] = "Ungültiger Gebotswert"
 -- Global/GlobalSlashCommands.lua:34
-CLM.L["Invalid item link"] = "Lien de l'objet invalide"
+CLM.L["Invalid item link"] = "Ungültiger Gegenstandslink"
 -- Global/GlobalChatMessageHandlers.lua:60
-CLM.L["Invalid value provided"] = "Valeur fournie non valide"
+CLM.L["Invalid value provided"] = "Ungültiger Wert eingegeben"
 -- Modules/LedgerManager/GUI.lua:98
-CLM.L["Item Value Mode"] = "Mode Valeur de l'article"
+CLM.L["Item Value Mode"] = "Gegenstandswert Modus"
 -- Modules/RosterManager/Options.lua:739
-CLM.L["Item value mode"] = "Mode Valeur de l'article"
+CLM.L["Item value mode"] = "Gegenstandswert Modus"
 -- Global/GlobalSlashCommands.lua:40
-CLM.L["Item value must be positive"] = "La valeur de l'article doit être positive"
+CLM.L["Item value must be positive"] = "Gestandswertswert muss im Positiven liegen"
 -- Modules/RosterManager/Options.lua:815
-CLM.L["Item value overrides"] = "Remplacements de la valeur de l'article"
+CLM.L["Item value overrides"] = "Überschreibe den Gegenstandswert"
 -- Modules/BiddingManager/GUI.lua:222
 -- Modules/AuctionManager/GUI.lua:260
 -- Modules/LootManager/GUI.lua:90
 -- Modules/LootManager/GUI.lua:97
-CLM.L["Item"] = "Objet"
+CLM.L["Item"] = "Gegenstand"
 -- Modules/AutoAwardManager/EncounterIDs.lua:102
 CLM.L["Jan'alai"] = "Jan'alai"
 -- Modules/AutoAwardManager/EncounterIDs.lua:52
