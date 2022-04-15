@@ -613,7 +613,7 @@ CLM.L["Hard cap"] = "Hard cap"
 -- Modules/RosterManager/Roster.lua:755
 CLM.L["Head"] = "Kopf"
 -- Modules/AutoAwardManager/EncounterIDs.lua:39
-CLM.L["Heigan the Unclean"] = "Heigan l'Impur"
+CLM.L["Heigan the Unclean"] = "Heigan der Unreine"
 -- Modules/RosterManager/Roster.lua:741
 -- Modules/RosterManager/Roster.lua:773
 CLM.L["Held In Off-hand"] = "Tenu en main gauche"
