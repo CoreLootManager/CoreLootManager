@@ -638,43 +638,43 @@ CLM.L["High Priestess Jeklik"] = "Hohepriesterin Jeklik"
 -- Modules/AutoAwardManager/EncounterIDs.lua:50
 CLM.L["High Priestess Mar'li"] = "Hohepriesterin Mar'li"
 -- Modules/AutoAwardManager/EncounterIDs.lua:86
-CLM.L["High Warlord Naj'entus"] = "Grand seigneur de guerre Naj'entus"
+CLM.L["High Warlord Naj'entus"] = "GOberster Kriegsfürst Naj'entus"
 -- .:indirectly
-CLM.L["Hunter"] = "Chasseur"
+CLM.L["Hunter"] = "Jäger"
 -- Modules/AutoAwardManager/EncounterIDs.lua:76
-CLM.L["Hydross the Unstable"] = "Hydross l'Instable"
+CLM.L["Hydross the Unstable"] = "Hydross der Unstete"
 -- Modules/AutoAwardManager/EncounterIDs.lua:292
-CLM.L["Hyjal Summit"] = "Sommet d'Hyjal"
+CLM.L["Hyjal Summit"] = "Hyjalgipfel"
 -- Global/GlobalSlashCommands.lua:112
-CLM.L["Ignore entry"] = "Ignorer l'entrée"
+CLM.L["Ignore entry"] = "Eintrag ignorieren"
 -- Modules/LootQueueManager/LootQueueManager.lua:94
-CLM.L["Ignore"] = "Ignorer"
+CLM.L["Ignore"] = "Ignorieren"
 -- Modules/AutoAwardManager/EncounterIDs.lua:94
-CLM.L["Illidan Stormrage"] = "Illidan Hurlorage"
+CLM.L["Illidan Stormrage"] = "Illidan Sturmgrimm"
 -- Modules/BiddingManager/GUI.lua:249
 CLM.L["Immediately bid base item value."] = "Enchérissez immédiatement la valeur de l'article de base."
 -- Modules/BiddingManager/GUI.lua:267
-CLM.L["Immediately bid max item value."] = "Enchérissez immédiatement la valeur maximale de l'article."
+CLM.L["Immediately bid max item value."] = "Sofort maximalen Gegenstandspreis bieten."
 -- Migration.lua:227
 -- Migration.lua:361
-CLM.L["Import complete"] = "Importation terminée"
+CLM.L["Import complete"] = "Importieren fertig"
 -- Modules/PointManager/PointManager.lua:402
-CLM.L["Import"] = "Importer"
+CLM.L["Import"] = "Importieren"
 -- Migration.lua:178
-CLM.L["Importing %s entries from DKPTable"] = "Importation d'entrées %s depuis la table DKP"
+CLM.L["Importing %s entries from DKPTable"] = "Importiere %s EInträgen von der DKP Liste"
 -- Migration.lua:289
-CLM.L["Importing profiles from DKPTable"] = "Importation de profils depuis la table DKP"
+CLM.L["Importing profiles from DKPTable"] = "Profile von der DKP Liste importieren"
 -- Modules/RosterManager/GUI.lua:113
 -- Modules/ProfileManager/GUI.lua:81
-CLM.L["In Guild"] = "Dans la guilde"
+CLM.L["In Guild"] = "In Gilde"
 -- Modules/RaidManager/RaidManager.lua:803
-CLM.L["In Progress"] = "En cours"
+CLM.L["In Progress"] = "Im Gange"
 -- Modules/RaidManager/GUI.lua:419
 -- Modules/RosterManager/GUI.lua:110
 -- Modules/ProfileManager/GUI.lua:80
-CLM.L["In Raid"] = "En Raid"
+CLM.L["In Raid"] = "Im Raid"
 -- Modules/LedgerManager/GUI.lua:477
-CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "En mode Sandbox, toutes les communications sont désactivées et les modifications sont locales jusqu'à ce qu'elles soient appliquées. Cliquez sur Appliquer les modifications pour stocker les modifications et quitter le mode Sandbox. Cliquez sur Ignorer pour annuler les modifications et quitter le mode Sandbox. /reload annulera les modifications. L'entrée en mode Sandbox annulera le Timetravel."
+CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "Im Sandbos Modus wird jegliche Kommunikation ausgeschaltet und lokal angewandt. Klicke auf Änderungen anwenden um sie zu speichern und verlasse den Sandbox Modus. Klicke verwerfen an um die Änderungen wieder rückgängig zu machen und verlassen den Sandbox Modus. /reload verwirft die Änderungen. Geht man in den Sandbox Modus verlässt man den Zeitreise Modus."
 -- MinimapIcon.lua:134
 CLM.L["In-Sync"] = "En synchronisation"
 -- Modules/RaidManager/GUI.lua:289
