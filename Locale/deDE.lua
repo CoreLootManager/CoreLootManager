@@ -733,13 +733,13 @@ CLM.L["Item"] = "Gegenstand"
 -- Modules/AutoAwardManager/EncounterIDs.lua:102
 CLM.L["Jan'alai"] = "Jan'alai"
 -- Modules/AutoAwardManager/EncounterIDs.lua:52
-CLM.L["Jin'do the Hexxer"] = "Jin'do le Maléficieur"
+CLM.L["Jin'do the Hexxer"] = "Jin'do der Verhexer"
 -- Global/GlobalConfigs.lua:35
-CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"] = "rejoignez notre discord pour plus d'infos : |cff44cc44https://tiny.one/clm-discord|r"
+CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"] = "Für mehr Informationen kommt auf unser Discord: |cff44cc44https://tiny.one/clm-discord|r"
 -- Modules/RaidManager/GUI.lua:152
-CLM.L["Join selected raid"] = "Rejoindre le raid sélectionné"
+CLM.L["Join selected raid"] = "Dem ausgewählten Raid beitreten"
 -- Modules/AutoAwardManager/EncounterIDs.lua:85
-CLM.L["Kael'thas Sunstrider"] = "Kael'thas Haut-soleil"
+CLM.L["Kael'thas Sunstrider"] = "Kael'thas Sonnenwanderer"
 -- Modules/AutoAwardManager/EncounterIDs.lua:106
 CLM.L["Kalecgos"] = "Kalecgos"
 -- Modules/AutoAwardManager/EncounterIDs.lua:223
@@ -753,33 +753,33 @@ CLM.L["Kil'jaeden"] = "Kil'jaeden"
 -- Modules/AutoAwardManager/EncounterIDs.lua:56
 CLM.L["Kurinnaxx"] = "Kurinnaxx"
 -- Modules/AutoAwardManager/EncounterIDs.lua:81
-CLM.L["Lady Vashj"] = "Dame Vashj"
+CLM.L["Lady Vashj"] = "Lady Vashj"
 -- Modules/LedgerManager/GUI.lua:602
-CLM.L["Ledger Entries Audit"] = "Audit des écritures comptables"
+CLM.L["Ledger Entries Audit"] = "Hauptkonto Einträge Prüfung"
 -- Modules/LootQueueManager/LootQueueManager.lua:87
 -- Global/GlobalConfigs.lua:73
-CLM.L["Legendary"] = "Légendaire"
+CLM.L["Legendary"] = "Legendär"
 -- Modules/RosterManager/Roster.lua:734
 -- Modules/RosterManager/Roster.lua:766
-CLM.L["Legs"] = "Jambes"
+CLM.L["Legs"] = "Beine"
 -- Modules/AutoAwardManager/EncounterIDs.lua:78
-CLM.L["Leotheras the Blind"] = "Leotheras l'Aveugle"
+CLM.L["Leotheras the Blind"] = "Leotheras der Blinde"
 -- Global/GlobalSlashCommands.lua:93
-CLM.L["Link Alt to Main"] = "Lier Reroll au Main"
+CLM.L["Link Alt to Main"] = "Verknüpfe Main mit Twink"
 -- Modules/PointManager/PointManager.lua:405
-CLM.L["Linking override"] = "Remplacement de la liaison"
+CLM.L["Linking override"] = "Verknüpfung überschreiben"
 -- MinimapIcon.lua:128
 -- Modules/LootManager/GUI.lua:297
 -- Modules/LedgerManager/GUI.lua:510
-CLM.L["Loading..."] = "Chargement..."
+CLM.L["Loading..."] = "Laden..."
 -- Modules/AutoAwardManager/EncounterIDs.lua:40
-CLM.L["Loatheb"] = "Horreb"
+CLM.L["Loatheb"] = "Loatheb"
 -- Modules/Logger/Logger.lua:19
-CLM.L["Logging level"] = "Niveau Enregistrement"
+CLM.L["Logging level"] = "Aufzeichnungs Level"
 -- Modules/Logger/Logger.lua:15
-CLM.L["Logging"] = "Enregistrement"
+CLM.L["Logging"] = "Aufzeichnung"
 -- Global/GlobalConfigs.lua:138
-CLM.L["Loot Awards"] = "Récompenses de butin"
+CLM.L["Loot Awards"] = "Gegenstands Gewinne"
 -- MinimapIcon.lua:31
 -- Modules/LootManager/GUI.lua:235
 CLM.L["Loot History"] = "Historique du butin"
