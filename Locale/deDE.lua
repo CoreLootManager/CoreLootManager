@@ -1022,22 +1022,22 @@ CLM.L["Poor"] = "Schlecht"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:74
 CLM.L["Post bids"] = "Gebote anzeigen"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:83
-CLM.L["Post channel"] = "Canal de publication"
+CLM.L["Post channel"] = "Kanal zum anzeigen"
 -- .:indirectly
-CLM.L["Priest"] = "Prêtre"
+CLM.L["Priest"] = "Priester"
 -- Modules/AutoAwardManager/EncounterIDs.lua:71
-CLM.L["Prince Malchezaar"] = "Prince Malchezaar"
+CLM.L["Prince Malchezaar"] = "Prinz Malchezaar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:27
-CLM.L["Princess Huhuran"] = "Princesse Huhuran"
+CLM.L["Princess Huhuran"] = "Prinzessin Huhuran"
 -- MinimapIcon.lua:69
 -- Modules/ProfileManager/GUI.lua:404
-CLM.L["Profiles"] = "Profiles"
+CLM.L["Profiles"] = "Profile"
 -- Modules/PointManager/PointManager.lua:394
-CLM.L["Progression Bonus"] = "Bonus de progression"
+CLM.L["Progression Bonus"] = "Fortschritts Bonus"
 -- Modules/RosterManager/RosterManager.lua:271
-CLM.L["Provide number of raids needed for 100% attendance in a weekly reset. Between 1 - 50 raids. Defaults to 2. Requires /reload."] = "Indiquez le nombre de raids nécessaires pour une participation à 100 % lors d'une réinitialisation hebdomadaire. Entre 1 et 50 raids. La valeur par défaut est 2. Nécessite /reload."
+CLM.L["Provide number of raids needed for 100% attendance in a weekly reset. Between 1 - 50 raids. Defaults to 2. Requires /reload."] = "Anzahl der Schlachtzüge angeben um 100% Beteiligung zu erhalten in einer Woche. Zwischen 1 - 50 Schlachtzügen. Voreingstellt ist 2. Erfordert /reload."
 -- Modules/RosterManager/RosterManager.lua:289
-CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 - 1000 weeks. Defaults to 10. Requires /reload."] = "Indiquez le nombre de semaines qui seront prises en compte pour la fréquentation. Entre 1 et 1000 semaines. La valeur par défaut est 10. Nécessite /reload."
+CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 - 1000 weeks. Defaults to 10. Requires /reload."] = "Anzahl der Wochen angeben welche für die Beteiligung angerechnet werden sollen. Zwischen 1 - 1000 Wochen. Voreingrstellt sind 10. Erfordert /reload."
 -- Global/GlobalSlashCommands.lua:126
 CLM.L["Prune profiles"] = "Tailler les profils"
 -- Modules/RaidManager/GUI.lua:298
