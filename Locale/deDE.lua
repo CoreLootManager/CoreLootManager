@@ -941,86 +941,86 @@ CLM.L["Not in a roster"] = "Nicht in einem Roster"
 -- Modules/RosterManager/GUI.lua:544
 CLM.L["Not in raid"] = "Nicht in einem Schlachtzug"
 -- Modules/RosterManager/GUI.lua:227
-CLM.L["Note to be added to award. Max 32 characters. It is rre. If you will input encounter ID it will be transformed into boss name."] = "Notiz zum Gewinn hinzufügen. Maximal 32 Zeichen. Es ist rre. Wenn man die Boss-ID eingibt wird sie in den Bossnamen umgewandelt"
+CLM.L["Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."] = "Notiz zum Gewinn hinzufügen. Maximal 32 Zeichen. Es wird geraten kein Datum oder ausgewählten Grund einzugeben. Wenn man die Boss-ID eingibt wird sie in den Bossnamen umgewandelt"
 -- Modules/AuctionMecommended to not include date nor selected reason heanager/GUI.lua:280
 -- Modules/AuctionManager/GUI.lua:286
 -- Modules/RosterManager/GUI.lua:225
 -- Modules/PointManager/GUI.lua:179
 CLM.L["Note"] = "Notiz"
 -- Modules/AutoAwardManager/EncounterIDs.lua:38
-CLM.L["Noth the Plaguebringer"] = "Noth le Porte-peste"
+CLM.L["Noth the Plaguebringer"] = "Noth der Seuchenfürst"
 -- Modules/BiddingManager/GUI.lua:298
-CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Avertissez que vous passé l'article. Annule toutes les offres existantes."
+CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Melden das man auf ein Gegenstand passt. Löscht jegliche Gebote."
 -- Modules/BiddingManager/GUI.lua:296
-CLM.L["Notify that you are passing on the item."] = "Avertissez que vous passé l'article."
+CLM.L["Notify that you are passing on the item."] = "Melden das man auf einen Gegenstand passt."
 -- Modules/LedgerManager/GUI.lua:52
 CLM.L["Num"] = "Nombre"
 -- Modules/RosterManager/Roster.lua:740
 -- Modules/RosterManager/Roster.lua:772
-CLM.L["Off Hand"] = "Main gauche"
+CLM.L["Off Hand"] = "Schildhand"
 -- Modules/RaidManager/GUI.lua:206
 -- Modules/RaidManager/GUI.lua:243
 -- Modules/RosterManager/Options.lua:599
-CLM.L["On Time Bonus Value"] = "Valeur du bonus du temps"
+CLM.L["On Time Bonus Value"] = "Wert für Pünktlichkeits Bonus"
 -- Modules/LedgerManager/GUI.lua:128
-CLM.L["On Time Bonus value"] = "Valeur du bonus du temps"
+CLM.L["On Time Bonus value"] = "Wert für Pünktlichkeits Bonus"
 -- Modules/RaidManager/GUI.lua:204
 -- Modules/RaidManager/GUI.lua:236
 -- Modules/RosterManager/Options.lua:592
 -- Modules/PointManager/PointManager.lua:391
 -- Modules/LedgerManager/GUI.lua:125
-CLM.L["On Time Bonus"] = "Bonus au temps"
+CLM.L["On Time Bonus"] = "Pünktlichkeits Bonus"
 -- Modules/RosterManager/Roster.lua:738
 -- Modules/RosterManager/Roster.lua:770
-CLM.L["One-Hand"] = "Une main"
+CLM.L["One-Hand"] = "Einhändig"
 -- Modules/RosterManager/Options.lua:654
 -- Modules/LedgerManager/GUI.lua:167
-CLM.L["Online only"] = "En ligne seulement"
+CLM.L["Online only"] = "Nur online"
 -- Modules/AutoAwardManager/EncounterIDs.lua:3
 CLM.L["Onyxia"] = "Onyxia"
 -- Modules/AutoAwardManager/EncounterIDs.lua:119
-CLM.L["Onyxia's Lair"] = "Repaire d'Onyxia"
+CLM.L["Onyxia's Lair"] = "Onyxias Hort"
 -- Modules/RosterManager/Roster.lua:659
-CLM.L["Open"] = "Ouvert"
+CLM.L["Open"] = "Offen"
 -- Modules/AutoAwardManager/EncounterIDs.lua:65
-CLM.L["Opera Hall"] = "L'Opéra"
+CLM.L["Opera Hall"] = "Schach Event"
 -- Modules/AutoAwardManager/EncounterIDs.lua:61
-CLM.L["Ossirian the Unscarred"] = "Ossirian l'Intouché"
+CLM.L["Ossirian the Unscarred"] = "Ossirian der Narbenlose"
 -- Modules/AutoAwardManager/EncounterIDs.lua:29
 CLM.L["Ouro"] = "Ouro"
 -- Modules/RaidManager/GUI.lua:225
-CLM.L["Overrides"] = "Remplace"
+CLM.L["Overrides"] = "Überschreibt"
 -- Modules/BiddingManager/BiddingManager.lua:137
 -- Modules/AuctionManager/AuctionManager.lua:616
 CLM.L["PASS"] = "PASSE"
 -- .:indirectly
 CLM.L["Paladin"] = "Paladin"
 -- Modules/RaidManager/GUI.lua:417
-CLM.L["Participated"] = "Participé"
+CLM.L["Participated"] = "Teilnehmen"
 -- Modules/BiddingManager/GUI.lua:293
 CLM.L["Pass"] = "Passe"
 -- Modules/AuctionManager/AuctionManager.lua:667
-CLM.L["Passing after bidding not allowed"] = "Passer après l'enchère n'est pas autorisé"
+CLM.L["Passing after bidding not allowed"] = "Passen nachdem bieten nicht erlaubt ist"
 -- Modules/AutoAwardManager/EncounterIDs.lua:34
-CLM.L["Patchwerk"] = "Le Recousu"
+CLM.L["Patchwerk"] = "Flickwerk"
 -- Modules/LootManager/GUI.lua:100
-CLM.L["Player"] = "Joueur"
+CLM.L["Player"] = "Spieler"
 -- Modules/RaidManager/GUI.lua:103
 -- Modules/RaidManager/GUI.lua:115
-CLM.L["Please select a raid"] = "Veuillez sélectionner un raid"
+CLM.L["Please select a raid"] = "Bitte einen Schlachtzug auswählen"
 -- MinimapIcon.lua:35
 -- Modules/PointManager/GUI.lua:219
-CLM.L["Point History"] = "Historique des points"
+CLM.L["Point History"] = "Punktehistorie"
 -- Modules/RosterManager/Options.lua:672
-CLM.L["Point caps"] = "Point caps"
+CLM.L["Point caps"] = "Punktedeckel"
 -- Modules/RosterManager/Options.lua:495
 -- Modules/RosterManager/Options.lua:849
-CLM.L["Point type"] = "Type de point"
+CLM.L["Point type"] = "Punktetyp"
 -- Modules/LootQueueManager/LootQueueManager.lua:82
 -- Global/GlobalConfigs.lua:68
-CLM.L["Poor"] = "Médiocre"
+CLM.L["Poor"] = "Schlecht"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:74
-CLM.L["Post bids"] = "Publier des offres"
+CLM.L["Post bids"] = "Gebote anzeigen"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:83
 CLM.L["Post channel"] = "Canal de publication"
 -- .:indirectly
