@@ -825,67 +825,67 @@ CLM.L["Marks selected profiles or everyone if none selected as alts of choosen p
 -- Modules/BiddingManager/GUI.lua:266
 -- Modules/AuctionManager/GUI.lua:330
 -- Modules/RosterManager/Options.lua:388
-CLM.L["Max"] = "Маx"
+CLM.L["Max"] = "Маximum"
 -- Modules/BiddingManager/GUI.lua:425
-CLM.L["Max: %d "] = "Маx: %d "
+CLM.L["Max: %d "] = "Маximum: %d "
 -- Modules/AuctionManager/AuctionManager.lua:240
-CLM.L["Maximum bid: %s."] = "Enchère maximale : %s."
+CLM.L["Maximum bid: %s."] = "Maximales Gebot: %s."
 -- Modules/RosterManager/Options.lua:688
-CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."] = "Le nombre maximum de points que le joueur peut recevoir par semaine de raid. Réglez sur 0 pour désactiver."
+CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."] = "Maximale Punnkte die ein Spieler pro Woche erhalten kann. Zum ausschalten auf 0 setzen."
 -- Modules/RosterManager/Options.lua:697
-CLM.L["Maximum point cap that player can have. Set to 0 to disable."] = "Limite maximale de points que le joueur peut avoir. Réglez sur 0 pour désactiver."
+CLM.L["Maximum point cap that player can have. Set to 0 to disable."] = "Maximale Punkte die ein Spieler erhalten kann. Zum ausschalten auf 0 setzen."
 -- Modules/RosterManager/Options.lua:319
-CLM.L["Maximum value for Ascending auction. Set to 0 to ignore."] = "Valeur maximale pour l'enchère ascendante. Mettre à 0 pour ignorer."
+CLM.L["Maximum value for Ascending auction. Set to 0 to ignore."] = "Maximaler Wert für aufsteigende Auktion. Zum ignorieren auf 0 setzen."
 -- MinimapIcon.lua:23
-CLM.L["Menu"] = "Menu"
+CLM.L["Menu"] = "Menü"
 -- Migration.lua:165
 -- Migration.lua:243
-CLM.L["Migrating %s"] = "Migration de %s"
+CLM.L["Migrating %s"] = "Migration %s"
 -- Migration.lua:63
-CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."] = "Migration terminée. %s pour appliquer et synchroniser avec d'autres ou aller à %s pour supprimer."
+CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."] = "Migration fertig. %s zum anwenden und synchronisieren mit anderen oder gehe zu %s zum Discord."
 -- Migration.lua:266
-CLM.L["Migration failure: Detected 0 teams"] = "Échec de la migration : 0 équipes détectées"
+CLM.L["Migration failure: Detected 0 teams"] = "Migratiosfehler: 0 Teams erkannt"
 -- Migration.lua:204
 -- Migration.lua:320
-CLM.L["Migration failure: Unable to create profiles"] = "Échec de la migration : impossible de créer des profils"
+CLM.L["Migration failure: Unable to create profiles"] = "Migrationsfehler: Konnte keine Profile erstellen"
 -- Migration.lua:34
-CLM.L["Migration ongoing: %s(%s)"] = "Migration en cours : %s(%s)"
+CLM.L["Migration ongoing: %s(%s)"] = "Migration im Gange: %s(%s)"
 -- Modules/LedgerManager/GUI.lua:158
-CLM.L["Min bid increment"] = "Incrément d'enchère minimum"
+CLM.L["Min bid increment"] = "Minimum Gebotssteigerung"
 -- Modules/RosterManager/Options.lua:776
-CLM.L["Minimal increment"] = "Incrément minimal"
+CLM.L["Minimal increment"] = "Minimale Steigerung"
 -- Modules/RosterManager/Options.lua:777
-CLM.L["Minimal value increment for open auction mode."] = "Augmentation de valeur minimale pour le mode d'enchères ouvertes."
+CLM.L["Minimal value increment for open auction mode."] = "Minimaler Steigerungswert bei offener Auktion."
 -- Migration.lua:65
-CLM.L["Minimap Icon -> Configuration -> Wipe events"] = "Icône de la minicarte -> Configuration -> Effacer les événements"
+CLM.L["Minimap Icon -> Configuration -> Wipe events"] = "Minimapsymbol -> Konfiguration -> Events löschen"
 -- Modules/ProfileManager/GUI.lua:165
-CLM.L["Minimum Level"] = "Niveau minimum"
+CLM.L["Minimum Level"] = "Minimum Level"
 -- Modules/AuctionManager/AuctionManager.lua:237
-CLM.L["Minimum bid: %s."] = "Enchère minimale : %s."
+CLM.L["Minimum bid: %s."] = "Minimumgebot: %s."
 -- Modules/ProfileManager/GUI.lua:166
-CLM.L["Minimum level of players to fill from guild."] = "Niveau minimum de joueurs à remplir de guilde."
+CLM.L["Minimum level of players to fill from guild."] = "Minimum Level der Spieler um von Gilde aufzufüllen."
 -- Global/GlobalSlashCommands.lua:73
-CLM.L["Missing profile %s"] = "Profil manquant %s"
+CLM.L["Missing profile %s"] = "Kein Profil %s"
 -- Global/GlobalSlashCommands.lua:51
-CLM.L["Missing roster name and you are not in raid"] = "Nom de la liste manquant et vous n'êtes pas en raid"
+CLM.L["Missing roster name and you are not in raid"] = "Rostername fehlt und du bist nicht in einem Schlachtzug"
 -- Global/GlobalSlashCommands.lua:55
-CLM.L["Missing roster name. Using Raid Info"] = "Nom de liste manquant. Utilisation des informations de raid"
+CLM.L["Missing roster name. Using Raid Info"] = "Rostername fehlt. Benutze Schlachtzug Information"
 -- Modules/RaidManager/RaidManager.lua:377
 -- Modules/RaidManager/RaidManager.lua:433
 -- Modules/RaidManager/RaidManager.lua:462
 -- Modules/RaidManager/RaidManager.lua:491
 -- Modules/RaidManager/RaidManager.lua:525
-CLM.L["Missing valid raid"] = "Raid valide manquant"
+CLM.L["Missing valid raid"] = "Gültiger Schlachtzug fehlt"
 -- Modules/AutoAwardManager/EncounterIDs.lua:58
 CLM.L["Moam"] = "Moam"
 -- Modules/AutoAwardManager/EncounterIDs.lua:126
-CLM.L["Molten Core"] = "Cœur du Magma"
+CLM.L["Molten Core"] = "Geschmolzener Kern"
 -- Modules/AutoAwardManager/EncounterIDs.lua:63
 CLM.L["Moroes"] = "Moroes"
 -- Modules/AutoAwardManager/EncounterIDs.lua:80
-CLM.L["Morogrim Tidewalker"] = "Morogrim Marcheur-des-flots"
+CLM.L["Morogrim Tidewalker"] = "Morogrim Gezeitenwandler"
 -- Modules/AutoAwardManager/EncounterIDs.lua:92
-CLM.L["Mother Shahraz"] = "Mère Shahraz"
+CLM.L["Mother Shahraz"] = "Mutter Shahraz"
 -- Modules/AutoAwardManager/EncounterIDs.lua:101
 CLM.L["Nalorakk"] = "Nalorakk"
 -- Modules/RaidManager/GUI.lua:387
@@ -893,60 +893,60 @@ CLM.L["Nalorakk"] = "Nalorakk"
 -- Modules/RosterManager/GUI.lua:462
 -- Modules/RosterManager/Options.lua:488
 -- Modules/ProfileManager/GUI.lua:374
-CLM.L["Name"] = "Nom"
+CLM.L["Name"] = "Name"
 -- Modules/AutoAwardManager/EncounterIDs.lua:171
 CLM.L["Naxxramas"] = "Naxxramas"
 -- Modules/RosterManager/Roster.lua:724
 -- Modules/RosterManager/Roster.lua:756
-CLM.L["Neck"] = "Cou"
+CLM.L["Neck"] = "Hals"
 -- Modules/AutoAwardManager/EncounterIDs.lua:21
 CLM.L["Nefarian"] = "Nefarian"
 -- Modules/AuctionManager/AuctionManager.lua:659
-CLM.L["Negative bidders not allowed"] = "Enchérisseurs négatifs non autorisés"
+CLM.L["Negative bidders not allowed"] = "Negative Bieter nicht erlaubt"
 -- Modules/RosterManager/GUI.lua:316
-CLM.L["Negatives"] = "Négatifs"
+CLM.L["Negatives"] = "Negative"
 -- Modules/AutoAwardManager/EncounterIDs.lua:69
-CLM.L["Netherspite"] = "Dédain-du-Néant"
+CLM.L["Netherspite"] = "Nethergroll"
 -- Modules/Changelog/GUI.lua:40
-CLM.L["Never show changelog"] = "Ne jamais afficher le journal des modifications"
+CLM.L["Never show changelog"] = "Niemals das Änderungsprotokoll (Changelog) zeigen"
 -- Modules/AuctionManager/AuctionManager.lua:414
-CLM.L["New highest bid: %d DKP %s"] = "Nouvelle enchère la plus élevée : %d DKP %s"
+CLM.L["New highest bid: %d DKP %s"] = "Neues Höchstgebot: %d DKP %s"
 -- Migration.lua:91
-CLM.L["New roster: [%s]"] = "Nouvelle liste : [%s]"
+CLM.L["New roster: [%s]"] = "Neues Roster: [%s]"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:69
-CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."] = "La nouvelle version %s de Classic Loot Manager est disponible. Pour une meilleure expérience, veuillez mettre à jour l'Addon."
+CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."] = "Neue Version %s von Classic Loot Manager vorhanden. Für das beste Erlebnis, bitte das Addon updaten."
 -- Modules/AutoAwardManager/EncounterIDs.lua:72
-CLM.L["Nightbane"] = "Plaie-de-nuit"
+CLM.L["Nightbane"] = "Der Schrecken der Nacht"
 -- Modules/AuctionManager/AuctionManager.lua:665
-CLM.L["No auction in progress"] = "Aucune enchère en cours"
+CLM.L["No auction in progress"] = "Keine Auktion im Gange"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:50
 -- Modules/AuctionHistoryManager/GUI.lua:152
-CLM.L["No bids"] = "Aucune enchère"
+CLM.L["No bids"] = "Keine Gebote"
 -- Modules/ProfileManager/GUI.lua:477
-CLM.L["No profile for "] = "Pas de profil pour "
+CLM.L["No profile for "] = "Kein Profil für"
 -- Utils.lua:452
-CLM.L["No"] = "Non"
+CLM.L["No"] = "Nein"
 -- Modules/RosterManager/Roster.lua:746
 -- Modules/RosterManager/Roster.lua:778
-CLM.L["Non-equippable"] = "Non-équipable"
+CLM.L["Non-equippable"] = "Nicht ausrüstbar"
 -- Modules/RaidManager/GUI.lua:430
 -- Modules/RosterManager/GUI.lua:191
 -- Modules/PointManager/GUI.lua:141
 -- Modules/ProfileManager/GUI.lua:123
-CLM.L["None"] = "Aucun"
+CLM.L["None"] = "Kein"
 -- Modules/AuctionManager/AuctionManager.lua:658
-CLM.L["Not in a roster"] = "Pas dans une liste"
+CLM.L["Not in a roster"] = "Nicht in einem Roster"
 -- Modules/RaidManager/GUI.lua:524
 -- Modules/RosterManager/GUI.lua:501
 -- Modules/RosterManager/GUI.lua:544
-CLM.L["Not in raid"] = "Pas en raid"
+CLM.L["Not in raid"] = "Nicht in einem Schlachtzug"
 -- Modules/RosterManager/GUI.lua:227
-CLM.L["Note to be added to award. Max 32 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."] = "Note à ajouter à l'attribution. 32 caractères maximum. Il est recommandé de ne pas inclure la date ni la raison sélectionnée ici. Si vous entrez l'ID de rencontre, il sera transformé en nom de boss."
--- Modules/AuctionManager/GUI.lua:280
+CLM.L["Note to be added to award. Max 32 characters. It is rre. If you will input encounter ID it will be transformed into boss name."] = "Notiz zum Gewinn hinzufügen. Maximal 32 Zeichen. Es ist rre. Wenn man die Boss-ID eingibt wird sie in den Bossnamen umgewandelt"
+-- Modules/AuctionMecommended to not include date nor selected reason heanager/GUI.lua:280
 -- Modules/AuctionManager/GUI.lua:286
 -- Modules/RosterManager/GUI.lua:225
 -- Modules/PointManager/GUI.lua:179
-CLM.L["Note"] = "Note"
+CLM.L["Note"] = "Notiz"
 -- Modules/AutoAwardManager/EncounterIDs.lua:38
 CLM.L["Noth the Plaguebringer"] = "Noth le Porte-peste"
 -- Modules/BiddingManager/GUI.lua:298
