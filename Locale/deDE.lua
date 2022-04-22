@@ -638,7 +638,7 @@ CLM.L["High Priestess Jeklik"] = "Hohepriesterin Jeklik"
 -- Modules/AutoAwardManager/EncounterIDs.lua:50
 CLM.L["High Priestess Mar'li"] = "Hohepriesterin Mar'li"
 -- Modules/AutoAwardManager/EncounterIDs.lua:86
-CLM.L["High Warlord Naj'entus"] = "GOberster Kriegsfürst Naj'entus"
+CLM.L["High Warlord Naj'entus"] = "Oberster Kriegsfürst Naj'entus"
 -- .:indirectly
 CLM.L["Hunter"] = "Jäger"
 -- Modules/AutoAwardManager/EncounterIDs.lua:76
@@ -652,7 +652,7 @@ CLM.L["Ignore"] = "Ignorieren"
 -- Modules/AutoAwardManager/EncounterIDs.lua:94
 CLM.L["Illidan Stormrage"] = "Illidan Sturmgrimm"
 -- Modules/BiddingManager/GUI.lua:249
-CLM.L["Immediately bid base item value."] = "Enchérissez immédiatement la valeur de l'article de base."
+CLM.L["Immediately bid base item value."] = "Sofort den Grunditemwert bieten."
 -- Modules/BiddingManager/GUI.lua:267
 CLM.L["Immediately bid max item value."] = "Sofort maximalen Gegenstandspreis bieten."
 -- Migration.lua:227
@@ -782,11 +782,11 @@ CLM.L["Logging"] = "Aufzeichnung"
 CLM.L["Loot Awards"] = "Gegenstands Gewinne"
 -- MinimapIcon.lua:31
 -- Modules/LootManager/GUI.lua:235
-CLM.L["Loot History"] = "Historique du butin"
+CLM.L["Loot History"] = "Loot History"
 -- MinimapIcon.lua:56
 -- Modules/LootQueueManager/GUI.lua:185
 -- Modules/LootQueueManager/LootQueueManager.lua:73
-CLM.L["Loot Queue"] = "File d'attente du butin"
+CLM.L["Loot Queue"] = "Loot Queue"
 -- Modules/AutoAwardManager/EncounterIDs.lua:4
 CLM.L["Lucifron"] = "Lucifron"
 -- Modules/AutoAwardManager/EncounterIDs.lua:110
@@ -801,27 +801,27 @@ CLM.L["Magmadar"] = "Magmadar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:248
 CLM.L["Magtheridon"] = "Magtheridon"
 -- Modules/AutoAwardManager/EncounterIDs.lua:64
-CLM.L["Maiden of Virtue"] = "Damoiselle de vertu"
+CLM.L["Maiden of Virtue"] = "Tugendhafte Maid"
 -- Modules/RosterManager/Roster.lua:739
 -- Modules/RosterManager/Roster.lua:771
-CLM.L["Main Hand"] = "Main principale"
+CLM.L["Main Hand"] = "Waffenhand"
 -- Modules/ProfileManager/GUI.lua:383
 CLM.L["Main"] = "Main"
 -- Modules/RosterManager/GUI.lua:111
 CLM.L["Mains"] = "Mains"
 -- Modules/AutoAwardManager/EncounterIDs.lua:12
-CLM.L["Majordomo Executus"] = "Chambellan Executus"
+CLM.L["Majordomo Executus"] = "Majordomus Exekutus"
 -- Modules/RosterManager/GUI.lua:211
 -- Modules/ProfileManager/GUI.lua:152
-CLM.L["Management"] = "Gestion"
+CLM.L["Management"] = "Management"
 -- Modules/ProfileManager/GUI.lua:442
-CLM.L["Manager"] = "Gestionnaire"
+CLM.L["Manager"] = "Manager"
 -- Modules/PointManager/PointManager.lua:398
-CLM.L["Manual adjustment"] = "Réglage manuel"
+CLM.L["Manual adjustment"] = "Manuelle Anpassung"
 -- Modules/ProfileManager/GUI.lua:241
-CLM.L["Mark as alt"] = "Marquer comme reroll"
+CLM.L["Mark as alt"] = "Als Twink markieren"
 -- Modules/ProfileManager/GUI.lua:242
-CLM.L["Marks selected profiles or everyone if none selected as alts of choosen player (from dropdown)."] = "Marque les profils sélectionnés ou tout le monde si aucun n'est sélectionné comme rerolls du joueur choisi (dans la liste déroulante)."
+CLM.L["Marks selected profiles or everyone if none selected as alts of choosen player (from dropdown)."] = "Markiert alle ausgewählten Profile oder alle, wenn keins markiert ist, als Twink des gewählten Spielers (aus dem Dropdown Menu)."
 -- Modules/BiddingManager/GUI.lua:266
 -- Modules/AuctionManager/GUI.lua:330
 -- Modules/RosterManager/Options.lua:388
