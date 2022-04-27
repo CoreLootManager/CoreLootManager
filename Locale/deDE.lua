@@ -1039,84 +1039,84 @@ CLM.L["Provide number of raids needed for 100% attendance in a weekly reset. Bet
 -- Modules/RosterManager/RosterManager.lua:289
 CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 - 1000 weeks. Defaults to 10. Requires /reload."] = "Anzahl der Wochen angeben welche für die Beteiligung angerechnet werden sollen. Zwischen 1 - 1000 Wochen. Voreingrstellt sind 10. Erfordert /reload."
 -- Global/GlobalSlashCommands.lua:126
-CLM.L["Prune profiles"] = "Tailler les profils"
+CLM.L["Prune profiles"] = "Profile löschen"
 -- Modules/RaidManager/GUI.lua:298
 -- Modules/RosterManager/Options.lua:720
-CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."] = "Mettez les joueurs quittant le raid sur le banc au lieu de les retirer. Pour les retirer complètement, ils devront être retirés manuellement du banc."
+CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."] = "Spieler welche den Schlachtzug verlassen auf die Bank setzten anstatt sie zu entfernen. Um sie vollständig zu entfernen, müssen sie manuell von der Bank (Standby) entfernt werden"
 -- Modules/RosterManager/Roster.lua:750
 -- Modules/RosterManager/Roster.lua:782
 CLM.L["Quiver"] = "Quiver"
 -- Modules/RosterManager/Roster.lua:640
-CLM.L["ROLL"] = "Jet de dés"
+CLM.L["ROLL"] = "Würfeln"
 -- Modules/AutoAwardManager/EncounterIDs.lua:95
-CLM.L["Rage Winterchill"] = "Rage Froidhiver"
+CLM.L["Rage Winterchill"] = "Furor Winterfrost"
 -- Modules/AutoAwardManager/EncounterIDs.lua:13
 CLM.L["Ragnaros"] = "Ragnaros"
 -- Modules/RaidManager/GUI.lua:211
-CLM.L["Raid Completion Bonus Value"] = "Valeur du bonus de fin de raid"
+CLM.L["Raid Completion Bonus Value"] = "Raid Abschluss Bonuswert"
 -- Modules/LedgerManager/GUI.lua:134
-CLM.L["Raid Completion Bonus value"] = "Valeur du bonus de fin de raid"
+CLM.L["Raid Completion Bonus value"] = "Raid Abschluss Bonuswert"
 -- Modules/RaidManager/GUI.lua:209
 -- Modules/RaidManager/GUI.lua:251
 -- Modules/RosterManager/Options.lua:607
 -- Modules/PointManager/PointManager.lua:393
 -- Modules/LedgerManager/GUI.lua:131
-CLM.L["Raid Completion Bonus"] = "Bonus de fin de raid"
+CLM.L["Raid Completion Bonus"] = "Raid Abschlussbonus"
 -- Modules/RaidManager/GUI.lua:258
 -- Modules/RosterManager/Options.lua:614
-CLM.L["Raid Completion Value"] = "Valeur de fin de raid"
+CLM.L["Raid Completion Value"] = "Raid Abschlusswert"
 -- Modules/RaidManager/GUI.lua:341
-CLM.L["Raid Name"] = "Nom du raid"
+CLM.L["Raid Name"] = "Raid Name"
 -- Global/GlobalConfigs.lua:102
-CLM.L["Raid Start/End"] = "Début/Fin du Raid"
+CLM.L["Raid Start/End"] = "Raid Beginn/Ende"
 -- Global/GlobalConfigs.lua:98
-CLM.L["Raid Warnings"] = "Avertissements de raid"
+CLM.L["Raid Warnings"] = "Schlachtzug Warnungen"
 -- Modules/RaidManager/RaidManager.lua:455
-CLM.L["Raid [%s] ended"] = "Raid [%s] terminé"
+CLM.L["Raid [%s] ended"] = "Raid [%s] beendet"
 -- Modules/RaidManager/RaidManager.lua:425
-CLM.L["Raid [%s] started"] = "Le raid [%s] a commencé"
+CLM.L["Raid [%s] started"] = "Le raid [%s] gestartet"
 -- Modules/RaidManager/RaidManager.lua:367
 -- Modules/RaidManager/RaidManager.lua:389
 -- Modules/RaidManager/RaidManager.lua:445
 -- Modules/RaidManager/RaidManager.lua:478
 -- Modules/RaidManager/RaidManager.lua:503
 -- Modules/RaidManager/RaidManager.lua:537
-CLM.L["Raid management is disabled during time traveling."] = "La gestion des raids est désactivée pendant le Time-traveling"
+CLM.L["Raid management is disabled during time traveling."] = "Raid Management ist abgeschaltet wärend Time Travling"
 -- Global/GlobalSlashCommands.lua:57
 CLM.L["Raid: %s Roster: %s"] = "Raid : %s Roster : %s"
 -- Modules/RosterManager/RosterManager.lua:270
-CLM.L["Raids needed in reset"] = "Raids nécessaires à la réinitialisation"
+CLM.L["Raids needed in reset"] = "Raids brauchten einen Neustart"
 -- MinimapIcon.lua:39
 -- Modules/RaidManager/GUI.lua:474
 CLM.L["Raids"] = "Raids"
 -- Modules/RosterManager/Roster.lua:745
 -- Modules/RosterManager/Roster.lua:777
-CLM.L["Ranged (wands)"] = "À distance (baguettes)"
+CLM.L["Ranged (wands)"] = "Distanz (Zauberstäbe)"
 -- Modules/RosterManager/Roster.lua:744
 -- Modules/RosterManager/Roster.lua:776
-CLM.L["Ranged"] = "À distance"
+CLM.L["Ranged"] = "Distanz"
 -- Modules/ProfileManager/GUI.lua:384
 CLM.L["Rank"] = "Rang"
 -- Modules/ProfileManager/GUI.lua:156
-CLM.L["Ranks"] = "Rangs"
+CLM.L["Ranks"] = "Ränge"
 -- Modules/LootQueueManager/LootQueueManager.lua:85
 -- Global/GlobalConfigs.lua:71
-CLM.L["Rare"] = "Rare"
+CLM.L["Rare"] = "Selten"
 -- Modules/AutoAwardManager/EncounterIDs.lua:14
-CLM.L["Razorgore the Untamed"] = "Tranchetripe l'Indompté"
+CLM.L["Razorgore the Untamed"] = "Razorgore der Ungezähmte"
 -- Modules/RosterManager/GUI.lua:240
 -- Modules/PointManager/GUI.lua:94
-CLM.L["Reason"] = "Raison"
+CLM.L["Reason"] = "Grund"
 -- ClassicLootManager.lua:256
-CLM.L["Redo action"] = "Refaire l'action"
+CLM.L["Redo action"] = "Aktion erneut ausführen"
 -- Modules/RosterManager/Roster.lua:751
 -- Modules/RosterManager/Roster.lua:783
-CLM.L["Relic"] = "Relique"
+CLM.L["Relic"] = "Relikt"
 -- Modules/AutoAwardManager/EncounterIDs.lua:91
-CLM.L["Reliquary of Souls"] = "Reliquaire des âmes"
+CLM.L["Reliquary of Souls"] = "Reliquiar der Seelen"
 -- Modules/AuctionHistoryManager/GUI.lua:91
 -- Modules/LootQueueManager/GUI.lua:86
-CLM.L["Remove all"] = "Enlever tout"
+CLM.L["Remove all"] = "Alle entfernen"
 -- Modules/AuctionHistoryManager/GUI.lua:67
 CLM.L["Remove auction"] = "Supprimer l'enchère"
 -- Modules/RosterManager/GUI.lua:588
