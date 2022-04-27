@@ -1264,39 +1264,39 @@ CLM.L["Stale"] = "Abgestanden"
 CLM.L["Standby Bonus"] = "Bonus d'attente"
 -- Modules/RaidManager/GUI.lua:428
 -- Modules/RosterManager/GUI.lua:114
-CLM.L["Standby"] = "En attente"
+CLM.L["Standby"] = "Standby"
 -- MinimapIcon.lua:27
 -- Modules/RosterManager/GUI.lua:680
 -- Modules/LootManager/GUI.lua:413
-CLM.L["Standings"] = "Classement"
+CLM.L["Standings"] = "Standings"
 -- Modules/RaidManager/GUI.lua:124
-CLM.L["Start selected raid"] = "Commencer le raid sélectionné"
+CLM.L["Start selected raid"] = "Ausgwählten Raid starten"
 -- Modules/AuctionManager/GUI.lua:369
-CLM.L["Start"] = "Début"
+CLM.L["Start"] = "Starten"
 -- Modules/LedgerManager/GUI.lua:415
-CLM.L["Started raid %s"] = "Raid commencé %s"
+CLM.L["Started raid %s"] = "Raid %s gestartet"
 -- Modules/RaidManager/GUI.lua:388
 CLM.L["Status"] = "Status"
 -- Modules/AuctionManager/GUI.lua:369
-CLM.L["Stop"] = "Stop"
+CLM.L["Stop"] = "Stopp"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
-CLM.L["Store bids"] = "Enchères du magasin"
+CLM.L["Store bids"] = "Gebote speichern"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:66
-CLM.L["Store finished auction bids information."] = "Store finished auction bids information."
+CLM.L["Store finished auction bids information."] = "Vollendete Auktionsinformationen speichern."
 -- Modules/AutoAwardManager/EncounterIDs.lua:10
-CLM.L["Sulfuron Harbinger"] = "Messager de Sulfuron"
+CLM.L["Sulfuron Harbinger"] = "Sulfuronherold"
 -- Modules/AutoAwardManager/EncounterIDs.lua:315
-CLM.L["Sunwell Plateau"] = "Plateau du Puits de soleil"
+CLM.L["Sunwell Plateau"] = "Sonnenbrunnenplateau"
 -- Modules/AuctionManager/AuctionManager.lua:121
-CLM.L["Suppress incoming whispers"] = "Supprimer les chuchotements entrants"
+CLM.L["Suppress incoming whispers"] = "Eingehende Whisper unterdrücken"
 -- Modules/AuctionManager/AuctionManager.lua:130
-CLM.L["Suppress outgoing whispers"] = "Supprimer les chuchotements sortants"
+CLM.L["Suppress outgoing whispers"] = "Ausgehende Whisper unterdrücken"
 -- Modules/Changelog/GUI.lua:81
-CLM.L["Suppresses changelog display until new version is released"] = "Supprime l'affichage du journal des modifications jusqu'à ce qu'une nouvelle version soit publiée"
+CLM.L["Suppresses changelog display until new version is released"] = "Änderungsprotokoll Anzeige unterdrücken bis eine neue Version veröffentlicht wurde"
 -- Modules/AutoAwardManager/EncounterIDs.lua:87
 CLM.L["Supremus"] = "Supremus"
 -- MinimapIcon.lua:136
-CLM.L["Sync ongoing"] = "Synchronisation en cours"
+CLM.L["Sync ongoing"] = "Synchronisation im Gange"
 -- Modules/RosterManager/Options.lua:417
 CLM.L["TBC"] = "TBC"
 -- Modules/RosterManager/Roster.lua:730
@@ -1639,5 +1639,5 @@ CLM.L["selected"] = "choisi"
 -- Global/GlobalSlashCommands.lua:138
 CLM.L["unguilded"] = "sans guilde"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:62
-CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Ваш Classic Loot Manager est considérablement obsolète.|r La communication du module complémentaire a été désactivée. La version %s est disponible. Veuillez mettre à jour dès que possible."
+CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Dein Classic Loot Manager ist bedeutend nicht aktuell.|r AddOn Kommunikation wurde abgeschaltet. Version %s isz verfügbar. Bitte schnellstmöglich uf den neuesten Stand bringen"
 end
