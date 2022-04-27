@@ -1230,36 +1230,36 @@ CLM.L["Shade of Akama"] = "Akamas Schemen"
 -- Modules/AutoAwardManager/EncounterIDs.lua:68
 CLM.L["Shade of Aran"] = "Arans Schemen"
 -- .:indirectly
-CLM.L["Shaman"] = "Chaman"
+CLM.L["Shaman"] = "Schamane"
 -- Modules/AutoAwardManager/EncounterIDs.lua:9
 CLM.L["Shazzrah"] = "Shazzrah"
 -- Modules/RosterManager/Roster.lua:743
 -- Modules/RosterManager/Roster.lua:775
-CLM.L["Shield"] = "Bouclier"
+CLM.L["Shield"] = "Schild"
 -- Modules/RosterManager/Roster.lua:726
 -- Modules/RosterManager/Roster.lua:758
 CLM.L["Shirt"] = "Chemise"
 -- Modules/RosterManager/Roster.lua:725
 -- Modules/RosterManager/Roster.lua:757
-CLM.L["Shoulder"] = "Épaule"
+CLM.L["Shoulder"] = "Schulter"
 -- Modules/AutoAwardManager/EncounterIDs.lua:23
-CLM.L["Silithid Royalty"] = "Bug Trio"
+CLM.L["Silithid Royalty"] = "Das Käfer-Trio"
 -- Modules/RosterManager/Options.lua:740
-CLM.L["Single-Priced (static) or Ascending (in range of min-max) item value."] = "Valeur de l'article à prix unique (statique) ou ascendante (dans la plage min-max)."
+CLM.L["Single-Priced (static) or Ascending (in range of min-max) item value."] = "Einzelpreis (statisch) oder aufsteigend (in Nähe von min-max)."
 -- Modules/RosterManager/Roster.lua:681
-CLM.L["Single-Priced"] = "Prix unique"
+CLM.L["Single-Priced"] = "Einzelpreis"
 -- Migration.lua:160
-CLM.L["Skipping %s"] = "%s ignoré"
+CLM.L["Skipping %s"] = "%s überspringen"
 -- Migration.lua:236
-CLM.L["Skipping CommunityDKP"] = "Ignorer CommunityDKP"
+CLM.L["Skipping CommunityDKP"] = "CommunityDKP überspringen"
 -- Global/GlobalSlashCommands.lua:158
-CLM.L["Spec guild request"] = "Demande spé de la guide"
+CLM.L["Spec guild request"] = "Gildenspezifikation anfordern"
 -- Modules/AuctionManager/GUI.lua:171
 -- Modules/RosterManager/GUI.lua:471
 -- Modules/ProfileManager/GUI.lua:382
-CLM.L["Spec"] = "Spécification"
+CLM.L["Spec"] = "Spezifikation"
 -- Modules/RaidManager/RaidManager.lua:805
-CLM.L["Stale"] = "Périmé"
+CLM.L["Stale"] = "Abgestanden"
 -- Modules/PointManager/PointManager.lua:395
 CLM.L["Standby Bonus"] = "Bonus d'attente"
 -- Modules/RaidManager/GUI.lua:428
