@@ -1301,26 +1301,26 @@ CLM.L["Sync ongoing"] = "Synchronisation im Gange"
 CLM.L["TBC"] = "TBC"
 -- Modules/RosterManager/Roster.lua:730
 -- Modules/RosterManager/Roster.lua:762
-CLM.L["Tabard"] = "Tabard"
+CLM.L["Tabard"] = "Wappenrock"
 -- Modules/RosterManager/Options.lua:784
 -- Modules/LedgerManager/GUI.lua:176
-CLM.L["Tax"] = "Impôt"
+CLM.L["Tax"] = "Steuer"
 -- Modules/AutoAwardManager/EncounterIDs.lua:267
-CLM.L["Tempest Keep"] = "Donjon de la Tempête"
+CLM.L["Tempest Keep"] = "Festung der Stürme"
 -- Modules/AutoAwardManager/EncounterIDs.lua:156
 CLM.L["Temple of Ahn'Qiraj"] = "Ahn'Qiraj"
 -- Modules/AutoAwardManager/EncounterIDs.lua:67
-CLM.L["Terestian Illhoof"] = "Terestian Malsabot"
+CLM.L["Terestian Illhoof"] = "Terestian Siechhuf"
 -- Modules/AutoAwardManager/EncounterIDs.lua:89
-CLM.L["Teron Gorefiend"] = "Teron Fielsang"
+CLM.L["Teron Gorefiend"] = "Teron Blutschatten"
 -- Modules/AutoAwardManager/EncounterIDs.lua:37
 CLM.L["Thaddius"] = "Thaddius"
 -- Modules/AutoAwardManager/EncounterIDs.lua:66
-CLM.L["The Curator"] = "Le conservateur"
+CLM.L["The Curator"] = "Der Kurator"
 -- Modules/AutoAwardManager/EncounterIDs.lua:43
-CLM.L["The Four Horsemen"] = "Coffre des quatre cavaliers"
+CLM.L["The Four Horsemen"] = "Die Vier Reiter"
 -- Modules/AutoAwardManager/EncounterIDs.lua:93
-CLM.L["The Illidari Council"] = "Le conseil illidari"
+CLM.L["The Illidari Council"] = "Der Rat der Illidari"
 -- Modules/AutoAwardManager/EncounterIDs.lua:77
 CLM.L["The Lurker Below"] = "Le Rôdeur d'En bas"
 -- Modules/AutoAwardManager/EncounterIDs.lua:22
@@ -1574,70 +1574,70 @@ CLM.L["[Raid Start]: "] = "[Début du Raid]: "
 -- Modules/LedgerManager/GUI.lua:421
 CLM.L["[Raid Update]: "] = "[Raid mis a jour]: "
 -- Modules/LedgerManager/GUI.lua:230
-CLM.L["[Remove Profile]: "] = "[Profile Supprimé]: "
+CLM.L["[Remove Profile]: "] = "[Profile Entfernen]: "
 -- Modules/LedgerManager/GUI.lua:264
-CLM.L["[Rename Roster]: "] = "[Renommer Roster]: "
+CLM.L["[Rename Roster]: "] = "[Roster Umbenennen]: "
 -- Modules/LedgerManager/GUI.lua:327
-CLM.L["[Roster Boss Kill Bonus]: "] = "[Roster - Bonus de boss tué]: "
+CLM.L["[Roster Boss Kill Bonus]: "] = "[Roster - Boss Kill Bonus]: "
 -- Modules/LedgerManager/GUI.lua:277
-CLM.L["[Roster Config]: "] = "[Configuration du Roster]: "
+CLM.L["[Roster Config]: "] = "[Roster Konfiguration]: "
 -- Modules/LedgerManager/GUI.lua:315
-CLM.L["[Roster Copy]: "] = "[Copie du Roster]: "
+CLM.L["[Roster Copy]: "] = "[Roster Kopie]: "
 -- Modules/LedgerManager/GUI.lua:290
-CLM.L["[Roster Default Slot Value]: "] = "[Valeur du Roster par défaut]: "
+CLM.L["[Roster Default Slot Value]: "] = "[Roster Voreinstellung Platz Wert]: "
 -- Modules/LedgerManager/GUI.lua:297
 -- Modules/LedgerManager/GUI.lua:303
-CLM.L["[Roster Item Value Override]: "] = "[Remplacement de la valeur de l'objet]: "
+CLM.L["[Roster Item Value Override]: "] = "[Roster Gegenstand Wert Überschreiben]: "
 -- Modules/LedgerManager/GUI.lua:307
-CLM.L["[Roster Update Profiles]: "] = "[Mettre à jour les profils du Roster]: "
+CLM.L["[Roster Update Profiles]: "] = "[Roster Aktualisierung Profile]: "
 -- Modules/LedgerManager/GUI.lua:222
-CLM.L["[Update Profile]: "] = "[Mettre à jour le profil]: "
+CLM.L["[Update Profile]: "] = "[Profile aktualisieren]: "
 -- Modules/LedgerManager/GUI.lua:318
-CLM.L["[config] "] = "[Configuration] "
+CLM.L["[config] "] = "[Konfiguration] "
 -- Modules/LedgerManager/GUI.lua:320
-CLM.L["[item values] "] = "[Valeur de l'objet] "
+CLM.L["[item values] "] = "[Gegenstandswert] "
 -- Modules/LedgerManager/GUI.lua:321
-CLM.L["[profiles] "] = "[Profiles] "
+CLM.L["[profiles] "] = "[Profile] "
 -- Modules/LedgerManager/GUI.lua:319
-CLM.L["[slot defaults] "] = "[Emplacements par défaut] "
+CLM.L["[slot defaults] "] = "[Platz Voreinstellung] "
 -- Global/GlobalChatMessageHandlers.lua:63
-CLM.L["accepted"] = "Accepté"
+CLM.L["accepted"] = "akzeptieren"
 -- Modules/RosterManager/GUI.lua:518
 -- Modules/RosterManager/GUI.lua:527
-CLM.L["add"] = "ajouter"
+CLM.L["add"] = "hinzufügen"
 -- Modules/RosterManager/GUI.lua:103
-CLM.L["all"] = "tout"
+CLM.L["all"] = "Alle"
 -- Modules/BiddingManager/BiddingManager.lua:219
 -- Modules/BiddingManager/BiddingManager.lua:233
 -- Global/GlobalChatMessageHandlers.lua:50
-CLM.L["cancel"] = "annuler"
+CLM.L["cancel"] = "abbrechen"
 -- Modules/RosterManager/GUI.lua:527
 -- Modules/RosterManager/GUI.lua:570
-CLM.L["created"] = "créé"
+CLM.L["created"] = "erstellt"
 -- Global/GlobalChatMessageHandlers.lua:63
-CLM.L["denied"] = "refusé"
+CLM.L["denied"] = "ablehnen"
 -- Modules/LedgerManager/GUI.lua:369
-CLM.L["excluding negatives "] = "A l'exclusion des négatifs"
+CLM.L["excluding negatives "] = "Negative auslassen"
 -- Global/GlobalSlashCommands.lua:131
-CLM.L["level"] = "niveau"
+CLM.L["level"] = "Level"
 -- Global/GlobalChatMessageHandlers.lua:52
 CLM.L["pass"] = "passe"
 -- Modules/RosterManager/GUI.lua:518
 -- Modules/RosterManager/GUI.lua:561
-CLM.L["progressing"] = "progressant"
+CLM.L["progressing"] = "fortschreitend"
 -- Global/GlobalSlashCommands.lua:134
 CLM.L["rank"] = "rang"
 -- Modules/RosterManager/GUI.lua:561
 -- Modules/RosterManager/GUI.lua:570
-CLM.L["remove"] = "retirer"
+CLM.L["remove"] = "entfernen"
 -- Global/GlobalChatMessageHandlers.lua:102
-CLM.L["roster"] = "liste"
+CLM.L["roster"] = "Roster"
 -- Global/GlobalChatMessageHandlers.lua:102
-CLM.L["rosters"] = "listes"
+CLM.L["rosters"] = "Roster"
 -- Modules/RosterManager/GUI.lua:105
-CLM.L["selected"] = "choisi"
+CLM.L["selected"] = "ausgewählt"
 -- Global/GlobalSlashCommands.lua:138
-CLM.L["unguilded"] = "sans guilde"
+CLM.L["unguilded"] = "Ohne Gilde"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:62
 CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Dein Classic Loot Manager ist bedeutend nicht aktuell.|r AddOn Kommunikation wurde abgeschaltet. Version %s isz verfügbar. Bitte schnellstmöglich uf den neuesten Stand bringen"
 end
