@@ -1168,40 +1168,40 @@ CLM.L["Round to selected number of decimals"] = "Auf ausgewählte Dezimalstellen
 -- Modules/LedgerManager/GUI.lua:155
 CLM.L["Round to"] = "Aufrunden auf"
 -- Modules/RosterManager/Options.lua:510
-CLM.L["Rounding"] = "Arrondi"
+CLM.L["Rounding"] = "Runden"
 -- Modules/AutoAwardManager/EncounterIDs.lua:208
-CLM.L["Ruins of Ahn'Qiraj"] = "Ruines d'Ahn'Qiraj"
+CLM.L["Ruins of Ahn'Qiraj"] = "Die Ruinen von'Ahn'Qiraj"
 -- Modules/RosterManager/Roster.lua:641
 CLM.L["SK"] = "SK"
 -- Modules/RosterManager/Options.lua:663
 -- Modules/LedgerManager/GUI.lua:170
-CLM.L["Same zone only"] = "Même zone uniquement"
+CLM.L["Same zone only"] = "Nur in selber Zone"
 -- MinimapIcon.lua:142
-CLM.L["Sandbox mode"] = "Sandbox mode"
+CLM.L["Sandbox mode"] = "Sandbox Modus"
 -- Modules/AutoAwardManager/EncounterIDs.lua:44
 CLM.L["Sapphiron"] = "Saphiron"
 -- Modules/RosterManager/Roster.lua:660
-CLM.L["Sealed"] = "Scellé"
+CLM.L["Sealed"] = "Geschlossen"
 -- Modules/RosterManager/GUI.lua:149
-CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."] = "Rechercher des noms de joueurs. Séparez les multiples par une virgule ','. 3 caractères minimum. Remplace le filtrage."
+CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."] = "Nach Spielernamen suchen. Mehrere durch Komma "," unterteilen. Mindestens 3 Zeichen. Überschreibt das Filtern."
 -- Modules/RosterManager/GUI.lua:148
 -- Modules/LootManager/GUI.lua:130
-CLM.L["Search"] = "Chercher"
+CLM.L["Search"] = "Suchen"
 -- Modules/RosterManager/GUI.lua:178
 -- Modules/ProfileManager/GUI.lua:111
-CLM.L["Select all classes."] = "Sélectionnez toutes les classes."
+CLM.L["Select all classes."] = "Alle Klassen auswählen."
 -- Modules/ProfileManager/GUI.lua:231
-CLM.L["Select character to be marked as main for alt-main linking."] = "Sélectionnez le caractère à marquer comme principal pour le lien reroll-main."
+CLM.L["Select character to be marked as main for alt-main linking."] = "Charakter auswählen um als Main zu markieren für Alt-Twink verlinkung."
 -- Modules/BiddingManager/GUI.lua:154
-CLM.L["Select custom button mode"] = "Sélectionnez le mode bouton personnalisé"
+CLM.L["Select custom button mode"] = "Benutzerdefinierter Knöpfe Modus auswählen"
 -- Modules/Logger/Logger.lua:20
-CLM.L["Select logging level for troubleshooting"] = "Sélectionnez le niveau du journal pour le dépannage"
+CLM.L["Select logging level for troubleshooting"] = "Protokollierungsgrad für Fehlerbehebung auswählen"
 -- Global/GlobalConfigs.lua:64
-CLM.L["Select loot rarity for the annoucement to raid."] = "Sélectionnez la rareté du butin pour l'annonce du raid."
+CLM.L["Select loot rarity for the annoucement to raid."] = "Loot-Rarität für Ankündigung im Schlachtzug auswählen."
 -- Modules/LootQueueManager/LootQueueManager.lua:78
-CLM.L["Select loot rarity for the tracking unauctioned loot."] = "Sélectionnez la rareté du butin pour le suivi du butin non mis aux enchères."
+CLM.L["Select loot rarity for the tracking unauctioned loot."] = "Loot-Rarität auswählen um nicht auktionierte Gegenstände zu erfassen."
 -- Modules/ProfileManager/GUI.lua:230
-CLM.L["Select main"] = "Sélectionnez Main"
+CLM.L["Select main"] = "Main auswählen"
 -- Modules/PointManager/GUI.lua:117
 -- Modules/LootManager/GUI.lua:122
 CLM.L["Select player"] = "Sélectionner un joueur"
