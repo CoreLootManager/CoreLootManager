@@ -1204,31 +1204,31 @@ CLM.L["Select loot rarity for the tracking unauctioned loot."] = "Loot-Rarität 
 CLM.L["Select main"] = "Main auswählen"
 -- Modules/PointManager/GUI.lua:117
 -- Modules/LootManager/GUI.lua:122
-CLM.L["Select player"] = "Sélectionner un joueur"
+CLM.L["Select player"] = "Spieler auswählen"
 -- Modules/ProfileManager/GUI.lua:272
-CLM.L["Select roster to add profiles to."] = "Sélectionner la liste à laquelle ajouter des profils."
+CLM.L["Select roster to add profiles to."] = "Roster auwählen zu welchem Profile hinzugefügt werden sollen."
 -- Modules/RaidManager/GUI.lua:319
-CLM.L["Select roster to create raid for."] = "Sélectionner la liste pour laquelle créer un raid."
+CLM.L["Select roster to create raid for."] = "Roster zum Raid erstellen auswählen."
 -- Modules/RaidManager/GUI.lua:318
 -- Modules/RosterManager/GUI.lua:486
 -- Modules/PointManager/GUI.lua:108
 -- Modules/ProfileManager/GUI.lua:271
 -- Modules/LootManager/GUI.lua:113
-CLM.L["Select roster"] = "Sélectionner la liste"
+CLM.L["Select roster"] = "Roster auswählen"
 -- Modules/RosterManager/Options.lua:679
-CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "Sélectionnez le fuseau horaire de réinitialisation hebdomadaire. UE : Mercredi 07h00 GMT ou États-Unis : Mar 15h00 GMT"
+CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "Wöchentliche Reset Zeitzone auswählen. EU: Mi 07:00 GMT oder US: Die 15:00 GMT"
 -- Modules/AutoAwardManager/EncounterIDs.lua:255
-CLM.L["Serpentshrine Cavern"] = "Caverne du sanctuaire du Serpent"
+CLM.L["Serpentshrine Cavern"] = "Höhle des Schlangenschreins"
 -- Modules/LedgerManager/GUI.lua:376
-CLM.L["Set %s DKP to %s players for %s in <%s>"] = "Définir %s DKP sur %s joueurs pour %s dans <%s>"
+CLM.L["Set %s DKP to %s players for %s in <%s>"] = "Bestimme %s DKP für %s Spieler für %s in <%s>"
 -- Migration.lua:359
-CLM.L["Set DKP for %s players for team to %s"] = "Définir DKP pour %s joueurs pour l'équipe sur %s"
+CLM.L["Set DKP for %s players for team to %s"] = "Bestimme DKP für %s Spieler im Team für %s"
 -- Modules/RaidManager/GUI.lua:342
-CLM.L["Set raid name"] = "Définir le nom du raid"
+CLM.L["Set raid name"] = "Raidname bestimmen"
 -- Modules/AutoAwardManager/EncounterIDs.lua:88
-CLM.L["Shade of Akama"] = "Ombre d'Akama"
+CLM.L["Shade of Akama"] = "Akamas Schemen"
 -- Modules/AutoAwardManager/EncounterIDs.lua:68
-CLM.L["Shade of Aran"] = "L'ombre d'Aran"
+CLM.L["Shade of Aran"] = "Arans Schemen"
 -- .:indirectly
 CLM.L["Shaman"] = "Chaman"
 -- Modules/AutoAwardManager/EncounterIDs.lua:9
