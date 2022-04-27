@@ -1150,23 +1150,23 @@ CLM.L["Request standby"] = "Standby beantragen"
 -- Global/GlobalSlashCommands.lua:205
 CLM.L["Reset gui positions"] = "Réinitialiser les positions de l'interface graphique"
 -- Modules/RaidManager/GUI.lua:108
-CLM.L["Revoke standby"] = "Révoquer la mise en veille"
+CLM.L["Revoke standby"] = "Standby widerrufen"
 -- .:indirectly
-CLM.L["Rogue"] = "Voleur"
+CLM.L["Rogue"] = "Schurke"
 -- Modules/RosterManager/Options.lua:841
-CLM.L["Roster Name"] = "Nom de la liste"
+CLM.L["Roster Name"] = "Rostername"
 -- Modules/RosterManager/Options.lua:840
-CLM.L["Roster name"] = "Nom de la liste"
+CLM.L["Roster name"] = "Rostername"
 -- Modules/RaidManager/GUI.lua:389
-CLM.L["Roster"] = "Liste"
+CLM.L["Roster"] = "Roster"
 -- Modules/ConfigManager/ConfigManager.lua:132
 -- Modules/ConfigManager/ConfigManager.lua:138
 -- Modules/ConfigManager/ConfigManager.lua:144
-CLM.L["Rosters"] = "Listes"
+CLM.L["Rosters"] = "Roster"
 -- Modules/RosterManager/Options.lua:511
-CLM.L["Round to selected number of decimals"] = "Arrondir au nombre de décimales sélectionné"
+CLM.L["Round to selected number of decimals"] = "Auf ausgewählte Dezimalstellen aufrunden"
 -- Modules/LedgerManager/GUI.lua:155
-CLM.L["Round to"] = "Arrondir à"
+CLM.L["Round to"] = "Aufrunden auf"
 -- Modules/RosterManager/Options.lua:510
 CLM.L["Rounding"] = "Arrondi"
 -- Modules/AutoAwardManager/EncounterIDs.lua:208
