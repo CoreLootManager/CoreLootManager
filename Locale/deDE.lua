@@ -1118,35 +1118,35 @@ CLM.L["Reliquary of Souls"] = "Reliquiar der Seelen"
 -- Modules/LootQueueManager/GUI.lua:86
 CLM.L["Remove all"] = "Alle entfernen"
 -- Modules/AuctionHistoryManager/GUI.lua:67
-CLM.L["Remove auction"] = "Supprimer l'enchère"
+CLM.L["Remove auction"] = "Auktion entfernen"
 -- Modules/RosterManager/GUI.lua:588
-CLM.L["Remove from roster"] = "Retirer de la liste"
+CLM.L["Remove from roster"] = "Vom Roster löschen"
 -- Modules/RosterManager/GUI.lua:541
-CLM.L["Remove from standby"] = "Retirer du mode veille"
+CLM.L["Remove from standby"] = "Von Standby entfernen"
 -- Modules/LootQueueManager/GUI.lua:73
-CLM.L["Remove item"] = "Retirer l'objet"
+CLM.L["Remove item"] = "Gegenstand entfernen"
 -- Modules/LedgerManager/GUI.lua:247
-CLM.L["Remove linking of "] = "Supprimer le lien de "
+CLM.L["Remove linking of "] = "Verknüpfung löschen von"
 -- Modules/AuctionHistoryManager/GUI.lua:80
-CLM.L["Remove old"] = "Supprimer l'ancien"
+CLM.L["Remove old"] = "Alt entfernen"
 -- Modules/RosterManager/Options.lua:556
-CLM.L["Remove roster"] = "Supprimer la liste"
+CLM.L["Remove roster"] = "Roster entfernen"
 -- Modules/RaidManager/GUI.lua:171
-CLM.L["Remove selected raid"] = "Supprimer le raid sélectionné"
+CLM.L["Remove selected raid"] = "Ausgewählten Raid entfernen"
 -- Modules/PointManager/GUI.lua:74
 -- Modules/LootManager/GUI.lua:68
 -- Modules/LedgerManager/GUI.lua:575
-CLM.L["Remove selected"] = "Supprimer la sélection"
+CLM.L["Remove selected"] = "Ausgewählt entfernen"
 -- Modules/RosterManager/Options.lua:562
 -- Modules/ProfileManager/GUI.lua:216
 -- Modules/LedgerManager/GUI.lua:309
-CLM.L["Remove"] = "Supprimer"
+CLM.L["Remove"] = "Entfernen"
 -- Modules/RosterManager/Options.lua:563
-CLM.L["Removes current roster."] = "Supprime la liste actuelle."
+CLM.L["Removes current roster."] = "Aktuelles Roster etnfernen."
 -- Modules/ProfileManager/GUI.lua:217
-CLM.L["Removes selected profiles or everyone if none selected."] = "Supprime les profils sélectionnés ou tout le monde si aucun n'est sélectionné."
+CLM.L["Removes selected profiles or everyone if none selected."] = "Ausgewählte Profile entfernen oder alle wenn keins ausgewählt ist."
 -- Modules/RaidManager/GUI.lua:96
-CLM.L["Request standby"] = "Demander une mise en veille"
+CLM.L["Request standby"] = "Standby beantragen"
 -- Global/GlobalSlashCommands.lua:205
 CLM.L["Reset gui positions"] = "Réinitialiser les positions de l'interface graphique"
 -- Modules/RaidManager/GUI.lua:108
