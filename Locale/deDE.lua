@@ -954,7 +954,7 @@ CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "
 -- Modules/BiddingManager/GUI.lua:296
 CLM.L["Notify that you are passing on the item."] = "Melden das man auf einen Gegenstand passt."
 -- Modules/LedgerManager/GUI.lua:52
-CLM.L["Num"] = "Nombre"
+CLM.L["Num"] = "Nummer"
 -- Modules/RosterManager/Roster.lua:740
 -- Modules/RosterManager/Roster.lua:772
 CLM.L["Off Hand"] = "Schildhand"
@@ -1322,40 +1322,40 @@ CLM.L["The Four Horsemen"] = "Die Vier Reiter"
 -- Modules/AutoAwardManager/EncounterIDs.lua:93
 CLM.L["The Illidari Council"] = "Der Rat der Illidari"
 -- Modules/AutoAwardManager/EncounterIDs.lua:77
-CLM.L["The Lurker Below"] = "Le Rôdeur d'En bas"
+CLM.L["The Lurker Below"] = "Das Grauen aus der Tiefe"
 -- Modules/AutoAwardManager/EncounterIDs.lua:22
-CLM.L["The Prophet Skeram"] = "Le Prophète Skeram"
+CLM.L["The Prophet Skeram"] = "Prophet Skeram"
 -- Modules/RosterManager/Roster.lua:749
 -- Modules/RosterManager/Roster.lua:781
-CLM.L["Thrown"] = "Arme de jet"
+CLM.L["Thrown"] = "Wurfwaffe"
 -- Modules/LedgerManager/GUI.lua:512
-CLM.L["Time Travel"] = "Voyage dans le temps"
+CLM.L["Time Travel"] = "Zeitreise"
 -- MinimapIcon.lua:146
-CLM.L["Time Traveling"] = "Voyager dans le temps"
+CLM.L["Time Traveling"] = "Zeitreisen"
 -- Modules/RosterManager/Options.lua:801
-CLM.L["Time in seconds by which auction will be extended if bid is received during last 10 seconds."] = "Durée en secondes pendant laquelle l'enchère sera prolongée si l'offre est reçue au cours des 10 dernières secondes."
+CLM.L["Time in seconds by which auction will be extended if bid is received during last 10 seconds."] = "Zeit in Sekunden welche die Auktion verlängert werden soll, wenn ein Gebot in den letzten 10 Sekunden eingeht."
 -- Modules/AuctionManager/GUI.lua:343
-CLM.L["Time settings"] = "Paramètres du temps"
+CLM.L["Time settings"] = "Zeiteinstellungen"
 -- Modules/LedgerManager/GUI.lua:53
-CLM.L["Time"] = "Temps"
+CLM.L["Time"] = "Zeit"
 -- Modules/LedgerManager/GUI.lua:550
-CLM.L["Timetravel"] = "Voyage dans le temps"
+CLM.L["Timetravel"] = "Zeitreise"
 -- Modules/AuctionHistoryManager/GUI.lua:279
-CLM.L["Toggle Auction History window display"] = "Basculer l'affichage de la fenêtre Historique des enchères"
+CLM.L["Toggle Auction History window display"] = "Auktionsfesnter Anzeige umschalten"
 -- Modules/AuctionManager/GUI.lua:657
-CLM.L["Toggle Auctioning window display"] = "Basculer l'affichage de la fenêtre d'enchères"
+CLM.L["Toggle Auctioning window display"] = "Auktionsfesnter Anzeige umschalten"
 -- Modules/BiddingManager/BiddingManager.lua:65
-CLM.L["Toggle Bidding auto-open"] = "Basculer l'ouverture automatique des enchères"
+CLM.L["Toggle Bidding auto-open"] = "Automatisches öffnen des Bietfensters umschalten"
 -- Modules/BiddingManager/GUI.lua:491
-CLM.L["Toggle Bidding window display"] = "Basculer l'affichage de la fenêtre d'enchères"
+CLM.L["Toggle Bidding window display"] = "Bietfenster Anzeige umschalten"
 -- Modules/LootQueueManager/GUI.lua:268
-CLM.L["Toggle Loot Queue window display"] = "Basculer l'affichage de la fenêtre de la file d'attente de butin"
+CLM.L["Toggle Loot Queue window display"] = "Lootschlange Fenster Anzeige umschalten"
 -- Modules/ProfileManager/GUI.lua:506
-CLM.L["Toggle Profiles window display"] = "Basculer l'affichage de la fenêtre Profils"
+CLM.L["Toggle Profiles window display"] = "Profilanzeige Fenster umschalten"
 -- Modules/RaidManager/GUI.lua:549
-CLM.L["Toggle Raid Manager window display"] = "Basculer l'affichage de la fenêtre des gestions du Raid"
+CLM.L["Toggle Raid Manager window display"] = "Raid Manager Fenster Anzeige umschalten"
 -- Modules/LedgerManager/GUI.lua:676
-CLM.L["Toggle all ledger events audit window"] = "Basculer la fenêtre d'audit de tous les événements du grand livre"
+CLM.L["Toggle all ledger events audit window"] = "Alle Hauptbuchereignisse Prüfung Fenster umschalten"
 -- Modules/BiddingManager/BiddingManager.lua:66
 CLM.L["Toggle auto open and auto close on auction start and stop"] = "Basculer l'ouverture automatique et la fermeture automatique au début et à l'arrêt des enchères"
 -- Modules/Changelog/GUI.lua:50
