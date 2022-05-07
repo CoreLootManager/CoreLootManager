@@ -1522,55 +1522,55 @@ CLM.L["You have just received Kill Command from %s. All Ledger data was wiped. P
 -- Modules/BiddingManager/BiddingManager.lua:235
 CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"] = "Votre enchère (%s) a été refusée : |cffcc0000%s|r"
 -- Modules/BiddingManager/BiddingManager.lua:221
-CLM.L["Your bid (%s) was |cff00cc00accepted|r"] = "Votre enchère (%s) a été |cff00cc00accepted|r"
+CLM.L["Your bid (%s) was |cff00cc00accepted|r"] = "Dein Gebot (%s) war |cff00cc00accepted|r"
 -- Modules/LedgerManager/GUI.lua:104
-CLM.L["Zero-Sum Bank Inflation"] = "Inflation bancaire à somme nulle"
+CLM.L["Zero-Sum Bank Inflation"] = "Zero-Sum Bank Inflation"
 -- Modules/RosterManager/Options.lua:747
 -- Modules/LedgerManager/GUI.lua:101
-CLM.L["Zero-Sum Bank"] = "Banque à somme nulle"
+CLM.L["Zero-Sum Bank"] = "Zero-Sum Bank"
 -- Modules/RosterManager/Options.lua:754
-CLM.L["Zero-Sum Inflation Value"] = "Valeur d'inflation à somme nulle"
+CLM.L["Zero-Sum Inflation Value"] = "Zero-Sum Inflationswert"
 -- Modules/PointManager/PointManager.lua:399
-CLM.L["Zero-Sum award"] = "Prix à somme nulle"
+CLM.L["Zero-Sum award"] = "Zero-Sum vergeben"
 -- Modules/AutoAwardManager/EncounterIDs.lua:303
 CLM.L["Zul'Aman"] = "Zul'Aman"
 -- Modules/AutoAwardManager/EncounterIDs.lua:192
 CLM.L["Zul'Gurub"] = "Zul'Gurub"
 -- Modules/LedgerManager/GUI.lua:270
-CLM.L["[All Roster Configs]: "] = "[Configuration de tous le Roster]: "
+CLM.L["[All Roster Configs]: "] = "[Alle Roster Konfigurationen]: "
 -- Modules/LedgerManager/GUI.lua:283
-CLM.L["[All Roster Default Slot Values]: "] = "Toutes les valeurs d'emplacements par défaut: "
+CLM.L["[All Roster Default Slot Values]: "] = "[Alle voreinsgestellten Roster Platz Werte]: "
 -- Modules/LedgerManager/GUI.lua:240
 -- Modules/LedgerManager/GUI.lua:247
-CLM.L["[Alt-Main Link]: "] = "Lien Reroll-Main: "
+CLM.L["[Alt-Main Link]: "] = "[Twink-Main Link]: "
 -- Modules/LedgerManager/GUI.lua:254
-CLM.L["[Create Roster]: "] = "[Créer Roster]: "
+CLM.L["[Create Roster]: "] = "[Roster erstellen]: "
 -- Modules/LedgerManager/GUI.lua:260
-CLM.L["[Delete Roster]: "] = "[Effacer Roster]: "
+CLM.L["[Delete Roster]: "] = "[Roster löschen]: "
 -- Modules/LedgerManager/GUI.lua:436
-CLM.L["[IGNORE]: Ignoring entry"] = "[IGNORE] : Ignorer l'entrée"
+CLM.L["[IGNORE]: Ignoring entry"] = "[IGNORIEREN]: Eintrag ignorieren]: "
 -- Modules/LedgerManager/GUI.lua:396
-CLM.L["[Item Award in Raid]: "] = "Récompense d'objet' en raid: "
+CLM.L["[Item Award in Raid]: "] = "[Gegenstand Vergeben im Raid]: "
 -- Modules/LedgerManager/GUI.lua:386
-CLM.L["[Item Award]: "] = "[Objet décerner]: "
+CLM.L["[Item Award]: "] = "[Gegenstand Gewinn]: "
 -- Modules/LedgerManager/GUI.lua:359
-CLM.L["[Point Award to raid]: "] = "[Attribution de points au raid]: "
+CLM.L["[Point Award to raid]: "] = "[Punkt Vergeben zum Roster]: "
 -- Modules/LedgerManager/GUI.lua:351
-CLM.L["[Point Award to roster]: "] = "[Attribution de points au Roster]: "
+CLM.L["[Point Award to roster]: "] = "[Punkt Vergeben zum Roster]: "
 -- Modules/LedgerManager/GUI.lua:335
-CLM.L["[Point Award]: "] = "[Attribution de points]: "
+CLM.L["[Point Award]: "] = "[Punkt Vergeben]: "
 -- Modules/LedgerManager/GUI.lua:367
-CLM.L["[Point Decay for roster]: "] = "[Point décroissant pour le roster]: "
+CLM.L["[Point Decay for roster]: "] = "[Punkte Verfall für Roster]: "
 -- Modules/LedgerManager/GUI.lua:343
-CLM.L["[Point Decay]: "] = "[Point décroissant]: "
+CLM.L["[Point Decay]: "] = "[Point Verfall]: "
 -- Modules/LedgerManager/GUI.lua:375
-CLM.L["[Point Set]: "] = "[Ensemble de points]: "
+CLM.L["[Point Set]: "] = "[Punkte Setzen]: "
 -- Modules/LedgerManager/GUI.lua:405
-CLM.L["[Raid Create]: "] = "[Raid créé]: "
+CLM.L["[Raid Create]: "] = "[Raid Erstellen]: "
 -- Modules/LedgerManager/GUI.lua:430
-CLM.L["[Raid Finish]: "] = "[Raid terminé]: "
+CLM.L["[Raid Finish]: "] = "[Raid Ende]: "
 -- Modules/LedgerManager/GUI.lua:414
-CLM.L["[Raid Start]: "] = "[Début du Raid]: "
+CLM.L["[Raid Start]: "] = "[Raid Beginn]: "
 -- Modules/LedgerManager/GUI.lua:421
 CLM.L["[Raid Update]: "] = "[Raid mis a jour]: "
 -- Modules/LedgerManager/GUI.lua:230
