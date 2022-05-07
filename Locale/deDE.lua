@@ -1357,55 +1357,55 @@ CLM.L["Toggle Raid Manager window display"] = "Raid Manager Fenster Anzeige umsc
 -- Modules/LedgerManager/GUI.lua:676
 CLM.L["Toggle all ledger events audit window"] = "Alle Hauptbuchereignisse Prüfung Fenster umschalten"
 -- Modules/BiddingManager/BiddingManager.lua:66
-CLM.L["Toggle auto open and auto close on auction start and stop"] = "Basculer l'ouverture automatique et la fermeture automatique au début et à l'arrêt des enchères"
+CLM.L["Toggle auto open and auto close on auction start and stop"] = "Zeigt automatisches öffnen oder schließen vom Start und Ende der Auktion"
 -- Modules/Changelog/GUI.lua:50
 -- Modules/Changelog/GUI.lua:161
-CLM.L["Toggle changelog window display"] = "Basculer l'affichage de la fenêtre du journal des modifications"
+CLM.L["Toggle changelog window display"] = "Zeigt das Änderungsprotokoll Fenster"
 -- Modules/Changelog/GUI.lua:49
-CLM.L["Toggle changelog"] = "Basculer le journal des modifications"
+CLM.L["Toggle changelog"] = "Zeigt das Änderungsprotokoll"
 -- Modules/LootManager/GUI.lua:414
-CLM.L["Toggle loot window display"] = "Basculer l'affichage de la fenêtre de butin"
+CLM.L["Toggle loot window display"] = "Zeigt das Loot Fenster"
 -- Modules/PointManager/GUI.lua:359
-CLM.L["Toggle point history window display"] = "Basculer l'affichage de la fenêtre de l'historique des points"
+CLM.L["Toggle point history window display"] = "Zeigt das Geschichte Fenster"
 -- Modules/RosterManager/GUI.lua:811
-CLM.L["Toggle standings window display"] = "Basculer l'affichage de la fenêtre des classements"
+CLM.L["Toggle standings window display"] = "Zeigt das Punktestand Fenster"
 -- Global/GlobalConfigs.lua:46
-CLM.L["Toggles alerts display when receiving DKP or loot."] = "Bascule l'affichage des alertes lors de la réception de DKP ou de butin."
+CLM.L["Toggles alerts display when receiving DKP or loot."] = "Zeigt die Warnungsanzeige wenn DKP oder Loot erhalten wurde."
 -- Global/GlobalConfigs.lua:55
-CLM.L["Toggles loot announcement to raid"] = "Bascule l'annonce de butin en raid"
+CLM.L["Toggles loot announcement to raid"] = "Zeigt den Loot Gewinn im Schlachtzug Kanal"
 -- Modules/AuctionManager/AuctionManager.lua:81
-CLM.L["Toggles loot award announcement to guild"] = "Bascule l'annonce de récompense de butin à la guilde"
+CLM.L["Toggles loot award announcement to guild"] = "Zeigt den Loot Gewinn im Gilden Kanal"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:75
-CLM.L["Toggles posting bids in selected channel after auction has ended."] = "Active/désactive la publication des offres dans le canal sélectionné après la fin de l'enchère."
+CLM.L["Toggles posting bids in selected channel after auction has ended."] = "Zeigt die Gebote nach beendeter Auktion im gewählten Kanal."
 -- Modules/LootQueueManager/LootQueueManager.lua:77
-CLM.L["Tracked loot rarity"] = "Suivi de la rareté du butin"
+CLM.L["Tracked loot rarity"] = "Vefolgte Loot Rarität"
 -- Modules/RosterManager/Roster.lua:737
 -- Modules/RosterManager/Roster.lua:769
-CLM.L["Trinket"] = "Bijou"
+CLM.L["Trinket"] = "Schmuckstück"
 -- Modules/LedgerManager/GUI.lua:38
-CLM.L["True"] = "Vrai"
+CLM.L["True"] = "Wahr"
 -- Modules/AutoAwardManager/EncounterIDs.lua:28
-CLM.L["Twin Emperors"] = "Les Empereurs jumeaux"
+CLM.L["Twin Emperors"] = "Zwillingsimperatoren"
 -- Modules/RosterManager/Roster.lua:742
 -- Modules/RosterManager/Roster.lua:774
-CLM.L["Two-Hand"] = "Deux mains"
+CLM.L["Two-Hand"] = "Zweihand"
 -- Modules/RosterManager/Options.lua:732
-CLM.L["Type of auction used: Open, Anonymous Open, Sealed, Vickrey (Sealed with second-highest pay price)."] = "Type d'enchère utilisé : Ouvert, Anonyme Ouvert, Scellé, Vickrey (Scellé avec le deuxième prix le plus élevé)."
+CLM.L["Type of auction used: Open, Anonymous Open, Sealed, Vickrey (Sealed with second-highest pay price)."] = "Typ der Auktion benutzt: Offen, Anonym offen, Verdeckt, Vickery (Verdeckt mit Zweithöchstgebot Preis)."
 -- Modules/LedgerManager/GUI.lua:54
-CLM.L["Type"] = "Type"
+CLM.L["Type"] = "Typ"
 -- Migration.lua:47
-CLM.L["Unable to execute migration. Entries already exist."] = "Impossible d'exécuter la migration. Les entrées existent déjà."
+CLM.L["Unable to execute migration. Entries already exist."] = "Migrationen kann nicht ausgeführt werden."
 -- Modules/LootQueueManager/LootQueueManager.lua:84
 -- Global/GlobalConfigs.lua:70
-CLM.L["Uncommon"] = "Commun"
+CLM.L["Uncommon"] = "Ungewöhnlich"
 -- ClassicLootManager.lua:255
-CLM.L["Undo action"] = "Annuler l'action"
+CLM.L["Undo action"] = "Aktion rückgängig machen"
 -- Modules/PointManager/PointManager.lua:396
-CLM.L["Unexcused absence"] = "Absence injustifiée"
+CLM.L["Unexcused absence"] = "Unentschuldigstes Fehlen"
 -- Global/GlobalSlashCommands.lua:62
-CLM.L["Unknown roster %s"] = "Liste inconnue %s"
+CLM.L["Unknown roster %s"] = "Unbekanntes Roster %s"
 -- MinimapIcon.lua:138
-CLM.L["Unknown sync state"] = "État de synchronisation inconnu"
+CLM.L["Unknown sync state"] = "Unbekannter Sync Status"
 -- Modules/BiddingManager/BiddingManager.lua:234
 -- Modules/BiddingManager/BiddingManager.lua:235
 -- Modules/RaidManager/GUI.lua:414
@@ -1413,11 +1413,11 @@ CLM.L["Unknown sync state"] = "État de synchronisation inconnu"
 -- Modules/ProfileManager/Profile.lua:27
 -- Modules/LootManager/GUI.lua:178
 -- Modules/LedgerManager/GUI.lua:194
-CLM.L["Unknown"] = "Inconnu"
+CLM.L["Unknown"] = "Unbekannt"
 -- Global/GlobalSlashCommands.lua:102
-CLM.L["Unlink Alt"] = "Dissocier Reroll"
+CLM.L["Unlink Alt"] = "Twink entkoppeln"
 -- Migration.lua:125
-CLM.L["UpdatePoints(): Empty targets list"] = "UpdatePoints(): Empty targets list"
+CLM.L["UpdatePoints(): Empty targets list"] = "UpdatePunkte(): Leere Zielliste"
 -- Modules/LedgerManager/GUI.lua:422
 CLM.L["Updated raid <%s> %s joined, %s left, %s benched, %s removed"] = "Aktualisieten Schlachtzug <%s> %s beigetreten, %s verlassen, %s auf die Bank gesetzt, %s entfernt"
 -- Modules/AutoAwardManager/EncounterIDs.lua:15
