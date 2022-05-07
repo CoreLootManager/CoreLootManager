@@ -1419,23 +1419,23 @@ CLM.L["Unlink Alt"] = "Dissocier Reroll"
 -- Migration.lua:125
 CLM.L["UpdatePoints(): Empty targets list"] = "UpdatePoints(): Empty targets list"
 -- Modules/LedgerManager/GUI.lua:422
-CLM.L["Updated raid <%s> %s joined, %s left, %s benched, %s removed"] = "Raid <%s> %s joueurs ont rejoint, %s joueurs sont partis, %s joueurs ont banc, %s joueurs ont été supprimés"
+CLM.L["Updated raid <%s> %s joined, %s left, %s benched, %s removed"] = "Aktualisieten Schlachtzug <%s> %s beigetreten, %s verlassen, %s auf die Bank gesetzt, %s entfernt"
 -- Modules/AutoAwardManager/EncounterIDs.lua:15
-CLM.L["Vaelastrasz the Corrupt"] = "Vaelastrasz le Corrompu"
+CLM.L["Vaelastrasz the Corrupt"] = "Vaelastrasz der Verdorbene"
 -- Modules/AuctionManager/GUI.lua:311
-CLM.L["Value ranges"] = "Plages de valeurs"
+CLM.L["Value ranges"] = "Fernkampf Werte"
 -- Modules/BiddingManager/GUI.lua:163
-CLM.L["Value to use in custom mode"] = "Valeur à utiliser en mode personnalisé"
+CLM.L["Value to use in custom mode"] = "Wert für Custom Modus"
 -- Modules/BiddingManager/GUI.lua:232
-CLM.L["Value you want to bid. Press Enter or click Okay button to accept."] = "Valeur que vous souhaitez enchérir. Appuyez sur Entrée ou cliquez sur le bouton OK pour accepter."
+CLM.L["Value you want to bid. Press Enter or click Okay button to accept."] = "Wert den du bieten möchtest. Drücke Enter oder klicke den Okay Knopf zum akzeptieren."
 -- Modules/PointManager/GUI.lua:96
 -- Modules/LootManager/GUI.lua:91
 -- Modules/LootManager/GUI.lua:98
-CLM.L["Value"] = "Valeur"
+CLM.L["Value"] = "Wert"
 -- Modules/Logger/Logger.lua:28
-CLM.L["Verbose"] = "Détaillé"
+CLM.L["Verbose"] = "Ausführlich"
 -- Global/GlobalSlashCommands.lua:148
-CLM.L["Version check in guild"] = "Vérification de la version dans la guilde"
+CLM.L["Version check in guild"] = "Version in Gilde kontrollieren"
 -- Modules/ProfileManager/GUI.lua:385
 CLM.L["Version"] = "Version"
 -- Modules/RosterManager/Roster.lua:661
@@ -1443,84 +1443,84 @@ CLM.L["Vickrey"] = "Vickrey"
 -- Modules/AutoAwardManager/EncounterIDs.lua:26
 CLM.L["Viscidus"] = "Viscidus"
 -- Modules/AutoAwardManager/EncounterIDs.lua:83
-CLM.L["Void Reaver"] = "Saccageur du Vide"
+CLM.L["Void Reaver"] = "Leerhäscher"
 -- Modules/RosterManager/Roster.lua:733
 -- Modules/RosterManager/Roster.lua:765
 CLM.L["Waist"] = "Taille"
 -- .:indirectly
-CLM.L["Warlock"] = "Démoniste"
+CLM.L["Warlock"] = "Hexenmeister"
 -- .:indirectly
-CLM.L["Warrior"] = "Guerrier"
+CLM.L["Warrior"] = "Krieger"
 -- Modules/LedgerManager/GUI.lua:149
-CLM.L["Weekly DKP cap"] = "Plafond dkp hebdomadaire"
+CLM.L["Weekly DKP cap"] = "Wöchentlicher DKP Deckel"
 -- Modules/RosterManager/Options.lua:687
-CLM.L["Weekly cap"] = "Plafond hebdomadaire"
+CLM.L["Weekly cap"] = "Wöchentlicher Deckel"
 -- Modules/RosterManager/GUI.lua:625
-CLM.L["Weekly gains:"] = "Gains hebdomadaires :"
+CLM.L["Weekly gains:"] = "Wöchentliche Gewinne:"
 -- Modules/RosterManager/Options.lua:678
-CLM.L["Weekly reset timezone"] = "Fuseau horaire de réinitialisation hebdomadaire"
+CLM.L["Weekly reset timezone"] = "Wöchentliche Reset Zeitzone"
 -- Modules/LedgerManager/GUI.lua:152
-CLM.L["Weekly reset"] = "Réinitialisation hebdomadaire"
+CLM.L["Weekly reset"] = "Wöchentlicher Reset"
 -- Global/GlobalConfigs.lua:89
-CLM.L["Wipe events"] = "Effacer les événements"
+CLM.L["Wipe events"] = "Ereignisse löschen"
 -- Modules/Logger/Logger.lua:36
-CLM.L["Wipe"] = "Effacer"
+CLM.L["Wipe"] = "Löschen"
 -- Global/GlobalConfigs.lua:90
-CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "Efface tous les événements de la mémoire. Cela déclenchera la resynchronisation des autres utilisateurs."
+CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "Löscht alle Ereignisse vom Speicher."
 -- Modules/Logger/Logger.lua:37
-CLM.L["Wipes the log history"] = "Efface l'historique du journal"
+CLM.L["Wipes the log history"] = "Löscht die Protokoll Einträge"
 -- Global/GlobalConfigs.lua:80
-CLM.L["WoW DKP Bot Integration"] = "Intégration WoW DKP Bot"
+CLM.L["WoW DKP Bot Integration"] = "WoW DKP Bot Integration"
 -- Modules/RosterManager/Roster.lua:731
 -- Modules/RosterManager/Roster.lua:763
-CLM.L["Wrist"] = "Poignet"
+CLM.L["Wrist"] = "Handgelenkt"
 -- Utils.lua:447
-CLM.L["Yes"] = "Oui"
+CLM.L["Yes"] = "Ja"
 -- Modules/RaidManager/RaidManager.lua:363
-CLM.L["You are already in an active raid. Leave or finish it before creating new one."] = "Vous êtes déjà dans un raid actif. Laissez-le ou terminez-le avant d'en créer un nouveau."
+CLM.L["You are already in an active raid. Leave or finish it before creating new one."] = "Du bist bereits in einem aktiven Schlachtzug. Verlasse oder beende den Schlachtzug bevor du einen neuen erstellst."
 -- Modules/AuctionManager/AuctionManager.lua:170
-CLM.L["You are not allowed to auction items"] = "Vous n'êtes pas autorisé à vendre des articles aux enchères"
+CLM.L["You are not allowed to auction items"] = "Du kannst keine Gegenstände versteigern"
 -- Modules/RaidManager/RaidManager.lua:495
 -- Modules/RaidManager/RaidManager.lua:529
-CLM.L["You are not allowed to control raid."] = "Vous n'êtes pas autorisé à contrôler le raid."
+CLM.L["You are not allowed to control raid."] = "Du kannst keinen Schlachtzug kontrollieren."
 -- Modules/RaidManager/RaidManager.lua:359
-CLM.L["You are not allowed to create raids."] = "Vous n'êtes pas autorisé à créer des raids."
+CLM.L["You are not allowed to create raids."] = "Du kannst keinen Schlachtzug erstellen."
 -- Modules/RaidManager/RaidManager.lua:466
-CLM.L["You are not allowed to join raid."] = "Vous n'êtes pas autorisé à rejoindre le raid."
+CLM.L["You are not allowed to join raid."] = "Du kannst keinem Schlachtzug beitreten."
 -- Modules/RaidManager/RaidManager.lua:381
 -- Modules/RaidManager/RaidManager.lua:437
-CLM.L["You are not allowed to start raid."] = "Vous n'êtes pas autorisé à démarrer un raid."
+CLM.L["You are not allowed to start raid."] = "Du kannst keinen Schlachtzug starten."
 -- Modules/RaidManager/RaidManager.lua:449
-CLM.L["You are not in an active raid."] = "Vous n'êtes pas dans un raid actif."
+CLM.L["You are not in an active raid."] = "Du bist nicht in einem aktiven Schlachtzug."
 -- Modules/RaidManager/RaidManager.lua:394
-CLM.L["You are not in the raid."] = "Vous n'êtes pas dans un raid."
+CLM.L["You are not in the raid."] = "Du bist nicht im Schlachtzug."
 -- Modules/RosterManager/GUI.lua:560
 -- Modules/RosterManager/GUI.lua:569
-CLM.L["You can %s max %d players from standby at the same time to a %s raid."] = "Vous pouvez %s max %d joueurs de la veille en même temps à un raid %s."
+CLM.L["You can %s max %d players from standby at the same time to a %s raid."] = "Du kannst %s maximal %d Spieler von Standby zu gleichen Zeit zum %s Schlachtzug."
 -- Modules/RosterManager/GUI.lua:517
 -- Modules/RosterManager/GUI.lua:526
-CLM.L["You can %s max %d players to standby at the same time to a %s raid."] = "Vous pouvez %s max %d joueurs en attente en même temps pour un raid %s."
+CLM.L["You can %s max %d players to standby at the same time to a %s raid."] = "Du kannst %s maximal %d Spieler zur Standby zu gleichen Zeit zum %s Schlachtzug."
 -- Modules/RaidManager/RaidManager.lua:499
 -- Modules/RaidManager/RaidManager.lua:533
-CLM.L["You can only add players to standby of a progressing raid."] = "Vous ne pouvez ajouter des joueurs qu'en attente d'un raid en cours."
+CLM.L["You can only add players to standby of a progressing raid."] = "Du kannst nur Spieler auf Standby setzen, welche im einem fortschreitenden Schlachtzug sind."
 -- Modules/RosterManager/GUI.lua:508
-CLM.L["You can only bench players from same roster as the raid (%s)."] = "Vous ne pouvez mettre au banc que des joueurs de la même liste que le raid (%s)."
+CLM.L["You can only bench players from same roster as the raid (%s)."] = "Du kannst nur Spieler vom selben Roster auf die Bank setzen als im Schlachtzug (%s)."
 -- Modules/RaidManager/RaidManager.lua:441
-CLM.L["You can only end an active raid."] = "Vous ne pouvez terminer qu'un raid actif."
+CLM.L["You can only end an active raid."] = "Du kannst nur einen aktiven Schlachtzug beenden."
 -- Modules/RaidManager/RaidManager.lua:470
-CLM.L["You can only join an active raid."] = "Vous ne pouvez rejoindre qu'un raid actif."
+CLM.L["You can only join an active raid."] = "Du kannst nur einem aktiven Schlachtzug beitreten."
 -- Modules/RaidManager/RaidManager.lua:474
-CLM.L["You can only join different raid than your current one."] = "Vous ne pouvez rejoindre un raid différent de celui que vous avez actuellement."
+CLM.L["You can only join different raid than your current one."] = "Du kannst einen anderen Schlachtug beitreten als dem momentanen."
 -- Modules/RosterManager/GUI.lua:551
-CLM.L["You can only remove from bench players from same roster as the raid (%s)."] = "Vous ne pouvez supprimer du banc que les joueurs de la même liste que le raid (%s)."
+CLM.L["You can only remove from bench players from same roster as the raid (%s)."] = "Du kannst nur Spieler vom selben Roster im Schlachtzug (%s) von der Bank entfernen."
 -- Modules/RaidManager/RaidManager.lua:385
-CLM.L["You can only start a freshly created raid."] = "Vous ne pouvez démarrer qu'un raid fraîchement créé."
+CLM.L["You can only start a freshly created raid."] = "Du kannst nur einen neuerstellten Raid starten."
 -- Modules/RosterManager/GUI.lua:601
-CLM.L["You can remove max %d players from roster at the same time."] = "Vous pouvez supprimer un maximum de %d joueurs de la liste en même temps."
+CLM.L["You can remove max %d players from roster at the same time."] = "Du kannst maximal %d spieler vom Roster auf einmal entfernen."
 -- Debug.lua:182
-CLM.L["You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI."] = "Vous venez de recevoir la commande Kill de %s. Toutes les informations du registre ont été effacées. Veuillez recharger l'interface utilisateur."
+CLM.L["You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI."] = "Du hast gerade Kill Command von %s erhalten. Alle Hauptdateien wurden gelöscht. Bitte das UI reloaden"
 -- Modules/BiddingManager/BiddingManager.lua:235
-CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"] = "Votre enchère (%s) a été refusée : |cffcc0000%s|r"
+CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"] = "Dein Gobot (%s) wurde abgelehnt: |cffcc0000%s|r"
 -- Modules/BiddingManager/BiddingManager.lua:221
 CLM.L["Your bid (%s) was |cff00cc00accepted|r"] = "Dein Gebot (%s) war |cff00cc00accepted|r"
 -- Modules/LedgerManager/GUI.lua:104
