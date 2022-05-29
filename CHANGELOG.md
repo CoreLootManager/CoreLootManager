@@ -1,3 +1,12 @@
+# Classic Loot Manager v1.9.0
+## Features
+### German Locale
+German locale is now available to use. Big thank you to Snickles, floha90 and Charadrass for the contribution.
+## Fixes
+### Error during disenchanting
+Disenchanting no longer will cause an error when tracking `Uncommon` loot or above.
+### BoJ in Loot Queu
+BoJ will no longer be tracked by Loot Queue alongside with Splinter of Atiesh.
 # Classic Loot Manager v1.8.0
 ## Features
 ### Spanish Locale

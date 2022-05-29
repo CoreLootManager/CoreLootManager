@@ -1,6 +1,24 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v1.9.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    {header = "German Locale", body = "German locale is now available to use. Big thank you to Snickles, floha90 and Charadrass for the contribution."},
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Error during disenchanting", body = "Disenchanting no longer will cause an error when tracking |cff1eff00Uncommon|r loot or above."},
+                    {header = "BoJ in Loot Queue", body = "BoJ will no longer be tracked by Loot Queue alongside with Splinter of Atiesh."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.8.0",
         data = {
             {
