@@ -85,8 +85,10 @@ local function PostLootToRaidChat()
         if not RaidManager:IsRaidOwner(whoami) then return end
     end
     local targetGuid = UnitGUID("target")
-    if alreadyPostedLoot[targetGuid] then return end
-    alreadyPostedLoot[targetGuid] = true
+    if targetGuid then
+        if alreadyPostedLoot[targetGuid] then return end
+        alreadyPostedLoot[targetGuid] = true
+    end
 
     local numLootItems = GetNumLootItems()
     local num = 1
