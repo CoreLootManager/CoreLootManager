@@ -49,7 +49,7 @@ Libs\LibLuaXML\LibLuaXML.lua
 
 # Locale
 Locale\enUS.lua
-#Locale\deDE.lua
+Locale\deDE.lua
 Locale\ruRU.lua
 Locale\frFR.lua
 #Locale\itIT.lua
