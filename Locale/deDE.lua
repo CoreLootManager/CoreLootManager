@@ -1183,7 +1183,7 @@ CLM.L["Sapphiron"] = "Saphiron"
 -- Modules/RosterManager/Roster.lua:660
 CLM.L["Sealed"] = "Geschlossen"
 -- Modules/RosterManager/GUI.lua:149
-CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."] = "Nach Spielernamen suchen. Mehrere durch Komma "," unterteilen. Mindestens 3 Zeichen. Überschreibt das Filtern."
+CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."] = "Nach Spielernamen suchen. Mehrere durch Komma ',' unterteilen. Mindestens 3 Zeichen. Überschreibt das Filtern."
 -- Modules/RosterManager/GUI.lua:148
 -- Modules/LootManager/GUI.lua:130
 CLM.L["Search"] = "Suchen"
