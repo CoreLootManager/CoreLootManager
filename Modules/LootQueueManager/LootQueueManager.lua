@@ -38,7 +38,7 @@ local function HandleLootMessage(self, addon, event, message, _, _, _, playerNam
     local itemId = string.match(message, 'Hitem:(%d*):')
     itemId = tonumber(itemId) or 0
     local _, itemLink, rarity, _, _, _, _, _, _, _, _, classId = GetItemInfo(itemId)
-    if itemLink 
+    if itemLink
         and (rarity >= self:GetTrackedLootLevel())
         and not (self.db.ignoredClasses[classId])
         and not (ignoredItems[itemId]) then
