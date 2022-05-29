@@ -217,7 +217,7 @@ local autoAwardIgnores = UTILS.Set({
     22726, -- Splinter of Atiesh
     30183, -- Nether Vortex
     29434, -- Badge of Justice
-    -- 23572, -- Primal Nether
+    23572, -- Primal Nether
 })
 function AutoAward:IsIgnored(itemId)
     return autoAwardIgnores[itemId]
