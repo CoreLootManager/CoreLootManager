@@ -25,6 +25,11 @@ do
     end
 end
 
+local ignoredItems = UTILS.Set({
+    22726, -- Splinter of Atiesh
+    29434, -- Badge of Justice
+})
+
 local LootQueueManager = {}
 
 local function HandleLootMessage(self, addon, event, message, _, _, _, playerName, ...)
@@ -33,7 +38,10 @@ local function HandleLootMessage(self, addon, event, message, _, _, _, playerNam
     local itemId = string.match(message, 'Hitem:(%d*):')
     itemId = tonumber(itemId) or 0
     local _, itemLink, rarity, _, _, _, _, _, _, _, _, classId = GetItemInfo(itemId)
-    if itemLink and (rarity >= self:GetTrackedLootLevel()) and not (self.db.ignoredClasses[classId]) then
+    if itemLink 
+        and (rarity >= self:GetTrackedLootLevel())
+        and not (self.db.ignoredClasses[classId])
+        and not (ignoredItems[itemId]) then
         table.insert(self.db.queue, {
             id = itemId,
             link = itemLink
