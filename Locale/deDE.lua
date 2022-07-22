@@ -499,7 +499,7 @@ CLM.L["Enables announcing raid start and end."] = "Aktiviert das Ankündigen von
 -- Modules/AuctionManager/AuctionManager.lua:99
 CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Aktiviert das automatische Handeln von Loot nach der Auktion aus der Tasche"
 -- Global/GlobalConfigs.lua:130
-CLM.L["Enables raid-warning countdown for auctions."] = "Aktiviert Raidwarnungenscountdown der Auktionen."
+CLM.L["Enables raid-warning countdown for auctions."] = "Aktiviert Raidwarnungen Countdown der Auktionen."
 -- Modules/AuctionManager/AuctionManager.lua:113
 CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."] = "Aktiviert !dkp und !bid über Flüstern / Raidchat. Änderrung erfordert /reload."
 -- Global/GlobalConfigs.lua:81
@@ -518,7 +518,7 @@ CLM.L["Eredar Twins"] = "Eredarzwillinge"
 -- Modules/RosterManager/Roster.lua:797
 CLM.L["Europe"] = "Europa"
 -- Modules/RosterManager/GUI.lua:326
-CLM.L["Execute decay for selected players or everyone if none selected."] = "Führt Verfall für ausgewählte Spieler oder alle, falls keiner ausgewählt ist, aus."
+CLM.L["Execute decay for selected players or everyone if none selected."] = "Führt Verfall für ausgewählte Spieler aus oder alle, falls keiner ausgewählt ist."
 -- Migration.lua:369
 CLM.L["Execute migration from MonolithDKP, EssentialDKP or CommunityDKP"] = "Führe Migration von MonolithDKP, EssentialDKP oder CommunitiyDKP aus"
 -- Migration.lua:51
@@ -542,7 +542,7 @@ CLM.L["Felmyst"] = "Teufelsruch"
 -- Modules/ProfileManager/GUI.lua:178
 CLM.L["Fill from Guild"] = "Von Gilde auffüllen"
 -- Modules/ProfileManager/GUI.lua:191
-CLM.L["Fill from Raid Roster"] = "Von Raid Roster auffüllen"
+CLM.L["Fill from Raid Roster"] = "Vom Raid Roster auffüllen"
 -- Modules/ProfileManager/GUI.lua:192
 CLM.L["Fill profile list with players in current raid roster."] = "Fülle Profilliste mit Spielern im aktuellen Raid Roster."
 -- Modules/ProfileManager/GUI.lua:179
@@ -606,9 +606,9 @@ CLM.L["Halazzi"] = "Halazzi"
 -- Modules/RosterManager/Roster.lua:764
 CLM.L["Hands"] = "Hände"
 -- Modules/LedgerManager/GUI.lua:146
-CLM.L["Hard DKP cap"] = "Hard DKP cap"
+CLM.L["Hard DKP cap"] = "Oberes DKP Limit"
 -- Modules/RosterManager/Options.lua:696
-CLM.L["Hard cap"] = "Hard cap"
+CLM.L["Hard cap"] = "Oberes Limit"
 -- Modules/RosterManager/Roster.lua:723
 -- Modules/RosterManager/Roster.lua:755
 CLM.L["Head"] = "Kopf"
@@ -661,7 +661,7 @@ CLM.L["Import complete"] = "Importieren fertig"
 -- Modules/PointManager/PointManager.lua:402
 CLM.L["Import"] = "Importieren"
 -- Migration.lua:178
-CLM.L["Importing %s entries from DKPTable"] = "Importiere %s EInträgen von der DKP Liste"
+CLM.L["Importing %s entries from DKPTable"] = "Importiere %s Einträgen von der DKP Liste"
 -- Migration.lua:289
 CLM.L["Importing profiles from DKPTable"] = "Profile von der DKP Liste importieren"
 -- Modules/RosterManager/GUI.lua:113
@@ -674,7 +674,7 @@ CLM.L["In Progress"] = "Im Gange"
 -- Modules/ProfileManager/GUI.lua:80
 CLM.L["In Raid"] = "Im Raid"
 -- Modules/LedgerManager/GUI.lua:477
-CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "Im Sandbos Modus wird jegliche Kommunikation ausgeschaltet und lokal angewandt. Klicke auf Änderungen anwenden um sie zu speichern und verlasse den Sandbox Modus. Klicke verwerfen an um die Änderungen wieder rückgängig zu machen und verlassen den Sandbox Modus. /reload verwirft die Änderungen. Geht man in den Sandbox Modus verlässt man den Zeitreise Modus."
+CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "Im Sandbox Modus wird jegliche Kommunikation ausgeschaltet und Änderungen sind lokal bis sie angewandt werden. Klicke auf Änderungen anwenden um sie zu speichern und verlasse den Sandbox Modus. Klicke verwerfen um die Änderungen wieder rückgängig zu machen und den Sandbox Modus zu verlassen. /reload verwirft die Änderungen. Geht man in den Sandbox Modus verlässt man den Zeitreise Modus."
 -- MinimapIcon.lua:134
 CLM.L["In-Sync"] = "Synchronisiert"
 -- Modules/RaidManager/GUI.lua:289
@@ -735,7 +735,7 @@ CLM.L["Jan'alai"] = "Jan'alai"
 -- Modules/AutoAwardManager/EncounterIDs.lua:52
 CLM.L["Jin'do the Hexxer"] = "Jin'do der Verhexer"
 -- Global/GlobalConfigs.lua:35
-CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"] = "Für mehr Informationen kommt auf unser Discord: |cff44cc44https://tiny.one/clm-discord|r"
+CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"] = "Für mehr Informationen kommt auf unseren Discord: |cff44cc44https://tiny.one/clm-discord|r"
 -- Modules/RaidManager/GUI.lua:152
 CLM.L["Join selected raid"] = "Dem ausgewählten Raid beitreten"
 -- Modules/AutoAwardManager/EncounterIDs.lua:85
@@ -755,7 +755,7 @@ CLM.L["Kurinnaxx"] = "Kurinnaxx"
 -- Modules/AutoAwardManager/EncounterIDs.lua:81
 CLM.L["Lady Vashj"] = "Lady Vashj"
 -- Modules/LedgerManager/GUI.lua:602
-CLM.L["Ledger Entries Audit"] = "Hauptkonto Einträge Prüfung"
+CLM.L["Ledger Entries Audit"] = "Prüfung der Hauptbucheinträge"
 -- Modules/LootQueueManager/LootQueueManager.lua:87
 -- Global/GlobalConfigs.lua:73
 CLM.L["Legendary"] = "Legendär"
@@ -765,13 +765,13 @@ CLM.L["Legs"] = "Beine"
 -- Modules/AutoAwardManager/EncounterIDs.lua:78
 CLM.L["Leotheras the Blind"] = "Leotheras der Blinde"
 -- Global/GlobalSlashCommands.lua:93
-CLM.L["Link Alt to Main"] = "Verknüpfe Main mit Twink"
+CLM.L["Link Alt to Main"] = "Verknüpfe Main mit dem Twink"
 -- Modules/PointManager/PointManager.lua:405
 CLM.L["Linking override"] = "Verknüpfung überschreiben"
 -- MinimapIcon.lua:128
 -- Modules/LootManager/GUI.lua:297
 -- Modules/LedgerManager/GUI.lua:510
-CLM.L["Loading..."] = "Laden..."
+CLM.L["Loading..."] = "Lädt..."
 -- Modules/AutoAwardManager/EncounterIDs.lua:40
 CLM.L["Loatheb"] = "Loatheb"
 -- Modules/Logger/Logger.lua:19
@@ -779,14 +779,14 @@ CLM.L["Logging level"] = "Aufzeichnungs Level"
 -- Modules/Logger/Logger.lua:15
 CLM.L["Logging"] = "Aufzeichnung"
 -- Global/GlobalConfigs.lua:138
-CLM.L["Loot Awards"] = "Gegenstands Gewinne"
+CLM.L["Loot Awards"] = "Loot Gewinne"
 -- MinimapIcon.lua:31
 -- Modules/LootManager/GUI.lua:235
-CLM.L["Loot History"] = "Loot History"
+CLM.L["Loot History"] = "Loot Historie"
 -- MinimapIcon.lua:56
 -- Modules/LootQueueManager/GUI.lua:185
 -- Modules/LootQueueManager/LootQueueManager.lua:73
-CLM.L["Loot Queue"] = "Loot Queue"
+CLM.L["Loot Queue"] = "Loot Warteschlange"
 -- Modules/AutoAwardManager/EncounterIDs.lua:4
 CLM.L["Lucifron"] = "Lucifron"
 -- Modules/AutoAwardManager/EncounterIDs.lua:110
@@ -821,7 +821,7 @@ CLM.L["Manual adjustment"] = "Manuelle Anpassung"
 -- Modules/ProfileManager/GUI.lua:241
 CLM.L["Mark as alt"] = "Als Twink markieren"
 -- Modules/ProfileManager/GUI.lua:242
-CLM.L["Marks selected profiles or everyone if none selected as alts of choosen player (from dropdown)."] = "Markiert alle ausgewählten Profile oder alle, wenn keins markiert ist, als Twink des gewählten Spielers (aus dem Dropdown Menu)."
+CLM.L["Marks selected profiles or everyone if none selected as alts of choosen player (from dropdown)."] = "Markiert ausgewählten Profile als Twink des gewählten Spielers oder alle, wenn keins markiert ist."
 -- Modules/BiddingManager/GUI.lua:266
 -- Modules/AuctionManager/GUI.lua:330
 -- Modules/RosterManager/Options.lua:388
@@ -831,18 +831,18 @@ CLM.L["Max: %d "] = "Маximum: %d "
 -- Modules/AuctionManager/AuctionManager.lua:240
 CLM.L["Maximum bid: %s."] = "Maximales Gebot: %s."
 -- Modules/RosterManager/Options.lua:688
-CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."] = "Maximale Punnkte die ein Spieler pro Woche erhalten kann. Zum ausschalten auf 0 setzen."
+CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."] = "Maximale Punnkte die ein Spieler pro Woche erhalten kann. Zum Ausschalten auf 0 setzen."
 -- Modules/RosterManager/Options.lua:697
-CLM.L["Maximum point cap that player can have. Set to 0 to disable."] = "Maximale Punkte die ein Spieler erhalten kann. Zum ausschalten auf 0 setzen."
+CLM.L["Maximum point cap that player can have. Set to 0 to disable."] = "Maximale Punkte die ein Spieler erhalten kann. Zum Ausschalten auf 0 setzen."
 -- Modules/RosterManager/Options.lua:319
-CLM.L["Maximum value for Ascending auction. Set to 0 to ignore."] = "Maximaler Wert für aufsteigende Auktion. Zum ignorieren auf 0 setzen."
+CLM.L["Maximum value for Ascending auction. Set to 0 to ignore."] = "Maximaler Wert für aufsteigende Auktion. Zum Ignorieren auf 0 setzen."
 -- MinimapIcon.lua:23
 CLM.L["Menu"] = "Menü"
 -- Migration.lua:165
 -- Migration.lua:243
 CLM.L["Migrating %s"] = "Migration %s"
 -- Migration.lua:63
-CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."] = "Migration fertig. %s zum anwenden und synchronisieren mit anderen oder gehe zu %s zum Discord."
+CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."] = "Migration fertig. %s zum Anwenden und synchronisieren mit anderen oder gehe zu %s zum Discord."
 -- Migration.lua:266
 CLM.L["Migration failure: Detected 0 teams"] = "Migratiosfehler: 0 Teams erkannt"
 -- Migration.lua:204
@@ -863,7 +863,7 @@ CLM.L["Minimum Level"] = "Minimum Level"
 -- Modules/AuctionManager/AuctionManager.lua:237
 CLM.L["Minimum bid: %s."] = "Minimumgebot: %s."
 -- Modules/ProfileManager/GUI.lua:166
-CLM.L["Minimum level of players to fill from guild."] = "Minimum Level der Spieler um von Gilde aufzufüllen."
+CLM.L["Minimum level of players to fill from guild."] = "Minimum Level der Spieler um von der Gilde aufzufüllen."
 -- Global/GlobalSlashCommands.lua:73
 CLM.L["Missing profile %s"] = "Kein Profil %s"
 -- Global/GlobalSlashCommands.lua:51
@@ -914,7 +914,7 @@ CLM.L["New highest bid: %d DKP %s"] = "Neues Höchstgebot: %d DKP %s"
 -- Migration.lua:91
 CLM.L["New roster: [%s]"] = "Neues Roster: [%s]"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:69
-CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."] = "Neue Version %s von Classic Loot Manager vorhanden. Für das beste Erlebnis, bitte das Addon updaten."
+CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."] = "Neue Version %s von Classic Loot Manager vorhanden. Update bitte das Addon für das beste Erlebnis"
 -- Modules/AutoAwardManager/EncounterIDs.lua:72
 CLM.L["Nightbane"] = "Der Schrecken der Nacht"
 -- Modules/AuctionManager/AuctionManager.lua:665
@@ -950,7 +950,7 @@ CLM.L["Note"] = "Notiz"
 -- Modules/AutoAwardManager/EncounterIDs.lua:38
 CLM.L["Noth the Plaguebringer"] = "Noth der Seuchenfürst"
 -- Modules/BiddingManager/GUI.lua:298
-CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Melden das man auf ein Gegenstand passt. Löscht jegliche Gebote."
+CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Melden dass man auf ein Gegenstand passt. Löscht jegliche Gebote."
 -- Modules/BiddingManager/GUI.lua:296
 CLM.L["Notify that you are passing on the item."] = "Melden das man auf einen Gegenstand passt."
 -- Modules/LedgerManager/GUI.lua:52
