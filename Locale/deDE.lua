@@ -1639,5 +1639,5 @@ CLM.L["selected"] = "ausgewählt"
 -- Global/GlobalSlashCommands.lua:138
 CLM.L["unguilded"] = "Ohne Gilde"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:62
-CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Dein Classic Loot Manager ist bedeutend nicht aktuell.|r AddOn Kommunikation wurde abgeschaltet. Version %s isz verfügbar. Bitte schnellstmöglich uf den neuesten Stand bringen"
+CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Dein Classic Loot Manager ist nicht mehr aktuell.|r Die Addon Kommunikation wurde abgeschaltet. Version %s isz verfügbar. Bitte schnellstmöglich auf den neuesten Stand bringen"
 end
