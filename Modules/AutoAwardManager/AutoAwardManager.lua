@@ -30,6 +30,10 @@ local function normalizeDifficultyId(difficultyId)
 end
 
 local function awardBossKillBonus(id, difficultyId)
+    if not difficultyId then
+        local _, _, difficultyID = GetInstanceInfo()
+        difficultyId = difficultyID
+    end
     difficultyId = normalizeDifficultyId(difficultyId)
     LOG:Info("Award Boss Kill Bonus for %s %s", id, difficultyId)
     if RaidManager:IsInActiveRaid() then
@@ -66,9 +70,7 @@ end
 local function handleBossKill(self, addon, event, id, name)
     LOG:Debug("[%s %s]: <%s %s>", addon, event, id, name)
     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
-        -- TODO handle hardmodes soonTM
-        local _, _, difficultyID = GetInstanceInfo()
-        awardBossKillBonus(id, difficultyID)
+        awardBossKillBonus(id)
     end
 end
 
@@ -79,7 +81,6 @@ local function handleBossWorkaround(self, targets)
             local _, _, _, _, _, npc_id = strsplit("-", guid)
             local encounterId = targets[tonumber(npc_id)]
             if encounterId then
-                local _, _, difficultyID = GetInstanceInfo()
                 awardBossKillBonus(encounterId)
             end
         end
