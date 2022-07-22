@@ -1516,7 +1516,7 @@ CLM.L["You can only remove from bench players from same roster as the raid (%s).
 -- Modules/RaidManager/RaidManager.lua:385
 CLM.L["You can only start a freshly created raid."] = "Du kannst nur einen neuerstellten Schlachtzug starten."
 -- Modules/RosterManager/GUI.lua:601
-CLM.L["You can remove max %d players from roster at the same time."] = "Du kannst maximal %d spieler vom Roster auf einmal entfernen."
+CLM.L["You can remove max %d players from roster at the same time."] = "Du kannst maximal %d Spieler vom Roster auf einmal entfernen."
 -- Debug.lua:182
 CLM.L["You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI."] = "Du hast gerade Kill Command von %s erhalten. Alle Hauptdateien wurden gelöscht. Bitte das UI reloaden"
 -- Modules/BiddingManager/BiddingManager.lua:235
@@ -1527,11 +1527,11 @@ CLM.L["Your bid (%s) was |cff00cc00accepted|r"] = "Dein Gebot (%s) war |cff00cc0
 CLM.L["Zero-Sum Bank Inflation"] = "Zero-Sum Bank Inflation"
 -- Modules/RosterManager/Options.lua:747
 -- Modules/LedgerManager/GUI.lua:101
-CLM.L["Zero-Sum Bank"] = "Zero-Sum Bank"
+CLM.L["Zero-Sum Bank"] = "Nullsummen Bank"
 -- Modules/RosterManager/Options.lua:754
-CLM.L["Zero-Sum Inflation Value"] = "Zero-Sum Inflationswert"
+CLM.L["Zero-Sum Inflation Value"] = "Nullsummen Inflationswert"
 -- Modules/PointManager/PointManager.lua:399
-CLM.L["Zero-Sum award"] = "Zero-Sum vergeben"
+CLM.L["Zero-Sum award"] = "Nullsumme vergeben"
 -- Modules/AutoAwardManager/EncounterIDs.lua:303
 CLM.L["Zul'Aman"] = "Zul'Aman"
 -- Modules/AutoAwardManager/EncounterIDs.lua:192
@@ -1552,7 +1552,7 @@ CLM.L["[IGNORE]: Ignoring entry"] = "[IGNORIEREN]: Eintrag ignorieren]: "
 -- Modules/LedgerManager/GUI.lua:396
 CLM.L["[Item Award in Raid]: "] = "[Gegenstand Vergeben im Raid]: "
 -- Modules/LedgerManager/GUI.lua:386
-CLM.L["[Item Award]: "] = "[Gegenstand Gewinn]: "
+CLM.L["[Item Award]: "] = "[Gegenstand vergeben]: "
 -- Modules/LedgerManager/GUI.lua:359
 CLM.L["[Point Award to raid]: "] = "[Punkt Vergeben zum Roster]: "
 -- Modules/LedgerManager/GUI.lua:351
@@ -1566,13 +1566,13 @@ CLM.L["[Point Decay]: "] = "[Point Verfall]: "
 -- Modules/LedgerManager/GUI.lua:375
 CLM.L["[Point Set]: "] = "[Punkte Setzen]: "
 -- Modules/LedgerManager/GUI.lua:405
-CLM.L["[Raid Create]: "] = "[Raid Erstellen]: "
+CLM.L["[Raid Create]: "] = "[Schlachtzug Erstellen]: "
 -- Modules/LedgerManager/GUI.lua:430
-CLM.L["[Raid Finish]: "] = "[Raid Ende]: "
+CLM.L["[Raid Finish]: "] = "[Schlachtzug Ende]: "
 -- Modules/LedgerManager/GUI.lua:414
-CLM.L["[Raid Start]: "] = "[Raid Beginn]: "
+CLM.L["[Raid Start]: "] = "[Schlachtzug Beginn]: "
 -- Modules/LedgerManager/GUI.lua:421
-CLM.L["[Raid Update]: "] = "[Raid mis a jour]: "
+CLM.L["[Raid Update]: "] = "[Schlachtzug Update]: "
 -- Modules/LedgerManager/GUI.lua:230
 CLM.L["[Remove Profile]: "] = "[Profile Entfernen]: "
 -- Modules/LedgerManager/GUI.lua:264
