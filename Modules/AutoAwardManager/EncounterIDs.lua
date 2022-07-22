@@ -384,10 +384,10 @@ CLM.EncounterIDs.TBC = {
     }
 }
 
-CLM.EncounterIDs.WOTLK = {
+CLM.EncounterIDs.WOTLK10 = {
     {
         name = CLM.L["Naxxramas"],
-        difficulty = {3,4},
+        difficulty = {3},
         data = {
             { id = 1107, name = EncounterIDsMap[1107] },
             { id = 1110, name = EncounterIDsMap[1110] },
@@ -408,7 +408,7 @@ CLM.EncounterIDs.WOTLK = {
     },
     {
         name = CLM.L["The Obsidian Sanctum"],
-        difficulty = {3,4},
+        difficulty = {3},
         data = {
             { id = 1090, name = EncounterIDsMap[1090] },
             { id = 1091, name = EncounterIDsMap[1091] },
@@ -418,14 +418,14 @@ CLM.EncounterIDs.WOTLK = {
     },
     {
         name = CLM.L["The Eye of Eternity"],
-        difficulty = {3,4},
+        difficulty = {3},
         data = {
             { id = 1094, name = EncounterIDsMap[1094] },
         },
     },
     {
         name = CLM.L["Vault of Archavon"],
-        difficulty = {3,4},
+        difficulty = {3},
         data = {
             { id = 1126, name = EncounterIDsMap[1126] },
             { id = 1127, name = EncounterIDsMap[1127] },
@@ -435,7 +435,7 @@ CLM.EncounterIDs.WOTLK = {
     },
     {
         name = CLM.L["Ulduar"],
-        difficulty = {3,4},
+        difficulty = {3},
         data = {
             { id = 1130, name = EncounterIDsMap[1130] },
             { id = 1131, name = EncounterIDsMap[1131] },
@@ -454,7 +454,7 @@ CLM.EncounterIDs.WOTLK = {
     },
     {
         name = CLM.L["Trial of the Crusader"],
-        difficulty = {3,4,5,6},
+        difficulty = {3,5},
         data = {
             { id = 1085, name = EncounterIDsMap[1085] },
             { id = 1086, name = EncounterIDsMap[1086] },
@@ -465,7 +465,7 @@ CLM.EncounterIDs.WOTLK = {
     },
     {
         name = CLM.L["Icecrown Citadel"],
-        difficulty = {3,4,5,6},
+        difficulty = {3,5},
         data = {
             { id = 1095, name = EncounterIDsMap[1095] },
             { id = 1096, name = EncounterIDsMap[1096] },
@@ -483,14 +483,130 @@ CLM.EncounterIDs.WOTLK = {
     },
     {
         name = CLM.L["Onyxia's Lair"],
-        difficulty = {3,4},
+        difficulty = {3},
         data = {
 	        { id = 1084, order =  1, name = EncounterIDsMap[1084] },
         },
     },
     {
         name = CLM.L["The Ruby Sanctum"],
-        difficulty = {3,4,5,6},
+        difficulty = {3,5},
+        data = {
+            { id = 1147, name = EncounterIDsMap[1147] },
+            { id = 1148, name = EncounterIDsMap[1148] },
+            { id = 1149, name = EncounterIDsMap[1149] },
+            { id = 1150, name = EncounterIDsMap[1150] },
+        },
+    },
+}
+
+CLM.EncounterIDs.WOTLK25 = {
+    {
+        name = CLM.L["Naxxramas"],
+        difficulty = {4},
+        data = {
+            { id = 1107, name = EncounterIDsMap[1107] },
+            { id = 1110, name = EncounterIDsMap[1110] },
+            { id = 1116, name = EncounterIDsMap[1116] },
+            { id = 1118, name = EncounterIDsMap[1118] },
+            { id = 1111, name = EncounterIDsMap[1111] },
+            { id = 1108, name = EncounterIDsMap[1108] },
+            { id = 1120, name = EncounterIDsMap[1120] },
+            { id = 1117, name = EncounterIDsMap[1117] },
+            { id = 1112, name = EncounterIDsMap[1112] },
+            { id = 1115, name = EncounterIDsMap[1115] },
+            { id = 1113, name = EncounterIDsMap[1113] },
+            { id = 1109, name = EncounterIDsMap[1109] },
+            { id = 1121, name = EncounterIDsMap[1121] },
+            { id = 1119, name = EncounterIDsMap[1119] },
+            { id = 1114, name = EncounterIDsMap[1114] },
+        },
+    },
+    {
+        name = CLM.L["The Obsidian Sanctum"],
+        difficulty = {4},
+        data = {
+            { id = 1090, name = EncounterIDsMap[1090] },
+            { id = 1091, name = EncounterIDsMap[1091] },
+            { id = 1092, name = EncounterIDsMap[1092] },
+            { id = 1093, name = EncounterIDsMap[1093] },
+        },
+    },
+    {
+        name = CLM.L["The Eye of Eternity"],
+        difficulty = {4},
+        data = {
+            { id = 1094, name = EncounterIDsMap[1094] },
+        },
+    },
+    {
+        name = CLM.L["Vault of Archavon"],
+        difficulty = {4},
+        data = {
+            { id = 1126, name = EncounterIDsMap[1126] },
+            { id = 1127, name = EncounterIDsMap[1127] },
+            { id = 1128, name = EncounterIDsMap[1128] },
+            { id = 1129, name = EncounterIDsMap[1129] },
+        },
+    },
+    {
+        name = CLM.L["Ulduar"],
+        difficulty = {4},
+        data = {
+            { id = 1130, name = EncounterIDsMap[1130] },
+            { id = 1131, name = EncounterIDsMap[1131] },
+            { id = 1132, name = EncounterIDsMap[1132] },
+            { id = 1133, name = EncounterIDsMap[1133] },
+            { id = 1134, name = EncounterIDsMap[1134] },
+            { id = 1135, name = EncounterIDsMap[1135] },
+            { id = 1136, name = EncounterIDsMap[1136] },
+            { id = 1137, name = EncounterIDsMap[1137] },
+            { id = 1138, name = EncounterIDsMap[1138] },
+            { id = 1139, name = EncounterIDsMap[1139] },
+            { id = 1140, name = EncounterIDsMap[1140] },
+            { id = 1141, name = EncounterIDsMap[1141] },
+            { id = 1142, name = EncounterIDsMap[1142] },
+        },
+    },
+    {
+        name = CLM.L["Trial of the Crusader"],
+        difficulty = {4,6},
+        data = {
+            { id = 1085, name = EncounterIDsMap[1085] },
+            { id = 1086, name = EncounterIDsMap[1086] },
+            { id = 1087, name = EncounterIDsMap[1087] },
+            { id = 1088, name = EncounterIDsMap[1088] },
+            { id = 1089, name = EncounterIDsMap[1089] },
+        },
+    },
+    {
+        name = CLM.L["Icecrown Citadel"],
+        difficulty = {4,6},
+        data = {
+            { id = 1095, name = EncounterIDsMap[1095] },
+            { id = 1096, name = EncounterIDsMap[1096] },
+            { id = 1097, name = EncounterIDsMap[1097] },
+            { id = 1098, name = EncounterIDsMap[1098] },
+            { id = 1099, name = EncounterIDsMap[1099] },
+            { id = 1100, name = EncounterIDsMap[1100] },
+            { id = 1101, name = EncounterIDsMap[1101] },
+            { id = 1102, name = EncounterIDsMap[1102] },
+            { id = 1103, name = EncounterIDsMap[1103] },
+            { id = 1104, name = EncounterIDsMap[1104] },
+            { id = 1105, name = EncounterIDsMap[1105] },
+            { id = 1106, name = EncounterIDsMap[1106] },
+        },
+    },
+    {
+        name = CLM.L["Onyxia's Lair"],
+        difficulty = {4},
+        data = {
+	        { id = 1084, order =  1, name = EncounterIDsMap[1084] },
+        },
+    },
+    {
+        name = CLM.L["The Ruby Sanctum"],
+        difficulty = {4,6},
         data = {
             { id = 1147, name = EncounterIDsMap[1147] },
             { id = 1148, name = EncounterIDsMap[1148] },

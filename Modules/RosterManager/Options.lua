@@ -417,9 +417,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = CLM.L["TBC"],
                 args = {}
             },
-            wotlk = {
+            wotlk10 = {
                 type = "group",
-                name = CLM.L["WotLK"],
+                name = CLM.L["WotLK - 10 Player"],
+                args = {}
+            },
+            wotlk25 = {
+                type = "group",
+                name = CLM.L["WotLK - 25 Player"],
                 args = {}
             }
         }
