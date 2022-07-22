@@ -1,5 +1,6 @@
 local _, CLM = ...
 local EncounterIDsMap = {
+    -- Classic
     [1084] = CLM.L["Onyxia"],
     [663] = CLM.L["Lucifron"],
     [664] = CLM.L["Magmadar"],
@@ -43,6 +44,7 @@ local EncounterIDsMap = {
     [1121] = CLM.L["The Four Horsemen"],
     [1119] = CLM.L["Sapphiron"],
     [1114] = CLM.L["Kel'Thuzad"],
+    -- TBC
     [789] = CLM.L["High Priest Thekal"],
     [784] = CLM.L["High Priest Venoxis"],
     [791] = CLM.L["High Priestess Arlokk"],
@@ -109,21 +111,79 @@ local EncounterIDsMap = {
     [727] = CLM.L["Eredar Twins"],
     [728] = CLM.L["M'uru"],
     [729] = CLM.L["Kil'jaeden"],
+    -- WotLK
+    -- Naxx fully reused
+    [1090] = CLM.L["Sartharion"],
+    [1091] = CLM.L["Shadron"],
+    [1092] = CLM.L["Tenebron"],
+    [1093] = CLM.L["Vesperon"],
+    [1094] = CLM.L["Malygos"],
+    [1126] = CLM.L["Archavon the Stone Watcher"],
+    [1127] = CLM.L["Emalon the Storm Watcher"],
+    [1128] = CLM.L["Koralon the Flame Watcher"],
+    [1129] = CLM.L["Toravon the Ice Watcher"],
+    [1130] = CLM.L["Algalon the Observer"],
+    [1131] = CLM.L["Auriaya"],
+    [1132] = CLM.L["Flame Leviathan"],
+    [1133] = CLM.L["Freya"],
+    [1134] = CLM.L["General Vezax"],
+    [1135] = CLM.L["Hodir"],
+    [1136] = CLM.L["Ignis the Furnace Master"],
+    [1137] = CLM.L["Kologarn"],
+    [1138] = CLM.L["Mimiron"],
+    [1139] = CLM.L["Razorscale"],
+    [1140] = CLM.L["The Assembly of Iron"],
+    [1141] = CLM.L["Thorim"],
+    [1142] = CLM.L["XT-002 Deconstructor"],
+    [1143] = CLM.L["Yogg-Saron"],
+    [1085] = CLM.L["Anub'arak"],
+    [1086] = CLM.L["Faction Champions"],
+    [1087] = CLM.L["Lord Jaraxxus"],
+    [1088] = CLM.L["Northrend Beasts"],
+    [1089] = CLM.L["Val'kyr Twins"],
+    [1095] = CLM.L["Blood Council"],
+    [1096] = CLM.L["Deathbringer Saurfang"],
+    [1097] = CLM.L["Festergut"],
+    [1098] = CLM.L["Valithria Dreamwalker"],
+    [1099] = CLM.L["Icecrown Gunship Battle"],
+    [1100] = CLM.L["Lady Deathwhisper"],
+    [1101] = CLM.L["Lord Marrowgar"],
+    [1102] = CLM.L["Professor Putricide"],
+    [1103] = CLM.L["Queen Lana'thel"],
+    [1104] = CLM.L["Rotface"],
+    [1105] = CLM.L["Sindragosa"],
+    [1106] = CLM.L["The Lich King"],
+    [1147] = CLM.L["Baltharus the Warborn"],
+    [1148] = CLM.L["General Zarithrian"],
+    [1149] = CLM.L["Saviana Ragefire"],
+    [1150] = CLM.L["Halion"],
 }
+
+local DifficultyIDsMap = {
+    [-1]    = "Fake", -- Trick for handling easily not-supported encounter ids
+    [3]	    = CLM.L["10 Player"],
+    [4]	    = CLM.L["25 Player"],
+    [5]	    = CLM.L["10 Player (Heroic)"],
+    [6]	    = CLM.L["25 Player (Heroic)"],
+    [9]     = CLM.L["40 Player"],
+    [148]   = CLM.L["20 Player"]
+}
+
 CLM.EncounterIDsMap = EncounterIDsMap
-
+CLM.DifficultyIDsMap = DifficultyIDsMap
 CLM.EncounterIDs = {}
-CLM.EncounterIDs.Classic = {
 
+CLM.EncounterIDs.Classic = {
     {
         name = CLM.L["Onyxia's Lair"],
+        difficulty = {9},
         data = {
 	        { id = 1084, order =  1, name = EncounterIDsMap[1084] },
         },
     },
-
     {
         name = CLM.L["Molten Core"],
+        difficulty = {9},
         data = {
             { id = 663, name = EncounterIDsMap[663] },
             { id = 664, name = EncounterIDsMap[664] },
@@ -137,9 +197,9 @@ CLM.EncounterIDs.Classic = {
             { id = 672, name = EncounterIDsMap[672] },
         },
     },
-
     {
         name = CLM.L["Blackwing Lair"],
+        difficulty = {9},
         data = {
             { id = 610, name = EncounterIDsMap[610] },
             { id = 611, name = EncounterIDsMap[611] },
@@ -151,9 +211,9 @@ CLM.EncounterIDs.Classic = {
             { id = 617, name = EncounterIDsMap[617] },
         },
     },
-
     {
         name = CLM.L["Temple of Ahn'Qiraj"],
+        difficulty = {9},
         data = {
             { id = 709, name = EncounterIDsMap[709] },
             { id = 710, name = EncounterIDsMap[710] },
@@ -166,9 +226,9 @@ CLM.EncounterIDs.Classic = {
             { id = 717, name = EncounterIDsMap[717] },
         },
     },
-
     {
         name = CLM.L["Naxxramas"],
+        difficulty = {9},
         data = {
             { id = 1107, name = EncounterIDsMap[1107] },
             { id = 1110, name = EncounterIDsMap[1110] },
@@ -187,9 +247,9 @@ CLM.EncounterIDs.Classic = {
             { id = 1114, name = EncounterIDsMap[1114] },
         },
     },
-
     {
         name = CLM.L["Zul'Gurub"],
+        difficulty = {148},
         data = {
             { id = 789, name = EncounterIDsMap[789] },
             { id = 784, name = EncounterIDsMap[784] },
@@ -203,9 +263,9 @@ CLM.EncounterIDs.Classic = {
             { id = 790, name = EncounterIDsMap[790] },
         },
     },
-
     {
         name = CLM.L["Ruins of Ahn'Qiraj"],
+        difficulty = {148},
         data = {
             { id = 718, name = EncounterIDsMap[718] },
             { id = 719, name = EncounterIDsMap[719] },
@@ -218,9 +278,9 @@ CLM.EncounterIDs.Classic = {
 }
 
 CLM.EncounterIDs.TBC = {
-
     {
         name = CLM.L["Karazhan"],
+        difficulty = {3},
         data = {
             { id = 652, name = EncounterIDsMap[652] },
             { id = 653, name = EncounterIDsMap[653] },
@@ -235,24 +295,24 @@ CLM.EncounterIDs.TBC = {
             { id = 662, name = EncounterIDsMap[662] },
         }
     },
-
     {
         name = CLM.L["Gruul's Lair"],
+        difficulty = {4},
         data = {
             { id = 649, name = EncounterIDsMap[649] },
             { id = 650, name = EncounterIDsMap[650] },
         }
     },
-
     {
         name = CLM.L["Magtheridon"],
+        difficulty = {4},
         data = {
             { id = 651, name = EncounterIDsMap[651] },
         }
     },
-
     {
         name = CLM.L["Serpentshrine Cavern"],
+        difficulty = {4},
         data = {
             { id = 623, name = EncounterIDsMap[623] },
             { id = 624, name = EncounterIDsMap[624] },
@@ -262,9 +322,9 @@ CLM.EncounterIDs.TBC = {
             { id = 628, name = EncounterIDsMap[628] },
         }
     },
-
     {
         name = CLM.L["Tempest Keep"],
+        difficulty = {4},
         data = {
             { id = 730, name = EncounterIDsMap[730] },
             { id = 731, name = EncounterIDsMap[731] },
@@ -272,9 +332,9 @@ CLM.EncounterIDs.TBC = {
             { id = 733, name = EncounterIDsMap[733] },
         }
     },
-
     {
         name = CLM.L["Black Temple"],
+        difficulty = {4},
         data = {
             { id = 601, name = EncounterIDsMap[601] },
             { id = 602, name = EncounterIDsMap[602] },
@@ -287,9 +347,9 @@ CLM.EncounterIDs.TBC = {
             { id = 609, name = EncounterIDsMap[609] },
         }
     },
-
     {
         name = CLM.L["Hyjal Summit"],
+        difficulty = {4},
         data = {
             { id = 618, name = EncounterIDsMap[618] },
             { id = 619, name = EncounterIDsMap[619] },
@@ -298,9 +358,9 @@ CLM.EncounterIDs.TBC = {
             { id = 622, name = EncounterIDsMap[622] },
         }
     },
-
     {
         name = CLM.L["Zul'Aman"],
+        difficulty = {3},
         data = {
             { id = 1189, name = EncounterIDsMap[1189] },
             { id = 1190, name = EncounterIDsMap[1190] },
@@ -310,16 +370,132 @@ CLM.EncounterIDs.TBC = {
             { id = 1194, name = EncounterIDsMap[1194] },
         }
     },
-
     {
         name = CLM.L["Sunwell Plateau"],
+        difficulty = {4},
         data = {
             { id = 724, name = EncounterIDsMap[724] },
             { id = 725, name = EncounterIDsMap[725] },
             { id = 726, name = EncounterIDsMap[726] },
             { id = 727, name = EncounterIDsMap[727] },
             { id = 728, name = EncounterIDsMap[728] },
-            { id = 729, name = EncounterIDsMap[729] }
+            { id = 729, name = EncounterIDsMap[729] },
         }
     }
+}
+
+CLM.EncounterIDs.WOTLK = {
+    {
+        name = CLM.L["Naxxramas"],
+        difficulty = {3,4},
+        data = {
+            { id = 1107, name = EncounterIDsMap[1107] },
+            { id = 1110, name = EncounterIDsMap[1110] },
+            { id = 1116, name = EncounterIDsMap[1116] },
+            { id = 1118, name = EncounterIDsMap[1118] },
+            { id = 1111, name = EncounterIDsMap[1111] },
+            { id = 1108, name = EncounterIDsMap[1108] },
+            { id = 1120, name = EncounterIDsMap[1120] },
+            { id = 1117, name = EncounterIDsMap[1117] },
+            { id = 1112, name = EncounterIDsMap[1112] },
+            { id = 1115, name = EncounterIDsMap[1115] },
+            { id = 1113, name = EncounterIDsMap[1113] },
+            { id = 1109, name = EncounterIDsMap[1109] },
+            { id = 1121, name = EncounterIDsMap[1121] },
+            { id = 1119, name = EncounterIDsMap[1119] },
+            { id = 1114, name = EncounterIDsMap[1114] },
+        },
+    },
+    {
+        name = CLM.L["The Obsidian Sanctum"],
+        difficulty = {3,4},
+        data = {
+            { id = 1090, name = EncounterIDsMap[1090] },
+            { id = 1091, name = EncounterIDsMap[1091] },
+            { id = 1092, name = EncounterIDsMap[1092] },
+            { id = 1093, name = EncounterIDsMap[1093] },
+        },
+    },
+    {
+        name = CLM.L["The Eye of Eternity"],
+        difficulty = {3,4},
+        data = {
+            { id = 1094, name = EncounterIDsMap[1094] },
+        },
+    },
+    {
+        name = CLM.L["Vault of Archavon"],
+        difficulty = {3,4},
+        data = {
+            { id = 1126, name = EncounterIDsMap[1126] },
+            { id = 1127, name = EncounterIDsMap[1127] },
+            { id = 1128, name = EncounterIDsMap[1128] },
+            { id = 1129, name = EncounterIDsMap[1129] },
+        },
+    },
+    {
+        name = CLM.L["Ulduar"],
+        difficulty = {3,4},
+        data = {
+            { id = 1130, name = EncounterIDsMap[1130] },
+            { id = 1131, name = EncounterIDsMap[1131] },
+            { id = 1132, name = EncounterIDsMap[1132] },
+            { id = 1133, name = EncounterIDsMap[1133] },
+            { id = 1134, name = EncounterIDsMap[1134] },
+            { id = 1135, name = EncounterIDsMap[1135] },
+            { id = 1136, name = EncounterIDsMap[1136] },
+            { id = 1137, name = EncounterIDsMap[1137] },
+            { id = 1138, name = EncounterIDsMap[1138] },
+            { id = 1139, name = EncounterIDsMap[1139] },
+            { id = 1140, name = EncounterIDsMap[1140] },
+            { id = 1141, name = EncounterIDsMap[1141] },
+            { id = 1142, name = EncounterIDsMap[1142] },
+        },
+    },
+    {
+        name = CLM.L["Trial of the Crusader"],
+        difficulty = {3,4,5,6},
+        data = {
+            { id = 1085, name = EncounterIDsMap[1085] },
+            { id = 1086, name = EncounterIDsMap[1086] },
+            { id = 1087, name = EncounterIDsMap[1087] },
+            { id = 1088, name = EncounterIDsMap[1088] },
+            { id = 1089, name = EncounterIDsMap[1089] },
+        },
+    },
+    {
+        name = CLM.L["Icecrown Citadel"],
+        difficulty = {3,4,5,6},
+        data = {
+            { id = 1095, name = EncounterIDsMap[1095] },
+            { id = 1096, name = EncounterIDsMap[1096] },
+            { id = 1097, name = EncounterIDsMap[1097] },
+            { id = 1098, name = EncounterIDsMap[1098] },
+            { id = 1099, name = EncounterIDsMap[1099] },
+            { id = 1100, name = EncounterIDsMap[1100] },
+            { id = 1101, name = EncounterIDsMap[1101] },
+            { id = 1102, name = EncounterIDsMap[1102] },
+            { id = 1103, name = EncounterIDsMap[1103] },
+            { id = 1104, name = EncounterIDsMap[1104] },
+            { id = 1105, name = EncounterIDsMap[1105] },
+            { id = 1106, name = EncounterIDsMap[1106] },
+        },
+    },
+    {
+        name = CLM.L["Onyxia's Lair"],
+        difficulty = {3,4},
+        data = {
+	        { id = 1084, order =  1, name = EncounterIDsMap[1084] },
+        },
+    },
+    {
+        name = CLM.L["The Ruby Sanctum"],
+        difficulty = {3,4,5,6},
+        data = {
+            { id = 1147, name = EncounterIDsMap[1147] },
+            { id = 1148, name = EncounterIDsMap[1148] },
+            { id = 1149, name = EncounterIDsMap[1149] },
+            { id = 1150, name = EncounterIDsMap[1150] },
+        },
+    },
 }

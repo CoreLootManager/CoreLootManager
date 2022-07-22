@@ -334,11 +334,12 @@ end
 -- -------------------- --
 -- RosterBossKillBonus --
 -- -------------------- --
-function RosterBossKillBonus:new(rosterUid, encounterId, value)
+function RosterBossKillBonus:new(rosterUid, encounterId, difficultyId, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.e = tonumber(encounterId) or 0
     o.v = tonumber(value) or 0
+    o.d = tonumber(difficultyId) or 0
     return o
 end
 
@@ -350,11 +351,15 @@ function RosterBossKillBonus:encounterId()
     return self.e
 end
 
+function RosterBossKillBonus:difficultyId()
+    return self.d
+end
+
 function RosterBossKillBonus:value()
     return self.v
 end
 
-local RosterBossKillBonusFields = mergeLists(LogEntry:fields(), {"r", "e", "v"})
+local RosterBossKillBonusFields = mergeLists(LogEntry:fields(), {"r", "e", "v", "d"})
 function RosterBossKillBonus:fields()
     return RosterBossKillBonusFields
 end
