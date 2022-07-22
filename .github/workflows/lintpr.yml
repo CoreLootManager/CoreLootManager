@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - master
+      - wotlk
 jobs:
   lint:
     name: Auto-Review Pull Request
