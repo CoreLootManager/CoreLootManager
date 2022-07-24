@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - master
+      - wotlk
 jobs:
   l10n:
     name: L10n verification

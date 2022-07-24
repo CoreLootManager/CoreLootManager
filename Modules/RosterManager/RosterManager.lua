@@ -248,7 +248,7 @@ function RosterManager:Initialize()
                         LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                         return
                     end
-                    roster:SetBossKillBonusValue(entry:encounterId(), entry:value())
+                    roster:SetBossKillBonusValue(entry:encounterId(), entry:difficultyId(), entry:value())
                 end))
 
         LedgerManager:RegisterOnRestart(function()
@@ -496,7 +496,7 @@ function RosterManager:SetRosterItemValue(nameOrRoster, itemId, base, max)
     LedgerManager:Submit(LEDGER_ROSTER.UpdateOverrides:new(roster:UID(), itemId, base, max), true)
 end
 
-function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, value)
+function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, difficultyId, value)
     LOG:Trace("RosterManager:SetRosterBossKillBonusValue()")
     local roster
     if typeof(nameOrRoster, Roster) then
@@ -512,6 +512,10 @@ function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, va
         LOG:Error("RosterManager:SetRosterBossKillBonusValue(): Missing encounterId")
         return
     end
+    if not tonumber(difficultyId) then
+        LOG:Error("RosterManager:SetRosterBossKillBonusValue(): Missing difficultyId")
+        return
+    end
     if not tonumber(value) then
         LOG:Error("RosterManager:SetRosterBossKillBonusValue(): Missing value")
         return
@@ -521,7 +525,7 @@ function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, va
         LOG:Debug("RosterManager:SetRosterBossKillBonusValue(): No change to value. Skipping.")
         return
     end
-    LedgerManager:Submit(LEDGER_ROSTER.BossKillBonus:new(roster:UID(), encounterId, value), true)
+    LedgerManager:Submit(LEDGER_ROSTER.BossKillBonus:new(roster:UID(), encounterId, difficultyId, value), true)
 end
 
 function RosterManager:AddProfilesToRoster(roster, profiles)

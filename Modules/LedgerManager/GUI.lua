@@ -190,22 +190,22 @@ local function decodeItemValueOverride(itemId, base, max)
     return safeItemIdToLink(itemId), safeToString(base), safeToString(max)
 end
 
-local function decodeBossKillBonus(encounterId, value)
+local function decodeBossKillBonus(encounterId, difficultyId, value)
     local encounter = CLM.L["Unknown"]
     value = tonumber(value) or 0
     if value == 0 then
-        return encounter, ""
+        return encounter, "", ""
     end
     for _, expack in pairs(CLM.EncounterIDs) do
         for _,instance in ipairs(expack) do
             for _,encounterInfo in ipairs(instance.data) do
                 if encounterInfo.id == encounterId then
-                    return safeToString(encounterInfo.name), safeToString(value)
+                    return safeToString(encounterInfo.name), safeToString(CLM.DifficultyIDsMap[difficultyId]), safeToString(value)
                 end
             end
         end
     end
-    return "", safeToString(value)
+    return "", safeToString(CLM.DifficultyIDsMap[difficultyId]), safeToString(value)
 end
 
 local describeFunctions  = {
@@ -323,10 +323,10 @@ local describeFunctions  = {
     end),
     ["RB"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        local encounter, value = decodeBossKillBonus(entry:encounterId(), entry:value())
+        local encounter, difficulty, value = decodeBossKillBonus(entry:encounterId(), entry:difficultyId(), entry:value())
         return CLM.L["[Roster Boss Kill Bonus]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
-            encounter .. ": " .. value
+            encounter .. " - ".. difficulty .. ": " .. value
 
     end),
     -- Points

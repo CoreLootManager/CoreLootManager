@@ -416,60 +416,50 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "group",
                 name = CLM.L["TBC"],
                 args = {}
+            },
+            wotlk10 = {
+                type = "group",
+                name = CLM.L["WotLK - 10 Player"],
+                args = {}
+            },
+            wotlk25 = {
+                type = "group",
+                name = CLM.L["WotLK - 25 Player"],
+                args = {}
             }
         }
-        -- Classic
+        -- Common
         local order = 1
-        for _, data in ipairs(CLM.EncounterIDs.Classic) do
-            order = order + 1
-            args.classic.args["encounter_header_" .. data.name] = {
-                name = data.name,
-                type = "header",
-                order = order,
-                width = "full"
-            }
-            for _, info in ipairs(data.data) do
-                order = order + 1
-                args.classic.args["encounter" .. info.id] = {
-                    name = info.name,
-                    type = "input",
-                    width = "full",
-                    order = order,
-                    set = (function(i, v)
-                        if self.readOnly then return end
-                        RosterManager:SetRosterBossKillBonusValue(name, info.id, v)
-                    end),
-                    get = (function(i)
-                        return tostring(roster:GetBossKillBonusValue(info.id))
-                    end)
-                }
-            end
-        end
-        -- TBC
-        order = 1
-        for _, data in ipairs(CLM.EncounterIDs.TBC) do
-            order = order + 1
-            args.tbc.args["encounter_header_" .. data.name] = {
-                name = data.name,
-                type = "header",
-                order = order,
-                width = "full"
-            }
-            for _, info in ipairs(data.data) do
-                order = order + 1
-                args.tbc.args["encounter" .. info.id] = {
-                    name = info.name,
-                    type = "input",
-                    width = "full",
-                    order = order,
-                    set = (function(i, v)
-                        if self.readOnly then return end
-                        RosterManager:SetRosterBossKillBonusValue(name, info.id, v)
-                    end),
-                    get = (function(i)
-                        return tostring(roster:GetBossKillBonusValue(info.id))
-                    end)
-                }
+        for expansion,expansionEncounterData in pairs(CLM.EncounterIDs) do
+            expansion = string.lower( expansion )
+            for _, instanceData in ipairs(expansionEncounterData) do
+                for _,difficultyId in ipairs(instanceData.difficulty) do
+                    order = order + 1
+                    local instanceName = instanceData.name .. " - " .. CLM.DifficultyIDsMap[difficultyId]
+                    args[expansion].args["encounter_header_" .. instanceData.name .. difficultyId] = {
+                        name = instanceName,
+                        type = "header",
+                        order = order,
+                        width = "full"
+                    }
+                    for _, info in ipairs(instanceData.data) do
+                        order = order + 1
+                        args[expansion].args["encounter" .. info.id .. difficultyId] = {
+                            name = info.name,
+                            desc = instanceName,
+                            type = "input",
+                            width = "full",
+                            order = order,
+                            set = (function(i, v)
+                                if self.readOnly then return end
+                                RosterManager:SetRosterBossKillBonusValue(name, info.id, difficultyId, v)
+                            end),
+                            get = (function(i)
+                                return tostring(roster:GetBossKillBonusValue(info.id, difficultyId))
+                            end)
+                        }
+                    end
+                end
             end
         end
         return args

@@ -52,6 +52,9 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.weeklyGains = {}
     -- Boss Kill Bonus values
     o.bossKillBonusValues = {}
+    for id,_ in pairs(CLM.DifficultyIDsMap) do
+        o.bossKillBonusValues[id] = {}
+    end
 
     return o
 end
@@ -350,12 +353,13 @@ function Roster:GetProfilePointHistoryByGUID(GUID)
     return self.profilePointHistory[GUID] or {}
 end
 
-function Roster:SetBossKillBonusValue(encounterId, value)
-    self.bossKillBonusValues[encounterId] = tonumber(value)
+function Roster:SetBossKillBonusValue(encounterId, difficultyId, value)
+    LOG:Debug("Roster:SetBossKillBonusValue() Trying to set encounterId: %s difficultyId: %s value: %s", encounterId, difficultyId, value)
+    self.bossKillBonusValues[difficultyId][encounterId] = tonumber(value)
 end
 
-function Roster:GetBossKillBonusValue(encounterId)
-    return self.bossKillBonusValues[encounterId] or self.configuration._.bossKillBonusValue
+function Roster:GetBossKillBonusValue(encounterId, difficultyId)
+    return self.bossKillBonusValues[difficultyId or -1][encounterId] or self.configuration._.bossKillBonusValue
 end
 
 -- Copies. Hope I didn't fk it up

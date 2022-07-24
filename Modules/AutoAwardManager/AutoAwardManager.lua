@@ -14,13 +14,33 @@ local HYDROSS_NPC_ID = 21216
 
 local RAID_AWARD_LEDGER_CLASS = "DR"
 
-local function awardBossKillBonus(id)
-    LOG:Info("Award Boss Kill Bonus for %s", id)
+local multiWoWDifficultyIDs = {
+    [3] = 3,
+    [4] = 4,
+    [5] = 5,
+    [6] = 6,
+    [9] = 9,
+    [148] = 148,
+    [175] = 3,
+    [176] = 4,
+}
+
+local function normalizeDifficultyId(difficultyId)
+    return multiWoWDifficultyIDs[difficultyId] or -1
+end
+
+local function awardBossKillBonus(id, difficultyId)
+    if not difficultyId then
+        local _, _, difficultyID = GetInstanceInfo()
+        difficultyId = difficultyID
+    end
+    difficultyId = normalizeDifficultyId(difficultyId)
+    LOG:Info("Award Boss Kill Bonus for %s %s", id, difficultyId)
     if RaidManager:IsInActiveRaid() then
         local roster = RaidManager:GetRaid():Roster()
         local config = RaidManager:GetRaid():Configuration()
         if config:Get("bossKillBonus") then
-            local value = roster:GetBossKillBonusValue(id)
+            local value = roster:GetBossKillBonusValue(id, difficultyId)
             if value > 0 then
                 PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
             end
