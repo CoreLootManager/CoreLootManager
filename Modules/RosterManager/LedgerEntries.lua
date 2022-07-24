@@ -339,7 +339,7 @@ function RosterBossKillBonus:new(rosterUid, encounterId, difficultyId, value)
     o.r = tonumber(rosterUid) or 0
     o.e = tonumber(encounterId) or 0
     o.v = tonumber(value) or 0
-    o.d = tonumber(difficultyId) or 0
+    o.d = tonumber(difficultyId) or -1
     return o
 end
 
@@ -352,7 +352,7 @@ function RosterBossKillBonus:encounterId()
 end
 
 function RosterBossKillBonus:difficultyId()
-    return self.d
+    return (self.d or -1)
 end
 
 function RosterBossKillBonus:value()

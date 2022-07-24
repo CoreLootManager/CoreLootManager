@@ -419,12 +419,12 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             },
             wotlk10 = {
                 type = "group",
-                name = CLM.L["WotLK - 10 Player"],
+                name = CLM.L["WotLK - 10"],
                 args = {}
             },
             wotlk25 = {
                 type = "group",
-                name = CLM.L["WotLK - 25 Player"],
+                name = CLM.L["WotLK - 25"],
                 args = {}
             }
         }
@@ -809,6 +809,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             boss_kill_award_values = {
                 name = CLM.L["Boss kill award values"],
                 type = "group",
+                childGroups = "tab",
                 args = boss_kill_award_values_args
             }
         }

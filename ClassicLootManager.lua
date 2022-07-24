@@ -57,7 +57,7 @@ local function Initialize_Versioning()
     local major, minor, patch, changeset = string.match(CLM.AUTOVERSION, "^v(%d+).(%d+).(%d+)-?(.*)")
     local old = CLM_DB.global.version
     local new = {
-        major = tonumber(major) or 1,
+        major = tonumber(major) or 2,
         minor = tonumber(minor) or 0,
         patch = tonumber(patch) or 0,
         changeset = changeset or ""
