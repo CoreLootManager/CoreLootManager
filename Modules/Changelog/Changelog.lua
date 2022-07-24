@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v1.9.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "German Locale", body = "Fixes to German locale. Big thank you to Saysor for the contribution."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.9.0",
         data = {
             {
