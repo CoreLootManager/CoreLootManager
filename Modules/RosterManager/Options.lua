@@ -43,16 +43,16 @@ function RosterManagerOptions:Initialize()
     self.rosterName = RosterManager:GenerateName()
     self.readOnly = not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     self.handlers = {
-        name_get = (function(name)
+        general_name_get = (function(name)
             return name
         end),
-        name_set = (function(old, new)
+        general_name_set = (function(old, new)
             RosterManager:RenameRoster(old, new)
         end),
-        remove_execute = (function(name)
+        general_remove_execute = (function(name)
             RosterManager:DeleteRosterByName(name)
         end),
-        fill_profiles_execute = (function(name)
+        general_fill_profiles_execute = (function(name)
             local profiles = ProfileManager:GetProfiles()
             local profileList = {}
             for GUID, _ in pairs(profiles) do
@@ -61,124 +61,124 @@ function RosterManagerOptions:Initialize()
             local roster = RosterManager:GetRosterByName(name)
             RosterManager:AddProfilesToRoster(roster, profileList)
         end),
-        copy_execute = (function(name)
+        general_copy_execute = (function(name)
             if self.copy_source_name == nil then return end
             RosterManager:Copy(self.copy_source_name, name, true, true, true, false)
         end),
-        copy_source_get = (function(name)
+        general_copy_source_get = (function(name)
             return self.copy_source_name
         end),
-        copy_source_set = (function(name, value)
+        general_copy_source_set = (function(name, value)
             self.copy_source_name = value
         end),
         -- Bonuses
-        boss_kill_bonus_get = (function(name)
+        general_boss_kill_bonus_get = (function(name)
             return GetRosterOption(name, "bossKillBonus")
         end),
-        boss_kill_bonus_set = (function(name, value)
+        general_boss_kill_bonus_set = (function(name, value)
             SetRosterOption(name, "bossKillBonus", value)
         end),
-        boss_kill_bonus_value_get = (function(name)
+        general_boss_kill_bonus_value_get = (function(name)
             return tostring(GetRosterOption(name, "bossKillBonusValue"))
         end),
-        boss_kill_bonus_value_set = (function(name, value)
+        general_boss_kill_bonus_value_set = (function(name, value)
             SetRosterOption(name, "bossKillBonusValue", value)
         end),
-        on_time_bonus_get = (function(name)
+        general_on_time_bonus_get = (function(name)
             return GetRosterOption(name, "onTimeBonus")
         end),
-        on_time_bonus_set = (function(name, value)
+        general_on_time_bonus_set = (function(name, value)
             SetRosterOption(name, "onTimeBonus", value)
         end),
-        on_time_bonus_value_get = (function(name)
+        general_on_time_bonus_value_get = (function(name)
             return tostring(GetRosterOption(name, "onTimeBonusValue"))
         end),
-        on_time_bonus_value_set = (function(name, value)
+        general_on_time_bonus_value_set = (function(name, value)
             SetRosterOption(name, "onTimeBonusValue", value)
         end),
-        raid_completion_bonus_get = (function(name)
+        general_raid_completion_bonus_get = (function(name)
             return GetRosterOption(name, "raidCompletionBonus")
         end),
-        raid_completion_bonus_set = (function(name, value)
+        general_raid_completion_bonus_set = (function(name, value)
             SetRosterOption(name, "raidCompletionBonus", value)
         end),
-        raid_completion_bonus_value_get = (function(name)
+        general_raid_completion_bonus_value_get = (function(name)
             return tostring(GetRosterOption(name, "raidCompletionBonusValue"))
         end),
-        raid_completion_bonus_value_set = (function(name, value)
+        general_raid_completion_bonus_value_set = (function(name, value)
             SetRosterOption(name, "raidCompletionBonusValue", value)
         end),
-        interval_bonus_get = (function(name)
+        general_interval_bonus_get = (function(name)
             return GetRosterOption(name, "intervalBonus")
         end),
-        interval_bonus_set = (function(name, value)
+        general_interval_bonus_set = (function(name, value)
             SetRosterOption(name, "intervalBonus", value)
         end),
-        interval_bonus_value_get = (function(name)
+        general_interval_bonus_value_get = (function(name)
             return tostring(GetRosterOption(name, "intervalBonusValue"))
         end),
-        interval_bonus_value_set = (function(name, value)
+        general_interval_bonus_value_set = (function(name, value)
             SetRosterOption(name, "intervalBonusValue", value)
         end),
-        interval_bonus_time_get = (function(name)
+        general_interval_bonus_time_get = (function(name)
             return tostring(GetRosterOption(name, "intervalBonusTime"))
         end),
-        interval_bonus_time_set = (function(name, value)
+        general_interval_bonus_time_set = (function(name, value)
             SetRosterOption(name, "intervalBonusTime", value)
         end),
-        weekly_reset_timezone_get = (function(name)
+        general_weekly_reset_timezone_get = (function(name)
             return GetRosterOption(name, "weeklyReset")
         end),
-        weekly_reset_timezone_set = (function(name, value)
+        general_weekly_reset_timezone_set = (function(name, value)
             SetRosterOption(name, "weeklyReset", value)
         end),
-        allow_self_bench_subscribe_get = (function(name)
+        general_allow_self_bench_subscribe_get = (function(name)
             return GetRosterOption(name, "selfBenchSubscribe")
         end),
-        allow_self_bench_subscribe_set = (function(name, value)
+        general_allow_self_bench_subscribe_set = (function(name, value)
             SetRosterOption(name, "selfBenchSubscribe", value)
         end),
-        auto_bench_leavers_get = (function(name)
+        general_auto_bench_leavers_get = (function(name)
             return GetRosterOption(name, "autoBenchLeavers")
         end),
-        auto_bench_leavers_set = (function(name, value)
+        general_auto_bench_leavers_set = (function(name, value)
             SetRosterOption(name, "autoBenchLeavers", value)
         end),
-        auto_award_include_bench_get = (function(name)
+        general_auto_award_include_bench_get = (function(name)
             return GetRosterOption(name, "autoAwardIncludeBench")
         end),
-        auto_award_include_bench_set = (function(name, value)
+        general_auto_award_include_bench_set = (function(name, value)
             SetRosterOption(name, "autoAwardIncludeBench", value)
         end),
-        auto_award_online_only_get = (function(name)
+        general_auto_award_online_only_get = (function(name)
             return GetRosterOption(name, "autoAwardOnlineOnly")
         end),
-        auto_award_online_only_set = (function(name, value)
+        general_auto_award_online_only_set = (function(name, value)
             SetRosterOption(name, "autoAwardOnlineOnly", value)
         end),
-        auto_award_same_zone_only_get = (function(name)
+        general_auto_award_same_zone_only_get = (function(name)
             return GetRosterOption(name, "autoAwardSameZoneOnly")
         end),
-        auto_award_same_zone_only_set = (function(name, value)
+        general_auto_award_same_zone_only_set = (function(name, value)
             SetRosterOption(name, "autoAwardSameZoneOnly", value)
         end),
         -- Caps
-        hard_cap_get = (function(name)
+        general_hard_cap_get = (function(name)
             return tostring(GetRosterOption(name, "hardCap"))
         end),
-        hard_cap_set = (function(name, value)
+        general_hard_cap_set = (function(name, value)
             SetRosterOption(name, "hardCap", value)
         end),
-        round_decimals_get = (function(name)
+        general_round_decimals_get = (function(name)
             return GetRosterOption(name, "roundDecimals")
         end),
-        round_decimals_set = (function(name, value)
+        general_round_decimals_set = (function(name, value)
             SetRosterOption(name, "roundDecimals", value)
         end),
-        weekly_cap_get = (function(name)
+        general_weekly_cap_get = (function(name)
             return tostring(GetRosterOption(name, "weeklyCap"))
         end),
-        weekly_cap_set = (function(name, value)
+        general_weekly_cap_set = (function(name, value)
             SetRosterOption(name, "weeklyCap", value)
         end),
         -- Auction
@@ -315,8 +315,11 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = RosterManager:GetRosterByName(name)
     local default_slot_values_args = (function()
         local values = {
-            ["Base"] = CLM.L["Base value for Static-Priced auction. Minimum value for Ascending auction. Set to 0 to ignore."],
-            ["Maximum"] = CLM.L["Maximum value for Ascending auction. Set to 0 to ignore."]
+            {[CONSTANTS.SLOT_VALUE_TIER.BASE] = CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]},
+            {[CONSTANTS.SLOT_VALUE_TIER.SMALL] = CLM.L["Small value for Tiered auction.\n\nSet to 0 to ignore."]},
+            {[CONSTANTS.SLOT_VALUE_TIER.MEDIUM] = CLM.L["Medium value for Tiered auction.\n\nSet to 0 to ignore."]},
+            {[CONSTANTS.SLOT_VALUE_TIER.LARGE] = CLM.L["Large value for Tiered auction.\n\nSet to 0 to ignore."]},
+            {[CONSTANTS.SLOT_VALUE_TIER.MAX] = CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]}
         }
         local args = {}
         local order = 0
@@ -334,18 +337,21 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 type = "description",
                 image = slot.icon,
                 order = order,
-                width = 0.25
+                width = 0.5
             }
             order = order + 1
-            for type, desc in pairs(values) do
-                args[prefix .. "_" .. type:lower()] = {
-                    type = "input",
-                    order = order,
-                    desc = desc,
-                    name = CLM.L[type],
-                    pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                }
-                order = order + 1
+            for _, ivalues in ipairs(values) do
+                for type, desc in pairs(ivalues) do
+                    args[prefix .. "_" .. type] = {
+                        type = "input",
+                        order = order,
+                        desc = desc,
+                        width = 0.5,
+                        name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[type] or ""),
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                    }
+                    order = order + 1
+                end
             end
         end
         return args
@@ -473,253 +479,262 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         get = "Getter",
         -- hidden = "Hider",
         func = "Handler",
+        childGroups = "select",
         args = {
-            name = {
-                name = CLM.L["Name"],
-                desc = CLM.L["Change roster name."],
-                type = "input",
-                width = "full",
-                order = 0
-            },
-            point_type = { -- informative
-                name = CLM.L["Point type"],
-                desc = CLM.L["Currently only DKP supported."],
-                type = "select",
-                style = "radio",
-                get = (function(i)
-                    local r = RosterManager:GetRosterByName(name)
-                    if not r then return nil end
-                    return r:GetPointType()
-                end),
+            general = {
+                name = CLM.L["General settings"],
+                type = "group",
                 order = 1,
-                disabled = true,
-                width = "half",
-                values = CONSTANTS.POINT_TYPES_GUI
-            },
-            round_decimals = {
-                name = CLM.L["Rounding"],
-                desc = CLM.L["Round to selected number of decimals"],
-                type = "select",
-                style = "radio",
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 2,
-                values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
-            },
-            copy_header = {
-                name = CLM.L["Copy settings"],
-                type = "header",
-                order = 97,
-                width = "full"
-            },
-            copy = {
-                name = CLM.L["Copy settings"],
-                desc = CLM.L["Copy settings from selected roster."],
-                type = "execute",
-                confirm = true,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 98
-            },
-            copy_source = {
-                name = CLM.L["Copy source"],
-                desc = CLM.L["Copy settings from selected roster."],
-                type = "select",
-                values = (function()
-                    local v = {}
-                    local r = RosterManager:GetRosters()
-                    for n, _ in pairs(r) do
-                        v[n] = n
-                    end
-                    return v
-                end),
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 99
-            },
-            -- fill_profiles = {
-            --     name = CLM.L["Fill profiles"],
-            --     desc = CLM.L["Fills current roster with all profiles."],
-            --     type = "execute",
-            --     confirm = true,
-            --     disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-            --     order = 100
-            -- },
-            remove_header = {
-                name = CLM.L["Remove roster"],
-                type = "header",
-                order = 100,
-                width = "full"
-            },
-            remove = {
-                name = CLM.L["Remove"],
-                desc = CLM.L["Removes current roster."],
-                type = "execute",
-                confirm = true,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 101
-            },
-            --
-            bonuses_header = {
-                name = CLM.L["Bonuses"],
-                type = "header",
-                order = 4,
-                width = "full"
-            },
-            boss_kill_bonus = {
-                name = CLM.L["Boss Kill Bonus"],
-                type = "toggle",
-                order = 5,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
-            },
-            boss_kill_bonus_value = {
-                name = CLM.L["Default Boss Kill Bonus Value"],
-                type = "input",
-                order = 6,
-                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
-            },
-            on_time_bonus = {
-                name = CLM.L["On Time Bonus"],
-                type = "toggle",
-                order = 7,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
-            },
-            on_time_bonus_value = {
-                name = CLM.L["On Time Bonus Value"],
-                type = "input",
-                order = 8,
-                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
-            },
-            raid_completion_bonus = {
-                name = CLM.L["Raid Completion Bonus"],
-                type = "toggle",
-                order = 9,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
-            },
-            raid_completion_bonus_value = {
-                name = CLM.L["Raid Completion Value"],
-                type = "input",
-                order = 10,
-                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
-            },
-            interval_bonus = {
-                name = CLM.L["Interval Bonus"],
-                type = "toggle",
-                order = 11,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
-            },
-            interval_bonus_time = {
-                name = CLM.L["Interval Time"],
-                desc = CLM.L["Interval in [minutes] to award bonus points"],
-                type = "input",
-                order = 12,
-                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 0.6
-            },
-            interval_bonus_value = {
-                name = CLM.L["Interval Value"],
-                type = "input",
-                order = 13,
-                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 0.6
-            },
-            auto_award_include_bench =  {
-                name = CLM.L["Include bench"],
-                desc = CLM.L["Include benched players in all auto-awards"],
-                type = "toggle",
-                order = 14,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 2
-            },
-            auto_award_online_only =  {
-                name = CLM.L["Online only"],
-                desc = CLM.L["Award points only to online players"],
-                type = "toggle",
-                order = 15,
-                -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                disabled = true,
-                width = 1
-            },
-            auto_award_same_zone_only =  {
-                name = CLM.L["Same zone only"],
-                desc = CLM.L["Award points only to players in same zone"],
-                type = "toggle",
-                order = 16,
-                -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                disabled = true,
-                width = 1
-            },
-            point_caps_header = {
-                name = CLM.L["Point caps"],
-                type = "header",
-                order = 17,
-                width = "full"
-            },
-            weekly_reset_timezone = {
-                name = CLM.L["Weekly reset timezone"],
-                desc = CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"],
-                type = "select",
-                style = "radio",
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 18,
-                values = CONSTANTS.WEEKLY_RESETS_GUI
-            },
-            weekly_cap = {
-                name = CLM.L["Weekly cap"],
-                desc = CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."],
-                type = "input",
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 19,
-                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                -- width = 0.6
-            },
-            hard_cap = {
-                name = CLM.L["Hard cap"],
-                desc = CLM.L["Maximum point cap that player can have. Set to 0 to disable."],
-                type = "input",
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                order = 20,
-                pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                -- width = 0.6
-            },
-            bench_header = {
-                name = CLM.L["Bench"],
-                type = "header",
-                order = 21,
-                width = "full"
-            },
-            allow_self_bench_subscribe =  {
-                name = CLM.L["Allow subscription"],
-                desc = CLM.L["Allow players to subscribe to the bench through Raids menu"],
-                type = "toggle",
-                order = 22,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
-            },
-            auto_bench_leavers =  {
-                name = CLM.L["Auto bench leavers"],
-                desc = CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."],
-                type = "toggle",
-                order = 23,
-                disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-                width = 1
+                args = {
+                    name = {
+                        name = CLM.L["Name"],
+                        desc = CLM.L["Change roster name."],
+                        type = "input",
+                        width = "full",
+                        order = 0
+                    },
+                    point_type = { -- informative
+                        name = CLM.L["Point type"],
+                        desc = CLM.L["Currently only DKP supported."],
+                        type = "select",
+                        style = "radio",
+                        get = (function(i)
+                            local r = RosterManager:GetRosterByName(name)
+                            if not r then return nil end
+                            return r:GetPointType()
+                        end),
+                        order = 1,
+                        -- disabled = true,
+                        width = "half",
+                        values = CONSTANTS.POINT_TYPES_GUI
+                    },
+                    round_decimals = {
+                        name = CLM.L["Rounding"],
+                        desc = CLM.L["Round to selected number of decimals"],
+                        type = "select",
+                        style = "radio",
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        order = 2,
+                        values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
+                    },
+                    copy_header = {
+                        name = CLM.L["Copy settings"],
+                        type = "header",
+                        order = 97,
+                        width = "full"
+                    },
+                    copy = {
+                        name = CLM.L["Copy settings"],
+                        desc = CLM.L["Copy settings from selected roster."],
+                        type = "execute",
+                        confirm = true,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        order = 98
+                    },
+                    copy_source = {
+                        name = CLM.L["Copy source"],
+                        desc = CLM.L["Copy settings from selected roster."],
+                        type = "select",
+                        values = (function()
+                            local v = {}
+                            local r = RosterManager:GetRosters()
+                            for n, _ in pairs(r) do
+                                v[n] = n
+                            end
+                            return v
+                        end),
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        order = 99
+                    },
+                    -- fill_profiles = {
+                    --     name = CLM.L["Fill profiles"],
+                    --     desc = CLM.L["Fills current roster with all profiles."],
+                    --     type = "execute",
+                    --     confirm = true,
+                    --     disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                    --     order = 100
+                    -- },
+                    remove_header = {
+                        name = CLM.L["Remove roster"],
+                        type = "header",
+                        order = 100,
+                        width = "full"
+                    },
+                    remove = {
+                        name = CLM.L["Remove"],
+                        desc = CLM.L["Removes current roster."],
+                        type = "execute",
+                        confirm = true,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        order = 101
+                    },
+                    --
+                    bonuses_header = {
+                        name = CLM.L["Bonuses"],
+                        type = "header",
+                        order = 4,
+                        width = "full"
+                    },
+                    boss_kill_bonus = {
+                        name = CLM.L["Boss Kill Bonus"],
+                        type = "toggle",
+                        order = 5,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                    boss_kill_bonus_value = {
+                        name = CLM.L["Default Boss Kill Bonus Value"],
+                        type = "input",
+                        order = 8,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                    on_time_bonus = {
+                        name = CLM.L["On Time Bonus"],
+                        type = "toggle",
+                        order = 6,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                    on_time_bonus_value = {
+                        name = CLM.L["On Time Bonus Value"],
+                        type = "input",
+                        order = 9,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                    raid_completion_bonus = {
+                        name = CLM.L["Raid Completion Bonus"],
+                        type = "toggle",
+                        order = 7,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                    raid_completion_bonus_value = {
+                        name = CLM.L["Raid Completion Value"],
+                        type = "input",
+                        order = 10,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                    interval_bonus = {
+                        name = CLM.L["Interval Bonus"],
+                        type = "toggle",
+                        order = 11,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                    interval_bonus_time = {
+                        name = CLM.L["Interval Time"],
+                        desc = CLM.L["Interval in [minutes] to award bonus points"],
+                        type = "input",
+                        order = 12,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        -- width = 0.6
+                    },
+                    interval_bonus_value = {
+                        name = CLM.L["Interval Value"],
+                        type = "input",
+                        order = 13,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        -- width = 0.6
+                    },
+                    auto_award_include_bench =  {
+                        name = CLM.L["Include bench"],
+                        desc = CLM.L["Include benched players in all auto-awards"],
+                        type = "toggle",
+                        order = 14,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        -- width = 2
+                    },
+                    auto_award_online_only =  {
+                        name = CLM.L["Online only"],
+                        desc = CLM.L["Award points only to online players"],
+                        type = "toggle",
+                        order = 15,
+                        -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        disabled = true,
+                        width = 1
+                    },
+                    auto_award_same_zone_only =  {
+                        name = CLM.L["Same zone only"],
+                        desc = CLM.L["Award points only to players in same zone"],
+                        type = "toggle",
+                        order = 16,
+                        -- disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        disabled = true,
+                        width = 1
+                    },
+                    point_caps_header = {
+                        name = CLM.L["Point caps"],
+                        type = "header",
+                        order = 17,
+                        width = "full"
+                    },
+                    weekly_reset_timezone = {
+                        name = CLM.L["Weekly reset timezone"],
+                        desc = CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"],
+                        type = "select",
+                        style = "radio",
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        order = 18,
+                        values = CONSTANTS.WEEKLY_RESETS_GUI
+                    },
+                    weekly_cap = {
+                        name = CLM.L["Weekly cap"],
+                        desc = CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."],
+                        type = "input",
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        order = 19,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        -- width = 0.6
+                    },
+                    hard_cap = {
+                        name = CLM.L["Hard cap"],
+                        desc = CLM.L["Maximum point cap that player can have. Set to 0 to disable."],
+                        type = "input",
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        order = 20,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        -- width = 0.6
+                    },
+                    bench_header = {
+                        name = CLM.L["Bench"],
+                        type = "header",
+                        order = 21,
+                        width = "full"
+                    },
+                    allow_self_bench_subscribe =  {
+                        name = CLM.L["Allow subscription"],
+                        desc = CLM.L["Allow players to subscribe to the bench through Raids menu"],
+                        type = "toggle",
+                        order = 22,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                    auto_bench_leavers =  {
+                        name = CLM.L["Auto bench leavers"],
+                        desc = CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."],
+                        type = "toggle",
+                        order = 23,
+                        disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+                        width = 1
+                    },
+                },
             },
             auction = {
                 name = CLM.L["Auction settings"],
                 type = "group",
+                order = 2,
                 args = {
                     auction_type = {
                         name = CLM.L["Auction type"],
-                        desc = CLM.L["Type of auction used: Open, Anonymous Open, Sealed, Vickrey (Sealed with second-highest pay price)."],
+                        desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
                         type = "select",
                         style = "radio",
                         order = 4,
@@ -727,7 +742,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     },
                     item_value_mode = {
                         name = CLM.L["Item value mode"],
-                        desc = CLM.L["Single-Priced (static) or Ascending (in range of min-max) item value."],
+                        desc = CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding only specific values. Up to 3 additional tiers are configurable in |cff44ee00<base, max>|r (including base and max). |cff44ee00base < small <= medium <= large < max|r"],
                         type = "select",
                         style = "radio",
                         order = 5,
@@ -799,16 +814,19 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             default_slot_values = {
                 name = CLM.L["Default slot values"],
                 type = "group",
+                order = 3,
                 args = default_slot_values_args
             },
             item_value_overrides = {
                 name = CLM.L["Item value overrides"],
                 type = "group",
+                order = 4,
                 args = item_value_overrides_args
             },
             boss_kill_award_values = {
                 name = CLM.L["Boss kill award values"],
                 type = "group",
+                order = 5,
                 childGroups = "tab",
                 args = boss_kill_award_values_args
             }

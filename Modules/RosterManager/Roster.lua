@@ -18,6 +18,16 @@ local PointInfo = CLM.MODELS.PointInfo
 local Roster = { } -- Roster information
 local RosterConfiguration = { } -- Roster Configuration
 
+local GLOBAL_FAKE_INVENTORY_SLOT = "_GLOBAL"
+
+local function lazyCreateSlot(self, itemEquipLoc)
+    self.defaultSlotValues[itemEquipLoc] = { }
+    for key,_ in pairs(CONSTANTS.SLOT_VALUE_TIER) do
+        self.defaultSlotValues[itemEquipLoc][key] = 0
+    end
+end
+
+
 function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
     local o = {}
 
@@ -29,6 +39,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.pointType = pointType
     o.configuration  = RosterConfiguration:New()
     o.defaultSlotValues = {}
+    lazyCreateSlot(self, GLOBAL_FAKE_INVENTORY_SLOT)
     o.itemValues = {}
 
     -- Roster data
@@ -240,20 +251,21 @@ function Roster:MirrorWeeklyGains(source, targets, isArray)
     end
 end
 
-function Roster:SetDefaultSlotValue(itemEquipLoc, base, maximum)
-    LOG:Debug("Set Default Slot Value: [%s]: [%s] [%s] for roster [%s]", itemEquipLoc, base, maximum, self:UID())
-    self.defaultSlotValues[itemEquipLoc] = {
-        base = tonumber(base) or 0,
-        max = tonumber(maximum) or 0
-    }
+function Roster:SetDefaultSlotTierValue(itemEquipLoc, tier, value)
+    LOG:Debug("Set Default Slot Value: [%s]: [%s] [%s] for roster [%s]", itemEquipLoc, tier, value, self:UID())
+    if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then return end
+    if not tier or not CONSTANTS.SLOT_VALUE_TIERS[tier] then return end
+    if not self.defaultSlotValues[itemEquipLoc] then
+        lazyCreateSlot(self, itemEquipLoc)
+    end
+    self.defaultSlotValues[itemEquipLoc][tier] = tonumber(value) or 0
 end
 
 function Roster:GetDefaultSlotValue(itemEquipLoc)
     if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then
-        itemEquipLoc = "INVTYPE_NON_EQUIP"
+        itemEquipLoc = GLOBAL_FAKE_INVENTORY_SLOT
     end
-    local s = self.defaultSlotValues[itemEquipLoc]
-    return s or {base = 0, max = 0}
+    return self.defaultSlotValues[itemEquipLoc] or self.defaultSlotValues[GLOBAL_FAKE_INVENTORY_SLOT]
 end
 
 function Roster:GetAllItemValues()
@@ -472,9 +484,9 @@ function RosterConfiguration:New(i)
     return o
 end
 
--- ------------------------ --
--- ADD NEW  ONLY AT THE END --
--- ------------------------ --
+-- ----------------------- --
+-- ADD NEW ONLY AT THE END --
+-- ----------------------- --
 function RosterConfiguration:fields()
     return {
         "auctionType",
@@ -504,7 +516,7 @@ function RosterConfiguration:fields()
         "autoAwardOnlineOnly",
         "autoAwardSameZoneOnly",
         "selfBenchSubscribe",
-        "tax"
+        "tax",
     }
 end
 
@@ -646,22 +658,22 @@ CLM.MODELS.RosterConfiguration = RosterConfiguration
 CONSTANTS.POINT_TYPE = {
     DKP = 0,
     EPGP = 1,
-    ROLL = 2,
-    SK = 3
+    -- ROLL = 2,
+    -- SK = 3
 }
 
 CONSTANTS.POINT_TYPES = UTILS.Set({
     CONSTANTS.POINT_TYPE.DKP, -- DKP
     CONSTANTS.POINT_TYPE.EPGP, -- EPGP
-    CONSTANTS.POINT_TYPE.ROLL, -- ROLL
-    CONSTANTS.POINT_TYPE.SK  -- SK
+    -- CONSTANTS.POINT_TYPE.ROLL, -- ROLL
+    -- CONSTANTS.POINT_TYPE.SK  -- SK
 })
 
 CONSTANTS.POINT_TYPES_GUI = {
     [CONSTANTS.POINT_TYPE.DKP] = CLM.L["DKP"],
     [CONSTANTS.POINT_TYPE.EPGP] = CLM.L["EPGP"],
-    [CONSTANTS.POINT_TYPE.ROLL] = CLM.L["ROLL"],
-    [CONSTANTS.POINT_TYPE.SK] = CLM.L["SK"]
+    -- [CONSTANTS.POINT_TYPE.ROLL] = CLM.L["ROLL"],
+    -- [CONSTANTS.POINT_TYPE.SK] = CLM.L["SK"]
 }
 
 CONSTANTS.AUCTION_TYPE = {
@@ -692,21 +704,25 @@ CONSTANTS.AUCTION_TYPES_OPEN = UTILS.Set({
 
 CONSTANTS.ITEM_VALUE_MODE = {
     SINGLE_PRICED = 0,
-    ASCENDING = 1
+    ASCENDING = 1,
+    TIERED = 2,
 }
 
 CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
-    CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED, -- SINGLE_PRICED
-    CONSTANTS.ITEM_VALUE_MODE.ASCENDING  -- ASCENDING
+    CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED,
+    CONSTANTS.ITEM_VALUE_MODE.ASCENDING,
+    CONSTANTS.ITEM_VALUE_MODE.TIERED,
 })
 
 CONSTANTS.ITEM_VALUE_MODES_GUI = {
     [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = CLM.L["Single-Priced"],
-    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = CLM.L["Ascending"]
+    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = CLM.L["Ascending"],
+    [CONSTANTS.ITEM_VALUE_MODE.TIERED] = CLM.L["Tiered"],
 }
 
 
 CONSTANTS.INVENTORY_TYPES = {
+    GLOBAL_FAKE_INVENTORY_SLOT,
     "INVTYPE_NON_EQUIP",
     "INVTYPE_HEAD",
     "INVTYPE_NECK",
@@ -743,6 +759,7 @@ CONSTANTS.INVENTORY_TYPES_SET = UTILS.Set(CONSTANTS.INVENTORY_TYPES)
 
 local PAPERDOLL = "Interface\\AddOns\\ClassicLootManager\\Media\\Paperdoll\\"
 CONSTANTS.INVENTORY_TYPES_SORTED = {
+    { type = GLOBAL_FAKE_INVENTORY_SLOT,                name = CLM.L["Global"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
     { type = "INVTYPE_HEAD",            name = CLM.L["Head"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-head.blp" },
     { type = "INVTYPE_NECK",            name = CLM.L["Neck"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-neck.blp" },
     { type = "INVTYPE_SHOULDER",        name = CLM.L["Shoulder"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-shoulder.blp" },
@@ -775,6 +792,7 @@ CONSTANTS.INVENTORY_TYPES_SORTED = {
 }
 
 CONSTANTS.INVENTORY_TYPES_GUI = {
+    [GLOBAL_FAKE_INVENTORY_SLOT] = CLM.L["Global"],
     ["INVTYPE_HEAD"] = CLM.L["Head"],
     ["INVTYPE_NECK"] = CLM.L["Neck"],
     ["INVTYPE_SHOULDER"] = CLM.L["Shoulder"],
@@ -829,4 +847,28 @@ CONSTANTS.ALLOWED_ROUNDINGS_GUI = {
     [0] = "1",
     [1] = "0.1",
     [2] = "0.01",
+}
+
+CONSTANTS.SLOT_VALUE_TIER = {
+    BASE   = "b",
+    SMALL  = "s",
+    MEDIUM = "m",
+    LARGE  = "l",
+    MAX    = "x"
+}
+
+CONSTANTS.SLOT_VALUE_TIERS = UTILS.Set({
+    CONSTANTS.SLOT_VALUE_TIER.BASE,
+    CONSTANTS.SLOT_VALUE_TIER.SMALL,
+    CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
+    CONSTANTS.SLOT_VALUE_TIER.LARGE,
+    CONSTANTS.SLOT_VALUE_TIER.MAX
+})
+
+CONSTANTS.SLOT_VALUE_TIERS_GUI = {
+    ["b"] = CLM.L["Base"],
+    ["s"] = CLM.L["Small"],
+    ["m"] = CLM.L["Medium"],
+    ["l"] = CLM.L["Large"],
+    ["x"] = CLM.L["Maximum"],
 }
