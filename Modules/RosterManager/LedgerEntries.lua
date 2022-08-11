@@ -22,7 +22,7 @@ local RosterUpdateConfigSingle      = LogEntry:extend("R4")
 -- local RosterUpdateDefault           = LogEntry:extend("R5")
 local RosterUpdateDefaultSingle     = LogEntry:extend("R6")
 local RosterUpdateOverrides         = LogEntry:extend("R7")
--- local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
+local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
 local RosterUpdateProfiles          = LogEntry:extend("R9")
 local RosterCopyData                = LogEntry:extend("RC")
 local RosterBossKillBonus           = LogEntry:extend("RB")
@@ -236,30 +236,35 @@ end
 -- --------------------------- --
 -- RosterUpdateOverridesSingle --
 -- --------------------------- --
--- function RosterUpdateOverridesSingle:new(rosterUid, itemId, value)
---     local o = LogEntry.new(self);
---     o.r = tonumber(rosterUid) or 0
---     o.o = tonumber(itemId) or 0
---     o.v = tonumber(value) or 0
---     return o
--- end
+function RosterUpdateOverridesSingle:new(rosterUid, itemId, tier, value)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.o = tonumber(itemId) or 0
+    o.t = tier
+    o.v = tonumber(value) or 0
+    return o
+end
 
--- function RosterUpdateOverridesSingle:rosterUid()
---     return self.r
--- end
+function RosterUpdateOverridesSingle:rosterUid()
+    return self.r
+end
 
--- function RosterUpdateOverridesSingle:itemId()
---     return self.o
--- end
+function RosterUpdateOverridesSingle:itemId()
+    return self.o
+end
 
--- function RosterUpdateOverridesSingle:value()
---     return self.v
--- end
+function RosterUpdateOverridesSingle:tier()
+    return self.t
+end
 
--- local RosterUpdateOverridesSingleFields = mergeLists(LogEntry:fields(), {"r", "o", "v"})
--- function RosterUpdateOverridesSingle:fields()
---     return RosterUpdateOverridesSingleFields
--- end
+function RosterUpdateOverridesSingle:value()
+    return self.v
+end
+
+local RosterUpdateOverridesSingleFields = mergeLists(LogEntry:fields(), {"r", "o", "t", "v"})
+function RosterUpdateOverridesSingle:fields()
+    return RosterUpdateOverridesSingleFields
+end
 -- -------------------- --
 -- RosterUpdateProfiles --
 -- -------------------- --
@@ -373,7 +378,7 @@ MODELS.LEDGER.ROSTER = {
     -- UpdateDefault           = RosterUpdateDefault,
     UpdateDefaultSingle     = RosterUpdateDefaultSingle,
     UpdateOverrides         = RosterUpdateOverrides,
-    -- UpdateOverridesSingle   = RosterUpdateOverridesSingle,
+    UpdateOverridesSingle   = RosterUpdateOverridesSingle,
     UpdateProfiles          = RosterUpdateProfiles,
     CopyData                = RosterCopyData,
     BossKillBonus           = RosterBossKillBonus,

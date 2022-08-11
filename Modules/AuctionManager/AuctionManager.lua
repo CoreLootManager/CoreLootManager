@@ -188,9 +188,15 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
         return false
     end
     self.itemLink = itemLink
-    if not (tonumber(baseValue) and tonumber(maxValue)) then -- TODO
-        LOG:Warning("AuctionManager:StartAuction(): invalid values [%s] [%s]", tostring(baseValue), tostring(maxValue))
-        return false
+    -- if not (tonumber(baseValue) and tonumber(maxValue)) then -- TODO
+    --     LOG:Warning("AuctionManager:StartAuction(): invalid values [%s] [%s]", tostring(baseValue), tostring(maxValue))
+    --     return false
+    -- end
+    for key,_ in pairs(CLM.CONSTANTS.SLOT_VALUE_TIERS) do
+        if not tonumber(values[key]) then
+            LOG:Warning("AuctionManager:StartAuction(): invalid value [%s] for [%s]", tostring(values[key]), tostring(key))
+            return false
+        end
     end
     if not typeof(configuration, RosterConfiguration) then
         LOG:Warning("AuctionManager:StartAuction(): Invalid roster configuration object")
@@ -208,13 +214,17 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
     self.auctionTime = auctionTime
     self.itemValueMode = configuration:Get("itemValueMode")
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
-        if maxValue > 0 and baseValue > maxValue then -- TODO
+        if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and values[CONSTANTS.SLOT_VALUE_TIER.BASE] > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then -- TODO
             LOG:Warning("AuctionManager:StartAuction(): base value must be smaller or equal to max values")
             return false
         end
     end
-    self.baseValue = baseValue or 0 --TODO
-    self.maxValue = maxValue or 0--TODO
+    self.values = values
+    self.acceptedTierValues = {}
+    for _,val in pairs(self.values) do
+        self.acceptedTierValuesList[val] = true
+    end
+    for _,val in pairs(self.values) do
     if self.auctionTime <= 0 then
         LOG:Warning("AuctionManager:StartAuction(): Auction time must be greater than 0 seconds")
         return false
@@ -233,11 +243,20 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
         -- Max 2 raid warnings are displayed at the same time
         SendChatMessage(auctionMessage , "RAID_WARNING")
         auctionMessage = ""
-        if baseValue > 0 then --TODO
-            auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."] .. " ", tostring(baseValue))
-        end
-        if maxValue > 0 then--TODO
-            auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."] .. " ", tostring(maxValue))
+        if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
+            local tiers = ""
+            for _,key in ipairs(CLM.CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
+                tiers = tiers .. tostring(values[key]) .. ", "
+            end
+            tiers = UTILS.Trim(tiers)
+            auctionMessage = auctionMessage .. string.format(CLM.L["Bid tiers: %s."], tiers)  .. " "
+        else
+            if values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 then
+                auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."] .. " ", tostring(values[CONSTANTS.SLOT_VALUE_TIER.BASE]))
+            end
+            if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
+                auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."] .. " ", tostring(values[CONSTANTS.SLOT_VALUE_TIER.MAX]))
+            end
         end
         auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."] .. " ", tostring(auctionTime))
         if self.antiSnipe > 0 then
@@ -263,7 +282,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
     self.minimalIncrement = self.raid:Roster():GetConfiguration("minimalIncrement")
     -- workaround for open bid to allow 0 bid
     if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
-        self.highestBid = self.baseValue - self.minimalIncrement
+        self.highestBid = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] - self.minimalIncrement
     end
     -- Send auction information
     self:SendAuctionStart(self.raid:Roster():UID())
@@ -346,8 +365,7 @@ function AuctionManager:SendAuctionStart(rosterUid)
         AuctionCommStartAuction:New(
             self.auctionType,
             self.itemValueMode,
-            self.baseValue,
-            self.maxValue,
+            self.values,
             self.itemLink,
             self.auctionTime,
             self.auctionEndTime,
@@ -502,13 +520,13 @@ function AuctionManager:ValidateBid(name, bid)
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
         -- min
-        if self.baseValue > 0 and bid < self.baseValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 and bid < self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
-        if self.maxValue > 0 and bid > self.maxValue then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             -- always allow bidding min in ascending mode if haven't bid yet
-            if bid == self.baseValue and self.userResponses.bids[name] == nil then
+            if bid == self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] and self.userResponses.bids[name] == nil then
                 return true
             end
             if bid <= self.highestBid then
@@ -518,9 +536,11 @@ function AuctionManager:ValidateBid(name, bid)
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_INCREMENT_TOO_LOW
             end
         end
+    else if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
+        if not self.acceptedTierValuesList[bid] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID
     else
         -- single-priced
-        if self.baseValue ~= bid then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] ~= bid then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
     end
     -- accept otherwise
     return true
@@ -678,9 +698,9 @@ function AuctionManager:FakeBids()
             local bidType = math.random(1,6)
             if     bidType == 1 then -- none
             elseif bidType == 2 then -- value
-                local min, max = self.baseValue, 10
-                if self.maxValue > 0 then
-                    max = self.maxValue
+                local min, max = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE], 10
+                if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
+                    max = self.values[CONSTANTS.SLOT_VALUE_TIER.MAX]
                 end
                 self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(math.random(min, max)), bidder)
             elseif bidType == 3 then -- pass

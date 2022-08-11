@@ -350,7 +350,7 @@ function Roster:SetItemValues(itemId, values)
     local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
 
     local allSame = true
-    for key,value in pairs(self:GetDefaultSlotValue(itemEquipLoc)) do
+    for key,value in pairs(self:GetDefaultSlotValues(itemEquipLoc)) do
         if value ~= values[key] then
             allSame = false
         end
@@ -373,7 +373,7 @@ function Roster:GetItemValues(itemId)
     local itemValues = self.itemValues[itemId]
     if itemValues == nil then
         local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
-        return self:GetDefaultSlotValue(itemEquipLoc)
+        return self:GetDefaultSlotValues(itemEquipLoc)
     end
     return itemValues
 end
@@ -985,4 +985,12 @@ CONSTANTS.SLOT_VALUE_TIERS_GUI = {
     ["m"] = CLM.L["Medium"],
     ["l"] = CLM.L["Large"],
     ["x"] = CLM.L["Maximum"],
+}
+
+CONSTANTS.SLOT_VALUE_TIERS_ORDERED = {
+    CONSTANTS.SLOT_VALUE_TIER.BASE,
+    CONSTANTS.SLOT_VALUE_TIER.SMALL,
+    CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
+    CONSTANTS.SLOT_VALUE_TIER.LARGE,
+    CONSTANTS.SLOT_VALUE_TIER.MAX
 }

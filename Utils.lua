@@ -548,7 +548,7 @@ end
 
 function UTILS.Trim(text)
     text = text or ""
-    return (string.gsub(text, "^%s*(.-)%s*$", "%1"))
+    return (string.gsub(text, "^[%s,]*(.-)[%s,]*$", "%1"))
 end
 
 function UTILS.LibStCompareSortWrapper(modifierFn)

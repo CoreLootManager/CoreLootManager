@@ -311,31 +311,33 @@ function RosterManagerOptions:Hider(info, ...)
     self:_Handle(CBTYPE.HIDER, info, ...)
 end
 
+local valuesWithDesc = {
+    {
+        type = CONSTANTS.SLOT_VALUE_TIER.BASE,
+        desc = CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]
+    },
+    {
+        type = CONSTANTS.SLOT_VALUE_TIER.SMALL,
+        desc = CLM.L["Small value for Tiered auction.\n\nSet to 0 to ignore."]
+    },
+    {
+        type = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
+        desc = CLM.L["Medium value for Tiered auction.\n\nSet to 0 to ignore."]
+    },
+    {
+        type = CONSTANTS.SLOT_VALUE_TIER.LARGE,
+        desc = CLM.L["Large value for Tiered auction.\n\nSet to 0 to ignore."]
+    },
+    {
+        type = CONSTANTS.SLOT_VALUE_TIER.MAX,
+        desc = CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]
+    }
+}
+
 function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = RosterManager:GetRosterByName(name)
+
     local default_slot_values_args = (function()
-        local values = {
-            {
-                type = CONSTANTS.SLOT_VALUE_TIER.BASE,
-                desc = CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]
-            },
-            {
-                type = CONSTANTS.SLOT_VALUE_TIER.SMALL,
-                desc = CLM.L["Small value for Tiered auction.\n\nSet to 0 to ignore."]
-            },
-            {
-                type = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
-                desc = CLM.L["Medium value for Tiered auction.\n\nSet to 0 to ignore."]
-            },
-            {
-                type = CONSTANTS.SLOT_VALUE_TIER.LARGE,
-                desc = CLM.L["Large value for Tiered auction.\n\nSet to 0 to ignore."]
-            },
-            {
-                type = CONSTANTS.SLOT_VALUE_TIER.MAX,
-                desc = CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]
-            }
-        }
         local args = {}
         local order = 0
         local prefix
@@ -355,7 +357,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 width = 0.5
             }
             order = order + 1
-            for _, ivalues in ipairs(values) do
+            for _, ivalues in ipairs(valuesWithDesc) do
                 args[prefix .. "_" .. ivalues.type] = {
                     type = "input",
                     order = order,
@@ -384,16 +386,34 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             local _, _, _, _, icon = GetItemInfoInstant(id)
             if icon then
                 local sid = tostring(id)
-                local d = "i" .. sid .. "icon"
-                local b = "i" .. sid .. "b"
-                local m = "i" .. sid .. "m"
-                args[d] = {
+                local prefix = "i" .. sid
+                args[prefix .. "icon"] = {
                         name = "",
                         type = "description",
                         image = icon,
                         order = order,
-                        width = 0.25
+                        width = 0.5
                     }
+                order = order + 1
+                for _, ivalues in ipairs(valuesWithDesc) do
+                    args[prefix .. "_" .. ivalues.type] = {
+                        type = "input",
+                        order = order,
+                        -- desc = ivalues.desc,
+                        width = 0.5,
+                        set = (function(i, v)
+                            if self.readOnly then return end
+                            RosterManager:SetRosterItemTierValue(roster, id, ivalues.type, tonumber(v))
+                        end),
+                        get = (function(i)
+                            local values = roster:GetItemValues(id)
+                            return tostring(values[ivalues.type])
+                        end),
+                        name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                    }
+                    order = order + 1
+                end
                 -- args[b] = {
                 --         name = CLM.L["Base"],
                 --         type = "input",

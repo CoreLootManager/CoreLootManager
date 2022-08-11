@@ -180,6 +180,21 @@ function RosterManager:Initialize()
                     roster:SetItemValues(entry:itemId(), entry:values())
                 end))
 
+            LedgerManager:RegisterEntryType(
+                LEDGER_ROSTER.UpdateOverridesSingle,
+                (function(entry)
+                    LOG:TraceAndCount("mutator(RosterUpdateOverridesSingle)")
+                    local rosterUid = entry:rosterUid()
+
+                    local roster = self:GetRosterByUid(rosterUid)
+                    if not roster then
+                        LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                        return
+                    end
+
+                    roster:SetItemTierValue(entry:itemId(), entry:tier(), entry:value())
+                end))
+
         LedgerManager:RegisterEntryType(
             LEDGER_ROSTER.UpdateProfiles,
             (function(entry)
@@ -474,7 +489,7 @@ function RosterManager:CompareAndSanitizeSlotTierValues(current, new)
 end
 
 function RosterManager:SetRosterItemValues(nameOrRoster, itemId, values)
-    LOG:Trace("RosterManager:SetRosterItemValues()")
+    LOG:Trace("RosterManager:SetRosterItemTierValue()")
     local roster
     if typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
@@ -493,6 +508,34 @@ function RosterManager:SetRosterItemValues(nameOrRoster, itemId, values)
     if sanitizedValues then
         LedgerManager:Submit(LEDGER_ROSTER.UpdateOverrides:new(roster:UID(), itemId, sanitizedValues), true)
     end
+end
+
+function RosterManager:SetRosterItemTierValue(nameOrRoster, itemId, tier, value)
+    LOG:Trace("RosterManager:SetRosterItemTierValue()")
+    local roster
+    if typeof(nameOrRoster, Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterItemValue(): Invalid roster object or name")
+        return nil
+    end
+    if not itemId then
+        LOG:Error("RosterManager:SetRosterItemValue(): Missing itemId")
+        return
+    end
+    value = tonumber(value)
+    if not value then
+        LOG:Error("RosterManager:SetRosterItemTierValue(): Missing value")
+        return
+    end
+    if not tier or not CONSTANTS.SLOT_VALUE_TIERS[tier] then
+        LOG:Error("RosterManager:SetRosterItemTierValue(): Missing tier")
+        return
+    end
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateOverridesSingle:new(roster:UID(), itemId, tier, value), true)
 end
 
 function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, difficultyId, value)
