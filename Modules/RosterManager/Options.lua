@@ -27,16 +27,16 @@ local function SetRosterOption(name, option, value)
     RosterManager:SetRosterConfiguration(name, option, value)
 end
 
-local function GetDefaultSlotValue(name, slot, isBase)
-    local roster = RosterManager:GetRosterByName(name)
-    if roster == nil then return nil end
-    local v = roster:GetDefaultSlotValue(slot)
-    if isBase then return tostring(v.base) else return tostring(v.max) end
-end
+-- local function GetDefaultSlotValue(name, slot, isBase)
+--     local roster = RosterManager:GetRosterByName(name)
+--     if roster == nil then return nil end
+--     local v = roster:GetDefaultSlotValue(slot)
+--     if isBase then return tostring(v.base) else return tostring(v.max) end
+-- end
 
-local function SetDefaultSlotValue(name, slot, value, isBase)
-    RosterManager:SetRosterDefaultSlotValue(name, slot, value, isBase)
-end
+-- local function SetDefaultSlotValue(name, slot, value, isBase)
+--     RosterManager:SetRosterDefaultSlotValue(name, slot, value, isBase)
+-- end
 
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
@@ -244,19 +244,19 @@ function RosterManagerOptions:Initialize()
         end)
     }
     -- Handlers for Minimum / Maximum setting
-    local values = {base = true, maximum = false}
-    for _, slot in ipairs(CONSTANTS.INVENTORY_TYPES_SORTED) do
-        local prefix = slot.type:lower()
-        for type, isBase in pairs(values) do
-            local node = "default_slot_values_" .. prefix .. "_" .. type
-            self.handlers[ node .."_get"] = (function(name)
-                return GetDefaultSlotValue(name, slot.type, isBase)
-            end)
-            self.handlers[ node .."_set"] = (function(name, value)
-                SetDefaultSlotValue(name, slot.type, value, isBase)
-            end)
-        end
-    end
+    -- local values = {base = true, maximum = false}
+    -- for _, slot in ipairs(CONSTANTS.INVENTORY_TYPES_SORTED) do
+    --     local prefix = slot.type:lower()
+    --     for type, isBase in pairs(values) do
+    --         local node = "default_slot_values_" .. prefix .. "_" .. type
+    --         self.handlers[ node .."_get"] = (function(name)
+    --             return GetDefaultSlotValue(name, slot.type, isBase)
+    --         end)
+    --         self.handlers[ node .."_set"] = (function(name, value)
+    --             SetDefaultSlotValue(name, slot.type, value, isBase)
+    --         end)
+    --     end
+    -- end
 
     self:UpdateOptions()
 
@@ -315,11 +315,26 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = RosterManager:GetRosterByName(name)
     local default_slot_values_args = (function()
         local values = {
-            {[CONSTANTS.SLOT_VALUE_TIER.BASE] = CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]},
-            {[CONSTANTS.SLOT_VALUE_TIER.SMALL] = CLM.L["Small value for Tiered auction.\n\nSet to 0 to ignore."]},
-            {[CONSTANTS.SLOT_VALUE_TIER.MEDIUM] = CLM.L["Medium value for Tiered auction.\n\nSet to 0 to ignore."]},
-            {[CONSTANTS.SLOT_VALUE_TIER.LARGE] = CLM.L["Large value for Tiered auction.\n\nSet to 0 to ignore."]},
-            {[CONSTANTS.SLOT_VALUE_TIER.MAX] = CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]}
+            {
+                type = CONSTANTS.SLOT_VALUE_TIER.BASE,
+                desc = CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]
+            },
+            {
+                type = CONSTANTS.SLOT_VALUE_TIER.SMALL,
+                desc = CLM.L["Small value for Tiered auction.\n\nSet to 0 to ignore."]
+            },
+            {
+                type = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
+                desc = CLM.L["Medium value for Tiered auction.\n\nSet to 0 to ignore."]
+            },
+            {
+                type = CONSTANTS.SLOT_VALUE_TIER.LARGE,
+                desc = CLM.L["Large value for Tiered auction.\n\nSet to 0 to ignore."]
+            },
+            {
+                type = CONSTANTS.SLOT_VALUE_TIER.MAX,
+                desc = CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]
+            }
         }
         local args = {}
         local order = 0
@@ -341,17 +356,21 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             }
             order = order + 1
             for _, ivalues in ipairs(values) do
-                for type, desc in pairs(ivalues) do
-                    args[prefix .. "_" .. type] = {
-                        type = "input",
-                        order = order,
-                        desc = desc,
-                        width = 0.5,
-                        name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[type] or ""),
-                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                    }
-                    order = order + 1
-                end
+                args[prefix .. "_" .. ivalues.type] = {
+                    type = "input",
+                    order = order,
+                    desc = ivalues.desc,
+                    width = 0.5,
+                    get = (function(i)
+                        return tostring(roster:GetDefaultSlotTierValue(slot.type, ivalues.type))
+                    end),
+                    set = (function(i, v)
+                        RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
+                    end),
+                    name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                    pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                }
+                order = order + 1
             end
         end
         return args
@@ -365,7 +384,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             local _, _, _, _, icon = GetItemInfoInstant(id)
             if icon then
                 local sid = tostring(id)
-                local d = "i" .. sid .. "d"
+                local d = "i" .. sid .. "icon"
                 local b = "i" .. sid .. "b"
                 local m = "i" .. sid .. "m"
                 args[d] = {
@@ -375,36 +394,36 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         order = order,
                         width = 0.25
                     }
-                args[b] = {
-                        name = CLM.L["Base"],
-                        type = "input",
-                        order = order + 1,
-                        itemLink = "item:" .. sid,
-                        set = (function(i, v)
-                            if self.readOnly then return end
-                            local value = roster:GetItemValue(id)
-                            RosterManager:SetRosterItemValue(roster, id, tonumber(v) or 0, value.max)
-                        end),
-                        get = (function(i)
-                            local value = roster:GetItemValue(id)
-                            return tostring(value.base)
-                        end)
-                    }
-                args[m] = {
-                        name = CLM.L["Max"],
-                        type = "input",
-                        order = order + 2,
-                        itemLink = "item:" .. sid,
-                        set = (function(i, v)
-                            if self.readOnly then return end
-                            local value = roster:GetItemValue(id)
-                            RosterManager:SetRosterItemValue(roster, id, value.base, tonumber(v) or 0)
-                        end),
-                        get = (function(i)
-                            local value = roster:GetItemValue(id)
-                            return tostring(value.max)
-                        end)
-                    }
+                -- args[b] = {
+                --         name = CLM.L["Base"],
+                --         type = "input",
+                --         order = order + 1,
+                --         itemLink = "item:" .. sid,
+                --         set = (function(i, v)
+                --             if self.readOnly then return end
+                --             local value = roster:GetItemValue(id)
+                --             RosterManager:SetRosterItemValue(roster, id, tonumber(v) or 0, value.max)
+                --         end),
+                --         get = (function(i)
+                --             local value = roster:GetItemValue(id)
+                --             return tostring(value.base)
+                --         end)
+                --     }
+                -- args[m] = {
+                --         name = CLM.L["Max"],
+                --         type = "input",
+                --         order = order + 2,
+                --         itemLink = "item:" .. sid,
+                --         set = (function(i, v)
+                --             if self.readOnly then return end
+                --             local value = roster:GetItemValue(id)
+                --             RosterManager:SetRosterItemValue(roster, id, value.base, tonumber(v) or 0)
+                --         end),
+                --         get = (function(i)
+                --             local value = roster:GetItemValue(id)
+                --             return tostring(value.max)
+                --         end)
+                --     }
                 order = order + 3
             end
         end

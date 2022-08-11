@@ -160,7 +160,7 @@ function AuctionManager:GetAutoTrade()
 end
 
 -- We pass configuration separately as it can be overriden on per-auction basis
-function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxValue, note, raid, configuration)
+function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, raid, configuration)
     LOG:Trace("AuctionManager:StartAuction()")
     if self.auctionInProgress then
         LOG:Warning("AuctionManager:StartAuction(): Auction in progress")
@@ -188,7 +188,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         return false
     end
     self.itemLink = itemLink
-    if not (tonumber(baseValue) and tonumber(maxValue)) then
+    if not (tonumber(baseValue) and tonumber(maxValue)) then -- TODO
         LOG:Warning("AuctionManager:StartAuction(): invalid values [%s] [%s]", tostring(baseValue), tostring(maxValue))
         return false
     end
@@ -208,13 +208,13 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.auctionTime = auctionTime
     self.itemValueMode = configuration:Get("itemValueMode")
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
-        if maxValue > 0 and baseValue > maxValue then
+        if maxValue > 0 and baseValue > maxValue then -- TODO
             LOG:Warning("AuctionManager:StartAuction(): base value must be smaller or equal to max values")
             return false
         end
     end
-    self.baseValue = baseValue or 0
-    self.maxValue = maxValue or 0
+    self.baseValue = baseValue or 0 --TODO
+    self.maxValue = maxValue or 0--TODO
     if self.auctionTime <= 0 then
         LOG:Warning("AuctionManager:StartAuction(): Auction time must be greater than 0 seconds")
         return false
@@ -233,10 +233,10 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
         -- Max 2 raid warnings are displayed at the same time
         SendChatMessage(auctionMessage , "RAID_WARNING")
         auctionMessage = ""
-        if baseValue > 0 then
+        if baseValue > 0 then --TODO
             auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."] .. " ", tostring(baseValue))
         end
-        if maxValue > 0 then
+        if maxValue > 0 then--TODO
             auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."] .. " ", tostring(maxValue))
         end
         auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."] .. " ", tostring(auctionTime))
@@ -252,11 +252,8 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, baseValue, maxV
     self.auctionType = configuration:Get("auctionType")
     -- AntiSnipe settings
     self.antiSnipeLimit = (self.antiSnipe > 0) and (CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and 100 or 3) or 0
-    -- if baseValue / maxValue are different than current (or default if no override) item value we will need to update the config
-    local current = self.raid:Roster():GetItemValue(itemId)
-    if current.base ~= baseValue or current.max ~= maxValue then
-        RosterManager:SetRosterItemValue(self.raid:Roster(), itemId, baseValue, maxValue)
-    end
+    -- if values are different than current (or default if no override) item value we will need to update the config
+    RosterManager:SetRosterItemValues(self.raid:Roster(), itemId, values)
     -- clear bids
     self:ClearBids()
     -- calculate server end time
