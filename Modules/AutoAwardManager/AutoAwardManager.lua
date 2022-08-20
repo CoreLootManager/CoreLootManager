@@ -140,6 +140,20 @@ local function handleIntervalBonus(self)
     end
 end
 
+local instancesToWorkaround = CLM.UTILS.Set({548})
+local encountersToWorkaround = CLM.UTILS.Set({HYDROSS_ENCOUNTER_ID})
+
+local isWorkaroundRegistered = false
+local function registerWorkaroundHandler(self)
+    if isWorkaroundRegistered then return end
+    EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
+        handleBossWorkaround(self, {
+            [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID
+        })
+    end))
+    isWorkaroundRegistered = true
+end
+
 local AutoAwardManager = {}
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")
@@ -147,22 +161,21 @@ function AutoAwardManager:Initialize()
     self.enabled = false
     self:DisableBossKillBonusAwarding()
     self:DisableIntervalBonusAwarding()
-    -- EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(...)
-    --     handleEncounterStart(self, ...)
-    -- end))
-    -- EventManager:RegisterWoWEvent({"ENCOUNTER_END"}, (function(...)
-    --     handleEncounterEnd(self, ...)
-    -- end))
+    EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(_, _, _, id, ...)
+        if encountersToWorkaround[id] then
+            registerWorkaroundHandler(self)
+        end
+    end))
     -- Handle boss kill when not in encounter
     EventManager:RegisterWoWEvent({"BOSS_KILL"}, (function(...)
         handleBossKill(self, ...)
     end))
-    -- Hydross and Akama workarounds
-    EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
-        handleBossWorkaround(self, {
-            [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID
-        })
-    end))
+    -- Boss workarounds
+    local _, _, _, _, _, _, _, instanceID = GetInstanceInfo()
+    if instancesToWorkaround[instanceID] then
+        registerWorkaroundHandler(self)
+    end
+
     MODULES.ConfigManager:RegisterUniversalExecutor("aam", "AutoAwardManager", self)
 end
 
