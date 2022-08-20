@@ -466,7 +466,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         end
         return args
     end)()
-    
+
     local options = {
         type = "group",
         name = name,
