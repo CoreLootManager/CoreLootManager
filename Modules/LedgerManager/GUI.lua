@@ -109,11 +109,11 @@ local configDecodeFunctions = {
     antiSnipe = (function(value)
         return CLM.L["Anti-snipe"], safeToString(value)
     end),
-    allowNegativeStandings = (function(value)
-        return CLM.L["Allow going below 0  DKP"], boolToString(value)
+    allowBelowMinStandings = (function(value)
+        return CLM.L["Allow going below minimum points"], boolToString(value)
     end),
     allowNegativeBidders = (function(value)
-        return CLM.L["Allow bidding below 0 DKP"], boolToString(value)
+        return CLM.L["Allow bidding below minimum points"], boolToString(value)
     end),
     bossKillBonus = (function(value)
         return CLM.L["Boss Kill Bonus"], boolToString(value)

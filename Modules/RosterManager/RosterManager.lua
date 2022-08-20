@@ -162,7 +162,7 @@ function RosterManager:Initialize()
                     return
                 end
 
-                roster:SetDefaultSlotValue(entry:config(), entry:base(), entry:max())
+                roster:SetDefaultSlotTierValue(entry:slot(), entry:tier(), entry:value())
             end))
 
         LedgerManager:RegisterEntryType(
@@ -177,13 +177,22 @@ function RosterManager:Initialize()
                         return
                     end
 
-                    local _, _, _, itemEquipLoc = GetItemInfoInstant(entry:itemId())
-                    local default = roster:GetDefaultSlotValue(itemEquipLoc)
-                    if default.base == entry:base() and default.max == entry:max() then
-                        roster:ClearItemValue(entry:itemId())
-                    else
-                        roster:SetItemValue(entry:itemId(), entry:base(), entry:max())
+                    roster:SetItemValues(entry:itemId(), entry:values())
+                end))
+
+            LedgerManager:RegisterEntryType(
+                LEDGER_ROSTER.UpdateOverridesSingle,
+                (function(entry)
+                    LOG:TraceAndCount("mutator(RosterUpdateOverridesSingle)")
+                    local rosterUid = entry:rosterUid()
+
+                    local roster = self:GetRosterByUid(rosterUid)
+                    if not roster then
+                        LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                        return
                     end
+
+                    roster:SetItemTierValue(entry:itemId(), entry:tier(), entry:value())
                 end))
 
         LedgerManager:RegisterEntryType(
@@ -426,8 +435,8 @@ function RosterManager:SetRosterConfiguration(name, option, value)
     LedgerManager:Submit(LEDGER_ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
 end
 
-function RosterManager:SetRosterDefaultSlotValue(nameOrRoster, slot, value, isBase)
-    LOG:Trace("RosterManager:SetRosterDefaultSlotValue()")
+function RosterManager:SetRosterDefaultSlotTierValue(nameOrRoster, slot, tier, value)
+    LOG:Trace("RosterManager:SetRosterDefaultSlotTierValue()")
     local roster
     if typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
@@ -435,37 +444,52 @@ function RosterManager:SetRosterDefaultSlotValue(nameOrRoster, slot, value, isBa
         roster = self:GetRosterByName(nameOrRoster)
     end
     if not roster then
-        LOG:Error("RosterManager:SetRosterDefaultSlotValue(): Invalid roster object or name")
+        LOG:Error("RosterManager:SetRosterDefaultSlotTierValue(): Invalid roster object or name")
         return nil
     end
     if not value then
-        LOG:Error("RosterManager:SetRosterDefaultSlotValue(): Missing value")
+        LOG:Error("RosterManager:SetRosterDefaultSlotTierValue(): Missing value")
         return
     end
-    if not slot then
-        LOG:Error("RosterManager:SetRosterDefaultSlotValue(): Missing slot")
+    if not slot or not CONSTANTS.INVENTORY_TYPES_SET[slot] then
+        LOG:Error("RosterManager:SetRosterDefaultSlotTierValue(): Missing slot")
         return
     end
-    local v = roster:GetDefaultSlotValue(slot)
-    if isBase then
-        if v.base == tonumber(value) then
-            LOG:Debug("RosterManager:SetRosterDefaultSlotValue(): No change to value. Skipping.")
-            return
-        end
-        v.base = value
-    else
-        if v.max == tonumber(value) then
-            LOG:Debug("RosterManager:SetRosterDefaultSlotValue(): No change to value. Skipping.")
-            return
-        end
-        v.max = value
+    if not tier or not CONSTANTS.SLOT_VALUE_TIERS[tier] then
+        LOG:Error("RosterManager:SetRosterDefaultSlotTierValue(): Missing tier")
+        return
+    end
+    if roster:GetDefaultSlotTierValue(slot, tier) == tonumber(value) then
+        LOG:Debug("RosterManager:SetRosterDefaultSlotTierValue(): No change to value. Skipping.")
+        return
     end
 
-    LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, v.base, v.max), true)
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, tier, value), true)
 end
 
-function RosterManager:SetRosterItemValue(nameOrRoster, itemId, base, max)
-    LOG:Trace("RosterManager:SetRosterItemValue()")
+function RosterManager:CompareAndSanitizeSlotTierValues(current, new)
+    local sanitizedValues = {}
+    local allSame = true
+    for key,_ in pairs(CONSTANTS.SLOT_VALUE_TIERS) do
+        local value = tonumber(new[key])
+        if not value then
+            LOG:Error("RosterManager:CompareAndSanitizeSlotTierValues(): Missing valid value for tier %s", CONSTANTS.SLOT_VALUE_TIERS_GUI[key])
+            return
+        end
+        if current[key] ~= value then
+            allSame = false
+        end
+        sanitizedValues[key] = value
+    end
+    if allSame then
+        LOG:Debug("RosterManager:CompareAndSanitizeSlotTierValues(): No change to value. Skipping.")
+        return
+    end
+    return sanitizedValues
+end
+
+function RosterManager:SetRosterItemValues(nameOrRoster, itemId, values)
+    LOG:Trace("RosterManager:SetRosterItemTierValue()")
     local roster
     if typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
@@ -480,20 +504,38 @@ function RosterManager:SetRosterItemValue(nameOrRoster, itemId, base, max)
         LOG:Error("RosterManager:SetRosterItemValue(): Missing itemId")
         return
     end
-    if not tonumber(base) then
-        LOG:Error("RosterManager:SetRosterItemValue(): Missing base")
+    local sanitizedValues = self:CompareAndSanitizeSlotTierValues(roster:GetItemValues(itemId), values)
+    if sanitizedValues then
+        LedgerManager:Submit(LEDGER_ROSTER.UpdateOverrides:new(roster:UID(), itemId, sanitizedValues), true)
+    end
+end
+
+function RosterManager:SetRosterItemTierValue(nameOrRoster, itemId, tier, value)
+    LOG:Trace("RosterManager:SetRosterItemTierValue()")
+    local roster
+    if typeof(nameOrRoster, Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterItemValue(): Invalid roster object or name")
+        return nil
+    end
+    if not itemId then
+        LOG:Error("RosterManager:SetRosterItemValue(): Missing itemId")
         return
     end
-    if not tonumber(max) then
-        LOG:Error("RosterManager:SetRosterItemValue(): Missing max")
+    value = tonumber(value)
+    if not value then
+        LOG:Error("RosterManager:SetRosterItemTierValue(): Missing value")
         return
     end
-    local itemValue = roster:GetItemValue(itemId)
-    if (itemValue.base == base) and (itemValue.max == max) then
-        LOG:Debug("RosterManager:SetRosterItemValue(): No change to value. Skipping.")
+    if not tier or not CONSTANTS.SLOT_VALUE_TIERS[tier] then
+        LOG:Error("RosterManager:SetRosterItemTierValue(): Missing tier")
         return
     end
-    LedgerManager:Submit(LEDGER_ROSTER.UpdateOverrides:new(roster:UID(), itemId, base, max), true)
+    LedgerManager:Submit(LEDGER_ROSTER.UpdateOverridesSingle:new(roster:UID(), itemId, tier, value), true)
 end
 
 function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, difficultyId, value)

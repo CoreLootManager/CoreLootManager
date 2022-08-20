@@ -304,7 +304,7 @@ end
 
 -- handles connection of user with newest ledger raid entity
 function RaidManager:UpdateProfileCurentRaid(GUID, raid)
-    LOG:Debug("RaidManager:UpdateProfileCurentRaid(%s)", GUID)
+    LOG:Debug("RaidManager:UpdateProfileCurentRaid(%s): %s", GUID, raid and "Add" or "Remove")
     if ProfileManager:GetProfileByGUID(GUID) then
         local current = self.cache.profileRaidInfo[GUID]
         if current and current:IsActive() then
@@ -421,7 +421,7 @@ function RaidManager:StartRaid(raid)
         end
     end
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players, standby), true)
-    if CLM.GlobalConfigs:GetRaidWarning() then
+    if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
         SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
     end
     self:HandleRosterUpdateEvent()
@@ -752,6 +752,10 @@ function RaidManager:IsRaidOwner(name)
 end
 
 function RaidManager:IsAllowedToAuction(name, relaxed)
+    --@debug@
+    return true
+    --@end-debug@
+    --[===[@non-debug@
     LOG:Trace("RaidManager:IsAllowedToAuction()")
     name = name or whoami()
 
@@ -767,6 +771,7 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
         LOG:Debug("%s is not allowed to auction.", name)
     end
     return allow
+    --@end-non-debug@]===]
 end
 
 function RaidManager:GetRaid()

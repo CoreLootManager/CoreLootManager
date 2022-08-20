@@ -132,6 +132,7 @@ function AuctionManagerGUI:Initialize()
         HookBagSlots()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
+    self.values = {}
     EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
     EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function(...)self:HandleLootClosedEvent() end))
     EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
@@ -249,26 +250,22 @@ function AuctionManagerGUI:GenerateAuctionOptions()
     end
 
     self.note = ""
-    if not self.base then self.base = 0 end
-    if not self.max then self.max = 0 end
-
-    if RaidManager:IsInActiveRaid() then
+    self.values = {}
+    if RaidManager:IsInRaid() then
         self.raid = RaidManager:GetRaid()
         self.roster = self.raid:Roster()
         if self.roster then
             self.configuration:Copy(self.roster.configuration)
-            local v = self.roster:GetItemValue(self.itemId)
-            self.base = v.base
-            self.max = v.max
+            self.values = UTILS.ShallowCopy(self.roster:GetItemValues(self.itemId))
         end
     end
 
-    return {
+    local options = {
         icon = {
             name = "",
             type = "description",
             image = icon,
-            width = 0.5,
+            width = 0.50,
             order = 1
         },
         item = {
@@ -294,7 +291,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         note_label = {
             name = CLM.L["Note"],
             type = "description",
-            width = 0.5,
+            width = 0.50,
             order = 3
         },
         note = {
@@ -325,40 +322,40 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         value_label = {
             name = CLM.L["Value ranges"],
             type = "description",
-            width = 0.5,
+            width = 0.50,
             order = 5
         },
-        value_base = {
-            name = CLM.L["Base"],
-            type = "input",
-            set = (function(i,v)
-                self.base = tonumber(v) or 0
-                -- todo override item value
-            end),
-            get = (function(i) return tostring(self.base) end),
-            disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
-            pattern = "%d+",
-            width = 0.7,
-            order = 6
-        },
-        value_max = {
-            name = CLM.L["Max"],
-            type = "input",
-            set = (function(i,v)
-                self.max = tonumber(v) or 0
-                -- todo override item value
-            end),
-            get = (function(i) return tostring(self.max) end),
-            disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
-            pattern = "%d+",
-            width = 0.7,
-            order = 7
-        },
+        -- value_base = {
+        --     name = CLM.L["Base"],
+        --     type = "input",
+        --     set = (function(i,v)
+        --         self.base = tonumber(v) or 0
+        --         -- todo override item value
+        --     end),
+        --     get = (function(i) return tostring(self.base) end),
+        --     disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
+        --     pattern = "%d+",
+        --     width = 0.7,
+        --     order = 6
+        -- },
+        -- value_max = {
+        --     name = CLM.L["Max"],
+        --     type = "input",
+        --     set = (function(i,v)
+        --         self.max = tonumber(v) or 0
+        --         -- todo override item value
+        --     end),
+        --     get = (function(i) return tostring(self.max) end),
+        --     disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
+        --     pattern = "%d+",
+        --     width = 0.7,
+        --     order = 7
+        -- },
         time_label = {
             name = CLM.L["Time settings"],
             type = "description",
-            width = 0.5,
-            order = 8
+            width = 0.50,
+            order = 11
         },
         time_auction = {
             name = CLM.L["Auction length"],
@@ -368,7 +365,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
             width = 0.7,
-            order = 9
+            order = 12
         },
         time_antiSnipe = {
             name = CLM.L["Anti-snipe"],
@@ -378,7 +375,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             disabled = (function(i) return  AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
             width = 0.7,
-            order = 10
+            order = 13
         },
         auction = {
             name = (function() return AuctionManager:IsAuctionInProgress() and CLM.L["Stop"] or CLM.L["Start"] end),
@@ -391,19 +388,19 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 end
             end),
             width = 2.5,
-            order = 11,
+            order = 14,
             disabled = (function() return not ((self.itemLink or false) and RaidManager:IsInProgressingRaid()) end)
         },
         auction_results = {
             name = CLM.L["Auction Results"],
             type = "header",
-            order = 12
+            order = 15
         },
         award_label = {
             name = CLM.L["Award item"],
             type = "description",
             width = 0.5,
-            order = 13
+            order = 16
         },
         award_value = {
             name = CLM.L["Award value"],
@@ -412,7 +409,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             get = (function(i) return tostring(self.awardValue) end),
             -- disabled = (function(i) return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end),
             width = 0.55,
-            order = 14
+            order = 17
         },
         award = {
             name = CLM.L["Award"],
@@ -442,7 +439,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 )
             end),
             width = 0.55,
-            order = 15,
+            order = 18,
             disabled = (function() return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end)
         },
         bid_stats_info = {
@@ -526,9 +523,29 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             func = (function() end),
             image = "Interface\\Icons\\INV_Misc_QuestionMark",
             width = 0.3,
-            order = 16
+            order = 19
         }
     }
+
+    local order = 6
+    for _,key in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
+         options["value_"..key] = {
+            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
+            type = "input",
+            set = (function(i,v)
+                self.values[key] = tonumber(v) or 0
+                -- todo override item value
+            end),
+            get = (function(i) return tostring(self.values[key] or 0) end),
+            disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
+            pattern = CONSTANTS.REGEXP_FLOAT,
+            width = 0.3,
+            order = order
+        }
+        order = order + 1
+    end
+
+    return options
 end
 
 function AuctionManagerGUI:Create()
@@ -565,7 +582,7 @@ end
 function AuctionManagerGUI:StartAuction()
     self:ClearSelectedBid()
     AuctionManager:ClearBids()
-    AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.base, self.max, self.note, self.raid, self.configuration)
+    AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.values, self.note, self.raid, self.configuration)
 end
 
 local function GetTopBids()
@@ -595,7 +612,7 @@ function AuctionManagerGUI:UpdateAwardValue()
     local isVickrey = (self.roster:GetConfiguration("auctionType") ==  CONSTANTS.AUCTION_TYPE.VICKREY)
     if isVickrey then
         if second.bid == 0 then
-            self.awardValue = self.base or 0
+            self.awardValue = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] or 0
         else
             self.awardValue = second.bid
         end

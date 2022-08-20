@@ -19,7 +19,7 @@ local RosterDelete                  = LogEntry:extend("R1")
 local RosterRename                  = LogEntry:extend("R2")
 local RosterUpdateConfig            = LogEntry:extend("R3")
 local RosterUpdateConfigSingle      = LogEntry:extend("R4")
-local RosterUpdateDefault           = LogEntry:extend("R5")
+-- local RosterUpdateDefault           = LogEntry:extend("R5")
 local RosterUpdateDefaultSingle     = LogEntry:extend("R6")
 local RosterUpdateOverrides         = LogEntry:extend("R7")
 local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
@@ -150,34 +150,34 @@ end
 -- ------------------- --
 -- RosterUpdateDefault --
 -- ------------------- --
-function RosterUpdateDefault:new(rosterUid, defaults)
-    local o = LogEntry.new(self);
-    o.r = tonumber(rosterUid) or 0
-    o.d = defaults or {}
-    return o
-end
+-- function RosterUpdateDefault:new(rosterUid, defaults)
+--     local o = LogEntry.new(self);
+--     o.r = tonumber(rosterUid) or 0
+--     o.d = defaults or {}
+--     return o
+-- end
 
-function RosterUpdateDefault:rosterUid()
-    return self.r
-end
+-- function RosterUpdateDefault:rosterUid()
+--     return self.r
+-- end
 
-function RosterUpdateDefault:defaults()
-    return self.d
-end
+-- function RosterUpdateDefault:defaults()
+--     return self.d
+-- end
 
-local RosterUpdateDefaultFields = mergeLists(LogEntry:fields(), {"r", "d"})
-function RosterUpdateDefault:fields()
-    return RosterUpdateDefaultFields
-end
+-- local RosterUpdateDefaultFields = mergeLists(LogEntry:fields(), {"r", "d"})
+-- function RosterUpdateDefault:fields()
+--     return RosterUpdateDefaultFields
+-- end
 -- ------------------------- --
 -- RosterUpdateDefaultSingle --
 -- ------------------------- --
-function RosterUpdateDefaultSingle:new(rosterUid, slot, baseValue, maxValue)
+function RosterUpdateDefaultSingle:new(rosterUid, slot, tier, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.d = tostring(slot) or "" -- not the most optimal but i don't expect it to be changed too often
-    o.i = tonumber(baseValue) or 0
-    o.a = tonumber(maxValue) or 0
+    o.i = tier
+    o.a = tonumber(value)
     return o
 end
 
@@ -185,15 +185,15 @@ function RosterUpdateDefaultSingle:rosterUid()
     return self.r
 end
 
-function RosterUpdateDefaultSingle:config()
+function RosterUpdateDefaultSingle:slot()
     return self.d
 end
 
-function RosterUpdateDefaultSingle:base()
+function RosterUpdateDefaultSingle:tier()
     return self.i
 end
 
-function RosterUpdateDefaultSingle:max()
+function RosterUpdateDefaultSingle:value()
     return self.a
 end
 
@@ -204,12 +204,16 @@ end
 -- ------------------------ --
 -- RosterUpdateOverrides --
 -- ------------------------ --
-function RosterUpdateOverrides:new(rosterUid, itemId, base, max)
+function RosterUpdateOverrides:new(rosterUid, itemId, values)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.i = tonumber(itemId) or 0
-    o.b = tonumber(base) or 0
-    o.a = tonumber(max) or 0
+    o.b = {}
+    if type(values) == "table" then
+        for key,_ in pairs(CLM.CONSTANTS.SLOT_VALUE_TIERS) do
+            o.b[key] = tonumber(values[key])
+        end
+    end
     return o
 end
 
@@ -221,25 +225,22 @@ function RosterUpdateOverrides:itemId()
     return self.i
 end
 
-function RosterUpdateOverrides:base()
+function RosterUpdateOverrides:values()
     return self.b
 end
 
-function RosterUpdateOverrides:max()
-    return self.a
-end
-
-local RosterUpdateOverridesFields = mergeLists(LogEntry:fields(), {"r", "i", "b", "a"})
+local RosterUpdateOverridesFields = mergeLists(LogEntry:fields(), {"r", "i", "b"})
 function RosterUpdateOverrides:fields()
     return RosterUpdateOverridesFields
 end
 -- --------------------------- --
 -- RosterUpdateOverridesSingle --
 -- --------------------------- --
-function RosterUpdateOverridesSingle:new(rosterUid, itemId, value)
+function RosterUpdateOverridesSingle:new(rosterUid, itemId, tier, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.o = tonumber(itemId) or 0
+    o.t = tier
     o.v = tonumber(value) or 0
     return o
 end
@@ -252,11 +253,15 @@ function RosterUpdateOverridesSingle:itemId()
     return self.o
 end
 
+function RosterUpdateOverridesSingle:tier()
+    return self.t
+end
+
 function RosterUpdateOverridesSingle:value()
     return self.v
 end
 
-local RosterUpdateOverridesSingleFields = mergeLists(LogEntry:fields(), {"r", "o", "v"})
+local RosterUpdateOverridesSingleFields = mergeLists(LogEntry:fields(), {"r", "o", "t", "v"})
 function RosterUpdateOverridesSingle:fields()
     return RosterUpdateOverridesSingleFields
 end
@@ -370,7 +375,7 @@ MODELS.LEDGER.ROSTER = {
     Rename                  = RosterRename,
     UpdateConfig            = RosterUpdateConfig,
     UpdateConfigSingle      = RosterUpdateConfigSingle,
-    UpdateDefault           = RosterUpdateDefault,
+    -- UpdateDefault           = RosterUpdateDefault,
     UpdateDefaultSingle     = RosterUpdateDefaultSingle,
     UpdateOverrides         = RosterUpdateOverrides,
     UpdateOverridesSingle   = RosterUpdateOverridesSingle,
