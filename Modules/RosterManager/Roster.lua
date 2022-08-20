@@ -984,7 +984,7 @@ CONSTANTS.SLOT_VALUE_TIERS_GUI = {
     ["s"] = CLM.L["Small"],
     ["m"] = CLM.L["Medium"],
     ["l"] = CLM.L["Large"],
-    ["x"] = CLM.L["Maximum"],
+    ["x"] = CLM.L["Max"],
 }
 
 CONSTANTS.SLOT_VALUE_TIERS_ORDERED = {
