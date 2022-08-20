@@ -228,8 +228,8 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
         LOG:Warning("AuctionManager:StartAuction(): Auction time must be greater than 0 seconds")
         return false
     end
-    self.allowNegativeBidders = configuration:Get("allowNegativeBidders")
-    self.allowNegativeStandings = configuration:Get("allowNegativeStandings")
+    self.minimumPoints = configuration:Get("minimumPoints")
+    self.allowBelowMinStandings = configuration:Get("allowBelowMinStandings")
     -- Auctioning
     -- Start Auction Messages
     self.note = note
@@ -511,10 +511,10 @@ function AuctionManager:ValidateBid(name, bid)
     if not self.raid:Roster():IsProfileInRoster(GUID) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
     -- allow negative bidders
     local current = self.raid:Roster():Standings(GUID)
-    if current < 0 and not self.allowNegativeBidders then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_BIDDER end
+    if current < self.minimumPoints then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BELOW_MIN_BIDDER end
     -- allow negative standings after bid
     local new = current - bid
-    if new < 0 and not self.allowNegativeStandings then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
+    if new < self.minimumPoints and not self.allowBelowMinStandings then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
     -- bid value
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
@@ -649,7 +649,7 @@ CONSTANTS.AUCTION_COMM = {
     }),
     DENY_BID_REASON = {
         NOT_IN_ROSTER = 1,
-        NEGATIVE_BIDDER = 2,
+        BELOW_MIN_BIDDER = 2,
         NEGATIVE_STANDING_AFTER = 3,
         BID_VALUE_TOO_LOW = 4,
         BID_VALUE_TOO_HIGH = 5,
@@ -661,7 +661,7 @@ CONSTANTS.AUCTION_COMM = {
     },
     DENY_BID_REASONS = UTILS.Set({
         1, -- NOT_IN_ROSTER
-        2, -- NEGATIVE_BIDDER
+        2, -- BELOW_MIN_BIDDER
         3, -- NEGATIVE_STANDING_AFTER
         4, -- BID_VALUE_TOO_LOW
         5, -- BID_VALUE_TOO_HIGH
@@ -673,7 +673,7 @@ CONSTANTS.AUCTION_COMM = {
     }),
     DENY_BID_REASONS_STRING = {
         [1] = CLM.L["Not in a roster"],
-        [2] = CLM.L["Negative bidders not allowed"],
+        [2] = CLM.L["Bidding while below minimum standings not allowed"],
         [3] = CLM.L["Bidding over current standings not allowed"],
         [4] = CLM.L["Bid too low"],
         [5] = CLM.L["Bid too high"],

@@ -546,10 +546,8 @@ function RosterConfiguration:New(i)
     o._.auctionTime = 30
     -- Anti snipe time seconds (0 = disabled)
     o._.antiSnipe = 0
-    -- Allow negative standings
-    o._.allowNegativeStandings = false
-    -- Allow negative bidders
-    o._.allowNegativeBidders = false
+    -- Allow going below minimum standings after bidding
+    o._.allowBelowMinStandings = false
     -- Boss Kill Bonus
     o._.bossKillBonus = false
     -- Default Boss Kill Bonus value
@@ -590,6 +588,8 @@ function RosterConfiguration:New(i)
     o._.selfBenchSubscribe = false
     -- Additional tax to pay
     o._.tax = 0
+    -- Minimum points to be allowed to bid. >=0 covers Allow Negative Bidders
+    o._.minimumPoints = 0
 
     -- Additional settings
     o.hasHardCap = false
@@ -609,8 +609,7 @@ function RosterConfiguration:fields()
         "zeroSumBankInflation",
         "auctionTime",
         "antiSnipe",
-        "allowNegativeStandings",
-        "allowNegativeBidders",
+        "allowBelowMinStandings",
         "bossKillBonus",
         "bossKillBonusValue",
         "onTimeBonus",
@@ -631,6 +630,7 @@ function RosterConfiguration:fields()
         "autoAwardSameZoneOnly",
         "selfBenchSubscribe",
         "tax",
+        "minimumPoints"
     }
 end
 
@@ -648,8 +648,7 @@ local TRANSFORMS = {
     zeroSumBankInflation = transform_number,
     auctionTime = transform_number,
     antiSnipe = transform_number,
-    allowNegativeStandings = transform_boolean,
-    allowNegativeBidders = transform_boolean,
+    allowBelowMinStandings = transform_boolean,
     bossKillBonus = transform_boolean,
     onTimeBonus = transform_boolean,
     onTimeBonusValue = transform_number,
@@ -670,15 +669,11 @@ local TRANSFORMS = {
     autoAwardSameZoneOnly = transform_boolean,
     selfBenchSubscribe = transform_boolean,
     tax = transform_number,
+    minimumPoints = transform_number,
 }
 
 function RosterConfiguration:inflate(data)
-    --  Fix for bossKillBonusValue fuckup with adding in between
-    if #data < 22 then
-        table.insert(data, 10, 0)
-    end
     for i, key in ipairs(self:fields()) do
-        -- self._[key] = data[i]
         self._[key] = TRANSFORMS[key](data[i])
     end
 end
@@ -739,8 +734,7 @@ local function IsPositive(value) return value >= 0 end
 function RosterConfiguration._validate_auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
 function RosterConfiguration._validate_itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
 function RosterConfiguration._validate_zeroSumBank(value) return IsBoolean(value) end
-function RosterConfiguration._validate_allowNegativeStandings(value) return IsBoolean(value) end
-function RosterConfiguration._validate_allowNegativeBidders(value) return IsBoolean(value) end
+function RosterConfiguration._validate_allowBelowMinStandings(value) return IsBoolean(value) end
 function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
@@ -764,6 +758,7 @@ function RosterConfiguration._validate_autoAwardOnlineOnly(value) return IsBoole
 function RosterConfiguration._validate_autoAwardSameZoneOnly(value) return IsBoolean(value) end
 function RosterConfiguration._validate_selfBenchSubscribe(value) return IsBoolean(value) end
 function RosterConfiguration._validate_tax(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_minimumPoints(value) return IsNumeric(tonumber(value)) end
 
 CLM.MODELS.Roster = Roster
 CLM.MODELS.RosterConfiguration = RosterConfiguration
@@ -811,6 +806,11 @@ CONSTANTS.AUCTION_TYPES_GUI = {
     [CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN] = CLM.L["Anonymous Open"]
 }
 
+CONSTANTS.AUCTION_TYPES_EPGP_GUI = {
+    [CONSTANTS.AUCTION_TYPE.OPEN] = CLM.L["Open"],
+    [CONSTANTS.AUCTION_TYPE.SEALED] = CLM.L["Sealed"],
+}
+
 CONSTANTS.AUCTION_TYPES_OPEN = UTILS.Set({
     CONSTANTS.AUCTION_TYPE.OPEN,
     CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN
@@ -831,6 +831,11 @@ CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
 CONSTANTS.ITEM_VALUE_MODES_GUI = {
     [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = CLM.L["Single-Priced"],
     [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = CLM.L["Ascending"],
+    [CONSTANTS.ITEM_VALUE_MODE.TIERED] = CLM.L["Tiered"],
+}
+
+CONSTANTS.ITEM_VALUE_MODES_EPGP_GUI = {
+    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = CLM.L["Single-Priced"],
     [CONSTANTS.ITEM_VALUE_MODE.TIERED] = CLM.L["Tiered"],
 }
 
