@@ -292,8 +292,8 @@ function Roster:SetDefaultSlotTierValue(itemEquipLoc, tier, value)
         local new = UTILS.ShallowCopy(self:GetDefaultSlotValues(itemEquipLoc))
         new[tier] = value
         local allSame = true
-        for key,value in pairs(self:GetDefaultSlotValues(GLOBAL_FAKE_INVENTORY_SLOT)) do
-            if value ~= new[key] then
+        for key,val in pairs(self:GetDefaultSlotValues(GLOBAL_FAKE_INVENTORY_SLOT)) do
+            if val ~= new[key] then
                 allSame = false
             end
         end
@@ -302,7 +302,7 @@ function Roster:SetDefaultSlotTierValue(itemEquipLoc, tier, value)
             return
         end
     end
-    
+
     self.defaultSlotValues[itemEquipLoc][tier] = tonumber(value) or 0
 end
 

@@ -280,7 +280,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                     name = value,
                     desc = CLM.CONSTANTS.SLOT_VALUE_TIERS_GUI[tier] or "",
                     type = "execute",
-                    func = (function() 
+                    func = (function()
                         self.bid = value
                         BiddingManager:Bid(self.bid)
                     end),
