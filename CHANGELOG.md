@@ -1,3 +1,7 @@
+# Classic Loot Manager v1.9.1
+## Fixes
+### German Locale
+Fixes to German locale. Big thank you to Saysor for the contribution.
 # Classic Loot Manager v1.9.0
 ## Features
 ### German Locale
