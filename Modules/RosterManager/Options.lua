@@ -781,7 +781,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     },
                     item_value_mode = {
                         name = CLM.L["Item value mode"],
-                        desc = CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding only specific values. Up to 3 additional tiers are configurable in |cff44ee00<base, max>|r (including base and max). |cff44ee00base < small <= medium <= large < max|r"],
+                        desc = CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."],
                         type = "select",
                         style = "radio",
                         order = 5,
