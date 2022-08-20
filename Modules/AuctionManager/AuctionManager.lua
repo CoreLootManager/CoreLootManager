@@ -222,9 +222,8 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
     self.values = values
     self.acceptedTierValues = {}
     for _,val in pairs(self.values) do
-        self.acceptedTierValuesList[val] = true
+        self.acceptedTierValues[val] = true
     end
-    for _,val in pairs(self.values) do
     if self.auctionTime <= 0 then
         LOG:Warning("AuctionManager:StartAuction(): Auction time must be greater than 0 seconds")
         return false
@@ -536,8 +535,8 @@ function AuctionManager:ValidateBid(name, bid)
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_INCREMENT_TOO_LOW
             end
         end
-    else if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
-        if not self.acceptedTierValuesList[bid] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID
+    elseif self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
+        if not self.acceptedTierValues[bid] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
     else
         -- single-priced
         if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] ~= bid then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
