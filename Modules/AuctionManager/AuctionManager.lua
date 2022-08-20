@@ -214,7 +214,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
     self.auctionTime = auctionTime
     self.itemValueMode = configuration:Get("itemValueMode")
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
-        if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and values[CONSTANTS.SLOT_VALUE_TIER.BASE] > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then -- TODO
+        if values[CONSTANTS.SLOT_VALUE_TIER.MAX] >= 0 and values[CONSTANTS.SLOT_VALUE_TIER.BASE] > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then -- TODO
             LOG:Warning("AuctionManager:StartAuction(): base value must be smaller or equal to max values")
             return false
         end
@@ -250,10 +250,10 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
             tiers = UTILS.Trim(tiers)
             auctionMessage = auctionMessage .. string.format(CLM.L["Bid tiers: %s."], tiers)  .. " "
         else
-            if values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 then
+            if values[CONSTANTS.SLOT_VALUE_TIER.BASE] >= 0 then
                 auctionMessage = auctionMessage .. string.format(CLM.L["Minimum bid: %s."] .. " ", tostring(values[CONSTANTS.SLOT_VALUE_TIER.BASE]))
             end
-            if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
+            if values[CONSTANTS.SLOT_VALUE_TIER.MAX] >= 0 then
                 auctionMessage = auctionMessage .. string.format(CLM.L["Maximum bid: %s."] .. " ", tostring(values[CONSTANTS.SLOT_VALUE_TIER.MAX]))
             end
         end
@@ -519,9 +519,9 @@ function AuctionManager:ValidateBid(name, bid)
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
         -- min
-        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 and bid < self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] >= 0 and bid < self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
-        if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] >= 0 and bid > self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             -- always allow bidding min in ascending mode if haven't bid yet
@@ -698,7 +698,7 @@ function AuctionManager:FakeBids()
             if     bidType == 1 then -- none
             elseif bidType == 2 then -- value
                 local min, max = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE], 10
-                if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
+                if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] >= 0 then
                     max = self.values[CONSTANTS.SLOT_VALUE_TIER.MAX]
                 end
                 self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(math.random(min, max)), bidder)

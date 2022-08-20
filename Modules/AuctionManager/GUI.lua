@@ -538,7 +538,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             end),
             get = (function(i) return tostring(self.values[key] or 0) end),
             disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
-            pattern = "%d+",
+            pattern = CONSTANTS.REGEXP_FLOAT,
             width = 0.3,
             order = order
         }

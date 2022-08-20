@@ -314,23 +314,23 @@ end
 local valuesWithDesc = {
     {
         type = CONSTANTS.SLOT_VALUE_TIER.BASE,
-        desc = CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]
+        desc = CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     },
     {
         type = CONSTANTS.SLOT_VALUE_TIER.SMALL,
-        desc = CLM.L["Small value for Tiered auction.\n\nSet to 0 to ignore."]
+        desc = CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     },
     {
         type = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
-        desc = CLM.L["Medium value for Tiered auction.\n\nSet to 0 to ignore."]
+        desc = CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     },
     {
         type = CONSTANTS.SLOT_VALUE_TIER.LARGE,
-        desc = CLM.L["Large value for Tiered auction.\n\nSet to 0 to ignore."]
+        desc = CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     },
     {
         type = CONSTANTS.SLOT_VALUE_TIER.MAX,
-        desc = CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to 0 to ignore."]
+        desc = CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     }
 }
 
@@ -370,7 +370,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
                     end),
                     name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
-                    pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                    pattern = CONSTANTS.REGEXP_FLOAT,
                 }
                 order = order + 1
             end
@@ -410,7 +410,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                             return tostring(values[ivalues.type])
                         end),
                         name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
-                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        pattern = CONSTANTS.REGEXP_FLOAT,
                     }
                     order = order + 1
                 end
@@ -529,29 +529,29 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         name = CLM.L["Name"],
                         desc = CLM.L["Change roster name."],
                         type = "input",
-                        width = "full",
+                        width = 1,
                         order = 0
                     },
                     point_type = { -- informative
                         name = CLM.L["Point type"],
-                        desc = CLM.L["Currently only DKP supported."],
                         type = "select",
-                        style = "radio",
+                        -- style = "radio",
                         get = (function(i)
                             local r = RosterManager:GetRosterByName(name)
                             if not r then return nil end
                             return r:GetPointType()
                         end),
                         order = 1,
-                        -- disabled = true,
-                        width = "half",
+                        disabled = true,
+                        width = 1,
                         values = CONSTANTS.POINT_TYPES_GUI
                     },
                     round_decimals = {
                         name = CLM.L["Rounding"],
                         desc = CLM.L["Round to selected number of decimals"],
                         type = "select",
-                        style = "radio",
+                        -- style = "radio",
+                        width = 1,
                         disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                         order = 2,
                         values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
@@ -719,7 +719,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         name = CLM.L["Weekly reset timezone"],
                         desc = CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"],
                         type = "select",
-                        style = "radio",
+                        -- style = "radio",
                         disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
                         order = 18,
                         values = CONSTANTS.WEEKLY_RESETS_GUI
