@@ -620,7 +620,13 @@ function UTILS.TableCompare(o1, o2, check_mt)
     return true
 end
 
-
-
+CONSTANTS.ITEM_QUALITY = {
+    [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
+    [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
+    [2] = ColorCodeText(CLM.L["Uncommon"], "1eff00"),
+    [3] = ColorCodeText(CLM.L["Rare"], "0070dd"),
+    [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
+    [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
+}
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"

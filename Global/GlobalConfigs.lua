@@ -1,16 +1,16 @@
+-- ------------------------------- --
 local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
--- local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
-local ColorCodeText = UTILS.ColorCodeText
-
-local ConfigManager = MODULES.ConfigManager
-local LedgerManager = MODULES.LedgerManager
+local tonumber = tonumber
 
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
-    self.db = MODULES.Database:Personal('global', {
+    self.db = CLM.MODULES.Database:Personal('global', {
         announce_award_to_guild = true,
         announce_loot_to_raid = false,
         announce_loot_to_raid_owner_only = true,
@@ -66,7 +66,7 @@ function GlobalConfigs:Initialize()
             desc = CLM.L["Wipes all events from memory. This will trigger resyncing from other users."],
             type = "execute",
             confirm = true,
-            func = function() LedgerManager:Wipe() end,
+            func = function() CLM.MODULES.LedgerManager:Wipe() end,
             order = 4
         },
         global_loot_announcement_header = {
@@ -96,15 +96,7 @@ function GlobalConfigs:Initialize()
             name = CLM.L["Announcement loot rarity"],
             desc = CLM.L["Select loot rarity for the annoucement to raid."],
             type = "select",
-            -- width = "double",
-            values = {
-                [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
-                [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
-                [2] = ColorCodeText(CLM.L["Uncommon"], "1eff00"),
-                [3] = ColorCodeText(CLM.L["Rare"], "0070dd"),
-                [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
-                [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
-            },
+            values = CONSTANTS.ITEM_QUALITY,
             set = function(i, v) self:SetAnnounceLootToRaidLevel(v) end,
             get = function(i) return self:GetAnnounceLootToRaidLevel() end,
             order = 8
@@ -129,7 +121,6 @@ function GlobalConfigs:Initialize()
             type = "toggle",
             set = function(i, v) self:SetAuctionWarning(v) end,
             get = function(i) return self:GetAuctionWarning() end,
-            -- width = "double",
             order = 122
         },
         rw_commands = {
@@ -138,7 +129,6 @@ function GlobalConfigs:Initialize()
             type = "toggle",
             set = function(i, v) self:SetCommandsWarning(v) end,
             get = function(i) return self:GetCommandsWarning() end,
-            -- width = "double",
             order = 123
         },
         rw_countdown = {
@@ -147,7 +137,6 @@ function GlobalConfigs:Initialize()
             type = "toggle",
             set = function(i, v) self:SetCountdownWarning(v) end,
             get = function(i) return self:GetCountdownWarning() end,
-            -- width = "double",
             order = 124
         },
         rw_loot = {
@@ -156,7 +145,6 @@ function GlobalConfigs:Initialize()
             type = "toggle",
             set = function(i, v) self:SetLootWarning(v) end,
             get = function(i) return self:GetLootWarning() end,
-            -- width = "double",
             order = 125
         },
         rw_bids = {
@@ -165,7 +153,6 @@ function GlobalConfigs:Initialize()
             type = "toggle",
             set = function(i, v) self:SetBidsWarning(v) end,
             get = function(i) return self:GetBidsWarning() end,
-            -- width = "double",
             order = 126
         },
         danger_zone_header = {
@@ -183,7 +170,7 @@ function GlobalConfigs:Initialize()
             order = 10001
         }
     }
-    ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 function GlobalConfigs:SetAlerts(value)
