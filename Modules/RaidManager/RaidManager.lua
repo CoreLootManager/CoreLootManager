@@ -7,23 +7,19 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 local MODELS = CLM.MODELS
 
--- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
-
 local ACL = MODULES.ACL
 local LedgerManager = MODULES.LedgerManager
 local RosterManager = MODULES.RosterManager
 local EventManager = MODULES.EventManager
 local ProfileManager = MODULES.ProfileManager
 local PointManager = MODULES.PointManager
--- local Comms = MODULES.Comms
 
--- local LEDGER_DKP = MODELS.LEDGER.DKP
 local LEDGER_RAID = CLM.MODELS.LEDGER.RAID
--- local Profile = MODELS.Profile
+
 local Raid = MODELS.Raid
 local Roster = MODELS.Roster
 local RosterConfiguration = MODELS.RosterConfiguration
--- local PointHistory = MODELS.PointHistory
+
 
 local whoami = UTILS.whoami
 local whoamiGUID = UTILS.whoamiGUID
@@ -170,27 +166,6 @@ function RaidManager:Initialize()
                 end
             end
             raid:Start(entry:time())
-            local config = raid:Configuration()
-            local roster = raid:Roster()
-            if roster then
-                if not config then
-                    config = roster.configuration
-                end
-                if config:Get("onTimeBonus") and config:Get("onTimeBonusValue") > 0 then
-                    PointManager:AddFakePointHistory(roster, raid:Players(), config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
-                    local _players
-                    if config:Get("autoAwardIncludeBench") then
-                        _players = raid:AllPlayers()
-                        local playersOnStandby = raid:PlayersOnStandby()
-                        if #playersOnStandby > 0 then
-                            PointManager:AddFakePointHistory(roster, playersOnStandby, config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS, entry:time(), entry:creator(), CONSTANTS.POINT_CHANGE_REASONS.ALL[CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS] or "")
-                        end
-                    else
-                        _players = raid:Players()
-                    end
-                    PointManager:UpdatePointsDirectlyWithoutHistory(roster, _players, config:Get("onTimeBonusValue"), CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, entry:time(), entry:creator())
-                end
-            end
         end)
     )
 
@@ -204,28 +179,6 @@ function RaidManager:Initialize()
             if not raid then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
                 return
-            end
-
-            local config = raid:Configuration()
-            local roster = raid:Roster()
-            if roster then
-                if not config then
-                    config = roster.configuration
-                end
-                if config:Get("raidCompletionBonus") and config:Get("raidCompletionBonusValue") > 0 then
-                    PointManager:AddFakePointHistory(roster, raid:Players(), config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
-                    local players
-                    if config:Get("autoAwardIncludeBench") then
-                        players = raid:AllPlayers()
-                        local playersOnStandby = raid:PlayersOnStandby()
-                        if #playersOnStandby > 0 then
-                            PointManager:AddFakePointHistory(roster, playersOnStandby, config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS, entry:time(), entry:creator(), CONSTANTS.POINT_CHANGE_REASONS.ALL[CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS] or "")
-                        end
-                    else
-                        players = raid:Players()
-                    end
-                    PointManager:UpdatePointsDirectlyWithoutHistory(roster, players, config:Get("raidCompletionBonusValue"), CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, entry:time(), entry:creator())
-                end
             end
 
             raid:End(entry:time())
@@ -413,18 +366,30 @@ function RaidManager:StartRaid(raid)
     end
 
     -- Fill Standby
-    -- local standby = keys(MODULES.StandbyStagingManager:GetStandby(raid:UID()))
     local standby = {}
     for GUID,_ in pairs(MODULES.StandbyStagingManager:GetStandby(raid:UID())) do
         if not joining_players_guids[GUID] then
             table.insert(standby, GUID)
         end
     end
+    -- Start Raid
     LedgerManager:Submit(LEDGER_RAID.Start:new(raid:UID(), players, standby), true)
     if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
         SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
     end
     self:HandleRosterUpdateEvent()
+    -- On Time Bonus
+    local config = raid:Configuration()
+    local roster = raid:Roster()
+    if roster then
+        if not config then
+            config = roster.configuration
+        end
+        local onTimeBonusValue = config:Get("onTimeBonusValue")
+        if config:Get("onTimeBonus") and onTimeBonusValue > 0 then
+            PointManager:UpdateRaidPoints(raid, onTimeBonusValue, CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+        end
+    end
 end
 
 function RaidManager:EndRaid(raid)
@@ -445,10 +410,20 @@ function RaidManager:EndRaid(raid)
         LOG:Message(CLM.L["Raid management is disabled during time traveling."])
         return
     end
-    -- if not self:IsInActiveRaid() then
-    --     LOG:Message(CLM.L["You are not in an active raid."])
-    --     return
-    -- end
+    self:HandleRosterUpdateEvent()
+    -- Raid completion bonus
+    local config = raid:Configuration()
+    local roster = raid:Roster()
+    if roster then
+        if not config then
+            config = roster.configuration
+        end
+        local raidCompletionBonusValue = config:Get("raidCompletionBonusValue")
+        if config:Get("raidCompletionBonus") and raidCompletionBonusValue > 0 then
+            PointManager:UpdateRaidPoints(raid, raidCompletionBonusValue, CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+        end
+    end
+    -- End raid
     LedgerManager:Submit(LEDGER_RAID.End:new(raid:UID()), true)
 
     if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
