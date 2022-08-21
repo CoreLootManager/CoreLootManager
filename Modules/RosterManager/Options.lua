@@ -27,17 +27,6 @@ local function SetRosterOption(name, option, value)
     RosterManager:SetRosterConfiguration(name, option, value)
 end
 
--- local function GetDefaultSlotValue(name, slot, isBase)
---     local roster = RosterManager:GetRosterByName(name)
---     if roster == nil then return nil end
---     local v = roster:GetDefaultSlotValue(slot)
---     if isBase then return tostring(v.base) else return tostring(v.max) end
--- end
-
--- local function SetDefaultSlotValue(name, slot, value, isBase)
---     RosterManager:SetRosterDefaultSlotValue(name, slot, value, isBase)
--- end
-
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
     self.rosterName = RosterManager:GenerateName()
