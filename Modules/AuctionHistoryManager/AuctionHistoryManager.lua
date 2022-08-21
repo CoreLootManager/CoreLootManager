@@ -1,14 +1,17 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
+local pairs, ipairs = pairs, ipairs
+local tinsert, tremove = table.insert, table.remove
+local tostring, tonumber = tostring, tonumber
+local GetServerTime = GetServerTime
 
-local EventManager = MODULES.EventManager
-
-local EVENT_END_AUCTION = "CLM_AUCTION_END"
-
-local AuctionHistoryManager = {}
+local EVENT_END_AUCTION = "CLM_AUCTION_END" -- TODO CONSTANTS
 
 local CHANNELS = {
     [1] = "SAY",
@@ -21,18 +24,19 @@ local CHANNELS = {
     [8] = "RAID_WARNING"
 }
 
+local AuctionHistoryManager = {}
 function AuctionHistoryManager:Initialize()
     LOG:Trace("AuctionHistoryManager:Initialize()")
-    self.db = MODULES.Database:Personal('auctionHistory', {
+    self.db = CLM.MODULES.Database:Personal('auctionHistory', {
         stack = {},
         -- config
         enable = true,
         post_bids = true,
         post_bids_channel = 5
     })
-    EventManager:RegisterEvent(EVENT_END_AUCTION, function(_, data)
+    CLM.MODULES.EventManager:RegisterEvent(EVENT_END_AUCTION, function(_, data)
         if not self:GetEnabled() then return end
-        table.insert(self.db.stack, 1, {
+        tinsert(self.db.stack, 1, {
             link   = data.link,
             id     = data.id,
             bids   = data.bids,
@@ -67,7 +71,6 @@ function AuctionHistoryManager:Initialize()
             type = "toggle",
             set = function(i, v) self:SetEnabled(v) end,
             get = function(i) return self:GetEnabled() end,
-            -- width = "double",
             order = 40
         },
         auction_history_post_bids = {
@@ -76,7 +79,6 @@ function AuctionHistoryManager:Initialize()
             type = "toggle",
             set = function(i, v) self:SetPostBids(v) end,
             get = function(i) return self:GetPostBids() end,
-            -- width = "double",
             order = 41
         },
         auction_history_post_bids_channel = {
@@ -86,13 +88,12 @@ function AuctionHistoryManager:Initialize()
             values = CHANNELS,
             set = function(i, v) self:SetPostBidsChannel(v) end,
             get = function(i) return self:GetPostBidsChannel() end,
-            -- width = "double",
             order = 42
         }
     }
-    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
-    MODULES.ConfigManager:RegisterUniversalExecutor("ah", "Auction History", self)
+    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ah", "Auction History", self)
 end
 
 function AuctionHistoryManager:SetEnabled(value)
@@ -155,7 +156,7 @@ end
 function AuctionHistoryManager:Remove(id)
     id = tonumber(id) or 0
     if (id <= #self.db.stack) and (id >= 1) then
-        table.remove(self.db.stack, id)
+        tremove(self.db.stack, id)
         CLM.GUI.AuctionHistory:Refresh(true)
     end
 end
@@ -171,9 +172,9 @@ end
 
 function AuctionHistoryManager:Wipe()
     while(#self.db.stack > 0) do
-        table.remove(self.db.stack)
+        tremove(self.db.stack)
     end
     CLM.GUI.AuctionHistory:Refresh(true)
 end
 
-MODULES.AuctionHistoryManager = AuctionHistoryManager
+CLM.MODULES.AuctionHistoryManager = AuctionHistoryManager

@@ -1,27 +1,24 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local UIParent, CreateFrame = UIParent, CreateFrame
+local pairs, ipairs = pairs, ipairs
+local tonumber = tonumber
+local date = date
 
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
-local CONSTANTS = CLM.CONSTANTS
--- local RESULTS = CLM.CONSTANTS.RESULTS
-local GUI = CLM.GUI
-
-local ACL = MODULES.ACL
-local EventManager = MODULES.EventManager
-local AuctionHistoryManager = MODULES.AuctionHistoryManager
-local ProfileManager = MODULES.ProfileManager
-
 local RightClickMenu
 
-local AuctionHistoryGUI = {}
-
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('auctionHistory', {
+    self.db = CLM.MODULES.Database:GUI('auctionHistory', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -36,7 +33,6 @@ local function RestoreLocation(self)
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
 end
-
 
 local function ST_GetItemId(row)
     return row.cols[2].value
@@ -54,9 +50,10 @@ local function ST_GetItemSeq(row)
     return row.cols[5].value
 end
 
+local AuctionHistoryGUI = {}
 function AuctionHistoryGUI:Initialize()
     LOG:Trace("AuctionHistoryGUI:Initialize()")
-    if not ACL:IsTrusted() then return end
+    if not CLM.MODULES.ACL:IsTrusted() then return end
     InitializeDB(self)
 
     self.tooltip = CreateFrame("GameTooltip", "CLMAuctionHistoryGUIDialogTooltip", UIParent, "GameTooltipTemplate")
@@ -68,7 +65,7 @@ function AuctionHistoryGUI:Initialize()
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
-                    AuctionHistoryManager:Remove(ST_GetItemSeq(rowData))
+                    CLM.MODULES.AuctionHistoryManager:Remove(ST_GetItemSeq(rowData))
                 end),
                 color = "cc0000"
             },
@@ -79,7 +76,7 @@ function AuctionHistoryGUI:Initialize()
             {
                 title = CLM.L["Remove old"],
                 func = (function()
-                    AuctionHistoryManager:RemoveOld()
+                    CLM.MODULES.AuctionHistoryManager:RemoveOld()
                 end),
                 color = "cc0000"
             },
@@ -90,17 +87,17 @@ function AuctionHistoryGUI:Initialize()
             {
                 title = CLM.L["Remove all"],
                 func = (function()
-                    AuctionHistoryManager:Wipe()
+                    CLM.MODULES.AuctionHistoryManager:Wipe()
                 end),
                 color = "cc0000"
             }
         },
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
     )
 
     self:Create()
-    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:RegisterSlash()
     self._initialized = true
     self:Refresh()
@@ -142,7 +139,7 @@ local function CreateAuctionDisplay(self)
         local noBids = true
         for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
             noBids = false
-            local bidderProfile = ProfileManager:GetProfileByName(bidder)
+            local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
             if bidderProfile then
                 bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
             end
@@ -205,7 +202,7 @@ function AuctionHistoryGUI:Create()
     RestoreLocation(self)
     -- Hide by default
     f:Hide()
-    MODULES.ConfigManager:RegisterUniversalExecutor("ahg", "Auction History GUI", self)
+    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ahg", "Auction History GUI", self)
 end
 
 function AuctionHistoryGUI:Refresh(visible)
@@ -214,7 +211,7 @@ function AuctionHistoryGUI:Refresh(visible)
     if visible and not self.top:IsVisible() then return end
 
     local data = {}
-    local stack = AuctionHistoryManager:GetHistory()
+    local stack = CLM.MODULES.AuctionHistoryManager:GetHistory()
     -- Data
     local rowId = 1
     for seq, auction in ipairs(stack) do
@@ -281,7 +278,7 @@ function AuctionHistoryGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function AuctionHistoryGUI:Reset()
@@ -290,4 +287,4 @@ function AuctionHistoryGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-GUI.AuctionHistory = AuctionHistoryGUI
+CLM.GUI.AuctionHistory = AuctionHistoryGUI
