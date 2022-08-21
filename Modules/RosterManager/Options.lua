@@ -371,15 +371,18 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         local order = 1
         for id,_ in pairs(items) do
             local _, _, _, _, icon = GetItemInfoInstant(id)
+            local shortItemLink = "item:" .. tostring(id)
             if icon then
                 local sid = tostring(id)
                 local prefix = "i" .. sid
                 args[prefix .. "icon"] = {
                         name = "",
-                        type = "description",
                         image = icon,
                         order = order,
-                        width = 0.5
+                        width = 0.5,
+                        type = "execute",
+                        func = (function() end),
+                        itemLink = shortItemLink,
                     }
                 order = order + 1
                 for _, ivalues in ipairs(valuesWithDesc) do
