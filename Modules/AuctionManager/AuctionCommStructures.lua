@@ -1,8 +1,13 @@
-local _, CLM = ...
-
-local MODELS = CLM.MODELS
--- local UTILS = CLM.UTILS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local type, setmetatable = type, setmetatable
+local tonumber = tonumber
 
 local AuctionCommStartAuction = {}
 function AuctionCommStartAuction:New(typeOrObject, itemValueMode, values, itemLink, time, endtime, antiSnipe, note, increment, rosterUid)
@@ -147,7 +152,7 @@ function AuctionCommStructure:Data()
     return self.d
 end
 
-MODELS.AuctionCommStructure = AuctionCommStructure
-MODELS.AuctionCommStartAuction = AuctionCommStartAuction
-MODELS.AuctionCommDenyBid = AuctionCommDenyBid
-MODELS.AuctionCommDistributeBid = AuctionCommDistributeBid
+CLM.MODELS.AuctionCommStructure = AuctionCommStructure
+CLM.MODELS.AuctionCommStartAuction = AuctionCommStartAuction
+CLM.MODELS.AuctionCommDenyBid = AuctionCommDenyBid
+CLM.MODELS.AuctionCommDistributeBid = AuctionCommDistributeBid

@@ -1,5 +1,7 @@
 local _, CLM = ...
 
+local setmetatable = setmetatable
+
 local ExportConfiguration = {}
 function ExportConfiguration:New(format, jobs, timerange, rosters, profiles)
     local o = {}
