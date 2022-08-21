@@ -193,7 +193,7 @@ function Minimap:Initialize()
         else -- Unknown state
             ic = "blue"
         end
-        CLM.MinimapDBI.ic = getIcon(icon)
+        CLM.MinimapDBI.icon = getIcon(ic)
     end)
 
     if CLM_MinimapIcon.disable then icon:Hide(addonName) end
