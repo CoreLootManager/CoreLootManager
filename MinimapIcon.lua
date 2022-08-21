@@ -15,10 +15,10 @@ local function CreateMinimapDBI(self, dropdown)
         icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-blue-32.tga"
     })
 
-    CLM.MinimapDBI.OnClick = function(_self, button)
+    CLM.MinimapDBI.OnClick = function(s, button)
         if button == "RightButton" then
             if self:IsInitialized() then
-                CLM.UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdown, _self, -20, 0)
+                CLM.UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdown, s, -20, 0)
             end
         else
             CLM.GUI.Standings:Toggle()
@@ -181,19 +181,19 @@ function Minimap:Initialize()
 
     -- Hook Minimap Icon
     hooksecurefunc(CLM.MODULES.LedgerManager, "UpdateSyncState", function()
-        local icon
+        local ic
         if CLM.MODULES.LedgerManager:IsInIncoherentState() then
-            icon = "red"
+            ic = "red"
         elseif CLM.MODULES.LedgerManager:IsInSync() then
-            icon = "green"
+            ic = "green"
         elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
-            icon = "yellow"
+            ic = "yellow"
         elseif CLM.MODULES.SandboxManager:IsSandbox() or CLM.MODULES.LedgerManager:IsTimeTraveling() then
-            icon = "white"
+            ic = "white"
         else -- Unknown state
-            icon = "blue"
+            ic = "blue"
         end
-        CLM.MinimapDBI.icon = getIcon(icon)
+        CLM.MinimapDBI.ic = getIcon(icon)
     end)
 
     if CLM_MinimapIcon.disable then icon:Hide(addonName) end
