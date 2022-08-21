@@ -1,13 +1,13 @@
 --- AceConfigDialog-3.0 generates AceGUI-3.0 based windows based on option tables.
 -- @class file
 -- @name AceConfigDialog-3.0
--- @release $Id: AceConfigDialog-3.0.lua 1248 2021-02-05 14:27:49Z funkehdude $
+-- @release $Id: AceConfigDialog-3.0.lua 1262 2022-04-07 23:00:32Z funkehdude $
 
 local LibStub = LibStub
 local gui = LibStub("AceGUI-3.0")
 local reg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigDialog-3.0", 11181
+local MAJOR, MINOR = "AceConfigDialog-3.0", 82
 local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigDialog then return end
@@ -161,7 +161,6 @@ local allIsLiteral = {
 	descStyle = true,
 	imageWidth = true,
 	imageHeight = true,
-	itemLink = true
 }
 
 --gets the value for a member that could be a function
@@ -509,14 +508,6 @@ local function OptionOnMouseOver(widget, event)
 	local tooltip = AceConfigDialog.tooltip
 
 	tooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
-
-	local itemLink = GetOptionsMemberValue("itemLink", opt, options, path, appName)
-	if itemLink then
-		tooltip:SetHyperlink(itemLink)
-		tooltip:Show()
-		return
-	end
-
 	local name = GetOptionsMemberValue("name", opt, options, path, appName)
 	local desc = GetOptionsMemberValue("desc", opt, options, path, appName)
 	local usage = GetOptionsMemberValue("usage", opt, options, path, appName)
@@ -575,21 +566,10 @@ do
 			end
 		end)
 
-		if not frame.SetFixedFrameStrata then -- API capability check (classic check)
-			frame:SetBackdrop({
-				bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
-				edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
-				tile = true,
-				tileSize = 32,
-				edgeSize = 32,
-				insets = { left = 11, right = 11, top = 11, bottom = 11 },
-			})
-		else
-			local border = CreateFrame("Frame", nil, frame, "DialogBorderOpaqueTemplate")
-			border:SetAllPoints(frame)
-			frame:SetFixedFrameStrata(true)
-			frame:SetFixedFrameLevel(true)
-		end
+		local border = CreateFrame("Frame", nil, frame, "DialogBorderOpaqueTemplate")
+		border:SetAllPoints(frame)
+		frame:SetFixedFrameStrata(true)
+		frame:SetFixedFrameLevel(true)
 
 		local text = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 		text:SetSize(290, 0)
