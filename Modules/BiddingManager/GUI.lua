@@ -179,12 +179,15 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         -- Force caching loot from server
         GetItemInfo(itemId)
     end
+    local shortItemLink = "item:" .. tostring(itemId)
     local itemValueMode = self.auctionInfo and self.auctionInfo:Mode() or CLM.CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
     local options = {
         icon = {
             name = "",
-            type = "description",
+            type = "execute",
             image = icon,
+            func = (function() end),
+            itemLink = shortItemLink,
             width = 0.25,
             order = 1
         },
@@ -195,7 +198,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             set = (function(i,v) end), -- Intentionally: do not override
             -- width = 1,
             order = 2,
-            itemLink = "item:" .. tostring(itemId),
+            itemLink = shortItemLink,
         },
         bid_value = {
             name = CLM.L["Bid value"],

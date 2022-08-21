@@ -259,14 +259,16 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             self.values = UTILS.ShallowCopy(self.roster:GetItemValues(self.itemId))
         end
     end
-
+    local itemLink = "item:" .. tostring(self.itemId)
     local options = {
         icon = {
             name = "",
-            type = "description",
+            type = "execute",
             image = icon,
+            func = (function() end),
             width = 0.50,
-            order = 1
+            order = 1,
+            itemLink = itemLink,
         },
         item = {
             name = CLM.L["Item"],
@@ -286,7 +288,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             disabled = (function() return AuctionManager:IsAuctionInProgress() end),
             width = 1.4,
             order = 2,
-            itemLink = "item:" .. tostring(self.itemId),
+            itemLink = itemLink,
         },
         note_label = {
             name = CLM.L["Note"],

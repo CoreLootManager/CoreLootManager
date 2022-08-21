@@ -300,10 +300,6 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceI
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
         entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason, note, includeBench)
-    -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-    --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
-    -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-    --     entry = LEDGER_DKP.DecayRoster:new(uid, value, reason)
     end
 
     LedgerManager:Submit(entry, forceInstant)
@@ -315,7 +311,7 @@ function PointManager:RemovePointChange(pointHistory, forceInstant)
         LOG:Error("PointManager:RemovePointChange(): Missing valid point history")
         return
     end
-    -- TODO: Add entry to track who removed?
+
     LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 
@@ -332,15 +328,15 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, times
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, pointHistoryEntry, true)
 end
 
-function PointManager:UpdatePointsDirectlyWithoutHistory(roster, targets, value, reason, timestamp, creator)
-    LOG:Trace("PointManager:UpdatePointsDirectly()")
-    if not roster then
-        LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
-        return
-    end
+-- function PointManager:UpdatePointsDirectlyWithoutHistory(roster, targets, value, reason, timestamp, creator)
+--     LOG:Trace("PointManager:UpdatePointsDirectly()")
+--     if not roster then
+--         LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
+--         return
+--     end
 
-    update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, nil, true)
-end
+--     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, nil, true)
+-- end
 
 function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     LOG:Trace("PointManager:AddPointHistory()")

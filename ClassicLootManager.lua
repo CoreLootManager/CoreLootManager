@@ -104,9 +104,9 @@ function CORE:_InitializeBackend()
     MODULES.EventManager:Initialize()
     MODULES.GuildInfoListener:Initialize()
     MODULES.LedgerManager:Initialize()
-    if type(self.Debug) == "function" then
-        self.Debug()
-    end
+    -- if type(self.Debug) == "function" then
+    --     self.Debug()
+    -- end
 end
 
 function CORE:_InitializeFeatures()
@@ -134,37 +134,25 @@ function CORE:_InitializeFeatures()
     CLM.Integration:Initialize() -- Initialize external (to wow) integrations
 end
 
-local function getIcon(icon)
-    return "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-" .. icon .. "-32.tga"
+function CORE:_InitializeMinimap()
+    LOG:Trace("CORE:_InitializeMinimap()")
+    -- Initialize Minmap
+    MODULES.Minimap:Initialize()
 end
 
-function CORE:_InitializeFrontend()
-    LOG:Trace("CORE:_InitializeFrontend()")
+function CORE:_InitializeOptions()
+    LOG:Trace("CORE:_InitializeOptions()")
     -- No GUI / OPTIONS should be dependent on each other ever, only on the managers
     for _, module in pairs(CLM.OPTIONS) do
         module:Initialize()
     end
+end
+
+function CORE:_InitializeGUI()
+    LOG:Trace("CORE:_InitializeGUI()")
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
-    -- Initialize Minmap
-    MODULES.Minimap:Initialize()
-    -- Hook Minimap Icon
-    hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
-        local icon
-        if MODULES.LedgerManager:IsInIncoherentState() then
-            icon = "red"
-        elseif MODULES.LedgerManager:IsInSync() then
-            icon = "green"
-        elseif MODULES.LedgerManager:IsSyncOngoing() then
-            icon = "yellow"
-        elseif MODULES.SandboxManager:IsSandbox() or MODULES.LedgerManager:IsTimeTraveling() then
-            icon = "white"
-        else -- Unknown state
-            icon = "blue"
-        end
-        CLM.MinimapDBI.icon = getIcon(icon)
-    end)
 end
 
 function CORE:_Enable()
@@ -173,28 +161,38 @@ function CORE:_Enable()
     MODULES.LedgerManager:Enable()
 end
 
-function CORE:_SequentialInitialize(stage)
+local stages = {
+    "_InitializeCore",
+    "_InitializeMinimap",
+    "_InitializeBackend",
+    "_InitializeFeatures",
+    "_InitializeOptions",
+    "_InitializeGUI"
+}
+
+local finalStage = "_Enable"
+
+local function getStage(stage)
+    return stages[stage] or finalStage
+end
+
+function CORE:_SequentialInitialize(stageNum)
     LOG:Trace("CORE:_SequentialInitialize()")
-    if stage == 0 then
-        self:_InitializeCore()
-    elseif stage == 1 then
-        self:_InitializeBackend()
-    elseif stage == 2 then
-        self:_InitializeFeatures()
-    elseif stage == 3 then
-        self:_InitializeFrontend()
-    elseif stage >= 4 then
-        self:_Enable()
+    local stage = getStage(stageNum)
+    LOG:Info("Initialization stage [%s]", stage)
+    self[stage]()
+
+    if stage == finalStage then
         LOG:Info(CLM.L["Boot complete"])
         return
     end
-    C_Timer.After(0.1, function() CORE:_SequentialInitialize(stage + 1) end)
+    C_Timer.After(0.1, function() CORE:_SequentialInitialize(stageNum + 1) end)
 end
 
 function CORE:_ExecuteInitialize()
     if self._initialize_fired then return end
     self._initialize_fired = true
-    C_Timer.After(1, function() CORE:_SequentialInitialize(0) end)
+    C_Timer.After(1, function() CORE:_SequentialInitialize(1) end)
 end
 
 function CORE:_Initialize()

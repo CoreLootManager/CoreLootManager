@@ -27,17 +27,6 @@ local function SetRosterOption(name, option, value)
     RosterManager:SetRosterConfiguration(name, option, value)
 end
 
--- local function GetDefaultSlotValue(name, slot, isBase)
---     local roster = RosterManager:GetRosterByName(name)
---     if roster == nil then return nil end
---     local v = roster:GetDefaultSlotValue(slot)
---     if isBase then return tostring(v.base) else return tostring(v.max) end
--- end
-
--- local function SetDefaultSlotValue(name, slot, value, isBase)
---     RosterManager:SetRosterDefaultSlotValue(name, slot, value, isBase)
--- end
-
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
     self.rosterName = RosterManager:GenerateName()
@@ -371,15 +360,18 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         local order = 1
         for id,_ in pairs(items) do
             local _, _, _, _, icon = GetItemInfoInstant(id)
+            local shortItemLink = "item:" .. tostring(id)
             if icon then
                 local sid = tostring(id)
                 local prefix = "i" .. sid
                 args[prefix .. "icon"] = {
                         name = "",
-                        type = "description",
                         image = icon,
                         order = order,
-                        width = 0.5
+                        width = 0.5,
+                        type = "execute",
+                        func = (function() end),
+                        itemLink = shortItemLink,
                     }
                 order = order + 1
                 for _, ivalues in ipairs(valuesWithDesc) do
