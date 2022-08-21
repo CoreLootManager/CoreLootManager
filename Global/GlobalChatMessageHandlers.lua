@@ -6,6 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+local pairs, ipairs = pairs, ipairs
 local tostring = tostring
 local tinsert, sformat, sfind, slower, strsplit = table.insert, string.format, string.find, string.lower, strsplit
 local SendChatMessage = SendChatMessage

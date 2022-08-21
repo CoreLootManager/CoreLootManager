@@ -1,20 +1,19 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
-
+local pairs, ipairs = pairs, ipairs
+local tinsert, wipe = table.insert, wipe
+local C_TimerAfter = C_Timer.After
+local collectgarbage = collectgarbage
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
-local EventManager = MODULES.EventManager
-local ProfileManager = MODULES.ProfileManager
-local RosterManager = MODULES.RosterManager
-local ProfileInfoManager = MODULES.ProfileInfoManager
-
-local Integration = {}
-
 local function InitializeDB(key)
-    local db = MODULES.Database:Server()
+    local db = CLM.MODULES.Database:Server()
     if not db.integration then
         db.integration = {}
     end
@@ -29,7 +28,7 @@ local function StoreWoWDKPBotData()
     local db = InitializeDB("wowdkpbot")
     db.profiles = {}
     -- Fill Profiles
-    for GUID,profile in pairs(ProfileManager:GetProfiles()) do
+    for GUID,profile in pairs(CLM.MODULES.ProfileManager:GetProfiles()) do
        db.profiles[GUID] = {
             name = profile:Name(),
             class = profile:Class(),
@@ -39,7 +38,7 @@ local function StoreWoWDKPBotData()
     end
     -- Fill config
     db.config = {}
-    for name,roster in pairs(RosterManager:GetRosters()) do
+    for name,roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
         db.config[name] = {}
         -- Config
         local rounding = roster:GetConfiguration("roundDecimals")
@@ -48,7 +47,7 @@ local function StoreWoWDKPBotData()
     end
     -- Fill Rosters
     db.rosters = {}
-    for name,roster in pairs(RosterManager:GetRosters()) do
+    for name,roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
         db.rosters[name] = {}
         -- For each profile in roster
         for GUID, value in pairs(roster.standings) do
@@ -67,7 +66,7 @@ local function StoreWoWDKPBotData()
                 }
                 local lootName = GetItemInfo(lootEntry:Id())
                 loot.name = lootName or "???"
-                table.insert(data.loot, loot)
+                tinsert(data.loot, loot)
             end
             -- set point history
             for _, historyEntry in ipairs(roster:GetProfilePointHistoryByGUID(GUID)) do
@@ -77,7 +76,7 @@ local function StoreWoWDKPBotData()
                     value = historyEntry:Value(),
                     creator = getGuidFromInteger(historyEntry:Creator())
                 }
-                table.insert(data.history, history)
+                tinsert(data.history, history)
             end
         end
 
@@ -92,17 +91,18 @@ end
 
 local function RequestWoWDKPBotData()
     if not CLM.GlobalConfigs:GetWoWDKPBotIntegration() then return end
-    ProfileInfoManager:RequestSpec()
-    ProfileInfoManager:RequestVersion()
+    CLM.MODULES.ProfileInfoManager:RequestSpec()
+    CLM.MODULES.ProfileInfoManager:RequestVersion()
 end
 
+local Integration = {}
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
     ClearWoWDKPBotData()
     -- WoW DKP Bot SV Data
-    C_Timer.After(10, RequestWoWDKPBotData)
+    C_TimerAfter(10, RequestWoWDKPBotData)
 
-    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData()
     end))
     -- Generic Data

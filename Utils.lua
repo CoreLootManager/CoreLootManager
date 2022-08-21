@@ -620,6 +620,10 @@ function UTILS.TableCompare(o1, o2, check_mt)
     return true
 end
 
+function UTILS.DictNotEmpty(dict)
+    return not rawequal(next(dict), nil)
+end
+
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
     [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
