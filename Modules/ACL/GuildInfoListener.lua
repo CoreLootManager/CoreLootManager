@@ -1,17 +1,21 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-
-local UTILS = CLM.UTILS
-local RemoveServer = UTILS.RemoveServer
+local GuildRoster, GetGuildRosterInfo = GuildRoster, GetGuildRosterInfo
+local GuildControlGetNumRanks, GetNumGuildMembers = GuildControlGetNumRanks, GetNumGuildMembers
+local C_GuildInfoGuildControlGetRankFlags = C_GuildInfo.GuildControlGetRankFlags
 
 local GuildInfoListener = {}
 function GuildInfoListener:Initialize()
     LOG:Trace("GuildInfoListener:Initialize()")
     self:WipeAll()
     self:BuildCache()
-    MODULES.EventManager:RegisterWoWEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
         LOG:Debug("Rebuild trust cache after event")
         if self.cacheUpdateRequired then
             GuildRoster()
@@ -33,7 +37,7 @@ end
 function GuildInfoListener:BuildRankCache()
     LOG:Trace("GuildInfoListener:BuildRankCache()")
     for i=1,GuildControlGetNumRanks() do
-        local rankInfo = C_GuildInfo.GuildControlGetRankFlags(i)
+        local rankInfo = C_GuildInfoGuildControlGetRankFlags(i)
         self.cache.ranks[i] = {}
         -- 11 View Officer Note
         self.cache.ranks[i].isAssistant = rankInfo[11]
@@ -54,7 +58,7 @@ function GuildInfoListener:BuildGuildCache()
             -- Number - The number corresponding to the guild's rank.
             -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
             rankIndex = rankIndex + 1
-            name = RemoveServer(name)
+            name = UTILS.RemoveServer(name)
             self.cache.guildies[name] = true
             self.cache.ranks[rankIndex].name = rankName
             if self.cache.ranks[rankIndex] then
@@ -93,4 +97,4 @@ function GuildInfoListener:WipeAll()
 end
 
 
-MODULES.GuildInfoListener = GuildInfoListener
+CLM.MODULES.GuildInfoListener = GuildInfoListener
