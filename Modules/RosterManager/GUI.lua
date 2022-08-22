@@ -1,37 +1,22 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local pairs, ipairs = pairs, ipairs
+local CreateFrame, UIParent = CreateFrame, UIParent
+local tonumber, tostring, type = tonumber, tostring, type
+local strlen, sfind, sformat, tinsert = strlen, string.find, string.format, table.insert
 
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0"),
-    gui = LibStub("AceConfigDialog-3.0")
-}
-
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
-local CONSTANTS = CLM.CONSTANTS
-local ACL = MODULES.ACL
-
-local GUI = CLM.GUI
-
-local mergeDictsInline = UTILS.mergeDictsInline
-local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
-local Trim = UTILS.Trim
-local round = UTILS.round
-local ColorCodeByPercentage = UTILS.ColorCodeByPercentage
-local RemoveColorCode = UTILS.RemoveColorCode
-
-local GuildInfoListener = MODULES.GuildInfoListener
-local ProfileManager = MODULES.ProfileManager
-local RosterManager = MODULES.RosterManager
-local PointManager = MODULES.PointManager
-local LedgerManager = MODULES.LedgerManager
-local EventManager = MODULES.EventManager
-local RaidManager = MODULES.RaidManager
-local StandbyStagingManager = MODULES.StandbyStagingManager
 
 local FILTER_IN_RAID = 100
 -- local FILTER_ONLINE = 101
@@ -40,13 +25,10 @@ local FILTER_IN_GUILD = 103
 local FILTER_NOT_IN_GUILD = 104
 local FILTER_MAINS_ONLY = 105
 
-local POINT_CHANGE_REASON_DECAY = CONSTANTS.POINT_CHANGE_REASON.DECAY
-local POINT_CHANGE_REASONS_ALL = CONSTANTS.POINT_CHANGE_REASONS.ALL
-
 local StandingsGUI = {}
 
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('standings', {
+    self.db = CLM.MODULES.Database:GUI('standings', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -64,7 +46,7 @@ end
 
 function StandingsGUI:Initialize()
     InitializeDB(self)
-    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self.tooltip = CreateFrame("GameTooltip", "CLMStandingsListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     self:Create()
     self:RegisterSlash()
@@ -72,7 +54,7 @@ function StandingsGUI:Initialize()
     self.selectedRoster = 0
     self.numSelected = 0
     self.numInRoster = 0
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
     end)
@@ -120,7 +102,7 @@ local function UpdateStatusText(self)
 end
 
 local function GenerateUntrustedOptions(self)
-    local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
+    local filters = UTILS.ShallowCopy(UTILS.GetColorCodedClassDict())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
     filters[FILTER_MAINS_ONLY] = UTILS.ColorCodeText(CLM.L["Mains"], "FFD100")
     filters[FILTER_NOT_IN_GUILD] = UTILS.ColorCodeText(CLM.L["External"], "FFD100")
@@ -136,7 +118,7 @@ local function GenerateUntrustedOptions(self)
             name = CLM.L["Filter"],
             type = "multiselect",
             set = function(i, k, v)
-                local n = tonumber(k)
+                local n = tonumber(k) or 0
                 self.filterOptions[n] = v
                 if v then
                     if n == FILTER_IN_RAID then
@@ -168,10 +150,10 @@ local function GenerateUntrustedOptions(self)
                     local searchList = { strsplit(",", v) }
                     self.searchMethod = (function(playerName)
                         for _, searchString in ipairs(searchList) do
-                            searchString = Trim(searchString)
+                            searchString = UTILS.Trim(searchString)
                             if strlen(searchString) >= 3 then
                                 searchString = ".*" .. strlower(searchString) .. ".*"
-                                if(string.find(strlower(playerName), searchString)) then
+                                if(sfind(strlower(playerName), searchString)) then
                                     return true
                                 end
                             end
@@ -287,10 +269,10 @@ local function GenerateManagerOptions(self)
                 end
                 -- Roster award
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
-                elseif RaidManager:IsInActiveRaid() then
+                    CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
+                elseif CLM.MODULES.RaidManager:IsInActiveRaid() then
                     local raidAward = false
-                    local raid = RaidManager:GetRaid()
+                    local raid = CLM.MODULES.RaidManager:GetRaid()
                     if #profiles == #raid:Players() then
                         raidAward = true
                         for _, profile in ipairs(profiles) do
@@ -298,15 +280,15 @@ local function GenerateManagerOptions(self)
                         end
                     end
                     if raidAward then
-                        PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                        CLM.MODULES.PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                     else
-                        PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                     end
                 else
-                    PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                    CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                 end
                 -- Update points
-                -- PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                -- CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
             end),
             confirm = true,
             order = 14
@@ -356,7 +338,7 @@ local function GenerateOfficerOptions(self)
                     return
                 end
                 if #profiles == #roster:Profiles() then
-                    PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
+                    CLM.MODULES.PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
                 else
                     local filter
                     if not self.includeNegative then
@@ -369,7 +351,7 @@ local function GenerateOfficerOptions(self)
                         LOG:Debug("StandingsGUI(Decay): profiles == 0")
                         return
                     end
-                    PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                    CLM.MODULES.PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
                 end
             end),
             confirm = true,
@@ -391,7 +373,7 @@ local function CreateManagementOptions(self, container)
     self.awardValue = nil
     self.note = ""
     self.awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
-    for _=1,9 do table.insert( self.filterOptions, true ) end
+    for _=1,9 do tinsert( self.filterOptions, true ) end
     self.filterOptions[FILTER_IN_RAID] = false
     self.filterOptions[FILTER_NOT_IN_GUILD] = false
     self.filterOptions[FILTER_IN_GUILD] = false
@@ -400,15 +382,15 @@ local function CreateManagementOptions(self, container)
         type = "group",
         args = {}
     }
-    mergeDictsInline(options.args, GenerateUntrustedOptions(self))
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        mergeDictsInline(options.args, GenerateManagerOptions(self))
+    UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(self))
+    if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        UTILS.mergeDictsInline(options.args, GenerateManagerOptions(self))
     end
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
-        mergeDictsInline(options.args, GenerateOfficerOptions(self))
+    if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+        UTILS.mergeDictsInline(options.args, GenerateOfficerOptions(self))
     end
-    LIBS.registry:RegisterOptionsTable("clm_standings_gui_options", options)
-    LIBS.gui:Open("clm_standings_gui_options", ManagementOptions)
+    AceConfigRegistry:RegisterOptionsTable("clm_standings_gui_options", options)
+    AceConfigDialog:Open("clm_standings_gui_options", ManagementOptions)
     self.st:SetFilter((function(stobject, row)
         local playerName = ST_GetName(row)
         local class = ST_GetClass(row)
@@ -421,7 +403,7 @@ local function CreateManagementOptions(self, container)
         -- Check class filter
 
         local status
-        for id, _class in pairs(GetColorCodedClassDict()) do
+        for id, _class in pairs(UTILS.GetColorCodedClassDict()) do
             if class == _class then
                 status = self.filterOptions[id]
             end
@@ -438,31 +420,31 @@ local function CreateManagementOptions(self, container)
             end
             status = status and isInRaid[playerName]
         elseif self.filterOptions[FILTER_STANDBY] then
-            if RaidManager:IsInProgressingRaid() then
-                local profile = ProfileManager:GetProfileByName(playerName)
+            if CLM.MODULES.RaidManager:IsInProgressingRaid() then
+                local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
                 if profile then
-                    status = status and RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID())
+                    status = status and CLM.MODULES.RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID())
                 end
-            elseif RaidManager:IsInCreatedRaid() then
-                local profile = ProfileManager:GetProfileByName(playerName)
+            elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
+                local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
                 if profile then
-                    status = status and StandbyStagingManager:IsPlayerOnStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                    status = status and CLM.MODULES.StandbyStagingManager:IsPlayerOnStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
                 end
             else
                 status = false
             end
         end
         if self.filterOptions[FILTER_MAINS_ONLY] then
-            local profile = ProfileManager:GetProfileByName(playerName)
+            local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
             if profile then
                 status = status and (profile:Main() == "")
             end
         end
         if self.filterOptions[FILTER_NOT_IN_GUILD] then
-            status = status and not GuildInfoListener:GetGuildies()[playerName]
+            status = status and not CLM.MODULES.GuildInfoListener:GetGuildies()[playerName]
         end
         if self.filterOptions[FILTER_IN_GUILD] then
-            status = status and GuildInfoListener:GetGuildies()[playerName]
+            status = status and CLM.MODULES.GuildInfoListener:GetGuildies()[playerName]
         end
         return status
     end))
@@ -476,19 +458,11 @@ local function CreateStandingsDisplay(self)
         {   name = CLM.L["Name"],   width = 100 },
         {   name = CLM.L["DKP"],    width = 80, sort = ScrollingTable.SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
         {   name = CLM.L["Class"],  width = 60,
-            comparesort = UTILS.LibStCompareSortWrapper(
-                (function(a1, b1)
-                    return RemoveColorCode(a1), RemoveColorCode(b1)
-                end)
-            )
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
         {   name = CLM.L["Spec"],   width = 60 },
         {   name = CLM.L["Attendance [%]"], width = 90,
-            comparesort = UTILS.LibStCompareSortWrapper(
-                (function(a1, b1)
-                    return tonumber(RemoveColorCode(a1)), tonumber(RemoveColorCode(b1))
-                end)
-            )
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         }
     }
     local StandingsGroup = AceGUI:Create("SimpleGroup")
@@ -511,39 +485,39 @@ local function CreateStandingsDisplay(self)
         {
             title = CLM.L["Add to standby"],
             func = (function()
-                if not RaidManager:IsInRaid() then
+                if not CLM.MODULES.RaidManager:IsInRaid() then
                     LOG:Message(CLM.L["Not in raid"])
                     return
                 end
                 local roster, profiles = self:GetSelected()
-                local raid = RaidManager:GetRaid()
+                local raid = CLM.MODULES.RaidManager:GetRaid()
                 if roster ~= raid:Roster() then
-                    LOG:Message(string.format(
+                    LOG:Message(sformat(
                         CLM.L["You can only bench players from same roster as the raid (%s)."],
-                        RosterManager:GetRosterNameByUid(raid:Roster():UID())
+                        CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
                     ))
                     return
                 end
 
-                if RaidManager:IsInProgressingRaid() then
+                if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                     if #profiles > 10 then
-                        LOG:Message(string.format(
+                        LOG:Message(sformat(
                             CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
                             CLM.L["add"], 10, CLM.L["progressing"]
                         ))
                         return
                     end
-                    RaidManager:AddToStandby(RaidManager:GetRaid(), profiles)
-                elseif RaidManager:IsInCreatedRaid() then
+                    CLM.MODULES.RaidManager:AddToStandby(CLM.MODULES.RaidManager:GetRaid(), profiles)
+                elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
                     if #profiles > 25 then
-                        LOG:Message(string.format(
+                        LOG:Message(sformat(
                             CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
                             CLM.L["add"], 25, CLM.L["created"]
                         ))
                         return
                     end
                     for _, profile in ipairs(profiles) do
-                        StandbyStagingManager:AddToStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                        CLM.MODULES.StandbyStagingManager:AddToStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
                     end
                 end
                 self:Refresh(true)
@@ -554,39 +528,39 @@ local function CreateStandingsDisplay(self)
         {
             title = CLM.L["Remove from standby"],
             func = (function()
-                if not RaidManager:IsInRaid() then
+                if not CLM.MODULES.RaidManager:IsInRaid() then
                     LOG:Message(CLM.L["Not in raid"])
                     return
                 end
                 local roster, profiles = self:GetSelected()
-                local raid = RaidManager:GetRaid()
+                local raid = CLM.MODULES.RaidManager:GetRaid()
                 if roster ~= raid:Roster() then
-                    LOG:Message(string.format(
+                    LOG:Message(sformat(
                         CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
-                        RosterManager:GetRosterNameByUid(raid:Roster():UID())
+                        CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
                     ))
                     return
                 end
 
-                if RaidManager:IsInProgressingRaid() then
+                if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                     if #profiles > 10 then
-                        LOG:Message(string.format(
+                        LOG:Message(sformat(
                             CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
                             CLM.L["remove"], 10, CLM.L["progressing"]
                         ))
                         return
                     end
-                    RaidManager:RemoveFromStandby(RaidManager:GetRaid(), profiles)
-                elseif RaidManager:IsInCreatedRaid() then
+                    CLM.MODULES.RaidManager:RemoveFromStandby(CLM.MODULES.RaidManager:GetRaid(), profiles)
+                elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
                     if #profiles > 25 then
-                        LOG:Message(string.format(
+                        LOG:Message(sformat(
                             CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
                             CLM.L["remove"], 25, CLM.L["created"]
                         ))
                         return
                     end
                     for _, profile in ipairs(profiles) do
-                        StandbyStagingManager:RemoveFromStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                        CLM.MODULES.StandbyStagingManager:RemoveFromStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
                     end
                 end
                 self:Refresh(true)
@@ -611,13 +585,13 @@ local function CreateStandingsDisplay(self)
                     return
                 end
                 if #profiles > 10 then
-                    LOG:Message(string.format(
+                    LOG:Message(sformat(
                         CLM.L["You can remove max %d players from roster at the same time."],
                         10
                     ))
                     return
                 end
-                RosterManager:RemoveProfilesFromRoster(roster, profiles)
+                CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles)
             end),
             trustedOnly = true,
             color = "cc0000"
@@ -678,10 +652,10 @@ local function CreateStandingsDisplay(self)
                 if i > 5 then break end
                 local reason = point:Reason() or 0
                 local value = tostring(point:Value())
-                if reason == POINT_CHANGE_REASON_DECAY then
+                if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                     value = value .. "%"
                 end
-                tooltip:AddDoubleLine(POINT_CHANGE_REASONS_ALL[reason] or "", value)
+                tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
             end
         else
             tooltip:AddLine(CLM.L["No points received"])
@@ -765,15 +739,15 @@ function StandingsGUI:Refresh(visible)
     local rowId = 1
     local data = {}
     for GUID,value in pairs(roster:Standings()) do
-        local profile = ProfileManager:GetProfileByGUID(GUID)
-        local attendance = round(roster:GetAttendance(GUID) or 0, 0)
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
         if profile then
             local row = {cols = {}}
             row.cols[1]  = {value = profile:Name()}
             row.cols[2]  = {value = value}
             row.cols[3]  = {value = UTILS.ColorCodeClass(profile:Class())}
             row.cols[4]  = {value = profile:SpecString()}
-            row.cols[5]  = {value = ColorCodeByPercentage(attendance)}
+            row.cols[5]  = {value = UTILS.ColorCodeByPercentage(attendance)}
             -- not displayed
             row.cols[6]  = {value = roster:GetCurrentGainsForPlayer(GUID)}
             row.cols[7]  = {value = weeklyCap}
@@ -785,14 +759,14 @@ function StandingsGUI:Refresh(visible)
         end
     end
     self.st:SetData(data)
-    LIBS.gui:Open("clm_standings_gui_options", self.ManagementOptions)
+    AceConfigDialog:Open("clm_standings_gui_options", self.ManagementOptions)
     self.numInRoster = #data
     UpdateStatusText(self)
 end
 
 function StandingsGUI:GetCurrentRoster()
     self.db.selectedRosterUid = self.RosterSelectorDropDown:GetValue()
-    return RosterManager:GetRosterByUid(self.db.selectedRosterUid)
+    return CLM.MODULES.RosterManager:GetRosterByUid(self.db.selectedRosterUid)
 end
 
 function StandingsGUI:GetSelected(filter)
@@ -811,9 +785,9 @@ function StandingsGUI:GetSelected(filter)
         selected = self.st:DoFilter()
     end
     for _,s in pairs(selected) do
-        local profile = ProfileManager:GetProfileByName(ST_GetName(self.st:GetRow(s)))
+        local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetName(self.st:GetRow(s)))
         if profile then
-            table.insert(profiles, profile)
+            tinsert(profiles, profile)
         else
             LOG:Debug("No profile for %s", ST_GetName(self.st:GetRow(s)))
         end
@@ -821,7 +795,7 @@ function StandingsGUI:GetSelected(filter)
     local profiles_filtered = {}
     for _, profile in ipairs(profiles) do
         if filter(roster, profile) then
-            table.insert(profiles_filtered, profile)
+            tinsert(profiles_filtered, profile)
         end
     end
     return roster, profiles_filtered
@@ -829,7 +803,7 @@ end
 
 function StandingsGUI:RefreshRosters()
     LOG:Trace("StandingsGUI:RefreshRosters()")
-    local rosters = RosterManager:GetRosters()
+    local rosters = CLM.MODULES.RosterManager:GetRosters()
     local rosterUidMap = {}
     local rosterList = {}
     local positionOfSavedRoster = 1
@@ -875,7 +849,7 @@ function StandingsGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function StandingsGUI:Reset()
@@ -884,4 +858,4 @@ function StandingsGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-GUI.Standings = StandingsGUI
+CLM.GUI.Standings = StandingsGUI

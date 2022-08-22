@@ -1,12 +1,10 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local OPTIONS = CLM.OPTIONS
-local MODULES = CLM.MODULES
-local ACL = MODULES.ACL
-local RosterManager = MODULES.RosterManager
-local ProfileManager = MODULES.ProfileManager
-local LedgerManager = MODULES.LedgerManager
-local ConfigManager = MODULES.ConfigManager
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
 local CBTYPE = {
     GETTER   = "get",
@@ -18,41 +16,41 @@ local CBTYPE = {
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)
-    local roster = RosterManager:GetRosterByName(name)
+    local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
     if roster == nil then return nil end
     return roster:GetConfiguration(option)
 end
 
 local function SetRosterOption(name, option, value)
-    RosterManager:SetRosterConfiguration(name, option, value)
+    CLM.MODULES.RosterManager:SetRosterConfiguration(name, option, value)
 end
 
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
-    self.rosterName = RosterManager:GenerateName()
-    self.readOnly = not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    self.rosterName = CLM.MODULES.RosterManager:GenerateName()
+    self.readOnly = not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     self.handlers = {
         general_name_get = (function(name)
             return name
         end),
         general_name_set = (function(old, new)
-            RosterManager:RenameRoster(old, new)
+            CLM.MODULES.RosterManager:RenameRoster(old, new)
         end),
         general_remove_execute = (function(name)
-            RosterManager:DeleteRosterByName(name)
+            CLM.MODULES.RosterManager:DeleteRosterByName(name)
         end),
         general_fill_profiles_execute = (function(name)
-            local profiles = ProfileManager:GetProfiles()
+            local profiles = CLM.MODULES.ProfileManager:GetProfiles()
             local profileList = {}
             for GUID, _ in pairs(profiles) do
                 table.insert(profileList, GUID)
             end
-            local roster = RosterManager:GetRosterByName(name)
-            RosterManager:AddProfilesToRoster(roster, profileList)
+            local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
+            CLM.MODULES.RosterManager:AddProfilesToRoster(roster, profileList)
         end),
         general_copy_execute = (function(name)
             if self.copy_source_name == nil then return end
-            RosterManager:Copy(self.copy_source_name, name, true, true, true, false)
+            CLM.MODULES.RosterManager:Copy(self.copy_source_name, name, true, true, true, false)
         end),
         general_copy_source_get = (function(name)
             return self.copy_source_name
@@ -235,10 +233,10 @@ function RosterManagerOptions:Initialize()
 
     self:UpdateOptions()
 
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:UpdateOptions()
-        ConfigManager:UpdateOptions(CONSTANTS.CONFIGS.GROUP.ROSTER)
+        CLM.MODULES.ConfigManager:UpdateOptions(CONSTANTS.CONFIGS.GROUP.ROSTER)
     end)
 end
 
@@ -310,8 +308,8 @@ local valuesWithDesc = {
 }
 
 function RosterManagerOptions:GenerateRosterOptions(name)
-    local roster = RosterManager:GetRosterByName(name)
-    local isManager = ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
+    local isManager = CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
 
     local default_slot_values_args = (function()
         local args = {}
@@ -343,7 +341,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         return tostring(roster:GetDefaultSlotTierValue(slot.type, ivalues.type))
                     end),
                     set = (function(i, v)
-                        RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
+                        CLM.MODULES.RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
                     end),
                     name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
                     pattern = CONSTANTS.REGEXP_FLOAT,
@@ -382,7 +380,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         width = 0.5,
                         set = (function(i, v)
                             if self.readOnly then return end
-                            RosterManager:SetRosterItemTierValue(roster, id, ivalues.type, tonumber(v))
+                            CLM.MODULES.RosterManager:SetRosterItemTierValue(roster, id, ivalues.type, tonumber(v))
                         end),
                         get = (function(i)
                             local values = roster:GetItemValues(id)
@@ -446,7 +444,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                             order = order,
                             set = (function(i, v)
                                 if self.readOnly then return end
-                                RosterManager:SetRosterBossKillBonusValue(name, info.id, difficultyId, v)
+                                CLM.MODULES.RosterManager:SetRosterBossKillBonusValue(name, info.id, difficultyId, v)
                             end),
                             get = (function(i)
                                 return tostring(roster:GetBossKillBonusValue(info.id, difficultyId))
@@ -524,7 +522,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "select",
                         values = (function()
                             local v = {}
-                            local r = RosterManager:GetRosters()
+                            local r = CLM.MODULES.RosterManager:GetRosters()
                             for n, _ in pairs(r) do
                                 v[n] = n
                             end
@@ -873,8 +871,8 @@ function RosterManagerOptions:UpdateOptions()
             name = CLM.L["Create"],
             desc = CLM.L["Creates new roster with default configuration"],
             type = "execute",
-            func = function() RosterManager:NewRoster(self.pointType, self.rosterName); self.rosterName = RosterManager:GenerateName() end,
-            disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+            func = function() CLM.MODULES.RosterManager:NewRoster(self.pointType, self.rosterName); self.rosterName = CLM.MODULES.RosterManager:GenerateName() end,
+            disabled = (function() return not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
             order = 1
         },
         roster_name = {
@@ -883,7 +881,7 @@ function RosterManagerOptions:UpdateOptions()
             type = "input",
             set = (function(i, v) self.rosterName = v end),
             get = (function(i) return self.rosterName end),
-            disabled = (function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+            disabled = (function() return not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
             order = 2,
         },
         point_type = {
@@ -893,15 +891,15 @@ function RosterManagerOptions:UpdateOptions()
             set = (function(i, v) self.pointType = v end),
             get = (function(i) return self.pointType end),
             order = 3,
-            -- disabled = true,--(function() return not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+            -- disabled = true,--(function() return not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
             values = CONSTANTS.POINT_TYPES_GUI
         },
     }
-    local rosters = MODULES.RosterManager:GetRosters()
+    local rosters = CLM.MODULES.RosterManager:GetRosters()
     for name, _ in pairs(rosters) do
         options[name] = self:GenerateRosterOptions(name)
     end
-    MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, options, true)
+    CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, options, true)
 end
 
-OPTIONS.RosterManager = RosterManagerOptions
+CLM.OPTIONS.RosterManager = RosterManagerOptions

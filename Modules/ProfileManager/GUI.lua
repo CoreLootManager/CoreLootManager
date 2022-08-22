@@ -400,7 +400,7 @@ function ProfilesGUI:Refresh(visible)
     end
 
     self.st:SetData(data)
-    AceGUI:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+    AceConfigDialog:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 
 function ProfilesGUI:GetSelected(filter)
