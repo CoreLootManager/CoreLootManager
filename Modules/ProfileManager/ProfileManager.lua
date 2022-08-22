@@ -390,7 +390,7 @@ function ProfileManager:PruneUnguilded(nop)
     end
     for GUID in pairs(self.cache.profiles) do
         if not GUIDs[GUID] then
-            prune(GUID, log)
+            prune(GUID)
             pruned = pruned + 1
         end
     end
