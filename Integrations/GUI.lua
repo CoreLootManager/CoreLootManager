@@ -20,18 +20,18 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local ALL = 0
 
 local EXPORT_DATA_TYPE_GUI = {
-    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = CLM.L["Configuration"],
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = CLM.L["Standings"],
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = CLM.L["Point History"],
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = CLM.L["Loot History"],
-    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = CLM.L["Raids"],
+    -- [CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = CLM.L["Configuration"],
+    [CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = CLM.L["Standings"],
+    [CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = CLM.L["Point History"],
+    [CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = CLM.L["Loot History"],
+    -- [CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = CLM.L["Raids"],
 
 }
 
 local FORMAT_VALUES_GUI =  {
-    [CLM.CONSTANTS.FORMAT_VALUE.XML] = "XML",
-    -- [CLM.CONSTANTS.FORMAT_VALUE.CSV] = "CSV",
-    [CLM.CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
+    [CONSTANTS.FORMAT_VALUE.XML] = "XML",
+    -- [CONSTANTS.FORMAT_VALUE.CSV] = "CSV",
+    [CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
 }
 
 -- local function GetProgressText(percent)
@@ -58,7 +58,7 @@ local function InitializeDB(self)
         location = {nil, nil, "CENTER", 0, 0 },
         export_config = {
             data = {},
-            format = CLM.CONSTANTS.FORMAT_VALUE.XML,
+            format = CONSTANTS.FORMAT_VALUE.XML,
             timerange = {
                 begin = {
                     day = 1,

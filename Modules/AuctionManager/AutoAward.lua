@@ -15,7 +15,7 @@ local ipairs = ipairs
 local BIND_TRADE_TIME_REMAINING, ITEM_SOULBOUND, ERR_TRADE_COMPLETE  = BIND_TRADE_TIME_REMAINING, ITEM_SOULBOUND, ERR_TRADE_COMPLETE
 local sgsub, sfind = string.gsub, string.find
 local tinsert, tremove = table.insert, table.remove
-local C_TimerAfter, UseContainerItem, GetTradePlayerItemLink, GetItemIdFromLink = C_Timer.After, UseContainerItem, GetTradePlayerItemLink, GetItemIdFromLink
+local C_TimerAfter, UseContainerItem, GetTradePlayerItemLink = C_Timer.After, UseContainerItem, GetTradePlayerItemLink
 local GetNumLootItems, GetLootSlotInfo, GetItemInfoInstant, GetLootSlotLink, GetNumGroupMembers, GetMasterLootCandidate, GiveMasterLoot = GetNumLootItems, GetLootSlotInfo, GetItemInfoInstant, GetLootSlotLink, GetNumGroupMembers, GetMasterLootCandidate, GiveMasterLoot
 local UnitName = UnitName
 
@@ -170,7 +170,7 @@ local function HandleTradeAcceptUpdate(self)
     for tradeSlot = 1, 6 do
         local itemLink = GetTradePlayerItemLink(tradeSlot)
         if itemLink then
-            tinsert(self.lastTradedItems, GetItemIdFromLink(itemLink))
+            tinsert(self.lastTradedItems, UTILS.GetItemIdFromLink(itemLink))
         end
     end
 end

@@ -6,7 +6,7 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs
+local pairs, ipairs = pairs, ipairs
 local tostring, tonumber = tostring, tonumber
 local sformat = string.format
 local GetItemInfoInstant, GetItemInfo = GetItemInfoInstant, GetItemInfo

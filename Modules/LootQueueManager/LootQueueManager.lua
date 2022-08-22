@@ -7,7 +7,10 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local tremove, tinsert, smatch = table.remove, table.insert, string.match
-local GetItemInfo, IsInRaid, tonumber = GetItemInfo, IsInRaid, tonumber
+local GetItemInfo, tonumber = GetItemInfo, tonumber
+--[===[@non-debug@
+local IsInRaid = IsInRaid
+--@end-non-debug@]===]
 
 local whoami = UTILS.whoami()
 

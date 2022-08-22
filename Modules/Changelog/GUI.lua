@@ -50,7 +50,7 @@ local function CreateConfigs(self)
             order = 82
           }
     }
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 local ChangelogGUI = {}
