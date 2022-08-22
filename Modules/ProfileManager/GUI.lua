@@ -1,30 +1,19 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local pairs, ipairs = pairs, ipairs
+local tostring, tinsert = tostring, table.insert
 
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
-
-local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0"),
-    gui = LibStub("AceConfigDialog-3.0")
-}
-
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
-local CONSTANTS = CLM.CONSTANTS
-local GUI = CLM.GUI
-
-local mergeDictsInline = UTILS.mergeDictsInline
-local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
-local RemoveColorCode = UTILS.RemoveColorCode
-
-local ACL = MODULES.ACL
-local GuildInfoListener = MODULES.GuildInfoListener
-local ProfileManager = MODULES.ProfileManager
-local RosterManager = MODULES.RosterManager
-local LedgerManager = MODULES.LedgerManager
-local EventManager = MODULES.EventManager
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local REGISTRY = "clm_profiles_gui_options"
 
@@ -38,7 +27,7 @@ local FILTER_NOT_IN_GUILD = 104
 local ProfilesGUI = {}
 
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('profile', {
+    self.db = CLM.MODULES.Database:GUI('profile', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -57,11 +46,11 @@ end
 function ProfilesGUI:Initialize()
     LOG:Trace("ProfilesGUI:Initialize()")
     InitializeDB(self)
-    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
     end)
@@ -76,7 +65,7 @@ local function ST_GetClass(row)
 end
 
 local function GenerateUntrustedOptions(self)
-    local filters = UTILS.ShallowCopy(GetColorCodedClassDict())
+    local filters = UTILS.ShallowCopy(UTILS.GetColorCodedClassDict())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
     filters[FILTER_IN_GUILD] = UTILS.ColorCodeText(CLM.L["In Guild"], "FFD100")
     filters[FILTER_NOT_IN_GUILD] = UTILS.ColorCodeText(CLM.L["External"], "FFD100")
@@ -90,7 +79,7 @@ local function GenerateUntrustedOptions(self)
             name = CLM.L["Filter"],
             type = "multiselect",
             set = function(i, k, v)
-                local n = tonumber(k)
+                local n = tonumber(k) or 0
                 self.filterOptions[n] = v
                 if v then
                     if n == FILTER_IN_GUILD then
@@ -141,7 +130,7 @@ end
 
 local function GenerateAssistantOptions(self)
     local rankOptions = {}
-    local ranks = GuildInfoListener:GetRanks()
+    local ranks = CLM.MODULES.GuildInfoListener:GetRanks()
     for i,o in pairs(ranks) do
         rankOptions[i] = o.name
     end
@@ -180,7 +169,7 @@ local function GenerateAssistantOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                ProfileManager:FillFromGuild(self.rank, tonumber(self.minimumLevel) or 1)
+                CLM.MODULES.ProfileManager:FillFromGuild(self.rank, tonumber(self.minimumLevel) or 1)
                 self:Refresh()
             end),
             -- disabled = (function() return not IsInGuild() end)
@@ -193,7 +182,7 @@ local function GenerateAssistantOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                ProfileManager:FillFromRaid()
+                CLM.MODULES.ProfileManager:FillFromRaid()
                 self:Refresh()
             end),
             -- disabled = (function() return not IsInRaid() end)
@@ -206,7 +195,7 @@ local function GenerateAssistantOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                ProfileManager:AddTarget()
+                CLM.MODULES.ProfileManager:AddTarget()
                 self:Refresh()
             end),
             confirm = true,
@@ -219,61 +208,20 @@ local function GenerateAssistantOptions(self)
             width = "full",
             func = (function(i)
                 for _,profile in ipairs(self:GetSelected()) do
-                    ProfileManager:RemoveProfile(profile:GUID())
+                    CLM.MODULES.ProfileManager:RemoveProfile(profile:GUID())
                 end
                 self:Refresh()
             end),
             confirm = true,
             order = 25
         },
-        -- select_main = {
-        --     name = CLM.L["Select main"],
-        --     desc = CLM.L["Select character to be marked as main for alt-main linking."],
-        --     type = "select",
-        --     width = "full",
-        --     values = {}, --self.profilesList, -- not used for now. causes a lot of lag with big profile lists
-        --     set = function(i, v) self.selectedMain = v end,
-        --     get = function(i) return self.selectedMain end,
-        --     disabled = true,
-        --     order = 28
-        -- },
-        -- mark_as_alt = {
-        --     name = CLM.L["Mark as alt"],
-        --     desc = CLM.L["Marks selected profiles or everyone if none selected as alts of choosen player (from dropdown)."],
-        --     type = "execute",
-        --     width = "full",
-        --     func = (function(i)
-        --         for _,alt in ipairs(self:GetSelected()) do
-        --             ProfileManager:MarkAsAltByNames(self.selectedMain, alt:Name())
-        --         end
-        --         self:Refresh()
-        --     end),
-        --     confirm = true,
-        --     disabled = true,
-        --     order = 29
-        -- },
-        -- clear_main = {
-        --     name = CLM.L["Clear mains"],
-        --     desc = CLM.L["Clears selected profiles mains."],
-        --     type = "execute",
-        --     width = "full",
-        --     func = (function(i)
-        --         for _,profile in ipairs(self:GetSelected()) do
-        --             ProfileManager:MarkAsAltByNames(profile:Name(), profile:Name())
-        --         end
-        --         self:Refresh()
-        --     end),
-        --     confirm = true,
-        --     disabled = true,
-        --     order = 30
-        -- },
         select_roster = {
             name = CLM.L["Select roster"],
             desc = CLM.L["Select roster to add profiles to."],
             type = "select",
             width = "full",
             values = (function()
-                local rosters = RosterManager:GetRosters()
+                local rosters = CLM.MODULES.RosterManager:GetRosters()
                 local values = {}
                 for name,_ in pairs(rosters) do
                     values[name] = name
@@ -290,7 +238,7 @@ local function GenerateAssistantOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                RosterManager:AddProfilesToRoster(RosterManager:GetRosterByName(self.selectedRoster), self:GetSelected())
+                CLM.MODULES.RosterManager:AddProfilesToRoster(CLM.MODULES.RosterManager:GetRosterByName(self.selectedRoster), self:GetSelected())
             end),
             confirm = true,
             order = 32
@@ -313,7 +261,7 @@ local function CreateManagementOptions(self, container)
     self.profilesList = {}
     self.selectedMain = ""
     self.selectedRoster = ""
-    for _=1,9 do table.insert( self.filterOptions, true ) end
+    for _=1,9 do tinsert( self.filterOptions, true ) end
     self.filterOptions[FILTER_IN_RAID] = false
     self.filterOptions[FILTER_IN_GUILD] = false
     self.filterOptions[FILTER_NOT_IN_GUILD] = false
@@ -321,14 +269,14 @@ local function CreateManagementOptions(self, container)
         type = "group",
         args = {}
     }
-    mergeDictsInline(options.args, GenerateUntrustedOptions(self))
-    if ACL:IsTrusted() then
-        mergeDictsInline(options.args, GenerateAssistantOptions(self))
-        mergeDictsInline(options.args, GenerateManagerOptions(self))
-        mergeDictsInline(options.args, GenerateGMOptions(self))
+    UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(self))
+    if CLM.MODULES.ACL:IsTrusted() then
+        UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(self))
+        UTILS.mergeDictsInline(options.args, GenerateManagerOptions(self))
+        UTILS.mergeDictsInline(options.args, GenerateGMOptions(self))
     end
-    LIBS.registry:RegisterOptionsTable(REGISTRY, options)
-    LIBS.gui:Open(REGISTRY, ManagementOptions)
+    AceConfigRegistry:RegisterOptionsTable(REGISTRY, options)
+    AceConfigDialog:Open(REGISTRY, ManagementOptions)
 
     self.st:SetFilter((function(stobject, row)
         local isInRaid = {}
@@ -347,7 +295,7 @@ local function CreateManagementOptions(self, container)
         local class = ST_GetClass(row)
 
         local status
-        for id, _class in pairs(GetColorCodedClassDict()) do
+        for id, _class in pairs(UTILS.GetColorCodedClassDict()) do
             if class == _class then
                 status = self.filterOptions[id]
             end
@@ -357,10 +305,10 @@ local function CreateManagementOptions(self, container)
             status = status and isInRaid[playerName]
         end
         if self.filterOptions[FILTER_NOT_IN_GUILD] then
-            status = status and not GuildInfoListener:GetGuildies()[playerName]
+            status = status and not CLM.MODULES.GuildInfoListener:GetGuildies()[playerName]
         end
         if self.filterOptions[FILTER_IN_GUILD] then
-            status = status and GuildInfoListener:GetGuildies()[playerName]
+            status = status and CLM.MODULES.GuildInfoListener:GetGuildies()[playerName]
         end
         return status
     end))
@@ -373,11 +321,7 @@ local function CreateStandingsDisplay(self)
     local columns = {
         {name = CLM.L["Name"],  width = 100},
         {name = CLM.L["Class"], width = 70,
-            comparesort = UTILS.LibStCompareSortWrapper(
-                (function(a1, b1)
-                    return RemoveColorCode(a1), RemoveColorCode(b1)
-                end)
-            )
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
         {name = CLM.L["Spec"],  width = 70},
         {name = CLM.L["Main"],  width = 70},
@@ -426,21 +370,21 @@ function ProfilesGUI:Refresh(visible)
 
     local rowId = 1
     local data = {}
-    local profiles = ProfileManager:GetProfiles()
+    local profiles = CLM.MODULES.ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
         local row = {cols = {}}
         local main = ""
-        local profile = ProfileManager:GetProfileByGUID(object:Main())
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(object:Main())
         if profile then
             main = profile:Name()
         end
         local name = object:Name()
         local rank = ""
-        if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER, name) then
+        if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER, name) then
             rank = CLM.L["GM"]
-        elseif ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name) then
+        elseif CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name) then
             rank = CLM.L["Manager"]
-        elseif ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
+        elseif CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             rank = CLM.L["Assistant"]
         end
         row.cols[1] = {value = name}
@@ -456,7 +400,7 @@ function ProfilesGUI:Refresh(visible)
     end
 
     self.st:SetData(data)
-    LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+    AceGUI:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
 end
 
 function ProfilesGUI:GetSelected(filter)
@@ -470,9 +414,9 @@ function ProfilesGUI:GetSelected(filter)
         selected = self.st:DoFilter()
     end
     for _,s in pairs(selected) do
-        local profile = ProfileManager:GetProfileByName(ST_GetName(self.st:GetRow(s)))
+        local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetName(self.st:GetRow(s)))
         if profile then
-            table.insert(profiles, profile)
+            tinsert(profiles, profile)
         else
             LOG:Debug(CLM.L["No profile for "] .. tostring(ST_GetName(self.st:GetRow(s))))
         end
@@ -480,7 +424,7 @@ function ProfilesGUI:GetSelected(filter)
     local profiles_filtered = {}
     for _, profile in ipairs(profiles) do
         if filter(profile) then
-            table.insert(profiles_filtered, profile)
+            tinsert(profiles_filtered, profile)
         end
     end
     return profiles_filtered
@@ -508,7 +452,7 @@ function ProfilesGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function ProfilesGUI:Reset()
@@ -517,4 +461,4 @@ function ProfilesGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-GUI.Profiles = ProfilesGUI
+CLM.GUI.Profiles = ProfilesGUI
