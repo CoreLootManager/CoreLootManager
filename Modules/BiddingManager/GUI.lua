@@ -363,7 +363,7 @@ function BiddingManagerGUI:BuildBar(duration)
 end
 
 local function EvaluateItemUsability(self)
-    self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
+    self.fakeTooltip:SetHyperlink("item:" .. UTILS.GetItemIdFromLink(self.auctionInfo:ItemLink()))
 end
 
 local function HandleWindowDisplay(self)

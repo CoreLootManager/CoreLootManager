@@ -161,7 +161,7 @@ local function CreateLootDisplay(self)
         local tooltip = self.tooltip
         if not tooltip then return end
         local itemLink = ST_GetItemLink(rowData) or ""
-        local itemId = GetItemIdFromLink(itemLink)
+        local itemId = UTILS.GetItemIdFromLink(itemLink)
         local itemString = "item:" .. tonumber(itemId)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
