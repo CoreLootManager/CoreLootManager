@@ -1,36 +1,17 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local pairs, ipairs = pairs, ipairs
+local tostring = tostring
 
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
-
--- local LIBS =  {
---     registry = LibStub("AceConfigRegistry-3.0"),
---     gui = LibStub("AceConfigDialog-3.0")
--- }
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
-local CONSTANTS = CLM.CONSTANTS
-
-local POINT_CHANGE_REASON_DECAY = CONSTANTS.POINT_CHANGE_REASON.DECAY
-local POINT_CHANGE_REASONS_ALL = CONSTANTS.POINT_CHANGE_REASONS.ALL
-
-local GUI = CLM.GUI
-
--- local mergeDictsInline = UTILS.mergeDictsInline
--- local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
-
-local getGuidFromInteger = UTILS.getGuidFromInteger
-local GetClassColor = UTILS.GetClassColor
-local ColorCodeText = UTILS.ColorCodeText
--- local GetItemIdFromLink = UTILS.GetItemIdFromLink
-
-local ProfileManager = MODULES.ProfileManager
-local RosterManager = MODULES.RosterManager
--- local PointManager = MODULES.PointManager
-local LedgerManager = MODULES.LedgerManager
-local EventManager = MODULES.EventManager
 
 local function ST_GetPointHistory(row)
     return row.cols[5].value
@@ -41,7 +22,7 @@ local RightClickMenu
 local PointHistoryGUI = {}
 
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('point', {
+    self.db = CLM.MODULES.Database:GUI('point', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -59,10 +40,10 @@ end
 
 function PointHistoryGUI:Initialize()
     InitializeDB(self)
-    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
     end)
@@ -76,7 +57,7 @@ function PointHistoryGUI:Initialize()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
                         local history = ST_GetPointHistory(row)
-                        LedgerManager:Remove(history:Entry(), true)
+                        CLM.MODULES.LedgerManager:Remove(history:Entry(), true)
                     end
                 end),
                 trustedOnly = true,
@@ -157,7 +138,7 @@ local function CreatePointDisplay(self)
                 if profilesLeft == 0 then
                     separator = ""
                 end
-                line = line .. ColorCodeText(currentProfile:Name(), GetClassColor(currentProfile:Class()).hex) .. separator
+                line = line .. UTILS.ColorCodeText(currentProfile:Name(), UTILS.GetClassColor(currentProfile:Class()).hex) .. separator
                 profilesInLine = profilesInLine + 1
                 if profilesInLine >= 5 or profilesLeft == 0 then
                     tooltip:AddLine(line)
@@ -259,18 +240,18 @@ function PointHistoryGUI:Refresh(visible)
     for _,history in ipairs(pointList) do
         local reason = history:Reason() or 0
         local value = tostring(history:Value())
-        if reason == POINT_CHANGE_REASON_DECAY then
+        if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
             value = value .. "%"
         end
         local awardedBy
-        local creator = ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
+        local creator = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
         if creator then
-            awardedBy = ColorCodeText(creator:Name(), GetClassColor(creator:Class()).hex)
+            awardedBy = UTILS.ColorCodeText(creator:Name(), UTILS.GetClassColor(creator:Class()).hex)
         else
             awardedBy = ""
         end
         local row = {cols = {}}
-        row.cols[1] = {value = POINT_CHANGE_REASONS_ALL[reason] or ""}
+        row.cols[1] = {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""}
         row.cols[2] = {value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], history:Timestamp())}
         row.cols[3] = {value = value}
         row.cols[4] = {value = awardedBy}
@@ -284,16 +265,16 @@ end
 
 function PointHistoryGUI:GetCurrentRoster()
     self.db.selectedRosterUid = self.RosterSelectorDropDown:GetValue()
-    return RosterManager:GetRosterByUid(self.db.selectedRosterUid)
+    return CLM.MODULES.RosterManager:GetRosterByUid(self.db.selectedRosterUid)
 end
 
 function PointHistoryGUI:GetCurrentProfile()
-    return ProfileManager:GetProfileByName(self.ProfileSelectorDropDown:GetValue())
+    return CLM.MODULES.ProfileManager:GetProfileByName(self.ProfileSelectorDropDown:GetValue())
 end
 
 function PointHistoryGUI:RefreshRosters()
     LOG:Trace("PointHistoryGUI:RefreshRosters()")
-    local rosters = RosterManager:GetRosters()
+    local rosters = CLM.MODULES.RosterManager:GetRosters()
     local rosterUidMap = {}
     local rosterList = {}
     local positionOfSavedRoster = 1
@@ -322,7 +303,7 @@ function PointHistoryGUI:RefreshProfiles()
     local profileNameMap = { [CLM.L["-- History --"]] = CLM.L["-- History --"]}
     local profileList = {CLM.L["-- History --"]}
     for _, GUID in ipairs(profiles) do
-        local profile = ProfileManager:GetProfileByGUID(GUID)
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
         if profile then
             profileNameMap[profile:Name()] = profile:Name()
             table.insert(profileList, profile:Name())
@@ -359,7 +340,7 @@ function PointHistoryGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function PointHistoryGUI:Reset()
@@ -368,4 +349,4 @@ function PointHistoryGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-GUI.PointHistory = PointHistoryGUI
+CLM.GUI.PointHistory = PointHistoryGUI

@@ -75,7 +75,7 @@ local LootManager = {}
 function LootManager:Initialize()
     LOG:Trace("LootManager:Initialize()")
     CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER_LOOT.Award,
+        CLM.MODELS.LEDGER.LOOT.Award,
         (function(entry)
             LOG:TraceAndCount("mutator(LootAward)")
             local roster = CLM.MODULES.RosterManager:GetRosterByUid(entry:rosterUid())
@@ -87,7 +87,7 @@ function LootManager:Initialize()
         end))
 
         CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER_LOOT.RaidAward,
+        CLM.MODELS.LEDGER.LOOT.RaidAward,
         (function(entry)
             LOG:TraceAndCount("mutator(LootRaidAward)")
             local raid = CLM.MODULES.RaidManager:GetRaidByUid(entry:raidUid())
@@ -132,9 +132,9 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
     if roster:IsProfileInRoster(profile:GUID()) then
         local entry
         if isRaid then
-            entry = CLM.MODELS.LEDGER_LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value)
+            entry = CLM.MODELS.LEDGER.LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value)
         else
-            entry = CLM.MODELS.LEDGER_LOOT.Award:new(roster:UID(), profile, itemId, value)
+            entry = CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, itemId, value)
         end
         CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
         if CLM.GlobalConfigs:GetLootWarning() then
@@ -175,7 +175,7 @@ function LootManager:TransferItem(roster, profile, loot, forceInstant)
         return
     end
     if roster:IsProfileInRoster(profile:GUID()) then
-        CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER_LOOT.Award:new(roster:UID(), profile, loot:Id(), loot:Value()), forceInstant)
+        CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, loot:Id(), loot:Value()), forceInstant)
         CLM.MODULES.LedgerManager:Remove(loot:Entry(), forceInstant)
     else
         LOG:Error("LootManager:TransferItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
