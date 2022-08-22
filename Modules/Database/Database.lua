@@ -1,8 +1,12 @@
+-- ------------------------------- --
 local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local MODULES = CLM.MODULES
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
+local type, pairs = type, pairs
 
 local DeepCopy = UTILS.DeepCopy
 local assertType = UTILS.assertType
@@ -106,4 +110,4 @@ function DB:UpdateLedger(ledger)
     CLM_DB[self.server_faction_guild][DB_NAME_LEDGER] = ledger
 end
 
-MODULES.Database = DB
+CLM.MODULES.Database = DB
