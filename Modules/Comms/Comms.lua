@@ -1,25 +1,23 @@
+-- ------------------------------- --
 local  _, CLM = ...
-
--- local upvalues
-
-local MODULES = CLM.MODULES
-local LOG = CLM.LOG
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local UTILS = CLM.UTILS
-local ACL = MODULES.ACL
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local whoami = UTILS.whoami
+local ssub, type = string.sub,type
 
--- Module
-local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
+local whoami = UTILS.whoami()
+
 local serdes = LibStub("LibSerialize")
 local codec = LibStub("LibDeflate")
 
 local CommsPrefix = "CLM"
 
+local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 function Comms:Initialize()
     LOG:Trace("Comms:Initialize()")
-    self.who = whoami()
     self.callbacks = {}
     self.securityCallbacks = {}
     self.allowSelfReceive = {}
@@ -36,7 +34,7 @@ function Comms:IsEnabled()
 end
 
 local function _prefix(prefix)
-    return CommsPrefix .. string.sub(prefix or "", 0, 12)
+    return CommsPrefix .. ssub(prefix or "", 0, 12)
 end
 
 function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfReceive)
@@ -63,7 +61,7 @@ function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfRece
     if type(securityCallbackOrLevel) == "function" then
         self.securityCallbacks[prefix] = securityCallbackOrLevel
     elseif type(securityCallbackOrLevel) == "number" then
-        self.securityCallbacks[prefix] = (function(name, _) return ACL:CheckLevel(securityCallbackOrLevel, name) end)
+        self.securityCallbacks[prefix] = (function(name, _) return CLM.MODULE.ACL:CheckLevel(securityCallbackOrLevel, name) end)
     else
         LOG:Fatal("Comms:Register(): Unknown security callback or ACL Level. Setting to any.")
         self.securityCallbacks[prefix] = (function() return true end)
@@ -112,7 +110,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
-    if not self.securityCallbacks[prefix](self.who, message and #message or 0) then
+    if not self.securityCallbacks[prefix](whoami, message and #message or 0) then
         LOG:Warning("Trying to send privileged message [%s]", prefix)
         return false
     end
@@ -155,7 +153,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return false
     end
     -- Ignore messages from self if not allowing them specifically
-    if not self.allowSelfReceive[prefix] and (sender == self.who) then
+    if not self.allowSelfReceive[prefix] and (sender == whoami) then
         return false
     end
     -- Validate prefix
@@ -197,7 +195,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
 end
 
 -- Publish API
-MODULES.Comms = Comms
+CLM.MODULES.Comms = Comms
 
 -- Constants
 CONSTANTS.COMMS = {
