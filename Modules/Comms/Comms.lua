@@ -61,7 +61,7 @@ function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfRece
     if type(securityCallbackOrLevel) == "function" then
         self.securityCallbacks[prefix] = securityCallbackOrLevel
     elseif type(securityCallbackOrLevel) == "number" then
-        self.securityCallbacks[prefix] = (function(name, _) return CLM.MODULE.ACL:CheckLevel(securityCallbackOrLevel, name) end)
+        self.securityCallbacks[prefix] = (function(name, _) return CLM.MODULES.ACL:CheckLevel(securityCallbackOrLevel, name) end)
     else
         LOG:Fatal("Comms:Register(): Unknown security callback or ACL Level. Setting to any.")
         self.securityCallbacks[prefix] = (function() return true end)

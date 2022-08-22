@@ -655,7 +655,7 @@ function AuctionManagerGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    CLM.MODULES.MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function AuctionManagerGUI:Reset()

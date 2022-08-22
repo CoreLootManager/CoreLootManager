@@ -41,7 +41,7 @@ function RaidManager:Initialize()
             LOG:TraceAndCount("mutator(RaidCreate)")
             local raidUid = entry:uuid()
             local name = entry:name()
-            local config = CLM.MODULES.RosterConfiguration:New()
+            local config = CLM.MODELS.RosterConfiguration:New()
             config:inflate(entry:config())
             local rosterUid = entry:rosterUid()
 

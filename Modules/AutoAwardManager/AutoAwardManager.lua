@@ -178,7 +178,7 @@ function AutoAwardManager:Initialize()
         registerWorkaroundHandler(self)
     end
 
-    CLM.MODULES.MODULES.ConfigManager:RegisterUniversalExecutor("aam", "AutoAwardManager", self)
+    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("aam", "AutoAwardManager", self)
 end
 
 function AutoAwardManager:Enable()
