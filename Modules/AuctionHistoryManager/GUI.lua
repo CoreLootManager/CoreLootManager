@@ -2,7 +2,7 @@
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
+local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
@@ -92,7 +92,7 @@ function AuctionHistoryGUI:Initialize()
                 color = "cc0000"
             }
         },
-        CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
         CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
     )
 

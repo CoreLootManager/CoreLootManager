@@ -2,7 +2,7 @@
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
+local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
@@ -91,7 +91,7 @@ function AuctionHistoryManager:Initialize()
             order = 42
         }
     }
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
     CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ah", "Auction History", self)
 end
