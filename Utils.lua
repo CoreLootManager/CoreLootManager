@@ -26,7 +26,7 @@ local function capitalize(string)
 end
 
 local classOrdered = {
-    "druid", "hunter", "mage", "priest", "rogue", "shaman", "paladin", "warlock", "warrior"
+    "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior"
 }
 
 local classColors = {
@@ -38,7 +38,8 @@ local classColors = {
     ["shaman"]  = { r = 0.01, g = 0.44, b = 0.87, hex = "0270DD" },
     ["paladin"] = { r = 0.96, g = 0.55, b = 0.73, hex = "F58CBA" },
     ["warlock"] = { r = 0.53, g = 0.53, b = 0.93, hex = "8787ED" },
-    ["warrior"] = { r = 0.78, g = 0.61, b = 0.43, hex = "C79C6E" }
+    ["warrior"] = { r = 0.78, g = 0.61, b = 0.43, hex = "C79C6E" },
+    ["death knight"] = { r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" }
 }
 
 function UTILS.GetClassColor(className)
@@ -59,10 +60,10 @@ end
 local colorCodedClassList = {}
 do
     for _,class in pairs(classOrdered) do
-        tinsert(colorCodedClassList, UTILS.ColorCodeClass(capitalize(class)))
+        tinsert(colorCodedClassList, UTILS.ColorCodeClass(class))
     end
 end
-function UTILS.GetColorCodedClassDict()
+function UTILS.GetColorCodedClassList()
     return colorCodedClassList
 end
 
@@ -399,6 +400,11 @@ local numberToClass = {
 }
 function UTILS.NumberToClass(number)
     return supper((numberToClass[number] or ""))
+end
+
+function UTILS.GetClassReadable(class)
+    if class == "DEATHKNIGHT" then return "Death Knight" end
+    return capitalize(class or "")
 end
 
 function UTILS.capitalize(string)

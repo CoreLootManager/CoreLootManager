@@ -65,7 +65,7 @@ local function ST_GetClass(row)
 end
 
 local function GenerateUntrustedOptions(self)
-    local filters = UTILS.ShallowCopy(UTILS.GetColorCodedClassDict())
+    local filters = UTILS.ShallowCopy(UTILS.GetColorCodedClassList())
     filters[FILTER_IN_RAID] = UTILS.ColorCodeText(CLM.L["In Raid"], "FFD100")
     filters[FILTER_IN_GUILD] = UTILS.ColorCodeText(CLM.L["In Guild"], "FFD100")
     filters[FILTER_NOT_IN_GUILD] = UTILS.ColorCodeText(CLM.L["External"], "FFD100")
@@ -100,7 +100,7 @@ local function GenerateUntrustedOptions(self)
             desc = CLM.L["Select all classes."],
             type = "execute",
             func = (function()
-                for i=1,9 do
+                for i=1,10 do
                     self.filterOptions[i] = true
                 end
                 self:Refresh(true)
@@ -113,7 +113,7 @@ local function GenerateUntrustedOptions(self)
             desc = CLM.L["Clear all classes."],
             type = "execute",
             func = (function()
-                for i=1,9 do
+                for i=1,10 do
                     self.filterOptions[i] = false
                 end
                 self:Refresh(true)
@@ -295,7 +295,7 @@ local function CreateManagementOptions(self, container)
         local class = ST_GetClass(row)
 
         local status
-        for id, _class in pairs(UTILS.GetColorCodedClassDict()) do
+        for id, _class in pairs(UTILS.GetColorCodedClassList()) do
             if class == _class then
                 status = self.filterOptions[id]
             end
