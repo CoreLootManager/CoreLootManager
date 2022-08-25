@@ -1,6 +1,6 @@
 --[[-----------------------------------------------------------------------------
-Label Widget
-Displays text and optionally an icon.
+LibScrollingTable Widget
+Wraps ScrollingTable provided by LibScrollingTable in AceGUI widget
 -------------------------------------------------------------------------------]]
 local Type, Version ="CLMLibScrollingTable", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
