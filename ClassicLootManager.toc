@@ -120,6 +120,10 @@ Modules\LedgerManager\GUI.lua
 Modules\LootQueueManager\GUI.lua
 Modules\AuctionHistoryManager\GUI.lua
 
+Modules\GUI\AceGUIWidget-LibScrollingTable.lua
+Modules\GUI\UnifiedGUI.lua
+
+
 # Alerts
 Alerts\Alerts.xml
 Alerts\Alerts.lua
