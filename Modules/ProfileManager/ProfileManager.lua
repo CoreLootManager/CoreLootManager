@@ -171,7 +171,7 @@ function ProfileManager:NewProfile(GUID, name, class)
         return
     end
     if type(name) ~= "string" or name == "" then
-        LOG:Error("NewProfile(): UTILS.empty name")
+        LOG:Error("NewProfile(): Empty name")
         return
     end
     if self:GetProfileByGUID(GUID) or self:GetProfileByName(name) then
