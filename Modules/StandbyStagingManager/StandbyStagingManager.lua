@@ -158,7 +158,7 @@ CONSTANTS.STANDBY_STAGING_COMM = {
         SUBSCRIBE   = 1,
         REVOKE      = 2,
     },
-    TYPES = UTILS.Set({ 1,  })
+    TYPES = UTILS.Set({ 1, 2 })
 }
 
 CLM.MODULES.StandbyStagingManager = StandbyStagingManager
