@@ -1,4 +1,12 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local tinsert, tsort = table.insert, table.sort
 
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
@@ -36,10 +44,10 @@ function PointHistory:Profiles()
                 profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
             end
             if profile then
-                table.insert(self.profiles, profile)
+                tinsert(self.profiles, profile)
             end
         end
-        table.sort(self.profiles, (function(first, second)
+        tsort(self.profiles, (function(first, second)
             return first:Name() < second:Name()
         end))
     end
@@ -100,10 +108,10 @@ function FakePointHistory:Profiles()
                 profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
             end
             if profile then
-                table.insert(self.profiles, profile)
+                tinsert(self.profiles, profile)
             end
         end
-        table.sort(self.profiles, (function(first, second)
+        tsort(self.profiles, (function(first, second)
             return first:Name() < second:Name()
         end))
     end

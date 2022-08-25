@@ -1,7 +1,12 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local MODELS = CLM.MODELS
-local UTILS = CLM.UTILS
+local tonumber = tonumber
 
 local CreateGUIDList = UTILS.CreateGUIDList
 local mergeLists = UTILS.mergeLists
@@ -13,7 +18,7 @@ local Start     = LogEntry:extend("AS")
 local End       = LogEntry:extend("AE")
 local Update    = LogEntry:extend("AU")
 
-MODELS.LEDGER.RAID = {
+CLM.MODELS.LEDGER.RAID = {
     Create = Create,
     Start = Start,
     End = End,

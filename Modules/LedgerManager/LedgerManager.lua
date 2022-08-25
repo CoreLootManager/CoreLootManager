@@ -1,22 +1,21 @@
-local _, CLM = ...
-
-local MODULES = CLM.MODULES
-local LOG = CLM.LOG
-local Comms = MODULES.Comms
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local ACL = MODULES.ACL
-local UTILS = CLM.UTILS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local pairs, ipairs = pairs, ipairs
+local wipe, collectgarbage, tinsert = wipe, collectgarbage, table.insert
+
+local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
 local STATUS_SYNCED = "synced"
 local STATUS_OUT_OF_SYNC = "out_of_sync"
 -- local STATUS_UNKNOWN = "unknown"
 local STATUS_UNKNOWN_TYPE = "unknown_type"
 
-local DeepCopy = UTILS.DeepCopy
-
-local LedgerLib = LibStub("EventSourcing/LedgerFactory")
-
-local LedgerManager = { _initialized = false}
 
 local LEDGER_SYNC_COMM_PREFIX = "LedgerS1"
 local LEDGER_DATA_COMM_PREFIX = "LedgerD1"
@@ -30,8 +29,8 @@ local function registerReceiveCallback(callback)
     -- Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
     --     return length < 4096
     -- end)
-    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-    Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
+    CLM.MODULES.Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
+    CLM.MODULES.Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
 end
 
 local function restoreReceiveCallback()
@@ -45,14 +44,14 @@ local function createLedger(self, database)
     local ledger = LedgerLib.createLedger(
         database,
         (function(data, distribution, target, callbackFn, callbackArg)
-            return Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
+            return CLM.MODULES.Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
         (function(entry, sender)
-            return ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
+            return CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
-            return Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
+            return CLM.MODULES.Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- sendLargeMessage
         0, 100, LOG)
 
@@ -89,15 +88,16 @@ local function createLedgerAndRegisterCallbacks(self, database)
     return ledger
 end
 
+local LedgerManager = { _initialized = false}
 function LedgerManager:Initialize()
-    self.activeDatabase = MODULES.Database:Ledger()
+    self.activeDatabase = CLM.MODULES.Database:Ledger()
     self.activeLedger = createLedger(self, self.activeDatabase)
     self.mutatorCallbacks = {}
     self.onUpdateCallbacks = {}
     self.onRestartCallbacks = {}
     self._initialized = true
 
-    MODULES.ConfigManager:RegisterUniversalExecutor("ledger", "LedgerManager", self)
+    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ledger", "LedgerManager", self)
 end
 
 function LedgerManager:IsInitialized()
@@ -110,7 +110,7 @@ function LedgerManager:Enable()
         LedgerManager:Cutoff()
         LOG:Message("Ledger synchronisation was disabled. Use this at your own risk.")
     else
-        if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
             self.activeLedger.enableSending()
         end
     end
@@ -119,8 +119,8 @@ end
 -- This is not reversable until reload
 function LedgerManager:Cutoff()
     self.activeLedger.disableSending()
-    Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
-    Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
+    CLM.MODULES.Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
+    CLM.MODULES.Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
 end
 
 function LedgerManager:DisableAdvertising()
@@ -157,7 +157,7 @@ function LedgerManager:EnterSandbox()
     -- Backup database reference
     self._originalDatabase = self.activeDatabase
     -- Copy ledger database
-    self.activeDatabase = DeepCopy(self._originalDatabase)
+    self.activeDatabase = UTILS.DeepCopy(self._originalDatabase)
     -- Backup ledger
     self._originalLedger = self.activeLedger
     -- Create new ledger and substitute
@@ -179,7 +179,7 @@ function LedgerManager:ExitSandbox(apply)
     if apply then
         -- If we apply we simply keep the new ledger and discard old one
         -- We only update the database storage
-        MODULES.Database:UpdateLedger(self.activeDatabase)
+        CLM.MODULES.Database:UpdateLedger(self.activeDatabase)
         self._originalDatabase = nil
         self._originalLedger = nil
     else
@@ -208,12 +208,12 @@ function LedgerManager:RegisterEntryType(class, mutatorFn)
 end
 
 function LedgerManager:RegisterOnRestart(callback)
-    table.insert(self.onRestartCallbacks, callback)
+    tinsert(self.onRestartCallbacks, callback)
     self.activeLedger.addStateRestartListener(callback)
 end
 
 function LedgerManager:RegisterOnUpdate(callback)
-    table.insert(self.onUpdateCallbacks, callback)
+    tinsert(self.onUpdateCallbacks, callback)
     self.activeLedger.addStateChangedListener(callback)
 end
 
@@ -302,7 +302,7 @@ end
 function LedgerManager:Wipe()
     if not self._initialized then return end
     self:DisableAdvertising()
-    local db = MODULES.Database:Ledger()
+    local db = CLM.MODULES.Database:Ledger()
     wipe(db)
     collectgarbage()
     self:Enable()
@@ -314,4 +314,4 @@ function LedgerManager:Reset()
 end
 --@end-do-not-package@
 
-MODULES.LedgerManager = LedgerManager
+CLM.MODULES.LedgerManager = LedgerManager

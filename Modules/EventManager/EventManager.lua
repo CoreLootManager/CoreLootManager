@@ -1,12 +1,17 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local type, pcall, pairs, ipairs = type, pcall, pairs, ipairs
+local tinsert = table.insert
+
 local eventDispatcher = LibStub("EventDispatcher")
 
-local CORE = CLM.CORE
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-local CONSTANTS = CLM.CONSTANTS
-
-local myGUID = CLM.UTILS.whoamiGUID()
+local myGUID = UTILS.whoamiGUID()
 
 local CLM_HISTORICAL_TTL = 5
 
@@ -38,7 +43,7 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
     for _,event in ipairs(events) do
         if not self.callbacks[event] then-- lazy load event handlers
             self.callbacks[event] = {}
-            CORE[event] = (function(...)
+            CLM.CORE[event] = (function(...)
                 LOG:Debug("Handling [" .. event .. "]")
                 for _,cb in pairs(self.callbacks[event]) do
                     local status, error = pcall(cb, ...) -- if there are multiple handlers for an event we don't one to error out all of them
@@ -47,10 +52,10 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
                     end
                 end
             end)
-            CORE:RegisterEvent(event)
+            CLM.CORE:RegisterEvent(event)
         end
 
-        table.insert(self.callbacks[event], callback)
+        tinsert(self.callbacks[event], callback)
     end
 end
 
@@ -62,7 +67,7 @@ function EventManager:UnregisterWoWEvent(events)
     end
     if type(events) == "string" then events = { events } end
     for _,event in ipairs(events) do
-        CORE:UnregisterEvent(event)
+        CLM.CORE:UnregisterEvent(event)
         self.callbacks[event] = nil
     end
 end
@@ -80,7 +85,7 @@ function EventManager:RegisterWoWBucketEvent(event, interval, functionOrObject, 
     if not self.bucketCallbacks[event] then-- lazy load event handlers
         self.bucketCallbacks[event] = {}
         local handlerName = event .. "_bucket"
-        CORE[handlerName] = (function(...)
+        CLM.CORE[handlerName] = (function(...)
             LOG:Debug("Bucket handling [" .. event .. "]")
             for _,cb in pairs(self.bucketCallbacks[event]) do
                 local status, error = pcall(cb, ...) -- if there are multiple handlers for an event we don't one to error out all of them
@@ -89,9 +94,9 @@ function EventManager:RegisterWoWBucketEvent(event, interval, functionOrObject, 
                 end
             end
         end)
-        CORE:RegisterBucketEvent(event, interval or 1, handlerName)
+        CLM.CORE:RegisterBucketEvent(event, interval or 1, handlerName)
     end
-    table.insert(self.bucketCallbacks[event], callback)
+    tinsert(self.bucketCallbacks[event], callback)
 end
 
 function EventManager:DispatchEvent(event, params, timestamp, guid)
@@ -126,4 +131,4 @@ CONSTANTS.EVENTS = {
     GLOBAL_LOOT_REMOVED = "CLM_GLOBAL_LOOT_REMOVED"
 }
 
-MODULES.EventManager = EventManager
+CLM.MODULES.EventManager = EventManager

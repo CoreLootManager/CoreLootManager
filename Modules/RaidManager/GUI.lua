@@ -1,38 +1,21 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local CreateFrame, UIParent, pairs = CreateFrame, UIParent, pairs
 
 -- Libs
-local AceGUI = LibStub("AceGUI-3.0")
 local ScrollingTable = LibStub("ScrollingTable")
+local AceGUI = LibStub("AceGUI-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0"),
-    gui = LibStub("AceConfigDialog-3.0")
-}
-
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
-local ACL = MODULES.ACL
-local MODELS = CLM.MODELS
-local CONSTANTS = CLM.CONSTANTS
-local GUI = CLM.GUI
-
-local mergeDictsInline = UTILS.mergeDictsInline
--- local GetColorCodedClassDict = UTILS.GetColorCodedClassDict
-
--- local ACL = MODULES.ACL
-local RosterManager = MODULES.RosterManager
-local LedgerManager = MODULES.LedgerManager
-local RaidManager = MODULES.RaidManager
-local EventManager = MODULES.EventManager
-local StandbyStagingManager = MODULES.StandbyStagingManager
-
-local buildPlayerListForTooltip = UTILS.buildPlayerListForTooltip
-local DeepCopy = UTILS.DeepCopy
-local GreenYes = UTILS.GreenYes
-local RedNo = UTILS.RedNo
-
-local RosterConfiguration = MODELS.RosterConfiguration
+local GreenYes = UTILS.GreenYes()
+local RedNo = UTILS.RedNo()
 
 local REGISTRY = "clm_raid_manager_gui_options"
 
@@ -43,9 +26,8 @@ end
 local RightClickMenu
 
 local RaidManagerGUI = {}
-
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('raid', {
+    self.db = CLM.MODULES.Database:GUI('raid', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -62,9 +44,9 @@ local function RestoreLocation(self)
 end
 
 local function UpdateRaid(self, name)
-    self.roster = RosterManager:GetRosterByName(name)
+    self.roster = CLM.MODULES.RosterManager:GetRosterByName(name)
     if self.roster then
-        self.configuration = RosterConfiguration:New(DeepCopy(self.roster.configuration))
+        self.configuration = CLM.MODELS.RosterConfiguration:New(UTILS.DeepCopy(self.roster.configuration))
         return true
     end
     return false
@@ -72,16 +54,16 @@ end
 
 function RaidManagerGUI:Initialize()
     LOG:Trace("RaidManagerGUI:Initialize()")
-    self.configuration = RosterConfiguration:New()
+    self.configuration = CLM.MODELS.RosterConfiguration:New()
     self.name = ""
     self.tooltip = CreateFrame("GameTooltip", "CLMRaidListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     InitializeDB(self)
     self.selectedRoster = ""
-    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if UpdateRaid(self, self.db.selectedRoster) then
             self.selectedRoster =  self.db.selectedRoster
@@ -98,7 +80,7 @@ function RaidManagerGUI:Initialize()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
                         local raid = ST_GetRaid(row)
-                        StandbyStagingManager:SignupToStandby(raid:UID())
+                        CLM.MODULES.StandbyStagingManager:SignupToStandby(raid:UID())
                     else
                         LOG:Message(CLM.L["Please select a raid"])
                     end
@@ -110,7 +92,7 @@ function RaidManagerGUI:Initialize()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
                         local raid = ST_GetRaid(row)
-                        StandbyStagingManager:RevokeStandby(raid:UID())
+                        CLM.MODULES.StandbyStagingManager:RevokeStandby(raid:UID())
                     else
                         LOG:Message(CLM.L["Please select a raid"])
                     end
@@ -128,7 +110,7 @@ function RaidManagerGUI:Initialize()
                     if row then
                         raid = ST_GetRaid(row)
                     end
-                    RaidManager:StartRaid(raid)
+                    CLM.MODULES.RaidManager:StartRaid(raid)
                     self:Refresh()
                 end),
                 trustedOnly = true,
@@ -142,7 +124,7 @@ function RaidManagerGUI:Initialize()
                     if row then
                         raid = ST_GetRaid(row)
                     end
-                    RaidManager:EndRaid(raid)
+                    CLM.MODULES.RaidManager:EndRaid(raid)
                     self:Refresh()
                 end),
                 trustedOnly = true,
@@ -156,7 +138,7 @@ function RaidManagerGUI:Initialize()
                     if row then
                         raid = ST_GetRaid(row)
                     end
-                    RaidManager:JoinRaid(raid)
+                    CLM.MODULES.RaidManager:JoinRaid(raid)
                     self:Refresh()
                 end),
                 trustedOnly = true,
@@ -173,7 +155,7 @@ function RaidManagerGUI:Initialize()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
                         local raid = ST_GetRaid(row)
-                        LedgerManager:Remove(raid:Entry(), true)
+                        CLM.MODULES.LedgerManager:Remove(raid:Entry(), true)
                     end
                 end),
                 trustedOnly = true,
@@ -199,19 +181,19 @@ end
 local function FillConfigurationTooltip(configuration, tooltip)
     tooltip:AddDoubleLine(CLM.L["Auction Time"], configuration:Get("auctionTime"))
     tooltip:AddDoubleLine(CLM.L["Anti-snipe"], configuration:Get("antiSnipe"))
-    tooltip:AddDoubleLine(CLM.L["Boss Kill Bonus"], configuration:Get("bossKillBonus") and GreenYes() or RedNo())
+    tooltip:AddDoubleLine(CLM.L["Boss Kill Bonus"], configuration:Get("bossKillBonus") and GreenYes or RedNo)
     local onTimeBonus = configuration:Get("onTimeBonus")
-    tooltip:AddDoubleLine(CLM.L["On Time Bonus"], onTimeBonus and GreenYes() or RedNo())
+    tooltip:AddDoubleLine(CLM.L["On Time Bonus"], onTimeBonus and GreenYes or RedNo)
     if onTimeBonus then
         tooltip:AddDoubleLine(CLM.L["On Time Bonus Value"], configuration:Get("onTimeBonusValue"))
     end
     local raidCompletionBonus = configuration:Get("raidCompletionBonus")
-    tooltip:AddDoubleLine(CLM.L["Raid Completion Bonus"], raidCompletionBonus and GreenYes() or RedNo())
+    tooltip:AddDoubleLine(CLM.L["Raid Completion Bonus"], raidCompletionBonus and GreenYes or RedNo)
     if raidCompletionBonus then
         tooltip:AddDoubleLine(CLM.L["Raid Completion Bonus Value"], configuration:Get("raidCompletionBonusValue"))
     end
     local intervalBonus = configuration:Get("intervalBonus")
-    tooltip:AddDoubleLine(CLM.L["Interval Bonus"], intervalBonus and GreenYes() or RedNo())
+    tooltip:AddDoubleLine(CLM.L["Interval Bonus"], intervalBonus and GreenYes or RedNo)
     if intervalBonus then
         tooltip:AddDoubleLine(CLM.L["Interval Time"], configuration:Get("intervalBonusTime"))
         tooltip:AddDoubleLine(CLM.L["Interval Value"], configuration:Get("intervalBonusValue"))
@@ -320,7 +302,7 @@ local function GenerateOfficerOptions(self)
             type = "select",
             width = "full",
             values = (function()
-                local rosters = RosterManager:GetRosters()
+                local rosters = CLM.MODULES.RosterManager:GetRosters()
                 local values = {}
                 for name,_ in pairs(rosters) do
                     values[name] = name
@@ -334,7 +316,7 @@ local function GenerateOfficerOptions(self)
                 self:Refresh()
             end),
             get = function(i) return self.selectedRoster end,
-            disabled = (function() return RaidManager:IsInActiveRaid() end),
+            disabled = (function() return CLM.MODULES.RaidManager:IsInActiveRaid() end),
             order = 9
         },
         name_raid = {
@@ -343,7 +325,7 @@ local function GenerateOfficerOptions(self)
             type = "input",
             set = function(i, v) self.name = v end,
             get = function(i) return self.name end,
-            disabled = (function() return RaidManager:IsInActiveRaid() end),
+            disabled = (function() return CLM.MODULES.RaidManager:IsInActiveRaid() end),
             width = "full",
             order = 8
         },
@@ -353,10 +335,10 @@ local function GenerateOfficerOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                RaidManager:CreateRaid(self.roster, self.name, self.configuration)
+                CLM.MODULES.RaidManager:CreateRaid(self.roster, self.name, self.configuration)
                 self:Refresh()
             end),
-            disabled = (function() return RaidManager:IsInActiveRaid() end),
+            disabled = (function() return CLM.MODULES.RaidManager:IsInActiveRaid() end),
             confirm = true,
             order = 10
         }
@@ -373,10 +355,10 @@ local function CreateManagementOptions(self, container)
         type = "group",
         args = {}
     }
-    if ACL:IsTrusted() then
-        mergeDictsInline(options.args, GenerateOfficerOptions(self))
-        LIBS.registry:RegisterOptionsTable(REGISTRY, options)
-        LIBS.gui:Open(REGISTRY, ManagementOptions)
+    if CLM.MODULES.ACL:IsTrusted() then
+        UTILS.mergeDictsInline(options.args, GenerateOfficerOptions(self))
+        AceConfigRegistry:RegisterOptionsTable(REGISTRY, options)
+        AceConfigDialog:Open(REGISTRY, ManagementOptions)
     end
     return ManagementOptions
 end
@@ -421,7 +403,7 @@ local function CreateRaidDisplay(self)
         if not profiles or numProfiles == 0 then
             tooltip:AddLine("None")
         else
-            buildPlayerListForTooltip(profiles, tooltip)
+            UTILS.buildPlayerListForTooltip(profiles, tooltip)
         end
         local standby = raid:Standby(finished)
         local numStandby = #standby
@@ -429,7 +411,7 @@ local function CreateRaidDisplay(self)
         if not standby or numStandby == 0 then
             tooltip:AddLine(CLM.L["None"])
         else
-            buildPlayerListForTooltip(standby, tooltip)
+            UTILS.buildPlayerListForTooltip(standby, tooltip)
         end
         tooltip:AddLine(" ")
         tooltip:AddLine(CLM.L["Configuration"] .. ":")
@@ -477,7 +459,7 @@ function RaidManagerGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    if ACL:IsTrusted() then
+    if CLM.MODULES.ACL:IsTrusted() then
         f:SetWidth(760)
     else
         f:SetWidth(520)
@@ -487,7 +469,7 @@ function RaidManagerGUI:Create()
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Raid_Manager_GUI")
 
     f:AddChild(CreateRaidDisplay(self))
-    if ACL:IsTrusted() then
+    if CLM.MODULES.ACL:IsTrusted() then
         f:AddChild(CreateManagementOptions(self))
     end
 
@@ -503,11 +485,11 @@ function RaidManagerGUI:Refresh(visible)
 
     local data = {}
     local rowId = 1
-    for _, raid in pairs(RaidManager:ListRaids()) do
+    for _, raid in pairs(CLM.MODULES.RaidManager:ListRaids()) do
         local row = {cols = {
             { value = raid:Name() },
             { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"] },
-            { value = RosterManager:GetRosterNameByUid(raid:Roster():UID()) },
+            { value = CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID()) },
             { value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], raid:CreatedAt()) },
             { value = raid }
         }};
@@ -518,14 +500,14 @@ function RaidManagerGUI:Refresh(visible)
 
     self.st:SetData(data)
 
-    if RaidManager:IsInActiveRaid() then
-        self.top:SetStatusText(CLM.L["Currently in raid: "] .. RaidManager:GetRaid():Name())
+    if CLM.MODULES.RaidManager:IsInActiveRaid() then
+        self.top:SetStatusText(CLM.L["Currently in raid: "] .. CLM.MODULES.RaidManager:GetRaid():Name())
     else
         self.top:SetStatusText(CLM.L["Not in raid"])
     end
 
-    if ACL:IsTrusted() then
-        LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
+    if CLM.MODULES.ACL:IsTrusted() then
+        AceConfigDialog:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
     end
 end
 
@@ -551,7 +533,7 @@ function RaidManagerGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function RaidManagerGUI:Reset()
@@ -560,4 +542,4 @@ function RaidManagerGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-GUI.RaidManager = RaidManagerGUI
+CLM.GUI.RaidManager = RaidManagerGUI

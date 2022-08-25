@@ -4,7 +4,7 @@
 [![Release](https://img.shields.io/github/v/release/ClassicLootManager/classiclootmanager.svg?color=important)](https://github.com/ClassicLootManager/ClassicLootManager/releases)
 [![Issues](https://img.shields.io/github/issues/ClassicLootManager/classiclootmanager?color=blue)](https://github.com/ClassicLootManager/ClassicLootManager/issues)
 [![Discord](https://img.shields.io/discord/813686248841019392?label=discord)](https://discord.gg/Qjn8KdD8yt)
-
+[![Patreon](https://img.shields.io/badge/Support%20CLM-Patreon-red)](https://www.patreon.com/classiclootmanager)
 
 # About
 Classic Loot Manager is a robust Loot Tracking and awarding tool for guilds.

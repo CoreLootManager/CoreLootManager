@@ -1,26 +1,20 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local tinsert, tsort, sfind = table.insert, table.sort, string.find
+local pairs, ipairs = pairs, ipairs
+local strlen, strsplit, strlower = strlen, strsplit, strlower
+local CreateFrame, UIParent = CreateFrame, UIParent
+local GetItemInfo, GetItemInfoInstant = GetItemInfo, GetItemInfoInstant
 
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
-
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
-local CONSTANTS = CLM.CONSTANTS
-local GUI = CLM.GUI
-
-local getGuidFromInteger = UTILS.getGuidFromInteger
-local GetClassColor = UTILS.GetClassColor
-local ColorCodeText = UTILS.ColorCodeText
-local GetItemIdFromLink = UTILS.GetItemIdFromLink
-local Trim = UTILS.Trim
-
-local ProfileManager = MODULES.ProfileManager
-local RosterManager = MODULES.RosterManager
-local RaidManager = MODULES.RaidManager
-local LedgerManager = MODULES.LedgerManager
-local EventManager = MODULES.EventManager
 
 local function ST_GetItemLink(row)
     return row.cols[1].value
@@ -35,7 +29,7 @@ local RightClickMenu
 local LootGUI = {}
 
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('loot', {
+    self.db = CLM.MODULES.Database:GUI('loot', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -53,10 +47,10 @@ end
 
 function LootGUI:Initialize()
     InitializeDB(self)
-    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     self:RegisterSlash()
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
     end)
@@ -70,8 +64,8 @@ function LootGUI:Initialize()
                     local row = self.st:GetRow(self.st:GetSelection())
                     if row then
                         local loot = ST_GetLoot(row)
-                        LedgerManager:Remove(loot:Entry(), true)
-                        EventManager:DispatchEvent(CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, {
+                        CLM.MODULES.LedgerManager:Remove(loot:Entry(), true)
+                        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, {
                             id = loot:Id(), name = loot:Owner():Name()
                         }, loot:Timestamp() + 7200) -- only up to 2 hours after loot is created
                     end
@@ -84,7 +78,7 @@ function LootGUI:Initialize()
         CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
 
-    EventManager:RegisterWoWBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
+    CLM.MODULES.EventManager:RegisterWoWBucketEvent("GET_ITEM_INFO_RECEIVED", 1, self, "HandleItemInfoReceivedBucket")
     self._initialized = true
 end
 
@@ -147,10 +141,10 @@ local function CreateLootDisplay(self)
         if searchKeyword and strlen(searchKeyword) >= 3 then
             local searchList = { strsplit(",", searchKeyword) }
             for _, searchString in ipairs(searchList) do
-                searchString = Trim(searchString)
+                searchString = UTILS.Trim(searchString)
                 if strlen(searchString) >= 3 then
                     searchString = ".*" .. strlower(searchString) .. ".*"
-                    if (string.find(item, searchString)) then
+                    if (sfind(item, searchString)) then
                         return true
                     end
                 end
@@ -167,29 +161,29 @@ local function CreateLootDisplay(self)
         local tooltip = self.tooltip
         if not tooltip then return end
         local itemLink = ST_GetItemLink(rowData) or ""
-        local itemId = GetItemIdFromLink(itemLink)
+        local itemId = UTILS.GetItemIdFromLink(itemLink)
         local itemString = "item:" .. tonumber(itemId)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
         local loot = ST_GetLoot(rowData)
         if loot then
-            local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
+            local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
             local name
             if profile then
-                name = ColorCodeText(profile:Name(), GetClassColor(profile:Class()).hex)
+                name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
             else
                 name = CLM.L["Unknown"]
             end
-            local raid = RaidManager:GetRaidByUid(loot:RaidUid())
+            local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
             if raid then
                 tooltip:AddLine(raid:Name())
             end
             tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
-            local auction = MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
+            local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
             if auction then
                 tooltip:AddLine(CLM.L["Bids"])
                 for bidder, bid in pairs(auction.bids) do
-                    local bidderProfile = ProfileManager:GetProfileByName(bidder)
+                    local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
                     if bidderProfile then
                         bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
                     end
@@ -287,7 +281,7 @@ function LootGUI:Refresh(visible)
                 self.pendingLoot = true
             elseif not self.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
                 local owner = loot:Owner()
-                table.insert(self.displayedLoot, {loot, itemLink, ColorCodeText(owner:Name(), GetClassColor(owner:Class()).hex)})
+                tinsert(self.displayedLoot, {loot, itemLink, UTILS.ColorCodeText(owner:Name(), UTILS.GetClassColor(owner:Class()).hex)})
             end
         end
     end
@@ -326,16 +320,16 @@ end
 
 function LootGUI:GetCurrentRoster()
     self.db.selectedRosterUid = self.RosterSelectorDropDown:GetValue()
-    return RosterManager:GetRosterByUid(self.db.selectedRosterUid)
+    return CLM.MODULES.RosterManager:GetRosterByUid(self.db.selectedRosterUid)
 end
 
 function LootGUI:GetCurrentProfile()
-    return ProfileManager:GetProfileByName(self.ProfileSelectorDropDown:GetValue())
+    return CLM.MODULES.ProfileManager:GetProfileByName(self.ProfileSelectorDropDown:GetValue())
 end
 
 function LootGUI:RefreshRosters()
     LOG:Trace("LootGUI:RefreshRosters()")
-    local rosters = RosterManager:GetRosters()
+    local rosters = CLM.MODULES.RosterManager:GetRosters()
     local rosterUidMap = {}
     local rosterList = {}
     local positionOfSavedRoster = 1
@@ -364,13 +358,13 @@ function LootGUI:RefreshProfiles()
     local profileNameMap = { [CLM.L["-- Raid Loot --"]] = CLM.L["-- Raid Loot --"]}
     local profileList = {CLM.L["-- Raid Loot --"]}
     for _, GUID in ipairs(profiles) do
-        local profile = ProfileManager:GetProfileByGUID(GUID)
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
         if profile then
             profileNameMap[profile:Name()] = profile:Name()
-            table.insert(profileList, profile:Name())
+            tinsert(profileList, profile:Name())
         end
     end
-    table.sort(profileList)
+    tsort(profileList)
     self.ProfileSelectorDropDown:SetList(profileNameMap, profileList)
     if not self.ProfileSelectorDropDown:GetValue() then
         if #profileList > 0 then
@@ -419,7 +413,7 @@ function LootGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function LootGUI:Reset()
@@ -428,4 +422,4 @@ function LootGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-GUI.Loot = LootGUI
+CLM.GUI.Loot = LootGUI

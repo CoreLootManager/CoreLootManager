@@ -1,23 +1,19 @@
+-- ------------------------------- --
 local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
+local pairs, ipairs = pairs, ipairs
 
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
-
-local capitalize = UTILS.capitalize
-local ColorCodeText = UTILS.ColorCodeText
-
--- Libs
 local AceGUI = LibStub("AceGUI-3.0")
-
-local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0"),
-    gui = LibStub("AceConfigDialog-3.0")
-}
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('changelog', {
+    self.db = CLM.MODULES.Database:GUI('changelog', {
         location = {nil, nil, "CENTER", 0, 0 },
         lastVersion = {
             major = 0,
@@ -54,7 +50,7 @@ local function CreateConfigs(self)
             order = 82
           }
     }
-    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 local ChangelogGUI = {}
@@ -91,14 +87,14 @@ local function Create(self)
         for _, group in ipairs(versionData.data) do
             local name = group.name
             args[name..counter..versionData.version.."bar"] = {
-                name = capitalize(name),
+                name = UTILS.capitalize(name),
                 type = "header",
                 order = counter
             }
             counter = counter + 1
             for i, data in pairs(group.data) do
                 args[name..i..versionData.version.."header"] = {
-                    name = ColorCodeText(data.header,"6699ff"),
+                    name = UTILS.ColorCodeText(data.header,"6699ff"),
                     type = "description",
                     fontSize = "large",
                     order = counter
@@ -122,8 +118,8 @@ local function Create(self)
         counter = counter + 1
     end
 
-    LIBS.registry:RegisterOptionsTable(CLM.L["Changelog"], options)
-    LIBS.gui:Open(CLM.L["Changelog"], parent)
+    AceConfigRegistry:RegisterOptionsTable(CLM.L["Changelog"], options)
+    AceConfigDialog:Open(CLM.L["Changelog"], parent)
 
     return parent
 end
@@ -132,7 +128,6 @@ function ChangelogGUI:Create()
     LOG:Trace("ChangelogGUI:Create()")
     local f = Create(self)
     self.top = f
-
 
     -- Display based on config
     local version = CLM.CORE:GetVersion()
@@ -163,7 +158,7 @@ function ChangelogGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function ChangelogGUI:Reset()

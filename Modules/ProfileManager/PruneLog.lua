@@ -1,7 +1,14 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local GetServerTime, tinsert, setmetatable = GetServerTime, table.insert, setmetatable
 
 local PruneLog = {}
-
 function PruneLog:New(type, nop)
     local o = {}
 
@@ -17,7 +24,7 @@ function PruneLog:New(type, nop)
 end
 
 function PruneLog:Add(name)
-    table.insert(self.log, name)
+    tinsert(self.log, name)
 end
 
 CLM.MODELS.ProfilePruneLog = PruneLog

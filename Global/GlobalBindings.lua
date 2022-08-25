@@ -1,10 +1,14 @@
-
--- Globals: Keybinds
+-- ------------------------------- --
 local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local LOG = CLM.LOG
+local GameTooltip = GameTooltip
 
-local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
+local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL" -- TODO event
 
 BINDING_HEADER_CLM = "Classic Loot Manager"
 

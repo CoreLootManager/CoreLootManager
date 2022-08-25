@@ -163,8 +163,8 @@ end
 
 local stages = {
     "_InitializeCore",
-    "_InitializeMinimap",
     "_InitializeBackend",
+    "_InitializeMinimap",
     "_InitializeFeatures",
     "_InitializeOptions",
     "_InitializeGUI"

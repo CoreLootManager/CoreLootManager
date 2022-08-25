@@ -1,8 +1,12 @@
-local _, CLM = ...
-
-local MODELS = CLM.MODELS
--- local UTILS = CLM.UTILS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local tonumber, setmetatable, type = tonumber, setmetatable, type
 
 
 local BiddingCommSubmitBid = {}
@@ -54,5 +58,5 @@ function BiddingCommStructure:Data()
     return self.d
 end
 
-MODELS.BiddingCommStructure = BiddingCommStructure
-MODELS.BiddingCommSubmitBid = BiddingCommSubmitBid
+CLM.MODELS.BiddingCommStructure = BiddingCommStructure
+CLM.MODELS.BiddingCommSubmitBid = BiddingCommSubmitBid
