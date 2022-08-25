@@ -1,21 +1,26 @@
-local  _, CLM = ...
-
 --[[
     Lots of thanks to Zh0rax (https://github.com/papa-smurf) for sharing
     all the corner cases of trade handling and solutions to them
 ]]--
 
-local LOG = CLM.LOG
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
-
-local GetItemIdFromLink = UTILS.GetItemIdFromLink
-
-local EventManager = MODULES.EventManager
+local ipairs = ipairs
+local BIND_TRADE_TIME_REMAINING, ITEM_SOULBOUND, ERR_TRADE_COMPLETE  = BIND_TRADE_TIME_REMAINING, ITEM_SOULBOUND, ERR_TRADE_COMPLETE
+local sgsub, sfind = string.gsub, string.find
+local tinsert, tremove = table.insert, table.remove
+local C_TimerAfter, UseContainerItem, GetTradePlayerItemLink = C_Timer.After, UseContainerItem, GetTradePlayerItemLink
+local GetNumLootItems, GetLootSlotInfo, GetItemInfoInstant, GetLootSlotLink, GetNumGroupMembers, GetMasterLootCandidate, GiveMasterLoot = GetNumLootItems, GetLootSlotInfo, GetItemInfoInstant, GetLootSlotLink, GetNumGroupMembers, GetMasterLootCandidate, GiveMasterLoot
+local UnitName = UnitName
 
 local function ScanTooltip(self)
-    local query = BIND_TRADE_TIME_REMAINING:gsub("%%s", ".*")
+    local query = sgsub(BIND_TRADE_TIME_REMAINING, "%%s", ".*")
     local lineWithTimer
     for i = 1, self.fakeTooltip:NumLines() do
         local line = _G["CLMAutoAwardBagItemCheckerFakeTooltipTextLeft" .. i]
@@ -24,7 +29,7 @@ local function ScanTooltip(self)
             if line == ITEM_SOULBOUND then
                 self.itemInfo.soulbound = true
             end
-            if line:find(query) then
+            if sfind(line, query) then
                 lineWithTimer = line
                 break
             end
@@ -109,7 +114,7 @@ local function ScanBagsForItem(itemId, tradeableOnly)
                     isTradeable = BagItemChecker:IsTradeable()
                 end
                 if isTradeable then
-                    table.insert(found, {bag = bag, slot = slot} )
+                    tinsert(found, {bag = bag, slot = slot} )
                 end
             end
         end
@@ -147,9 +152,9 @@ local function HandleTradeShow(self)
         local totalQueued = 0
         for _, itemId in ipairs(self.tracking[self.lastTradeTarget]) do
             if foundItems[itemId] and #foundItems[itemId] > 0 then
-                local loc = table.remove(foundItems[itemId])
+                local loc = tremove(foundItems[itemId])
                 totalQueued = totalQueued + 1
-                C_Timer.After(0.25*totalQueued, function()
+                C_TimerAfter(0.25*totalQueued, function()
                     UseContainerItem(loc.bag, loc.slot)
                 end)
                 if totalQueued == 6 then
@@ -165,7 +170,7 @@ local function HandleTradeAcceptUpdate(self)
     for tradeSlot = 1, 6 do
         local itemLink = GetTradePlayerItemLink(tradeSlot)
         if itemLink then
-            table.insert(self.lastTradedItems, GetItemIdFromLink(itemLink))
+            tinsert(self.lastTradedItems, UTILS.GetItemIdFromLink(itemLink))
         end
     end
 end
@@ -185,7 +190,7 @@ function AutoAward:Initialize()
 
     BagItemChecker:Initialize()
 
-    EventManager:RegisterWoWEvent({"TRADE_SHOW"}, (function()
+    CLM.MODULES.EventManager:RegisterWoWEvent({"TRADE_SHOW"}, (function()
         Clear(self)
         pcall(function()
             self.lastTradeTarget = _G.TradeFrameRecipientNameText:GetText()
@@ -197,18 +202,18 @@ function AutoAward:Initialize()
         if not self.lastTradeTarget then return end
         HandleTradeShow(self)
     end))
-    EventManager:RegisterWoWEvent({"TRADE_ACCEPT_UPDATE"}, (function()
+    CLM.MODULES.EventManager:RegisterWoWEvent({"TRADE_ACCEPT_UPDATE"}, (function()
         if not self.lastTradeTarget then return end
         HandleTradeAcceptUpdate(self)
     end))
-    EventManager:RegisterWoWEvent({"UI_INFO_MESSAGE"}, (function(_, _, _, message)
+    CLM.MODULES.EventManager:RegisterWoWEvent({"UI_INFO_MESSAGE"}, (function(_, _, _, message)
         if not self.lastTradeTarget then return end
         if message == ERR_TRADE_COMPLETE then
             HandleTradeSuccess(self)
         end
         self.lastTradeTarget = nil
     end))
-    EventManager:RegisterEvent(CLM.CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, function(_, data)
+    CLM.MODULES.EventManager:RegisterEvent(CLM.CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, function(_, data)
         AutoAward:Remove(data.id, data.name)
     end)
 end
@@ -218,6 +223,9 @@ local autoAwardIgnores = UTILS.Set({
     30183, -- Nether Vortex
     29434, -- Badge of Justice
     23572, -- Primal Nether
+    40752, -- Emblem of Heroism
+    40753, -- Emblem of Valor
+    45038, -- Fragment of Val'anyr
 })
 function AutoAward:IsIgnored(itemId)
     return autoAwardIgnores[itemId]
@@ -249,7 +257,7 @@ function AutoAward:Track(itemId, player)
         self.tracking[player] = {}
     end
     -- Update
-    table.insert(self.tracking[player], itemId)
+    tinsert(self.tracking[player], itemId)
 end
 
 function AutoAward:Remove(itemId, player)
@@ -261,10 +269,10 @@ function AutoAward:Remove(itemId, player)
     -- Update
     for id, _itemId in ipairs(self.tracking[player]) do
         if itemId == _itemId then
-            table.remove(self.tracking[player], id)
+            tremove(self.tracking[player], id)
             break
         end
     end
 end
 
-MODULES.AutoAward = AutoAward
+CLM.MODULES.AutoAward = AutoAward

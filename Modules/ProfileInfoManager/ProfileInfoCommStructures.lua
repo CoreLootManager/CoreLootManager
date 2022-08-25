@@ -1,8 +1,12 @@
-local _, CLM = ...
-
-local MODELS = CLM.MODELS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
+local type, setmetatable, tonumber = type, setmetatable, tonumber
 
 local ProfileInfoCommAnnounceVersion = {}
 function ProfileInfoCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)
@@ -88,6 +92,6 @@ function ProfileInfoCommStructure:Data()
     return self.d
 end
 
-MODELS.ProfileInfoCommStructure = ProfileInfoCommStructure
-MODELS.ProfileInfoCommAnnounceVersion = ProfileInfoCommAnnounceVersion
-MODELS.ProfileInfoCommAnnounceSpec = ProfileInfoCommAnnounceSpec
+CLM.MODELS.ProfileInfoCommStructure = ProfileInfoCommStructure
+CLM.MODELS.ProfileInfoCommAnnounceVersion = ProfileInfoCommAnnounceVersion
+CLM.MODELS.ProfileInfoCommAnnounceSpec = ProfileInfoCommAnnounceSpec

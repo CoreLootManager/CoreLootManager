@@ -1,19 +1,18 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local MODELS = CLM.MODELS
-local UTILS = CLM.UTILS
+local tostring = tostring
 
 local mergeLists = UTILS.mergeLists
--- local typeof = UTILS.typeof
 local ClassToNumber = UTILS.ClassToNumber
--- local getIntegerGuid = UTILS.getIntegerGuid
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
--- local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
-
--- local inflate = UTILS.inflate
--- local deflate = UTILS.deflate
 
 local ProfileUpdate     = LogEntry:extend("P0")
 local ProfileRemove     = LogEntry:extend("P1")
@@ -97,7 +96,7 @@ function ProfileLink:fields()
     return ProfileLinkFields
 end
 
-MODELS.LEDGER.PROFILE = {
+CLM.MODELS.LEDGER.PROFILE = {
     Update  = ProfileUpdate,
     Remove  = ProfileRemove,
     Link    = ProfileLink

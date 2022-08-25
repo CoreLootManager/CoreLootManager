@@ -1,13 +1,18 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
+local wipe, collectgarbage = wipe, collectgarbage
 
 -- Module part
 local Logger = {}
 function Logger:Initialize()
     LOG:Trace("Logger:Initialize()")
-    self.db = MODULES.Database:Logger()
+    self.db = CLM.MODULES.Database:Logger()
 
     local options = {
         logger_header = {
@@ -41,7 +46,7 @@ function Logger:Initialize()
             order = 1003
           }
     }
-    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 function Logger:SetSeverity(severity)
@@ -69,4 +74,4 @@ function Logger:Wipe()
 end
 
 -- Publish API
-MODULES.Logger = Logger
+CLM.MODULES.Logger = Logger

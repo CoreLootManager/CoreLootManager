@@ -1,8 +1,12 @@
-local _, CLM = ...
-
-local LOG = CLM.LOG
-local UTILS =  CLM.UTILS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local pairs, GetServerTime = pairs, GetServerTime
 
 local WeekNumber = UTILS.WeekNumber
 local weekOffsetEU = UTILS.GetWeekOffsetEU()

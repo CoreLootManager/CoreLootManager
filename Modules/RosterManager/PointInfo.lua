@@ -1,7 +1,14 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local PointInfo = { }
+local setmetatable = setmetatable
 
+local PointInfo = {}
 function PointInfo:New()
     local o = {}
 
