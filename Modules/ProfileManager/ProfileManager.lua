@@ -167,7 +167,7 @@ end
 function ProfileManager:NewProfile(GUID, name, class)
     LOG:Trace("ProfileManager:NewProfile()")
     if type(GUID) ~= "string" or GUID == "" then
-        LOG:Error("NewProfile(): UTILS.empty GUID")
+        LOG:Error("NewProfile(): Empty GUID")
         return
     end
     if type(name) ~= "string" or name == "" then
