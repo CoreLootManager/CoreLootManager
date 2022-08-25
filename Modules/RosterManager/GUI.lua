@@ -373,7 +373,7 @@ local function CreateManagementOptions(self, container)
     self.awardValue = nil
     self.note = ""
     self.awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
-    for _=1,9 do tinsert( self.filterOptions, true ) end
+    for _=1,10 do tinsert( self.filterOptions, true ) end
     self.filterOptions[FILTER_IN_RAID] = false
     self.filterOptions[FILTER_NOT_IN_GUILD] = false
     self.filterOptions[FILTER_IN_GUILD] = false
