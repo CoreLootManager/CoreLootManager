@@ -175,7 +175,7 @@ end
     --- PUBLIC ---
 ]]
 
-local ProfileInfoManager = {}
+local ProfileInfoManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function ProfileInfoManager:Initialize()
     LOG:Trace("ProfileInfoManager:Initialize()")
     self._initialized = false

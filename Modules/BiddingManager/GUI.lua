@@ -79,7 +79,7 @@ local function CreateOptions(self)
     return OptionsGroup
 end
 
-local BiddingManagerGUI = {}
+local BiddingManagerGUI = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {

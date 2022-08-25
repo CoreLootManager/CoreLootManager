@@ -12,7 +12,7 @@ local type, MAX_RAID_MEMBERS, IsInRaid, GetRaidRosterInfo = type, MAX_RAID_MEMBE
 local tinsert = table.insert
 
 
-local RosterManager = {}
+local RosterManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function RosterManager:GenerateName()
     local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX)]
     local suffix = CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX)]

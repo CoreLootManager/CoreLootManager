@@ -5,7 +5,7 @@ local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
-local SandboxManager = {}
+local SandboxManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function SandboxManager:Initialize()
     LOG:Trace("SandboxManager:Initialize()")
 end

@@ -8,11 +8,35 @@ end
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
 CLM.MODULES = {}
-CLM.MODELS = { LEDGER = {} }
+CLM.MODELS = { LEDGER =  {} }
 CLM.CONSTANTS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
 CLM.ALERTS = {}
+
+local function StoreMetrics(name, array)
+    if type(array) == "table" and array.__profiling then
+        for k, metrics in pairs(array.__profiling) do
+            CLM_DB.metrics[name..k] = {}
+            for metric, value in pairs(metrics) do
+                CLM_DB.metrics[name..k][metric] = value
+            end
+        end
+    end
+end
+
+function CLM:DumpProxy()
+    CLM_DB.metrics = {}
+    for sectionName, section in pairs(CLM) do
+        if type(section) == "table" then
+            for moduleName, module in pairs(section) do
+                StoreMetrics(sectionName.."."..moduleName, module)
+            end
+        end
+    end
+    -- Mutators
+    StoreMetrics("mutators", CLM.MODULES.LedgerManager.activeLedger.getStateManager().handlers)
+end
 
 CLM.AUTOVERSION = "@project-version@"
 
@@ -146,6 +170,9 @@ function CORE:_InitializeOptions()
     for _, module in pairs(CLM.OPTIONS) do
         module:Initialize()
     end
+    -- for key, _ in pairs(CLM.OPTIONS) do
+        -- CLM.OPTIONS[key]:Initialize()
+    -- end
 end
 
 function CORE:_InitializeGUI()
@@ -153,6 +180,9 @@ function CORE:_InitializeGUI()
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
+    -- for key, _ in pairs(CLM.GUI) do
+    --     CLM.GUI[key]:Initialize()
+    -- end
 end
 
 function CORE:_Enable()

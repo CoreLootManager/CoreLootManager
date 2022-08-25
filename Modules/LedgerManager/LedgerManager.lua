@@ -88,10 +88,17 @@ local function createLedgerAndRegisterCallbacks(self, database)
     return ledger
 end
 
-local LedgerManager = { _initialized = false}
+local LedgerManager = ProfilerProxy_CreateProfilingProxyNonRecursive({ _initialized = false})
 function LedgerManager:Initialize()
     self.activeDatabase = CLM.MODULES.Database:Ledger()
     self.activeLedger = createLedger(self, self.activeDatabase)
+
+    local orig_handlers = self.activeLedger.getStateManager().handlers
+    self.activeLedger.getStateManager().handlers = ProfilerProxy_CreateProfilingProxyNonRecursive({})
+    for k,v in pairs(orig_handlers) do
+        self.activeLedger.getStateManager().handlers[k] = v
+    end
+
     self.mutatorCallbacks = {}
     self.onUpdateCallbacks = {}
     self.onRestartCallbacks = {}

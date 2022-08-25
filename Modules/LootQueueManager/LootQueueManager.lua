@@ -40,7 +40,7 @@ local ignoredItems = UTILS.Set({
     45038, -- Fragment of Val'anyr
 })
 
-local LootQueueManager = {}
+local LootQueueManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 
 local function HandleLootMessage(self, addon, event, message, _, _, _, playerName, ...)
     if playerName ~= whoami then return end

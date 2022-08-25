@@ -14,6 +14,10 @@
 # TODO change to soon for no backcomp: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon
 ## LoadOnDemand: 0
 
+#@do-not-package@
+ProfilerProxy.lua
+#@end-do-not-package@
+
 # LIBS
 Libs\LibStub\LibStub.lua
 Libs\LibDeflate\lib.xml

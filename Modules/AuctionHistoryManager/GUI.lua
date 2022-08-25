@@ -50,7 +50,7 @@ local function ST_GetItemSeq(row)
     return row.cols[5].value
 end
 
-local AuctionHistoryGUI = {}
+local AuctionHistoryGUI = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function AuctionHistoryGUI:Initialize()
     LOG:Trace("AuctionHistoryGUI:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end

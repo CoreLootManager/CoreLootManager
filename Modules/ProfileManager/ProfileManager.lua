@@ -12,7 +12,7 @@ local GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID = GetRaidRosterInf
 
 local whoamiGUID = UTILS.whoamiGUID()
 
-local ProfileManager = {}
+local ProfileManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")
 

@@ -25,7 +25,7 @@ end
 
 local RightClickMenu
 
-local RaidManagerGUI = {}
+local RaidManagerGUI = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('raid', {
         location = {nil, nil, "CENTER", 0, 0 }

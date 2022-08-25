@@ -115,7 +115,7 @@ local function RestoreLocation(self)
     end
 end
 
-local AuctionManagerGUI = {}
+local AuctionManagerGUI = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     InitializeDB(self)

@@ -13,7 +13,7 @@ local CBTYPE = {
     HIDER    = "hide"
 }
 
-local RosterManagerOptions = { externalOptions = {} }
+local RosterManagerOptions = ProfilerProxy_CreateProfilingProxyNonRecursive({ externalOptions = {} })
 
 local function GetRosterOption(name, option)
     local roster = CLM.MODULES.RosterManager:GetRosterByName(name)

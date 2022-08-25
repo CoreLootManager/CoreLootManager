@@ -8,7 +8,7 @@ local CONSTANTS = CLM.CONSTANTS
 
 local setmetatable = setmetatable
 
-local RosterConfiguration = {} -- Roster Configuration
+local RosterConfiguration = {}
 function RosterConfiguration:New(i)
     local o = i or {}
 

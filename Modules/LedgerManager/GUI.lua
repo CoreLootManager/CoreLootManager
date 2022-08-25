@@ -540,7 +540,7 @@ local function CreateManagementOptions(self, container)
     return ManagementOptions
 end
 
-local AuditGUI = {}
+local AuditGUI = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function AuditGUI:Initialize()
     LOG:Trace("AuditGUI:Initialize()")
     self:Create()

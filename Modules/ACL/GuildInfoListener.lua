@@ -10,7 +10,7 @@ local GuildRoster, GetGuildRosterInfo = GuildRoster, GetGuildRosterInfo
 local GuildControlGetNumRanks, GetNumGuildMembers = GuildControlGetNumRanks, GetNumGuildMembers
 local C_GuildInfoGuildControlGetRankFlags = C_GuildInfo.GuildControlGetRankFlags
 
-local GuildInfoListener = {}
+local GuildInfoListener = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function GuildInfoListener:Initialize()
     LOG:Trace("GuildInfoListener:Initialize()")
     self:WipeAll()

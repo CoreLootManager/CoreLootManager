@@ -71,7 +71,7 @@ local function mutateLootAward(entry, roster)
     end
 end
 
-local LootManager = {}
+local LootManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function LootManager:Initialize()
     LOG:Trace("LootManager:Initialize()")
     CLM.MODULES.LedgerManager:RegisterEntryType(

@@ -12,6 +12,7 @@ local DeepCopy = UTILS.DeepCopy
 local assertType = UTILS.assertType
 
 local DB = {}
+-- local DB = ProfilerProxy_CreateProfilingProxy({})
 
 -- You really do not want to modify this
 -- vvvvv
@@ -24,9 +25,9 @@ local DB_NAME_LOGGER = 'logger'
 local DB_NAME_GLOBAL = 'global'
 -- ^^^^^
 
-local function UpdateGuild()
-    DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. (GetGuildInfo("player") or "unguilded"))
-    LOG:Debug("Using database: %s", DB.server_faction_guild)
+local function UpdateGuild(self)
+    self.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. (GetGuildInfo("player") or "unguilded"))
+    LOG:Debug("Using database: %s", self.server_faction_guild)
 end
 
 local function UpdateSchema(table, schema)
@@ -44,7 +45,7 @@ end
 function DB:Initialize()
     LOG:Trace("DB:Initialize()")
     -- Below API requires delay after loading to work after variables loaded event
-    UpdateGuild()
+    UpdateGuild(self)
 
     if type(CLM_DB[self.server_faction_guild]) ~= "table" then
         CLM_DB[self.server_faction_guild] = {}

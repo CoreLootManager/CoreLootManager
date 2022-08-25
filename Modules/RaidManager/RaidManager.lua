@@ -22,7 +22,7 @@ local function IsPlayerInPvP()
 	return arena or (bg ~= nil)
 end
 
-local RaidManager = {}
+local RaidManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
 

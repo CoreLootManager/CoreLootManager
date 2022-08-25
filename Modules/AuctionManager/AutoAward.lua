@@ -40,7 +40,7 @@ local function ScanTooltip(self)
     end
 end
 
-local BagItemChecker = {}
+local BagItemChecker = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function BagItemChecker:Initialize()
     self.fakeTooltip = CreateFrame("GameTooltip", "CLMAutoAwardBagItemCheckerFakeTooltip", UIParent, "GameTooltipTemplate")
     self.fakeTooltip:SetOwner(UIParent, "ANCHOR_NONE");
@@ -182,7 +182,7 @@ local function HandleTradeSuccess(self)
 end
 
 
-local AutoAward = {}
+local AutoAward = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function AutoAward:Initialize()
     LOG:Trace("AutoAward:Initialize()")
     self.tracking = {}

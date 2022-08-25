@@ -12,7 +12,7 @@ local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local ConfigManager = { enabled = false }
+local ConfigManager = ProfilerProxy_CreateProfilingProxyNonRecursive({ enabled = false })
 
 local function ConfigGenerator(config)
     return ConfigManager.options[config]

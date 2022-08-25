@@ -156,7 +156,7 @@ local function registerWorkaroundHandler(self)
     isWorkaroundRegistered = true
 end
 
-local AutoAwardManager = {}
+local AutoAwardManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end

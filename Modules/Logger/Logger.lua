@@ -9,7 +9,7 @@ local LOG       = CLM.LOG
 local wipe, collectgarbage = wipe, collectgarbage
 
 -- Module part
-local Logger = {}
+local Logger = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function Logger:Initialize()
     LOG:Trace("Logger:Initialize()")
     self.db = CLM.MODULES.Database:Logger()

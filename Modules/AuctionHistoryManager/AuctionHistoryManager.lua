@@ -24,7 +24,7 @@ local CHANNELS = {
     [8] = "RAID_WARNING"
 }
 
-local AuctionHistoryManager = {}
+local AuctionHistoryManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function AuctionHistoryManager:Initialize()
     LOG:Trace("AuctionHistoryManager:Initialize()")
     self.db = CLM.MODULES.Database:Personal('auctionHistory', {

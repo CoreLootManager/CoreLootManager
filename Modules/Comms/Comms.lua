@@ -15,7 +15,7 @@ local codec = LibStub("LibDeflate")
 
 local CommsPrefix = "CLM"
 
-local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
+local Comms = ProfilerProxy_CreateProfilingProxyNonRecursive(CLM.CORE:NewModule("Comms", {}, "AceComm-3.0"))
 function Comms:Initialize()
     LOG:Trace("Comms:Initialize()")
     self.callbacks = {}

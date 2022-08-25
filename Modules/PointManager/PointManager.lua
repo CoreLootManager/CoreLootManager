@@ -141,7 +141,7 @@ local function mutate_decay_standings(roster, GUID, value, timestamp)
     roster:DecayStandings(GUID, value)
 end
 
-local PointManager = {}
+local PointManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function PointManager:Initialize()
     LOG:Trace("PointManager:Initialize()")
 

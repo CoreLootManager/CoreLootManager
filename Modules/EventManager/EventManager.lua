@@ -15,7 +15,7 @@ local myGUID = UTILS.whoamiGUID()
 
 local CLM_HISTORICAL_TTL = 5
 
-local EventManager = {}
+local EventManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function EventManager:Initialize()
     LOG:Trace("EventManager:Initialize()")
     -- WoW

@@ -19,7 +19,7 @@ local AUCTION_COMM_PREFIX = "Auction1"
 local EVENT_START_AUCTION = "CLM_AUCTION_START"
 local EVENT_END_AUCTION = "CLM_AUCTION_END"
 
-local AuctionManager = {}
+local AuctionManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:Personal('auction', {

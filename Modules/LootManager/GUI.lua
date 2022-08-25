@@ -26,7 +26,7 @@ end
 
 local RightClickMenu
 
-local LootGUI = {}
+local LootGUI = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('loot', {

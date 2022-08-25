@@ -10,7 +10,7 @@ local IsGuildLeader = IsGuildLeader
 
 local whoami = UTILS.whoami()
 
-local ACL = {}
+local ACL = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function ACL:Initialize()
     self.guildMaster = IsGuildLeader()
     CLM.MODULES.ConfigManager:RegisterUniversalExecutor("acl", "ACL", self) -- TODO remove RegisterUniversalExecutor

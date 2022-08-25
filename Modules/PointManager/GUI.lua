@@ -19,7 +19,7 @@ end
 
 local RightClickMenu
 
-local PointHistoryGUI = {}
+local PointHistoryGUI = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('point', {

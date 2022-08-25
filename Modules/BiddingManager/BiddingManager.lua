@@ -8,7 +8,7 @@ local UTILS     = CLM.UTILS
 
 local BIDDING_COMM_PREFIX = "Bidding1"
 
-local BiddingManager = {}
+local BiddingManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function BiddingManager:Initialize()
     LOG:Trace("BiddingManager:Initialize()")
 

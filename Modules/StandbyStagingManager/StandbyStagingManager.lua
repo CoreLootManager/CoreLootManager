@@ -81,7 +81,7 @@ end
 --     LOG:Trace("StandbyStagingManager:HandleResponse()")
 -- end
 
-local StandbyStagingManager = {}
+local StandbyStagingManager = ProfilerProxy_CreateProfilingProxyNonRecursive({})
 function StandbyStagingManager:Initialize()
     LOG:Trace("StandbyStagingManager:Initialize()")
     self:Clear()
