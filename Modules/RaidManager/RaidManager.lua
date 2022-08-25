@@ -293,7 +293,7 @@ function RaidManager:CreateRaid(roster, name, config)
         LOG:Error("RaidManager:CreateRaid(): Missing valid roster")
         return
     end
-    if not UTILS.typeof(config, CLM.MODULES.RosterConfiguration) then
+    if not UTILS.typeof(config, CLM.MODELS.RosterConfiguration) then
         LOG:Error("RaidManager:CreateRaid(): Missing valid configuration")
         return
     end
