@@ -50,7 +50,8 @@ local STMethodsToExposeWithResize = {
 
 local function Resize(self)
     self:SetWidth(self.st.frame:GetWidth())
-    self:SetHeight(self.st.frame:GetHeight())
+	-- self.st.rowHeight + 8 comes from the lib implementation of header frame
+    self:SetHeight(self.st.frame:GetHeight() + self.st.rowHeight + 8)
 end
 
 --[[-----------------------------------------------------------------------------
@@ -68,9 +69,14 @@ local methods = {
         return self.st
     end,
 
+    ["GetWidth"] = function(self)
+        return self.frame.width
+    end,
+
 	["SetBackdropColor"] = function(self, ...)
 		self.st.frame:SetBackdropColor(...)
 	end,
+
 
 	    -- AFAIK needed for input type of AceConfigDialog
     ["SetDisabled"] = function(self)
@@ -85,7 +91,6 @@ local methods = {
 Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
-    print("Construct libst ace")
     local frame = CreateFrame("Frame", nil, UIParent)
     local columns = {{ name ="A", width = 30}, { name ="B", width = 30}, { name ="C", width = 30}}
     local st = ScrollingTable:CreateST(columns, 25, 18, nil, frame, true)

@@ -25,7 +25,7 @@
 -- @class file
 -- @name AceGUI-3.0
 -- @release $Id: AceGUI-3.0.lua 1247 2021-01-23 23:16:39Z funkehdude $
-local ACEGUI_MAJOR, ACEGUI_MINOR = "AceGUI-3.0", 41
+local ACEGUI_MAJOR, ACEGUI_MINOR = "AceGUI-3.0", 11141
 local AceGUI, oldminor = LibStub:NewLibrary(ACEGUI_MAJOR, ACEGUI_MINOR)
 
 if not AceGUI then return end -- No upgrade needed
@@ -426,7 +426,9 @@ do
 	end
 
 	WidgetContainerBase.PerformLayout = function(self)
+		-- print("PerformLayout: ", tostring(self.type))
 		if self.LayoutPaused then
+			-- print("LayoutPaused")
 			return
 		end
 		safecall(self.LayoutFunc, self.content, self.children)
@@ -866,7 +868,7 @@ AceGUI:RegisterLayout("Table",
 		local spaceH = tableObj.spaceH or tableObj.space or 0
 		local spaceV = tableObj.spaceV or tableObj.space or 0
 		local totalH = (content:GetWidth() or content.width or 0) - spaceH * (#cols - 1)
-
+		-- print("totalH ", totalH)
 		-- We need to reuse these because layout events can come in very frequently
 		local layoutCache = obj:GetUserData("layoutCache")
 		if not layoutCache then

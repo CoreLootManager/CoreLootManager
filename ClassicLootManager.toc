@@ -122,7 +122,9 @@ Modules\LootQueueManager\GUI.lua
 Modules\AuctionHistoryManager\GUI.lua
 
 Modules\GUI\AceGUIWidget-LibScrollingTable.lua
+Modules\GUI\Filters.lua
 Modules\GUI\UnifiedGUI.lua
+Modules\GUI\UnifiedGUI_Standings.lua
 
 
 # Alerts
