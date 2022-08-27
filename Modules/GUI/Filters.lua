@@ -118,7 +118,6 @@ end
 
 function Filters:GetAceOptions()
     if self.options then return self.options end
-    print("Gen ACE")
     local options = {}
     local filters = {}
 
@@ -151,9 +150,7 @@ function Filters:GetAceOptions()
         type = "multiselect",
         set = function(i, k, valueToSet)
             local filterId = tonumber(k) or 0
-            print("Filter", filterId, valueToSet)
             self.filters[filterId] = valueToSet
-            UTILS.DumpTable(self.filters)
             HandleMutualExclusiveOptions(self, filterId, valueToSet)
             self.refreshFn(true)
         end,

@@ -92,8 +92,8 @@ Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
     local frame = CreateFrame("Frame", nil, UIParent)
-    local columns = {{ name ="A", width = 30}, { name ="B", width = 30}, { name ="C", width = 30}}
-    local st = ScrollingTable:CreateST(columns, 25, 18, nil, frame, true)
+    local st = ScrollingTable:CreateST({{name ="A", width = 1}}, 25, 18, nil, frame, true)
+    st:EnableSelection(true)
     frame:Hide()
     -- create widget
     local widget = {

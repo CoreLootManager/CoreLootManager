@@ -235,10 +235,14 @@ local function GenerateManagerOptions(self)
     }
 end
 
-
 local UnifiedGUI_Standings = {
-    filter = CLM.MODELS.Filters:New(refreshFn, true, true, true, true, true, true, false, true, true, nil, 1)
+    filter = CLM.MODELS.Filters:New(refreshFn, true, true, true, true, true, true, false, true, true, nil, 1),
+    tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIStandingsDialogTooltip", UIParent, "GameTooltipTemplate"),
+    GetSelected = (function()
+    
+    end)
 }
+
 
 local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
     {
@@ -248,15 +252,15 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
                 LOG:Message(CLM.L["Not in raid"])
                 return
             end
-            local roster, profiles = self:GetSelected()
-            local raid = CLM.MODULES.RaidManager:GetRaid()
-            if roster ~= raid:Roster() then
-                LOG:Message(sformat(
-                    CLM.L["You can only bench players from same roster as the raid (%s)."],
-                    CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
-                ))
-                return
-            end
+            local profiles = UnifiedGUI_Standings:GetSelected()
+            -- local raid = CLM.MODULES.RaidManager:GetRaid()
+            -- if roster ~= raid:Roster() then -- TODO UnifiedGUI_Standings
+            --     LOG:Message(sformat(
+            --         CLM.L["You can only bench players from same roster as the raid (%s)."],
+            --         CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
+            --     ))
+            --     return
+            -- end
 
             if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                 if #profiles > 10 then
@@ -279,7 +283,7 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
                     CLM.MODULES.StandbyStagingManager:AddToStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
                 end
             end
-            self:Refresh(true)
+            refreshFn(true)
         end),
         trustedOnly = true,
         color = "eeee00"
@@ -291,15 +295,15 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
                 LOG:Message(CLM.L["Not in raid"])
                 return
             end
-            local roster, profiles = self:GetSelected()
-            local raid = CLM.MODULES.RaidManager:GetRaid()
-            if roster ~= raid:Roster() then
-                LOG:Message(sformat(
-                    CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
-                    CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
-                ))
-                return
-            end
+            local profiles = UnifiedGUI_Standings:GetSelected()
+            -- local raid = CLM.MODULES.RaidManager:GetRaid()
+            -- if roster ~= raid:Roster() then -- TODO
+            --     LOG:Message(sformat(
+            --         CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
+            --         CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
+            --     ))
+            --     return
+            -- end
 
             if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                 if #profiles > 10 then
@@ -322,7 +326,7 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
                     CLM.MODULES.StandbyStagingManager:RemoveFromStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
                 end
             end
-            self:Refresh(true)
+            refreshFn(true)
         end),
         trustedOnly = true,
         color = "eeee00"
@@ -334,11 +338,11 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
     {
         title = CLM.L["Remove from roster"],
         func = (function(i)
-            local roster, profiles = self:GetSelected()
-            if roster == nil then
-                LOG:Debug("UnifiedGUI(Remove): roster == nil")
-                return
-            end
+            local profiles = UnifiedGUI_Standings:GetSelected()
+            -- if roster == nil then
+            --     LOG:Debug("UnifiedGUI(Remove): roster == nil")
+            --     return
+            -- end
             if not profiles or #profiles == 0 then
                 LOG:Debug("UnifiedGUI(Remove): profiles == 0")
                 return
@@ -350,7 +354,7 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
                 ))
                 return
             end
-            CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles)
+            -- CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles) -- TODO
         end),
         trustedOnly = true,
         color = "cc0000"
@@ -429,8 +433,8 @@ local function tableFeeder(st)
         -- Events to override for ScrollingTable
         events = {
             -- OnEnter handler -> on hover
-            OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-                local status = st:GetScrollingTable().DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+                local status = st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
                 local rowData = st:GetRow(realrow)
                 if not rowData or not rowData.cols then return status end
                 local tooltip = UnifiedGUI_Standings.tooltip
@@ -493,35 +497,15 @@ local function tableFeeder(st)
                 return status
             end),
             -- OnLeave handler -> on hover out
-            OnLeaveHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-                local status = st:GetScrollingTable().DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+                local status = st.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
                 UnifiedGUI_Standings.tooltip:Hide()
                 return status
             end),
             -- OnClick handler -> click
-            OnClickHandler = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-                local rightButton = (button == "RightButton")
-                local status
-                local selected = st:GetSelection()
-                local isSelected = false
-                for _, _selected in ipairs(selected) do
-                    if _selected == realrow then
-                        isSelected = true
-                        break
-                    end
-                end
-                if not isSelected then
-                    status = st:GetScrollingTable().DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, rightButton and "LeftButton" or button, ...)
-                end
-                if rightButton then
-                    UTILS.LibDD:CloseDropDownMenus()
-                    UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
-                end
-                -- Delayed because selection in lib is updated after this function returns
-                C_Timer.After(0.01, function()
-                    UnifiedGUI_Standings.numSelected = #st:GetSelection()
-                end)
-                return status
+            OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+                UTILS.LibStClickHandler(st, RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+                return true
             end
         }
     }

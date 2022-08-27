@@ -6,10 +6,8 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs = pairs, ipairs
-local CreateFrame, UIParent = CreateFrame, UIParent
-local tonumber, tostring, type = tonumber, tostring, type
-local strlen, sfind, sformat, tinsert = strlen, string.find, string.format, table.insert
+local pairs = pairs
+local tinsert = table.insert
 
 -- Libs
 
@@ -18,8 +16,6 @@ local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local REGISTRY = "clm_unifiedgui_gui_options"
-
-local UnifiedGUI = { tabs = {} }
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('unifiedgui', {
@@ -38,16 +34,14 @@ local function RestoreLocation(self)
     end
 end
 
+local UnifiedGUI = { tabs = {} }
 function UnifiedGUI:Initialize()
     InitializeDB(self)
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
-    self.tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIListGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    -- self.selectedRoster = 0
-    -- self.numSelected = 0
-    -- self.numInRoster = 0
+
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:Refresh(true)
@@ -55,38 +49,26 @@ function UnifiedGUI:Initialize()
 
 end
 
-local function ST_GetName(row)
-    return row.cols[1].value
-end
-
-local function ST_GetClass(row)
-    return row.cols[3].value
-end
-
--- local function UpdateStatusText(self)
---     local selectCount = self.numSelected
---     if not self.numSelected or self.numSelected == 0 then
---         selectCount = CLM.L["all"]
---     end
---     self.aceObjects.top:SetStatusText(self.numInRoster .. CLM.L[" players in roster"] .. " (" .. selectCount .. " " .. CLM.L["selected"] ..  ")")
--- end
-
-local function UpdateST(self)
+local function UpdateScrollingTableStructure(self)
     local scrollingTable = self.aceObjects.scrollingTable:GetScrollingTable()
     -- Clean selection 
     scrollingTable:ClearSelection()
     -- Clean old event handlers
-    self.aceObjects.scrollingTable:RegisterEvents(scrollingTable.DefaultEvents)
     -- Clean old filter
     self.aceObjects.scrollingTable:SetFilter(scrollingTable.Filter)
     -- Get new
     local newSt = self.tabs[self.selectedTab].tableFeeder(scrollingTable)
     -- Set new structure
     self.aceObjects.scrollingTable:SetDisplayCols(newSt.columns)
-    -- Set new event handlers
+    -- Set new event handlers and clear previous ones
+    self.aceObjects.scrollingTable:RegisterEvents(newSt.events, true)
     -- Set new filters
     self.aceObjects.scrollingTable:SetFilter(newSt.filter)
+end
+
+local function UpdateScrollingTableData(self)
     -- Set new data
+    local newSt = self.tabs[self.selectedTab].tableFeeder(scrollingTable)
     self.aceObjects.scrollingTable:SetData(newSt.dataProvider())
 end
 
@@ -96,9 +78,7 @@ local function UpdateOptions(self)
 end
 
 local function UpdateTab(self)
-    print("UpdateST")
-    UpdateST(self)
-
+    -- Update Tab sizes
     local totalWidth = self.aceObjects.tabContent.frame.width
     local stWidth = self.aceObjects.scrollingTable.frame.width
     local optionsWidth = totalWidth - stWidth
@@ -111,8 +91,9 @@ local function UpdateTab(self)
         },
         alignV = "top"
     })
-    print("UpdateOptions")
+    -- Update options
     UpdateOptions(self)
+    -- Redraw
     self.aceObjects.tabContent:DoLayout()
 end
 
@@ -134,6 +115,8 @@ local function CreateTabsWidget(self, content)
 
     tabsWidget:SetCallback("OnGroupSelected", function(_, _, tab)
         self.selectedTab = tab
+        UpdateScrollingTableStructure(self)
+        UpdateScrollingTableData(self)
         UpdateTab(self)
     end)
 
@@ -171,22 +154,14 @@ function UnifiedGUI:Create()
     self.aceObjects = {}
     self.aceObjects.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_UNIFIED_GUI")
-    -- All registers must happen before creations of widget
-    -- self:RegisterTab("standings", {}, {})
-    -- self:RegisterTab("history", {}, {})
-    -- self:RegisterTab("raids", {}, {})
-    -- self:RegisterTab("profiles", function() return {columns = {}} end, { type = "group", args = {} })
-
     -- Widget
     CreateTabsContent(self)
     CreateTabsWidget(self, self.aceObjects.tabContent)
-    -- UpdateSelectedTab(self)
-    -- f:AddChild(CreateManagementOptions(self))
     RestoreLocation(self)
     f:AddChild(self.aceObjects.tabsWidget)
     -- Hide by default
     self.aceObjects.tabsWidget:SelectTab(self.selectedTab)
-    -- f:Hide()
+    f:Hide()
 end
 
 function UnifiedGUI:RegisterTab(name, tableFeeder, optionsFeeder)
@@ -201,44 +176,13 @@ end
 
 function UnifiedGUI:Refresh(visible)
     LOG:Trace("UnifiedGUI:Refresh()")
-    print("UnifiedGUI:Refresh()")
     if not self._initialized then return end
     if visible and not self.aceObjects.top:IsVisible() then return end
+    -- Don't update scrolling table structure on refresh.
+    -- TODO if update options?
+    UpdateScrollingTableData(self)
     UpdateTab(self)
 end
-
-
--- function UnifiedGUI:GetSelected(filter)
---     if type(filter) ~= "function" then
---         filter = (function(roster, profile) return profile end)
---     end
---     -- Roster
---     local roster = self:GetCurrentRoster()
---     if not roster then
---         return nil, nil
---     end
---     -- Profiles
---     local selected = self.aceObjects.scrollingTable:GetSelection()
---     local profiles = {}
---     if #selected == 0 then -- nothing selected: assume all visible are selected
---         selected = self.aceObjects.scrollingTable:DoFilter()
---     end
---     for _,s in pairs(selected) do
---         local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetName(self.aceObjects.scrollingTable:GetRow(s)))
---         if profile then
---             tinsert(profiles, profile)
---         else
---             LOG:Debug("No profile for %s", ST_GetName(self.aceObjects.scrollingTable:GetRow(s)))
---         end
---     end
---     local profiles_filtered = {}
---     for _, profile in ipairs(profiles) do
---         if filter(roster, profile) then
---             tinsert(profiles_filtered, profile)
---         end
---     end
---     return roster, profiles_filtered
--- end
 
 function UnifiedGUI:Toggle()
     LOG:Trace("UnifiedGUI:Toggle()")
