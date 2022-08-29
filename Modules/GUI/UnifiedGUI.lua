@@ -19,7 +19,8 @@ local REGISTRY = "clm_unifiedgui_gui_options"
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('unifiedgui', {
-        location = {nil, nil, "CENTER", 0, 0 }
+        location = {nil, nil, "CENTER", 0, 0 },
+        storage = {}
     })
 end
 
@@ -37,16 +38,32 @@ end
 local UnifiedGUI = { tabs = {} }
 function UnifiedGUI:Initialize()
     InitializeDB(self)
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+
     self:Create()
+
+    for _, tab in pairs(self.tabs) do
+        tab.handlers.initializeHandler()
+    end
+
     self:RegisterSlash()
-    self._initialized = true
 
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
+        for _, tab in pairs(self.tabs) do
+            tab.handlers.dataReadyHandler()
+        end
         self:Refresh(true)
     end)
 
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"},
+    (function()
+        StoreLocation(self)
+        for _, tab in pairs(self.tabs) do
+            tab.handlers.storeHandler()
+        end
+    end))
+
+    self._initialized = true
 end
 
 local function UpdateScrollingTableStructure(self)
@@ -57,7 +74,7 @@ local function UpdateScrollingTableStructure(self)
     -- Clean old filter
     self.aceObjects.scrollingTable:SetFilter(scrollingTable.Filter)
     -- Get new
-    local newSt = self.tabs[self.selectedTab].tableFeeder(scrollingTable)
+    local newSt = self.tabs[self.selectedTab].feeders.table(scrollingTable)
     -- Set new structure
     self.aceObjects.scrollingTable:SetDisplayCols(newSt.columns)
     -- Set new event handlers and clear previous ones
@@ -68,13 +85,8 @@ end
 
 local function UpdateScrollingTableData(self)
     -- Set new data
-    local newSt = self.tabs[self.selectedTab].tableFeeder(scrollingTable)
+    local newSt = self.tabs[self.selectedTab].feeders.table(self.aceObjects.scrollingTable:GetScrollingTable())
     self.aceObjects.scrollingTable:SetData(newSt.dataProvider())
-end
-
-local function UpdateOptions(self)
-    AceConfigRegistry:RegisterOptionsTable(REGISTRY, self.tabs[self.selectedTab].optionsFeeder)
-    AceConfigDialog:Open(REGISTRY, self.aceObjects.optionsContent)
 end
 
 local function UpdateTab(self)
@@ -92,7 +104,7 @@ local function UpdateTab(self)
         alignV = "top"
     })
     -- Update options
-    UpdateOptions(self)
+    self:RefreshOptionsPane()
     -- Redraw
     self.aceObjects.tabContent:DoLayout()
 end
@@ -158,30 +170,85 @@ function UnifiedGUI:Create()
     CreateTabsContent(self)
     CreateTabsWidget(self, self.aceObjects.tabContent)
     RestoreLocation(self)
+    for _, tab in pairs(self.tabs) do
+        tab.handlers.restoreHandler()
+    end
     f:AddChild(self.aceObjects.tabsWidget)
     -- Hide by default
     self.aceObjects.tabsWidget:SelectTab(self.selectedTab)
     f:Hide()
 end
 
-function UnifiedGUI:RegisterTab(name, tableFeeder, optionsFeeder)
+local publicHandlers = {
+    "initializeHandler",
+    "refreshHandler",
+    "preShowHandler",
+    "storeHandler",
+    "restoreHandler",
+    "dataReadyHandler"
+}
+
+function UnifiedGUI:RegisterTab(
+    name, tableFeeder, optionsFeeder, handlers
+)
+
+    local supportedTableTypes = {["function"] = true}
+    if not supportedTableTypes[type(tableFeeder)] then
+        error("UnifiedGUI:RegisterTab(): tableFeeder must be a function")
+    end
+
+    local supportedOptionsTypes = { ["function"] = true, ["table"] = true }
+    if not supportedOptionsTypes[type(optionsFeeder)] then
+        error("UnifiedGUI:RegisterTab(): optionsFeeder must be a function or a table")
+    end
+
     self.tabs[name] = {
-        tableFeeder = tableFeeder,
-        optionsFeeder = optionsFeeder
+        feeders = {
+            table   = tableFeeder,
+            options = optionsFeeder,
+        },
+        handlers = {}
     }
+
+    for _, handlerName in ipairs(publicHandlers) do
+        if type(handlers[handlerName]) == "function" then
+            self.tabs[name].handlers[handlerName] = handlers[handlerName]
+        else
+            self.tabs[name].handlers[handlerName] = (function() end)
+        end
+    end
+
     if not self.selectedTab then
         self.selectedTab = name
     end
 end
 
+function UnifiedGUI:GetStorage(name)
+    if self.tabs[name] then
+        if not self.db.storage[name] then
+            self.db.storage[name] = {}
+        end
+        return self.db.storage[name]
+    end
+    return {}
+end
+
+-- Refresh the data
 function UnifiedGUI:Refresh(visible)
     LOG:Trace("UnifiedGUI:Refresh()")
     if not self._initialized then return end
     if visible and not self.aceObjects.top:IsVisible() then return end
+    -- Tab specific refresh
+    self.tabs[self.selectedTab].handlers.refreshHandler()
     -- Don't update scrolling table structure on refresh.
     -- TODO if update options?
     UpdateScrollingTableData(self)
     UpdateTab(self)
+end
+
+function UnifiedGUI:RefreshOptionsPane()
+    AceConfigRegistry:RegisterOptionsTable(REGISTRY, self.tabs[self.selectedTab].feeders.options)
+    AceConfigDialog:Open(REGISTRY, self.aceObjects.optionsContent)
 end
 
 function UnifiedGUI:Toggle()
@@ -190,10 +257,7 @@ function UnifiedGUI:Toggle()
     if self.aceObjects.top:IsVisible() then
         self.aceObjects.top:Hide()
     else
-        if IsInRaid() then
-            self.filterOptions[FILTER_IN_RAID] = true
-            self.filterOptions[FILTER_STANDBY] = false
-        end
+        self.tabs[self.selectedTab].handlers.preShowHandler()
         self:Refresh()
         self.aceObjects.top:Show()
     end

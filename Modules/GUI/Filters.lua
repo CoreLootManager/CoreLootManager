@@ -148,10 +148,8 @@ function Filters:GetAceOptions()
     options[self.prefix .. "display"] = {
         name = CLM.L["Filter"],
         type = "multiselect",
-        set = function(i, k, valueToSet)
-            local filterId = tonumber(k) or 0
-            self.filters[filterId] = valueToSet
-            HandleMutualExclusiveOptions(self, filterId, valueToSet)
+        set = function(i, k, v)
+            self:SetFilterValue(k, v)
             self.refreshFn(true)
         end,
         get = function(i, v) return self.filters[tonumber(v)] end,
@@ -210,6 +208,11 @@ function Filters:GetAceOptions()
 
     self.options = options
     return options
+end
+
+function Filters:SetFilterValue(filterId, valueToSet)
+    self.filters[tonumber(filterId) or 0] = valueToSet and true or false
+    HandleMutualExclusiveOptions(self, filterId, valueToSet)
 end
 
 function Filters:Filter(playerName, playerClass, searchFieldsList)

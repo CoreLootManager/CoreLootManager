@@ -9,6 +9,9 @@ local UTILS     = CLM.UTILS
 local pairs, ipairs = pairs, ipairs
 local sformat = string.format
 
+local colorRed = {r = 0.93, g = 0.2, b = 0.2, a = 1.0}
+local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
+
 local function ST_GetName(row)
     return row.cols[1].value
 end
@@ -16,7 +19,6 @@ end
 local function ST_GetClass(row)
     return row.cols[3].value
 end
-
 
 local function ST_GetWeeklyGains(row)
     return row.cols[6].value
@@ -42,6 +44,16 @@ local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
 end
 
+local TAB_NAME = "standings"
+
+local UnifiedGUI_Standings = {
+    filter = CLM.MODELS.Filters:New(refreshFn, true, true, true, true, true, true, false, true, true, nil, 1),
+    tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIStandingsDialogTooltip", UIParent, "GameTooltipTemplate"),
+    GetSelected = (function()
+
+    end)
+}
+
 local function GenerateUntrustedOptions(self)
     local options = {}
     local rosters = CLM.MODULES.RosterManager:GetRosters()
@@ -55,6 +67,7 @@ local function GenerateUntrustedOptions(self)
         values = rosterMap,
         set = function(i, v)
             self.roster = v
+            self.context = CONSTANTS.ACTION_CONTEXT.ROSTER
             refreshFn()
         end,
         get = function(i) return self.roster end,
@@ -122,48 +135,41 @@ local function GenerateAssistantOptions(self)
             width = 0.575,
             func = (function(i)
                 -- Award Value
-                -- local awardValue = tonumber(self.awardValue)
-                -- if not awardValue then LOG:Debug("UnifiedGUI(Award): missing award value"); return end
-                -- -- Reason
-                -- local awardReason
-                -- if self.awardReason and CONSTANTS.POINT_CHANGE_REASONS.GENERAL[self.awardReason] then
-                --     awardReason = self.awardReason
-                -- else
-                --     LOG:Debug("UnifiedGUI(Award): missing reason");
-                --     awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
-                -- end
-                -- Selected: roster, profiles
-                -- local roster, profiles = self:GetSelected()
-                -- if roster == nil then
-                --     LOG:Debug("UnifiedGUI(Award): roster == nil")
-                --     return
-                -- end
-                -- if not profiles or #profiles == 0 then
-                --     LOG:Debug("UnifiedGUI(Award): profiles == 0")
-                --     return
-                -- end
-                -- Roster award
-                -- if #profiles == #roster:Profiles() then
-                --     CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
-                -- elseif CLM.MODULES.RaidManager:IsInActiveRaid() then
-                --     local raidAward = false
-                --     local raid = CLM.MODULES.RaidManager:GetRaid()
-                --     if #profiles == #raid:Players() then
-                --         raidAward = true
-                --         for _, profile in ipairs(profiles) do
-                --             raidAward = raidAward and raid:IsPlayerInRaid(profile:GUID())
-                --         end
-                --     end
-                --     if raidAward then
-                --         CLM.MODULES.PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
-                --     else
-                --         CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
-                --     end
-                -- else
-                --     CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
-                -- end
-                -- Update points
-                -- CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+                local awardValue = tonumber(self.awardValue)
+                if not awardValue then LOG:Debug("UnifiedGUI_Standings(Award): missing award value"); return end
+                -- Reason
+                local awardReason
+                if self.awardReason and CONSTANTS.POINT_CHANGE_REASONS.GENERAL[self.awardReason] then
+                    awardReason = self.awardReason
+                else
+                    LOG:Debug("UnifiedGUI_Standings(Award): missing reason");
+                    awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
+                end
+                local roster = CLM.MODULES.RosterManager:GetRosterNameByUid(self.roster)
+                if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
+                    if CLM.MODULES.RosterManager:IsInRaid() then
+                        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RosterManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                    else
+                        LOG:Warning("You are not in raid.")
+                    end
+                elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
+                    if roster then
+                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
+                    else
+                        LOG:Warning("Missing valid roster.")
+                    end
+                elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
+                    local profiles = UnifiedGUI_Standings:GetSelected()
+                    if not profiles or #profiles == 0 then
+                        LOG:Debug("UnifiedGUI_Standings(Award): profiles == 0")
+                        return
+                    end
+                    if roster then
+                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                    else
+                        LOG:Warning("Missing valid roster.")
+                    end
+                end
             end),
             confirm = true,
             order = 14
@@ -197,52 +203,34 @@ local function GenerateManagerOptions(self)
             desc = CLM.L["Execute decay for selected players or everyone if none selected."],
             type = "execute",
             width = 0.575,
-            -- func = (function(i)
-            --     -- Decay Value
-            --     local decayValue = tonumber(self.decayValue)
-            --     if not decayValue then LOG:Debug("UnifiedGUI(Decay): missing decay value"); return end
-            --     if decayValue > 100 or decayValue < 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
-            --     -- Selected: roster, profiles
-            --     local roster, profiles = self:GetSelected()
-            --     if roster == nil then
-            --         LOG:Debug("UnifiedGUI(Decay): roster == nil")
-            --         return
-            --     end
-            --     if not profiles or #profiles == 0 then
-            --         LOG:Debug("UnifiedGUI(Decay): profiles == 0")
-            --         return
-            --     end
-            --     if #profiles == #roster:Profiles() then
-            --         CLM.MODULES.PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
-            --     else
-            --         local filter
-            --         if not self.includeNegative then
-            --             filter = (function(rosterObject, profile)
-            --                 return (rosterObject:Standings(profile:GUID()) >= 0)
-            --             end)
-            --         end
-            --         roster, profiles = self:GetSelected(filter)
-            --         if not profiles or #profiles == 0 then
-            --             LOG:Debug("UnifiedGUI(Decay): profiles == 0")
-            --             return
-            --         end
-            --         CLM.MODULES.PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
-            --     end
-            -- end),
+            func = (function(i)
+                -- Decay Value
+                local decayValue = tonumber(self.decayValue)
+                if not decayValue then LOG:Debug("UnifiedGUI_Standings(Decay): missing decay value"); return end
+                if decayValue > 100 or decayValue < 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
+                local roster = CLM.MODULES.RosterManager:GetRosterNameByUid(self.roster)
+                if roster == nil then
+                    LOG:Debug("UnifiedGUI_Standings(Decay): roster == nil")
+                    return
+                end
+                if self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
+                    CLM.MODULES.PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
+                elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
+                    local profiles = UnifiedGUI_Standings:GetSelected()
+                    if not profiles or #profiles == 0 then
+                        LOG:Debug("UnifiedGUI_Standings(Decay): profiles == 0")
+                        return
+                    end
+                    CLM.MODULES.PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                else
+                    LOG:Warning("Invalid context. You should not decay raid only.")
+                end
+            end),
             confirm = true,
             order = 22
         }
     }
 end
-
-local UnifiedGUI_Standings = {
-    filter = CLM.MODELS.Filters:New(refreshFn, true, true, true, true, true, true, false, true, true, nil, 1),
-    tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIStandingsDialogTooltip", UIParent, "GameTooltipTemplate"),
-    GetSelected = (function()
-    
-    end)
-}
-
 
 local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
     {
@@ -253,14 +241,15 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
                 return
             end
             local profiles = UnifiedGUI_Standings:GetSelected()
-            -- local raid = CLM.MODULES.RaidManager:GetRaid()
-            -- if roster ~= raid:Roster() then -- TODO UnifiedGUI_Standings
-            --     LOG:Message(sformat(
-            --         CLM.L["You can only bench players from same roster as the raid (%s)."],
-            --         CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
-            --     ))
-            --     return
-            -- end
+            local raid = CLM.MODULES.RaidManager:GetRaid()
+            local roster = CLM.MODULES.RosterManager:GetRosterNameByUid(UnifiedGUI_Standings.roster)
+            if roster ~= raid:Roster() then
+                LOG:Message(sformat(
+                    CLM.L["You can only bench players from same roster as the raid (%s)."],
+                    CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
+                ))
+                return
+            end
 
             if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                 if #profiles > 10 then
@@ -296,14 +285,15 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
                 return
             end
             local profiles = UnifiedGUI_Standings:GetSelected()
-            -- local raid = CLM.MODULES.RaidManager:GetRaid()
-            -- if roster ~= raid:Roster() then -- TODO
-            --     LOG:Message(sformat(
-            --         CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
-            --         CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
-            --     ))
-            --     return
-            -- end
+            local raid = CLM.MODULES.RaidManager:GetRaid()
+            local roster = CLM.MODULES.RosterManager:GetRosterNameByUid(UnifiedGUI_Standings.roster)
+            if roster ~= raid:Roster() then
+                LOG:Message(sformat(
+                    CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
+                    CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
+                ))
+                return
+            end
 
             if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                 if #profiles > 10 then
@@ -339,12 +329,13 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
         title = CLM.L["Remove from roster"],
         func = (function(i)
             local profiles = UnifiedGUI_Standings:GetSelected()
-            -- if roster == nil then
-            --     LOG:Debug("UnifiedGUI(Remove): roster == nil")
-            --     return
-            -- end
+            local roster = CLM.MODULES.RosterManager:GetRosterNameByUid(UnifiedGUI_Standings.roster)
+            if roster == nil then
+                LOG:Debug("UnifiedGUI_Standings(Remove): roster == nil")
+                return
+            end
             if not profiles or #profiles == 0 then
-                LOG:Debug("UnifiedGUI(Remove): profiles == 0")
+                LOG:Debug("UnifiedGUI_Standings(Remove): profiles == 0")
                 return
             end
             if #profiles > 10 then
@@ -354,7 +345,7 @@ local RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
                 ))
                 return
             end
-            -- CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles) -- TODO
+            CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles)
         end),
         trustedOnly = true,
         color = "cc0000"
@@ -384,13 +375,13 @@ local function tableFeeder(st)
     return {
         -- columns - structure of the ScrollingTable
         columns = {
-            {   name = CLM.L["Name"],   width = 100 },
-            {   name = CLM.L["DKP"],    width = 80, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+            {   name = CLM.L["Name"],   width = 80 },
+            {   name = CLM.L["DKP"],    width = 60, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
             {   name = CLM.L["Class"],  width = 60,
                 comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
             },
             {   name = CLM.L["Spec"],   width = 60 },
-            {   name = CLM.L["Attendance [%]"], width = 30,
+            {   name = CLM.L["Attendance [%]"], width = 60,
                 comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
             }
         },
@@ -401,13 +392,14 @@ local function tableFeeder(st)
             local weeklyCap = roster:GetConfiguration("weeklyCap")
             local rowId = 1
             local data = {}
+
             for GUID,value in pairs(roster:Standings()) do
                 local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
                 local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
                 if profile then
                     local row = { cols = {
                         {value = profile:Name()},
-                        {value = value},
+                        {value = value, color = (value > 0 and colorGreen or colorRed)},
                         {value = UTILS.ColorCodeClass(profile:Class())},
                         {value = profile:SpecString()},
                         {value = UTILS.ColorCodeByPercentage(attendance)},
@@ -439,7 +431,7 @@ local function tableFeeder(st)
                 if not rowData or not rowData.cols then return status end
                 local tooltip = UnifiedGUI_Standings.tooltip
                 if not tooltip then return end
-                tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
+                tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
                 local weeklyGain = ST_GetWeeklyGains(rowData)
                 local weeklyCap = ST_GetWeeklyCap(rowData)
                 local gains = weeklyGain
@@ -505,10 +497,43 @@ local function tableFeeder(st)
             -- OnClick handler -> click
             OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
                 UTILS.LibStClickHandler(st, RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+                UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.SELECTED
+                CLM.GUI.Unified:RefreshOptionsPane()
                 return true
             end
         }
     }
+end
+
+local function refreshHandler()
+end
+
+local function preShowHandler()
+    UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
+    if CLM.MODULES.RosterManager:IsInRaid() then
+        UnifiedGUI_Standings.roster = CLM.MODULES.RosterManager:GetRaid():UID()
+        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
+        UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
+    end
+end
+
+local function storeHandler()
+    local storage = CLM.GUI.Unified:GetStorage(TAB_NAME)
+    storage.raid = UnifiedGUI_Standings.roster
+end
+    
+local function restoreHandler()
+    local storage = CLM.GUI.Unified:GetStorage(TAB_NAME)
+    UnifiedGUI_Standings.roster = storage.raid
+end
+   
+local function dataReadyHandler()
+    if not CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster) then
+        for _, roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
+            UnifiedGUI_Standings.roster = roster:UID()
+            break
+        end
+    end
 end
 
 CONSTANTS.ACTION_CONTEXT = {
@@ -529,4 +554,13 @@ CONSTANTS.ACTION_CONTEXT_LIST = {
     CONSTANTS.ACTION_CONTEXT.RAID
 }
 
-CLM.GUI.Unified:RegisterTab("standings", tableFeeder, optionsFeeder)
+CLM.GUI.Unified:RegisterTab(
+    TAB_NAME,
+    tableFeeder, optionsFeeder,
+    {
+        refreshHandler = refreshHandler,
+        preShowHandler = preShowHandler,
+        storeHandler = storeHandler,
+        restoreHandler = restoreHandler,
+        dataReadyHandler = dataReadyHandler
+    })
