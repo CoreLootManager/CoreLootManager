@@ -219,11 +219,12 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
 
     -- Check Search first, discard others
     if self.searchFunction then
-        local searchResult = false
         for _, field in ipairs(searchFieldsList) do
-            searchResult = searchResult or self.searchFunction(field)
+            if self.searchFunction(field) then
+                return true
+            end
         end
-        return searchResult
+        return false
     end
 
     local status = true

@@ -7,7 +7,6 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs = pairs
-local tinsert = table.insert
 
 -- Libs
 
@@ -114,10 +113,10 @@ local function CreateTabsWidget(self, content)
 
     local tabs = {}
     for name, _ in pairs(self.tabs) do
-        tinsert(tabs, {
+        tabs[#tabs + 1] = {
             value = name,
             text = CLM.L[UTILS.capitalize(name)]
-        })
+        }
     end
 
     self.selectedTab = "standings"
