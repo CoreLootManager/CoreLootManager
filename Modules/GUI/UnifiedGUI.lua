@@ -163,8 +163,9 @@ function UnifiedGUI:Create()
     f:EnableResize(false)
     f:SetWidth(700)
     f:SetHeight(600)
-    self.aceObjects = {}
-    self.aceObjects.top = f
+    self.aceObjects = {
+      top = f
+    }
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_UNIFIED_GUI")
     -- Widget
     CreateTabsContent(self)
