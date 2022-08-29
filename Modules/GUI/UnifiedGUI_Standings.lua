@@ -423,7 +423,7 @@ local function initializeHandler()
                     ))
                     return
                 end
-    
+
                 if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                     if #profiles > 10 then
                         LOG:Message(sformat(
@@ -467,7 +467,7 @@ local function initializeHandler()
                     ))
                     return
                 end
-    
+
                 if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                     if #profiles > 10 then
                         LOG:Message(sformat(
@@ -545,17 +545,17 @@ local function storeHandler()
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Standings.name)
     storage.raid = UnifiedGUI_Standings.roster
 end
-    
+
 local function restoreHandler()
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Standings.name)
     UnifiedGUI_Standings.roster = storage.raid
 end
-   
+
 local function dataReadyHandler()
     if not CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster) then
-        for _, roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
+        local roster = next(CLM.MODULES.RosterManager:GetRosters())
+        if roster then
             UnifiedGUI_Standings.roster = roster:UID()
-            break
         end
     end
 end

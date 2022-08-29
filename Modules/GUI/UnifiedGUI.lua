@@ -2,7 +2,7 @@
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
+-- local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
@@ -67,7 +67,7 @@ end
 
 local function UpdateScrollingTableStructure(self)
     local scrollingTable = self.aceObjects.scrollingTable:GetScrollingTable()
-    -- Clean selection 
+    -- Clean selection
     scrollingTable:ClearSelection()
     -- Clean old event handlers
     -- Clean old filter

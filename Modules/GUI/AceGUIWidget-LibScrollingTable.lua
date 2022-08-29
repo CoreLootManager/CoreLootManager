@@ -42,14 +42,14 @@ local STMethodsToExposeDirectly = {
 }
 
 local STMethodsToExposeWithResize = {
-	"SetDisplayRows",
-	"SetRowHeight",
-	"SetDisplayCols",
+    "SetDisplayRows",
+    "SetRowHeight",
+    "SetDisplayCols",
 }
 
 local function Resize(self)
     self:SetWidth(self.st.frame:GetWidth())
-	-- self.st.rowHeight + 8 comes from the lib implementation of header frame
+    -- self.st.rowHeight + 8 comes from the lib implementation of header frame
     self:SetHeight(self.st.frame:GetHeight() + self.st.rowHeight + 8)
 end
 
@@ -72,12 +72,12 @@ local methods = {
         return self.frame.width
     end,
 
-	["SetBackdropColor"] = function(self, ...)
-		self.st.frame:SetBackdropColor(...)
-	end,
+    ["SetBackdropColor"] = function(self, ...)
+        self.st.frame:SetBackdropColor(...)
+    end,
 
 
-	    -- AFAIK needed for input type of AceConfigDialog
+        -- AFAIK needed for input type of AceConfigDialog
     ["SetDisabled"] = function(self)
     end,
     ["SetLabel"] = function(self)
@@ -101,26 +101,29 @@ local function Constructor()
         type  = Type
     }
     for method, func in pairs(methods) do
+---@diagnostic disable-next-line: assign-type-mismatch
         widget[method] = func
     end
 
-	for _, methodName in ipairs(STMethodsToExposeDirectly) do
-    	widget[methodName] = function(self, ...) return self.st[methodName](self.st, ...) end
-	end
+    for _, methodName in ipairs(STMethodsToExposeDirectly) do
+---@diagnostic disable-next-line: assign-type-mismatch
+        widget[methodName] = function(self, ...) return self.st[methodName](self.st, ...) end
+    end
 
     -- Methods that we do not want to be touched directly as they require resize
-	for _, methodName in ipairs(STMethodsToExposeWithResize) do
-    	widget[methodName] = function(self, ...)
+    for _, methodName in ipairs(STMethodsToExposeWithResize) do
+---@diagnostic disable-next-line: assign-type-mismatch
+        widget[methodName] = function(self, ...)
             local newMethodName = "ace3_" .. methodName
             self.st[newMethodName] = self.st[methodName]
-			local r = self.st[newMethodName](self.st, ...)
+            local r = self.st[newMethodName](self.st, ...)
             self.st[methodName] = (function()
                 error("Do not call " .. methodName .. " directly when using Ace3 wrapper.")
             end)
-			Resize(self)
-			return r
-		end
-	end
+            Resize(self)
+            return r
+        end
+    end
 
     return AceGUI:RegisterAsWidget(widget)
 end
