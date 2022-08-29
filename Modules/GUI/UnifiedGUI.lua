@@ -233,6 +233,10 @@ function UnifiedGUI:GetStorage(name)
     return {}
 end
 
+function UnifiedGUI:GetScrollingTable()
+    return self.aceObjects.scrollingTable:GetScrollingTable()
+end
+
 -- Refresh the data
 function UnifiedGUI:Refresh(visible)
     LOG:Trace("UnifiedGUI:Refresh()")

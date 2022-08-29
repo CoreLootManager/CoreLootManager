@@ -36,7 +36,6 @@ local STMethodsToExposeDirectly = {
     "GetSelection",
     "GetCell",
     "GetRow",
-    "DoCellUpdate",
     "IsRowVisible",
     "SetFilter",
     "DoFilter",
@@ -109,9 +108,15 @@ local function Constructor()
     	widget[methodName] = function(self, ...) return self.st[methodName](self.st, ...) end
 	end
 
+    -- Methods that we do not want to be touched directly as they require resize
 	for _, methodName in ipairs(STMethodsToExposeWithResize) do
     	widget[methodName] = function(self, ...)
-			local r = self.st[methodName](self.st, ...)
+            local newMethodName = "ace3_" .. methodName
+            self.st[newMethodName] = self.st[methodName]
+			local r = self.st[newMethodName](self.st, ...)
+            self.st[methodName] = (function()
+                error("Do not call " .. methodName .. " directly when using Ace3 wrapper.")
+            end)
 			Resize(self)
 			return r
 		end
