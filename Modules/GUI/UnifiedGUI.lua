@@ -41,7 +41,7 @@ function UnifiedGUI:Initialize()
     self:Create()
 
     for _, tab in pairs(self.tabs) do
-        tab.handlers.initializeHandler()
+        tab.handlers.initialize()
     end
 
     self:RegisterSlash()
@@ -49,7 +49,7 @@ function UnifiedGUI:Initialize()
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         for _, tab in pairs(self.tabs) do
-            tab.handlers.dataReadyHandler()
+            tab.handlers.dataReady()
         end
         self:Refresh(true)
     end)
@@ -58,7 +58,7 @@ function UnifiedGUI:Initialize()
     (function()
         StoreLocation(self)
         for _, tab in pairs(self.tabs) do
-            tab.handlers.storeHandler()
+            tab.handlers.store()
         end
     end))
 
@@ -171,7 +171,7 @@ function UnifiedGUI:Create()
     CreateTabsWidget(self, self.aceObjects.tabContent)
     RestoreLocation(self)
     for _, tab in pairs(self.tabs) do
-        tab.handlers.restoreHandler()
+        tab.handlers.restore()
     end
     f:AddChild(self.aceObjects.tabsWidget)
     -- Hide by default
@@ -180,12 +180,12 @@ function UnifiedGUI:Create()
 end
 
 local publicHandlers = {
-    "initializeHandler",
-    "refreshHandler",
-    "preShowHandler",
-    "storeHandler",
-    "restoreHandler",
-    "dataReadyHandler"
+    "initialize",
+    "refresh",
+    "beforeShow",
+    "store",
+    "restore",
+    "dataReady"
 }
 
 function UnifiedGUI:RegisterTab(
@@ -243,7 +243,7 @@ function UnifiedGUI:Refresh(visible)
     if not self._initialized then return end
     if visible and not self.aceObjects.top:IsVisible() then return end
     -- Tab specific refresh
-    self.tabs[self.selectedTab].handlers.refreshHandler()
+    self.tabs[self.selectedTab].handlers.refresh()
     -- Don't update scrolling table structure on refresh.
     -- TODO if update options?
     UpdateScrollingTableData(self)
@@ -261,7 +261,7 @@ function UnifiedGUI:Toggle()
     if self.aceObjects.top:IsVisible() then
         self.aceObjects.top:Hide()
     else
-        self.tabs[self.selectedTab].handlers.preShowHandler()
+        self.tabs[self.selectedTab].handlers.beforeShow()
         self:Refresh()
         self.aceObjects.top:Show()
     end

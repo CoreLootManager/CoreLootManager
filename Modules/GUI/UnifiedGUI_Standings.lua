@@ -532,7 +532,7 @@ end
 -- local function refreshHandler()
 -- end
 
-local function preShowHandler()
+local function beforeShowHandler()
     UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
     if CLM.MODULES.RaidManager:IsInRaid() then
         UnifiedGUI_Standings.roster = CLM.MODULES.RaidManager:GetRaid():UID()
@@ -582,10 +582,10 @@ CLM.GUI.Unified:RegisterTab(
     UnifiedGUI_Standings.name,
     tableFeeder, optionsFeeder,
     {
-        initializeHandler = initializeHandler,
-        -- refreshHandler = refreshHandler,
-        preShowHandler = preShowHandler,
-        storeHandler = storeHandler,
-        restoreHandler = restoreHandler,
-        dataReadyHandler = dataReadyHandler
+        initialize = initializeHandler,
+        -- refresh = refreshHandler,
+        beforeShow = beforeShowHandler,
+        store = storeHandler,
+        restore = restoreHandler,
+        dataReady = dataReadyHandler
     })
