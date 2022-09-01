@@ -84,14 +84,14 @@ end
 
 local columns = {
     playerLoot = {
-        {name = CLM.L["Item"],  width = 265},
+        {name = CLM.L["Item"],  width = 220},
         {name = CLM.L["Value"],  width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = CLM.L["Date"], width = 160, sort = ScrollingTable.SORT_DSC},
         {name = "", width = 0},
         {name = "", width = 0},
     },
     raidLoot = {
-        {name = CLM.L["Item"], width = 265},
+        {name = CLM.L["Item"], width = 220},
         {name = CLM.L["Value"], width = 70, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0}},
         {name = CLM.L["Date"], width = 160, sort = ScrollingTable.SORT_DSC},
         {name = CLM.L["Player"], width = 90},

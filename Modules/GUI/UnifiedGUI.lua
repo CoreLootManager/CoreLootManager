@@ -14,7 +14,8 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local REGISTRY = "clm_unifiedgui_gui_options"
+local VERTICAL_REGISTRY   = "clm_unifiedgui_gui_options_vertical"
+local HORIZONTAL_REGISTRY = "clm_unifiedgui_gui_options_horizontal"
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('unifiedgui', {
@@ -38,8 +39,9 @@ local UnifiedGUI = { tabs = {} }
 function UnifiedGUI:Initialize()
     InitializeDB(self)
 
-    self:Create()
+    self:CreateAceGUIStructure()
 
+    -- Run GUI plugins pre-initialization
     for _, tab in pairs(self.tabs) do
         tab.handlers.initialize()
     end
@@ -65,37 +67,38 @@ function UnifiedGUI:Initialize()
     self._initialized = true
 end
 
-local function UpdateScrollingTableStructure(self)
-    local scrollingTable = self.aceObjects.scrollingTable:GetScrollingTable()
-    -- Clean selection
-    scrollingTable:ClearSelection()
-    -- Clean old event handlers
-    -- Clean old filter
-    self.aceObjects.scrollingTable:SetFilter(scrollingTable.Filter)
-    -- Get new
-    local newSt = self.tabs[self.selectedTab].feeders.table(scrollingTable)
-    -- Set new structure
-    self.aceObjects.scrollingTable:SetDisplayCols(newSt.columns)
-    -- Set new event handlers and clear previous ones
-    self.aceObjects.scrollingTable:RegisterEvents(newSt.events, true)
-    -- Set new filters
-    self.aceObjects.scrollingTable:SetFilter(newSt.filter)
+local function ChangeScrollingTable(self)
+    -- Hide all
+    for _,st in pairs(self.aceObjects.scrollingTables) do
+        st:Hide()
+    end
+    -- Remove children from the scrollingTable ace group
+    self.aceObjects.scrollingTableContent.children = {}
+    -- Set new scrolling table object as child
+    local aceSTObject = self.aceObjects.scrollingTables[self.selectedTab]
+    self.aceObjects.scrollingTableContent:AddChild(aceSTObject)
+    -- Clear selection
+    aceSTObject:ClearSelection()
+    -- Display new object
+    aceSTObject:Show()
 end
 
 local function UpdateScrollingTableData(self)
     -- Set new data
-    local newSt = self.tabs[self.selectedTab].feeders.table(self.aceObjects.scrollingTable:GetScrollingTable())
-    self.aceObjects.scrollingTable:SetData(newSt.dataProvider())
+    local currentSt = self.aceObjects.scrollingTables[self.selectedTab]
+    local dataProvider = self.tabs[self.selectedTab].feeders.table
+    currentSt:SetData(dataProvider(currentSt:GetScrollingTable()))
 end
 
 local function UpdateTab(self)
     -- Update Tab sizes
-    local totalWidth = self.aceObjects.tabContent.frame.width
-    local stWidth = self.aceObjects.scrollingTable.frame.width
+    local totalWidth = self.aceObjects.tabularContent.frame.width
+    local stWidth = self.aceObjects.scrollingTables[self.selectedTab].frame.width
     local optionsWidth = totalWidth - stWidth
     self.aceObjects.scrollFrame:SetWidth(optionsWidth)
-    self.aceObjects.optionsContent:SetWidth(optionsWidth - 20)
-    self.aceObjects.tabContent:SetUserData("table", {
+    self.aceObjects.horizontalOptionsContent:SetWidth(totalWidth)
+    self.aceObjects.verticalOptionsContent:SetWidth(optionsWidth - 20)
+    self.aceObjects.tabularContent:SetUserData("table", {
         columns = {
             stWidth,
             optionsWidth
@@ -105,7 +108,7 @@ local function UpdateTab(self)
     -- Update options
     self:RefreshOptionsPane()
     -- Redraw
-    self.aceObjects.tabContent:DoLayout()
+    self.aceObjects.tabularContent:DoLayout()
 end
 
 local function CreateTabsWidget(self, content)
@@ -126,9 +129,9 @@ local function CreateTabsWidget(self, content)
 
     tabsWidget:SetCallback("OnGroupSelected", function(_, _, tab)
         self.selectedTab = tab
-        UpdateScrollingTableStructure(self)
-        UpdateScrollingTableData(self)
+        ChangeScrollingTable(self)
         UpdateTab(self)
+        UpdateScrollingTableData(self)
     end)
 
     tabsWidget:AddChild(content)
@@ -138,22 +141,37 @@ end
 
 local function CreateTabsContent(self)
     local tabContent = AceGUI:Create("SimpleGroup")
-    tabContent:SetLayout("Table")
-    tabContent:SetUserData("table", { columns = {100, 100}, alignV =  "top" })
-    self.aceObjects.tabContent = tabContent
-    local scrollingTable = AceGUI:Create("CLMLibScrollingTable")
-    local optionsContent = AceGUI:Create("SimpleGroup")
-    self.aceObjects.scrollingTable = scrollingTable
+    tabContent:SetLayout("Fill")
+    self.aceObjects.scrollingTables = {}
+    local scrollingTableContent = AceGUI:Create("SimpleGroup")
+    local horizontalOptionsContent = AceGUI:Create("SimpleGroup")
+    horizontalOptionsContent:SetLayout("Flow")
+
+    local tabularContent = AceGUI:Create("SimpleGroup")
+    tabularContent:SetLayout("Table")
+    tabularContent:SetUserData("table", { columns = {100, 100}, alignV =  "top" })
+    local verticalOptionsContent = AceGUI:Create("SimpleGroup")
+    for name,_ in pairs(self.tabs) do
+        self.aceObjects.scrollingTables[name] = AceGUI:Create("CLMLibScrollingTable")
+    end
     local scrollFrame = AceGUI:Create("ScrollFrame")
+
+    self.aceObjects.tabContent = tabContent
+    self.aceObjects.tabularContent = tabularContent
+    self.aceObjects.scrollingTableContent = scrollingTableContent
     self.aceObjects.scrollFrame = scrollFrame
-    self.aceObjects.optionsContent = optionsContent
-    tabContent:AddChild(scrollingTable)
-    tabContent:AddChild(scrollFrame)
-    scrollFrame:AddChild(optionsContent)
+    self.aceObjects.horizontalOptionsContent = horizontalOptionsContent
+    self.aceObjects.verticalOptionsContent = verticalOptionsContent
+
+    tabularContent:AddChild(scrollingTableContent)
+    tabularContent:AddChild(scrollFrame)
+    scrollFrame:AddChild(verticalOptionsContent)
+    tabContent:AddChild(horizontalOptionsContent)
+    tabContent:AddChild(tabularContent)
 end
 
-function UnifiedGUI:Create()
-    LOG:Trace("UnifiedGUI:Create()")
+function UnifiedGUI:CreateAceGUIStructure()
+    LOG:Trace("UnifiedGUI:CreateAceGUIStructure()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
     f:SetTitle(CLM.L["Classic Loot Manger"])
@@ -174,6 +192,14 @@ function UnifiedGUI:Create()
         tab.handlers.restore()
     end
     f:AddChild(self.aceObjects.tabsWidget)
+    -- Build scrollingTables
+    for name, tab in pairs(self.tabs) do
+        local structure = tab.structure
+        local st = self.aceObjects.scrollingTables[name]
+        st:SetDisplayCols(structure.columns)
+        st:RegisterEvents(structure.events, true)
+        st:SetFilter(structure.filter)
+    end
     -- Hide by default
     self.aceObjects.tabsWidget:SelectTab(self.selectedTab)
     f:Hide()
@@ -189,23 +215,36 @@ local publicHandlers = {
 }
 
 function UnifiedGUI:RegisterTab(
-    name, tableFeeder, optionsFeeder, handlers
+    name, tableStructure, tableDataFeeder,
+    horizontalOptionsFeeder, verticalOptionsFeeder,
+    handlers
 )
 
-    local supportedTableTypes = {["function"] = true}
-    if not supportedTableTypes[type(tableFeeder)] then
-        error("UnifiedGUI:RegisterTab(): tableFeeder must be a function")
+    local supportedTableStructureTypes = {["table"] = true}
+    if not supportedTableStructureTypes[type(tableStructure)] then
+        error("UnifiedGUI:RegisterTab(): tableStructure must be a table")
     end
 
-    local supportedOptionsTypes = { ["function"] = true, ["table"] = true }
-    if not supportedOptionsTypes[type(optionsFeeder)] then
-        error("UnifiedGUI:RegisterTab(): optionsFeeder must be a function or a table")
+    local supportedTableDataFeederTypes = {["function"] = true}
+    if not supportedTableDataFeederTypes[type(tableDataFeeder)] then
+        error("UnifiedGUI:RegisterTab(): tableDataFeeder must be a function")
+    end
+
+    local supportedOptionsTypes = { ["function"] = true, ["table"] = true, ["nil"] = true }
+    if not supportedOptionsTypes[type(horizontalOptionsFeeder)] then
+        error("UnifiedGUI:RegisterTab(): horizontalOptionsFeeder must be a function or a table")
+    end
+
+    if not supportedOptionsTypes[type(verticalOptionsFeeder)] then
+        error("UnifiedGUI:RegisterTab(): verticalOptionsFeeder must be a function or a table")
     end
 
     self.tabs[name] = {
+        structure = tableStructure,
         feeders = {
-            table   = tableFeeder,
-            options = optionsFeeder,
+            table   = tableDataFeeder,
+            horizontalOptions = horizontalOptionsFeeder or { type = "group", args = {} },
+            verticalOptions = verticalOptionsFeeder or { type = "group", args = {} }
         },
         handlers = {}
     }
@@ -234,7 +273,7 @@ function UnifiedGUI:GetStorage(name)
 end
 
 function UnifiedGUI:GetScrollingTable()
-    return self.aceObjects.scrollingTable:GetScrollingTable()
+    return self.aceObjects.scrollingTables[self.selectedTab]:GetScrollingTable()
 end
 
 -- Refresh the data
@@ -251,8 +290,10 @@ function UnifiedGUI:Refresh(visible)
 end
 
 function UnifiedGUI:RefreshOptionsPane()
-    AceConfigRegistry:RegisterOptionsTable(REGISTRY, self.tabs[self.selectedTab].feeders.options)
-    AceConfigDialog:Open(REGISTRY, self.aceObjects.optionsContent)
+    AceConfigRegistry:RegisterOptionsTable(VERTICAL_REGISTRY, self.tabs[self.selectedTab].feeders.verticalOptions)
+    AceConfigDialog:Open(VERTICAL_REGISTRY, self.aceObjects.verticalOptionsContent)
+    AceConfigRegistry:RegisterOptionsTable(HORIZONTAL_REGISTRY, self.tabs[self.selectedTab].feeders.horizontalOptions)
+    AceConfigDialog:Open(HORIZONTAL_REGISTRY, self.aceObjects.horizontalOptionsContent)
 end
 
 function UnifiedGUI:Toggle()

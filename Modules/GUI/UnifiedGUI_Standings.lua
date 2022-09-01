@@ -76,15 +76,10 @@ end
 
 local function GenerateUntrustedOptions(self)
     local options = {}
-    local rosters = CLM.MODULES.RosterManager:GetRosters()
-    local rosterMap = {}
-    for name, roster in pairs(rosters) do
-        rosterMap[roster:UID()] = name
-    end
     options.roster = {
         name = CLM.L["Roster"],
         type = "select",
-        values = rosterMap,
+        values = CLM.MODULES.RosterManager:GetRostersUidMap(),
         set = function(i, v)
             self.roster = v
             self.context = CONSTANTS.ACTION_CONTEXT.ROSTER
@@ -254,7 +249,7 @@ local function GenerateManagerOptions(self)
     }
 end
 
-local function optionsFeeder()
+local function verticalOptionsFeeder()
     local options = {
         type = "group",
         args = {}
@@ -270,138 +265,136 @@ local function optionsFeeder()
     return options
 end
 
-local function tableFeeder(st)
-    return {
-        -- columns - structure of the ScrollingTable
-        columns = {
-            {   name = CLM.L["Name"],   width = 80 },
-            {   name = CLM.L["DKP"],    width = 60, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-            {   name = CLM.L["Class"],  width = 60,
-                comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-            },
-            {   name = CLM.L["Spec"],   width = 60 },
-            {   name = CLM.L["Attendance [%]"], width = 60,
-                comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-            }
+local tableStructure = {
+    -- columns - structure of the ScrollingTable
+    columns = {
+        {   name = CLM.L["Name"],   width = 80 },
+        {   name = CLM.L["DKP"],    width = 60, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+        {   name = CLM.L["Class"],  width = 80,
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
-        -- Function to fill ScrollingTable
-        dataProvider = (function()
-            local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
-            if not roster then return {} end
-            local weeklyCap = roster:GetConfiguration("weeklyCap")
-            local rowId = 1
-            local data = {}
-
-            for GUID,value in pairs(roster:Standings()) do
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-                local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
-                if profile then
-                    local row = { cols = {
-                        {value = profile:Name()},
-                        {value = value, color = (value > 0 and colorGreen or colorRed)},
-                        {value = UTILS.ColorCodeClass(profile:Class())},
-                        {value = profile:SpecString()},
-                        {value = UTILS.ColorCodeByPercentage(attendance)},
-                        -- not displayed
-                        {value = roster:GetCurrentGainsForPlayer(GUID)},
-                        {value = weeklyCap},
-                        {value = roster:GetPointInfoForPlayer(GUID)},
-                        {value = roster:GetProfileLootByGUID(GUID)},
-                        {value = roster:GetProfilePointHistoryByGUID(GUID)}
-                    }}
-                    data[rowId] = row
-                    rowId = rowId + 1
-                end
-            end
-            return data
-        end),
-        -- Function to filter ScrollingTable
-        filter = (function(stobject, row)
-            local playerName = ST_GetName(row)
-            local class = ST_GetClass(row)
-            return UnifiedGUI_Standings.filter:Filter(playerName, class, {playerName, class})
-        end),
-        -- Events to override for ScrollingTable
-        events = {
-            -- OnEnter handler -> on hover
-            OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-                local status = st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-                local rowData = st:GetRow(realrow)
-                if not rowData or not rowData.cols then return status end
-                local tooltip = UnifiedGUI_Standings.tooltip
-                if not tooltip then return end
-                tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
-                local weeklyGain = ST_GetWeeklyGains(rowData)
-                local weeklyCap = ST_GetWeeklyCap(rowData)
-                local gains = weeklyGain
-                if weeklyCap > 0 then
-                    gains = gains .. " / " .. weeklyCap
-                end
-                local pointInfo = ST_GetPointInfo(rowData)
-                tooltip:AddDoubleLine(CLM.L["Information"], CLM.L["DKP"])
-                tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
-                tooltip:AddLine("\n")
-                -- Statistics
-                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Statistics:"], "44ee44"))
-                tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
-                tooltip:AddDoubleLine(CLM.L["Total received"], pointInfo.received)
-                tooltip:AddDoubleLine(CLM.L["Total blocked"], pointInfo.blocked)
-                tooltip:AddDoubleLine(CLM.L["Total decayed"], pointInfo.decayed)
-                -- Loot History
-                local lootList = ST_GetProfileLoot(rowData)
-                tooltip:AddLine("\n")
-                if #lootList > 0 then
-                    tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest loot:"], "44ee44"))
-                    local limit = #lootList - 4 -- inclusive (- 5 + 1)
-                    if limit < 1 then
-                        limit = 1
-                    end
-                    for i=#lootList, limit, -1 do
-                        local loot = lootList[i]
-                        local _, itemLink = GetItemInfo(loot:Id())
-                        if itemLink then
-                            tooltip:AddDoubleLine(itemLink, loot:Value())
-                        end
-                    end
-                else
-                    tooltip:AddLine(CLM.L["No loot received"])
-                end
-                -- Point History
-                local pointList = ST_GetProfilePoints(rowData)
-                tooltip:AddLine("\n")
-                if #pointList > 0 then
-                    tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest DKP changes:"], "44ee44"))
-                    for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
-                        if i > 5 then break end
-                        local reason = point:Reason() or 0
-                        local value = tostring(point:Value())
-                        if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
-                            value = value .. "%"
-                        end
-                        tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
-                    end
-                else
-                    tooltip:AddLine(CLM.L["No points received"])
-                end
-                -- Display
-                tooltip:Show()
-                return status
-            end),
-            -- OnLeave handler -> on hover out
-            OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-                local status = st.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-                UnifiedGUI_Standings.tooltip:Hide()
-                return status
-            end),
-            -- OnClick handler -> click
-            OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-                UTILS.LibStClickHandler(st, UnifiedGUI_Standings.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-                UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.SELECTED
-                CLM.GUI.Unified:RefreshOptionsPane()
-                return true
-            end
+        {   name = CLM.L["Spec"],   width = 60 },
+        {   name = CLM.L["Attendance [%]"], width = 60,
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         }
+    },
+    -- Function to filter ScrollingTable
+    filter = (function(stobject, row)
+        local playerName = ST_GetName(row)
+        local class = ST_GetClass(row)
+        return UnifiedGUI_Standings.filter:Filter(playerName, class, {playerName, class})
+    end),
+    -- Events to override for ScrollingTable
+    events = {
+        -- OnEnter handler -> on hover
+        OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+            local tooltip = UnifiedGUI_Standings.tooltip
+            if not tooltip then return end
+            tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+            local weeklyGain = ST_GetWeeklyGains(rowData)
+            local weeklyCap = ST_GetWeeklyCap(rowData)
+            local gains = weeklyGain
+            if weeklyCap > 0 then
+                gains = gains .. " / " .. weeklyCap
+            end
+            local pointInfo = ST_GetPointInfo(rowData)
+            tooltip:AddDoubleLine(CLM.L["Information"], CLM.L["DKP"])
+            tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
+            tooltip:AddLine("\n")
+            -- Statistics
+            tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Statistics:"], "44ee44"))
+            tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
+            tooltip:AddDoubleLine(CLM.L["Total received"], pointInfo.received)
+            tooltip:AddDoubleLine(CLM.L["Total blocked"], pointInfo.blocked)
+            tooltip:AddDoubleLine(CLM.L["Total decayed"], pointInfo.decayed)
+            -- Loot History
+            local lootList = ST_GetProfileLoot(rowData)
+            tooltip:AddLine("\n")
+            if #lootList > 0 then
+                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest loot:"], "44ee44"))
+                local limit = #lootList - 4 -- inclusive (- 5 + 1)
+                if limit < 1 then
+                    limit = 1
+                end
+                for i=#lootList, limit, -1 do
+                    local loot = lootList[i]
+                    local _, itemLink = GetItemInfo(loot:Id())
+                    if itemLink then
+                        tooltip:AddDoubleLine(itemLink, loot:Value())
+                    end
+                end
+            else
+                tooltip:AddLine(CLM.L["No loot received"])
+            end
+            -- Point History
+            local pointList = ST_GetProfilePoints(rowData)
+            tooltip:AddLine("\n")
+            if #pointList > 0 then
+                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest DKP changes:"], "44ee44"))
+                for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
+                    if i > 5 then break end
+                    local reason = point:Reason() or 0
+                    local value = tostring(point:Value())
+                    if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
+                        value = value .. "%"
+                    end
+                    tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
+                end
+            else
+                tooltip:AddLine(CLM.L["No points received"])
+            end
+            -- Display
+            tooltip:Show()
+            return status
+        end),
+        -- OnLeave handler -> on hover out
+        OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            UnifiedGUI_Standings.tooltip:Hide()
+            return status
+        end),
+        -- OnClick handler -> click
+        OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UTILS.LibStClickHandler(table, UnifiedGUI_Standings.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.SELECTED
+            CLM.GUI.Unified:RefreshOptionsPane()
+            return true
+        end
     }
+}
+
+local function tableDataFeeder()
+    local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+    if not roster then return {} end
+    local weeklyCap = roster:GetConfiguration("weeklyCap")
+    local rowId = 1
+    local data = {}
+
+    for GUID,value in pairs(roster:Standings()) do
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
+        if profile then
+            local row = { cols = {
+                {value = profile:Name()},
+                {value = value, color = (value > 0 and colorGreen or colorRed)},
+                {value = UTILS.ColorCodeClass(profile:Class())},
+                {value = profile:SpecString()},
+                {value = UTILS.ColorCodeByPercentage(attendance)},
+                -- not displayed
+                {value = roster:GetCurrentGainsForPlayer(GUID)},
+                {value = weeklyCap},
+                {value = roster:GetPointInfoForPlayer(GUID)},
+                {value = roster:GetProfileLootByGUID(GUID)},
+                {value = roster:GetProfilePointHistoryByGUID(GUID)}
+            }}
+            data[rowId] = row
+            rowId = rowId + 1
+        end
+    end
+    return data
 end
 
 local function initializeHandler()
@@ -543,17 +536,17 @@ end
 
 local function storeHandler()
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Standings.name)
-    storage.raid = UnifiedGUI_Standings.roster
+    storage.roster = UnifiedGUI_Standings.roster
 end
 
 local function restoreHandler()
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Standings.name)
-    UnifiedGUI_Standings.roster = storage.raid
+    UnifiedGUI_Standings.roster = storage.roster
 end
 
 local function dataReadyHandler()
     if not CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster) then
-        local roster = next(CLM.MODULES.RosterManager:GetRosters())
+        local _, roster = next(CLM.MODULES.RosterManager:GetRosters())
         if roster then
             UnifiedGUI_Standings.roster = roster:UID()
         end
@@ -580,7 +573,35 @@ CONSTANTS.ACTION_CONTEXT_LIST = {
 
 CLM.GUI.Unified:RegisterTab(
     UnifiedGUI_Standings.name,
-    tableFeeder, optionsFeeder,
+    tableStructure,
+    tableDataFeeder,
+    -- horizontalOptionsFeeder,
+    (function()
+        return {
+            type = "group",
+            args = {
+                rosterx = {
+                    name = "roster",
+                    type = "toggle",
+                    set = (function() end),
+                    get = (function() end),
+                },
+                playerx = {
+                    name = "player",
+                    type = "toggle",
+                    set = (function() end),
+                    get = (function() end),
+                },
+                searchxx = {
+                    name = "search",
+                    type = "toggle",
+                    set = (function() end),
+                    get = (function() end),
+                }
+            }
+        }
+    end),
+    verticalOptionsFeeder,
     {
         initialize = initializeHandler,
         -- refresh = refreshHandler,
@@ -588,4 +609,5 @@ CLM.GUI.Unified:RegisterTab(
         store = storeHandler,
         restore = restoreHandler,
         dataReady = dataReadyHandler
-    })
+    }
+)

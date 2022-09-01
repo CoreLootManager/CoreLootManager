@@ -62,10 +62,22 @@ local methods = {
         Resize(self)
     end,
 
+    ["Show"] = function(self)
+        self.st:Show()
+    end,
+
+    ["Hide"] = function(self)
+        self.st:Hide()
+    end,
+
     -- ["OnRelease"] = nil,
 
     ["GetScrollingTable"] = function(self)
         return self.st
+    end,
+
+    ["GetDefaultEvent"] = function(self, event)
+        return self.st.DefaultEvents[event]
     end,
 
     ["GetWidth"] = function(self)
@@ -114,14 +126,14 @@ local function Constructor()
     for _, methodName in ipairs(STMethodsToExposeWithResize) do
 ---@diagnostic disable-next-line: assign-type-mismatch
         widget[methodName] = function(self, ...)
-            local newMethodName = "ace3_" .. methodName
-            self.st[newMethodName] = self.st[methodName]
-            local r = self.st[newMethodName](self.st, ...)
-            self.st[methodName] = (function()
-                error("Do not call " .. methodName .. " directly when using Ace3 wrapper.")
-            end)
+            -- local newMethodName = "ace3_" .. methodName
+            -- self.st[newMethodName] = self.st[methodName]
+            -- self.st[newMethodName](self.st, ...)
+            -- self.st[methodName] = (function()
+            --     error("Do not call " .. methodName .. " directly when using Ace3 wrapper.")
+            -- end)
+            self.st[methodName](self.st, ...)
             Resize(self)
-            return r
         end
     end
 

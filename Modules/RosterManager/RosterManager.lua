@@ -312,6 +312,10 @@ function RosterManager:GetRosters()
     return self.cache.rosters
 end
 
+function RosterManager:GetRostersUidMap()
+    return self.cache.rostersUidMap
+end
+
 function RosterManager:GetRosterByName(name)
     return self.cache.rosters[name]
 end
