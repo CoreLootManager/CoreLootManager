@@ -439,13 +439,21 @@ function UTILS.GetCutoffTimestamp()
     return 1566684000
 end
 
-function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
+function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine, maxProfiles)
     inLine = inLine or 5
+    maxProfiles = maxProfiles or 25
     local profilesInLine = 0
     local line = ""
     local separator = ", "
     local numProfiles = #profiles
-    local profilesLeft = numProfiles
+    local profilesLeft
+    local notIncludedProfiles = 0
+    if numProfiles > maxProfiles then
+        notIncludedProfiles = numProfiles - maxProfiles
+        numProfiles = maxProfiles
+    end
+    profilesLeft = numProfiles
+    
     while (profilesLeft > 0) do
         local currentProfile = profiles[numProfiles - profilesLeft + 1]
         profilesLeft = profilesLeft - 1
@@ -459,6 +467,10 @@ function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
             line = ""
             profilesInLine = 0
         end
+    end
+
+    if notIncludedProfiles > 0 then
+        tooltip:AddLine(notIncludedProfiles .. CLM.L[" more"])
     end
 end
 

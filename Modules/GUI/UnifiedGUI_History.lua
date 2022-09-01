@@ -24,33 +24,22 @@ CONSTANTS.HISTORY_TYPES_GUI = {
     [CONSTANTS.HISTORY_TYPE.POINT] = CLM.L["Point"]
 }
 
-local function ST_GetName(row)
+local function ST_GetInfo(row)
     return row.cols[1].value
 end
 
-local function ST_GetClass(row)
-    return row.cols[3].value
+local function ST_GetValue(row)
+    return row.cols[2].value
 end
 
-local function ST_GetWeeklyGains(row)
+local function ST_GetIsLoot(row)
+    return row.cols[5].value
+end
+
+local function ST_GetObject(row)
     return row.cols[6].value
 end
 
-local function ST_GetWeeklyCap(row)
-    return row.cols[7].value
-end
-
-local function ST_GetPointInfo(row)
-    return row.cols[8].value
-end
-
-local function ST_GetProfileLoot(row)
-    return row.cols[9].value
-end
-
-local function ST_GetProfilePoints(row)
-    return row.cols[10].value
-end
 
 local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
@@ -83,11 +72,11 @@ function UnifiedGUI_History:GetSelection()
     --     return profiles
     -- end
     -- for _,s in pairs(selected) do
-    --     local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
+    --     local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetInfo(st:GetRow(s)))
     --     if profile then
     --         tinsert(profiles, profile)
     --     else
-    --         LOG:Debug("No profile for %s", ST_GetName(st:GetRow(s)))
+    --         LOG:Debug("No profile for %s", ST_GetInfo(st:GetRow(s)))
     --     end
     -- end
     -- return profiles
@@ -347,80 +336,90 @@ local tableStructure = {
     },
     -- Function to filter ScrollingTable
     filter = (function(stobject, row)
-        local playerName = ST_GetName(row)
-        local class = ST_GetClass(row)
-        return UnifiedGUI_History.filter:Filter(playerName, class, {playerName, class})
+        return UnifiedGUI_History.filter:Filter("", "", {ST_GetInfo(row)})
     end),
     -- Events to override for ScrollingTable
     events = {
         -- OnEnter handler -> on hover
         OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            -- local rowData = table:GetRow(realrow)
-            -- if not rowData or not rowData.cols then return status end
-            -- local tooltip = UnifiedGUI_History.tooltip
-            -- if not tooltip then return end
-            -- tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
-            -- local weeklyGain = ST_GetWeeklyGains(rowData)
-            -- local weeklyCap = ST_GetWeeklyCap(rowData)
-            -- local gains = weeklyGain
-            -- if weeklyCap > 0 then
-            --     gains = gains .. " / " .. weeklyCap
-            -- end
-            -- local pointInfo = ST_GetPointInfo(rowData)
-            -- tooltip:AddDoubleLine(CLM.L["Information"], CLM.L["DKP"])
-            -- tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
-            -- tooltip:AddLine("\n")
-            -- -- Statistics
-            -- tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Statistics:"], "44ee44"))
-            -- tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
-            -- tooltip:AddDoubleLine(CLM.L["Total received"], pointInfo.received)
-            -- tooltip:AddDoubleLine(CLM.L["Total blocked"], pointInfo.blocked)
-            -- tooltip:AddDoubleLine(CLM.L["Total decayed"], pointInfo.decayed)
-            -- -- Loot History
-            -- local lootList = ST_GetProfileLoot(rowData)
-            -- tooltip:AddLine("\n")
-            -- if #lootList > 0 then
-            --     tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest loot:"], "44ee44"))
-            --     local limit = #lootList - 4 -- inclusive (- 5 + 1)
-            --     if limit < 1 then
-            --         limit = 1
-            --     end
-            --     for i=#lootList, limit, -1 do
-            --         local loot = lootList[i]
-            --         local _, itemLink = GetItemInfo(loot:Id())
-            --         if itemLink then
-            --             tooltip:AddDoubleLine(itemLink, loot:Value())
-            --         end
-            --     end
-            -- else
-            --     tooltip:AddLine(CLM.L["No loot received"])
-            -- end
-            -- -- Point History
-            -- local pointList = ST_GetProfilePoints(rowData)
-            -- tooltip:AddLine("\n")
-            -- if #pointList > 0 then
-            --     tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest DKP changes:"], "44ee44"))
-            --     for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
-            --         if i > 5 then break end
-            --         local reason = point:Reason() or 0
-            --         local value = tostring(point:Value())
-            --         if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
-            --             value = value .. "%"
-            --         end
-            --         tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
-            --     end
-            -- else
-            --     tooltip:AddLine(CLM.L["No points received"])
-            -- end
-            -- -- Display
-            -- tooltip:Show()
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+            local tooltip = UnifiedGUI_History.tooltip
+            if not tooltip then return end
+            tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+            -- ------------------------------ --
+            if ST_GetIsLoot(rowData) == true then
+                -- ----------- Loot ------------- --
+                local itemLink = ST_GetInfo(rowData) or ""
+                local itemId = UTILS.GetItemIdFromLink(itemLink)
+                local itemString = "item:" .. tonumber(itemId)
+                tooltip:SetHyperlink(itemString)
+                local loot = ST_GetObject(rowData)
+                if loot then
+                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
+                    local name
+                    if profile then
+                        name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+                    else
+                        name = CLM.L["Unknown"]
+                    end
+                    local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
+                    if raid then
+                        tooltip:AddLine(raid:Name())
+                    end
+                    tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+                    local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
+                    if auction then
+                        tooltip:AddLine(CLM.L["Bids"])
+                        for bidder, bid in pairs(auction.bids) do
+                            local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
+                            if bidderProfile then
+                                bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
+                            end
+                            tooltip:AddDoubleLine(bidder, bid)
+                        end
+                    end
+                end
+            elseif ST_GetIsLoot(rowData) == false then
+                -- ----------- Point ------------ --
+                local history = ST_GetObject(rowData)
+                local profiles = history:Profiles()
+                local numProfiles = #profiles
+                tooltip:AddDoubleLine(CLM.L["Affected players:"], tostring(numProfiles))
+                if not profiles or numProfiles == 0 then
+                    tooltip:AddLine(CLM.L["None"])
+                else
+                    UTILS.buildPlayerListForTooltip(profiles, tooltip)
+                end
+                local note = history:Note()
+                if note ~= "" then
+                    local numNote = tonumber(note)
+                    if numNote then
+                        note = CLM.EncounterIDsMap[numNote] or note
+                    end
+                    tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
+                end
+                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
+                local name
+                if profile then
+                    name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+                else
+                    name = CLM.L["Unknown"]
+                end
+                tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+            else
+                return status
+            end
+            -- ------------------------------ --
+            -- Display
+            tooltip:Show()
             return status
         end),
         -- OnLeave handler -> on hover out
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            -- UnifiedGUI_History.tooltip:Hide()
+            UnifiedGUI_History.tooltip:Hide()
             return status
         end),
         -- OnClick handler -> click
@@ -468,15 +467,16 @@ local function tableDataFeeder()
         end
 
         for _,lootData in ipairs(displayedLoot) do
-            local loot = lootData[1]
-            -- local link = lootData[2]
-            -- local owner = lootData[3]
-            local row = {cols = {}}
-            row.cols[1] = {value = lootData[2]}
-            row.cols[2] = {value = loot:Value()}
-            row.cols[3] = {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())}
-            row.cols[4] = {value = lootData[3]}
-            row.cols[5] = {value = loot}
+            local loot = lootData[1] --
+            local row = {cols = {
+                {value = lootData[2]}, -- itemLink
+                {value = loot:Value()},
+                {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
+                {value = lootData[3]}, -- owner
+                -- Not visible
+                {value = true}, -- is Loot
+                {value = loot} -- Loot Object
+            }}
             data[#data + 1] =  row
         end
     end
@@ -498,20 +498,21 @@ local function tableDataFeeder()
             if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                 value = value .. "%"
             end
-            local awardedBy
-            local creator = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
-            if creator then
-                awardedBy = UTILS.ColorCodeText(creator:Name(), UTILS.GetClassColor(creator:Class()).hex)
-            else
-                awardedBy = ""
-            end
-            local row = {cols = {}}
-            row.cols[1] = {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""}
-            row.cols[2] = {value = value}
-            row.cols[3] = {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())}
-            -- row.cols[4] = {value = awardedBy}
-            row.cols[4] = {value = CLM.L["Multiple"]}
-            row.cols[5] = {value = history}
+            -- local awardedBy
+            -- local creator = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
+            -- if creator then
+            --     awardedBy = UTILS.ColorCodeText(creator:Name(), UTILS.GetClassColor(creator:Class()).hex)
+            -- else
+            --     awardedBy = ""
+            -- end
+            local row = {cols = {
+                {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
+                {value = value},
+                {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
+                {value = CLM.L["Multiple"]},
+                {value = false},
+                {value = history}
+            }}
             data[#data + 1] =  row
         end
     end
