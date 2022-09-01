@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v1.9.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Death Knight support", body = "Add support to Death Knights in prepatch."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.9.1",
         data = {
             {
