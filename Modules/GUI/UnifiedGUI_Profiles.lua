@@ -17,7 +17,7 @@ local function ST_GetName(row)
 end
 
 local function ST_GetClass(row)
-    return row.cols[2].value
+    return row.cols[3].value
 end
 
 local function refreshFn(...)
@@ -26,7 +26,16 @@ end
 
 local UnifiedGUI_Profiles = {
     name = "profiles",
-    filter = CLM.MODELS.Filters:New(refreshFn, true, false, false, true, true, false, false, true, true, nil, 1),
+    filter = CLM.MODELS.Filters:New(
+    (function() CLM.GUI.Unified:FilterScrollingTable() end),
+    UTILS.Set({
+        "class",
+        "inGuild", "external"
+    }),
+    UTILS.Set({
+        "buttons", "search"
+    }),
+    nil, 1),
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIProfilesDialogTooltip", UIParent, "GameTooltipTemplate"),
 }
 
@@ -187,21 +196,21 @@ local function verticalOptionsFeeder()
     -- if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
     --     UTILS.mergeDictsInline(options.args, GenerateGMOptions(UnifiedGUI_Profiles))
     -- end
-    UnifiedGUI_Profiles.options = options
     return options
 end
 
 local tableStructure = {
+    rows = 25,
     -- columns - structure of the ScrollingTable
     columns = {
-        {name = CLM.L["Name"],  width = 80},
-        {name = CLM.L["Class"], width = 80,
+        {name = CLM.L["Name"],  width = 85, sort = LibStub("ScrollingTable").SORT_DSC},
+        {name = CLM.L["Main"],  width = 85,
+            color = colorGreen
+        },
+        {name = CLM.L["Class"], width = 100,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
         {name = CLM.L["Spec"],  width = 60},
-        {name = CLM.L["Main"],  width = 80,
-            color = colorGreen
-        },
         {name = CLM.L["Rank"],  width = 60},
         {name = CLM.L["Version"],  width = 60},
     },
@@ -313,12 +322,14 @@ local function tableDataFeeder()
         elseif CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             rank = CLM.L["Assistant"]
         end
-        row.cols[1] = {value = name}
-        row.cols[2] = {value = UTILS.ColorCodeClass(object:Class())}
-        row.cols[3] = {value = object:SpecString()}
-        row.cols[4] = {value = main}
-        row.cols[5] = {value = rank}
-        row.cols[6] = {value = object:VersionString()}
+        row.cols = {
+            {value = name},
+            {value = main},
+            {value = UTILS.ColorCodeClass(object:Class())},
+            {value = object:SpecString()},
+            {value = rank},
+            {value = object:VersionString()}
+        }
         data[rowId] = row
         rowId = rowId + 1
     end
@@ -472,7 +483,7 @@ end
 -- end
 
 CLM.GUI.Unified:RegisterTab(
-    UnifiedGUI_Profiles.name,
+    UnifiedGUI_Profiles.name, 4,
     tableStructure,
     tableDataFeeder,
     horizontalOptionsFeeder,

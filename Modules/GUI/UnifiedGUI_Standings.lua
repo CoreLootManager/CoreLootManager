@@ -46,7 +46,16 @@ end
 
 local UnifiedGUI_Standings = {
     name = "standings",
-    filter = CLM.MODELS.Filters:New(refreshFn, true, true, true, true, true, true, false, true, true, nil, 1),
+    filter = CLM.MODELS.Filters:New(
+    (function() CLM.GUI.Unified:FilterScrollingTable() end),
+    UTILS.Set({
+        "class", "inRaid", "inStandby",
+        "inGuild", "external", "main"
+    }),
+    UTILS.Set({
+        "buttons", "search"
+    }),
+    nil, 2),
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIStandingsDialogTooltip", UIParent, "GameTooltipTemplate"),
 }
 
@@ -261,20 +270,20 @@ local function verticalOptionsFeeder()
     if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
         UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_Standings))
     end
-    UnifiedGUI_Standings.options = options
     return options
 end
 
 local tableStructure = {
+    rows = 25,
     -- columns - structure of the ScrollingTable
     columns = {
-        {   name = CLM.L["Name"],   width = 80 },
-        {   name = CLM.L["DKP"],    width = 60, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-        {   name = CLM.L["Class"],  width = 80,
+        {   name = CLM.L["Name"],   width = 85 },
+        {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+        {   name = CLM.L["Class"],  width = 100,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
         {   name = CLM.L["Spec"],   width = 60 },
-        {   name = CLM.L["Attendance [%]"], width = 60,
+        {   name = CLM.L["Att. [%]"], width = 60,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         }
     },
@@ -572,35 +581,10 @@ CONSTANTS.ACTION_CONTEXT_LIST = {
 }
 
 CLM.GUI.Unified:RegisterTab(
-    UnifiedGUI_Standings.name,
+    UnifiedGUI_Standings.name, 1,
     tableStructure,
     tableDataFeeder,
-    -- horizontalOptionsFeeder,
-    (function()
-        return {
-            type = "group",
-            args = {
-                rosterx = {
-                    name = "roster",
-                    type = "toggle",
-                    set = (function() end),
-                    get = (function() end),
-                },
-                playerx = {
-                    name = "player",
-                    type = "toggle",
-                    set = (function() end),
-                    get = (function() end),
-                },
-                searchxx = {
-                    name = "search",
-                    type = "toggle",
-                    set = (function() end),
-                    get = (function() end),
-                }
-            }
-        }
-    end),
+    nil,
     verticalOptionsFeeder,
     {
         initialize = initializeHandler,

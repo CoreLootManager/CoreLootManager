@@ -16,32 +16,42 @@ local sfind, strlower, strlen = string.find, strlower, strlen
 
 local filterInstanceId = 1
 
+local supportedFilters = {
+    "class",
+    "inRaid",
+    "inStandby",
+    "inGuild",
+    "external",
+    "main",
+    "online",
+}
+
+local supportedOptions = {
+    "buttons",
+    "search",
+    "horizontal"
+}
+
 local Filters = {}
-function Filters:New(
-    refreshFn,
-    useClass,
-    useInRaid, useInStandby,
-    useInGuild, useExternal,
-    useMain,
-    useOnline,
-    addButtons,
-    useSearch,
-    prefix, filterOrderStartOffset)
+function Filters:New(refreshFn, usedFilters, usedOptions, prefix, filterOrderStartOffset)
 
     local o = {}
 
     setmetatable(o, self)
     self.__index = self
 
-    o.useClass = useClass
-    o.useInRaid = useInRaid
-    o.useInStandby = useInStandby
-    o.useInGuild = useInGuild
-    o.useExternal = useExternal
-    o.useMain = useMain
-    o.useOnline = useOnline
-    o.addButtons = addButtons
-    o.useSearch = useSearch
+
+    o.anyFilter = false
+
+    for _, name in ipairs(supportedFilters) do
+        o[name] = usedFilters[name] and true or false
+        o.anyFilter = o.anyFilter or o[name]
+    end
+
+    for _, name in ipairs(supportedOptions) do
+        o[name] = usedOptions[name] and true or false
+    end
+
     o.filterOrderStartOffset = tonumber(filterOrderStartOffset) or 0
     o.prefix = tostring(prefix or "filter") .. tostring(filterInstanceId)
     o.refreshFn = refreshFn
@@ -73,12 +83,12 @@ CONSTANTS.FILTERS_GUI = {
 
 local color = "FFD100"
 local parameterToConstantMap = {
-    useInRaid = CONSTANTS.FILTER.IN_RAID,
-    useInStandby = CONSTANTS.FILTER.STANDBY,
-    useInGuild = CONSTANTS.FILTER.IN_GUILD,
-    useExternal = CONSTANTS.FILTER.NOT_IN_GUILD,
-    useMain = CONSTANTS.FILTER.MAINS_ONLY,
-    useOnline = CONSTANTS.FILTER.ONLINE
+    inRaid = CONSTANTS.FILTER.IN_RAID,
+    inStandby = CONSTANTS.FILTER.STANDBY,
+    inGuild = CONSTANTS.FILTER.IN_GUILD,
+    external = CONSTANTS.FILTER.NOT_IN_GUILD,
+    main = CONSTANTS.FILTER.MAINS_ONLY,
+    online = CONSTANTS.FILTER.ONLINE
 }
 
 local function SelectClasses(self, isSelect)
@@ -121,7 +131,7 @@ function Filters:GetAceOptions()
     local options = {}
     local filters = {}
 
-    if self.useClass then
+    if self.class then
         UTILS.mergeDictsInline(filters, UTILS.ShallowCopy(UTILS.GetColorCodedClassList()))
         SelectClasses(self, true)
     else
@@ -138,55 +148,52 @@ function Filters:GetAceOptions()
 
     -- Header
     local order = self.filterOrderStartOffset
-    -- options[self.prefix .. "header"] = {
-    --     type = "header",
-    --     name = CLM.L["Filtering"],
-    --     order = order
-    -- }
-    -- order = order + 1
     -- Filters
-    options[self.prefix .. "display"] = {
-        name = CLM.L["Filter"],
-        type = "multiselect",
-        set = function(i, k, v)
-            self:SetFilterValue(k, v)
-            self.refreshFn(true)
-        end,
-        get = function(i, v) return self.filters[tonumber(v)] end,
-        values = filters,
-        disabled = function() return self.searchFunction and true or false end,
-        order = order
-    }
-    order = order + 1
-    if self.addButtons and self.useClass then
-        options[self.prefix .. "select_all"] = {
-            name = CLM.L["All"],
-            desc = CLM.L["Select all classes."],
-            type = "execute",
-            func = (function()
-                SelectClasses(self, true)
+    if self.anyFilter then
+        options[self.prefix .. "display"] = {
+            name = CLM.L["Filter"],
+            type = "multiselect",
+            set = function(i, k, v)
+                self:SetFilterValue(k, v)
                 self.refreshFn(true)
-            end),
+            end,
+            get = function(i, v) return self.filters[tonumber(v)] end,
+            values = filters,
             disabled = function() return self.searchFunction and true or false end,
-            width = 0.5,
-            order = order,
+            width = "half",
+            order = order
         }
         order = order + 1
-        options[self.prefix .. "select_none"] = {
-            name = CLM.L["None"],
-            desc = CLM.L["Clear all classes."],
-            type = "execute",
-            func = (function()
-                SelectClasses(self, false)
-                self.refreshFn(true)
-            end),
-            disabled = function() return self.searchFunction and true or false end,
-            width = 0.5,
-            order = order,
-        }
-        order = order + 1
+        if self.buttons and self.class then
+            options[self.prefix .. "select_all"] = {
+                name = CLM.L["All"],
+                desc = CLM.L["Select all classes."],
+                type = "execute",
+                func = (function()
+                    SelectClasses(self, true)
+                    self.refreshFn(true)
+                end),
+                disabled = function() return self.searchFunction and true or false end,
+                width = 0.5,
+                order = order,
+            }
+            order = order + 1
+            options[self.prefix .. "select_none"] = {
+                name = CLM.L["None"],
+                desc = CLM.L["Clear all classes."],
+                type = "execute",
+                func = (function()
+                    SelectClasses(self, false)
+                    self.refreshFn(true)
+                end),
+                disabled = function() return self.searchFunction and true or false end,
+                width = 0.5,
+                order = order,
+            }
+            order = order + 1
+        end
     end
-    if self.useSearch then
+    if self.search then
         options[self.prefix .. "search"] = {
             name = CLM.L["Search"],
             desc = CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."],
@@ -201,7 +208,7 @@ function Filters:GetAceOptions()
                 self.refreshFn(true)
             end),
             get = (function(i) return self.searchString end),
-            width = "full",
+            width = self.horizontal and 1 or "full",
             order = order,
         }
     end
@@ -228,7 +235,7 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
     end
 
     local status = true
-    if self.useClass then
+    if self.class then
         for id, _class in pairs(UTILS.GetColorCodedClassList()) do
             if playerClass == _class then
                 status = self.filters[id]
@@ -236,7 +243,7 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
         end
     end
 
-    if self.useInRaid and self.filters[CONSTANTS.FILTER.IN_RAID] then
+    if self.inRaid and self.filters[CONSTANTS.FILTER.IN_RAID] then
         local isInRaid = {}
         for i=1,MAX_RAID_MEMBERS do
             local name = GetRaidRosterInfo(i)
@@ -246,7 +253,7 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
             end
         end
         status = status and isInRaid[playerName]
-    elseif self.useInStandby and self.filters[CONSTANTS.FILTER.STANDBY] then
+    elseif self.inStandby and self.filters[CONSTANTS.FILTER.STANDBY] then
         if CLM.MODULES.RaidManager:IsInProgressingRaid() then
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
             if profile then
@@ -262,16 +269,16 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
         end
     end
 
-    if self.useMain and self.filters[CONSTANTS.FILTER.MAINS_ONLY] then
+    if self.main and self.filters[CONSTANTS.FILTER.MAINS_ONLY] then
         local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
         if profile then
             status = status and (profile:Main() == "")
         end
     end
-    if self.useExternal and self.filters[CONSTANTS.FILTER.NOT_IN_GUILD] then
+    if self.external and self.filters[CONSTANTS.FILTER.NOT_IN_GUILD] then
         status = status and not CLM.MODULES.GuildInfoListener:GetGuildies()[playerName]
     end
-    if self.useInGuild and self.filters[CONSTANTS.FILTER.IN_GUILD] then
+    if self.inGuild and self.filters[CONSTANTS.FILTER.IN_GUILD] then
         status = status and CLM.MODULES.GuildInfoListener:GetGuildies()[playerName]
     end
     return status

@@ -6,7 +6,7 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs = pairs
+local pairs, tsort = pairs, table.sort
 
 -- Libs
 
@@ -115,12 +115,15 @@ local function CreateTabsWidget(self, content)
     local tabsWidget = AceGUI:Create("TabGroup")
 
     local tabs = {}
-    for name, _ in pairs(self.tabs) do
+    for name, tab in pairs(self.tabs) do
         tabs[#tabs + 1] = {
             value = name,
-            text = CLM.L[UTILS.capitalize(name)]
+            text = CLM.L[UTILS.capitalize(name)],
+            order = tab.order
         }
     end
+
+    tsort(tabs, (function(a, b) return a.order < b.order end))
 
     self.selectedTab = "standings"
     tabsWidget:SetTabs(tabs)
@@ -140,8 +143,6 @@ local function CreateTabsWidget(self, content)
 end
 
 local function CreateTabsContent(self)
-    local tabContent = AceGUI:Create("SimpleGroup")
-    tabContent:SetLayout("Fill")
     self.aceObjects.scrollingTables = {}
     local scrollingTableContent = AceGUI:Create("SimpleGroup")
     local horizontalOptionsContent = AceGUI:Create("SimpleGroup")
@@ -156,24 +157,22 @@ local function CreateTabsContent(self)
     end
     local scrollFrame = AceGUI:Create("ScrollFrame")
 
-    self.aceObjects.tabContent = tabContent
     self.aceObjects.tabularContent = tabularContent
     self.aceObjects.scrollingTableContent = scrollingTableContent
     self.aceObjects.scrollFrame = scrollFrame
     self.aceObjects.horizontalOptionsContent = horizontalOptionsContent
     self.aceObjects.verticalOptionsContent = verticalOptionsContent
 
-    tabularContent:AddChild(scrollingTableContent)
+    tabularContent:AddChild(horizontalOptionsContent)
     tabularContent:AddChild(scrollFrame)
+    tabularContent:AddChild(scrollingTableContent)
     scrollFrame:AddChild(verticalOptionsContent)
-    tabContent:AddChild(horizontalOptionsContent)
-    tabContent:AddChild(tabularContent)
 end
 
 function UnifiedGUI:CreateAceGUIStructure()
     LOG:Trace("UnifiedGUI:CreateAceGUIStructure()")
     -- Main Frame
-    local f = AceGUI:Create("Frame")
+    local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Classic Loot Manger"])
     f:SetStatusText("")
     f:SetLayout("Fill")
@@ -186,7 +185,7 @@ function UnifiedGUI:CreateAceGUIStructure()
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_UNIFIED_GUI")
     -- Widget
     CreateTabsContent(self)
-    CreateTabsWidget(self, self.aceObjects.tabContent)
+    CreateTabsWidget(self, self.aceObjects.tabularContent)
     RestoreLocation(self)
     for _, tab in pairs(self.tabs) do
         tab.handlers.restore()
@@ -196,6 +195,7 @@ function UnifiedGUI:CreateAceGUIStructure()
     for name, tab in pairs(self.tabs) do
         local structure = tab.structure
         local st = self.aceObjects.scrollingTables[name]
+        st:SetDisplayRows(structure.rows, 18)
         st:SetDisplayCols(structure.columns)
         st:RegisterEvents(structure.events, true)
         st:SetFilter(structure.filter)
@@ -215,7 +215,7 @@ local publicHandlers = {
 }
 
 function UnifiedGUI:RegisterTab(
-    name, tableStructure, tableDataFeeder,
+    name, order, tableStructure, tableDataFeeder,
     horizontalOptionsFeeder, verticalOptionsFeeder,
     handlers
 )
@@ -240,6 +240,7 @@ function UnifiedGUI:RegisterTab(
     end
 
     self.tabs[name] = {
+        order = order,
         structure = tableStructure,
         feeders = {
             table   = tableDataFeeder,
@@ -294,6 +295,13 @@ function UnifiedGUI:RefreshOptionsPane()
     AceConfigDialog:Open(VERTICAL_REGISTRY, self.aceObjects.verticalOptionsContent)
     AceConfigRegistry:RegisterOptionsTable(HORIZONTAL_REGISTRY, self.tabs[self.selectedTab].feeders.horizontalOptions)
     AceConfigDialog:Open(HORIZONTAL_REGISTRY, self.aceObjects.horizontalOptionsContent)
+end
+
+function UnifiedGUI:FilterScrollingTable()
+    local st = self.aceObjects.scrollingTables[self.selectedTab]
+    st:ClearSelection()
+    -- actually it sorts filters and refreshes data
+    st:SortData()
 end
 
 function UnifiedGUI:Toggle()
