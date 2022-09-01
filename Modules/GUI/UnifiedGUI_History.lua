@@ -59,27 +59,22 @@ local UnifiedGUI_History = {
 }
 
 function UnifiedGUI_History:GetSelection()
-    -- local st = CLM.GUI.Unified:GetScrollingTable()
-    -- local profiles = {}
-    -- -- Roster
-    -- local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
-    -- if not roster then
-    --     return profiles
-    -- end
-    -- -- Profiles
-    -- local selected = st:GetSelection()
-    -- if #selected == 0 then -- nothing selected: assume all visible are selected
-    --     return profiles
-    -- end
-    -- for _,s in pairs(selected) do
-    --     local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetInfo(st:GetRow(s)))
-    --     if profile then
-    --         tinsert(profiles, profile)
-    --     else
-    --         LOG:Debug("No profile for %s", ST_GetInfo(st:GetRow(s)))
-    --     end
-    -- end
-    -- return profiles
+    local st = CLM.GUI.Unified:GetScrollingTable()
+    local lootList, historyList = {}, {}
+    -- Profiles
+    local selected = st:GetSelection()
+    if #selected == 0 then -- nothing selected: assume all visible are selected
+        return {}, {}
+    end
+    for _,s in pairs(selected) do
+        local row = st:GetRow(s)
+        if ST_GetIsLoot(row) == true then
+            lootList[#lootList+1] = ST_GetObject(row)
+        elseif ST_GetIsLoot(row) == false then
+            historyList[#historyList+1] = ST_GetObject(row)
+        end
+    end
+    return lootList, historyList
 end
 
 local function GenerateUntrustedOptions(self)
@@ -520,127 +515,28 @@ local function tableDataFeeder()
 end
 
 local function initializeHandler()
-    UnifiedGUI_History.RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
+    UnifiedGUI_History.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            title = CLM.L["Add to standby"],
-            func = (function()
-                if not CLM.MODULES.RaidManager:IsInRaid() then
-                    LOG:Message(CLM.L["Not in raid"])
-                    return
-                end
-                local profiles = UnifiedGUI_History:GetSelection()
-                local raid = CLM.MODULES.RaidManager:GetRaid()
-                local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
-                if roster ~= raid:Roster() then
-                    LOG:Message(sformat(
-                        CLM.L["You can only bench players from same roster as the raid (%s)."],
-                        CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
-                    ))
-                    return
-                end
-
-                if CLM.MODULES.RaidManager:IsInProgressingRaid() then
-                    if #profiles > 10 then
-                        LOG:Message(sformat(
-                            CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
-                            CLM.L["add"], 10, CLM.L["progressing"]
-                        ))
-                        return
+            {
+                title = CLM.L["Remove selected"],
+                func = (function()
+                    local selectedLoot, selectedHistory = UnifiedGUI_History:GetSelection()
+                    for _, loot in pairs(selectedLoot) do
+                        CLM.MODULES.LedgerManager:Remove(loot:Entry())
+                        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, {
+                            id = loot:Id(), name = loot:Owner():Name()
+                        }, loot:Timestamp() + 7200) -- only up to 2 hours after loot is created
                     end
-                    CLM.MODULES.RaidManager:AddToStandby(CLM.MODULES.RaidManager:GetRaid(), profiles)
-                elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
-                    if #profiles > 25 then
-                        LOG:Message(sformat(
-                            CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
-                            CLM.L["add"], 25, CLM.L["created"]
-                        ))
-                        return
+                    for _, history in pairs(selectedHistory) do
+                        CLM.MODULES.LedgerManager:Remove(history:Entry())
                     end
-                    for _, profile in ipairs(profiles) do
-                        CLM.MODULES.StandbyStagingManager:AddToStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
-                    end
-                end
-                refreshFn(true)
-            end),
-            trustedOnly = true,
-            color = "eeee00"
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            }
         },
-        {
-            title = CLM.L["Remove from standby"],
-            func = (function()
-                if not CLM.MODULES.RaidManager:IsInRaid() then
-                    LOG:Message(CLM.L["Not in raid"])
-                    return
-                end
-                local profiles = UnifiedGUI_History:GetSelection()
-                local raid = CLM.MODULES.RaidManager:GetRaid()
-                local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
-                if roster ~= raid:Roster() then
-                    LOG:Message(sformat(
-                        CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
-                        CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
-                    ))
-                    return
-                end
-
-                if CLM.MODULES.RaidManager:IsInProgressingRaid() then
-                    if #profiles > 10 then
-                        LOG:Message(sformat(
-                            CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
-                            CLM.L["remove"], 10, CLM.L["progressing"]
-                        ))
-                        return
-                    end
-                    CLM.MODULES.RaidManager:RemoveFromStandby(CLM.MODULES.RaidManager:GetRaid(), profiles)
-                elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
-                    if #profiles > 25 then
-                        LOG:Message(sformat(
-                            CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
-                            CLM.L["remove"], 25, CLM.L["created"]
-                        ))
-                        return
-                    end
-                    for _, profile in ipairs(profiles) do
-                        CLM.MODULES.StandbyStagingManager:RemoveFromStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
-                    end
-                end
-                refreshFn(true)
-            end),
-            trustedOnly = true,
-            color = "eeee00"
-        },
-        {
-            separator = true,
-            trustedOnly = true
-        },
-        {
-            title = CLM.L["Remove from roster"],
-            func = (function(i)
-                local profiles = UnifiedGUI_History:GetSelection()
-                local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
-                if roster == nil then
-                    LOG:Debug("UnifiedGUI_History(Remove): roster == nil")
-                    return
-                end
-                if not profiles or #profiles == 0 then
-                    LOG:Debug("UnifiedGUI_History(Remove): profiles == 0")
-                    return
-                end
-                if #profiles > 10 then
-                    LOG:Message(sformat(
-                        CLM.L["You can remove max %d players from roster at the same time."],
-                        10
-                    ))
-                    return
-                end
-                CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles)
-            end),
-            trustedOnly = true,
-            color = "cc0000"
-        },
-    },
-    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-    CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
 end
 

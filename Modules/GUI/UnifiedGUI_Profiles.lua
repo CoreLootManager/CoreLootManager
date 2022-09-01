@@ -28,13 +28,8 @@ local UnifiedGUI_Profiles = {
     name = "profiles",
     filter = CLM.MODELS.Filters:New(
     (function() CLM.GUI.Unified:FilterScrollingTable() end),
-    UTILS.Set({
-        "class",
-        "inGuild", "external"
-    }),
-    UTILS.Set({
-        "buttons", "search"
-    }),
+    UTILS.Set({"class", "inGuild", "external"}),
+    UTILS.Set({"buttons", "search"}),
     nil, 1),
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIProfilesDialogTooltip", UIParent, "GameTooltipTemplate"),
 }
@@ -50,7 +45,7 @@ function UnifiedGUI_Profiles:GetSelection()
     for _,s in pairs(selected) do
         local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
         if profile then
-            tinsert(profiles, profile)
+            profiles[#profiles + 1] = profile
         else
             LOG:Debug("No profile for %s", ST_GetName(st:GetRow(s)))
         end
@@ -135,20 +130,20 @@ local function GenerateAssistantOptions(self)
             confirm = true,
             order = 24
         },
-        remove_selected = {
-            name = CLM.L["Remove"],
-            desc = CLM.L["Removes selected profiles or everyone if none selected."],
-            type = "execute",
-            width = "full",
-            func = (function(i)
-                for _,profile in ipairs(self:GetSelection()) do
-                    CLM.MODULES.ProfileManager:RemoveProfile(profile:GUID())
-                end
-                -- refreshFn()
-            end),
-            confirm = true,
-            order = 25
-        },
+        -- remove_selected = {
+        --     name = CLM.L["Remove"],
+        --     desc = CLM.L["Removes selected profiles or everyone if none selected."],
+        --     type = "execute",
+        --     width = "full",
+        --     func = (function(i)
+        --         for _,profile in ipairs(self:GetSelection()) do
+        --             CLM.MODULES.ProfileManager:RemoveProfile(profile:GUID())
+        --         end
+        --         -- refreshFn()
+        --     end),
+        --     confirm = true,
+        --     order = 25
+        -- },
         select_roster = {
             name = CLM.L["Select roster"],
             desc = CLM.L["Select roster to add profiles to."],
@@ -222,7 +217,7 @@ local tableStructure = {
     end),
     -- Events to override for ScrollingTable
     events = {
-        -- -- OnEnter handler -> on hover
+        -- OnEnter handler -> on hover
         OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             -- local rowData = table:GetRow(realrow)
@@ -230,58 +225,6 @@ local tableStructure = {
             -- local tooltip = UnifiedGUI_Profiles.tooltip
             -- if not tooltip then return end
             -- tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
-            -- local weeklyGain = ST_GetWeeklyGains(rowData)
-            -- local weeklyCap = ST_GetWeeklyCap(rowData)
-            -- local gains = weeklyGain
-            -- if weeklyCap > 0 then
-            --     gains = gains .. " / " .. weeklyCap
-            -- end
-            -- local pointInfo = ST_GetPointInfo(rowData)
-            -- tooltip:AddDoubleLine(CLM.L["Information"], CLM.L["DKP"])
-            -- tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
-            -- tooltip:AddLine("\n")
-            -- -- Statistics
-            -- tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Statistics:"], "44ee44"))
-            -- tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
-            -- tooltip:AddDoubleLine(CLM.L["Total received"], pointInfo.received)
-            -- tooltip:AddDoubleLine(CLM.L["Total blocked"], pointInfo.blocked)
-            -- tooltip:AddDoubleLine(CLM.L["Total decayed"], pointInfo.decayed)
-            -- -- Loot History
-            -- local lootList = ST_GetProfileLoot(rowData)
-            -- tooltip:AddLine("\n")
-            -- if #lootList > 0 then
-            --     tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest loot:"], "44ee44"))
-            --     local limit = #lootList - 4 -- inclusive (- 5 + 1)
-            --     if limit < 1 then
-            --         limit = 1
-            --     end
-            --     for i=#lootList, limit, -1 do
-            --         local loot = lootList[i]
-            --         local _, itemLink = GetItemInfo(loot:Id())
-            --         if itemLink then
-            --             tooltip:AddDoubleLine(itemLink, loot:Value())
-            --         end
-            --     end
-            -- else
-            --     tooltip:AddLine(CLM.L["No loot received"])
-            -- end
-            -- -- Point History
-            -- local pointList = ST_GetProfilePoints(rowData)
-            -- tooltip:AddLine("\n")
-            -- if #pointList > 0 then
-            --     tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest DKP changes:"], "44ee44"))
-            --     for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
-            --         if i > 5 then break end
-            --         local reason = point:Reason() or 0
-            --         local value = tostring(point:Value())
-            --         if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
-            --             value = value .. "%"
-            --         end
-            --         tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
-            --     end
-            -- else
-            --     tooltip:AddLine(CLM.L["No points received"])
-            -- end
             -- -- Display
             -- tooltip:Show()
             return status
@@ -337,128 +280,22 @@ local function tableDataFeeder()
 end
 
 local function initializeHandler()
-    -- UnifiedGUI_Profiles.RightClickMenu = CLM.UTILS.GenerateDropDownMenu({
-    --     {
-    --         title = CLM.L["Add to standby"],
-    --         func = (function()
-    --             if not CLM.MODULES.RaidManager:IsInRaid() then
-    --                 LOG:Message(CLM.L["Not in raid"])
-    --                 return
-    --             end
-    --             local profiles = UnifiedGUI_Profiles:GetSelection()
-    --             local raid = CLM.MODULES.RaidManager:GetRaid()
-    --             local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Profiles.roster)
-    --             if roster ~= raid:Roster() then
-    --                 LOG:Message(sformat(
-    --                     CLM.L["You can only bench players from same roster as the raid (%s)."],
-    --                     CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
-    --                 ))
-    --                 return
-    --             end
-
-    --             if CLM.MODULES.RaidManager:IsInProgressingRaid() then
-    --                 if #profiles > 10 then
-    --                     LOG:Message(sformat(
-    --                         CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
-    --                         CLM.L["add"], 10, CLM.L["progressing"]
-    --                     ))
-    --                     return
-    --                 end
-    --                 CLM.MODULES.RaidManager:AddToStandby(CLM.MODULES.RaidManager:GetRaid(), profiles)
-    --             elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
-    --                 if #profiles > 25 then
-    --                     LOG:Message(sformat(
-    --                         CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
-    --                         CLM.L["add"], 25, CLM.L["created"]
-    --                     ))
-    --                     return
-    --                 end
-    --                 for _, profile in ipairs(profiles) do
-    --                     CLM.MODULES.StandbyStagingManager:AddToStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
-    --                 end
-    --             end
-    --             refreshFn(true)
-    --         end),
-    --         trustedOnly = true,
-    --         color = "eeee00"
-    --     },
-    --     {
-    --         title = CLM.L["Remove from standby"],
-    --         func = (function()
-    --             if not CLM.MODULES.RaidManager:IsInRaid() then
-    --                 LOG:Message(CLM.L["Not in raid"])
-    --                 return
-    --             end
-    --             local profiles = UnifiedGUI_Profiles:GetSelection()
-    --             local raid = CLM.MODULES.RaidManager:GetRaid()
-    --             local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Profiles.roster)
-    --             if roster ~= raid:Roster() then
-    --                 LOG:Message(sformat(
-    --                     CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
-    --                     CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
-    --                 ))
-    --                 return
-    --             end
-
-    --             if CLM.MODULES.RaidManager:IsInProgressingRaid() then
-    --                 if #profiles > 10 then
-    --                     LOG:Message(sformat(
-    --                         CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
-    --                         CLM.L["remove"], 10, CLM.L["progressing"]
-    --                     ))
-    --                     return
-    --                 end
-    --                 CLM.MODULES.RaidManager:RemoveFromStandby(CLM.MODULES.RaidManager:GetRaid(), profiles)
-    --             elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
-    --                 if #profiles > 25 then
-    --                     LOG:Message(sformat(
-    --                         CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
-    --                         CLM.L["remove"], 25, CLM.L["created"]
-    --                     ))
-    --                     return
-    --                 end
-    --                 for _, profile in ipairs(profiles) do
-    --                     CLM.MODULES.StandbyStagingManager:RemoveFromStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
-    --                 end
-    --             end
-    --             refreshFn(true)
-    --         end),
-    --         trustedOnly = true,
-    --         color = "eeee00"
-    --     },
-    --     {
-    --         separator = true,
-    --         trustedOnly = true
-    --     },
-    --     {
-    --         title = CLM.L["Remove from roster"],
-    --         func = (function(i)
-    --             local profiles = UnifiedGUI_Profiles:GetSelection()
-    --             local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Profiles.roster)
-    --             if roster == nil then
-    --                 LOG:Debug("UnifiedGUI_Profiles(Remove): roster == nil")
-    --                 return
-    --             end
-    --             if not profiles or #profiles == 0 then
-    --                 LOG:Debug("UnifiedGUI_Profiles(Remove): profiles == 0")
-    --                 return
-    --             end
-    --             if #profiles > 10 then
-    --                 LOG:Message(sformat(
-    --                     CLM.L["You can remove max %d players from roster at the same time."],
-    --                     10
-    --                 ))
-    --                 return
-    --             end
-    --             CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles)
-    --         end),
-    --         trustedOnly = true,
-    --         color = "cc0000"
-    --     },
-    -- },
-    -- CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-    -- CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
-    -- )
+    UnifiedGUI_Profiles.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
+        {
+            {
+                title = CLM.L["Remove selected"],
+                func = (function()
+                    for _,profile in ipairs(UnifiedGUI_Profiles:GetSelection()) do
+                        CLM.MODULES.ProfileManager:RemoveProfile(profile:GUID())
+                    end
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            },
+        },
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
 end
 
 -- local function refreshHandler()

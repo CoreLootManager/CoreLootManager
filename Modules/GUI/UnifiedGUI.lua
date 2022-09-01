@@ -54,6 +54,11 @@ function UnifiedGUI:Initialize()
             tab.handlers.dataReady()
         end
         self:Refresh(true)
+        self.aceObjects.loadingBanner:Hide()
+    end)
+
+    CLM.MODULES.LedgerManager:RegisterOnRestart(function()
+        self.aceObjects.loadingBanner:Show()
     end)
 
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"},
@@ -169,6 +174,40 @@ local function CreateTabsContent(self)
     scrollFrame:AddChild(verticalOptionsContent)
 end
 
+function CreateLoadingBanner(self)
+    local lb = AceGUI:Create("Window")
+    local lbContent = AceGUI:Create("SimpleGroup")
+    lb.frame:SetPoint("TOP", UIParent, "TOP", 0, 24)
+    lb:EnableResize(false)
+    lb:SetWidth(230)
+    lb:SetHeight(100)
+    lb:AddChild(lbContent)
+
+    AceConfigRegistry:RegisterOptionsTable("loading_banner_cfg",
+    {
+        type = "group",
+        args = {
+            top = {
+                name = "CLM is processing",
+                type = "description",
+                fontSize = "large",
+                image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-green-32.tga",
+                order = 1
+            },
+            middle = {
+                name = "Windows will refresh automatically",
+                type = "description",
+                fontSize = "medium",
+                order = 2,
+            }
+        }
+    })
+    AceConfigDialog:Open("loading_banner_cfg", lbContent)
+
+    self.aceObjects.loadingBanner = lb
+    lb:Show()
+end
+
 function UnifiedGUI:CreateAceGUIStructure()
     LOG:Trace("UnifiedGUI:CreateAceGUIStructure()")
     -- Main Frame
@@ -178,7 +217,7 @@ function UnifiedGUI:CreateAceGUIStructure()
     f:SetLayout("Fill")
     f:EnableResize(false)
     f:SetWidth(700)
-    f:SetHeight(600)
+    f:SetHeight(580)
     self.aceObjects = {
       top = f
     }
@@ -203,6 +242,8 @@ function UnifiedGUI:CreateAceGUIStructure()
     -- Hide by default
     self.aceObjects.tabsWidget:SelectTab(self.selectedTab)
     f:Hide()
+    -- loading banner
+    CreateLoadingBanner(self)
 end
 
 local publicHandlers = {
