@@ -35,43 +35,6 @@ local function RestoreLocation(self)
     end
 end
 
-local UnifiedGUI = { tabs = {} }
-function UnifiedGUI:Initialize()
-    InitializeDB(self)
-
-    self:CreateAceGUIStructure()
-
-    -- Run GUI plugins pre-initialization
-    for _, tab in pairs(self.tabs) do
-        tab.handlers.initialize()
-    end
-
-    self:RegisterSlash()
-
-    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
-        if lag ~= 0 or uncommitted ~= 0 then return end
-        for _, tab in pairs(self.tabs) do
-            tab.handlers.dataReady()
-        end
-        self:Refresh(true)
-        self.aceObjects.loadingBanner:Hide()
-    end)
-
-    CLM.MODULES.LedgerManager:RegisterOnRestart(function()
-        self.aceObjects.loadingBanner:Show()
-    end)
-
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"},
-    (function()
-        StoreLocation(self)
-        for _, tab in pairs(self.tabs) do
-            tab.handlers.store()
-        end
-    end))
-
-    self._initialized = true
-end
-
 local function ChangeScrollingTable(self)
     -- Hide all
     for _,st in pairs(self.aceObjects.scrollingTables) do
@@ -174,24 +137,16 @@ local function CreateTabsContent(self)
     scrollFrame:AddChild(verticalOptionsContent)
 end
 
-function CreateLoadingBanner(self)
-    local lb = AceGUI:Create("Window")
-    local lbContent = AceGUI:Create("SimpleGroup")
-    lb.frame:SetPoint("TOP", UIParent, "TOP", 0, 24)
-    lb:EnableResize(false)
-    lb:SetWidth(230)
-    lb:SetHeight(100)
-    lb:AddChild(lbContent)
-
+local function UpdateLoadingBanner(self)
     AceConfigRegistry:RegisterOptionsTable("loading_banner_cfg",
     {
         type = "group",
         args = {
             top = {
-                name = "CLM is processing",
+                name = "|cffdcb749CLM is processing|r",
                 type = "description",
                 fontSize = "large",
-                image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-green-32.tga",
+                image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga",
                 order = 1
             },
             middle = {
@@ -199,13 +154,92 @@ function CreateLoadingBanner(self)
                 type = "description",
                 fontSize = "medium",
                 order = 2,
+            },
+            bottom = {
+                name = tostring(100 * (self.percentage or 0)) .. "%",
+                -- func = (function() end),
+                -- type = "execute",
+                fontSize = "large",
+                type = "description",
+                image = "Interface\\AddOns\\ClassicLootManager\\Media\\Bars\\Gloss.tga",
+                imageWidth = 150 * (self.percentage or 0.01),
+                -- imageWidth = 1,
+                imageHeight = 15,
+                width = 230,
+                order = 3
             }
         }
     })
-    AceConfigDialog:Open("loading_banner_cfg", lbContent)
+    AceConfigDialog:Open("loading_banner_cfg", self.aceObjects.loadingBannerContent)
+end
+
+local function CreateLoadingBanner(self)
+    local lb = AceGUI:Create("Window")
+    local lbContent = AceGUI:Create("SimpleGroup")
+    lb.frame:SetPoint("TOP", UIParent, "TOP", 0, 25)
+    lb:EnableResize(false)
+    lb:SetWidth(230)
+    lb:SetHeight(110)
+    lb:AddChild(lbContent)
 
     self.aceObjects.loadingBanner = lb
-    lb:Show()
+    self.aceObjects.loadingBannerContent = lbContent
+
+
+    UpdateLoadingBanner(self)
+
+    lb:Hide()
+    -- lb:Show()
+end
+
+local UnifiedGUI = { tabs = {} }
+function UnifiedGUI:Initialize()
+    InitializeDB(self)
+
+    self:CreateAceGUIStructure()
+
+    -- Run GUI plugins pre-initialization
+    for _, tab in pairs(self.tabs) do
+        tab.handlers.initialize()
+    end
+
+    self:RegisterSlash()
+
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then
+            local count = CLM.MODULES.LedgerManager:Length() + uncommitted
+            local percentage = UTILS.round(((count - lag) / count), 2)
+            if percentage < 0.01 then
+                percentage = 0.01
+            elseif percentage > 1 then
+                percentage = 1
+            end
+            self.percentage = percentage
+            UpdateLoadingBanner(self)
+            self.aceObjects.loadingBanner:Show()
+            return
+        end
+        -- all done
+        for _, tab in pairs(self.tabs) do
+            tab.handlers.dataReady()
+        end
+        self:Refresh(true)
+        self.aceObjects.loadingBanner:Hide()
+    end)
+
+    CLM.MODULES.LedgerManager:RegisterOnRestart(function()
+        self.aceObjects.loadingBanner:Show()
+    end)
+
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"},
+    (function()
+        StoreLocation(self)
+        for _, tab in pairs(self.tabs) do
+            tab.handlers.store()
+        end
+    end))
+
+    self._initialized = true
 end
 
 function UnifiedGUI:CreateAceGUIStructure()
@@ -217,7 +251,7 @@ function UnifiedGUI:CreateAceGUIStructure()
     f:SetLayout("Fill")
     f:EnableResize(false)
     f:SetWidth(700)
-    f:SetHeight(580)
+    f:SetHeight(572)
     self.aceObjects = {
       top = f
     }
@@ -237,7 +271,9 @@ function UnifiedGUI:CreateAceGUIStructure()
         st:SetDisplayRows(structure.rows, 18)
         st:SetDisplayCols(structure.columns)
         st:RegisterEvents(structure.events, true)
-        st:SetFilter(structure.filter)
+        if structure.filter then
+            st:SetFilter(structure.filter)
+        end
     end
     -- Hide by default
     self.aceObjects.tabsWidget:SelectTab(self.selectedTab)

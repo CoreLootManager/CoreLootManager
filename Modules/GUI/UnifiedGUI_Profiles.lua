@@ -39,7 +39,7 @@ function UnifiedGUI_Profiles:GetSelection()
     local profiles = {}
     -- Profiles
     local selected = st:GetSelection()
-    if #selected == 0 then -- nothing selected: assume all visible are selected
+    if #selected == 0 then
         return profiles
     end
     for _,s in pairs(selected) do
@@ -198,7 +198,7 @@ local tableStructure = {
     rows = 25,
     -- columns - structure of the ScrollingTable
     columns = {
-        {name = CLM.L["Name"],  width = 85, sort = LibStub("ScrollingTable").SORT_DSC},
+        {name = CLM.L["Name"],  width = 85, sort = LibStub("ScrollingTable").SORT_ASC},
         {name = CLM.L["Main"],  width = 85,
             color = colorGreen
         },
@@ -238,15 +238,12 @@ local tableStructure = {
         -- OnClick handler -> click
         OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             UTILS.LibStClickHandler(table, UnifiedGUI_Profiles.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            UnifiedGUI_Profiles.context = CONSTANTS.ACTION_CONTEXT.SELECTED
-            CLM.GUI.Unified:RefreshOptionsPane()
             return true
         end
     }
 }
 
 local function tableDataFeeder()
-    local rowId = 1
     local data = {}
     local profiles = CLM.MODULES.ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
@@ -273,8 +270,7 @@ local function tableDataFeeder()
             {value = rank},
             {value = object:VersionString()}
         }
-        data[rowId] = row
-        rowId = rowId + 1
+        data[#data+1] = row
     end
     return data
 end

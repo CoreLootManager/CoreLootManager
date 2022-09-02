@@ -543,14 +543,8 @@ end
 -- local function refreshHandler()
 -- end
 
-local function beforeShowHandler()
-    UnifiedGUI_History.context = CONSTANTS.ACTION_CONTEXT.ROSTER
-    if CLM.MODULES.RaidManager:IsInRaid() then
-        UnifiedGUI_History.roster = CLM.MODULES.RaidManager:GetRaid():UID()
-        UnifiedGUI_History.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
-        UnifiedGUI_History.context = CONSTANTS.ACTION_CONTEXT.RAID
-    end
-end
+-- local function beforeShowHandler()
+-- end
 
 local function storeHandler()
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_History.name)
@@ -586,7 +580,7 @@ CLM.GUI.Unified:RegisterTab(
     {
         initialize = initializeHandler,
         -- refresh = refreshHandler,
-        beforeShow = beforeShowHandler,
+        -- beforeShow = beforeShowHandler,
         store = storeHandler,
         restore = restoreHandler,
         dataReady = dataReadyHandler

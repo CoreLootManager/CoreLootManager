@@ -174,7 +174,7 @@ function Filters:GetAceOptions()
                     self.refreshFn(true)
                 end),
                 disabled = function() return self.searchFunction and true or false end,
-                width = 0.5,
+                width = 0.49,
                 order = order,
             }
             order = order + 1
@@ -187,7 +187,7 @@ function Filters:GetAceOptions()
                     self.refreshFn(true)
                 end),
                 disabled = function() return self.searchFunction and true or false end,
-                width = 0.5,
+                width = 0.49,
                 order = order,
             }
             order = order + 1

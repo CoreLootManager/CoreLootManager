@@ -651,6 +651,18 @@ function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, co
     end
 end
 
+function UTILS.LibStSingleSelectClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+    local rightClick = (button == "RightButton")
+
+    st:ClearSelection()
+    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
+
+    if dropdownMenu and rightClick then
+        UTILS.LibDD:CloseDropDownMenus()
+        UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdownMenu, cellFrame, -20, 0)
+    end
+end
+
 function UTILS.OnePassRemove(t, fnKeep)
     local j, n = 1, #t;
     fnKeep = fnKeep or (function(tab, idx)
