@@ -7,7 +7,9 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs = pairs, ipairs
-local sformat = string.format
+local CreateFrame, UIParent = CreateFrame, UIParent
+local tonumber, tostring = tonumber, tostring
+local strlen, sformat = strlen, string.format
 
 local colorRed = {r = 0.93, g = 0.2, b = 0.2, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
@@ -69,13 +71,13 @@ function UnifiedGUI_Standings:GetSelection()
     end
     -- Profiles
     local selected = st:GetSelection()
-    if #selected == 0 then -- nothing selected: assume all visible are selected
+    if #selected == 0 then
         return profiles
     end
     for _,s in pairs(selected) do
         local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
         if profile then
-            tinsert(profiles, profile)
+            profiles[#profiles+1] = profile
         else
             LOG:Debug("No profile for %s", ST_GetName(st:GetRow(s)))
         end

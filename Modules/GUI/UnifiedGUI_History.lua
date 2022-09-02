@@ -7,9 +7,8 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs = pairs, ipairs
-local sformat, sgsub, tsort = string.format, string.gsub, table.sort
+local sgsub, tsort =string.gsub, table.sort
 
--- local colorRed = {r = 0.93, g = 0.2, b = 0.2, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 
 CONSTANTS.HISTORY_TYPE = {
@@ -26,10 +25,6 @@ CONSTANTS.HISTORY_TYPES_GUI = {
 
 local function ST_GetInfo(row)
     return row.cols[1].value
-end
-
-local function ST_GetValue(row)
-    return row.cols[2].value
 end
 
 local function ST_GetIsLoot(row)
@@ -132,185 +127,12 @@ local function GenerateUntrustedOptions(self)
     return options
 end
 
--- local function GenerateAssistantOptions(self)
---     return {
---         award_header = {
---             type = "header",
---             name = CLM.L["Management"],
---             order = 9
---         },
---         action_context = {
---             name = CLM.L["Action context"],
---             type = "select",
---             values = CONSTANTS.ACTION_CONTEXT_GUI,
---             set = function(i, v) self.context = v end,
---             get = function(i) return self.context end,
---             order = 10,
---             width = "full"
---         },
---         award_dkp_note = {
---             name = CLM.L["Note"],
---             desc = (function()
---                 local n = CLM.L["Note to be added to award. Max 25 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."]
---                 if strlen(self.note or "") > 0 then
---                     n = n .. "\n\n|cffeeee00Note:|r " .. self.note
---                 end
---                 return n
---             end),
---             type = "input",
---             set = function(i, v) self.note = v end,
---             get = function(i) return self.note end,
---             width = "full",
---             order = 12
---         },
---         award_reason = {
---             name = CLM.L["Reason"],
---             type = "select",
---             values = CONSTANTS.POINT_CHANGE_REASONS.GENERAL,
---             set = function(i, v) self.awardReason = v end,
---             get = function(i) return self.awardReason end,
---             order = 11,
---             width = "full"
---         },
---         award_dkp_value = {
---             name = CLM.L["Award value"],
---             desc = CLM.L["Points value that will be awarded."],
---             type = "input",
---             set = function(i, v) self.awardValue = v end,
---             get = function(i) return self.awardValue end,
---             width = 0.575,
---             pattern = CONSTANTS.REGEXP_FLOAT,
---             order = 13
---         },
---         award_dkp = {
---             name = CLM.L["Award"],
---             desc = CLM.L["Award DKP to selected players or everyone if none selected."],
---             type = "execute",
---             width = 0.575,
---             func = (function(i)
---                 -- Award Value
---                 local awardValue = tonumber(self.awardValue)
---                 if not awardValue then LOG:Debug("UnifiedGUI_History(Award): missing award value"); return end
---                 -- Reason
---                 local awardReason
---                 if self.awardReason and CONSTANTS.POINT_CHANGE_REASONS.GENERAL[self.awardReason] then
---                     awardReason = self.awardReason
---                 else
---                     LOG:Debug("UnifiedGUI_History(Award): missing reason");
---                     awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
---                 end
---                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
---                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
---                     if CLM.MODULES.RaidManager:IsInRaid() then
---                         CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
---                     else
---                         LOG:Warning("You are not in raid.")
---                     end
---                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
---                     if roster then
---                         CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
---                     else
---                         LOG:Warning("Missing valid roster.")
---                     end
---                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
---                     local profiles = UnifiedGUI_History:GetSelection()
---                     if not profiles or #profiles == 0 then
---                         LOG:Message(CLM.L["No players selected"])
---                         LOG:Debug("UnifiedGUI_History(Award): profiles == 0")
---                         return
---                     end
---                     if roster then
---                         CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
---                     else
---                         LOG:Warning("Missing valid roster.")
---                     end
---                 end
---             end),
---             confirm = true,
---             order = 14
---         }
---     }
--- end
-
--- local function GenerateManagerOptions(self)
---     return {
---         decay_dkp_value = {
---             name = CLM.L["Decay %"],
---             desc = CLM.L["% that will be decayed."],
---             type = "input",
---             set = function(i, v) self.decayValue = v end,
---             get = function(i) return self.decayValue end,
---             width = 0.575,
---             pattern = CONSTANTS.REGEXP_FLOAT,
---             order = 21
---         },
---         decay_negative = {
---             name = CLM.L["Decay Negatives"],
---             desc = CLM.L["Include players with negative standings in decay."],
---             type = "toggle",
---             set = function(i, v) self.includeNegative = v end,
---             get = function(i) return self.includeNegative end,
---             width = "full",
---             order = 23
---         },
---         decay_dkp = {
---             name = CLM.L["Decay"],
---             desc = CLM.L["Execute decay for selected players or everyone if none selected."],
---             type = "execute",
---             width = 0.575,
---             func = (function(i)
---                 -- Decay Value
---                 local decayValue = tonumber(self.decayValue)
---                 if not decayValue then LOG:Debug("UnifiedGUI_History(Decay): missing decay value"); return end
---                 if decayValue > 100 or decayValue < 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
---                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
---                 if roster == nil then
---                     LOG:Debug("UnifiedGUI_History(Decay): roster == nil")
---                     return
---                 end
---                 if self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
---                     CLM.MODULES.PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
---                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
---                     local profiles = UnifiedGUI_History:GetSelection()
---                     if not profiles or #profiles == 0 then
---                         LOG:Message(CLM.L["No players selected"])
---                         LOG:Debug("UnifiedGUI_History(Decay): profiles == 0")
---                         return
---                     end
---                     CLM.MODULES.PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
---                 else
---                     LOG:Warning("Invalid context. You should not decay raid only.")
---                 end
---             end),
---             confirm = true,
---             order = 22
---         }
---     }
--- end
-
 local function horizontalOptionsFeeder()
     local options = {
         type = "group",
-        args = {
-
-        }
+        args = { }
     }
     UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_History))
-    return options
-end
-
-local function verticalOptionsFeeder()
-    local options = {
-        type = "group",
-        args = {}
-    }
-    -- UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_History))
-    -- if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-    --     UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_History))
-    -- end
-    -- if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
-    --     UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_History))
-    -- end
     return options
 end
 

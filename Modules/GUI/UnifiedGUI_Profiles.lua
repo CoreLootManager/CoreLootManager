@@ -7,9 +7,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs = pairs, ipairs
-local sformat = string.format
 
--- local colorRed = {r = 0.93, g = 0.2, b = 0.2, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 
 local function ST_GetName(row)
@@ -18,10 +16,6 @@ end
 
 local function ST_GetClass(row)
     return row.cols[3].value
-end
-
-local function refreshFn(...)
-    CLM.GUI.Unified:Refresh(...)
 end
 
 local UnifiedGUI_Profiles = {
@@ -84,7 +78,7 @@ local function GenerateAssistantOptions(self)
             desc = CLM.L["Minimum level of players to fill from guild."],
             type = "range",
             min  = 0,
-            max  = 70,
+            max  = 80,
             step = 1,
             bigStep = 1,
             set = function(i, v) self.minimumLevel = v end,
@@ -99,7 +93,6 @@ local function GenerateAssistantOptions(self)
             width = "full",
             func = (function(i)
                 CLM.MODULES.ProfileManager:FillFromGuild(self.rank, tonumber(self.minimumLevel) or 1)
-                -- refreshFn()
             end),
             -- disabled = (function() return not IsInGuild() end)
             confirm = true,
@@ -112,7 +105,6 @@ local function GenerateAssistantOptions(self)
             width = "full",
             func = (function(i)
                 CLM.MODULES.ProfileManager:FillFromRaid()
-                -- refreshFn()
             end),
             -- disabled = (function() return not IsInRaid() end)
             confirm = true,
@@ -125,25 +117,10 @@ local function GenerateAssistantOptions(self)
             width = "full",
             func = (function(i)
                 CLM.MODULES.ProfileManager:AddTarget()
-                -- refreshFn()
             end),
             confirm = true,
             order = 24
         },
-        -- remove_selected = {
-        --     name = CLM.L["Remove"],
-        --     desc = CLM.L["Removes selected profiles or everyone if none selected."],
-        --     type = "execute",
-        --     width = "full",
-        --     func = (function(i)
-        --         for _,profile in ipairs(self:GetSelection()) do
-        --             CLM.MODULES.ProfileManager:RemoveProfile(profile:GUID())
-        --         end
-        --         -- refreshFn()
-        --     end),
-        --     confirm = true,
-        --     order = 25
-        -- },
         select_roster = {
             name = CLM.L["Select roster"],
             desc = CLM.L["Select roster to add profiles to."],
@@ -168,14 +145,6 @@ local function GenerateAssistantOptions(self)
     }
 end
 
--- local function GenerateManagerOptions(self)
---     return {}
--- end
-
--- local function GenerateGMOptions(self)
---     return {}
--- end
-
 local function verticalOptionsFeeder()
     local options = {
         type = "group",
@@ -185,12 +154,6 @@ local function verticalOptionsFeeder()
     if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_Profiles))
     end
-    -- if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
-    --     UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_Profiles))
-    -- end
-    -- if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
-    --     UTILS.mergeDictsInline(options.args, GenerateGMOptions(UnifiedGUI_Profiles))
-    -- end
     return options
 end
 
@@ -294,9 +257,6 @@ local function initializeHandler()
     )
 end
 
--- local function refreshHandler()
--- end
-
 local function beforeShowHandler()
     if CLM.MODULES.RaidManager:IsInRaid() then
         UnifiedGUI_Profiles.roster = CLM.MODULES.RaidManager:GetRaid():UID()
@@ -304,29 +264,14 @@ local function beforeShowHandler()
     end
 end
 
--- local function storeHandler()
---     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Profiles.name)
--- end
-
--- local function restoreHandler()
---     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Profiles.name)
--- end
-
--- local function dataReadyHandler()
--- end
-
 CLM.GUI.Unified:RegisterTab(
     UnifiedGUI_Profiles.name, 4,
     tableStructure,
     tableDataFeeder,
-    horizontalOptionsFeeder,
+    nil,
     verticalOptionsFeeder,
     {
         initialize = initializeHandler,
-        -- refresh = refreshHandler,
-        beforeShow = beforeShowHandler,
-        -- store = storeHandler,
-        -- restore = restoreHandler,
-        -- dataReady = dataReadyHandler
+        beforeShow = beforeShowHandler
     }
 )

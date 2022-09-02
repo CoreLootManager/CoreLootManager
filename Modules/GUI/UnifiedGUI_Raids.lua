@@ -6,13 +6,11 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs = pairs, ipairs
-local sformat = string.format
+local CreateFrame, UIParent, pairs = CreateFrame, UIParent, pairs
 
 local GreenYes = UTILS.GreenYes()
 local RedNo = UTILS.RedNo()
 
--- local colorRed = {r = 0.93, g = 0.2, b = 0.2, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 
 local function ST_GetRaid(row)
@@ -38,7 +36,7 @@ function UnifiedGUI_Raids:GetSelection()
     local st = CLM.GUI.Unified:GetScrollingTable()
 
     local raid
-    local row = self.st:GetRow(self.st:GetSelection())
+    local row = st:GetRow(st:GetSelection())
     if row then
         raid = ST_GetRaid(row)
     end
@@ -329,10 +327,13 @@ local tableStructure = {
 local function tableDataFeeder()
     local data = {}
     for _, raid in pairs(CLM.MODULES.RaidManager:ListRaids()) do
+        local color = nil
+        if CONSTANTS.RAID_STATUS.IN_PROGRESS == raid:Status() then
+            color = colorGreen
+        end
         local row = {cols = {
             { value = raid:Name() },
-            { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"] },
-            -- { value = CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID()) or "" },
+            { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"], color = color },
             { value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], raid:CreatedAt()) },
             { value = raid }
         }}
@@ -467,7 +468,7 @@ CLM.GUI.Unified:RegisterTab(
     UnifiedGUI_Raids.name, 3,
     tableStructure,
     tableDataFeeder,
-    horizontalOptionsFeeder,
+    nil,
     verticalOptionsFeeder,
     {
         initialize = initializeHandler,
