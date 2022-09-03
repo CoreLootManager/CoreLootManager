@@ -428,7 +428,7 @@ function AuctionManager:HandleSubmitBid(data, sender)
         LOG:Debug("Received submit bid from %s while no auctions are in progress", sender)
         return
     end
-    self:UpdateBid(sender, data:Bid())
+    self:UpdateBid(sender, data:Bid(), data:Type())
 end
 
 function AuctionManager:HandleCancelBid(data, sender)
@@ -528,13 +528,13 @@ function AuctionManager:ValidateBid(name, bid)
     return true
 end
 
-function AuctionManager:UpdateBid(name, bid)
+function AuctionManager:UpdateBid(name, bid, type)
     LOG:Trace("AuctionManager:UpdateBid()")
     LOG:Debug("Bid from %s: %s", name, bid)
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local accept, reason = self:ValidateBid(name, bid)
     if accept then
-        local newHighBid = self:UpdateBidsInternal(name, bid)
+        local newHighBid = self:UpdateBidsInternal(name, bid, type)
         self:SendBidAccepted(name)
         self:AnnounceHighestBidder(newHighBid, name, bid)
     else
@@ -546,7 +546,8 @@ function AuctionManager:UpdateBid(name, bid)
     return accept, reason
 end
 
-function AuctionManager:UpdateBidsInternal(name, bid)
+function AuctionManager:UpdateBidsInternal(name, bid, type)
+    print(name, bid, type)
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
         -- We remove from the bids list but add to pass list
         self.userResponses.bids[name] = nil
@@ -554,6 +555,7 @@ function AuctionManager:UpdateBidsInternal(name, bid)
         return false
     end
     self.userResponses.bids[name] = bid
+    self.userResponses.bidTypes[name] = type
     self.userResponses.passes[name] = nil
 
     local newHighBid = false
@@ -568,7 +570,7 @@ function AuctionManager:UpdateBidsInternal(name, bid)
 end
 
 function AuctionManager:Bids()
-    return self.userResponses.bids
+    return self.userResponses.bids, self.userResponses.bidTypes
 end
 
 function AuctionManager:Passes()
@@ -586,6 +588,7 @@ end
 function AuctionManager:ClearBids()
     self.userResponses = {
         bids    = {},
+        bidTypes = {},
         passes  = {},
         cantUse = {},
         hidden  = {}

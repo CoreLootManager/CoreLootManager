@@ -247,7 +247,6 @@ function UnifiedGUI:CreateAceGUIStructure()
     -- Main Frame
     local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Classic Loot Manger"])
-    f:SetStatusText("")
     f:SetLayout("Fill")
     f:EnableResize(false)
     f:SetWidth(700)

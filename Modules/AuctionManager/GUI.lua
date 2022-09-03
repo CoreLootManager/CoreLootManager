@@ -26,6 +26,8 @@ local REGISTRY = "clm_auction_manager_gui_options"
 local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
 
 local whoami = UTILS.whoami()
+local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
+local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
 
 local guiOptions = {
     type = "group",
@@ -174,7 +176,7 @@ local function CreateBidWindow(self)
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
         {name = CLM.L["Spec"],  width = 60},
-        {name = CLM.L["Bid"],   width = 60, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0},
+        {name = CLM.L["Bid"],   width = 60, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
             sortnext = 5
         },
@@ -611,17 +613,23 @@ function AuctionManagerGUI:Refresh()
     if not self._initialized then return end
 
     if CLM.MODULES.RaidManager:IsInActiveRaid() then
+        local bids, bidTypes = CLM.MODULES.AuctionManager:Bids()
         local data = {}
-        for name,bid in pairs(CLM.MODULES.AuctionManager:Bids()) do
+        for name,bid in pairs(bids) do
+            local color
+            if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
+                color = colorYellow
+            end
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
             if profile then
-                local row = {cols = {}}
-                tinsert(row.cols, {value = profile:Name()})
-                tinsert(row.cols, {value = UTILS.ColorCodeClass(profile:Class())})
-                tinsert(row.cols, {value = profile:SpecString()})
-                tinsert(row.cols, {value = bid})
-                tinsert(row.cols, {value = self.roster:Standings(profile:GUID())})
-                tinsert(data, row)
+                local row = {cols = {
+                    {value = profile:Name()},
+                    {value = UTILS.ColorCodeClass(profile:Class())},
+                    {value = profile:SpecString()},
+                    {value = bid, color = color},
+                    {value = self.roster:Standings(profile:GUID())}
+                }}
+                data[#data+1]=  row
             end
         end
         self.st:SetData(data)
