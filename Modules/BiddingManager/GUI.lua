@@ -196,15 +196,25 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "input",
             set = (function(i,v) self.bid = tonumber(v) or 0 end),
             get = (function(i) return tostring(self.bid) end),
-            width = 0.35,
+            width = 0.38,
             order = 3
         },
+        os = {
+            name = CLM.L["OS"],
+            desc = CLM.L["Bid input values as Off spec bid."],
+            type = "execute",
+            -- set = (function(i,v) self.isOs = v end),
+            -- get = (function(i) return self.isOs end),
+            func = (function() self:BidCurrent() end),
+            width = 0.3,
+            order = 5
+        },
         bid = {
-            name = CLM.L["Bid"],
-            desc = CLM.L["Bid input value."],
+            name = CLM.L["MS"],
+            desc = CLM.L["Bid input values as Main spec bid."],
             type = "execute",
             func = (function() self:BidCurrent() end),
-            width = 0.46,
+            width = 0.3,
             order = 4
         },
         cancel = {
@@ -213,8 +223,8 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function() CLM.MODULES.BiddingManager:CancelBid() end),
             disabled = (function() return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CLM.CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
-            width = 0.46,
-            order = 5
+            width = 0.45,
+            order = 7
         },
         pass = {
             name = CLM.L["Pass"],
@@ -230,7 +240,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             disabled = (function()
                     return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
             end),
-            width = 0.46,
+            width = 0.35,
             order = 6
         }
     }
