@@ -3,3 +3,4 @@ ExternalLibs
 locales_*
 TESTING
 merger.py
+report.log

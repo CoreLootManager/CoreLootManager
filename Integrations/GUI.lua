@@ -209,7 +209,7 @@ local function SetOffsetTime(self, offset)
 end
 
 local function Create(self)
-    local parent = AceGUI:Create("Frame")
+    local parent = AceGUI:Create("Window")
     parent:SetLayout("Flow")
     parent:EnableResize(false)
     local options = {

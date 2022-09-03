@@ -15,22 +15,23 @@ function GuildInfoListener:Initialize()
     LOG:Trace("GuildInfoListener:Initialize()")
     self:WipeAll()
     self:BuildCache()
+    self.cacheUpdateRequired = true
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
         LOG:Debug("Rebuild trust cache after event")
-        if self.cacheUpdateRequired then
+        if not self.cacheUpdateRequired then
             GuildRoster()
-            self.cacheUpdateRequired = false
+            self.cacheUpdateRequired = true
         end
     end))
 end
 
 function GuildInfoListener:BuildCache()
     LOG:Trace("GuildInfoListener:BuildCache()")
-    if not self.cacheUpdateRequired then
+    if self.cacheUpdateRequired then
         self:WipeAll()
         self:BuildRankCache()
         self:BuildGuildCache()
-        self.cacheUpdateRequired = true
+        self.cacheUpdateRequired = false
     end
 end
 
@@ -59,7 +60,7 @@ function GuildInfoListener:BuildGuildCache()
             -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
             rankIndex = rankIndex + 1
             name = UTILS.RemoveServer(name)
-            self.cache.guildies[name] = true
+            self.cache.guildies[name] = rankIndex
             self.cache.ranks[rankIndex].name = rankName
             if self.cache.ranks[rankIndex] then
                 if self.cache.ranks[rankIndex].isAssistant then

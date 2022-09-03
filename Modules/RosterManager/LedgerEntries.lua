@@ -228,7 +228,8 @@ function RosterUpdateOverrides:itemId()
 end
 
 function RosterUpdateOverrides:values()
-    return self.b
+    -- return self.b
+    return ((type(self.b) == "table") and self.b or {})
 end
 
 local RosterUpdateOverridesFields = mergeLists(LogEntry:fields(), {"r", "i", "b"})

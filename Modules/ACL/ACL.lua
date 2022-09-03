@@ -12,6 +12,7 @@ local whoami = UTILS.whoami()
 
 local ACL = {}
 function ACL:Initialize()
+    LOG:Trace("ACL:Initialize()")
     self.guildMaster = IsGuildLeader()
     CLM.MODULES.ConfigManager:RegisterUniversalExecutor("acl", "ACL", self) -- TODO remove RegisterUniversalExecutor
 end

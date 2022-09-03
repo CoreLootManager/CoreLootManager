@@ -439,13 +439,21 @@ function UTILS.GetCutoffTimestamp()
     return 1566684000
 end
 
-function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
+function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine, maxProfiles)
     inLine = inLine or 5
+    maxProfiles = maxProfiles or 25
     local profilesInLine = 0
     local line = ""
     local separator = ", "
     local numProfiles = #profiles
-    local profilesLeft = numProfiles
+    local profilesLeft
+    local notIncludedProfiles = 0
+    if numProfiles > maxProfiles then
+        notIncludedProfiles = numProfiles - maxProfiles
+        numProfiles = maxProfiles
+    end
+    profilesLeft = numProfiles
+
     while (profilesLeft > 0) do
         local currentProfile = profiles[numProfiles - profilesLeft + 1]
         profilesLeft = profilesLeft - 1
@@ -459,6 +467,10 @@ function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
             line = ""
             profilesInLine = 0
         end
+    end
+
+    if notIncludedProfiles > 0 then
+        tooltip:AddLine(notIncludedProfiles .. CLM.L[" more"])
     end
 end
 
@@ -587,6 +599,68 @@ end
 
 function UTILS.LibStModifierFn(a1, b1)
     return RemoveColorCode(a1), RemoveColorCode(b1)
+end
+
+function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+    local leftClick = (button == "LeftButton")
+    local rightClick = (button == "RightButton")
+    local isCtrlKeyDown = IsControlKeyDown()
+    local isShiftKeyDown = IsShiftKeyDown()
+    local isAdditiveSelect = leftClick and isCtrlKeyDown
+    local isContinuousSelect = leftClick and isShiftKeyDown
+    local isSingleSelect = leftClick and not isCtrlKeyDown and not isShiftKeyDown
+
+    local isSelected = st.selected:IsSelected(realrow)
+
+    if not isSelected then
+        if isAdditiveSelect then
+            st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
+        elseif isContinuousSelect then
+            local first, last, selected
+            for _row, _realrow in ipairs(st.filtered) do
+                if not first then
+                    if st.selected:IsSelected(_realrow) then first = _row end
+                end
+                if st.selected:IsSelected(_realrow) then last = _row end
+                if _realrow == realrow then selected = _row end
+            end
+
+            st:ClearSelection()
+            if selected <= first then -- clicked above first
+                for _row=selected,last do
+                    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
+                end
+            elseif selected >= last then -- clicked below last
+                for _row=first,selected do
+                    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
+                end
+            else -- clicked in between
+                for _row=first,last do
+                    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
+                end
+            end
+        end
+    end
+    if isSingleSelect then
+        st:ClearSelection()
+        st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
+    end
+    if dropdownMenu and rightClick then
+        UTILS.LibDD:CloseDropDownMenus()
+        UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdownMenu, cellFrame, -20, 0)
+    end
+end
+
+function UTILS.LibStSingleSelectClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+    local rightClick = (button == "RightButton")
+
+    st:ClearSelection()
+    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
+
+    if dropdownMenu and rightClick then
+        UTILS.LibDD:CloseDropDownMenus()
+        UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdownMenu, cellFrame, -20, 0)
+    end
 end
 
 function UTILS.OnePassRemove(t, fnKeep)
