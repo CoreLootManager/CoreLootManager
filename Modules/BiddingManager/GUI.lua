@@ -290,7 +290,7 @@ end
 function BiddingManagerGUI:Create()
     LOG:Trace("BiddingManagerGUI:Create()")
     -- Main Frame
-    local f = AceGUI:Create("Frame")
+    local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Bidding"])
     f:SetStatusText("")
     f:SetLayout("flow")

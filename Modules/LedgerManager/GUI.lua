@@ -611,7 +611,7 @@ end
 function AuditGUI:Create()
     LOG:Trace("AuditGUI:Create()")
     -- Main Frame
-    local f = AceGUI:Create("Frame")
+    local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Ledger Entries Audit"])
     f:SetStatusText("")
     f:SetLayout("flow")

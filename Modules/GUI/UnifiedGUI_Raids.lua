@@ -38,7 +38,8 @@ function UnifiedGUI_Raids:GetSelection()
     local st = CLM.GUI.Unified:GetScrollingTable()
 
     local raid
-    local row = st:GetRow(st:GetSelection())
+    local _, selection = next(st:GetSelection())
+    local row = st:GetRow(selection)
     if row then
         raid = ST_GetRaid(row)
     end

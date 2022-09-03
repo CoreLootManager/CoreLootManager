@@ -515,13 +515,13 @@ end
 function AuctionManagerGUI:Create()
     LOG:Trace("AuctionManagerGUI:Create()")
     -- Main Frame
-    local f = AceGUI:Create("Frame")
+    local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Auctioning"])
     f:SetStatusText("")
     f:SetLayout("flow")
     f:EnableResize(false)
-    f:SetWidth(375)
-    f:SetHeight(625)
+    f:SetWidth(365)
+    f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Auctioning_GUI")
 
