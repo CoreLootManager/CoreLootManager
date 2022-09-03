@@ -182,12 +182,21 @@ local function decodeRosterConfig(config, value)
     return fn(value)
 end
 
-local function decodeSlotValueConfig(slot, base, max)
-    return CONSTANTS.INVENTORY_TYPES_GUI[slot] or "", safeToString(base), safeToString(max)
+local function decodeSlotValueConfig(entry)
+    return CONSTANTS.INVENTORY_TYPES_GUI[entry:slot()] or "", safeToString(CONSTANTS.SLOT_VALUE_TIERS_GUI[entry:tier()]) .. ": " .. safeToString(entry:value())
 end
 
-local function decodeItemValueOverride(itemId, base, max)
-    return safeItemIdToLink(itemId), safeToString(base), safeToString(max)
+local function decodeItemValueOverride(entry)
+    local value = ""
+    local values = entry:values()
+    for key,_ in pairs(CLM.CONSTANTS.SLOT_VALUE_TIERS) do
+        value = value .. safeToString(CONSTANTS.SLOT_VALUE_TIERS_GUI[key]) .. ": " .. safeToString(values[key]or "?")
+    end
+    return safeItemIdToLink(entry:itemId()), value
+end
+
+local function decodeItemValueOverrideSingle(entry)
+    return safeItemIdToLink(entry:itemId()), safeToString(CONSTANTS.SLOT_VALUE_TIERS_GUI[entry:tier()]) .. ": " .. safeToString(entry:value())
 end
 
 local function decodeBossKillBonus(encounterId, difficultyId, value)
@@ -284,23 +293,27 @@ local describeFunctions  = {
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. CLM.L[" Too much data to display"]
 
     end),
-    -- ["R6"] = (function(entry)
-    --     local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-    --     local slot, base, max = decodeSlotValueConfig(entry:config(), entry:base(), entry:max())
-    --     return CLM.L["[Roster Default Slot Value]: "] ..
-    --         "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
-    --         slot .. ": " .. base .. " / " .. max
-    -- end),
-    -- ["R7"] = (function(entry)
-    --     local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-    --     local link, base, max = decodeItemValueOverride(entry:itemId(), entry:base(), entry:max())
-    --     return CLM.L["[Roster Item Value Override]: "] ..
-    --         "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
-    --         link .. ": " .. base .. " / " .. max
+    ["R6"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local slot, values = decodeSlotValueConfig(entry)
+        return CLM.L["[Roster Default Slot Value]: "] ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
+            slot .. ": " .. values
+    end),
+    ["R7"] = (function(entry)
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local link, values = decodeItemValueOverride(entry)
+        return CLM.L["[Roster Item Value Override]: "] ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
+            link .. ": " .. values
 
-    -- end),
+    end),
     ["R8"] = (function(entry)
-        return CLM.L["[Roster Item Value Override]: "] .. CLM.L[" UNUSED"]
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local link, values = decodeItemValueOverrideSingle(entry)
+        return CLM.L["[Roster Item Value Override Single]: "] ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
+            link .. ": " .. values
     end),
     ["R9"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
