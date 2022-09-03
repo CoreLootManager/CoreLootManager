@@ -92,7 +92,7 @@ function BiddingManager:GetLastBidValue()
     return self.lastBid
 end
 
-function BiddingManager:Bid(value)
+function BiddingManager:Bid(value, type)
     LOG:Trace("BiddingManager:Bid()")
     if not self.auctionInProgress then
         LOG:Debug("BiddingManager:Bid(): No auction in progress")
@@ -103,7 +103,7 @@ function BiddingManager:Bid(value)
     self.guiBid = true
     local message = CLM.MODELS.BiddingCommStructure:New(
         CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
-        CLM.MODULES.BiddingCommSubmitBid:New(value)
+        CLM.MODELS.BiddingCommSubmitBid:New(value, type)
     )
     CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
@@ -260,5 +260,14 @@ CONSTANTS.BIDDING_COMM = {
         5  -- NOTIFY_CANTUSE
     })
 }
+
+CONSTANTS.BID_TYPE = {
+    MAIN_SPEC = 1,
+    OFF_SPEC = 2,
+    -- PASS = 3,
+    -- CANCEL = 4
+}
+
+CONSTANTS.BID_TYPES = UTILS.Set(CONSTANTS.BID_TYPE)
 
 CLM.MODULES.BiddingManager = BiddingManager
