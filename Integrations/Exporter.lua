@@ -1,19 +1,22 @@
-local _, CLM = ...
-
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES -- Not typical model since it accessess modules and breaks the MVP but i wanted not as singleton
-local MODELS = CLM.MODELS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
 local json = LibStub:GetLibrary("LibJsonLua")
 local XML = LibStub:GetLibrary("LibLuaXML")
 
-local function dictNotEmpty(dict)
-    return not rawequal(next(dict), nil)
-end
+local pairs, ipairs = pairs, ipairs
+local tonumber, date = tonumber, date
+local tinsert = table.insert
+local setmetatable = setmetatable
+
+local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local Exporter = {}
-
 function Exporter:New(config)
     local o = {}
 
@@ -27,7 +30,6 @@ function Exporter:New(config)
     o.dataInfo = {
         rosters = {},
         profiles = {},
-        -- cutoffTimestamp = 0
         begin = 0,
         finish = 0
     }
@@ -74,22 +76,22 @@ local ENCODERS =  {
 
 local DATA_BUILDERS = {
     [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = (function(self)
-        local filterPlayers = dictNotEmpty(self.dataInfo.profiles)
+        local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
         if filterPlayers then
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
                     standings = {
                         player = {}
                     }
                 }
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     if roster:IsProfileInRoster(GUID) then
-                        local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
+                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
                         if profile then
-                            table.insert(roster_data.standings.player, {
+                            tinsert(roster_data.standings.player, {
                                 guid = GUID,
                                 name = profile:Name(),
                                 class = profile:Class(),
@@ -99,22 +101,22 @@ local DATA_BUILDERS = {
                         end
                     end
                 end
-                table.insert(data.roster, roster_data)
+                tinsert(data.roster, roster_data)
             end
         else
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
                     standings = {
                         player = {}
                     }
                 }
                 local standings = roster:Standings()
                 for GUID,value in pairs(standings) do
-                    local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
+                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
                     if profile then
-                        table.insert(roster_data.standings.player, {
+                        tinsert(roster_data.standings.player, {
                             guid = GUID,
                             name = profile:Name(),
                             class = profile:Class(),
@@ -123,20 +125,20 @@ local DATA_BUILDERS = {
                         })
                     end
                 end
-                table.insert(data.roster, roster_data)
+                tinsert(data.roster, roster_data)
             end
         end
         return data
     end),
     [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = (function(self)
-        local filterPlayers = dictNotEmpty(self.dataInfo.profiles)
+        local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
 
         if filterPlayers then
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
                     lootHistory = {
                         item = {}
                     }
@@ -144,11 +146,11 @@ local DATA_BUILDERS = {
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     local lootList = roster:GetProfileLootByGUID(GUID)
                     for _, loot in ipairs(lootList) do
-                        local profile = MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
+                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
                         if profile and self:TimestampInRange(loot:Timestamp()) then
-                            local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
+                            local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
                             local itemName, _, itemQuality = GetItemInfo(loot:Id())
-                            table.insert(roster_data.lootHistory.item, {
+                            tinsert(roster_data.lootHistory.item, {
                                 id = loot:Id(),
                                 name = itemName or "",
                                 quality = itemQuality or 0,
@@ -160,24 +162,24 @@ local DATA_BUILDERS = {
                         end
                     end
                 end
-                table.insert(data.roster, roster_data)
+                tinsert(data.roster, roster_data)
             end
         else
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
                     lootHistory = {
                         item = {}
                     }
                 }
                 local lootList = roster:GetRaidLoot()
                 for _, loot in ipairs(lootList) do
-                    local profile = MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
+                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
                     if profile and self:TimestampInRange(loot:Timestamp()) then
-                        local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
+                        local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
                         local itemName, _, itemQuality = GetItemInfo(loot:Id())
-                        table.insert(roster_data.lootHistory.item, {
+                        tinsert(roster_data.lootHistory.item, {
                             id = loot:Id(),
                             name = itemName or "",
                             quality = itemQuality or 0,
@@ -188,20 +190,20 @@ local DATA_BUILDERS = {
                         })
                     end
                 end
-                table.insert(data.roster, roster_data)
+                tinsert(data.roster, roster_data)
             end
         end
         return data
     end),
     [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = (function(self)
-        local filterPlayers = dictNotEmpty(self.dataInfo.profiles)
+        local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
 
         if filterPlayers then
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
                     pointHistory = {
                         point = {}
                     }
@@ -209,11 +211,11 @@ local DATA_BUILDERS = {
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     local historyList = roster:GetProfilePointHistoryByGUID(GUID)
                     for _, history in ipairs(historyList) do
-                        local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
+                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
                         if profile and self:TimestampInRange(history:Timestamp()) then
                             local note = decodeNote(history:Note())
-                            local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
-                            table.insert(roster_data.pointHistory.point, {
+                            local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
+                            tinsert(roster_data.pointHistory.point, {
                                 dkp = history:Value(),
                                 player = profile:Name(),
                                 reason = CLM.CONSTANTS.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
@@ -224,13 +226,13 @@ local DATA_BUILDERS = {
                         end
                     end
                 end
-                table.insert(data.roster, roster_data)
+                tinsert(data.roster, roster_data)
             end
         else
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
                     pointHistory = {
                         point = {}
                     }
@@ -240,8 +242,8 @@ local DATA_BUILDERS = {
                     if self:TimestampInRange(history:Timestamp()) then
                         for _,profile in ipairs(history:Profiles()) do
                             local note = decodeNote(history:Note())
-                            local awardedBy = MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
-                            table.insert(roster_data.pointHistory.point, {
+                            local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
+                            tinsert(roster_data.pointHistory.point, {
                                 dkp = history:Value(),
                                 player = profile:Name(),
                                 reason = CLM.CONSTANTS.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
@@ -252,13 +254,13 @@ local DATA_BUILDERS = {
                         end
                     end
                 end
-                table.insert(data.roster, roster_data)
+                tinsert(data.roster, roster_data)
             end
         end
         return data
     end),
     [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = (function(self)
-        -- local filterPlayers = dictNotEmpty(self.dataInfo.profiles)
+        -- local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         -- local workEstimate = 0
         -- local now = GetServerTime()
 
@@ -273,13 +275,13 @@ local DATA_BUILDERS = {
 function Exporter:Run(completeCallback, updateCallback)
     -- Prepare Data Info
     for _, UID in ipairs(self.config.rosters) do
-        local roster = MODULES.RosterManager:GetRosterByUid(UID)
+        local roster = CLM.MODULES.RosterManager:GetRosterByUid(UID)
         if roster then
-            table.insert(self.dataInfo.rosters, roster)
+            tinsert(self.dataInfo.rosters, roster)
         end
     end
     for _, GUID in ipairs(self.config.profiles) do
-        local profile = MODULES.ProfileManager:GetProfileByGUID(GUID)
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
         if profile then
             self.dataInfo.profiles[GUID] = profile
         end
@@ -312,4 +314,4 @@ function Exporter:Run(completeCallback, updateCallback)
 end
 
 
-MODELS.Exporter = Exporter
+CLM.MODELS.Exporter = Exporter

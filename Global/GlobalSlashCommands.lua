@@ -1,25 +1,19 @@
+-- ------------------------------- --
 local  _, CLM = ...
-
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local UTILS = CLM.UTILS
-local ACL = MODULES.ACL
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local ConfigManager = MODULES.ConfigManager
-local LootManager = MODULES.LootManager
-local RaidManager = MODULES.RaidManager
-local ProfileManager = MODULES.ProfileManager
-local RosterManager = MODULES.RosterManager
-local ProfileInfoManager = MODULES.ProfileInfoManager
-local AutoAward = MODULES.AutoAward
-
-local GetItemIdFromLink = UTILS.GetItemIdFromLink
+local pairs = pairs
+local strsplit, strlower, tonumber = strsplit, strlower, tonumber
+local GetNumGuildMembers, GetGuildRosterInfo = GetNumGuildMembers, GetGuildRosterInfo
 
 local GlobalSlashCommands = {}
 function GlobalSlashCommands:Initialize()
     local options = {}
-    if ACL:IsTrusted() then
+    if CLM.MODULES.ACL:IsTrusted() then
         options.award = {
             type = "input",
             name = CLM.L["Award item"],
@@ -29,13 +23,13 @@ function GlobalSlashCommands:Initialize()
             end)
         }
     end
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
         options.link = {
             type = "input",
             name = CLM.L["Link Alt to Main"],
             set = (function(i, input)
                 local alt, main = strsplit(" ", input)
-                ProfileManager:MarkAsAltByNames(alt, main)
+                CLM.MODULES.ProfileManager:MarkAsAltByNames(alt, main)
             end),
             confirm = true
         }
@@ -43,26 +37,26 @@ function GlobalSlashCommands:Initialize()
             type = "input",
             name = CLM.L["Unlink Alt"],
             set = (function(i, input)
-                ProfileManager:MarkAsAltByNames(input, "")
+                CLM.MODULES.ProfileManager:MarkAsAltByNames(input, "")
             end),
             confirm = true
         }
     end
-    if ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
+    if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
         options.ignore = {
             type = "input",
             name = CLM.L["Ignore entry"],
             set = (function(i, id)
                 id = tonumber(id) or 0
-                local realEntry = MODULES.LedgerManager.ledger.getSortedList():entries()[id]
+                local realEntry = CLM.MODULES.LedgerManager.ledger.getSortedList():entries()[id]
                 if realEntry then
-                    MODULES.LedgerManager:Remove(realEntry)
+                    CLM.MODULES.LedgerManager:Remove(realEntry)
                 end
             end),
             confirm = true
         }
     end
-    if ACL:IsTrusted() then
+    if CLM.MODULES.ACL:IsTrusted() then
         options.prune = {
             type = "input",
             name = CLM.L["Prune profiles"],
@@ -72,39 +66,39 @@ function GlobalSlashCommands:Initialize()
                 nop = nop and true or false
                 if command == CLM.L["level"] then
                     parameter = tonumber(parameter) or 0
-                    ProfileManager:PruneBelowLevel(parameter, nop)
+                    CLM.MODULES.ProfileManager:PruneBelowLevel(parameter, nop)
                 elseif command == CLM.L["rank"] then
                     parameter = parameter or ""
                     parameter = tonumber(parameter) or parameter
-                    ProfileManager:PruneRank(parameter, nop)
+                    CLM.MODULES.ProfileManager:PruneRank(parameter, nop)
                 elseif command == CLM.L["unguilded"] then
-                    ProfileManager:PruneUnguilded(nop)
+                    CLM.MODULES.ProfileManager:PruneUnguilded(nop)
                 end
             end),
             confirm = true
         }
     end
-    if ACL:IsTrusted() then
+    if CLM.MODULES.ACL:IsTrusted() then
         options.version = {
             type = "execute",
             name = CLM.L["Version check in guild"],
             func = (function()
-                ProfileInfoManager:RequestVersion()
+                CLM.MODULES.ProfileInfoManager:RequestVersion()
             end),
             confirm = true
         }
     end
-    if ACL:IsTrusted() then
+    if CLM.MODULES.ACL:IsTrusted() then
         options.spec = {
             type = "execute",
             name = CLM.L["Spec guild request"],
             func = (function()
-                ProfileInfoManager:RequestSpec()
+                CLM.MODULES.ProfileInfoManager:RequestSpec()
             end),
             confirm = true
         }
     end
-    if ACL:IsTrusted() then
+    if CLM.MODULES.ACL:IsTrusted() then
         options.addprofile = {
             type = "input",
             name = "Add Profile By Name",
@@ -116,12 +110,12 @@ function GlobalSlashCommands:Initialize()
                     name, _ = strsplit("-", name)
                     if strlower(name) == inputName then
                         LOG:Message(CLM.L["Found %s in guild."], name)
-                        local profile = ProfileManager:GetProfileByName(name)
+                        local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
                         if profile then
                             LOG:Message(CLM.L["%s profile exists."], name)
                         else
                             LOG:Message(CLM.L["%s profile missing. Adding."], name)
-                            ProfileManager:NewProfile(GUID, name, class)
+                            CLM.MODULES.ProfileManager:NewProfile(GUID, name, class)
                         end
                         return
                     end
@@ -144,7 +138,7 @@ function GlobalSlashCommands:Initialize()
         end),
         confirm = true
     }
-    ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function GlobalSlashCommands:Award(args)
@@ -152,7 +146,7 @@ function GlobalSlashCommands:Award(args)
     local values = {strsplit("/", args)}
     -- Item --
     local itemLink = values[1]
-    local itemId = GetItemIdFromLink(itemLink)
+    local itemId = UTILS.GetItemIdFromLink(itemLink)
     if not itemId or itemId == 0 then
         LOG:Message(CLM.L["Invalid item link"])
         return
@@ -169,7 +163,7 @@ function GlobalSlashCommands:Award(args)
     local rosterName = values[3]
     local roster
     if not rosterName or rosterName == "" then
-        raid = RaidManager:GetRaid()
+        raid = CLM.MODULES.RaidManager:GetRaid()
         if not raid then
             LOG:Message(CLM.L["Missing roster name and you are not in raid"])
             return
@@ -177,10 +171,10 @@ function GlobalSlashCommands:Award(args)
             isRaid = true
             LOG:Info(CLM.L["Missing roster name. Using Raid Info"])
             roster = raid:Roster()
-            LOG:Info(CLM.L["Raid: %s Roster: %s"], raid:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
+            LOG:Info(CLM.L["Raid: %s Roster: %s"], raid:Name(), CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()))
         end
     else
-        roster = RosterManager:GetRosterByName(rosterName)
+        roster = CLM.MODULES.RosterManager:GetRosterByName(rosterName)
         if not roster then
             LOG:Message(CLM.L["Unknown roster %s"], rosterName)
             return
@@ -191,20 +185,20 @@ function GlobalSlashCommands:Award(args)
     if not name or name == "" then
         name = UTILS.GetUnitName("target")
     end
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
     if not profile then
         LOG:Message(CLM.L["Missing profile %s"], name)
         return
     end
     if not roster:IsProfileInRoster(profile:GUID()) then
-        LOG:Message(CLM.L["%s is not part of the %s roster"], profile:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
+        LOG:Message(CLM.L["%s is not part of the %s roster"], profile:Name(), CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()))
         return
     end
     -- Award --
-    local awarded = LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
-    if awarded and not AutoAward:IsIgnored(itemId) then
-        if MODULES.AuctionManager:GetAutoTrade() then
-            AutoAward:Track(itemId, name)
+    local awarded = CLM.MODULES.LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
+    if awarded and not CLM.MODULES.AutoAward:IsIgnored(itemId) then
+        if CLM.MODULES.AuctionManager:GetAutoTrade() then
+            CLM.MODULES.AutoAward:Track(itemId, name)
         end
     end
 end

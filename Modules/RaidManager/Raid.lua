@@ -1,19 +1,14 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local CONSTANTS =  CLM.CONSTANTS
-local UTILS = CLM.UTILS
--- local MODELS = CLM.MODELS
+local setmetatable, ipairs, tinsert, tsort = setmetatable, ipairs, table.insert, table.sort
 
--- local ShallowCopy = UTILS.ShallowCopy
-
--- local getGuidFromInteger = UTILS.getGuidFromInteger
-local keys = UTILS.keys
--- local whoami = UTILS.whoami
--- local typeof = UTILS.typeof
-
-
-local Raid = { } -- Raid information
-
+local Raid = {} -- Raid information
 function Raid:New(uid, name, roster, config, creator, entry)
     local o = {}
 
@@ -149,11 +144,11 @@ function Raid:IsActive()
 end
 
 function Raid:Players()
-    return keys(self.players)
+    return UTILS.keys(self.players)
 end
 
 function Raid:PlayersOnStandby()
-    return keys(self.standby)
+    return UTILS.keys(self.standby)
 end
 
 function Raid:AllPlayers()
@@ -176,10 +171,10 @@ function Raid:Profiles(historical)
         -- TODO: resolve this
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(player)
         if profile then
-            table.insert(self.playerProfileCache, profile)
+            tinsert(self.playerProfileCache, profile)
         end
     end
-    table.sort(self.playerProfileCache, (function(first, second)
+    tsort(self.playerProfileCache, (function(first, second)
         return first:Name() < second:Name()
     end))
     return self.playerProfileCache
@@ -197,10 +192,10 @@ function Raid:Standby(historical)
         -- TODO: resolve this
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(player)
         if profile then
-            table.insert(self.standbyProfileCache, profile)
+            tinsert(self.standbyProfileCache, profile)
         end
     end
-    table.sort(self.standbyProfileCache, (function(first, second)
+    tsort(self.standbyProfileCache, (function(first, second)
         return first:Name() < second:Name()
     end))
     return self.standbyProfileCache

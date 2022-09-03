@@ -1,13 +1,15 @@
-## Interface: 20504
 ## Interface-Classic: 11403
 ## Interface-BCC: 20504
+## Interface-Wrath: 30400
+## X-Min-Interface-Classic: 11403
+## X-Min-Interface-BCC: 20504
+## X-Min-Interface-Wrath: 30400
 ## Title: Classic Loot Manager
-## Notes: Robust, DKP based Loot Manager system
+## Notes: Robust, DKP and EPGP based Loot Manager system
 ## Author: Lantis
 ## Version: @project-version@
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
-## X-WoWI-ID: 26001
 ## X-Wago-ID: vEGPw4K1
 # OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, LibLogger, AceAddon-3.0
 ## SavedVariables: CLM_DB, CLM_Logs, CLM_MinimapIcon
@@ -53,8 +55,8 @@ Locale\enUS.lua
 Locale\deDE.lua
 Locale\ruRU.lua
 Locale\frFR.lua
-#Locale\itIT.lua
 Locale\esES.lua
+#Locale\itIT.lua
 
 # Addon Core
 ClassicLootManager.lua
@@ -67,6 +69,7 @@ Modules\Changelog\Changelog.lua
 Modules\ProfileManager\Profile.lua
 Modules\ProfileManager\PruneLog.lua
 Modules\RosterManager\PointInfo.lua
+Modules\RosterManager\RosterConfiguration.lua
 Modules\RosterManager\Roster.lua
 Modules\ProfileManager\LedgerEntries.lua
 Modules\RosterManager\LedgerEntries.lua
@@ -107,18 +110,22 @@ Modules\AuctionHistoryManager\AuctionHistoryManager.lua
 Modules\AutoAwardManager\EncounterIDs.lua
 
 # Addon Options and GUIs (View)
-Modules\ProfileManager\GUI.lua
 Modules\RosterManager\Options.lua
-Modules\RosterManager\GUI.lua
-Modules\RaidManager\GUI.lua
 Modules\AuctionManager\GUI.lua
 Modules\BiddingManager\GUI.lua
-Modules\LootManager\GUI.lua
-Modules\PointManager\GUI.lua
 Modules\Changelog\GUI.lua
 Modules\LedgerManager\GUI.lua
 Modules\LootQueueManager\GUI.lua
 Modules\AuctionHistoryManager\GUI.lua
+
+Modules\GUI\AceGUIWidget-LibScrollingTable.lua
+Modules\GUI\Filters.lua
+Modules\GUI\UnifiedGUI.lua
+Modules\GUI\UnifiedGUI_Standings.lua
+Modules\GUI\UnifiedGUI_History.lua
+Modules\GUI\UnifiedGUI_Profiles.lua
+Modules\GUI\UnifiedGUI_Raids.lua
+
 
 # Alerts
 Alerts\Alerts.xml
@@ -139,7 +146,3 @@ Integrations\Integrations.lua
 Integrations\Exporter.lua
 Integrations\ExportConfiguration.lua
 Integrations\GUI.lua
-
-#@do-not-package@
-Debug.lua
-#@end-do-not-package@

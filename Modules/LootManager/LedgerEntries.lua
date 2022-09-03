@@ -1,7 +1,12 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local MODELS = CLM.MODELS
-local UTILS = CLM.UTILS
+local tonumber = tonumber
 
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local mergeLists = UTILS.mergeLists
@@ -71,7 +76,7 @@ function RaidAward:fields()
     return raidAwardFields
 end
 
-MODELS.LEDGER.LOOT = {
+CLM.MODELS.LEDGER.LOOT = {
     Award = Award,
     RaidAward = RaidAward
 }

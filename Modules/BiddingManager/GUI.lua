@@ -1,32 +1,22 @@
+-- ------------------------------- --
 local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
--- Libs
--- local ScrollingTable = LibStub("ScrollingTable")
+local pairs, ipairs = pairs, ipairs
+local tostring, tonumber = tostring, tonumber
+local sformat = string.format
+local GetItemInfoInstant, GetItemInfo = GetItemInfoInstant, GetItemInfo
+local C_TimerAfter, C_ItemIsItemDataCachedByID = C_Timer.After, C_Item.IsItemDataCachedByID
+
 local AceGUI = LibStub("AceGUI-3.0")
 local LibCandyBar = LibStub("LibCandyBar-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0"),
-    gui = LibStub("AceConfigDialog-3.0")
-}
-
-
-local LOG = CLM.LOG
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
--- local MODELS = CLM.MODELS
--- local CONSTANTS = CLM.CONSTANTS
-local GUI = CLM.GUI
-
-local BiddingManager = MODULES.BiddingManager
-local EventManager = MODULES.EventManager
-
-local ProfileManager = MODULES.ProfileManager
-local RosterManager = MODULES.RosterManager
-
-local mergeDictsInline = UTILS.mergeDictsInline
-local IsTooltipTextRed = UTILS.IsTooltipTextRed
-local GetItemIdFromLink = UTILS.GetItemIdFromLink
 local guiOptions = {
     type = "group",
     args = {}
@@ -72,7 +62,7 @@ local function UpdateOptions(self)
     for k,_ in pairs(guiOptions.args) do
         guiOptions.args[k] = nil
     end
-    mergeDictsInline(guiOptions.args, self:GenerateAuctionOptions())
+    UTILS.mergeDictsInline(guiOptions.args, self:GenerateAuctionOptions())
     guiOptions.args.item.width = 1.45
     self.OptionsGroup:SetWidth(BASE_WIDTH)
 end
@@ -83,8 +73,8 @@ local function CreateOptions(self)
     OptionsGroup:SetWidth(BASE_WIDTH)
     self.OptionsGroup = OptionsGroup
     UpdateOptions(self)
-    LIBS.registry:RegisterOptionsTable(REGISTRY, guiOptions)
-    LIBS.gui:Open(REGISTRY, OptionsGroup)
+    AceConfigRegistry:RegisterOptionsTable(REGISTRY, guiOptions)
+    AceConfigDialog:Open(REGISTRY, OptionsGroup)
 
     return OptionsGroup
 end
@@ -92,7 +82,7 @@ end
 local BiddingManagerGUI = {}
 
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('bidding', {
+    self.db = CLM.MODULES.Database:GUI('bidding', {
         location = {nil, nil, "CENTER", 0, 0 },
         customButton = {
             mode = CUSTOM_BUTTON.MODE.DISABLED,
@@ -137,13 +127,13 @@ local function CreateConfigs(self)
             order = 76
           }
     }
-    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 function BiddingManagerGUI:Initialize()
     LOG:Trace("BiddingManagerGUI:Initialize()")
     InitializeDB(self)
-    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     CreateConfigs(self)
     self:RegisterSlash()
@@ -156,7 +146,7 @@ function BiddingManagerGUI:Initialize()
         for i = 1, s:NumLines() do
             local l = _G[tooltipName..'TextLeft'..i]
             local r = _G[tooltipName..'TextRight'..i]
-            if IsTooltipTextRed(l) or IsTooltipTextRed(r) then
+            if UTILS.IsTooltipTextRed(l) or UTILS.IsTooltipTextRed(r) then
                 self.canUseItem = false
                 break
             end
@@ -167,7 +157,7 @@ function BiddingManagerGUI:Initialize()
 end
 
 function BiddingManagerGUI:BidCurrent()
-    BiddingManager:Bid(self.bid)
+    CLM.MODULES.BiddingManager:Bid(self.bid)
 end
 
 function BiddingManagerGUI:GenerateAuctionOptions()
@@ -221,7 +211,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             name = CLM.L["Cancel"],
             desc = CLM.L["Cancel your bid."],
             type = "execute",
-            func = (function() BiddingManager:CancelBid() end),
+            func = (function() CLM.MODULES.BiddingManager:CancelBid() end),
             disabled = (function() return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CLM.CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
             width = 0.46,
             order = 5
@@ -236,9 +226,9 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                 end
             end),
             type = "execute",
-            func = (function() BiddingManager:NotifyPass() end),
+            func = (function() CLM.MODULES.BiddingManager:NotifyPass() end),
             disabled = (function()
-                    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (BiddingManager:GetLastBidValue() ~= nil)
+                    return CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
             end),
             width = 0.46,
             order = 6
@@ -252,11 +242,11 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         if CLM.CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             options["all_in"] = {
                 name = CLM.L["All In"],
-                desc = string.format(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
+                desc = sformat(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
                 type = "execute",
                 func = (function()
                     self.bid = self.standings
-                    BiddingManager:Bid(self.bid)
+                    CLM.MODULES.BiddingManager:Bid(self.bid)
                 end),
                 width = 1.725,
                 order = offset
@@ -279,13 +269,12 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             if not alreadyExistingValues[value] and value >= 0 then
                 alreadyExistingValues[value] = true
                 options[tier] = {
-                    -- name = CLM.CONSTANTS.SLOT_VALUE_TIERS_GUI[tier],
                     name = value,
                     desc = CLM.CONSTANTS.SLOT_VALUE_TIERS_GUI[tier] or "",
                     type = "execute",
                     func = (function()
                         self.bid = value
-                        BiddingManager:Bid(self.bid)
+                        CLM.MODULES.BiddingManager:Bid(self.bid)
                     end),
                     width = row_width,
                     order = offset
@@ -301,7 +290,7 @@ end
 function BiddingManagerGUI:Create()
     LOG:Trace("BiddingManagerGUI:Create()")
     -- Main Frame
-    local f = AceGUI:Create("Frame")
+    local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Bidding"])
     f:SetStatusText("")
     f:SetLayout("flow")
@@ -318,7 +307,7 @@ function BiddingManagerGUI:Create()
     -- Handle onHide information passing whenever the UI is closed
     local oldOnHide = f.frame:GetScript("OnHide")
     f.frame:SetScript("OnHide", (function(...)
-        BiddingManager:NotifyHide()
+        CLM.MODULES.BiddingManager:NotifyHide()
         oldOnHide(...)
     end))
     -- Hide by default
@@ -374,7 +363,7 @@ function BiddingManagerGUI:BuildBar(duration)
 end
 
 local function EvaluateItemUsability(self)
-    self.fakeTooltip:SetHyperlink("item:" .. GetItemIdFromLink(self.auctionInfo:ItemLink()))
+    self.fakeTooltip:SetHyperlink("item:" .. UTILS.GetItemIdFromLink(self.auctionInfo:ItemLink()))
 end
 
 local function HandleWindowDisplay(self)
@@ -382,7 +371,7 @@ local function HandleWindowDisplay(self)
         self:Refresh()
         self.top:Show()
     else
-        BiddingManager:NotifyCantUse()
+        CLM.MODULES.BiddingManager:NotifyCantUse()
     end
 end
 
@@ -396,9 +385,9 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     local values = auctionInfo:Values()
     self.bid = values[CLM.CONSTANTS.SLOT_VALUE_TIER.BASE]
     local statusText = ""
-    local myProfile = ProfileManager:GetMyProfile()
+    local myProfile = CLM.MODULES.ProfileManager:GetMyProfile()
     if myProfile then
-        local roster = RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
+        local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
             self.auctionType = roster:GetConfiguration("auctionType")
             if roster:IsProfileInRoster(myProfile:GUID()) then
@@ -414,13 +403,13 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
 
     if not show then return end
     self:Refresh()
-    if C_Item.IsItemDataCachedByID(self.auctionInfo:ItemLink()) then
+    if C_ItemIsItemDataCachedByID(self.auctionInfo:ItemLink()) then
         EvaluateItemUsability(self)
         HandleWindowDisplay(self)
     else
         GetItemInfo(self.auctionInfo:ItemLink())
-        C_Timer.After(0.5, function()
-            if C_Item.IsItemDataCachedByID(self.auctionInfo:ItemLink()) then
+        C_TimerAfter(0.5, function()
+            if C_ItemIsItemDataCachedByID(self.auctionInfo:ItemLink()) then
                 EvaluateItemUsability(self)
             else
                 self.canUseItem = true -- fallback
@@ -451,8 +440,8 @@ function BiddingManagerGUI:Refresh()
     if not self._initialized then return end
 
     UpdateOptions(self)
-    LIBS.registry:NotifyChange(REGISTRY)
-    LIBS.gui:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
+    AceConfigRegistry:NotifyChange(REGISTRY)
+    AceConfigDialog:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
 end
 
 function BiddingManagerGUI:Toggle()
@@ -476,7 +465,7 @@ function BiddingManagerGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function BiddingManagerGUI:Reset()
@@ -485,4 +474,4 @@ function BiddingManagerGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-GUI.BiddingManager = BiddingManagerGUI
+CLM.GUI.BiddingManager = BiddingManagerGUI

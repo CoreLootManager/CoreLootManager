@@ -1,17 +1,19 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local MODELS = CLM.MODELS
-local UTILS = CLM.UTILS
+local tonumber, tostring = tonumber, tostring
 
 local mergeLists = UTILS.mergeLists
 local typeof = UTILS.typeof
--- local getIntegerGuid = UTILS.getIntegerGuid
--- local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
--- local inflate = UTILS.inflate
 local deflate = UTILS.deflate
 
 local RosterCreate                  = LogEntry:extend("R0")
@@ -101,8 +103,8 @@ end
 function RosterUpdateConfig:new(rosterUid, config)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    if not typeof(config, MODELS.RosterConfiguration) then
-        config = MODELS.RosterConfiguration:New()
+    if not typeof(config, CLM.MODELS.RosterConfiguration) then
+        config = CLM.MODELS.RosterConfiguration:New()
     end
     o.c = deflate(config)
     return o
@@ -226,7 +228,8 @@ function RosterUpdateOverrides:itemId()
 end
 
 function RosterUpdateOverrides:values()
-    return self.b
+    -- return self.b
+    return ((type(self.b) == "table") and self.b or {})
 end
 
 local RosterUpdateOverridesFields = mergeLists(LogEntry:fields(), {"r", "i", "b"})
@@ -369,7 +372,7 @@ function RosterBossKillBonus:fields()
     return RosterBossKillBonusFields
 end
 
-MODELS.LEDGER.ROSTER = {
+CLM.MODELS.LEDGER.ROSTER = {
     Create                  = RosterCreate,
     Delete                  = RosterDelete,
     Rename                  = RosterRename,

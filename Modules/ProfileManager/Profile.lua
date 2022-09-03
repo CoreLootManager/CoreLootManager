@@ -1,9 +1,14 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
--- local UTILS = CLM.UTILS
+local setmetatable, tostring, tonumber, rawequal, sformat = setmetatable, tostring, tonumber, rawequal, string.format
 
 local Profile = {}
-
 function Profile:New(entry, name, class, main)
     local o = {}
 
@@ -101,9 +106,9 @@ function Profile:SetVersion(major, minor, patch, changeset)
     self.version.changeset = tostring(changeset)
 
     if self.version.changeset == "" then
-        self._versionString = string.format("v%d.%d.%d", self.version.major, self.version.minor, self.version.patch)
+        self._versionString = sformat("v%d.%d.%d", self.version.major, self.version.minor, self.version.patch)
     else
-        self._versionString = string.format("v%d.%d.%d-%s", self.version.major, self.version.minor, self.version.patch, self.version.changeset)
+        self._versionString = sformat("v%d.%d.%d-%s", self.version.major, self.version.minor, self.version.patch, self.version.changeset)
     end
 
 end

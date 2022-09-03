@@ -1,12 +1,14 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local MODELS = CLM.MODELS
-local UTILS = CLM.UTILS
+local tonumber, tostring = tonumber, tostring
 
 local mergeLists = UTILS.mergeLists
--- local typeof = UTILS.typeof
--- local getIntegerGuid = UTILS.getIntegerGuid
--- local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
@@ -240,7 +242,7 @@ function DecayRoster:fields()
     return decayRosterFields
 end
 
-MODELS.LEDGER.DKP = {
+CLM.MODELS.LEDGER.DKP = {
     Modify = Modify,
     Set = Set,
     Decay = Decay,
