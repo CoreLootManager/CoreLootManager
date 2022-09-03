@@ -54,6 +54,7 @@ local UnifiedGUI_History = {
 }
 
 function UnifiedGUI_History:GetSelection()
+    LOG:Trace("UnifiedGUI_History:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()
     local lootList, historyList = {}, {}
     -- Profiles
@@ -248,6 +249,7 @@ local tableStructure = {
 }
 
 local function tableDataFeeder()
+    LOG:Trace("UnifiedGUI_History tableDataFeeder()")
     local data = {}
 
     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
@@ -337,6 +339,7 @@ local function tableDataFeeder()
 end
 
 local function initializeHandler()
+    LOG:Trace("UnifiedGUI_History initializeHandler()")
     UnifiedGUI_History.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
@@ -369,16 +372,19 @@ end
 -- end
 
 local function storeHandler()
+    LOG:Trace("UnifiedGUI_History storeHandler()")
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_History.name)
     storage.roster = UnifiedGUI_History.roster
 end
 
 local function restoreHandler()
+    LOG:Trace("UnifiedGUI_History restoreHandler()")
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_History.name)
     UnifiedGUI_History.roster = storage.roster
 end
 
 local function dataReadyHandler()
+    LOG:Trace("UnifiedGUI_History dataReadyHandler()")
     if not CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster) then
         local _, roster = next(CLM.MODULES.RosterManager:GetRosters())
         if roster then

@@ -29,6 +29,7 @@ local UnifiedGUI_Profiles = {
 }
 
 function UnifiedGUI_Profiles:GetSelection()
+    LOG:Trace("UnifiedGUI_Profiles:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()
     local profiles = {}
     -- Profiles
@@ -207,6 +208,7 @@ local tableStructure = {
 }
 
 local function tableDataFeeder()
+    LOG:Trace("UnifiedGUI_Profiles tableDataFeeder()")
     local data = {}
     local profiles = CLM.MODULES.ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
@@ -239,6 +241,7 @@ local function tableDataFeeder()
 end
 
 local function initializeHandler()
+    LOG:Trace("UnifiedGUI_Profiles initializeHandler()")
     UnifiedGUI_Profiles.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
@@ -258,6 +261,7 @@ local function initializeHandler()
 end
 
 local function beforeShowHandler()
+    LOG:Trace("UnifiedGUI_Profiles beforeShowHandler()")
     if CLM.MODULES.RaidManager:IsInRaid() then
         UnifiedGUI_Profiles.roster = CLM.MODULES.RaidManager:GetRaid():UID()
         UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)

@@ -34,6 +34,7 @@ local UnifiedGUI_Raids = {
 }
 
 function UnifiedGUI_Raids:GetSelection()
+    LOG:Trace("UnifiedGUI_Raids:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()
 
     local raid
@@ -46,6 +47,7 @@ function UnifiedGUI_Raids:GetSelection()
 end
 
 local function UpdateRaid(self, name)
+    LOG:Trace("UnifiedGUI_Raids UpdateRaid()")
     local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
     if roster then
         self.configuration = CLM.MODELS.RosterConfiguration:New(UTILS.DeepCopy(roster.configuration))
@@ -325,6 +327,7 @@ local tableStructure = {
 }
 
 local function tableDataFeeder()
+    LOG:Trace("UnifiedGUI_Raids tableDataFeeder()")
     local data = {}
     for _, raid in pairs(CLM.MODULES.RaidManager:ListRaids()) do
         local color = nil
@@ -345,6 +348,7 @@ local function tableDataFeeder()
 end
 
 local function initializeHandler()
+    LOG:Trace("UnifiedGUI_Raids initializeHandler()")
     UnifiedGUI_Raids.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
@@ -446,16 +450,19 @@ end
 -- end
 
 local function storeHandler()
+    LOG:Trace("UnifiedGUI_Raids storeHandler()")
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Raids.name)
     storage.roster = UnifiedGUI_Raids.roster
 end
 
 local function restoreHandler()
+    LOG:Trace("UnifiedGUI_Raids restoreHandler()")
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Raids.name)
     UnifiedGUI_Raids.roster = storage.roster
 end
 
 local function dataReadyHandler()
+    LOG:Trace("UnifiedGUI_Raids dataReadyHandler()")
     if not CLM.MODULES.RosterManager:GetRosterByName(UnifiedGUI_Raids.roster) then
         local _, roster = next(CLM.MODULES.RosterManager:GetRosters())
         if roster then

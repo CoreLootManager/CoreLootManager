@@ -62,6 +62,7 @@ local UnifiedGUI_Standings = {
 }
 
 function UnifiedGUI_Standings:GetSelection()
+    LOG:Trace("UnifiedGUI_Standings:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()
     local profiles = {}
     -- Roster
@@ -378,6 +379,7 @@ local tableStructure = {
 }
 
 local function tableDataFeeder()
+    LOG:Trace("UnifiedGUI_Standings tableDataFeeder()")
     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
     if not roster then return {} end
     local weeklyCap = roster:GetConfiguration("weeklyCap")
@@ -409,6 +411,7 @@ local function tableDataFeeder()
 end
 
 local function initializeHandler()
+    LOG:Trace("UnifiedGUI_Standings initializeHandler()")
     UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
@@ -538,6 +541,7 @@ end
 -- end
 
 local function beforeShowHandler()
+    LOG:Trace("UnifiedGUI_Standings beforeShowHandler()")
     UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
     if CLM.MODULES.RaidManager:IsInRaid() then
         UnifiedGUI_Standings.roster = CLM.MODULES.RaidManager:GetRaid():UID()
@@ -547,16 +551,19 @@ local function beforeShowHandler()
 end
 
 local function storeHandler()
+    LOG:Trace("UnifiedGUI_Standings storeHandler()")
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Standings.name)
     storage.roster = UnifiedGUI_Standings.roster
 end
 
 local function restoreHandler()
+    LOG:Trace("UnifiedGUI_Standings restoreHandler()")
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Standings.name)
     UnifiedGUI_Standings.roster = storage.roster
 end
 
 local function dataReadyHandler()
+    LOG:Trace("UnifiedGUI_Standings dataReadyHandler()")
     if not CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster) then
         local _, roster = next(CLM.MODULES.RosterManager:GetRosters())
         if roster then
