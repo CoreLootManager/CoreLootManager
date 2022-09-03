@@ -60,7 +60,7 @@ function GuildInfoListener:BuildGuildCache()
             -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
             rankIndex = rankIndex + 1
             name = UTILS.RemoveServer(name)
-            self.cache.guildies[name] = true
+            self.cache.guildies[name] = rankIndex
             self.cache.ranks[rankIndex].name = rankName
             if self.cache.ranks[rankIndex] then
                 if self.cache.ranks[rankIndex].isAssistant then

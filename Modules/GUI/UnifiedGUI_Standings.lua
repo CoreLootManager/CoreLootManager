@@ -52,7 +52,7 @@ local UnifiedGUI_Standings = {
     (function() CLM.GUI.Unified:FilterScrollingTable() end),
     UTILS.Set({
         "class", "inRaid", "inStandby",
-        "inGuild", "external", "main"
+        "inGuild", "external", "main", "rank"
     }),
     UTILS.Set({
         "buttons", "search"

@@ -24,6 +24,7 @@ local supportedFilters = {
     "external",
     "main",
     "online",
+    "rank"
 }
 
 local supportedOptions = {
@@ -143,6 +144,14 @@ function Filters:GetAceOptions()
             filters[constant] = UTILS.ColorCodeText(CONSTANTS.FILTERS_GUI[constant], color)
         else
             self.filters[constant] = false
+        end
+    end
+
+    if self.rank and self.inGuild then
+        for index, info in pairs(CLM.MODULES.GuildInfoListener:GetRanks()) do
+            local internalRankIndex = 1000 + index
+            filters[internalRankIndex] = info.name
+            self.filters[internalRankIndex] = true
         end
     end
 
@@ -275,11 +284,19 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
             status = status and (profile:Main() == "")
         end
     end
+    local guildies = CLM.MODULES.GuildInfoListener:GetGuildies()
+    local inGuild = (guildies[playerName] ~= nil)
+    if self.rank and self.inGuild then
+        if inGuild then
+            status = status and self.filters[guildies[playerName] + 1000]
+        end
+    end
+
     if self.external and self.filters[CONSTANTS.FILTER.NOT_IN_GUILD] then
-        status = status and not CLM.MODULES.GuildInfoListener:GetGuildies()[playerName]
+        status = status and not inGuild
     end
     if self.inGuild and self.filters[CONSTANTS.FILTER.IN_GUILD] then
-        status = status and CLM.MODULES.GuildInfoListener:GetGuildies()[playerName]
+        status = status and inGuild
     end
     return status
 end

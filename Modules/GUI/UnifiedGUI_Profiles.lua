@@ -22,7 +22,7 @@ local UnifiedGUI_Profiles = {
     name = "profiles",
     filter = CLM.MODELS.Filters:New(
     (function() CLM.GUI.Unified:FilterScrollingTable() end),
-    UTILS.Set({"class", "inGuild", "external"}),
+    UTILS.Set({"class", "inGuild", "external", "rank"}),
     UTILS.Set({"buttons", "search"}),
     nil, 1),
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIProfilesDialogTooltip", UIParent, "GameTooltipTemplate"),
