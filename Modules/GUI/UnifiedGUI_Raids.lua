@@ -12,6 +12,7 @@ local GreenYes = UTILS.GreenYes()
 local RedNo = UTILS.RedNo()
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
+local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
 
 local function ST_GetRaid(row)
     return row.cols[4].value
@@ -193,8 +194,7 @@ local function GenerateAssistantOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                CLM.MODULES.RaidManager:CreateRaid(self.roster, self.raidName, self.configuration)
-                self:Refresh()
+                CLM.MODULES.RaidManager:CreateRaid(CLM.MODULES.RosterManager:GetRosterByName(self.roster), self.raidName, self.configuration)
             end),
             disabled = (function() return CLM.MODULES.RaidManager:IsInActiveRaid() end),
             confirm = true,
@@ -330,6 +330,8 @@ local function tableDataFeeder()
         local color = nil
         if CONSTANTS.RAID_STATUS.IN_PROGRESS == raid:Status() then
             color = colorGreen
+        elseif CONSTANTS.RAID_STATUS.CREATED == raid:Status() then
+            color = colorYellow
         end
         local row = {cols = {
             { value = raid:Name() },

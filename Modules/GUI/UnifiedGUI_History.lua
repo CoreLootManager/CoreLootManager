@@ -398,7 +398,7 @@ CLM.GUI.Unified:RegisterTab(
     tableStructure,
     tableDataFeeder,
     horizontalOptionsFeeder,
-    verticalOptionsFeeder,
+    nil,
     {
         initialize = initializeHandler,
         -- refresh = refreshHandler,

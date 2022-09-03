@@ -453,7 +453,7 @@ function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine, maxProfiles)
         numProfiles = maxProfiles
     end
     profilesLeft = numProfiles
-    
+
     while (profilesLeft > 0) do
         local currentProfile = profiles[numProfiles - profilesLeft + 1]
         profilesLeft = profilesLeft - 1
