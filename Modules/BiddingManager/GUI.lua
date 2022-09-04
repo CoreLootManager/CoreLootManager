@@ -22,7 +22,9 @@ local guiOptions = {
     args = {}
 }
 
-local BASE_WIDTH  = 330
+local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+
+local BASE_WIDTH  = 330 + (isElvUI and 15 or 0)
 local BASE_HEIGHT = 125
 local EXTENDED_HEIGHT = BASE_HEIGHT + 25
 
