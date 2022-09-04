@@ -30,6 +30,7 @@ local classOrdered = {
 }
 
 local classColors = {
+    ["deathknight"] = { r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" },
     ["druid"]   = { r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
     ["hunter"]  = { r = 0.67, g = 0.83, b = 0.45, hex = "ABD473" },
     ["mage"]    = { r = 0.25, g = 0.78, b = 0.92, hex = "40C7EB" },
