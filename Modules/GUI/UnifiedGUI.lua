@@ -17,6 +17,8 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local VERTICAL_REGISTRY   = "clm_unifiedgui_gui_options_vertical"
 local HORIZONTAL_REGISTRY = "clm_unifiedgui_gui_options_horizontal"
 
+local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('unifiedgui', {
         location = {nil, nil, "CENTER", 0, 0 },
@@ -178,8 +180,14 @@ local function CreateLoadingBanner(self)
     local lbContent = AceGUI:Create("SimpleGroup")
     lb.frame:SetPoint("TOP", UIParent, "TOP", 0, 25)
     lb:EnableResize(false)
-    lb:SetWidth(230)
-    lb:SetHeight(110)
+    if isElvUI then
+        lb:SetWidth(230)
+        lb:SetHeight(125)
+        lbContent:SetWidth(200)
+    else
+        lb:SetWidth(230)
+        lb:SetHeight(110)
+    end
     lb:AddChild(lbContent)
 
     self.aceObjects.loadingBanner = lb

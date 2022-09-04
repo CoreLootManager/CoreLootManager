@@ -25,6 +25,10 @@ local REGISTRY = "clm_auction_manager_gui_options"
 
 local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
 
+local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+
+local BASE_WIDTH  = 365 + (isElvUI and 5 or 0)
+
 local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
@@ -34,8 +38,30 @@ local guiOptions = {
     args = {}
 }
 
+local function GetModifierCombination()
+    local combination = ""
+
+    if IsAltKeyDown() then
+        combination = combination .. "a"
+    end
+
+    if IsShiftKeyDown() then
+        combination = combination .. "s"
+    end
+
+    if IsControlKeyDown() then
+        combination = combination .. "c"
+    end
+
+    return combination
+end
+
+local function CheckModifierCombination()
+    return (CLM.GlobalConfigs:GetModifierCombination() == GetModifierCombination())
+end
+
 local function FillAuctionWindowFromTooltip(frame, button)
-    if GameTooltip and IsAltKeyDown() then
+    if GameTooltip and CheckModifierCombination() then
         local _, itemLink = GameTooltip:GetItem()
         if itemLink then
             CLM.MODULES.EventManager:DispatchEvent(EVENT_FILL_AUCTION_WINDOW, {
@@ -225,7 +251,7 @@ end
 local function CreateOptions(self)
     local OptionsGroup = AceGUI:Create("SimpleGroup")
     OptionsGroup:SetLayout("Flow")
-    OptionsGroup:SetWidth(375)
+    OptionsGroup:SetWidth(BASE_WIDTH)
     self.OptionsGroup = OptionsGroup
     UpdateOptions(self)
     AceConfigRegistry:RegisterOptionsTable(REGISTRY, guiOptions)
@@ -522,7 +548,7 @@ function AuctionManagerGUI:Create()
     f:SetStatusText("")
     f:SetLayout("flow")
     f:EnableResize(false)
-    f:SetWidth(365)
+    f:SetWidth(BASE_WIDTH)
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Auctioning_GUI")
