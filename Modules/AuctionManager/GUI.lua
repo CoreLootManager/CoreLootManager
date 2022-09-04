@@ -38,8 +38,30 @@ local guiOptions = {
     args = {}
 }
 
+local function GetModifierCombination()
+    local combination = ""
+
+    if IsAltKeyDown() then
+        combination = combination .. "a"
+    end
+
+    if IsShiftKeyDown() then
+        combination = combination .. "s"
+    end
+
+    if IsControlKeyDown() then
+        combination = combination .. "c"
+    end
+
+    return combination
+end
+
+local function CheckModifierCombination()
+    return (CLM.GlobalConfigs:GetModifierCombination() == GetModifierCombination())
+end
+
 local function FillAuctionWindowFromTooltip(frame, button)
-    if GameTooltip and IsAltKeyDown() then
+    if GameTooltip and CheckModifierCombination() then
         local _, itemLink = GameTooltip:GetItem()
         if itemLink then
             CLM.MODULES.EventManager:DispatchEvent(EVENT_FILL_AUCTION_WINDOW, {

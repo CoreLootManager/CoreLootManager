@@ -90,6 +90,16 @@ function AuctionManager:Initialize()
             -- width = "double",
             order = 33
         },
+        global_auction_combination = {
+            name = CLM.L["Modifier combination"],
+            desc = CLM.L["Select modifier combination for auctioning from bags and corpse."],
+            type = "select",
+            values = CONSTANTS.MODIFIER_COMBINATIONS_GUI,
+            sorting = CONSTANTS.MODIFIER_COMBINATIONS_SORTED,
+            set = function(i, v) CLM.GlobalConfigs:SetModifierCombination(v) end,
+            get = function(i) return CLM.GlobalConfigs:GetModifierCombination() end,
+            order = 31.5
+        },
         auctioning_chat_commands_header = {
             type = "header",
             name = CLM.L["Auctioning - Chat Commands"],

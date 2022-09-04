@@ -3,7 +3,7 @@ local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
+local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local tonumber = tonumber
@@ -16,6 +16,7 @@ function GlobalConfigs:Initialize()
         announce_loot_to_raid_owner_only = true,
         announce_loot_to_raid_level = 3,
         wowdkpbot_integration = false,
+        modifier_combination = CONSTANTS.MODIFIER_COMBINATION.ALT,
         chat_commands = false,
         alerts = true,
         sounds = true,
@@ -231,6 +232,14 @@ function GlobalConfigs:GetAnnounceLootToRaidLevel()
     return self.db.announce_loot_to_raid_level or 3
 end
 
+function GlobalConfigs:SetModifierCombination(value)
+    self.db.modifier_combination = CONSTANTS.MODIFIER_COMBINATIONS[value] and value or CONSTANTS.MODIFIER_COMBINATION.ALT
+end
+
+function GlobalConfigs:GetModifierCombination()
+    return self.db.modifier_combination or CONSTANTS.MODIFIER_COMBINATION.ALT
+end
+
 function GlobalConfigs:SetWoWDKPBotIntegration(value)
     self.db.wowdkpbot_integration = value and true or false
 end
@@ -318,5 +327,37 @@ end
 function GlobalConfigs:SetDisableSync(value)
     self.db.disable_sync = value and true or false
 end
+
+CONSTANTS.MODIFIER_COMBINATION = {
+    ALT             = "a",
+    SHIFT           = "s",
+    CTRL            = "c",
+    ALT_SHIFT       = "as",
+    ALT_CTRL        = "ac",
+    SHIFT_CTRL      = "sc",
+    ALT_SHIFT_CTRL  = "asc",
+}
+
+CONSTANTS.MODIFIER_COMBINATIONS_SORTED = {
+    CONSTANTS.MODIFIER_COMBINATION.SHIFT,
+    CONSTANTS.MODIFIER_COMBINATION.CTRL,
+    CONSTANTS.MODIFIER_COMBINATION.ALT,
+    CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT,
+    CONSTANTS.MODIFIER_COMBINATION.ALT_CTRL,
+    CONSTANTS.MODIFIER_COMBINATION.SHIFT_CTRL,
+    CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT_CTRL
+}
+
+CONSTANTS.MODIFIER_COMBINATIONS = UTILS.Set(CONSTANTS.MODIFIER_COMBINATIONS_SORTED)
+
+CONSTANTS.MODIFIER_COMBINATIONS_GUI = {
+    [CONSTANTS.MODIFIER_COMBINATION.SHIFT] = CLM.L["Shift"],
+    [CONSTANTS.MODIFIER_COMBINATION.CTRL] = CLM.L["Ctrl"],
+    [CONSTANTS.MODIFIER_COMBINATION.ALT] = CLM.L["Alt"],
+    [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT] = CLM.L["Shift + Alt"],
+    [CONSTANTS.MODIFIER_COMBINATION.ALT_CTRL] = CLM.L["Ctrl + Alt"],
+    [CONSTANTS.MODIFIER_COMBINATION.SHIFT_CTRL] = CLM.L["Shift + Ctrl"],
+    [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT_CTRL] = CLM.L["Shift + Ctrl + Alt"]
+}
 
 CLM.GlobalConfigs = GlobalConfigs
