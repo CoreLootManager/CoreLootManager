@@ -7,7 +7,6 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
-local tinsert = table.insert
 
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
@@ -428,8 +427,8 @@ end
 function Roster:AddLoot(loot, profile)
     -- History store
     local GUID = profile:GUID()
-    tinsert(self.profileLoot[GUID], loot)
-    tinsert(self.raidLoot, loot)
+    self.profileLoot[GUID][#self.profileLoot[GUID]+1] = loot
+    self.raidLoot[#self.raidLoot+1] = loot
     -- Charging for the item
     self:UpdateStandings(GUID, -loot:Value(), 0)
     self.pointInfo[GUID]:AddSpent(loot:Value())
@@ -446,11 +445,11 @@ function Roster:GetProfileLootByGUID(GUID)
 end
 
 function Roster:AddProfilePointHistory(history, profile)
-    tinsert(self.profilePointHistory[profile:GUID()], 1, history)
+    self.profilePointHistory[profile:GUID()][#self.profilePointHistory[profile:GUID()]+1] = history
 end
 
 function Roster:AddRosterPointHistory(history)
-    tinsert(self.pointHistory, 1, history)
+    self.pointHistory[#self.pointHistory+1] = history
 end
 
 function Roster:GetRaidPointHistory()
