@@ -12,7 +12,11 @@ local tonumber, tostring = tonumber, tostring
 local strlen, sformat = strlen, string.format
 
 local colorRed = {r = 0.93, g = 0.2, b = 0.2, a = 1.0}
+-- local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3} -- locking
+local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
+
+local whoami = UTILS.whoami()
 
 local function ST_GetName(row)
     return row.cols[1].value
@@ -40,6 +44,18 @@ end
 
 local function ST_GetProfilePoints(row)
     return row.cols[10].value
+end
+
+local function highlightPlayer(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+    table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+    local color
+    if table.selected:IsSelected(realrow) then
+        color = table:GetDefaultHighlight()
+    else
+        color = colorBlueTransparent
+    end
+
+    table:SetHighLightColor(rowFrame, color)
 end
 
 local function refreshFn(...)
@@ -366,6 +382,11 @@ local tableStructure = {
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             UnifiedGUI_Standings.tooltip:Hide()
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+            if ST_GetName(rowData) == whoami then
+                highlightPlayer(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            end
             return status
         end),
         -- OnClick handler -> click
@@ -390,6 +411,10 @@ local function tableDataFeeder()
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
         local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
         if profile then
+            local highlight
+            if profile:Name() == whoami then
+                highlight = highlightPlayer
+            end
             local row = { cols = {
                 {value = profile:Name()},
                 {value = value, color = (value > 0 and colorGreen or colorRed)},
@@ -402,7 +427,9 @@ local function tableDataFeeder()
                 {value = roster:GetPointInfoForPlayer(GUID)},
                 {value = roster:GetProfileLootByGUID(GUID)},
                 {value = roster:GetProfilePointHistoryByGUID(GUID)}
-            }}
+            },
+            DoCellUpdate = highlight
+            }
             data[rowId] = row
             rowId = rowId + 1
         end
