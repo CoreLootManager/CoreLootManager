@@ -173,7 +173,7 @@ local function GenerateAssistantOptions(self)
         },
         award_dkp = {
             name = CLM.L["Award"],
-            desc = CLM.L["Award DKP to selected players or everyone if none selected."],
+            desc = CLM.L["Award DKP to players based on context."],
             type = "execute",
             width = 0.575,
             func = (function(i)
@@ -244,7 +244,7 @@ local function GenerateManagerOptions(self)
         },
         decay_dkp = {
             name = CLM.L["Decay"],
-            desc = CLM.L["Execute decay for selected players or everyone if none selected."],
+            desc = CLM.L["Execute decay for players based on context."],
             type = "execute",
             width = 0.575,
             func = (function(i)

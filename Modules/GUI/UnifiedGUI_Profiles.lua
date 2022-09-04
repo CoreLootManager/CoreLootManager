@@ -134,7 +134,7 @@ local function GenerateAssistantOptions(self)
         },
         add_to_roster = {
             name = CLM.L["Add to roster"],
-            desc = CLM.L["Adds selected players or everyone if none selected to the selected roster (from dropdown)."],
+            desc = CLM.L["Adds selected players to the selected roster (from dropdown)."],
             type = "execute",
             width = "full",
             func = (function(i)
