@@ -311,24 +311,19 @@ local function tableDataFeeder()
             pointList = roster:GetRaidPointHistory()
         end
 
+        local multiple = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
         for _,history in ipairs(pointList) do
             local reason = history:Reason() or 0
             local value = tostring(history:Value())
             if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                 value = value .. "%"
             end
-            -- local awardedBy
-            -- local creator = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
-            -- if creator then
-            --     awardedBy = UTILS.ColorCodeText(creator:Name(), UTILS.GetClassColor(creator:Class()).hex)
-            -- else
-            --     awardedBy = ""
-            -- end
+
             local row = {cols = {
                 {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
                 {value = value},
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
-                {value = CLM.L["Multiple"]},
+                {value = multiple},
                 {value = false},
                 {value = history}
             }}

@@ -162,9 +162,11 @@ end
 
 local PlayStartSound, PlayEndSound
 PlayStartSound = function()
+    if not CLM.GlobalConfigs:GetSounds() then return end
     PlaySound(12889)
 end
 PlayEndSound = function()
+    if not CLM.GlobalConfigs:GetSounds() then return end
     PlaySound(12867)
 end
 

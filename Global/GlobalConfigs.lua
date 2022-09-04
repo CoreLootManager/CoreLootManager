@@ -18,6 +18,7 @@ function GlobalConfigs:Initialize()
         wowdkpbot_integration = false,
         chat_commands = false,
         alerts = true,
+        sounds = true,
         disable_sync = false,
         suppress_incoming_chat_commands = false,
         suppress_outgoing_chat_commands = false,
@@ -51,6 +52,15 @@ function GlobalConfigs:Initialize()
             get = function(i) return self:GetAlerts() end,
             width = "double",
             order = 2
+        },
+        global_sounds = {
+            name = CLM.L["Addon sounds"],
+            desc = CLM.L["Toggles addon sounds."],
+            type = "toggle",
+            set = function(i, v) self:SetSounds(v) end,
+            get = function(i) return self:GetSounds() end,
+            width = "double",
+            order = 2.5
         },
         global_wodkpbot_integration = {
             name = CLM.L["WoW DKP Bot Integration"],
@@ -179,6 +189,14 @@ end
 
 function GlobalConfigs:GetAlerts()
     return self.db.alerts
+end
+
+function GlobalConfigs:SetSounds(value)
+    self.db.sounds = value and true or false
+end
+
+function GlobalConfigs:GetSounds()
+    return self.db.sounds
 end
 
 function GlobalConfigs:SetAnnounceAwardToGuild(value)
