@@ -55,6 +55,7 @@ local BiddingManagerGUI = {}
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {
         location = {nil, nil, "CENTER", 0, 0 },
+        closeOnBid = false
     })
 end
 
@@ -69,11 +70,30 @@ local function RestoreLocation(self)
     end
 end
 
+local function GetCloseOnBid(self)
+    return self.db.closeOnBid
+end
+
+local function CreateConfig(self)
+    local options = {
+        bidding_gui_close_on_bid = {
+            name = CLM.L["Close on bid"],
+            desc = CLM.L["Toggle closing bidding UI after submitting bid."],
+            type = "toggle",
+            set = function(i, v) self.db.closeOnBid = v and true or false end,
+            get = function(i) return GetCloseOnBid(self) end,
+            order = 75
+        }
+    }
+    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+end
+
 function BiddingManagerGUI:Initialize()
     LOG:Trace("BiddingManagerGUI:Initialize()")
     InitializeDB(self)
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
+    CreateConfig(self)
     self:RegisterSlash()
     self.standings = 0
     self.canUseItem = true
@@ -143,6 +163,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "execute",
             func = (function()
                 CLM.MODULES.BiddingManager:Bid(self.bid)
+                if GetCloseOnBid(self) then self:Toggle() end
             end),
             width = 0.3,
             order = 4
@@ -151,7 +172,10 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             name = CLM.L["OS"],
             desc = CLM.L["Bid input values as Off spec bid."],
             type = "execute",
-            func = (function() CLM.MODULES.BiddingManager:Bid(self.bid, CONSTANTS.BID_TYPE.OFF_SPEC) end),
+            func = (function()
+                CLM.MODULES.BiddingManager:Bid(self.bid, CONSTANTS.BID_TYPE.OFF_SPEC)
+                if GetCloseOnBid(self) then self:Toggle() end
+            end),
             width = 0.3,
             order = 5
         },
@@ -165,7 +189,10 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                 end
             end),
             type = "execute",
-            func = (function() CLM.MODULES.BiddingManager:NotifyPass() end),
+            func = (function()
+                CLM.MODULES.BiddingManager:NotifyPass()
+                if GetCloseOnBid(self) then self:Toggle() end
+            end),
             disabled = (function()
                     return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
             end),
@@ -176,7 +203,10 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             name = CLM.L["Cancel"],
             desc = CLM.L["Cancel your bid."],
             type = "execute",
-            func = (function() CLM.MODULES.BiddingManager:CancelBid() end),
+            func = (function()
+                CLM.MODULES.BiddingManager:CancelBid()
+                if GetCloseOnBid(self) then self:Toggle() end
+            end),
             disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
             width = 0.45,
             order = 7
@@ -195,6 +225,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                 func = (function()
                     self.bid = self.standings
                     CLM.MODULES.BiddingManager:Bid(self.bid)
+                    if GetCloseOnBid(self) then self:Toggle() end
                 end),
                 width = 1.8,
                 order = offset
@@ -223,6 +254,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                     func = (function()
                         self.bid = value
                         CLM.MODULES.BiddingManager:Bid(self.bid)
+                        if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     width = row_width,
                     order = offset
