@@ -7,6 +7,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
+local slen, strsub = string.len, strsub
 
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
@@ -47,6 +48,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.configuration  = CLM.MODELS.RosterConfiguration:New()
     o.defaultSlotValues = { [GLOBAL_FAKE_INVENTORY_SLOT] = {} }
     fillSlotsArray(o.defaultSlotValues[GLOBAL_FAKE_INVENTORY_SLOT])
+    o.fieldNames = {}
     o.itemValues = {}
     -- Boss Kill Bonus values
     o.bossKillBonusValues = {}
@@ -126,6 +128,19 @@ function Roster:Standings(GUID)
         return self.standings or {}
     else
         return self.standings[GUID] or 0
+    end
+end
+
+function Roster:Priority(GUID)
+    if GUID == nil then
+        return 0
+    else
+        local spent = self.pointInfo[GUID].spent
+        if spent == 0 then -- this probably should be < minGP
+            -- spent = self.configuration._.minGP -- TODO this needs to be actually configurable
+            spent = 10
+        end
+        return UTILS.round((self.standings[GUID] or 0) / spent, self.configuration._.roundDecimals)
     end
 end
 
@@ -220,6 +235,13 @@ function Roster:DecayStandings(GUID, value)
     local new = UTILS.round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
     self.pointInfo[GUID]:AddDecayed(self.standings[GUID] - new)
     self.standings[GUID] = new
+
+    -- Spent in EPGP = GP -> thus needs to be decayed also
+    if self:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+        new = UTILS.round(((self.pointInfo[GUID].spent * (100 - value)) / 100), self.configuration._.roundDecimals)
+        self.pointInfo[GUID].spent = new
+    end
+
 end
 
 --[[
@@ -389,6 +411,22 @@ function Roster:SetConfiguration(option, value)
     end
 end
 
+function Roster:GetFieldName(field)
+    if not CONSTANTS.SLOT_VALUE_TIERS[field] then
+        LOG:Error("Roster:GetFieldName(): Unknown field %s", field)
+    end
+    return self.fieldNames[field] or ""
+end
+
+function Roster:SetFieldName(field, name)
+    if not CONSTANTS.SLOT_VALUE_TIERS[field] then
+        LOG:Error("Roster:SetFieldName(): Unknown field %s", field)
+        return
+    end
+    
+    self.fieldNames[field] = name
+end
+
 --[[
  ********
  * Wipe *
@@ -429,11 +467,13 @@ function Roster:AddLoot(loot, profile)
     local GUID = profile:GUID()
     self.profileLoot[GUID][#self.profileLoot[GUID]+1] = loot
     self.raidLoot[#self.raidLoot+1] = loot
-    -- Charging for the item
-    self:UpdateStandings(GUID, -loot:Value(), 0)
     self.pointInfo[GUID]:AddSpent(loot:Value())
-    -- Correct for the spending since it will be subtracted in update standings
-    self.pointInfo[GUID]:AddReceived(loot:Value())
+    if self:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+        -- Charging for the item
+        self:UpdateStandings(GUID, -loot:Value(), 0)
+        -- Correct for the spending since it will be subtracted in update standings
+        self.pointInfo[GUID]:AddReceived(loot:Value())
+    end
 end
 
 function Roster:GetRaidLoot()

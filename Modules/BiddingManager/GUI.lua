@@ -25,8 +25,12 @@ local guiOptions = {
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
 local BASE_WIDTH  = 330 + (isElvUI and 15 or 0)
-local BASE_HEIGHT = 125
-local EXTENDED_HEIGHT = BASE_HEIGHT + 25
+local BASE_HEIGHT_NO_BUTTONS = 100
+local ROW_OFFSET = 25
+local BASE_HEIGHT = BASE_HEIGHT_NO_BUTTONS + ROW_OFFSET
+local EXTENDED_HEIGHT = BASE_HEIGHT + ROW_OFFSET
+
+local rowMultiplier = 1.8
 
 local REGISTRY = "clm_bidding_manager_gui_options"
 
@@ -120,17 +124,8 @@ function BiddingManagerGUI:BidCurrent()
     CLM.MODULES.BiddingManager:Bid(self.bid)
 end
 
-function BiddingManagerGUI:GenerateAuctionOptions()
-    local itemId = 0
-    local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
-    local itemLink = self.auctionInfo and self.auctionInfo:ItemLink() or nil
-    if itemLink then
-        itemId, _, _, _, icon = GetItemInfoInstant(self.auctionInfo:ItemLink())
-        -- Force caching loot from server
-        GetItemInfo(itemId)
-    end
-    local shortItemLink = "item:" .. tostring(itemId)
-    local itemValueMode = self.auctionInfo and self.auctionInfo:Mode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
+local function GenerateValueButtonsAuctionOptions(self,
+    icon, itemLink, shortItemLink, itemValueMode, values)
     local options = {
         icon = {
             name = "",
@@ -229,7 +224,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
                     CLM.MODULES.BiddingManager:Bid(self.bid)
                     if GetCloseOnBid(self) then self:Toggle() end
                 end),
-                width = 1.8,
+                width = rowMultiplier,
                 order = offset
             }
             self.top:SetHeight(EXTENDED_HEIGHT)
@@ -242,8 +237,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         end
     end
     if usedTiers then
-        local row_width = 1.8/#usedTiers
-        local values = self.auctionInfo and self.auctionInfo:Values() or {}
+        local row_width = rowMultiplier/#usedTiers
         local alreadyExistingValues = {}
         for _,tier in ipairs(usedTiers) do
             local value = tonumber(values[tier]) or 0
@@ -266,6 +260,132 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         end
         self.top:SetHeight(EXTENDED_HEIGHT)
     end
+    return options
+end
+
+local function GenerateNamedButtonsAuctionOptions(self,
+    icon, itemLink, shortItemLink, itemValueMode, values)
+    local options = {
+        icon = {
+            name = "",
+            type = "execute",
+            image = icon,
+            func = (function() end),
+            itemLink = shortItemLink,
+            width = 0.25,
+            order = 1
+        },
+        item = {
+            name = "",--CLM.L["Item"],
+            type = "input",
+            get = (function(i) return itemLink or "" end),
+            set = (function(i,v) end), -- Intentionally: do not override
+            width = 1.65,
+            order = 2,
+            itemLink = shortItemLink,
+        },
+    }
+    local offset = 3
+    local row_width = rowMultiplier/2
+    local numButtons = 0
+    local usedTiers
+    if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
+        usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
+    elseif itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
+        usedTiers = {
+            CONSTANTS.SLOT_VALUE_TIER.BASE,
+            CONSTANTS.SLOT_VALUE_TIER.MAX
+        }
+    end
+    if usedTiers then
+        for _,tier in ipairs(usedTiers) do
+            local value = tonumber(values[tier]) or 0
+            local name = self.roster:GetFieldName(tier)
+            if name and name ~= "" then
+                options[tier] = {
+                    name = name,
+                    desc = tostring(value),
+                    type = "execute",
+                    func = (function()
+                        self.bid = value
+                        CLM.MODULES.BiddingManager:Bid(self.bid)
+                        if GetCloseOnBid(self) then self:Toggle() end
+                    end),
+                    width = row_width,
+                    order = offset
+                }
+                offset = offset + 1
+                numButtons = numButtons + 1
+            end
+        end
+    end
+    local isEven = true
+    local cancelPassWidth = rowMultiplier/2
+    if (numButtons %2 ~= 0) then
+        cancelPassWidth = rowMultiplier/4
+        isEven = false
+    end
+
+    options.pass = {
+        name = CLM.L["Pass"],
+        desc = (function()
+            if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+                return CLM.L["Notify that you are passing on the item."]
+            else
+                return CLM.L["Notify that you are passing on the item. Cancels any existing bids."]
+            end
+        end),
+        type = "execute",
+        func = (function()
+            CLM.MODULES.BiddingManager:NotifyPass()
+            if GetCloseOnBid(self) then self:Toggle() end
+        end),
+        disabled = (function()
+                return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
+        end),
+        width = cancelPassWidth,
+        order = offset
+    }
+    options.cancel = {
+        name = CLM.L["Cancel"],
+        desc = CLM.L["Cancel your bid."],
+        type = "execute",
+        func = (function()
+            CLM.MODULES.BiddingManager:CancelBid()
+            if GetCloseOnBid(self) then self:Toggle() end
+        end),
+        disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
+        width = cancelPassWidth,
+        order = offset + 1
+    }
+
+    self.top:SetHeight((isEven and BASE_HEIGHT or BASE_HEIGHT_NO_BUTTONS) + (math.ceil(numButtons/2)*ROW_OFFSET))
+
+    return options
+end
+
+function BiddingManagerGUI:GenerateAuctionOptions()
+    local itemId = 0
+    local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
+    local itemLink = self.auctionInfo and self.auctionInfo:ItemLink() or nil
+    if itemLink then
+        itemId, _, _, _, icon = GetItemInfoInstant(self.auctionInfo:ItemLink())
+        -- Force caching loot from server
+        GetItemInfo(itemId)
+    end
+    local shortItemLink = "item:" .. tostring(itemId)
+    local itemValueMode = self.auctionInfo and self.auctionInfo:Mode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
+    local values = self.auctionInfo and self.auctionInfo:Values() or {}
+
+    local namedButtonsMode = self.roster and self.roster:GetConfiguration("namedButtons")
+
+    local options
+    if namedButtonsMode then
+        options = GenerateNamedButtonsAuctionOptions(self, icon, itemLink, shortItemLink, itemValueMode, values)
+    else
+        options = GenerateValueButtonsAuctionOptions(self, icon, itemLink, shortItemLink, itemValueMode, values)
+    end
+    
     return options
 end
 
@@ -370,6 +490,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
         local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
             self.auctionType = roster:GetConfiguration("auctionType")
+            self.roster = roster
             if roster:IsProfileInRoster(myProfile:GUID()) then
                 self.standings = roster:Standings(myProfile:GUID())
             end
