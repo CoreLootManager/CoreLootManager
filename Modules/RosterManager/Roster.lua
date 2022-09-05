@@ -230,6 +230,10 @@ function Roster:SetStandings(GUID, value)
     self.standings[GUID] = UTILS.round(value, self.configuration._.roundDecimals)
 end
 
+function Roster:SetSpent(GUID, value)
+    self.pointInfo[GUID].spent = UTILS.round(value, self.configuration._.roundDecimals)
+end
+
 function Roster:DecayStandings(GUID, value)
     local new = UTILS.round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
     self.pointInfo[GUID]:AddDecayed(self.standings[GUID] - new)
@@ -253,6 +257,7 @@ local function mirrorStandings(self, source, target)
     if source == target then return end -- to prevent circular updates
     if not self.standings[target] then return end
     self.standings[target] = self.standings[source]
+    self.pointInfo[target].spent = self.pointInfo[source].spent
 end
 
 function Roster:MirrorStandings(source, targets, isArray)

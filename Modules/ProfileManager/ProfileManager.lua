@@ -144,7 +144,11 @@ function ProfileManager:Initialize()
                         local pointSum = roster:Standings(mainGUID) + roster:Standings(altGUID)
                         -- 3) Set new Main standings
                         roster:SetStandings(mainGUID, pointSum)
-                        -- 4) Mirror standings from main to alts
+                        -- 2a) Sum spent points of the pool and new alt
+                        local spentSum = roster:GetPointInfoForPlayer(mainGUID).spent + roster:GetPointInfoForPlayer(altGUID).spent
+                        -- 3a) Set new Main spent
+                        roster:SetSpent(mainGUID, spentSum)
+                        -- 4) Mirror standings (includes spent) from main to alts
                         roster:MirrorStandings(mainGUID, mainProfile:Alts(), true)
                         -- 5) Mirror weekly gains from main to alts
                         roster:MirrorWeeklyGains(mainGUID, mainProfile:Alts(), true)
