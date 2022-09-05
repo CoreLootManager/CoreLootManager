@@ -185,7 +185,7 @@ local function GenerateAssistantOptions(self)
         },
         award_dkp = {
             name = CLM.L["Award"],
-            desc = CLM.L["Award DKP to players based on context."],
+            desc = CLM.L["Award points to players based on context."],
             type = "execute",
             width = 0.575,
             func = (function(i)
