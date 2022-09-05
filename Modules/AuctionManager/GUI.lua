@@ -256,11 +256,6 @@ local function CreateBidWindow(self)
             if not self.awardValue or self.awardValue == '' then
                 AuctionManagerGUI:UpdateBids()
             end
-            if self.awardPlayer and self.awardPlayer:len() > 0 then
-                self.top:SetStatusText(sformat(CLM.L["Awarding to %s for %d."], self.awardPlayer, self.awardValue))
-            else
-                self.top:SetStatusText("")
-            end
             return selected
         end),
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -652,7 +647,6 @@ end
 
 function AuctionManagerGUI:setInputAwardValue(v)
     self.awardValue = tonumber(v) or 0;
-    self.top:SetStatusText(sformat(CLM.L["Awarding to %s for %d."], self.awardPlayer, self.awardValue))
     self:Refresh()
 end
 

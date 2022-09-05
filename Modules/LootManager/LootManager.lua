@@ -136,7 +136,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         else
             entry = CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, itemId, value)
         end
-        local pointTypeSuffix = (roster:GetPointType() == CONSTANTS.POINT_TYPE_DKP and CLM.L["DKP"] or CLM.L["GP"])
+        local pointTypeSuffix = ((roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP) and CLM.L["DKP"] or CLM.L["GP"])
         CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
         if CLM.GlobalConfigs:GetLootWarning() then
             local message = string.format(CLM.L["%s awarded to %s for %s %s"], itemLink, name, value, pointTypeSuffix)
