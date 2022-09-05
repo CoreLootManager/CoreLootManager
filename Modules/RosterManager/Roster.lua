@@ -7,7 +7,6 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
-local slen, strsub = string.len, strsub
 
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
@@ -423,7 +422,7 @@ function Roster:SetFieldName(field, name)
         LOG:Error("Roster:SetFieldName(): Unknown field %s", field)
         return
     end
-    
+
     self.fieldNames[field] = name
 end
 

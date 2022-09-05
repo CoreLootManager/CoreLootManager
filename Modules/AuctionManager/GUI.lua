@@ -58,7 +58,7 @@ local function getHighlightMethod(highlightColor)
         else
             color = highlightColor
         end
-    
+
         table:SetHighLightColor(rowFrame, color)
     end)
 end

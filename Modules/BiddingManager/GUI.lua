@@ -385,7 +385,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
     else
         options = GenerateValueButtonsAuctionOptions(self, icon, itemLink, shortItemLink, itemValueMode, values)
     end
-    
+
     return options
 end
 

@@ -174,7 +174,6 @@ function RosterManagerOptions:Initialize()
         general_weekly_cap_set = (function(name, value)
             SetRosterOption(name, "weeklyCap", value)
         end),
-        
         -- Auction
         auction_auction_type_get = (function(name)
             return GetRosterOption(name, "auctionType")

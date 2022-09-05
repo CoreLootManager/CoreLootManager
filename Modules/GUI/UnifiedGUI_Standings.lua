@@ -22,10 +22,6 @@ local function ST_GetName(row)
     return row.cols[1].value
 end
 
-local function ST_GetValue(row)
-    return row.cols[3].value
-end
-
 local function ST_GetClass(row)
     return row.cols[4].value
 end
@@ -620,14 +616,11 @@ end
 local function refreshHandler()
     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
     if roster then
-        local head = CLM.L["Points"]
         if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
-            -- head = CLM.L["PR"]
             CLM.GUI.Unified:GetScrollingTable():SetDisplayCols(columnsEPGP)
         else
             CLM.GUI.Unified:GetScrollingTable():SetDisplayCols(columnsDKP)
         end
-        -- CLM.GUI.Unified:GetScrollingTable().head.cols[2]:GetFontString():SetText(head)
     end
 end
 
