@@ -32,10 +32,41 @@ local BASE_WIDTH  = 365 + (isElvUI and 5 or 0)
 local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
+local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
+local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
+local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
+
+local colorRedTransparentHex = "ED3333"
+local colorGreenTransparentHex = "33ED33"
+local colorBlueTransparentHex = "3333ED"
 
 local guiOptions = {
     type = "group",
     args = {}
+}
+
+local function ST_GetHighlightFunction(row)
+    return row.cols[5].value
+end
+
+local function getHighlightMethod(highlightColor)
+    return (function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+        table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+        local color
+        if table.selected == realrow then
+            color = table:GetDefaultHighlight()
+        else
+            color = highlightColor
+        end
+    
+        table:SetHighLightColor(rowFrame, color)
+    end)
+end
+
+local highlightRole = {
+    ["DAMAGER"] = getHighlightMethod(colorRedTransparent),
+    ["TANK"] = getHighlightMethod(colorBlueTransparent),
+    ["HEALER"] = getHighlightMethod(colorGreenTransparent),
 }
 
 local function GetModifierCombination()
@@ -201,8 +232,8 @@ local function CreateBidWindow(self)
         {name = CLM.L["Class"], width = 60,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
-        {name = CLM.L["Spec"],  width = 60},
-        {name = CLM.L["Bid"],   width = 60, color = colorGreen,
+        -- {name = CLM.L["Spec"],  width = 60},
+        {name = CLM.L["Bid"],   width = 120, color = colorGreen, -- TODO sorting
             sort = ScrollingTable.SORT_DSC,
             sortnext = 5
         },
@@ -215,28 +246,31 @@ local function CreateBidWindow(self)
     self.st.frame:SetPoint("TOPLEFT", BidWindowGroup.frame, "TOPLEFT", 0, -25)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
 
-    --- selection ---
-    local OnClickHandler = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        local selected = self.st:GetRow(self.st:GetSelection())
-        if type(selected) ~= "table" then return false end
-        if selected.cols == nil then return false end -- Handle column titles click
-        self.awardPlayer = selected.cols[1].value or ""
-        -- self.awardValue = selected.cols[4].value or 0
-        if not self.awardValue or self.awardValue == '' then
-            AuctionManagerGUI:UpdateBids()
-        end
-        if self.awardPlayer and self.awardPlayer:len() > 0 then
-            self.top:SetStatusText(sformat(CLM.L["Awarding to %s for %d."], self.awardPlayer, self.awardValue))
-        else
-            self.top:SetStatusText("")
-        end
-        return selected
-    end)
     self.st:RegisterEvents({
-        OnClick = OnClickHandler
+        OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local selected = self.st:GetRow(self.st:GetSelection())
+            if type(selected) ~= "table" then return false end
+            if selected.cols == nil then return false end -- Handle column titles click
+            self.awardPlayer = selected.cols[1].value or ""
+            if not self.awardValue or self.awardValue == '' then
+                AuctionManagerGUI:UpdateBids()
+            end
+            if self.awardPlayer and self.awardPlayer:len() > 0 then
+                self.top:SetStatusText(sformat(CLM.L["Awarding to %s for %d."], self.awardPlayer, self.awardValue))
+            else
+                self.top:SetStatusText("")
+            end
+            return selected
+        end),
+        OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+            ST_GetHighlightFunction(rowData)(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            return status
+        end),
     })
-    --- --- ---
 
     return BidWindowGroup
 end
@@ -437,7 +471,9 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         bid_stats_info = {
             name = "Info",
             desc = (function()
-                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return "Not in raid" end
+                -- Legend
+                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].."\n",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].."\n",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
+                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] .. "\n" .. legend end
                 -- Unique did any action dict
                 local didAnyAction = {}
                 -- generateInfo closure
@@ -509,7 +545,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 -- Stats
                 local stats = sformat("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
                 -- Result
-                return stats .. passed .. cantUse .. closed .. noAction
+                return stats .. passed .. cantUse .. closed .. noAction .. legend
             end),
             type = "execute",
             func = (function() end),
@@ -639,23 +675,32 @@ function AuctionManagerGUI:Refresh()
     if not self._initialized then return end
 
     if CLM.MODULES.RaidManager:IsInActiveRaid() then
+        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+        local namedButtons = roster:GetConfiguration("namedButtons")
         local bids, bidTypes = CLM.MODULES.AuctionManager:Bids()
         local data = {}
         for name,bid in pairs(bids) do
             local color
-            if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
-                color = colorYellow
+            if namedButtons then
+                bid = roster:GetFieldName(bidTypes[name]) or bid
+            else
+                if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
+                    color = colorYellow
+                end
             end
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
             if profile then
                 local row = {cols = {
                     {value = profile:Name()},
                     {value = UTILS.ColorCodeClass(profile:Class())},
-                    {value = profile:SpecString()},
+                    -- {value = profile:SpecString()},
                     {value = bid, color = color},
-                    {value = self.roster:Standings(profile:GUID())}
-                }}
-                data[#data+1]=  row
+                    {value = self.roster:Standings(profile:GUID())},
+                    {value = highlightRole[profile:Role()]},
+                },
+                DoCellUpdate = highlightRole[profile:Role()]
+                }
+                data[#data+1] = row
             end
         end
         self.st:SetData(data)

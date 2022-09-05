@@ -249,7 +249,7 @@ local function GenerateValueButtonsAuctionOptions(self,
                     type = "execute",
                     func = (function()
                         self.bid = value
-                        CLM.MODULES.BiddingManager:Bid(self.bid)
+                        CLM.MODULES.BiddingManager:Bid(self.bid, tier)
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     width = row_width,
@@ -308,7 +308,7 @@ local function GenerateNamedButtonsAuctionOptions(self,
                     type = "execute",
                     func = (function()
                         self.bid = value
-                        CLM.MODULES.BiddingManager:Bid(self.bid)
+                        CLM.MODULES.BiddingManager:Bid(self.bid, tier)
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     width = row_width,
