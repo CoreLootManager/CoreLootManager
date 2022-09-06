@@ -58,7 +58,7 @@ function GlobalConfigs:Initialize()
             name = CLM.L["Bindings"],
             desc = CLM.L["Open Key Bindings UI for AddOns"],
             type = "execute",
-            func = (function() 
+            func = (function()
                 local category = "AddOns"
                 category = _G[category] or category
                 KeyBindingFrame_LoadUI()
