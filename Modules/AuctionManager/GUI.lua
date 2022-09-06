@@ -27,7 +27,7 @@ local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
-local BASE_WIDTH  = 365 + (isElvUI and 5 or 0)
+local BASE_WIDTH  = 365 + (isElvUI and 15 or 0)
 
 local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}

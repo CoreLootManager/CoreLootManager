@@ -437,7 +437,7 @@ end
 
 function BiddingManagerGUI:BuildBar(duration)
     LOG:Trace("BiddingManagerGUI:BuildBar()")
-    self.bar = LibCandyBar:New("Interface\\AddOns\\ClassicLootManager\\Media\\Bars\\AceBarFrames.tga", --[[435--]]BASE_WIDTH, 25)
+    self.bar = LibCandyBar:New("Interface\\AddOns\\ClassicLootManager\\Media\\Bars\\AceBarFrames.tga", BASE_WIDTH, 25)
     local note = ""
     if self.auctionInfo:Note():len() > 0 then
         note = "(" .. self.auctionInfo:Note() .. ")"
@@ -452,7 +452,7 @@ function BiddingManagerGUI:BuildBar(duration)
     end);
     self.bar:SetColor(0, 0.80, 0, 1)
     -- self.bar:SetParent(self.top.frame) -- makes the bar disappear
-    self.bar:SetPoint("CENTER", self.top.frame, "TOP", 0, 25)
+    self.bar:SetPoint("CENTER", self.top.frame, "TOP", 0, 10)
 
     self.bar.candyBarBar:SetScript("OnMouseDown", function (_, button)
         if button == 'LeftButton' then
