@@ -125,6 +125,7 @@ Modules\GUI\UnifiedGUI_Standings.lua
 Modules\GUI\UnifiedGUI_History.lua
 Modules\GUI\UnifiedGUI_Profiles.lua
 Modules\GUI\UnifiedGUI_Raids.lua
+Modules\GUI\UnifiedGUI_Audit.lua
 
 
 # Alerts

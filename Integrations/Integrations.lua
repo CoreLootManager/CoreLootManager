@@ -95,6 +95,10 @@ local function RequestWoWDKPBotData()
     CLM.MODULES.ProfileInfoManager:RequestVersion()
 end
 
+local function InitializeGargulIntegration(self)
+    
+end
+
 local Integration = {}
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
@@ -105,6 +109,8 @@ function Integration:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData()
     end))
+    -- Gargul
+    InitializeGargulIntegration(self)
     -- Generic Data
     self.exportInProgress = false
 end

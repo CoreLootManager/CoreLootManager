@@ -64,7 +64,7 @@ function ChangelogGUI:Initialize()
 end
 
 local function Create(self)
-    local parent = AceGUI:Create("Frame")
+    local parent = AceGUI:Create("Window")
     parent:SetLayout("Flow")
     parent:SetWidth(780)
 
