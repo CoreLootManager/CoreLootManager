@@ -361,6 +361,7 @@ function Roster:SetItemTierValue(itemId, tier, value)
     LOG:Debug("Set Item Tier Value: [%s]: [%s] [%s] for roster [%s]", itemId, tier, value, self:UID())
     lazyCreateItem(self, itemId)
     self.itemValues[itemId][tier] = tonumber(value) or 0
+    self:SetItemValues(itemId, self.itemValues[itemId])
 end
 
 function Roster:SetItemValues(itemId, values)
