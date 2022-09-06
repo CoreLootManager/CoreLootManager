@@ -507,7 +507,7 @@ function AuctionManager:ValidateBid(name, bid)
     if current < self.minimumPoints then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BELOW_MIN_BIDDER end
     -- allow negative standings after bid
     local new = current - bid
-    if new < self.minimumPoints and not self.allowBelowMinStandings then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
+    if (new < self.minimumPoints) and not self.allowBelowMinStandings and (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE_DKP) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
     -- bid value
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
@@ -557,7 +557,6 @@ function AuctionManager:UpdateBid(name, bid, type)
 end
 
 function AuctionManager:UpdateBidsInternal(name, bid, type)
-    print(name, bid, type)
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
         -- We remove from the bids list but add to pass list
         self.userResponses.bids[name] = nil

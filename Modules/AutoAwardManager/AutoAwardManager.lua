@@ -7,7 +7,6 @@ local CONSTANTS = CLM.CONSTANTS
 -- ------------------------------- --
 
 local tonumber, tostring = tonumber, tostring
-local ipairs = ipairs
 local IsInRaid, CombatLogGetCurrentEventInfo = IsInRaid, CombatLogGetCurrentEventInfo
 local strsplit, GetServerTime, C_TimerNewTicker = strsplit, GetServerTime, C_Timer.NewTicker
 
@@ -116,7 +115,8 @@ local function handleIntervalBonus(self)
     -- Check if at least interval passed since raid start
     if now - raid:StartTime() < interval then return end
     -- Check History
-    for _,pointHistoryEntry in ipairs(pointHistory) do
+    for i = #pointHistory, 1, -1 do
+        local pointHistoryEntry = pointHistory[i]
         -- If we are already so deep in history we missed the interval
         if now - pointHistoryEntry:Timestamp() >= interval then
             break

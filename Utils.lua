@@ -19,6 +19,7 @@ local tostring, tonumber = tostring, tonumber
 local tinsert = table.insert
 local print, type, setmetatable, getmetatable, rawequal = print, type, setmetatable, getmetatable, rawequal
 local GetUnitName, UnitGUID, GetTalentTabInfo = GetUnitName, UnitGUID, GetTalentTabInfo
+local GetTalentGroupRole, GetActiveTalentGroup = GetTalentGroupRole, GetActiveTalentGroup
 
 local function capitalize(string)
     string = string or ""
@@ -30,6 +31,7 @@ local classOrdered = {
 }
 
 local classColors = {
+    ["deathknight"] = { r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" },
     ["druid"]   = { r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
     ["hunter"]  = { r = 0.67, g = 0.83, b = 0.45, hex = "ABD473" },
     ["mage"]    = { r = 0.25, g = 0.78, b = 0.92, hex = "40C7EB" },
@@ -566,6 +568,10 @@ function UTILS.GetMyTalents()
     _, _, two   = GetTalentTabInfo(2)
     _, _, three = GetTalentTabInfo(3)
     return one, two, three
+end
+
+function UTILS.GetMyRole()
+    return GetTalentGroupRole(GetActiveTalentGroup())
 end
 
 function UTILS.IsTooltipTextRed(text)

@@ -134,7 +134,7 @@ local function GenerateAssistantOptions(self)
         },
         add_to_roster = {
             name = CLM.L["Add to roster"],
-            desc = CLM.L["Adds selected players or everyone if none selected to the selected roster (from dropdown)."],
+            desc = CLM.L["Adds selected players to the selected roster (from dropdown)."],
             type = "execute",
             width = "full",
             func = (function(i)
@@ -169,7 +169,7 @@ local tableStructure = {
         {name = CLM.L["Class"], width = 100,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
-        {name = CLM.L["Spec"],  width = 60},
+        {name = CLM.L["Role"],  width = 60},
         {name = CLM.L["Rank"],  width = 60},
         {name = CLM.L["Version"],  width = 60},
     },
@@ -231,7 +231,7 @@ local function tableDataFeeder()
             {value = name},
             {value = main},
             {value = UTILS.ColorCodeClass(object:Class())},
-            {value = object:SpecString()},
+            {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
             {value = rank},
             {value = object:VersionString()}
         }

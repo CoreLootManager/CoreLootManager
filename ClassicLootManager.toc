@@ -73,8 +73,8 @@ Modules\RosterManager\RosterConfiguration.lua
 Modules\RosterManager\Roster.lua
 Modules\ProfileManager\LedgerEntries.lua
 Modules\RosterManager\LedgerEntries.lua
-Modules\PointManager\DKP\LedgerEntries.lua
-Modules\PointManager\DKP\PointHistory.lua
+Modules\PointManager\LedgerEntries.lua
+Modules\PointManager\PointHistory.lua
 Modules\LootManager\LedgerEntries.lua
 Modules\LootManager\Loot.lua
 Modules\AuctionManager\AuctionCommStructures.lua
@@ -125,6 +125,7 @@ Modules\GUI\UnifiedGUI_Standings.lua
 Modules\GUI\UnifiedGUI_History.lua
 Modules\GUI\UnifiedGUI_Profiles.lua
 Modules\GUI\UnifiedGUI_Raids.lua
+Modules\GUI\UnifiedGUI_Audit.lua
 
 
 # Alerts

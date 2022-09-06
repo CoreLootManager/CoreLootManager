@@ -2,7 +2,7 @@
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
+local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
@@ -27,6 +27,7 @@ function Profile:New(entry, name, class, main)
         changeset = ""
     }
     o:SetSpec()
+    o:SetRole()
     o.alts = {}
 
     o._versionString = CLM.L["Unknown"]
@@ -46,12 +47,20 @@ function Profile:Spec()
     return self.spec
 end
 
+function Profile:SetRole(role)
+    self.role = role or ""
+end
+
 function Profile:SetSpec(one, two, three)
     self.spec = {
         one = one or 0,
         two = two or 0,
         three = three or 0
     }
+end
+
+function Profile:Role()
+    return self.role
 end
 
 function Profile:SpecString()
@@ -124,5 +133,11 @@ end
 function Profile:Entry()
     return self.entry
 end
+
+CONSTANTS.PROFILE_ROLES_GUI = {
+    ["TANK"] = CLM.L["Tank"],
+    ["HEALER"] = CLM.L["Healer"],
+    ["DAMAGER"] = CLM.L["DPS"],
+}
 
 CLM.MODELS.Profile = Profile

@@ -1,6 +1,77 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.0.0",
+        data = {
+            {
+                name = "Wrath of the Lich King!",
+                data = {
+                    {header = "", body = "Are you ready for Wrath of the Lich King? Classic Loot Manager is! Read about major overhaul and new features coming in this version!"},
+                    {header = "Wrath of the Lich King support", body = "New Bosses and difficulties, new API and dual spec is now properly supported! \nCLM 2.0 is not backwards compatible and starts with a clean database for your best experience in new expansion!"},
+                    {header = "Thank you supporters!", body = "Thank you to all  that support us, either by contributing or donating through patreon: https://www.patreon.com/classiclootmanager. \nSpecial thank you to legendary patrons: **naimious**"},
+                },
+            },
+            {
+                name = "New: Simplified User Interface",
+                data = {
+                    {header = "No more bulky windows!", body = "Main CLM windows: Standings, Point History, Loot History, Raids and Profiles are now combined in single window with tabs for ease of use. Additionaly Loot and Point History are now combined into common list."},
+                    {header = "No more accidental selection clear!", body = "Selection now works as expected:\n- Single click to select a single row,\n- Alt-click to select any row,\n- Shift-click to select a range of rows."},
+                    {header = "Filtering and search!", body = "You can now search through data with ease."},
+                    {header = "Visibility and QoL changes!", body = "- You are now highlighted in standings,\n- Minimap Icon can now be toggled on and off,\n- Sounds can now be toggled on and off,"},
+                    {header = "Configurable keybinds!", body = "You can now configure your own click-keybinds for auctioning and way more in the Bindings section of configuration."},
+                },
+            },
+            {
+                name = "New: Auction and Bidding UI overhaul",
+                data = {
+                    {header = "Auction window now highlights players roles", body = "- blue for Tank\n- green for Healer\n- red for DPS"},
+                    {header = "Bidding window received general overhaul and is more compact than ever.", body = "- Supports MS/OS bidding which is displayed in the Auction window. Original - MS bids are green, new OS bids are yellow.\n- It can now be toggled by clicking on the timer bar\n- Tooltips will now properly display also when hovering over the item Icon"},
+                },
+            },
+            {
+                name = "New: Action Context mechanism",
+                data = {
+                    {header = "", body = "Previously CLM automatically selected every player in the UI. This is no more happening. With the new selection system there has been introduced a new concept: context. Your point awards will be based on this - either Roster, Raid or selection. By default context is Roster, when you select someone it's changed to selection, and if you're in raid it will default to Raid. Be sure to be aware of the context when working on the points."},
+                },
+            },
+            {
+                name = "New: EPGP support",
+                data = {
+                    {header = "Effort Points / Gear Points support is here!", body = "You can now run simultaneously multiple DKP and EPGP raids and rosters at the same time, using all the great mechanisms CLM provides."},
+                },
+            },
+            {
+                name = "New: Tiered bidding mode",
+                data = {
+                    {header = "", body = "Dedicated to EPGP but works great for DKP also - this system is a type of ascending bid system, where you can set up to 5 tiers of values which people will pay for an item, for example: 0, 30, 50, 70, 100 - no other values will be accepted by aucioneer. This comes with full UI support."},
+                },
+            },
+            {
+                name = "New: Named buttons bidding mode",
+                data = {
+                    {header = "", body = "Dedicated to Tiered bidding mode - this allows you to name tiered bid buttons and use them instead of values (although the underlying values are still there). Both players bidding and auctioneer will see the text instead of value, while awarding will still result in the proper point deduction (DKP) or award (GP)."},
+                },
+            },
+            {
+                name = "Gargul by @Zh0rax integration",
+                data = {
+                    {header = "", body = "Gargul and CLM are coming with new integration for TMB/LC + DKP/EPGP use for more loot systems flexibilty!"},
+                },
+            },
+        }
+    },
+    {
+        version = "v1.9.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Death Knight support", body = "Add support to Death Knights in prepatch."},
+                },
+            },
+        }
+    },
+    {
         version = "v1.9.1",
         data = {
             {

@@ -1,3 +1,6 @@
+# Classic Loot Manager v1.9.2
+## Fixes
+Support for Death Knights in prepatch.
 # Classic Loot Manager v1.9.1
 ## Fixes
 ### German Locale

@@ -23,7 +23,7 @@ local function ST_GetName(row)
 end
 
 local function ST_GetClass(row)
-    return row.cols[3].value
+    return row.cols[4].value
 end
 
 local function ST_GetWeeklyGains(row)
@@ -44,6 +44,14 @@ end
 
 local function ST_GetProfilePoints(row)
     return row.cols[10].value
+end
+
+local function ST_GetIsEPGP(row)
+    return row.cols[11].value
+end
+
+local function ST_GetEP(row)
+    return row.cols[12].value
 end
 
 local function highlightPlayer(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
@@ -173,7 +181,7 @@ local function GenerateAssistantOptions(self)
         },
         award_dkp = {
             name = CLM.L["Award"],
-            desc = CLM.L["Award DKP to selected players or everyone if none selected."],
+            desc = CLM.L["Award points to players based on context."],
             type = "execute",
             width = 0.575,
             func = (function(i)
@@ -239,12 +247,17 @@ local function GenerateManagerOptions(self)
             type = "toggle",
             set = function(i, v) self.includeNegative = v end,
             get = function(i) return self.includeNegative end,
+            hidden = function()
+                local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+                if not roster then return false end
+                return (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
+            end,
             width = "full",
             order = 23
         },
         decay_dkp = {
             name = CLM.L["Decay"],
-            desc = CLM.L["Execute decay for selected players or everyone if none selected."],
+            desc = CLM.L["Execute decay for players based on context."],
             type = "execute",
             width = 0.575,
             func = (function(i)
@@ -292,20 +305,36 @@ local function verticalOptionsFeeder()
     return options
 end
 
+local columnsDKP = {
+    {   name = CLM.L["Name"],   width = 85 },
+    {   name = "", width = 60 },
+    {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = CLM.L["Class"],  width = 100,
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+    },
+    -- {   name = CLM.L["Spec"],   width = 60 },
+    {   name = CLM.L["Att. [%]"], width = 60,
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+    }
+}
+
+local columnsEPGP = {
+    {   name = CLM.L["Name"], width = 85 },
+    {   name = CLM.L["EP/GP"], width = 75 },
+    {   name = CLM.L["PR"], width = 70, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = CLM.L["Class"],  width = 100,
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+    },
+    -- {   name = CLM.L["Spec"],   width = 60 },
+    {   name = CLM.L["Att. [%]"], width = 60,
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+    }
+}
+
 local tableStructure = {
     rows = 25,
     -- columns - structure of the ScrollingTable
-    columns = {
-        {   name = CLM.L["Name"],   width = 85 },
-        {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-        {   name = CLM.L["Class"],  width = 100,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        },
-        {   name = CLM.L["Spec"],   width = 60 },
-        {   name = CLM.L["Att. [%]"], width = 60,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        }
-    },
+    columns = columnsDKP,
     -- Function to filter ScrollingTable
     filter = (function(stobject, row)
         local playerName = ST_GetName(row)
@@ -322,27 +351,35 @@ local tableStructure = {
             local tooltip = UnifiedGUI_Standings.tooltip
             if not tooltip then return end
             tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+            local pointInfo = ST_GetPointInfo(rowData)
             local weeklyGain = ST_GetWeeklyGains(rowData)
             local weeklyCap = ST_GetWeeklyCap(rowData)
             local gains = weeklyGain
             if weeklyCap > 0 then
                 gains = gains .. " / " .. weeklyCap
             end
-            local pointInfo = ST_GetPointInfo(rowData)
-            tooltip:AddDoubleLine(CLM.L["Information"], CLM.L["DKP"])
-            tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
-            tooltip:AddLine("\n")
-            -- Statistics
-            tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Statistics:"], "44ee44"))
-            tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
-            tooltip:AddDoubleLine(CLM.L["Total received"], pointInfo.received)
-            tooltip:AddDoubleLine(CLM.L["Total blocked"], pointInfo.blocked)
-            tooltip:AddDoubleLine(CLM.L["Total decayed"], pointInfo.decayed)
+
+            local isEPGP = ST_GetIsEPGP(rowData)
+            if isEPGP then
+                tooltip:AddLine(CLM.L["Information"])
+                tooltip:AddDoubleLine(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], tostring(pointInfo.spent) .. " ".. CLM.L["GP"])
+                tooltip:AddDoubleLine(CLM.L["Weekly gains"], tostring(gains) .. " " .. CLM.L["EP"])
+            else
+                tooltip:AddLine(CLM.L["Information"])
+                tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
+                tooltip:AddLine("\n")
+                -- Statistics
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Statistics"], "44ee44"), CLM.L["DKP"])
+                tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
+                tooltip:AddDoubleLine(CLM.L["Total received"], pointInfo.received)
+                tooltip:AddDoubleLine(CLM.L["Total blocked"], pointInfo.blocked)
+                tooltip:AddDoubleLine(CLM.L["Total decayed"], pointInfo.decayed)
+            end
             -- Loot History
             local lootList = ST_GetProfileLoot(rowData)
             tooltip:AddLine("\n")
             if #lootList > 0 then
-                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest loot:"], "44ee44"))
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest loot"], "44ee44"), isEPGP and CLM.L["GP"] or CLM.L["DKP"])
                 local limit = #lootList - 4 -- inclusive (- 5 + 1)
                 if limit < 1 then
                     limit = 1
@@ -361,7 +398,7 @@ local tableStructure = {
             local pointList = ST_GetProfilePoints(rowData)
             tooltip:AddLine("\n")
             if #pointList > 0 then
-                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["Latest DKP changes:"], "44ee44"))
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest points"], "44ee44"), isEPGP and CLM.L["EP"] or CLM.L["DKP"])
                 for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
                     if i > 5 then break end
                     local reason = point:Reason() or 0
@@ -406,10 +443,19 @@ local function tableDataFeeder()
     local weeklyCap = roster:GetConfiguration("weeklyCap")
     local rowId = 1
     local data = {}
-
+    local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
     for GUID,value in pairs(roster:Standings()) do
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
         local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
+        local pointInfo = roster:GetPointInfoForPlayer(GUID)
+        local numColumnValue
+        local epgp
+        if isEPGP then
+            numColumnValue = roster:Priority(GUID)
+            epgp = tostring(value) .. "/" .. tostring(pointInfo.spent)
+        else
+            numColumnValue = value
+        end
         if profile then
             local highlight
             if profile:Name() == whoami then
@@ -417,16 +463,19 @@ local function tableDataFeeder()
             end
             local row = { cols = {
                 {value = profile:Name()},
-                {value = value, color = (value > 0 and colorGreen or colorRed)},
+                {value = epgp},
+                {value = numColumnValue, color = (value > 0 and colorGreen or colorRed)},
                 {value = UTILS.ColorCodeClass(profile:Class())},
-                {value = profile:SpecString()},
+                -- {value = profile:SpecString()},
                 {value = UTILS.ColorCodeByPercentage(attendance)},
                 -- not displayed
                 {value = roster:GetCurrentGainsForPlayer(GUID)},
                 {value = weeklyCap},
-                {value = roster:GetPointInfoForPlayer(GUID)},
+                {value = pointInfo},
                 {value = roster:GetProfileLootByGUID(GUID)},
-                {value = roster:GetProfilePointHistoryByGUID(GUID)}
+                {value = roster:GetProfilePointHistoryByGUID(GUID)},
+                {value = isEPGP},
+                {value = value}
             },
             DoCellUpdate = highlight
             }
@@ -564,15 +613,23 @@ local function initializeHandler()
     )
 end
 
--- local function refreshHandler()
--- end
+local function refreshHandler()
+    local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+    if roster then
+        if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+            CLM.GUI.Unified:GetScrollingTable():SetDisplayCols(columnsEPGP)
+        else
+            CLM.GUI.Unified:GetScrollingTable():SetDisplayCols(columnsDKP)
+        end
+    end
+end
 
 local function beforeShowHandler()
     LOG:Trace("UnifiedGUI_Standings beforeShowHandler()")
     UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
     if CLM.MODULES.RaidManager:IsInRaid() then
-        UnifiedGUI_Standings.roster = CLM.MODULES.RaidManager:GetRaid():UID()
-        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
+        UnifiedGUI_Standings.roster = CLM.MODULES.RaidManager:GetRaid():Roster():UID()
+        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
         UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
     end
 end
@@ -625,7 +682,7 @@ CLM.GUI.Unified:RegisterTab(
     verticalOptionsFeeder,
     {
         initialize = initializeHandler,
-        -- refresh = refreshHandler,
+        refresh = refreshHandler,
         beforeShow = beforeShowHandler,
         store = storeHandler,
         restore = restoreHandler,
