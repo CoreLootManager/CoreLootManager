@@ -4,11 +4,20 @@ import string
 import copy
 import os
 import re
+import math
+import translators as ts
 from pathlib import Path
 
 import pprint
 from xmlrpc.client import boolean
 pp = pprint.PrettyPrinter(indent=4)
+
+locale_to_google = {
+    'deDE': 'de',
+    'frFR': 'fr',
+    'ruRU': 'ru',
+    'esES': 'es'
+}
 
 class L10nStorage:
     def __init__(self, base, parser, markdown):
@@ -174,13 +183,25 @@ def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean, ma
             print("Missing translations for locale {}:".format(locale))
             for key in missing_translations:
                 print(key)
-        return 1
+        return 1, missing_translations
     if ignored_translations_count > 0:
         if markdown_format:
             print("**Ignored {} locale translations**".format(ignored_translations_count))
         elif not parser_format:
             print("Ignored {} locale translations".format(ignored_translations_count))
-    return 0
+    return 0, []
+
+def translate_missing(missing, storage:L10nStorage, locale, total_missing, total_done, last_percent ):
+    if len(missing) > 0:
+        for sentence in missing:
+            storage.translations[sentence] = ts.google(sentence, from_language='en', to_language=locale_to_google[locale])
+            total_done += 1
+            percent = math.floor(100*(total_done/total_missing))
+            if percent > last_percent:
+                print("Translation progress: {0}%".format(percent))
+            last_percent = percent
+    return total_missing, total_done, last_percent
+
 
 # Always needs to be run from the top directory of the project!
 def main(args):
@@ -205,12 +226,21 @@ def main(args):
     # Scan for existing translations and create outputs of them with report
     for locale in locales:
         scan_file_for_l10n_translation(baseDir / ("Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
+
+    total_missing, total_done, last_percent = 0, 0, 0    
+    status = 0
+    missing_translations = {}
+    for locale in locales:
+        return_status, missing = verify_locales(storage, locale, args.parser, args.markdown)
+        status += return_status
+        missing_translations[locale] = missing
+        total_missing += len(missing)
+
+    for locale in locales:
+        if args.translate:
+            total_missing, total_done, last_percent = translate_missing(missing_translations[locale], storage, locale, total_missing, total_done, last_percent)
         if args.regenerate:
             output_to_file('Locale/{0}.lua'.format(locale), storage, locale)
-    
-    status = 0
-    for locale in locales:
-        status += verify_locales(storage, locale, args.parser, args.markdown)
 
     exit(status)
 
@@ -219,4 +249,5 @@ if __name__ == '__main__':
     parser.add_argument('--regenerate', dest='regenerate', action='store_true')
     parser.add_argument('--parser', dest='parser', action='store_true')
     parser.add_argument('--markdown', dest='markdown', action='store_true')
+    parser.add_argument('--translate', dest='translate', action='store_true')
     main(parser.parse_known_args(sys.argv)[0])
