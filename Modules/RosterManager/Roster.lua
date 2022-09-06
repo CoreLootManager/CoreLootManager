@@ -135,9 +135,9 @@ function Roster:Priority(GUID)
         return 0
     else
         local spent = self.pointInfo[GUID].spent
-        if spent == 0 then -- this probably should be < minGP
-            -- spent = self.configuration._.minGP -- TODO this needs to be actually configurable
-            spent = 10
+        local minGP = self.configuration._.minGP
+        if spent < minGP then
+            spent = minGP
         end
         return UTILS.round((self.standings[GUID] or 0) / spent, self.configuration._.roundDecimals)
     end
