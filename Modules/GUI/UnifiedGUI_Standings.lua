@@ -628,8 +628,8 @@ local function beforeShowHandler()
     LOG:Trace("UnifiedGUI_Standings beforeShowHandler()")
     UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
     if CLM.MODULES.RaidManager:IsInRaid() then
-        UnifiedGUI_Standings.roster = CLM.MODULES.RaidManager:GetRaid():UID()
-        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
+        UnifiedGUI_Standings.roster = CLM.MODULES.RaidManager:GetRaid():Roster():UID()
+        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
         UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
     end
 end
