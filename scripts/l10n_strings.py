@@ -194,11 +194,12 @@ def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean, ma
 def translate_missing(missing, storage:L10nStorage, locale, total_missing, total_done, last_percent ):
     if len(missing) > 0:
         for sentence in missing:
-            storage.translations[sentence] = ts.google(sentence, from_language='en', to_language=locale_to_google[locale])
+            translation = ts.google(sentence, from_language='en', to_language=locale_to_google[locale])
+            storage.translate(locale, sentence, translation, False)
             total_done += 1
             percent = math.floor(100*(total_done/total_missing))
             if percent > last_percent:
-                print("Translation progress: {0}%".format(percent))
+                print("Translation progress: {0}% [{1}]".format(percent, locale))
             last_percent = percent
     return total_missing, total_done, last_percent
 
