@@ -149,6 +149,12 @@ function RosterManagerOptions:Initialize()
         general_auto_award_same_zone_only_set = (function(name, value)
             SetRosterOption(name, "autoAwardSameZoneOnly", value)
         end),
+        general_named_buttons_toggle_set = (function(name, value)
+            SetRosterOption(name, "namedButtons", value)
+        end),
+        general_named_buttons_toggle_get = (function(name)
+            return GetRosterOption(name, "namedButtons")
+        end),
         -- Caps
         general_hard_cap_get = (function(name)
             return tostring(GetRosterOption(name, "hardCap"))
@@ -228,6 +234,12 @@ function RosterManagerOptions:Initialize()
         end),
         auction_minimum_points_set = (function(name, value)
             SetRosterOption(name, "minimumPoints", value)
+        end),
+        auction_min_gp_get = (function(name)
+            return tostring(GetRosterOption(name, "minGP"))
+        end),
+        auction_min_gp_set = (function(name, value)
+            SetRosterOption(name, "minGP", value)
         end),
     }
 
@@ -702,6 +714,12 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         disabled = (function() return not isManager end),
                         width = 1
                     },
+                    named_buttons_header = {
+                        name = CLM.L["Button Names"],
+                        type = "header",
+                        order = 24,
+                        width = "full"
+                    }
                 },
             },
             auction = {
@@ -722,14 +740,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "header",
                         order = 10,
                         width = "full"
-                    },
-                    allow_below_min_standings = {
-                        name = CLM.L["Allow biding more than current standings"],
-                        desc = CLM.L["Allow biding more than current standings and ending up with less than minimum points."],
-                        type = "toggle",
-                        disabled = (function() return not isManager end),
-                        width = 2,
-                        order = 11
                     },
                     minimum_points = {
                         name = CLM.L["Minimum points"],
@@ -787,6 +797,28 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             }
         }
     }
+    -- Button names
+    options.args.general.args.named_buttons_toggle = {
+        name = CLM.L["Use named buttons"],
+        desc = CLM.L["Will display names of the buttons instead of values in bidding UI"],
+        type = "toggle",
+        order = 25,
+        disabled = (function() return not isManager end),
+        width = 1
+    }
+    local order = 26
+    for _, tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
+        options.args.general.args["named_button_tier_" .. tostring(tier)] = {
+            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[tier],
+            type = "input",
+            set = (function(i, v) CLM.MODULES.RosterManager:SetFieldName(roster, tier, v) end),
+            get = (function(i) return roster:GetFieldName(tier) end),
+            order = order,
+            disabled = (function() return not isManager end),
+            width = 1
+        }
+        order = order + 1
+    end
     -- Point Specific auction settings
     if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
         options.args.auction.args.auction_type = {
@@ -828,6 +860,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             width = 1,
             order = 9
         }
+        options.args.auction.args.allow_below_min_standings = {
+            name = CLM.L["Allow biding more than current standings"],
+            desc = CLM.L["Allow biding more than current standings and ending up with less than minimum points."],
+            type = "toggle",
+            disabled = (function() return not isManager end),
+            width = 2,
+            order = 11
+        }
         options.args.auction.args.other_header = {
             name = CLM.L["Other"],
             type = "header",
@@ -860,6 +900,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             disabled = (function() return not isManager end),
             order = 4,
             values = CONSTANTS.AUCTION_TYPES_EPGP_GUI
+        }
+        options.args.auction.args.min_gp = {
+            name = CLM.L["Minimum GP"],
+            desc = CLM.L["Minimum GP used in calculations when player has less GP than this value."],
+            type = "input",
+            disabled = (function() return not isManager end),
+            pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+            order = 12.5
         }
     end
     return options

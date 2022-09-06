@@ -44,7 +44,7 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
                 mainProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(targetProfile:Main())
             end
             -- Check if we should schedule it for alert
-            CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason }, timestamp, GUID)
+            CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason, pointType = roster:GetPointType() }, timestamp, GUID)
             -- If we have a linked case then we alter the GUID to mains guid
             if mainProfile then
                 GUID = mainProfile:GUID()

@@ -2628,6 +2628,8 @@ globals = {
 	"GetSuperTrackedQuestID",
 	"GetTabardCreationCost",
 	"GetTabardInfo",
+	"GetTalentGroupRole",
+	"GetActiveTalentGroup",
 	"GetTalentInfo",
 	"GetTalentInfoByID",
 	"GetTalentInfoBySpecialization",

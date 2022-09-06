@@ -28,6 +28,7 @@ local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
 local RosterUpdateProfiles          = LogEntry:extend("R9")
 local RosterCopyData                = LogEntry:extend("RC")
 local RosterBossKillBonus           = LogEntry:extend("RB")
+local RosterFieldRename             = LogEntry:extend("RF")
 
 -- ------------ --
 -- RosterCreate --
@@ -372,6 +373,34 @@ function RosterBossKillBonus:fields()
     return RosterBossKillBonusFields
 end
 
+-- ------------------------- --
+-- RosterFieldRename --
+-- ------------------------- --
+function RosterFieldRename:new(rosterUid, tier, name)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.i = tier
+    o.a = name
+    return o
+end
+
+function RosterFieldRename:rosterUid()
+    return self.r
+end
+
+function RosterFieldRename:tier()
+    return self.i
+end
+
+function RosterFieldRename:name()
+    return self.a
+end
+
+local RosterFieldRenameFields = mergeLists(LogEntry:fields(), {"r", "i", "a"})
+function RosterFieldRename:fields()
+    return RosterFieldRenameFields
+end
+
 CLM.MODELS.LEDGER.ROSTER = {
     Create                  = RosterCreate,
     Delete                  = RosterDelete,
@@ -385,4 +414,5 @@ CLM.MODELS.LEDGER.ROSTER = {
     UpdateProfiles          = RosterUpdateProfiles,
     CopyData                = RosterCopyData,
     BossKillBonus           = RosterBossKillBonus,
+    FieldRename             = RosterFieldRename
 }

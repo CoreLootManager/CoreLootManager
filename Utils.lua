@@ -19,6 +19,7 @@ local tostring, tonumber = tostring, tonumber
 local tinsert = table.insert
 local print, type, setmetatable, getmetatable, rawequal = print, type, setmetatable, getmetatable, rawequal
 local GetUnitName, UnitGUID, GetTalentTabInfo = GetUnitName, UnitGUID, GetTalentTabInfo
+local GetTalentGroupRole, GetActiveTalentGroup = GetTalentGroupRole, GetActiveTalentGroup
 
 local function capitalize(string)
     string = string or ""
@@ -567,6 +568,10 @@ function UTILS.GetMyTalents()
     _, _, two   = GetTalentTabInfo(2)
     _, _, three = GetTalentTabInfo(3)
     return one, two, three
+end
+
+function UTILS.GetMyRole()
+    return GetTalentGroupRole(GetActiveTalentGroup())
 end
 
 function UTILS.IsTooltipTextRed(text)

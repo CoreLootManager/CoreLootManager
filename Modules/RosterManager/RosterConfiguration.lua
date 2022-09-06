@@ -74,6 +74,10 @@ function RosterConfiguration:New(i)
     o._.tax = 0
     -- Minimum points to be allowed to bid. >=0 covers Allow Negative Bidders
     o._.minimumPoints = 0
+    -- Minimum GP used in calculations when player has less
+    o._.minGP = 1
+    -- Named Buttons Mode
+    o._.namedButtons = false
 
     -- Additional settings
     o.hasHardCap = false
@@ -114,7 +118,9 @@ function RosterConfiguration:fields()
         "autoAwardSameZoneOnly",
         "selfBenchSubscribe",
         "tax",
-        "minimumPoints"
+        "minimumPoints",
+        "minGP",
+        "namedButtons"
     }
 end
 
@@ -154,6 +160,8 @@ local TRANSFORMS = {
     selfBenchSubscribe = transform_boolean,
     tax = transform_number,
     minimumPoints = transform_number,
+    minGP = transform_number,
+    namedButtons = transform_boolean
 }
 
 function RosterConfiguration:inflate(data)
@@ -243,5 +251,7 @@ function RosterConfiguration._validate_autoAwardSameZoneOnly(value) return IsBoo
 function RosterConfiguration._validate_selfBenchSubscribe(value) return IsBoolean(value) end
 function RosterConfiguration._validate_tax(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_minimumPoints(value) return IsNumeric(tonumber(value)) end
+function RosterConfiguration._validate_minGP(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_namedButtons(value) return IsBoolean(value) end
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration

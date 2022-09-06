@@ -47,6 +47,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.configuration  = CLM.MODELS.RosterConfiguration:New()
     o.defaultSlotValues = { [GLOBAL_FAKE_INVENTORY_SLOT] = {} }
     fillSlotsArray(o.defaultSlotValues[GLOBAL_FAKE_INVENTORY_SLOT])
+    o.fieldNames = {}
     o.itemValues = {}
     -- Boss Kill Bonus values
     o.bossKillBonusValues = {}
@@ -126,6 +127,19 @@ function Roster:Standings(GUID)
         return self.standings or {}
     else
         return self.standings[GUID] or 0
+    end
+end
+
+function Roster:Priority(GUID)
+    if GUID == nil then
+        return 0
+    else
+        local spent = self.pointInfo[GUID].spent
+        local minGP = self.configuration._.minGP
+        if spent < minGP then
+            spent = minGP
+        end
+        return UTILS.round((self.standings[GUID] or 0) / spent, self.configuration._.roundDecimals)
     end
 end
 
@@ -216,10 +230,21 @@ function Roster:SetStandings(GUID, value)
     self.standings[GUID] = UTILS.round(value, self.configuration._.roundDecimals)
 end
 
+function Roster:SetSpent(GUID, value)
+    self.pointInfo[GUID].spent = UTILS.round(value, self.configuration._.roundDecimals)
+end
+
 function Roster:DecayStandings(GUID, value)
     local new = UTILS.round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
     self.pointInfo[GUID]:AddDecayed(self.standings[GUID] - new)
     self.standings[GUID] = new
+
+    -- Spent in EPGP = GP -> thus needs to be decayed also
+    if self:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+        new = UTILS.round(((self.pointInfo[GUID].spent * (100 - value)) / 100), self.configuration._.roundDecimals)
+        self.pointInfo[GUID].spent = new
+    end
+
 end
 
 --[[
@@ -232,6 +257,7 @@ local function mirrorStandings(self, source, target)
     if source == target then return end -- to prevent circular updates
     if not self.standings[target] then return end
     self.standings[target] = self.standings[source]
+    self.pointInfo[target].spent = self.pointInfo[source].spent
 end
 
 function Roster:MirrorStandings(source, targets, isArray)
@@ -335,6 +361,7 @@ function Roster:SetItemTierValue(itemId, tier, value)
     LOG:Debug("Set Item Tier Value: [%s]: [%s] [%s] for roster [%s]", itemId, tier, value, self:UID())
     lazyCreateItem(self, itemId)
     self.itemValues[itemId][tier] = tonumber(value) or 0
+    self:SetItemValues(itemId, self.itemValues[itemId])
 end
 
 function Roster:SetItemValues(itemId, values)
@@ -389,6 +416,22 @@ function Roster:SetConfiguration(option, value)
     end
 end
 
+function Roster:GetFieldName(field)
+    if not CONSTANTS.SLOT_VALUE_TIERS[field] then
+        LOG:Error("Roster:GetFieldName(): Unknown field %s", field)
+    end
+    return self.fieldNames[field] or ""
+end
+
+function Roster:SetFieldName(field, name)
+    if not CONSTANTS.SLOT_VALUE_TIERS[field] then
+        LOG:Error("Roster:SetFieldName(): Unknown field %s", field)
+        return
+    end
+
+    self.fieldNames[field] = name
+end
+
 --[[
  ********
  * Wipe *
@@ -429,11 +472,13 @@ function Roster:AddLoot(loot, profile)
     local GUID = profile:GUID()
     self.profileLoot[GUID][#self.profileLoot[GUID]+1] = loot
     self.raidLoot[#self.raidLoot+1] = loot
-    -- Charging for the item
-    self:UpdateStandings(GUID, -loot:Value(), 0)
     self.pointInfo[GUID]:AddSpent(loot:Value())
-    -- Correct for the spending since it will be subtracted in update standings
-    self.pointInfo[GUID]:AddReceived(loot:Value())
+    if self:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+        -- Charging for the item
+        self:UpdateStandings(GUID, -loot:Value(), 0)
+        -- Correct for the spending since it will be subtracted in update standings
+        self.pointInfo[GUID]:AddReceived(loot:Value())
+    end
 end
 
 function Roster:GetRaidLoot()

@@ -27,7 +27,8 @@ local function GetProfileDb(self, name)
                 one = 0,
                 two = 0,
                 three = 0
-            }
+            },
+            role = "NONE"
         }
     end
     return self.db[name]
@@ -160,6 +161,50 @@ local function HandleRequestSpec(self, data, sender)
 end
 
 --[[
+    --- ROLE ---
+]]
+local function AnnounceRole()
+    LOG:Trace("ProfileInfoManager:AnnounceRole()")
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(
+        CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE,
+        CLM.MODELS.ProfileInfoCommAnnounceRole:New(UTILS.GetMyRole()))
+    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+end
+
+local function SetProfileRole(name, role)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+    if profile then
+        profile:SetRole(role)
+    end
+end
+
+local function StoreProfileRole(self, name, role)
+    GetProfileDb(self, name).role = role
+end
+
+local function RestoreRoles(self)
+    for name, info in pairs(self.db) do
+        SetProfileRole(name, info.role)
+    end
+end
+
+local function HandleAnnounceRole(self, data, sender)
+    LOG:Trace("ProfileInfoManager:HandleAnnounceRole()")
+    local receivedRole = data:Role()
+    SetProfileRole(sender, receivedRole)
+    StoreProfileRole(self, sender, receivedRole)
+end
+
+local function HandleRequestRole(self, data, sender)
+    LOG:Trace("ProfileInfoManager:HandleRequestRole()")
+    local currentTime = GetServerTime()
+    if (currentTime - self._lastRequestResponse.role) > 30  then
+        AnnounceRole()
+        self._lastRequestResponse.role = currentTime
+    end
+end
+
+--[[
     --- General ---
 ]]
 
@@ -180,7 +225,7 @@ function ProfileInfoManager:Initialize()
     LOG:Trace("ProfileInfoManager:Initialize()")
     self._initialized = false
 
-    self._lastRequestResponse = { version = 0, spec = 0 }
+    self._lastRequestResponse = { version = 0, spec = 0 , role = 0}
     self._lastDisplayedMessage = 0
     self._lastDisplayedMessageD = 0
 
@@ -190,7 +235,8 @@ function ProfileInfoManager:Initialize()
             for player, version in pairs(CLM.MODULES.Database:Personal('version')) do
                 table[player] = {
                     version = version,
-                    spec = { one = 0, two = 0, three = 0}
+                    spec = { one = 0, two = 0, three = 0},
+                    role = "NONE"
                 }
             end
         end
@@ -200,7 +246,9 @@ function ProfileInfoManager:Initialize()
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC]     = HandleAnnounceSpec,
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec,
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE]     = HandleAnnounceRole,
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE]      = HandleRequestRole
     }
 
     CLM.MODULES.Comms:Register(PROFILEINFO_COMM_PREFIX, (function(rawMessage, distribution, sender)
@@ -216,16 +264,22 @@ function ProfileInfoManager:Initialize()
             C_Timer.After(1, function()
                 RestoreVersions(self)
                 RestoreSpecs(self)
+                RestoreRoles(self)
             end)
             C_Timer.After(math.random(2, 5), function()
                 AnnounceVersion()
                 AnnounceSpec()
+                AnnounceRole()
             end)
             self._initialized = true
         end
     end)
 
-    CLM.MODULES.EventManager:RegisterWoWEvent("READY_CHECK", (function(...) AnnounceVersion() end))
+    CLM.MODULES.EventManager:RegisterWoWEvent("READY_CHECK", (function(...)
+        AnnounceVersion()
+        AnnounceSpec()
+        AnnounceRole()
+    end))
 
     CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
 end
@@ -242,14 +296,22 @@ function ProfileInfoManager:RequestSpec()
     CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
+function ProfileInfoManager:RequestRole()
+    LOG:Trace("ProfileInfoManager:RequestRole()")
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE, {})
+    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+end
+
 CONSTANTS.PROFILE_INFO_COMM = {
     TYPE = {
         ANNOUNCE_VERSION    = 1,
         REQUEST_VERSION     = 2,
         ANNOUNCE_SPEC       = 3,
-        REQUEST_SPEC        = 4
+        REQUEST_SPEC        = 4,
+        ANNOUNCE_ROLE       = 5,
+        REQUEST_ROLE        = 6,
     },
-    TYPES = UTILS.Set({ 1, 2, 3, 4 })
+    TYPES = UTILS.Set({ 1, 2, 3, 4, 5, 6 })
 }
 
 CLM.MODULES.ProfileInfoManager = ProfileInfoManager
