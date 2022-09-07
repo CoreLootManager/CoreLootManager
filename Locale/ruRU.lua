@@ -330,7 +330,7 @@ CLM.L["Baltharus the Warborn"] = "Бальтарус военный"
 -- Modules/AutoAwardManager/EncounterIDs.lua:9
 CLM.L["Baron Geddon"] = "Барон Геддон"
 -- Modules/RosterManager/Options.lua:302
-CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Базовое значение для статического ценового аукциона. \ Минимальное значение для восходящего и многоуровневого аукциона. \ В \ Установлено то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
+CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Базовое значение для статического ценового аукциона. \nМинимальное значение для восходящего и многоуровневого аукциона. \n\nУстановлено то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
 -- Modules/RosterManager/Roster.lua:788
 CLM.L["Base"] = "Мин"
 -- Modules/AutoAwardManager/EncounterIDs.lua:25
