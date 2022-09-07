@@ -1521,7 +1521,7 @@ CLM.L["Shazzrah"] = "Shazzrah"
 -- Modules/RosterManager/Roster.lua:735
 CLM.L["Shield"] = "Schild"
 -- Global/GlobalConfigs.lua:367
-CLM.L["Shift + Alt"] = "Verschiebung + Alt"
+CLM.L["Shift + Alt"] = "Shift + Alt"
 -- Global/GlobalConfigs.lua:370
 CLM.L["Shift + Ctrl + Alt"] = "Verschiebung + Strg + Alt"
 -- Global/GlobalConfigs.lua:369
