@@ -1831,7 +1831,7 @@ CLM.L["Wipes the log history"] = "Löscht die Protokoll Historie"
 -- Integrations/Integrations.lua:176
 CLM.L["WoW DKP Bot Integration"] = "WoW DKP Bot Integration"
 -- Modules/RosterManager/Options.lua:426
-CLM.L["WotLK - 10"] = "WOTLK - 10"
+CLM.L["WotLK - 10"] = "WotLK - 10"
 -- Modules/RosterManager/Options.lua:431
 CLM.L["WotLK - 25"] = "WOTLK - 25"
 -- Modules/RosterManager/Roster.lua:690
