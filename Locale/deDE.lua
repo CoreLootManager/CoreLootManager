@@ -1295,6 +1295,8 @@ CLM.L["Princess Huhuran"] = "Prinzessin Huhuran"
 CLM.L["Prioritized"] = "Priorisiert"
 -- Modules/AutoAwardManager/EncounterIDs.lua:151
 CLM.L["Professor Putricide"] = "Professor Patrikmide"
+-- Modules/ProfileManager/ProfileManager.lua:200
+CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "Profil %s existiert bereits und wird von verschiedenen Guid %S ( %s) verwendet."
 -- Modules/PointManager/PointManager.lua:398
 CLM.L["Progression Bonus"] = "Fortschritts Bonus"
 -- Modules/RosterManager/RosterManager.lua:285
@@ -1729,6 +1731,8 @@ CLM.L["Trinket"] = "Schmuckstück"
 CLM.L["True"] = "Wahr"
 -- Modules/AutoAwardManager/EncounterIDs.lua:29
 CLM.L["Twin Emperors"] = "Zwillingsimperatoren"
+-- Modules/ProfileManager/ProfileManager.lua:192
+CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."] = "Für Zielguid%s (%s:%s) und nennen%s (%s:%s) zwei verschiedene Profile. Überprüfen und reinigen Sie Profile vor dem Aktualisieren."
 -- Modules/RosterManager/Roster.lua:701
 -- Modules/RosterManager/Roster.lua:734
 CLM.L["Two-Hand"] = "Zweihand"
