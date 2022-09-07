@@ -624,7 +624,6 @@ function UnifiedGUI_Audit:GetSelection()
     LOG:Trace("UnifiedGUI_Audit:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()
 
-    local raid
     local _, selection = next(st:GetSelection())
     return st:GetRow(selection)
 end

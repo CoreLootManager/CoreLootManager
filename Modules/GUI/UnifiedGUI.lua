@@ -215,7 +215,7 @@ function UnifiedGUI:Initialize()
 
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then
-            local percentage = 0
+            local percentage
             if CLM.MODULES.LedgerManager:IsTimeTraveling() then
                 percentage = CLM.MODULES.LedgerManager:TimeTravelProgress()
             else

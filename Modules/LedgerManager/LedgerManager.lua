@@ -150,7 +150,7 @@ function LedgerManager:TimeTravelProgress()
     local sm = self.activeLedger.getStateManager()
     local currentEntry = sm.list:entries()[sm.lastAppliedIndex]
     if not currentEntry then return 1 end
-    
+
     local startTime = firstEntry:time()
     local currentTime = currentEntry:time() - startTime
     local endTime = self.timeTravelTarget - startTime

@@ -12,6 +12,18 @@ local C_TimerAfter = C_Timer.After
 local collectgarbage = collectgarbage
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
+local EXTERNAL_AWARD_EVENT = "CLM_EXTERNAL_EVENT_ITEM_AWARDED"
+
+CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
+    NONE = 1,
+    AWARD_FOR_FREE = 2,
+    AWARD_FOR_BASE = 3,
+    AWARD_FOR_SMALL = 4,
+    AWARD_FOR_MEDIUM = 5,
+    AWARD_FOR_LARGE = 6,
+    AWARD_FOR_MAX = 7
+}
+
 local function InitializeDB(key)
     local db = CLM.MODULES.Database:Server()
     if not db.integration then
@@ -176,19 +188,88 @@ local function InitializeConfigs(self)
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS, options)
 end
 
-
 local Integration = {}
+
+local function validateEventStructure(data, source)
+    if data.source ~= source then return end
+    if not data.itemLink then return end
+    if not data.player then return end
+
+    return true
+end
+
+local function parseEventStructure(data)
+    local itemId = UTILS.GetItemIdFromLink(data.itemLink)
+    local isOs = data.isOffSpec and true or false
+    local isWishlisted = data.isWishlisted and true or false
+    local isPrioritized = data.isPrioritized and true or false
+    local isReserved = data.isReserved and true or false
+
+    return data.player, data.itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved
+end
+
+local function getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved)
+    if not isOs and     isPrioritized then return CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_MS end
+    if     isOs and     isPrioritized then return CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_OS end
+    if not isOs and not isPrioritized then return CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_MS  end
+    if     isOs and not isPrioritized then return CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_OS  end
+end
+
+local awardToTierMap = {
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE]   = CONSTANTS.SLOT_VALUE_TIER.BASE,
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL]  = CONSTANTS.SLOT_VALUE_TIER.SMALL,
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM] = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE]  = CONSTANTS.SLOT_VALUE_TIER.LARGE,
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]    = CONSTANTS.SLOT_VALUE_TIER.MAX
+}
+
+local function getAwardValueFromAction(roster, itemId, action)
+    local tier = awardToTierMap[action]
+    if not tier then return 0 end -- covers also for FREE
+    local values = roster:GetItemValues(itemId)
+    return values[tier] or 0
+end
+
+-- LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forceInstant)
+local function ExternalAwardEventHandler(_, data)
+    if Integration:GetGargulIntegration() then
+        if not validateEventStructure(data, "Gargul") then
+            LOG:Warning("Malformed Gargul Event")
+            return
+        end
+        local player, itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved = parseEventStructure(data)
+        local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
+        if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
+        local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
+        if not profile then
+            LOG:Debug("Gargul item awarded to player without profile")
+            return
+        end
+        local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
+        if not raid then
+            LOG:Debug("Gargul item awarded outside of raid")
+            return
+        end
+        local value = getAwardValueFromAction(raid:Roster(), itemId, action)
+        CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, value)
+    end
+end
+
+
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
     self.db = InitializeDB("global")
     ClearWoWDKPBotData()
     InitializeConfigs(self)
-    
+
     -- WoW DKP Bot SV Data
     C_TimerAfter(10, (function() RequestWoWDKPBotData(self) end))
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData()
     end))
+    -- External award integration
+    CLM.MODULES.EventManager:RegisterEvent(EXTERNAL_AWARD_EVENT, ExternalAwardEventHandler)
+
     self.exportInProgress = false
 end
 
@@ -259,16 +340,6 @@ CONSTANTS.TIMEFRAME_SCALE_VALUE = {
     WEEKS = 2,
     MONTHS = 3,
     YEARS  = 4
-}
-
-CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
-    NONE = 1,
-    AWARD_FOR_FREE = 2,
-    AWARD_FOR_BASE = 3,
-    AWARD_FOR_SMALL = 4,
-    AWARD_FOR_MEDIUM = 5,
-    AWARD_FOR_LARGE = 6,
-    AWARD_FOR_MAX = 7
 }
 
 CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS = UTILS.Set(CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION)
