@@ -39,7 +39,7 @@ CLM.L["%s %% %s decay"] = "% s %%% S Déglature"
 -- Alerts/Alerts.lua:18
 CLM.L["%s %s"] = "%s %s"
 -- Modules/LootManager/LootManager.lua:142
-CLM.L["%s awarded to %s for %s %s"] = "% s attribué à% s pour% s% s"
+CLM.L["%s awarded to %s for %s %s"] = "%s attribué à %s pour %s %s"
 -- MinimapIcon.lua:37
 CLM.L["%s events (%s pending)"] = "%s événements (%s en attente)"
 -- MinimapIcon.lua:39
