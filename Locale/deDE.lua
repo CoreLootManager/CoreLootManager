@@ -492,7 +492,7 @@ CLM.L["Created"] = "Erstellt"
 -- Modules/RosterManager/Options.lua:920
 CLM.L["Creates new roster with default configuration"] = "Erstellt einen neuen Roster mit Standardkonfiguration"
 -- Global/GlobalConfigs.lua:368
-CLM.L["Ctrl + Alt"] = "Strg + Alt"
+CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 -- Global/GlobalConfigs.lua:365
 CLM.L["Ctrl"] = "Strg"
 -- Modules/AuctionManager/GUI.lua:240
