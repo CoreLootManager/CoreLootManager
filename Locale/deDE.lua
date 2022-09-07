@@ -356,7 +356,7 @@ CLM.L["Bid cancelling not allowed"] = "Gebotsabbruch is nicht erlaubt"
 -- Modules/AuctionManager/AuctionManager.lua:676
 CLM.L["Bid increment too low"] = "Geboterhöhung ist zu niedrig"
 -- Modules/BiddingManager/GUI.lua:159
-CLM.L["Bid input values as Main spec bid."] = "BID -Eingangswerte als Hauptspezifikationsangebot."
+CLM.L["Bid input values as Main spec bid."] = "Bid eingangswerte als Hauptspezifikationsangebot."
 -- Modules/BiddingManager/GUI.lua:170
 CLM.L["Bid input values as Off spec bid."] = "Geboteingabewerte als Aus -Spec -Gebot."
 -- Modules/AuctionManager/AuctionManager.lua:244
