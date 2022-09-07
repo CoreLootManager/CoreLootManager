@@ -1028,7 +1028,7 @@ CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as o
 -- Integrations/GUI.lua:143
 CLM.L["May"] = "Mayo"
 -- Modules/RosterManager/Options.lua:310
-CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Valor medio para subasta escalonada. \ In \ set al mismo valor que otro nivel o negativo para ignorar."
+CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Valor medio para subasta escalonada. \n\nSet al mismo valor que otro nivel o negativo para ignorar."
 -- Modules/RosterManager/Roster.lua:790
 CLM.L["Medium"] = "Medio"
 -- MinimapIcon.lua:100
