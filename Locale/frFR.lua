@@ -35,7 +35,7 @@ CLM.L["%Y/%m/%d %a %H:%M:%S"] = "%Y/%m/%d %a %H:%M:%S"
 -- Modules/GUI/UnifiedGUI_Audit.lua:585
 CLM.L["%d/%m/%Y %H:%M:%S"] = "%d/%m/%Y %H:%M:%S"
 -- Alerts/Alerts.lua:21
-CLM.L["%s %% %s decay"] = "% s %%% S Déglature"
+CLM.L["%s %% %s decay"] = "%s %% %s Déglature"
 -- Alerts/Alerts.lua:18
 CLM.L["%s %s"] = "%s %s"
 -- Modules/LootManager/LootManager.lua:142
