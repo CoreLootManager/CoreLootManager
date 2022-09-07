@@ -1162,7 +1162,7 @@ CLM.L["Not in a roster"] = "Pas dans une liste"
 -- Modules/GUI/UnifiedGUI_Standings.lua:541
 CLM.L["Not in raid"] = "Pas en raid"
 -- Modules/GUI/UnifiedGUI_Standings.lua:151
-CLM.L["Note to be added to award. Max 25 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."] = "Ajouter une note pour attribuer des points". Maximum 25 personnages. Il est recommandé de ne pas inclure de date ni la raison ici. Si vous entrer l'ID de la rencontre, il sera transformé en nom du boss"
+CLM.L["Note to be added to award. Max 25 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."] = "Ajouter une note pour attribuer des points. Maximum 25 personnages. Il est recommandé de ne pas inclure de date ni la raison ici. Si vous entrer l'ID de la rencontre, il sera transformé en nom du boss"
 -- Modules/AuctionManager/GUI.lua:340
 -- Modules/AuctionManager/GUI.lua:346
 -- Modules/GUI/UnifiedGUI_Standings.lua:149
