@@ -1214,7 +1214,7 @@ CLM.L["Online only"] = "Nur online"
 -- Modules/GUI/Filters.lua:78
 CLM.L["Online"] = "Online"
 -- Global/GlobalConfigs.lua:113
-CLM.L["Only when ML/RL"] = "Nur wenn ml/rl"
+CLM.L["Only when ML/RL"] = "Nur wenn ML/RL"
 -- Modules/AutoAwardManager/EncounterIDs.lua:4
 CLM.L["Onyxia"] = "Onyxia"
 -- Modules/AutoAwardManager/EncounterIDs.lua:178
