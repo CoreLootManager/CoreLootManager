@@ -9,6 +9,7 @@ local UTILS     = CLM.UTILS
 local pairs, type, strsplit, strlower = pairs, type, strsplit, strlower
 local GetNumGuildMembers, GetGuildRosterInfo, UnitIsPlayer = GetNumGuildMembers, GetGuildRosterInfo, UnitIsPlayer
 local GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID = GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID
+local sformat = string.format
 
 local whoamiGUID = UTILS.whoamiGUID()
 
@@ -178,10 +179,35 @@ function ProfileManager:NewProfile(GUID, name, class)
         LOG:Error("NewProfile(): Empty name")
         return
     end
-    if self:GetProfileByGUID(GUID) or self:GetProfileByName(name) then
-        LOG:Debug("NewProfile(): %s (%s) already exists", name, GUID)
+    local guidProfile = self:GetProfileByGUID(GUID)
+    local nameProfile = self:GetProfileByName(name)
+
+    local discard, warning
+    if guidProfile then -- profile with this GUID already exists. Is this a rename?
+        if nameProfile then -- profile with name and guid exists
+            if guidProfile == nameProfile then -- same profile, same name - do nothing
+                discard = true
+            else -- 2 different profiles exist. Warning
+                discard = true
+                warning = sformat(CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."], GUID, name, guidProfile:GUID(), guidProfile:Name(), nameProfile:GUID(), nameProfile:Name())
+            end
+        else -- profile with this name does not exist - this is an actual rename
+            discard = false
+        end
+    else -- profile with this GUID does not exist. Is this new profile?
+        if nameProfile then -- name is used already by different profile? Warning
+            discard = true
+            warning = sformat(CLM.L["Profile %s already exists and is used by different GUID %s (%s). "], name, nameProfile:GUID(), nameProfile:Name())
+        else -- New profile!
+            discard = false
+        end
+    end
+    if discard then
+        if warning then LOG:Warning(warning) end
+        LOG:Debug("NewProfile(): discarding request", name, GUID)
         return
     end
+
     LOG:Debug("New profile: [%s]: %s", GUID, name)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Update:new(GUID, name, class), true)
 end
