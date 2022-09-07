@@ -223,7 +223,19 @@ local function GenerateAssistantOptions(self)
                     end
                 end
             end),
-            confirm = true,
+            confirm = (function()
+                local awardValue = tonumber(self.awardValue)
+                if not awardValue then return CLM.L["Missing award value"] end
+                if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
+                    return sformat(CLM.L["Award %s points to everyone in raid."], awardValue)
+                elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
+                    return sformat(CLM.L["Award %s points to everyone in roster."], awardValue)
+                elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
+                    local profiles = UnifiedGUI_Standings:GetSelection()
+                    if not profiles then profiles = {} end
+                    return sformat(CLM.L["Award %s points to %s selected players."], awardValue, #profiles)
+                end
+            end),
             order = 14
         }
     }
@@ -284,7 +296,19 @@ local function GenerateManagerOptions(self)
                     LOG:Warning("Invalid context. You should not decay raid only.")
                 end
             end),
-            confirm = true,
+            confirm = (function()
+                local decayValue = tonumber(self.decayValue)
+                if not decayValue then return CLM.L["Missing decay value"] end
+                if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
+                    return CLM.L["Invalid context. You should not decay raid only."]
+                elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
+                    return sformat(CLM.L["Decay %s% points to everyone in roster."], decayValue)
+                elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
+                    local profiles = UnifiedGUI_Standings:GetSelection()
+                    if not profiles then profiles = {} end
+                    return sformat(CLM.L["Decay %s% points to %s selected players."], decayValue, #profiles)
+                end
+            end),
             order = 22
         }
     }
