@@ -143,6 +143,21 @@ function LedgerManager:IsTimeTraveling()
     return self.activeLedger.getStateManager():isTimeTraveling()
 end
 
+function LedgerManager:TimeTravelProgress()
+    local firstEntry = self:GetData()[1]
+    if not firstEntry then return 1 end
+
+    local sm = self.activeLedger.getStateManager()
+    local currentEntry = sm.list:entries()[sm.lastAppliedIndex]
+    if not currentEntry then return 1 end
+    
+    local startTime = firstEntry:time()
+    local currentTime = currentEntry:time() - startTime
+    local endTime = self.timeTravelTarget - startTime
+
+    return UTILS.round(currentTime/endTime, 2)
+end
+
 function LedgerManager:GetTimeTravelTarget()
     return self.timeTravelTarget
 end

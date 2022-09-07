@@ -96,7 +96,7 @@ local function RequestWoWDKPBotData()
 end
 
 local function InitializeGargulIntegration(self)
-    
+
 end
 
 local Integration = {}

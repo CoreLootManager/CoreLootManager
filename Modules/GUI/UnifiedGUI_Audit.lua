@@ -7,20 +7,22 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs = pairs, ipairs
-local sgsub, tsort = string.gsub, table.sort
+local strsub = strsub
 
-local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
-
-local function ST_GetInfo(row)
-    return row.cols[1].value
+local function ST_GetDescription(row)
+    return row.cols[4].value
 end
 
-local function ST_GetIsLoot(row)
-    return row.cols[5].value
-end
-
-local function ST_GetObject(row)
+local function ST_GetEntry(row)
     return row.cols[6].value
+end
+
+local function ST_GetName(row)
+    return row.cols[7].value
+end
+
+local function ST_GetExtendedDescription(row)
+    return row.cols[8].value
 end
 
 
@@ -525,6 +527,43 @@ local describeFunctions  = {
     end),
 }
 
+local function concatenateNameFromList(list)
+    local names = ""
+    for _,iGUID in ipairs(list) do
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(iGUID))
+        if profile then
+            names = names .. profile:Name() .. ","
+        end
+    end
+    return names
+end
+
+local extendFunctions  = {
+    -- Default
+    ["-"] = (function(entry)
+        return ""
+    end),
+
+    -- Points
+    ["DM"] = (function(entry)
+        return concatenateNameFromList(entry:targets())
+    end),
+    ["DD"] = (function(entry)
+        return concatenateNameFromList(entry:targets())
+    end),
+    ["DS"] = (function(entry)
+        return concatenateNameFromList(entry:targets())
+    end),
+    ["AU"] = (function(entry)
+        local names = ""
+        names = names .. concatenateNameFromList(entry:joiners())
+        names = names .. concatenateNameFromList(entry:leavers())
+        names = names .. concatenateNameFromList(entry:standby())
+        names = names .. concatenateNameFromList(entry:removed())
+        return names
+    end),
+}
+
 local function describeEntry(entry)
     local fn = describeFunctions[entry:class()] or describeFunctions["-"]
     return fn(entry)
@@ -532,6 +571,11 @@ end
 
 local function nameEntry(entry)
     local fn = nameFunctions[entry:class()] or nameFunctions["-"]
+    return fn(entry)
+end
+
+local function extendEntryData(entry)
+    local fn = extendFunctions[entry:class()] or extendFunctions["-"]
     return fn(entry)
 end
 
@@ -544,7 +588,8 @@ local function getEntryInfo(entry)
     local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(guid)
     local author = profile and profile:Name() or guid
     local description = describeEntry(entry)
-    return name, time, type, description, "", author
+    local extendedEntryData = extendEntryData(entry)
+    return name, time, type, description, extendedEntryData, author
 end
 
 local function buildEntryRow(entry, id)
@@ -578,76 +623,14 @@ local UnifiedGUI_Audit = {
 function UnifiedGUI_Audit:GetSelection()
     LOG:Trace("UnifiedGUI_Audit:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()
-    local lootList, historyList = {}, {}
-    -- Profiles
-    local selected = st:GetSelection()
-    if #selected == 0 then -- nothing selected: assume all visible are selected
-        return {}, {}
-    end
-    for _,s in pairs(selected) do
-        local row = st:GetRow(s)
-        if ST_GetIsLoot(row) == true then
-            lootList[#lootList+1] = ST_GetObject(row)
-        elseif ST_GetIsLoot(row) == false then
-            historyList[#historyList+1] = ST_GetObject(row)
-        end
-    end
-    return lootList, historyList
+
+    local raid
+    local _, selection = next(st:GetSelection())
+    return st:GetRow(selection)
 end
 
 local function GenerateUntrustedOptions(self)
-    local options = {}
-    local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
-    if not roster then return {} end
-    local profiles = roster:Profiles()
-    local profileNameMap = { [CLM.L["-- All --"]] = CLM.L["-- All --"]}
-    local profileList = {CLM.L["-- All --"]}
-    for _, GUID in ipairs(profiles) do
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-        if profile then
-            profileNameMap[profile:Name()] = profile:Name()
-            profileList[#profileList + 1] = profile:Name()
-        end
-    end
-    tsort(profileList)
-
-    options.roster = {
-        name = CLM.L["Roster"],
-        type = "select",
-        values = CLM.MODULES.RosterManager:GetRostersUidMap(),
-        set = function(i, v)
-            self.roster = v
-            refreshFn()
-        end,
-        get = function(i) return self.roster end,
-        order = 0
-    }
-    options.player = {
-        name = CLM.L["Player"],
-        type = "select",
-        values = profileNameMap,
-        sorting = profileList,
-        set = function(i, v)
-            self.profile = v
-            refreshFn()
-        end,
-        get = function(i) return self.profile end,
-        order = 1
-    }
-    options.history = {
-        name = CLM.L["History type"],
-        type = "select",
-        values = CONSTANTS.HISTORY_TYPES_GUI,
-        set = function(i, v)
-            self.historyType = v
-            refreshFn()
-        end,
-        get = function(i) return self.historyType end,
-        width = 0.75,
-        order = 4
-    }
-    UTILS.mergeDictsInline(options, self.filter:GetAceOptions())
-    return options
+    return self.filter:GetAceOptions()
 end
 
 local function horizontalOptionsFeeder()
@@ -666,102 +649,40 @@ local tableStructure = {
         {name = CLM.L["Num"],          width = 40, sort = LibStub("ScrollingTable").SORT_DSC},
         {name = CLM.L["Time"],         width = 140},
         {name = CLM.L["Type"],         width = 30},
-        {name = CLM.L["Description"],  width = 320},
+        {name = CLM.L["Description"],  width = 330},
         {name = CLM.L["Author"],       width = 80}
     },
     -- Function to filter ScrollingTable
     filter = (function(stobject, row)
-        return UnifiedGUI_Audit.filter:Filter("", "", {ST_GetInfo(row)})
+        return UnifiedGUI_Audit.filter:Filter("", "", { ST_GetDescription(row), ST_GetName(row), ST_GetExtendedDescription(row) })
     end),
     -- Events to override for ScrollingTable
     events = {
         -- OnEnter handler -> on hover
-        -- OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        --     local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        --     local rowData = table:GetRow(realrow)
-        --     if not rowData or not rowData.cols then return status end
-        --     local tooltip = UnifiedGUI_Audit.tooltip
-        --     if not tooltip then return end
-        --     tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
-        --     -- ------------------------------ --
-        --     if ST_GetIsLoot(rowData) == true then
-        --         -- ----------- Loot ------------- --
-        --         local itemLink = ST_GetInfo(rowData) or ""
-        --         local itemId = UTILS.GetItemIdFromLink(itemLink)
-        --         local itemString = "item:" .. tonumber(itemId)
-        --         tooltip:SetHyperlink(itemString)
-        --         local loot = ST_GetObject(rowData)
-        --         if loot then
-        --             local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
-        --             local name
-        --             if profile then
-        --                 name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
-        --             else
-        --                 name = CLM.L["Unknown"]
-        --             end
-        --             local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
-        --             if raid then
-        --                 tooltip:AddLine(raid:Name())
-        --             end
-        --             tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
-        --             local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
-        --             if auction then
-        --                 tooltip:AddLine(CLM.L["Bids"])
-        --                 for bidder, bid in pairs(auction.bids) do
-        --                     local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
-        --                     if bidderProfile then
-        --                         bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
-        --                     end
-        --                     tooltip:AddDoubleLine(bidder, bid)
-        --                 end
-        --             end
-        --         end
-        --     elseif ST_GetIsLoot(rowData) == false then
-        --         -- ----------- Point ------------ --
-        --         local history = ST_GetObject(rowData)
-        --         local profiles = history:Profiles()
-        --         local numProfiles = #profiles
-        --         tooltip:AddDoubleLine(CLM.L["Affected players:"], tostring(numProfiles))
-        --         if not profiles or numProfiles == 0 then
-        --             tooltip:AddLine(CLM.L["None"])
-        --         else
-        --             UTILS.buildPlayerListForTooltip(profiles, tooltip)
-        --         end
-        --         local note = history:Note()
-        --         if note ~= "" then
-        --             local numNote = tonumber(note)
-        --             if numNote then
-        --                 note = CLM.EncounterIDsMap[numNote] or note
-        --             end
-        --             tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
-        --         end
-        --         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
-        --         local name
-        --         if profile then
-        --             name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
-        --         else
-        --             name = CLM.L["Unknown"]
-        --         end
-        --         tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
-        --     else
-        --         return status
-        --     end
-        --     -- ------------------------------ --
-        --     -- Display
-        --     tooltip:Show()
-        --     return status
-        -- end),
-        -- -- OnLeave handler -> on hover out
-        -- OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        --     local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        --     UnifiedGUI_Audit.tooltip:Hide()
-        --     return status
-        -- end),
+        OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+            local tooltip = UnifiedGUI_Audit.tooltip
+            if not tooltip then return end
+            tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+            tooltip:AddLine(ST_GetName(rowData))
+            tooltip:AddLine(ST_GetDescription(rowData))
+            tooltip:AddLine(strsub(ST_GetExtendedDescription(rowData), 1, 100))
+            tooltip:Show()
+            return status
+        end),
+        -- OnLeave handler -> on hover out
+        OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            UnifiedGUI_Audit.tooltip:Hide()
+            return status
+        end),
         -- OnClick handler -> click
-        -- OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-        --     UTILS.LibStClickHandler(table, UnifiedGUI_Audit.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-        --     return true
-        -- end
+        OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UTILS.LibStClickHandler(table, UnifiedGUI_Audit.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            return true
+        end
     }
 }
 
@@ -801,48 +722,40 @@ end
 
 local function initializeHandler()
     LOG:Trace("UnifiedGUI_Audit initializeHandler()")
-    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
-        if lag ~= 0 or uncommitted ~= 0 then return end
-        UnifiedGUI_Audit.timeTravelInProgress = false
-    end)
     UnifiedGUI_Audit.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
-            -- {
-            --     title = CLM.L["Timetravel"],
-            --     func = (function()
-            --         local row = self.st:GetRow(self.st:GetSelection())
-            --         if row then
-            --             self.timeTravelInProgress = true
-            --             LedgerManager:TimeTravel(ST_GetEntry(row):time())
-            --             LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
-            --         end
-            --     end),
-            --     trustedOnly = true,
-            --     color = "eeee00"
-            -- },
-            -- {
-            --     title = CLM.L["End Timetravel"],
-            --     func = (function()
-            --         if LedgerManager:IsTimeTraveling() then
-            --             self.timeTravelInProgress = true
-            --             LedgerManager:EndTimeTravel()
-            --             LIBS.gui:Open(REGISTRY, self.ManagementOptions) -- Refresh the config gui panel
-            --         end
-            --     end),
-            --     trustedOnly = true,
-            --     color = "eeee00"
-            -- },
-            -- {
-            --     title = CLM.L["Remove selected"],
-            --     func = (function()
-            --         local row = self.st:GetRow(self.st:GetSelection())
-            --         if row then
-            --             LedgerManager:Remove(ST_GetEntry(row), true)
-            --         end
-            --     end),
-            --     trustedOnly = true,
-            --     color = "cc0000"
-            -- },
+            {
+                title = CLM.L["Timetravel"],
+                func = (function()
+                    local row = UnifiedGUI_Audit:GetSelection()
+                    if row then
+                        CLM.MODULES.LedgerManager:TimeTravel(ST_GetEntry(row):time())
+                    end
+                end),
+                trustedOnly = true,
+                color = "eeee00"
+            },
+            {
+                title = CLM.L["End Timetravel"],
+                func = (function()
+                    if CLM.MODULES.LedgerManager:IsTimeTraveling() then
+                        CLM.MODULES.LedgerManager:EndTimeTravel()
+                    end
+                end),
+                trustedOnly = true,
+                color = "eeee00"
+            },
+            {
+                title = CLM.L["Remove selected"],
+                func = (function()
+                    local row = UnifiedGUI_Audit:GetSelection()
+                    if row then
+                        CLM.MODULES.LedgerManager:Remove(ST_GetEntry(row), true)
+                    end
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            },
         },
         CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
         CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
