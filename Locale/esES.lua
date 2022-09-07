@@ -925,7 +925,7 @@ CLM.L["Lady Deathwhisper"] = "Lady Deathwhisper"
 -- Modules/AutoAwardManager/EncounterIDs.lua:83
 CLM.L["Lady Vashj"] = "Lady Vashj"
 -- Modules/RosterManager/Options.lua:314
-CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Gran valor para la subasta escalonada. \ In \ establecer al mismo valor que otro nivel o negativo para ignorar."
+CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Gran valor para la subasta escalonada. \n\nEstablecer al mismo valor que otro nivel o negativo para ignorar."
 -- Modules/RosterManager/Roster.lua:791
 CLM.L["Large"] = "Larga Largo"
 -- Integrations/GUI.lua:318
