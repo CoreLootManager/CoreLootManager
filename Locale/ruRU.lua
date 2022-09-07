@@ -133,14 +133,14 @@ CLM.L["All migration entries were commited and executed. Congratulations!"] = "�
 CLM.L["All"] = "Все"
 -- Modules/LedgerManager/GUI.lua:116
 -- Modules/GUI/UnifiedGUI_Audit.lua:79
---CLM.L["Allow bidding below minimum points"] = ""
+CLM.L["Allow bidding below minimum points"] = "Разрешить ставки при отрицательных значениях"
 -- Modules/RosterManager/Options.lua:865
---CLM.L["Allow biding more than current standings and ending up with less than minimum points."] = ""
+CLM.L["Allow biding more than current standings and ending up with less than minimum points."] = "Разрешить ставить больше, чем есть сейчас и после получения вещи остаться с минусом."
 -- Modules/RosterManager/Options.lua:864
---CLM.L["Allow biding more than current standings"] = ""
+CLM.L["Allow biding more than current standings"] = "Разрешить ставить больше, чем есть сейчас"
 -- Modules/LedgerManager/GUI.lua:113
 -- Modules/GUI/UnifiedGUI_Audit.lua:76
---CLM.L["Allow going below minimum points"] = ""
+CLM.L["Allow going below minimum points"] = "Разрешить уходить в отрицательные значения"
 -- Modules/RosterManager/Options.lua:703
 -- Modules/GUI/UnifiedGUI_Raids.lua:157
 CLM.L["Allow players to subscribe to the bench through Raids menu"] = "Разрешить игрокам подписываться на замену через меню рейда"
@@ -374,7 +374,7 @@ CLM.L["Bid"] = "Ставка"
 -- Modules/AuctionManager/AuctionManager.lua:672
 CLM.L["Bidding over current standings not allowed"] = "Ставки выше текущей позиции невозможны"
 -- Modules/AuctionManager/AuctionManager.lua:671
---CLM.L["Bidding while below minimum standings not allowed"] = ""
+CLM.L["Bidding while below minimum standings not allowed"] = "Ставки при отрицательных значениях запрещены"
 -- MinimapIcon.lua:138
 -- Modules/BiddingManager/BiddingManager.lua:47
 -- Modules/BiddingManager/GUI.lua:396
@@ -1070,9 +1070,9 @@ CLM.L["Minimum level of players to fill from guild."] = "Минимальный 
 -- Modules/GUI/UnifiedGUI_Audit.lua:142
 --CLM.L["Minimum points (DKP / EP)"] = ""
 -- Modules/RosterManager/Options.lua:746
---CLM.L["Minimum points to be allowed to bid."] = ""
+CLM.L["Minimum points to be allowed to bid."] = "Минимальное количество очков, которое можно поставить."
 -- Modules/RosterManager/Options.lua:745
---CLM.L["Minimum points"] = ""
+CLM.L["Minimum points"] = "Минимальное количество"
 -- Global/GlobalSlashCommands.lua:190
 CLM.L["Missing profile %s"] = "Отсутствует профиль %s"
 -- Global/GlobalSlashCommands.lua:168
@@ -1231,7 +1231,7 @@ CLM.L["Opera Hall"] = "Опера"
 -- Modules/AutoAwardManager/EncounterIDs.lua:63
 CLM.L["Ossirian the Unscarred"] = "Оссириан Неуязвимый"
 -- Modules/RosterManager/Options.lua:872
---CLM.L["Other"] = ""
+CLM.L["Other"] = "Прочее"
 -- Modules/AutoAwardManager/EncounterIDs.lua:30
 CLM.L["Ouro"] = "Оуро"
 -- Modules/GUI/UnifiedGUI_Raids.lua:76
@@ -1470,7 +1470,7 @@ CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 ch
 -- Modules/GUI/Filters.lua:207
 CLM.L["Search"] = "Поиск"
 -- Modules/RosterManager/Options.lua:937
---CLM.L["Select DKP or EPGP point system."] = ""
+CLM.L["Select DKP or EPGP point system."] = "Выберите DKP или EPGP систему."
 -- Integrations/GUI.lua:371
 CLM.L["Select Profiles to export"] = "Выбор профилей для экспорта"
 -- Integrations/GUI.lua:340
@@ -1900,7 +1900,7 @@ CLM.L["Zero-Sum Inflation Value"] = "Значение инфляции при н
 -- Modules/PointManager/PointManager.lua:403
 CLM.L["Zero-Sum award"] = "Награда за ноль"
 -- Modules/RosterManager/Options.lua:841
---CLM.L["Zero-Sum"] = ""
+CLM.L["Zero-Sum"] = "Нулевая сумма"
 -- Modules/AutoAwardManager/EncounterIDs.lua:362
 CLM.L["Zul'Aman"] = "Зул'Аман"
 -- Modules/AutoAwardManager/EncounterIDs.lua:251
@@ -2055,7 +2055,7 @@ CLM.L["unguilded"] = "без гильдии"
 --CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = ""
 -- Modules/RosterManager/Options.lua:732
 -- Modules/RosterManager/Options.lua:834
---CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = ""
+CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|cff00ee44Статичная цена:|r Режим статичной цены. Только ставка фиксированного значения разрешена.\n\n|cff00ee44На повышение:|r Разрешен диапазон ставок. Разрешается поставить любое значение в диапазоне |cff44ee00<base, max>|r.\n\n|cff00ee44Тир-аукцион:|r Разрешен диапазон ставок. Разрешается ставить только конкретные значения. До 5 тиров можно настроить в диапазоне |cff44ee00<base, small, medium, large, max>|r."
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:54
 CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Ваш Classic Loot Manager сильно устарел.|r Коммуникации аддона отключены. Версия %s уже доступна. Пожалуйста, обновитесь как можно скорее."
 end
