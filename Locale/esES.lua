@@ -1833,7 +1833,7 @@ CLM.L["WoW DKP Bot Integration"] = "Integración WoW DKP Bot"
 -- Modules/RosterManager/Options.lua:426
 CLM.L["WotLK - 10"] = "Wotlk - 10"
 -- Modules/RosterManager/Options.lua:431
-CLM.L["WotLK - 25"] = "Wotlk - 25"
+CLM.L["WotLK - 25"] = "WotLK - 25"
 -- Modules/RosterManager/Roster.lua:690
 -- Modules/RosterManager/Roster.lua:723
 CLM.L["Wrist"] = "Muñeca"
