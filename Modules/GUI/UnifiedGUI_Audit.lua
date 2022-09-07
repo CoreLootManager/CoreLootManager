@@ -680,7 +680,7 @@ local tableStructure = {
         end),
         -- OnClick handler -> click
         OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            UTILS.LibStClickHandler(table, UnifiedGUI_Audit.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UTILS.LibStSingleSelectClickHandler(table, UnifiedGUI_Audit.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             return true
         end
     }
