@@ -1606,7 +1606,7 @@ CLM.L["TBC"] = "TBC"
 CLM.L["Tabard"] = "Wappenrock"
 -- Modules/AuctionManager/GUI.lua:470
 -- Modules/ProfileManager/Profile.lua:138
-CLM.L["Tank"] = "Panzer"
+CLM.L["Tank"] = "Tank"
 -- Modules/RosterManager/Options.lua:887
 -- Modules/LedgerManager/GUI.lua:176
 -- Modules/GUI/UnifiedGUI_Audit.lua:139
