@@ -1527,7 +1527,7 @@ CLM.L["Shift + Ctrl + Alt"] = "Verschiebung + Strg + Alt"
 -- Global/GlobalConfigs.lua:369
 CLM.L["Shift + Ctrl"] = "Verschiebung + Strg"
 -- Global/GlobalConfigs.lua:364
-CLM.L["Shift"] = "Wechsel"
+CLM.L["Shift"] = "Shift"
 -- Modules/RosterManager/Roster.lua:685
 -- Modules/RosterManager/Roster.lua:718
 CLM.L["Shirt"] = "Chemise"
