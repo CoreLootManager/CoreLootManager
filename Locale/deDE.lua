@@ -1523,7 +1523,7 @@ CLM.L["Shield"] = "Schild"
 -- Global/GlobalConfigs.lua:367
 CLM.L["Shift + Alt"] = "Shift + Alt"
 -- Global/GlobalConfigs.lua:370
-CLM.L["Shift + Ctrl + Alt"] = "Verschiebung + Strg + Alt"
+CLM.L["Shift + Ctrl + Alt"] = "Shift + Ctrl + Alt"
 -- Global/GlobalConfigs.lua:369
 CLM.L["Shift + Ctrl"] = "Verschiebung + Strg"
 -- Global/GlobalConfigs.lua:364
