@@ -564,7 +564,7 @@ CLM.L["Druid"] = "Druide"
 CLM.L["EP"] = "EP"
 -- Alerts/Alerts.lua:20
 -- Modules/GUI/UnifiedGUI_Standings.lua:323
-CLM.L["EP/GP"] = "EP / GP"
+CLM.L["EP/GP"] = "EP/GP"
 -- Modules/RosterManager/Roster.lua:583
 CLM.L["EPGP"] = "EPGP"
 -- Modules/AutoAwardManager/EncounterIDs.lua:19
