@@ -37,7 +37,7 @@ CLM.L["%d/%m/%Y %H:%M:%S"] = "%d/%m/%Y %H:%M:%S"
 -- Alerts/Alerts.lua:21
 CLM.L["%s %% %s decay"] = "%s %% %s распад"
 -- Alerts/Alerts.lua:18
-CLM.L["%s %s"] = "%SS"
+CLM.L["%s %s"] = "%s %s"
 -- Modules/LootManager/LootManager.lua:142
 CLM.L["%s awarded to %s for %s %s"] = "%s присвоено %s за %s %s"
 -- MinimapIcon.lua:37
