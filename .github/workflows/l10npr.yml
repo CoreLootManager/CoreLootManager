@@ -16,6 +16,7 @@ jobs:
         id: l10n
         run: |
           set -o pipefail
+          pip3 install translators
           python3 ./scripts/l10n_strings.py --markdown | tee report.log
         continue-on-error: true
       - name: Read report.log
