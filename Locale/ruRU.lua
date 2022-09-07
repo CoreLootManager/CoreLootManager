@@ -452,7 +452,7 @@ CLM.L["Class"] = "Класс"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:263
 CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s загрузка завершена."
 -- Modules/GUI/UnifiedGUI.lua:262
-CLM.L["Classic Loot Manger"] = "Классический менеджер по добыче"
+CLM.L["Classic Loot Manager"] = "Classic Loot Manager"
 -- Modules/RosterManager/Options.lua:416
 CLM.L["Classic"] = "Классика"
 -- Modules/GUI/Filters.lua:192
