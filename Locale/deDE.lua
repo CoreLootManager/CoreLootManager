@@ -330,7 +330,7 @@ CLM.L["Baltharus the Warborn"] = "Baltharus der Warborn"
 -- Modules/AutoAwardManager/EncounterIDs.lua:9
 CLM.L["Baron Geddon"] = "Baron Geddon"
 -- Modules/RosterManager/Options.lua:302
-CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Grundwert für statische Preisträger. \ Mindestwert für aufsteigende und abgestufte Auktion. \ In \ auf denselben Wert wie andere Stufe oder negativ zu ignorieren."
+CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Grundwert für statische Preisträger. \nMindestwert für aufsteigende und abgestufte Auktion. \n\nAuf denselben Wert wie andere Stufe oder negativ zu ignorieren."
 -- Modules/RosterManager/Roster.lua:788
 CLM.L["Base"] = "Standard"
 -- Modules/AutoAwardManager/EncounterIDs.lua:25
