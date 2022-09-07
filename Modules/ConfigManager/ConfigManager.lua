@@ -21,10 +21,9 @@ end
 function ConfigManager:Initialize()
     LOG:Trace("ConfigManager:Initialize()")
     self.generators = {
-        [CONSTANTS.CONFIGS.GROUP.GLOBAL]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
-        -- [CONSTANTS.CONFIGS.GROUP.PERSONAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.PERSONAL) end),
-        -- [CONSTANTS.CONFIGS.GROUP.GUILD]    = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GUILD) end),
-        [CONSTANTS.CONFIGS.GROUP.ROSTER]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end)
+        [CONSTANTS.CONFIGS.GROUP.GLOBAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
+        [CONSTANTS.CONFIGS.GROUP.ROSTER] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end),
+        [CONSTANTS.CONFIGS.GROUP.INTEGRATIONS] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS) end)
     }
 
     self.options = {}
@@ -128,20 +127,17 @@ CLM.MODULES.ConfigManager = ConfigManager
 CONSTANTS.CONFIGS = {
     GROUPS = UTILS.Set({
         "Classic Loot Manager",
-        -- "Personal",
-        -- "Guild",
-        CLM.L["Rosters"]
+        CLM.L["Rosters"],
+        CLM.L["Integrations"]
     }),
     ORDERED_GROUPS = {
         "Classic Loot Manager",
-        -- "Personal",
-        -- "Guild",
-        CLM.L["Rosters"]
+        CLM.L["Rosters"],
+        CLM.L["Integrations"]
     },
     GROUP = {
         GLOBAL = "Classic Loot Manager",
-        -- PERSONAL = "Personal",
-        -- GUILD = "Guild",
-        ROSTER = CLM.L["Rosters"]
+        ROSTER = CLM.L["Rosters"],
+        INTEGRATIONS = CLM.L["Integrations"]
     },
 }

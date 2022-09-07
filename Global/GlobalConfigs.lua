@@ -87,24 +87,6 @@ function GlobalConfigs:Initialize()
             width = "double",
             order = 2.5
         },
-        global_wodkpbot_integration = {
-            name = CLM.L["WoW DKP Bot Integration"],
-            desc = CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."],
-            type = "toggle",
-            set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
-            get = function(i) return self:GetWoWDKPBotIntegration() end,
-            -- width = "double",
-            order = 3
-        },
-        global_gargul_integration = {
-            name = CLM.L["Gargul Integration"],
-            desc = CLM.L["Enble Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."],
-            type = "toggle",
-            set = function(i, v) self:SetGargulIntegration(v) end,
-            get = function(i) return self:GetGargulIntegration() end,
-            -- width = "double",
-            order = 3.5
-        },
         global_wipe_ledger = {
             name = CLM.L["Wipe events"],
             desc = CLM.L["Wipes all events from memory. This will trigger resyncing from other users."],
@@ -271,22 +253,6 @@ end
 
 function GlobalConfigs:GetModifierCombination()
     return self.db.modifier_combination or CONSTANTS.MODIFIER_COMBINATION.ALT
-end
-
-function GlobalConfigs:SetWoWDKPBotIntegration(value)
-    self.db.wowdkpbot_integration = value and true or false
-end
-
-function GlobalConfigs:GetWoWDKPBotIntegration()
-    return self.db.wowdkpbot_integration
-end
-
-function GlobalConfigs:SetGargulIntegration(value)
-    self.db.gargul_integration = value and true or false
-end
-
-function GlobalConfigs:GetGargulIntegration()
-    return self.db.gargul_integration
 end
 
 function GlobalConfigs:SetAllowChatCommands(value)

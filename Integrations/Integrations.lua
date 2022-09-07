@@ -84,35 +84,139 @@ local function StoreWoWDKPBotData()
 end
 
 local function ClearWoWDKPBotData()
-    if not CLM.GlobalConfigs:GetWoWDKPBotIntegration() then return end
     local db = InitializeDB("wowdkpbot") -- luacheck: ignore
     wipe(db)
 end
 
-local function RequestWoWDKPBotData()
-    if not CLM.GlobalConfigs:GetWoWDKPBotIntegration() then return end
+local function RequestWoWDKPBotData(self)
+    if not self:GetWoWDKPBotIntegration() then return end
     CLM.MODULES.ProfileInfoManager:RequestSpec()
+    CLM.MODULES.ProfileInfoManager:RequestRole()
     CLM.MODULES.ProfileInfoManager:RequestVersion()
 end
 
 local function InitializeGargulIntegration(self)
+    local options = {
+        global_gargul_integration_header = {
+            name = CLM.L["Gargul Integration"],
+            type = "header",
+            width = "full",
+            order = 10
+        },
+        global_gargul_integration = {
+            name = CLM.L["Gargul Integration"],
+            desc = CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."],
+            type = "toggle",
+            set = function(i, v) self:SetGargulIntegration(v) end,
+            get = function(i) return self:GetGargulIntegration() end,
+            width = "full",
+            order = 10.1
+        },
+        empty_slot1 = { type = "description", name = "", fontSize = "medium", width = 1, order = 13 },
+        empty_slot2 = { type = "description", name = "", fontSize = "medium", width = 1, order = 16 },
+    }
 
+    local selections = {
+        {
+            name = CLM.L["Regular"] .. " " .. CLM.L["MS"],
+            order = 11,
+            var = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_MS,
+        },
+        {
+            name = CLM.L["Prioritized"] .. " " .. CLM.L["MS"],
+            order = 12,
+            var = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_MS,
+        },
+        {
+            name = CLM.L["Regular"] .. " " .. CLM.L["OS"],
+            order = 14,
+            var = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_OS,
+        },
+        {
+            name = CLM.L["Prioritized"] .. " " .. CLM.L["OS"],
+            order = 15,
+            var = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_OS,
+        }
+    }
+
+    for _,selection in ipairs(selections) do
+        options[selection.var] = {
+            name = selection.name,
+            desc = CLM.L["Action to take upon Gargul loot award event happening during raid."],
+            type = "select",
+            values = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_GUI,
+            set = (function(i, v)
+                self:SetGargulAwardAction(selection.var, v)
+            end),
+            get = (function(i)
+                return self:GetGargulAwardAction(selection.var)
+            end),
+            order = selection.order
+        }
+    end
+
+    return options
 end
+
+local function InitializeConfigs(self)
+    local options = {
+        global_wodkpbot_integration = {
+            name = CLM.L["WoW DKP Bot Integration"],
+            desc = CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."],
+            type = "toggle",
+            set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
+            get = function(i) return self:GetWoWDKPBotIntegration() end,
+            width = "full",
+            order = 1
+        },
+    }
+
+    UTILS.mergeDictsInline(options, InitializeGargulIntegration(self))
+
+    CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS, options)
+end
+
 
 local Integration = {}
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
+    self.db = InitializeDB("global")
     ClearWoWDKPBotData()
+    InitializeConfigs(self)
+    
     -- WoW DKP Bot SV Data
-    C_TimerAfter(10, RequestWoWDKPBotData)
-
+    C_TimerAfter(10, (function() RequestWoWDKPBotData(self) end))
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData()
     end))
-    -- Gargul
-    InitializeGargulIntegration(self)
-    -- Generic Data
     self.exportInProgress = false
+end
+
+function Integration:SetWoWDKPBotIntegration(value)
+    self.db.wowdkpbot_integration = value and true or false
+end
+
+function Integration:GetWoWDKPBotIntegration()
+    return self.db.wowdkpbot_integration
+end
+
+function Integration:SetGargulIntegration(value)
+    self.db.gargul_integration = value and true or false
+end
+
+function Integration:GetGargulIntegration()
+    return self.db.gargul_integration
+end
+
+function Integration:SetGargulAwardAction(handler, action)
+    if not CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLERS[handler] then return end
+    local db = InitializeDB("gargul")
+    db[handler] = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS[action] and action or CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
+end
+
+function Integration:GetGargulAwardAction(handler)
+    local db = InitializeDB("gargul")
+    return db[handler] or CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
 end
 
 function Integration:Export(config, completeCallback, updateCallback)
@@ -156,6 +260,47 @@ CONSTANTS.TIMEFRAME_SCALE_VALUE = {
     MONTHS = 3,
     YEARS  = 4
 }
+
+CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
+    NONE = 1,
+    AWARD_FOR_FREE = 2,
+    AWARD_FOR_BASE = 3,
+    AWARD_FOR_SMALL = 4,
+    AWARD_FOR_MEDIUM = 5,
+    AWARD_FOR_LARGE = 6,
+    AWARD_FOR_MAX = 7
+}
+
+CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS = UTILS.Set(CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION)
+
+CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_ORDERED = {
+    CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE,
+    CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_FREE,
+    CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE,
+    CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL,
+    CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM,
+    CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE,
+    CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX,
+}
+
+CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_GUI = {
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE]             = CLM.L["None"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_FREE]   = CLM.L["Award for Free"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE]   = CLM.L["Award for Base"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL]  = CLM.L["Award for Small"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM] = CLM.L["Award for Medium"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE]  = CLM.L["Award for Large"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]    = CLM.L["Award for Max"],
+}
+
+CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER = {
+    REGULAR_MS = "rms",
+    REGULAR_OS = "ros",
+    PRIORITY_MS = "pms",
+    PRIORITY_OS = "pos"
+}
+
+CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLERS = UTILS.Set(CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER)
 
 CONSTANTS.TIMEFRAME_SCALE_VALUES = UTILS.Set(CONSTANTS.TIMEFRAME_SCALE_VALUE)
 
