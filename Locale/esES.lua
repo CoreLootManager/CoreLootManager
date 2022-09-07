@@ -750,7 +750,7 @@ CLM.L["Hard cap"] = "Límite máximo"
 CLM.L["Head"] = "Cabeza"
 -- Modules/AuctionManager/GUI.lua:470
 -- Modules/ProfileManager/Profile.lua:139
-CLM.L["Healer"] = "Curadora Curador"
+CLM.L["Healer"] = "Healer"
 -- Modules/AutoAwardManager/EncounterIDs.lua:40
 CLM.L["Heigan the Unclean"] = "Heigan el Impuro"
 -- Modules/RosterManager/Roster.lua:700
