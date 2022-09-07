@@ -494,7 +494,7 @@ CLM.L["Creates new roster with default configuration"] = "Crea un nuevo roster c
 -- Global/GlobalConfigs.lua:368
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 -- Global/GlobalConfigs.lua:365
-CLM.L["Ctrl"] = "Control"
+CLM.L["Ctrl"] = "Ctrl"
 -- Modules/AuctionManager/GUI.lua:240
 CLM.L["Current"] = "Actual"
 -- Alerts/Alerts.lua:17
