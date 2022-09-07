@@ -507,7 +507,7 @@ CLM.L["Current"] = "actuel"
 CLM.L["DKP"] = "DKP"
 -- Modules/AuctionManager/GUI.lua:470
 -- Modules/ProfileManager/Profile.lua:140
-CLM.L["DPS"] = "Dps"
+CLM.L["DPS"] = "DPS"
 -- Global/GlobalConfigs.lua:186
 CLM.L["Danger Zone - Use at own risk"] = "Zone de danger - Utilisation à vos risques et périls"
 -- Integrations/GUI.lua:226
