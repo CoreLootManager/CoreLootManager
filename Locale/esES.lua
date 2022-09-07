@@ -1546,7 +1546,7 @@ CLM.L["Skipping %s"] = "Saltando %s"
 -- Migration.lua:235
 CLM.L["Skipping CommunityDKP"] = "Ignorar CommunityDKP"
 -- Modules/RosterManager/Options.lua:306
-CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Pequeño valor para subasta escalonada. \ In \ establecer al mismo valor que otro nivel o negativo para ignorar."
+CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Pequeño valor para subasta escalonada. \n\nEstablecer al mismo valor que otro nivel o negativo para ignorar."
 -- Modules/RosterManager/Roster.lua:789
 CLM.L["Small"] = "Pequeña Pequeño"
 -- Global/GlobalSlashCommands.lua:94
