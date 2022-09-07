@@ -925,7 +925,7 @@ CLM.L["Lady Deathwhisper"] = "Lady Deathwhisper"
 -- Modules/AutoAwardManager/EncounterIDs.lua:83
 CLM.L["Lady Vashj"] = "Lady Vashj"
 -- Modules/RosterManager/Options.lua:314
-CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Großer Wert für abgestufte Auktion. \ In \ setze auf denselben Wert wie andere Stufe oder negativ zu ignorieren."
+CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Großer Wert für abgestufte Auktion. \n\nIn setze auf denselben Wert wie andere Stufe oder negativ zu ignorieren."
 -- Modules/RosterManager/Roster.lua:791
 CLM.L["Large"] = "Groß"
 -- Integrations/GUI.lua:318
