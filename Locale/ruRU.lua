@@ -1296,7 +1296,7 @@ CLM.L["Prioritized"] = "Приоритет"
 -- Modules/AutoAwardManager/EncounterIDs.lua:151
 CLM.L["Professor Putricide"] = "Профессор Петрицид"
 -- Modules/ProfileManager/ProfileManager.lua:200
-CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "Профиль %s уже существует и используется различными GUID %S ( %s)."
+CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "Профиль %s уже существует и используется различными GUID %s ( %s)."
 -- Modules/PointManager/PointManager.lua:398
 CLM.L["Progression Bonus"] = "Бонус за прогресс"
 -- Modules/RosterManager/RosterManager.lua:285

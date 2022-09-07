@@ -1296,7 +1296,7 @@ CLM.L["Prioritized"] = "Priorisé"
 -- Modules/AutoAwardManager/EncounterIDs.lua:151
 CLM.L["Professor Putricide"] = "Professeur Putricide"
 -- Modules/ProfileManager/ProfileManager.lua:200
-CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "Le profil% s existe déjà et est utilisé par différents% de Guid% s (% s)."
+CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "Le profil %s existe déjà et est utilisé par différents de Guid %s (%s)."
 -- Modules/PointManager/PointManager.lua:398
 CLM.L["Progression Bonus"] = "Bonus de progression"
 -- Modules/RosterManager/RosterManager.lua:285
@@ -1732,7 +1732,7 @@ CLM.L["True"] = "Vrai"
 -- Modules/AutoAwardManager/EncounterIDs.lua:29
 CLM.L["Twin Emperors"] = "Les Empereurs jumeaux"
 -- Modules/ProfileManager/ProfileManager.lua:192
-CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."] = "Deux profils différents existent pour le Guid% S cible (% s:% s) et le nom% s (% s:% s). Vérifiez et nettoyez les profils avant de mettre à jour."
+CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."] = "Deux profils différents existent pour le Guid %s cible (%s:%s) et le nom %s (%s:%s). Vérifiez et nettoyez les profils avant de mettre à jour."
 -- Modules/RosterManager/Roster.lua:701
 -- Modules/RosterManager/Roster.lua:734
 CLM.L["Two-Hand"] = "Deux mains"
