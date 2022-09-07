@@ -925,7 +925,7 @@ CLM.L["Lady Deathwhisper"] = "Леди Смерть .WHISPER"
 -- Modules/AutoAwardManager/EncounterIDs.lua:83
 CLM.L["Lady Vashj"] = "Леди Вайш"
 -- Modules/RosterManager/Options.lua:314
-CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Большое значение для многоуровневого аукциона. \ In \ Установлено на то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
+CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Большое значение для многоуровневого аукциона. \n\nУстановлено на то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
 -- Modules/RosterManager/Roster.lua:791
 CLM.L["Large"] = "Большой"
 -- Integrations/GUI.lua:318
@@ -1024,11 +1024,11 @@ CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."
 -- Modules/RosterManager/Options.lua:688
 CLM.L["Maximum point cap that player can have. Set to 0 to disable."] = "Кап очков, которые могут быть у игрока. Поставьте 0 для отключения."
 -- Modules/RosterManager/Options.lua:318
-CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Максимальное значение для восходящего и многоуровневого аукциона. \ In \ Установить на то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
+CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Максимальное значение для восходящего и многоуровневого аукциона. \n\nУстановить на то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
 -- Integrations/GUI.lua:143
 CLM.L["May"] = "Май"
 -- Modules/RosterManager/Options.lua:310
-CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Среднее значение для многоуровневого аукциона. \ В \ Установлено то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
+CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Среднее значение для многоуровневого аукциона. \n\nУстановлено то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
 -- Modules/RosterManager/Roster.lua:790
 CLM.L["Medium"] = "Середина"
 -- MinimapIcon.lua:100
@@ -1546,7 +1546,7 @@ CLM.L["Skipping %s"] = "Пропускаю %s"
 -- Migration.lua:235
 CLM.L["Skipping CommunityDKP"] = "Пропускаю CommunityDKP"
 -- Modules/RosterManager/Options.lua:306
-CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Небольшое значение для многоуровневого аукциона. \ In \ Установлено на то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
+CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Небольшое значение для многоуровневого аукциона. \n\nУстановлено на то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
 -- Modules/RosterManager/Roster.lua:789
 CLM.L["Small"] = "Маленький"
 -- Global/GlobalSlashCommands.lua:94
@@ -2052,7 +2052,7 @@ CLM.L["rosters"] = "составы"
 CLM.L["unguilded"] = "без гильдии"
 -- Modules/RosterManager/Options.lua:826
 -- Modules/RosterManager/Options.lua:898
-CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = "| cff00ee44open: | r английский аукцион с объявлением с наибольшим количеством участников. Высоко высокой цены выигрывает. Два игрока не могут сделать такую же ценность. Кроме того, всегда позволяет базой ставок на соответствие для шведского аукционного вкуса. \ N \ n | CFF00EE4444444444444444444444444444444444444444444444444444. Open: | r То же самое, что открытое, но наиболее высокое имя претендента не раскрывается. Высоко высокой цены выигрывает. \ N \ n | cff00ee444vickrey: | r то же самое, что запечатано, но победитель оплачивает вторую по величине заявку."
+CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = "|cff00ee44open: |r английский аукцион с объявлением с наибольшим количеством участников. Высоко высокой цены выигрывает. Два игрока не могут сделать такую же ценность. Кроме того, всегда позволяет базой ставок на соответствие для шведского аукционного вкуса. \n\n|cff00ee44Open: |r То же самое, что открытое, но наиболее высокое имя претендента не раскрывается. Высоко высокой цены выигрывает. \n\n|cff00ee444vickrey:|r то же самое, что запечатано, но победитель оплачивает вторую по величине заявку."
 -- Modules/RosterManager/Options.lua:732
 -- Modules/RosterManager/Options.lua:834
 CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|cff00ee44Статичная цена:|r Режим статичной цены. Только ставка фиксированного значения разрешена.\n\n|cff00ee44На повышение:|r Разрешен диапазон ставок. Разрешается поставить любое значение в диапазоне |cff44ee00<base, max>|r.\n\n|cff00ee44Тир-аукцион:|r Разрешен диапазон ставок. Разрешается ставить только конкретные значения. До 5 тиров можно настроить в диапазоне |cff44ee00<base, small, medium, large, max>|r."

@@ -1024,11 +1024,11 @@ CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."
 -- Modules/RosterManager/Options.lua:688
 CLM.L["Maximum point cap that player can have. Set to 0 to disable."] = "Maximale Punkte die ein Spieler erhalten kann. Zum Ausschalten auf 0 setzen."
 -- Modules/RosterManager/Options.lua:318
-CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Maximaler Wert für aufsteigender und abgestufter Auktion. \ In \ auf denselben Wert wie andere Stufe oder negativ zu ignorieren."
+CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Maximaler Wert für aufsteigender und abgestufter Auktion. \n\nAuf denselben Wert wie andere Stufe oder negativ zu ignorieren."
 -- Integrations/GUI.lua:143
 CLM.L["May"] = "Kann"
 -- Modules/RosterManager/Options.lua:310
-CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Mittlerer Wert für abgestufte Auktion. \ In \ setze auf denselben Wert wie andere Stufe oder negativ zu ignorieren."
+CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Mittlerer Wert für abgestufte Auktion. \n\nSetze auf denselben Wert wie andere Stufe oder negativ zu ignorieren."
 -- Modules/RosterManager/Roster.lua:790
 CLM.L["Medium"] = "Mittel"
 -- MinimapIcon.lua:100
@@ -2052,10 +2052,10 @@ CLM.L["rosters"] = "Roster"
 CLM.L["unguilded"] = "Ohne Gilde"
 -- Modules/RosterManager/Options.lua:826
 -- Modules/RosterManager/Options.lua:898
-CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = "| CFF00EEE44OPEN: | R Englische Auktion mit Ankündigung des höchsten Bieters. Der höchste Bieter gewinnt. Zwei Spieler können keinen gleichen Wert bieten. Darüber hinaus ermöglicht die Bieterbasis immer für den schwedischen Auktionsaroma. Der höchste Bieter gewinnt."
+CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = "|cff00ee44Open: |r Englische Auktion mit Ankündigung des höchsten Bieters. Der höchste Bieter gewinnt. Zwei Spieler können keinen gleichen Wert bieten. Darüber hinaus ermöglicht die Bieterbasis immer für den schwedischen Auktionsaroma. Der höchste Bieter gewinnt."
 -- Modules/RosterManager/Options.lua:732
 -- Modules/RosterManager/Options.lua:834
-CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "| CFF00EEE44SINGLE-PREISE: | R statischer Wertmodus. Der Basiswert wird nur unterstützt. Ermöglicht das Bieten in | CFF44ee00 <Basis, max> | r. Ermöglicht das Bieten nur spezifische Werte. Bis zu 5 Ebenen sind in | CFF44ee00 <Basis, klein, mittel, groß, max> | r."
+CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|Single-preise: |r statischer Wertmodus. Der Basiswert wird nur unterstützt. Ermöglicht das Bieten in |cff44ee00 <basis, max> |r. Ermöglicht das Bieten nur spezifische Werte. Bis zu 5 Ebenen sind in |cff44ee00 <Basis, klein, mittel, groß, max> |r."
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:54
 CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Dein Classic Loot Manager ist nicht mehr aktuell.|r Die Addon Kommunikation wurde abgeschaltet. Version %s isz verfügbar. Bitte schnellstmöglich auf den neuesten Stand bringen"
 end
