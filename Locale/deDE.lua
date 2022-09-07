@@ -26,7 +26,7 @@ CLM.L["% that will be decayed."] = "% das wird verfallen."
 -- Modules/GUI/UnifiedGUI_Raids.lua:343
 -- Modules/GUI/UnifiedGUI_History.lua:293
 -- Modules/GUI/UnifiedGUI_History.lua:325
-CLM.L["%Y/%m/%d %H:%M:%S (%A)"] = "%Y/%m/%d%H:%M:%s (%a)"
+CLM.L["%Y/%m/%d %H:%M:%S (%A)"] = "%Y/%m/%d %H:%M:%S (%A)"
 -- Integrations/Exporter.lua:292
 -- Integrations/Exporter.lua:293
 -- Modules/AuctionHistoryManager/GUI.lua:223
