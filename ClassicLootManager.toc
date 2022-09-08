@@ -1,7 +1,5 @@
-## Interface-Classic: 11403
 ## Interface-BCC: 20504
 ## Interface-Wrath: 30400
-## X-Min-Interface-Classic: 11403
 ## X-Min-Interface-BCC: 20504
 ## X-Min-Interface-Wrath: 30400
 ## Title: Classic Loot Manager
