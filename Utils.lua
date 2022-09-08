@@ -305,7 +305,7 @@ function UTILS.CreateGUIDList(playerList)
     for _, p in ipairs(playerList) do
         GUID = GetGUIDFromEntry(p)
         if GUID ~= nil then
-            tinsert(playerGUIDList, GUID)
+            playerGUIDList[#playerGUIDList+1] = GUID
         end
     end
     return playerGUIDList
@@ -619,7 +619,7 @@ function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, co
     local isSelected = st.selected:IsSelected(realrow)
 
     if not isSelected then
-        if isAdditiveSelect then
+        if isAdditiveSelect or rightClick then
             st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
         elseif isContinuousSelect then
             local first, last, selected
@@ -667,6 +667,26 @@ function UTILS.LibStSingleSelectClickHandler(st, dropdownMenu, rowFrame, cellFra
         UTILS.LibDD:CloseDropDownMenus()
         UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdownMenu, cellFrame, -20, 0)
     end
+end
+
+function UTILS.getHighlightMethod(highlightColor, multiselect)
+    return (function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+        table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+        local color
+        local selected
+        if multiselect then
+            selected = table.selected:IsSelected(realrow)
+        else
+            selected = (table.selected == realrow)
+        end
+        if selected then
+            color = table:GetDefaultHighlight()
+        else
+            color = highlightColor
+        end
+
+        table:SetHighLightColor(rowFrame, color)
+    end)
 end
 
 function UTILS.OnePassRemove(t, fnKeep)

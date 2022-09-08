@@ -23,6 +23,7 @@ local supportedFilters = {
     "inGuild",
     "external",
     "main",
+    "locked",
     "online",
     "rank"
 }
@@ -71,6 +72,7 @@ CONSTANTS.FILTER = {
     IN_GUILD     = 103,
     NOT_IN_GUILD = 104,
     MAINS_ONLY   = 105,
+    LOCKED_ONLY  = 106
 }
 
 CONSTANTS.FILTERS_GUI = {
@@ -79,7 +81,8 @@ CONSTANTS.FILTERS_GUI = {
     [CONSTANTS.FILTER.STANDBY] = CLM.L["Standby"],
     [CONSTANTS.FILTER.IN_GUILD] = CLM.L["In Guild"],
     [CONSTANTS.FILTER.NOT_IN_GUILD] = CLM.L["External"],
-    [CONSTANTS.FILTER.MAINS_ONLY] = CLM.L["Mains"]
+    [CONSTANTS.FILTER.MAINS_ONLY] = CLM.L["Mains"],
+    [CONSTANTS.FILTER.LOCKED_ONLY] = CLM.L["Locked"]
 }
 
 local color = "FFD100"
@@ -89,7 +92,8 @@ local parameterToConstantMap = {
     inGuild = CONSTANTS.FILTER.IN_GUILD,
     external = CONSTANTS.FILTER.NOT_IN_GUILD,
     main = CONSTANTS.FILTER.MAINS_ONLY,
-    online = CONSTANTS.FILTER.ONLINE
+    online = CONSTANTS.FILTER.ONLINE,
+    locked = CONSTANTS.FILTER.LOCKED_ONLY,
 }
 
 local function SelectClasses(self, isSelect)
@@ -278,8 +282,8 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
         end
     end
 
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
     if self.main and self.filters[CONSTANTS.FILTER.MAINS_ONLY] then
-        local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
         if profile then
             status = status and (profile:Main() == "")
         end
@@ -289,6 +293,12 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
     if self.rank and self.inGuild then
         if inGuild then
             status = status and self.filters[guildies[playerName] + 1000]
+        end
+    end
+
+    if self.locked and self.filters[CONSTANTS.FILTER.LOCKED_ONLY] then
+        if profile then
+            status = status and profile:IsLocked()
         end
     end
 

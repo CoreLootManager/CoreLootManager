@@ -362,6 +362,7 @@ local function initializeHandler()
                         LOG:Message(CLM.L["Please select a raid"])
                     end
                     refreshFn(true)
+                    CLM.GUI.Unified:ClearSelection()
                 end)
             },
             {
@@ -374,6 +375,7 @@ local function initializeHandler()
                         LOG:Message(CLM.L["Please select a raid"])
                     end
                     refreshFn(true)
+                    CLM.GUI.Unified:ClearSelection()
                 end)
             },
             {
@@ -389,6 +391,7 @@ local function initializeHandler()
                     else
                         LOG:Message(CLM.L["Please select a raid"])
                     end
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -402,6 +405,7 @@ local function initializeHandler()
                     else
                         LOG:Message(CLM.L["Please select a raid"])
                     end
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -415,6 +419,7 @@ local function initializeHandler()
                     else
                         LOG:Message(CLM.L["Please select a raid"])
                     end
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -433,6 +438,7 @@ local function initializeHandler()
                     else
                         LOG:Message(CLM.L["Please select a raid"])
                     end
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 managerOnly = true,

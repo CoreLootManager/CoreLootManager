@@ -12,7 +12,7 @@ local tonumber, tostring = tonumber, tostring
 local strlen, sformat = strlen, string.format
 
 local colorRed = {r = 0.93, g = 0.2, b = 0.2, a = 1.0}
--- local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3} -- locking
+local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
 local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 
@@ -54,17 +54,16 @@ local function ST_GetEP(row)
     return row.cols[12].value
 end
 
-local function highlightPlayer(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
-    table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
-    local color
-    if table.selected:IsSelected(realrow) then
-        color = table:GetDefaultHighlight()
-    else
-        color = colorBlueTransparent
-    end
-
-    table:SetHighLightColor(rowFrame, color)
+local function ST_GetIsLocked(row)
+    return row.cols[13].value
 end
+
+local function ST_GetHighlight(row)
+    return row.cols[14].value
+end
+
+local highlightPlayer = UTILS.getHighlightMethod(colorBlueTransparent, true)
+local highlightLocked = UTILS.getHighlightMethod(colorRedTransparent, true)
 
 local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
@@ -76,7 +75,7 @@ local UnifiedGUI_Standings = {
     (function() CLM.GUI.Unified:FilterScrollingTable() end),
     UTILS.Set({
         "class", "inRaid", "inStandby",
-        "inGuild", "external", "main", "rank"
+        "inGuild", "external", "main", "rank", "locked"
     }),
     UTILS.Set({
         "buttons", "search"
@@ -302,11 +301,11 @@ local function GenerateManagerOptions(self)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     return CLM.L["Invalid context. You should not decay raid only."]
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    return sformat(CLM.L["Decay %s% points to everyone in roster."], decayValue)
+                    return sformat(CLM.L["Decay %s%% points to everyone in roster."], decayValue)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles then profiles = {} end
-                    return sformat(CLM.L["Decay %s% points to %s selected players."], decayValue, #profiles)
+                    return sformat(CLM.L["Decay %s%% points to %s selected players."], decayValue, #profiles)
                 end
             end),
             order = 22
@@ -375,6 +374,10 @@ local tableStructure = {
             local tooltip = UnifiedGUI_Standings.tooltip
             if not tooltip then return end
             tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+            local lockedString = ""
+            if ST_GetIsLocked(rowData) then
+                lockedString = "|c4eED3333" .. CLM.L["Locked"] .. "|r"
+            end
             local pointInfo = ST_GetPointInfo(rowData)
             local weeklyGain = ST_GetWeeklyGains(rowData)
             local weeklyCap = ST_GetWeeklyCap(rowData)
@@ -385,11 +388,11 @@ local tableStructure = {
 
             local isEPGP = ST_GetIsEPGP(rowData)
             if isEPGP then
-                tooltip:AddLine(CLM.L["Information"])
+                tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
                 tooltip:AddDoubleLine(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], tostring(pointInfo.spent) .. " ".. CLM.L["GP"])
                 tooltip:AddDoubleLine(CLM.L["Weekly gains"], tostring(gains) .. " " .. CLM.L["EP"])
             else
-                tooltip:AddLine(CLM.L["Information"])
+                tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
                 tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
                 tooltip:AddLine("\n")
                 -- Statistics
@@ -445,8 +448,9 @@ local tableStructure = {
             UnifiedGUI_Standings.tooltip:Hide()
             local rowData = table:GetRow(realrow)
             if not rowData or not rowData.cols then return status end
-            if ST_GetName(rowData) == whoami then
-                highlightPlayer(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            local highlight = ST_GetHighlight(rowData)
+            if highlight then
+                highlight(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
             end
             return status
         end),
@@ -482,7 +486,9 @@ local function tableDataFeeder()
         end
         if profile then
             local highlight
-            if profile:Name() == whoami then
+            if profile:IsLocked() then
+                highlight = highlightLocked
+            elseif profile:Name() == whoami then
                 highlight = highlightPlayer
             end
             local row = { cols = {
@@ -499,7 +505,9 @@ local function tableDataFeeder()
                 {value = roster:GetProfileLootByGUID(GUID)},
                 {value = roster:GetProfilePointHistoryByGUID(GUID)},
                 {value = isEPGP},
-                {value = value}
+                {value = value},
+                {value = profile:IsLocked()},
+                {value = highlight}
             },
             DoCellUpdate = highlight
             }
@@ -554,6 +562,7 @@ local function initializeHandler()
                         end
                     end
                     refreshFn(true)
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -598,6 +607,7 @@ local function initializeHandler()
                         end
                     end
                     refreshFn(true)
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -627,6 +637,8 @@ local function initializeHandler()
                         return
                     end
                     CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles)
+                    refreshFn(true)
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "cc0000"

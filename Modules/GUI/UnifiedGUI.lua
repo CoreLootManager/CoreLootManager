@@ -393,6 +393,10 @@ function UnifiedGUI:FilterScrollingTable()
     st:SortData()
 end
 
+function UnifiedGUI:ClearSelection()
+    self.aceObjects.scrollingTables[self.selectedTab]:ClearSelection()
+end
+
 function UnifiedGUI:Toggle()
     LOG:Trace("UnifiedGUI:Toggle()")
     if not self._initialized then return end

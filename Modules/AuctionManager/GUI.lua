@@ -49,24 +49,10 @@ local function ST_GetHighlightFunction(row)
     return row.cols[5].value
 end
 
-local function getHighlightMethod(highlightColor)
-    return (function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
-        table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
-        local color
-        if table.selected == realrow then
-            color = table:GetDefaultHighlight()
-        else
-            color = highlightColor
-        end
-
-        table:SetHighLightColor(rowFrame, color)
-    end)
-end
-
 local highlightRole = {
-    ["DAMAGER"] = getHighlightMethod(colorRedTransparent),
-    ["TANK"] = getHighlightMethod(colorBlueTransparent),
-    ["HEALER"] = getHighlightMethod(colorGreenTransparent),
+    ["DAMAGER"] = UTILS.getHighlightMethod(colorRedTransparent),
+    ["TANK"] = UTILS.getHighlightMethod(colorBlueTransparent),
+    ["HEALER"] = UTILS.getHighlightMethod(colorGreenTransparent),
 }
 
 local function GetModifierCombination()

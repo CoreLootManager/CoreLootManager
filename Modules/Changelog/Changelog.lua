@@ -7,7 +7,7 @@ CLM.ChangelogData = {
                 name = "Wrath of the Lich King!",
                 data = {
                     {header = "", body = "Are you ready for Wrath of the Lich King? Classic Loot Manager is! Read about major overhaul and new features coming in this version!"},
-                    {header = "Wrath of the Lich King support", body = "New Bosses and difficulties, new API and dual spec is now properly supported! \nCLM 2.0 is not backwards compatible and starts with a clean database for your best experience in new expansion!"},
+                    {header = "Wrath of the Lich King support", body = "New Bosses and difficulties, new API and dual spec is now properly supported! \n|cffdcb749CLM 2.0 is not backwards compatible and starts with a clean database for your best experience in new expansion!|r"},
                     {header = "Thank you supporters!", body = "Thank you to all  that support us, either by contributing or donating through patreon: https://www.patreon.com/classiclootmanager. \nSpecial thank you to legendary patrons: **naimious**"},
                 },
             },
@@ -50,6 +50,12 @@ CLM.ChangelogData = {
                 name = "New: Named buttons bidding mode",
                 data = {
                     {header = "", body = "Dedicated to Tiered bidding mode - this allows you to name tiered bid buttons and use them instead of values (although the underlying values are still there). Both players bidding and auctioneer will see the text instead of value, while awarding will still result in the proper point deduction (DKP) or award (GP)."},
+                },
+            },
+            {
+                name = "New: Profile locking",
+                data = {
+                    {header = "", body = "You can now lock (and unlock) profiles. Now any point, either DKP, EP or GP, operations on those profiles, in any roster, will be ignored as long as profiles are locked. Locked players are displayed with red tint."}
                 },
             },
             {

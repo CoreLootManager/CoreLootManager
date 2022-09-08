@@ -162,6 +162,40 @@ function ProfileManager:Initialize()
             end
         end))
 
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.PROFILE.Lock,
+        (function(entry)
+            LOG:TraceAndCount("mutator(ProfileLock)")
+            local action
+            if entry:lock() then
+                action = (function(p) p:Lock() end)
+            else
+                action = (function(p) p:Unlock() end)
+            end
+            -- Same action for all alts and mains
+            for _, target in ipairs(entry:targets()) do
+                local profile = self:GetProfileByGUID(UTILS.getGuidFromInteger(target))
+                if profile then
+                    action(profile) -- main lock/unlock
+                    if profile:HasAlts() then -- Is Main - has alts
+                        for altGUID in pairs(profile:Alts()) do
+                            local altProfile = self:GetProfileByGUID(altGUID)
+                            if altProfile then action(altProfile) end
+                        end
+                    elseif (profile:Main() ~= "") then -- is alt - has main
+                        local mainProfile = self:GetProfileByGUID(profile:Main())
+                        if mainProfile then
+                            action(mainProfile)
+                            for altGUID in pairs(mainProfile:Alts()) do
+                                local altProfile = self:GetProfileByGUID(altGUID)
+                                if altProfile then action(altProfile) end
+                            end
+                        end
+                    end
+                end
+            end
+        end))
+
     CLM.MODULES.LedgerManager:RegisterOnRestart(function()
         self:WipeAll()
     end)
@@ -255,6 +289,20 @@ function ProfileManager:MarkAsAltByNames(alt, main)
         if altProfile:Main() == mainProfile:GUID() then return end
         CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
     end
+end
+
+function ProfileManager:SetProfilesLock(profiles, lock)
+    LOG:Trace("ProfileManager:SetProfilesLock()")
+
+    local entry = CLM.MODELS.LEDGER.PROFILE.Lock:new(profiles, lock and true or false)
+
+    local t = entry:targets()
+    if not t or (#t == 0) then
+        LOG:Error("ProfileManager:SetProfilesLock(): Empty targets list")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(entry, true)
 end
 
 -- Functionalities

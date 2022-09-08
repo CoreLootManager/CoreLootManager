@@ -31,7 +31,7 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
             return
         end
         local targetProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-        if targetProfile then
+        if targetProfile and not targetProfile:IsLocked() then
             if roster:IsProfileInRoster(GUID) and pointHistoryEntry then
                 roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
             end
@@ -92,7 +92,7 @@ local function apply_roster_mutator(entry, mutate)
         for _, GUID in ipairs(profiles) do
             local standings = roster:Standings(GUID)
             if standings and standings >= 0 then
-                table.insert(positiveProfiles, GUID)
+                positiveProfiles[#positiveProfiles+1] = GUID
             end
         end
         profiles = positiveProfiles
