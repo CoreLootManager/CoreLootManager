@@ -9,6 +9,9 @@ local UTILS     = CLM.UTILS
 local pairs, ipairs = pairs, ipairs
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
+local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
+
+local highlightLocked = UTILS.getHighlightMethod(colorRedTransparent, true)
 
 local function ST_GetName(row)
     return row.cols[1].value
@@ -18,11 +21,19 @@ local function ST_GetClass(row)
     return row.cols[3].value
 end
 
+-- local function ST_GetIsLocked(row)
+--     return row.cols[7].value
+-- end
+
+local function ST_GetHighlight(row)
+    return row.cols[8].value
+end
+
 local UnifiedGUI_Profiles = {
     name = "profiles",
     filter = CLM.MODELS.Filters:New(
     (function() CLM.GUI.Unified:FilterScrollingTable() end),
-    UTILS.Set({"class", "inGuild", "external", "rank"}),
+    UTILS.Set({"class", "inGuild", "external", "rank", "locked"}),
     UTILS.Set({"buttons", "search"}),
     nil, 1),
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIProfilesDialogTooltip", UIParent, "GameTooltipTemplate"),
@@ -184,19 +195,17 @@ local tableStructure = {
         -- OnEnter handler -> on hover
         OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            -- local rowData = table:GetRow(realrow)
-            -- if not rowData or not rowData.cols then return status end
-            -- local tooltip = UnifiedGUI_Profiles.tooltip
-            -- if not tooltip then return end
-            -- tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
-            -- -- Display
-            -- tooltip:Show()
             return status
         end),
         -- OnLeave handler -> on hover out
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            -- UnifiedGUI_Profiles.tooltip:Hide()
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+            local highlight = ST_GetHighlight(rowData)
+            if highlight then
+                highlight(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            end
             return status
         end),
         -- OnClick handler -> click
@@ -212,8 +221,8 @@ local function tableDataFeeder()
     local data = {}
     local profiles = CLM.MODULES.ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
-        local row = {cols = {}}
         local main = ""
+        local isLocked = object:IsLocked()
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(object:Main())
         if profile then
             main = profile:Name()
@@ -227,13 +236,22 @@ local function tableDataFeeder()
         elseif CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             rank = CLM.L["Assistant"]
         end
-        row.cols = {
+        local highlight
+        if isLocked then
+            highlight = highlightLocked
+        end
+        local row = { cols = {
             {value = name},
             {value = main},
             {value = UTILS.ColorCodeClass(object:Class())},
             {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
             {value = rank},
-            {value = object:VersionString()}
+            {value = object:VersionString()},
+            -- hidden
+            {value = isLocked},
+            {value = highlight}
+        },
+        DoCellUpdate = highlight
         }
         data[#data+1] = row
     end
@@ -245,11 +263,34 @@ local function initializeHandler()
     UnifiedGUI_Profiles.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
+                title = CLM.L["Lock selected"],
+                func = (function()
+                    CLM.MODULES.ProfileManager:SetProfilesLock(UnifiedGUI_Profiles:GetSelection(), true)
+                    CLM.GUI.Unified:ClearSelection()
+                end),
+                trustedOnly = true,
+                color = "cccc00"
+            },
+            {
+                title = CLM.L["Unlock selected"],
+                func = (function()
+                    CLM.MODULES.ProfileManager:SetProfilesLock(UnifiedGUI_Profiles:GetSelection(), false)
+                    CLM.GUI.Unified:ClearSelection()
+                end),
+                trustedOnly = true,
+                color = "00cc00"
+            },
+            {
+                separator = true,
+                trustedOnly = true
+            },
+            {
                 title = CLM.L["Remove selected"],
                 func = (function()
                     for _,profile in ipairs(UnifiedGUI_Profiles:GetSelection()) do
                         CLM.MODULES.ProfileManager:RemoveProfile(profile:GUID())
                     end
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "cc0000"

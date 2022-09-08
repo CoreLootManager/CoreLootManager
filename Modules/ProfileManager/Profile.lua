@@ -29,6 +29,7 @@ function Profile:New(entry, name, class, main)
     o:SetSpec()
     o:SetRole()
     o.alts = {}
+    o.locked = false
 
     o._versionString = CLM.L["Unknown"]
 
@@ -105,6 +106,18 @@ end
 
 function Profile:GUID()
     return self._GUID
+end
+
+function Profile:Lock()
+    self.locked = true
+end
+
+function Profile:Unlock()
+    self.locked = false
+end
+
+function Profile:IsLocked()
+    return self.locked
 end
 
 function Profile:SetVersion(major, minor, patch, changeset)
