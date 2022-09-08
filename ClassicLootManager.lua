@@ -23,8 +23,8 @@ local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 
 local function Initialize_SavedVariables()
-    if type(CLM_DB) ~= "table" then
-        CLM_DB = {
+    if type(CLM2_DB) ~= "table" then
+        CLM2_DB = {
             global = {
                 version = {
                     major = 0,
@@ -40,22 +40,22 @@ local function Initialize_SavedVariables()
         }
     end
 
-    if type(CLM_Logs) ~= "table" then
-        CLM_Logs = {}
+    if type(CLM2_Logs) ~= "table" then
+        CLM2_Logs = {}
     end
 end
 
 local function Initialize_Logger()
-    LOG:SetSeverity(CLM_DB.global.logger.severity)
-    LOG:SetVerbosity(CLM_DB.global.logger.verbosity)
+    LOG:SetSeverity(CLM2_DB.global.logger.severity)
+    LOG:SetVerbosity(CLM2_DB.global.logger.verbosity)
     LOG:SetPrefix("CLM")
-    LOG:SetDatabase(CLM_Logs)
+    LOG:SetDatabase(CLM2_Logs)
 end
 
 local function Initialize_Versioning()
     -- Parse autoversion
     local major, minor, patch, changeset = string.match(CLM.AUTOVERSION, "^v(%d+).(%d+).(%d+)-?(.*)")
-    local old = CLM_DB.global.version
+    local old = CLM2_DB.global.version
     local new = {
         major = tonumber(major) or 2,
         minor = tonumber(minor) or 0,
@@ -63,7 +63,7 @@ local function Initialize_Versioning()
         changeset = changeset or ""
     }
     -- set new version
-    CLM_DB.global.version = new
+    CLM2_DB.global.version = new
     -- update string
     changeset = new.changeset
     if changeset and changeset ~= "" then
@@ -82,7 +82,7 @@ local function Initialize_Versioning()
 end
 
 function CORE:GetVersion()
-    return CLM_DB.global.version
+    return CLM2_DB.global.version
 end
 
 function CORE:GetVersionString()
@@ -132,6 +132,7 @@ function CORE:_InitializeFeatures()
     CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
     CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
     CLM.Integration:Initialize() -- Initialize external (to wow) integrations
+    CLM.DatabaseUpgradeImporter:Initialize() -- Initialize import for JSON data from CLM1
 end
 
 function CORE:_InitializeMinimap()

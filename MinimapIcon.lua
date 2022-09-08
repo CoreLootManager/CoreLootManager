@@ -61,7 +61,7 @@ local function CreateMinimapDBI(self, dropdown)
         end
     end
 
-    icon:Register(addonName, CLM.MinimapDBI, CLM_MinimapIcon)
+    icon:Register(addonName, CLM.MinimapDBI, CLM2_MinimapIcon)
 end
 
 local function getIcon(ic)
@@ -93,7 +93,7 @@ end
 
 function Minimap:Initialize()
     CreateConfig(self)
-    if not CLM_MinimapIcon then CLM_MinimapIcon = {} end
+    if not CLM2_MinimapIcon then CLM2_MinimapIcon = {} end
     -- Minimap icon dropdown menu
     local options = {
         {
@@ -191,7 +191,7 @@ function Minimap:Initialize()
         CLM.MinimapDBI.icon = getIcon(ic)
     end)
 
-    if CLM_MinimapIcon.disable then icon:Hide(addonName) end
+    if CLM2_MinimapIcon.disable then icon:Hide(addonName) end
 
     self._initialized = true
 end
@@ -201,17 +201,17 @@ function Minimap:IsInitialized()
 end
 
 function Minimap:Enable()
-    CLM_MinimapIcon.disable = false
+    CLM2_MinimapIcon.disable = false
         icon:Show(addonName)
 end
 
 function Minimap:Disable()
-    CLM_MinimapIcon.disable = true
+    CLM2_MinimapIcon.disable = true
     icon:Hide(addonName)
 end
 
 function Minimap:IsEnabled()
-    return not CLM_MinimapIcon.disable
+    return not CLM2_MinimapIcon.disable
 end
 
 CLM.MODULES.Minimap = Minimap

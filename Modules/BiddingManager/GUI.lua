@@ -24,7 +24,7 @@ local guiOptions = {
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
-local BASE_WIDTH  = 330 + (isElvUI and 15 or 0)
+local BASE_WIDTH  = 335 + (isElvUI and 15 or 0)
 local BASE_HEIGHT_NO_BUTTONS = 100
 local ROW_OFFSET = 25
 local BASE_HEIGHT = BASE_HEIGHT_NO_BUTTONS + ROW_OFFSET

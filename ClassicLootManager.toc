@@ -9,9 +9,7 @@
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
 ## X-Wago-ID: vEGPw4K1
-# OptionalDependencies: LibStub, CallbackHandler-1.0, LibDeflate, LibSerialize, LibLogger, AceAddon-3.0
-## SavedVariables: CLM_DB, CLM_Logs, CLM_MinimapIcon
-# TODO change to soon for no backcomp: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon
+## SavedVariables: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon, CLM_DB, CLM_Logs, CLM_MinimapIcon
 ## LoadOnDemand: 0
 
 # LIBS
@@ -139,6 +137,7 @@ Global\GlobalBindings.lua
 # Extra
 MinimapIcon.lua
 Migration.lua
+Import.lua
 
 # Integrations
 Integrations\Integrations.lua
