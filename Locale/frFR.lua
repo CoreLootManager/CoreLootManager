@@ -275,11 +275,11 @@ CLM.L["Auto-trade after award"] = "Auto-échange après l'attribution"
 -- Modules/RosterManager/RosterManager.lua:302
 CLM.L["Average weeks"] = "Semaines moyennes"
 -- Modules/GUI/UnifiedGUI_Standings.lua:236
-CLM.L["Award %s points to %s selected players."] = "Les récompenses indiquent% un joueur sélectionné."
+CLM.L["Award %s points to %s selected players."] = "Les récompenses indiquent %s un %s joueur sélectionné."
 -- Modules/GUI/UnifiedGUI_Standings.lua:230
-CLM.L["Award %s points to everyone in raid."] = "Le% S pour tout le monde en raid."
+CLM.L["Award %s points to everyone in raid."] = "Le %s pour tout le monde en raid."
 -- Modules/GUI/UnifiedGUI_Standings.lua:232
-CLM.L["Award %s points to everyone in roster."] = "Le prix% S à tout le monde dans la liste."
+CLM.L["Award %s points to everyone in roster."] = "Le prix %s à tout le monde dans la liste."
 -- Integrations/Integrations.lua:360
 CLM.L["Award for Base"] = "Prix pour la base"
 -- Integrations/Integrations.lua:359
