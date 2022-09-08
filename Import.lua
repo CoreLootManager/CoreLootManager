@@ -45,7 +45,8 @@ local function ParseImportData(self)
         -- standings       table: 0x555b4a36d450
         rosterMap[roster.uid] = {
             name = roster.name,
-            standings = {}
+            standings = {},
+            players = {}
         }
         for _, player in ipairs(roster.standings.player) do
             -- name    Specified
@@ -60,10 +61,14 @@ local function ParseImportData(self)
                     class = player.class
                 }
             end
+            rosterMap[roster.uid].players[#rosterMap[roster.uid].players+1] = player.guid
             if player.dkp ~= 0 then
                 numStandingsToSet = numStandingsToSet + 1
+                if not rosterMap[roster.uid].standings[player.dkp] then
+                    rosterMap[roster.uid].standings[player.dkp] = {}
+                end
+                rosterMap[roster.uid].standings[player.dkp][#rosterMap[roster.uid].standings[player.dkp]+1] = player.guid
             end
-            rosterMap[roster.uid].standings[player.guid] = player.dkp
         end
     end
 
@@ -99,12 +104,12 @@ local function Import_AddProfilesToRosters(self)
     for _, info in pairs(self.actionDescriptor.rosterMap) do
         local roster = CLM.MODULES.RosterManager:GetRosterByName(info.name)
         if CLM.MODULES.RosterManager:GetRosterByName(info.name) then
-            local profiles = {}
-            for GUID, _ in pairs(info.standings) do
-                profiles[#profiles+1] = GUID
-            end
+            -- local profiles = {}
+            -- for i, GUID in ipairs(info.players) do
+            --     profiles[#profiles+1] = GUID
+            -- end
 
-            CLM.MODULES.RosterManager:AddProfilesToRoster(roster, profiles)
+            CLM.MODULES.RosterManager:AddProfilesToRoster(roster, info.players)
         end
     end
 end
@@ -113,9 +118,9 @@ local function Import_SetStandings(self)
     for _, info in pairs(self.actionDescriptor.rosterMap) do
         local roster = CLM.MODULES.RosterManager:GetRosterByName(info.name)
         if CLM.MODULES.RosterManager:GetRosterByName(info.name) then
-            for GUID, standings in pairs(info.standings) do
+            for standings, GUID in pairs(info.standings) do
                 if standings ~= 0 then
-                    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.DKP.Set:new(roster:UID(), { GUID }, standings, CONSTANTS.POINT_CHANGE_REASON.IMPORT))
+                    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.DKP.Set:new(roster:UID(), GUID, standings, CONSTANTS.POINT_CHANGE_REASON.IMPORT))
                 end
             end
         end
@@ -213,6 +218,7 @@ function DatabaseUpgradeImporter:Create()
     self.top = f
     self.options = g
     UpdateOptions(self)
+    f:Hide()
 end
 
 function DatabaseUpgradeImporter:RegisterSlash()
