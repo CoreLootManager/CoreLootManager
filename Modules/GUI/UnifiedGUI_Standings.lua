@@ -71,6 +71,7 @@ end
 
 local UnifiedGUI_Standings = {
     name = "standings",
+    awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT,
     filter = CLM.MODELS.Filters:New(
     (function() CLM.GUI.Unified:FilterScrollingTable() end),
     UTILS.Set({
