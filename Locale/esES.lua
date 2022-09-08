@@ -525,7 +525,7 @@ CLM.L["Deathbringer Saurfang"] = "Deathbringer Saurfang"
 -- Modules/GUI/UnifiedGUI_Standings.lua:247
 CLM.L["Decay %"] = "Decadencia %"
 -- Modules/GUI/UnifiedGUI_Standings.lua:309
-CLM.L["Decay %s% points to %s selected players."] = "La descomposición %s %apunta a %s jugadores seleccionados."
+CLM.L["Decay %s% points to %s selected players."] = "La descomposición %s% apunta a %s jugadores seleccionados."
 -- Modules/GUI/UnifiedGUI_Standings.lua:305
 CLM.L["Decay %s% points to everyone in roster."] = "La descomposición % s % apunta a todos en la lista."
 -- Modules/GUI/UnifiedGUI_Standings.lua:257
