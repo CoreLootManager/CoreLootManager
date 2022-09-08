@@ -525,9 +525,9 @@ CLM.L["Deathbringer Saurfang"] = "Porte-mort Saurcroc"
 -- Modules/GUI/UnifiedGUI_Standings.lua:247
 CLM.L["Decay %"] = "Décomposition %"
 -- Modules/GUI/UnifiedGUI_Standings.lua:309
-CLM.L["Decay %s% points to %s selected players."] = "Decay %s% pointe vers %s sélectionné des joueurs."
+CLM.L["Decay %s%% points to %s selected players."] = "Decay %s%% pointe vers %s sélectionné des joueurs."
 -- Modules/GUI/UnifiedGUI_Standings.lua:305
-CLM.L["Decay %s% points to everyone in roster."] = "Decay %s% pointe à tout le monde dans la liste."
+CLM.L["Decay %s%% points to everyone in roster."] = "Decay %s%%  pointe à tout le monde dans la liste."
 -- Modules/GUI/UnifiedGUI_Standings.lua:257
 CLM.L["Decay Negatives"] = "Décomposition négative"
 -- Modules/PointManager/PointManager.lua:407

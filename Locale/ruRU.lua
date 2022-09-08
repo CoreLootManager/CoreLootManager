@@ -525,9 +525,9 @@ CLM.L["Deathbringer Saurfang"] = "Смертный курорт Саурфанг
 -- Modules/GUI/UnifiedGUI_Standings.lua:247
 CLM.L["Decay %"] = "Разлагаться %"
 -- Modules/GUI/UnifiedGUI_Standings.lua:309
-CLM.L["Decay %s% points to %s selected players."] = "Decay %s% указывает на выбранных %s игроков."
+CLM.L["Decay %s%% points to %s selected players."] = "Decay %s%% указывает на выбранных %s игроков."
 -- Modules/GUI/UnifiedGUI_Standings.lua:305
-CLM.L["Decay %s% points to everyone in roster."] = "Decay %s% указывает на всех в списке."
+CLM.L["Decay %s%%  points to everyone in roster."] = "Decay%s%%  указывает на всех в списке."
 -- Modules/GUI/UnifiedGUI_Standings.lua:257
 CLM.L["Decay Negatives"] = "Распад негативы"
 -- Modules/PointManager/PointManager.lua:407

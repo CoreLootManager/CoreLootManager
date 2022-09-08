@@ -301,11 +301,11 @@ local function GenerateManagerOptions(self)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     return CLM.L["Invalid context. You should not decay raid only."]
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    return sformat(CLM.L["Decay %s% points to everyone in roster."], decayValue)
+                    return sformat(CLM.L["Decay %s%% points to everyone in roster."], decayValue)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles then profiles = {} end
-                    return sformat(CLM.L["Decay %s% points to %s selected players."], decayValue, #profiles)
+                    return sformat(CLM.L["Decay %s%% points to %s selected players."], decayValue, #profiles)
                 end
             end),
             order = 22
