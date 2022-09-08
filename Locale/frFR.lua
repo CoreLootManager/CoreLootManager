@@ -538,7 +538,7 @@ CLM.L["Decay"] = "Décroissance"
 CLM.L["Decayed %s%% DKP to %s players in <%s>"] = "Dégrader %s%% DKP dégradé pour %s joueurs dans <%s>"
 -- Modules/LedgerManager/GUI.lua:381
 -- Modules/GUI/UnifiedGUI_Audit.lua:458
-CLM.L["Decayed %s%% DKP to all players %sin <%s>"] = "Dégrader %s%%  pour tous les joueurs %sin <%s>"
+CLM.L["Decayed %s%% DKP to all players %s in <%s>"] = "Dégrader %s%%  pour tous les joueurs %s in <%s>"
 -- Integrations/GUI.lua:150
 CLM.L["December"] = "Décembre"
 -- Modules/RosterManager/Options.lua:575

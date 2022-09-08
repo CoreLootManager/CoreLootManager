@@ -378,7 +378,7 @@ local describeFunctions  = {
     ["DT"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return CLM.L["[Point Decay for roster]: "] ..
-            string.format(CLM.L["Decayed %s%% DKP to all players %sin <%s>"],
+            string.format(CLM.L["Decayed %s%% DKP to all players %s in <%s>"],
                 safeToString(entry:value()), (entry:ignoreNegatives() and CLM.L["excluding negatives "] or ""),
                 ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
