@@ -472,6 +472,7 @@ function Roster:AddLoot(loot, profile)
     local GUID = profile:GUID()
     self.profileLoot[GUID][#self.profileLoot[GUID]+1] = loot
     self.raidLoot[#self.raidLoot+1] = loot
+    if profile:IsLocked() then return end
     self.pointInfo[GUID]:AddSpent(loot:Value())
     if self:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
         -- Charging for the item
