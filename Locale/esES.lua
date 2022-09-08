@@ -527,7 +527,7 @@ CLM.L["Decay %"] = "Decadencia %"
 -- Modules/GUI/UnifiedGUI_Standings.lua:309
 CLM.L["Decay %s% points to %s selected players."] = "La descomposición %s% apunta a %s jugadores seleccionados."
 -- Modules/GUI/UnifiedGUI_Standings.lua:305
-CLM.L["Decay %s% points to everyone in roster."] = "La descomposición % s % apunta a todos en la lista."
+CLM.L["Decay %s% points to everyone in roster."] = "La descomposición %s% apunta a todos en la lista."
 -- Modules/GUI/UnifiedGUI_Standings.lua:257
 CLM.L["Decay Negatives"] = "Decadencia negativa"
 -- Modules/PointManager/PointManager.lua:407
@@ -695,7 +695,7 @@ CLM.L["Flamegor"] = "Flamegor"
 -- Integrations/GUI.lua:236
 CLM.L["Format"] = "Formato"
 -- Global/GlobalSlashCommands.lua:112
-CLM.L["Found %s in guild."] = "Encontrado% s en la Hermandad."
+CLM.L["Found %s in guild."] = "Encontrado %s en la Hermandad."
 -- Modules/AutoAwardManager/EncounterIDs.lua:128
 CLM.L["Freya"] = "Freya"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:224
