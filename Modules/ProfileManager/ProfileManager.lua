@@ -167,7 +167,7 @@ function ProfileManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLock)")
             local action
-            if entry:lock() then 
+            if entry:lock() then
                 action = (function(p) p:Lock() end)
             else
                 action = (function(p) p:Unlock() end)
