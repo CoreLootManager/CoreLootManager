@@ -350,6 +350,7 @@ local function initializeHandler()
                     for _, history in pairs(selectedHistory) do
                         CLM.MODULES.LedgerManager:Remove(history:Entry())
                     end
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "cc0000"

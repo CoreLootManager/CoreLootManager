@@ -562,6 +562,7 @@ local function initializeHandler()
                         end
                     end
                     refreshFn(true)
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -606,6 +607,7 @@ local function initializeHandler()
                         end
                     end
                     refreshFn(true)
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -636,6 +638,7 @@ local function initializeHandler()
                     end
                     CLM.MODULES.RosterManager:RemoveProfilesFromRoster(roster, profiles)
                     refreshFn(true)
+                    CLM.GUI.Unified:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "cc0000"

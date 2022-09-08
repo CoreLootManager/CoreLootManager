@@ -612,14 +612,14 @@ function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, co
     local rightClick = (button == "RightButton")
     local isCtrlKeyDown = IsControlKeyDown()
     local isShiftKeyDown = IsShiftKeyDown()
-    local isAdditiveSelect = --[[leftClick and]] isCtrlKeyDown
-    local isContinuousSelect = --[[leftClick and]] isShiftKeyDown
-    local isSingleSelect = --[[leftClick and]] not isCtrlKeyDown and not isShiftKeyDown
+    local isAdditiveSelect = leftClick and isCtrlKeyDown
+    local isContinuousSelect = leftClick and isShiftKeyDown
+    local isSingleSelect = leftClick and not isCtrlKeyDown and not isShiftKeyDown
 
     local isSelected = st.selected:IsSelected(realrow)
 
     if not isSelected then
-        if isAdditiveSelect then
+        if isAdditiveSelect or rightClick then
             st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
         elseif isContinuousSelect then
             local first, last, selected
