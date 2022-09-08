@@ -1,3 +1,52 @@
+# Classic Loot Manager v2.0.0
+<img src="https://cdn.discordapp.com/attachments/843129642298376252/1016670248646230026/CLM-wotlk.png" alt="CLM" width="128"/>
+
+## Wrath of the Lich King!
+Are you ready for Wrath of the Lich King? Classic Loot Manager is! Read about major overhaul and new features coming in this version!
+### Wrath of the Lich King support
+New Bosses and difficulties, new API and dual spec is now properly supported!  
+**CLM 2.0 is not backwards compatible and starts with a clean database for your best experience in new expansion!**
+### Thank you supporters!
+Thank you to all  that support us, either by contributing or donating through patreon: https://www.patreon.com/classiclootmanager.
+Special thank you to legendary patrons: **naimious**
+## New: Simplified User Interface
+### No more bulky windows!
+Main CLM windows: Standings, Point History, Loot History, Raids and Profiles are now combined in single window with tabs for ease of use. Additionaly Loot and Point History are now combined into common list.
+### No more accidental selection clear!
+Selection now works as expected:
+- Single click to select a single row,
+- Alt-click to select any row,
+- Shift-click to select a range of rows.
+### Filtering and search!
+You can now search through data with ease.
+### Visibility and QoL changes!
+- You are now highlighted in standings,
+- Minimap Icon can now be toggled on and off,
+- Sounds can now be toggled on and off,
+### Configurable keybinds!
+You can now configure your own click-keybinds for auctioning and way more in the Bindings section of configuration.
+## New: Auction and Bidding UI overhaul
+### Auction window now highlights players roles
+- blue for Tank
+- green for Healer
+- red for DPS
+### Bidding window received general overhaul and is more compact than ever.
+- Supports MS/OS bidding which is displayed in the Auction window. Original - MS bids are green, new OS bids are yellow.
+- It can now be toggled by clicking on the timer bar\n- Tooltips will now properly display also when hovering over the item Icon
+## New: Action Context mechanism
+Previously CLM automatically selected every player in the UI. This is no more happening. With the new selection system there has been introduced a new concept: context. Your point awards will be based on this - either Roster, Raid or selection. By default context is Roster, when you select someone it's changed to selection, and if you're in raid it will default to Raid. Be sure to be aware of the context when working on the points.
+## New: EPGP support
+### Effort Points / Gear Points support is here!
+You can now run simultaneously multiple DKP and EPGP raids and rosters at the same time, using all the great mechanisms CLM provides.
+## New: Tiered bidding mode
+Dedicated to EPGP but works great for DKP also - this system is a type of ascending bid system, where you can set up to 5 tiers of values which people will pay for an item, for example: 0, 30, 50, 70, 100 - no other values will be accepted by aucioneer. This comes with full UI support.
+## New: Named buttons bidding mode
+Dedicated to Tiered bidding mode - this allows you to name tiered bid buttons and use them instead of values (although the underlying values are still there). Both players bidding and auctioneer will see the text instead of value, while awarding will still result in the proper point deduction (DKP) or award (GP).
+## New: Profile locking
+You can now lock (and unlock) profiles. Now any point, either DKP, EP or GP, operations on those profiles, in any roster, will be ignored as long as profiles are locked. Locked players are displayed with red tint.
+## Gargul by @Zh0rax integration
+Gargul and CLM are coming with new integration for TMB/LC + DKP/EPGP use for more loot systems flexibilty!
+
 # Classic Loot Manager v1.9.2
 ## Fixes
 Support for Death Knights in prepatch.
