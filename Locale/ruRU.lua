@@ -277,9 +277,9 @@ CLM.L["Average weeks"] = "Недель для среднего"
 -- Modules/GUI/UnifiedGUI_Standings.lua:236
 CLM.L["Award %s points to %s selected players."] = "Награды указывают на %выбранных игроков."
 -- Modules/GUI/UnifiedGUI_Standings.lua:230
-CLM.L["Award %s points to everyone in raid."] = "Наградите %S -точки всем в рейде."
+CLM.L["Award %s points to everyone in raid."] = "Наградите %s -точки всем в рейде."
 -- Modules/GUI/UnifiedGUI_Standings.lua:232
-CLM.L["Award %s points to everyone in roster."] = "Наградите %S -точки всем в списке."
+CLM.L["Award %s points to everyone in roster."] = "Наградите %s -точки всем в списке."
 -- Integrations/Integrations.lua:360
 CLM.L["Award for Base"] = "Награда за базу"
 -- Integrations/Integrations.lua:359
@@ -525,9 +525,9 @@ CLM.L["Deathbringer Saurfang"] = "Смертный курорт Саурфанг
 -- Modules/GUI/UnifiedGUI_Standings.lua:247
 CLM.L["Decay %"] = "Разлагаться %"
 -- Modules/GUI/UnifiedGUI_Standings.lua:309
-CLM.L["Decay %s% points to %s selected players."] = "Decay %S %указывает на выбранных игроков %."
+CLM.L["Decay %s% points to %s selected players."] = "Decay %s% указывает на выбранных %s игроков."
 -- Modules/GUI/UnifiedGUI_Standings.lua:305
-CLM.L["Decay %s% points to everyone in roster."] = "Decay % S % указывает на всех в списке."
+CLM.L["Decay %s% points to everyone in roster."] = "Decay %s% указывает на всех в списке."
 -- Modules/GUI/UnifiedGUI_Standings.lua:257
 CLM.L["Decay Negatives"] = "Распад негативы"
 -- Modules/PointManager/PointManager.lua:407
@@ -1748,7 +1748,7 @@ CLM.L["True"] = "Верно"
 -- Modules/AutoAwardManager/EncounterIDs.lua:29
 CLM.L["Twin Emperors"] = "Императоры-близнецы"
 -- Modules/ProfileManager/ProfileManager.lua:192
-CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."] = "Существуют два разных профиля для целевого GUID%S (%s:%s) и имя%s (%s:%s). Проверьте и очистите профили перед обновлением."
+CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."] = "Существуют два разных профиля для целевого GUID %s (%s:%s) и имя%s (%s:%s). Проверьте и очистите профили перед обновлением."
 -- Modules/RosterManager/Roster.lua:701
 -- Modules/RosterManager/Roster.lua:734
 CLM.L["Two-Hand"] = "Двуручное"

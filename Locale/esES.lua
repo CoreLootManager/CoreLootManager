@@ -277,9 +277,9 @@ CLM.L["Average weeks"] = "Semanas promedio"
 -- Modules/GUI/UnifiedGUI_Standings.lua:236
 CLM.L["Award %s points to %s selected players."] = "Los premios apuntan a %de jugadores seleccionados."
 -- Modules/GUI/UnifiedGUI_Standings.lua:230
-CLM.L["Award %s points to everyone in raid."] = "El premio %S señala a todos en RAID."
+CLM.L["Award %s points to everyone in raid."] = "El premio %standby señala a todos en RAID."
 -- Modules/GUI/UnifiedGUI_Standings.lua:232
-CLM.L["Award %s points to everyone in roster."] = "Premio %S señala a todos en la lista."
+CLM.L["Award %s points to everyone in roster."] = "Premio %s señala a todos en la lista."
 -- Integrations/Integrations.lua:360
 CLM.L["Award for Base"] = "Premio a la base"
 -- Integrations/Integrations.lua:359
