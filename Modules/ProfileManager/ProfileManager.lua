@@ -200,7 +200,7 @@ function ProfileManager:Initialize()
         self:WipeAll()
     end)
 
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
+
 end
 
 function ProfileManager:NewProfile(GUID, name, class)

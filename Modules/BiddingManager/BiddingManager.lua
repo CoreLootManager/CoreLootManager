@@ -68,7 +68,7 @@ function BiddingManager:Initialize()
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("bidding", "BiddingManager", self)
+
     self._initialized = true
 end
 

@@ -113,7 +113,7 @@ function LootQueueManager:Initialize()
         },
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("lq", "Loot Queue", self)
+
 end
 
 function LootQueueManager:SetTrackedLootLevel(value)

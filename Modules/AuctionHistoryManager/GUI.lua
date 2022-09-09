@@ -202,7 +202,7 @@ function AuctionHistoryGUI:Create()
     RestoreLocation(self)
     -- Hide by default
     f:Hide()
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ahg", "Auction History GUI", self)
+
 end
 
 function AuctionHistoryGUI:Refresh(visible)

@@ -135,7 +135,7 @@ function AuctionManager:Initialize()
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("aum", "AuctionManager", self)
+
 
     self._initialized = true
 end

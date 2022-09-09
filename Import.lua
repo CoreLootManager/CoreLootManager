@@ -134,6 +134,7 @@ local function Import(self)
                 C_Timer.After(1, function()
                     LOG:Message(CLM.L["Set Profiles standings in Rosters"])
                     Import_SetStandings(self)
+                    self.inProgress = false
                 end)
             end)
         end)
@@ -166,9 +167,10 @@ local function UpdateOptions(self)
                 name = CLM.L["Import"],
                 type = "execute",
                 func = (function()
+                    self.inProgress = true
                    Import(self)
                 end),
-                disabled = (function() return not self.actionDescriptor end),
+                disabled = (function() return not self.actionDescriptor or self.inProgress end),
                 order = 3,
                 width = "full"
             }
@@ -204,7 +206,8 @@ function DatabaseUpgradeImporter:Create()
     f:SetLayout("Flow")
     f:EnableResize(false)
     f:SetTitle(CLM.L["Import"])
-    f:SetWidth(350)
+    f:SetWidth(330)
+    f:SetHeight(330)
 
     local g = AceGUI:Create("SimpleGroup")
     f:AddChild(g)

@@ -97,7 +97,7 @@ function LedgerManager:Initialize()
     self.onRestartCallbacks = {}
     self._initialized = true
 
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ledger", "LedgerManager", self)
+
 end
 
 function LedgerManager:IsInitialized()

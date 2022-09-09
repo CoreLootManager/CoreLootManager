@@ -281,7 +281,7 @@ function ProfileInfoManager:Initialize()
         AnnounceRole()
     end))
 
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
+
 end
 
 function ProfileInfoManager:RequestVersion()

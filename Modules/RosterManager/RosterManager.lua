@@ -319,7 +319,7 @@ function RosterManager:Initialize()
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("rm", "RosterManager", self)
+
 end
 
 function RosterManager:GetRosters()

@@ -187,7 +187,7 @@ function PointManager:Initialize()
             apply_raid_mutator(self, entry, mutate_update_standings)
         end))
 
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
+
 end
 
 function PointManager:UpdatePoints(roster, targets, value, reason, action, note, forceInstant)

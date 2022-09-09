@@ -190,7 +190,7 @@ function LootQueueGUI:Create()
     RestoreLocation(self)
     -- Hide by default
     f:Hide()
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("lqg", "Loot Queue GUI", self)
+
 end
 
 function LootQueueGUI:Refresh(visible)

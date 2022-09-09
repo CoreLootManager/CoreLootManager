@@ -191,7 +191,7 @@ function RaidManager:Initialize()
 
     self:RegisterEventHandling()
     C_Timer.After(20, function() self:ParseStatus() end) -- backup in case of 0 entries
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("raidm", "RaidManager", self)
+
 end
 
 function RaidManager:ParseStatus()

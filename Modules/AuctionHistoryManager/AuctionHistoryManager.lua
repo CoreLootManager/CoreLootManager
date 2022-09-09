@@ -93,7 +93,7 @@ function AuctionHistoryManager:Initialize()
     }
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
-    CLM.MODULES.ConfigManager:RegisterUniversalExecutor("ah", "Auction History", self)
+
 end
 
 function AuctionHistoryManager:SetEnabled(value)

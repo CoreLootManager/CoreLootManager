@@ -98,7 +98,7 @@ function LootManager:Initialize()
             mutateLootAward(entry, raid:Roster())
         end))
 
-        CLM.MODULES.ConfigManager:RegisterUniversalExecutor("lm", "LootManager", self)
+
 end
 
 function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forceInstant)

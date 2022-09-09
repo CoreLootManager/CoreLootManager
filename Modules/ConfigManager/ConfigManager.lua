@@ -95,21 +95,6 @@ function ConfigManager:RegisterSlash(options)
     return true
 end
 
-function ConfigManager:RegisterUniversalExecutor(command, name, object)
-    --@debug@
-    local options = {
-        [command] = {
-            type = "input",
-            name = name .. " Debug",
-            desc = "Debug Execute any " .. name .. " API",
-            set = function(info, value) UTILS.UniversalCliMethodExecutor(name, object, value) end
-        }
-    }
-
-    self:RegisterSlash(options)
-    --@end-debug@
-end
-
 function ConfigManager:UpdateOptions(group, register)
     if not CONSTANTS.CONFIGS.GROUPS[group] then
         LOG:Warning("ConfigManager:Update(): Group %s is not supported", group)
