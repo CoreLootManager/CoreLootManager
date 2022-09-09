@@ -277,7 +277,7 @@ CLM.L["Auto-trade after award"] = "Авто-выдача после награж
 -- Modules/RosterManager/RosterManager.lua:302
 CLM.L["Average weeks"] = "Недель для среднего"
 -- Modules/GUI/UnifiedGUI_Standings.lua:236
-CLM.L["Award %s points to %s selected players."] = "Награды указывают на %выбранных игроков."
+CLM.L["Award %s points to %s selected players."] = "Награды %s указывают на %s выбранных игроков."
 -- Modules/GUI/UnifiedGUI_Standings.lua:230
 CLM.L["Award %s points to everyone in raid."] = "Наградите %s -точки всем в рейде."
 -- Modules/GUI/UnifiedGUI_Standings.lua:232
