@@ -17,8 +17,8 @@ local STATUS_OUT_OF_SYNC = "out_of_sync"
 local STATUS_UNKNOWN_TYPE = "unknown_type"
 
 
-local LEDGER_SYNC_COMM_PREFIX = "LedgerS1"
-local LEDGER_DATA_COMM_PREFIX = "LedgerD1"
+local LEDGER_SYNC_COMM_PREFIX = "LedgerS2"
+local LEDGER_DATA_COMM_PREFIX = "LedgerD2"
 
 local previousCallback = nil
 local function registerReceiveCallback(callback)
