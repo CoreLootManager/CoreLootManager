@@ -91,7 +91,7 @@ CLM.L["Action context"] = "Aktionskontext"
 -- Integrations/Integrations.lua:157
 CLM.L["Action to take upon Gargul loot award event happening during raid."] = "Maßnahmen zur Ausnahme von Gargul Loot Award -Event während der Razzia."
 -- Import.lua:132
---CLM.L["Add Profiles to Rosters"] = ""
+CLM.L["Add Profiles to Rosters"] = "Profile zu Dienstplänen hinzufügen"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:127
 CLM.L["Add currently selected target to list."] = "Fügt aktuelles Ziel zur Liste hinzu."
 -- Modules/GUI/UnifiedGUI_Profiles.lua:126
@@ -486,9 +486,9 @@ CLM.L["Copy source"] = "Quelle kopieren"
 -- Modules/PointManager/PointManager.lua:401
 CLM.L["Correcting error"] = "Fehler korrigieren"
 -- Import.lua:129
---CLM.L["Create Profiles"] = ""
+CLM.L["Create Profiles"] = "Profile erstellen"
 -- Import.lua:126
---CLM.L["Create Rosters"] = ""
+CLM.L["Create Rosters"] = "Dienstpläne erstellen"
 -- Modules/GUI/UnifiedGUI_Raids.lua:196
 CLM.L["Create new raid with provided name. You will automatically join this raid and leave any other you are part of."] = "Neuen Raid mit eingegebenen Namen erstellen. Du wirst diesem Raid automatisch beitreten und alle anderen verlassen."
 -- Modules/LedgerManager/GUI.lua:420
@@ -584,7 +584,7 @@ CLM.L["EP/GP"] = "EP/GP"
 -- Modules/RosterManager/Roster.lua:584
 CLM.L["EPGP"] = "EPGP"
 -- Import.lua:189
---CLM.L["ERROR - invalid import data"] = ""
+CLM.L["ERROR - invalid import data"] = "Fehler - Ungültige Importdaten"
 -- Modules/AutoAwardManager/EncounterIDs.lua:19
 CLM.L["Ebonroc"] = "Schattenschwinge"
 -- Modules/AutoAwardManager/EncounterIDs.lua:56
@@ -861,7 +861,7 @@ CLM.L["Info"] = "Die Info"
 -- Modules/GUI/UnifiedGUI_Standings.lua:396
 CLM.L["Information"] = "Information"
 -- Import.lua:148
---CLM.L["Input JSON exported standings"] = ""
+CLM.L["Input JSON exported standings"] = "Eingabe JSON exportierte Platz"
 -- Global/GlobalSlashCommands.lua:107
 CLM.L["Input name: %s"] = "Füge Namen ein: %s"
 -- Modules/AutoAwardManager/EncounterIDs.lua:42
@@ -1161,7 +1161,7 @@ CLM.L["Never show changelog"] = "Niemals das Änderungsprotokoll (Changelog) zei
 -- Modules/AuctionManager/AuctionManager.lua:422
 CLM.L["New highest bid: %d DKP %s"] = "Neues Höchstgebot: %d DKP %s"
 -- Import.lua:89
---CLM.L["New roster: %s"] = ""
+CLM.L["New roster: %s"] = "Neue Liste: %s"
 -- Migration.lua:91
 CLM.L["New roster: [%s]"] = "Neues Roster: [%s]"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:61
@@ -1545,7 +1545,7 @@ CLM.L["Set %s DKP to %s players for %s in <%s>"] = "Bestimme %s DKP für %s Spie
 -- Migration.lua:358
 CLM.L["Set DKP for %s players for team to %s"] = "Bestimme DKP für %s Spieler im Team für %s"
 -- Import.lua:135
---CLM.L["Set Profiles standings in Rosters"] = ""
+CLM.L["Set Profiles standings in Rosters"] = "Setzen Sie die Profiltypen in Dienstplänen"
 -- Modules/GUI/UnifiedGUI_Raids.lua:186
 CLM.L["Set raid name"] = "Schlachtzugname bestimmen"
 -- Modules/AutoAwardManager/EncounterIDs.lua:90
@@ -1627,7 +1627,7 @@ CLM.L["Store bids"] = "Gebote speichern"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:70
 CLM.L["Store finished auction bids information."] = "Vollendete Auktionsinformationen speichern."
 -- Import.lua:181
---CLM.L["Success"] = ""
+CLM.L["Success"] = "Erfolg"
 -- Modules/AutoAwardManager/EncounterIDs.lua:11
 CLM.L["Sulfuron Harbinger"] = "Sulfuronherold"
 -- Modules/AutoAwardManager/EncounterIDs.lua:374
@@ -1738,7 +1738,7 @@ CLM.L["Toggle closing bidding UI after submitting bid."] = "Umschaltung der Biet
 -- Integrations/GUI.lua:509
 CLM.L["Toggle export window display"] = "Umschalten des Exportfensters umschalten"
 -- Import.lua:223
---CLM.L["Toggle import window display"] = ""
+CLM.L["Toggle import window display"] = "Schalten Sie das Importfenster Anzeige"
 -- Modules/GUI/UnifiedGUI.lua:417
 CLM.L["Toggle standings window display"] = "Zeigt das Punktestand Fenster"
 -- Global/GlobalConfigs.lua:83
