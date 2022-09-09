@@ -646,6 +646,10 @@ function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, co
                 end
             end
         end
+    else
+        if isAdditiveSelect then
+            st.selected._storage[realrow] = nil
+        end
     end
     if isSingleSelect then
         st:ClearSelection()
