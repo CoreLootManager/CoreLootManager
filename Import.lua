@@ -16,6 +16,7 @@ local json = LibStub:GetLibrary("LibJsonLua")
 local DatabaseUpgradeImporter = {}
 function DatabaseUpgradeImporter:Initialize()
     LOG:Trace("Import:Initialize()")
+    if not CLM.MODULES.ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
     self._initialized = true
@@ -104,11 +105,6 @@ local function Import_AddProfilesToRosters(self)
     for _, info in pairs(self.actionDescriptor.rosterMap) do
         local roster = CLM.MODULES.RosterManager:GetRosterByName(info.name)
         if CLM.MODULES.RosterManager:GetRosterByName(info.name) then
-            -- local profiles = {}
-            -- for i, GUID in ipairs(info.players) do
-            --     profiles[#profiles+1] = GUID
-            -- end
-
             CLM.MODULES.RosterManager:AddProfilesToRoster(roster, info.players)
         end
     end

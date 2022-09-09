@@ -8,6 +8,7 @@ CLM.ChangelogData = {
                 data = {
                     {header = "", body = "Are you ready for Wrath of the Lich King? Classic Loot Manager is! Read about major overhaul and new features coming in this version!"},
                     {header = "Wrath of the Lich King support", body = "New Bosses and difficulties, new API and dual spec is now properly supported! \n|cffdcb749CLM 2.0 is not backwards compatible and starts with a clean database for your best experience in new expansion!|r"},
+                    {header = "Import current standings for prepatch", body = "If you wish to use your current standings during prepatch, you can now import the data from version |cff00ee001.9.x|r. This will however import only your profiles (without linking), standings and rosters (without history and configuration)." },
                     {header = "Thank you supporters!", body = "Thank you to all  that support us, either by contributing or donating through patreon: https://www.patreon.com/classiclootmanager. \nSpecial thank you to legendary patrons: **naimious**"},
                 },
             },
