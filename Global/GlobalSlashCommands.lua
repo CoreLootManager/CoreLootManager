@@ -94,6 +94,7 @@ function GlobalSlashCommands:Initialize()
             name = CLM.L["Spec guild request"],
             func = (function()
                 CLM.MODULES.ProfileInfoManager:RequestSpec()
+                CLM.MODULES.ProfileInfoManager:RequestRole()
             end),
             confirm = true
         }
