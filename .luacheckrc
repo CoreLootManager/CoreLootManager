@@ -30,6 +30,10 @@ globals = {
 	"CLM_DB",
 	"CLM_Logs",
 	"CLM_MinimapIcon",
+	-- 
+	"CLM2_DB",
+	"CLM2_Logs",
+	"CLM2_MinimapIcon",
 	-- Bindings
 	"CLM_Undo",
 	"CLM_Redo",

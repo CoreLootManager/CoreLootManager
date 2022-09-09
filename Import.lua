@@ -3,7 +3,7 @@ local  _, CLM = ...
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
+-- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 -- Libs
@@ -37,8 +37,6 @@ local function ParseImportData(self)
     local profileMap = {}
 
     local numStandingsToSet = 0
-
-    
 
     for _, roster in ipairs(self.data.standings.roster) do
         -- uid             1624382252
