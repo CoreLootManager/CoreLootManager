@@ -1,28 +1,49 @@
-local _, CLM = ...
-
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local ACL = MODULES.ACL
-local PointManager = MODULES.PointManager
-local RaidManager = MODULES.RaidManager
-local EventManager = MODULES.EventManager
+local tonumber, tostring = tonumber, tostring
+local IsInRaid, CombatLogGetCurrentEventInfo = IsInRaid, CombatLogGetCurrentEventInfo
+local strsplit, GetServerTime, C_TimerNewTicker = strsplit, GetServerTime, C_Timer.NewTicker
 
 local HYDROSS_ENCOUNTER_ID = 623
 local HYDROSS_NPC_ID = 21216
 
 local RAID_AWARD_LEDGER_CLASS = "DR"
 
-local function awardBossKillBonus(id)
-    LOG:Info("Award Boss Kill Bonus for %s", id)
-    if RaidManager:IsInActiveRaid() then
-        local roster = RaidManager:GetRaid():Roster()
-        local config = RaidManager:GetRaid():Configuration()
+local multiWoWDifficultyIDs = {
+    [3] = 3,
+    [4] = 4,
+    [5] = 5,
+    [6] = 6,
+    [9] = 9,
+    [148] = 148,
+    [175] = 3,
+    [176] = 4,
+}
+
+local function normalizeDifficultyId(difficultyId)
+    return multiWoWDifficultyIDs[difficultyId] or -1
+end
+
+local function awardBossKillBonus(id, difficultyId)
+    if not difficultyId then
+        local _, _, difficultyID = GetInstanceInfo()
+        difficultyId = difficultyID
+    end
+    difficultyId = normalizeDifficultyId(difficultyId)
+    LOG:Info("Award Boss Kill Bonus for %s %s", id, difficultyId)
+    if CLM.MODULES.RaidManager:IsInActiveRaid() then
+        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+        local config = CLM.MODULES.RaidManager:GetRaid():Configuration()
         if config:Get("bossKillBonus") then
-            local value = roster:GetBossKillBonusValue(id)
+            local value = roster:GetBossKillBonusValue(id, difficultyId)
             if value > 0 then
-                PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
+                CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
             end
         end
     end
@@ -72,9 +93,9 @@ local function handleIntervalBonus(self)
     if not IsInRaid() then return end
     if not self:IsEnabled() then return end
     if not self:IsIntervalBonusAwardingEnabled() then return end
-    if not RaidManager:IsInProgressingRaid() then return end
+    if not CLM.MODULES.RaidManager:IsInProgressingRaid() then return end
     -- Validate roster
-    local raid = RaidManager:GetRaid()
+    local raid = CLM.MODULES.RaidManager:GetRaid()
     local roster = raid:Roster()
     if not roster then
         LOG:Warning("No roster in raid for handleIntervalBonus()")
@@ -94,7 +115,8 @@ local function handleIntervalBonus(self)
     -- Check if at least interval passed since raid start
     if now - raid:StartTime() < interval then return end
     -- Check History
-    for _,pointHistoryEntry in ipairs(pointHistory) do
+    for i = #pointHistory, 1, -1 do
+        local pointHistoryEntry = pointHistory[i]
         -- If we are already so deep in history we missed the interval
         if now - pointHistoryEntry:Timestamp() >= interval then
             break
@@ -116,34 +138,47 @@ local function handleIntervalBonus(self)
         end
     end
     if award then
-        PointManager:UpdateRaidPoints(raid, value, CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+        CLM.MODULES.PointManager:UpdateRaidPoints(raid, value, CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
     end
+end
+
+local instancesToWorkaround = CLM.UTILS.Set({548})
+local encountersToWorkaround = CLM.UTILS.Set({HYDROSS_ENCOUNTER_ID})
+
+local isWorkaroundRegistered = false
+local function registerWorkaroundHandler(self)
+    if isWorkaroundRegistered then return end
+    CLM.MODULES.EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
+        handleBossWorkaround(self, {
+            [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID
+        })
+    end))
+    isWorkaroundRegistered = true
 end
 
 local AutoAwardManager = {}
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")
-    if not ACL:IsTrusted() then return end
+    if not CLM.MODULES.ACL:IsTrusted() then return end
     self.enabled = false
     self:DisableBossKillBonusAwarding()
     self:DisableIntervalBonusAwarding()
-    -- EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(...)
-    --     handleEncounterStart(self, ...)
-    -- end))
-    -- EventManager:RegisterWoWEvent({"ENCOUNTER_END"}, (function(...)
-    --     handleEncounterEnd(self, ...)
-    -- end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(_, _, _, id, ...)
+        if encountersToWorkaround[id] then
+            registerWorkaroundHandler(self)
+        end
+    end))
     -- Handle boss kill when not in encounter
-    EventManager:RegisterWoWEvent({"BOSS_KILL"}, (function(...)
+    CLM.MODULES.EventManager:RegisterWoWEvent({"BOSS_KILL"}, (function(...)
         handleBossKill(self, ...)
     end))
-    -- Hydross and Akama workarounds
-    EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
-        handleBossWorkaround(self, {
-            [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID
-        })
-    end))
-    MODULES.ConfigManager:RegisterUniversalExecutor("aam", "AutoAwardManager", self)
+    -- Boss workarounds
+    local _, _, _, _, _, _, _, instanceID = GetInstanceInfo()
+    if instancesToWorkaround[instanceID] then
+        registerWorkaroundHandler(self)
+    end
+
+
 end
 
 function AutoAwardManager:Enable()
@@ -187,7 +222,7 @@ function AutoAwardManager:EnableIntervalBonusAwarding()
     self.intervalBonusAwardingEnabled = true
     handleIntervalBonus(self) -- additional handle for cases of relogs / reloads if time has already passed
     if not self.intervalTimer then
-        self.intervalTimer = C_Timer.NewTicker(60, function()
+        self.intervalTimer = C_TimerNewTicker(60, function()
             handleIntervalBonus(self)
         end)
     end
@@ -203,4 +238,4 @@ function AutoAwardManager:IsIntervalBonusAwardingEnabled()
     return self.intervalBonusAwardingEnabled
 end
 
-MODULES.AutoAwardManager = AutoAwardManager
+CLM.MODULES.AutoAwardManager = AutoAwardManager

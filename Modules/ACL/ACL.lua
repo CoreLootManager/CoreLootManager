@@ -1,20 +1,20 @@
-local _, CLM = ...
-
-local MODULES = CLM.MODULES
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local UTILS = CLM.UTILS
-local LOG = CLM.LOG
--- local MODELS = CLM.MODELS
-local whoami = UTILS.whoami
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local GuildInfoListener = MODULES.GuildInfoListener
+local IsGuildLeader = IsGuildLeader
 
-local ACL = { }
+local whoami = UTILS.whoami()
 
+local ACL = {}
 function ACL:Initialize()
+    LOG:Trace("ACL:Initialize()")
     self.guildMaster = IsGuildLeader()
 
-    MODULES.ConfigManager:RegisterUniversalExecutor("acl", "ACL", self)
 end
 
 function ACL:IsTrusted(name)
@@ -23,7 +23,7 @@ end
 
 function ACL:CheckLevel(level, name)
     LOG:Trace("ACL:CheckLevel()")
-    local info = GuildInfoListener:GetInfo()
+    local info = CLM.MODULES.GuildInfoListener:GetInfo()
     -- By default block everything except for GM if level not provided
     level = level or CONSTANTS.ACL.LEVEL.GUILD_MASTER
     -- Request is for self
@@ -31,7 +31,7 @@ function ACL:CheckLevel(level, name)
         if self.guildMaster then
             return true
         end
-        name = whoami()
+        name = whoami
     end
     local isGuildMaster = (info.guildMaster == name) or false
     local isManager = info.managers[name] or false
@@ -53,7 +53,6 @@ function ACL:CheckLevel(level, name)
 end
 
 CONSTANTS.ACL = {}
-
 CONSTANTS.ACL.LEVEL = {
     PLEBS = 0,
     ASSISTANT = 1,
@@ -61,6 +60,11 @@ CONSTANTS.ACL.LEVEL = {
     GUILD_MASTER = 3
 }
 
-CONSTANTS.ACL.LEVELS = UTILS.Set({ 0, 1, 2, 3 })
+CONSTANTS.ACL.LEVELS = UTILS.Set({
+    CONSTANTS.ACL.LEVEL.PLEBS,
+    CONSTANTS.ACL.LEVEL.ASSISTANT,
+    CONSTANTS.ACL.LEVEL.MANAGER,
+    CONSTANTS.ACL.LEVEL.GUILD_MASTER
+})
 
-MODULES.ACL = ACL
+CLM.MODULES.ACL = ACL

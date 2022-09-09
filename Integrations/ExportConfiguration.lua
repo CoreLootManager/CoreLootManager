@@ -1,6 +1,6 @@
 local _, CLM = ...
 
-local MODELS = CLM.MODELS
+local setmetatable = setmetatable
 
 local ExportConfiguration = {}
 function ExportConfiguration:New(format, jobs, timerange, rosters, profiles)
@@ -22,4 +22,4 @@ function ExportConfiguration:New(format, jobs, timerange, rosters, profiles)
 end
 
 
-MODELS.ExportConfiguration = ExportConfiguration
+CLM.MODELS.ExportConfiguration = ExportConfiguration

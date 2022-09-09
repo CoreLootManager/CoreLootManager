@@ -1,26 +1,17 @@
-local _, CLM = ...
-
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local MODELS = CLM.MODELS
-local UTILS = CLM.UTILS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local Comms = MODULES.Comms
-local LedgerManager = MODULES.LedgerManager
-local ProfileManager = MODULES.ProfileManager
-local EventManager = MODULES.EventManager
-
-local ColorCodeText = UTILS.ColorCodeText
-local GetMyTalents = UTILS.GetMyTalents
-local ProfileInfoCommStructure = MODELS.ProfileInfoCommStructure
-local ProfileInfoCommAnnounceVersion = MODELS.ProfileInfoCommAnnounceVersion
-local ProfileInfoCommAnnounceSpec = MODELS.ProfileInfoCommAnnounceSpec
+local sformat = string.format
 
 local PROFILEINFO_COMM_PREFIX = "Version001" -- Keep it for version sync with older ones
 
 local function stringifyVersion(version)
-    return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
+    return sformat("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
 end
 
 local function GetProfileDb(self, name)
@@ -36,7 +27,8 @@ local function GetProfileDb(self, name)
                 one = 0,
                 two = 0,
                 three = 0
-            }
+            },
+            role = "NONE"
         }
     end
     return self.db[name]
@@ -48,10 +40,10 @@ end
 local function AnnounceVersion()
     LOG:Trace("ProfileInfoManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
-    local message = ProfileInfoCommStructure:New(
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(
         CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION,
-        ProfileInfoCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
-    Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+        CLM.MODELS.ProfileInfoCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
+    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 local function OutOfDate(self, version, disable)
@@ -59,21 +51,21 @@ local function OutOfDate(self, version, disable)
     local currentTime = GetServerTime()
     if disable then
         if currentTime - self._lastDisplayedMessageD > 300 then
-            LOG:Message(CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."], ColorCodeText(stringifyVersion(version), "00cc00"))
+            LOG:Message(CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessageD = currentTime
         end
-        LedgerManager:Cutoff()
-        Comms:Disable()
+        CLM.MODULES.LedgerManager:Cutoff()
+        CLM.MODULES.Comms:Disable()
     else
         if currentTime - self._lastDisplayedMessage > 300 then
-            LOG:Message(CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."], ColorCodeText(stringifyVersion(version), "00cc00"))
+            LOG:Message(CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessage = currentTime
         end
     end
 end
 
 local function SetProfileVersion(name, version)
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
     if profile then
         profile:SetVersion(version.major, version.minor, version.patch, version.changeset)
     end
@@ -128,15 +120,15 @@ end
 ]]
 local function AnnounceSpec()
     LOG:Trace("ProfileInfoManager:AnnounceSpec()")
-    local one, two, three = GetMyTalents()
-    local message = ProfileInfoCommStructure:New(
+    local one, two, three = UTILS.GetMyTalents()
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(
         CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC,
-        ProfileInfoCommAnnounceSpec:New(one, two, three))
-    Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+        CLM.MODELS.ProfileInfoCommAnnounceSpec:New(one, two, three))
+    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 local function SetProfileSpec(name, spec)
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
     if profile then
         profile:SetSpec(spec.one, spec.two, spec.three)
     end
@@ -169,6 +161,50 @@ local function HandleRequestSpec(self, data, sender)
 end
 
 --[[
+    --- ROLE ---
+]]
+local function AnnounceRole()
+    LOG:Trace("ProfileInfoManager:AnnounceRole()")
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(
+        CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE,
+        CLM.MODELS.ProfileInfoCommAnnounceRole:New(UTILS.GetMyRole()))
+    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+end
+
+local function SetProfileRole(name, role)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+    if profile then
+        profile:SetRole(role)
+    end
+end
+
+local function StoreProfileRole(self, name, role)
+    GetProfileDb(self, name).role = role
+end
+
+local function RestoreRoles(self)
+    for name, info in pairs(self.db) do
+        SetProfileRole(name, info.role)
+    end
+end
+
+local function HandleAnnounceRole(self, data, sender)
+    LOG:Trace("ProfileInfoManager:HandleAnnounceRole()")
+    local receivedRole = data:Role()
+    SetProfileRole(sender, receivedRole)
+    StoreProfileRole(self, sender, receivedRole)
+end
+
+local function HandleRequestRole(self, data, sender)
+    LOG:Trace("ProfileInfoManager:HandleRequestRole()")
+    local currentTime = GetServerTime()
+    if (currentTime - self._lastRequestResponse.role) > 30  then
+        AnnounceRole()
+        self._lastRequestResponse.role = currentTime
+    end
+end
+
+--[[
     --- General ---
 ]]
 
@@ -189,17 +225,18 @@ function ProfileInfoManager:Initialize()
     LOG:Trace("ProfileInfoManager:Initialize()")
     self._initialized = false
 
-    self._lastRequestResponse = { version = 0, spec = 0 }
+    self._lastRequestResponse = { version = 0, spec = 0 , role = 0}
     self._lastDisplayedMessage = 0
     self._lastDisplayedMessageD = 0
 
-    self.db = MODULES.Database:Personal('profileInfo', (function(table)
+    self.db = CLM.MODULES.Database:Personal('profileInfo', (function(table)
         -- Migration from version to playerInfo if it is empty
         if rawequal(next(table), nil) then
-            for player, version in pairs(MODULES.Database:Personal('version')) do
+            for player, version in pairs(CLM.MODULES.Database:Personal('version')) do
                 table[player] = {
                     version = version,
-                    spec = { one = 0, two = 0, three = 0}
+                    spec = { one = 0, two = 0, three = 0},
+                    role = "NONE"
                 }
             end
         end
@@ -209,46 +246,60 @@ function ProfileInfoManager:Initialize()
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC]     = HandleAnnounceSpec,
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec,
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE]     = HandleAnnounceRole,
+        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE]      = HandleRequestRole
     }
 
-    Comms:Register(PROFILEINFO_COMM_PREFIX, (function(rawMessage, distribution, sender)
-        local message = ProfileInfoCommStructure:New(rawMessage)
+    CLM.MODULES.Comms:Register(PROFILEINFO_COMM_PREFIX, (function(rawMessage, distribution, sender)
+        local message = CLM.MODELS.ProfileInfoCommStructure:New(rawMessage)
         if CONSTANTS.PROFILE_INFO_COMM.TYPES[message:Type()] == nil then return end
         HandleIncomingMessage(self, message, distribution, sender)
     end), CONSTANTS.ACL.LEVEL.PLEBS, true)
 
-    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
-            LOG:Message(CLM.L["Classic Loot Manager %s initialization complete."], ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
+            LOG:Message(CLM.L["Classic Loot Manager %s initialization complete."], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
             C_Timer.After(1, function()
                 RestoreVersions(self)
                 RestoreSpecs(self)
+                RestoreRoles(self)
             end)
             C_Timer.After(math.random(2, 5), function()
                 AnnounceVersion()
                 AnnounceSpec()
+                AnnounceRole()
             end)
             self._initialized = true
         end
     end)
 
-    EventManager:RegisterWoWEvent("READY_CHECK", (function(...) AnnounceVersion() end))
+    CLM.MODULES.EventManager:RegisterWoWEvent("READY_CHECK", (function(...)
+        AnnounceVersion()
+        AnnounceSpec()
+        AnnounceRole()
+    end))
 
-    MODULES.ConfigManager:RegisterUniversalExecutor("ver", "Version", self)
+
 end
 
 function ProfileInfoManager:RequestVersion()
     LOG:Trace("ProfileInfoManager:RequestVersion()")
-    local message = ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION, {})
-    Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION, {})
+    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 function ProfileInfoManager:RequestSpec()
     LOG:Trace("ProfileInfoManager:RequestSpec()")
-    local message = ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC, {})
-    Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC, {})
+    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+end
+
+function ProfileInfoManager:RequestRole()
+    LOG:Trace("ProfileInfoManager:RequestRole()")
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE, {})
+    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 CONSTANTS.PROFILE_INFO_COMM = {
@@ -256,9 +307,11 @@ CONSTANTS.PROFILE_INFO_COMM = {
         ANNOUNCE_VERSION    = 1,
         REQUEST_VERSION     = 2,
         ANNOUNCE_SPEC       = 3,
-        REQUEST_SPEC        = 4
+        REQUEST_SPEC        = 4,
+        ANNOUNCE_ROLE       = 5,
+        REQUEST_ROLE        = 6,
     },
-    TYPES = UTILS.Set({ 1, 2, 3, 4 })
+    TYPES = UTILS.Set({ 1, 2, 3, 4, 5, 6 })
 }
 
-MODULES.ProfileInfoManager = ProfileInfoManager
+CLM.MODULES.ProfileInfoManager = ProfileInfoManager

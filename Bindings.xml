@@ -8,17 +8,20 @@
     <Binding name="Award for Base" category="ADDONS">
         CLM_Binding_AwardForBase()
     </Binding>
+    <Binding name="Award for Tier: Small" category="ADDONS">
+        CLM_Binding_AwardForSmall()
+    </Binding>
+    <Binding name="Award for Tier: Medium" category="ADDONS">
+        CLM_Binding_AwardForMedium()
+    </Binding>
+    <Binding name="Award for Tier: Large" category="ADDONS">
+        CLM_Binding_AwardForLarge()
+    </Binding>
+    <Binding name="Award for Max" category="ADDONS">
+        CLM_Binding_AwardForMax()
+    </Binding>
     <Binding name="Award for Free" category="ADDONS">
         CLM_Binding_AwardForFree()
-    </Binding>
-    <Binding name="Bid Base" category="ADDONS">
-        CLM_Binding_BidBase()
-    </Binding>
-    <Binding name="Bid Max" category="ADDONS">
-        CLM_Binding_BidMax()
-    </Binding>
-    <Binding name="Bid Current" category="ADDONS">
-        CLM_Binding_BidCurrent()
     </Binding>
     <!--  -->
     <Binding name="Toggle Auctioning" category="ADDONS">
@@ -27,28 +30,13 @@
     <Binding name="Toggle Auction History" category="ADDONS">
         CLM_Binding_ToggleGUI_AuctionHistory()
     </Binding>
-    <Binding name="Toggle Audit" category="ADDONS">
-        CLM_Binding_ToggleGUI_Audit()
-    </Binding>
     <Binding name="Toggle Bidding" category="ADDONS">
         CLM_Binding_ToggleGUI_Bidding()
-    </Binding>
-    <Binding name="Toggle Loot History" category="ADDONS">
-        CLM_Binding_ToggleGUI_LootHistory()
     </Binding>
     <Binding name="Toggle Loot Queue" category="ADDONS">
         CLM_Binding_ToggleGUI_LootQueue()
     </Binding>
-    <Binding name="Toggle Point History" category="ADDONS">
-        CLM_Binding_ToggleGUI_PointHistory()
-    </Binding>
-    <Binding name="Toggle Profiles" category="ADDONS">
-        CLM_Binding_ToggleGUI_Profiles()
-    </Binding>
-    <Binding name="Toggle Standings" category="ADDONS">
-        CLM_Binding_ToggleGUI_Standings()
-    </Binding>
-    <Binding name="Toggle Raids" category="ADDONS">
-        CLM_Binding_ToggleGUI_Raids()
+    <Binding name="Toggle Main UI" category="ADDONS">
+        CLM_Binding_ToggleGUI_UnifiedGUI()
     </Binding>
 </Bindings>

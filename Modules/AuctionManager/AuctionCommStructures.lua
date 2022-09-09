@@ -1,11 +1,16 @@
-local _, CLM = ...
-
-local MODELS = CLM.MODELS
--- local UTILS = CLM.UTILS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local type, setmetatable = type, setmetatable
+local tonumber = tonumber
 
 local AuctionCommStartAuction = {}
-function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, itemLink, time, endtime, antiSnipe, note, increment, rosterUid)
+function AuctionCommStartAuction:New(typeOrObject, itemValueMode, values, itemLink, time, endtime, antiSnipe, note, increment, rosterUid)
     local isCopyConstructor = (type(typeOrObject) == "table")
 
     local o = isCopyConstructor and typeOrObject or {}
@@ -17,8 +22,7 @@ function AuctionCommStartAuction:New(typeOrObject, itemValueMode, base, max, ite
 
     o.t = typeOrObject
     o.i = itemValueMode
-    o.b = base
-    o.m = max
+    o.v = values
     o.l = itemLink
     o.e = time
     o.d = endtime
@@ -38,12 +42,8 @@ function AuctionCommStartAuction:Mode()
     return self.i or 0
 end
 
-function AuctionCommStartAuction:Base()
-    return tonumber(self.b) or 0
-end
-
-function AuctionCommStartAuction:Max()
-    return tonumber(self.m) or 0
+function AuctionCommStartAuction:Values()
+    return self.v or {}
 end
 
 function AuctionCommStartAuction:ItemLink()
@@ -152,7 +152,7 @@ function AuctionCommStructure:Data()
     return self.d
 end
 
-MODELS.AuctionCommStructure = AuctionCommStructure
-MODELS.AuctionCommStartAuction = AuctionCommStartAuction
-MODELS.AuctionCommDenyBid = AuctionCommDenyBid
-MODELS.AuctionCommDistributeBid = AuctionCommDistributeBid
+CLM.MODELS.AuctionCommStructure = AuctionCommStructure
+CLM.MODELS.AuctionCommStartAuction = AuctionCommStartAuction
+CLM.MODELS.AuctionCommDenyBid = AuctionCommDenyBid
+CLM.MODELS.AuctionCommDistributeBid = AuctionCommDistributeBid

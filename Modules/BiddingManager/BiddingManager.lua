@@ -1,24 +1,10 @@
+-- ------------------------------- --
 local  _, CLM = ...
-
-local LOG = CLM.LOG
-
-local UTILS = CLM.UTILS
-local MODULES = CLM.MODULES
-local MODELS = CLM.MODELS
-local GUI = CLM.GUI
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-
-local EventManager = MODULES.EventManager
-
-local Comms = MODULES.Comms
-
--- local Roster = MODELS.Roster
--- local RosterConfiguration =  MODELS.RosterConfiguration
-
--- local typeof = UTILS.typeof
-
-local BiddingCommStructure = MODELS.BiddingCommStructure
-local BiddingCommSubmitBid = MODELS.BiddingCommSubmitBid
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
 local BIDDING_COMM_PREFIX = "Bidding1"
 
@@ -31,12 +17,12 @@ function BiddingManager:Initialize()
     self.guiBid = false -- hiding responses for bidding through chat command (which shouldnt be used anyway)
     self.auctionInProgress = false
 
-    Comms:Register(BIDDING_COMM_PREFIX, (function(rawMessage, distribution, sender)
-        local message = BiddingCommStructure:New(rawMessage)
+    CLM.MODULES.Comms:Register(BIDDING_COMM_PREFIX, (function(rawMessage, distribution, sender)
+        local message = CLM.MODELS.BiddingCommStructure:New(rawMessage)
         if CONSTANTS.BIDDING_COMM.TYPES[message:Type()] == nil then return end
         -- Bidding Manager is owner of the channel
         -- pass handling to Auction Manager
-        MODULES.AuctionManager:HandleIncomingMessage(message, distribution, sender)
+        CLM.MODULES.AuctionManager:HandleIncomingMessage(message, distribution, sender)
     end), CONSTANTS.ACL.LEVEL.PLEBS, true)
 
     self:ClearAuctionInfo()
@@ -50,7 +36,7 @@ function BiddingManager:Initialize()
         [CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID]    = "HandleDistributeBid"
     }
 
-    self.db = MODULES.Database:Personal('bidding', {
+    self.db = CLM.MODULES.Database:Personal('bidding', {
         autoOpen = true,
         autoUpdateBidValue = false
     })
@@ -80,9 +66,9 @@ function BiddingManager:Initialize()
             order = 72
           }
     }
-    MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
-    MODULES.ConfigManager:RegisterUniversalExecutor("bidding", "BiddingManager", self)
+
     self._initialized = true
 end
 
@@ -106,7 +92,7 @@ function BiddingManager:GetLastBidValue()
     return self.lastBid
 end
 
-function BiddingManager:Bid(value)
+function BiddingManager:Bid(value, type)
     LOG:Trace("BiddingManager:Bid()")
     if not self.auctionInProgress then
         LOG:Debug("BiddingManager:Bid(): No auction in progress")
@@ -115,11 +101,11 @@ function BiddingManager:Bid(value)
     value = tonumber(value) or 0
     self.lastBid = value
     self.guiBid = true
-    local message = BiddingCommStructure:New(
+    local message = CLM.MODELS.BiddingCommStructure:New(
         CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
-        BiddingCommSubmitBid:New(value)
+        CLM.MODELS.BiddingCommSubmitBid:New(value, type)
     )
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:CancelBid()
@@ -127,8 +113,8 @@ function BiddingManager:CancelBid()
     if not self.auctionInProgress then return end
     self.lastBid = nil
     self.guiBid = true
-    local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID, {})
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID, {})
+    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyPass()
@@ -136,22 +122,22 @@ function BiddingManager:NotifyPass()
     if not self.auctionInProgress then return end
     self.lastBid = CLM.L["PASS"]
     self.guiBid = true
-    local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
+    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyCantUse()
     LOG:Trace("BiddingManager:NotifyCantUse()")
     if not self.auctionInProgress then return end
-    local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE, {})
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE, {})
+    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyHide()
     LOG:Trace("BiddingManager:NotifyHide()")
     if not self.auctionInProgress then return end
-    local message = BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE, {})
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE, {})
+    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:ClearAuctionInfo()
@@ -161,9 +147,9 @@ function BiddingManager:ClearAuctionInfo()
     self.guiBid = false
 end
 
-function BiddingManager:HandleIncomingMessage(message, distribution, sender)
+function BiddingManager:HandleIncomingMessage(message, _, sender)
     LOG:Trace("BiddingManager:HandleIncomingMessage()")
-    if not MODULES.AuctionManager:IsAuctioneer(sender, true) then
+    if not CLM.MODULES.AuctionManager:IsAuctioneer(sender, true) then
         LOG:Error("Received unauthorised auction command from %s", sender)
         return
     end
@@ -176,9 +162,11 @@ end
 
 local PlayStartSound, PlayEndSound
 PlayStartSound = function()
+    if not CLM.GlobalConfigs:GetSounds() then return end
     PlaySound(12889)
 end
 PlayEndSound = function()
+    if not CLM.GlobalConfigs:GetSounds() then return end
     PlaySound(12867)
 end
 
@@ -192,11 +180,11 @@ function BiddingManager:HandleStartAuction(data, sender)
     self.auctioneer = sender
     self.auctionInProgress = true
     PlayStartSound()
-    GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
+    CLM.GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
     LOG:Message(CLM.L["Auction of "] .. self.auctionInfo:ItemLink())
 end
 
-function BiddingManager:HandleStopAuction(data, sender)
+function BiddingManager:HandleStopAuction(_, sender)
     LOG:Trace("BiddingManager:HandleStopAuction()")
     if not self.auctionInProgress then
         LOG:Debug("Received auction stop from %s while no auctions are in progress", sender)
@@ -205,20 +193,20 @@ function BiddingManager:HandleStopAuction(data, sender)
     self.auctionInProgress = false
     self:ClearAuctionInfo()
     PlayEndSound()
-    GUI.BiddingManager:EndAuction()
+    CLM.GUI.BiddingManager:EndAuction()
     LOG:Message(CLM.L["Auction finished"])
 end
 
-function BiddingManager:HandleAntiSnipe(data, sender)
+function BiddingManager:HandleAntiSnipe(_, sender)
     LOG:Trace("BiddingManager:HandleAntiSnipe()")
     if not self.auctionInProgress then
         LOG:Debug("Received antisnipe from %s while no auctions are in progress", sender)
         return
     end
-    GUI.BiddingManager:AntiSnipe()
+    CLM.GUI.BiddingManager:AntiSnipe()
 end
 
-function BiddingManager:HandleAcceptBid(data, sender)
+function BiddingManager:HandleAcceptBid(_, sender)
     LOG:Trace("BiddingManager:HandleAcceptBid()")
     if not self.auctionInProgress then
         LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
@@ -226,7 +214,7 @@ function BiddingManager:HandleAcceptBid(data, sender)
     end
     if self.guiBid then
         local value =  self.lastBid or CLM.L["cancel"]
-        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
+        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
         LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], value)
         self.guiBid = false
     end
@@ -240,7 +228,7 @@ function BiddingManager:HandleDenyBid(data, sender)
     end
     if self.guiBid then
         local value = self.lastBid or CLM.L["cancel"]
-        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
+        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
         LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], value, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"])
         self.guiBid = false
     end
@@ -254,7 +242,7 @@ function BiddingManager:HandleDistributeBid(data, sender)
     end
     if self:GetAutoUpdateBidValue() then
         local value = (tonumber(data:Value()) or 0) + self.auctionInfo:Increment()
-        GUI.BiddingManager:UpdateCurrentBidValue(value)
+        CLM.GUI.BiddingManager:UpdateCurrentBidValue(value)
     end
 end
 
@@ -275,4 +263,18 @@ CONSTANTS.BIDDING_COMM = {
     })
 }
 
-MODULES.BiddingManager = BiddingManager
+CONSTANTS.BID_TYPE = {
+    MAIN_SPEC = 1,
+    OFF_SPEC = 2,
+    -- PASS = 3,
+    -- CANCEL = 4,
+    [CONSTANTS.SLOT_VALUE_TIER.BASE]    = CONSTANTS.SLOT_VALUE_TIER.BASE,
+    [CONSTANTS.SLOT_VALUE_TIER.SMALL]   = CONSTANTS.SLOT_VALUE_TIER.SMALL,
+    [CONSTANTS.SLOT_VALUE_TIER.MEDIUM]  = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
+    [CONSTANTS.SLOT_VALUE_TIER.LARGE]   = CONSTANTS.SLOT_VALUE_TIER.LARGE,
+    [CONSTANTS.SLOT_VALUE_TIER.MAX]     = CONSTANTS.SLOT_VALUE_TIER.MAX
+}
+
+CONSTANTS.BID_TYPES = UTILS.Set(CONSTANTS.BID_TYPE)
+
+CLM.MODULES.BiddingManager = BiddingManager

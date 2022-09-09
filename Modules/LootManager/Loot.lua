@@ -1,9 +1,16 @@
-local _, CLM = ...
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
+
+local setmetatable = setmetatable
 
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
 local Loot = {}
-
 function Loot:New(entry, owner)
     local o = {}
 

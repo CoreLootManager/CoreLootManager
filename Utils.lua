@@ -1,22 +1,33 @@
 local _, CLM = ...
-local LOG = CLM.LOG
-CLM.UTILS = {}
 
-local UTILS = CLM.UTILS
+local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+
+CLM.UTILS = {}
+local UTILS = CLM.UTILS
 
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 local assertType = LibStub("EventSourcing/Util").assertType
 
+local pairs, ipairs = pairs, ipairs
+local ssub, supper, slower, sformat, sfind = string.sub, string.upper, string.lower, string.format, string.find
+local sgsub = string.gsub
+local mfloor = math.floor
+local tostring, tonumber = tostring, tonumber
+local tinsert = table.insert
+local print, type, setmetatable, getmetatable, rawequal = print, type, setmetatable, getmetatable, rawequal
+local GetUnitName, UnitGUID, GetTalentTabInfo = GetUnitName, UnitGUID, GetTalentTabInfo
+local GetTalentGroupRole, GetActiveTalentGroup = GetTalentGroupRole, GetActiveTalentGroup
+
 local function capitalize(string)
     string = string or ""
-    return string:sub(1,1):upper()..string:sub(2):lower()
+    return supper(ssub(string, 1,1)) .. slower(ssub(string, 2))
 end
 
 local classOrdered = {
-    "deathknight", "druid", "hunter", "mage", "priest", "rogue", "shaman", "paladin", "warlock", "warrior"
+    "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior"
 }
 
 local classColors = {
@@ -29,17 +40,18 @@ local classColors = {
     ["shaman"]  = { r = 0.01, g = 0.44, b = 0.87, hex = "0270DD" },
     ["paladin"] = { r = 0.96, g = 0.55, b = 0.73, hex = "F58CBA" },
     ["warlock"] = { r = 0.53, g = 0.53, b = 0.93, hex = "8787ED" },
-    ["warrior"] = { r = 0.78, g = 0.61, b = 0.43, hex = "C79C6E" }
+    ["warrior"] = { r = 0.78, g = 0.61, b = 0.43, hex = "C79C6E" },
+    ["death knight"] = { r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" }
 }
 
 function UTILS.GetClassColor(className)
-    local color = classColors[string.lower(className)]
+    local color = classColors[slower(className)]
     return (color or { r = 0.627, g = 0.627, b = 0.627, hex = "A0A0A0" })
 end
 local GetClassColor = UTILS.GetClassColor
 
 function UTILS.ColorCodeText(text, color)
-    return string.format("|cff%s%s|r", color, text);
+    return sformat("|cff%s%s|r", color, text);
 end
 local ColorCodeText = UTILS.ColorCodeText
 
@@ -50,10 +62,10 @@ end
 local colorCodedClassList = {}
 do
     for _,class in pairs(classOrdered) do
-        table.insert(colorCodedClassList, UTILS.ColorCodeClass(capitalize(class)))
+        tinsert(colorCodedClassList, UTILS.ColorCodeClass(class))
     end
 end
-function UTILS.GetColorCodedClassDict()
+function UTILS.GetColorCodedClassList()
     return colorCodedClassList
 end
 
@@ -68,12 +80,14 @@ function UTILS.ColorCodeByPercentage(percentage)
     elseif percentage > 50 then
         red = UTILS.round(255*(100 - percentage)/100, 0)
     end
-    return string.format("|cff%s%s|r", string.format("%02x%02x%02x", red, green, blue), percentage)
+    return sformat("|cff%s%s|r", sformat("%02x%02x%02x", red, green, blue), percentage)
 end
 
 function UTILS.RemoveColorCode(s)
-    return string.sub(s or "", 11, -3)
+    return ssub(s or "", 11, -3)
 end
+
+local RemoveColorCode = UTILS.RemoveColorCode
 
 -- formats:
 -- s: string  "AARRGGBB"
@@ -81,7 +95,7 @@ end
 -- i: integer array = {a = AA, r = RR, g = GG, b = BB } from 0 to 255
 -- f: float array   = {a = AA, r = RR, g = GG, b = BB } from 0 to 1
 function UTILS.GetColorFromLink(itemLink, format)
-    local _, _, a, r, g, b = string.find(itemLink, "|c(%x%x)(%x%x)(%x%x)(%x%x)|.*")
+    local _, _, a, r, g, b = sfind(itemLink, "|c(%x%x)(%x%x)(%x%x)(%x%x)|.*")
     local color = {
         a = a or "",
         r = r or "",
@@ -89,7 +103,7 @@ function UTILS.GetColorFromLink(itemLink, format)
         b = b or ""
     }
     if format == "s" then
-        return string.format("%s%s%s%s", color.a, color.r, color.g, color.b)
+        return sformat("%s%s%s%s", color.a, color.r, color.g, color.b)
     else
         if format ~= "s" then
             for k,v in pairs(color) do
@@ -107,9 +121,9 @@ function UTILS.GetColorFromLink(itemLink, format)
 end
 
 function UTILS.GetItemIdFromLink(itemLink)
-    -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+    -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = sfind(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
     itemLink = itemLink or ""
-    local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
+    local _, _, _, _, itemId = sfind(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
     return tonumber(itemId) or 0
 end
 
@@ -171,7 +185,7 @@ function UTILS.NewStorageQualifiedObject(storage, o)
 end
 
 function UTILS.GenerateItemLink(itemId)
-    return string.format("item:%d:0:0:0:0:0:0:0:0:0:0:0:0", itemId)
+    return sformat("item:%d:0:0:0:0:0:0:0:0:0:0:0:0", itemId)
 end
 
 function UTILS.Set(t)
@@ -251,14 +265,14 @@ function UTILS.empty(object)
 end
 
 function UTILS.getIntegerGuid(GUID)
-    return tonumber(string.sub(GUID, -8), 16)
+    return tonumber(ssub(GUID, -8), 16)
 end
 local getIntegerGuid = UTILS.getIntegerGuid
 
 local playerGUID = UnitGUID("player")
-local GUIDPrefix = string.sub(playerGUID, 1, -9)
+local GUIDPrefix = ssub(playerGUID, 1, -9)
 function UTILS.getGuidFromInteger(int)
-    return GUIDPrefix .. string.format("%08X", tonumber(int) or 0)
+    return GUIDPrefix .. sformat("%08X", tonumber(int) or 0)
 end
 
 local playerName = UTILS.GetUnitName("player")
@@ -291,7 +305,7 @@ function UTILS.CreateGUIDList(playerList)
     for _, p in ipairs(playerList) do
         GUID = GetGUIDFromEntry(p)
         if GUID ~= nil then
-            table.insert(playerGUIDList, GUID)
+            playerGUIDList[#playerGUIDList+1] = GUID
         end
     end
     return playerGUIDList
@@ -314,7 +328,7 @@ end
 function UTILS.deflate(object, version)
     local result = {}
     for _, key in ipairs(object:fields(version)) do
-        table.insert(result, object[key])
+        tinsert(result, object[key])
     end
     result.v = version
     return result
@@ -387,7 +401,12 @@ local numberToClass = {
     -- [12] = "DEMONHUNTER"
 }
 function UTILS.NumberToClass(number)
-    return (numberToClass[number] or ""):upper()
+    return supper((numberToClass[number] or ""))
+end
+
+function UTILS.GetClassReadable(class)
+    if class == "DEATHKNIGHT" then return "Death Knight" end
+    return capitalize(class or "")
 end
 
 function UTILS.capitalize(string)
@@ -422,13 +441,21 @@ function UTILS.GetCutoffTimestamp()
     return 1566684000
 end
 
-function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
+function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine, maxProfiles)
     inLine = inLine or 5
+    maxProfiles = maxProfiles or 25
     local profilesInLine = 0
     local line = ""
     local separator = ", "
     local numProfiles = #profiles
-    local profilesLeft = numProfiles
+    local profilesLeft
+    local notIncludedProfiles = 0
+    if numProfiles > maxProfiles then
+        notIncludedProfiles = numProfiles - maxProfiles
+        numProfiles = maxProfiles
+    end
+    profilesLeft = numProfiles
+
     while (profilesLeft > 0) do
         local currentProfile = profiles[numProfiles - profilesLeft + 1]
         profilesLeft = profilesLeft - 1
@@ -442,6 +469,10 @@ function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine)
             line = ""
             profilesInLine = 0
         end
+    end
+
+    if notIncludedProfiles > 0 then
+        tooltip:AddLine(notIncludedProfiles .. CLM.L[" more"])
     end
 end
 
@@ -509,7 +540,7 @@ end
 
 function UTILS.WeekNumber(unixtimestamp, offset)
     offset = offset or 0
-    local week = 1 + math.floor((unixtimestamp - offset) / 604800)
+    local week = 1 + mfloor((unixtimestamp - offset) / 604800)
     if week < 1 then week = 1 end
     return week
 end
@@ -528,7 +559,7 @@ end
 
 function UTILS.round(number, decimals)
     local factor = 10 ^ decimals
-    return math.floor(number * factor + 0.5) / factor
+    return mfloor(number * factor + 0.5) / factor
 end
 
 function UTILS.GetMyTalents()
@@ -539,17 +570,21 @@ function UTILS.GetMyTalents()
     return one, two, three
 end
 
+function UTILS.GetMyRole()
+    return GetTalentGroupRole(GetActiveTalentGroup())
+end
+
 function UTILS.IsTooltipTextRed(text)
     if text and text:GetText() then
         local r,g,b = text:GetTextColor()
-        return math.floor(r*256) == 255 and math.floor(g*256) == 32 and math.floor(b*256) == 32
+        return mfloor(r*256) == 255 and mfloor(g*256) == 32 and mfloor(b*256) == 32
     end
     return false
 end
 
 function UTILS.Trim(text)
     text = text or ""
-    return (string.gsub(text, "^%s*(.-)%s*$", "%1"))
+    return (sgsub(text, "^[%s,]*(.-)[%s,]*$", "%1"))
 end
 
 function UTILS.LibStCompareSortWrapper(modifierFn)
@@ -565,6 +600,92 @@ function UTILS.LibStCompareSortWrapper(modifierFn)
         a1.value, b1.value  = a1_value, b1_value
         -- return
         return result
+    end)
+end
+
+function UTILS.LibStModifierFn(a1, b1)
+    return RemoveColorCode(a1), RemoveColorCode(b1)
+end
+
+function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+    local leftClick = (button == "LeftButton")
+    local rightClick = (button == "RightButton")
+    local isCtrlKeyDown = IsControlKeyDown()
+    local isShiftKeyDown = IsShiftKeyDown()
+    local isAdditiveSelect = leftClick and isCtrlKeyDown
+    local isContinuousSelect = leftClick and isShiftKeyDown
+    local isSingleSelect = leftClick and not isCtrlKeyDown and not isShiftKeyDown
+
+    local isSelected = st.selected:IsSelected(realrow)
+
+    if not isSelected then
+        if isAdditiveSelect or rightClick then
+            st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
+        elseif isContinuousSelect then
+            local first, last, selected
+            for _row, _realrow in ipairs(st.filtered) do
+                if not first then
+                    if st.selected:IsSelected(_realrow) then first = _row end
+                end
+                if st.selected:IsSelected(_realrow) then last = _row end
+                if _realrow == realrow then selected = _row end
+            end
+
+            st:ClearSelection()
+            if selected <= first then -- clicked above first
+                for _row=selected,last do
+                    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
+                end
+            elseif selected >= last then -- clicked below last
+                for _row=first,selected do
+                    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
+                end
+            else -- clicked in between
+                for _row=first,last do
+                    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
+                end
+            end
+        end
+    end
+    if isSingleSelect then
+        st:ClearSelection()
+        st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
+    end
+    if dropdownMenu and rightClick then
+        UTILS.LibDD:CloseDropDownMenus()
+        UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdownMenu, cellFrame, -20, 0)
+    end
+end
+
+function UTILS.LibStSingleSelectClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+    local rightClick = (button == "RightButton")
+
+    st:ClearSelection()
+    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, "LeftButton", ...)
+
+    if dropdownMenu and rightClick then
+        UTILS.LibDD:CloseDropDownMenus()
+        UTILS.LibDD:ToggleDropDownMenu(1, nil, dropdownMenu, cellFrame, -20, 0)
+    end
+end
+
+function UTILS.getHighlightMethod(highlightColor, multiselect)
+    return (function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+        table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+        local color
+        local selected
+        if multiselect then
+            selected = table.selected:IsSelected(realrow)
+        else
+            selected = (table.selected == realrow)
+        end
+        if selected then
+            color = table:GetDefaultHighlight()
+        else
+            color = highlightColor
+        end
+
+        table:SetHighLightColor(rowFrame, color)
     end)
 end
 
@@ -589,7 +710,49 @@ function UTILS.OnePassRemove(t, fnKeep)
     return t;
 end
 
+-- https://stackoverflow.com/a/32660766
+function UTILS.TableCompare(o1, o2, check_mt)
+    if o1 == o2 then return true end
+    local o1Type = type(o1)
+    local o2Type = type(o2)
+    if o1Type ~= o2Type then return false end
+    if o1Type ~= 'table' then return false end
 
+    if check_mt then
+        local mt1 = getmetatable(o1)
+        if mt1 and mt1.__eq then
+            --compare using built in method
+            return o1 == o2
+        end
+    end
 
+    local keySet = {}
+
+    for key1, value1 in pairs(o1) do
+        local value2 = o2[key1]
+        if value2 == nil or UTILS.TableCompare(value1, value2, check_mt) == false then
+            return false
+        end
+        keySet[key1] = true
+    end
+
+    for key2, _ in pairs(o2) do
+        if not keySet[key2] then return false end
+    end
+    return true
+end
+
+function UTILS.DictNotEmpty(dict)
+    return not rawequal(next(dict), nil)
+end
+
+CONSTANTS.ITEM_QUALITY = {
+    [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
+    [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
+    [2] = ColorCodeText(CLM.L["Uncommon"], "1eff00"),
+    [3] = ColorCodeText(CLM.L["Rare"], "0070dd"),
+    [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
+    [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
+}
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"

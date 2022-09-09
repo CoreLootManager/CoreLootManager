@@ -1,8 +1,12 @@
-local _, CLM = ...
-
-local MODELS = CLM.MODELS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
+local setmetatable, type = setmetatable, type
 
 local StandbyStagingCommSubscribe = {}
 function StandbyStagingCommSubscribe:New(raidUidOrObject)
@@ -95,7 +99,7 @@ function StandbyStagingCommStructure:Data()
     return self.d
 end
 
-MODELS.StandbyStagingCommStructure = StandbyStagingCommStructure
-MODELS.StandbyStagingCommSubscribe = StandbyStagingCommSubscribe
-MODELS.StandbyStagingCommRevoke = StandbyStagingCommRevoke
-MODELS.StandbyStagingCommResponse = StandbyStagingCommResponse
+CLM.MODELS.StandbyStagingCommStructure = StandbyStagingCommStructure
+CLM.MODELS.StandbyStagingCommSubscribe = StandbyStagingCommSubscribe
+CLM.MODELS.StandbyStagingCommRevoke = StandbyStagingCommRevoke
+CLM.MODELS.StandbyStagingCommResponse = StandbyStagingCommResponse

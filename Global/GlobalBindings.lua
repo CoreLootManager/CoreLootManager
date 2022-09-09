@@ -1,10 +1,14 @@
-
--- Globals: Keybinds
+-- ------------------------------- --
 local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local LOG = CLM.LOG
+local GameTooltip = GameTooltip
 
-local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
+local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL" -- TODO event
 
 BINDING_HEADER_CLM = "Classic Loot Manager"
 
@@ -34,20 +38,44 @@ function CLM_Binding_QuickStartAuction() -- luacheck: ignore
     end
 end
 
-function CLM_Binding_AwardForBase() -- luacheck: ignore
-    LOG:Trace("CLM_Binding_AwardForBase")
+local function awardForTierValue(tier)
     if GameTooltip then
         local _, itemLink = GameTooltip:GetItem()
         if itemLink then
-            local base = 0
+            local value = 0
             local raid = CLM.MODULES.RaidManager:GetRaid()
             if raid then
                 local itemId = CLM.UTILS.GetItemIdFromLink(itemLink)
-                base = raid:Roster():GetItemValue(itemId).base
+                value = raid:Roster():GetItemValues(itemId)[tier]
             end
-            CLM.GlobalSlashCommands:Award(itemLink .. "/" .. base)
+            CLM.GlobalSlashCommands:Award(itemLink .. "/" .. value)
         end
     end
+end
+
+function CLM_Binding_AwardForBase() -- luacheck: ignore
+    LOG:Trace("CLM_Binding_AwardForBase")
+    awardForTierValue(CONSTANTS.SLOT_VALUE_TIER.BASE)
+end
+
+function CLM_Binding_AwardForSmall() -- luacheck: ignore
+    LOG:Trace("CLM_Binding_AwardForSmall")
+    awardForTierValue(CONSTANTS.SLOT_VALUE_TIER.SMALL)
+end
+
+function CLM_Binding_AwardForMedium() -- luacheck: ignore
+    LOG:Trace("CLM_Binding_AwardForMedium")
+    awardForTierValue(CONSTANTS.SLOT_VALUE_TIER.MEDIUM)
+end
+
+function CLM_Binding_AwardForLarge() -- luacheck: ignore
+    LOG:Trace("CLM_Binding_AwardForLarge")
+    awardForTierValue(CONSTANTS.SLOT_VALUE_TIER.LARGE)
+end
+
+function CLM_Binding_AwardForMax() -- luacheck: ignore
+    LOG:Trace("CLM_Binding_AwardForMax")
+    awardForTierValue(CONSTANTS.SLOT_VALUE_TIER.MAX)
 end
 
 function CLM_Binding_AwardForFree() -- luacheck: ignore
@@ -59,26 +87,10 @@ function CLM_Binding_AwardForFree() -- luacheck: ignore
         end
     end
 end
-
-function CLM_Binding_BidBase() -- luacheck: ignore
-    CLM.GUI.BiddingManager:BidBase()
-end
-function CLM_Binding_BidMax() -- luacheck: ignore
-    CLM.GUI.BiddingManager:BidMax()
-end
-function CLM_Binding_BidCurrent() -- luacheck: ignore
-    CLM.GUI.BiddingManager:BidCurrent()
-end
 -- GUI Toggles
 
-function CLM_Binding_ToggleGUI_Standings() -- luacheck: ignore
-    CLM.GUI.Standings:Toggle()
-end
-function CLM_Binding_ToggleGUI_PointHistory() -- luacheck: ignore
-    CLM.GUI.PointHistory:Toggle()
-end
-function CLM_Binding_ToggleGUI_LootHistory() -- luacheck: ignore
-    CLM.GUI.Loot:Toggle()
+function CLM_Binding_ToggleGUI_UnifiedGUI() -- luacheck: ignore
+    CLM.GUI.Unified:Toggle()
 end
 function CLM_Binding_ToggleGUI_LootQueue() -- luacheck: ignore
     CLM.GUI.LootQueue:Toggle()
@@ -91,13 +103,4 @@ function CLM_Binding_ToggleGUI_Bidding() -- luacheck: ignore
 end
 function CLM_Binding_ToggleGUI_Auctioning() -- luacheck: ignore
     CLM.GUI.AuctionManager:Toggle()
-end
-function CLM_Binding_ToggleGUI_Profiles() -- luacheck: ignore
-    CLM.GUI.Profiles:Toggle()
-end
-function CLM_Binding_ToggleGUI_Audit() -- luacheck: ignore
-    CLM.GUI.Audit:Toggle()
-end
-function CLM_Binding_ToggleGUI_Raids() -- luacheck: ignore
-    CLM.GUI.RaidManager:Toggle()
 end

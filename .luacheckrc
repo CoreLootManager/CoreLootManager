@@ -30,6 +30,10 @@ globals = {
 	"CLM_DB",
 	"CLM_Logs",
 	"CLM_MinimapIcon",
+	-- 
+	"CLM2_DB",
+	"CLM2_Logs",
+	"CLM2_MinimapIcon",
 	-- Bindings
 	"CLM_Undo",
 	"CLM_Redo",
@@ -43,7 +47,9 @@ globals = {
 	"_G",
 	"MAX_RAID_MEMBERS",
 	"LootAlertSystem",
-
+	"KeyBindingFrame_LoadUI",
+	"KeyBindingFrame",
+	"InterfaceOptionsFrame",
 	-- FrameXML misc
 	"ALTERNATE_POWER_INDEX",
 	"BNET_CLIENT_WOW",
@@ -2628,6 +2634,8 @@ globals = {
 	"GetSuperTrackedQuestID",
 	"GetTabardCreationCost",
 	"GetTabardInfo",
+	"GetTalentGroupRole",
+	"GetActiveTalentGroup",
 	"GetTalentInfo",
 	"GetTalentInfoByID",
 	"GetTalentInfoBySpecialization",

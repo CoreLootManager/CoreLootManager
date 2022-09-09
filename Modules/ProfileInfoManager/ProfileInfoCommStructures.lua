@@ -1,8 +1,12 @@
-local _, CLM = ...
-
-local MODELS = CLM.MODELS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+-- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
+local type, setmetatable, tonumber = type, setmetatable, tonumber
 
 local ProfileInfoCommAnnounceVersion = {}
 function ProfileInfoCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)
@@ -56,6 +60,25 @@ function ProfileInfoCommAnnounceSpec:Spec()
     }
 end
 
+local ProfileInfoCommAnnounceRole = {}
+function ProfileInfoCommAnnounceRole:New(roleOrObject)
+    local isCopyConstructor = (type(roleOrObject) == "table")
+    local o = isCopyConstructor and roleOrObject or {}
+
+    setmetatable(o, self)
+    self.__index = self
+
+    if isCopyConstructor then return o end
+
+    o.r = roleOrObject
+
+    return o
+end
+
+function ProfileInfoCommAnnounceRole:Role()
+    return self.r
+end
+
 local ProfileInfoCommStructure = {}
 function ProfileInfoCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
@@ -70,6 +93,8 @@ function ProfileInfoCommStructure:New(typeOrObject, data)
             o.d = ProfileInfoCommAnnounceVersion:New(o.d)
         elseif o.t == CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC then
             o.d = ProfileInfoCommAnnounceSpec:New(o.d)
+        elseif o.t == CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE then
+            o.d = ProfileInfoCommAnnounceRole:New(o.d)
         end
         return o
     end
@@ -88,6 +113,7 @@ function ProfileInfoCommStructure:Data()
     return self.d
 end
 
-MODELS.ProfileInfoCommStructure = ProfileInfoCommStructure
-MODELS.ProfileInfoCommAnnounceVersion = ProfileInfoCommAnnounceVersion
-MODELS.ProfileInfoCommAnnounceSpec = ProfileInfoCommAnnounceSpec
+CLM.MODELS.ProfileInfoCommStructure = ProfileInfoCommStructure
+CLM.MODELS.ProfileInfoCommAnnounceVersion = ProfileInfoCommAnnounceVersion
+CLM.MODELS.ProfileInfoCommAnnounceSpec = ProfileInfoCommAnnounceSpec
+CLM.MODELS.ProfileInfoCommAnnounceRole = ProfileInfoCommAnnounceRole

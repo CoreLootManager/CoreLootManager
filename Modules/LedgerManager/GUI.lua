@@ -109,11 +109,11 @@ local configDecodeFunctions = {
     antiSnipe = (function(value)
         return CLM.L["Anti-snipe"], safeToString(value)
     end),
-    allowNegativeStandings = (function(value)
-        return CLM.L["Allow going below 0  DKP"], boolToString(value)
+    allowBelowMinStandings = (function(value)
+        return CLM.L["Allow going below minimum points"], boolToString(value)
     end),
     allowNegativeBidders = (function(value)
-        return CLM.L["Allow bidding below 0 DKP"], boolToString(value)
+        return CLM.L["Allow bidding below minimum points"], boolToString(value)
     end),
     bossKillBonus = (function(value)
         return CLM.L["Boss Kill Bonus"], boolToString(value)
@@ -182,30 +182,39 @@ local function decodeRosterConfig(config, value)
     return fn(value)
 end
 
-local function decodeSlotValueConfig(slot, base, max)
-    return CONSTANTS.INVENTORY_TYPES_GUI[slot] or "", safeToString(base), safeToString(max)
+local function decodeSlotValueConfig(entry)
+    return CONSTANTS.INVENTORY_TYPES_GUI[entry:slot()] or "", safeToString(CONSTANTS.SLOT_VALUE_TIERS_GUI[entry:tier()]) .. ": " .. safeToString(entry:value())
 end
 
-local function decodeItemValueOverride(itemId, base, max)
-    return safeItemIdToLink(itemId), safeToString(base), safeToString(max)
+local function decodeItemValueOverride(entry)
+    local value = ""
+    local values = entry:values()
+    for key,_ in pairs(CLM.CONSTANTS.SLOT_VALUE_TIERS) do
+        value = value .. safeToString(CONSTANTS.SLOT_VALUE_TIERS_GUI[key]) .. ": " .. safeToString(values[key]or "?")
+    end
+    return safeItemIdToLink(entry:itemId()), value
 end
 
-local function decodeBossKillBonus(encounterId, value)
+local function decodeItemValueOverrideSingle(entry)
+    return safeItemIdToLink(entry:itemId()), safeToString(CONSTANTS.SLOT_VALUE_TIERS_GUI[entry:tier()]) .. ": " .. safeToString(entry:value())
+end
+
+local function decodeBossKillBonus(encounterId, difficultyId, value)
     local encounter = CLM.L["Unknown"]
     value = tonumber(value) or 0
     if value == 0 then
-        return encounter, ""
+        return encounter, "", ""
     end
     for _, expack in pairs(CLM.EncounterIDs) do
         for _,instance in ipairs(expack) do
             for _,encounterInfo in ipairs(instance.data) do
                 if encounterInfo.id == encounterId then
-                    return safeToString(encounterInfo.name), safeToString(value)
+                    return safeToString(encounterInfo.name), safeToString(CLM.DifficultyIDsMap[difficultyId]), safeToString(value)
                 end
             end
         end
     end
-    return "", safeToString(value)
+    return "", safeToString(CLM.DifficultyIDsMap[difficultyId]), safeToString(value)
 end
 
 local describeFunctions  = {
@@ -286,21 +295,25 @@ local describeFunctions  = {
     end),
     ["R6"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        local slot, base, max = decodeSlotValueConfig(entry:config(), entry:base(), entry:max())
+        local slot, values = decodeSlotValueConfig(entry)
         return CLM.L["[Roster Default Slot Value]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
-            slot .. ": " .. base .. " / " .. max
+            slot .. ": " .. values
     end),
     ["R7"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        local link, base, max = decodeItemValueOverride(entry:itemId(), entry:base(), entry:max())
+        local link, values = decodeItemValueOverride(entry)
         return CLM.L["[Roster Item Value Override]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
-            link .. ": " .. base .. " / " .. max
+            link .. ": " .. values
 
     end),
     ["R8"] = (function(entry)
-        return CLM.L["[Roster Item Value Override]: "] .. CLM.L[" UNUSED"]
+        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local link, values = decodeItemValueOverrideSingle(entry)
+        return CLM.L["[Roster Item Value Override Single]: "] ..
+            "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
+            link .. ": " .. values
     end),
     ["R9"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
@@ -323,10 +336,10 @@ local describeFunctions  = {
     end),
     ["RB"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
-        local encounter, value = decodeBossKillBonus(entry:encounterId(), entry:value())
+        local encounter, difficulty, value = decodeBossKillBonus(entry:encounterId(), entry:difficultyId(), entry:value())
         return CLM.L["[Roster Boss Kill Bonus]: "] ..
             "<" .. ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
-            encounter .. ": " .. value
+            encounter .. " - ".. difficulty .. ": " .. value
 
     end),
     -- Points
@@ -365,7 +378,7 @@ local describeFunctions  = {
     ["DT"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         return CLM.L["[Point Decay for roster]: "] ..
-            string.format(CLM.L["Decayed %s%% DKP to all players %sin <%s>"],
+            string.format(CLM.L["Decayed %s%% DKP to all players %s in <%s>"],
                 safeToString(entry:value()), (entry:ignoreNegatives() and CLM.L["excluding negatives "] or ""),
                 ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
@@ -598,7 +611,7 @@ end
 function AuditGUI:Create()
     LOG:Trace("AuditGUI:Create()")
     -- Main Frame
-    local f = AceGUI:Create("Frame")
+    local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Ledger Entries Audit"])
     f:SetStatusText("")
     f:SetLayout("flow")

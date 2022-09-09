@@ -1,23 +1,12 @@
+-- ------------------------------- --
 local  _, CLM = ...
-
-local LOG = CLM.LOG
-
-local MODULES =  CLM.MODULES
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local UTILS = CLM.UTILS
-local MODELS = CLM.MODELS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local LedgerManager = MODULES.LedgerManager
-local RosterManager = MODULES.RosterManager
-local ProfileManager = MODULES.ProfileManager
-local EventManager = MODULES.EventManager
-
-local LEDGER_DKP = MODELS.LEDGER.DKP
-local Profile = MODELS.Profile
-local Roster = MODELS.Roster
-local Raid = MODELS.Raid
-local PointHistory = MODELS.PointHistory
-local FakePointHistory = MODELS.FakePointHistory
+local strsub, type, ipairs = strsub, type, ipairs
 
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
@@ -41,8 +30,8 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
             LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
             return
         end
-        local targetProfile = ProfileManager:GetProfileByGUID(GUID)
-        if targetProfile then
+        local targetProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        if targetProfile and not targetProfile:IsLocked() then
             if roster:IsProfileInRoster(GUID) and pointHistoryEntry then
                 roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
             end
@@ -52,10 +41,10 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
                     mainProfile = targetProfile
                 end
             else -- is alt
-                mainProfile = ProfileManager:GetProfileByGUID(targetProfile:Main())
+                mainProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(targetProfile:Main())
             end
             -- Check if we should schedule it for alert
-            EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason }, timestamp, GUID)
+            CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason, pointType = roster:GetPointType() }, timestamp, GUID)
             -- If we have a linked case then we alter the GUID to mains guid
             if mainProfile then
                 GUID = mainProfile:GUID()
@@ -78,20 +67,20 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
 end
 
 local function apply_mutator(entry, mutate)
-    local roster = RosterManager:GetRosterByUid(entry:rosterUid())
+    local roster = CLM.MODULES.RosterManager:GetRosterByUid(entry:rosterUid())
     if not roster then
         LOG:Debug("PointManager apply_mutator(): Unknown roster uid %s", entry:rosterUid())
         return
     end
 
-    local pointHistoryEntry = PointHistory:New(entry)
+    local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
     update_profile_standings(mutate, roster, entry:targets(), entry:value(), entry:reason(), entry:time(), pointHistoryEntry)
 end
 
 local function apply_roster_mutator(entry, mutate)
-    local roster = RosterManager:GetRosterByUid(entry:rosterUid())
+    local roster = CLM.MODULES.RosterManager:GetRosterByUid(entry:rosterUid())
     if not roster then
         LOG:Debug("PointManager apply_roster_mutator(): Unknown roster uid %s", entry:rosterUid())
         return
@@ -103,20 +92,20 @@ local function apply_roster_mutator(entry, mutate)
         for _, GUID in ipairs(profiles) do
             local standings = roster:Standings(GUID)
             if standings and standings >= 0 then
-                table.insert(positiveProfiles, GUID)
+                positiveProfiles[#positiveProfiles+1] = GUID
             end
         end
         profiles = positiveProfiles
     end
 
-    local pointHistoryEntry = PointHistory:New(entry, profiles)
+    local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, profiles)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
     update_profile_standings(mutate, roster, profiles, entry:value(), entry:reason(), entry:time(), pointHistoryEntry, true)
 end
 
 local function apply_raid_mutator(self, entry, mutate)
-    local raid = MODULES.RaidManager:GetRaidByUid(entry:raidUid())
+    local raid = CLM.MODULES.RaidManager:GetRaidByUid(entry:raidUid())
     if not raid then
         LOG:Debug("PointManager apply_raid_mutator(): Unknown raid uid %s", entry:raidUid())
         return
@@ -127,11 +116,11 @@ local function apply_raid_mutator(self, entry, mutate)
         return
     end
 
-    local pointHistoryEntry = PointHistory:New(entry, raid:Players())
+    local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, raid:Players())
     self:AddPointHistory(roster, raid:Players(), pointHistoryEntry)
     local playersOnStandby = raid:PlayersOnStandby()
     if entry:standby() and (#playersOnStandby > 0) then
-        pointHistoryEntry = PointHistory:New(entry, playersOnStandby, nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
+        pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, playersOnStandby, nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
         pointHistoryEntry.note = CONSTANTS.POINT_CHANGE_REASONS.ALL[entry:reason()] or ""
         self:AddPointHistory(roster, playersOnStandby, pointHistoryEntry)
         update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), nil, true)
@@ -156,49 +145,49 @@ local PointManager = {}
 function PointManager:Initialize()
     LOG:Trace("PointManager:Initialize()")
 
-    LedgerManager:RegisterEntryType(
-        LEDGER_DKP.Modify,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.DKP.Modify,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModify)")
             apply_mutator(entry, mutate_update_standings)
         end))
 
-    LedgerManager:RegisterEntryType(
-        LEDGER_DKP.Set,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.DKP.Set,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPSet)")
             apply_mutator(entry, mutate_set_standings)
         end))
 
-    LedgerManager:RegisterEntryType(
-        LEDGER_DKP.Decay,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.DKP.Decay,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPDecay)")
             apply_mutator(entry, mutate_decay_standings)
         end))
 
-    LedgerManager:RegisterEntryType(
-        LEDGER_DKP.ModifyRoster,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.DKP.ModifyRoster,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModifyRoster)")
             apply_roster_mutator(entry, mutate_update_standings)
         end))
 
-    LedgerManager:RegisterEntryType(
-        LEDGER_DKP.DecayRoster,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.DKP.DecayRoster,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPDecayRoster)")
             apply_roster_mutator(entry, mutate_decay_standings)
         end))
 
-    LedgerManager:RegisterEntryType(
-        LEDGER_DKP.ModifyRaid,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.DKP.ModifyRaid,
         (function(entry)
             LOG:TraceAndCount("mutator(DKPModifyRaid)")
             apply_raid_mutator(self, entry, mutate_update_standings)
         end))
 
-    MODULES.ConfigManager:RegisterUniversalExecutor("pom", "PointManager", self)
+
 end
 
 function PointManager:UpdatePoints(roster, targets, value, reason, action, note, forceInstant)
@@ -215,7 +204,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
         LOG:Error("PointManager:UpdatePoints(): Value is not a number")
         return
     end
-    if not typeof(roster, Roster) then
+    if not typeof(roster, CLM.MODELS.Roster) then
         LOG:Error("PointManager:UpdatePoints(): Missing valid roster")
         return
     end
@@ -223,7 +212,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     local uid = roster:UID()
 
     -- Always a list, even for single entry
-    if typeof(targets, Profile) or type(targets) == "number" or type(targets) == "string" then
+    if typeof(targets, CLM.MODELS.Profile) or type(targets) == "number" or type(targets) == "string" then
         targets = { targets }
     elseif type(targets) ~= "table" then
         LOG:Error("PointManager:UpdatePoints(): Invalid targets list")
@@ -233,11 +222,11 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     note = strsub32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.Modify:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.DKP.Modify:new(uid, targets, value, reason, note)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = LEDGER_DKP.Set:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.DKP.Set:new(uid, targets, value, reason, note)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = LEDGER_DKP.Decay:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.DKP.Decay:new(uid, targets, value, reason, note)
     end
 
     local t = entry:targets()
@@ -246,7 +235,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
         return
     end
 
-    LedgerManager:Submit(entry, forceInstant)
+    CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
 function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, note, forceInstant)
@@ -259,7 +248,7 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNe
         LOG:Error("PointManager:UpdateRosterPoints(): Value is not a number")
         return
     end
-    if not typeof(roster, Roster) then
+    if not typeof(roster, CLM.MODELS.Roster) then
         LOG:Error("PointManager:UpdateRosterPoints(): Missing valid roster")
         return
     end
@@ -269,14 +258,14 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNe
     note = strsub32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.ModifyRoster:new(uid, value, reason, note)
+        entry = CLM.MODELS.LEDGER.DKP.ModifyRoster:new(uid, value, reason, note)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-    --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
+    --     entry = LEDGER.DKP.Set:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = LEDGER_DKP.DecayRoster:new(uid, value, reason, ignoreNegatives, note)
+        entry = CLM.MODELS.LEDGER.DKP.DecayRoster:new(uid, value, reason, ignoreNegatives, note)
     end
 
-    LedgerManager:Submit(entry, forceInstant)
+    CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
 function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceInstant)
@@ -289,7 +278,7 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceI
         LOG:Error("PointManager:UpdateRaidPoints(): Value is not a number")
         return
     end
-    if not typeof(raid, Raid) then
+    if not typeof(raid, CLM.MODELS.Raid) then
         LOG:Error("PointManager:UpdateRaidPoints(): Missing valid raid")
         return
     end
@@ -299,24 +288,20 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceI
     local includeBench = raid:Configuration():Get("autoAwardIncludeBench") and true or false
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = LEDGER_DKP.ModifyRaid:new(uid, value, reason, note, includeBench)
-    -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-    --     entry = LEDGER_DKP.Set:new(uid, targets, value, reason)
-    -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-    --     entry = LEDGER_DKP.DecayRoster:new(uid, value, reason)
+        entry = CLM.MODELS.LEDGER.DKP.ModifyRaid:new(uid, value, reason, note, includeBench)
     end
 
-    LedgerManager:Submit(entry, forceInstant)
+    CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
 function PointManager:RemovePointChange(pointHistory, forceInstant)
     LOG:Trace("PointManager:RemovePointChange()")
-    if not typeof(pointHistory, PointHistory) then
+    if not typeof(pointHistory, CLM.MODELS.PointHistory) then
         LOG:Error("PointManager:RemovePointChange(): Missing valid point history")
         return
     end
-    -- TODO: Add entry to track who removed?
-    LedgerManager:Remove(pointHistory:Entry(), forceInstant)
+
+    CLM.MODULES.LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 
 function PointManager:UpdatePointsDirectly(roster, targets, value, reason, timestamp, creator)
@@ -326,21 +311,21 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, times
         return
     end
 
-    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator)
+    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, pointHistoryEntry, true)
 end
 
-function PointManager:UpdatePointsDirectlyWithoutHistory(roster, targets, value, reason, timestamp, creator)
-    LOG:Trace("PointManager:UpdatePointsDirectly()")
-    if not roster then
-        LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
-        return
-    end
+-- function PointManager:UpdatePointsDirectlyWithoutHistory(roster, targets, value, reason, timestamp, creator)
+--     LOG:Trace("PointManager:UpdatePointsDirectly()")
+--     if not roster then
+--         LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
+--         return
+--     end
 
-    update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, nil, true)
-end
+--     update_profile_standings(mutate_update_standings, roster, targets, value, reason, timestamp, nil, true)
+-- end
 
 function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     LOG:Trace("PointManager:AddPointHistory()")
@@ -352,7 +337,7 @@ function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then
-            local targetProfile = ProfileManager:GetProfileByGUID(target)
+            local targetProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
             if targetProfile then
                 roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
             end
@@ -367,11 +352,11 @@ function PointManager:AddFakePointHistory(roster, targets, value, reason, timest
         return
     end
 
-    local pointHistoryEntry = FakePointHistory:New(targets, timestamp, value, reason, creator, note)
+    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then
-            local targetProfile = ProfileManager:GetProfileByGUID(target)
+            local targetProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
             if targetProfile then
                 roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
             end
@@ -427,4 +412,4 @@ CONSTANTS.POINT_CHANGE_REASONS = {
 
 CONSTANTS.POINT_CHANGE_REASONS.ALL = UTILS.mergeDicts(CONSTANTS.POINT_CHANGE_REASONS.GENERAL, CONSTANTS.POINT_CHANGE_REASONS.INTERNAL)
 
-MODULES.PointManager = PointManager
+CLM.MODULES.PointManager = PointManager

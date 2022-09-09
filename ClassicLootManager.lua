@@ -23,8 +23,8 @@ local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 
 local function Initialize_SavedVariables()
-    if type(CLM_DB) ~= "table" then
-        CLM_DB = {
+    if type(CLM2_DB) ~= "table" then
+        CLM2_DB = {
             global = {
                 version = {
                     major = 0,
@@ -40,30 +40,30 @@ local function Initialize_SavedVariables()
         }
     end
 
-    if type(CLM_Logs) ~= "table" then
-        CLM_Logs = {}
+    if type(CLM2_Logs) ~= "table" then
+        CLM2_Logs = {}
     end
 end
 
 local function Initialize_Logger()
-    LOG:SetSeverity(CLM_DB.global.logger.severity)
-    LOG:SetVerbosity(CLM_DB.global.logger.verbosity)
+    LOG:SetSeverity(CLM2_DB.global.logger.severity)
+    LOG:SetVerbosity(CLM2_DB.global.logger.verbosity)
     LOG:SetPrefix("CLM")
-    LOG:SetDatabase(CLM_Logs)
+    LOG:SetDatabase(CLM2_Logs)
 end
 
 local function Initialize_Versioning()
     -- Parse autoversion
     local major, minor, patch, changeset = string.match(CLM.AUTOVERSION, "^v(%d+).(%d+).(%d+)-?(.*)")
-    local old = CLM_DB.global.version
+    local old = CLM2_DB.global.version
     local new = {
-        major = tonumber(major) or 1,
+        major = tonumber(major) or 2,
         minor = tonumber(minor) or 0,
         patch = tonumber(patch) or 0,
         changeset = changeset or ""
     }
     -- set new version
-    CLM_DB.global.version = new
+    CLM2_DB.global.version = new
     -- update string
     changeset = new.changeset
     if changeset and changeset ~= "" then
@@ -82,7 +82,7 @@ local function Initialize_Versioning()
 end
 
 function CORE:GetVersion()
-    return CLM_DB.global.version
+    return CLM2_DB.global.version
 end
 
 function CORE:GetVersionString()
@@ -104,9 +104,9 @@ function CORE:_InitializeBackend()
     MODULES.EventManager:Initialize()
     MODULES.GuildInfoListener:Initialize()
     MODULES.LedgerManager:Initialize()
-    if type(self.Debug) == "function" then
-        self.Debug()
-    end
+    -- if type(self.Debug) == "function" then
+    --     self.Debug()
+    -- end
 end
 
 function CORE:_InitializeFeatures()
@@ -132,39 +132,28 @@ function CORE:_InitializeFeatures()
     CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
     CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
     CLM.Integration:Initialize() -- Initialize external (to wow) integrations
+    CLM.DatabaseUpgradeImporter:Initialize() -- Initialize import for JSON data from CLM1
 end
 
-local function getIcon(icon)
-    return "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-" .. icon .. "-32.tga"
+function CORE:_InitializeMinimap()
+    LOG:Trace("CORE:_InitializeMinimap()")
+    -- Initialize Minmap
+    MODULES.Minimap:Initialize()
 end
 
-function CORE:_InitializeFrontend()
-    LOG:Trace("CORE:_InitializeFrontend()")
+function CORE:_InitializeOptions()
+    LOG:Trace("CORE:_InitializeOptions()")
     -- No GUI / OPTIONS should be dependent on each other ever, only on the managers
     for _, module in pairs(CLM.OPTIONS) do
         module:Initialize()
     end
+end
+
+function CORE:_InitializeGUI()
+    LOG:Trace("CORE:_InitializeGUI()")
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
-    -- Initialize Minmap
-    MODULES.Minimap:Initialize()
-    -- Hook Minimap Icon
-    hooksecurefunc(MODULES.LedgerManager, "UpdateSyncState", function()
-        local icon
-        if MODULES.LedgerManager:IsInIncoherentState() then
-            icon = "red"
-        elseif MODULES.LedgerManager:IsInSync() then
-            icon = "green"
-        elseif MODULES.LedgerManager:IsSyncOngoing() then
-            icon = "yellow"
-        elseif MODULES.SandboxManager:IsSandbox() or MODULES.LedgerManager:IsTimeTraveling() then
-            icon = "white"
-        else -- Unknown state
-            icon = "blue"
-        end
-        CLM.MinimapDBI.icon = getIcon(icon)
-    end)
 end
 
 function CORE:_Enable()
@@ -173,28 +162,38 @@ function CORE:_Enable()
     MODULES.LedgerManager:Enable()
 end
 
-function CORE:_SequentialInitialize(stage)
+local stages = {
+    "_InitializeCore",
+    "_InitializeBackend",
+    "_InitializeMinimap",
+    "_InitializeFeatures",
+    "_InitializeOptions",
+    "_InitializeGUI"
+}
+
+local finalStage = "_Enable"
+
+local function getStage(stage)
+    return stages[stage] or finalStage
+end
+
+function CORE:_SequentialInitialize(stageNum)
     LOG:Trace("CORE:_SequentialInitialize()")
-    if stage == 0 then
-        self:_InitializeCore()
-    elseif stage == 1 then
-        self:_InitializeBackend()
-    elseif stage == 2 then
-        self:_InitializeFeatures()
-    elseif stage == 3 then
-        self:_InitializeFrontend()
-    elseif stage >= 4 then
-        self:_Enable()
+    local stage = getStage(stageNum)
+    LOG:Info("Initialization stage [%s]", stage)
+    self[stage]()
+
+    if stage == finalStage then
         LOG:Info(CLM.L["Boot complete"])
         return
     end
-    C_Timer.After(0.1, function() CORE:_SequentialInitialize(stage + 1) end)
+    C_Timer.After(0.1, function() CORE:_SequentialInitialize(stageNum + 1) end)
 end
 
 function CORE:_ExecuteInitialize()
     if self._initialize_fired then return end
     self._initialize_fired = true
-    C_Timer.After(1, function() CORE:_SequentialInitialize(0) end)
+    C_Timer.After(1, function() CORE:_SequentialInitialize(1) end)
 end
 
 function CORE:_Initialize()

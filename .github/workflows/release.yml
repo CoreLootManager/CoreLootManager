@@ -16,44 +16,44 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-  bigwigs_release_classic:
-    needs:
-      - create_github_release
-    name: Build via BigWigs packager for Classic
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: install gitman
-        run: pipx install gitman
-      - name: install dependencies
-        run: gitman install
-      - name: install yq
-        run: pipx install yq
-      - name: verify required files recursively
-        run: scripts/verify-dependencies ClassicLootManager.toc
-      - name: Remove git dirs from gitman deps
-        run:  find ExternalLibs -type d -name ".git" -execdir rm -rf {} \; -prune
-      - name: Copy gitman deps
-        run: mkdir -p .release/ClassicLootManager && mv ExternalLibs .release/ClassicLootManager/
-      - name: Bigwigs packager
-        uses: BigWigsMods/packager@671e9a055942010dda29a24334510ac1aee0d911
-        env:
-          CF_API_KEY: ${{ secrets.CF_TOKEN }}
-          WOWI_API_TOKEN: ${{ secrets.WOWI_TOKEN }}
-        with:
-          args: "-o -e -u -m .pkgmeta -g classic"
-      - name: Get name of zip file
-        run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
-      - name: Upload artifact to github
-        uses: fnkr/github-action-ghr@v1
-        env:
-          GHR_PATH: ${{ env.artifact }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # bigwigs_release_classic:
+  #   needs:
+  #     - create_github_release
+  #   name: Build via BigWigs packager for Classic
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: install gitman
+  #       run: pipx install gitman
+  #     - name: install dependencies
+  #       run: gitman install
+  #     - name: install yq
+  #       run: pipx install yq
+  #     - name: verify required files recursively
+  #       run: scripts/verify-dependencies ClassicLootManager.toc
+  #     - name: Remove git dirs from gitman deps
+  #       run:  find ExternalLibs -type d -name ".git" -execdir rm -rf {} \; -prune
+  #     - name: Copy gitman deps
+  #       run: mkdir -p .release/ClassicLootManager && mv ExternalLibs .release/ClassicLootManager/
+  #     - name: Bigwigs packager
+  #       uses: BigWigsMods/packager@671e9a055942010dda29a24334510ac1aee0d911
+  #       env:
+  #         CF_API_KEY: ${{ secrets.CF_TOKEN }}
+  #         WOWI_API_TOKEN: ${{ secrets.WOWI_TOKEN }}
+  #       with:
+  #         args: "-o -e -u -m .pkgmeta -g classic"
+  #     - name: Get name of zip file
+  #       run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
+  #     - name: Upload artifact to github
+  #       uses: fnkr/github-action-ghr@v1
+  #       env:
+  #         GHR_PATH: ${{ env.artifact }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  bigwigs_release_tbcc:
+  bigwigs_release_wrath:
     needs:
       - create_github_release
-    name: Build via BigWigs packager for TBCC
+    name: Build via BigWigs packager for Wrath Classic
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -70,13 +70,12 @@ jobs:
       - name: Copy gitman deps
         run: mkdir -p .release/ClassicLootManager && mv ExternalLibs .release/ClassicLootManager/
       - name: Bigwigs packager
-        uses: BigWigsMods/packager@671e9a055942010dda29a24334510ac1aee0d911
+        uses: BigWigsMods/packager@7cd7fe5fede4ca80f63742e6bc1d777914814380
         env:
           CF_API_KEY: ${{ secrets.CF_TOKEN }}
-          WOWI_API_TOKEN: ${{ secrets.WOWI_TOKEN }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_TOKEN }}
         with:
-          args: "-o -e -u -m .pkgmeta -g bcc"
+          args: "-o -e -u -m .pkgmeta -g wrath"
       - name: Get name of zip file
         run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
       - name: Upload artifact to github
@@ -85,17 +84,17 @@ jobs:
           GHR_PATH: ${{ env.artifact }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  discord_announce:
-    needs:
-      - bigwigs_release_classic
-      - bigwigs_release_tbcc
-    name: Post a Discord Announcement
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: install discordpy
-        run: pip3 install discord.py
-      - name: announce
-        run: python3 scripts/post_release.py $WEBHOOK_URL
-        env:
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+  # discord_announce:
+  #   needs:
+  #     - bigwigs_release_classic
+  #     - bigwigs_release_tbcc
+  #   name: Post a Discord Announcement
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: install discordpy
+  #       run: pip3 install discord.py
+  #     - name: announce
+  #       run: python3 scripts/post_release.py $WEBHOOK_URL
+  #       env:
+  #         WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

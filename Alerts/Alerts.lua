@@ -1,4 +1,5 @@
 local _, CLM = ...
+local CONSTANTS = CLM.CONSTANTS
 
 local eventDispatcher = LibStub("EventDispatcher")
 
@@ -10,12 +11,14 @@ local USER_BID_DENIED = "CLM_BID_DENIED"
 local POINT_CHANGE_REASON_DECAY = 101
 
 local function DKPReceivedAlertFrame_SetUp(self, data)
-    local value = tonumber(data.value)
+    local value = tonumber(data.value) or 0
     value = (value ~= nil) and tostring(value) or tostring(data.value)
     if data.reason ~= POINT_CHANGE_REASON_DECAY then
-        self.Amount:SetText(string.format(CLM.L["%s DKP"], value))
+        local suffix = ((data.pointType == CONSTANTS.POINT_TYPE.DKP) and CLM.L["DKP"] or CLM.L["EP"])
+        self.Amount:SetText(string.format(CLM.L["%s %s"], value, suffix))
     else
-        self.Amount:SetText(string.format(CLM.L["%s %% DKP decay"], value))
+        local suffix = ((data.pointType == CONSTANTS.POINT_TYPE.DKP) and CLM.L["DKP"] or CLM.L["EP/GP"])
+        self.Amount:SetText(string.format(CLM.L["%s %% %s decay"], value, suffix))
     end
     PlaySound(SOUNDKIT.UI_EPICLOOT_TOAST)
 end

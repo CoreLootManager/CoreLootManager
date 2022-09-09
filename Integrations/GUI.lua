@@ -1,33 +1,37 @@
+-- ------------------------------- --
 local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
+local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
+local pairs = pairs
+local tonumber, date = tonumber, date
+local tinsert, tsort = table.insert, table.sort
+local GetServerTime = GetServerTime
 
 -- Libs
 local AceGUI = LibStub("AceGUI-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0"),
-    gui = LibStub("AceConfigDialog-3.0")
-}
 
 local ALL = 0
 
 local EXPORT_DATA_TYPE_GUI = {
-    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = CLM.L["Configuration"],
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = CLM.L["Standings"],
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = CLM.L["Point History"],
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = CLM.L["Loot History"],
-    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = CLM.L["Raids"],
+    -- [CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = CLM.L["Configuration"],
+    [CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = CLM.L["Standings"],
+    [CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = CLM.L["Point History"],
+    [CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = CLM.L["Loot History"],
+    -- [CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = CLM.L["Raids"],
 
 }
 
 local FORMAT_VALUES_GUI =  {
-    [CLM.CONSTANTS.FORMAT_VALUE.XML] = "XML",
-    -- [CLM.CONSTANTS.FORMAT_VALUE.CSV] = "CSV",
-    [CLM.CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
+    [CONSTANTS.FORMAT_VALUE.XML] = "XML",
+    -- [CONSTANTS.FORMAT_VALUE.CSV] = "CSV",
+    [CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
 }
 
 -- local function GetProgressText(percent)
@@ -50,11 +54,11 @@ local FORMAT_VALUES_GUI =  {
 -- end
 
 local function InitializeDB(self)
-    self.db = MODULES.Database:GUI('export', {
+    self.db = CLM.MODULES.Database:GUI('export', {
         location = {nil, nil, "CENTER", 0, 0 },
         export_config = {
             data = {},
-            format = CLM.CONSTANTS.FORMAT_VALUE.XML,
+            format = CONSTANTS.FORMAT_VALUE.XML,
             timerange = {
                 begin = {
                     day = 1,
@@ -77,12 +81,12 @@ local profileList = {}
 local function GetProfileList()
     if redoProfileList then
         profileList = {}
-        for _, profile in pairs(MODULES.ProfileManager:GetProfiles()) do
-            table.insert(profileList, UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff"))
+        for _, profile in pairs(CLM.MODULES.ProfileManager:GetProfiles()) do
+            tinsert(profileList, UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff"))
         end
         redoProfileList = false
     end
-    table.sort(profileList, function(a, b)
+    tsort(profileList, function(a, b)
         return UTILS.RemoveColorCode(a) < UTILS.RemoveColorCode(b)
     end)
     profileList[ALL] = UTILS.ColorCodeText("Everyone", "6699ff")
@@ -99,7 +103,7 @@ function ExportGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         redoProfileList = true
     end)
@@ -113,9 +117,8 @@ local days_in_month = {
 
 local leap_years = UTILS.Set({2022, 2024})
 
-local function get_days_in_month(month, year)
+local function getDaysInMonth(month, year)
     if month == 2 then
-        print(leap_years[year])
         return leap_years[year] and 29 or 28
     else
         return days_in_month[month] or 0
@@ -129,7 +132,7 @@ local timerange_select = {
 }
 
 for i=1,31 do
-    table.insert(timerange_select.day, i)
+    tinsert(timerange_select.day, i)
 end
 
 local MONTHS = {
@@ -157,11 +160,11 @@ end
 
 local function SanitizeDates(self)
     -- Check days in the month
-    local begin_days = get_days_in_month(self.db.export_config.timerange.begin.month, self.db.export_config.timerange.begin.year)
+    local begin_days = getDaysInMonth(self.db.export_config.timerange.begin.month, self.db.export_config.timerange.begin.year)
     if self.db.export_config.timerange.begin.day > begin_days then
         self.db.export_config.timerange.begin.day = begin_days
     end
-    local finish_days = get_days_in_month(self.db.export_config.timerange.finish.month, self.db.export_config.timerange.finish.year)
+    local finish_days = getDaysInMonth(self.db.export_config.timerange.finish.month, self.db.export_config.timerange.finish.year)
     if self.db.export_config.timerange.finish.day > finish_days then
         self.db.export_config.timerange.finish.day = finish_days
     end
@@ -206,7 +209,7 @@ local function SetOffsetTime(self, offset)
 end
 
 local function Create(self)
-    local parent = AceGUI:Create("Frame")
+    local parent = AceGUI:Create("Window")
     parent:SetLayout("Flow")
     parent:EnableResize(false)
     local options = {
@@ -350,7 +353,7 @@ local function Create(self)
                     local roster_list = {
                         [ALL] = UTILS.ColorCodeText("All", "6699ff")
                     }
-                    for name, roster in pairs(MODULES.RosterManager:GetRosters()) do
+                    for name, roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
                         roster_list[roster:UID()] = name
                     end
                     return roster_list
@@ -402,26 +405,26 @@ local function Create(self)
                 func = (function()
                     local rosters = {}
                     if self.roster_select_list[ALL] then
-                        for _, roster in pairs(MODULES.RosterManager:GetRosters()) do
-                            table.insert(rosters, roster:UID())
+                        for _, roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
+                            tinsert(rosters, roster:UID())
                         end
                     else
                         for UID, status in pairs(self.roster_select_list) do
                             if status then
-                                table.insert(rosters, UID)
+                                tinsert(rosters, UID)
                             end
                         end
                     end
                     local profiles = {}
                     if self.profile_select_list[ALL] then
-                        for GUID, _ in pairs(MODULES.ProfileManager:GetProfiles()) do
-                            table.insert(rosters, GUID)
+                        for GUID, _ in pairs(CLM.MODULES.ProfileManager:GetProfiles()) do
+                            tinsert(rosters, GUID)
                         end
                     else
                         for selectedId, status in pairs(self.profile_select_list) do
                             if status then
-                                local profile = MODULES.ProfileManager:GetProfileByName(UTILS.RemoveColorCode(profileList[selectedId]))
-                                table.insert(profiles, profile:GUID())
+                                local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.RemoveColorCode(profileList[selectedId]))
+                                tinsert(profiles, profile:GUID())
                             end
                         end
                     end
@@ -474,8 +477,8 @@ local function Create(self)
     }
 
 
-    LIBS.registry:RegisterOptionsTable(CLM.L["Export"], options)
-    LIBS.gui:Open(CLM.L["Export"], parent)
+    AceConfigRegistry:RegisterOptionsTable(CLM.L["Export"], options)
+    AceConfigDialog:Open(CLM.L["Export"], parent)
 
     return parent
 end
@@ -508,7 +511,7 @@ function ExportGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    MODULES.ConfigManager:RegisterSlash(options)
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function ExportGUI:Reset()

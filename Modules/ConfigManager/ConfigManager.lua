@@ -1,15 +1,16 @@
-local _, CLM = ...;
-
-local LOG = CLM.LOG
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local LIBS =  {
-    registry = LibStub("AceConfigRegistry-3.0"),
-    config = LibStub("AceConfig-3.0"),
-    gui = LibStub("AceConfigDialog-3.0")
-}
+local type, pairs, ipairs = type, pairs, ipairs
+
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local ConfigManager = { enabled = false }
 
@@ -20,21 +21,20 @@ end
 function ConfigManager:Initialize()
     LOG:Trace("ConfigManager:Initialize()")
     self.generators = {
-        [CONSTANTS.CONFIGS.GROUP.GLOBAL]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
-        -- [CONSTANTS.CONFIGS.GROUP.PERSONAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.PERSONAL) end),
-        -- [CONSTANTS.CONFIGS.GROUP.GUILD]    = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GUILD) end),
-        [CONSTANTS.CONFIGS.GROUP.ROSTER]   = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end)
+        [CONSTANTS.CONFIGS.GROUP.GLOBAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
+        [CONSTANTS.CONFIGS.GROUP.ROSTER] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end),
+        [CONSTANTS.CONFIGS.GROUP.INTEGRATIONS] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS) end)
     }
 
     self.options = {}
     for _, config in ipairs(CONSTANTS.CONFIGS.ORDERED_GROUPS) do
-        local parent = CONSTANTS.CONFIGS.GROUP.GLOBAL
-        if config == CONSTANTS.CONFIGS.GROUP.GLOBAL then
-            parent = nil
+        local parent = nil
+        if config ~= CONSTANTS.CONFIGS.GROUP.GLOBAL then
+            parent = CONSTANTS.CONFIGS.GROUP.GLOBAL
         end
-        self.options[config] = { type = "group", args = {}}
-        LIBS.registry:RegisterOptionsTable(config, self.generators[config])
-        LIBS.gui:AddToBlizOptions(config, config, parent)
+        self.options[config] = { type = "group", childGroups = "tab", args = {}}
+        AceConfigRegistry:RegisterOptionsTable(config, self.generators[config])
+        AceConfigDialog:AddToBlizOptions(config, config, parent)
     end
     self.slash_options = { type = "group", args = {}}
 end
@@ -91,23 +91,8 @@ function ConfigManager:RegisterSlash(options)
         end
     end
 
-    LIBS.config:RegisterOptionsTable("CLM", self.slash_options, {"clm", "classiclootmanager"})
+    AceConfig:RegisterOptionsTable("CLM", self.slash_options, {"clm", "classiclootmanager"})
     return true
-end
-
-function ConfigManager:RegisterUniversalExecutor(command, name, object)
-    --@debug@
-    local options = {
-        [command] = {
-            type = "input",
-            name = name .. " Debug",
-            desc = "Debug Execute any " .. name .. " API",
-            set = function(info, value) UTILS.UniversalCliMethodExecutor(name, object, value) end
-        }
-    }
-
-    self:RegisterSlash(options)
-    --@end-debug@
 end
 
 function ConfigManager:UpdateOptions(group, register)
@@ -116,31 +101,28 @@ function ConfigManager:UpdateOptions(group, register)
         return
     end
     if register then
-        LIBS.config:RegisterOptionsTable(group, self.generators[group])
+        AceConfig:RegisterOptionsTable(group, self.generators[group])
     end
-    LIBS.registry:NotifyChange(group)
+    AceConfigRegistry:NotifyChange(group)
 end
 
 -- Publish API
-MODULES.ConfigManager = ConfigManager
+CLM.MODULES.ConfigManager = ConfigManager
 
 CONSTANTS.CONFIGS = {
     GROUPS = UTILS.Set({
         "Classic Loot Manager",
-        -- "Personal",
-        -- "Guild",
-        CLM.L["Rosters"]
+        CLM.L["Rosters"],
+        CLM.L["Integrations"]
     }),
     ORDERED_GROUPS = {
         "Classic Loot Manager",
-        -- "Personal",
-        -- "Guild",
-        CLM.L["Rosters"]
+        CLM.L["Rosters"],
+        CLM.L["Integrations"]
     },
     GROUP = {
         GLOBAL = "Classic Loot Manager",
-        -- PERSONAL = "Personal",
-        -- GUILD = "Guild",
-        ROSTER = CLM.L["Rosters"]
+        ROSTER = CLM.L["Rosters"],
+        INTEGRATIONS = CLM.L["Integrations"]
     },
 }

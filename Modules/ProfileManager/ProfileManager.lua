@@ -1,28 +1,19 @@
-local _, CLM = ...
--- Upvalues
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
+-- ------------------------------- --
+local  _, CLM = ...
+-- ------ CLM common cache ------- --
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
--- local ACL_LEVEL = CONSTANTS.ACL.LEVEL
+local UTILS     = CLM.UTILS
+-- ------------------------------- --
 
-local keys = UTILS.keys
-local typeof = UTILS.typeof
-local empty = UTILS.empty
-local capitalize = UTILS.capitalize
-local getGuidFromInteger = UTILS.getGuidFromInteger
-local NumberToClass = UTILS.NumberToClass
-local whoamiGUID = UTILS.whoamiGUID
+local pairs, type, strsplit, strlower = pairs, type, strsplit, strlower
+local GetNumGuildMembers, GetGuildRosterInfo, UnitIsPlayer = GetNumGuildMembers, GetGuildRosterInfo, UnitIsPlayer
+local GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID = GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID
+local sformat = string.format
 
-local Profile = CLM.MODELS.Profile
-local PruneLog = CLM.MODELS.ProfilePruneLog
+local whoamiGUID = UTILS.whoamiGUID()
 
-local LedgerManager = MODULES.LedgerManager
-
-local LEDGER_PROFILE = CLM.MODELS.LEDGER.PROFILE
-
-local ProfileManager = { }
-
+local ProfileManager = {}
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")
 
@@ -31,42 +22,42 @@ function ProfileManager:Initialize()
         profiles = {}
     }
 
-    self.db = MODULES.Database:Personal('profileManager', {
+    self.db = CLM.MODULES.Database:Personal('profileManager', {
         pruneLog = {}
     })
 
     -- Register mutators
-    LedgerManager:RegisterEntryType(
-        LEDGER_PROFILE.Update,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.PROFILE.Update,
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileUpdate)")
             local iGUID = entry:GUID()
             if type(iGUID) ~= "number" then return end
-            local GUID = getGuidFromInteger(iGUID)
+            local GUID = UTILS.getGuidFromInteger(iGUID)
             local name = entry:name()
-            if empty(name) then return end
+            if UTILS.empty(name) then return end
 
-            local class = capitalize(NumberToClass(entry:ingameClass()))
+            local class = UTILS.GetClassReadable(UTILS.NumberToClass(entry:ingameClass()))
             local main = entry:main()
-            main =  (type(main) == "number" and main ~= 0) and getGuidFromInteger(main) or ""
+            main =  (type(main) == "number" and main ~= 0) and UTILS.getGuidFromInteger(main) or ""
             -- Check if it's an update
             local profileInternal = self.cache.profiles[GUID]
             if profileInternal then
-                if empty(class) then
+                if UTILS.empty(class) then
                     class = profileInternal:Class()
                 end
-                if empty(main) then
+                if UTILS.empty(main) then
                     main = profileInternal:Main()
                 end
                 profileInternal.class = class
                 profileInternal.main = main
             else
-                local profile = Profile:New(entry, name, class, main)
+                local profile = CLM.MODELS.Profile:New(entry, name, class, main)
                 profile:SetGUID(GUID)
                 self.cache.profiles[GUID] = profile
                 self.cache.profilesGuidMap[strlower(name)] = GUID
                 -- Check for conditional restore
-                local rosters = MODULES.RosterManager:GetRosters()
+                local rosters = CLM.MODULES.RosterManager:GetRosters()
                 for _, roster in pairs(rosters) do
                     if roster:IsConditinallyRemoved(GUID) then
                         roster:RestoreConditionallyRemoved(GUID)
@@ -75,13 +66,13 @@ function ProfileManager:Initialize()
             end
         end))
 
-    LedgerManager:RegisterEntryType(
-        LEDGER_PROFILE.Remove,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.PROFILE.Remove,
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileRemove)")
             local GUID = entry:GUID()
             if type(GUID) ~= "number" then return end
-            GUID = getGuidFromInteger(GUID)
+            GUID = UTILS.getGuidFromInteger(GUID)
             local profile = self.cache.profiles[GUID]
             if profile then
                 -- Check alt-main linking before removing
@@ -101,7 +92,7 @@ function ProfileManager:Initialize()
                 -- Remove
                 self.cache.profiles[GUID] = nil
                 -- Conditonally remove for backwards compatibility
-                local rosters = MODULES.RosterManager:GetRosters()
+                local rosters = CLM.MODULES.RosterManager:GetRosters()
                 for _, roster in pairs(rosters) do
                     if roster:IsProfileInRoster(GUID) then
                         roster:MarkAsConditionallyRemoved(GUID)
@@ -110,24 +101,24 @@ function ProfileManager:Initialize()
             end
         end))
 
-    LedgerManager:RegisterEntryType(
-        LEDGER_PROFILE.Link,
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.PROFILE.Link,
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLink)")
             local altGUID = entry:GUID()
             if type(altGUID) ~= "number" then return end
-            altGUID = getGuidFromInteger(altGUID)
+            altGUID = UTILS.getGuidFromInteger(altGUID)
             local mainGUID = entry:main()
             if type(mainGUID) ~= "number" then return end
             if altGUID == mainGUID then return end
-            mainGUID = getGuidFromInteger(mainGUID)
+            mainGUID = UTILS.getGuidFromInteger(mainGUID)
             local altProfile = self:GetProfileByGUID(altGUID)
-            if not typeof(altProfile, Profile) then return end
+            if not UTILS.typeof(altProfile, CLM.MODELS.Profile) then return end
             local mainProfile = self:GetProfileByGUID(mainGUID)
-            if not typeof(mainProfile, Profile) then -- Unlink
+            if not UTILS.typeof(mainProfile, CLM.MODELS.Profile) then -- Unlink
                 -- Check if our main exists
                 local currentMainProfile = self:GetProfileByGUID(altProfile:Main())
-                if not typeof(currentMainProfile, Profile) then return end
+                if not UTILS.typeof(currentMainProfile, CLM.MODELS.Profile) then return end
                 -- Remove main from this alt
                 altProfile:ClearMain()
                 -- Remove alt count from main
@@ -136,7 +127,7 @@ function ProfileManager:Initialize()
                 -- Sanity check if not setting existing one
                 if altProfile:Main() == mainProfile:GUID() then return end
                 -- Do not allow alt chaining if main is alt
-                if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
+                if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), CLM.MODELS.Profile) then return end
                 -- Do not allow alt chaining if alt has alts
                 if altProfile:HasAlts() then return end
                 -- Set new main of this alt
@@ -145,7 +136,7 @@ function ProfileManager:Initialize()
                 mainProfile:AddAlt(altGUID)
                 -- Handle consequences of linking:
                 -- For each roster this alt is present in:
-                local rosters = MODULES.RosterManager:GetRosters()
+                local rosters = CLM.MODULES.RosterManager:GetRosters()
                 for _,roster in pairs(rosters) do
                     if roster:IsProfileInRoster(altGUID) then
                         -- 1) Add main if not present in roster
@@ -154,24 +145,62 @@ function ProfileManager:Initialize()
                         local pointSum = roster:Standings(mainGUID) + roster:Standings(altGUID)
                         -- 3) Set new Main standings
                         roster:SetStandings(mainGUID, pointSum)
-                        -- 4) Mirror standings from main to alts
+                        -- 2a) Sum spent points of the pool and new alt
+                        local spentSum = roster:GetPointInfoForPlayer(mainGUID).spent + roster:GetPointInfoForPlayer(altGUID).spent
+                        -- 3a) Set new Main spent
+                        roster:SetSpent(mainGUID, spentSum)
+                        -- 4) Mirror standings (includes spent) from main to alts
                         roster:MirrorStandings(mainGUID, mainProfile:Alts(), true)
                         -- 5) Mirror weekly gains from main to alts
                         roster:MirrorWeeklyGains(mainGUID, mainProfile:Alts(), true)
                         -- 6) History entry
-                        local targets = keys(mainProfile:Alts())
+                        local targets = UTILS.keys(mainProfile:Alts())
                         table.insert(targets, 1, mainGUID)
-                        MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
+                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
                     end
                 end
             end
         end))
 
-    LedgerManager:RegisterOnRestart(function()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.PROFILE.Lock,
+        (function(entry)
+            LOG:TraceAndCount("mutator(ProfileLock)")
+            local action
+            if entry:lock() then
+                action = (function(p) p:Lock() end)
+            else
+                action = (function(p) p:Unlock() end)
+            end
+            -- Same action for all alts and mains
+            for _, target in ipairs(entry:targets()) do
+                local profile = self:GetProfileByGUID(UTILS.getGuidFromInteger(target))
+                if profile then
+                    action(profile) -- main lock/unlock
+                    if profile:HasAlts() then -- Is Main - has alts
+                        for altGUID in pairs(profile:Alts()) do
+                            local altProfile = self:GetProfileByGUID(altGUID)
+                            if altProfile then action(altProfile) end
+                        end
+                    elseif (profile:Main() ~= "") then -- is alt - has main
+                        local mainProfile = self:GetProfileByGUID(profile:Main())
+                        if mainProfile then
+                            action(mainProfile)
+                            for altGUID in pairs(mainProfile:Alts()) do
+                                local altProfile = self:GetProfileByGUID(altGUID)
+                                if altProfile then action(altProfile) end
+                            end
+                        end
+                    end
+                end
+            end
+        end))
+
+    CLM.MODULES.LedgerManager:RegisterOnRestart(function()
         self:WipeAll()
     end)
 
-    MODULES.ConfigManager:RegisterUniversalExecutor("pm", "ProfileManager", self)
+
 end
 
 function ProfileManager:NewProfile(GUID, name, class)
@@ -184,22 +213,47 @@ function ProfileManager:NewProfile(GUID, name, class)
         LOG:Error("NewProfile(): Empty name")
         return
     end
-    if self:GetProfileByGUID(GUID) or self:GetProfileByName(name) then
-        LOG:Debug("NewProfile(): %s (%s) already exists", name, GUID)
+    local guidProfile = self:GetProfileByGUID(GUID)
+    local nameProfile = self:GetProfileByName(name)
+
+    local discard, warning
+    if guidProfile then -- profile with this GUID already exists. Is this a rename?
+        if nameProfile then -- profile with name and guid exists
+            if guidProfile == nameProfile then -- same profile, same name - do nothing
+                discard = true
+            else -- 2 different profiles exist. Warning
+                discard = true
+                warning = sformat(CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."], GUID, name, guidProfile:GUID(), guidProfile:Name(), nameProfile:GUID(), nameProfile:Name())
+            end
+        else -- profile with this name does not exist - this is an actual rename
+            discard = false
+        end
+    else -- profile with this GUID does not exist. Is this new profile?
+        if nameProfile then -- name is used already by different profile? Warning
+            discard = true
+            warning = sformat(CLM.L["Profile %s already exists and is used by different GUID %s (%s). "], name, nameProfile:GUID(), nameProfile:Name())
+        else -- New profile!
+            discard = false
+        end
+    end
+    if discard then
+        if warning then LOG:Warning(warning) end
+        LOG:Debug("NewProfile(): discarding request", name, GUID)
         return
     end
+
     LOG:Debug("New profile: [%s]: %s", GUID, name)
-    LedgerManager:Submit(LEDGER_PROFILE.Update:new(GUID, name, class), true)
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Update:new(GUID, name, class), true)
 end
 
 function ProfileManager:RemoveProfile(GUID)
     LOG:Trace("ProfileManager:RemoveProfile()")
     if type(GUID) ~= "string" or GUID == "" then
-        LOG:Error("RemoveProfile(): Empty GUID")
+        LOG:Error("RemoveProfile(): UTILS.empty GUID")
         return
     end
     LOG:Debug("Remove profile: [%s]", GUID)
-    LedgerManager:Submit(LEDGER_PROFILE.Remove:new(GUID), true)
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Remove:new(GUID), true)
 end
 
 local function PruneProfile(self, GUID, log)
@@ -208,33 +262,47 @@ local function PruneProfile(self, GUID, log)
     local entry = profile:Entry()
     if not entry then return end
     log:Add(profile:Name())
-    LedgerManager:Remove(entry)
+    CLM.MODULES.LedgerManager:Remove(entry)
 end
 
 function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local altProfile = self:GetProfileByName(alt)
-    if not typeof(altProfile, Profile) then
+    if not UTILS.typeof(altProfile, CLM.MODELS.Profile) then
         LOG:Error("MarkAsAltByNames(): Invalid alt")
         return
     end
     local mainProfile = self:GetProfileByName(main)
     -- Unlink
-    if not typeof(mainProfile, Profile) then
+    if not UTILS.typeof(mainProfile, CLM.MODELS.Profile) then
         if altProfile:Main() ~= "" then
-            LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), nil), true)
+            CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), nil), true)
         end
     else -- Link
         -- Do not allow alt chaining if main is alt
-        if typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
+        if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), CLM.MODELS.Profile) then return end
         -- Do not allow alt chaining if alt has alts
         if altProfile:HasAlts() then return end
         -- Don't allow self setting
         if altProfile:GUID() == mainProfile:GUID() then return end
         -- Don't allow re-setting
         if altProfile:Main() == mainProfile:GUID() then return end
-        LedgerManager:Submit(LEDGER_PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
+        CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
     end
+end
+
+function ProfileManager:SetProfilesLock(profiles, lock)
+    LOG:Trace("ProfileManager:SetProfilesLock()")
+
+    local entry = CLM.MODELS.LEDGER.PROFILE.Lock:new(profiles, lock and true or false)
+
+    local t = entry:targets()
+    if not t or (#t == 0) then
+        LOG:Error("ProfileManager:SetProfilesLock(): Empty targets list")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(entry, true)
 end
 
 -- Functionalities
@@ -307,7 +375,7 @@ end
 
 function ProfileManager:PruneBelowLevel(minLevel, nop)
     LOG:Trace("ProfileManager:PruneBelowLevel()")
-    local log = PruneLog:New("level", nop)
+    local log = CLM.MODELS.PruneLog:New("level", nop)
     local prune
     if nop then
         LOG:Info("Pruning: No operation")
@@ -333,7 +401,7 @@ end
 
 function ProfileManager:PruneRank(rank, nop)
     LOG:Trace("ProfileManager:PruneRank()")
-    local log = PruneLog:New("rank", nop)
+    local log = CLM.MODELS.PruneLog:New("rank", nop)
     local prune
     if nop then
         LOG:Info("Pruning: No operation")
@@ -370,7 +438,7 @@ end
 
 function ProfileManager:PruneUnguilded(nop)
     LOG:Trace("ProfileManager:PruneUnguilded()")
-    local log = PruneLog:New("unguilded", nop)
+    local log = CLM.MODELS.PruneLog:New("unguilded", nop)
     local prune
     if nop then
         LOG:Info("Pruning: No operation")
@@ -390,7 +458,7 @@ function ProfileManager:PruneUnguilded(nop)
     end
     for GUID in pairs(self.cache.profiles) do
         if not GUIDs[GUID] then
-            prune(GUID, log)
+            prune(GUID)
             pruned = pruned + 1
         end
     end
@@ -405,7 +473,7 @@ end
 
 function ProfileManager:GetMyProfile()
     LOG:Trace("ProfileManager:GetMyProfile()")
-    return self:GetProfileByGUID(whoamiGUID())
+    return self:GetProfileByGUID(whoamiGUID)
 end
 
 -- Utility
@@ -427,4 +495,4 @@ function ProfileManager:GetProfileByName(name)
 end
 
 -- Publis API
-MODULES.ProfileManager = ProfileManager
+CLM.MODULES.ProfileManager = ProfileManager
