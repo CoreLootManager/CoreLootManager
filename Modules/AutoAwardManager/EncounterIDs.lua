@@ -566,6 +566,7 @@ CLM.EncounterIDs.WOTLK25 = {
             { id = 1140, name = EncounterIDsMap[1140] },
             { id = 1141, name = EncounterIDsMap[1141] },
             { id = 1142, name = EncounterIDsMap[1142] },
+            { id = 1143, name = EncounterIDsMap[1143] },
         },
     },
     {
