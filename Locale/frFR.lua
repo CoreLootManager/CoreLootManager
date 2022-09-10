@@ -757,6 +757,8 @@ CLM.L["High Priestess Mar'li"] = "Grande prêtresse Mar'li"
 CLM.L["High Warlord Naj'entus"] = "Grand seigneur de guerre Naj'entus"
 -- Modules/GUI/UnifiedGUI_History.lua:116
 CLM.L["History type"] = "Type d"
+-- .:indirectly
+CLM.L["History"] = "Histoire"
 -- Modules/AutoAwardManager/EncounterIDs.lua:130
 CLM.L["Hodir"] = "Hodir"
 -- .:indirectly
@@ -1278,6 +1280,8 @@ CLM.L["Prioritized"] = "Priorisé"
 CLM.L["Professor Putricide"] = "Professeur Putricide"
 -- Modules/ProfileManager/ProfileManager.lua:235
 CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "Le profil %s existe déjà et est utilisé par différents de Guid %s (%s)."
+-- .:indirectly
+CLM.L["Profiles"] = "Profils"
 -- Modules/PointManager/PointManager.lua:398
 CLM.L["Progression Bonus"] = "Bonus de progression"
 -- Modules/RosterManager/RosterManager.lua:285
