@@ -1,3 +1,5 @@
+# Classic Loot Manager v2.0.1
+Fix Multiple baby-age issues.
 # Classic Loot Manager v2.0.0
 <img src="https://cdn.discordapp.com/attachments/843129642298376252/1016670248646230026/CLM-wotlk.png" alt="CLM" width="128"/>
 

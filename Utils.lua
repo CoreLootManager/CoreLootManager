@@ -405,7 +405,7 @@ function UTILS.NumberToClass(number)
 end
 
 function UTILS.GetClassReadable(class)
-    if class == "DEATHKNIGHT" then return "Death Knight" end
+    if class == "DEATHKNIGHT" then return CLM.L["Death Knight"] end
     return capitalize(class or "")
 end
 
@@ -645,6 +645,10 @@ function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, co
                     st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
                 end
             end
+        end
+    else
+        if isAdditiveSelect then
+            st.selected._storage[realrow] = nil
         end
     end
     if isSingleSelect then

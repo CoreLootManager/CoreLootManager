@@ -143,12 +143,6 @@ function Minimap:Initialize()
             separator = true,
         },
         {
-            title = CLM.L["Audit"],
-            func = (function() CLM.GUI.Audit:Toggle() end),
-            trustedOnly = true,
-            managerOnly = true
-        },
-        {
             title = CLM.L["Export"],
             func = (function() CLM.GUI.Export:Toggle() end),
             trustedOnly = true,

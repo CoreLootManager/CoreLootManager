@@ -204,6 +204,9 @@ local nameFunctions  = {
     ["P2"] = (function(entry)
             return CLM.L["[Alt-Main Link]: "]
     end),
+    ["P3"] = (function(entry)
+        return CLM.L["[Profile Lock]: "]
+    end),
     -- Roster
     ["R0"] = (function(entry)
         return CLM.L["[Create Roster]: "]
@@ -328,6 +331,9 @@ local describeFunctions  = {
                 UTILS.ColorCodeText(profile and profile:Name() or guid,
                             profile and UTILS.GetClassColor(profile:Class()).hex or "6699ff")
         end
+    end),
+    ["P3"] = (function(entry)
+        return safeToString(entry:lock())
     end),
     -- Roster
     ["R0"] = (function(entry)
@@ -543,7 +549,10 @@ local extendFunctions  = {
     ["-"] = (function(entry)
         return ""
     end),
-
+    -- Profiles
+    ["P3"] = (function(entry)
+        return concatenateNameFromList(entry:targets())
+    end),
     -- Points
     ["DM"] = (function(entry)
         return concatenateNameFromList(entry:targets())

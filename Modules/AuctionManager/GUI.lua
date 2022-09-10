@@ -218,10 +218,9 @@ local function CreateBidWindow(self)
         {name = CLM.L["Class"], width = 60,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
-        -- {name = CLM.L["Spec"],  width = 60},
-        {name = CLM.L["Bid"],   width = 120, color = colorGreen, -- TODO sorting
+        {name = CLM.L["Bid"],   width = 120, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
-            sortnext = 5
+            sortnext = 4
         },
         {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
@@ -248,7 +247,10 @@ local function CreateBidWindow(self)
             local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local rowData = table:GetRow(realrow)
             if not rowData or not rowData.cols then return status end
-            ST_GetHighlightFunction(rowData)(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            local highlight = ST_GetHighlightFunction(rowData)
+            if highlight then
+                highlight(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            end
             return status
         end),
     })
@@ -673,7 +675,6 @@ function AuctionManagerGUI:Refresh()
                 local row = {cols = {
                     {value = profile:Name()},
                     {value = UTILS.ColorCodeClass(profile:Class())},
-                    -- {value = profile:SpecString()},
                     {value = bid, color = color},
                     {value = self.roster:Standings(profile:GUID())},
                     {value = highlightRole[profile:Role()]},

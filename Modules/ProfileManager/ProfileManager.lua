@@ -51,6 +51,7 @@ function ProfileManager:Initialize()
                 end
                 profileInternal.class = class
                 profileInternal.main = main
+                profileInternal.name = name
             else
                 local profile = CLM.MODELS.Profile:New(entry, name, class, main)
                 profile:SetGUID(GUID)
@@ -219,7 +220,7 @@ function ProfileManager:NewProfile(GUID, name, class)
     local discard, warning
     if guidProfile then -- profile with this GUID already exists. Is this a rename?
         if nameProfile then -- profile with name and guid exists
-            if guidProfile == nameProfile then -- same profile, same name - do nothing
+            if guidProfile:GUID() == nameProfile:GUID() then -- same profile, same name - do nothing
                 discard = true
             else -- 2 different profiles exist. Warning
                 discard = true

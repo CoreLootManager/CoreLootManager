@@ -110,7 +110,6 @@ Modules\RosterManager\Options.lua
 Modules\AuctionManager\GUI.lua
 Modules\BiddingManager\GUI.lua
 Modules\Changelog\GUI.lua
-Modules\LedgerManager\GUI.lua
 Modules\LootQueueManager\GUI.lua
 Modules\AuctionHistoryManager\GUI.lua
 
