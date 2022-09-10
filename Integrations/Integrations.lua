@@ -35,8 +35,8 @@ local function InitializeDB(key)
     return db.integration[key]
 end
 
-local function StoreWoWDKPBotData()
-    if not CLM.GlobalConfigs:GetWoWDKPBotIntegration() then return end
+local function StoreWoWDKPBotData(self)
+    if not self:GetWoWDKPBotIntegration() then return end
     local db = InitializeDB("wowdkpbot")
     db.profiles = {}
     -- Fill Profiles
@@ -265,7 +265,7 @@ function Integration:Initialize()
     -- WoW DKP Bot SV Data
     C_TimerAfter(10, (function() RequestWoWDKPBotData(self) end))
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
-        StoreWoWDKPBotData()
+        StoreWoWDKPBotData(self)
     end))
     -- External award integration
     CLM.MODULES.EventManager:RegisterEvent(EXTERNAL_AWARD_EVENT, ExternalAwardEventHandler)
