@@ -23,9 +23,9 @@ local function ST_GetClass(row)
     return row.cols[3].value
 end
 
-local function ST_GetRank(row)
-    return row.cols[6].value
-end
+-- local function ST_GetRank(row)
+--     return row.cols[6].value
+-- end
 
 -- local function ST_GetIsLocked(row)
 --     return row.cols[7].value
