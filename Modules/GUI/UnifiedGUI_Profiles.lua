@@ -10,8 +10,10 @@ local pairs, ipairs = pairs, ipairs
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
+local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 
 local highlightLocked = UTILS.getHighlightMethod(colorRedTransparent, true)
+local highlightTrusted = UTILS.getHighlightMethod(colorGreenTransparent, true)
 
 local function ST_GetName(row)
     return row.cols[1].value
@@ -19,6 +21,10 @@ end
 
 local function ST_GetClass(row)
     return row.cols[3].value
+end
+
+local function ST_GetRank(row)
+    return row.cols[6].value
 end
 
 -- local function ST_GetIsLocked(row)
@@ -181,7 +187,6 @@ local tableStructure = {
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
         {name = CLM.L["Role"],  width = 60},
-        {name = CLM.L["Rank"],  width = 60},
         {name = CLM.L["Version"],  width = 60},
     },
     -- Function to filter ScrollingTable
@@ -239,15 +244,17 @@ local function tableDataFeeder()
         local highlight
         if isLocked then
             highlight = highlightLocked
+        elseif rank ~= "" then
+            highlight = highlightTrusted
         end
         local row = { cols = {
             {value = name},
             {value = main},
             {value = UTILS.ColorCodeClass(object:Class())},
             {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
-            {value = rank},
             {value = object:VersionString()},
             -- hidden
+            {value = rank},
             {value = isLocked},
             {value = highlight}
         },
