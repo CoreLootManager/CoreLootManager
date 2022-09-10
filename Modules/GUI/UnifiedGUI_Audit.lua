@@ -204,6 +204,9 @@ local nameFunctions  = {
     ["P2"] = (function(entry)
             return CLM.L["[Alt-Main Link]: "]
     end),
+    ["P3"] = (function(entry)
+        return CLM.L["[Profile Lock]: "]
+    end),
     -- Roster
     ["R0"] = (function(entry)
         return CLM.L["[Create Roster]: "]

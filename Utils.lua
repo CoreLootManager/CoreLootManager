@@ -405,7 +405,7 @@ function UTILS.NumberToClass(number)
 end
 
 function UTILS.GetClassReadable(class)
-    if class == "DEATHKNIGHT" then return "Death Knight" end
+    if class == "DEATHKNIGHT" then return CLM.L["Death Knight"] end
     return capitalize(class or "")
 end
 
