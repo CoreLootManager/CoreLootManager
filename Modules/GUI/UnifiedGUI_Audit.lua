@@ -332,6 +332,9 @@ local describeFunctions  = {
                             profile and UTILS.GetClassColor(profile:Class()).hex or "6699ff")
         end
     end),
+    ["P3"] = (function(entry)
+        return safeToString(entry:lock())
+    end),
     -- Roster
     ["R0"] = (function(entry)
         return
@@ -546,7 +549,10 @@ local extendFunctions  = {
     ["-"] = (function(entry)
         return ""
     end),
-
+    -- Profiles
+    ["P3"] = (function(entry)
+        return concatenateNameFromList(entry:targets())
+    end),
     -- Points
     ["DM"] = (function(entry)
         return concatenateNameFromList(entry:targets())
