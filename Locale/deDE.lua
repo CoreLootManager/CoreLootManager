@@ -498,7 +498,7 @@ CLM.L["Data"] = "Daten"
 -- Modules/GUI/UnifiedGUI_History.lua:150
 CLM.L["Date"] = "Datum"
 -- Utils.lua:408
---CLM.L["Death Knight"] = ""
+CLM.L["Death Knight"] = "Todesritter"
 -- Modules/AutoAwardManager/EncounterIDs.lua:145
 CLM.L["Deathbringer Saurfang"] = "Deathbringer Saurafang"
 -- Modules/GUI/UnifiedGUI_Standings.lua:247
@@ -1902,7 +1902,7 @@ CLM.L["[Point Decay]: "] = "[Point Verfall]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:267
 CLM.L["[Point Set]: "] = "[Punkte Setzen]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:208
---CLM.L["[Profile Lock]: "] = ""
+CLM.L["[Profile Lock]: "] = "[Profilschloss]:"
 -- Modules/GUI/UnifiedGUI_Audit.lua:278
 CLM.L["[Raid Create]: "] = "[Schlachtzug Erstellen]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:287
