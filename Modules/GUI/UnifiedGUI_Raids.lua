@@ -1,10 +1,9 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("RosterManager", {
+    "Log", "Constants", "Util", "RosterManager/RosterConfiguration", "Meta:ADDON_TABLE", "L", "RosterManager", "RaidManager", "StandbyStagingManager", "LedgerManager"
+}, function(resolve, LOG, CONSTANTS, UTILS, RosterConfiguration, CLM, L, RosterManager, RaidManager, StandbyStagingManager, Acl, LedgerManager)
+
 
 local CreateFrame, UIParent, pairs = CreateFrame, UIParent, pairs
 
@@ -30,7 +29,7 @@ local UnifiedGUI_Raids = {
     -- UTILS.Set({"buttons", "search"}),
     -- nil, 1),
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIRaidsDialogTooltip", UIParent, "GameTooltipTemplate"),
-    configuration = CLM.MODELS.RosterConfiguration:New()
+    configuration = RosterConfiguration:New()
 }
 
 function UnifiedGUI_Raids:GetSelection()
@@ -49,9 +48,9 @@ end
 
 local function UpdateRaid(self, name)
     LOG:Trace("UnifiedGUI_Raids UpdateRaid()")
-    local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
+    local roster = RosterManager:GetRosterByName(name)
     if roster then
-        self.configuration = CLM.MODELS.RosterConfiguration:New(UTILS.DeepCopy(roster.configuration))
+        self.configuration = RosterConfiguration:New(UTILS.DeepCopy(roster.configuration))
         return true
     end
     return false
@@ -73,25 +72,25 @@ local function GenerateAssistantOptions(self)
     return {
         information_header = {
             type = "header",
-            name = CLM.L["Overrides"],
+            name = L["Overrides"],
             order = 30
         },
         boss_kill_bonus = {
-            name = CLM.L["Boss Kill Bonus"],
+            name = L["Boss Kill Bonus"],
             type = "toggle",
             set = (function(i, v) SetRaidConfigurationOption(self, "bossKillBonus", v) end),
             get = (function() return GetRaidConfigurationOption(self, "bossKillBonus") end),
             order = 31,
         },
         on_time_bonus = {
-            name = CLM.L["On Time Bonus"],
+            name = L["On Time Bonus"],
             type = "toggle",
             set = (function(i, v) SetRaidConfigurationOption(self, "onTimeBonus", v) end),
             get = (function() return GetRaidConfigurationOption(self, "onTimeBonus")  end),
             order = 32,
         },
         on_time_bonus_value = {
-            name = CLM.L["On Time Bonus Value"],
+            name = L["On Time Bonus Value"],
             type = "input",
             set = (function(i, v) SetRaidConfigurationOption(self, "onTimeBonusValue", tonumber(v)) end),
             get = (function() return tostring(GetRaidConfigurationOption(self, "onTimeBonusValue")) end),
@@ -99,14 +98,14 @@ local function GenerateAssistantOptions(self)
             order = 33,
         },
         raid_completion_bonus = {
-            name = CLM.L["Raid Completion Bonus"],
+            name = L["Raid Completion Bonus"],
             type = "toggle",
             set = (function(i, v) SetRaidConfigurationOption(self, "raidCompletionBonus", v) end),
             get = (function() return GetRaidConfigurationOption(self, "raidCompletionBonus") end),
             order = 34,
         },
         raid_completion_bonus_value = {
-            name = CLM.L["Raid Completion Value"],
+            name = L["Raid Completion Value"],
             type = "input",
             set = (function(i, v) SetRaidConfigurationOption(self, "raidCompletionBonusValue", tonumber(v)) end),
             get = (function() return tostring(GetRaidConfigurationOption(self, "raidCompletionBonusValue")) end),
@@ -114,14 +113,14 @@ local function GenerateAssistantOptions(self)
             order = 35,
         },
         interval_bonus = {
-            name = CLM.L["Interval Bonus"],
+            name = L["Interval Bonus"],
             type = "toggle",
             set = (function(i, v) SetRaidConfigurationOption(self, "intervalBonus", v) end),
             get = (function() return GetRaidConfigurationOption(self, "intervalBonus") end),
             order = 36,
         },
         interval_time = {
-            name = CLM.L["Interval Time"],
+            name = L["Interval Time"],
             type = "input",
             set = (function(i, v) SetRaidConfigurationOption(self, "intervalBonusTime", tonumber(v)) end),
             get = (function() return tostring(GetRaidConfigurationOption(self, "intervalBonusTime")) end),
@@ -129,7 +128,7 @@ local function GenerateAssistantOptions(self)
             order = 37,
         },
         interval_bonus_value = {
-            name = CLM.L["Interval Value"],
+            name = L["Interval Value"],
             type = "input",
             set = (function(i, v) SetRaidConfigurationOption(self, "intervalBonusValue", tonumber(v)) end),
             get = (function() return tostring(GetRaidConfigurationOption(self, "intervalBonusValue")) end),
@@ -137,36 +136,36 @@ local function GenerateAssistantOptions(self)
             order = 38,
         },
         auto_award_include_bench =  {
-            name = CLM.L["Include bench"],
-            desc = CLM.L["Include benched players in all auto-awards"],
+            name = L["Include bench"],
+            desc = L["Include benched players in all auto-awards"],
             type = "toggle",
             set = (function(i, v) SetRaidConfigurationOption(self, "autoAwardIncludeBench", v) end),
             get = (function() return GetRaidConfigurationOption(self, "autoAwardIncludeBench") end),
             order = 39,
         },
         auto_bench_leavers =  {
-            name = CLM.L["Auto bench leavers"],
-            desc = CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."],
+            name = L["Auto bench leavers"],
+            desc = L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."],
             type = "toggle",
             set = (function(i, v) SetRaidConfigurationOption(self, "autoBenchLeavers", v) end),
             get = (function() return GetRaidConfigurationOption(self, "autoBenchLeavers") end),
             order = 40,
         },
         allow_self_bench_subscribe =  {
-            name = CLM.L["Allow subscription"],
-            desc = CLM.L["Allow players to subscribe to the bench through Raids menu"],
+            name = L["Allow subscription"],
+            desc = L["Allow players to subscribe to the bench through Raids menu"],
             type = "toggle",
             set = (function(i, v) SetRaidConfigurationOption(self, "selfBenchSubscribe", v) end),
             get = (function() return GetRaidConfigurationOption(self, "selfBenchSubscribe") end),
             order = 41,
         },
         select_roster = {
-            name = CLM.L["Select roster"],
-            desc = CLM.L["Select roster to create raid for."],
+            name = L["Select roster"],
+            desc = L["Select roster to create raid for."],
             type = "select",
             width = "full",
             values = (function()
-                local rosters = CLM.MODULES.RosterManager:GetRosters()
+                local rosters = RosterManager:GetRosters()
                 local values = {}
                 for name,_ in pairs(rosters) do
                     values[name] = name
@@ -178,28 +177,28 @@ local function GenerateAssistantOptions(self)
                 UpdateRaid(self, self.roster)
             end),
             get = function(i) return self.roster end,
-            disabled = (function() return CLM.MODULES.RaidManager:IsInActiveRaid() end),
+            disabled = (function() return RaidManager:IsInActiveRaid() end),
             order = 9
         },
         name_raid = {
-            name = CLM.L["Raid Name"],
-            desc = CLM.L["Set raid name"],
+            name = L["Raid Name"],
+            desc = L["Set raid name"],
             type = "input",
             set = function(i, v) self.raidName = v end,
             get = function(i) return self.raidName end,
-            disabled = (function() return CLM.MODULES.RaidManager:IsInActiveRaid() end),
+            disabled = (function() return RaidManager:IsInActiveRaid() end),
             width = "full",
             order = 8
         },
         create_raid = {
-            name = CLM.L["Create raid"],
-            desc = CLM.L["Create new raid with provided name. You will automatically join this raid and leave any other you are part of."],
+            name = L["Create raid"],
+            desc = L["Create new raid with provided name. You will automatically join this raid and leave any other you are part of."],
             type = "execute",
             width = "full",
             func = (function(i)
-                CLM.MODULES.RaidManager:CreateRaid(CLM.MODULES.RosterManager:GetRosterByName(self.roster), self.raidName, self.configuration)
+                RaidManager:CreateRaid(RosterManager:GetRosterByName(self.roster), self.raidName, self.configuration)
             end),
-            disabled = (function() return CLM.MODULES.RaidManager:IsInActiveRaid() end),
+            disabled = (function() return RaidManager:IsInActiveRaid() end),
             confirm = true,
             order = 10
         }
@@ -220,37 +219,37 @@ local function verticalOptionsFeeder()
         args = {}
     }
     -- UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_Raids))
-    if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_Raids))
     end
-    -- if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    -- if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
     --     UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_Raids))
     -- end
-    -- if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
+    -- if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
     --     UTILS.mergeDictsInline(options.args, GenerateGMOptions(UnifiedGUI_Raids))
     -- end
     return options
 end
 
 local function FillConfigurationTooltip(configuration, tooltip)
-    tooltip:AddDoubleLine(CLM.L["Auction Time"], configuration:Get("auctionTime"))
-    tooltip:AddDoubleLine(CLM.L["Anti-snipe"], configuration:Get("antiSnipe"))
-    tooltip:AddDoubleLine(CLM.L["Boss Kill Bonus"], configuration:Get("bossKillBonus") and GreenYes or RedNo)
+    tooltip:AddDoubleLine(L["Auction Time"], configuration:Get("auctionTime"))
+    tooltip:AddDoubleLine(L["Anti-snipe"], configuration:Get("antiSnipe"))
+    tooltip:AddDoubleLine(L["Boss Kill Bonus"], configuration:Get("bossKillBonus") and GreenYes or RedNo)
     local onTimeBonus = configuration:Get("onTimeBonus")
-    tooltip:AddDoubleLine(CLM.L["On Time Bonus"], onTimeBonus and GreenYes or RedNo)
+    tooltip:AddDoubleLine(L["On Time Bonus"], onTimeBonus and GreenYes or RedNo)
     if onTimeBonus then
-        tooltip:AddDoubleLine(CLM.L["On Time Bonus Value"], configuration:Get("onTimeBonusValue"))
+        tooltip:AddDoubleLine(L["On Time Bonus Value"], configuration:Get("onTimeBonusValue"))
     end
     local raidCompletionBonus = configuration:Get("raidCompletionBonus")
-    tooltip:AddDoubleLine(CLM.L["Raid Completion Bonus"], raidCompletionBonus and GreenYes or RedNo)
+    tooltip:AddDoubleLine(L["Raid Completion Bonus"], raidCompletionBonus and GreenYes or RedNo)
     if raidCompletionBonus then
-        tooltip:AddDoubleLine(CLM.L["Raid Completion Bonus Value"], configuration:Get("raidCompletionBonusValue"))
+        tooltip:AddDoubleLine(L["Raid Completion Bonus Value"], configuration:Get("raidCompletionBonusValue"))
     end
     local intervalBonus = configuration:Get("intervalBonus")
-    tooltip:AddDoubleLine(CLM.L["Interval Bonus"], intervalBonus and GreenYes or RedNo)
+    tooltip:AddDoubleLine(L["Interval Bonus"], intervalBonus and GreenYes or RedNo)
     if intervalBonus then
-        tooltip:AddDoubleLine(CLM.L["Interval Time"], configuration:Get("intervalBonusTime"))
-        tooltip:AddDoubleLine(CLM.L["Interval Value"], configuration:Get("intervalBonusValue"))
+        tooltip:AddDoubleLine(L["Interval Time"], configuration:Get("intervalBonusTime"))
+        tooltip:AddDoubleLine(L["Interval Value"], configuration:Get("intervalBonusValue"))
     end
 end
 
@@ -258,9 +257,9 @@ local tableStructure = {
     rows = 25,
     -- columns - structure of the ScrollingTable
     columns = {
-        {name = CLM.L["Name"],  width = 140},
-        {name = CLM.L["Status"], width = 65},
-        {name = CLM.L["Created"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC}
+        {name = L["Name"],  width = 140},
+        {name = L["Status"], width = 65},
+        {name = L["Created"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC}
     },
     -- Function to filter ScrollingTable
     -- filter = (function(stobject, row)
@@ -283,12 +282,12 @@ local tableStructure = {
             local finished = not raid:IsActive()
             local profiles = raid:Profiles(finished)
             local numProfiles = #profiles
-            tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"])
+            tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or L["Unknown"])
             tooltip:AddLine(" ")
             if finished then
-                tooltip:AddDoubleLine(CLM.L["Participated"] .. ":", tostring(numProfiles))
+                tooltip:AddDoubleLine(L["Participated"] .. ":", tostring(numProfiles))
             else
-                tooltip:AddDoubleLine(CLM.L["In Raid"] .. ":", tostring(numProfiles))
+                tooltip:AddDoubleLine(L["In Raid"] .. ":", tostring(numProfiles))
             end
             if not profiles or numProfiles == 0 then
                 tooltip:AddLine("None")
@@ -297,18 +296,18 @@ local tableStructure = {
             end
             local standby = raid:Standby(finished)
             local numStandby = #standby
-            tooltip:AddDoubleLine(CLM.L["Standby"] .. ":", tostring(numStandby))
+            tooltip:AddDoubleLine(L["Standby"] .. ":", tostring(numStandby))
             if not standby or numStandby == 0 then
-                tooltip:AddLine(CLM.L["None"])
+                tooltip:AddLine(L["None"])
             else
                 UTILS.buildPlayerListForTooltip(standby, tooltip)
             end
 
             tooltip:AddLine(" ")
-            tooltip:AddDoubleLine(CLM.L["Roster"], CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID()) or "")
+            tooltip:AddDoubleLine(L["Roster"], RosterManager:GetRosterNameByUid(raid:Roster():UID()) or "")
 
             tooltip:AddLine(" ")
-            tooltip:AddLine(CLM.L["Configuration"] .. ":")
+            tooltip:AddLine(L["Configuration"] .. ":")
             FillConfigurationTooltip(raid:Configuration(), tooltip)
             tooltip:Show()
             return status
@@ -330,7 +329,7 @@ local tableStructure = {
 local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_Raids tableDataFeeder()")
     local data = {}
-    for _, raid in pairs(CLM.MODULES.RaidManager:ListRaids()) do
+    for _, raid in pairs(RaidManager:ListRaids()) do
         local color = nil
         if CONSTANTS.RAID_STATUS.IN_PROGRESS == raid:Status() then
             color = colorGreen
@@ -339,8 +338,8 @@ local function tableDataFeeder()
         end
         local row = {cols = {
             { value = raid:Name() },
-            { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or CLM.L["Unknown"], color = color },
-            { value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], raid:CreatedAt()) },
+            { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or L["Unknown"], color = color },
+            { value = date(L["%Y/%m/%d %H:%M:%S (%A)"], raid:CreatedAt()) },
             { value = raid }
         }}
         data[#data+1] = row
@@ -353,26 +352,26 @@ local function initializeHandler()
     UnifiedGUI_Raids.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
-                title = CLM.L["Request standby"],
+                title = L["Request standby"],
                 func = (function(i)
                     local raid = UnifiedGUI_Raids:GetSelection()
                     if raid then
-                        CLM.MODULES.StandbyStagingManager:SignupToStandby(raid:UID())
+                        StandbyStagingManager:SignupToStandby(raid:UID())
                     else
-                        LOG:Message(CLM.L["Please select a raid"])
+                        LOG:Message(L["Please select a raid"])
                     end
                     refreshFn(true)
                     CLM.GUI.Unified:ClearSelection()
                 end)
             },
             {
-                title = CLM.L["Revoke standby"],
+                title = L["Revoke standby"],
                 func = (function(i)
                     local raid = UnifiedGUI_Raids:GetSelection()
                     if raid then
-                        CLM.MODULES.StandbyStagingManager:RevokeStandby(raid:UID())
+                        StandbyStagingManager:RevokeStandby(raid:UID())
                     else
-                        LOG:Message(CLM.L["Please select a raid"])
+                        LOG:Message(L["Please select a raid"])
                     end
                     refreshFn(true)
                     CLM.GUI.Unified:ClearSelection()
@@ -383,13 +382,13 @@ local function initializeHandler()
                 trustedOnly = true
             },
             {
-                title = CLM.L["Start selected raid"],
+                title = L["Start selected raid"],
                 func = (function(i)
                     local raid = UnifiedGUI_Raids:GetSelection()
                     if raid then
-                        CLM.MODULES.RaidManager:StartRaid(raid)
+                        RaidManager:StartRaid(raid)
                     else
-                        LOG:Message(CLM.L["Please select a raid"])
+                        LOG:Message(L["Please select a raid"])
                     end
                     CLM.GUI.Unified:ClearSelection()
                 end),
@@ -397,13 +396,13 @@ local function initializeHandler()
                 color = "eeee00"
             },
             {
-                title = CLM.L["End selected raid"],
+                title = L["End selected raid"],
                 func = (function(i)
                     local raid = UnifiedGUI_Raids:GetSelection()
                     if raid then
-                        CLM.MODULES.RaidManager:EndRaid(raid)
+                        RaidManager:EndRaid(raid)
                     else
-                        LOG:Message(CLM.L["Please select a raid"])
+                        LOG:Message(L["Please select a raid"])
                     end
                     CLM.GUI.Unified:ClearSelection()
                 end),
@@ -411,13 +410,13 @@ local function initializeHandler()
                 color = "eeee00"
             },
             {
-                title = CLM.L["Join selected raid"],
+                title = L["Join selected raid"],
                 func = (function(i)
                     local raid = UnifiedGUI_Raids:GetSelection()
                     if raid then
-                        CLM.MODULES.RaidManager:JoinRaid(raid)
+                        RaidManager:JoinRaid(raid)
                     else
-                        LOG:Message(CLM.L["Please select a raid"])
+                        LOG:Message(L["Please select a raid"])
                     end
                     CLM.GUI.Unified:ClearSelection()
                 end),
@@ -430,13 +429,13 @@ local function initializeHandler()
                 managerOnly = true
             },
             {
-                title = CLM.L["Remove selected raid"],
+                title = L["Remove selected raid"],
                 func = (function()
                     local raid = UnifiedGUI_Raids:GetSelection()
                     if raid then
-                        CLM.MODULES.LedgerManager:Remove(raid:Entry(), true)
+                        LedgerManager:Remove(raid:Entry(), true)
                     else
-                        LOG:Message(CLM.L["Please select a raid"])
+                        LOG:Message(L["Please select a raid"])
                     end
                     CLM.GUI.Unified:ClearSelection()
                 end),
@@ -445,8 +444,8 @@ local function initializeHandler()
                 color = "cc0000"
             }
         },
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
 end
 
@@ -470,8 +469,8 @@ end
 
 local function dataReadyHandler()
     LOG:Trace("UnifiedGUI_Raids dataReadyHandler()")
-    if not CLM.MODULES.RosterManager:GetRosterByName(UnifiedGUI_Raids.roster) then
-        local _, roster = next(CLM.MODULES.RosterManager:GetRosters())
+    if not RosterManager:GetRosterByName(UnifiedGUI_Raids.roster) then
+        local _, roster = next(RosterManager:GetRosters())
         if roster then
             UnifiedGUI_Raids.roster = roster:UID()
         end
@@ -495,3 +494,7 @@ CLM.GUI.Unified:RegisterTab(
         dataReady = dataReadyHandler
     }
 )
+
+
+
+end)

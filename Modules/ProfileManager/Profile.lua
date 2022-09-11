@@ -1,10 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("ProfileManager/Profile", {"Constants", "Models", "L"}, function(resolve, CONSTANTS, Models, L)
 
 local setmetatable, tostring, tonumber, rawequal, sformat = setmetatable, tostring, tonumber, rawequal, string.format
 
@@ -31,7 +27,7 @@ function Profile:New(entry, name, class, main)
     o.alts = {}
     o.locked = false
 
-    o._versionString = CLM.L["Unknown"]
+    o._versionString = L["Unknown"]
 
     return o
 end
@@ -148,9 +144,12 @@ function Profile:Entry()
 end
 
 CONSTANTS.PROFILE_ROLES_GUI = {
-    ["TANK"] = CLM.L["Tank"],
-    ["HEALER"] = CLM.L["Healer"],
-    ["DAMAGER"] = CLM.L["DPS"],
+    ["TANK"] = L["Tank"],
+    ["HEALER"] = L["Healer"],
+    ["DAMAGER"] = L["DPS"],
 }
 
-CLM.MODELS.Profile = Profile
+Models.Profile = Profile
+resolve(Profile)
+
+end)

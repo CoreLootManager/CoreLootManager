@@ -1,10 +1,9 @@
 -- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("Database", {"Log", "Utils", "Modules", "SavedVariable:CLM2_DB", "FirstEvent:GUILD_ROSTER_UPDATE"}, function(resolve, LOG, UTILS, MODULES, CLM2_DB, _)
+
+
 
 local type, pairs = type, pairs
 
@@ -12,6 +11,7 @@ local DeepCopy = UTILS.DeepCopy
 local assertType = UTILS.assertType
 
 local DB = {}
+MODULES.Database = DB
 
 -- You really do not want to modify this
 -- vvvvv
@@ -110,4 +110,6 @@ function DB:UpdateLedger(ledger)
     CLM2_DB[self.server_faction_guild][DB_NAME_LEDGER] = ledger
 end
 
-CLM.MODULES.Database = DB
+DB:Initialize()
+resolve(DB)
+end)

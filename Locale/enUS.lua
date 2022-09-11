@@ -1,12 +1,16 @@
-local _, CLM = ...
 
-local L = {}
+local define = LibDependencyInjection.createContext(...)
 
--- For Lazy creating localization during runtime throug CLM.L[string]
-setmetatable(L, {
-    __index = function (table, key)
-        return tostring(key)
-    end
-})
+define.module("Locale.enUS", {"Meta:ADDON_TABLE"}, function(resolve, CLM)
+    local L = {}
 
-CLM.L = L
+    -- For Lazy creating localization during runtime throug CLM.L[string]
+    setmetatable(L, {
+        __index = function (table, key)
+            return tostring(key)
+        end
+    })
+
+    CLM.L = L
+    resolve(L)
+end)

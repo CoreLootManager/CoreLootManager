@@ -1,29 +1,11 @@
-local name, CLM = ...
+local name, _ = ...
 
-local LIB_CLM, _ = LibStub:NewLibrary("ClassicLootManager", 1)
-if LIB_CLM then
-    LIB_CLM.CLM = CLM
-end
+local define = LibDependencyInjection.createContext(...)
 
-CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
-
-CLM.MODULES = {}
-CLM.MODELS = { LEDGER = {} }
-CLM.CONSTANTS = {}
-CLM.GUI = {}
-CLM.OPTIONS = {}
-CLM.ALERTS = {}
-
-CLM.AUTOVERSION = "@project-version@"
-
-CLM.LOG = LibStub("LibLogger"):New()
-
-local CORE = CLM.CORE
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-
-local function Initialize_SavedVariables()
-    if type(CLM2_DB) ~= "table" then
+-- Define our configuration database structure
+define.module("Config", {"SavedVariable:CLM2_DB", "Log"}, function(resolve, CLM2_DB, Log)
+    -- CLM2_DB will always be initialized to an empty table if not set. We check for key existence to decide whether to initialize
+    if CLM2_DB.global == nil then
         CLM2_DB = {
             global = {
                 version = {
@@ -33,29 +15,110 @@ local function Initialize_SavedVariables()
                     changeset = ""
                 },
                 logger = {
-                    severity = CLM.LOG.SEVERITY.ERROR,
+                    severity = Log.SEVERITY.ERROR,
                     verbosity = false
                 }
             }
         }
     end
+    resolve(CLM2_DB)
 
-    if type(CLM2_Logs) ~= "table" then
-        CLM2_Logs = {}
-    end
+end)
+
+---- First define log module since many of our modules require it
+define.module("Log", {"LibStub:LibLogger"}, function(resolve, LibLogger)
+    local Log = LibLogger:New()
+    Log:SetPrefix("CLM")
+    resolve(Log)
+end)
+
+-- configure database
+define.await({"Log", "SavedVariable:CLM2_Logs"}, function(Log, CLM2_LOGS)
+    Log:SetDatabase(CLM2_LOGS)
+end)
+
+-- configure log settings
+define.await({"Log", "Config"}, function(Log, Config)
+    Log:SetSeverity(Config.global.logger.severity)
+    Log:SetVerbosity(Config.global.logger.verbosity)
+end)
+
+
+-- Define constants as a module since it is some kind of global registry
+define.module("Constants", {"Meta:ADDON_TABLE"},  function(resolve, CLM)
+    local constants = {}
+    CLM.CONSTANTS = constants
+    resolve(constants)
+end)
+
+-- Define models as a module since it is some kind of global registry
+define.module("Models", {"Meta:ADDON_TABLE"}, function(resolve, CLM)
+    local models = {
+        LEDGER = {}
+    }
+    CLM.MODELS = models
+    resolve(models)
+end)
+
+-- Define GUI  as a module since it is some kind of global registry
+define.module("Gui", {"Meta:ADDON_TABLE"}, function(resolve, CLM)
+    local gui = {
+
+    }
+    CLM.GUI = gui
+    resolve(gui)
+end)
+
+-- Define modules as a module since it is some kind of global registry
+define.module("Modules", {"Meta:ADDON_TABLE"}, function(resolve, CLM)
+    local modules = {}
+    CLM.MODULES = modules
+    resolve(modules)
+end)
+
+define.module("Core", {"LibStub:AceAddon-3.0", "Meta:ADDON_TABLE"}, function(resolve, AceAddon, CLM)
+    local core = AceAddon:NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
+    CLM.CORE = core
+    resolve(resolve)
+end)
+-- Define L as a module so we don't depend on the full addon table everywhere
+define.module("L", {"Locale:" .. GetLocale()}, function(resolve, CurrentLocale)
+    resolve(CurrentLocale)
+end)
+define.module("Main", {
+    "Core",
+    "Log",
+    "Meta:ADDON_TABLE",
+    "Constants",
+    "Modules",
+    "Config",
+    "Models",
+    "Gui"
+}, function(resolve, CORE, Log, CLM, Constants, Modules, Config, Models, Gui)
+local LIB_CLM, _ = LibStub:NewLibrary("ClassicLootManager", 1)
+if LIB_CLM then
+    LIB_CLM.CLM = CLM
 end
 
-local function Initialize_Logger()
-    LOG:SetSeverity(CLM2_DB.global.logger.severity)
-    LOG:SetVerbosity(CLM2_DB.global.logger.verbosity)
-    LOG:SetPrefix("CLM")
-    LOG:SetDatabase(CLM2_Logs)
-end
+CLM.MODELS = Models
+CLM.CONSTANTS = Constants
+CLM.OPTIONS = {}
+CLM.ALERTS = {}
+
+CLM.AUTOVERSION = "@project-version@"
+
+CLM.LOG = Log
+
+local LOG = Log
+local MODULES = Modules
+
+
+
 
 local function Initialize_Versioning()
     -- Parse autoversion
     local major, minor, patch, changeset = string.match(CLM.AUTOVERSION, "^v(%d+).(%d+).(%d+)-?(.*)")
-    local old = CLM2_DB.global.version
+    local old = Config.global.version
     local new = {
         major = tonumber(major) or 2,
         minor = tonumber(minor) or 0,
@@ -63,7 +126,7 @@ local function Initialize_Versioning()
         changeset = changeset or ""
     }
     -- set new version
-    CLM2_DB.global.version = new
+    Config.global.version = new
     -- update string
     changeset = new.changeset
     if changeset and changeset ~= "" then
@@ -82,7 +145,7 @@ local function Initialize_Versioning()
 end
 
 function CORE:GetVersion()
-    return CLM2_DB.global.version
+    return Config.global.version
 end
 
 function CORE:GetVersionString()
@@ -91,15 +154,12 @@ end
 
 function CORE:_InitializeCore()
     LOG:Trace("CORE:_InitializeCore()")
-
-    MODULES.Database:Initialize()
     MODULES.ConfigManager:Initialize()
     MODULES.ACL:Initialize()
 end
 
 function CORE:_InitializeBackend()
     LOG:Trace("CORE:_InitializeBackend()")
-    MODULES.Logger:Initialize()
     MODULES.Comms:Initialize()
     MODULES.EventManager:Initialize()
     MODULES.GuildInfoListener:Initialize()
@@ -151,7 +211,7 @@ end
 
 function CORE:_InitializeGUI()
     LOG:Trace("CORE:_InitializeGUI()")
-    for _, module in pairs(CLM.GUI) do
+    for _, module in pairs(Gui) do
         module:Initialize()
     end
 end
@@ -213,22 +273,15 @@ end
 function CORE:OnInitialize()
     -- Fix ML UI issue - https://bit.ly/3tc8nvw
     hooksecurefunc(MasterLooterFrame, 'Hide', function(s) s:ClearAllPoints() end);
-    -- Initialize SavedVariables
-    Initialize_SavedVariables()
-    --  Early Initialize logger
-    Initialize_Logger()
     -- Initialize Versioning
     Initialize_Versioning()
     -- Initialize AddOn
     LOG:Trace("OnInitialize")
     self._initialize_fired = false
-    CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
-    SetGuildRosterShowOffline(true)
-    GuildRoster()
-    -- We schedule this in case GUILD_ROSTER_UPDATE won't come early enough
-    C_Timer.After(20, function()
-        CORE:_ExecuteInitialize()
-    end)
+    -- CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
+    -- SetGuildRosterShowOffline(true)
+    -- GuildRoster()
+    CORE:_ExecuteInitialize()
 end
 
 function CORE:OnEnable()
@@ -254,3 +307,4 @@ function CORE.Debug()
     CLM.Debug:RegisterSlash()
 end
 --@end-do-not-package@
+end)

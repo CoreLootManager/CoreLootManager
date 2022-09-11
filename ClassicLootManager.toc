@@ -11,6 +11,7 @@
 ## X-Wago-ID: vEGPw4K1
 ## SavedVariables: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon, CLM_DB
 ## LoadOnDemand: 0
+## Dependencies: LibDependencyInjection
 
 # LIBS
 Libs\LibStub\LibStub.lua

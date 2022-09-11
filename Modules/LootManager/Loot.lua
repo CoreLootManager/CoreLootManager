@@ -1,14 +1,10 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("LootManager/Loot", {"Models", "Utils"}, function(resolve, Models, Utils)
 
 local setmetatable = setmetatable
 
-local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
+local getGuidFromInteger = Utils.getGuidFromInteger
 
 local Loot = {}
 function Loot:New(entry, owner)
@@ -60,4 +56,6 @@ function Loot:RaidUid()
     return self.raidUid
 end
 
-CLM.MODELS.Loot = Loot
+Models.Loot = Loot
+resolve(Loot)
+end)

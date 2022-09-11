@@ -1,17 +1,18 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("PointManager/PointHistory", {
+    "Utils",
+    "Models",
+    "ProfileManager"
+}, function(resolve, Utils, Models, ProfileManager)
+
 
 local tinsert, tsort = table.insert, table.sort
 
-local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
+local getGuidFromInteger = Utils.getGuidFromInteger
 
 local PointHistory = {}
-local FakePointHistory = {}
+
 
 function PointHistory:New(entry, targets, timestamp, value, reason, creator, note)
     local o = {}
@@ -39,9 +40,9 @@ function PointHistory:Profiles()
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this
-            local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
             if not profile then
-                profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
+                profile = ProfileManager:GetProfileByGUID(target)
             end
             if profile then
                 tinsert(self.profiles, profile)
@@ -79,6 +80,20 @@ function PointHistory:Entry()
 end
 
 
+Models.PointHistory = PointHistory
+resolve(PointHistory)
+
+
+end)
+
+
+define.module("PointManager/FakePointHistory", {
+    "Models",
+    "ProfileManager"
+}, function(resolve, Models, ProfileManager)
+
+local FakePointHistory = {}
+
 function FakePointHistory:New(targets, timestamp, value, reason, creator, note)
     local o = {}
 
@@ -103,9 +118,9 @@ function FakePointHistory:Profiles()
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this
-            local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
             if not profile then
-                profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
+                profile = ProfileManager:GetProfileByGUID(target)
             end
             if profile then
                 tinsert(self.profiles, profile)
@@ -141,6 +156,6 @@ end
 function FakePointHistory:Entry()
     return nil
 end
-
-CLM.MODELS.PointHistory = PointHistory
-CLM.MODELS.FakePointHistory = FakePointHistory
+Models.FakePointHistory = FakePointHistory
+    resolve(FakePointHistory)
+end)

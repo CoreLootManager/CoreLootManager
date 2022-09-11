@@ -1,11 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
 
+define.module("RosterManager/RosterConfiguration", {"Models", "Constants", "RosterManager/Roster"}, function(resolve, Models, CONSTANTS, _)
 local setmetatable = setmetatable
 
 local RosterConfiguration = {} -- Roster Configuration
@@ -254,4 +249,6 @@ function RosterConfiguration._validate_minimumPoints(value) return IsNumeric(ton
 function RosterConfiguration._validate_minGP(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_namedButtons(value) return IsBoolean(value) end
 
-CLM.MODELS.RosterConfiguration = RosterConfiguration
+Models.RosterConfiguration = RosterConfiguration
+resolve(RosterConfiguration)
+end)

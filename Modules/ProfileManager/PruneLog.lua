@@ -1,10 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("ProfileManager/PruneLog", {"Models"}, function(resolve, Models)
 
 local GetServerTime, tinsert, setmetatable = GetServerTime, table.insert, setmetatable
 
@@ -27,4 +23,7 @@ function PruneLog:Add(name)
     tinsert(self.log, name)
 end
 
-CLM.MODELS.ProfilePruneLog = PruneLog
+Models.ProfilePruneLog = PruneLog
+resolve(PruneLog)
+
+end)

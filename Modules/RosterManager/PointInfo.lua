@@ -1,10 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("Profile", {"Models"}, function(resolve, Models)
 
 local setmetatable = setmetatable
 
@@ -47,4 +43,7 @@ function PointInfo:AddDecayed(value)
     Add(self, "decayed", value)
 end
 
-CLM.MODELS.PointInfo = PointInfo
+Models.PointInfo = PointInfo
+resolve(PointInfo)
+
+end)

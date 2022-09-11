@@ -1,10 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("RosterManager/Roster", {"Models", "Constants", "Utils", "L", "Meta:ADDON_TABLE", "Log"}, function(resolve, Models, CONSTANTS, UTILS, L, CLM, LOG)
 
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
 
@@ -44,7 +40,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     -- CONFIGURATION --
     o.uid  = tonumber(uid)
     o.pointType = pointType
-    o.configuration  = CLM.MODELS.RosterConfiguration:New()
+    o.configuration  = MODELS.RosterConfiguration:New()
     o.defaultSlotValues = { [GLOBAL_FAKE_INVENTORY_SLOT] = {} }
     fillSlotsArray(o.defaultSlotValues[GLOBAL_FAKE_INVENTORY_SLOT])
     o.fieldNames = {}
@@ -60,7 +56,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.inRoster = {}             -- Profile is at all in roster
     o.standings = {}            -- Profile standing in roster (dict)
     o.pointInfo = {}            -- Profile point info
-    o.attendanceTracker = CLM.MODELS.AttendanceTracker:New(
+    o.attendanceTracker = MODELS.AttendanceTracker:New(
        raidsForFullAttendance, attendanceWeeksWindow) -- Profile attendance in roster (dict)
     o.pointHistory = {}         -- Point changes in  roster (list)
     o.profilePointHistory = {}  -- Point changes in to players in roster (dict of lists)
@@ -84,7 +80,7 @@ function Roster:AddProfileByGUID(GUID)
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
     self.inRoster[GUID] = true
-    self.pointInfo[GUID] = CLM.MODELS.PointInfo:New()
+    self.pointInfo[GUID] = MODELS.PointInfo:New()
 end
 
 function Roster:RemoveProfileByGUID(GUID)
@@ -164,7 +160,7 @@ function Roster:GetCurrentGainsForPlayer(GUID)
 end
 
 function Roster:GetPointInfoForPlayer(GUID)
-    return self.pointInfo[GUID] or CLM.MODELS.PointInfo:New()
+    return self.pointInfo[GUID] or MODELS.PointInfo:New()
 end
 
 function Roster:GetWeeklyGainsForPlayerWeek(GUID, week)
@@ -536,7 +532,7 @@ function Roster:CopyDefaultSlotValues(s)
 end
 
 function Roster:CopyConfiguration(s)
-    self.configuration = CLM.MODELS.RosterConfiguration:New(UTILS.DeepCopy(s.configuration))
+    self.configuration = MODELS.RosterConfiguration:New(UTILS.DeepCopy(s.configuration))
     self.bossKillBonusValues = UTILS.DeepCopy(s.bossKillBonusValues)
 end
 
@@ -562,7 +558,7 @@ function Roster:GetAttendance(GUID)
     return self.attendanceTracker:Get(GUID)
 end
 
-CLM.MODELS.Roster = Roster
+Models.Roster = Roster
 
 -- Constants
 CONSTANTS.POINT_TYPE = {
@@ -580,10 +576,10 @@ CONSTANTS.POINT_TYPES = UTILS.Set({
 })
 
 CONSTANTS.POINT_TYPES_GUI = {
-    [CONSTANTS.POINT_TYPE.DKP] = CLM.L["DKP"],
-    [CONSTANTS.POINT_TYPE.EPGP] = CLM.L["EPGP"],
-    -- [CONSTANTS.POINT_TYPE.ROLL] = CLM.L["ROLL"],
-    -- [CONSTANTS.POINT_TYPE.SK] = CLM.L["SK"]
+    [CONSTANTS.POINT_TYPE.DKP] = L["DKP"],
+    [CONSTANTS.POINT_TYPE.EPGP] = L["EPGP"],
+    -- [CONSTANTS.POINT_TYPE.ROLL] = L["ROLL"],
+    -- [CONSTANTS.POINT_TYPE.SK] = L["SK"]
 }
 
 CONSTANTS.AUCTION_TYPE = {
@@ -601,15 +597,15 @@ CONSTANTS.AUCTION_TYPES = UTILS.Set({
 })
 
 CONSTANTS.AUCTION_TYPES_GUI = {
-    [CONSTANTS.AUCTION_TYPE.OPEN] = CLM.L["Open"],
-    [CONSTANTS.AUCTION_TYPE.SEALED] = CLM.L["Sealed"],
-    [CONSTANTS.AUCTION_TYPE.VICKREY] = CLM.L["Vickrey"],
-    [CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN] = CLM.L["Anonymous Open"]
+    [CONSTANTS.AUCTION_TYPE.OPEN] = L["Open"],
+    [CONSTANTS.AUCTION_TYPE.SEALED] = L["Sealed"],
+    [CONSTANTS.AUCTION_TYPE.VICKREY] = L["Vickrey"],
+    [CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN] = L["Anonymous Open"]
 }
 
 CONSTANTS.AUCTION_TYPES_EPGP_GUI = {
-    [CONSTANTS.AUCTION_TYPE.OPEN] = CLM.L["Open"],
-    [CONSTANTS.AUCTION_TYPE.SEALED] = CLM.L["Sealed"],
+    [CONSTANTS.AUCTION_TYPE.OPEN] = L["Open"],
+    [CONSTANTS.AUCTION_TYPE.SEALED] = L["Sealed"],
 }
 
 CONSTANTS.AUCTION_TYPES_OPEN = UTILS.Set({
@@ -630,14 +626,14 @@ CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
 })
 
 CONSTANTS.ITEM_VALUE_MODES_GUI = {
-    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = CLM.L["Single-Priced"],
-    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = CLM.L["Ascending"],
-    [CONSTANTS.ITEM_VALUE_MODE.TIERED] = CLM.L["Tiered"],
+    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = L["Single-Priced"],
+    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = L["Ascending"],
+    [CONSTANTS.ITEM_VALUE_MODE.TIERED] = L["Tiered"],
 }
 
 CONSTANTS.ITEM_VALUE_MODES_EPGP_GUI = {
-    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = CLM.L["Single-Priced"],
-    [CONSTANTS.ITEM_VALUE_MODE.TIERED] = CLM.L["Tiered"],
+    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = L["Single-Priced"],
+    [CONSTANTS.ITEM_VALUE_MODE.TIERED] = L["Tiered"],
 }
 
 
@@ -679,69 +675,69 @@ CONSTANTS.INVENTORY_TYPES_SET = UTILS.Set(CONSTANTS.INVENTORY_TYPES)
 
 local PAPERDOLL = "Interface\\AddOns\\ClassicLootManager\\Media\\Paperdoll\\"
 CONSTANTS.INVENTORY_TYPES_SORTED = {
-    { type = GLOBAL_FAKE_INVENTORY_SLOT,    name = CLM.L["Global"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_HEAD",                name = CLM.L["Head"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-head.blp" },
-    { type = "INVTYPE_NECK",                name = CLM.L["Neck"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-neck.blp" },
-    { type = "INVTYPE_SHOULDER",            name = CLM.L["Shoulder"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-shoulder.blp" },
-    { type = "INVTYPE_BODY",                name = CLM.L["Shirt"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-shirt.blp" },
-    { type = "INVTYPE_CLOAK",               name = CLM.L["Back"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_CHEST",               name = CLM.L["Chest"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_ROBE",                name = CLM.L["Chest (robes)"],     icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_TABARD",              name = CLM.L["Tabard"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-tabard.blp" },
-    { type = "INVTYPE_WRIST",               name = CLM.L["Wrist"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-wrists.blp" },
-    { type = "INVTYPE_HAND",                name = CLM.L["Hands"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-hands.blp" },
-    { type = "INVTYPE_WAIST",               name = CLM.L["Waist"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-waist.blp" },
-    { type = "INVTYPE_LEGS",                name = CLM.L["Legs"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-legs.blp" },
-    { type = "INVTYPE_FEET",                name = CLM.L["Feet"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-feet.blp" },
-    { type = "INVTYPE_FINGER",              name = CLM.L["Finger"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-finger.blp" },
-    { type = "INVTYPE_TRINKET",             name = CLM.L["Trinket"],           icon = PAPERDOLL .. "Ui-paperdoll-slot-trinket.blp" },
-    { type = "INVTYPE_WEAPON",              name = CLM.L["One-Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_WEAPONMAINHAND",      name = CLM.L["Main Hand"],         icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_WEAPONOFFHAND",       name = CLM.L["Off Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_HOLDABLE",            name = CLM.L["Held In Off-hand"],  icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_2HWEAPON",            name = CLM.L["Two-Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_SHIELD",              name = CLM.L["Shield"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_RANGED",              name = CLM.L["Ranged"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
-    { type = "INVTYPE_RANGEDRIGHT",         name = CLM.L["Ranged (wands)"],    icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
-    { type = "INVTYPE_NON_EQUIP",           name = CLM.L["Non-equippable"],    icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_BAG",                 name = CLM.L["Bag"],               icon = PAPERDOLL .. "Ui-paperdoll-slot-bag.blp" },
-    { type = "INVTYPE_AMMO",                name = CLM.L["Ammo"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_THROWN",              name = CLM.L["Thrown"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_QUIVER",              name = CLM.L["Quiver"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_RELIC",               name = CLM.L["Relic"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
+    { type = GLOBAL_FAKE_INVENTORY_SLOT,    name = L["Global"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_HEAD",                name = L["Head"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-head.blp" },
+    { type = "INVTYPE_NECK",                name = L["Neck"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-neck.blp" },
+    { type = "INVTYPE_SHOULDER",            name = L["Shoulder"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-shoulder.blp" },
+    { type = "INVTYPE_BODY",                name = L["Shirt"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-shirt.blp" },
+    { type = "INVTYPE_CLOAK",               name = L["Back"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_CHEST",               name = L["Chest"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_ROBE",                name = L["Chest (robes)"],     icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
+    { type = "INVTYPE_TABARD",              name = L["Tabard"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-tabard.blp" },
+    { type = "INVTYPE_WRIST",               name = L["Wrist"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-wrists.blp" },
+    { type = "INVTYPE_HAND",                name = L["Hands"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-hands.blp" },
+    { type = "INVTYPE_WAIST",               name = L["Waist"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-waist.blp" },
+    { type = "INVTYPE_LEGS",                name = L["Legs"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-legs.blp" },
+    { type = "INVTYPE_FEET",                name = L["Feet"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-feet.blp" },
+    { type = "INVTYPE_FINGER",              name = L["Finger"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-finger.blp" },
+    { type = "INVTYPE_TRINKET",             name = L["Trinket"],           icon = PAPERDOLL .. "Ui-paperdoll-slot-trinket.blp" },
+    { type = "INVTYPE_WEAPON",              name = L["One-Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_WEAPONMAINHAND",      name = L["Main Hand"],         icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_WEAPONOFFHAND",       name = L["Off Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_HOLDABLE",            name = L["Held In Off-hand"],  icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_2HWEAPON",            name = L["Two-Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
+    { type = "INVTYPE_SHIELD",              name = L["Shield"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
+    { type = "INVTYPE_RANGED",              name = L["Ranged"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
+    { type = "INVTYPE_RANGEDRIGHT",         name = L["Ranged (wands)"],    icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
+    { type = "INVTYPE_NON_EQUIP",           name = L["Non-equippable"],    icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_BAG",                 name = L["Bag"],               icon = PAPERDOLL .. "Ui-paperdoll-slot-bag.blp" },
+    { type = "INVTYPE_AMMO",                name = L["Ammo"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_THROWN",              name = L["Thrown"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_QUIVER",              name = L["Quiver"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
+    { type = "INVTYPE_RELIC",               name = L["Relic"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
 }
 
 CONSTANTS.INVENTORY_TYPES_GUI = {
-    [GLOBAL_FAKE_INVENTORY_SLOT] = CLM.L["Global"],
-    ["INVTYPE_HEAD"] = CLM.L["Head"],
-    ["INVTYPE_NECK"] = CLM.L["Neck"],
-    ["INVTYPE_SHOULDER"] = CLM.L["Shoulder"],
-    ["INVTYPE_BODY"] = CLM.L["Shirt"],
-    ["INVTYPE_CLOAK"] = CLM.L["Back"],
-    ["INVTYPE_CHEST"] = CLM.L["Chest"],
-    ["INVTYPE_ROBE"] = CLM.L["Chest (robes)"],
-    ["INVTYPE_TABARD"] = CLM.L["Tabard"],
-    ["INVTYPE_WRIST"] = CLM.L["Wrist"],
-    ["INVTYPE_HAND"] = CLM.L["Hands"],
-    ["INVTYPE_WAIST"] = CLM.L["Waist"],
-    ["INVTYPE_LEGS"] = CLM.L["Legs"],
-    ["INVTYPE_FEET"] = CLM.L["Feet"],
-    ["INVTYPE_FINGER"] = CLM.L["Finger"],
-    ["INVTYPE_TRINKET"] = CLM.L["Trinket"],
-    ["INVTYPE_WEAPON"] = CLM.L["One-Hand"],
-    ["INVTYPE_WEAPONMAINHAND"] = CLM.L["Main Hand"],
-    ["INVTYPE_WEAPONOFFHAND"] = CLM.L["Off Hand"],
-    ["INVTYPE_HOLDABLE"] = CLM.L["Held In Off-hand"],
-    ["INVTYPE_2HWEAPON"] = CLM.L["Two-Hand"],
-    ["INVTYPE_SHIELD"] = CLM.L["Shield"],
-    ["INVTYPE_RANGED"] = CLM.L["Ranged"],
-    ["INVTYPE_RANGEDRIGHT"] = CLM.L["Ranged (wands)"],
-    ["INVTYPE_NON_EQUIP"] = CLM.L["Non-equippable"],
-    ["INVTYPE_BAG"] = CLM.L["Bag"],
-    ["INVTYPE_AMMO"] = CLM.L["Ammo"],
-    ["INVTYPE_THROWN"] = CLM.L["Thrown"],
-    ["INVTYPE_QUIVER"] = CLM.L["Quiver"],
-    ["INVTYPE_RELIC"] = CLM.L["Relic"]
+    [GLOBAL_FAKE_INVENTORY_SLOT] = L["Global"],
+    ["INVTYPE_HEAD"] = L["Head"],
+    ["INVTYPE_NECK"] = L["Neck"],
+    ["INVTYPE_SHOULDER"] = L["Shoulder"],
+    ["INVTYPE_BODY"] = L["Shirt"],
+    ["INVTYPE_CLOAK"] = L["Back"],
+    ["INVTYPE_CHEST"] = L["Chest"],
+    ["INVTYPE_ROBE"] = L["Chest (robes)"],
+    ["INVTYPE_TABARD"] = L["Tabard"],
+    ["INVTYPE_WRIST"] = L["Wrist"],
+    ["INVTYPE_HAND"] = L["Hands"],
+    ["INVTYPE_WAIST"] = L["Waist"],
+    ["INVTYPE_LEGS"] = L["Legs"],
+    ["INVTYPE_FEET"] = L["Feet"],
+    ["INVTYPE_FINGER"] = L["Finger"],
+    ["INVTYPE_TRINKET"] = L["Trinket"],
+    ["INVTYPE_WEAPON"] = L["One-Hand"],
+    ["INVTYPE_WEAPONMAINHAND"] = L["Main Hand"],
+    ["INVTYPE_WEAPONOFFHAND"] = L["Off Hand"],
+    ["INVTYPE_HOLDABLE"] = L["Held In Off-hand"],
+    ["INVTYPE_2HWEAPON"] = L["Two-Hand"],
+    ["INVTYPE_SHIELD"] = L["Shield"],
+    ["INVTYPE_RANGED"] = L["Ranged"],
+    ["INVTYPE_RANGEDRIGHT"] = L["Ranged (wands)"],
+    ["INVTYPE_NON_EQUIP"] = L["Non-equippable"],
+    ["INVTYPE_BAG"] = L["Bag"],
+    ["INVTYPE_AMMO"] = L["Ammo"],
+    ["INVTYPE_THROWN"] = L["Thrown"],
+    ["INVTYPE_QUIVER"] = L["Quiver"],
+    ["INVTYPE_RELIC"] = L["Relic"]
 }
 
 CONSTANTS.WEEKLY_RESET = {
@@ -755,8 +751,8 @@ CONSTANTS.WEEKLY_RESETS = UTILS.Set({
 })
 
 CONSTANTS.WEEKLY_RESETS_GUI = {
-    [CONSTANTS.WEEKLY_RESET.EU] = CLM.L["Europe"],
-    [CONSTANTS.WEEKLY_RESET.US] = CLM.L["Americas"]
+    [CONSTANTS.WEEKLY_RESET.EU] = L["Europe"],
+    [CONSTANTS.WEEKLY_RESET.US] = L["Americas"]
 }
 
 CONSTANTS.ALLOWED_ROUNDINGS = UTILS.Set({
@@ -786,11 +782,11 @@ CONSTANTS.SLOT_VALUE_TIERS = UTILS.Set({
 })
 
 CONSTANTS.SLOT_VALUE_TIERS_GUI = {
-    ["b"] = CLM.L["Base"],
-    ["s"] = CLM.L["Small"],
-    ["m"] = CLM.L["Medium"],
-    ["l"] = CLM.L["Large"],
-    ["x"] = CLM.L["Max"],
+    ["b"] = L["Base"],
+    ["s"] = L["Small"],
+    ["m"] = L["Medium"],
+    ["l"] = L["Large"],
+    ["x"] = L["Max"],
 }
 
 CONSTANTS.SLOT_VALUE_TIERS_ORDERED = {
@@ -800,3 +796,5 @@ CONSTANTS.SLOT_VALUE_TIERS_ORDERED = {
     CONSTANTS.SLOT_VALUE_TIER.LARGE,
     CONSTANTS.SLOT_VALUE_TIER.MAX
 }
+  resolve(Roster)
+end)

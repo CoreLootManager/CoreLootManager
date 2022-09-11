@@ -1,10 +1,9 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("Integrations", {
+    "Log", "Constants", "Util", "RosterManager/Roster", "L", "Meta:ADDON_TABLE",
+}, function(resolve, LOG, CONSTANTS, UTILS, _, L, CLM)
+
 
 local pairs, ipairs = pairs, ipairs
 local tinsert, wipe = table.insert, wipe
@@ -110,14 +109,14 @@ end
 local function InitializeGargulIntegration(self)
     local options = {
         global_gargul_integration_header = {
-            name = CLM.L["Gargul Integration"],
+            name = L["Gargul Integration"],
             type = "header",
             width = "full",
             order = 10
         },
         global_gargul_integration = {
-            name = CLM.L["Gargul Integration"],
-            desc = CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."],
+            name = L["Gargul Integration"],
+            desc = L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."],
             type = "toggle",
             set = function(i, v) self:SetGargulIntegration(v) end,
             get = function(i) return self:GetGargulIntegration() end,
@@ -130,22 +129,22 @@ local function InitializeGargulIntegration(self)
 
     local selections = {
         {
-            name = CLM.L["Regular"] .. " " .. CLM.L["MS"],
+            name = L["Regular"] .. " " .. L["MS"],
             order = 11,
             var = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_MS,
         },
         {
-            name = CLM.L["Prioritized"] .. " " .. CLM.L["MS"],
+            name = L["Prioritized"] .. " " .. L["MS"],
             order = 12,
             var = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_MS,
         },
         {
-            name = CLM.L["Regular"] .. " " .. CLM.L["OS"],
+            name = L["Regular"] .. " " .. L["OS"],
             order = 14,
             var = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_OS,
         },
         {
-            name = CLM.L["Prioritized"] .. " " .. CLM.L["OS"],
+            name = L["Prioritized"] .. " " .. L["OS"],
             order = 15,
             var = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_OS,
         }
@@ -154,7 +153,7 @@ local function InitializeGargulIntegration(self)
     for _,selection in ipairs(selections) do
         options[selection.var] = {
             name = selection.name,
-            desc = CLM.L["Action to take upon Gargul loot award event happening during raid."],
+            desc = L["Action to take upon Gargul loot award event happening during raid."],
             type = "select",
             values = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_GUI,
             set = (function(i, v)
@@ -173,8 +172,8 @@ end
 local function InitializeConfigs(self)
     local options = {
         global_wodkpbot_integration = {
-            name = CLM.L["WoW DKP Bot Integration"],
-            desc = CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."],
+            name = L["WoW DKP Bot Integration"],
+            desc = L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."],
             type = "toggle",
             set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
             get = function(i) return self:GetWoWDKPBotIntegration() end,
@@ -355,13 +354,13 @@ CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_ORDERED = {
 }
 
 CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_GUI = {
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE]             = CLM.L["None"],
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_FREE]   = CLM.L["Award for Free"],
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE]   = CLM.L["Award for Base"],
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL]  = CLM.L["Award for Small"],
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM] = CLM.L["Award for Medium"],
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE]  = CLM.L["Award for Large"],
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]    = CLM.L["Award for Max"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE]             = L["None"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_FREE]   = L["Award for Free"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE]   = L["Award for Base"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL]  = L["Award for Small"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM] = L["Award for Medium"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE]  = L["Award for Large"],
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]    = L["Award for Max"],
 }
 
 CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER = {
@@ -376,3 +375,5 @@ CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLERS = UTILS.Set(CONSTANTS.EXTERNAL_LOO
 CONSTANTS.TIMEFRAME_SCALE_VALUES = UTILS.Set(CONSTANTS.TIMEFRAME_SCALE_VALUE)
 
 CLM.Integration = Integration
+resolve(Integration)
+end)

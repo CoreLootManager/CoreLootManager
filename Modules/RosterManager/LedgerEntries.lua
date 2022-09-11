@@ -1,10 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("RosterManager/LedgerEntries", {"Utils", "Constants", "LibStub:EventSourcing/LogEntry", "RosterManager/RosterConfiguration"}, function(resolve, UTILS, Constants, LogEntry, RosterConfiguration)
 
 local tonumber, tostring = tonumber, tostring
 
@@ -12,7 +8,6 @@ local mergeLists = UTILS.mergeLists
 local typeof = UTILS.typeof
 local CreateGUIDList = UTILS.CreateGUIDList
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 local deflate = UTILS.deflate
 
@@ -104,8 +99,8 @@ end
 function RosterUpdateConfig:new(rosterUid, config)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    if not typeof(config, CLM.MODELS.RosterConfiguration) then
-        config = CLM.MODELS.RosterConfiguration:New()
+    if not typeof(config, RosterConfiguration) then
+        config = RosterConfiguration:New()
     end
     o.c = deflate(config)
     return o
@@ -213,7 +208,7 @@ function RosterUpdateOverrides:new(rosterUid, itemId, values)
     o.i = tonumber(itemId) or 0
     o.b = {}
     if type(values) == "table" then
-        for key,_ in pairs(CLM.CONSTANTS.SLOT_VALUE_TIERS) do
+        for key,_ in pairs(Constants.SLOT_VALUE_TIERS) do
             o.b[key] = tonumber(values[key])
         end
     end
@@ -401,7 +396,7 @@ function RosterFieldRename:fields()
     return RosterFieldRenameFields
 end
 
-CLM.MODELS.LEDGER.ROSTER = {
+resolve{
     Create                  = RosterCreate,
     Delete                  = RosterDelete,
     Rename                  = RosterRename,
@@ -416,3 +411,6 @@ CLM.MODELS.LEDGER.ROSTER = {
     BossKillBonus           = RosterBossKillBonus,
     FieldRename             = RosterFieldRename
 }
+
+
+end)

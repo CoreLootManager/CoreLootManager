@@ -1,7 +1,7 @@
-local _, CLM = ...
+local define = LibDependencyInjection.createContext(...)
 
-local LOG = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
+define.module("Utils", {"Log", "Constants", "Meta:ADDON_TABLE"}, function(resolve, LOG, CONSTANTS, CLM)
+
 
 CLM.UTILS = {}
 local UTILS = CLM.UTILS
@@ -760,3 +760,7 @@ CONSTANTS.ITEM_QUALITY = {
 }
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"
+
+
+resolve(UTILS)
+end)

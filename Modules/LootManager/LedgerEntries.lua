@@ -1,17 +1,15 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("LootManager/LedgerEntries", {
+    "Utils",
+    "LibStub:EventSourcing/LogEntry",
+}, function(resolve, UTILS, LogEntry)
 
 local tonumber = tonumber
 
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local mergeLists = UTILS.mergeLists
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 local Award     = LogEntry:extend("IA")
 local RaidAward = LogEntry:extend("II")
@@ -76,7 +74,8 @@ function RaidAward:fields()
     return raidAwardFields
 end
 
-CLM.MODELS.LEDGER.LOOT = {
+resolve({
     Award = Award,
     RaidAward = RaidAward
-}
+})
+end)

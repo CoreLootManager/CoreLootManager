@@ -1,17 +1,13 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("PointManager/LedgerEntries", {"Utils", "LibStub:EventSourcing/LogEntry"}, function(resolve, UTILS, LogEntry)
+
 
 local tonumber, tostring = tonumber, tostring
 
 local mergeLists = UTILS.mergeLists
 local CreateGUIDList = UTILS.CreateGUIDList
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 -- Point DKP X
 local Modify        = LogEntry:extend("DM")
@@ -242,11 +238,13 @@ function DecayRoster:fields()
     return decayRosterFields
 end
 
-CLM.MODELS.LEDGER.DKP = {
+resolve({
     Modify = Modify,
     Set = Set,
     Decay = Decay,
     ModifyRaid = ModifyRaid,
     ModifyRoster = ModifyRoster,
     DecayRoster = DecayRoster
-}
+})
+
+end)

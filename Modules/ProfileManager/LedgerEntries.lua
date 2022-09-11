@@ -1,10 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("ProfileManager/LedgerEntries", {"Utils", "LibStub:EventSourcing/LogEntry"}, function(resolve, UTILS, LogEntry)
 
 local tostring = tostring
 
@@ -13,7 +9,6 @@ local ClassToNumber = UTILS.ClassToNumber
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local CreateGUIDList = UTILS.CreateGUIDList
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 local ProfileUpdate     = LogEntry:extend("P0")
 local ProfileRemove     = LogEntry:extend("P1")
@@ -121,9 +116,11 @@ function ProfileLock:fields()
     return ProfileLockFields
 end
 
-CLM.MODELS.LEDGER.PROFILE = {
+
+resolve({
     Update  = ProfileUpdate,
     Remove  = ProfileRemove,
     Link    = ProfileLink,
     Lock    = ProfileLock
-}
+})
+end)

@@ -1,18 +1,15 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
 
-local wipe, collectgarbage = wipe, collectgarbage
+
+define.module("Logger", {"Modules", "Database", "Meta:ADDON_TABLE", "Log"}, function(resolve, MODULES, Database, CLM, LOG)
+
+    local wipe, collectgarbage = wipe, collectgarbage
 
 -- Module part
 local Logger = {}
 function Logger:Initialize()
     LOG:Trace("Logger:Initialize()")
-    self.db = CLM.MODULES.Database:Logger()
+    self.db = Database:Logger()
 
     local options = {
         logger_header = {
@@ -73,5 +70,8 @@ function Logger:Wipe()
     collectgarbage()
 end
 
--- Publish API
-CLM.MODULES.Logger = Logger
+    -- Publish API
+    MODULES.Logger = Logger
+    Logger:Initialize()
+    resolve(Logger)
+end)

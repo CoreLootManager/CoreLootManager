@@ -1,10 +1,8 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("RosterManager/Options", {
+    "Constants", "RosterManager/Roster", "Meta:ADDON_TABLE",
+}, function(resolve, CONSTANTS, CLM, _)
 
 local CBTYPE = {
     GETTER   = "get",
@@ -951,3 +949,5 @@ function RosterManagerOptions:UpdateOptions()
 end
 
 CLM.OPTIONS.RosterManager = RosterManagerOptions
+resolve(RosterManagerOptions)
+end)

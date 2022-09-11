@@ -1,16 +1,20 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("GlobalConfigs", {
+    "Constants",
+    "Utils",
+    "Database",
+    "LedgerManager",
+    "ConfigManager",
+    "ProfileManager",
+    "L"
+}, function(resolve,CONSTANTS, UTILS, Database, LedgerManager, L)
 
 local tonumber = tonumber
 
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
-    self.db = CLM.MODULES.Database:Personal('global', {
+    self.db = Database:Personal('global', {
         announce_award_to_guild = true,
         announce_loot_to_raid = false,
         announce_loot_to_raid_owner_only = true,
@@ -36,18 +40,18 @@ function GlobalConfigs:Initialize()
     local options = {
         discord = {
             type = "description",
-            name = CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"],
+            name = L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"],
             fontSize = "medium",
             order = 0
         },
         global_header = {
             type = "header",
-            name = CLM.L["Global"],
+            name = L["Global"],
             order = 1
         },
         global_alerts = {
-            name = CLM.L["Point & Loot alerts"],
-            desc = CLM.L["Toggles alerts display when receiving Points or loot."],
+            name = L["Point & Loot alerts"],
+            desc = L["Toggles alerts display when receiving Points or loot."],
             type = "toggle",
             set = function(i, v) self:SetAlerts(v) end,
             get = function(i) return self:GetAlerts() end,
@@ -55,8 +59,8 @@ function GlobalConfigs:Initialize()
             order = 2
         },
         global_bindings = {
-            name = CLM.L["Bindings"],
-            desc = CLM.L["Open Key Bindings UI for AddOns"],
+            name = L["Bindings"],
+            desc = L["Open Key Bindings UI for AddOns"],
             type = "execute",
             func = (function()
                 local category = "AddOns"
@@ -79,8 +83,8 @@ function GlobalConfigs:Initialize()
             order = 2.1
         },
         global_sounds = {
-            name = CLM.L["Addon sounds"],
-            desc = CLM.L["Toggles addon sounds."],
+            name = L["Addon sounds"],
+            desc = L["Toggles addon sounds."],
             type = "toggle",
             set = function(i, v) self:SetSounds(v) end,
             get = function(i) return self:GetSounds() end,
@@ -88,21 +92,21 @@ function GlobalConfigs:Initialize()
             order = 2.5
         },
         global_wipe_ledger = {
-            name = CLM.L["Wipe events"],
-            desc = CLM.L["Wipes all events from memory. This will trigger resyncing from other users."],
+            name = L["Wipe events"],
+            desc = L["Wipes all events from memory. This will trigger resyncing from other users."],
             type = "execute",
             confirm = true,
-            func = function() CLM.MODULES.LedgerManager:Wipe() end,
+            func = function() LedgerManager:Wipe() end,
             order = 4
         },
         global_loot_announcement_header = {
             type = "header",
-            name = CLM.L["Announce loot"],
+            name = L["Announce loot"],
             order = 5
         },
         global_raid_loot_announcement = {
-            name = CLM.L["Announce loot from corpse to Raid"],
-            desc = CLM.L["Toggles loot announcement to raid"],
+            name = L["Announce loot from corpse to Raid"],
+            desc = L["Toggles loot announcement to raid"],
             type = "toggle",
             set = function(i, v) self:SetAnnounceLootToRaid(v) end,
             get = function(i) return self:GetAnnounceLootToRaid() end,
@@ -110,8 +114,8 @@ function GlobalConfigs:Initialize()
             order = 6
         },
         global_raid_loot_announcement_owner_only = {
-            name = CLM.L["Only when ML/RL"],
-            desc = CLM.L["When enabled, this will make loot announcement display only if you're Master Looter or Raid Leader (if there is no Master Looter)."],
+            name = L["Only when ML/RL"],
+            desc = L["When enabled, this will make loot announcement display only if you're Master Looter or Raid Leader (if there is no Master Looter)."],
             type = "toggle",
             set = function(i, v) self:SetAnnounceLootToRaidOwnerOnly(v) end,
             get = function(i) return self:GetAnnounceLootToRaidOwnerOnly() end,
@@ -119,8 +123,8 @@ function GlobalConfigs:Initialize()
             order = 7
         },
         global_raid_loot_announcement_level = {
-            name = CLM.L["Announcement loot rarity"],
-            desc = CLM.L["Select loot rarity for the annoucement to raid."],
+            name = L["Announcement loot rarity"],
+            desc = L["Select loot rarity for the annoucement to raid."],
             type = "select",
             values = CONSTANTS.ITEM_QUALITY,
             set = function(i, v) self:SetAnnounceLootToRaidLevel(v) end,
@@ -129,12 +133,12 @@ function GlobalConfigs:Initialize()
         },
         rw_header = {
             type = "header",
-            name = CLM.L["Raid Warnings"],
+            name = L["Raid Warnings"],
             order = 120
         },
         rw_raid = {
-            name = CLM.L["Raid Start/End"],
-            desc = CLM.L["Enables announcing raid start and end."],
+            name = L["Raid Start/End"],
+            desc = L["Enables announcing raid start and end."],
             type = "toggle",
             set = function(i, v) self:SetRaidWarning(v) end,
             get = function(i) return self:GetRaidWarning() end,
@@ -142,40 +146,40 @@ function GlobalConfigs:Initialize()
             order = 121
         },
         rw_auction = {
-            name = CLM.L["Auction Start/End"],
-            desc = CLM.L["Enable announcing auction start and end."],
+            name = L["Auction Start/End"],
+            desc = L["Enable announcing auction start and end."],
             type = "toggle",
             set = function(i, v) self:SetAuctionWarning(v) end,
             get = function(i) return self:GetAuctionWarning() end,
             order = 122
         },
         rw_commands = {
-            name = CLM.L["Chat Commands"],
-            desc = CLM.L["Enables announcing chat commands at auction start."],
+            name = L["Chat Commands"],
+            desc = L["Enables announcing chat commands at auction start."],
             type = "toggle",
             set = function(i, v) self:SetCommandsWarning(v) end,
             get = function(i) return self:GetCommandsWarning() end,
             order = 123
         },
         rw_countdown = {
-            name = CLM.L["Auction End Countdown"],
-            desc = CLM.L["Enables raid-warning countdown for auctions."],
+            name = L["Auction End Countdown"],
+            desc = L["Enables raid-warning countdown for auctions."],
             type = "toggle",
             set = function(i, v) self:SetCountdownWarning(v) end,
             get = function(i) return self:GetCountdownWarning() end,
             order = 124
         },
         rw_loot = {
-            name = CLM.L["Loot Awards"],
-            desc = CLM.L["Enables announcing loot awards."],
+            name = L["Loot Awards"],
+            desc = L["Enables announcing loot awards."],
             type = "toggle",
             set = function(i, v) self:SetLootWarning(v) end,
             get = function(i) return self:GetLootWarning() end,
             order = 125
         },
         rw_bids = {
-            name = CLM.L["Bids"],
-            desc = CLM.L["Enables announcing new highest bid (when applicable)."],
+            name = L["Bids"],
+            desc = L["Enables announcing new highest bid (when applicable)."],
             type = "toggle",
             set = function(i, v) self:SetBidsWarning(v) end,
             get = function(i) return self:GetBidsWarning() end,
@@ -183,20 +187,20 @@ function GlobalConfigs:Initialize()
         },
         danger_zone_header = {
             type = "header",
-            name = CLM.L["Danger Zone - Use at own risk"],
+            name = L["Danger Zone - Use at own risk"],
             order = 10000
         },
         danger_zone_disable_sync = {
             type = "toggle",
-            name = CLM.L["Disable data synchronisation"],
-            desc = CLM.L["Disable data synchronisation. This might lead to unexpected consequences. Use this at your own risk. Requires /reload to apply."],
+            name = L["Disable data synchronisation"],
+            desc = L["Disable data synchronisation. This might lead to unexpected consequences. Use this at your own risk. Requires /reload to apply."],
             set = function(i, v) self:SetDisableSync(v) end,
             get = function(i) return self:GetDisableSync() end,
             width = "full",
             order = 10001
         }
     }
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 function GlobalConfigs:SetAlerts(value)
@@ -360,14 +364,16 @@ CONSTANTS.MODIFIER_COMBINATIONS_SORTED = {
 CONSTANTS.MODIFIER_COMBINATIONS = UTILS.Set(CONSTANTS.MODIFIER_COMBINATIONS_SORTED)
 
 CONSTANTS.MODIFIER_COMBINATIONS_GUI = {
-    [CONSTANTS.MODIFIER_COMBINATION.DISABLED] = CLM.L["Disable"],
-    [CONSTANTS.MODIFIER_COMBINATION.SHIFT] = CLM.L["Shift"],
-    [CONSTANTS.MODIFIER_COMBINATION.CTRL] = CLM.L["Ctrl"],
-    [CONSTANTS.MODIFIER_COMBINATION.ALT] = CLM.L["Alt"],
-    [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT] = CLM.L["Shift + Alt"],
-    [CONSTANTS.MODIFIER_COMBINATION.ALT_CTRL] = CLM.L["Ctrl + Alt"],
-    [CONSTANTS.MODIFIER_COMBINATION.SHIFT_CTRL] = CLM.L["Shift + Ctrl"],
-    [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT_CTRL] = CLM.L["Shift + Ctrl + Alt"]
+    [CONSTANTS.MODIFIER_COMBINATION.DISABLED] = L["Disable"],
+    [CONSTANTS.MODIFIER_COMBINATION.SHIFT] = L["Shift"],
+    [CONSTANTS.MODIFIER_COMBINATION.CTRL] = L["Ctrl"],
+    [CONSTANTS.MODIFIER_COMBINATION.ALT] = L["Alt"],
+    [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT] = L["Shift + Alt"],
+    [CONSTANTS.MODIFIER_COMBINATION.ALT_CTRL] = L["Ctrl + Alt"],
+    [CONSTANTS.MODIFIER_COMBINATION.SHIFT_CTRL] = L["Shift + Ctrl"],
+    [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT_CTRL] = L["Shift + Ctrl + Alt"]
 }
 
-CLM.GlobalConfigs = GlobalConfigs
+resolve(GlobalConfigs)
+
+end)

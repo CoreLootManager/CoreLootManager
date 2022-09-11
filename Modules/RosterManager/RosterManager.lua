@@ -1,10 +1,8 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("RosterManager", {
+    "Log", "Constants", "Util", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager",
+}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager)
 
 local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
@@ -30,8 +28,8 @@ function RosterManager:Initialize()
     }
 
     -- Register mutators
-    CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.ROSTER.Create,
+    LedgerManager:RegisterEntryType(
+        LedgerEntries.Create,
         (function(entry)
             LOG:TraceAndCount("mutator(RosterCreate)")
             local uid = entry:rosterUid()
@@ -47,8 +45,8 @@ function RosterManager:Initialize()
             self.cache.rostersUidMap[uid] = name
         end))
 
-    CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.ROSTER.Delete,
+    LedgerManager:RegisterEntryType(
+        LedgerEntries.Delete,
         (function(entry)
             LOG:TraceAndCount("mutator(RosterDelete)")
             local uid = entry:rosterUid()
@@ -64,8 +62,8 @@ function RosterManager:Initialize()
             self.cache.rosters[name] = nil
         end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.Rename,
+        LedgerManager:RegisterEntryType(
+            LedgerEntries.Rename,
             (function(entry)
                 LOG:TraceAndCount("mutator(RosterRename)")
                 local uid = entry:rosterUid()
@@ -91,8 +89,8 @@ function RosterManager:Initialize()
                 self.cache.rosters[oldname] = nil
             end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.CopyData,
+        LedgerManager:RegisterEntryType(
+            LedgerEntries.CopyData,
             (function(entry)
                 LOG:TraceAndCount("mutator(RosterCopyData)")
                 local sourceUid = entry:sourceRosterUid()
@@ -126,8 +124,8 @@ function RosterManager:Initialize()
                 end
             end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.UpdateConfigSingle,
+        LedgerManager:RegisterEntryType(
+            LedgerEntries.UpdateConfigSingle,
             (function(entry)
                 LOG:TraceAndCount("mutator(RosterUpdateConfigSingle)")
                 local rosterUid = entry:rosterUid()
@@ -141,8 +139,8 @@ function RosterManager:Initialize()
                 roster:SetConfiguration(entry:config(), entry:value())
             end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.UpdateDefaultSingle,
+        LedgerManager:RegisterEntryType(
+            LedgerEntries.UpdateDefaultSingle,
             (function(entry)
                 LOG:TraceAndCount("mutator(RosterUpdateDefaultSingle)")
                 local rosterUid = entry:rosterUid()
@@ -156,8 +154,8 @@ function RosterManager:Initialize()
                 roster:SetDefaultSlotTierValue(entry:slot(), entry:tier(), entry:value())
             end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-                CLM.MODELS.LEDGER.ROSTER.UpdateOverrides,
+        LedgerManager:RegisterEntryType(
+                LedgerEntries.UpdateOverrides,
                 (function(entry)
                     LOG:TraceAndCount("mutator(RosterUpdateOverrides)")
                     local rosterUid = entry:rosterUid()
@@ -171,8 +169,8 @@ function RosterManager:Initialize()
                     roster:SetItemValues(entry:itemId(), entry:values())
                 end))
 
-            CLM.MODULES.LedgerManager:RegisterEntryType(
-                CLM.MODELS.LEDGER.ROSTER.UpdateOverridesSingle,
+            LedgerManager:RegisterEntryType(
+                LedgerEntries.UpdateOverridesSingle,
                 (function(entry)
                     LOG:TraceAndCount("mutator(RosterUpdateOverridesSingle)")
                     local rosterUid = entry:rosterUid()
@@ -186,8 +184,8 @@ function RosterManager:Initialize()
                     roster:SetItemTierValue(entry:itemId(), entry:tier(), entry:value())
                 end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.UpdateProfiles,
+        LedgerManager:RegisterEntryType(
+            LedgerEntries.UpdateProfiles,
             (function(entry)
                 LOG:TraceAndCount("mutator(RosterUpdateProfiles)")
                 local rosterUid = entry:rosterUid()
@@ -237,8 +235,8 @@ function RosterManager:Initialize()
                 end
             end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.BossKillBonus,
+        LedgerManager:RegisterEntryType(
+            LedgerEntries.BossKillBonus,
             (function(entry)
                 LOG:TraceAndCount("mutator(RosterBossKillBonus)")
                 local rosterUid = entry:rosterUid()
@@ -251,8 +249,8 @@ function RosterManager:Initialize()
                 roster:SetBossKillBonusValue(entry:encounterId(), entry:difficultyId(), entry:value())
             end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.FieldRename,
+        LedgerManager:RegisterEntryType(
+            LedgerEntries.FieldRename,
             (function(entry)
                 LOG:TraceAndCount("mutator(RosterRenameField)")
                 local rosterUid = entry:rosterUid()
@@ -265,7 +263,7 @@ function RosterManager:Initialize()
                 roster:SetFieldName(entry:tier(), entry:name())
             end))
 
-        CLM.MODULES.LedgerManager:RegisterOnRestart(function()
+        LedgerManager:RegisterOnRestart(function()
             self:WipeAll()
         end)
 
@@ -360,7 +358,7 @@ function RosterManager:NewRoster(pointType, name)
         LOG:Error("RosterManager:NewRoster(): Invalid point type")
         return
     end
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.Create:new(uid, name, pointType), true)
+    LedgerManager:Submit(LedgerEntries.Create:new(uid, name, pointType), true)
 end
 
 function RosterManager:DeleteRosterByName(name)
@@ -370,7 +368,7 @@ function RosterManager:DeleteRosterByName(name)
         LOG:Error("RosterManager:RenameRoster(): Unknown roster name %s", name)
         return
     end
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.Delete:new(roster:UID()), true)
+    LedgerManager:Submit(LedgerEntries.Delete:new(roster:UID()), true)
 end
 
 function RosterManager:RenameRoster(old, new)
@@ -386,7 +384,7 @@ function RosterManager:RenameRoster(old, new)
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.Rename:new(o:UID(), new), true)
+    LedgerManager:Submit(LedgerEntries.Rename:new(o:UID(), new), true)
 end
 
 function RosterManager:Copy(source, target, config, defaults, overrides, profiles)
@@ -402,7 +400,7 @@ function RosterManager:Copy(source, target, config, defaults, overrides, profile
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.CopyData:new(s:UID(), t:UID(), config, defaults, overrides, profiles), true)
+    LedgerManager:Submit(LedgerEntries.CopyData:new(s:UID(), t:UID(), config, defaults, overrides, profiles), true)
 end
 
 function RosterManager:SetRosterConfiguration(name, option, value)
@@ -441,7 +439,7 @@ function RosterManager:SetRosterConfiguration(name, option, value)
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
+    LedgerManager:Submit(LedgerEntries.UpdateConfigSingle:new(roster:UID(), option, value), true)
 end
 
 function RosterManager:SetRosterDefaultSlotTierValue(nameOrRoster, slot, tier, value)
@@ -473,7 +471,7 @@ function RosterManager:SetRosterDefaultSlotTierValue(nameOrRoster, slot, tier, v
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, tier, value), true)
+    LedgerManager:Submit(LedgerEntries.UpdateDefaultSingle:new(roster:UID(), slot, tier, value), true)
 end
 
 function RosterManager:SetFieldName(nameOrRoster, field, name)
@@ -507,7 +505,7 @@ function RosterManager:SetFieldName(nameOrRoster, field, name)
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.FieldRename:new(roster:UID(), field, name), true)
+    LedgerManager:Submit(LedgerEntries.FieldRename:new(roster:UID(), field, name), true)
 end
 
 function RosterManager:CompareAndSanitizeSlotTierValues(current, new)
@@ -549,7 +547,7 @@ function RosterManager:SetRosterItemValues(nameOrRoster, itemId, values)
     end
     local sanitizedValues = self:CompareAndSanitizeSlotTierValues(roster:GetItemValues(itemId), values)
     if sanitizedValues then
-        CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateOverrides:new(roster:UID(), itemId, sanitizedValues), true)
+        LedgerManager:Submit(LedgerEntries.UpdateOverrides:new(roster:UID(), itemId, sanitizedValues), true)
     end
 end
 
@@ -578,7 +576,7 @@ function RosterManager:SetRosterItemTierValue(nameOrRoster, itemId, tier, value)
         LOG:Error("RosterManager:SetRosterItemTierValue(): Missing tier")
         return
     end
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateOverridesSingle:new(roster:UID(), itemId, tier, value), true)
+    LedgerManager:Submit(LedgerEntries.UpdateOverridesSingle:new(roster:UID(), itemId, tier, value), true)
 end
 
 function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, difficultyId, value)
@@ -610,7 +608,7 @@ function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, di
         LOG:Debug("RosterManager:SetRosterBossKillBonusValue(): No change to value. Skipping.")
         return
     end
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.BossKillBonus:new(roster:UID(), encounterId, difficultyId, value), true)
+    LedgerManager:Submit(LedgerEntries.BossKillBonus:new(roster:UID(), encounterId, difficultyId, value), true)
 end
 
 function RosterManager:AddProfilesToRoster(roster, profiles)
@@ -624,14 +622,14 @@ function RosterManager:AddProfilesToRoster(roster, profiles)
         return
     end
 
-    local entry = CLM.MODELS.LEDGER.ROSTER.UpdateProfiles:new(roster:UID(), profiles, false)
+    local entry = LedgerEntries.UpdateProfiles:new(roster:UID(), profiles, false)
     local t = entry:profiles()
     if not t or (#t == 0) then
         LOG:Error("RosterManager:AddProfilesToRoster(): Empty profiles list")
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(entry, true)
+    LedgerManager:Submit(entry, true)
 end
 
 function RosterManager:RemoveProfilesFromRoster(roster, profiles)
@@ -645,7 +643,7 @@ function RosterManager:RemoveProfilesFromRoster(roster, profiles)
         return
     end
 
-    local entry = CLM.MODELS.LEDGER.ROSTER.UpdateProfiles:new(roster:UID(), profiles, true)
+    local entry = LedgerEntries.UpdateProfiles:new(roster:UID(), profiles, true)
 
     local t = entry:profiles()
     if not t or (#t == 0) then
@@ -653,7 +651,7 @@ function RosterManager:RemoveProfilesFromRoster(roster, profiles)
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(entry, true)
+    LedgerManager:Submit(entry, true)
 end
 
 function RosterManager:AddFromRaidToRoster(roster)
@@ -721,6 +719,7 @@ function RosterManager:WipeAll()
 end
 
 CLM.MODULES.RosterManager = RosterManager
+resolve(RosterManager)
 
 CONSTANTS.ROSTER_NAME_GENERATOR = {
     PREFIX = {
@@ -989,3 +988,5 @@ CONSTANTS.ROSTER_NAME_GENERATOR = {
         "zebras"
     }
 }
+
+end)

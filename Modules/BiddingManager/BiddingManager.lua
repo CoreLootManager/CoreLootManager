@@ -1,10 +1,9 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("RosterManager/Options", {
+    "Utils", "Log",
+    "Constants",  "Meta:ADDON_TABLE","RosterManager/Roster", "L"
+}, function(resolve, UTILS, LOG, CONSTANTS, CLM, _, L)
 
 local BIDDING_COMM_PREFIX = "Bidding1"
 
@@ -44,12 +43,12 @@ function BiddingManager:Initialize()
     local options = {
         bidding_header = {
             type = "header",
-            name = CLM.L["Bidding"],
+            name = L["Bidding"],
             order = 70
         },
         bidding_auto_open = {
-            name = CLM.L["Toggle Bidding auto-open"],
-            desc = CLM.L["Toggle auto open and auto close on auction start and stop"],
+            name = L["Toggle Bidding auto-open"],
+            desc = L["Toggle auto open and auto close on auction start and stop"],
             type = "toggle",
             set = function(i, v) self:SetAutoOpen(v) end,
             get = function(i) return self:GetAutoOpen() end,
@@ -57,8 +56,8 @@ function BiddingManager:Initialize()
             order = 71
           },
           bidding_auto_update = {
-            name = CLM.L["Enable auto-update bid values"],
-            desc = CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."],
+            name = L["Enable auto-update bid values"],
+            desc = L["Enable auto-update bid values when current highest bid changes (open auction only)."],
             type = "toggle",
             set = function(i, v) self:SetAutoUpdateBidValue(v) end,
             get = function(i) return self:GetAutoUpdateBidValue() end,
@@ -120,7 +119,7 @@ end
 function BiddingManager:NotifyPass()
     LOG:Trace("BiddingManager:NotifyPass()")
     if not self.auctionInProgress then return end
-    self.lastBid = CLM.L["PASS"]
+    self.lastBid = L["PASS"]
     self.guiBid = true
     local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
     CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
@@ -181,7 +180,7 @@ function BiddingManager:HandleStartAuction(data, sender)
     self.auctionInProgress = true
     PlayStartSound()
     CLM.GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
-    LOG:Message(CLM.L["Auction of "] .. self.auctionInfo:ItemLink())
+    LOG:Message(L["Auction of "] .. self.auctionInfo:ItemLink())
 end
 
 function BiddingManager:HandleStopAuction(_, sender)
@@ -194,7 +193,7 @@ function BiddingManager:HandleStopAuction(_, sender)
     self:ClearAuctionInfo()
     PlayEndSound()
     CLM.GUI.BiddingManager:EndAuction()
-    LOG:Message(CLM.L["Auction finished"])
+    LOG:Message(L["Auction finished"])
 end
 
 function BiddingManager:HandleAntiSnipe(_, sender)
@@ -213,9 +212,9 @@ function BiddingManager:HandleAcceptBid(_, sender)
         return
     end
     if self.guiBid then
-        local value =  self.lastBid or CLM.L["cancel"]
+        local value =  self.lastBid or L["cancel"]
         CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
-        LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], value)
+        LOG:Message(L["Your bid (%s) was |cff00cc00accepted|r"], value)
         self.guiBid = false
     end
 end
@@ -227,9 +226,9 @@ function BiddingManager:HandleDenyBid(data, sender)
         return
     end
     if self.guiBid then
-        local value = self.lastBid or CLM.L["cancel"]
-        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
-        LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], value, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"])
+        local value = self.lastBid or L["cancel"]
+        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or L["Unknown"] })
+        LOG:Message(L["Your bid (%s) was denied: |cffcc0000%s|r"], value, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or L["Unknown"])
         self.guiBid = false
     end
 end
@@ -278,3 +277,6 @@ CONSTANTS.BID_TYPE = {
 CONSTANTS.BID_TYPES = UTILS.Set(CONSTANTS.BID_TYPE)
 
 CLM.MODULES.BiddingManager = BiddingManager
+
+resolve(BiddingManager)
+end)
