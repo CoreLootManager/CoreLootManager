@@ -195,6 +195,7 @@ function RaidManager:Initialize()
 end
 
 function RaidManager:ParseStatus()
+    LOG:Trace("RaidManager:ParseStatus()")
     if not self._initialized then
         -- Mark raids as stale
         for raid in ipairs(self.cache.raids) do
@@ -565,19 +566,22 @@ end
 
 function RaidManager:RegisterEventHandling()
     if self.isEventHandlingRegistered then return end
-    CLM.MODULES.EventManager:RegisterWoWEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, (function(...)
+    CLM.MODULES.EventManager:RegisterWoWBucketEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, 3, (function(...)
         self:HandleRosterUpdateEvent()
     end))
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PARTY_LOOT_METHOD_CHANGED","PLAYER_ROLES_ASSIGNED"}, (function(...)
+    CLM.MODULES.EventManager:RegisterWoWBucketEvent({"PARTY_LOOT_METHOD_CHANGED","PLAYER_ROLES_ASSIGNED"}, 3, (function(...)
         self:UpdateGameRaidInformation() -- we dont need to check others; im not even sure if we need to do this
     end))
     self.isEventHandlingRegistered = true
 end
 
+local reentrance = false
 function RaidManager:HandleRosterUpdateEvent()
     LOG:Trace("RaidManager:HandleRosterUpdateEvent()")
+    if reentrance then LOG:Debug("Reentrance!") return end
     if not IsInRaid() then return end
     if CLM.MODULES.LedgerManager:IsTimeTraveling() then return end
+    reentrance = true
     -- Update wow raid information
     self:UpdateGameRaidInformation()
     -- Auto award handling removal in case of raid owner change
@@ -587,6 +591,7 @@ function RaidManager:HandleRosterUpdateEvent()
         self:UpdateRaiderList()
         self:EnableAutoAwarding()
     end
+    reentrance = false
 end
 
 function RaidManager:EnableAutoAwarding()
