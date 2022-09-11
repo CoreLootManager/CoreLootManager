@@ -243,10 +243,10 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
             tiers = UTILS.Trim(tiers)
             auctionMessage = auctionMessage .. sformat(CLM.L["Bid tiers: %s."], tiers)  .. " "
         else
-            if values[CONSTANTS.SLOT_VALUE_TIER.BASE] >= 0 then
+            if values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 then
                 auctionMessage = auctionMessage .. sformat(CLM.L["Minimum bid: %s."] .. " ", tostring(values[CONSTANTS.SLOT_VALUE_TIER.BASE]))
             end
-            if values[CONSTANTS.SLOT_VALUE_TIER.MAX] >= 0 then
+            if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
                 auctionMessage = auctionMessage .. sformat(CLM.L["Maximum bid: %s."] .. " ", tostring(values[CONSTANTS.SLOT_VALUE_TIER.MAX]))
             end
         end
@@ -507,14 +507,14 @@ function AuctionManager:ValidateBid(name, bid)
     if current < self.minimumPoints then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BELOW_MIN_BIDDER end
     -- allow negative standings after bid
     local new = current - bid
-    if (new < self.minimumPoints) and not self.allowBelowMinStandings and (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE_DKP) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
+    if (new < self.minimumPoints) and not self.allowBelowMinStandings and (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.DKP) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
     -- bid value
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
         -- min
-        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] >= 0 and bid < self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 and bid < self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
-        if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] >= 0 and bid > self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and bid > self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             -- always allow bidding min in ascending mode if haven't bid yet
