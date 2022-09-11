@@ -207,7 +207,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
     self.auctionTime = auctionTime
     self.itemValueMode = configuration:Get("itemValueMode")
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
-        if values[CONSTANTS.SLOT_VALUE_TIER.MAX] >= 0 and values[CONSTANTS.SLOT_VALUE_TIER.BASE] > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then -- TODO
+        if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and values[CONSTANTS.SLOT_VALUE_TIER.BASE] > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then
             LOG:Warning("AuctionManager:StartAuction(): base value must be smaller or equal to max values")
             return false
         end
