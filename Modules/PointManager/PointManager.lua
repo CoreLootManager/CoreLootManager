@@ -1,6 +1,6 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("RosterManager", {
+define.module("PointManager", {
     "Log", "Constants", "Util", "PointManager/LedgerEntries", "Meta:ADDON_TABLE", "ProfileManager", "L", "LedgerManager", "EventManager", "RosterManager", "RaidManager", "Models"
 }, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, ProfileManager, L, LedgerManager, EventManager, RosterManager, RaidManager, Models)
 

@@ -1,10 +1,9 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("UnifiedGUI_Standings", {
+    "Log", "Constants", "Utils", "PointManager", "Meta:ADDON_TABLE", "L"
+}, function(resolve, LOG, CONSTANTS, UTILS, _, CLM, L)
+
 
 local pairs, ipairs = pairs, ipairs
 local CreateFrame, UIParent = CreateFrame, UIParent
@@ -113,7 +112,7 @@ end
 local function GenerateUntrustedOptions(self)
     local options = {}
     options.roster = {
-        name = CLM.L["Roster"],
+        name = L["Roster"],
         type = "select",
         values = CLM.MODULES.RosterManager:GetRostersUidMap(),
         set = function(i, v)
@@ -133,11 +132,11 @@ local function GenerateAssistantOptions(self)
     return {
         award_header = {
             type = "header",
-            name = CLM.L["Management"],
+            name = L["Management"],
             order = 9
         },
         action_context = {
-            name = CLM.L["Action context"],
+            name = L["Action context"],
             type = "select",
             values = CONSTANTS.ACTION_CONTEXT_GUI,
             set = function(i, v) self.context = v end,
@@ -146,9 +145,9 @@ local function GenerateAssistantOptions(self)
             width = "full"
         },
         award_dkp_note = {
-            name = CLM.L["Note"],
+            name = L["Note"],
             desc = (function()
-                local n = CLM.L["Note to be added to award. Max 25 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."]
+                local n = L["Note to be added to award. Max 25 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."]
                 if strlen(self.note or "") > 0 then
                     n = n .. "\n\n|cffeeee00Note:|r " .. self.note
                 end
@@ -161,7 +160,7 @@ local function GenerateAssistantOptions(self)
             order = 12
         },
         award_reason = {
-            name = CLM.L["Reason"],
+            name = L["Reason"],
             type = "select",
             values = CONSTANTS.POINT_CHANGE_REASONS.GENERAL,
             set = function(i, v) self.awardReason = v end,
@@ -170,8 +169,8 @@ local function GenerateAssistantOptions(self)
             width = "full"
         },
         award_dkp_value = {
-            name = CLM.L["Award value"],
-            desc = CLM.L["Points value that will be awarded."],
+            name = L["Award value"],
+            desc = L["Points value that will be awarded."],
             type = "input",
             set = function(i, v) self.awardValue = v end,
             get = function(i) return self.awardValue end,
@@ -180,8 +179,8 @@ local function GenerateAssistantOptions(self)
             order = 13
         },
         award_dkp = {
-            name = CLM.L["Award"],
-            desc = CLM.L["Award points to players based on context."],
+            name = L["Award"],
+            desc = L["Award points to players based on context."],
             type = "execute",
             width = 0.575,
             func = (function(i)
@@ -212,7 +211,7 @@ local function GenerateAssistantOptions(self)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles or #profiles == 0 then
-                        LOG:Message(CLM.L["No players selected"])
+                        LOG:Message(L["No players selected"])
                         LOG:Debug("UnifiedGUI_Standings(Award): profiles == 0")
                         return
                     end
@@ -225,15 +224,15 @@ local function GenerateAssistantOptions(self)
             end),
             confirm = (function()
                 local awardValue = tonumber(self.awardValue)
-                if not awardValue then return CLM.L["Missing award value"] end
+                if not awardValue then return L["Missing award value"] end
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
-                    return sformat(CLM.L["Award %s points to everyone in raid."], awardValue)
+                    return sformat(L["Award %s points to everyone in raid."], awardValue)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    return sformat(CLM.L["Award %s points to everyone in roster."], awardValue)
+                    return sformat(L["Award %s points to everyone in roster."], awardValue)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles then profiles = {} end
-                    return sformat(CLM.L["Award %s points to %s selected players."], awardValue, #profiles)
+                    return sformat(L["Award %s points to %s selected players."], awardValue, #profiles)
                 end
             end),
             order = 14
@@ -244,8 +243,8 @@ end
 local function GenerateManagerOptions(self)
     return {
         decay_dkp_value = {
-            name = CLM.L["Decay %"],
-            desc = CLM.L["% that will be decayed."],
+            name = L["Decay %"],
+            desc = L["% that will be decayed."],
             type = "input",
             set = function(i, v) self.decayValue = v end,
             get = function(i) return self.decayValue end,
@@ -254,8 +253,8 @@ local function GenerateManagerOptions(self)
             order = 21
         },
         decay_negative = {
-            name = CLM.L["Decay Negatives"],
-            desc = CLM.L["Include players with negative standings in decay."],
+            name = L["Decay Negatives"],
+            desc = L["Include players with negative standings in decay."],
             type = "toggle",
             set = function(i, v) self.includeNegative = v end,
             get = function(i) return self.includeNegative end,
@@ -268,8 +267,8 @@ local function GenerateManagerOptions(self)
             order = 23
         },
         decay_dkp = {
-            name = CLM.L["Decay"],
-            desc = CLM.L["Execute decay for players based on context."],
+            name = L["Decay"],
+            desc = L["Execute decay for players based on context."],
             type = "execute",
             width = 0.575,
             func = (function(i)
@@ -287,7 +286,7 @@ local function GenerateManagerOptions(self)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles or #profiles == 0 then
-                        LOG:Message(CLM.L["No players selected"])
+                        LOG:Message(L["No players selected"])
                         LOG:Debug("UnifiedGUI_Standings(Decay): profiles == 0")
                         return
                     end
@@ -298,15 +297,15 @@ local function GenerateManagerOptions(self)
             end),
             confirm = (function()
                 local decayValue = tonumber(self.decayValue)
-                if not decayValue then return CLM.L["Missing decay value"] end
+                if not decayValue then return L["Missing decay value"] end
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
-                    return CLM.L["Invalid context. You should not decay raid only."]
+                    return L["Invalid context. You should not decay raid only."]
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    return sformat(CLM.L["Decay %s%% points to everyone in roster."], decayValue)
+                    return sformat(L["Decay %s%% points to everyone in roster."], decayValue)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles then profiles = {} end
-                    return sformat(CLM.L["Decay %s%% points to %s selected players."], decayValue, #profiles)
+                    return sformat(L["Decay %s%% points to %s selected players."], decayValue, #profiles)
                 end
             end),
             order = 22
@@ -330,27 +329,27 @@ local function verticalOptionsFeeder()
 end
 
 local columnsDKP = {
-    {   name = CLM.L["Name"],   width = 85 },
+    {   name = L["Name"],   width = 85 },
     {   name = "", width = 60 },
-    {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {   name = CLM.L["Class"],  width = 100,
+    {   name = L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = L["Class"],  width = 100,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
-    -- {   name = CLM.L["Spec"],   width = 60 },
-    {   name = CLM.L["Att. [%]"], width = 60,
+    -- {   name = L["Spec"],   width = 60 },
+    {   name = L["Att. [%]"], width = 60,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     }
 }
 
 local columnsEPGP = {
-    {   name = CLM.L["Name"], width = 85 },
-    {   name = CLM.L["EP/GP"], width = 75 },
-    {   name = CLM.L["PR"], width = 70, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {   name = CLM.L["Class"],  width = 100,
+    {   name = L["Name"], width = 85 },
+    {   name = L["EP/GP"], width = 75 },
+    {   name = L["PR"], width = 70, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = L["Class"],  width = 100,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
-    -- {   name = CLM.L["Spec"],   width = 60 },
-    {   name = CLM.L["Att. [%]"], width = 60,
+    -- {   name = L["Spec"],   width = 60 },
+    {   name = L["Att. [%]"], width = 60,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     }
 }
@@ -377,7 +376,7 @@ local tableStructure = {
             tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
             local lockedString = ""
             if ST_GetIsLocked(rowData) then
-                lockedString = "|c4eED3333" .. CLM.L["Locked"] .. "|r"
+                lockedString = "|c4eED3333" .. L["Locked"] .. "|r"
             end
             local pointInfo = ST_GetPointInfo(rowData)
             local weeklyGain = ST_GetWeeklyGains(rowData)
@@ -389,25 +388,25 @@ local tableStructure = {
 
             local isEPGP = ST_GetIsEPGP(rowData)
             if isEPGP then
-                tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
-                tooltip:AddDoubleLine(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], tostring(pointInfo.spent) .. " ".. CLM.L["GP"])
-                tooltip:AddDoubleLine(CLM.L["Weekly gains"], tostring(gains) .. " " .. CLM.L["EP"])
+                tooltip:AddDoubleLine(L["Information"], lockedString)
+                tooltip:AddDoubleLine(tostring(ST_GetEP(rowData)) .. " ".. L["EP"], tostring(pointInfo.spent) .. " ".. L["GP"])
+                tooltip:AddDoubleLine(L["Weekly gains"], tostring(gains) .. " " .. L["EP"])
             else
-                tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
-                tooltip:AddDoubleLine(CLM.L["Weekly gains"], gains)
+                tooltip:AddDoubleLine(L["Information"], lockedString)
+                tooltip:AddDoubleLine(L["Weekly gains"], gains)
                 tooltip:AddLine("\n")
                 -- Statistics
-                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Statistics"], "44ee44"), CLM.L["DKP"])
-                tooltip:AddDoubleLine(CLM.L["Total spent"], pointInfo.spent)
-                tooltip:AddDoubleLine(CLM.L["Total received"], pointInfo.received)
-                tooltip:AddDoubleLine(CLM.L["Total blocked"], pointInfo.blocked)
-                tooltip:AddDoubleLine(CLM.L["Total decayed"], pointInfo.decayed)
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(L["Statistics"], "44ee44"), L["DKP"])
+                tooltip:AddDoubleLine(L["Total spent"], pointInfo.spent)
+                tooltip:AddDoubleLine(L["Total received"], pointInfo.received)
+                tooltip:AddDoubleLine(L["Total blocked"], pointInfo.blocked)
+                tooltip:AddDoubleLine(L["Total decayed"], pointInfo.decayed)
             end
             -- Loot History
             local lootList = ST_GetProfileLoot(rowData)
             tooltip:AddLine("\n")
             if #lootList > 0 then
-                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest loot"], "44ee44"), isEPGP and CLM.L["GP"] or CLM.L["DKP"])
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(L["Latest loot"], "44ee44"), isEPGP and L["GP"] or L["DKP"])
                 local limit = #lootList - 4 -- inclusive (- 5 + 1)
                 if limit < 1 then
                     limit = 1
@@ -420,13 +419,13 @@ local tableStructure = {
                     end
                 end
             else
-                tooltip:AddLine(CLM.L["No loot received"])
+                tooltip:AddLine(L["No loot received"])
             end
             -- Point History
             local pointList = ST_GetProfilePoints(rowData)
             tooltip:AddLine("\n")
             if #pointList > 0 then
-                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest points"], "44ee44"), isEPGP and CLM.L["EP"] or CLM.L["DKP"])
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(L["Latest points"], "44ee44"), isEPGP and L["EP"] or L["DKP"])
                 for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
                     if i > 5 then break end
                     local reason = point:Reason() or 0
@@ -437,7 +436,7 @@ local tableStructure = {
                     tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
                 end
             else
-                tooltip:AddLine(CLM.L["No points received"])
+                tooltip:AddLine(L["No points received"])
             end
             -- Display
             tooltip:Show()
@@ -524,10 +523,10 @@ local function initializeHandler()
     UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
-                title = CLM.L["Add to standby"],
+                title = L["Add to standby"],
                 func = (function()
                     if not CLM.MODULES.RaidManager:IsInRaid() then
-                        LOG:Message(CLM.L["Not in raid"])
+                        LOG:Message(L["Not in raid"])
                         return
                     end
                     local profiles = UnifiedGUI_Standings:GetSelection()
@@ -535,7 +534,7 @@ local function initializeHandler()
                     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
                     if roster ~= raid:Roster() then
                         LOG:Message(sformat(
-                            CLM.L["You can only bench players from same roster as the raid (%s)."],
+                            L["You can only bench players from same roster as the raid (%s)."],
                             CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
                         ))
                         return
@@ -544,8 +543,8 @@ local function initializeHandler()
                     if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                         if #profiles > 10 then
                             LOG:Message(sformat(
-                                CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
-                                CLM.L["add"], 10, CLM.L["progressing"]
+                                L["You can %s max %d players to standby at the same time to a %s raid."],
+                                L["add"], 10, L["progressing"]
                             ))
                             return
                         end
@@ -553,8 +552,8 @@ local function initializeHandler()
                     elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
                         if #profiles > 25 then
                             LOG:Message(sformat(
-                                CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
-                                CLM.L["add"], 25, CLM.L["created"]
+                                L["You can %s max %d players to standby at the same time to a %s raid."],
+                                L["add"], 25, L["created"]
                             ))
                             return
                         end
@@ -569,10 +568,10 @@ local function initializeHandler()
                 color = "eeee00"
             },
             {
-                title = CLM.L["Remove from standby"],
+                title = L["Remove from standby"],
                 func = (function()
                     if not CLM.MODULES.RaidManager:IsInRaid() then
-                        LOG:Message(CLM.L["Not in raid"])
+                        LOG:Message(L["Not in raid"])
                         return
                     end
                     local profiles = UnifiedGUI_Standings:GetSelection()
@@ -580,7 +579,7 @@ local function initializeHandler()
                     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
                     if roster ~= raid:Roster() then
                         LOG:Message(sformat(
-                            CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
+                            L["You can only remove from bench players from same roster as the raid (%s)."],
                             CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
                         ))
                         return
@@ -589,8 +588,8 @@ local function initializeHandler()
                     if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                         if #profiles > 10 then
                             LOG:Message(sformat(
-                                CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
-                                CLM.L["remove"], 10, CLM.L["progressing"]
+                                L["You can %s max %d players from standby at the same time to a %s raid."],
+                                L["remove"], 10, L["progressing"]
                             ))
                             return
                         end
@@ -598,8 +597,8 @@ local function initializeHandler()
                     elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
                         if #profiles > 25 then
                             LOG:Message(sformat(
-                                CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
-                                CLM.L["remove"], 25, CLM.L["created"]
+                                L["You can %s max %d players from standby at the same time to a %s raid."],
+                                L["remove"], 25, L["created"]
                             ))
                             return
                         end
@@ -618,7 +617,7 @@ local function initializeHandler()
                 trustedOnly = true
             },
             {
-                title = CLM.L["Remove from roster"],
+                title = L["Remove from roster"],
                 func = (function(i)
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
@@ -632,7 +631,7 @@ local function initializeHandler()
                     end
                     if #profiles > 10 then
                         LOG:Message(sformat(
-                            CLM.L["You can remove max %d players from roster at the same time."],
+                            L["You can remove max %d players from roster at the same time."],
                             10
                         ))
                         return
@@ -700,9 +699,9 @@ CONSTANTS.ACTION_CONTEXT = {
 }
 
 CONSTANTS.ACTION_CONTEXT_GUI = {
-    [CONSTANTS.ACTION_CONTEXT.SELECTED] = CLM.L["Selected"],
-    [CONSTANTS.ACTION_CONTEXT.ROSTER] = CLM.L["Roster"],
-    [CONSTANTS.ACTION_CONTEXT.RAID] = CLM.L["Raid"],
+    [CONSTANTS.ACTION_CONTEXT.SELECTED] = L["Selected"],
+    [CONSTANTS.ACTION_CONTEXT.ROSTER] = L["Roster"],
+    [CONSTANTS.ACTION_CONTEXT.RAID] = L["Raid"],
 }
 
 CONSTANTS.ACTION_CONTEXT_LIST = {
@@ -726,3 +725,5 @@ CLM.GUI.Unified:RegisterTab(
         dataReady = dataReadyHandler
     }
 )
+
+end)

@@ -79,7 +79,7 @@ end)
 define.module("Core", {"LibStub:AceAddon-3.0", "Meta:ADDON_TABLE"}, function(resolve, AceAddon, CLM)
     local core = AceAddon:NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
     CLM.CORE = core
-    resolve(resolve)
+    resolve(core)
 end)
 -- Define L as a module so we don't depend on the full addon table everywhere
 define.module("L", {"Locale:" .. GetLocale()}, function(resolve, CurrentLocale)
