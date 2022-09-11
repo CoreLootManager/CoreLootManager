@@ -364,6 +364,86 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         return args
     end)()
 
+    local dynamic_item_values_args = (function()
+        local args = {}
+        local order = 0
+        local prefix
+        args["equation_header"] = {
+            type = "header",
+            order = order,
+            name = CLM.L["Equation"]
+        }
+        order = order + 1
+        local wowpedia = "WoWpedia: |c43eeee00M * [item value]^2 * [slot multiplier]|r\n\n"
+        local epgpweb = "EPGPWeb: |c43eeee00M * 2^(ilvl/26 + (rarity - 4)) * [slot multiplier]|r\n\n"
+        args["equation_select"] = {
+            type = "select",
+            style = "dropdown",
+            desc = wowpedia .. epgpweb,
+            order = order,
+            values = CONSTANTS.ITEM_VALUE_EQUATIONS_GUI,
+            sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
+            set = (function(i, v) end),
+            get = (function(i) end),
+            name = CLM.L["Select equation"]
+        }
+        args["equation_multiplier"] = {
+            type = "input",
+            desc = CLM.L["Multiplier used by the equations"],
+            order = order,
+            width = 0.5,
+            get = (function(i) end),
+            set = (function(i, v) end),
+            name = CLM.L["Multiplier"],
+            pattern = CONSTANTS.REGEXP_FLOAT,
+        }
+        order = order + 1
+
+        args["slot_multipliers_header"] = {
+            type = "header",
+            order = order,
+            name = CLM.L["Slot multipliers"]
+        }
+        order = order + 1
+        for _, slot in ipairs(CONSTANTS.INVENTORY_TYPES_SORTED) do
+            prefix = slot.type
+            args[prefix .. "_"] = {
+                type = "input",
+                order = order,
+                width = 0.5,
+                get = (function(i) end),
+                set = (function(i, v) end),
+                name = slot.name,
+                pattern = CONSTANTS.REGEXP_FLOAT,
+            }
+            order = order + 1
+        end
+        args["tier_multipliers_header"] = {
+            type = "header",
+            order = order,
+            name = CLM.L["Tier multipliers"]
+        }
+        order = order + 1
+        for _, ivalues in ipairs(valuesWithDesc) do
+            args[prefix .. "_" .. ivalues.type] = {
+                type = "input",
+                order = order,
+                desc = ivalues.desc,
+                width = 0.6,
+                get = (function(i)
+                    -- return tostring(roster:GetDefaultSlotTierValue(slot.type, ivalues.type))
+                end),
+                set = (function(i, v)
+                    -- CLM.MODULES.RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
+                end),
+                name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                pattern = CONSTANTS.REGEXP_FLOAT,
+            }
+            order = order + 1
+        end
+        return args
+    end)()
+
     local item_value_overrides_args = (function()
         local items = roster:GetAllItemValues()
         local args = {}
@@ -782,16 +862,22 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 3,
                 args = default_slot_values_args
             },
+            dynamic_item_value = {
+                name = CLM.L["Dynamic Item values"],
+                type = "group",
+                order = 4,
+                args = dynamic_item_values_args
+            },
             item_value_overrides = {
                 name = CLM.L["Item value overrides"],
                 type = "group",
-                order = 4,
+                order = 5,
                 args = item_value_overrides_args
             },
             boss_kill_award_values = {
                 name = CLM.L["Boss kill award values"],
                 type = "group",
-                order = 5,
+                order = 6,
                 childGroups = "tab",
                 args = boss_kill_award_values_args
             }

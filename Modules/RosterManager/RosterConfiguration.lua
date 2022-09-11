@@ -78,6 +78,8 @@ function RosterConfiguration:New(i)
     o._.minGP = 1
     -- Named Buttons Mode
     o._.namedButtons = false
+    -- Dynamic item value
+    o._.dynamicValue = false
 
     -- Additional settings
     o.hasHardCap = false
@@ -120,7 +122,8 @@ function RosterConfiguration:fields()
         "tax",
         "minimumPoints",
         "minGP",
-        "namedButtons"
+        "namedButtons",
+        "dynamicValue"
     }
 end
 
@@ -161,7 +164,8 @@ local TRANSFORMS = {
     tax = transform_number,
     minimumPoints = transform_number,
     minGP = transform_number,
-    namedButtons = transform_boolean
+    namedButtons = transform_boolean,
+    dynamicValue = transform_boolean
 }
 
 function RosterConfiguration:inflate(data)
@@ -253,5 +257,6 @@ function RosterConfiguration._validate_tax(value) value = tonumber(value); retur
 function RosterConfiguration._validate_minimumPoints(value) return IsNumeric(tonumber(value)) end
 function RosterConfiguration._validate_minGP(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_namedButtons(value) return IsBoolean(value) end
+function RosterConfiguration._validate_dynamicValue(value) return IsBoolean(value) end
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration

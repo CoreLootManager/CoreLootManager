@@ -66,6 +66,7 @@ Modules\ProfileManager\Profile.lua
 Modules\ProfileManager\PruneLog.lua
 Modules\RosterManager\PointInfo.lua
 Modules\RosterManager\RosterConfiguration.lua
+Modules\RosterManager\ItemValueCalculator.lua
 Modules\RosterManager\Roster.lua
 Modules\ProfileManager\LedgerEntries.lua
 Modules\RosterManager\LedgerEntries.lua
