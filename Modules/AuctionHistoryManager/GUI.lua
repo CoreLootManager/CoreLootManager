@@ -6,7 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local UIParent, CreateFrame = UIParent, CreateFrame
 local pairs, ipairs = pairs, ipairs
 local tonumber = tonumber
 local date = date
@@ -56,7 +55,6 @@ function AuctionHistoryGUI:Initialize()
     if not CLM.MODULES.ACL:IsTrusted() then return end
     InitializeDB(self)
 
-    -- self.tooltip = CreateFrame("GameTooltip", "CLMAuctionHistoryGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     self.tooltip = GameTooltip
 
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(

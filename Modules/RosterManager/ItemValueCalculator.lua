@@ -87,7 +87,7 @@ function ItemValueCalculator:New()
 
     setmetatable(o, self)
     self.__index = self
-    
+
     o.equation = CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB
 
     o.multiplier = 1.0
@@ -146,7 +146,7 @@ end
 
 function ItemValueCalculator:Calculate(itemId, rounding)
     local values = {}
-    
+
     local _, _, itemQuality, itemLevel, _, _, _,_, itemEquipLoc = GetItemInfo(itemId)
     if not itemQuality or not itemLevel or not itemEquipLoc then
         LOG:Warning(CLM.L["Unable to get item info from server. Please try auctioning again"])

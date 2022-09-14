@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local CreateFrame, UIParent, ipairs = CreateFrame, UIParent, ipairs
+local ipairs = ipairs
 
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
@@ -47,7 +47,6 @@ function LootQueueGUI:Initialize()
     LOG:Trace("LootQueueGUI:Initialize()")
     InitializeDB(self)
 
-    -- self.tooltip = CreateFrame("GameTooltip", "CLMLootQueueGUIDialogTooltip", UIParent, "GameTooltipTemplate")
     self.tooltip = GameTooltip
 
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
