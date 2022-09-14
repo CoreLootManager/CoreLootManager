@@ -30,6 +30,11 @@ local RosterCopyData                = LogEntry:extend("RC")
 local RosterBossKillBonus           = LogEntry:extend("RB")
 local RosterFieldRename             = LogEntry:extend("RF")
 
+local RosterDynamicItemValueEquation       = LogEntry:extend("VE")
+local RosterDynamicItemValueMultiplier     = LogEntry:extend("VM")
+local RosterDynamicItemValueSlotMultiplier = LogEntry:extend("VS")
+local RosterDynamicItemValueTierMultiplier = LogEntry:extend("VT")
+
 -- ------------ --
 -- RosterCreate --
 -- ------------ --
@@ -401,18 +406,123 @@ function RosterFieldRename:fields()
     return RosterFieldRenameFields
 end
 
+-- ------------------------------ --
+-- RosterDynamicItemValueEquation --
+-- ------------------------------ --
+function RosterDynamicItemValueEquation:new(rosterUid, equation)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.e = tonumber(equation) or 0
+    return o
+end
+
+function RosterDynamicItemValueEquation:rosterUid()
+    return self.r
+end
+
+function RosterDynamicItemValueEquation:equation()
+    return self.e
+end
+
+local RosterDynamicItemValueEquationFields = mergeLists(LogEntry:fields(), {"r", "e"})
+function RosterDynamicItemValueEquation:fields()
+    return RosterDynamicItemValueEquationFields
+end
+
+-- -------------------------------- --
+-- RosterDynamicItemValueMultiplier --
+-- -------------------------------- --
+function RosterDynamicItemValueMultiplier:new(rosterUid, multiplier)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.m = tonumber(multiplier) or 0
+    return o
+end
+
+function RosterDynamicItemValueMultiplier:rosterUid()
+    return self.r
+end
+
+function RosterDynamicItemValueMultiplier:multiplier()
+    return self.m
+end
+
+local RosterDynamicItemValueMultiplierFields = mergeLists(LogEntry:fields(), {"r", "m"})
+function RosterDynamicItemValueMultiplier:fields()
+    return RosterDynamicItemValueMultiplierFields
+end
+
+-- ------------------------------------ --
+-- RosterDynamicItemValueSlotMultiplier --
+-- ------------------------------------ --
+function RosterDynamicItemValueSlotMultiplier:new(rosterUid, slot, multiplier)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.s = slot
+    o.m = tonumber(multiplier) or 0
+    return o
+end
+
+function RosterDynamicItemValueSlotMultiplier:rosterUid()
+    return self.r
+end
+
+function RosterDynamicItemValueSlotMultiplier:slot()
+    return self.s
+end
+
+function RosterDynamicItemValueSlotMultiplier:multiplier()
+    return self.m
+end
+
+local RosterDynamicItemValueSlotMultiplierFields = mergeLists(LogEntry:fields(), {"r", "s", "m"})
+function RosterDynamicItemValueSlotMultiplier:fields()
+    return RosterDynamicItemValueSlotMultiplierFields
+end
+
+-- ------------------------------------ --
+-- RosterDynamicItemValueTierMultiplier --
+-- ------------------------------------ --
+function RosterDynamicItemValueTierMultiplier:new(rosterUid, tier, multiplier)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.i = tier
+    o.m = tonumber(multiplier) or 0
+    return o
+end
+
+function RosterDynamicItemValueTierMultiplier:rosterUid()
+    return self.r
+end
+
+function RosterDynamicItemValueTierMultiplier:tier()
+    return self.i
+end
+
+function RosterDynamicItemValueTierMultiplier:multiplier()
+    return self.a
+end
+
+local RosterDynamicItemValueTierMultiplierFields = mergeLists(LogEntry:fields(), {"r", "i", "m"})
+function RosterDynamicItemValueTierMultiplier:fields()
+    return RosterDynamicItemValueTierMultiplierFields
+end
+
 CLM.MODELS.LEDGER.ROSTER = {
-    Create                  = RosterCreate,
-    Delete                  = RosterDelete,
-    Rename                  = RosterRename,
-    UpdateConfig            = RosterUpdateConfig,
-    UpdateConfigSingle      = RosterUpdateConfigSingle,
-    -- UpdateDefault           = RosterUpdateDefault,
-    UpdateDefaultSingle     = RosterUpdateDefaultSingle,
-    UpdateOverrides         = RosterUpdateOverrides,
-    UpdateOverridesSingle   = RosterUpdateOverridesSingle,
-    UpdateProfiles          = RosterUpdateProfiles,
-    CopyData                = RosterCopyData,
-    BossKillBonus           = RosterBossKillBonus,
-    FieldRename             = RosterFieldRename
+    Create                          = RosterCreate,
+    Delete                          = RosterDelete,
+    Rename                          = RosterRename,
+    UpdateConfig                    = RosterUpdateConfig,
+    UpdateConfigSingle              = RosterUpdateConfigSingle,
+    UpdateDefaultSingle             = RosterUpdateDefaultSingle,
+    UpdateOverrides                 = RosterUpdateOverrides,
+    UpdateOverridesSingle           = RosterUpdateOverridesSingle,
+    UpdateProfiles                  = RosterUpdateProfiles,
+    CopyData                        = RosterCopyData,
+    BossKillBonus                   = RosterBossKillBonus,
+    FieldRename                     = RosterFieldRename,
+    DynamicItemValueEquation        = RosterDynamicItemValueEquation,
+    DynamicItemValueMultiplier      = RosterDynamicItemValueMultiplier,
+    DynamicItemValueSlotMultiplier  = RosterDynamicItemValueSlotMultiplier,
+    DynamicItemValueTierMultiplier  = RosterDynamicItemValueTierMultiplier
 }

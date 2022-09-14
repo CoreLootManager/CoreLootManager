@@ -13,6 +13,9 @@ local CBTYPE = {
     HIDER    = "hide"
 }
 
+local sformat = string.format
+local pairs, ipairs = pairs, ipairs
+
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)
@@ -186,6 +189,12 @@ function RosterManagerOptions:Initialize()
         end),
         auction_item_value_mode_set = (function(name, value)
             SetRosterOption(name, "itemValueMode", value)
+        end),
+        auction_dynamic_item_values_get = (function(name)
+            return GetRosterOption(name, "dynamicValue")
+        end),
+        auction_dynamic_item_values_set = (function(name, value)
+            SetRosterOption(name, "dynamicValue", value)
         end),
         auction_zero_sum_bank_get = (function(name)
             return GetRosterOption(name, "zeroSumBank")
@@ -374,12 +383,13 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             name = CLM.L["Equation"]
         }
         order = order + 1
-        local wowpedia = "WoWpedia: |c43eeee00M * [item value]^2 * [slot multiplier]|r\n\n"
-        local epgpweb = "EPGPWeb: |c43eeee00M * 2^(ilvl/26 + (rarity - 4)) * [slot multiplier]|r\n\n"
+        local wowpedia = "WoWpedia: |c43eeee00[Multiplier] * [item value]^2 * [slot multiplier]|r\n\n"
+        local epgpweb = "EPGPWeb: |c43eeee00[Multiplier] * 2^(ilvl/26 + (rarity - 4)) * [slot multiplier]|r\n\n"
+        local equationNote = "|c43ee4444Changing this will reset slot multipliers to default values.|r"
         args["equation_select"] = {
             type = "select",
             style = "dropdown",
-            desc = wowpedia .. epgpweb,
+            desc = epgpweb .. wowpedia .. equationNote,
             order = order,
             values = CONSTANTS.ITEM_VALUE_EQUATIONS_GUI,
             sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
@@ -425,10 +435,11 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         }
         order = order + 1
         for _, ivalues in ipairs(valuesWithDesc) do
+            local tierName = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or "")
             args[prefix .. "_" .. ivalues.type] = {
                 type = "input",
                 order = order,
-                desc = ivalues.desc,
+                desc = sformat(CLM.L["Multiplier for tier %s (if used by the auction type)."], tierName),
                 width = 0.6,
                 get = (function(i)
                     -- return tostring(roster:GetDefaultSlotTierValue(slot.type, ivalues.type))
@@ -436,7 +447,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 set = (function(i, v)
                     -- CLM.MODULES.RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
                 end),
-                name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                name = tierName,
                 pattern = CONSTANTS.REGEXP_FLOAT,
             }
             order = order + 1
@@ -815,6 +826,13 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         order = 5,
                         values = CONSTANTS.ITEM_VALUE_MODES_GUI
                     },
+                    dynamic_item_values = {
+                        name = CLM.L["Dynamic Item values"],
+                        type = "toggle",
+                        order = 6,
+                        disabled = (function() return not isManager end),
+                        width = 1
+                    },
                     bidding_header = {
                         name = CLM.L["Bidding"],
                         type = "header",
@@ -862,7 +880,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 3,
                 args = default_slot_values_args
             },
-            dynamic_item_value = {
+            dynamic_item_values = {
                 name = CLM.L["Dynamic Item values"],
                 type = "group",
                 order = 4,
