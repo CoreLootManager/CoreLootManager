@@ -47,7 +47,8 @@ function LootQueueGUI:Initialize()
     LOG:Trace("LootQueueGUI:Initialize()")
     InitializeDB(self)
 
-    self.tooltip = CreateFrame("GameTooltip", "CLMLootQueueGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+    -- self.tooltip = CreateFrame("GameTooltip", "CLMLootQueueGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+    self.tooltip = GameTooltip
 
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {

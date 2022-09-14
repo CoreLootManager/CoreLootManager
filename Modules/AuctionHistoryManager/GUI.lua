@@ -56,7 +56,8 @@ function AuctionHistoryGUI:Initialize()
     if not CLM.MODULES.ACL:IsTrusted() then return end
     InitializeDB(self)
 
-    self.tooltip = CreateFrame("GameTooltip", "CLMAuctionHistoryGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+    -- self.tooltip = CreateFrame("GameTooltip", "CLMAuctionHistoryGUIDialogTooltip", UIParent, "GameTooltipTemplate")
+    self.tooltip = GameTooltip
 
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
