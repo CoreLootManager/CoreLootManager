@@ -20,8 +20,8 @@ CONSTANTS.ITEM_VALUE_EQUATION = {
 }
 
 local equationIDtoParam = {
-    [1] = "epgpweb",
-    [2] = "wowpedia",
+    [CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB] = "epgpweb",
+    [CONSTANTS.ITEM_VALUE_EQUATION.WOWPEDIA] = "wowpedia",
 }
 
 local rarityModifier = {
@@ -38,10 +38,10 @@ local function getItemValue(rarity, ilvl)
 end
 
 local calculators = {
-    epgpweb = (function(ilvl, rarity, multiplier, slot_multiplier)
+    [CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB] = (function(ilvl, rarity, multiplier, slot_multiplier)
         return multiplier * pow(2, (ilvl/26) + (rarity - 4)) * slot_multiplier
     end),
-    wowpedia = (function(ilvl, rarity, multiplier, slot_multiplier)
+    [CONSTANTS.ITEM_VALUE_EQUATION.WOWPEDIA] = (function(ilvl, rarity, multiplier, slot_multiplier)
         return pow(getItemValue(rarity, ilvl), 2) * multiplier * slot_multiplier
     end),
 }
@@ -144,7 +144,7 @@ function ItemValueCalculator:SetTierMultiplier(tier, multiplier)
     self.tierMultipliers[tier] = tonumber(multiplier) or 1.0
 end
 
-function ItemValueCalculator:Calculate(itemId)
+function ItemValueCalculator:Calculate(itemId, rounding)
     local values = {}
     
     local _, _, itemQuality, itemLevel, _, _, _,_, itemEquipLoc = GetItemInfo(itemId)
@@ -157,7 +157,7 @@ function ItemValueCalculator:Calculate(itemId)
         itemLevel, itemQuality,
         self.multiplier, self:GetSlotMultiplier(itemEquipLoc))
     for tier, tierMultiplier in pairs(self.tierMultipliers) do
-        values[tier] = baseValue * tierMultiplier
+        values[tier] = UTILS.round(baseValue * tierMultiplier, rounding)
     end
 
     return values

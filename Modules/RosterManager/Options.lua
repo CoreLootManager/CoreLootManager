@@ -328,6 +328,34 @@ local valuesWithDesc = {
     }
 }
 
+local function generateDynamicItemValuesHandlers(roster)
+    local equationGet = (function()
+        return roster:GetCalculator():GetEquation()
+    end)
+    local equationSet = (function(value)
+        CLM.MODULES.RosterManager:SetRosterDynamicItemValueEquation(roster, value)
+    end)
+    local multiplierGet = (function()
+        return roster:GetCalculator():GetMultiplier()
+    end)
+    local multiplierSet = (function(value)
+        CLM.MODULES.RosterManager:SetRosterDynamicItemValueMultiplier(roster, value)
+    end)
+    local slotGet = (function(slot)
+        return roster:GetCalculator():GetSlotMultiplier(slot)
+    end)
+    local slotSet = (function(slot, value)
+        CLM.MODULES.RosterManager:SetRosterDynamicItemValueSlotMultiplier(roster, slot, value)
+    end)
+    local tierGet = (function(tier)
+        return roster:GetCalculator():GetTierMultiplier(tier)
+    end)
+    local tierSet = (function(tier, value)
+        CLM.MODULES.RosterManager:SetRosterDynamicItemValueTierMultiplier(roster, tier, value)
+    end)
+    return equationGet, equationSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet
+end
+
 function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
     local isManager = CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
@@ -373,6 +401,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         return args
     end)()
 
+    local equationGet, equationSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet = generateDynamicItemValuesHandlers(roster)
+
     local dynamic_item_values_args = (function()
         local args = {}
         local order = 0
@@ -393,8 +423,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             order = order,
             values = CONSTANTS.ITEM_VALUE_EQUATIONS_GUI,
             sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
-            set = (function(i, v) end),
-            get = (function(i) end),
+            set = (function(i, v) equationSet(tonumber(v)) end),
+            get = (function(i) return equationGet() end),
             name = CLM.L["Select equation"]
         }
         args["equation_multiplier"] = {
@@ -402,8 +432,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             desc = CLM.L["Multiplier used by the equations"],
             order = order,
             width = 0.5,
-            get = (function(i) end),
-            set = (function(i, v) end),
+            get = (function(i) return tostring(multiplierGet()) end),
+            set = (function(i, v) multiplierSet(tonumber(v)) end),
             name = CLM.L["Multiplier"],
             pattern = CONSTANTS.REGEXP_FLOAT,
         }
@@ -417,16 +447,18 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         order = order + 1
         for _, slot in ipairs(CONSTANTS.INVENTORY_TYPES_SORTED) do
             prefix = slot.type
-            args[prefix .. "_"] = {
-                type = "input",
-                order = order,
-                width = 0.5,
-                get = (function(i) end),
-                set = (function(i, v) end),
-                name = slot.name,
-                pattern = CONSTANTS.REGEXP_FLOAT,
-            }
-            order = order + 1
+            if CONSTANTS.ITEM_SLOT_MULTIPLIERS[prefix] then
+                args[prefix .. "_"] = {
+                    type = "input",
+                    order = order,
+                    width = 0.5,
+                    get = (function(i) return tostring(slotGet(slot.type)) end),
+                    set = (function(i, v) slotSet(slot.type, tonumber(v)) end),
+                    name = slot.name,
+                    pattern = CONSTANTS.REGEXP_FLOAT,
+                }
+                order = order + 1
+            end
         end
         args["tier_multipliers_header"] = {
             type = "header",
@@ -441,12 +473,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = order,
                 desc = sformat(CLM.L["Multiplier for tier %s (if used by the auction type)."], tierName),
                 width = 0.6,
-                get = (function(i)
-                    -- return tostring(roster:GetDefaultSlotTierValue(slot.type, ivalues.type))
-                end),
-                set = (function(i, v)
-                    -- CLM.MODULES.RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
-                end),
+                get = (function(i) return tostring(tierGet(ivalues.type)) end),
+                set = (function(i, v) tierSet(ivalues.type, tonumber(v)) end),
                 name = tierName,
                 pattern = CONSTANTS.REGEXP_FLOAT,
             }
@@ -494,7 +522,16 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     }
                     order = order + 1
                 end
-                order = order + 3
+                args[prefix .. "remove"] = {
+                    name = "x",
+                    desc = CLM.L["Remove override"],
+                    -- image = icon,
+                    order = order,
+                    width = 0.25,
+                    type = "execute",
+                    func = (function() CLM.MODULES.RosterManager:RemoveRosterItemOverride(roster, id) end)
+                }
+                order = order + 6
             end
         end
         return args

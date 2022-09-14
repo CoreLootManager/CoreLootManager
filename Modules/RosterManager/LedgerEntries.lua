@@ -25,6 +25,7 @@ local RosterUpdateConfigSingle      = LogEntry:extend("R4")
 local RosterUpdateDefaultSingle     = LogEntry:extend("R6")
 local RosterUpdateOverrides         = LogEntry:extend("R7")
 local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
+local RosterRemoveOverrides         = LogEntry:extend("RR")
 local RosterUpdateProfiles          = LogEntry:extend("R9")
 local RosterCopyData                = LogEntry:extend("RC")
 local RosterBossKillBonus           = LogEntry:extend("RB")
@@ -274,6 +275,28 @@ local RosterUpdateOverridesSingleFields = mergeLists(LogEntry:fields(), {"r", "o
 function RosterUpdateOverridesSingle:fields()
     return RosterUpdateOverridesSingleFields
 end
+-- ------------------------ --
+-- RosterRemoveOverrides --
+-- ------------------------ --
+function RosterRemoveOverrides:new(rosterUid, itemId)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.i = tonumber(itemId) or 0
+    return o
+end
+
+function RosterRemoveOverrides:rosterUid()
+    return self.r
+end
+
+function RosterRemoveOverrides:itemId()
+    return self.i
+end
+
+local RosterRemoveOverridesFields = mergeLists(LogEntry:fields(), {"r", "i"})
+function RosterRemoveOverrides:fields()
+    return RosterRemoveOverridesFields
+end
 -- -------------------- --
 -- RosterUpdateProfiles --
 -- -------------------- --
@@ -500,7 +523,7 @@ function RosterDynamicItemValueTierMultiplier:tier()
 end
 
 function RosterDynamicItemValueTierMultiplier:multiplier()
-    return self.a
+    return self.m
 end
 
 local RosterDynamicItemValueTierMultiplierFields = mergeLists(LogEntry:fields(), {"r", "i", "m"})
@@ -517,6 +540,7 @@ CLM.MODELS.LEDGER.ROSTER = {
     UpdateDefaultSingle             = RosterUpdateDefaultSingle,
     UpdateOverrides                 = RosterUpdateOverrides,
     UpdateOverridesSingle           = RosterUpdateOverridesSingle,
+    RemoveOverrides                 = RosterRemoveOverrides,
     UpdateProfiles                  = RosterUpdateProfiles,
     CopyData                        = RosterCopyData,
     BossKillBonus                   = RosterBossKillBonus,
