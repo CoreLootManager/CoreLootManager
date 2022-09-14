@@ -51,7 +51,12 @@ function ProfileManager:Initialize()
                 end
                 profileInternal.class = class
                 profileInternal.main = main
+                -- Renam:
+                -- Remove old map
+                self.cache.profilesGuidMap[strlower(profileInternal.name)] = nil
+                -- set new name
                 profileInternal.name = name
+                self.cache.profilesGuidMap[strlower(name)] = GUID
             else
                 local profile = CLM.MODELS.Profile:New(entry, name, class, main)
                 profile:SetGUID(GUID)
@@ -222,24 +227,29 @@ function ProfileManager:NewProfile(GUID, name, class)
         if nameProfile then -- profile with name and guid exists
             if guidProfile:GUID() == nameProfile:GUID() then -- same profile, same name - do nothing
                 discard = true
+                LOG:Debug("NewProfile(): guidProfile:GUID() == nameProfile:GUID()")
             else -- 2 different profiles exist. Warning
                 discard = true
+                LOG:Debug("NewProfile(): guidProfile:GUID() ~= nameProfile:GUID()")
                 warning = sformat(CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."], GUID, name, guidProfile:GUID(), guidProfile:Name(), nameProfile:GUID(), nameProfile:Name())
             end
         else -- profile with this name does not exist - this is an actual rename
             discard = false
+            LOG:Debug("NewProfile(): guidProfile and not nameProfile")
         end
     else -- profile with this GUID does not exist. Is this new profile?
         if nameProfile then -- name is used already by different profile? Warning
             discard = true
+            LOG:Debug("NewProfile(): no guidProfile and nameProfile")
             warning = sformat(CLM.L["Profile %s already exists and is used by different GUID %s (%s). "], name, nameProfile:GUID(), nameProfile:Name())
         else -- New profile!
             discard = false
+            LOG:Debug("NewProfile(): not guidProfile and not nameProfile")
         end
     end
     if discard then
         if warning then LOG:Warning(warning) end
-        LOG:Debug("NewProfile(): discarding request", name, GUID)
+        LOG:Debug("NewProfile(): discarding request for %s (%s)", name, GUID)
         return
     end
 
@@ -376,7 +386,7 @@ end
 
 function ProfileManager:PruneBelowLevel(minLevel, nop)
     LOG:Trace("ProfileManager:PruneBelowLevel()")
-    local log = CLM.MODELS.PruneLog:New("level", nop)
+    local log = CLM.MODELS.ProfilePruneLog:New("level", nop)
     local prune
     if nop then
         LOG:Info("Pruning: No operation")
@@ -402,7 +412,7 @@ end
 
 function ProfileManager:PruneRank(rank, nop)
     LOG:Trace("ProfileManager:PruneRank()")
-    local log = CLM.MODELS.PruneLog:New("rank", nop)
+    local log = CLM.MODELS.ProfilePruneLog:New("rank", nop)
     local prune
     if nop then
         LOG:Info("Pruning: No operation")
@@ -439,7 +449,7 @@ end
 
 function ProfileManager:PruneUnguilded(nop)
     LOG:Trace("ProfileManager:PruneUnguilded()")
-    local log = CLM.MODELS.PruneLog:New("unguilded", nop)
+    local log = CLM.MODELS.ProfilePruneLog:New("unguilded", nop)
     local prune
     if nop then
         LOG:Info("Pruning: No operation")

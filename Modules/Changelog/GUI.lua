@@ -12,6 +12,8 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
+local windowName = CLM.L["Classic Loot Manager"] .. " " .. CLM.L["Changelog"]
+
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('changelog', {
         location = {nil, nil, "CENTER", 0, 0 },
@@ -29,7 +31,7 @@ local function CreateConfigs(self)
     local options = {
         changelog_header = {
             type = "header",
-            name = CLM.L["Changelog"],
+            name = windowName,
             order = 80
         },
         changelog_never_show = {
@@ -118,8 +120,8 @@ local function Create(self)
         counter = counter + 1
     end
 
-    AceConfigRegistry:RegisterOptionsTable(CLM.L["Changelog"], options)
-    AceConfigDialog:Open(CLM.L["Changelog"], parent)
+    AceConfigRegistry:RegisterOptionsTable(windowName, options)
+    AceConfigDialog:Open(windowName, parent)
 
     return parent
 end

@@ -1,3 +1,7 @@
+# Classic Loot Manager v2.0.3
+Ascending auction multiple bugs fix.
+# Classic Loot Manager v2.0.2
+Fix Event spam and multiple other minor events.
 # Classic Loot Manager v2.0.1
 Fix Multiple baby-age issues.
 # Classic Loot Manager v2.0.0

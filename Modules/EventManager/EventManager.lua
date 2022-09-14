@@ -72,31 +72,34 @@ function EventManager:UnregisterWoWEvent(events)
     end
 end
 
-function EventManager:RegisterWoWBucketEvent(event, interval, functionOrObject, methodName)
+function EventManager:RegisterWoWBucketEvent(events, interval, functionOrObject, methodName)
     LOG:Trace("EventManager:RegisterWoWBucketEvent()")
-    local callback
-    if type(functionOrObject) == "table" and type(methodName) == "string" then
-        callback = (function(...) return functionOrObject[methodName](functionOrObject, ...) end)
-    elseif type(functionOrObject) == "function" then
-        callback = functionOrObject
-    else
-        LOG:Error("EventManager:RegisterWoWBucketEvent(): Invalid handler input")
-    end
-    if not self.bucketCallbacks[event] then-- lazy load event handlers
-        self.bucketCallbacks[event] = {}
-        local handlerName = event .. "_bucket"
-        CLM.CORE[handlerName] = (function(...)
-            LOG:Debug("Bucket handling [" .. event .. "]")
-            for _,cb in pairs(self.bucketCallbacks[event]) do
-                local status, error = pcall(cb, ...) -- if there are multiple handlers for an event we don't one to error out all of them
-                if not status then
-                    LOG:Error("Error during bucket handling %s event: %s", event, tostring(error))
+    if type(events) == "string" then events = { events } end
+    for _,event in ipairs(events) do
+        local callback
+        if type(functionOrObject) == "table" and type(methodName) == "string" then
+            callback = (function(...) return functionOrObject[methodName](functionOrObject, ...) end)
+        elseif type(functionOrObject) == "function" then
+            callback = functionOrObject
+        else
+            LOG:Error("EventManager:RegisterWoWBucketEvent(): Invalid handler input")
+        end
+        if not self.bucketCallbacks[event] then-- lazy load event handlers
+            self.bucketCallbacks[event] = {}
+            local handlerName = event .. "_bucket"
+            CLM.CORE[handlerName] = (function(...)
+                LOG:Debug("Bucket handling [" .. event .. "]")
+                for _,cb in pairs(self.bucketCallbacks[event]) do
+                    local status, error = pcall(cb, ...) -- if there are multiple handlers for an event we don't one to error out all of them
+                    if not status then
+                        LOG:Error("Error during bucket handling %s event: %s", event, tostring(error))
+                    end
                 end
-            end
-        end)
-        CLM.CORE:RegisterBucketEvent(event, interval or 1, handlerName)
+            end)
+            CLM.CORE:RegisterBucketEvent(event, interval or 1, handlerName)
+        end
+        tinsert(self.bucketCallbacks[event], callback)
     end
-    tinsert(self.bucketCallbacks[event], callback)
 end
 
 function EventManager:DispatchEvent(event, params, timestamp, guid)
