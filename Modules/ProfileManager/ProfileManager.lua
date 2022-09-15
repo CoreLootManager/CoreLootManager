@@ -1,9 +1,9 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("ProfileManager", {
-    "Log", "Constants", "Util", "ProfileManager/LedgerEntries", "ProfileManager/PruneLog", "Database", "ProfileManager/Profile",
-    "Meta:ADDON_TABLE"
-}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, PruneLog, Database, Profile, CLM)
+    "Log", "Utils", "ProfileManager/LedgerEntries", "ProfileManager/PruneLog", "Database", "ProfileManager/Profile",
+    "L", "LedgerManager", "RosterManager", "Modules"
+}, function(resolve, LOG, UTILS, LedgerEntries, PruneLog, Database, Profile, L, LedgerManager, RosterManager, Modules)
 
 
 local pairs, type, strsplit, strlower = pairs, type, strsplit, strlower
@@ -27,7 +27,7 @@ function ProfileManager:Initialize()
     })
 
     -- Register mutators
-    CLM.MODULES.LedgerManager:RegisterEntryType(
+    LedgerManager:RegisterEntryType(
         LedgerEntries.Update,
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileUpdate)")
@@ -63,7 +63,7 @@ function ProfileManager:Initialize()
                 self.cache.profiles[GUID] = profile
                 self.cache.profilesGuidMap[strlower(name)] = GUID
                 -- Check for conditional restore
-                local rosters = CLM.MODULES.RosterManager:GetRosters()
+                local rosters = RosterManager:GetRosters()
                 for _, roster in pairs(rosters) do
                     if roster:IsConditinallyRemoved(GUID) then
                         roster:RestoreConditionallyRemoved(GUID)
@@ -72,7 +72,7 @@ function ProfileManager:Initialize()
             end
         end))
 
-    CLM.MODULES.LedgerManager:RegisterEntryType(
+    LedgerManager:RegisterEntryType(
         LedgerEntries.Remove,
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileRemove)")
@@ -98,7 +98,7 @@ function ProfileManager:Initialize()
                 -- Remove
                 self.cache.profiles[GUID] = nil
                 -- Conditonally remove for backwards compatibility
-                local rosters = CLM.MODULES.RosterManager:GetRosters()
+                local rosters = RosterManager:GetRosters()
                 for _, roster in pairs(rosters) do
                     if roster:IsProfileInRoster(GUID) then
                         roster:MarkAsConditionallyRemoved(GUID)
@@ -107,68 +107,9 @@ function ProfileManager:Initialize()
             end
         end))
 
-    CLM.MODULES.LedgerManager:RegisterEntryType(
-        LedgerEntries.Link,
-        (function(entry)
-            LOG:TraceAndCount("mutator(ProfileLink)")
-            local altGUID = entry:GUID()
-            if type(altGUID) ~= "number" then return end
-            altGUID = UTILS.getGuidFromInteger(altGUID)
-            local mainGUID = entry:main()
-            if type(mainGUID) ~= "number" then return end
-            if altGUID == mainGUID then return end
-            mainGUID = UTILS.getGuidFromInteger(mainGUID)
-            local altProfile = self:GetProfileByGUID(altGUID)
-            if not UTILS.typeof(altProfile, Profile) then return end
-            local mainProfile = self:GetProfileByGUID(mainGUID)
-            if not UTILS.typeof(mainProfile, Profile) then -- Unlink
-                -- Check if our main exists
-                local currentMainProfile = self:GetProfileByGUID(altProfile:Main())
-                if not UTILS.typeof(currentMainProfile, Profile) then return end
-                -- Remove main from this alt
-                altProfile:ClearMain()
-                -- Remove alt count from main
-                currentMainProfile:RemoveAlt(altGUID)
-            else -- Link
-                -- Sanity check if not setting existing one
-                if altProfile:Main() == mainProfile:GUID() then return end
-                -- Do not allow alt chaining if main is alt
-                if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
-                -- Do not allow alt chaining if alt has alts
-                if altProfile:HasAlts() then return end
-                -- Set new main of this alt
-                altProfile:SetMain(mainGUID)
-                -- Add alt to our main
-                mainProfile:AddAlt(altGUID)
-                -- Handle consequences of linking:
-                -- For each roster this alt is present in:
-                local rosters = CLM.MODULES.RosterManager:GetRosters()
-                for _,roster in pairs(rosters) do
-                    if roster:IsProfileInRoster(altGUID) then
-                        -- 1) Add main if not present in roster
-                        roster:AddProfileByGUID(mainGUID)
-                        -- 2) Sum points of the pool and new alt
-                        local pointSum = roster:Standings(mainGUID) + roster:Standings(altGUID)
-                        -- 3) Set new Main standings
-                        roster:SetStandings(mainGUID, pointSum)
-                        -- 2a) Sum spent points of the pool and new alt
-                        local spentSum = roster:GetPointInfoForPlayer(mainGUID).spent + roster:GetPointInfoForPlayer(altGUID).spent
-                        -- 3a) Set new Main spent
-                        roster:SetSpent(mainGUID, spentSum)
-                        -- 4) Mirror standings (includes spent) from main to alts
-                        roster:MirrorStandings(mainGUID, mainProfile:Alts(), true)
-                        -- 5) Mirror weekly gains from main to alts
-                        roster:MirrorWeeklyGains(mainGUID, mainProfile:Alts(), true)
-                        -- 6) History entry
-                        local targets = UTILS.keys(mainProfile:Alts())
-                        table.insert(targets, 1, mainGUID)
-                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
-                    end
-                end
-            end
-        end))
 
-    CLM.MODULES.LedgerManager:RegisterEntryType(
+
+    LedgerManager:RegisterEntryType(
         LedgerEntries.Lock,
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLock)")
@@ -202,7 +143,7 @@ function ProfileManager:Initialize()
             end
         end))
 
-    CLM.MODULES.LedgerManager:RegisterOnRestart(function()
+    LedgerManager:RegisterOnRestart(function()
         self:WipeAll()
     end)
 
@@ -231,7 +172,7 @@ function ProfileManager:NewProfile(GUID, name, class)
             else -- 2 different profiles exist. Warning
                 discard = true
                 LOG:Debug("NewProfile(): guidProfile:GUID() ~= nameProfile:GUID()")
-                warning = sformat(CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."], GUID, name, guidProfile:GUID(), guidProfile:Name(), nameProfile:GUID(), nameProfile:Name())
+                warning = sformat(L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."], GUID, name, guidProfile:GUID(), guidProfile:Name(), nameProfile:GUID(), nameProfile:Name())
             end
         else -- profile with this name does not exist - this is an actual rename
             discard = false
@@ -241,7 +182,7 @@ function ProfileManager:NewProfile(GUID, name, class)
         if nameProfile then -- name is used already by different profile? Warning
             discard = true
             LOG:Debug("NewProfile(): no guidProfile and nameProfile")
-            warning = sformat(CLM.L["Profile %s already exists and is used by different GUID %s (%s). "], name, nameProfile:GUID(), nameProfile:Name())
+            warning = sformat(L["Profile %s already exists and is used by different GUID %s (%s). "], name, nameProfile:GUID(), nameProfile:Name())
         else -- New profile!
             discard = false
             LOG:Debug("NewProfile(): not guidProfile and not nameProfile")
@@ -254,7 +195,7 @@ function ProfileManager:NewProfile(GUID, name, class)
     end
 
     LOG:Debug("New profile: [%s]: %s", GUID, name)
-    CLM.MODULES.LedgerManager:Submit(LedgerEntries.Update:new(GUID, name, class), true)
+    LedgerManager:Submit(LedgerEntries.Update:new(GUID, name, class), true)
 end
 
 function ProfileManager:RemoveProfile(GUID)
@@ -264,7 +205,7 @@ function ProfileManager:RemoveProfile(GUID)
         return
     end
     LOG:Debug("Remove profile: [%s]", GUID)
-    CLM.MODULES.LedgerManager:Submit(LedgerEntries.Remove:new(GUID), true)
+    LedgerManager:Submit(LedgerEntries.Remove:new(GUID), true)
 end
 
 local function PruneProfile(self, GUID, log)
@@ -273,7 +214,7 @@ local function PruneProfile(self, GUID, log)
     local entry = profile:Entry()
     if not entry then return end
     log:Add(profile:Name())
-    CLM.MODULES.LedgerManager:Remove(entry)
+    LedgerManager:Remove(entry)
 end
 
 function ProfileManager:MarkAsAltByNames(alt, main)
@@ -287,7 +228,7 @@ function ProfileManager:MarkAsAltByNames(alt, main)
     -- Unlink
     if not UTILS.typeof(mainProfile, Profile) then
         if altProfile:Main() ~= "" then
-            CLM.MODULES.LedgerManager:Submit(LedgerEntries.Link:new(altProfile:GUID(), nil), true)
+            LedgerManager:Submit(LedgerEntries.Link:new(altProfile:GUID(), nil), true)
         end
     else -- Link
         -- Do not allow alt chaining if main is alt
@@ -298,7 +239,7 @@ function ProfileManager:MarkAsAltByNames(alt, main)
         if altProfile:GUID() == mainProfile:GUID() then return end
         -- Don't allow re-setting
         if altProfile:Main() == mainProfile:GUID() then return end
-        CLM.MODULES.LedgerManager:Submit(LedgerEntries.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
+        LedgerManager:Submit(LedgerEntries.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
     end
 end
 
@@ -313,7 +254,7 @@ function ProfileManager:SetProfilesLock(profiles, lock)
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(entry, true)
+    LedgerManager:Submit(entry, true)
 end
 
 -- Functionalities
@@ -506,6 +447,73 @@ function ProfileManager:GetProfileByName(name)
 end
 
 -- Publis API
-CLM.MODULES.ProfileManager = ProfileManager
+ProfileManager:Initialize()
+Modules.ProfileManager = ProfileManager
 resolve(ProfileManager)
+end)
+
+-- we register this entry outside the profile manager since it depends on pointmanager and we have a circular dependency otherwise
+define.await({"ProfileManager/LedgerEntries", "Log", "LedgerManager", "Utils", "ProfileManager", "PointManager", "RosterManager", "Constants", "ProfileManager/Profile"},
+function(LedgerEntries, LOG, LedgerManager, UTILS, ProfileManager, PointManager, RosterManager, CONSTANTS, Profile)
+    LedgerManager:RegisterEntryType(
+        LedgerEntries.Link,
+        (function(entry)
+            LOG:TraceAndCount("mutator(ProfileLink)")
+            local altGUID = entry:GUID()
+            if type(altGUID) ~= "number" then return end
+            altGUID = UTILS.getGuidFromInteger(altGUID)
+            local mainGUID = entry:main()
+            if type(mainGUID) ~= "number" then return end
+            if altGUID == mainGUID then return end
+            mainGUID = UTILS.getGuidFromInteger(mainGUID)
+            local altProfile = ProfileManager:GetProfileByGUID(altGUID)
+            if not UTILS.typeof(altProfile, Profile) then return end
+            local mainProfile = ProfileManager:GetProfileByGUID(mainGUID)
+            if not UTILS.typeof(mainProfile, Profile) then -- Unlink
+                -- Check if our main exists
+                local currentMainProfile = ProfileManager:GetProfileByGUID(altProfile:Main())
+                if not UTILS.typeof(currentMainProfile, Profile) then return end
+                -- Remove main from this alt
+                altProfile:ClearMain()
+                -- Remove alt count from main
+                currentMainProfile:RemoveAlt(altGUID)
+            else -- Link
+                -- Sanity check if not setting existing one
+                if altProfile:Main() == mainProfile:GUID() then return end
+                -- Do not allow alt chaining if main is alt
+                if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
+                -- Do not allow alt chaining if alt has alts
+                if altProfile:HasAlts() then return end
+                -- Set new main of this alt
+                altProfile:SetMain(mainGUID)
+                -- Add alt to our main
+                mainProfile:AddAlt(altGUID)
+                -- Handle consequences of linking:
+                -- For each roster this alt is present in:
+                local rosters = RosterManager:GetRosters()
+                for _,roster in pairs(rosters) do
+                    if roster:IsProfileInRoster(altGUID) then
+                        -- 1) Add main if not present in roster
+                        roster:AddProfileByGUID(mainGUID)
+                        -- 2) Sum points of the pool and new alt
+                        local pointSum = roster:Standings(mainGUID) + roster:Standings(altGUID)
+                        -- 3) Set new Main standings
+                        roster:SetStandings(mainGUID, pointSum)
+                        -- 2a) Sum spent points of the pool and new alt
+                        local spentSum = roster:GetPointInfoForPlayer(mainGUID).spent + roster:GetPointInfoForPlayer(altGUID).spent
+                        -- 3a) Set new Main spent
+                        roster:SetSpent(mainGUID, spentSum)
+                        -- 4) Mirror standings (includes spent) from main to alts
+                        roster:MirrorStandings(mainGUID, mainProfile:Alts(), true)
+                        -- 5) Mirror weekly gains from main to alts
+                        roster:MirrorWeeklyGains(mainGUID, mainProfile:Alts(), true)
+                        -- 6) History entry
+                        local targets = UTILS.keys(mainProfile:Alts())
+                        table.insert(targets, 1, mainGUID)
+                        PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
+                    end
+                end
+            end
+        end))
+
 end)

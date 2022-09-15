@@ -1,10 +1,9 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("StandbyStagingManager", {
+    "Log", "Utils", "Acl",
+    "RaidManager", "L", "ProfileManager", "Comms", "UnifiedGUI_Standings", "Constants/RaidStatus", "Constants/StandbyStagingComm", "Constants/Comms/Distribution", "StandbyManager"
+}, function(resolve, LOG, UTILS, Acl, RaidManager, L, ProfileManager, Comms, UnifiedGUI_Standings, RaidStatus, StandbyStagingComm, Distribution, StandbyManager)
 
 local STANDBY_STAGING_COMM_PREFIX = "Standby001"
 
@@ -18,14 +17,14 @@ end
 
 local function HandleSubscribe(self, data, sender)
     LOG:Trace("StandbyStagingManager:HandleSubscribe()")
-    if not CLM.MODULES.ACL:IsTrusted() then return end
+    if not Acl:IsTrusted() then return end
     local raidUid = data:RaidUid()
-    local raid = CLM.MODULES.RaidManager:GetRaidByUid(raidUid)
+    local raid = RaidManager:GetRaidByUid(raidUid)
     if not raid then
         LOG:Debug("Non existent raid: %s", raidUid)
         return
     end
-    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATED then
+    if raid:Status() ~= RaidStatus.CREATED then
         LOG:Debug("Raid %s is not in freshly created", raidUid)
         return
     end
@@ -33,48 +32,48 @@ local function HandleSubscribe(self, data, sender)
         LOG:Debug("Self-subscribe is disabled")
         return
     end
-    local profile = CLM.MODULES.ProfileManager:GetProfileByName(sender)
+    local profile = ProfileManager:GetProfileByName(sender)
     if profile then
-        local updated = self:AddToStandby(raidUid, profile:GUID())
+        local updated = StandbyManager:AddToStandby(raidUid, profile:GUID())
         if updated then
-            LOG:Message(CLM.L["%s has %s standby"],
+            LOG:Message(L["%s has %s standby"],
                         UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex),
-                        UTILS.ColorCodeText(CLM.L["requested"], "44cc44"))
+                        UTILS.ColorCodeText(L["requested"], "44cc44"))
         end
     else
         LOG:Warning("Missing profile for player %s", sender)
     end
-    CLM.GUI.Standings:Refresh(true)
+    UnifiedGUI_Standings:Refresh(true)
 end
 
 local function HandleRevoke(self, data, sender)
     LOG:Trace("StandbyStagingManager:HandleRevoke()")
-    if not CLM.MODULES.ACL:IsTrusted() then return end
+    if not Acl:IsTrusted() then return end
     local raidUid = data:RaidUid()
-    local raid = CLM.MODULES.RaidManager:GetRaidByUid(raidUid)
+    local raid = RaidManager:GetRaidByUid(raidUid)
     if not raid then
         LOG:Debug("Non existent raid: %s", raidUid)
         return
     end
-    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATED then
+    if raid:Status() ~= RaidStatus.CREATED then
         return
     end
     if not raid:Configuration():Get("selfBenchSubscribe") then
         LOG:Debug("Self-subscribe is disabled")
         return
     end
-    local profile = CLM.MODULES.ProfileManager:GetProfileByName(sender)
+    local profile = ProfileManager:GetProfileByName(sender)
     if profile then
-        local updated = self:RemoveFromStandby(raidUid, profile:GUID())
+        local updated = StandbyManager:RemoveFromStandby(raidUid, profile:GUID())
         if updated then
-            LOG:Message(CLM.L["%s has %s standby"],
+            LOG:Message(L["%s has %s standby"],
                         UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex),
-                        UTILS.ColorCodeText(CLM.L["revoked"], "cc4444"))
+                        UTILS.ColorCodeText(L["revoked"], "cc4444"))
         end
     else
         LOG:Warning("Missing profile for player %s", sender)
     end
-    CLM.GUI.Standings:Refresh(true)
+    UnifiedGUI_Standings:Refresh(true)
 end
 
 -- local function HandleResponse(self, data, sender)
@@ -87,78 +86,89 @@ function StandbyStagingManager:Initialize()
     self:Clear()
 
     self.handlers = {
-        [CONSTANTS.STANDBY_STAGING_COMM.TYPE.SUBSCRIBE] = HandleSubscribe,
-        [CONSTANTS.STANDBY_STAGING_COMM.TYPE.REVOKE]    = HandleRevoke,
+        [StandbyStagingComm.TYPE.SUBSCRIBE] = HandleSubscribe,
+        [StandbyStagingComm.TYPE.REVOKE]    = HandleRevoke,
     }
 
-    CLM.MODULES.Comms:Register(STANDBY_STAGING_COMM_PREFIX, (function(rawMessage, distribution, sender)
+    Comms:Register(STANDBY_STAGING_COMM_PREFIX, (function(rawMessage, distribution, sender)
         local message = CLM.MODELS.StandbyStagingCommStructure:New(rawMessage)
-        if CONSTANTS.STANDBY_STAGING_COMM.TYPES[message:Type()] == nil then return end
+        if StandbyStagingComm.TYPES[message:Type()] == nil then return end
         HandleIncomingMessage(self, message, distribution, sender)
     end), CONSTANTS.ACL.LEVEL.PLEBS, true)
 
 end
 -- Local API
-function StandbyStagingManager:Clear()
-    LOG:Trace("StandbyStagingManager:Clear()")
-    self.standby = {}
-end
 
-function StandbyStagingManager:IsPlayerOnStandby(raidUid, GUID)
-    LOG:Trace("StandbyStagingManager:IsPlayerOnStandby()")
-    if not self.standby[raidUid] then return false end
-    return self.standby[raidUid][GUID] and true or false
-end
-
-function StandbyStagingManager:AddToStandby(raidUid, GUID)
-    LOG:Trace("StandbyStagingManager:AddToStandby()")
-    LOG:Debug("AddToStandby %s: %s", raidUid, GUID)
-    if not self.standby[raidUid] then self.standby[raidUid] = {} end
-    local previous = self.standby[raidUid][GUID]
-    self.standby[raidUid][GUID] = true
-    return (previous ~= self.standby[raidUid][GUID])
-end
-
-function StandbyStagingManager:RemoveFromStandby(raidUid, GUID)
-    LOG:Trace("StandbyStagingManager:RemoveFromStandby()")
-    LOG:Debug("RemoveFromStandby %s: %s", raidUid, GUID)
-    if not self.standby[raidUid] then return false end
-    local previous = self.standby[raidUid][GUID]
-    self.standby[raidUid][GUID] = nil
-    return (previous ~= self.standby[raidUid][GUID])
-end
-
-function StandbyStagingManager:GetStandby(raidUid)
-    LOG:Trace("StandbyStagingManager:GetStandby()")
-    return self.standby[raidUid] or {}
-end
 -- Comms API
 function StandbyStagingManager:SignupToStandby(raidUid)
     LOG:Trace("StandbyStagingManager:SignupToStandby()")
     local message = CLM.MODELS.StandbyStagingCommStructure:New(
-        CONSTANTS.STANDBY_STAGING_COMM.TYPE.SUBSCRIBE,
+        StandbyStagingComm.TYPE.SUBSCRIBE,
         CLM.MODELS.StandbyStagingCommSubscribe:New(raidUid))
-    CLM.MODULES.Comms:Send(STANDBY_STAGING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
-    LOG:Message(CLM.L["Standby %s has been sent"],
-                UTILS.ColorCodeText(CLM.L["request"], "44cc44"))
+    Comms:Send(STANDBY_STAGING_COMM_PREFIX, message, Distribution.GUILD)
+    LOG:Message(L["Standby %s has been sent"],
+                UTILS.ColorCodeText(L["request"], "44cc44"))
 end
 
 function StandbyStagingManager:RevokeStandby(raidUid)
     LOG:Trace("StandbyStagingManager:RevokeStandby()")
     local message = CLM.MODELS.StandbyStagingCommStructure:New(
-        CONSTANTS.STANDBY_STAGING_COMM.TYPE.REVOKE,
+        StandbyStagingComm.TYPE.REVOKE,
         CLM.MODELS.StandbyStagingCommRevoke:New(raidUid))
-    CLM.MODULES.Comms:Send(STANDBY_STAGING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
-    LOG:Message(CLM.L["Standby %s has been sent"],
-    UTILS.ColorCodeText(CLM.L["revoke"], "cc4444"))
+    Comms:Send(STANDBY_STAGING_COMM_PREFIX, message, Distribution.GUILD)
+    LOG:Message(L["Standby %s has been sent"],
+    UTILS.ColorCodeText(L["revoke"], "cc4444"))
 end
 
-CONSTANTS.STANDBY_STAGING_COMM = {
-    TYPE = {
-        SUBSCRIBE   = 1,
-        REVOKE      = 2,
-    },
-    TYPES = UTILS.Set({ 1, 2 })
-}
 
-CLM.MODULES.StandbyStagingManager = StandbyStagingManager
+
+resolve(StandbyStagingManager)
+end)
+
+define.module("Constants/StandbyStagingComm", {"Utils"}, function(resolve, UTILS)
+    resolve({
+        TYPE = {
+            SUBSCRIBE   = 1,
+            REVOKE      = 2,
+        },
+        TYPES = UTILS.Set({ 1, 2 })
+    })
+
+end)
+
+-- define separate storage for the standby area
+define.module("StandbyManager", {"Log"}, function(resolve, LOG)
+    local standby = {}
+    local StandbyManager = {
+        Clear = function()
+            LOG:Trace("StandbyStagingManager:Clear()")
+            standby = {}
+        end,
+        IsPlayerOnStandby = function(raidUid, GUID)
+            LOG:Trace("StandbyStagingManager:IsPlayerOnStandby()")
+            if not standby[raidUid] then return false end
+            return standby[raidUid][GUID] and true or false
+        end,
+        AddToStandby = function(raidUid, GUID)
+            LOG:Trace("StandbyStagingManager:AddToStandby()")
+            LOG:Debug("AddToStandby %s: %s", raidUid, GUID)
+            if not standby[raidUid] then standby[raidUid] = {} end
+            local previous = standby[raidUid][GUID]
+            standby[raidUid][GUID] = true
+            return (previous ~= standby[raidUid][GUID])
+        end,
+        RemoveFromStandby = function(raidUid, GUID)
+            LOG:Trace("StandbyStagingManager:RemoveFromStandby()")
+            LOG:Debug("RemoveFromStandby %s: %s", raidUid, GUID)
+            if not standby[raidUid] then return false end
+            local previous = standby[raidUid][GUID]
+            standby[raidUid][GUID] = nil
+            return (previous ~= standby[raidUid][GUID])
+        end,
+        GetStandby = function(raidUid)
+            LOG:Trace("StandbyStagingManager:GetStandby()")
+            return standby[raidUid] or {}
+        end
+    }
+    resolve(StandbyManager)
+end)

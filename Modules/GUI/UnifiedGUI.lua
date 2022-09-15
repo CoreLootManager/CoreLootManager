@@ -1,10 +1,9 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("UnifiedGUI", {"Database", "L", "Utils", "ConfigManager", "Log", "LedgerManager", "EventManager"
+
+}, function(resolve, Database, L, UTILS, ConfigManager, LOG, LedgerManager, EventManager)
+
 
 local pairs, tsort = pairs, table.sort
 
@@ -20,7 +19,7 @@ local HORIZONTAL_REGISTRY = "clm_unifiedgui_gui_options_horizontal"
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('unifiedgui', {
+    self.db = Database:GUI('unifiedgui', {
         location = {nil, nil, "CENTER", 0, 0 },
         storage = {}
     })
@@ -88,7 +87,7 @@ local function CreateTabsWidget(self, content)
     for name, tab in pairs(self.tabs) do
         tabs[#tabs + 1] = {
             value = name,
-            text = CLM.L[UTILS.capitalize(name)],
+            text = L[UTILS.capitalize(name)],
             order = tab.order
         }
     end
@@ -213,13 +212,13 @@ function UnifiedGUI:Initialize()
 
     self:RegisterSlash()
 
-    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then
             local percentage
-            if CLM.MODULES.LedgerManager:IsTimeTraveling() then
-                percentage = CLM.MODULES.LedgerManager:TimeTravelProgress()
+            if LedgerManager:IsTimeTraveling() then
+                percentage = LedgerManager:TimeTravelProgress()
             else
-                local count = CLM.MODULES.LedgerManager:Length() + uncommitted
+                local count = LedgerManager:Length() + uncommitted
                 percentage = UTILS.round(((count - lag) / count), 2)
             end
             if percentage < 0.01 then
@@ -240,11 +239,11 @@ function UnifiedGUI:Initialize()
         self.aceObjects.loadingBanner:Hide()
     end)
 
-    CLM.MODULES.LedgerManager:RegisterOnRestart(function()
+    LedgerManager:RegisterOnRestart(function()
         self.aceObjects.loadingBanner:Show()
     end)
 
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"},
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"},
     (function()
         StoreLocation(self)
         for _, tab in pairs(self.tabs) do
@@ -259,7 +258,7 @@ function UnifiedGUI:CreateAceGUIStructure()
     LOG:Trace("UnifiedGUI:CreateAceGUIStructure()")
     -- Main Frame
     local f = AceGUI:Create("Window")
-    f:SetTitle(CLM.L["Classic Loot Manager"])
+    f:SetTitle(L["Classic Loot Manager"])
     f:SetLayout("Fill")
     f:EnableResize(false)
     f:SetWidth(700)
@@ -414,12 +413,12 @@ function UnifiedGUI:RegisterSlash()
         gui = {
             type = "execute",
             name = "Standings",
-            desc = CLM.L["Toggle standings window display"],
+            desc = L["Toggle standings window display"],
             handler = self,
             func = "Toggle",
         }
     }
-    CLM.MODULES.ConfigManager:RegisterSlash(options)
+    ConfigManager:RegisterSlash(options)
 end
 
 function UnifiedGUI:Reset()
@@ -428,4 +427,6 @@ function UnifiedGUI:Reset()
     self.aceObjects.top:SetPoint("CENTER", 0, 0)
 end
 
-CLM.GUI.Unified = UnifiedGUI
+UnifiedGUI:Initialize()
+resolve(UnifiedGUI)
+end)

@@ -78,11 +78,10 @@ end)
 
 define.module("Core", {"LibStub:AceAddon-3.0", "Meta:ADDON_TABLE"}, function(resolve, AceAddon, CLM)
     local core = AceAddon:NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
-    CLM.CORE = core
     resolve(core)
 end)
 -- Define L as a module so we don't depend on the full addon table everywhere
-define.module("L", {"Locale:" .. GetLocale()}, function(resolve, CurrentLocale)
+define.module("L", {"Locale." .. GetLocale()}, function(resolve, CurrentLocale)
     resolve(CurrentLocale)
 end)
 define.module("Main", {
@@ -93,8 +92,10 @@ define.module("Main", {
     "Modules",
     "Config",
     "Models",
-    "Gui"
-}, function(resolve, CORE, Log, CLM, Constants, Modules, Config, Models, Gui)
+    "Gui",
+    "Comms",
+    "LedgerManager"
+}, function(resolve, CORE, Log, CLM, Constants, Modules, Config, Models, Gui, Comms, LedgerManager)
 local LIB_CLM, _ = LibStub:NewLibrary("ClassicLootManager", 1)
 if LIB_CLM then
     LIB_CLM.CLM = CLM
@@ -110,7 +111,6 @@ CLM.AUTOVERSION = "@project-version@"
 CLM.LOG = Log
 
 local LOG = Log
-local MODULES = Modules
 
 
 
@@ -154,16 +154,10 @@ end
 
 function CORE:_InitializeCore()
     LOG:Trace("CORE:_InitializeCore()")
-    MODULES.ConfigManager:Initialize()
-    MODULES.ACL:Initialize()
 end
 
 function CORE:_InitializeBackend()
     LOG:Trace("CORE:_InitializeBackend()")
-    MODULES.Comms:Initialize()
-    MODULES.EventManager:Initialize()
-    MODULES.GuildInfoListener:Initialize()
-    MODULES.LedgerManager:Initialize()
     -- if type(self.Debug) == "function" then
     --     self.Debug()
     -- end
@@ -172,33 +166,30 @@ end
 function CORE:_InitializeFeatures()
     LOG:Trace("CORE:_InitializeFeatures()")
     -- We keep the order
-    MODULES.ProfileManager:Initialize()
-    MODULES.RosterManager:Initialize()
-    MODULES.PointManager:Initialize()
-    MODULES.LootManager:Initialize()
-    MODULES.RaidManager:Initialize()
-    MODULES.StandbyStagingManager:Initialize()
-    MODULES.AuctionManager:Initialize()
-    MODULES.AutoAward:Initialize()
-    MODULES.BiddingManager:Initialize()
-    MODULES.ProfileInfoManager:Initialize()
-    MODULES.AutoAwardManager:Initialize()
-    MODULES.LootQueueManager:Initialize()
-    MODULES.AuctionHistoryManager:Initialize()
-    MODULES.SandboxManager:Initialize()
+    -- MODULES.PointManager:Initialize()
+    -- MODULES.LootManager:Initialize()
+    -- MODULES.RaidManager:Initialize()
+    -- MODULES.StandbyStagingManager:Initialize()
+    -- MODULES.AuctionManager:Initialize()
+    -- MODULES.AutoAward:Initialize()
+    -- MODULES.BiddingManager:Initialize()
+    -- MODULES.ProfileInfoManager:Initialize()
+    -- MODULES.AutoAwardManager:Initialize()
+    -- MODULES.LootQueueManager:Initialize()
+    -- MODULES.AuctionHistoryManager:Initialize()
+    -- MODULES.SandboxManager:Initialize()
     -- Globals
-    CLM.Migration:Initialize() -- Initialize Migration
-    CLM.GlobalConfigs:Initialize() -- Initialize global configs
-    CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
-    CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
-    CLM.Integration:Initialize() -- Initialize external (to wow) integrations
-    CLM.DatabaseUpgradeImporter:Initialize() -- Initialize import for JSON data from CLM1
+    -- CLM.Migration:Initialize() -- Initialize Migration
+    -- CLM.GlobalConfigs:Initialize() -- Initialize global configs
+    -- CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
+    -- CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
+    -- CLM.Integration:Initialize() -- Initialize external (to wow) integrations
+    -- CLM.DatabaseUpgradeImporter:Initialize() -- Initialize import for JSON data from CLM1
 end
 
 function CORE:_InitializeMinimap()
     LOG:Trace("CORE:_InitializeMinimap()")
-    -- Initialize Minmap
-    MODULES.Minimap:Initialize()
+
 end
 
 function CORE:_InitializeOptions()
@@ -211,15 +202,15 @@ end
 
 function CORE:_InitializeGUI()
     LOG:Trace("CORE:_InitializeGUI()")
-    for _, module in pairs(Gui) do
-        module:Initialize()
-    end
+    -- for _, module in pairs(Gui) do
+    --     module:Initialize()
+    -- end
 end
 
 function CORE:_Enable()
     LOG:Trace("CORE:_Enable()")
-    MODULES.Comms:Enable()
-    MODULES.LedgerManager:Enable()
+    Comms:Enable()
+    LedgerManager:Enable()
 end
 
 local stages = {
@@ -307,4 +298,6 @@ function CORE.Debug()
     CLM.Debug:RegisterSlash()
 end
 --@end-do-not-package@
+
+resolve(true)
 end)

@@ -1,29 +1,20 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("Models/Ledger/Raid", {
+    "LibStub:EventSourcing/LogEntry", "Utils"
+}, function(resolve, LogEntry, UTILS)
+
 
 local tonumber = tonumber
 
 local CreateGUIDList = UTILS.CreateGUIDList
 local mergeLists = UTILS.mergeLists
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
-
 local Create    = LogEntry:extend("AC")
 local Start     = LogEntry:extend("AS")
 local End       = LogEntry:extend("AE")
 local Update    = LogEntry:extend("AU")
 
-CLM.MODELS.LEDGER.RAID = {
-    Create = Create,
-    Start = Start,
-    End = End,
-    Update = Update
-}
 
 function Create:new(rosterUid, name, config)
     local o = LogEntry.new(self)
@@ -127,3 +118,11 @@ local updateFields = mergeLists(LogEntry:fields(), {"r", "l", "j", "s", "e"})
 function Update:fields()
     return updateFields
 end
+
+resolve({
+    Create = Create,
+    Start = Start,
+    End = End,
+    Update = Update
+})
+end)

@@ -1,9 +1,8 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
+local define = LibDependencyInjection.createContext(...)
+
+define.module("AuctionHistoryManager/Gui", {"Database", "Acl", "AuctionHistoryManager", "L", "Log", "Utils"}, function(resolve, Database, Acl, AuctionHistoryManager, L, LOG, UTILS)
+
+
 -- ------------------------------- --
 
 local UIParent, CreateFrame = UIParent, CreateFrame
@@ -18,7 +17,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local RightClickMenu
 
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('auctionHistory', {
+    self.db = Database:GUI('auctionHistory', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -53,19 +52,19 @@ end
 local AuctionHistoryGUI = {}
 function AuctionHistoryGUI:Initialize()
     LOG:Trace("AuctionHistoryGUI:Initialize()")
-    if not CLM.MODULES.ACL:IsTrusted() then return end
+    if not Acl:IsTrusted() then return end
     InitializeDB(self)
 
     self.tooltip = CreateFrame("GameTooltip", "CLMAuctionHistoryGUIDialogTooltip", UIParent, "GameTooltipTemplate")
 
-    RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
+    RightClickMenu = UTILS.GenerateDropDownMenu(
         {
             {
-                title = CLM.L["Remove auction"],
+                title = L["Remove auction"],
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
-                    CLM.MODULES.AuctionHistoryManager:Remove(ST_GetItemSeq(rowData))
+                    AuctionHistoryManager:Remove(ST_GetItemSeq(rowData))
                 end),
                 color = "cc0000"
             },
@@ -74,9 +73,9 @@ function AuctionHistoryGUI:Initialize()
                 trustedOnly = true,
             },
             {
-                title = CLM.L["Remove old"],
+                title = L["Remove old"],
                 func = (function()
-                    CLM.MODULES.AuctionHistoryManager:RemoveOld()
+                    AuctionHistoryManager:RemoveOld()
                 end),
                 color = "cc0000"
             },
@@ -85,15 +84,15 @@ function AuctionHistoryGUI:Initialize()
                 trustedOnly = true,
             },
             {
-                title = CLM.L["Remove all"],
+                title = L["Remove all"],
                 func = (function()
-                    CLM.MODULES.AuctionHistoryManager:Wipe()
+                    AuctionHistoryManager:Wipe()
                 end),
                 color = "cc0000"
             }
         },
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        Acl:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
     )
 
     self:Create()
@@ -135,7 +134,7 @@ local function CreateAuctionDisplay(self)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
         tooltip:AddLine(ST_GetAuctionTime(rowData))
-        tooltip:AddLine(CLM.L["Bids"])
+        tooltip:AddLine(L["Bids"])
         local noBids = true
         for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
             noBids = false
@@ -146,7 +145,7 @@ local function CreateAuctionDisplay(self)
             tooltip:AddDoubleLine(bidder, bid)
         end
         if noBids then
-            tooltip:AddLine(CLM.L["No bids"])
+            tooltip:AddLine(L["No bids"])
         end
         tooltip:Show()
         return status
@@ -189,7 +188,7 @@ function AuctionHistoryGUI:Create()
     LOG:Trace("AuctionHistoryGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle(CLM.L["Auction History"])
+    f:SetTitle(L["Auction History"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
@@ -211,7 +210,7 @@ function AuctionHistoryGUI:Refresh(visible)
     if visible and not self.top:IsVisible() then return end
 
     local data = {}
-    local stack = CLM.MODULES.AuctionHistoryManager:GetHistory()
+    local stack = AuctionHistoryManager:GetHistory()
     -- Data
     local rowId = 1
     for seq, auction in ipairs(stack) do
@@ -220,7 +219,7 @@ function AuctionHistoryGUI:Refresh(visible)
                 { value = auction.link},
                 { value = auction.id },
                 { value = auction.bids },
-                { value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], auction.time) },
+                { value = date(L["%Y/%m/%d %a %H:%M:%S"], auction.time) },
                 { value = seq }
             }
         }
@@ -273,7 +272,7 @@ function AuctionHistoryGUI:RegisterSlash()
         auction_history = {
             type = "execute",
             name = "Auction History",
-            desc = CLM.L["Toggle Auction History window display"],
+            desc = L["Toggle Auction History window display"],
             handler = self,
             func = "Toggle",
         }
@@ -287,4 +286,6 @@ function AuctionHistoryGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-CLM.GUI.AuctionHistory = AuctionHistoryGUI
+AuctionHistoryGUI:Initialize()
+resolve(AuctionHistoryGUI)
+end)

@@ -1,16 +1,12 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("RosterManager/AttendanceTracker", {"Constants", "RosterManager/Roster", "Utils", "Log"}, function(resolve,  CONSTANTS, Roster, Utils, Log)
 
 local pairs, GetServerTime = pairs, GetServerTime
 
-local WeekNumber = UTILS.WeekNumber
-local weekOffsetEU = UTILS.GetWeekOffsetEU()
-local weekOffsetUS = UTILS.GetWeekOffsetUS()
+local WeekNumber = Utils.WeekNumber
+local weekOffsetEU = Utils.GetWeekOffsetEU()
+local weekOffsetUS = Utils.GetWeekOffsetUS()
 
 local AttendanceTracker = {}
 
@@ -58,7 +54,7 @@ function AttendanceTracker:Get(GUID)
             for _,_ in pairs(raidDict) do raids = raids + 1 end
             local weeklyAttendance = (raids / self.raidsPerWeekForFullAttendance)
             if weeklyAttendance > 1 then weeklyAttendance = 1 end
-            if weeklyAttendance < 0 then weeklyAttendance = 0; LOG:Fatal("Weekly attendance < 0???") end
+            if weeklyAttendance < 0 then weeklyAttendance = 0; Log:Fatal("Weekly attendance < 0???") end
             attendance = attendance + weeklyAttendance
         end
         self.attendancePercentage[GUID] = 100*(attendance / self.averageWindowWeeks)
@@ -66,4 +62,5 @@ function AttendanceTracker:Get(GUID)
     return self.attendancePercentage[GUID]
 end
 
-CLM.MODELS.AttendanceTracker = AttendanceTracker
+resolve(AttendanceTracker)
+end)

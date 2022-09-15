@@ -1,6 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("RosterManager/Roster", {"Models", "Constants", "Utils", "L", "Meta:ADDON_TABLE", "Log"}, function(resolve, Models, CONSTANTS, UTILS, L, CLM, LOG)
+define.module("RosterManager/Roster", {"Models", "Constants", "Utils", "L", "Meta:ADDON_TABLE", "Log",
+"DifficultyIdMap", "RosterManager/RosterConfiguration"}, function(resolve, Models, CONSTANTS, UTILS, L, CLM, LOG, DifficultyIdMap, RosterConfiguration)
 
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
 
@@ -40,14 +41,14 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     -- CONFIGURATION --
     o.uid  = tonumber(uid)
     o.pointType = pointType
-    o.configuration  = MODELS.RosterConfiguration:New()
+    o.configuration  = RosterConfiguration:New()
     o.defaultSlotValues = { [GLOBAL_FAKE_INVENTORY_SLOT] = {} }
     fillSlotsArray(o.defaultSlotValues[GLOBAL_FAKE_INVENTORY_SLOT])
     o.fieldNames = {}
     o.itemValues = {}
     -- Boss Kill Bonus values
     o.bossKillBonusValues = {}
-    for id,_ in pairs(CLM.DifficultyIDsMap) do
+    for id,_ in pairs(DifficultyIdMap) do
         o.bossKillBonusValues[id] = {}
     end
     -- END CONFIGURATION --

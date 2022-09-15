@@ -1,10 +1,8 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+
+define.module("Acl", {"Constants", "Utils", "Modules", "Log","GuildInfoListener"}, function(resolve, CONSTANTS, UTILS, Modules, LOG, GuildInfoListener)
+
 
 local IsGuildLeader = IsGuildLeader
 
@@ -23,7 +21,7 @@ end
 
 function ACL:CheckLevel(level, name)
     LOG:Trace("ACL:CheckLevel()")
-    local info = CLM.MODULES.GuildInfoListener:GetInfo()
+    local info = GuildInfoListener:GetInfo()
     -- By default block everything except for GM if level not provided
     level = level or CONSTANTS.ACL.LEVEL.GUILD_MASTER
     -- Request is for self
@@ -67,4 +65,7 @@ CONSTANTS.ACL.LEVELS = UTILS.Set({
     CONSTANTS.ACL.LEVEL.GUILD_MASTER
 })
 
-CLM.MODULES.ACL = ACL
+Modules.ACL = ACL
+ACL:Initialize()
+resolve(ACL)
+end)

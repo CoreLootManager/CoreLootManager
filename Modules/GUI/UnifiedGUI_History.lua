@@ -1,10 +1,7 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("UnifiedGUI/History", {"Models", "Constants", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager", "LedgerManager", "EventManager", "UnifiedGUI", "RaidManager", "EncounterIdMap"},
+function(resolve, Models, CONSTANTS, Acl, AuctionHistoryManager, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, LedgerManager, EventManager, UnifiedGUI, RaidManager, EncounterIdMap)
 
 local pairs, ipairs = pairs, ipairs
 local sgsub, tsort =string.gsub, table.sort
@@ -18,9 +15,9 @@ CONSTANTS.HISTORY_TYPE = {
 }
 
 CONSTANTS.HISTORY_TYPES_GUI = {
-    [CONSTANTS.HISTORY_TYPE.ALL] = CLM.L["All"],
-    [CONSTANTS.HISTORY_TYPE.LOOT] = CLM.L["Loot"],
-    [CONSTANTS.HISTORY_TYPE.POINT] = CLM.L["Point"]
+    [CONSTANTS.HISTORY_TYPE.ALL] = L["All"],
+    [CONSTANTS.HISTORY_TYPE.LOOT] = L["Loot"],
+    [CONSTANTS.HISTORY_TYPE.POINT] = L["Point"]
 }
 
 local function ST_GetInfo(row)
@@ -37,12 +34,12 @@ end
 
 
 local function refreshFn(...)
-    CLM.GUI.Unified:Refresh(...)
+    UnifiedGUI:Refresh(...)
 end
 
 local UnifiedGUI_History = {
     name = "history",
-    filter = CLM.MODELS.Filters:New(
+    filter = Models.Filters:New(
     refreshFn,
     {},
     UTILS.Set({
@@ -55,7 +52,7 @@ local UnifiedGUI_History = {
 
 function UnifiedGUI_History:GetSelection()
     LOG:Trace("UnifiedGUI_History:GetSelection()")
-    local st = CLM.GUI.Unified:GetScrollingTable()
+    local st = UnifiedGUI:GetScrollingTable()
     local lootList, historyList = {}, {}
     -- Profiles
     local selected = st:GetSelection()
@@ -75,13 +72,13 @@ end
 
 local function GenerateUntrustedOptions(self)
     local options = {}
-    local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+    local roster = RosterManager:GetRosterByUid(self.roster)
     if not roster then return {} end
     local profiles = roster:Profiles()
-    local profileNameMap = { [CLM.L["-- All --"]] = CLM.L["-- All --"]}
-    local profileList = {CLM.L["-- All --"]}
+    local profileNameMap = { [L["-- All --"]] = L["-- All --"]}
+    local profileList = {L["-- All --"]}
     for _, GUID in ipairs(profiles) do
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        local profile = ProfileManager:GetProfileByGUID(GUID)
         if profile then
             profileNameMap[profile:Name()] = profile:Name()
             profileList[#profileList + 1] = profile:Name()
@@ -90,9 +87,9 @@ local function GenerateUntrustedOptions(self)
     tsort(profileList)
 
     options.roster = {
-        name = CLM.L["Roster"],
+        name = L["Roster"],
         type = "select",
-        values = CLM.MODULES.RosterManager:GetRostersUidMap(),
+        values = RosterManager:GetRostersUidMap(),
         set = function(i, v)
             self.roster = v
             refreshFn()
@@ -101,7 +98,7 @@ local function GenerateUntrustedOptions(self)
         order = 0
     }
     options.player = {
-        name = CLM.L["Player"],
+        name = L["Player"],
         type = "select",
         values = profileNameMap,
         sorting = profileList,
@@ -113,7 +110,7 @@ local function GenerateUntrustedOptions(self)
         order = 1
     }
     options.history = {
-        name = CLM.L["History type"],
+        name = L["History type"],
         type = "select",
         values = CONSTANTS.HISTORY_TYPES_GUI,
         set = function(i, v)
@@ -141,14 +138,14 @@ local tableStructure = {
     rows = 22,
     -- columns - structure of the ScrollingTable
     columns = {
-        {name = CLM.L["Info"],  width = 235 },
-        {name = CLM.L["Value"], width = 85, color = colorGreen,
+        {name = L["Info"],  width = 235 },
+        {name = L["Value"], width = 85, color = colorGreen,
             comparesort = UTILS.LibStCompareSortWrapper(function(a1,b1)
                 return tonumber(sgsub(a1, "%%", "")), tonumber(sgsub(b1, "%%", ""))
             end)
         },
-        {name = CLM.L["Date"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC},
-        {name = CLM.L["Player"],width = 95,
+        {name = L["Date"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC},
+        {name = L["Player"],width = 95,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         }
     },
@@ -175,23 +172,23 @@ local tableStructure = {
                 tooltip:SetHyperlink(itemString)
                 local loot = ST_GetObject(rowData)
                 if loot then
-                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
+                    local profile = ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
                     local name
                     if profile then
                         name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
                     else
-                        name = CLM.L["Unknown"]
+                        name = L["Unknown"]
                     end
-                    local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
+                    local raid = RaidManager:GetRaidByUid(loot:RaidUid())
                     if raid then
                         tooltip:AddLine(raid:Name())
                     end
-                    tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
-                    local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
+                    tooltip:AddDoubleLine(L["Awarded by"], name)
+                    local auction = AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
                     if auction then
-                        tooltip:AddLine(CLM.L["Bids"])
+                        tooltip:AddLine(L["Bids"])
                         for bidder, bid in pairs(auction.bids) do
-                            local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
+                            local bidderProfile = ProfileManager:GetProfileByName(bidder)
                             if bidderProfile then
                                 bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
                             end
@@ -204,9 +201,9 @@ local tableStructure = {
                 local history = ST_GetObject(rowData)
                 local profiles = history:Profiles()
                 local numProfiles = #profiles
-                tooltip:AddDoubleLine(CLM.L["Affected players:"], tostring(numProfiles))
+                tooltip:AddDoubleLine(L["Affected players:"], tostring(numProfiles))
                 if not profiles or numProfiles == 0 then
-                    tooltip:AddLine(CLM.L["None"])
+                    tooltip:AddLine(L["None"])
                 else
                     UTILS.buildPlayerListForTooltip(profiles, tooltip)
                 end
@@ -214,18 +211,18 @@ local tableStructure = {
                 if note ~= "" then
                     local numNote = tonumber(note)
                     if numNote then
-                        note = CLM.EncounterIDsMap[numNote] or note
+                        note = EncounterIdMap[numNote] or note
                     end
-                    tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
+                    tooltip:AddDoubleLine(L["Note"] .. "", note)
                 end
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
+                local profile = ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
                 local name
                 if profile then
                     name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
                 else
-                    name = CLM.L["Unknown"]
+                    name = L["Unknown"]
                 end
-                tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+                tooltip:AddDoubleLine(L["Awarded by"], name)
             else
                 return status
             end
@@ -252,10 +249,10 @@ local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_History tableDataFeeder()")
     local data = {}
 
-    local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
+    local roster = RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
     if not roster then return {} end
     -- TODO: Change from loot type and profile name to filter as its faster
-    local profile = CLM.MODULES.ProfileManager:GetProfileByName(UnifiedGUI_History.profile or "")
+    local profile = ProfileManager:GetProfileByName(UnifiedGUI_History.profile or "")
     if UnifiedGUI_History.historyType ~= CONSTANTS.HISTORY_TYPE.POINT then
         local isProfileLoot = (profile and roster:IsProfileInRoster(profile:GUID()))
         local lootList
@@ -282,7 +279,7 @@ local function tableDataFeeder()
         end
 
         if UnifiedGUI_History.pendingLoot then
-            return {{cols = { {value = ""}, {value = ""}, {value = CLM.L["Loading..."]}, {value = ""}, {value = nil} }}}
+            return {{cols = { {value = ""}, {value = ""}, {value = L["Loading..."]}, {value = ""}, {value = nil} }}}
         end
 
         for _,lootData in ipairs(displayedLoot) do
@@ -290,7 +287,7 @@ local function tableDataFeeder()
             local row = {cols = {
                 {value = lootData[2]}, -- itemLink
                 {value = loot:Value()},
-                {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
+                {value = date(L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
                 {value = lootData[3]}, -- owner
                 -- Not visible
                 {value = true}, -- is Loot
@@ -311,7 +308,7 @@ local function tableDataFeeder()
             pointList = roster:GetRaidPointHistory()
         end
 
-        local multiple = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
+        local multiple = UTILS.ColorCodeText(L["Multiple"], "FFD100")
         for _,history in ipairs(pointList) do
             local reason = history:Reason() or 0
             local value = tostring(history:Value())
@@ -322,7 +319,7 @@ local function tableDataFeeder()
             local row = {cols = {
                 {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
                 {value = value},
-                {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
+                {value = date(L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
                 {value = multiple},
                 {value = false},
                 {value = history}
@@ -335,29 +332,29 @@ end
 
 local function initializeHandler()
     LOG:Trace("UnifiedGUI_History initializeHandler()")
-    UnifiedGUI_History.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
+    UnifiedGUI_History.RightClickMenu = UTILS.GenerateDropDownMenu(
         {
             {
-                title = CLM.L["Remove selected"],
+                title = L["Remove selected"],
                 func = (function()
                     local selectedLoot, selectedHistory = UnifiedGUI_History:GetSelection()
                     for _, loot in pairs(selectedLoot) do
-                        CLM.MODULES.LedgerManager:Remove(loot:Entry())
-                        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, {
+                        LedgerManager:Remove(loot:Entry())
+                        EventManager:DispatchEvent(CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, {
                             id = loot:Id(), name = loot:Owner():Name()
                         }, loot:Timestamp() + 7200) -- only up to 2 hours after loot is created
                     end
                     for _, history in pairs(selectedHistory) do
-                        CLM.MODULES.LedgerManager:Remove(history:Entry())
+                        LedgerManager:Remove(history:Entry())
                     end
-                    CLM.GUI.Unified:ClearSelection()
+                    UnifiedGUI:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "cc0000"
             }
         },
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
 end
 
@@ -369,20 +366,20 @@ end
 
 local function storeHandler()
     LOG:Trace("UnifiedGUI_History storeHandler()")
-    local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_History.name)
+    local storage = UnifiedGUI:GetStorage(UnifiedGUI_History.name)
     storage.roster = UnifiedGUI_History.roster
 end
 
 local function restoreHandler()
     LOG:Trace("UnifiedGUI_History restoreHandler()")
-    local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_History.name)
+    local storage = UnifiedGUI:GetStorage(UnifiedGUI_History.name)
     UnifiedGUI_History.roster = storage.roster
 end
 
 local function dataReadyHandler()
     LOG:Trace("UnifiedGUI_History dataReadyHandler()")
-    if not CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster) then
-        local _, roster = next(CLM.MODULES.RosterManager:GetRosters())
+    if not RosterManager:GetRosterByUid(UnifiedGUI_History.roster) then
+        local _, roster = next(RosterManager:GetRosters())
         if roster then
             UnifiedGUI_History.roster = roster:UID()
         end
@@ -395,7 +392,7 @@ end
 --     CONSTANTS.HISTORY_TYPE.POINT
 -- })
 
-CLM.GUI.Unified:RegisterTab(
+UnifiedGUI:RegisterTab(
     UnifiedGUI_History.name, 2,
     tableStructure,
     tableDataFeeder,
@@ -410,3 +407,6 @@ CLM.GUI.Unified:RegisterTab(
         dataReady = dataReadyHandler
     }
 )
+
+resolve(true)
+end)

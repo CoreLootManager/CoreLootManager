@@ -1,10 +1,8 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("UnifiedGUI_Standings", {
+    "Log", "Utils", "ProfileManager", "Meta:ADDON_TABLE", "L", "Integrations", "RosterManager", "Constants/ExportDataTypes", "Constants/FormatValues"
+}, function(resolve, LOG, UTILS, ProfileManager, CLM, L, _, RosterManager, ExportDataTypes, FormatValues)
 
 local json = LibStub:GetLibrary("LibJsonLua")
 local XML = LibStub:GetLibrary("LibLuaXML")
@@ -53,11 +51,11 @@ local function decodeNote(note)
 end
 
 local EXPORT_GROUP_NAME = {
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = "standings",
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = "pointHistory",
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = "lootHistory",
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = "raids",
-    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = "configs"
+    [ExportDataTypes.STANDINGS] = "standings",
+    [ExportDataTypes.POINT_HISTORY] = "pointHistory",
+    [ExportDataTypes.LOOT_HISTORY] = "lootHistory",
+    [ExportDataTypes.RAIDS] = "raids",
+    -- [ExportDataTypes.CONFIGS] = "configs"
 }
 
 -- -------- --
@@ -65,9 +63,9 @@ local EXPORT_GROUP_NAME = {
 -- -------- --
 
 local ENCODERS =  {
-    [CLM.CONSTANTS.FORMAT_VALUE.XML]  = (function(output) return XML.encode(output) end),
-    [CLM.CONSTANTS.FORMAT_VALUE.CSV]  = (function() return "CSV not supported" end),
-    [CLM.CONSTANTS.FORMAT_VALUE.JSON] = (function(output) return json.encode(output) end),
+    [FormatValues.XML]  = (function(output) return XML.encode(output) end),
+    [FormatValues.CSV]  = (function() return "CSV not supported" end),
+    [FormatValues.JSON] = (function(output) return json.encode(output) end),
 }
 
 -- ------------- --
@@ -75,21 +73,21 @@ local ENCODERS =  {
 -- ------------- --
 
 local DATA_BUILDERS = {
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = (function(self)
+    [ExportDataTypes.STANDINGS] = (function(self)
         local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
         if filterPlayers then
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = RosterManager:GetRosterNameByUid(roster:UID()),
                     standings = {
                         player = {}
                     }
                 }
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     if roster:IsProfileInRoster(GUID) then
-                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                        local profile = ProfileManager:GetProfileByGUID(GUID)
                         if profile then
                             tinsert(roster_data.standings.player, {
                                 guid = GUID,
@@ -107,14 +105,14 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = RosterManager:GetRosterNameByUid(roster:UID()),
                     standings = {
                         player = {}
                     }
                 }
                 local standings = roster:Standings()
                 for GUID,value in pairs(standings) do
-                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                    local profile = ProfileManager:GetProfileByGUID(GUID)
                     if profile then
                         tinsert(roster_data.standings.player, {
                             guid = GUID,
@@ -130,7 +128,7 @@ local DATA_BUILDERS = {
         end
         return data
     end),
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = (function(self)
+    [ExportDataTypes.LOOT_HISTORY] = (function(self)
         local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
 
@@ -138,7 +136,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = RosterManager:GetRosterNameByUid(roster:UID()),
                     lootHistory = {
                         item = {}
                     }
@@ -146,9 +144,9 @@ local DATA_BUILDERS = {
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     local lootList = roster:GetProfileLootByGUID(GUID)
                     for _, loot in ipairs(lootList) do
-                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
+                        local profile = ProfileManager:GetProfileByGUID(loot:OwnerGUID())
                         if profile and self:TimestampInRange(loot:Timestamp()) then
-                            local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
+                            local awardedBy = ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
                             local itemName, _, itemQuality = GetItemInfo(loot:Id())
                             tinsert(roster_data.lootHistory.item, {
                                 id = loot:Id(),
@@ -168,16 +166,16 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = RosterManager:GetRosterNameByUid(roster:UID()),
                     lootHistory = {
                         item = {}
                     }
                 }
                 local lootList = roster:GetRaidLoot()
                 for _, loot in ipairs(lootList) do
-                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
+                    local profile = ProfileManager:GetProfileByGUID(loot:OwnerGUID())
                     if profile and self:TimestampInRange(loot:Timestamp()) then
-                        local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
+                        local awardedBy = ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
                         local itemName, _, itemQuality = GetItemInfo(loot:Id())
                         tinsert(roster_data.lootHistory.item, {
                             id = loot:Id(),
@@ -195,7 +193,7 @@ local DATA_BUILDERS = {
         end
         return data
     end),
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = (function(self)
+    [ExportDataTypes.POINT_HISTORY] = (function(self)
         local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
 
@@ -203,7 +201,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = RosterManager:GetRosterNameByUid(roster:UID()),
                     pointHistory = {
                         point = {}
                     }
@@ -211,14 +209,14 @@ local DATA_BUILDERS = {
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     local historyList = roster:GetProfilePointHistoryByGUID(GUID)
                     for _, history in ipairs(historyList) do
-                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                        local profile = ProfileManager:GetProfileByGUID(GUID)
                         if profile and self:TimestampInRange(history:Timestamp()) then
                             local note = decodeNote(history:Note())
-                            local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
+                            local awardedBy = ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
                             tinsert(roster_data.pointHistory.point, {
                                 dkp = history:Value(),
                                 player = profile:Name(),
-                                reason = CLM.CONSTANTS.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
+                                reason = Constants.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
                                 note = note,
                                 awardedBy = awardedBy and awardedBy:Name() or "",
                                 timestamp = history:Timestamp()
@@ -232,7 +230,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = RosterManager:GetRosterNameByUid(roster:UID()),
                     pointHistory = {
                         point = {}
                     }
@@ -242,11 +240,11 @@ local DATA_BUILDERS = {
                     if self:TimestampInRange(history:Timestamp()) then
                         for _,profile in ipairs(history:Profiles()) do
                             local note = decodeNote(history:Note())
-                            local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
+                            local awardedBy = ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
                             tinsert(roster_data.pointHistory.point, {
                                 dkp = history:Value(),
                                 player = profile:Name(),
-                                reason = CLM.CONSTANTS.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
+                                reason = Constants.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
                                 note = note,
                                 awardedBy = awardedBy and awardedBy:Name() or "",
                                 timestamp = history:Timestamp()
@@ -259,7 +257,7 @@ local DATA_BUILDERS = {
         end
         return data
     end),
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = (function(self)
+    [ExportDataTypes.RAIDS] = (function(self)
         -- local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         -- local workEstimate = 0
         -- local now = GetServerTime()
@@ -275,13 +273,13 @@ local DATA_BUILDERS = {
 function Exporter:Run(completeCallback, updateCallback)
     -- Prepare Data Info
     for _, UID in ipairs(self.config.rosters) do
-        local roster = CLM.MODULES.RosterManager:GetRosterByUid(UID)
+        local roster = RosterManager:GetRosterByUid(UID)
         if roster then
             tinsert(self.dataInfo.rosters, roster)
         end
     end
     for _, GUID in ipairs(self.config.profiles) do
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        local profile = ProfileManager:GetProfileByGUID(GUID)
         if profile then
             self.dataInfo.profiles[GUID] = profile
         end
@@ -289,8 +287,8 @@ function Exporter:Run(completeCallback, updateCallback)
     -- self.dataInfo.cutoffTimestamp = GetCutoffTimestamp(self.config.timeframe)
     -- LOG:Info("Cutoff Timestamp %d", self.dataInfo.cutoffTimestamp)
     LOG:Message("Exporting data between: %s and %s",
-        date(CLM.L["%Y/%m/%d %a %H:%M:%S"], self.config.timerange.begin),
-        date(CLM.L["%Y/%m/%d %a %H:%M:%S"], self.config.timerange.finish)
+        date(L["%Y/%m/%d %a %H:%M:%S"], self.config.timerange.begin),
+        date(L["%Y/%m/%d %a %H:%M:%S"], self.config.timerange.finish)
     )
     self.dataInfo.begin = self.config.timerange.begin
     self.dataInfo.finish = self.config.timerange.finish
@@ -315,3 +313,5 @@ end
 
 
 CLM.MODELS.Exporter = Exporter
+resolve(Exporter)
+end)

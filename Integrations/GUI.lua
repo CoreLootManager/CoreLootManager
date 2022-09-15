@@ -1,37 +1,31 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("Integrations/Gui", {
+    "Log", "Utils", "Meta:ADDON_TABLE", "L", "Constants/ExportDataTypes", "Database", "ProfileManager", "LedgerManager", "ConfigManager", "RosterManager",
+    "LibStub:AceGUI-3.0", "LibStub:AceConfigRegistry-3.0", "LibStub:AceConfigDialog-3.0", "Constants/FormatValues"
+}, function(resolve, LOG, UTILS, CLM, L, ExportDataTypes, Database, ProfileManager, LedgerManager, ConfigManager, RosterManager, AceGUI, AceConfigRegistry, AceConfigDialog, FormatValues)
+
 
 local pairs = pairs
 local tonumber, date = tonumber, date
 local tinsert, tsort = table.insert, table.sort
 local GetServerTime = GetServerTime
 
--- Libs
-local AceGUI = LibStub("AceGUI-3.0")
-local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
-
-
 local ALL = 0
 
 local EXPORT_DATA_TYPE_GUI = {
-    -- [CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = CLM.L["Configuration"],
-    [CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = CLM.L["Standings"],
-    [CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = CLM.L["Point History"],
-    [CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = CLM.L["Loot History"],
-    -- [CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = CLM.L["Raids"],
+    -- [ExportDataTypes.CONFIGS] = L["Configuration"],
+    [ExportDataTypes.STANDINGS] = L["Standings"],
+    [ExportDataTypes.POINT_HISTORY] = L["Point History"],
+    [ExportDataTypes.LOOT_HISTORY] = L["Loot History"],
+    -- [ExportDataTypes.RAIDS] = L["Raids"],
 
 }
 
 local FORMAT_VALUES_GUI =  {
-    [CONSTANTS.FORMAT_VALUE.XML] = "XML",
+    [FormatValues.XML] = "XML",
     -- [CONSTANTS.FORMAT_VALUE.CSV] = "CSV",
-    [CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
+    [FormatValues.JSON] = "JSON"
 }
 
 -- local function GetProgressText(percent)
@@ -54,7 +48,7 @@ local FORMAT_VALUES_GUI =  {
 -- end
 
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('export', {
+    self.db = Database:GUI('export', {
         location = {nil, nil, "CENTER", 0, 0 },
         export_config = {
             data = {},
@@ -81,7 +75,7 @@ local profileList = {}
 local function GetProfileList()
     if redoProfileList then
         profileList = {}
-        for _, profile in pairs(CLM.MODULES.ProfileManager:GetProfiles()) do
+        for _, profile in pairs(ProfileManager:GetProfiles()) do
             tinsert(profileList, UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff"))
         end
         redoProfileList = false
@@ -103,7 +97,7 @@ function ExportGUI:Initialize()
     self:Create()
     self:RegisterSlash()
     self._initialized = true
-    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         redoProfileList = true
     end)
@@ -136,18 +130,18 @@ for i=1,31 do
 end
 
 local MONTHS = {
-    [1]  = CLM.L["January"],
-    [2]  = CLM.L["February"],
-    [3]  = CLM.L["March"],
-    [4]  = CLM.L["April"],
-    [5]  = CLM.L["May"],
-    [6]  = CLM.L["June"],
-    [7]  = CLM.L["July"],
-    [8]  = CLM.L["August"],
-    [9]  = CLM.L["September"],
-    [10] = CLM.L["October"],
-    [11] = CLM.L["November"],
-    [12] = CLM.L["December"],
+    [1]  = L["January"],
+    [2]  = L["February"],
+    [3]  = L["March"],
+    [4]  = L["April"],
+    [5]  = L["May"],
+    [6]  = L["June"],
+    [7]  = L["July"],
+    [8]  = L["August"],
+    [9]  = L["September"],
+    [10] = L["October"],
+    [11] = L["November"],
+    [12] = L["December"],
 }
 
 for i=1,12 do
@@ -223,7 +217,7 @@ local function Create(self)
         name = "Configure",
         args = {
             export_data_type = {
-                name = CLM.L["Data"],
+                name = L["Data"],
                 type = "multiselect",
                 set = function(i, k, v)
                     self.db.export_config.data[k] = v
@@ -233,7 +227,7 @@ local function Create(self)
                 order = 1
             },
             format = {
-                name = CLM.L["Format"],
+                name = L["Format"],
                 type = "select",
                 set = function(i, v) self.db.export_config.format = v end,
                 get = function(i) return self.db.export_config.format end,
@@ -242,7 +236,7 @@ local function Create(self)
                 order = 2
             },
             timerange_begin_day = {
-                name = CLM.L["Begin Day"],
+                name = L["Begin Day"],
                 type = "select",
                 set = function(i, v)
                     self.db.export_config.timerange.begin.day = v
@@ -253,7 +247,7 @@ local function Create(self)
                 order = 5,
             },
             timerange_begin_month = {
-                name = CLM.L["Begin Month"],
+                name = L["Begin Month"],
                 type = "select",
                 set = function(i, v)
                     self.db.export_config.timerange.begin.month = v
@@ -264,7 +258,7 @@ local function Create(self)
                 order = 6,
             },
             timerange_begin_year = {
-                name = CLM.L["Begin Year"],
+                name = L["Begin Year"],
                 type = "select",
                 set = function(i, v)
                     self.db.export_config.timerange.begin.year = v
@@ -275,7 +269,7 @@ local function Create(self)
                 order = 7,
             },
             timerange_finish_day = {
-                name = CLM.L["Finish Day"],
+                name = L["Finish Day"],
                 type = "select",
                 set = function(i, v)
                     self.db.export_config.timerange.finish.day = v
@@ -286,7 +280,7 @@ local function Create(self)
                 order = 8,
             },
             timerange_finish_month = {
-                name = CLM.L["Finish Month"],
+                name = L["Finish Month"],
                 type = "select",
                 set = function(i, v)
                     self.db.export_config.timerange.finish.month = v
@@ -297,7 +291,7 @@ local function Create(self)
                 order = 9,
             },
             timerange_finish_year = {
-                name = CLM.L["Finish Year"],
+                name = L["Finish Year"],
                 type = "select",
                 set = function(i, v)
                     self.db.export_config.timerange.finish.year = v
@@ -308,22 +302,22 @@ local function Create(self)
                 order = 10,
             },
             timerange_set_last_week = {
-                name =  CLM.L["Last week"],
-                desc = string.format(CLM.L["Begin %d days ago, finish today."], 7),
+                name =  L["Last week"],
+                desc = string.format(L["Begin %d days ago, finish today."], 7),
                 type = "execute",
                 func = (function() SetOffsetTime(self, 604800) end),
                 order = 11,
             },
             timerange_set_last_month = {
-                name = CLM.L["Last month"],
-                desc = string.format(CLM.L["Begin %d days ago, finish today."], 31),
+                name = L["Last month"],
+                desc = string.format(L["Begin %d days ago, finish today."], 31),
                 type = "execute",
                 func = (function() SetOffsetTime(self, 2678400) end),
                 order = 12,
             },
             timerange_set_last_year = {
-                name =  CLM.L["Last year"],
-                desc = string.format(CLM.L["Begin %d days ago, finish today."], 365),
+                name =  L["Last year"],
+                desc = string.format(L["Begin %d days ago, finish today."], 365),
                 type = "execute",
                 func = (function() SetOffsetTime(self, 31536000) end),
                 order = 13,
@@ -337,7 +331,7 @@ local function Create(self)
         name = "Rosters",
         args = {
             export_rosters = {
-                name = CLM.L["Select Rosters to export"],
+                name = L["Select Rosters to export"],
                 type = "multiselect",
                 set = function(i, k, v)
                     k = tonumber(k) or 0
@@ -353,7 +347,7 @@ local function Create(self)
                     local roster_list = {
                         [ALL] = UTILS.ColorCodeText("All", "6699ff")
                     }
-                    for name, roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
+                    for name, roster in pairs(RosterManager:GetRosters()) do
                         roster_list[roster:UID()] = name
                     end
                     return roster_list
@@ -368,7 +362,7 @@ local function Create(self)
         name = "Profiles",
         args = {
             export_rosters = {
-                name = CLM.L["Select Profiles to export"],
+                name = L["Select Profiles to export"],
                 type = "multiselect",
                 set = function(i, k, v)
                     k = tonumber(k) or 0
@@ -391,7 +385,7 @@ local function Create(self)
         name = "Export",
         args = {
             output = {
-                name = CLM.L["Export"],
+                name = L["Export"],
                 type = "input",
                 multiline = 10,
                 set = function(i, v) end,
@@ -400,12 +394,12 @@ local function Create(self)
                 order = 1
             },
             execute_export = {
-                name = CLM.L["Export"],
+                name = L["Export"],
                 type = "execute",
                 func = (function()
                     local rosters = {}
                     if self.roster_select_list[ALL] then
-                        for _, roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
+                        for _, roster in pairs(RosterManager:GetRosters()) do
                             tinsert(rosters, roster:UID())
                         end
                     else
@@ -417,13 +411,13 @@ local function Create(self)
                     end
                     local profiles = {}
                     if self.profile_select_list[ALL] then
-                        for GUID, _ in pairs(CLM.MODULES.ProfileManager:GetProfiles()) do
+                        for GUID, _ in pairs(ProfileManager:GetProfiles()) do
                             tinsert(rosters, GUID)
                         end
                     else
                         for selectedId, status in pairs(self.profile_select_list) do
                             if status then
-                                local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.RemoveColorCode(profileList[selectedId]))
+                                local profile = ProfileManager:GetProfileByName(UTILS.RemoveColorCode(profileList[selectedId]))
                                 tinsert(profiles, profile:GUID())
                             end
                         end
@@ -467,7 +461,7 @@ local function Create(self)
                 order = 2
             },
             clear_output = {
-                name = CLM.L["Clear output"],
+                name = L["Clear output"],
                 type = "execute",
                 func = (function() self.export_data = "" end),
                 order = 3
@@ -477,8 +471,8 @@ local function Create(self)
     }
 
 
-    AceConfigRegistry:RegisterOptionsTable(CLM.L["Export"], options)
-    AceConfigDialog:Open(CLM.L["Export"], parent)
+    AceConfigRegistry:RegisterOptionsTable(L["Export"], options)
+    AceConfigDialog:Open(L["Export"], parent)
 
     return parent
 end
@@ -506,12 +500,12 @@ function ExportGUI:RegisterSlash()
         export = {
             type = "execute",
             name = "Export",
-            desc = CLM.L["Toggle export window display"],
+            desc = L["Toggle export window display"],
             handler = self,
             func = "Toggle",
         }
     }
-    CLM.MODULES.ConfigManager:RegisterSlash(options)
+    ConfigManager:RegisterSlash(options)
 end
 
 function ExportGUI:Reset()
@@ -521,3 +515,5 @@ function ExportGUI:Reset()
 end
 
 CLM.GUI.Export = ExportGUI
+resolve(ExportGUI)
+end)

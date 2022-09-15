@@ -4,17 +4,48 @@ define.module("GlobalConfigs", {
     "Constants",
     "Utils",
     "Database",
-    "LedgerManager",
-    "ConfigManager",
-    "ProfileManager",
     "L"
-}, function(resolve,CONSTANTS, UTILS, Database, LedgerManager, L)
+}, function(resolve,CONSTANTS, UTILS, Database, L)
+
+    CONSTANTS.MODIFIER_COMBINATION = {
+        DISABLED        = "-",
+        ALT             = "a",
+        SHIFT           = "s",
+        CTRL            = "c",
+        ALT_SHIFT       = "as",
+        ALT_CTRL        = "ac",
+        SHIFT_CTRL      = "sc",
+        ALT_SHIFT_CTRL  = "asc",
+    }
+
+    CONSTANTS.MODIFIER_COMBINATIONS_SORTED = {
+        CONSTANTS.MODIFIER_COMBINATION.DISABLED,
+        CONSTANTS.MODIFIER_COMBINATION.SHIFT,
+        CONSTANTS.MODIFIER_COMBINATION.CTRL,
+        CONSTANTS.MODIFIER_COMBINATION.ALT,
+        CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT,
+        CONSTANTS.MODIFIER_COMBINATION.ALT_CTRL,
+        CONSTANTS.MODIFIER_COMBINATION.SHIFT_CTRL,
+        CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT_CTRL
+    }
+
+    CONSTANTS.MODIFIER_COMBINATIONS = UTILS.Set(CONSTANTS.MODIFIER_COMBINATIONS_SORTED)
+
+    CONSTANTS.MODIFIER_COMBINATIONS_GUI = {
+        [CONSTANTS.MODIFIER_COMBINATION.DISABLED] = L["Disable"],
+        [CONSTANTS.MODIFIER_COMBINATION.SHIFT] = L["Shift"],
+        [CONSTANTS.MODIFIER_COMBINATION.CTRL] = L["Ctrl"],
+        [CONSTANTS.MODIFIER_COMBINATION.ALT] = L["Alt"],
+        [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT] = L["Shift + Alt"],
+        [CONSTANTS.MODIFIER_COMBINATION.ALT_CTRL] = L["Ctrl + Alt"],
+        [CONSTANTS.MODIFIER_COMBINATION.SHIFT_CTRL] = L["Shift + Ctrl"],
+        [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT_CTRL] = L["Shift + Ctrl + Alt"]
+    }
 
 local tonumber = tonumber
 
-local GlobalConfigs = {}
-function GlobalConfigs:Initialize()
-    self.db = Database:Personal('global', {
+local GlobalConfigs = {
+    db = Database:Personal('global', {
         announce_award_to_guild = true,
         announce_loot_to_raid = false,
         announce_loot_to_raid_owner_only = true,
@@ -36,6 +67,152 @@ function GlobalConfigs:Initialize()
             commands = false
         }
     })
+}
+
+
+function GlobalConfigs:SetAlerts(value)
+    self.db.alerts = value and true or false
+end
+
+function GlobalConfigs:GetAlerts()
+    return self.db.alerts
+end
+
+function GlobalConfigs:SetSounds(value)
+    self.db.sounds = value and true or false
+end
+
+function GlobalConfigs:GetSounds()
+    return self.db.sounds
+end
+
+function GlobalConfigs:SetAnnounceAwardToGuild(value)
+    self.db.announce_award_to_guild = value and true or false
+end
+
+function GlobalConfigs:GetAnnounceAwardToGuild()
+    return self.db.announce_award_to_guild
+end
+
+function GlobalConfigs:SetAnnounceLootToRaid(value)
+    self.db.announce_loot_to_raid = value and true or false
+end
+
+function GlobalConfigs:GetAnnounceLootToRaid()
+    return self.db.announce_loot_to_raid
+end
+
+function GlobalConfigs:SetAnnounceLootToRaidOwnerOnly(value)
+    self.db.announce_loot_to_raid_owner_only = value and true or false
+end
+
+function GlobalConfigs:GetAnnounceLootToRaidOwnerOnly()
+    return self.db.announce_loot_to_raid_owner_only
+end
+
+function GlobalConfigs:SetAnnounceLootToRaidLevel(value)
+    self.db.announce_loot_to_raid_level = tonumber(value)
+end
+
+function GlobalConfigs:GetAnnounceLootToRaidLevel()
+    return self.db.announce_loot_to_raid_level or 3
+end
+
+function GlobalConfigs:SetModifierCombination(value)
+    self.db.modifier_combination = CONSTANTS.MODIFIER_COMBINATIONS[value] and value or CONSTANTS.MODIFIER_COMBINATION.ALT
+end
+
+function GlobalConfigs:GetModifierCombination()
+    return self.db.modifier_combination or CONSTANTS.MODIFIER_COMBINATION.ALT
+end
+
+function GlobalConfigs:SetAllowChatCommands(value)
+    self.db.chat_commands = value and true or false
+end
+
+function GlobalConfigs:GetAllowChatCommands()
+    return self.db.chat_commands
+end
+
+function GlobalConfigs:SetSuppressIncomingChatCommands(value)
+    self.db.suppress_incoming_chat_commands = value and true or false
+end
+
+function GlobalConfigs:GetSuppressIncomingChatCommands()
+    return self.db.suppress_incoming_chat_commands
+end
+
+function GlobalConfigs:SetSuppressOutgoingChatCommands(value)
+    self.db.suppress_outgoing_chat_commands = value and true or false
+end
+
+function GlobalConfigs:GetSuppressOutgoingChatCommands()
+    return self.db.suppress_outgoing_chat_commands
+end
+
+function GlobalConfigs:SetRaidWarning(value)
+    self.db.raid_warnings.raid = value and true or false
+end
+
+function GlobalConfigs:GetRaidWarning()
+    return self.db.raid_warnings.raid
+end
+
+function GlobalConfigs:SetAuctionWarning(value)
+    self.db.raid_warnings.auction = value and true or false
+end
+
+function GlobalConfigs:GetAuctionWarning()
+    return self.db.raid_warnings.auction
+end
+
+function GlobalConfigs:SetCommandsWarning(value)
+    self.db.raid_warnings.commands = value and true or false
+end
+
+function GlobalConfigs:GetCommandsWarning()
+    return self.db.raid_warnings.commands
+end
+
+function GlobalConfigs:SetCountdownWarning(value)
+    self.db.raid_warnings.countdown = value and true or false
+end
+
+function GlobalConfigs:GetCountdownWarning()
+    return self.db.raid_warnings.countdown
+end
+
+function GlobalConfigs:SetLootWarning(value)
+    self.db.raid_warnings.loot = value and true or false
+end
+
+function GlobalConfigs:GetLootWarning()
+    return self.db.raid_warnings.loot
+end
+
+function GlobalConfigs:SetBidsWarning(value)
+    self.db.raid_warnings.bids = value and true or false
+end
+
+function GlobalConfigs:GetBidsWarning()
+    return self.db.raid_warnings.bids
+end
+
+function GlobalConfigs:GetDisableSync()
+    return self.db.disable_sync
+end
+
+function GlobalConfigs:SetDisableSync(value)
+    self.db.disable_sync = value and true or false
+end
+
+
+
+resolve(GlobalConfigs)
+
+end)
+
+define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Constants"}, function(resolve, L, ConfigManager, self, CONSTANTS)
 
     local options = {
         discord = {
@@ -201,179 +378,4 @@ function GlobalConfigs:Initialize()
         }
     }
     ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
-end
-
-function GlobalConfigs:SetAlerts(value)
-    self.db.alerts = value and true or false
-end
-
-function GlobalConfigs:GetAlerts()
-    return self.db.alerts
-end
-
-function GlobalConfigs:SetSounds(value)
-    self.db.sounds = value and true or false
-end
-
-function GlobalConfigs:GetSounds()
-    return self.db.sounds
-end
-
-function GlobalConfigs:SetAnnounceAwardToGuild(value)
-    self.db.announce_award_to_guild = value and true or false
-end
-
-function GlobalConfigs:GetAnnounceAwardToGuild()
-    return self.db.announce_award_to_guild
-end
-
-function GlobalConfigs:SetAnnounceLootToRaid(value)
-    self.db.announce_loot_to_raid = value and true or false
-end
-
-function GlobalConfigs:GetAnnounceLootToRaid()
-    return self.db.announce_loot_to_raid
-end
-
-function GlobalConfigs:SetAnnounceLootToRaidOwnerOnly(value)
-    self.db.announce_loot_to_raid_owner_only = value and true or false
-end
-
-function GlobalConfigs:GetAnnounceLootToRaidOwnerOnly()
-    return self.db.announce_loot_to_raid_owner_only
-end
-
-function GlobalConfigs:SetAnnounceLootToRaidLevel(value)
-    self.db.announce_loot_to_raid_level = tonumber(value)
-end
-
-function GlobalConfigs:GetAnnounceLootToRaidLevel()
-    return self.db.announce_loot_to_raid_level or 3
-end
-
-function GlobalConfigs:SetModifierCombination(value)
-    self.db.modifier_combination = CONSTANTS.MODIFIER_COMBINATIONS[value] and value or CONSTANTS.MODIFIER_COMBINATION.ALT
-end
-
-function GlobalConfigs:GetModifierCombination()
-    return self.db.modifier_combination or CONSTANTS.MODIFIER_COMBINATION.ALT
-end
-
-function GlobalConfigs:SetAllowChatCommands(value)
-    self.db.chat_commands = value and true or false
-end
-
-function GlobalConfigs:GetAllowChatCommands()
-    return self.db.chat_commands
-end
-
-function GlobalConfigs:SetSuppressIncomingChatCommands(value)
-    self.db.suppress_incoming_chat_commands = value and true or false
-end
-
-function GlobalConfigs:GetSuppressIncomingChatCommands()
-    return self.db.suppress_incoming_chat_commands
-end
-
-function GlobalConfigs:SetSuppressOutgoingChatCommands(value)
-    self.db.suppress_outgoing_chat_commands = value and true or false
-end
-
-function GlobalConfigs:GetSuppressOutgoingChatCommands()
-    return self.db.suppress_outgoing_chat_commands
-end
-
-function GlobalConfigs:SetRaidWarning(value)
-    self.db.raid_warnings.raid = value and true or false
-end
-
-function GlobalConfigs:GetRaidWarning()
-    return self.db.raid_warnings.raid
-end
-
-function GlobalConfigs:SetAuctionWarning(value)
-    self.db.raid_warnings.auction = value and true or false
-end
-
-function GlobalConfigs:GetAuctionWarning()
-    return self.db.raid_warnings.auction
-end
-
-function GlobalConfigs:SetCommandsWarning(value)
-    self.db.raid_warnings.commands = value and true or false
-end
-
-function GlobalConfigs:GetCommandsWarning()
-    return self.db.raid_warnings.commands
-end
-
-function GlobalConfigs:SetCountdownWarning(value)
-    self.db.raid_warnings.countdown = value and true or false
-end
-
-function GlobalConfigs:GetCountdownWarning()
-    return self.db.raid_warnings.countdown
-end
-
-function GlobalConfigs:SetLootWarning(value)
-    self.db.raid_warnings.loot = value and true or false
-end
-
-function GlobalConfigs:GetLootWarning()
-    return self.db.raid_warnings.loot
-end
-
-function GlobalConfigs:SetBidsWarning(value)
-    self.db.raid_warnings.bids = value and true or false
-end
-
-function GlobalConfigs:GetBidsWarning()
-    return self.db.raid_warnings.bids
-end
-
-function GlobalConfigs:GetDisableSync()
-    return self.db.disable_sync
-end
-
-function GlobalConfigs:SetDisableSync(value)
-    self.db.disable_sync = value and true or false
-end
-
-CONSTANTS.MODIFIER_COMBINATION = {
-    DISABLED        = "-",
-    ALT             = "a",
-    SHIFT           = "s",
-    CTRL            = "c",
-    ALT_SHIFT       = "as",
-    ALT_CTRL        = "ac",
-    SHIFT_CTRL      = "sc",
-    ALT_SHIFT_CTRL  = "asc",
-}
-
-CONSTANTS.MODIFIER_COMBINATIONS_SORTED = {
-    CONSTANTS.MODIFIER_COMBINATION.DISABLED,
-    CONSTANTS.MODIFIER_COMBINATION.SHIFT,
-    CONSTANTS.MODIFIER_COMBINATION.CTRL,
-    CONSTANTS.MODIFIER_COMBINATION.ALT,
-    CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT,
-    CONSTANTS.MODIFIER_COMBINATION.ALT_CTRL,
-    CONSTANTS.MODIFIER_COMBINATION.SHIFT_CTRL,
-    CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT_CTRL
-}
-
-CONSTANTS.MODIFIER_COMBINATIONS = UTILS.Set(CONSTANTS.MODIFIER_COMBINATIONS_SORTED)
-
-CONSTANTS.MODIFIER_COMBINATIONS_GUI = {
-    [CONSTANTS.MODIFIER_COMBINATION.DISABLED] = L["Disable"],
-    [CONSTANTS.MODIFIER_COMBINATION.SHIFT] = L["Shift"],
-    [CONSTANTS.MODIFIER_COMBINATION.CTRL] = L["Ctrl"],
-    [CONSTANTS.MODIFIER_COMBINATION.ALT] = L["Alt"],
-    [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT] = L["Shift + Alt"],
-    [CONSTANTS.MODIFIER_COMBINATION.ALT_CTRL] = L["Ctrl + Alt"],
-    [CONSTANTS.MODIFIER_COMBINATION.SHIFT_CTRL] = L["Shift + Ctrl"],
-    [CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT_CTRL] = L["Shift + Ctrl + Alt"]
-}
-
-resolve(GlobalConfigs)
-
 end)

@@ -39,7 +39,7 @@ end
 ]]
 local function AnnounceVersion()
     LOG:Trace("ProfileInfoManager:AnnounceVersion()")
-    local version = CLM.CORE:GetVersion()
+    local version = Core:GetVersion()
     local message = CLM.MODELS.ProfileInfoCommStructure:New(
         CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION,
         CLM.MODELS.ProfileInfoCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
@@ -260,7 +260,7 @@ function ProfileInfoManager:Initialize()
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
-            LOG:Message(CLM.L["Classic Loot Manager %s initialization complete."], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
+            LOG:Message(CLM.L["Classic Loot Manager %s initialization complete."], UTILS.ColorCodeText(Core:GetVersionString(), "00cc00"))
             C_Timer.After(1, function()
                 RestoreVersions(self)
                 RestoreSpecs(self)

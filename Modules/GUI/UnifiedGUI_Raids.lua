@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("RosterManager", {
-    "Log", "Constants", "Util", "RosterManager/RosterConfiguration", "Meta:ADDON_TABLE", "L", "RosterManager", "RaidManager", "StandbyStagingManager", "LedgerManager"
-}, function(resolve, LOG, CONSTANTS, UTILS, RosterConfiguration, CLM, L, RosterManager, RaidManager, StandbyStagingManager, Acl, LedgerManager)
+define.module("UnifiedGui/Raids", {
+    "Log", "Constants", "Utils", "RosterManager/RosterConfiguration", "Meta:ADDON_TABLE", "L", "RosterManager", "RaidManager", "StandbyStagingManager", "Acl", "LedgerManager", "UnifiedGUI"
+}, function(resolve, LOG, CONSTANTS, UTILS, RosterConfiguration, CLM, L, RosterManager, RaidManager, StandbyStagingManager, Acl, LedgerManager, UnifiedGUI)
 
 
 local CreateFrame, UIParent, pairs = CreateFrame, UIParent, pairs
@@ -479,7 +479,8 @@ local function dataReadyHandler()
     UpdateRaid(UnifiedGUI_Raids, UnifiedGUI_Raids.roster)
 end
 
-CLM.GUI.Unified:RegisterTab(
+
+UnifiedGUI:RegisterTab(
     UnifiedGUI_Raids.name, 3,
     tableStructure,
     tableDataFeeder,
@@ -495,6 +496,6 @@ CLM.GUI.Unified:RegisterTab(
     }
 )
 
-
+resolve(true)
 
 end)

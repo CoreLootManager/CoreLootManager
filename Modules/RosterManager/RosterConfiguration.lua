@@ -1,6 +1,6 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("RosterManager/RosterConfiguration", {"Models", "Constants", "RosterManager/Roster"}, function(resolve, Models, CONSTANTS, _)
+define.module("RosterManager/RosterConfiguration", {"Models", "Constants"}, function(resolve, Models, CONSTANTS)
 local setmetatable = setmetatable
 
 local RosterConfiguration = {} -- Roster Configuration

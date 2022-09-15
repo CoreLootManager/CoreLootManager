@@ -1,29 +1,23 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("Comms", {
+    "Utils", "Log",
+    "Constants",  "Modules","RosterManager/Roster", "Acl", "LibStub:LibSerialize",  "LibStub:LibDeflate", "Core"
+}, function(resolve, UTILS, LOG, CONSTANTS, Modules, _, Acl, serdes, codec, Core)
 
 local ssub, type = string.sub,type
 
 local whoami = UTILS.whoami()
 
-local serdes = LibStub("LibSerialize")
-local codec = LibStub("LibDeflate")
-
 local CommsPrefix = "CLM"
 
-local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
-function Comms:Initialize()
-    LOG:Trace("Comms:Initialize()")
-    self.callbacks = {}
-    self.securityCallbacks = {}
-    self.allowSelfReceive = {}
-    self.suspended = {}
-    self.enabled = false
-end
+local Comms = Core:NewModule("Comms", {}, "AceComm-3.0")
+
+Comms.callbacks = {}
+Comms.securityCallbacks = {}
+Comms.allowSelfReceive = {}
+Comms.suspended = {}
+Comms.enabled = false
 
 function Comms:Enable()
     self.enabled = true
@@ -61,7 +55,7 @@ function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfRece
     if type(securityCallbackOrLevel) == "function" then
         self.securityCallbacks[prefix] = securityCallbackOrLevel
     elseif type(securityCallbackOrLevel) == "number" then
-        self.securityCallbacks[prefix] = (function(name, _) return CLM.MODULES.ACL:CheckLevel(securityCallbackOrLevel, name) end)
+        self.securityCallbacks[prefix] = (function(name, _) return Acl:CheckLevel(securityCallbackOrLevel, name) end)
     else
         LOG:Fatal("Comms:Register(): Unknown security callback or ACL Level. Setting to any.")
         self.securityCallbacks[prefix] = (function() return true end)
@@ -115,7 +109,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return false
     end
     -- Distribution
-    if not CONSTANTS.COMMS.DISTRIBUTIONS[distribution] then
+    if not CONSTANTS.COMMS.DISTRIBUTION[distribution] then
         LOG:Error("Comms:Send() invalid distribution: %s", distribution)
         return false
     end
@@ -195,7 +189,8 @@ function Comms:OnReceive(prefix, message, distribution, sender)
 end
 
 -- Publish API
-CLM.MODULES.Comms = Comms
+Modules.Comms = Comms
+resolve(Comms)
 
 -- Constants
 CONSTANTS.COMMS = {
@@ -210,24 +205,18 @@ CONSTANTS.COMMS = {
         NORMAL = "NORMAL",
         BULK = "BULK"
     },
-    DISTRIBUTIONS = UTILS.Set({
-        "PARTY",
-        "RAID",
-        --"INSTANCE_CHAT",
-        "GUILD",
-        "MANAGER",
-        "WHISPER",
-        --"SAY",
-        --"YELL"
-    }),
-    DISTRIBUTION = {
-        PARTY = "PARTY",
-        RAID = "RAID",
-        --INSTANCE = "INSTANCE_CHAT",
-        GUILD = "GUILD",
-        OFFICER = "OFFICER",
-        WHISPER = "WHISPER",
-        --SAY = "SAY",
-        --YELL = "YELL"
-    }
 }
+end)
+
+define.module("Constants/Comms/Distribution", {}, function(resolve)
+resolve({
+    PARTY = "PARTY",
+    RAID = "RAID",
+    --INSTANCE = "INSTANCE_CHAT",
+    GUILD = "GUILD",
+    OFFICER = "OFFICER",
+    WHISPER = "WHISPER",
+    --SAY = "SAY",
+    --YELL = "YELL"
+})
+end)

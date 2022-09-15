@@ -1,11 +1,9 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
 
+define.module("AutoAwardManager", {
+    "Utils", "Log",
+    "Constants",  "PointManager", "Constants/PointChangeReason", "EventManager", "Acl"
+}, function(resolve, UTILS, LOG, CONSTANTS, PointManager, PointChangeReason,EventManager, Acl)
 local tonumber, tostring = tonumber, tostring
 local IsInRaid, CombatLogGetCurrentEventInfo = IsInRaid, CombatLogGetCurrentEventInfo
 local strsplit, GetServerTime, C_TimerNewTicker = strsplit, GetServerTime, C_Timer.NewTicker
@@ -37,46 +35,27 @@ local function awardBossKillBonus(id, difficultyId)
     end
     difficultyId = normalizeDifficultyId(difficultyId)
     LOG:Info("Award Boss Kill Bonus for %s %s", id, difficultyId)
-    if CLM.MODULES.RaidManager:IsInActiveRaid() then
-        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
-        local config = CLM.MODULES.RaidManager:GetRaid():Configuration()
+    if RaidManager:IsInActiveRaid() then
+        local roster = RaidManager:GetRaid():Roster()
+        local config = RaidManager:GetRaid():Configuration()
         if config:Get("bossKillBonus") then
             local value = roster:GetBossKillBonusValue(id, difficultyId)
             if value > 0 then
-                CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
+                PointManager:UpdateRaidPoints(RaidManager:GetRaid(), value, PointChangeReason.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
             end
         end
     end
 end
 
--- local function handleEncounterStart(self, addon, event, id, name, difficulty, groupSize)
---     LOG:Debug("[%s %s]: <%s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize)
---     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
---         self.encounterInProgress = id
---     end
--- end
-
--- local function handleEncounterEnd(self, addon, event, id, name, difficulty, groupSize, success)
---     LOG:Debug("[%s %s]: <%s, %s, %s, %s, %s>", addon, event, id, name, difficulty, groupSize, success)
---     if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() and self:EncounterInProgress() then
---         if self.encounterInProgress == id then
---             if success == 1 then
---                 awardBossKillBonus(id)
---             end
---             self.encounterInProgress = 0
---         end
---     end
--- end
-
 local function handleBossKill(self, addon, event, id, name)
     LOG:Debug("[%s %s]: <%s %s>", addon, event, id, name)
-    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
+    if RaidManager:ShouldBossKillAward() then
         awardBossKillBonus(id)
     end
 end
 
 local function handleBossWorkaround(self, targets)
-    if self:IsEnabled() and self:IsBossKillBonusAwardingEnabled() then
+    if RaidManager:ShouldBossKillAward() then
         local _, subevent, _, _, _, _, _, guid, _   = CombatLogGetCurrentEventInfo()
         if subevent == "UNIT_DIED" then
             local _, _, _, _, _, npc_id = strsplit("-", guid)
@@ -91,11 +70,9 @@ end
 local function handleIntervalBonus(self)
     LOG:Trace("AutoAwardManager handleIntervalBonus()")
     if not IsInRaid() then return end
-    if not self:IsEnabled() then return end
-    if not self:IsIntervalBonusAwardingEnabled() then return end
-    if not CLM.MODULES.RaidManager:IsInProgressingRaid() then return end
+    if not RaidManager:ShouldIntervalAward() then return end
     -- Validate roster
-    local raid = CLM.MODULES.RaidManager:GetRaid()
+    local raid = RaidManager:GetRaid()
     local roster = raid:Roster()
     if not roster then
         LOG:Warning("No roster in raid for handleIntervalBonus()")
@@ -131,24 +108,24 @@ local function handleIntervalBonus(self)
             -- if its raid award entry to our raid for interval
             if  (entry:class() == RAID_AWARD_LEDGER_CLASS) and
                 (entry:raidUid() == raid:UID()) and
-                (pointHistoryEntry:Reason() == CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS) then -- skip only for interval awards
+                (pointHistoryEntry:Reason() == PointChangeReason.INTERVAL_BONUS) then -- skip only for interval awards
                 award = false
                 break
             end
         end
     end
     if award then
-        CLM.MODULES.PointManager:UpdateRaidPoints(raid, value, CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+        PointManager:UpdateRaidPoints(raid, value, PointChangeReason.INTERVAL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
     end
 end
 
-local instancesToWorkaround = CLM.UTILS.Set({548})
-local encountersToWorkaround = CLM.UTILS.Set({HYDROSS_ENCOUNTER_ID})
+local instancesToWorkaround = UTILS.Set({548})
+local encountersToWorkaround = UTILS.Set({HYDROSS_ENCOUNTER_ID})
 
 local isWorkaroundRegistered = false
 local function registerWorkaroundHandler(self)
     if isWorkaroundRegistered then return end
-    CLM.MODULES.EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
+    EventManager:RegisterWoWEvent({"COMBAT_LOG_EVENT_UNFILTERED"}, (function(...)
         handleBossWorkaround(self, {
             [HYDROSS_NPC_ID] = HYDROSS_ENCOUNTER_ID
         })
@@ -156,20 +133,19 @@ local function registerWorkaroundHandler(self)
     isWorkaroundRegistered = true
 end
 
-local AutoAwardManager = {}
+local AutoAwardManager = {
+    encounterInProgress = 0,
+}
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")
-    if not CLM.MODULES.ACL:IsTrusted() then return end
-    self.enabled = false
-    self:DisableBossKillBonusAwarding()
-    self:DisableIntervalBonusAwarding()
-    CLM.MODULES.EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(_, _, _, id, ...)
+    if not Acl:IsTrusted() then return end
+    EventManager:RegisterWoWEvent({"ENCOUNTER_START"}, (function(_, _, _, id, ...)
         if encountersToWorkaround[id] then
             registerWorkaroundHandler(self)
         end
     end))
     -- Handle boss kill when not in encounter
-    CLM.MODULES.EventManager:RegisterWoWEvent({"BOSS_KILL"}, (function(...)
+    EventManager:RegisterWoWEvent({"BOSS_KILL"}, (function(...)
         handleBossKill(self, ...)
     end))
     -- Boss workarounds
@@ -181,61 +157,8 @@ function AutoAwardManager:Initialize()
 
 end
 
-function AutoAwardManager:Enable()
-    LOG:Trace("AutoAwardManager:Enable()")
-    self.enabled = true
-end
 
-function AutoAwardManager:Disable()
-    LOG:Trace("AutoAwardManager:Disable()")
-    self.enabled = false
-end
+resolve(AutoAwardManager)
 
-function AutoAwardManager:IsEnabled()
-    LOG:Trace("AutoAwardManager:IsEnabled()")
-    return self.enabled
-end
 
-function AutoAwardManager:EncounterInProgress()
-    LOG:Trace("AutoAwardManager:EncounterInProgress()")
-    return (self.encounterInProgress ~= 0)
-end
-
-function AutoAwardManager:EnableBossKillBonusAwarding()
-    LOG:Trace("AutoAwardManager:EnableBossKillBonusAwarding()")
-    self.bossKillBonusAwardingEnabled = true
-end
-
-function AutoAwardManager:DisableBossKillBonusAwarding()
-    LOG:Trace("AutoAwardManager:DisableBossKillBonusAwarding()")
-    self.encounterInProgress = 0
-    self.bossKillBonusAwardingEnabled = false
-end
-
-function AutoAwardManager:IsBossKillBonusAwardingEnabled()
-    LOG:Trace("AutoAwardManager:IsBossKillBonusAwardingEnabled()")
-    return self.bossKillBonusAwardingEnabled
-end
-
-function AutoAwardManager:EnableIntervalBonusAwarding()
-    LOG:Trace("AutoAwardManager:EnableIntervalBonusAwarding()")
-    self.intervalBonusAwardingEnabled = true
-    handleIntervalBonus(self) -- additional handle for cases of relogs / reloads if time has already passed
-    if not self.intervalTimer then
-        self.intervalTimer = C_TimerNewTicker(60, function()
-            handleIntervalBonus(self)
-        end)
-    end
-end
-
-function AutoAwardManager:DisableIntervalBonusAwarding()
-    LOG:Trace("AutoAwardManager:DisableIntervalBonusAwarding()")
-    self.intervalBonusAwardingEnabled = false
-end
-
-function AutoAwardManager:IsIntervalBonusAwardingEnabled()
-    LOG:Trace("AutoAwardManager:IsIntervalBonusAwardingEnabled()")
-    return self.intervalBonusAwardingEnabled
-end
-
-CLM.MODULES.AutoAwardManager = AutoAwardManager
+end)

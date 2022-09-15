@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("RosterManager", {
-    "Log", "Constants", "Util", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager",
-}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager)
+    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database"
+}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database)
 
 local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
@@ -267,7 +267,7 @@ function RosterManager:Initialize()
             self:WipeAll()
         end)
 
-    self.db = CLM.MODULES.Database:Personal('rosterManager', {
+    self.db = Database:Personal('rosterManager', {
         raidsForFullAttendance = 2,
         attendanceWeeksWindow = 10
     })
@@ -718,6 +718,8 @@ function RosterManager:WipeAll()
     }
 end
 
+
+RosterManager:Initialize()
 CLM.MODULES.RosterManager = RosterManager
 resolve(RosterManager)
 
@@ -988,5 +990,6 @@ CONSTANTS.ROSTER_NAME_GENERATOR = {
         "zebras"
     }
 }
+
 
 end)

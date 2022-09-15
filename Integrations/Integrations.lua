@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("Integrations", {
-    "Log", "Constants", "Util", "RosterManager/Roster", "L", "Meta:ADDON_TABLE",
-}, function(resolve, LOG, CONSTANTS, UTILS, _, L, CLM)
+    "Log", "Constants", "Utils", "RosterManager/Roster", "L", "Meta:ADDON_TABLE", "Constants/FormatValueSet", "Constants/FormatValues"
+}, function(resolve, LOG, CONSTANTS, UTILS, _, L, CLM, FormatValueSet, FormatValues)
 
 
 local pairs, ipairs = pairs, ipairs
@@ -304,9 +304,9 @@ function Integration:Export(config, completeCallback, updateCallback)
         LOG:Error("Integration: Export in progress")
         return
     end
-    if config.format == CONSTANTS.FORMAT_VALUE.CSV then
+    if config.format == FormatValues.CSV then
         LOG:Warning("Integration: Unsupported format %s", tostring("CSV"))
-    elseif not CONSTANTS.FORMAT_VALUES[config.format] then
+    elseif not FormatValueSet[config.format] then
         LOG:Error("Integration: Unknown export format %d", tostring(config.format))
         return
     end
@@ -318,20 +318,8 @@ function Integration:Export(config, completeCallback, updateCallback)
     end), updateCallback)
 end
 
-CONSTANTS.FORMAT_VALUE = {
-    XML  = 0,
-    CSV  = 1,
-    JSON = 2
-}
-CONSTANTS.FORMAT_VALUES = UTILS.Set(CONSTANTS.FORMAT_VALUE)
 
-CONSTANTS.EXPORT_DATA_TYPE = {
-    STANDINGS = 0,
-    POINT_HISTORY = 1,
-    LOOT_HISTORY = 2,
-    RAIDS = 3,
-    CONFIGS = 4,
-}
+
 
 CONSTANTS.TIMEFRAME_SCALE_VALUE = {
     HOURS = 0,
@@ -376,4 +364,25 @@ CONSTANTS.TIMEFRAME_SCALE_VALUES = UTILS.Set(CONSTANTS.TIMEFRAME_SCALE_VALUE)
 
 CLM.Integration = Integration
 resolve(Integration)
+end)
+
+define.module("Constants/ExportDataTypes", {}, function(resolve)
+resolve({
+    STANDINGS = 0,
+    POINT_HISTORY = 1,
+    LOOT_HISTORY = 2,
+    RAIDS = 3,
+    CONFIGS = 4,
+})
+end)
+
+define.module("Constants/FormatValues", {}, function(resolve)
+resolve({
+    XML  = 0,
+    CSV  = 1,
+    JSON = 2
+})
+end)
+define.module("Constants/FormatValueSet", {"Utils", "Constants/FormatValues"}, function(resolve, Utils, FormatValues)
+resolve(Utils.Set(FormatValues))
 end)

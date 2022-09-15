@@ -1,11 +1,7 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
 
+define.module("UnifiedGUI/Profiles", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager"},
+function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager)
 local pairs, ipairs = pairs, ipairs
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
@@ -37,8 +33,8 @@ end
 
 local UnifiedGUI_Profiles = {
     name = "profiles",
-    filter = CLM.MODELS.Filters:New(
-    (function() CLM.GUI.Unified:FilterScrollingTable() end),
+    filter = Models.Filters:New(
+    (function() UnifiedGUI:FilterScrollingTable() end),
     UTILS.Set({"class", "inGuild", "external", "rank", "locked"}),
     UTILS.Set({"buttons", "search"}),
     nil, 1),
@@ -47,7 +43,7 @@ local UnifiedGUI_Profiles = {
 
 function UnifiedGUI_Profiles:GetSelection()
     LOG:Trace("UnifiedGUI_Profiles:GetSelection()")
-    local st = CLM.GUI.Unified:GetScrollingTable()
+    local st = UnifiedGUI:GetScrollingTable()
     local profiles = {}
     -- Profiles
     local selected = st:GetSelection()
@@ -55,7 +51,7 @@ function UnifiedGUI_Profiles:GetSelection()
         return profiles
     end
     for _,s in pairs(selected) do
-        local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
+        local profile = ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
         if profile then
             profiles[#profiles + 1] = profile
         else
@@ -71,19 +67,19 @@ end
 
 local function GenerateAssistantOptions(self)
     local rankOptions = {}
-    local ranks = CLM.MODULES.GuildInfoListener:GetRanks()
+    local ranks = GuildInfoListener:GetRanks()
     for i,o in pairs(ranks) do
         rankOptions[i] = o.name
     end
-    rankOptions[-1] = CLM.L["Any"]
+    rankOptions[-1] = L["Any"]
     return {
         management_header = {
             type = "header",
-            name = CLM.L["Management"],
+            name = L["Management"],
             order = 20
         },
         fill_from_guild_ranks = {
-            name = CLM.L["Ranks"],
+            name = L["Ranks"],
             type = "select",
             set = function(i, v) self.rank = v end,
             get = function(i) return self.rank end,
@@ -92,8 +88,8 @@ local function GenerateAssistantOptions(self)
             order = 21
         },
         fill_from_guild_min_level = {
-            name = CLM.L["Minimum Level"],
-            desc = CLM.L["Minimum level of players to fill from guild."],
+            name = L["Minimum Level"],
+            desc = L["Minimum level of players to fill from guild."],
             type = "range",
             min  = 0,
             max  = 80,
@@ -105,57 +101,57 @@ local function GenerateAssistantOptions(self)
             order = 22
         },
         fill_from_guild = {
-            name = CLM.L["Fill from Guild"],
-            desc = CLM.L["Fill profile list with players with the minimum level and ranks."],
+            name = L["Fill from Guild"],
+            desc = L["Fill profile list with players with the minimum level and ranks."],
             type = "execute",
             width = "full",
             func = (function(i)
-                CLM.MODULES.ProfileManager:FillFromGuild(self.rank, tonumber(self.minimumLevel) or 1)
+                ProfileManager:FillFromGuild(self.rank, tonumber(self.minimumLevel) or 1)
             end),
             -- disabled = (function() return not IsInGuild() end)
             confirm = true,
             order = 23
         },
         fill_from_raid_roster = {
-            name = CLM.L["Fill from Raid Roster"],
-            desc = CLM.L["Fill profile list with players in current raid roster."],
+            name = L["Fill from Raid Roster"],
+            desc = L["Fill profile list with players in current raid roster."],
             type = "execute",
             width = "full",
             func = (function(i)
-                CLM.MODULES.ProfileManager:FillFromRaid()
+                ProfileManager:FillFromRaid()
             end),
             -- disabled = (function() return not IsInRaid() end)
             confirm = true,
             order = 23
         },
         add_target = {
-            name = CLM.L["Add target"],
-            desc = CLM.L["Add currently selected target to list."],
+            name = L["Add target"],
+            desc = L["Add currently selected target to list."],
             type = "execute",
             width = "full",
             func = (function(i)
-                CLM.MODULES.ProfileManager:AddTarget()
+                ProfileManager:AddTarget()
             end),
             confirm = true,
             order = 24
         },
         select_roster = {
-            name = CLM.L["Select roster"],
-            desc = CLM.L["Select roster to add profiles to."],
+            name = L["Select roster"],
+            desc = L["Select roster to add profiles to."],
             type = "select",
             width = "full",
-            values = CLM.MODULES.RosterManager:GetRostersUidMap(),
+            values = RosterManager:GetRostersUidMap(),
             set = function(i, v) self.roster = v end,
             get = function(i) return self.roster end,
             order = 31
         },
         add_to_roster = {
-            name = CLM.L["Add to roster"],
-            desc = CLM.L["Adds selected players to the selected roster (from dropdown)."],
+            name = L["Add to roster"],
+            desc = L["Adds selected players to the selected roster (from dropdown)."],
             type = "execute",
             width = "full",
             func = (function(i)
-                CLM.MODULES.RosterManager:AddProfilesToRoster(CLM.MODULES.RosterManager:GetRosterByUid(self.roster), self:GetSelection())
+                RosterManager:AddProfilesToRoster(RosterManager:GetRosterByUid(self.roster), self:GetSelection())
             end),
             confirm = true,
             order = 32
@@ -169,7 +165,7 @@ local function verticalOptionsFeeder()
         args = {}
     }
     UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_Profiles))
-    if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
         UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_Profiles))
     end
     return options
@@ -179,15 +175,15 @@ local tableStructure = {
     rows = 25,
     -- columns - structure of the ScrollingTable
     columns = {
-        {name = CLM.L["Name"],  width = 85, sort = LibStub("ScrollingTable").SORT_ASC},
-        {name = CLM.L["Main"],  width = 85,
+        {name = L["Name"],  width = 85, sort = LibStub("ScrollingTable").SORT_ASC},
+        {name = L["Main"],  width = 85,
             color = colorGreen
         },
-        {name = CLM.L["Class"], width = 100,
+        {name = L["Class"], width = 100,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
-        {name = CLM.L["Role"],  width = 60},
-        {name = CLM.L["Version"],  width = 60},
+        {name = L["Role"],  width = 60},
+        {name = L["Version"],  width = 60},
     },
     -- Function to filter ScrollingTable
     filter = (function(stobject, row)
@@ -224,22 +220,22 @@ local tableStructure = {
 local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_Profiles tableDataFeeder()")
     local data = {}
-    local profiles = CLM.MODULES.ProfileManager:GetProfiles()
+    local profiles = ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
         local main = ""
         local isLocked = object:IsLocked()
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(object:Main())
+        local profile = ProfileManager:GetProfileByGUID(object:Main())
         if profile then
             main = profile:Name()
         end
         local name = object:Name()
         local rank = ""
-        if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER, name) then
-            rank = CLM.L["GM"]
-        elseif CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name) then
-            rank = CLM.L["Manager"]
-        elseif CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
-            rank = CLM.L["Assistant"]
+        if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER, name) then
+            rank = L["GM"]
+        elseif Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER, name) then
+            rank = L["Manager"]
+        elseif Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
+            rank = L["Assistant"]
         end
         local highlight
         if isLocked then
@@ -267,22 +263,22 @@ end
 
 local function initializeHandler()
     LOG:Trace("UnifiedGUI_Profiles initializeHandler()")
-    UnifiedGUI_Profiles.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
+    UnifiedGUI_Profiles.RightClickMenu = UTILS.GenerateDropDownMenu(
         {
             {
-                title = CLM.L["Lock selected"],
+                title = L["Lock selected"],
                 func = (function()
-                    CLM.MODULES.ProfileManager:SetProfilesLock(UnifiedGUI_Profiles:GetSelection(), true)
-                    CLM.GUI.Unified:ClearSelection()
+                    ProfileManager:SetProfilesLock(UnifiedGUI_Profiles:GetSelection(), true)
+                    UnifiedGUI:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "cccc00"
             },
             {
-                title = CLM.L["Unlock selected"],
+                title = L["Unlock selected"],
                 func = (function()
-                    CLM.MODULES.ProfileManager:SetProfilesLock(UnifiedGUI_Profiles:GetSelection(), false)
-                    CLM.GUI.Unified:ClearSelection()
+                    ProfileManager:SetProfilesLock(UnifiedGUI_Profiles:GetSelection(), false)
+                    UnifiedGUI:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "00cc00"
@@ -292,31 +288,31 @@ local function initializeHandler()
                 trustedOnly = true
             },
             {
-                title = CLM.L["Remove selected"],
+                title = L["Remove selected"],
                 func = (function()
                     for _,profile in ipairs(UnifiedGUI_Profiles:GetSelection()) do
-                        CLM.MODULES.ProfileManager:RemoveProfile(profile:GUID())
+                        ProfileManager:RemoveProfile(profile:GUID())
                     end
-                    CLM.GUI.Unified:ClearSelection()
+                    UnifiedGUI:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "cc0000"
             },
         },
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
 end
 
 local function beforeShowHandler()
     LOG:Trace("UnifiedGUI_Profiles beforeShowHandler()")
-    if CLM.MODULES.RaidManager:IsInRaid() then
-        UnifiedGUI_Profiles.roster = CLM.MODULES.RaidManager:GetRaid():UID()
+    if RaidManager:IsInRaid() then
+        UnifiedGUI_Profiles.roster = RaidManager:GetRaid():UID()
         UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
     end
 end
 
-CLM.GUI.Unified:RegisterTab(
+UnifiedGUI:RegisterTab(
     UnifiedGUI_Profiles.name, 4,
     tableStructure,
     tableDataFeeder,
@@ -327,3 +323,5 @@ CLM.GUI.Unified:RegisterTab(
         beforeShow = beforeShowHandler
     }
 )
+resolve(true)
+end)

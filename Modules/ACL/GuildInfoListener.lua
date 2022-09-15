@@ -1,10 +1,9 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("GuildInfoListener", {
+    "Utils", "Log",
+    "EventManager", "Modules"
+}, function(resolve, UTILS, LOG, EventManager, Modules)
 
 local GuildRoster, GetGuildRosterInfo = GuildRoster, GetGuildRosterInfo
 local GuildControlGetNumRanks, GetNumGuildMembers = GuildControlGetNumRanks, GetNumGuildMembers
@@ -16,7 +15,7 @@ function GuildInfoListener:Initialize()
     self:WipeAll()
     self:BuildCache()
     self.cacheUpdateRequired = true
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
+    EventManager:RegisterWoWEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
         LOG:Debug("Rebuild trust cache after event")
         if not self.cacheUpdateRequired then
             GuildRoster()
@@ -98,4 +97,7 @@ function GuildInfoListener:WipeAll()
 end
 
 
-CLM.MODULES.GuildInfoListener = GuildInfoListener
+Modules.GuildInfoListener = GuildInfoListener
+GuildInfoListener:Initialize()
+resolve(GuildInfoListener)
+end)

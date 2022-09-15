@@ -1,10 +1,12 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("RaidManager", {
+    "Log", "Utils", "GlobalConfigs",
+    "L", "LedgerManager", "RosterManager", "ProfileManager", "PointManager", "EventManager", "StandbyManager", "Constants/RaidStatus", "Acl", "RosterManager/RosterConfiguration", "Models/Ledger/Raid"
+}, function(resolve, LOG, UTILS, GlobalConfigs, L, LedgerManager, RosterManager, ProfileManager, PointManager, EventManager, StandbyManager, RaidStatus, Acl, RosterConfiguration, RaidModel)
+
+
+local RAID_STATUS_ACTIVE = UTILS.Set({ 0, 1 })
 
 local UnitInBattleground, IsActiveBattlefieldArena = UnitInBattleground, IsActiveBattlefieldArena
 local ipairs, pairs = ipairs, pairs
@@ -35,17 +37,17 @@ function RaidManager:Initialize()
     self.RaidAssistants = {}
 
     -- Register mutators
-    CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.RAID.Create,
+    LedgerManager:RegisterEntryType(
+        RaidModel.Create,
         (function(entry)
             LOG:TraceAndCount("mutator(RaidCreate)")
             local raidUid = entry:uuid()
             local name = entry:name()
-            local config = CLM.MODELS.RosterConfiguration:New()
+            local config = RosterConfiguration:New()
             config:inflate(entry:config())
             local rosterUid = entry:rosterUid()
 
-            local roster = CLM.MODULES.RosterManager:GetRosterByUid(rosterUid)
+            local roster = RosterManager:GetRosterByUid(rosterUid)
             if not roster then
                 LOG:Debug("RaidManager mutator(): Unknown roster uid %s", rosterUid)
                 return
@@ -59,8 +61,8 @@ function RaidManager:Initialize()
         end)
     )
 
-    CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.RAID.Update,
+    LedgerManager:RegisterEntryType(
+        RaidModel.Update,
         (function(entry)
             LOG:TraceAndCount("mutator(RaidUpdate)")
             local raidUid = entry:raid()
@@ -76,7 +78,7 @@ function RaidManager:Initialize()
             -- Add standby
             for _, iGUID in ipairs(standby) do
                 local GUID = getGuidFromInteger(iGUID)
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     -- Do not do that if player is already in a raid
                     if not raid:IsPlayerInRaid(GUID) then
@@ -88,7 +90,7 @@ function RaidManager:Initialize()
             -- Add Joiners
             for _, iGUID in ipairs(joiners) do
                 local GUID = getGuidFromInteger(iGUID)
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, raid)
                     raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
@@ -98,7 +100,7 @@ function RaidManager:Initialize()
             local benchLeavers = raid:Configuration():Get("autoBenchLeavers")
             for _, iGUID in ipairs(leavers) do
                 local GUID = getGuidFromInteger(iGUID)
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     -- raid:RemovePlayer(GUID)
                     if benchLeavers then
@@ -112,7 +114,7 @@ function RaidManager:Initialize()
             -- Remove removed
             for _, iGUID in ipairs(removed) do
                 local GUID = getGuidFromInteger(iGUID)
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, nil)
                     self:UpdateProfileCurentStandby(GUID, nil)
@@ -121,8 +123,8 @@ function RaidManager:Initialize()
         end)
     )
 
-    CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.RAID.Start,
+    LedgerManager:RegisterEntryType(
+        RaidModel.Start,
         (function(entry)
             LOG:TraceAndCount("mutator(RaidStart)")
             local raidUid = entry:raid()
@@ -137,7 +139,7 @@ function RaidManager:Initialize()
             -- Add standby
             for _, iGUID in ipairs(standby) do
                 local GUID = getGuidFromInteger(iGUID)
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     self:UpdateProfileCurentStandby(GUID, raid)
                     raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
@@ -146,7 +148,7 @@ function RaidManager:Initialize()
             -- Add players
             for _,iGUID in ipairs(players) do
                 local GUID = getGuidFromInteger(iGUID)
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                local profile = ProfileManager:GetProfileByGUID(GUID)
                 if profile then
                     self:UpdateProfileCurentRaid(GUID, raid)
                     raid:Roster():UpdateAttendance(GUID, raidUid, entry:time())
@@ -158,8 +160,8 @@ function RaidManager:Initialize()
         end)
     )
 
-    CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.RAID.End,
+    LedgerManager:RegisterEntryType(
+        RaidModel.End,
         (function(entry)
             LOG:TraceAndCount("mutator(RaidEnd)")
             local raidUid = entry:raid()
@@ -180,12 +182,12 @@ function RaidManager:Initialize()
         end)
     )
 
-    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+    LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:ParseStatus()
     end)
 
-    CLM.MODULES.LedgerManager:RegisterOnRestart(function()
+    LedgerManager:RegisterOnRestart(function()
         self:WipeAll()
     end)
 
@@ -238,17 +240,17 @@ function RaidManager:IsInActiveRaid()
 end
 
 function RaidManager:IsInCreatedRaid()
-    return self:IsInRaid() and (CONSTANTS.RAID_STATUS.CREATED == self:GetRaid():Status())
+    return self:IsInRaid() and (RaidStatus.CREATED == self:GetRaid():Status())
 end
 
 function RaidManager:IsInProgressingRaid()
-    return self:IsInRaid() and (CONSTANTS.RAID_STATUS.IN_PROGRESS == self:GetRaid():Status())
+    return self:IsInRaid() and (RaidStatus.IN_PROGRESS == self:GetRaid():Status())
 end
 
 -- handles connection of user with newest ledger raid entity
 function RaidManager:UpdateProfileCurentRaid(GUID, raid)
     LOG:Debug("RaidManager:UpdateProfileCurentRaid(%s): %s", GUID, raid and "Add" or "Remove")
-    if CLM.MODULES.ProfileManager:GetProfileByGUID(GUID) then
+    if ProfileManager:GetProfileByGUID(GUID) then
         local current = self.cache.profileRaidInfo[GUID]
         if current and current:IsActive() then
             current:RemovePlayer(GUID)
@@ -265,7 +267,7 @@ end
 
 function RaidManager:UpdateProfileCurentStandby(GUID, raid)
     LOG:Debug("RaidManager:UpdateProfileCurentStandby(%s)", GUID)
-    if CLM.MODULES.ProfileManager:GetProfileByGUID(GUID) then
+    if ProfileManager:GetProfileByGUID(GUID) then
         local current = self.cache.profileStandbyInfo[GUID]
         if current and current:IsActive() then
             current:RemoveFromStandbyPlayer(GUID)
@@ -294,60 +296,60 @@ function RaidManager:CreateRaid(roster, name, config)
         LOG:Error("RaidManager:CreateRaid(): Missing valid roster")
         return
     end
-    if not UTILS.typeof(config, CLM.MODELS.RosterConfiguration) then
+    if not UTILS.typeof(config, RosterConfiguration) then
         LOG:Error("RaidManager:CreateRaid(): Missing valid configuration")
         return
     end
-    if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message(CLM.L["You are not allowed to create raids."])
+    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(L["You are not allowed to create raids."])
         return
     end
     if self:IsInActiveRaid() then
-        LOG:Message(CLM.L["You are already in an active raid. Leave or finish it before creating new one."])
+        LOG:Message(L["You are already in an active raid. Leave or finish it before creating new one."])
         return
     end
-    if CLM.MODULES.LedgerManager:IsTimeTraveling() then
-        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(L["Raid management is disabled during time traveling."])
         return
     end
 
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Create:new(roster:UID(), name, config))
+    LedgerManager:Submit(RaidModel.Create:new(roster:UID(), name, config))
 end
 
 function RaidManager:StartRaid(raid)
     LOG:Trace("RaidManager:StartRaid()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
-        LOG:Message(CLM.L["Missing valid raid"])
+        LOG:Message(L["Missing valid raid"])
         return
     end
-    if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message(CLM.L["You are not allowed to start raid."])
+    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(L["You are not allowed to start raid."])
         return
     end
-    if raid:Status() ~= CONSTANTS.RAID_STATUS.CREATED then
-        LOG:Message(CLM.L["You can only start a freshly created raid."])
+    if raid:Status() ~= RaidStatus.CREATED then
+        LOG:Message(L["You can only start a freshly created raid."])
         return
     end
-    if CLM.MODULES.LedgerManager:IsTimeTraveling() then
-        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(L["Raid management is disabled during time traveling."])
         return
     end
     --[===[@non-debug@
     if (self:GetRaid() ~= raid) or not IsInRaid() then
-        LOG:Message(CLM.L["You are not in the raid."])
+        LOG:Message(L["You are not in the raid."])
         return
     end
     --@end-non-debug@]===]
 
     -- Lazy fill raid roster
-    CLM.MODULES.RosterManager:AddFromRaidToRoster(raid:Roster())
+    RosterManager:AddFromRaidToRoster(raid:Roster())
 
     local players = {}
     local joining_players_guids = {}
     for i=1,MAX_RAID_MEMBERS do
         local name = GetRaidRosterInfo(i)
         if name then
-            local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.RemoveServer(name))
+            local profile = ProfileManager:GetProfileByName(UTILS.RemoveServer(name))
             if profile then
                 tinsert(players, profile)
                 joining_players_guids[profile:GUID()] = true
@@ -357,15 +359,15 @@ function RaidManager:StartRaid(raid)
 
     -- Fill Standby
     local standby = {}
-    for GUID,_ in pairs(CLM.MODULES.StandbyStagingManager:GetStandby(raid:UID())) do
+    for GUID,_ in pairs(StandbyManager:GetStandby(raid:UID())) do
         if not joining_players_guids[GUID] then
             tinsert(standby, GUID)
         end
     end
     -- Start Raid
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Start:new(raid:UID(), players, standby), true)
-    if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
-        SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
+    LedgerManager:Submit(RaidModel.Start:new(raid:UID(), players, standby), true)
+    if GlobalConfigs:GetRaidWarning() and IsInRaid() then
+        SendChatMessage(string.format(L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
     end
     self:HandleRosterUpdateEvent()
     -- On Time Bonus
@@ -377,7 +379,7 @@ function RaidManager:StartRaid(raid)
         end
         local onTimeBonusValue = config:Get("onTimeBonusValue")
         if config:Get("onTimeBonus") and onTimeBonusValue > 0 then
-            CLM.MODULES.PointManager:UpdateRaidPoints(raid, onTimeBonusValue, CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+            PointManager:UpdateRaidPoints(raid, onTimeBonusValue, CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
         end
     end
 end
@@ -385,19 +387,19 @@ end
 function RaidManager:EndRaid(raid)
     LOG:Trace("RaidManager:EndRaid()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
-        LOG:Message(CLM.L["Missing valid raid"])
+        LOG:Message(L["Missing valid raid"])
         return
     end
-    if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message(CLM.L["You are not allowed to start raid."])
+    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(L["You are not allowed to start raid."])
         return
     end
     if not raid:Status() then
-        LOG:Message(CLM.L["You can only end an active raid."])
+        LOG:Message(L["You can only end an active raid."])
         return
     end
-    if CLM.MODULES.LedgerManager:IsTimeTraveling() then
-        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(L["Raid management is disabled during time traveling."])
         return
     end
     self:HandleRosterUpdateEvent()
@@ -410,62 +412,62 @@ function RaidManager:EndRaid(raid)
         end
         local raidCompletionBonusValue = config:Get("raidCompletionBonusValue")
         if config:Get("raidCompletionBonus") and raidCompletionBonusValue > 0 then
-            CLM.MODULES.PointManager:UpdateRaidPoints(raid, raidCompletionBonusValue, CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+            PointManager:UpdateRaidPoints(raid, raidCompletionBonusValue, CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
         end
     end
     -- End raid
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.End:new(raid:UID()), true)
+    LedgerManager:Submit(RaidModel.End:new(raid:UID()), true)
 
     if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
-        SendChatMessage(string.format(CLM.L["Raid [%s] ended"], raid:Name()) , "RAID_WARNING")
+        SendChatMessage(string.format(L["Raid [%s] ended"], raid:Name()) , "RAID_WARNING")
     end
 end
 
 function RaidManager:JoinRaid(raid)
     LOG:Trace("RaidManager:JoinRaid()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
-        LOG:Message(CLM.L["Missing valid raid"])
+        LOG:Message(L["Missing valid raid"])
         return
     end
-    if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message(CLM.L["You are not allowed to join raid."])
+    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(L["You are not allowed to join raid."])
         return
     end
     if not raid:IsActive() then
-        LOG:Message(CLM.L["You can only join an active raid."])
+        LOG:Message(L["You can only join an active raid."])
         return
     end
     if raid == self:GetRaid() then
-        LOG:Message(CLM.L["You can only join different raid than your current one."])
+        LOG:Message(L["You can only join different raid than your current one."])
         return
     end
-    if CLM.MODULES.LedgerManager:IsTimeTraveling() then
-        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(L["Raid management is disabled during time traveling."])
         return
     end
-    local myProfile = CLM.MODULES.ProfileManager:GetMyProfile()
+    local myProfile = ProfileManager:GetMyProfile()
     if myProfile == nil then
         error("My profile is nil")
     end
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Update:new(raid:UID(), {}, {CLM.MODULES.ProfileManager:GetMyProfile()}), true)
+    LedgerManager:Submit(RaidModel.Update:new(raid:UID(), {}, {ProfileManager:GetMyProfile()}), true)
 end
 
 function RaidManager:AddToStandby(raid, standby)
     LOG:Trace("RaidManager:AddToStandby()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
-        LOG:Message(CLM.L["Missing valid raid"])
+        LOG:Message(L["Missing valid raid"])
         return
     end
-    if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message(CLM.L["You are not allowed to control raid."])
+    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(L["You are not allowed to control raid."])
         return
     end
-    if raid:Status() ~= CONSTANTS.RAID_STATUS.IN_PROGRESS then
-        LOG:Message(CLM.L["You can only add players to standby of a progressing raid."])
+    if raid:Status() ~= RaidStatus.IN_PROGRESS then
+        LOG:Message(L["You can only add players to standby of a progressing raid."])
         return
     end
-    if CLM.MODULES.LedgerManager:IsTimeTraveling() then
-        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(L["Raid management is disabled during time traveling."])
         return
     end
     -- Filter out players currently in standby or in raid
@@ -480,26 +482,26 @@ function RaidManager:AddToStandby(raid, standby)
         LOG:Warning("Empty standby list")
         return
     end
-    local entry = CLM.MODELS.LEDGER.RAID.Update:new(raid:UID(), {}, {}, standby_filtered, {})
-    CLM.MODULES.LedgerManager:Submit(entry, true)
+    local entry = RaidModel.Update:new(raid:UID(), {}, {}, standby_filtered, {})
+    LedgerManager:Submit(entry, true)
 end
 
 function RaidManager:RemoveFromStandby(raid, removed)
     LOG:Trace("RaidManager:RemoveFromStandby()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
-        LOG:Message(CLM.L["Missing valid raid"])
+        LOG:Message(L["Missing valid raid"])
         return
     end
-    if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
-        LOG:Message(CLM.L["You are not allowed to control raid."])
+    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        LOG:Message(L["You are not allowed to control raid."])
         return
     end
-    if raid:Status() ~= CONSTANTS.RAID_STATUS.IN_PROGRESS then
-        LOG:Message(CLM.L["You can only add players to standby of a progressing raid."])
+    if raid:Status() ~= RaidStatus.IN_PROGRESS then
+        LOG:Message(L["You can only add players to standby of a progressing raid."])
         return
     end
-    if CLM.MODULES.LedgerManager:IsTimeTraveling() then
-        LOG:Message(CLM.L["Raid management is disabled during time traveling."])
+    if LedgerManager:IsTimeTraveling() then
+        LOG:Message(L["Raid management is disabled during time traveling."])
         return
     end
     -- Filter out players currently not on standby
@@ -514,8 +516,8 @@ function RaidManager:RemoveFromStandby(raid, removed)
         LOG:Warning("Empty removed list")
         return
     end
-    local entry = CLM.MODELS.LEDGER.RAID.Update:new(raid:UID(), {}, {}, {}, removed_filtered)
-    CLM.MODULES.LedgerManager:Submit(entry, true)
+    local entry = RaidModel.Update:new(raid:UID(), {}, {}, {}, removed_filtered)
+    LedgerManager:Submit(entry, true)
 end
 
 function RaidManager:GetUniquePlayersListInRaid(raid)
@@ -524,10 +526,10 @@ function RaidManager:GetUniquePlayersListInRaid(raid)
     local uniquePlayerDict = {}
     -- Loop through all players in raid. They always must be added
     for GUID,_ in pairs(raid.players) do
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        local profile = ProfileManager:GetProfileByGUID(GUID)
         if profile then
             uniquePlayerDict[profile:GUID()] = true
-            local main = CLM.MODULES.ProfileManager:GetProfileByGUID(profile:Main())
+            local main = ProfileManager:GetProfileByGUID(profile:Main())
             if profile:HasAlts() then
                 -- I am main but have alts
                 mainsGuidsInRaid[profile:GUID()] = true
@@ -539,9 +541,9 @@ function RaidManager:GetUniquePlayersListInRaid(raid)
     end
     -- Loop through standby
     for GUID,_ in pairs(raid.standby) do
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        local profile = ProfileManager:GetProfileByGUID(GUID)
         if profile then
-            local main = CLM.MODULES.ProfileManager:GetProfileByGUID(profile:Main())
+            local main = ProfileManager:GetProfileByGUID(profile:Main())
             if profile:HasAlts() then
                 -- I am main but have alts
                 -- I am added only if there is no alt of mine already added
@@ -566,58 +568,46 @@ end
 
 function RaidManager:RegisterEventHandling()
     if self.isEventHandlingRegistered then return end
-    CLM.MODULES.EventManager:RegisterWoWBucketEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, 3, (function(...)
+    EventManager:RegisterWoWBucketEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, 3, (function(...)
         self:HandleRosterUpdateEvent()
     end))
-    CLM.MODULES.EventManager:RegisterWoWBucketEvent({"PARTY_LOOT_METHOD_CHANGED","PLAYER_ROLES_ASSIGNED"}, 3, (function(...)
+    EventManager:RegisterWoWBucketEvent({"PARTY_LOOT_METHOD_CHANGED","PLAYER_ROLES_ASSIGNED"}, 3, (function(...)
         self:UpdateGameRaidInformation() -- we dont need to check others; im not even sure if we need to do this
     end))
     self.isEventHandlingRegistered = true
 end
 
 local reentrance = false
+
+function RaidManager:ShouldBossKillAward()
+    local config = RaidManager:GetRaid():Configuration()
+    local bossKillBonus = config:Get("bossKillBonus")
+
+    return self:IsRaidOwner() and self:IsInProgressingRaid() and bossKillBonus
+
+end
+
+function RaidManager:ShouldIntervalAward()
+    local config = RaidManager:GetRaid():Configuration()
+    local intervalBonus = config:Get("intervalBonus")
+
+    return self:IsRaidOwner() and self:IsInProgressingRaid() and intervalBonus
+
+end
+
 function RaidManager:HandleRosterUpdateEvent()
     LOG:Trace("RaidManager:HandleRosterUpdateEvent()")
     if reentrance then LOG:Debug("Reentrance!") return end
     if not IsInRaid() then return end
-    if CLM.MODULES.LedgerManager:IsTimeTraveling() then return end
+    if LedgerManager:IsTimeTraveling() then return end
     reentrance = true
     -- Update wow raid information
     self:UpdateGameRaidInformation()
-    -- Auto award handling removal in case of raid owner change
-    self:DisableAutoAwarding()
     -- Handle roster update
     if self:IsRaidOwner() and self:IsInProgressingRaid() then
         self:UpdateRaiderList()
-        self:EnableAutoAwarding()
     end
     reentrance = false
-end
-
-function RaidManager:EnableAutoAwarding()
-    LOG:Trace("RaidManager:EnableAutoAwarding()")
-    local config = self:GetRaid():Configuration()
-    local bossKillBonus = config:Get("bossKillBonus")
-    local intervalBonus = config:Get("intervalBonus")
-
-    if bossKillBonus or intervalBonus then
-        CLM.MODULES.AutoAwardManager:Enable()
-    end
-
-    if bossKillBonus then
-        CLM.MODULES.AutoAwardManager:EnableBossKillBonusAwarding()
-    end
-
-    if intervalBonus then
-        CLM.MODULES.AutoAwardManager:EnableIntervalBonusAwarding()
-    end
-end
-
-function RaidManager:DisableAutoAwarding()
-    LOG:Trace("RaidManager:DisableAutoAwarding()")
-    CLM.MODULES.AutoAwardManager:DisableBossKillBonusAwarding()
-    CLM.MODULES.AutoAwardManager:DisableIntervalBonusAwarding()
-    CLM.MODULES.AutoAwardManager:Disable()
 end
 
 function RaidManager:UpdateGameRaidInformation()
@@ -663,7 +653,7 @@ function RaidManager:UpdateRaiderList()
     -- self.lastRosterUpdateTime = GetServerTime()
 
     -- Fill missing profiles from roster as in this raid
-    CLM.MODULES.RosterManager:AddFromRaidToRoster(self:GetRaid():Roster())
+    RosterManager:AddFromRaidToRoster(self:GetRaid():Roster())
 
     local current, joiners, leavers = {}, {}, {}
     -- Detect leavers; build current set
@@ -672,7 +662,7 @@ function RaidManager:UpdateRaiderList()
         if name then
             name = UTILS.RemoveServer(name)
             current[name] = true
-            local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+            local profile = ProfileManager:GetProfileByName(name)
             if profile then
                 if not raid:IsPlayerInRaid(profile:GUID()) then
                     tinsert(leavers,  profile)
@@ -690,7 +680,7 @@ function RaidManager:UpdateRaiderList()
 
     LOG:Debug("RaidManager:UpdateRaiderList(): +%d -%d", #joiners, #leavers)
     if (#joiners > 0) or (#leavers > 0) then
-        CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Update:new(raid:UID(), joiners, leavers), true) -- force update
+        LedgerManager:Submit(RaidModel.Update:new(raid:UID(), joiners, leavers), true) -- force update
     end
 end
 
@@ -702,7 +692,7 @@ function RaidManager:IsRaidOwner(name)
         LOG:Debug("Player in PvP")
         return false
     end
-    if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
+    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
         isOwner = false
         LOG:Debug("Not Assistant")
     else
@@ -729,7 +719,7 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
     name = name or whoami
 
     if not relaxed then -- Relaxed requirements: doesn't need to be assitant (for out of guild checks)
-        if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
+        if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             LOG:Debug("Not Assistant")
             return false
         end
@@ -764,23 +754,30 @@ function RaidManager:WipeAll()
     }
 end
 
-CONSTANTS.RAID_STATUS =
-{
-    CREATED = 0,
-    IN_PROGRESS = 1,
-    FINISHED = 2,
-    STALE = 3
-}
 
-CONSTANTS.RAID_STATUS_GUI = {
-    [CONSTANTS.RAID_STATUS.CREATED]     = CLM.L["Created"],
-    [CONSTANTS.RAID_STATUS.IN_PROGRESS] = CLM.L["In Progress"],
-    [CONSTANTS.RAID_STATUS.FINISHED]    = CLM.L["Finished"],
-    [CONSTANTS.RAID_STATUS.STALE]       = CLM.L["Stale"]
-}
 
-CONSTANTS.RAID_STATUS_ACTIVE = UTILS.Set({ 0, 1 })
 
-CONSTANTS.RAID_STATUSES = UTILS.Set({ 0, 1, 2, 3 })
 
-CLM.MODULES.RaidManager = RaidManager
+RaidManager:Initialize()
+resolve(RaidManager)
+end)
+
+define.module("Constants/RaidStatus", {}, function(resolve)
+    resolve(
+    {
+        CREATED = 0,
+        IN_PROGRESS = 1,
+        FINISHED = 2,
+        STALE = 3
+    })
+
+end)
+
+define.module("Constants/RaidStatusGui", {"Constants/RaidStatus", "L"}, function(resolve, RaidStatus, L)
+    resolve({
+        [RaidStatus.CREATED]     = L["Created"],
+        [RaidStatus.IN_PROGRESS] = L["In Progress"],
+        [RaidStatus.FINISHED]    = L["Finished"],
+        [RaidStatus.STALE]       = L["Stale"]
+    })
+end)

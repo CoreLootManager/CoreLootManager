@@ -1,3 +1,5 @@
+local define = LibDependencyInjection.createContext(...)
+
 -- ------------------------------- --
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
@@ -64,6 +66,8 @@ end
 function StandbyStagingCommResponse:Response()
     return self.r
 end
+define.module("StandbyStagingCommStructure", {"Constants/StandbyStagingComm"} , function(resolve, StandbyStagingComm)
+
 
 local StandbyStagingCommStructure = {}
 function StandbyStagingCommStructure:New(typeOrObject, data)
@@ -75,11 +79,11 @@ function StandbyStagingCommStructure:New(typeOrObject, data)
     self.__index = self
 
     if isCopyConstructor then
-        if o.t == CONSTANTS.STANDBY_STAGING_COMM.TYPE.SUBSCRIBE then
+        if o.t == StandbyStagingComm.TYPE.SUBSCRIBE then
             o.d = StandbyStagingCommSubscribe:New(o.d)
-        elseif o.t == CONSTANTS.STANDBY_STAGING_COMM.TYPE.REVOKE then
+        elseif o.t == StandbyStagingComm.TYPE.REVOKE then
             o.d = StandbyStagingCommRevoke:New(o.d)
-        elseif o.t == CONSTANTS.STANDBY_STAGING_COMM.TYPE.RESPONSE then
+        elseif o.t == StandbyStagingComm.TYPE.RESPONSE then
             o.d = StandbyStagingCommResponse:New(o.d)
         end
         return o
@@ -98,8 +102,9 @@ end
 function StandbyStagingCommStructure:Data()
     return self.d
 end
+    resolve(StandbyStagingCommStructure)
+end)
 
-CLM.MODELS.StandbyStagingCommStructure = StandbyStagingCommStructure
 CLM.MODELS.StandbyStagingCommSubscribe = StandbyStagingCommSubscribe
 CLM.MODELS.StandbyStagingCommRevoke = StandbyStagingCommRevoke
 CLM.MODELS.StandbyStagingCommResponse = StandbyStagingCommResponse

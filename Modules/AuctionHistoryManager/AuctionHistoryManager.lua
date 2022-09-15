@@ -1,10 +1,8 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("AuctionHistoryManager", {
+    "Log", "Constants", "Utils", "Meta:ADDON_TABLE", "Database", "ConfigManager", "L", "EventManager"
+}, function(resolve, LOG, CONSTANTS, UTILS, CLM, Database, ConfigManager, L, EventManager)
 
 local pairs, ipairs = pairs, ipairs
 local tinsert, tremove = table.insert, table.remove
@@ -27,14 +25,14 @@ local CHANNELS = {
 local AuctionHistoryManager = {}
 function AuctionHistoryManager:Initialize()
     LOG:Trace("AuctionHistoryManager:Initialize()")
-    self.db = CLM.MODULES.Database:Personal('auctionHistory', {
+    self.db = Database:Personal('auctionHistory', {
         stack = {},
         -- config
         enable = true,
         post_bids = true,
         post_bids_channel = 5
     })
-    CLM.MODULES.EventManager:RegisterEvent(EVENT_END_AUCTION, function(_, data)
+    EventManager:RegisterEvent(EVENT_END_AUCTION, function(_, data)
         if not self:GetEnabled() then return end
         tinsert(self.db.stack, 1, {
             link   = data.link,
@@ -48,10 +46,10 @@ function AuctionHistoryManager:Initialize()
             local noBids = true
             for bidder,bid in pairs(data.bids) do
                 noBids = false
-                SendChatMessage(bidder .. ": " .. tostring(bid) .. CLM.L[" DKP "], channel)
+                SendChatMessage(bidder .. ": " .. tostring(bid) .. L[" DKP "], channel)
             end
             if noBids then
-                SendChatMessage(CLM.L["No bids"], channel)
+                SendChatMessage(L["No bids"], channel)
             end
         end
         CLM.GUI.AuctionHistory:Refresh(true)
@@ -62,28 +60,28 @@ function AuctionHistoryManager:Initialize()
     local options = {
         auction_history_header = {
             type = "header",
-            name = CLM.L["Auctioning - History"],
+            name = L["Auctioning - History"],
             order = 39
         },
         auction_history_store_bids = {
-            name = CLM.L["Store bids"],
-            desc = CLM.L["Store finished auction bids information."],
+            name = L["Store bids"],
+            desc = L["Store finished auction bids information."],
             type = "toggle",
             set = function(i, v) self:SetEnabled(v) end,
             get = function(i) return self:GetEnabled() end,
             order = 40
         },
         auction_history_post_bids = {
-            name = CLM.L["Post bids"],
-            desc = CLM.L["Toggles posting bids in selected channel after auction has ended."],
+            name = L["Post bids"],
+            desc = L["Toggles posting bids in selected channel after auction has ended."],
             type = "toggle",
             set = function(i, v) self:SetPostBids(v) end,
             get = function(i) return self:GetPostBids() end,
             order = 41
         },
         auction_history_post_bids_channel = {
-            name = CLM.L["Post channel"],
-            desc = CLM.L["Channel for posting bids."],
+            name = L["Post channel"],
+            desc = L["Channel for posting bids."],
             type = "select",
             values = CHANNELS,
             set = function(i, v) self:SetPostBidsChannel(v) end,
@@ -91,7 +89,7 @@ function AuctionHistoryManager:Initialize()
             order = 42
         }
     }
-    CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
 
 end
@@ -178,3 +176,6 @@ function AuctionHistoryManager:Wipe()
 end
 
 CLM.MODULES.AuctionHistoryManager = AuctionHistoryManager
+AuctionHistoryManager:Initialize()
+resolve(AuctionHistoryManager)
+end)

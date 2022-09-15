@@ -1,15 +1,11 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
 
+define.module("LedgerManager", {
+    "Utils", "Log",
+    "Constants",  "LibStub:EventSourcing/LedgerFactory", "Comms", "Acl", "Database", "Modules", "GlobalConfigs"
+}, function(resolve, UTILS, LOG, CONSTANTS, LedgerLib, Comms, Acl, Database, Modules, GlobalConfigs)
 local pairs, ipairs = pairs, ipairs
 local wipe, collectgarbage, tinsert = wipe, collectgarbage, table.insert
-
-local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
 local STATUS_SYNCED = "synced"
 local STATUS_OUT_OF_SYNC = "out_of_sync"
@@ -29,8 +25,8 @@ local function registerReceiveCallback(callback)
     -- Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
     --     return length < 4096
     -- end)
-    CLM.MODULES.Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-    CLM.MODULES.Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
+    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
+    Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
 end
 
 local function restoreReceiveCallback()
@@ -44,14 +40,14 @@ local function createLedger(self, database)
     local ledger = LedgerLib.createLedger(
         database,
         (function(data, distribution, target, callbackFn, callbackArg)
-            return CLM.MODULES.Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
+            return Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
         (function(entry, sender)
-            return CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
+            return Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
-            return CLM.MODULES.Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
+            return Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
         end), -- sendLargeMessage
         0, 100, LOG)
 
@@ -88,29 +84,25 @@ local function createLedgerAndRegisterCallbacks(self, database)
     return ledger
 end
 
-local LedgerManager = { _initialized = false}
-function LedgerManager:Initialize()
-    self.activeDatabase = CLM.MODULES.Database:Ledger()
-    self.activeLedger = createLedger(self, self.activeDatabase)
-    self.mutatorCallbacks = {}
-    self.onUpdateCallbacks = {}
-    self.onRestartCallbacks = {}
-    self._initialized = true
-
-
-end
+local LedgerManager = {
+    activeDatabase = Database:Ledger(),
+    mutatorCallbacks = {},
+    onUpdateCallbacks = {},
+    onRestartCallbacks = {}
+}
+LedgerManager.activeLedger = createLedger(LedgerManager, LedgerManager.activeDatabase)
 
 function LedgerManager:IsInitialized()
-    return self._initialized
+    return true
 end
 
 function LedgerManager:Enable()
     self.activeLedger.getStateManager():setUpdateInterval(50)
-    if CLM.GlobalConfigs:GetDisableSync() then
+    if GlobalConfigs:GetDisableSync() then
         LedgerManager:Cutoff()
         LOG:Message("Ledger synchronisation was disabled. Use this at your own risk.")
     else
-        if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
             self.activeLedger.enableSending()
         end
     end
@@ -119,8 +111,8 @@ end
 -- This is not reversable until reload
 function LedgerManager:Cutoff()
     self.activeLedger.disableSending()
-    CLM.MODULES.Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
-    CLM.MODULES.Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
+    Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
+    Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
 end
 
 function LedgerManager:DisableAdvertising()
@@ -139,7 +131,6 @@ function LedgerManager:EndTimeTravel()
 end
 
 function LedgerManager:IsTimeTraveling()
-    if not self._initialized then return false end
     return self.activeLedger.getStateManager():isTimeTraveling()
 end
 
@@ -194,7 +185,7 @@ function LedgerManager:ExitSandbox(apply)
     if apply then
         -- If we apply we simply keep the new ledger and discard old one
         -- We only update the database storage
-        CLM.MODULES.Database:UpdateLedger(self.activeDatabase)
+        Database:UpdateLedger(self.activeDatabase)
         self._originalDatabase = nil
         self._originalLedger = nil
     else
@@ -244,14 +235,12 @@ function LedgerManager:UpdateSyncState(status)
     self.incoherentState = false
     self.inSync = false
     self.syncOngoing = false
-    if self._initialized then
-        if status == STATUS_UNKNOWN_TYPE then
-            self.incoherentState = true
-        elseif status == STATUS_SYNCED then
-            self.inSync = true
-        elseif status == STATUS_OUT_OF_SYNC then
-            self.syncOngoing = true
-        end
+    if status == STATUS_UNKNOWN_TYPE then
+        self.incoherentState = true
+    elseif status == STATUS_SYNCED then
+        self.inSync = true
+    elseif status == STATUS_OUT_OF_SYNC then
+        self.syncOngoing = true
     end
 end
 
@@ -307,7 +296,6 @@ function LedgerManager:Remove(entry, catchup)
 end
 
 function LedgerManager:CancelLastEntry()
-    if not self._initialized then return end
     if self.lastEntry then
         self:Remove(self.lastEntry)
         self.lastEntry = nil
@@ -315,9 +303,8 @@ function LedgerManager:CancelLastEntry()
 end
 
 function LedgerManager:Wipe()
-    if not self._initialized then return end
     self:DisableAdvertising()
-    local db = CLM.MODULES.Database:Ledger()
+    local db = Database:Ledger()
     wipe(db)
     collectgarbage()
     self:Enable()
@@ -329,4 +316,6 @@ function LedgerManager:Reset()
 end
 --@end-do-not-package@
 
-CLM.MODULES.LedgerManager = LedgerManager
+Modules.LedgerManager = LedgerManager
+resolve(LedgerManager)
+end)

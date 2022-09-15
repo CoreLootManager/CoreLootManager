@@ -140,7 +140,7 @@ function Raid:CreatedAt()
 end
 
 function Raid:IsActive()
-    return CONSTANTS.RAID_STATUS_ACTIVE[self:Status()] and true or false
+    return RAID_STATUS_ACTIVE[self:Status()] and true or false
 end
 
 function Raid:Players()

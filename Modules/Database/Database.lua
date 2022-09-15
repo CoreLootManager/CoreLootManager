@@ -1,7 +1,20 @@
 -- ------------------------------- --
 local define = LibDependencyInjection.createContext(...)
 
-define.module("Database", {"Log", "Utils", "Modules", "SavedVariable:CLM2_DB", "FirstEvent:GUILD_ROSTER_UPDATE"}, function(resolve, LOG, UTILS, MODULES, CLM2_DB, _)
+define.module("GuildName", {"EventManager"}, function(resolve, EventManager)
+
+    if not IsInGuild() then
+        resolve("unguilded")
+    end
+    local guildName = GetGuildInfo("player")
+
+    if guildName == nil then
+        EventManager:RegisterWoWEvent("GUILD_ROSTER_UPDATE", function() resolve((GetGuildInfo("player"))) end)
+    else
+        resolve(guildName)
+    end
+end)
+define.module("Database", {"Log", "Utils", "Config", "GuildName"}, function(resolve, LOG, UTILS, CLM2_DB, GuildName)
 
 
 
@@ -11,7 +24,6 @@ local DeepCopy = UTILS.DeepCopy
 local assertType = UTILS.assertType
 
 local DB = {}
-MODULES.Database = DB
 
 -- You really do not want to modify this
 -- vvvvv
@@ -24,8 +36,9 @@ local DB_NAME_LOGGER = 'logger'
 local DB_NAME_GLOBAL = 'global'
 -- ^^^^^
 
+
 local function UpdateGuild()
-    DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. (GetGuildInfo("player") or "unguilded"))
+    DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. GuildName)
     LOG:Debug("Using database: %s", DB.server_faction_guild)
 end
 

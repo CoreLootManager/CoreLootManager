@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("LootManager", {
-    "Log", "Constants", "Util", "LootManager/LedgerEntries", "Meta:ADDON_TABLE", "ProfileManager", "L", "LedgerManager", "EventManager", "RosterManager", "RaidManager", "Models", "PointManager"
+    "Log", "Constants", "Utils", "LootManager/LedgerEntries", "Meta:ADDON_TABLE", "ProfileManager", "L", "LedgerManager", "EventManager", "RosterManager", "RaidManager", "Models", "PointManager"
 }, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, ProfileManager, L, LedgerManager, EventManager, RosterManager, RaidManager, Models, PointManager)
 
 local tinsert, type = table.insert, type

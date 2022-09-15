@@ -1,16 +1,10 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
 
+define.module("ConfigManager", {
+    "Utils", "Log",
+    "Constants",  "Meta:ADDON_TABLE", "L", "LibStub:AceConfigRegistry-3.0",  "LibStub:AceConfig-3.0", "LibStub:AceConfigDialog-3.0"
+}, function(resolve, UTILS, LOG, CONSTANTS, CLM, L, AceConfigRegistry, AceConfig, AceConfigDialog)
 local type, pairs, ipairs = type, pairs, ipairs
-
-local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
-local AceConfig = LibStub("AceConfig-3.0")
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local ConfigManager = { enabled = false }
 
@@ -108,21 +102,27 @@ end
 
 -- Publish API
 CLM.MODULES.ConfigManager = ConfigManager
-
 CONSTANTS.CONFIGS = {
     GROUPS = UTILS.Set({
         "Classic Loot Manager",
-        CLM.L["Rosters"],
-        CLM.L["Integrations"]
+        L["Rosters"],
+        L["Integrations"]
     }),
     ORDERED_GROUPS = {
         "Classic Loot Manager",
-        CLM.L["Rosters"],
-        CLM.L["Integrations"]
+        L["Rosters"],
+        L["Integrations"]
     },
     GROUP = {
         GLOBAL = "Classic Loot Manager",
-        ROSTER = CLM.L["Rosters"],
-        INTEGRATIONS = CLM.L["Integrations"]
+        ROSTER = L["Rosters"],
+        INTEGRATIONS = L["Integrations"]
     },
 }
+
+ConfigManager:Initialize()
+
+resolve(ConfigManager)
+
+
+end)
