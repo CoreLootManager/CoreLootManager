@@ -672,11 +672,17 @@ function AuctionManagerGUI:Refresh()
             end
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
             if profile then
+                local current
+                if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+                    current = self.roster:Standings(profile:GUID())
+                else
+                    current = self.roster:Priority(profile:GUID())
+                end
                 local row = {cols = {
                     {value = profile:Name()},
                     {value = UTILS.ColorCodeClass(profile:Class())},
                     {value = bid, color = color},
-                    {value = self.roster:Standings(profile:GUID())},
+                    {value = current},
                     {value = highlightRole[profile:Role()]},
                 },
                 DoCellUpdate = highlightRole[profile:Role()]
