@@ -491,6 +491,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     local values = auctionInfo:Values()
     self.bid = values[CONSTANTS.SLOT_VALUE_TIER.BASE]
     local myProfile = CLM.MODULES.ProfileManager:GetMyProfile()
+    self.top:SetTitle(CLM.L["Bidding"])
     if myProfile then
         local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
@@ -498,6 +499,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
             self.roster = roster
             if roster:IsProfileInRoster(myProfile:GUID()) then
                 self.standings = roster:Standings(myProfile:GUID())
+                self.top:SetTitle(CLM.L["Bidding"] ..  " | " .. CLM.L["Current"] .. ": " .. tostring(self.standings))
             end
         end
     end

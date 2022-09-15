@@ -478,7 +478,7 @@ CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 -- Global/GlobalConfigs.lua:365
 CLM.L["Ctrl"] = "Ctrl"
 -- Modules/AuctionManager/GUI.lua:225
-CLM.L["Current"] = "actuel"
+CLM.L["Current"] = "Actuel"
 -- Alerts/Alerts.lua:17
 -- Alerts/Alerts.lua:20
 -- Modules/RosterManager/Roster.lua:593
