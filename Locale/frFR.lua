@@ -539,7 +539,7 @@ CLM.L["Do not show again"] = "Ne pas montrer à nouveau"
 CLM.L["Druid"] = "Druide"
 -- Modules/RosterManager/Options.lua:867
 -- Modules/RosterManager/Options.lua:921
---CLM.L["Dynamic Item values"] = ""
+CLM.L["Dynamic Item values"] = "Valeurs d'éléments dynamiques"
 -- Alerts/Alerts.lua:17
 -- Modules/GUI/UnifiedGUI_Standings.lua:393
 -- Modules/GUI/UnifiedGUI_Standings.lua:394
@@ -549,7 +549,7 @@ CLM.L["EP"] = "EP"
 -- Modules/GUI/UnifiedGUI_Standings.lua:347
 CLM.L["EP/GP"] = "EP/GP"
 -- Modules/RosterManager/ItemValueCalculator.lua:177
---CLM.L["EPGP WEB"] = ""
+CLM.L["EPGP WEB"] = "EPGP WEB"
 -- Modules/RosterManager/Roster.lua:594
 CLM.L["EPGP"] = "EPGP"
 -- Import.lua:191
@@ -601,7 +601,7 @@ CLM.L["End selected raid"] = "Mettre fin au raid sélectionnéд"
 -- Utils.lua:758
 CLM.L["Epic"] = "Epic"
 -- Modules/RosterManager/Options.lua:413
---CLM.L["Equation"] = ""
+CLM.L["Equation"] = "Équation"
 -- Modules/AutoAwardManager/EncounterIDs.lua:111
 CLM.L["Eredar Twins"] = "Jumelles érédars"
 -- Modules/RosterManager/Roster.lua:768
@@ -1091,11 +1091,11 @@ CLM.L["Mother Shahraz"] = "Mère Shahraz"
 -- Modules/GUI/UnifiedGUI_History.lua:315
 CLM.L["Multiple"] = "Multiple"
 -- Modules/RosterManager/Options.lua:474
---CLM.L["Multiplier for tier %s (if used by the auction type)."] = ""
+CLM.L["Multiplier for tier %s (if used by the auction type)."] = "Multiplicateur pour le niveau %s (s'il est utilisé par le type d'enchères)."
 -- Modules/RosterManager/Options.lua:432
---CLM.L["Multiplier used by the equations"] = ""
+CLM.L["Multiplier used by the equations"] = "Multiplicateur utilisé par les équations"
 -- Modules/RosterManager/Options.lua:437
---CLM.L["Multiplier"] = ""
+CLM.L["Multiplier"] = "Multiplicateur"
 -- Modules/AutoAwardManager/EncounterIDs.lua:103
 CLM.L["Nalorakk"] = "Nalorakk"
 -- Modules/AuctionManager/GUI.lua:217
@@ -1123,7 +1123,7 @@ CLM.L["Never show changelog"] = "Ne jamais afficher le journal des modifications
 -- Modules/AuctionManager/AuctionManager.lua:422
 CLM.L["New highest bid: %d DKP %s"] = "Nouvelle enchère la plus élevée : %d DKP %s"
 -- Import.lua:89
-CLM.L["New roster: %s"] = "Nouvelle liste:% s"
+CLM.L["New roster: %s"] = "Nouvelle liste: %s"
 -- Migration.lua:91
 CLM.L["New roster: [%s]"] = "Nouvelle liste : [%s]"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:61
@@ -1393,7 +1393,7 @@ CLM.L["Remove item"] = "Retirer l'objet"
 -- Modules/AuctionHistoryManager/GUI.lua:76
 CLM.L["Remove old"] = "Supprimer l'ancien"
 -- Modules/RosterManager/Options.lua:527
---CLM.L["Remove override"] = ""
+CLM.L["Remove override"] = "Supprimer la remplacement"
 -- Modules/RosterManager/Options.lua:675
 CLM.L["Remove roster"] = "Supprimer la liste"
 -- Modules/GUI/UnifiedGUI_Raids.lua:433
@@ -1469,7 +1469,7 @@ CLM.L["Select Rosters to export"] = "Sélectionnez les listes à exporter"
 -- Modules/GUI/Filters.lua:183
 CLM.L["Select all classes."] = "Sélectionnez toutes les classes."
 -- Modules/RosterManager/Options.lua:428
---CLM.L["Select equation"] = ""
+CLM.L["Select equation"] = "Sélectionner l'équation"
 -- Modules/Logger/Logger.lua:25
 CLM.L["Select logging level for troubleshooting"] = "Sélectionnez le niveau du journal pour le dépannage"
 -- Global/GlobalConfigs.lua:123
@@ -1540,7 +1540,7 @@ CLM.L["Skipping %s"] = "%s ignoré"
 -- Migration.lua:235
 CLM.L["Skipping CommunityDKP"] = "Ignorer CommunityDKP"
 -- Modules/RosterManager/Options.lua:445
---CLM.L["Slot multipliers"] = ""
+CLM.L["Slot multipliers"] = "Multiplicateurs de machines à sous"
 -- Modules/RosterManager/Options.lua:315
 CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Petite valeur pour les enchères par niveau. \n\nRemplissez la même valeur que les autres niveaux ou une valeur négative pour ignorer"
 -- Modules/RosterManager/Roster.lua:800
@@ -1647,7 +1647,7 @@ CLM.L["Thorim"] = "Thorim"
 -- Modules/RosterManager/Roster.lua:752
 CLM.L["Thrown"] = "Arme de jet"
 -- Modules/RosterManager/Options.lua:466
---CLM.L["Tier multipliers"] = ""
+CLM.L["Tier multipliers"] = "Multiplicateurs de niveau"
 -- Modules/RosterManager/Roster.lua:645
 -- Modules/RosterManager/Roster.lua:650
 CLM.L["Tiered"] = "Par niveau"
@@ -1734,7 +1734,7 @@ CLM.L["Ulduar"] = "Ulduar"
 -- Migration.lua:47
 CLM.L["Unable to execute migration. Entries already exist."] = "Impossible d'exécuter la migration. Les entrées existent déjà."
 -- Modules/RosterManager/ItemValueCalculator.lua:152
---CLM.L["Unable to get item info from server. Please try auctioning again"] = ""
+CLM.L["Unable to get item info from server. Please try auctioning again"] = "Impossible d'obtenir des informations sur le serveur. Veuillez réessayer aux enchères"
 -- Utils.lua:756
 CLM.L["Uncommon"] = "Commun"
 -- Modules/PointManager/PointManager.lua:400
@@ -1828,7 +1828,7 @@ CLM.L["WotLK - 10"] = "WotLK - 10"
 -- Modules/RosterManager/Options.lua:559
 CLM.L["WotLK - 25"] = "WotLK - 25"
 -- Modules/RosterManager/ItemValueCalculator.lua:178
---CLM.L["Wowpedia"] = ""
+CLM.L["Wowpedia"] = "Wowpedia"
 -- Modules/RosterManager/Roster.lua:701
 -- Modules/RosterManager/Roster.lua:734
 CLM.L["Wrist"] = "Poignet"
