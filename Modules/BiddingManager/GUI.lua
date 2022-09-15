@@ -236,12 +236,13 @@ local function GenerateValueButtonsAuctionOptions(self,
             }
         end
     end
+
     if usedTiers then
         local row_width = rowMultiplier/#usedTiers
         local alreadyExistingValues = {}
         for _,tier in ipairs(usedTiers) do
             local value = tonumber(values[tier]) or 0
-            if not alreadyExistingValues[value] and value >= 0 then
+            if not alreadyExistingValues[value] and value >= 0 then -- this will display in ascending max 0
                 alreadyExistingValues[value] = true
                 options[tier] = {
                     name = value,
