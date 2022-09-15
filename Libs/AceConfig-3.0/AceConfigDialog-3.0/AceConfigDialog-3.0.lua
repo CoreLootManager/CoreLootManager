@@ -7,7 +7,7 @@ local LibStub = LibStub
 local gui = LibStub("AceGUI-3.0")
 local reg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigDialog-3.0", 11182
+local MAJOR, MINOR = "AceConfigDialog-3.0", 11282
 local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigDialog then return end
@@ -507,15 +507,17 @@ local function OptionOnMouseOver(widget, event)
 	local path = user.path
 	local appName = user.appName
 	local tooltip = AceConfigDialog.tooltip
-	tooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
 
 	local itemLink = GetOptionsMemberValue("itemLink", opt, options, path, appName)
 	if itemLink then
-		tooltip:SetHyperlink(itemLink)
-		tooltip:Show()
+		AceConfigDialog.GameTooltip = GameTooltip
+		AceConfigDialog.GameTooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+		AceConfigDialog.GameTooltip:SetHyperlink(itemLink)
+		AceConfigDialog.GameTooltip:Show()
 		return
 	end
 
+	tooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
 	local name = GetOptionsMemberValue("name", opt, options, path, appName)
 	local desc = GetOptionsMemberValue("desc", opt, options, path, appName)
 	local usage = GetOptionsMemberValue("usage", opt, options, path, appName)
@@ -540,6 +542,10 @@ end
 
 local function OptionOnMouseLeave(widget, event)
 	AceConfigDialog.tooltip:Hide()
+	if AceConfigDialog.GameTooltip then
+		AceConfigDialog.GameTooltip:Hide()
+		AceConfigDialog.GameTooltip = nil
+	end
 end
 
 local function GetFuncName(option)

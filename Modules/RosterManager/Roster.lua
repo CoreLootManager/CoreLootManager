@@ -67,6 +67,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.raidLoot = {}             -- Loot received in the roster (list). Time descending
     o.profileLoot = {}          -- Loot received by players (dict of lists). Time descending per player
     o.weeklyGains = {}          -- Weekly point gains per player
+    o.calculator = CLM.MODELS.ItemValueCalculator:New() -- Dynamic item value calculator
     -- END ROSTER STATE --
 
     return o
@@ -74,6 +75,10 @@ end
 
 function Roster:GetPointType()
     return self.pointType
+end
+
+function Roster:GetCalculator()
+    return self.calculator
 end
 
 function Roster:AddProfileByGUID(GUID)
@@ -394,6 +399,10 @@ function Roster:GetItemValues(itemId)
     local itemValues = self.itemValues[itemId]
     if itemValues == nil then
         local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+        if self.configuration._.dynamicValue then
+            local dynamicValues = self.calculator:Calculate(itemId, self.configuration._.roundDecimals)
+            if dynamicValues then return dynamicValues end
+        end
         return self:GetDefaultSlotValues(itemEquipLoc)
     end
     return itemValues
@@ -538,6 +547,7 @@ end
 function Roster:CopyConfiguration(s)
     self.configuration = CLM.MODELS.RosterConfiguration:New(UTILS.DeepCopy(s.configuration))
     self.bossKillBonusValues = UTILS.DeepCopy(s.bossKillBonusValues)
+    -- TODO: calculator coefficients copy?
 end
 
 function Roster:CopyProfiles(s)

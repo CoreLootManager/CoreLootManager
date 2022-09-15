@@ -171,20 +171,34 @@ function RosterManager:Initialize()
                     roster:SetItemValues(entry:itemId(), entry:values())
                 end))
 
-            CLM.MODULES.LedgerManager:RegisterEntryType(
-                CLM.MODELS.LEDGER.ROSTER.UpdateOverridesSingle,
-                (function(entry)
-                    LOG:TraceAndCount("mutator(RosterUpdateOverridesSingle)")
-                    local rosterUid = entry:rosterUid()
+        CLM.MODULES.LedgerManager:RegisterEntryType(
+            CLM.MODELS.LEDGER.ROSTER.UpdateOverridesSingle,
+            (function(entry)
+                LOG:TraceAndCount("mutator(RosterUpdateOverridesSingle)")
+                local rosterUid = entry:rosterUid()
 
-                    local roster = self:GetRosterByUid(rosterUid)
-                    if not roster then
-                        LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                        return
-                    end
+                local roster = self:GetRosterByUid(rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
 
-                    roster:SetItemTierValue(entry:itemId(), entry:tier(), entry:value())
-                end))
+                roster:SetItemTierValue(entry:itemId(), entry:tier(), entry:value())
+            end))
+        CLM.MODULES.LedgerManager:RegisterEntryType(
+            CLM.MODELS.LEDGER.ROSTER.RemoveOverrides,
+            (function(entry)
+                LOG:TraceAndCount("mutator(RemoveOverrides)")
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
+
+                roster:ClearItemValues(entry:itemId())
+            end))
 
         CLM.MODULES.LedgerManager:RegisterEntryType(
             CLM.MODELS.LEDGER.ROSTER.UpdateProfiles,
@@ -263,6 +277,66 @@ function RosterManager:Initialize()
                     return
                 end
                 roster:SetFieldName(entry:tier(), entry:name())
+            end))
+
+        CLM.MODULES.LedgerManager:RegisterEntryType(
+            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueEquation,
+            (function(entry)
+                LOG:TraceAndCount("mutator(DynamicItemValueEquation)")
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
+
+                roster:GetCalculator():SetEquation(entry:equation())
+            end))
+
+        CLM.MODULES.LedgerManager:RegisterEntryType(
+            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueMultiplier,
+            (function(entry)
+                LOG:TraceAndCount("mutator(DynamicItemValueMultiplier)")
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
+
+                roster:GetCalculator():SetMultiplier(entry:multiplier())
+            end))
+
+        CLM.MODULES.LedgerManager:RegisterEntryType(
+            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueSlotMultiplier,
+            (function(entry)
+                LOG:TraceAndCount("mutator(DynamicItemValueSlotMultiplier)")
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
+
+                roster:GetCalculator():SetSlotMultiplier(entry:slot(), entry:multiplier())
+            end))
+
+        CLM.MODULES.LedgerManager:RegisterEntryType(
+            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueTierMultiplier,
+            (function(entry)
+                LOG:TraceAndCount("mutator(DynamicItemValueTierMultiplier)")
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
+
+                roster:GetCalculator():SetTierMultiplier(entry:tier(), entry:multiplier())
             end))
 
         CLM.MODULES.LedgerManager:RegisterOnRestart(function()
@@ -476,6 +550,109 @@ function RosterManager:SetRosterDefaultSlotTierValue(nameOrRoster, slot, tier, v
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, tier, value), true)
 end
 
+function RosterManager:SetRosterDynamicItemValueEquation(nameOrRoster, equation)
+    LOG:Trace("RosterManager:SetRosterDynamicItemValueEquation()")
+    local roster
+    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not equation or not CONSTANTS.ITEM_VALUE_EQUATIONS[equation] then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueEquation(): Missing equation")
+        return
+    end
+    if roster:GetCalculator():GetEquation() == equation then
+        LOG:Debug("RosterManager:SetRosterDynamicItemValueEquation(): No change to value. Skipping.")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueEquation:new(roster:UID(), equation), true)
+end
+
+function RosterManager:SetRosterDynamicItemValueMultiplier(nameOrRoster, multiplier)
+    LOG:Trace("RosterManager:SetRosterDynamicItemValueMultiplier()")
+    multiplier = tonumber(multiplier)
+    local roster
+    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterDefaultSlotTierValue(): Invalid roster object or name")
+        return nil
+    end
+    if not multiplier then
+        LOG:Error("RosterManager:SetRosterDefaultSlotTierValue(): Missing multiplier")
+        return
+    end
+    if roster:GetCalculator():GetMultiplier() == multiplier then
+        LOG:Debug("RosterManager:SetRosterDefaultSlotTierValue(): No change to value. Skipping.")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueMultiplier:new(roster:UID(), multiplier), true)
+end
+
+function RosterManager:SetRosterDynamicItemValueSlotMultiplier(nameOrRoster, slot, multiplier)
+    LOG:Trace("RosterManager:SetRosterDynamicItemValueSlotMultiplier()")
+    multiplier = tonumber(multiplier)
+    local roster
+    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueSlotMultiplier(): Invalid roster object or name")
+        return nil
+    end
+    if not multiplier then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueSlotMultiplier(): Missing value")
+        return
+    end
+    if not slot or not CONSTANTS.INVENTORY_TYPES_SET[slot] then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueSlotMultiplier(): Missing slot")
+        return
+    end
+    if roster:GetCalculator():GetSlotMultiplier(slot) == multiplier then
+        LOG:Debug("RosterManager:SetRosterDynamicItemValueSlotMultiplier(): No change to value. Skipping.")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueSlotMultiplier:new(roster:UID(), slot, multiplier), true)
+end
+
+function RosterManager:SetRosterDynamicItemValueTierMultiplier(nameOrRoster, tier, multiplier)
+    LOG:Trace("RosterManager:SetRosterDynamicItemValueTierMultiplier()")
+    multiplier = tonumber(multiplier)
+    local roster
+    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueTierMultiplier(): Invalid roster object or name")
+        return nil
+    end
+    if not multiplier then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueTierMultiplier(): Missing value")
+        return
+    end
+    if not tier or not CONSTANTS.SLOT_VALUE_TIERS[tier] then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueTierMultiplier(): Missing tier")
+        return
+    end
+    if roster:GetCalculator():GetTierMultiplier(tier) == multiplier then
+        LOG:Debug("RosterManager:SetRosterDynamicItemValueTierMultiplier(): No change to value. Skipping.")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueTierMultiplier:new(roster:UID(), tier, multiplier), true)
+end
+
 function RosterManager:SetFieldName(nameOrRoster, field, name)
     LOG:Trace("RosterManager:SetFieldName()")
     local roster
@@ -551,6 +728,27 @@ function RosterManager:SetRosterItemValues(nameOrRoster, itemId, values)
     if sanitizedValues then
         CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateOverrides:new(roster:UID(), itemId, sanitizedValues), true)
     end
+end
+
+function RosterManager:RemoveRosterItemOverride(nameOrRoster, itemId)
+    LOG:Trace("RosterManager:RemoveRosterItemOverride()")
+    local roster
+    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not itemId then
+        LOG:Error("RosterManager:RemoveRosterItemOverride(): Missing itemId")
+        return
+    end
+
+    if not roster.itemValues[itemId] then
+        LOG:Debug("RosterManager:RemoveRosterItemOverride(): No change to value. Skipping.")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.RemoveOverrides:new(roster:UID(), itemId), true)
 end
 
 function RosterManager:SetRosterItemTierValue(nameOrRoster, itemId, tier, value)

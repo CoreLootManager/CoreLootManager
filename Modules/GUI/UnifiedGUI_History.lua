@@ -49,7 +49,8 @@ local UnifiedGUI_History = {
         "search", "horizontal"
     }),
     nil, 3),
-    tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIHistoryDialogTooltip", UIParent, "GameTooltipTemplate"),
+    -- tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIHistoryDialogTooltip", UIParent, "GameTooltipTemplate"),
+    tooltip = GameTooltip,
     historyType = CONSTANTS.HISTORY_TYPE.ALL
 }
 
