@@ -211,8 +211,11 @@ local function GenerateValueButtonsAuctionOptions(self,
     }
     local offset = 8
     local usedTiers
+
+    local doDisplayValue
     if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
         usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
+        doDisplayValue = (function(value) return (value >= 0) end)
     elseif (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) then
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             options["all_in"] = {
@@ -234,6 +237,7 @@ local function GenerateValueButtonsAuctionOptions(self,
                 CONSTANTS.SLOT_VALUE_TIER.BASE,
                 CONSTANTS.SLOT_VALUE_TIER.MAX
             }
+            doDisplayValue = (function(value) return (value > 0) end)
         end
     end
 
@@ -242,7 +246,7 @@ local function GenerateValueButtonsAuctionOptions(self,
         local alreadyExistingValues = {}
         for _,tier in ipairs(usedTiers) do
             local value = tonumber(values[tier]) or 0
-            if not alreadyExistingValues[value] and value >= 0 then -- this will display in ascending max 0
+            if not alreadyExistingValues[value] and doDisplayValue(value) then -- this will display in ascending max 0
                 alreadyExistingValues[value] = true
                 options[tier] = {
                     name = value,
