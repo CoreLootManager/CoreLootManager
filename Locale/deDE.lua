@@ -116,7 +116,7 @@ CLM.L["Akil'zon"] = "Akil'zon"
 CLM.L["Al'ar"] = "Al'ar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:125
 CLM.L["Algalon the Observer"] = "Algalon der Beobachter"
--- Modules/BiddingManager/GUI.lua:219
+-- Modules/BiddingManager/GUI.lua:221
 CLM.L["All In"] = "All in"
 -- Migration.lua:28
 CLM.L["All migration entries were commited and executed. Congratulations!"] = "Alle Migrierungseinträge wurden gespeichert und ausgeführt. Glückwunsch!"
@@ -336,9 +336,9 @@ CLM.L["Bid %s denied!"] = "Gebot %s abgelehnt!"
 CLM.L["Bid cancelling not allowed"] = "Gebotsabbruch is nicht erlaubt"
 -- Modules/AuctionManager/AuctionManager.lua:676
 CLM.L["Bid increment too low"] = "Geboterhöhung ist zu niedrig"
--- Modules/BiddingManager/GUI.lua:159
+-- Modules/BiddingManager/GUI.lua:157
 CLM.L["Bid input values as Main spec bid."] = "Bid eingangswerte als Hauptspezifikationsangebot."
--- Modules/BiddingManager/GUI.lua:170
+-- Modules/BiddingManager/GUI.lua:168
 CLM.L["Bid input values as Off spec bid."] = "Geboteingabewerte als Aus Spec Gebot."
 -- Modules/AuctionManager/AuctionManager.lua:244
 CLM.L["Bid tiers: %s."] = "Gebotsstufen: %s."
@@ -346,9 +346,9 @@ CLM.L["Bid tiers: %s."] = "Gebotsstufen: %s."
 CLM.L["Bid too high"] = "Gebot zu hoch"
 -- Modules/AuctionManager/AuctionManager.lua:673
 CLM.L["Bid too low"] = "Gebot zu niedrig"
--- Modules/BiddingManager/GUI.lua:149
+-- Modules/BiddingManager/GUI.lua:147
 CLM.L["Bid value"] = "Wert des Gebots"
--- Modules/BiddingManager/GUI.lua:220
+-- Modules/BiddingManager/GUI.lua:222
 CLM.L["Bid your current DKP (%s)."] = "Biete deine aktuellen DKP (%s)."
 -- Modules/AuctionManager/GUI.lua:221
 CLM.L["Bid"] = "Bieten"
@@ -358,8 +358,10 @@ CLM.L["Bidding over current standings not allowed"] = "Gebot über aktuellem Pun
 CLM.L["Bidding while below minimum standings not allowed"] = "Bieten unterhalb der Mindestwertung nicht zulässig"
 -- MinimapIcon.lua:138
 -- Modules/BiddingManager/BiddingManager.lua:47
--- Modules/BiddingManager/GUI.lua:397
--- Modules/BiddingManager/GUI.lua:558
+-- Modules/BiddingManager/GUI.lua:413
+-- Modules/BiddingManager/GUI.lua:506
+-- Modules/BiddingManager/GUI.lua:514
+-- Modules/BiddingManager/GUI.lua:576
 -- Modules/RosterManager/Options.lua:874
 CLM.L["Bidding"] = "Bieten"
 -- Modules/AuctionHistoryManager/GUI.lua:137
@@ -398,11 +400,11 @@ CLM.L["Buru the Gorger"] = "Buru der Verschlinger"
 CLM.L["Button Names"] = "Knopfnamen"
 -- Modules/AutoAwardManager/EncounterIDs.lua:31
 CLM.L["C'Thun"] = "C'Thun"
--- Modules/BiddingManager/GUI.lua:201
--- Modules/BiddingManager/GUI.lua:352
+-- Modules/BiddingManager/GUI.lua:199
+-- Modules/BiddingManager/GUI.lua:365
 CLM.L["Cancel your bid."] = "Dein Gebot abbrechen."
--- Modules/BiddingManager/GUI.lua:200
--- Modules/BiddingManager/GUI.lua:351
+-- Modules/BiddingManager/GUI.lua:198
+-- Modules/BiddingManager/GUI.lua:364
 CLM.L["Cancel"] = "Abbruch"
 -- Modules/RosterManager/Options.lua:617
 CLM.L["Change roster name."] = "Rostername ändern."
@@ -438,7 +440,7 @@ CLM.L["Classic"] = "Classic"
 CLM.L["Clear all classes."] = "Alle Klassen löschen."
 -- Integrations/GUI.lua:470
 CLM.L["Clear output"] = "Ausgabe löschen"
--- Modules/BiddingManager/GUI.lua:86
+-- Modules/BiddingManager/GUI.lua:84
 CLM.L["Close on bid"] = "Schließen Sie das Angebot"
 -- Utils.lua:755
 CLM.L["Common"] = "Üblich"
@@ -477,6 +479,7 @@ CLM.L["Creates new roster with default configuration"] = "Erstellt einen neuen R
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 -- Global/GlobalConfigs.lua:365
 CLM.L["Ctrl"] = "Ctrl"
+-- Modules/BiddingManager/GUI.lua:514
 -- Modules/AuctionManager/GUI.lua:225
 CLM.L["Current"] = "Aktuell"
 -- Alerts/Alerts.lua:17
@@ -870,8 +873,8 @@ CLM.L["Item value mode"] = "Gegenstandswert Modus"
 CLM.L["Item value must be positive"] = "Gestandswertswert muss im Positiven liegen"
 -- Modules/RosterManager/Options.lua:927
 CLM.L["Item value overrides"] = "Überschreibe den Gegenstandswert"
--- Modules/BiddingManager/GUI.lua:140
--- Modules/BiddingManager/GUI.lua:280
+-- Modules/BiddingManager/GUI.lua:138
+-- Modules/BiddingManager/GUI.lua:292
 -- Modules/AuctionManager/GUI.lua:308
 CLM.L["Item"] = "Gegenstand"
 -- Modules/AutoAwardManager/EncounterIDs.lua:104
@@ -970,7 +973,7 @@ CLM.L["Lucifron"] = "Lucifron"
 CLM.L["M'uru"] = "M'uru"
 -- Integrations/Integrations.lua:133
 -- Integrations/Integrations.lua:138
--- Modules/BiddingManager/GUI.lua:158
+-- Modules/BiddingManager/GUI.lua:156
 CLM.L["MS"] = "MS"
 -- Modules/AutoAwardManager/EncounterIDs.lua:34
 CLM.L["Maexxna"] = "Maexxna"
@@ -1169,11 +1172,11 @@ CLM.L["Note to be added to award. Max 25 characters. It is recommended to not in
 CLM.L["Note"] = "Notiz"
 -- Modules/AutoAwardManager/EncounterIDs.lua:39
 CLM.L["Noth the Plaguebringer"] = "Noth der Seuchenfürst"
--- Modules/BiddingManager/GUI.lua:185
--- Modules/BiddingManager/GUI.lua:336
-CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Melden dass man auf ein Gegenstand passt. Löscht jegliche Gebote."
 -- Modules/BiddingManager/GUI.lua:183
--- Modules/BiddingManager/GUI.lua:334
+-- Modules/BiddingManager/GUI.lua:349
+CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Melden dass man auf ein Gegenstand passt. Löscht jegliche Gebote."
+-- Modules/BiddingManager/GUI.lua:181
+-- Modules/BiddingManager/GUI.lua:347
 CLM.L["Notify that you are passing on the item."] = "Melden das man auf einen Gegenstand passt."
 -- Integrations/GUI.lua:149
 CLM.L["November"] = "November"
@@ -1181,7 +1184,7 @@ CLM.L["November"] = "November"
 CLM.L["Num"] = "Nummer"
 -- Integrations/Integrations.lua:143
 -- Integrations/Integrations.lua:148
--- Modules/BiddingManager/GUI.lua:169
+-- Modules/BiddingManager/GUI.lua:167
 CLM.L["OS"] = "OS"
 -- Integrations/GUI.lua:148
 CLM.L["October"] = "Oktober"
@@ -1240,8 +1243,8 @@ CLM.L["PR"] = "PR"
 CLM.L["Paladin"] = "Paladin"
 -- Modules/GUI/UnifiedGUI_Raids.lua:289
 CLM.L["Participated"] = "Teilnehmen"
--- Modules/BiddingManager/GUI.lua:180
--- Modules/BiddingManager/GUI.lua:331
+-- Modules/BiddingManager/GUI.lua:178
+-- Modules/BiddingManager/GUI.lua:344
 CLM.L["Pass"] = "Passe"
 -- Modules/AuctionManager/AuctionManager.lua:679
 CLM.L["Passing after bidding not allowed"] = "Passen ist nach dem Bieten nicht erlaubt."
@@ -1664,11 +1667,11 @@ CLM.L["Time"] = "Zeit"
 CLM.L["Timetravel"] = "Zeitreise"
 -- Modules/AuctionHistoryManager/GUI.lua:275
 CLM.L["Toggle Auction History window display"] = "Auktionsfenster Anzeige umschalten"
--- Modules/AuctionManager/GUI.lua:713
+-- Modules/AuctionManager/GUI.lua:719
 CLM.L["Toggle Auctioning window display"] = "Auktionsfenster Anzeige umschalten"
 -- Modules/BiddingManager/BiddingManager.lua:51
 CLM.L["Toggle Bidding auto-open"] = "Automatisches öffnen des Bietfensters umschalten"
--- Modules/BiddingManager/GUI.lua:559
+-- Modules/BiddingManager/GUI.lua:577
 CLM.L["Toggle Bidding window display"] = "Bietfenster Anzeige umschalten"
 -- Modules/LootQueueManager/GUI.lua:263
 CLM.L["Toggle Loot Queue window display"] = "Lootschlange Fensteranzeige umschalten"
@@ -1681,7 +1684,7 @@ CLM.L["Toggle auto open and auto close on auction start and stop"] = "Zeigt auto
 CLM.L["Toggle changelog window display"] = "Zeigt das Änderungsprotokoll Fenster"
 -- Modules/Changelog/GUI.lua:47
 CLM.L["Toggle changelog"] = "Zeigt das Änderungsprotokoll"
--- Modules/BiddingManager/GUI.lua:87
+-- Modules/BiddingManager/GUI.lua:85
 CLM.L["Toggle closing bidding UI after submitting bid."] = "Umschaltung der Bieter Benutzeroberfläche nach dem Einreichen von Angebot."
 -- Integrations/GUI.lua:509
 CLM.L["Toggle export window display"] = "Umschalten des Exportfensters umschalten"
@@ -1770,7 +1773,7 @@ CLM.L["Val'kyr Twins"] = "Val'kyr Twins"
 CLM.L["Valithria Dreamwalker"] = "Valitria Dreamwalker"
 -- Modules/AuctionManager/GUI.lua:359
 CLM.L["Value ranges"] = "Fernkampf Werte"
--- Modules/BiddingManager/GUI.lua:150
+-- Modules/BiddingManager/GUI.lua:148
 CLM.L["Value you want to bid. Press Enter or click Okay button to accept."] = "Wert den du bieten möchtest. Drücke Enter oder klicke den Okay Knopf zum akzeptieren."
 -- Modules/GUI/UnifiedGUI_History.lua:146
 CLM.L["Value"] = "Wert"

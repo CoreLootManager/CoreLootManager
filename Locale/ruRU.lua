@@ -116,7 +116,7 @@ CLM.L["Akil'zon"] = "Акил'зон"
 CLM.L["Al'ar"] = "Ал'ар"
 -- Modules/AutoAwardManager/EncounterIDs.lua:125
 CLM.L["Algalon the Observer"] = "Алгалон Наблюдатель"
--- Modules/BiddingManager/GUI.lua:219
+-- Modules/BiddingManager/GUI.lua:221
 CLM.L["All In"] = "Вабанк"
 -- Migration.lua:28
 CLM.L["All migration entries were commited and executed. Congratulations!"] = "Все мигрированные записи были добавлены. Поздравляем!"
@@ -336,9 +336,9 @@ CLM.L["Bid %s denied!"] = "Ставка %s не принята!"
 CLM.L["Bid cancelling not allowed"] = "Отмена ставок запрещена"
 -- Modules/AuctionManager/AuctionManager.lua:676
 CLM.L["Bid increment too low"] = "Слишком низкое увеличение ставки"
--- Modules/BiddingManager/GUI.lua:159
+-- Modules/BiddingManager/GUI.lua:157
 CLM.L["Bid input values as Main spec bid."] = "Ставка МС."
--- Modules/BiddingManager/GUI.lua:170
+-- Modules/BiddingManager/GUI.lua:168
 CLM.L["Bid input values as Off spec bid."] = "Ставка ОС."
 -- Modules/AuctionManager/AuctionManager.lua:244
 CLM.L["Bid tiers: %s."] = "Тиры ставок: %s."
@@ -346,9 +346,9 @@ CLM.L["Bid tiers: %s."] = "Тиры ставок: %s."
 CLM.L["Bid too high"] = "Ставка слишком высокая"
 -- Modules/AuctionManager/AuctionManager.lua:673
 CLM.L["Bid too low"] = "Ставка слишком низкая"
--- Modules/BiddingManager/GUI.lua:149
+-- Modules/BiddingManager/GUI.lua:147
 CLM.L["Bid value"] = "Ставка"
--- Modules/BiddingManager/GUI.lua:220
+-- Modules/BiddingManager/GUI.lua:222
 CLM.L["Bid your current DKP (%s)."] = "Поставьте свое текущее ДКП (%s)."
 -- Modules/AuctionManager/GUI.lua:221
 CLM.L["Bid"] = "Ставка"
@@ -358,8 +358,10 @@ CLM.L["Bidding over current standings not allowed"] = "Ставки выше т�
 CLM.L["Bidding while below minimum standings not allowed"] = "Ставки при отрицательных значениях запрещены"
 -- MinimapIcon.lua:138
 -- Modules/BiddingManager/BiddingManager.lua:47
--- Modules/BiddingManager/GUI.lua:397
--- Modules/BiddingManager/GUI.lua:558
+-- Modules/BiddingManager/GUI.lua:413
+-- Modules/BiddingManager/GUI.lua:506
+-- Modules/BiddingManager/GUI.lua:514
+-- Modules/BiddingManager/GUI.lua:576
 -- Modules/RosterManager/Options.lua:874
 CLM.L["Bidding"] = "Ставки"
 -- Modules/AuctionHistoryManager/GUI.lua:137
@@ -398,11 +400,11 @@ CLM.L["Buru the Gorger"] = "Буру Ненасытный"
 CLM.L["Button Names"] = "Имена кнопок"
 -- Modules/AutoAwardManager/EncounterIDs.lua:31
 CLM.L["C'Thun"] = "К'тун"
--- Modules/BiddingManager/GUI.lua:201
--- Modules/BiddingManager/GUI.lua:352
+-- Modules/BiddingManager/GUI.lua:199
+-- Modules/BiddingManager/GUI.lua:365
 CLM.L["Cancel your bid."] = "Отменить свою ставку."
--- Modules/BiddingManager/GUI.lua:200
--- Modules/BiddingManager/GUI.lua:351
+-- Modules/BiddingManager/GUI.lua:198
+-- Modules/BiddingManager/GUI.lua:364
 CLM.L["Cancel"] = "Отмена"
 -- Modules/RosterManager/Options.lua:617
 CLM.L["Change roster name."] = "Изменить название состава."
@@ -438,7 +440,7 @@ CLM.L["Classic"] = "Классика"
 CLM.L["Clear all classes."] = "Убирает все классы."
 -- Integrations/GUI.lua:470
 CLM.L["Clear output"] = "Очистить"
--- Modules/BiddingManager/GUI.lua:86
+-- Modules/BiddingManager/GUI.lua:84
 CLM.L["Close on bid"] = "Закрыть ставку"
 -- Utils.lua:755
 CLM.L["Common"] = "Обычное"
@@ -477,6 +479,7 @@ CLM.L["Creates new roster with default configuration"] = "Создает нов�
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 -- Global/GlobalConfigs.lua:365
 CLM.L["Ctrl"] = "Ctrl"
+-- Modules/BiddingManager/GUI.lua:514
 -- Modules/AuctionManager/GUI.lua:225
 CLM.L["Current"] = "Текущий"
 -- Alerts/Alerts.lua:17
@@ -870,8 +873,8 @@ CLM.L["Item value mode"] = "Режим стоимости вещи"
 CLM.L["Item value must be positive"] = "Стоимость вещи должна быть положительная"
 -- Modules/RosterManager/Options.lua:927
 CLM.L["Item value overrides"] = "Переназначение стоимости"
--- Modules/BiddingManager/GUI.lua:140
--- Modules/BiddingManager/GUI.lua:280
+-- Modules/BiddingManager/GUI.lua:138
+-- Modules/BiddingManager/GUI.lua:292
 -- Modules/AuctionManager/GUI.lua:308
 CLM.L["Item"] = "Предмет"
 -- Modules/AutoAwardManager/EncounterIDs.lua:104
@@ -970,7 +973,7 @@ CLM.L["Lucifron"] = "Люцифрон"
 CLM.L["M'uru"] = "М'уру"
 -- Integrations/Integrations.lua:133
 -- Integrations/Integrations.lua:138
--- Modules/BiddingManager/GUI.lua:158
+-- Modules/BiddingManager/GUI.lua:156
 CLM.L["MS"] = "МС"
 -- Modules/AutoAwardManager/EncounterIDs.lua:34
 CLM.L["Maexxna"] = "Мексна"
@@ -1169,11 +1172,11 @@ CLM.L["Note to be added to award. Max 25 characters. It is recommended to not in
 CLM.L["Note"] = "Заметка"
 -- Modules/AutoAwardManager/EncounterIDs.lua:39
 CLM.L["Noth the Plaguebringer"] = "Нот Чумной"
--- Modules/BiddingManager/GUI.lua:185
--- Modules/BiddingManager/GUI.lua:336
-CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Уведомьте, что вы пасуете на предмет. Отменяет любые текущие ставки."
 -- Modules/BiddingManager/GUI.lua:183
--- Modules/BiddingManager/GUI.lua:334
+-- Modules/BiddingManager/GUI.lua:349
+CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Уведомьте, что вы пасуете на предмет. Отменяет любые текущие ставки."
+-- Modules/BiddingManager/GUI.lua:181
+-- Modules/BiddingManager/GUI.lua:347
 CLM.L["Notify that you are passing on the item."] = "Уведомьте, что вы пасуете на предмет."
 -- Integrations/GUI.lua:149
 CLM.L["November"] = "Ноябрь"
@@ -1181,7 +1184,7 @@ CLM.L["November"] = "Ноябрь"
 CLM.L["Num"] = "Значение"
 -- Integrations/Integrations.lua:143
 -- Integrations/Integrations.lua:148
--- Modules/BiddingManager/GUI.lua:169
+-- Modules/BiddingManager/GUI.lua:167
 CLM.L["OS"] = "ОС"
 -- Integrations/GUI.lua:148
 CLM.L["October"] = "Октябрь"
@@ -1240,8 +1243,8 @@ CLM.L["PR"] = "PR"
 CLM.L["Paladin"] = "Паладин"
 -- Modules/GUI/UnifiedGUI_Raids.lua:289
 CLM.L["Participated"] = "Участвовавшие"
--- Modules/BiddingManager/GUI.lua:180
--- Modules/BiddingManager/GUI.lua:331
+-- Modules/BiddingManager/GUI.lua:178
+-- Modules/BiddingManager/GUI.lua:344
 CLM.L["Pass"] = "Пас"
 -- Modules/AuctionManager/AuctionManager.lua:679
 CLM.L["Passing after bidding not allowed"] = "Пас после ставки запрещен"
@@ -1664,11 +1667,11 @@ CLM.L["Time"] = "Время"
 CLM.L["Timetravel"] = "Путешествие"
 -- Modules/AuctionHistoryManager/GUI.lua:275
 CLM.L["Toggle Auction History window display"] = "Включить отображение окна истории торгов"
--- Modules/AuctionManager/GUI.lua:713
+-- Modules/AuctionManager/GUI.lua:719
 CLM.L["Toggle Auctioning window display"] = "Включить отображения окна ставок"
 -- Modules/BiddingManager/BiddingManager.lua:51
 CLM.L["Toggle Bidding auto-open"] = "Включить авто-открытие ставок"
--- Modules/BiddingManager/GUI.lua:559
+-- Modules/BiddingManager/GUI.lua:577
 CLM.L["Toggle Bidding window display"] = "Включить отображение окна ставок"
 -- Modules/LootQueueManager/GUI.lua:263
 CLM.L["Toggle Loot Queue window display"] = "Включить отображение окна очереди предметов"
@@ -1681,7 +1684,7 @@ CLM.L["Toggle auto open and auto close on auction start and stop"] = "Включ
 CLM.L["Toggle changelog window display"] = "Включить отображение окна лога изменений"
 -- Modules/Changelog/GUI.lua:47
 CLM.L["Toggle changelog"] = "Включить лог изменений"
--- Modules/BiddingManager/GUI.lua:87
+-- Modules/BiddingManager/GUI.lua:85
 CLM.L["Toggle closing bidding UI after submitting bid."] = "Закрыть окно ставок после отправления ставки."
 -- Integrations/GUI.lua:509
 CLM.L["Toggle export window display"] = "Включить отображение окна экспорта"
@@ -1770,7 +1773,7 @@ CLM.L["Val'kyr Twins"] = "Валь'киры Близнецы"
 CLM.L["Valithria Dreamwalker"] = "Валитрия Сновидица"
 -- Modules/AuctionManager/GUI.lua:359
 CLM.L["Value ranges"] = "Диапазон значений"
--- Modules/BiddingManager/GUI.lua:150
+-- Modules/BiddingManager/GUI.lua:148
 CLM.L["Value you want to bid. Press Enter or click Okay button to accept."] = "Значение которое вы хотите поставить. Нажмите Enter или Ставка для принятия ставки."
 -- Modules/GUI/UnifiedGUI_History.lua:146
 CLM.L["Value"] = "Значение"
