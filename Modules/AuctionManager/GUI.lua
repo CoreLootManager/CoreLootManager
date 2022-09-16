@@ -31,7 +31,8 @@ local BASE_WIDTH  = 365 + (isElvUI and 15 or 0)
 
 local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
-local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
+-- local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
+local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
 local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
@@ -667,7 +668,7 @@ function AuctionManagerGUI:Refresh()
                 bid = roster:GetFieldName(bidTypes[name]) or bid
             else
                 if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
-                    color = colorYellow
+                    color = colorTurquoise
                 end
             end
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
