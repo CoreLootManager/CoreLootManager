@@ -457,7 +457,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             name = "Info",
             desc = (function()
                 -- Legend
-                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].."\n",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].."\n",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
+                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].." ",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].." ",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
                 if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] .. "\n" .. legend end
                 -- Unique did any action dict
                 local didAnyAction = {}
