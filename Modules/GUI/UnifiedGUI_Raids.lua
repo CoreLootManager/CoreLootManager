@@ -18,13 +18,13 @@ local function ST_GetRaid(row)
 end
 
 local function refreshFn(...)
-    CLM.GUI.Unified:Refresh(...)
+    UnifiedGUI:Refresh(...)
 end
 
 local UnifiedGUI_Raids = {
     name = "raids",
     -- filter = CLM.MODELS.Filters:New(
-    -- (function() CLM.GUI.Unified:FilterScrollingTable() end),
+    -- (function() UnifiedGUI:FilterScrollingTable() end),
     -- UTILS.Set({"class", "inGuild", "external"}),
     -- UTILS.Set({"buttons", "search"}),
     -- nil, 1),
@@ -34,7 +34,7 @@ local UnifiedGUI_Raids = {
 
 function UnifiedGUI_Raids:GetSelection()
     LOG:Trace("UnifiedGUI_Raids:GetSelection()")
-    local st = CLM.GUI.Unified:GetScrollingTable()
+    local st = UnifiedGUI:GetScrollingTable()
 
     local raid
     local _, selection = next(st:GetSelection())
@@ -347,9 +347,37 @@ local function tableDataFeeder()
     return data
 end
 
-local function initializeHandler()
-    LOG:Trace("UnifiedGUI_Raids initializeHandler()")
-    UnifiedGUI_Raids.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
+-- local function refreshHandler()
+-- end
+
+-- local function beforeShowHandler()
+-- end
+
+local function storeHandler()
+    LOG:Trace("UnifiedGUI_Raids storeHandler()")
+    local storage = UnifiedGUI:GetStorage(UnifiedGUI_Raids.name)
+    storage.roster = UnifiedGUI_Raids.roster
+end
+
+local function restoreHandler()
+    LOG:Trace("UnifiedGUI_Raids restoreHandler()")
+    local storage = UnifiedGUI:GetStorage(UnifiedGUI_Raids.name)
+    UnifiedGUI_Raids.roster = storage.roster
+end
+
+local function dataReadyHandler()
+    LOG:Trace("UnifiedGUI_Raids dataReadyHandler()")
+    if not RosterManager:GetRosterByName(UnifiedGUI_Raids.roster) then
+        local _, roster = next(RosterManager:GetRosters())
+        if roster then
+            UnifiedGUI_Raids.roster = roster:UID()
+        end
+    end
+
+    UpdateRaid(UnifiedGUI_Raids, UnifiedGUI_Raids.roster)
+end
+
+UnifiedGUI_Raids.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
                 title = L["Request standby"],
@@ -361,7 +389,7 @@ local function initializeHandler()
                         LOG:Message(L["Please select a raid"])
                     end
                     refreshFn(true)
-                    CLM.GUI.Unified:ClearSelection()
+                    UnifiedGUI:ClearSelection()
                 end)
             },
             {
@@ -374,7 +402,7 @@ local function initializeHandler()
                         LOG:Message(L["Please select a raid"])
                     end
                     refreshFn(true)
-                    CLM.GUI.Unified:ClearSelection()
+                    UnifiedGUI:ClearSelection()
                 end)
             },
             {
@@ -390,7 +418,7 @@ local function initializeHandler()
                     else
                         LOG:Message(L["Please select a raid"])
                     end
-                    CLM.GUI.Unified:ClearSelection()
+                    UnifiedGUI:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -404,7 +432,7 @@ local function initializeHandler()
                     else
                         LOG:Message(L["Please select a raid"])
                     end
-                    CLM.GUI.Unified:ClearSelection()
+                    UnifiedGUI:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -418,7 +446,7 @@ local function initializeHandler()
                     else
                         LOG:Message(L["Please select a raid"])
                     end
-                    CLM.GUI.Unified:ClearSelection()
+                    UnifiedGUI:ClearSelection()
                 end),
                 trustedOnly = true,
                 color = "eeee00"
@@ -437,7 +465,7 @@ local function initializeHandler()
                     else
                         LOG:Message(L["Please select a raid"])
                     end
-                    CLM.GUI.Unified:ClearSelection()
+                    UnifiedGUI:ClearSelection()
                 end),
                 trustedOnly = true,
                 managerOnly = true,
@@ -447,39 +475,6 @@ local function initializeHandler()
         Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
         Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
-end
-
--- local function refreshHandler()
--- end
-
--- local function beforeShowHandler()
--- end
-
-local function storeHandler()
-    LOG:Trace("UnifiedGUI_Raids storeHandler()")
-    local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Raids.name)
-    storage.roster = UnifiedGUI_Raids.roster
-end
-
-local function restoreHandler()
-    LOG:Trace("UnifiedGUI_Raids restoreHandler()")
-    local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Raids.name)
-    UnifiedGUI_Raids.roster = storage.roster
-end
-
-local function dataReadyHandler()
-    LOG:Trace("UnifiedGUI_Raids dataReadyHandler()")
-    if not RosterManager:GetRosterByName(UnifiedGUI_Raids.roster) then
-        local _, roster = next(RosterManager:GetRosters())
-        if roster then
-            UnifiedGUI_Raids.roster = roster:UID()
-        end
-    end
-
-    UpdateRaid(UnifiedGUI_Raids, UnifiedGUI_Raids.roster)
-end
-
-
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Raids.name, 3,
     tableStructure,
@@ -487,7 +482,6 @@ UnifiedGUI:RegisterTab(
     nil,
     verticalOptionsFeeder,
     {
-        initialize = initializeHandler,
         -- refresh = refreshHandler,
         -- beforeShow = beforeShowHandler,
         store = storeHandler,
@@ -495,7 +489,7 @@ UnifiedGUI:RegisterTab(
         dataReady = dataReadyHandler
     }
 )
-
+restoreHandler()
 resolve(true)
 
 end)

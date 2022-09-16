@@ -1,6 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("RosterManager/RosterConfiguration", {"Models", "Constants"}, function(resolve, Models, CONSTANTS)
+define.module("RosterManager/RosterConfiguration", {"Models", "Constants", "Constants/ItemValueModes", "Constants/AuctionType", "Constants/ItemValueMode"},
+function(resolve, Models, CONSTANTS, ItemValueModes, AuctionType, ItemValueMode)
 local setmetatable = setmetatable
 
 local RosterConfiguration = {} -- Roster Configuration
@@ -14,9 +15,9 @@ function RosterConfiguration:New(i)
 
     o._ = {}
     -- Auction type: Open / Sealed / Vickrey
-    o._.auctionType = CONSTANTS.AUCTION_TYPE.SEALED
+    o._.auctionType = AuctionType.SEALED
     -- Item Value mode: Single-Priced / Ascending
-    o._.itemValueMode = CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
+    o._.itemValueMode = ItemValueMode.SINGLE_PRICED
     -- Zero-Sum Bank
     o._.zeroSumBank = false
     -- Zero-Sum Bank inflation value
@@ -218,8 +219,8 @@ end
 local function IsBoolean(value) return type(value) == "boolean" end
 local function IsNumeric(value) return type(value) == "number" end
 local function IsPositive(value) return value >= 0 end
-function RosterConfiguration._validate_auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
-function RosterConfiguration._validate_itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
+function RosterConfiguration._validate_auctionType(value) return AuctionTypeS[value] ~= nil end
+function RosterConfiguration._validate_itemValueMode(value) return ItemValueModes[value] ~= nil end
 function RosterConfiguration._validate_zeroSumBank(value) return IsBoolean(value) end
 function RosterConfiguration._validate_allowBelowMinStandings(value) return IsBoolean(value) end
 function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end

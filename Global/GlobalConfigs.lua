@@ -4,7 +4,7 @@ define.module("GlobalConfigs", {
     "Constants",
     "Utils",
     "Database",
-    "L"
+    "L",
 }, function(resolve,CONSTANTS, UTILS, Database, L)
 
     CONSTANTS.MODIFIER_COMBINATION = {
@@ -212,7 +212,7 @@ resolve(GlobalConfigs)
 
 end)
 
-define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Constants"}, function(resolve, L, ConfigManager, self, CONSTANTS)
+define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Constants/Configs", "Constants/ItemQuality"}, function(resolve, L, ConfigManager, GlobalConfigs, Configs, ItemQuality)
 
     local options = {
         discord = {
@@ -230,8 +230,8 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             name = L["Point & Loot alerts"],
             desc = L["Toggles alerts display when receiving Points or loot."],
             type = "toggle",
-            set = function(i, v) self:SetAlerts(v) end,
-            get = function(i) return self:GetAlerts() end,
+            set = function(i, v) GlobalConfigs:SetAlerts(v) end,
+            get = function(i) return GlobalConfigs:GetAlerts() end,
             width = "double",
             order = 2
         },
@@ -263,8 +263,8 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             name = L["Addon sounds"],
             desc = L["Toggles addon sounds."],
             type = "toggle",
-            set = function(i, v) self:SetSounds(v) end,
-            get = function(i) return self:GetSounds() end,
+            set = function(i, v) GlobalConfigs:SetSounds(v) end,
+            get = function(i) return GlobalConfigs:GetSounds() end,
             width = "double",
             order = 2.5
         },
@@ -285,8 +285,8 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             name = L["Announce loot from corpse to Raid"],
             desc = L["Toggles loot announcement to raid"],
             type = "toggle",
-            set = function(i, v) self:SetAnnounceLootToRaid(v) end,
-            get = function(i) return self:GetAnnounceLootToRaid() end,
+            set = function(i, v) GlobalConfigs:SetAnnounceLootToRaid(v) end,
+            get = function(i) return GlobalConfigs:GetAnnounceLootToRaid() end,
             width = "double",
             order = 6
         },
@@ -294,8 +294,8 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             name = L["Only when ML/RL"],
             desc = L["When enabled, this will make loot announcement display only if you're Master Looter or Raid Leader (if there is no Master Looter)."],
             type = "toggle",
-            set = function(i, v) self:SetAnnounceLootToRaidOwnerOnly(v) end,
-            get = function(i) return self:GetAnnounceLootToRaidOwnerOnly() end,
+            set = function(i, v) GlobalConfigs:SetAnnounceLootToRaidOwnerOnly(v) end,
+            get = function(i) return GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() end,
             width = "double",
             order = 7
         },
@@ -303,9 +303,9 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             name = L["Announcement loot rarity"],
             desc = L["Select loot rarity for the annoucement to raid."],
             type = "select",
-            values = CONSTANTS.ITEM_QUALITY,
-            set = function(i, v) self:SetAnnounceLootToRaidLevel(v) end,
-            get = function(i) return self:GetAnnounceLootToRaidLevel() end,
+            values = ItemQuality,
+            set = function(i, v) GlobalConfigs:SetAnnounceLootToRaidLevel(v) end,
+            get = function(i) return GlobalConfigs:GetAnnounceLootToRaidLevel() end,
             order = 8
         },
         rw_header = {
@@ -317,8 +317,8 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             name = L["Raid Start/End"],
             desc = L["Enables announcing raid start and end."],
             type = "toggle",
-            set = function(i, v) self:SetRaidWarning(v) end,
-            get = function(i) return self:GetRaidWarning() end,
+            set = function(i, v) GlobalConfigs:SetRaidWarning(v) end,
+            get = function(i) return GlobalConfigs:GetRaidWarning() end,
             -- width = "double",
             order = 121
         },
@@ -326,40 +326,40 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             name = L["Auction Start/End"],
             desc = L["Enable announcing auction start and end."],
             type = "toggle",
-            set = function(i, v) self:SetAuctionWarning(v) end,
-            get = function(i) return self:GetAuctionWarning() end,
+            set = function(i, v) GlobalConfigs:SetAuctionWarning(v) end,
+            get = function(i) return GlobalConfigs:GetAuctionWarning() end,
             order = 122
         },
         rw_commands = {
             name = L["Chat Commands"],
             desc = L["Enables announcing chat commands at auction start."],
             type = "toggle",
-            set = function(i, v) self:SetCommandsWarning(v) end,
-            get = function(i) return self:GetCommandsWarning() end,
+            set = function(i, v) GlobalConfigs:SetCommandsWarning(v) end,
+            get = function(i) return GlobalConfigs:GetCommandsWarning() end,
             order = 123
         },
         rw_countdown = {
             name = L["Auction End Countdown"],
             desc = L["Enables raid-warning countdown for auctions."],
             type = "toggle",
-            set = function(i, v) self:SetCountdownWarning(v) end,
-            get = function(i) return self:GetCountdownWarning() end,
+            set = function(i, v) GlobalConfigs:SetCountdownWarning(v) end,
+            get = function(i) return GlobalConfigs:GetCountdownWarning() end,
             order = 124
         },
         rw_loot = {
             name = L["Loot Awards"],
             desc = L["Enables announcing loot awards."],
             type = "toggle",
-            set = function(i, v) self:SetLootWarning(v) end,
-            get = function(i) return self:GetLootWarning() end,
+            set = function(i, v) GlobalConfigs:SetLootWarning(v) end,
+            get = function(i) return GlobalConfigs:GetLootWarning() end,
             order = 125
         },
         rw_bids = {
             name = L["Bids"],
             desc = L["Enables announcing new highest bid (when applicable)."],
             type = "toggle",
-            set = function(i, v) self:SetBidsWarning(v) end,
-            get = function(i) return self:GetBidsWarning() end,
+            set = function(i, v) GlobalConfigs:SetBidsWarning(v) end,
+            get = function(i) return GlobalConfigs:GetBidsWarning() end,
             order = 126
         },
         danger_zone_header = {
@@ -371,11 +371,11 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             type = "toggle",
             name = L["Disable data synchronisation"],
             desc = L["Disable data synchronisation. This might lead to unexpected consequences. Use this at your own risk. Requires /reload to apply."],
-            set = function(i, v) self:SetDisableSync(v) end,
-            get = function(i) return self:GetDisableSync() end,
+            set = function(i, v) GlobalConfigs:SetDisableSync(v) end,
+            get = function(i) return GlobalConfigs:GetDisableSync() end,
             width = "full",
             order = 10001
         }
     }
-    ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
 end)

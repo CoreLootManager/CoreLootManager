@@ -1,10 +1,8 @@
 -- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("BiddingManager/Gui", {"Log", "Utils", "L", "Database", "ConfigManager", "EventManager", "ProfileManager", "RosterManager", "BiddingManager", "Constants/ItemValueMode", "Constants/AuctionTypesOpen", "Constants/Configs"},
+function(resolve, LOG, UTILS, L, Database, ConfigManager, EventManager, ProfileManager, RosterManager, BiddingManager, ItemValueMode, AuctionTypesOpen, Configs)
 
 local pairs, ipairs = pairs, ipairs
 local tostring, tonumber = tostring, tonumber
@@ -59,7 +57,7 @@ end
 local BiddingManagerGUI = {}
 
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('bidding', {
+    self.db = Database:GUI('bidding', {
         location = {nil, nil, "CENTER", 0, 0 },
         closeOnBid = false
     })
@@ -83,21 +81,21 @@ end
 local function CreateConfig(self)
     local options = {
         bidding_gui_close_on_bid = {
-            name = CLM.L["Close on bid"],
-            desc = CLM.L["Toggle closing bidding UI after submitting bid."],
+            name = L["Close on bid"],
+            desc = L["Toggle closing bidding UI after submitting bid."],
             type = "toggle",
             set = function(i, v) self.db.closeOnBid = v and true or false end,
             get = function(i) return GetCloseOnBid(self) end,
             order = 75
         }
     }
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
 end
 
 function BiddingManagerGUI:Initialize()
     LOG:Trace("BiddingManagerGUI:Initialize()")
     InitializeDB(self)
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
     CreateConfig(self)
     self:RegisterSlash()
@@ -121,7 +119,7 @@ function BiddingManagerGUI:Initialize()
 end
 
 function BiddingManagerGUI:BidCurrent()
-    CLM.MODULES.BiddingManager:Bid(self.bid)
+    BiddingManager:Bid(self.bid)
 end
 
 local function GenerateValueButtonsAuctionOptions(self,
@@ -137,7 +135,7 @@ local function GenerateValueButtonsAuctionOptions(self,
             order = 1
         },
         item = {
-            name = "",--CLM.L["Item"],
+            name = "",--L["Item"],
             type = "input",
             get = (function(i) return itemLink or "" end),
             set = (function(i,v) end), -- Intentionally: do not override
@@ -146,8 +144,8 @@ local function GenerateValueButtonsAuctionOptions(self,
             itemLink = shortItemLink,
         },
         bid_value = {
-            name = "",--CLM.L["Bid value"],
-            desc = CLM.L["Value you want to bid. Press Enter or click Okay button to accept."],
+            name = "",--L["Bid value"],
+            desc = L["Value you want to bid. Press Enter or click Okay button to accept."],
             type = "input",
             set = (function(i,v) self.bid = tonumber(v) or 0 end),
             get = (function(i) return tostring(self.bid) end),
@@ -155,73 +153,73 @@ local function GenerateValueButtonsAuctionOptions(self,
             order = 3
         },
         bid = {
-            name = CLM.L["MS"],
-            desc = CLM.L["Bid input values as Main spec bid."],
+            name = L["MS"],
+            desc = L["Bid input values as Main spec bid."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:Bid(self.bid)
+                BiddingManager:Bid(self.bid)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             width = 0.3,
             order = 4
         },
         os = {
-            name = CLM.L["OS"],
-            desc = CLM.L["Bid input values as Off spec bid."],
+            name = L["OS"],
+            desc = L["Bid input values as Off spec bid."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:Bid(self.bid, CONSTANTS.BID_TYPE.OFF_SPEC)
+                BiddingManager:Bid(self.bid, CONSTANTS.BID_TYPE.OFF_SPEC)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             width = 0.3,
             order = 5
         },
         pass = {
-            name = CLM.L["Pass"],
+            name = L["Pass"],
             desc = (function()
-                if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
-                    return CLM.L["Notify that you are passing on the item."]
+                if AuctionTypesOpen[self.auctionType] then
+                    return L["Notify that you are passing on the item."]
                 else
-                    return CLM.L["Notify that you are passing on the item. Cancels any existing bids."]
+                    return L["Notify that you are passing on the item. Cancels any existing bids."]
                 end
             end),
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:NotifyPass()
+                BiddingManager:NotifyPass()
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             disabled = (function()
-                    return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
+                    return AuctionTypesOpen[self.auctionType] and (BiddingManager:GetLastBidValue() ~= nil)
             end),
             width = 0.35,
             order = 6
         },
         cancel = {
-            name = CLM.L["Cancel"],
-            desc = CLM.L["Cancel your bid."],
+            name = L["Cancel"],
+            desc = L["Cancel your bid."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:CancelBid()
+                BiddingManager:CancelBid()
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
+            disabled = (function() return AuctionTypesOpen[self.auctionType] and (itemValueMode == ItemValueMode.ASCENDING) end),
             width = 0.45,
             order = 7
         }
     }
     local offset = 8
     local usedTiers
-    if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
+    if itemValueMode == ItemValueMode.TIERED then
         usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
-    elseif (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) then
-        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+    elseif (itemValueMode == ItemValueMode.ASCENDING) then
+        if AuctionTypesOpen[self.auctionType] then
             options["all_in"] = {
-                name = CLM.L["All In"],
-                desc = sformat(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
+                name = L["All In"],
+                desc = sformat(L["Bid your current DKP (%s)."], tostring(self.standings)),
                 type = "execute",
                 func = (function()
                     self.bid = self.standings
-                    CLM.MODULES.BiddingManager:Bid(self.bid)
+                    BiddingManager:Bid(self.bid)
                     if GetCloseOnBid(self) then self:Toggle() end
                 end),
                 width = rowMultiplier,
@@ -249,7 +247,7 @@ local function GenerateValueButtonsAuctionOptions(self,
                     type = "execute",
                     func = (function()
                         self.bid = value
-                        CLM.MODULES.BiddingManager:Bid(self.bid, tier)
+                        BiddingManager:Bid(self.bid, tier)
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     width = row_width,
@@ -276,7 +274,7 @@ local function GenerateNamedButtonsAuctionOptions(self,
             order = 1
         },
         item = {
-            name = "",--CLM.L["Item"],
+            name = "",--L["Item"],
             type = "input",
             get = (function(i) return itemLink or "" end),
             set = (function(i,v) end), -- Intentionally: do not override
@@ -289,9 +287,9 @@ local function GenerateNamedButtonsAuctionOptions(self,
     local row_width = rowMultiplier/2
     local numButtons = 0
     local usedTiers
-    if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
+    if itemValueMode == ItemValueMode.TIERED then
         usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
-    elseif itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
+    elseif itemValueMode ~= ItemValueMode.ASCENDING then
         usedTiers = {
             CONSTANTS.SLOT_VALUE_TIER.BASE,
             CONSTANTS.SLOT_VALUE_TIER.MAX
@@ -308,7 +306,7 @@ local function GenerateNamedButtonsAuctionOptions(self,
                     type = "execute",
                     func = (function()
                         self.bid = value
-                        CLM.MODULES.BiddingManager:Bid(self.bid, tier)
+                        BiddingManager:Bid(self.bid, tier)
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     width = row_width,
@@ -327,34 +325,34 @@ local function GenerateNamedButtonsAuctionOptions(self,
     end
 
     options.pass = {
-        name = CLM.L["Pass"],
+        name = L["Pass"],
         desc = (function()
-            if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
-                return CLM.L["Notify that you are passing on the item."]
+            if AuctionTypesOpen[self.auctionType] then
+                return L["Notify that you are passing on the item."]
             else
-                return CLM.L["Notify that you are passing on the item. Cancels any existing bids."]
+                return L["Notify that you are passing on the item. Cancels any existing bids."]
             end
         end),
         type = "execute",
         func = (function()
-            CLM.MODULES.BiddingManager:NotifyPass()
+            BiddingManager:NotifyPass()
             if GetCloseOnBid(self) then self:Toggle() end
         end),
         disabled = (function()
-                return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
+                return AuctionTypesOpen[self.auctionType] and (BiddingManager:GetLastBidValue() ~= nil)
         end),
         width = cancelPassWidth,
         order = offset
     }
     options.cancel = {
-        name = CLM.L["Cancel"],
-        desc = CLM.L["Cancel your bid."],
+        name = L["Cancel"],
+        desc = L["Cancel your bid."],
         type = "execute",
         func = (function()
-            CLM.MODULES.BiddingManager:CancelBid()
+            BiddingManager:CancelBid()
             if GetCloseOnBid(self) then self:Toggle() end
         end),
-        disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
+        disabled = (function() return AuctionTypesOpen[self.auctionType] and (itemValueMode == ItemValueMode.ASCENDING) end),
         width = cancelPassWidth,
         order = offset + 1
     }
@@ -374,7 +372,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
         GetItemInfo(itemId)
     end
     local shortItemLink = "item:" .. tostring(itemId)
-    local itemValueMode = self.auctionInfo and self.auctionInfo:Mode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
+    local itemValueMode = self.auctionInfo and self.auctionInfo:Mode() or ItemValueMode.SINGLE_PRICED
     local values = self.auctionInfo and self.auctionInfo:Values() or {}
 
     local namedButtonsMode = self.roster and self.roster:GetConfiguration("namedButtons")
@@ -393,7 +391,7 @@ function BiddingManagerGUI:Create()
     LOG:Trace("BiddingManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Window")
-    f:SetTitle(CLM.L["Bidding"])
+    f:SetTitle(L["Bidding"])
     f:SetLayout("flow")
     f:EnableResize(false)
     f:SetWidth(BASE_WIDTH)
@@ -408,7 +406,7 @@ function BiddingManagerGUI:Create()
     -- Handle onHide information passing whenever the UI is closed
     local oldOnHide = f.frame:GetScript("OnHide")
     f.frame:SetScript("OnHide", (function(...)
-        CLM.MODULES.BiddingManager:NotifyHide()
+        BiddingManager:NotifyHide()
         oldOnHide(...)
     end))
     -- Hide by default
@@ -472,7 +470,7 @@ local function HandleWindowDisplay(self)
         self:Refresh()
         self.top:Show()
     else
-        CLM.MODULES.BiddingManager:NotifyCantUse()
+        BiddingManager:NotifyCantUse()
     end
 end
 
@@ -485,9 +483,9 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     self:BuildBar(duration)
     local values = auctionInfo:Values()
     self.bid = values[CONSTANTS.SLOT_VALUE_TIER.BASE]
-    local myProfile = CLM.MODULES.ProfileManager:GetMyProfile()
+    local myProfile = ProfileManager:GetMyProfile()
     if myProfile then
-        local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
+        local roster = RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
             self.auctionType = roster:GetConfiguration("auctionType")
             self.roster = roster
@@ -554,13 +552,13 @@ function BiddingManagerGUI:RegisterSlash()
     local options = {
         bid = {
             type = "execute",
-            name = CLM.L["Bidding"],
-            desc = CLM.L["Toggle Bidding window display"],
+            name = L["Bidding"],
+            desc = L["Toggle Bidding window display"],
             handler = self,
             func = "Toggle",
         }
     }
-    CLM.MODULES.ConfigManager:RegisterSlash(options)
+    ConfigManager:RegisterSlash(options)
 end
 
 function BiddingManagerGUI:Reset()
@@ -569,4 +567,7 @@ function BiddingManagerGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-CLM.GUI.BiddingManager = BiddingManagerGUI
+BiddingManagerGUI:Initialize()
+resolve(BiddingManagerGUI)
+
+end)

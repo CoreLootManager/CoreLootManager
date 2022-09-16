@@ -330,33 +330,6 @@ local function tableDataFeeder()
     return data
 end
 
-local function initializeHandler()
-    LOG:Trace("UnifiedGUI_History initializeHandler()")
-    UnifiedGUI_History.RightClickMenu = UTILS.GenerateDropDownMenu(
-        {
-            {
-                title = L["Remove selected"],
-                func = (function()
-                    local selectedLoot, selectedHistory = UnifiedGUI_History:GetSelection()
-                    for _, loot in pairs(selectedLoot) do
-                        LedgerManager:Remove(loot:Entry())
-                        EventManager:DispatchEvent(CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, {
-                            id = loot:Id(), name = loot:Owner():Name()
-                        }, loot:Timestamp() + 7200) -- only up to 2 hours after loot is created
-                    end
-                    for _, history in pairs(selectedHistory) do
-                        LedgerManager:Remove(history:Entry())
-                    end
-                    UnifiedGUI:ClearSelection()
-                end),
-                trustedOnly = true,
-                color = "cc0000"
-            }
-        },
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
-    )
-end
 
 -- local function refreshHandler()
 -- end
@@ -392,6 +365,31 @@ end
 --     CONSTANTS.HISTORY_TYPE.POINT
 -- })
 
+UnifiedGUI_History.RightClickMenu = UTILS.GenerateDropDownMenu(
+        {
+            {
+                title = L["Remove selected"],
+                func = (function()
+                    local selectedLoot, selectedHistory = UnifiedGUI_History:GetSelection()
+                    for _, loot in pairs(selectedLoot) do
+                        LedgerManager:Remove(loot:Entry())
+                        EventManager:DispatchEvent(CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, {
+                            id = loot:Id(), name = loot:Owner():Name()
+                        }, loot:Timestamp() + 7200) -- only up to 2 hours after loot is created
+                    end
+                    for _, history in pairs(selectedHistory) do
+                        LedgerManager:Remove(history:Entry())
+                    end
+                    UnifiedGUI:ClearSelection()
+                end),
+                trustedOnly = true,
+                color = "cc0000"
+            }
+        },
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
+        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    )
+
 UnifiedGUI:RegisterTab(
     UnifiedGUI_History.name, 2,
     tableStructure,
@@ -399,7 +397,6 @@ UnifiedGUI:RegisterTab(
     horizontalOptionsFeeder,
     nil,
     {
-        initialize = initializeHandler,
         -- refresh = refreshHandler,
         -- beforeShow = beforeShowHandler,
         store = storeHandler,
@@ -407,6 +404,6 @@ UnifiedGUI:RegisterTab(
         dataReady = dataReadyHandler
     }
 )
-
+restoreHandler()
 resolve(true)
 end)

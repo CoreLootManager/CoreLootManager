@@ -1,6 +1,6 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("Utils", {"Log", "Constants", "Meta:ADDON_TABLE"}, function(resolve, LOG, CONSTANTS, CLM)
+define.module("Utils", {"Log", "Constants", "Meta:ADDON_TABLE", "L"}, function(resolve, LOG, CONSTANTS, CLM, L)
 
 
 CLM.UTILS = {}
@@ -56,7 +56,7 @@ end
 local ColorCodeText = UTILS.ColorCodeText
 
 function UTILS.ColorCodeClass(className)
-    return ColorCodeText(CLM.L[className], GetClassColor(className).hex);
+    return ColorCodeText(L[className], GetClassColor(className).hex);
 end
 
 local colorCodedClassList = {}
@@ -405,7 +405,7 @@ function UTILS.NumberToClass(number)
 end
 
 function UTILS.GetClassReadable(class)
-    if class == "DEATHKNIGHT" then return CLM.L["Death Knight"] end
+    if class == "DEATHKNIGHT" then return L["Death Knight"] end
     return capitalize(class or "")
 end
 
@@ -472,16 +472,16 @@ function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine, maxProfiles)
     end
 
     if notIncludedProfiles > 0 then
-        tooltip:AddLine(notIncludedProfiles .. CLM.L[" more"])
+        tooltip:AddLine(notIncludedProfiles .. L[" more"])
     end
 end
 
-local greenYes = ColorCodeText(CLM.L["Yes"], "00cc00")
+local greenYes = ColorCodeText(L["Yes"], "00cc00")
 function UTILS.GreenYes()
     return greenYes
 end
 
-local redNo = ColorCodeText(CLM.L["No"], "cc0000")
+local redNo = ColorCodeText(L["No"], "cc0000")
 function UTILS.RedNo()
     return redNo
 end
@@ -750,17 +750,22 @@ function UTILS.DictNotEmpty(dict)
     return not rawequal(next(dict), nil)
 end
 
-CONSTANTS.ITEM_QUALITY = {
-    [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
-    [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
-    [2] = ColorCodeText(CLM.L["Uncommon"], "1eff00"),
-    [3] = ColorCodeText(CLM.L["Rare"], "0070dd"),
-    [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
-    [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
-}
 CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"
 
 
 resolve(UTILS)
+end)
+
+define.module("Constants/ItemQuality", {"L", "Utils"}, function(resolve, L, Utils)
+
+    resolve({
+        [0] = Utils.ColorCodeText(L["Poor"], "9d9d9d"),
+        [1] = Utils.ColorCodeText(L["Common"], "ffffff"),
+        [2] = Utils.ColorCodeText(L["Uncommon"], "1eff00"),
+        [3] = Utils.ColorCodeText(L["Rare"], "0070dd"),
+        [4] = Utils.ColorCodeText(L["Epic"], "a335ee"),
+        [5] = Utils.ColorCodeText(L["Legendary"], "ff8000"),
+    })
+
 end)

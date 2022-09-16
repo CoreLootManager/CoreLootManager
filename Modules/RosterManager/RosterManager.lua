@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("RosterManager", {
-    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database"
-}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database)
+    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database", "RosterManager/Roster", "ProfileManager/Profile", "L", "Constants/Configs"
+}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database, Roster, Profile, L, Configs)
 
 local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
@@ -40,7 +40,7 @@ function RosterManager:Initialize()
                 return
             end
             if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
-            local roster = CLM.MODELS.Roster:New(uid, pointType, self.db.raidsForFullAttendance, self.db.attendanceWeeksWindow)
+            local roster = Roster:New(uid, pointType, self.db.raidsForFullAttendance, self.db.attendanceWeeksWindow)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
         end))
@@ -275,12 +275,12 @@ function RosterManager:Initialize()
     local options = {
         attendance_header = {
             type = "header",
-            name = CLM.L["Attendance"],
+            name = L["Attendance"],
             order = 20
         },
         attendance_max = {
-            name = CLM.L["Raids needed in reset"],
-            desc = CLM.L["Provide number of raids needed for 100% attendance in a weekly reset. Between 1 - 50 raids. Defaults to 2. Requires /reload."],
+            name = L["Raids needed in reset"],
+            desc = L["Provide number of raids needed for 100% attendance in a weekly reset. Between 1 - 50 raids. Defaults to 2. Requires /reload."],
             type = "range",
             min = 1,
             max = 50,
@@ -297,8 +297,8 @@ function RosterManager:Initialize()
             order = 21
           },
           attendance_window = {
-            name = CLM.L["Average weeks"],
-            desc = CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 - 1000 weeks. Defaults to 10. Requires /reload."],
+            name = L["Average weeks"],
+            desc = L["Provide number of weeks that will be accounted for attendance. Between 1 - 1000 weeks. Defaults to 10. Requires /reload."],
             type = "range",
             min = 1,
             max = 1000,
@@ -315,7 +315,7 @@ function RosterManager:Initialize()
             order = 22
           }
     }
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(Configs.GROUP.GLOBAL, options)
 
 
 end
@@ -445,7 +445,7 @@ end
 function RosterManager:SetRosterDefaultSlotTierValue(nameOrRoster, slot, tier, value)
     LOG:Trace("RosterManager:SetRosterDefaultSlotTierValue()")
     local roster
-    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+    if UTILS.typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
     else
         roster = self:GetRosterByName(nameOrRoster)
@@ -477,7 +477,7 @@ end
 function RosterManager:SetFieldName(nameOrRoster, field, name)
     LOG:Trace("RosterManager:SetFieldName()")
     local roster
-    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+    if UTILS.typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
     else
         roster = self:GetRosterByName(nameOrRoster)
@@ -532,7 +532,7 @@ end
 function RosterManager:SetRosterItemValues(nameOrRoster, itemId, values)
     LOG:Trace("RosterManager:SetRosterItemTierValue()")
     local roster
-    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+    if UTILS.typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
     else
         roster = self:GetRosterByName(nameOrRoster)
@@ -554,7 +554,7 @@ end
 function RosterManager:SetRosterItemTierValue(nameOrRoster, itemId, tier, value)
     LOG:Trace("RosterManager:SetRosterItemTierValue()")
     local roster
-    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+    if UTILS.typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
     else
         roster = self:GetRosterByName(nameOrRoster)
@@ -582,7 +582,7 @@ end
 function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, difficultyId, value)
     LOG:Trace("RosterManager:SetRosterBossKillBonusValue()")
     local roster
-    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+    if UTILS.typeof(nameOrRoster, Roster) then
         roster = nameOrRoster
     else
         roster = self:GetRosterByName(nameOrRoster)
@@ -613,7 +613,7 @@ end
 
 function RosterManager:AddProfilesToRoster(roster, profiles)
     LOG:Trace("RosterManager:AddProfilesToRoster()")
-    if not UTILS.typeof(roster, CLM.MODELS.Roster) then
+    if not UTILS.typeof(roster, Roster) then
         LOG:Error("RosterManager:AddProfilesToRoster(): Invalid roster object")
         return
     end
@@ -634,7 +634,7 @@ end
 
 function RosterManager:RemoveProfilesFromRoster(roster, profiles)
     LOG:Trace("RosterManager:RemoveProfilesFromRoster()")
-    if not UTILS.typeof(roster, CLM.MODELS.Roster) then
+    if not UTILS.typeof(roster, Roster) then
         LOG:Error("RosterManager:RemoveProfilesFromRoster(): Invalid roster object")
         return
     end
@@ -656,7 +656,7 @@ end
 
 function RosterManager:AddFromRaidToRoster(roster)
     LOG:Trace("RosterManager:AddFromRaidToRoster()")
-    if not UTILS.typeof(roster, CLM.MODELS.Roster) then
+    if not UTILS.typeof(roster, Roster) then
         LOG:Error("RosterManager:AddFromRaidToRoster(): Invalid roster object")
         return
     end
@@ -680,18 +680,18 @@ function RosterManager:AddFromRaidToRoster(roster)
         end
     end
     if #missingProfiles > 0 then
-        LOG:Message(CLM.L["Adding missing %s players to current roster"], #missingProfiles)
+        LOG:Message(L["Adding missing %s players to current roster"], #missingProfiles)
         self:AddProfilesToRoster(roster, missingProfiles)
     end
 end
 
 function RosterManager:AddLootToRoster(roster, loot, profile)
     LOG:Trace("RosterManager:AddLootToRoster()")
-    if not UTILS.typeof(roster, CLM.MODELS.Roster) then
+    if not UTILS.typeof(roster, Roster) then
         LOG:Error("RosterManager:AddLootToRoster(): Invalid roster object")
         return
     end
-    if not UTILS.typeof(profile, CLM.MODELS.Profile) then
+    if not UTILS.typeof(profile, Profile) then
         LOG:Error("RosterManager:AddLootToRoster(): Invalid profile object")
         return
     end

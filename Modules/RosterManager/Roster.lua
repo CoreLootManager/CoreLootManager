@@ -1,7 +1,73 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("RosterManager/Roster", {"Models", "Constants", "Utils", "L", "Meta:ADDON_TABLE", "Log",
-"DifficultyIdMap", "RosterManager/RosterConfiguration"}, function(resolve, Models, CONSTANTS, UTILS, L, CLM, LOG, DifficultyIdMap, RosterConfiguration)
+
+
+
+define.module("Constants/AuctionTypes", {"Constants/AuctionType", "Utils"}, function(resolve, AuctionType, Utils)
+    resolve(Utils.Set({
+        AuctionType.OPEN,
+        AuctionType.SEALED,
+        AuctionType.VICKREY,
+        AuctionType.ANONYMOUS_OPEN
+    }))
+    end)
+define.module("Constants/AuctionTypesEpgpGui", {"Constants/AuctionType", "L"}, function(resolve, AuctionType, L)
+    resolve({
+        [AuctionType.OPEN] = L["Open"],
+        [AuctionType.SEALED] = L["Sealed"],
+    })
+end)
+define.module("Constants/AuctionTypesEpgpGui", {"Constants/AuctionType", "L"}, function(resolve, AuctionType, L)
+    resolve({
+        [AuctionType.OPEN] = L["Open"],
+        [AuctionType.SEALED] = L["Sealed"],
+        [AuctionType.VICKREY] = L["Vickrey"],
+        [AuctionType.ANONYMOUS_OPEN] = L["Anonymous Open"]
+    })
+end)
+define.module("Constants/AuctionTypesOpen", {"Constants/AuctionType", "Utils"}, function(resolve, AuctionType, Utils)
+resolve(Utils.Set({
+    AuctionType.OPEN,
+    AuctionType.ANONYMOUS_OPEN
+}))
+end)
+
+define.module("Constants/AuctionType", {}, function(resolve)
+    resolve({
+        OPEN = 0,
+        SEALED = 1,
+        VICKREY = 2,
+        ANONYMOUS_OPEN = 3
+    })
+
+end)
+define.module("Constants/ItemValueMode", {}, function(resolve)
+    resolve({
+        SINGLE_PRICED = 0,
+        ASCENDING = 1,
+        TIERED = 2,
+    })
+end)
+define.module("Constants/ItemValueModes", {"Constants/ItemValueMode", "Utils"}, function(resolve, ItemValueMode, Utils)
+    resolve(Utils.Set(ItemValueMode))
+end)
+
+define.module("Constants/ItemValueModesGui", {"Constants/ItemValueMode", "L"}, function(resolve, ItemValueMode, L)
+
+resolve({
+    [ItemValueMode.SINGLE_PRICED] = L["Single-Priced"],
+    [ItemValueMode.ASCENDING] = L["Ascending"],
+    [ItemValueMode.TIERED] = L["Tiered"],
+})
+end)
+define.module("Constants/ItemValueModesEpgpGui", {"Constants/ItemValueMode", "L"}, function(resolve, ItemValueMode, L)
+resolve({
+    [ItemValueMode.SINGLE_PRICED] = L["Single-Priced"],
+    [ItemValueMode.TIERED] = L["Tiered"],
+})
+end)
+define.module("RosterManager/Roster", {"Models", "Constants", "Utils", "L", "Log",
+"DifficultyIdMap", "RosterManager/RosterConfiguration"}, function(resolve, Models, CONSTANTS, UTILS, L, LOG, DifficultyIdMap, RosterConfiguration)
 
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
 
@@ -583,59 +649,12 @@ CONSTANTS.POINT_TYPES_GUI = {
     -- [CONSTANTS.POINT_TYPE.SK] = L["SK"]
 }
 
-CONSTANTS.AUCTION_TYPE = {
-    OPEN = 0,
-    SEALED = 1,
-    VICKREY = 2,
-    ANONYMOUS_OPEN = 3
-}
 
-CONSTANTS.AUCTION_TYPES = UTILS.Set({
-    CONSTANTS.AUCTION_TYPE.OPEN,
-    CONSTANTS.AUCTION_TYPE.SEALED,
-    CONSTANTS.AUCTION_TYPE.VICKREY,
-    CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN
-})
 
-CONSTANTS.AUCTION_TYPES_GUI = {
-    [CONSTANTS.AUCTION_TYPE.OPEN] = L["Open"],
-    [CONSTANTS.AUCTION_TYPE.SEALED] = L["Sealed"],
-    [CONSTANTS.AUCTION_TYPE.VICKREY] = L["Vickrey"],
-    [CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN] = L["Anonymous Open"]
-}
 
-CONSTANTS.AUCTION_TYPES_EPGP_GUI = {
-    [CONSTANTS.AUCTION_TYPE.OPEN] = L["Open"],
-    [CONSTANTS.AUCTION_TYPE.SEALED] = L["Sealed"],
-}
 
-CONSTANTS.AUCTION_TYPES_OPEN = UTILS.Set({
-    CONSTANTS.AUCTION_TYPE.OPEN,
-    CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN
-})
 
-CONSTANTS.ITEM_VALUE_MODE = {
-    SINGLE_PRICED = 0,
-    ASCENDING = 1,
-    TIERED = 2,
-}
 
-CONSTANTS.ITEM_VALUE_MODES = UTILS.Set({
-    CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED,
-    CONSTANTS.ITEM_VALUE_MODE.ASCENDING,
-    CONSTANTS.ITEM_VALUE_MODE.TIERED,
-})
-
-CONSTANTS.ITEM_VALUE_MODES_GUI = {
-    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = L["Single-Priced"],
-    [CONSTANTS.ITEM_VALUE_MODE.ASCENDING] = L["Ascending"],
-    [CONSTANTS.ITEM_VALUE_MODE.TIERED] = L["Tiered"],
-}
-
-CONSTANTS.ITEM_VALUE_MODES_EPGP_GUI = {
-    [CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED] = L["Single-Priced"],
-    [CONSTANTS.ITEM_VALUE_MODE.TIERED] = L["Tiered"],
-}
 
 
 CONSTANTS.INVENTORY_TYPES = {

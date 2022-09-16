@@ -1,15 +1,24 @@
 -- ------------------------------- --
 local define = LibDependencyInjection.createContext(...)
 
-define.module("GuildName", {"EventManager"}, function(resolve, EventManager)
+define.module("GuildName", {}, function(resolve)
 
     if not IsInGuild() then
         resolve("unguilded")
     end
     local guildName = GetGuildInfo("player")
 
+
     if guildName == nil then
-        EventManager:RegisterWoWEvent("GUILD_ROSTER_UPDATE", function() resolve((GetGuildInfo("player"))) end)
+        -- we use a timer since sometimes the guildname is still not available after a guild roster event.
+        local timer
+        timer = C_Timer.NewTicker(0.5, function()
+            guildName = GetGuildInfo("player")
+            if guildName ~= nil then
+                timer:Cancel()
+                resolve(guildName)
+            end
+        end)
     else
         resolve(guildName)
     end

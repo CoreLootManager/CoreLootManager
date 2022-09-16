@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
 
-define.module("Logger", {"Modules", "Database", "Meta:ADDON_TABLE", "Log", "ConfigManager"}, function(resolve, MODULES, Database, CLM, LOG, ConfigManager)
+define.module("Logger", {"Modules", "Database", "Log", "ConfigManager", "L", "Constants/Configs"}, function(resolve, MODULES, Database, LOG, ConfigManager, L, Configs)
 
     local wipe, collectgarbage = wipe, collectgarbage
 
@@ -14,12 +14,12 @@ function Logger:Initialize()
     local options = {
         logger_header = {
             type = "header",
-            name = CLM.L["Logging"],
+            name = L["Logging"],
             order = 1000
         },
         logger_severity = {
-            name = CLM.L["Logging level"],
-            desc = CLM.L["Select logging level for troubleshooting"],
+            name = L["Logging level"],
+            desc = L["Select logging level for troubleshooting"],
             type = "select",
             values = LOG.SEVERITY_LEVEL,
             set = function(i, v) self:SetSeverity(v) end,
@@ -27,23 +27,23 @@ function Logger:Initialize()
             order = 1001
         },
         logger_verbose = {
-            name = CLM.L["Verbose"],
-            desc = CLM.L["Enables / disables verbose data printing during logging"],
+            name = L["Verbose"],
+            desc = L["Enables / disables verbose data printing during logging"],
             type = "toggle",
             set = function(i, v) self:SetVerbosity(v) end,
             get = function(i) return self:GetVerbosity() end,
             order = 1002
           },
           logger_wipe = {
-            name = CLM.L["Wipe"],
-            desc = CLM.L["Wipes the log history"],
+            name = L["Wipe"],
+            desc = L["Wipes the log history"],
             type = "execute",
             confirm = true,
             func = function(i, v) self:Wipe() end,
             order = 1003
           }
     }
-    ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
 end
 
 function Logger:SetSeverity(severity)

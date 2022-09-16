@@ -518,9 +518,69 @@ local function tableDataFeeder()
     return data
 end
 
-local function initializeHandler()
-    LOG:Trace("UnifiedGUI_Standings initializeHandler()")
-    UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
+
+
+local function refreshHandler()
+    local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+    if roster then
+        if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+            UnifiedGUI:GetScrollingTable():SetDisplayCols(columnsEPGP)
+        else
+            UnifiedGUI:GetScrollingTable():SetDisplayCols(columnsDKP)
+        end
+    end
+end
+
+local function beforeShowHandler()
+    LOG:Trace("UnifiedGUI_Standings beforeShowHandler()")
+    UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
+    if RaidManager:IsInRaid() then
+        UnifiedGUI_Standings.roster = RaidManager:GetRaid():Roster():UID()
+        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
+        UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
+    end
+end
+
+local function storeHandler()
+    LOG:Trace("UnifiedGUI_Standings storeHandler()")
+    local storage = UnifiedGUI:GetStorage(UnifiedGUI_Standings.name)
+    storage.roster = UnifiedGUI_Standings.roster
+end
+
+local function restoreHandler()
+    LOG:Trace("UnifiedGUI_Standings restoreHandler()")
+    local storage = UnifiedGUI:GetStorage(UnifiedGUI_Standings.name)
+    UnifiedGUI_Standings.roster = storage.roster
+end
+
+local function dataReadyHandler()
+    LOG:Trace("UnifiedGUI_Standings dataReadyHandler()")
+    if not RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster) then
+        local _, roster = next(RosterManager:GetRosters())
+        if roster then
+            UnifiedGUI_Standings.roster = roster:UID()
+        end
+    end
+end
+
+CONSTANTS.ACTION_CONTEXT = {
+    SELECTED = 1,
+    ROSTER = 2,
+    RAID = 3
+}
+
+CONSTANTS.ACTION_CONTEXT_GUI = {
+    [CONSTANTS.ACTION_CONTEXT.SELECTED] = L["Selected"],
+    [CONSTANTS.ACTION_CONTEXT.ROSTER] = L["Roster"],
+    [CONSTANTS.ACTION_CONTEXT.RAID] = L["Raid"],
+}
+
+CONSTANTS.ACTION_CONTEXT_LIST = {
+    CONSTANTS.ACTION_CONTEXT.SELECTED,
+    CONSTANTS.ACTION_CONTEXT.ROSTER,
+    CONSTANTS.ACTION_CONTEXT.RAID
+}
+UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
                 title = L["Add to standby"],
@@ -647,69 +707,6 @@ local function initializeHandler()
         Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
         Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
-end
-
-local function refreshHandler()
-    local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
-    if roster then
-        if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
-            UnifiedGUI:GetScrollingTable():SetDisplayCols(columnsEPGP)
-        else
-            UnifiedGUI:GetScrollingTable():SetDisplayCols(columnsDKP)
-        end
-    end
-end
-
-local function beforeShowHandler()
-    LOG:Trace("UnifiedGUI_Standings beforeShowHandler()")
-    UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
-    if RaidManager:IsInRaid() then
-        UnifiedGUI_Standings.roster = RaidManager:GetRaid():Roster():UID()
-        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
-        UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
-    end
-end
-
-local function storeHandler()
-    LOG:Trace("UnifiedGUI_Standings storeHandler()")
-    local storage = UnifiedGUI:GetStorage(UnifiedGUI_Standings.name)
-    storage.roster = UnifiedGUI_Standings.roster
-end
-
-local function restoreHandler()
-    LOG:Trace("UnifiedGUI_Standings restoreHandler()")
-    local storage = UnifiedGUI:GetStorage(UnifiedGUI_Standings.name)
-    UnifiedGUI_Standings.roster = storage.roster
-end
-
-local function dataReadyHandler()
-    LOG:Trace("UnifiedGUI_Standings dataReadyHandler()")
-    if not RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster) then
-        local _, roster = next(RosterManager:GetRosters())
-        if roster then
-            UnifiedGUI_Standings.roster = roster:UID()
-        end
-    end
-end
-
-CONSTANTS.ACTION_CONTEXT = {
-    SELECTED = 1,
-    ROSTER = 2,
-    RAID = 3
-}
-
-CONSTANTS.ACTION_CONTEXT_GUI = {
-    [CONSTANTS.ACTION_CONTEXT.SELECTED] = L["Selected"],
-    [CONSTANTS.ACTION_CONTEXT.ROSTER] = L["Roster"],
-    [CONSTANTS.ACTION_CONTEXT.RAID] = L["Raid"],
-}
-
-CONSTANTS.ACTION_CONTEXT_LIST = {
-    CONSTANTS.ACTION_CONTEXT.SELECTED,
-    CONSTANTS.ACTION_CONTEXT.ROSTER,
-    CONSTANTS.ACTION_CONTEXT.RAID
-}
-
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Standings.name, 1,
     tableStructure,
@@ -717,13 +714,13 @@ UnifiedGUI:RegisterTab(
     nil,
     verticalOptionsFeeder,
     {
-        initialize = initializeHandler,
         refresh = refreshHandler,
         beforeShow = beforeShowHandler,
         store = storeHandler,
-        restore = restoreHandler,
         dataReady = dataReadyHandler
     }
 )
+restoreHandler()
+resolve(UnifiedGUI_Standings)
 
 end)

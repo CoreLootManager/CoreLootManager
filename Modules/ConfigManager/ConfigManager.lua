@@ -2,8 +2,8 @@ local define = LibDependencyInjection.createContext(...)
 
 define.module("ConfigManager", {
     "Utils", "Log",
-    "Constants",  "Meta:ADDON_TABLE", "L", "LibStub:AceConfigRegistry-3.0",  "LibStub:AceConfig-3.0", "LibStub:AceConfigDialog-3.0"
-}, function(resolve, UTILS, LOG, CONSTANTS, CLM, L, AceConfigRegistry, AceConfig, AceConfigDialog)
+    "Constants",  "Meta:ADDON_TABLE", "L", "LibStub:AceConfigRegistry-3.0",  "LibStub:AceConfig-3.0", "LibStub:AceConfigDialog-3.0", "Constants/Configs"
+}, function(resolve, UTILS, LOG, CONSTANTS, CLM, L, AceConfigRegistry, AceConfig, AceConfigDialog, Configs)
 local type, pairs, ipairs = type, pairs, ipairs
 
 local ConfigManager = { enabled = false }
@@ -15,16 +15,16 @@ end
 function ConfigManager:Initialize()
     LOG:Trace("ConfigManager:Initialize()")
     self.generators = {
-        [CONSTANTS.CONFIGS.GROUP.GLOBAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
-        [CONSTANTS.CONFIGS.GROUP.ROSTER] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end),
-        [CONSTANTS.CONFIGS.GROUP.INTEGRATIONS] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS) end)
+        [Configs.GROUP.GLOBAL] = (function() return ConfigGenerator(Configs.GROUP.GLOBAL) end),
+        [Configs.GROUP.ROSTER] = (function() return ConfigGenerator(Configs.GROUP.ROSTER) end),
+        [Configs.GROUP.INTEGRATIONS] = (function() return ConfigGenerator(Configs.GROUP.INTEGRATIONS) end)
     }
 
     self.options = {}
-    for _, config in ipairs(CONSTANTS.CONFIGS.ORDERED_GROUPS) do
+    for _, config in ipairs(Configs.ORDERED_GROUPS) do
         local parent = nil
-        if config ~= CONSTANTS.CONFIGS.GROUP.GLOBAL then
-            parent = CONSTANTS.CONFIGS.GROUP.GLOBAL
+        if config ~= Configs.GROUP.GLOBAL then
+            parent = Configs.GROUP.GLOBAL
         end
         self.options[config] = { type = "group", childGroups = "tab", args = {}}
         AceConfigRegistry:RegisterOptionsTable(config, self.generators[config])
@@ -51,7 +51,7 @@ function ConfigManager:Register(group, options, clean)
         return false
     end
 
-    if not CONSTANTS.CONFIGS.GROUPS[group] then
+    if not Configs.GROUPS[group] then
         LOG:Error("ConfigManager:Register(): Group %s is not supported", group)
         return false
     end
@@ -90,7 +90,7 @@ function ConfigManager:RegisterSlash(options)
 end
 
 function ConfigManager:UpdateOptions(group, register)
-    if not CONSTANTS.CONFIGS.GROUPS[group] then
+    if not Configs.GROUPS[group] then
         LOG:Warning("ConfigManager:Update(): Group %s is not supported", group)
         return
     end
@@ -102,8 +102,18 @@ end
 
 -- Publish API
 CLM.MODULES.ConfigManager = ConfigManager
-CONSTANTS.CONFIGS = {
-    GROUPS = UTILS.Set({
+
+
+ConfigManager:Initialize()
+
+resolve(ConfigManager)
+
+
+end)
+define.module("Constants/Configs", {"L", "Utils"}, function(resolve, L, Utils)
+
+resolve({
+    GROUPS = Utils.Set({
         "Classic Loot Manager",
         L["Rosters"],
         L["Integrations"]
@@ -118,11 +128,5 @@ CONSTANTS.CONFIGS = {
         ROSTER = L["Rosters"],
         INTEGRATIONS = L["Integrations"]
     },
-}
-
-ConfigManager:Initialize()
-
-resolve(ConfigManager)
-
-
+})
 end)

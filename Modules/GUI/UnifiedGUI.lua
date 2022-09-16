@@ -112,7 +112,7 @@ local function CreateTabsWidget(self, content)
 end
 
 local function CreateTabsContent(self)
-    self.aceObjects.scrollingTables = {}
+
     local scrollingTableContent = AceGUI:Create("SimpleGroup")
     local horizontalOptionsContent = AceGUI:Create("SimpleGroup")
     horizontalOptionsContent:SetLayout("Flow")
@@ -204,11 +204,7 @@ function UnifiedGUI:Initialize()
     InitializeDB(self)
 
     self:CreateAceGUIStructure()
-
-    -- Run GUI plugins pre-initialization
-    for _, tab in pairs(self.tabs) do
-        tab.handlers.initialize()
-    end
+    self.aceObjects.scrollingTables = {}
 
     self:RegisterSlash()
 
@@ -250,8 +246,6 @@ function UnifiedGUI:Initialize()
             tab.handlers.store()
         end
     end))
-
-    self._initialized = true
 end
 
 function UnifiedGUI:CreateAceGUIStructure()
@@ -271,30 +265,14 @@ function UnifiedGUI:CreateAceGUIStructure()
     CreateTabsContent(self)
     CreateTabsWidget(self, self.aceObjects.tabularContent)
     RestoreLocation(self)
-    for _, tab in pairs(self.tabs) do
-        tab.handlers.restore()
-    end
     f:AddChild(self.aceObjects.tabsWidget)
-    -- Build scrollingTables
-    for name, tab in pairs(self.tabs) do
-        local structure = tab.structure
-        local st = self.aceObjects.scrollingTables[name]
-        st:SetDisplayRows(structure.rows, 18)
-        st:SetDisplayCols(structure.columns)
-        st:RegisterEvents(structure.events, true)
-        if structure.filter then
-            st:SetFilter(structure.filter)
-        end
-    end
-    -- Hide by default
-    self.aceObjects.tabsWidget:SelectTab(self.selectedTab)
+
     f:Hide()
     -- loading banner
     CreateLoadingBanner(self)
 end
 
 local publicHandlers = {
-    "initialize",
     "refresh",
     "beforeShow",
     "store",
@@ -327,7 +305,7 @@ function UnifiedGUI:RegisterTab(
         error("UnifiedGUI:RegisterTab(): verticalOptionsFeeder must be a function or a table")
     end
 
-    self.tabs[name] = {
+    local tab = {
         order = order,
         structure = tableStructure,
         feeders = {
@@ -338,16 +316,36 @@ function UnifiedGUI:RegisterTab(
         handlers = {}
     }
 
+
     for _, handlerName in ipairs(publicHandlers) do
         if type(handlers[handlerName]) == "function" then
-            self.tabs[name].handlers[handlerName] = handlers[handlerName]
+            tab.handlers[handlerName] = handlers[handlerName]
         else
-            self.tabs[name].handlers[handlerName] = (function() end)
+            tab.handlers[handlerName] = function() end
         end
     end
 
+
+
+    -- Build scrollingTables
+    local structure = tab.structure
+    local st = AceGUI:Create("CLMLibScrollingTable")
+
+    st:SetDisplayRows(structure.rows, 18)
+    st:SetDisplayCols(structure.columns)
+    st:RegisterEvents(structure.events, true)
+    if structure.filter then
+        st:SetFilter(structure.filter)
+    end
+
+    self.aceObjects.scrollingTables[name] = st
+    self.tabs[name] = tab
     if not self.selectedTab then
         self.selectedTab = name
+    end
+
+    if (self.selectedTab == name) then
+        self.aceObjects.tabsWidget:SelectTab(self.selectedTab)
     end
 end
 
@@ -368,7 +366,6 @@ end
 -- Refresh the data
 function UnifiedGUI:Refresh(visible)
     LOG:Trace("UnifiedGUI:Refresh()")
-    if not self._initialized then return end
     if visible and not self.aceObjects.top:IsVisible() then return end
     -- Tab specific refresh
     self.tabs[self.selectedTab].handlers.refresh()
@@ -398,7 +395,6 @@ end
 
 function UnifiedGUI:Toggle()
     LOG:Trace("UnifiedGUI:Toggle()")
-    if not self._initialized then return end
     if self.aceObjects.top:IsVisible() then
         self.aceObjects.top:Hide()
     else

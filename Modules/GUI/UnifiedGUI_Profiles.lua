@@ -261,9 +261,14 @@ local function tableDataFeeder()
     return data
 end
 
-local function initializeHandler()
-    LOG:Trace("UnifiedGUI_Profiles initializeHandler()")
-    UnifiedGUI_Profiles.RightClickMenu = UTILS.GenerateDropDownMenu(
+local function beforeShowHandler()
+    LOG:Trace("UnifiedGUI_Profiles beforeShowHandler()")
+    if RaidManager:IsInRaid() then
+        UnifiedGUI_Profiles.roster = RaidManager:GetRaid():UID()
+        UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
+    end
+end
+UnifiedGUI_Profiles.RightClickMenu = UTILS.GenerateDropDownMenu(
         {
             {
                 title = L["Lock selected"],
@@ -302,16 +307,6 @@ local function initializeHandler()
         Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
         Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
-end
-
-local function beforeShowHandler()
-    LOG:Trace("UnifiedGUI_Profiles beforeShowHandler()")
-    if RaidManager:IsInRaid() then
-        UnifiedGUI_Profiles.roster = RaidManager:GetRaid():UID()
-        UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
-    end
-end
-
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Profiles.name, 4,
     tableStructure,
@@ -319,7 +314,6 @@ UnifiedGUI:RegisterTab(
     nil,
     verticalOptionsFeeder,
     {
-        initialize = initializeHandler,
         beforeShow = beforeShowHandler
     }
 )

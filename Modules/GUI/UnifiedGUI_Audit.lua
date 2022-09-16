@@ -725,9 +725,7 @@ local function tableDataFeeder()
     return data
 end
 
-local function initializeHandler()
-    LOG:Trace("UnifiedGUI_Audit initializeHandler()")
-    UnifiedGUI_Audit.RightClickMenu = UTILS.GenerateDropDownMenu(
+UnifiedGUI_Audit.RightClickMenu = UTILS.GenerateDropDownMenu(
         {
             {
                 title = L["Timetravel"],
@@ -765,7 +763,6 @@ local function initializeHandler()
         Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
         Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     )
-end
 
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Audit.name, 5,
@@ -774,7 +771,7 @@ UnifiedGUI:RegisterTab(
     horizontalOptionsFeeder,
     nil,
     {
-        initialize = initializeHandler,
+        -- initialize = initializeHandler,
         -- refresh = refreshHandler,
         -- beforeShow = beforeShowHandler,
         -- store = storeHandler,

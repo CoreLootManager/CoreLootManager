@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("MinimapIcon", {
-    "LibStub:LibDataBroker-1.1", "LibStub:LibDBIcon-1.0", "LedgerManager", "L", "Acl", "SandboxManager", "ConfigManager", "Meta:ADDON_TABLE", "UnifiedGUI", "Core"
-}, function(resolve, ldb, icon, LedgerManager, L, Acl, SandboxManager, ConfigManager, CLM, UnifiedGUI, Core)
+    "LibStub:LibDataBroker-1.1", "LibStub:LibDBIcon-1.0", "LedgerManager", "L", "Acl", "SandboxManager", "ConfigManager", "Meta:ADDON_TABLE", "UnifiedGUI", "Core", "Constants/Configs"
+}, function(resolve, ldb, icon, LedgerManager, L, Acl, SandboxManager, ConfigManager, CLM, UnifiedGUI, Core, Configs)
 local addonName = "Classic Loot Manager" -- same as the UI name for config
 
 local MinimapDBI
@@ -81,7 +81,7 @@ local function CreateConfig(self)
             order = 2.5
           },
     }
-    ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
 end
 
 function Minimap:Initialize()

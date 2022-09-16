@@ -112,7 +112,7 @@ function LootQueueManager:Initialize()
             order = 112
         },
     }
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    CLM.MODULES.ConfigManager:Register(Configs.GROUP.GLOBAL, options)
 
 end
 

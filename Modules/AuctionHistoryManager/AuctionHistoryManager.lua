@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("AuctionHistoryManager", {
-    "Log", "Constants", "Utils", "Meta:ADDON_TABLE", "Database", "ConfigManager", "L", "EventManager"
-}, function(resolve, LOG, CONSTANTS, UTILS, CLM, Database, ConfigManager, L, EventManager)
+    "Log", "Utils", "Meta:ADDON_TABLE", "Database", "ConfigManager", "L", "EventManager", "Constants/Configs"
+}, function(resolve, LOG, UTILS, CLM, Database, ConfigManager, L, EventManager, Configs)
 
 local pairs, ipairs = pairs, ipairs
 local tinsert, tremove = table.insert, table.remove
@@ -89,7 +89,7 @@ function AuctionHistoryManager:Initialize()
             order = 42
         }
     }
-    ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
 
 
 end
