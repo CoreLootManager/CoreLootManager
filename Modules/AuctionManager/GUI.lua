@@ -221,7 +221,8 @@ local function CreateBidWindow(self)
         },
         {name = CLM.L["Bid"],   width = 120, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
-            sortnext = 4
+            sortnext = 4,
+            align = "CENTER"
         },
         {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column

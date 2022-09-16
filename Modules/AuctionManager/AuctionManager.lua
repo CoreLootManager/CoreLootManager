@@ -692,11 +692,11 @@ function AuctionManager:FakeBids()
             local bidType = math.random(1,6)
             if     bidType == 1 then -- none
             elseif bidType == 2 then -- value
-                local min, max = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE], 10
-                if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] >= 0 then
+                local min, max = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE], 10000
+                if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
                     max = self.values[CONSTANTS.SLOT_VALUE_TIER.MAX]
                 end
-                self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(math.random(min, max)), bidder)
+                self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(math.random(min, max), math.random(1,2)), bidder)
             elseif bidType == 3 then -- pass
                 self:HandleNotifyPass(nil, bidder)
             elseif bidType == 4 then -- cancel
