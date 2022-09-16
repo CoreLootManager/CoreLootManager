@@ -1,6 +1,25 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.1.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    {header = "Dynamic value equations support", body = "Dedicated to EPGP but works with DKP also - dynamic item value calculation allows to get get dynamic item prices based on their |cff44ee44ilvl|r, |cff44ee44quality|r and |cff44ee44equip slot|r. You can choose one of the commonly used (by different addons and websites) equations (WoWpedia or EPGP WEB) and configure your multipliers (or use the provided default ones)."}
+                }
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "Streamlined Bidding UI", body = "Bidding UI now is streamlined between value-based and named button bidding mode. This should also make it behave better on very low UI scales and different locales."},
+                    {header = "Auction UI", body = "OS Bids should now be more readable with color changed from yellow to turquoise."},
+                    {header = "Tooltip addons integration", body = "Item Tooltips will now support multitude of addons editing them, including, but not limited to, Pawn, Atlas Loot, Gargul etc."},
+                }
+            }
+        }
+    },
+    {
         version = "v2.0.0",
         data = {
             {

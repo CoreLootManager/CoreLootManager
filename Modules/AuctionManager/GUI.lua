@@ -31,7 +31,8 @@ local BASE_WIDTH  = 365 + (isElvUI and 15 or 0)
 
 local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
-local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
+-- local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
+local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
 local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
@@ -220,7 +221,8 @@ local function CreateBidWindow(self)
         },
         {name = CLM.L["Bid"],   width = 120, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
-            sortnext = 4
+            sortnext = 4,
+            align = "CENTER"
         },
         {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
@@ -455,7 +457,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             name = "Info",
             desc = (function()
                 -- Legend
-                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].."\n",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].."\n",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
+                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].." ",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].." ",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
                 if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] .. "\n" .. legend end
                 -- Unique did any action dict
                 local didAnyAction = {}
@@ -667,16 +669,22 @@ function AuctionManagerGUI:Refresh()
                 bid = roster:GetFieldName(bidTypes[name]) or bid
             else
                 if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
-                    color = colorYellow
+                    color = colorTurquoise
                 end
             end
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
             if profile then
+                local current
+                if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+                    current = self.roster:Standings(profile:GUID())
+                else
+                    current = self.roster:Priority(profile:GUID())
+                end
                 local row = {cols = {
                     {value = profile:Name()},
                     {value = UTILS.ColorCodeClass(profile:Class())},
                     {value = bid, color = color},
-                    {value = self.roster:Standings(profile:GUID())},
+                    {value = current},
                     {value = highlightRole[profile:Role()]},
                 },
                 DoCellUpdate = highlightRole[profile:Role()]

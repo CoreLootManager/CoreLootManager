@@ -25,10 +25,8 @@ local guiOptions = {
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
 local BASE_WIDTH  = 335 + (isElvUI and 15 or 0)
-local BASE_HEIGHT_NO_BUTTONS = 100
-local ROW_OFFSET = 25
-local BASE_HEIGHT = BASE_HEIGHT_NO_BUTTONS + ROW_OFFSET
-local EXTENDED_HEIGHT = BASE_HEIGHT + ROW_OFFSET
+local ROW_HEIGHT = 25
+local BASE_HEIGHT = 100
 
 local rowMultiplier = 1.8
 
@@ -141,7 +139,7 @@ local function GenerateValueButtonsAuctionOptions(self,
             type = "input",
             get = (function(i) return itemLink or "" end),
             set = (function(i,v) end), -- Intentionally: do not override
-            width = 1.65,
+            width = 1.55,
             order = 2,
             itemLink = shortItemLink,
         },
@@ -151,7 +149,7 @@ local function GenerateValueButtonsAuctionOptions(self,
             type = "input",
             set = (function(i,v) self.bid = tonumber(v) or 0 end),
             get = (function(i) return tostring(self.bid) end),
-            width = 0.4,
+            width = 0.8,
             order = 3
         },
         bid = {
@@ -162,7 +160,7 @@ local function GenerateValueButtonsAuctionOptions(self,
                 CLM.MODULES.BiddingManager:Bid(self.bid)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            width = 0.3,
+            width = 0.5,
             order = 4
         },
         os = {
@@ -173,7 +171,7 @@ local function GenerateValueButtonsAuctionOptions(self,
                 CLM.MODULES.BiddingManager:Bid(self.bid, CONSTANTS.BID_TYPE.OFF_SPEC)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            width = 0.3,
+            width = 0.5,
             order = 5
         },
         pass = {
@@ -193,8 +191,8 @@ local function GenerateValueButtonsAuctionOptions(self,
             disabled = (function()
                     return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
             end),
-            width = 0.35,
-            order = 6
+            width = rowMultiplier/2,
+            order = 20
         },
         cancel = {
             name = CLM.L["Cancel"],
@@ -205,14 +203,18 @@ local function GenerateValueButtonsAuctionOptions(self,
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
-            width = 0.45,
-            order = 7
+            width = rowMultiplier/2,
+            order = 21
         }
     }
     local offset = 8
+    local numRows = 2
     local usedTiers
+
+    local doDisplayValue
     if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
         usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
+        doDisplayValue = (function(value) return (value >= 0) end)
     elseif (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) then
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             options["all_in"] = {
@@ -227,22 +229,22 @@ local function GenerateValueButtonsAuctionOptions(self,
                 width = rowMultiplier,
                 order = offset
             }
-            self.top:SetHeight(EXTENDED_HEIGHT)
-            return options
+            numRows = numRows + 1
         else
             usedTiers = {
                 CONSTANTS.SLOT_VALUE_TIER.BASE,
                 CONSTANTS.SLOT_VALUE_TIER.MAX
             }
+            doDisplayValue = (function(value) return (value > 0) end)
         end
     end
 
     if usedTiers then
-        local row_width = rowMultiplier/#usedTiers
         local alreadyExistingValues = {}
+        local numButtons = 0
         for _,tier in ipairs(usedTiers) do
             local value = tonumber(values[tier]) or 0
-            if not alreadyExistingValues[value] and value >= 0 then -- this will display in ascending max 0
+            if not alreadyExistingValues[value] and doDisplayValue(value) then -- this will display in ascending max 0
                 alreadyExistingValues[value] = true
                 options[tier] = {
                     name = value,
@@ -253,14 +255,24 @@ local function GenerateValueButtonsAuctionOptions(self,
                         CLM.MODULES.BiddingManager:Bid(self.bid, tier)
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
-                    width = row_width,
                     order = offset
                 }
                 offset = offset + 1
+                numButtons = numButtons + 1
             end
         end
-        self.top:SetHeight(EXTENDED_HEIGHT)
+        if numButtons > 0 then
+            numRows = numRows + 1
+            local row_width = rowMultiplier/numButtons
+            for _,tier in ipairs(usedTiers) do
+                if options[tier] then
+                    options[tier].width = row_width
+                end
+            end
+        end
     end
+
+    self.top:SetHeight(BASE_HEIGHT + (numRows*ROW_HEIGHT))
     return options
 end
 
@@ -292,7 +304,7 @@ local function GenerateNamedButtonsAuctionOptions(self,
     local usedTiers
     if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
         usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
-    elseif itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
+    elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         usedTiers = {
             CONSTANTS.SLOT_VALUE_TIER.BASE,
             CONSTANTS.SLOT_VALUE_TIER.MAX
@@ -302,6 +314,7 @@ local function GenerateNamedButtonsAuctionOptions(self,
         for _,tier in ipairs(usedTiers) do
             local value = tonumber(values[tier]) or 0
             local name = self.roster:GetFieldName(tier)
+            print(name)
             if name and name ~= "" then
                 options[tier] = {
                     name = name,
@@ -360,7 +373,10 @@ local function GenerateNamedButtonsAuctionOptions(self,
         order = offset + 1
     }
 
-    self.top:SetHeight((isEven and BASE_HEIGHT or BASE_HEIGHT_NO_BUTTONS) + (math.ceil(numButtons/2)*ROW_OFFSET))
+    local numRows = 0
+    if isEven then numRows = 1 end
+
+    self.top:SetHeight(BASE_HEIGHT + ((numRows + math.ceil(numButtons/2))*ROW_HEIGHT))
 
     return options
 end
@@ -487,6 +503,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     local values = auctionInfo:Values()
     self.bid = values[CONSTANTS.SLOT_VALUE_TIER.BASE]
     local myProfile = CLM.MODULES.ProfileManager:GetMyProfile()
+    self.top:SetTitle(CLM.L["Bidding"])
     if myProfile then
         local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
@@ -494,6 +511,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
             self.roster = roster
             if roster:IsProfileInRoster(myProfile:GUID()) then
                 self.standings = roster:Standings(myProfile:GUID())
+                self.top:SetTitle(CLM.L["Bidding"] ..  " | " .. CLM.L["Current"] .. ": " .. tostring(self.standings))
             end
         end
     end

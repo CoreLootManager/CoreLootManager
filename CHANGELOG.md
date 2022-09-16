@@ -1,3 +1,14 @@
+# Classic Loot Manager v2.1.0
+## Features
+### Dynamic value equations support
+Dedicated to EPGP but works with DKP also - dynamic item value calculation allows to get get dynamic item prices based on their `ilvl`, `quality` and `equip slot`. You can choose one of the commonly used (by different addons and websites) equations (**WoWpedia** or **EPGP WEB**) and configure your multipliers (or use the provided default ones).
+## Fixes
+### Streamlined Bidding UI
+Bidding UI now is streamlined between value-based and named button bidding mode. This should also make it behave better on very low UI scales and different locales.
+### Auction UI
+OS Bids should now be more readable with color changed from yellow to turquoise.
+### Tooltip addons integration
+Item Tooltips will now support multitude of addons editing them, including, but not limited to, Pawn, Atlas Loot, Gargul etc.
 # Classic Loot Manager v2.0.3
 Ascending auction multiple bugs fix.
 # Classic Loot Manager v2.0.2
