@@ -14,6 +14,7 @@ CLM.ChangelogData = {
                 data = {
                     {header = "Streamlined Bidding UI", body = "Bidding UI now is streamlined between value-based and named button bidding mode. This should also make it behave better on very low UI scales and different locales."},
                     {header = "Auction UI", body = "OS Bids should now be more readable with color changed from yellow to turquoise."},
+                    {header = "Tooltip addons integration", body = "Item Tooltips will now support multitude of addons editing them, including, but not limited to, Pawn, Atlas Loot, Gargul etc."},
                 }
             }
         }

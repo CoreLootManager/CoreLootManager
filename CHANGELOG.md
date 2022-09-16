@@ -7,8 +7,7 @@ Dedicated to EPGP but works with DKP also - dynamic item value calculation allow
 Bidding UI now is streamlined between value-based and named button bidding mode. This should also make it behave better on very low UI scales and different locales.
 ### Auction UI
 OS Bids should now be more readable with color changed from yellow to turquoise.
-
-## Tooltip addons integration
+### Tooltip addons integration
 Item Tooltips will now support multitude of addons editing them, including, but not limited to, Pawn, Atlas Loot, Gargul etc.
 # Classic Loot Manager v2.0.3
 Ascending auction multiple bugs fix.
