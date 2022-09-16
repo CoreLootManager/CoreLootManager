@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("UnifiedGui/Standings", {
-    "Log", "Constants", "Utils", "PointManager", "Meta:ADDON_TABLE", "L", "Constants/PointChangeReason", "UnifiedGUI", "RaidManager", "RosterManager", "Acl"
-}, function(resolve, LOG, CONSTANTS, UTILS, _, CLM, L, PointChangeReason, UnifiedGUI, RaidManager, RosterManager, Acl)
+    "Log", "Constants", "Utils", "PointManager", "Meta:ADDON_TABLE", "L", "Constants/PointChangeReason", "UnifiedGUI", "RaidManager", "RosterManager", "Acl", "Constants/AclLevel"
+}, function(resolve, LOG, CONSTANTS, UTILS, _, CLM, L, PointChangeReason, UnifiedGUI, RaidManager, RosterManager, Acl, AclLevel)
 
 
 local pairs, ipairs = pairs, ipairs
@@ -319,10 +319,10 @@ local function verticalOptionsFeeder()
         args = {}
     }
     UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_Standings))
-    if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if Acl:CheckLevel(AclLevel.ASSISTANT) then
         UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_Standings))
     end
-    if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    if Acl:CheckLevel(AclLevel.MANAGER) then
         UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_Standings))
     end
     return options
@@ -704,8 +704,8 @@ UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             },
         },
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(AclLevel.ASSISTANT),
+        Acl:CheckLevel(AclLevel.MANAGER)
     )
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Standings.name, 1,

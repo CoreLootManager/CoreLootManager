@@ -1,10 +1,7 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("Models/Raid", {"Utils", "Constants/RaidStatus", "ProfileManager"},
+function(resolve, UTILS, RaidStatus, ProfileManager)
 
 local setmetatable, ipairs, tinsert, tsort = setmetatable, ipairs, table.insert, table.sort
 
@@ -23,7 +20,7 @@ function Raid:New(uid, name, roster, config, creator, entry)
 
     o.config = config
     o.name = name
-    o.status = CONSTANTS.RAID_STATUS.CREATED
+    o.status = RaidStatus.CREATED
     -- o.owner = creator
 
     o.startTime = 0
@@ -52,17 +49,17 @@ function Raid:Name()
 end
 
 function Raid:Start(time)
-    self.status = CONSTANTS.RAID_STATUS.IN_PROGRESS
+    self.status = RaidStatus.IN_PROGRESS
     self.startTime = time
 end
 
 function Raid:End(time)
-    self.status = CONSTANTS.RAID_STATUS.FINISHED
+    self.status = RaidStatus.FINISHED
     self.endTime = time
 end
 
 function Raid:SetStale()
-    self.status = CONSTANTS.RAID_STATUS.STALE
+    self.status = RaidStatus.STALE
 end
 
 function Raid:Roster()
@@ -140,7 +137,7 @@ function Raid:CreatedAt()
 end
 
 function Raid:IsActive()
-    return RAID_STATUS_ACTIVE[self:Status()] and true or false
+    return self:Status() == RaidStatus.IN_PROGRESS or self:Status() == RaidStatus.CREATED
 end
 
 function Raid:Players()
@@ -169,7 +166,7 @@ function Raid:Profiles(historical)
         -- The code below breaks Model-View-Controller rule as it accessess Managers
         -- Maybe the caching should be done in GUI module?
         -- TODO: resolve this
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(player)
+        local profile = ProfileManager:GetProfileByGUID(player)
         if profile then
             tinsert(self.playerProfileCache, profile)
         end
@@ -190,7 +187,7 @@ function Raid:Standby(historical)
         -- The code below breaks Model-View-Controller rule as it accessess Managers
         -- Maybe the caching should be done in GUI module?
         -- TODO: resolve this
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(player)
+        local profile = ProfileManager:GetProfileByGUID(player)
         if profile then
             tinsert(self.standbyProfileCache, profile)
         end
@@ -205,4 +202,6 @@ function Raid:Entry()
     return self.entry
 end
 
-CLM.MODELS.Raid = Raid
+resolve(Raid)
+
+end)

@@ -2,8 +2,8 @@ local define = LibDependencyInjection.createContext(...)
 
 define.module("LedgerManager", {
     "Utils", "Log",
-    "Constants",  "LibStub:EventSourcing/LedgerFactory", "Comms", "Acl", "Database", "Modules", "GlobalConfigs"
-}, function(resolve, UTILS, LOG, CONSTANTS, LedgerLib, Comms, Acl, Database, Modules, GlobalConfigs)
+    "Constants",  "LibStub:EventSourcing/LedgerFactory", "Comms", "Acl", "Database", "Modules", "GlobalConfigs", "Constants/AclLevel"
+}, function(resolve, UTILS, LOG, CONSTANTS, LedgerLib, Comms, Acl, Database, Modules, GlobalConfigs, AclLevel)
 local pairs, ipairs = pairs, ipairs
 local wipe, collectgarbage, tinsert = wipe, collectgarbage, table.insert
 
@@ -25,8 +25,8 @@ local function registerReceiveCallback(callback)
     -- Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
     --     return length < 4096
     -- end)
-    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-    Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
+    Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, AclLevel.PLEBS)
+    Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, AclLevel.ASSISTANT)
 end
 
 local function restoreReceiveCallback()
@@ -44,7 +44,7 @@ local function createLedger(self, database)
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
         (function(entry, sender)
-            return Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
+            return Acl:CheckLevel(AclLevel.ASSISTANT, sender)
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
             return Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
@@ -102,7 +102,7 @@ function LedgerManager:Enable()
         LedgerManager:Cutoff()
         LOG:Message("Ledger synchronisation was disabled. Use this at your own risk.")
     else
-        if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+        if Acl:CheckLevel(AclLevel.ASSISTANT) then
             self.activeLedger.enableSending()
         end
     end

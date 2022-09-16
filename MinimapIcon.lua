@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("MinimapIcon", {
-    "LibStub:LibDataBroker-1.1", "LibStub:LibDBIcon-1.0", "LedgerManager", "L", "Acl", "SandboxManager", "ConfigManager", "Meta:ADDON_TABLE", "UnifiedGUI", "Core", "Constants/Configs"
-}, function(resolve, ldb, icon, LedgerManager, L, Acl, SandboxManager, ConfigManager, CLM, UnifiedGUI, Core, Configs)
+    "LibStub:LibDataBroker-1.1", "LibStub:LibDBIcon-1.0", "LedgerManager", "L", "Acl", "SandboxManager", "ConfigManager", "Meta:ADDON_TABLE", "UnifiedGUI", "Core", "Constants/Configs", "AuctionManager", "BiddingManager/Gui", "Constants/AclLevel"
+}, function(resolve, ldb, icon, LedgerManager, L, Acl, SandboxManager, ConfigManager, CLM, UnifiedGUI, Core, Configs, AuctionManager, BiddingManagerGui, AclLevel)
 local addonName = "Classic Loot Manager" -- same as the UI name for config
 
 local MinimapDBI
@@ -114,22 +114,22 @@ function Minimap:Initialize()
         -- },
         {
             title = L["Auctioning"],
-            func = (function() CLM.GUI.AuctionManager:Toggle() end),
+            func = (function() AuctionManager:Toggle() end),
             trustedOnly = true
         },
         {
             title = L["Auction History"],
-            func = (function() CLM.GUI.AuctionHistory:Toggle() end),
+            func = (function() AuctionHistory:Toggle() end),
             trustedOnly = true
         },
         {
             title = L["Loot Queue"],
-            func = (function() CLM.GUI.LootQueue:Toggle() end),
+            func = (function() LootQueue:Toggle() end),
             trustedOnly = true
         },
         {
             title = L["Bidding"],
-            func = (function() CLM.GUI.BiddingManager:Toggle() end)
+            func = (function() BiddingManagerGui:Toggle() end)
         },
         -- Management
         {
@@ -137,7 +137,7 @@ function Minimap:Initialize()
         },
         {
             title = L["Export"],
-            func = (function() CLM.GUI.Export:Toggle() end),
+            func = (function() Export:Toggle() end),
             trustedOnly = true,
             managerOnly = true
         },
@@ -154,8 +154,8 @@ function Minimap:Initialize()
 
     dropdown = CLM.UTILS.GenerateDropDownMenu(
         options,
-        Acl:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.ASSISTANT),
-        Acl:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(AclLevel.ASSISTANT),
+        Acl:CheckLevel(AclLevel.MANAGER)
     )
 
     -- Create Minimap Icon

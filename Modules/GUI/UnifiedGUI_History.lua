@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("UnifiedGUI/History", {"Models", "Constants", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager", "LedgerManager", "EventManager", "UnifiedGUI", "RaidManager", "EncounterIdMap"},
-function(resolve, Models, CONSTANTS, Acl, AuctionHistoryManager, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, LedgerManager, EventManager, UnifiedGUI, RaidManager, EncounterIdMap)
+define.module("UnifiedGUI/History", {"Models", "Constants", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager", "LedgerManager", "EventManager", "UnifiedGUI", "RaidManager", "EncounterIdMap", "Constants/AclLevel"},
+function(resolve, Models, CONSTANTS, Acl, AuctionHistoryManager, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, LedgerManager, EventManager, UnifiedGUI, RaidManager, EncounterIdMap, AclLevel)
 
 local pairs, ipairs = pairs, ipairs
 local sgsub, tsort =string.gsub, table.sort
@@ -386,8 +386,8 @@ UnifiedGUI_History.RightClickMenu = UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             }
         },
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(AclLevel.ASSISTANT),
+        Acl:CheckLevel(AclLevel.MANAGER)
     )
 
 UnifiedGUI:RegisterTab(

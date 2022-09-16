@@ -6,8 +6,6 @@ define.module("RaidManager", {
 }, function(resolve, LOG, UTILS, GlobalConfigs, L, LedgerManager, RosterManager, ProfileManager, PointManager, EventManager, StandbyManager, RaidStatus, Acl, RosterConfiguration, RaidModel)
 
 
-local RAID_STATUS_ACTIVE = UTILS.Set({ 0, 1 })
-
 local UnitInBattleground, IsActiveBattlefieldArena = UnitInBattleground, IsActiveBattlefieldArena
 local ipairs, pairs = ipairs, pairs
 local MAX_RAID_MEMBERS, GetRaidRosterInfo, GetServerTime, IsInRaid = MAX_RAID_MEMBERS, GetRaidRosterInfo, GetServerTime, IsInRaid

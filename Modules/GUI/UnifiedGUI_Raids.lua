@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("UnifiedGui/Raids", {
-    "Log", "Constants", "Utils", "RosterManager/RosterConfiguration", "Meta:ADDON_TABLE", "L", "RosterManager", "RaidManager", "StandbyStagingManager", "Acl", "LedgerManager", "UnifiedGUI"
-}, function(resolve, LOG, CONSTANTS, UTILS, RosterConfiguration, CLM, L, RosterManager, RaidManager, StandbyStagingManager, Acl, LedgerManager, UnifiedGUI)
+    "Log", "Constants", "Utils", "RosterManager/RosterConfiguration", "L", "RosterManager", "RaidManager", "StandbyStagingManager", "Acl", "LedgerManager", "UnifiedGUI", "Constants/RaidStatus", "Constants/RaidStatusGui", "Constants/AclLevel"
+}, function(resolve, LOG, CONSTANTS, UTILS, RosterConfiguration, L, RosterManager, RaidManager, StandbyStagingManager, Acl, LedgerManager, UnifiedGUI, RaidStatus, RaidStatusGui, AclLevel)
 
 
 local CreateFrame, UIParent, pairs = CreateFrame, UIParent, pairs
@@ -219,13 +219,13 @@ local function verticalOptionsFeeder()
         args = {}
     }
     -- UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_Raids))
-    if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if Acl:CheckLevel(AclLevel.ASSISTANT) then
         UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_Raids))
     end
-    -- if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
+    -- if Acl:CheckLevel(AclLevel.MANAGER) then
     --     UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_Raids))
     -- end
-    -- if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
+    -- if Acl:CheckLevel(AclLevel.GUILD_MASTER) then
     --     UTILS.mergeDictsInline(options.args, GenerateGMOptions(UnifiedGUI_Raids))
     -- end
     return options
@@ -282,7 +282,7 @@ local tableStructure = {
             local finished = not raid:IsActive()
             local profiles = raid:Profiles(finished)
             local numProfiles = #profiles
-            tooltip:AddDoubleLine(raid:Name(), CONSTANTS.RAID_STATUS_GUI[raid:Status()] or L["Unknown"])
+            tooltip:AddDoubleLine(raid:Name(), RaidStatusGui[raid:Status()] or L["Unknown"])
             tooltip:AddLine(" ")
             if finished then
                 tooltip:AddDoubleLine(L["Participated"] .. ":", tostring(numProfiles))
@@ -331,14 +331,14 @@ local function tableDataFeeder()
     local data = {}
     for _, raid in pairs(RaidManager:ListRaids()) do
         local color = nil
-        if CONSTANTS.RAID_STATUS.IN_PROGRESS == raid:Status() then
+        if RaidStatus.IN_PROGRESS == raid:Status() then
             color = colorGreen
-        elseif CONSTANTS.RAID_STATUS.CREATED == raid:Status() then
+        elseif RaidStatus.CREATED == raid:Status() then
             color = colorYellow
         end
         local row = {cols = {
             { value = raid:Name() },
-            { value = CONSTANTS.RAID_STATUS_GUI[raid:Status()] or L["Unknown"], color = color },
+            { value = RaidStatusGui[raid:Status()] or L["Unknown"], color = color },
             { value = date(L["%Y/%m/%d %H:%M:%S (%A)"], raid:CreatedAt()) },
             { value = raid }
         }}
@@ -377,7 +377,7 @@ local function dataReadyHandler()
     UpdateRaid(UnifiedGUI_Raids, UnifiedGUI_Raids.roster)
 end
 
-UnifiedGUI_Raids.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
+UnifiedGUI_Raids.RightClickMenu = UTILS.GenerateDropDownMenu(
         {
             {
                 title = L["Request standby"],
@@ -472,8 +472,8 @@ UnifiedGUI_Raids.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             }
         },
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(AclLevel.ASSISTANT),
+        Acl:CheckLevel(AclLevel.MANAGER)
     )
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Raids.name, 3,

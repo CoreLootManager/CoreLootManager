@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("UnifiedGUI/Audit", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager","DifficultyIdMap", "EncounterIdMap"},
-function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, DifficultyIdMap, EncounterIdMap)
+define.module("UnifiedGUI/Audit", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager","DifficultyIdMap", "EncounterIdMap", "Constants/AclLevel"},
+function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, DifficultyIdMap, EncounterIdMap,AclLevel)
 
 local pairs, ipairs = pairs, ipairs
 local strsub = strsub
@@ -760,8 +760,8 @@ UnifiedGUI_Audit.RightClickMenu = UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             },
         },
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckLevel(AclLevel.ASSISTANT),
+        Acl:CheckLevel(AclLevel.MANAGER)
     )
 
 UnifiedGUI:RegisterTab(
