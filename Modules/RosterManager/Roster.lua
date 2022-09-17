@@ -141,15 +141,16 @@ end
 
 function Roster:GP(GUID)
     local pointInfo = self.pointInfo[GUID]
-    if not pointInfo then return self.configuration._.minGP end
-    return mmax(pointInfo.spent, self.configuration._.minGP)
+    if not pointInfo then return -1 end
+    -- return mmax(pointInfo.spent, self.configuration._.minGP)
+    return pointInfo.spent
 end
 
 function Roster:Priority(GUID)
     if GUID == nil then
         return 0
     else
-        return UTILS.round((self.standings[GUID] or 0) / self:GP(), self.configuration._.roundDecimals)
+        return UTILS.round((self.standings[GUID] or 0) / self:GP(GUID), self.configuration._.roundDecimals)
     end
 end
 
@@ -427,6 +428,10 @@ function Roster:SetConfiguration(option, value)
     self.configuration:Set(option, value)
     if option == "weeklyReset" then
         self.attendanceTracker:UpdateWeeklyReset(value)
+    elseif option == "minGP" then
+        for GUID, pointInfo in pairs(self.pointInfo) do
+            self.pointInfo[GUID].spent = mmax(pointInfo.spent, self.configuration._.minGP)
+        end
     end
 end
 
