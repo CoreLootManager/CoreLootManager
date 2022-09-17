@@ -216,27 +216,11 @@ local function GenerateValueButtonsAuctionOptions(self,
         usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
         doDisplayValue = (function(value) return (value >= 0) end)
     elseif (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) then
-        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
-            options["all_in"] = {
-                name = CLM.L["All In"],
-                desc = sformat(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
-                type = "execute",
-                func = (function()
-                    self.bid = self.standings
-                    CLM.MODULES.BiddingManager:Bid(self.bid)
-                    if GetCloseOnBid(self) then self:Toggle() end
-                end),
-                width = rowMultiplier,
-                order = offset
-            }
-            numRows = numRows + 1
-        else
-            usedTiers = {
-                CONSTANTS.SLOT_VALUE_TIER.BASE,
-                CONSTANTS.SLOT_VALUE_TIER.MAX
-            }
-            doDisplayValue = (function(value) return (value > 0) end)
-        end
+        usedTiers = {
+            CONSTANTS.SLOT_VALUE_TIER.BASE,
+            CONSTANTS.SLOT_VALUE_TIER.MAX
+        }
+        doDisplayValue = (function(value) return (value > 0) end)
     end
 
     if usedTiers then
@@ -261,6 +245,25 @@ local function GenerateValueButtonsAuctionOptions(self,
                 numButtons = numButtons + 1
             end
         end
+
+        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and not options[CONSTANTS.SLOT_VALUE_TIER.MAX] then
+            local width = options[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
+            options["all_in"] = {
+                name = CLM.L["All In"],
+                desc = sformat(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
+                type = "execute",
+                func = (function()
+                    self.bid = self.standings
+                    CLM.MODULES.BiddingManager:Bid(self.bid)
+                    if GetCloseOnBid(self) then self:Toggle() end
+                end),
+                width = width,
+                order = offset
+            }
+            offset = offset + 1
+            numButtons = numButtons + 1
+        end
+
         if numButtons > 0 then
             numRows = numRows + 1
             local row_width = rowMultiplier/numButtons
@@ -303,7 +306,7 @@ local function GenerateNamedButtonsAuctionOptions(self,
     local numButtons = 0
     local usedTiers
     if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
-        usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
+        usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED_REVERSED
     elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         usedTiers = {
             CONSTANTS.SLOT_VALUE_TIER.BASE,
@@ -314,7 +317,6 @@ local function GenerateNamedButtonsAuctionOptions(self,
         for _,tier in ipairs(usedTiers) do
             local value = tonumber(values[tier]) or 0
             local name = self.roster:GetFieldName(tier)
-            print(name)
             if name and name ~= "" then
                 options[tier] = {
                     name = name,
