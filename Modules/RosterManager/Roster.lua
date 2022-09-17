@@ -7,6 +7,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
+local mmax = math.max
 
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
@@ -90,6 +91,9 @@ function Roster:AddProfileByGUID(GUID)
     self.profilePointHistory[GUID] = {}
     self.inRoster[GUID] = true
     self.pointInfo[GUID] = CLM.MODELS.PointInfo:New()
+    if self:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+        self.pointInfo[GUID].spent = self.configuration._.minGP
+    end
 end
 
 function Roster:RemoveProfileByGUID(GUID)
@@ -135,16 +139,18 @@ function Roster:Standings(GUID)
     end
 end
 
+function Roster:GP(GUID)
+    local pointInfo = self.pointInfo[GUID]
+    if not pointInfo then return -1 end
+    -- return mmax(pointInfo.spent, self.configuration._.minGP)
+    return pointInfo.spent
+end
+
 function Roster:Priority(GUID)
     if GUID == nil then
         return 0
     else
-        local spent = self.pointInfo[GUID].spent
-        local minGP = self.configuration._.minGP
-        if spent < minGP then
-            spent = minGP
-        end
-        return UTILS.round((self.standings[GUID] or 0) / spent, self.configuration._.roundDecimals)
+        return UTILS.round((self.standings[GUID] or 0) / self:GP(GUID), self.configuration._.roundDecimals)
     end
 end
 
@@ -247,7 +253,7 @@ function Roster:DecayStandings(GUID, value)
     -- Spent in EPGP = GP -> thus needs to be decayed also
     if self:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
         new = UTILS.round(((self.pointInfo[GUID].spent * (100 - value)) / 100), self.configuration._.roundDecimals)
-        self.pointInfo[GUID].spent = new
+        self.pointInfo[GUID].spent = mmax(new, self.configuration._.minGP)
     end
 
 end
@@ -422,6 +428,10 @@ function Roster:SetConfiguration(option, value)
     self.configuration:Set(option, value)
     if option == "weeklyReset" then
         self.attendanceTracker:UpdateWeeklyReset(value)
+    elseif option == "minGP" then
+        for GUID, pointInfo in pairs(self.pointInfo) do
+            self.pointInfo[GUID].spent = mmax(pointInfo.spent, self.configuration._.minGP)
+        end
     end
 end
 
