@@ -62,6 +62,10 @@ local function ST_GetHighlight(row)
     return row.cols[14].value
 end
 
+local function ST_GetGP(row)
+    return row.cols[15].value
+end
+
 local highlightPlayer = UTILS.getHighlightMethod(colorBlueTransparent, true)
 local highlightLocked = UTILS.getHighlightMethod(colorRedTransparent, true)
 
@@ -390,7 +394,7 @@ local tableStructure = {
             local isEPGP = ST_GetIsEPGP(rowData)
             if isEPGP then
                 tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
-                tooltip:AddDoubleLine(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], tostring(pointInfo.spent) .. " ".. CLM.L["GP"])
+                tooltip:AddDoubleLine(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], tostring(ST_GetGP(rowData)) .. " ".. CLM.L["GP"])
                 tooltip:AddDoubleLine(CLM.L["Weekly gains"], tostring(gains) .. " " .. CLM.L["EP"])
             else
                 tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
@@ -481,7 +485,7 @@ local function tableDataFeeder()
         local epgp
         if isEPGP then
             numColumnValue = roster:Priority(GUID)
-            epgp = tostring(value) .. "/" .. tostring(pointInfo.spent)
+            epgp = tostring(value) .. "/" .. tostring(roster:GP())
         else
             numColumnValue = value
         end
@@ -508,7 +512,8 @@ local function tableDataFeeder()
                 {value = isEPGP},
                 {value = value},
                 {value = profile:IsLocked()},
-                {value = highlight}
+                {value = highlight},
+                {value = roster:GP()}
             },
             DoCellUpdate = highlight
             }
