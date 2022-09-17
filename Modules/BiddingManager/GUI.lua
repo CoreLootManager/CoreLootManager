@@ -260,7 +260,6 @@ local function GenerateValueButtonsAuctionOptions(self,
                 width = width,
                 order = offset
             }
-            offset = offset + 1
             numButtons = numButtons + 1
         end
 
