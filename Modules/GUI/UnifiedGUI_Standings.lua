@@ -485,7 +485,7 @@ local function tableDataFeeder()
         local epgp
         if isEPGP then
             numColumnValue = roster:Priority(GUID)
-            epgp = tostring(value) .. "/" .. tostring(roster:GP())
+            epgp = tostring(value) .. "/" .. tostring(roster:GP(GUID))
         else
             numColumnValue = value
         end
@@ -513,7 +513,7 @@ local function tableDataFeeder()
                 {value = value},
                 {value = profile:IsLocked()},
                 {value = highlight},
-                {value = roster:GP()}
+                {value = roster:GP(GUID)}
             },
             DoCellUpdate = highlight
             }
