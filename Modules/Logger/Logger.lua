@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
 
-define.module("Logger", {"Modules", "Database", "Log", "ConfigManager", "L", "Constants/Configs"}, function(resolve, MODULES, Database, LOG, ConfigManager, L, Configs)
+define.module("Logger", {"Modules", "Database", "Log", "ConfigManager", "L"}, function(resolve, MODULES, Database, LOG, ConfigManager, L)
 
     local wipe, collectgarbage = wipe, collectgarbage
 
@@ -43,7 +43,7 @@ function Logger:Initialize()
             order = 1003
           }
     }
-    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
+    ConfigManager:RegisterGlobal(options)
 end
 
 function Logger:SetSeverity(severity)

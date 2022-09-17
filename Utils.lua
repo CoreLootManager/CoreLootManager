@@ -194,6 +194,15 @@ function UTILS.Set(t)
     return s
 end
 
+function UTILS.Contains(table, value)
+    for _, v in pairs(table) do
+        if value == v then
+            return true
+        end
+    end
+    return false
+end
+
 -- http://lua-users.org/wiki/CopyTable
 function UTILS.ShallowCopy(orig)
     local orig_type = type(orig)

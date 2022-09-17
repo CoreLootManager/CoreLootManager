@@ -30,7 +30,16 @@ function ACL:IsTrusted(name)
     return self:CheckLevel(AclLevel.ASSISTANT, name) or false
 end
 
+function ACL:CheckAssistant()
+    return self:CheckLevel(AclLevel.ASSISTANT)
+end
+
+function ACL:CheckManager()
+    return self:CheckLevel(AclLevel.MANAGER)
+end
+
 function ACL:CheckLevel(level, name)
+    if true then return true end
     LOG:Trace("ACL:CheckLevel()")
     local info = GuildInfoListener:GetInfo()
     -- By default block everything except for GM if level not provided

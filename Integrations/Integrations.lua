@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("Integrations", {
-    "Log", "Constants", "Utils", "RosterManager/Roster", "L", "Meta:ADDON_TABLE", "Constants/FormatValueSet", "Constants/FormatValues"
-}, function(resolve, LOG, CONSTANTS, UTILS, _, L, CLM, FormatValueSet, FormatValues)
+    "Log", "Constants", "Utils", "Models/Roster", "L", "Meta:ADDON_TABLE", "Constants/FormatValueSet", "Constants/FormatValues", "Constants/SlotValueTier"
+}, function(resolve, LOG, CONSTANTS, UTILS, _, L, CLM, FormatValueSet, FormatValues, SlotValueTier)
 
 
 local pairs, ipairs = pairs, ipairs
@@ -24,7 +24,7 @@ CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
 }
 
 local function InitializeDB(key)
-    local db = CLM.MODULES.Database:Server()
+    local db = Database:Server()
     if not db.integration then
         db.integration = {}
     end
@@ -39,7 +39,7 @@ local function StoreWoWDKPBotData(self)
     local db = InitializeDB("wowdkpbot")
     db.profiles = {}
     -- Fill Profiles
-    for GUID,profile in pairs(CLM.MODULES.ProfileManager:GetProfiles()) do
+    for GUID,profile in pairs(ProfileManager:GetProfiles()) do
        db.profiles[GUID] = {
             name = profile:Name(),
             class = profile:Class(),
@@ -49,7 +49,7 @@ local function StoreWoWDKPBotData(self)
     end
     -- Fill config
     db.config = {}
-    for name,roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
+    for name,roster in pairs(RosterManager:GetRosters()) do
         db.config[name] = {}
         -- Config
         local rounding = roster:GetConfiguration("roundDecimals")
@@ -58,7 +58,7 @@ local function StoreWoWDKPBotData(self)
     end
     -- Fill Rosters
     db.rosters = {}
-    for name,roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
+    for name,roster in pairs(RosterManager:GetRosters()) do
         db.rosters[name] = {}
         -- For each profile in roster
         for GUID, value in pairs(roster.standings) do
@@ -101,9 +101,9 @@ end
 
 local function RequestWoWDKPBotData(self)
     if not self:GetWoWDKPBotIntegration() then return end
-    CLM.MODULES.ProfileInfoManager:RequestSpec()
-    CLM.MODULES.ProfileInfoManager:RequestRole()
-    CLM.MODULES.ProfileInfoManager:RequestVersion()
+    ProfileInfoManager:RequestSpec()
+    ProfileInfoManager:RequestRole()
+    ProfileInfoManager:RequestVersion()
 end
 
 local function InitializeGargulIntegration(self)
@@ -184,7 +184,7 @@ local function InitializeConfigs(self)
 
     UTILS.mergeDictsInline(options, InitializeGargulIntegration(self))
 
-    CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS, options)
+    ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS, options)
 end
 
 local Integration = {}
@@ -215,11 +215,11 @@ local function getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isRes
 end
 
 local awardToTierMap = {
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE]   = CONSTANTS.SLOT_VALUE_TIER.BASE,
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL]  = CONSTANTS.SLOT_VALUE_TIER.SMALL,
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM] = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE]  = CONSTANTS.SLOT_VALUE_TIER.LARGE,
-    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]    = CONSTANTS.SLOT_VALUE_TIER.MAX
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE]   = SlotValueTier.BASE,
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL]  = SlotValueTier.SMALL,
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM] = SlotValueTier.MEDIUM,
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE]  = SlotValueTier.LARGE,
+    [CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]    = SlotValueTier.MAX
 }
 
 local function getAwardValueFromAction(roster, itemId, action)
@@ -239,18 +239,18 @@ local function ExternalAwardEventHandler(_, data)
         local player, itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved = parseEventStructure(data)
         local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
         if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
-        local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
+        local profile = ProfileManager:GetProfileByName(player)
         if not profile then
             LOG:Debug("Gargul item awarded to player without profile")
             return
         end
-        local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
+        local raid = RaidManager:GetProfileRaid(profile:GUID())
         if not raid then
             LOG:Debug("Gargul item awarded outside of raid")
             return
         end
         local value = getAwardValueFromAction(raid:Roster(), itemId, action)
-        CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, value)
+        LootManager:AwardItem(raid, player, itemLink, itemId, value)
     end
 end
 
@@ -263,11 +263,11 @@ function Integration:Initialize()
 
     -- WoW DKP Bot SV Data
     C_TimerAfter(10, (function() RequestWoWDKPBotData(self) end))
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData(self)
     end))
     -- External award integration
-    CLM.MODULES.EventManager:RegisterEvent(EXTERNAL_AWARD_EVENT, ExternalAwardEventHandler)
+    EventManager:RegisterEvent(EXTERNAL_AWARD_EVENT, ExternalAwardEventHandler)
 
     self.exportInProgress = false
 end

@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("MinimapIcon", {
-    "LibStub:LibDataBroker-1.1", "LibStub:LibDBIcon-1.0", "LedgerManager", "L", "Acl", "SandboxManager", "ConfigManager", "Meta:ADDON_TABLE", "UnifiedGUI", "Core", "Constants/Configs", "AuctionManager", "BiddingManager/Gui", "Constants/AclLevel"
-}, function(resolve, ldb, icon, LedgerManager, L, Acl, SandboxManager, ConfigManager, CLM, UnifiedGUI, Core, Configs, AuctionManager, BiddingManagerGui, AclLevel)
+    "LibStub:LibDataBroker-1.1", "LibStub:LibDBIcon-1.0", "LedgerManager", "L", "Acl", "SandboxManager", "ConfigManager", "Meta:ADDON_TABLE", "UnifiedGUI", "Core", "AuctionManagerGui", "BiddingManager/Gui", "AuctionHistoryGui"
+}, function(resolve, ldb, icon, LedgerManager, L, Acl, SandboxManager, ConfigManager, CLM, UnifiedGUI, Core, AuctionManager, BiddingManagerGui, AuctionHistory)
 local addonName = "Classic Loot Manager" -- same as the UI name for config
 
 local MinimapDBI
@@ -81,7 +81,7 @@ local function CreateConfig(self)
             order = 2.5
           },
     }
-    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
+    ConfigManager:RegisterGlobal(options)
 end
 
 function Minimap:Initialize()
@@ -154,8 +154,8 @@ function Minimap:Initialize()
 
     dropdown = CLM.UTILS.GenerateDropDownMenu(
         options,
-        Acl:CheckLevel(AclLevel.ASSISTANT),
-        Acl:CheckLevel(AclLevel.MANAGER)
+        Acl:CheckAssistant(),
+        Acl:CheckManager()
     )
 
     -- Create Minimap Icon

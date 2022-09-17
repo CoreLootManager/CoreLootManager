@@ -1,41 +1,54 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("ConfigManager", {
-    "Utils", "Log",
-    "Constants",  "Meta:ADDON_TABLE", "L", "LibStub:AceConfigRegistry-3.0",  "LibStub:AceConfig-3.0", "LibStub:AceConfigDialog-3.0", "Constants/Configs"
-}, function(resolve, UTILS, LOG, CONSTANTS, CLM, L, AceConfigRegistry, AceConfig, AceConfigDialog, Configs)
+    "Log",
+    "LibStub:AceConfigRegistry-3.0",  "LibStub:AceConfig-3.0", "LibStub:AceConfigDialog-3.0", "Constants/Configs", "L"
+}, function(resolve, LOG, AceConfigRegistry, AceConfig, AceConfigDialog, Configs, L)
 local type, pairs, ipairs = type, pairs, ipairs
 
 local ConfigManager = { enabled = false }
 
-local function ConfigGenerator(config)
-    return ConfigManager.options[config]
-end
+local appName = "Classic Loot Manager"
 
 function ConfigManager:Initialize()
     LOG:Trace("ConfigManager:Initialize()")
-    self.generators = {
-        [Configs.GROUP.GLOBAL] = (function() return ConfigGenerator(Configs.GROUP.GLOBAL) end),
-        [Configs.GROUP.ROSTER] = (function() return ConfigGenerator(Configs.GROUP.ROSTER) end),
-        [Configs.GROUP.INTEGRATIONS] = (function() return ConfigGenerator(Configs.GROUP.INTEGRATIONS) end)
-    }
+    -- use 1 table instead.
 
-    self.options = {}
-    for _, config in ipairs(Configs.ORDERED_GROUPS) do
-        local parent = nil
-        if config ~= Configs.GROUP.GLOBAL then
-            parent = Configs.GROUP.GLOBAL
-        end
-        self.options[config] = { type = "group", childGroups = "tab", args = {}}
-        AceConfigRegistry:RegisterOptionsTable(config, self.generators[config])
-        AceConfigDialog:AddToBlizOptions(config, config, parent)
-    end
+    self.options = {
+        type = "group",
+        args = {
+            GLOBAL = {
+                name = "Global",
+                type = "group",
+                args = {}
+            },
+            ROSTERS = {
+                name = L["Rosters"],
+                type = "group",
+                args = {}
+            },
+            INTEGRATIONS = {
+                type = "group",
+                name =  L["Integrations"],
+                args = {}
+            }
+        }
+    }
+    AceConfigRegistry:RegisterOptionsTable(appName, self.options)
+    AceConfigDialog:AddToBlizOptions(appName, appName, nil, "GLOBAL")
+    AceConfigDialog:AddToBlizOptions(appName, L["Rosters"], appName, "ROSTERS")
+    AceConfigDialog:AddToBlizOptions(appName, L["Integrations"], appName, "INTEGRATIONS")
+
     self.slash_options = { type = "group", args = {}}
 end
 
 function ConfigManager:Enable()
     LOG:Trace("ConfigManager:Enable()")
     self.enabled = true
+end
+
+function ConfigManager:RegisterGlobal(options, clean)
+    return self:Register("GLOBAL", options, clean)
 end
 
 function ConfigManager:Register(group, options, clean)
@@ -51,20 +64,21 @@ function ConfigManager:Register(group, options, clean)
         return false
     end
 
-    if not Configs.GROUPS[group] then
+    if not self.options.args[group] then
         LOG:Error("ConfigManager:Register(): Group %s is not supported", group)
         return false
     end
 
     if clean then
-        for option, _ in pairs(self.options[group].args) do
-            self.options[group].args[option] = nil
+        for option, _ in pairs(self.options.args[group].args) do
+            self.options.args[group].args[option] = nil
         end
     end
 
     for option, definition in pairs(options) do
-        self.options[group].args[option] = definition
+        self.options.args[group].args[option] = definition
     end
+    AceConfigRegistry:NotifyChange(appName)
 
     return true
 end
@@ -99,10 +113,6 @@ function ConfigManager:UpdateOptions(group, register)
     end
     AceConfigRegistry:NotifyChange(group)
 end
-
--- Publish API
-CLM.MODULES.ConfigManager = ConfigManager
-
 
 ConfigManager:Initialize()
 

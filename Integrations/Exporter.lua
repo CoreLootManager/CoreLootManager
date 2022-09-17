@@ -216,7 +216,7 @@ local DATA_BUILDERS = {
                             tinsert(roster_data.pointHistory.point, {
                                 dkp = history:Value(),
                                 player = profile:Name(),
-                                reason = Constants.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
+                                reason = PointChangeReasons.ALL[history:Reason()] or "",
                                 note = note,
                                 awardedBy = awardedBy and awardedBy:Name() or "",
                                 timestamp = history:Timestamp()
@@ -244,7 +244,7 @@ local DATA_BUILDERS = {
                             tinsert(roster_data.pointHistory.point, {
                                 dkp = history:Value(),
                                 player = profile:Name(),
-                                reason = Constants.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
+                                reason = PointChangeReasons.ALL[history:Reason()] or "",
                                 note = note,
                                 awardedBy = awardedBy and awardedBy:Name() or "",
                                 timestamp = history:Timestamp()

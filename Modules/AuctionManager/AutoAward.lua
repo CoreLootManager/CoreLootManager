@@ -190,7 +190,7 @@ function AutoAward:Initialize()
 
     BagItemChecker:Initialize()
 
-    CLM.MODULES.EventManager:RegisterWoWEvent({"TRADE_SHOW"}, (function()
+    EventManager:RegisterWoWEvent({"TRADE_SHOW"}, (function()
         Clear(self)
         pcall(function()
             self.lastTradeTarget = _G.TradeFrameRecipientNameText:GetText()
@@ -202,18 +202,18 @@ function AutoAward:Initialize()
         if not self.lastTradeTarget then return end
         HandleTradeShow(self)
     end))
-    CLM.MODULES.EventManager:RegisterWoWEvent({"TRADE_ACCEPT_UPDATE"}, (function()
+    EventManager:RegisterWoWEvent({"TRADE_ACCEPT_UPDATE"}, (function()
         if not self.lastTradeTarget then return end
         HandleTradeAcceptUpdate(self)
     end))
-    CLM.MODULES.EventManager:RegisterWoWEvent({"UI_INFO_MESSAGE"}, (function(_, _, _, message)
+    EventManager:RegisterWoWEvent({"UI_INFO_MESSAGE"}, (function(_, _, _, message)
         if not self.lastTradeTarget then return end
         if message == ERR_TRADE_COMPLETE then
             HandleTradeSuccess(self)
         end
         self.lastTradeTarget = nil
     end))
-    CLM.MODULES.EventManager:RegisterEvent(CLM.CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, function(_, data)
+    EventManager:RegisterEvent(CLM.CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, function(_, data)
         AutoAward:Remove(data.id, data.name)
     end)
 end
@@ -275,4 +275,4 @@ function AutoAward:Remove(itemId, player)
     end
 end
 
-CLM.MODULES.AutoAward = AutoAward
+AutoAward = AutoAward

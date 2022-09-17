@@ -2,8 +2,8 @@ local define = LibDependencyInjection.createContext(...)
 
 define.module("Comms", {
     "Utils", "Log",
-    "Constants",  "Modules","RosterManager/Roster", "Acl", "LibStub:LibSerialize",  "LibStub:LibDeflate", "Core"
-}, function(resolve, UTILS, LOG, CONSTANTS, Modules, _, Acl, serdes, codec, Core)
+    "Constants",  "Modules","Models/Roster", "Acl", "LibStub:LibSerialize",  "LibStub:LibDeflate", "Core", "Constants/Comms/Distribution"
+}, function(resolve, UTILS, LOG, CONSTANTS, Modules, _, Acl, serdes, codec, Core, Distribution)
 
 local ssub, type = string.sub,type
 
@@ -109,7 +109,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return false
     end
     -- Distribution
-    if not CONSTANTS.COMMS.DISTRIBUTION[distribution] then
+    if not Distribution[distribution] then
         LOG:Error("Comms:Send() invalid distribution: %s", distribution)
         return false
     end

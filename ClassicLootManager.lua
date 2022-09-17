@@ -89,13 +89,12 @@ define.module("Main", {
     "Log",
     "Meta:ADDON_TABLE",
     "Constants",
-    "Modules",
     "Config",
     "Models",
-    "Gui",
     "Comms",
-    "LedgerManager"
-}, function(resolve, CORE, Log, CLM, Constants, Modules, Config, Models, Gui, Comms, LedgerManager)
+    "LedgerManager",
+    "L"
+}, function(resolve, CORE, Log, CLM, Constants, Config, Models, Comms, LedgerManager, L)
 local LIB_CLM, _ = LibStub:NewLibrary("ClassicLootManager", 1)
 if LIB_CLM then
     LIB_CLM.CLM = CLM
@@ -235,7 +234,7 @@ function CORE:_SequentialInitialize(stageNum)
     self[stage]()
 
     if stage == finalStage then
-        LOG:Info(CLM.L["Boot complete"])
+        LOG:Info(L["Boot complete"])
         return
     end
     C_Timer.After(0.1, function() CORE:_SequentialInitialize(stageNum + 1) end)

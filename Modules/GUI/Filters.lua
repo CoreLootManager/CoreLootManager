@@ -1,10 +1,7 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("Models/Filter", {"L", "Utils", "Constants/FilterType", "GuildInfoListener", "RaidManager", "ProfileManager", "StandbyStagingManager"},
+function(resolve, L, Utils, FilterType, GuildInfoListener, RaidManager, ProfileManager, StandbyStagingManager)
 
 ---------------------------------
 -- Filter is breaking MVC rule --
@@ -65,35 +62,25 @@ function Filters:New(refreshFn, usedFilters, usedOptions, prefix, filterOrderSta
     return o
 end
 
-CONSTANTS.FILTER = {
-    IN_RAID      = 100,
-    ONLINE       = 101,
-    STANDBY      = 102,
-    IN_GUILD     = 103,
-    NOT_IN_GUILD = 104,
-    MAINS_ONLY   = 105,
-    LOCKED_ONLY  = 106
-}
-
-CONSTANTS.FILTERS_GUI = {
-    [CONSTANTS.FILTER.IN_RAID] = CLM.L["In Raid"],
-    [CONSTANTS.FILTER.ONLINE] = CLM.L["Online"],
-    [CONSTANTS.FILTER.STANDBY] = CLM.L["Standby"],
-    [CONSTANTS.FILTER.IN_GUILD] = CLM.L["In Guild"],
-    [CONSTANTS.FILTER.NOT_IN_GUILD] = CLM.L["External"],
-    [CONSTANTS.FILTER.MAINS_ONLY] = CLM.L["Mains"],
-    [CONSTANTS.FILTER.LOCKED_ONLY] = CLM.L["Locked"]
+local FILTERS_GUI = {
+    [FilterType.IN_RAID] = L["In Raid"],
+    [FilterType.ONLINE] = L["Online"],
+    [FilterType.STANDBY] = L["Standby"],
+    [FilterType.IN_GUILD] = L["In Guild"],
+    [FilterType.NOT_IN_GUILD] = L["External"],
+    [FilterType.MAINS_ONLY] = L["Mains"],
+    [FilterType.LOCKED_ONLY] = L["Locked"]
 }
 
 local color = "FFD100"
 local parameterToConstantMap = {
-    inRaid = CONSTANTS.FILTER.IN_RAID,
-    inStandby = CONSTANTS.FILTER.STANDBY,
-    inGuild = CONSTANTS.FILTER.IN_GUILD,
-    external = CONSTANTS.FILTER.NOT_IN_GUILD,
-    main = CONSTANTS.FILTER.MAINS_ONLY,
-    online = CONSTANTS.FILTER.ONLINE,
-    locked = CONSTANTS.FILTER.LOCKED_ONLY,
+    inRaid = FilterType.IN_RAID,
+    inStandby = FilterType.STANDBY,
+    inGuild = FilterType.IN_GUILD,
+    external = FilterType.NOT_IN_GUILD,
+    main = FilterType.MAINS_ONLY,
+    online = FilterType.ONLINE,
+    locked = FilterType.LOCKED_ONLY,
 }
 
 local function SelectClasses(self, isSelect)
@@ -104,22 +91,22 @@ end
 
 local function HandleMutualExclusiveOptions(self, filterId, valueToSet)
     if not valueToSet then return end
-    if filterId == CONSTANTS.FILTER.IN_RAID then
-        self.filters[CONSTANTS.FILTER.STANDBY] = false
-    elseif filterId == CONSTANTS.FILTER.STANDBY then
-        self.filters[CONSTANTS.FILTER.IN_RAID] = false
+    if filterId == FilterType.IN_RAID then
+        self.filters[FilterType.STANDBY] = false
+    elseif filterId == FilterType.STANDBY then
+        self.filters[FilterType.IN_RAID] = false
     end
-    if filterId == CONSTANTS.FILTER.IN_GUILD then
-        self.filters[CONSTANTS.FILTER.NOT_IN_GUILD] = false
-    elseif filterId == CONSTANTS.FILTER.NOT_IN_GUILD then
-        self.filters[CONSTANTS.FILTER.IN_GUILD] = false
+    if filterId == FilterType.IN_GUILD then
+        self.filters[FilterType.NOT_IN_GUILD] = false
+    elseif filterId == FilterType.NOT_IN_GUILD then
+        self.filters[FilterType.IN_GUILD] = false
     end
 end
 
 local function GetSearchFunction(searchList)
     return (function(input)
         for _, searchString in ipairs(searchList) do
-            searchString = UTILS.Trim(searchString)
+            searchString = Utils.Trim(searchString)
             if strlen(searchString) >= 3 then
                 searchString = ".*" .. strlower(searchString) .. ".*"
                 if(sfind(strlower(input), searchString)) then
@@ -137,7 +124,7 @@ function Filters:GetAceOptions()
     local filters = {}
 
     if self.class then
-        UTILS.mergeDictsInline(filters, UTILS.ShallowCopy(UTILS.GetColorCodedClassList()))
+        Utils.mergeDictsInline(filters, Utils.ShallowCopy(Utils.GetColorCodedClassList()))
         SelectClasses(self, true)
     else
         SelectClasses(self, false)
@@ -145,14 +132,14 @@ function Filters:GetAceOptions()
 
     for param, constant in pairs(parameterToConstantMap) do
         if self[param] then
-            filters[constant] = UTILS.ColorCodeText(CONSTANTS.FILTERS_GUI[constant], color)
+            filters[constant] = Utils.ColorCodeText(FILTERS_GUI[constant], color)
         else
             self.filters[constant] = false
         end
     end
 
     if self.rank and self.inGuild then
-        for index, info in pairs(CLM.MODULES.GuildInfoListener:GetRanks()) do
+        for index, info in pairs(GuildInfoListener:GetRanks()) do
             local internalRankIndex = 1000 + index
             filters[internalRankIndex] = info.name
             self.filters[internalRankIndex] = true
@@ -164,7 +151,7 @@ function Filters:GetAceOptions()
     -- Filters
     if self.anyFilter then
         options[self.prefix .. "display"] = {
-            name = CLM.L["Filter"],
+            name = L["Filter"],
             type = "multiselect",
             set = function(i, k, v)
                 self:SetFilterValue(k, v)
@@ -179,8 +166,8 @@ function Filters:GetAceOptions()
         order = order + 1
         if self.buttons and self.class then
             options[self.prefix .. "select_all"] = {
-                name = CLM.L["All"],
-                desc = CLM.L["Select all classes."],
+                name = L["All"],
+                desc = L["Select all classes."],
                 type = "execute",
                 func = (function()
                     SelectClasses(self, true)
@@ -192,8 +179,8 @@ function Filters:GetAceOptions()
             }
             order = order + 1
             options[self.prefix .. "select_none"] = {
-                name = CLM.L["None"],
-                desc = CLM.L["Clear all classes."],
+                name = L["None"],
+                desc = L["Clear all classes."],
                 type = "execute",
                 func = (function()
                     SelectClasses(self, false)
@@ -208,8 +195,8 @@ function Filters:GetAceOptions()
     end
     if self.search then
         options[self.prefix .. "search"] = {
-            name = CLM.L["Search"],
-            desc = CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."],
+            name = L["Search"],
+            desc = L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."],
             type = "input",
             set = (function(i, v)
                 self.searchString = v
@@ -249,46 +236,46 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
 
     local status = true
     if self.class then
-        for id, _class in pairs(UTILS.GetColorCodedClassList()) do
+        for id, _class in pairs(Utils.GetColorCodedClassList()) do
             if playerClass == _class then
                 status = self.filters[id]
             end
         end
     end
 
-    if self.inRaid and self.filters[CONSTANTS.FILTER.IN_RAID] then
+    if self.inRaid and self.filters[FilterType.IN_RAID] then
         local isInRaid = {}
         for i=1,MAX_RAID_MEMBERS do
             local name = GetRaidRosterInfo(i)
             if name then
-                name = UTILS.RemoveServer(name)
+                name = Utils.RemoveServer(name)
                 isInRaid[name] = true
             end
         end
         status = status and isInRaid[playerName]
-    elseif self.inStandby and self.filters[CONSTANTS.FILTER.STANDBY] then
-        if CLM.MODULES.RaidManager:IsInProgressingRaid() then
-            local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
+    elseif self.inStandby and self.filters[FilterType.STANDBY] then
+        if RaidManager:IsInProgressingRaid() then
+            local profile = ProfileManager:GetProfileByName(playerName)
             if profile then
-                status = status and CLM.MODULES.RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID())
+                status = status and RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID())
             end
-        elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
-            local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
+        elseif RaidManager:IsInCreatedRaid() then
+            local profile = ProfileManager:GetProfileByName(playerName)
             if profile then
-                status = status and CLM.MODULES.StandbyStagingManager:IsPlayerOnStandby(CLM.MODULES.RaidManager:GetRaid():UID(), profile:GUID())
+                status = status and StandbyStagingManager:IsPlayerOnStandby(RaidManager:GetRaid():UID(), profile:GUID())
             end
         else
             status = false
         end
     end
 
-    local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
-    if self.main and self.filters[CONSTANTS.FILTER.MAINS_ONLY] then
+    local profile = ProfileManager:GetProfileByName(playerName)
+    if self.main and self.filters[FilterType.MAINS_ONLY] then
         if profile then
             status = status and (profile:Main() == "")
         end
     end
-    local guildies = CLM.MODULES.GuildInfoListener:GetGuildies()
+    local guildies = GuildInfoListener:GetGuildies()
     local inGuild = (guildies[playerName] ~= nil)
     if self.rank and self.inGuild then
         if inGuild then
@@ -296,19 +283,34 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
         end
     end
 
-    if self.locked and self.filters[CONSTANTS.FILTER.LOCKED_ONLY] then
+    if self.locked and self.filters[FilterType.LOCKED_ONLY] then
         if profile then
             status = status and profile:IsLocked()
         end
     end
 
-    if self.external and self.filters[CONSTANTS.FILTER.NOT_IN_GUILD] then
+    if self.external and self.filters[FilterType.NOT_IN_GUILD] then
         status = status and not inGuild
     end
-    if self.inGuild and self.filters[CONSTANTS.FILTER.IN_GUILD] then
+    if self.inGuild and self.filters[FilterType.IN_GUILD] then
         status = status and inGuild
     end
     return status
 end
 
-CLM.MODELS.Filters = Filters
+resolve(Filters)
+
+end)
+
+define.module("Constants/FilterType", {}, function(resolve)
+return resolve({
+    IN_RAID      = 100,
+    ONLINE       = 101,
+    STANDBY      = 102,
+    IN_GUILD     = 103,
+    NOT_IN_GUILD = 104,
+    MAINS_ONLY   = 105,
+    LOCKED_ONLY  = 106
+})
+
+end)

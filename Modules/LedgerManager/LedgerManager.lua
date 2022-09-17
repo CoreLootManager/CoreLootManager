@@ -102,7 +102,7 @@ function LedgerManager:Enable()
         LedgerManager:Cutoff()
         LOG:Message("Ledger synchronisation was disabled. Use this at your own risk.")
     else
-        if Acl:CheckLevel(AclLevel.ASSISTANT) then
+        if Acl:CheckAssistant() then
             self.activeLedger.enableSending()
         end
     end

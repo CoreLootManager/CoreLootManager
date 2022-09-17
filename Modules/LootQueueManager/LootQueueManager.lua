@@ -1,10 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("LootQueueManager", {"Utils", "ConfigManager",  "L"}, function(resolve, UTILS, ConfigManager, L)
 
 local tremove, tinsert, smatch = table.remove, table.insert, string.match
 local GetItemInfo, tonumber = GetItemInfo, tonumber
@@ -56,13 +52,13 @@ local function HandleLootMessage(self, addon, event, message, _, _, _, playerNam
             id = itemId,
             link = itemLink
         })
-        CLM.GUI.LootQueue:Refresh(true)
+        LootQueue:Refresh(true)
     end
 end
 
 function LootQueueManager:Initialize()
     LOG:Trace("LootQueueManager:Initialize()")
-    self.db = CLM.MODULES.Database:Personal('lootQueue', {
+    self.db = Database:Personal('lootQueue', {
         queue = {},
         tracked_loot_level = 4,
         ignoredClasses = {}
@@ -74,10 +70,10 @@ function LootQueueManager:Initialize()
     end
     --@end-non-debug@]===]
     self.iterator = 1
-    CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_LOOT"}, (function(...)
+    EventManager:RegisterWoWEvent({"CHAT_MSG_LOOT"}, (function(...)
         HandleLootMessage(self, ...)
     end))
-    CLM.MODULES.EventManager:RegisterEvent(EVENT_START_AUCTION, function(event, data)
+    EventManager:RegisterEvent(EVENT_START_AUCTION, function(event, data)
         for i, entry in ipairs(self.db.queue) do
             if entry.id == data.itemId then
                 self:Remove(i)
@@ -88,12 +84,12 @@ function LootQueueManager:Initialize()
     local options = {
         loot_queue_header = {
             type = "header",
-            name = CLM.L["Loot Queue"],
+            name = L["Loot Queue"],
             order = 110
         },
         loot_queue_tracked_loot_level = {
-            name = CLM.L["Tracked loot rarity"],
-            desc = CLM.L["Select loot rarity for the tracking unauctioned loot."],
+            name = L["Tracked loot rarity"],
+            desc = L["Select loot rarity for the tracking unauctioned loot."],
             type = "select",
             values = CONSTANTS.ITEM_QUALITY,
             set = function(i, v) self:SetTrackedLootLevel(v) end,
@@ -101,7 +97,7 @@ function LootQueueManager:Initialize()
             order = 111
         },
         loot_queue_ignore_classes = {
-            name = CLM.L["Ignore"],
+            name = L["Ignore"],
             type = "multiselect",
             set = function(i, k, v)
                 local n = tonumber(k) or 0
@@ -112,7 +108,7 @@ function LootQueueManager:Initialize()
             order = 112
         },
     }
-    CLM.MODULES.ConfigManager:Register(Configs.GROUP.GLOBAL, options)
+    ConfigManager:RegisterGlobal(options)
 
 end
 
@@ -158,7 +154,7 @@ function LootQueueManager:Remove(id)
         if self.iterator > #self.db.queue then
             self.iterator = 1
         end
-        CLM.GUI.LootQueue:Refresh(true)
+        LootQueue:Refresh(true)
     end
 end
 
@@ -166,8 +162,9 @@ function LootQueueManager:Wipe()
     while(#self.db.queue > 0) do
         tremove(self.db.queue)
     end
-    CLM.GUI.LootQueue:Refresh(true)
+    LootQueue:Refresh(true)
     self.iterator = 1
 end
 
-CLM.MODULES.LootQueueManager = LootQueueManager
+resolve(LootQueueManager)
+end)

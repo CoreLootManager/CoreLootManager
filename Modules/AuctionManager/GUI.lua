@@ -1,10 +1,10 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
+
+define.module("AuctionManagerGui", {"ConfigManager", "Constants/BidType", "Utils", "Log", "RaidManager", "AuctionManager", "ProfileManager", "Models/RosterConfiguration"},
+function(resolve, ConfigManager, BidType, UTILS, LOG, RaidManager, AuctionManager, ProfileManager, RosterConfiguration)
+
+
+
 
 local tonumber, tostring = tonumber, tostring
 local pairs, ipairs = pairs, ipairs
@@ -74,14 +74,14 @@ local function GetModifierCombination()
 end
 
 local function CheckModifierCombination()
-    return (CLM.GlobalConfigs:GetModifierCombination() == GetModifierCombination())
+    return (GlobalConfigs:GetModifierCombination() == GetModifierCombination())
 end
 
 local function FillAuctionWindowFromTooltip(frame, button)
     if GameTooltip and CheckModifierCombination() then
         local _, itemLink = GameTooltip:GetItem()
         if itemLink then
-            CLM.MODULES.EventManager:DispatchEvent(EVENT_FILL_AUCTION_WINDOW, {
+            EventManager:DispatchEvent(EVENT_FILL_AUCTION_WINDOW, {
                 link = itemLink,
                 start = (button == "RightButton")
             })
@@ -117,10 +117,10 @@ end
 local alreadyPostedLoot = {}
 local function PostLootToRaidChat()
     if not IsInRaid() then return end
-    if not CLM.MODULES.ACL:IsTrusted() then return end
-    if not CLM.GlobalConfigs:GetAnnounceLootToRaid() then return end
-    if CLM.GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
-        if not CLM.MODULES.RaidManager:IsRaidOwner(whoami) then return end
+    if not Acl:IsTrusted() then return end
+    if not GlobalConfigs:GetAnnounceLootToRaid() then return end
+    if GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
+        if not RaidManager:IsRaidOwner(whoami) then return end
     end
     local targetGuid = UnitGUID("target")
     if targetGuid then
@@ -134,7 +134,7 @@ local function PostLootToRaidChat()
         local _, _, _, _, rarity = GetLootSlotInfo(lootIndex)
         local itemLink = GetLootSlotLink(lootIndex)
         if itemLink then
-            if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then
+            if (tonumber(rarity) or 0) >= GlobalConfigs:GetAnnounceLootToRaidLevel() then
                 SendChatMessage(num .. ". " .. itemLink, "RAID")
                 num = num + 1
             end
@@ -143,7 +143,7 @@ local function PostLootToRaidChat()
 end
 
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('auction', {
+    self.db = Database:GUI('auction', {
         location = {nil, nil, "CENTER", 0, 0 },
         notes = {}
     })
@@ -164,20 +164,20 @@ local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     InitializeDB(self)
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:Create()
-    if CLM.MODULES.ACL:IsTrusted() then
+    if Acl:IsTrusted() then
         HookBagSlots()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
     self.values = {}
-    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
-    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function(...)self:HandleLootClosedEvent() end))
-    CLM.MODULES.EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
-        if not CLM.MODULES.RaidManager:IsInProgressingRaid() then
+    EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
+    EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function(...)self:HandleLootClosedEvent() end))
+    EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
+        if not RaidManager:IsInProgressingRaid() then
             return
         end
-        if not CLM.MODULES.AuctionManager:IsAuctionInProgress() then
+        if not AuctionManager:IsAuctionInProgress() then
             self.itemLink = data.link
             self:Refresh()
             if data.start then
@@ -214,15 +214,15 @@ local function CreateBidWindow(self)
     local BidWindowGroup = AceGUI:Create("SimpleGroup")
     BidWindowGroup:SetLayout("Flow")
     local columns = {
-        {name = CLM.L["Name"],  width = 70},
-        {name = CLM.L["Class"], width = 60,
+        {name = L["Name"],  width = 70},
+        {name = L["Class"], width = 60,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
-        {name = CLM.L["Bid"],   width = 120, color = colorGreen,
+        {name = L["Bid"],   width = 120, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
             sortnext = 4
         },
-        {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
+        {name = L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
         },
     }
@@ -285,8 +285,8 @@ function AuctionManagerGUI:GenerateAuctionOptions()
 
     self.note = ""
     self.values = {}
-    if CLM.MODULES.RaidManager:IsInRaid() then
-        self.raid = CLM.MODULES.RaidManager:GetRaid()
+    if RaidManager:IsInRaid() then
+        self.raid = RaidManager:GetRaid()
         self.roster = self.raid:Roster()
         if self.roster then
             self.configuration:Copy(self.roster.configuration)
@@ -305,7 +305,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             itemLink = itemLink,
         },
         item = {
-            name = CLM.L["Item"],
+            name = L["Item"],
             type = "input",
             get = (function(i)
                 return self.itemLink or ""
@@ -319,19 +319,19 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 end
                 self:Refresh()
             end),
-            disabled = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            disabled = (function() return AuctionManager:IsAuctionInProgress() end),
             width = 1.4,
             order = 2,
             itemLink = itemLink,
         },
         note_label = {
-            name = CLM.L["Note"],
+            name = L["Note"],
             type = "description",
             width = 0.50,
             order = 3
         },
         note = {
-            name = CLM.L["Note"],
+            name = L["Note"],
             type = "input",
             set = (function(i,v)
                 self.note = tostring(v)
@@ -351,69 +351,69 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 end
                 return self.note
             end),
-            disabled = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            disabled = (function() return AuctionManager:IsAuctionInProgress() end),
             width = 1.4,
             order = 4
         },
         value_label = {
-            name = CLM.L["Value ranges"],
+            name = L["Value ranges"],
             type = "description",
             width = 0.50,
             order = 5
         },
         time_label = {
-            name = CLM.L["Time settings"],
+            name = L["Time settings"],
             type = "description",
             width = 0.50,
             order = 11
         },
         time_auction = {
-            name = CLM.L["Auction length"],
+            name = L["Auction length"],
             type = "input",
             set = (function(i,v) self.configuration:Set("auctionTime", v or 0) end),
             get = (function(i) return tostring(self.configuration:Get("auctionTime")) end),
-            disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
             width = 0.7,
             order = 12
         },
         time_antiSnipe = {
-            name = CLM.L["Anti-snipe"],
+            name = L["Anti-snipe"],
             type = "input",
             set = (function(i,v) self.configuration:Set("antiSnipe", v or 0) end),
             get = (function(i) return tostring(self.configuration:Get("antiSnipe")) end),
-            disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
             width = 0.7,
             order = 13
         },
         auction = {
-            name = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() and CLM.L["Stop"] or CLM.L["Start"] end),
+            name = (function() return AuctionManager:IsAuctionInProgress() and L["Stop"] or L["Start"] end),
             type = "execute",
             func = (function()
-                if not CLM.MODULES.AuctionManager:IsAuctionInProgress() then
+                if not AuctionManager:IsAuctionInProgress() then
                     self:StartAuction()
                 else
-                    CLM.MODULES.AuctionManager:StopAuctionManual()
+                    AuctionManager:StopAuctionManual()
                 end
             end),
             width = 2.5,
             order = 14,
-            disabled = (function() return not ((self.itemLink or false) and CLM.MODULES.RaidManager:IsInProgressingRaid()) end)
+            disabled = (function() return not ((self.itemLink or false) and RaidManager:IsInProgressingRaid()) end)
         },
         auction_results = {
-            name = CLM.L["Auction Results"],
+            name = L["Auction Results"],
             type = "header",
             order = 15
         },
         award_label = {
-            name = CLM.L["Award item"],
+            name = L["Award item"],
             type = "description",
             width = 0.5,
             order = 16
         },
         award_value = {
-            name = CLM.L["Award value"],
+            name = L["Award value"],
             type = "input",
             set = (function(i,v) AuctionManagerGUI:setInputAwardValue(v) end),
             get = (function(i) return tostring(self.awardValue) end),
@@ -421,15 +421,15 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             order = 17
         },
         award = {
-            name = CLM.L["Award"],
+            name = L["Award"],
             type = "execute",
             func = (function()
-                local awarded = CLM.MODULES.AuctionManager:Award(self.itemLink, self.itemId, self.awardValue, self.awardPlayer)
-                if awarded and not CLM.MODULES.AutoAward:IsIgnored(self.itemId) then
-                    if CLM.MODULES.AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
-                        CLM.MODULES.AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
-                    elseif CLM.MODULES.AuctionManager:GetAutoTrade() then
-                        CLM.MODULES.AutoAward:Track(self.itemId, self.awardPlayer)
+                local awarded = AuctionManager:Award(self.itemLink, self.itemId, self.awardValue, self.awardPlayer)
+                if awarded and not AutoAward:IsIgnored(self.itemId) then
+                    if AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
+                        AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
+                    elseif AuctionManager:GetAutoTrade() then
+                        AutoAward:Track(self.itemId, self.awardPlayer)
                     end
                 end
                 self.itemLink = nil
@@ -441,7 +441,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             end),
             confirm = (function()
                 return sformat(
-                    CLM.L["Are you sure, you want to award %s to %s for %s DKP?"],
+                    L["Are you sure, you want to award %s to %s for %s DKP?"],
                     self.itemLink,
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
                     tostring(self.awardValue)
@@ -449,14 +449,14 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             end),
             width = 0.55,
             order = 18,
-            disabled = (function() return (not (self.itemLink or false)) or CLM.MODULES.AuctionManager:IsAuctionInProgress() end)
+            disabled = (function() return (not (self.itemLink or false)) or AuctionManager:IsAuctionInProgress() end)
         },
         bid_stats_info = {
             name = "Info",
             desc = (function()
                 -- Legend
-                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].."\n",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].."\n",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
-                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] .. "\n" .. legend end
+                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(L["Tank"].."\n",colorBlueTransparentHex) .. UTILS.ColorCodeText(L["Healer"].."\n",colorGreenTransparentHex) .. UTILS.ColorCodeText(L["DPS"],colorRedTransparentHex)
+                if not RaidManager:IsInActiveRaid() or self.raid == nil then return L["Not in raid"] .. "\n" .. legend end
                 -- Unique did any action dict
                 local didAnyAction = {}
                 -- generateInfo closure
@@ -481,7 +481,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                     if count > 0 then
                         userCodedString = "\n\n" .. UTILS.ColorCodeText(prefix .. ": ", "EAB221")
                         for i= 1, count do
-                            local profile = CLM.MODULES.ProfileManager:GetProfileByName(dataList[i])
+                            local profile = ProfileManager:GetProfileByName(dataList[i])
                             local coloredName = dataList[i]
                             if profile then
                                 coloredName = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
@@ -494,33 +494,33 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                     end
                     return count, userCodedString
                 end)
-                for p,_ in pairs(CLM.MODULES.AuctionManager:Bids()) do
+                for p,_ in pairs(AuctionManager:Bids()) do
                     didAnyAction[p] = true
                 end
                 -- passess list
                 local _, passed = _generateInfo(
-                    CLM.MODULES.AuctionManager:Passes(),
-                                            { CLM.MODULES.AuctionManager:Bids() },
+                    AuctionManager:Passes(),
+                                            { AuctionManager:Bids() },
                                             "Passed")
                 -- cant use actions
                 local _, cantUse = _generateInfo(
-                    CLM.MODULES.AuctionManager:CantUse(),
-                                                { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes() },
+                    AuctionManager:CantUse(),
+                                                { AuctionManager:Bids(), AuctionManager:Passes() },
                                                 "Can't use")
                 -- closed actions
-                local _, closed = _generateInfo(CLM.MODULES.AuctionManager:Hidden(),
-                                            { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes(), CLM.MODULES.AuctionManager:CantUse() },
+                local _, closed = _generateInfo(AuctionManager:Hidden(),
+                                            { AuctionManager:Bids(), AuctionManager:Passes(), AuctionManager:CantUse() },
                                             "Closed")
                 -- no action
                 local raidersDict = {}
                 for _,GUID in ipairs(self.raid:Players()) do
-                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                    local profile = ProfileManager:GetProfileByGUID(GUID)
                     if profile then
                         raidersDict[profile:Name()] = true
                     end
                 end
                 local _, noAction = _generateInfo(raidersDict,
-                                    { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes(), CLM.MODULES.AuctionManager:CantUse(), CLM.MODULES.AuctionManager:Hidden() },
+                                    { AuctionManager:Bids(), AuctionManager:Passes(), AuctionManager:CantUse(), AuctionManager:Hidden() },
                                     "No action", true)
                 -- did any actions count
                 local didAnyActionCount = 0
@@ -548,7 +548,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 -- todo override item value
             end),
             get = (function(i) return tostring(self.values[key] or 0) end),
-            disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            disabled = (function(i) return AuctionManager:IsAuctionInProgress() end),
             pattern = CONSTANTS.REGEXP_FLOAT,
             width = 0.3,
             order = order
@@ -563,7 +563,7 @@ function AuctionManagerGUI:Create()
     LOG:Trace("AuctionManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Window")
-    f:SetTitle(CLM.L["Auctioning"])
+    f:SetTitle(L["Auctioning"])
     f:SetStatusText("")
     f:SetLayout("flow")
     f:EnableResize(false)
@@ -572,7 +572,7 @@ function AuctionManagerGUI:Create()
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Auctioning_GUI")
 
-    self.configuration = CLM.MODELS.RosterConfiguration:New()
+    self.configuration = RosterConfiguration:New()
     self.itemLink = nil
     self.itemId = 0
     self.note = ""
@@ -592,14 +592,14 @@ end
 
 function AuctionManagerGUI:StartAuction()
     self:ClearSelectedBid()
-    CLM.MODULES.AuctionManager:ClearBids()
-    CLM.MODULES.AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.values, self.note, self.raid, self.configuration)
+    AuctionManager:ClearBids()
+    AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.values, self.note, self.raid, self.configuration)
 end
 
 local function GetTopBids()
     LOG:Trace("AuctionManagerGUI:GetTopBids()")
     local max = {name = "", bid = 0}
-    for name,bid in pairs(CLM.MODULES.AuctionManager:Bids()) do
+    for name,bid in pairs(AuctionManager:Bids()) do
         bid = tonumber(bid) or 0
         if bid > max.bid then
             max.bid = bid
@@ -607,7 +607,7 @@ local function GetTopBids()
         end
     end
     local second = {name = "", bid = 0}
-    for name,bid in pairs(CLM.MODULES.AuctionManager:Bids()) do
+    for name,bid in pairs(AuctionManager:Bids()) do
         bid = tonumber(bid) or 0
         if bid > second.bid and name ~= max.name then
             second.bid = bid
@@ -623,7 +623,7 @@ function AuctionManagerGUI:UpdateAwardValue()
     local isVickrey = (self.roster:GetConfiguration("auctionType") ==  CONSTANTS.AUCTION_TYPE.VICKREY)
     if isVickrey then
         if second.bid == 0 then
-            self.awardValue = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] or 0
+            self.awardValue = self.values[SlotValueTier.BASE] or 0
         else
             self.awardValue = second.bid
         end
@@ -656,21 +656,21 @@ function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
 
-    if CLM.MODULES.RaidManager:IsInActiveRaid() then
-        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+    if RaidManager:IsInActiveRaid() then
+        local roster = RaidManager:GetRaid():Roster()
         local namedButtons = roster:GetConfiguration("namedButtons")
-        local bids, bidTypes = CLM.MODULES.AuctionManager:Bids()
+        local bids, bidTypes = AuctionManager:Bids()
         local data = {}
         for name,bid in pairs(bids) do
             local color
             if namedButtons then
                 bid = roster:GetFieldName(bidTypes[name]) or bid
             else
-                if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
+                if bidTypes[name] == BidType.OFF_SPEC then
                     color = colorYellow
                 end
             end
-            local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+            local profile = ProfileManager:GetProfileByName(name)
             if profile then
                 local row = {cols = {
                     {value = profile:Name()},
@@ -695,7 +695,7 @@ end
 function AuctionManagerGUI:Toggle()
     LOG:Trace("AuctionManagerGUI:Toggle()")
     if not self._initialized then return end
-    if self.top:IsVisible() or not CLM.MODULES.ACL:IsTrusted() then
+    if self.top:IsVisible() or not Acl:IsTrusted() then
         -- Award reset on closing BidWindow.
         AuctionManagerGUI:ClearSelectedBid()
         self.top:Hide()
@@ -710,12 +710,12 @@ function AuctionManagerGUI:RegisterSlash()
         auction = {
             type = "execute",
             name = "Auctioning",
-            desc = CLM.L["Toggle Auctioning window display"],
+            desc = L["Toggle Auctioning window display"],
             handler = self,
             func = "Toggle",
         }
     }
-    CLM.MODULES.ConfigManager:RegisterSlash(options)
+    ConfigManager:RegisterSlash(options)
 end
 
 function AuctionManagerGUI:Reset()
@@ -724,4 +724,7 @@ function AuctionManagerGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-CLM.GUI.AuctionManager = AuctionManagerGUI
+resolve(AuctionManagerGUI)
+
+
+end)

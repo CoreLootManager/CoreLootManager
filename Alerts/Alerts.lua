@@ -19,10 +19,10 @@ local function DKPReceivedAlertFrame_SetUp(self, data)
     local value = tonumber(data.value) or 0
     value = (value ~= nil) and tostring(value) or tostring(data.value)
     if data.reason ~= POINT_CHANGE_REASON_DECAY then
-        local suffix = ((data.pointType == CONSTANTS.POINT_TYPE.DKP) and L["DKP"] or L["EP"])
+        local suffix = ((data.pointType == PointType.DKP) and L["DKP"] or L["EP"])
         self.Amount:SetText(string.format(L["%s %s"], value, suffix))
     else
-        local suffix = ((data.pointType == CONSTANTS.POINT_TYPE.DKP) and L["DKP"] or L["EP/GP"])
+        local suffix = ((data.pointType == PointType.DKP) and L["DKP"] or L["EP/GP"])
         self.Amount:SetText(string.format(L["%s %% %s decay"], value, suffix))
     end
     PlaySound(SOUNDKIT.UI_EPICLOOT_TOAST)

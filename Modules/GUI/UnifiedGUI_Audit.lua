@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("UnifiedGUI/Audit", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager","DifficultyIdMap", "EncounterIdMap", "Constants/AclLevel"},
-function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, DifficultyIdMap, EncounterIdMap,AclLevel)
+define.module("UnifiedGUI/Audit", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager","DifficultyIdMap", "EncounterIdMap", "Models/Filter", "LedgerManager"},
+function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, DifficultyIdMap, EncounterIdMap,Filter, LedgerManager)
 
 local pairs, ipairs = pairs, ipairs
 local strsub = strsub
@@ -43,7 +43,7 @@ local function safeItemIdToLink(itemId)
 end
 
 local function decodeReason(reason)
-    return CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""
+    return PointChangeReasons.ALL[reason] or ""
 end
 
 local configDecodeFunctions = {
@@ -337,7 +337,7 @@ local describeFunctions  = {
         return
             entry:rosterUid() ..
             " <" .. UTILS.ColorCodeText(entry:name(), "ebb434") .. "> "  ..
-            (CONSTANTS.POINT_TYPES_GUI[entry:pointType()] or "")
+            (PointTypesGui[entry:pointType()] or "")
     end),
     ["R1"] = (function(entry)
         return
@@ -616,7 +616,7 @@ end
 
 local UnifiedGUI_Audit = {
     name = "audit",
-    filter = Models.Filters:New(
+    filter = Filter:New(
     refreshFn,
     {},
     UTILS.Set({
@@ -760,8 +760,8 @@ UnifiedGUI_Audit.RightClickMenu = UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             },
         },
-        Acl:CheckLevel(AclLevel.ASSISTANT),
-        Acl:CheckLevel(AclLevel.MANAGER)
+        Acl:CheckAssistant(),
+        Acl:CheckManager()
     )
 
 UnifiedGUI:RegisterTab(

@@ -13,7 +13,7 @@ local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('changelog', {
+    self.db = Database:GUI('changelog', {
         location = {nil, nil, "CENTER", 0, 0 },
         lastVersion = {
             major = 0,
@@ -29,12 +29,12 @@ local function CreateConfigs(self)
     local options = {
         changelog_header = {
             type = "header",
-            name = CLM.L["Changelog"],
+            name = L["Changelog"],
             order = 80
         },
         changelog_never_show = {
-            name = CLM.L["Never show changelog"],
-            desc = CLM.L["Disables display of the changelog for any new version."],
+            name = L["Never show changelog"],
+            desc = L["Disables display of the changelog for any new version."],
             type = "toggle",
             set = function(i, v) self.db.never_show = v and true or false end,
             get = function(i) return self.db.never_show end,
@@ -42,15 +42,15 @@ local function CreateConfigs(self)
             order = 81
         },
         changelog_toggle = {
-            name = CLM.L["Toggle changelog"],
-            desc = CLM.L["Toggle changelog window display"],
+            name = L["Toggle changelog"],
+            desc = L["Toggle changelog window display"],
             type = "execute",
             handler = self,
             func = "Toggle",
             order = 82
           }
     }
-    CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
 local ChangelogGUI = {}
@@ -73,8 +73,8 @@ local function Create(self)
         args = {}
     }
     options.args.do_not_show = {
-        name = CLM.L["Do not show again"],
-        desc = CLM.L["Suppresses changelog display until new version is released"],
+        name = L["Do not show again"],
+        desc = L["Suppresses changelog display until new version is released"],
         type = "toggle",
         set = function(i, v) self.db.do_not_show = v and true or false end,
         get = function(i) return self.db.do_not_show end,
@@ -118,8 +118,8 @@ local function Create(self)
         counter = counter + 1
     end
 
-    AceConfigRegistry:RegisterOptionsTable(CLM.L["Changelog"], options)
-    AceConfigDialog:Open(CLM.L["Changelog"], parent)
+    AceConfigRegistry:RegisterOptionsTable(L["Changelog"], options)
+    AceConfigDialog:Open(L["Changelog"], parent)
 
     return parent
 end
@@ -153,12 +153,12 @@ function ChangelogGUI:RegisterSlash()
         changelog = {
             type = "execute",
             name = "Changelog",
-            desc = CLM.L["Toggle changelog window display"],
+            desc = L["Toggle changelog window display"],
             handler = self,
             func = "Toggle",
         }
     }
-    CLM.MODULES.ConfigManager:RegisterSlash(options)
+    ConfigManager:RegisterSlash(options)
 end
 
 function ChangelogGUI:Reset()

@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("RosterManager/Options", {
-    "Constants", "Meta:ADDON_TABLE", "L", "RosterManager", "ConfigManager", "LedgerManager"
-}, function(resolve, CONSTANTS, CLM, L, RosterManager, ConfigManager, LedgerManager)
+    "Constants", "Meta:ADDON_TABLE", "L", "RosterManager", "ConfigManager", "LedgerManager", "Constants/SlotValueTier", "Constants/Configs", "ProfileManager", "Acl", "Constants/PointType", "Constants/PointTypesGui"
+}, function(resolve, CONSTANTS, CLM, L, RosterManager, ConfigManager, LedgerManager, SlotValueTier, Configs, ProfileManager, Acl, PointType, PointTypesGui)
 
 local CBTYPE = {
     GETTER   = "get",
@@ -24,9 +24,9 @@ local function SetRosterOption(name, option, value)
 end
 
 function RosterManagerOptions:Initialize()
-    self.pointType = CONSTANTS.POINT_TYPE.DKP
+    self.pointType = PointType.DKP
     self.rosterName = RosterManager:GenerateName()
-    self.readOnly = not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    self.readOnly = not Acl:CheckManager()
     self.handlers = {
         general_name_get = (function(name)
             return name
@@ -246,7 +246,6 @@ function RosterManagerOptions:Initialize()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         self:UpdateOptions()
-        ConfigManager:UpdateOptions(CONSTANTS.CONFIGS.GROUP.ROSTER)
     end)
 end
 
@@ -296,30 +295,30 @@ end
 
 local valuesWithDesc = {
     {
-        type = CONSTANTS.SLOT_VALUE_TIER.BASE,
+        type = SlotValueTier.BASE,
         desc = L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     },
     {
-        type = CONSTANTS.SLOT_VALUE_TIER.SMALL,
+        type = SlotValueTier.SMALL,
         desc = L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     },
     {
-        type = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
+        type = SlotValueTier.MEDIUM,
         desc = L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     },
     {
-        type = CONSTANTS.SLOT_VALUE_TIER.LARGE,
+        type = SlotValueTier.LARGE,
         desc = L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     },
     {
-        type = CONSTANTS.SLOT_VALUE_TIER.MAX,
+        type = SlotValueTier.MAX,
         desc = L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."]
     }
 }
 
 function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = RosterManager:GetRosterByName(name)
-    local isManager = Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+    local isManager = Acl:CheckManager()
 
     local default_slot_values_args = (function()
         local args = {}
@@ -500,7 +499,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         order = 1,
                         disabled = true,
                         width = 1,
-                        values = CONSTANTS.POINT_TYPES_GUI
+                        values = PointTypesGui
                     },
                     round_decimals = {
                         name = L["Rounding"],
@@ -818,7 +817,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         order = order + 1
     end
     -- Point Specific auction settings
-    if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+    if roster:GetPointType() == PointType.DKP then
         options.args.auction.args.auction_type = {
             name = L["Auction type"],
             desc = L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
@@ -890,7 +889,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             width = 1,
             order = 18
         }
-    elseif roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+    elseif roster:GetPointType() == PointType.EPGP then
         options.args.auction.args.auction_type = {
             name = L["Auction type"],
             -- desc = L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
@@ -918,7 +917,7 @@ function RosterManagerOptions:UpdateOptions()
             desc = L["Creates new roster with default configuration"],
             type = "execute",
             func = function() RosterManager:NewRoster(self.pointType, self.rosterName); self.rosterName = RosterManager:GenerateName() end,
-            disabled = (function() return not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+            disabled = (function() return not Acl:CheckManager() end),
             order = 1
         },
         roster_name = {
@@ -927,7 +926,7 @@ function RosterManagerOptions:UpdateOptions()
             type = "input",
             set = (function(i, v) self.rosterName = v end),
             get = (function(i) return self.rosterName end),
-            disabled = (function() return not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
+            disabled = (function() return not Acl:CheckManager() end),
             order = 2,
         },
         point_type = {
@@ -937,16 +936,17 @@ function RosterManagerOptions:UpdateOptions()
             set = (function(i, v) self.pointType = v end),
             get = (function(i) return self.pointType end),
             order = 3,
-            -- disabled = true,--(function() return not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) end),
-            values = CONSTANTS.POINT_TYPES_GUI
+            -- disabled = true,--(function() return not Acl:CheckManager() end),
+            values = PointTypesGui
         },
     }
     local rosters = RosterManager:GetRosters()
     for name, _ in pairs(rosters) do
         options[name] = self:GenerateRosterOptions(name)
     end
-    ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, options, true)
+    ConfigManager:Register("ROSTERS", options, true)
 end
 
+RosterManagerOptions:Initialize()
 resolve(RosterManagerOptions)
 end)

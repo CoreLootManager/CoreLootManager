@@ -212,7 +212,7 @@ resolve(GlobalConfigs)
 
 end)
 
-define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Constants/Configs", "Constants/ItemQuality"}, function(resolve, L, ConfigManager, GlobalConfigs, Configs, ItemQuality)
+define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Constants/ItemQuality"}, function(resolve, L, ConfigManager, GlobalConfigs, ItemQuality)
 
     local options = {
         discord = {
@@ -377,5 +377,5 @@ define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Cons
             order = 10001
         }
     }
-    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
+    ConfigManager:RegisterGlobal(options)
 end)

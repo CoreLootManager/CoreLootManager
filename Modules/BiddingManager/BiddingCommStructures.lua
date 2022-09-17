@@ -1,38 +1,40 @@
 -- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
 
-local tonumber, setmetatable, type = tonumber, setmetatable, type
+define.module("Models/BiddingCommSubmitBid", {"Constants/BidType", "Utils"}, function(resolve, BidType, Utils)
+
+    local tonumber, setmetatable, type = tonumber, setmetatable, type
 
 
-local BiddingCommSubmitBid = {}
-function BiddingCommSubmitBid:New(valueOrObject, bidType)
-    local isCopyConstructor = (type(valueOrObject) == "table")
-    local o = isCopyConstructor and valueOrObject or {}
+    local BiddingCommSubmitBid = {}
+    function BiddingCommSubmitBid:New(valueOrObject, bidType)
+        local isCopyConstructor = (type(valueOrObject) == "table")
+        local o = isCopyConstructor and valueOrObject or {}
 
-    setmetatable(o, self)
-    self.__index = self
+        setmetatable(o, self)
+        self.__index = self
 
-    if isCopyConstructor then return o end
+        if isCopyConstructor then return o end
 
-    o.d = valueOrObject
-    o.b = CONSTANTS.BID_TYPES[bidType] and bidType or CONSTANTS.BID_TYPE.MAIN_SPEC
+        o.d = valueOrObject
+        o.b = Utils.contains(BidType, bidType) and bidType or BidType.MAIN_SPEC
 
-    return o
-end
+        return o
+    end
 
-function BiddingCommSubmitBid:Bid()
-    return self.d or 0
-end
+    function BiddingCommSubmitBid:Bid()
+        return self.d or 0
+    end
 
-function BiddingCommSubmitBid:Type()
-    return self.b or CONSTANTS.BID_TYPE.MAIN_SPEC
-end
+    function BiddingCommSubmitBid:Type()
+        return self.b or BidType.MAIN_SPEC
+    end
 
+    resolve(BiddingCommSubmitBid)
+end)
+
+
+define.module("Models/BiddingCommStructure", {"Models/BiddingCommSubmitBid", "Constants/BiddingCommType"}, function(resolve, BiddingCommSubmitBid, BiddingCommType)
 local BiddingCommStructure = {}
 function BiddingCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
@@ -43,7 +45,7 @@ function BiddingCommStructure:New(typeOrObject, data)
     self.__index = self
 
     if isCopyConstructor then
-        if o.t == CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID then
+        if o.t == BiddingCommType.SUBMIT_BID then
             o.d = BiddingCommSubmitBid:New(o.d)
         end
         return o
@@ -62,6 +64,5 @@ end
 function BiddingCommStructure:Data()
     return self.d
 end
-
-CLM.MODELS.BiddingCommStructure = BiddingCommStructure
-CLM.MODELS.BiddingCommSubmitBid = BiddingCommSubmitBid
+resolve(BiddingCommStructure)
+end)

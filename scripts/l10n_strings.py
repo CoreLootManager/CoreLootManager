@@ -54,7 +54,7 @@ class L10nStorage:
             return
         if self.not_used.get(string):
             del self.not_used[string]
-        
+
         if not self.translations.get(locale):
             self.translations[locale] = {}
         self.translations[locale][string] = translation
@@ -78,11 +78,11 @@ class L10nStorage:
 
 def add_indirectly_used_strings(storage:L10nStorage):
     for s in ["Hunter", "Warrior", "Druid", "Priest", "Mage", "Paladin", "Rogue", "Warlock", "Shaman"]:
-        storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
+        storage.store('L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
     # tabs
     for s in ["History", "Profiles"]:
-        storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
+        storage.store('L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
 def get_paths():
     excludeDirs = ["ExternalLibs", "Libs", "Locale", ".github", "Media", ".vscode", ".git", "TESTING", "scripts"]
@@ -202,7 +202,7 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
             sanitized_sentence = sanitize_sentence_regex.findall(sentence)[0]
             if dry_run:
                 print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_google[locale]))
-                
+
             else:
                 translation = ts.google(sanitized_sentence, from_language='en', to_language=locale_to_google[locale])
                 storage.translate(locale, sentence, translation, False)
@@ -238,7 +238,7 @@ def main(args):
     for locale in locales:
         scan_file_for_l10n_translation(baseDir / ("Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
 
-    total_missing, total_done, last_percent = 0, 0, 0    
+    total_missing, total_done, last_percent = 0, 0, 0
     status = 0
     missing_translations = {}
     for locale in locales:

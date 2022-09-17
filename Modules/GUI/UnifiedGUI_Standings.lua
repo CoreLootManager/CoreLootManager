@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("UnifiedGui/Standings", {
-    "Log", "Constants", "Utils", "PointManager", "Meta:ADDON_TABLE", "L", "Constants/PointChangeReason", "UnifiedGUI", "RaidManager", "RosterManager", "Acl", "Constants/AclLevel"
-}, function(resolve, LOG, CONSTANTS, UTILS, _, CLM, L, PointChangeReason, UnifiedGUI, RaidManager, RosterManager, Acl, AclLevel)
+    "Log", "Constants", "Utils", "PointManager", "Meta:ADDON_TABLE", "L", "Constants/PointChangeReason", "UnifiedGUI", "RaidManager", "RosterManager", "Acl", "Models/Filter", "Constants/PointChangeReasons", "Constants/PointType"
+}, function(resolve, LOG, CONSTANTS, UTILS, _, CLM, L, PointChangeReason, UnifiedGUI, RaidManager, RosterManager, Acl, Filter, PointChangeReasons, PointType)
 
 
 local pairs, ipairs = pairs, ipairs
@@ -71,7 +71,7 @@ end
 local UnifiedGUI_Standings = {
     name = "standings",
     awardReason = PointChangeReason.MANUAL_ADJUSTMENT,
-    filter = CLM.MODELS.Filters:New(
+    filter = Filter:New(
     (function() UnifiedGUI:FilterScrollingTable() end),
     UTILS.Set({
         "class", "inRaid", "inStandby",
@@ -99,7 +99,7 @@ function UnifiedGUI_Standings:GetSelection()
         return profiles
     end
     for _,s in pairs(selected) do
-        local profile = CLM.MODULES.ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
+        local profile = ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
         if profile then
             profiles[#profiles+1] = profile
         else
@@ -162,7 +162,7 @@ local function GenerateAssistantOptions(self)
         award_reason = {
             name = L["Reason"],
             type = "select",
-            values = CONSTANTS.POINT_CHANGE_REASONS.GENERAL,
+            values = PointChangeReasons.GENERAL,
             set = function(i, v) self.awardReason = v end,
             get = function(i) return self.awardReason end,
             order = 11,
@@ -189,7 +189,7 @@ local function GenerateAssistantOptions(self)
                 if not awardValue then LOG:Debug("UnifiedGUI_Standings(Award): missing award value"); return end
                 -- Reason
                 local awardReason
-                if self.awardReason and CONSTANTS.POINT_CHANGE_REASONS.GENERAL[self.awardReason] then
+                if self.awardReason and PointChangeReasons.GENERAL[self.awardReason] then
                     awardReason = self.awardReason
                 else
                     LOG:Debug("UnifiedGUI_Standings(Award): missing reason");
@@ -198,13 +198,13 @@ local function GenerateAssistantOptions(self)
                 local roster = RosterManager:GetRosterByUid(self.roster)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     if RaidManager:IsInRaid() then
-                        CLM.MODULES.PointManager:UpdateRaidPoints(RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                        PointManager:UpdateRaidPoints(RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                     else
                         LOG:Warning("You are not in raid.")
                     end
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
                     if roster then
-                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
+                        PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
                     else
                         LOG:Warning("Missing valid roster.")
                     end
@@ -216,7 +216,7 @@ local function GenerateAssistantOptions(self)
                         return
                     end
                     if roster then
-                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                        PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
                     else
                         LOG:Warning("Missing valid roster.")
                     end
@@ -261,7 +261,7 @@ local function GenerateManagerOptions(self)
             hidden = function()
                 local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
                 if not roster then return false end
-                return (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
+                return (roster:GetPointType() == PointType.EPGP)
             end,
             width = "full",
             order = 23
@@ -282,7 +282,7 @@ local function GenerateManagerOptions(self)
                     return
                 end
                 if self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    CLM.MODULES.PointManager:UpdateRosterPoints(roster, decayValue, PointChangeReason.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
+                    PointManager:UpdateRosterPoints(roster, decayValue, PointChangeReason.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles or #profiles == 0 then
@@ -290,7 +290,7 @@ local function GenerateManagerOptions(self)
                         LOG:Debug("UnifiedGUI_Standings(Decay): profiles == 0")
                         return
                     end
-                    CLM.MODULES.PointManager:UpdatePoints(roster, profiles, decayValue, PointChangeReason.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                    PointManager:UpdatePoints(roster, profiles, decayValue, PointChangeReason.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
                 else
                     LOG:Warning("Invalid context. You should not decay raid only.")
                 end
@@ -319,10 +319,10 @@ local function verticalOptionsFeeder()
         args = {}
     }
     UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_Standings))
-    if Acl:CheckLevel(AclLevel.ASSISTANT) then
+    if Acl:CheckAssistant() then
         UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_Standings))
     end
-    if Acl:CheckLevel(AclLevel.MANAGER) then
+    if Acl:CheckManager() then
         UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_Standings))
     end
     return options
@@ -433,7 +433,7 @@ local tableStructure = {
                     if reason == PointChangeReason.DECAY then
                         value = value .. "%"
                     end
-                    tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
+                    tooltip:AddDoubleLine(PointChangeReasons.ALL[reason] or "", value)
                 end
             else
                 tooltip:AddLine(L["No points received"])
@@ -471,9 +471,9 @@ local function tableDataFeeder()
     local weeklyCap = roster:GetConfiguration("weeklyCap")
     local rowId = 1
     local data = {}
-    local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
+    local isEPGP = (roster:GetPointType() == PointType.EPGP)
     for GUID,value in pairs(roster:Standings()) do
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        local profile = ProfileManager:GetProfileByGUID(GUID)
         local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
         local pointInfo = roster:GetPointInfoForPlayer(GUID)
         local numColumnValue
@@ -523,7 +523,7 @@ end
 local function refreshHandler()
     local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
     if roster then
-        if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+        if roster:GetPointType() == PointType.EPGP then
             UnifiedGUI:GetScrollingTable():SetDisplayCols(columnsEPGP)
         else
             UnifiedGUI:GetScrollingTable():SetDisplayCols(columnsDKP)
@@ -536,7 +536,7 @@ local function beforeShowHandler()
     UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
     if RaidManager:IsInRaid() then
         UnifiedGUI_Standings.roster = RaidManager:GetRaid():Roster():UID()
-        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
+        UnifiedGUI_Standings.filter:SetFilterValue(FilterType.IN_RAID, true)
         UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
     end
 end
@@ -618,7 +618,7 @@ UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
                             return
                         end
                         for _, profile in ipairs(profiles) do
-                            CLM.MODULES.StandbyStagingManager:AddToStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                            StandbyStagingManager:AddToStandby(RaidManager:GetRaid():UID(), profile:GUID())
                         end
                     end
                     refreshFn(true)
@@ -663,7 +663,7 @@ UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
                             return
                         end
                         for _, profile in ipairs(profiles) do
-                            CLM.MODULES.StandbyStagingManager:RemoveFromStandby(RaidManager:GetRaid():UID(), profile:GUID())
+                            StandbyStagingManager:RemoveFromStandby(RaidManager:GetRaid():UID(), profile:GUID())
                         end
                     end
                     refreshFn(true)
@@ -704,8 +704,8 @@ UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             },
         },
-        Acl:CheckLevel(AclLevel.ASSISTANT),
-        Acl:CheckLevel(AclLevel.MANAGER)
+        Acl:CheckAssistant(),
+        Acl:CheckManager()
     )
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Standings.name, 1,

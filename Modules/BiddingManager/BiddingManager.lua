@@ -2,8 +2,8 @@ local define = LibDependencyInjection.createContext(...)
 
 define.module("BiddingManager", {
     "Utils", "Log",
-    "Constants",  "Meta:ADDON_TABLE","RosterManager/Roster", "L", "Comms", "AuctionManager", "Database", "ConfigManager"
-}, function(resolve, UTILS, LOG, CONSTANTS, CLM, _, L, Comms, AuctionManager, Database, ConfigManager)
+    "Constants",  "Meta:ADDON_TABLE","Models/Roster", "L", "Comms", "AuctionManager", "Database", "ConfigManager", "Constants/BiddingCommType", "EventManager"
+}, function(resolve, UTILS, LOG, CONSTANTS, CLM, _, L, Comms, AuctionManager, Database, ConfigManager, BiddingCommType, EventManager)
 
 local BIDDING_COMM_PREFIX = "Bidding1"
 
@@ -18,7 +18,7 @@ function BiddingManager:Initialize()
 
     Comms:Register(BIDDING_COMM_PREFIX, (function(rawMessage, distribution, sender)
         local message = CLM.MODELS.BiddingCommStructure:New(rawMessage)
-        if CONSTANTS.BIDDING_COMM.TYPES[message:Type()] == nil then return end
+        if UTILS.Contains(BiddingCommType, message:Type()) == false then return end
         -- Bidding Manager is owner of the channel
         -- pass handling to Auction Manager
         AuctionManager:HandleIncomingMessage(message, distribution, sender)
@@ -65,7 +65,7 @@ function BiddingManager:Initialize()
             order = 72
           }
     }
-    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
+    ConfigManager:RegisterGlobal(options)
 
 
     self._initialized = true
@@ -101,10 +101,10 @@ function BiddingManager:Bid(value, type)
     self.lastBid = value
     self.guiBid = true
     local message = CLM.MODELS.BiddingCommStructure:New(
-        CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
+        BiddingCommType.SUBMIT_BID,
         CLM.MODELS.BiddingCommSubmitBid:New(value, type)
     )
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    Comms:Send(BIDDING_COMM_PREFIX, message, Distribution.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:CancelBid()
@@ -112,8 +112,8 @@ function BiddingManager:CancelBid()
     if not self.auctionInProgress then return end
     self.lastBid = nil
     self.guiBid = true
-    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID, {})
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    local message = CLM.MODELS.BiddingCommStructure:New(BiddingCommType.CANCEL_BID, {})
+    Comms:Send(BIDDING_COMM_PREFIX, message, Distribution.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyPass()
@@ -121,22 +121,22 @@ function BiddingManager:NotifyPass()
     if not self.auctionInProgress then return end
     self.lastBid = L["PASS"]
     self.guiBid = true
-    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    local message = CLM.MODELS.BiddingCommStructure:New(BiddingCommType.NOTIFY_PASS, {})
+    Comms:Send(BIDDING_COMM_PREFIX, message, Distribution.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyCantUse()
     LOG:Trace("BiddingManager:NotifyCantUse()")
     if not self.auctionInProgress then return end
-    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE, {})
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    local message = CLM.MODELS.BiddingCommStructure:New(BiddingCommType.NOTIFY_CANTUSE, {})
+    Comms:Send(BIDDING_COMM_PREFIX, message, Distribution.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyHide()
     LOG:Trace("BiddingManager:NotifyHide()")
     if not self.auctionInProgress then return end
-    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE, {})
-    Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    local message = CLM.MODELS.BiddingCommStructure:New(BiddingCommType.NOTIFY_HIDE, {})
+    Comms:Send(BIDDING_COMM_PREFIX, message, Distribution.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:ClearAuctionInfo()
@@ -245,36 +245,34 @@ function BiddingManager:HandleDistributeBid(data, sender)
     end
 end
 
-CONSTANTS.BIDDING_COMM = {
-    TYPE = {
+
+
+
+
+resolve(BiddingManager)
+end)
+
+define.module("Constants/BiddingCommType", {}, function(resolve)
+    resolve({
         SUBMIT_BID  = 1,
         CANCEL_BID  = 2,
         NOTIFY_PASS = 3,
         NOTIFY_HIDE = 4,
         NOTIFY_CANTUSE = 5
-    },
-    TYPES = UTILS.Set({
-        1, -- SUBMIT BID
-        2, -- CANCEL BID
-        3, -- NOTIFY_PASS
-        4, -- NOTIFY_HIDE
-        5  -- NOTIFY_CANTUSE
     })
-}
+end)
 
-CONSTANTS.BID_TYPE = {
-    MAIN_SPEC = 1,
-    OFF_SPEC = 2,
-    -- PASS = 3,
-    -- CANCEL = 4,
-    [CONSTANTS.SLOT_VALUE_TIER.BASE]    = CONSTANTS.SLOT_VALUE_TIER.BASE,
-    [CONSTANTS.SLOT_VALUE_TIER.SMALL]   = CONSTANTS.SLOT_VALUE_TIER.SMALL,
-    [CONSTANTS.SLOT_VALUE_TIER.MEDIUM]  = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
-    [CONSTANTS.SLOT_VALUE_TIER.LARGE]   = CONSTANTS.SLOT_VALUE_TIER.LARGE,
-    [CONSTANTS.SLOT_VALUE_TIER.MAX]     = CONSTANTS.SLOT_VALUE_TIER.MAX
-}
+define.module("Constants/BidType", {"Constants/SlotValueTier"}, function (resolve, SlotValueTier)
+    resolve({
+        MAIN_SPEC = 1,
+        OFF_SPEC = 2,
+        -- PASS = 3,
+        -- CANCEL = 4,
+        [SlotValueTier.BASE]    = SlotValueTier.BASE,
+        [SlotValueTier.SMALL]   = SlotValueTier.SMALL,
+        [SlotValueTier.MEDIUM]  = SlotValueTier.MEDIUM,
+        [SlotValueTier.LARGE]   = SlotValueTier.LARGE,
+        [SlotValueTier.MAX]     = SlotValueTier.MAX
+    })
 
-CONSTANTS.BID_TYPES = UTILS.Set(CONSTANTS.BID_TYPE)
-
-resolve(BiddingManager)
 end)

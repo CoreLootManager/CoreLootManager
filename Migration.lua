@@ -25,13 +25,13 @@ function Migration:Initialize()
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag == 0 and uncommitted == 0 then
             if self.migrationOngoing then
-                LOG:Message(CLM.L["All migration entries were commited and executed. Congratulations!"])
+                LOG:Message(L["All migration entries were commited and executed. Congratulations!"])
                 self.migrationOngoing = false
             end
             return
         end
         if self.migrationOngoing then
-            LOG:Message(CLM.L["Migration ongoing: %s(%s)"], lag, uncommitted)
+            LOG:Message(L["Migration ongoing: %s(%s)"], lag, uncommitted)
         end
     end)
 end
@@ -44,11 +44,11 @@ local timestampCounter = {}
 function Migration:Migrate()
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
     if LedgerManager:Length() > 0 then
-        LOG:Message(CLM.L["Unable to execute migration. Entries already exist."])
+        LOG:Message(L["Unable to execute migration. Entries already exist."])
         return
     end
     Comms:Disable()
-    LOG:Message(CLM.L["Executing Addon Migration with comms disabled."])
+    LOG:Message(L["Executing Addon Migration with comms disabled."])
     -- self.timestamp = UTILS.GetCutoffTimestamp()
     self.playerCache = {}
     for i=1,GetNumGuildMembers() do
@@ -60,9 +60,9 @@ function Migration:Migrate()
     self:MigrateMonolithDKP()
     self:MigrateEssentialDKP()
     self:MigrateCommunityDKP()
-    LOG:Message(CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."],
+    LOG:Message(L["Migration complete. %s to apply and sync with others or go to %s to discard."],
         ColorCodeText("/reload", "00cc00"),
-        ColorCodeText(CLM.L["Minimap Icon -> Configuration -> Wipe events"], "6699ff"))
+        ColorCodeText(L["Minimap Icon -> Configuration -> Wipe events"], "6699ff"))
 end
 
 function Migration:GetOldTimestampUnique()
@@ -87,8 +87,8 @@ end
 
 local function NewRoster(name)
     local timestamp = Migration:GetOldTimestampUnique()
-    local roster = LEDGER_ROSTER.Create:new(timestamp, name, CONSTANTS.POINT_TYPE.DKP)
-    LOG:Message(CLM.L["New roster: [%s]"], name)
+    local roster = LEDGER_ROSTER.Create:new(timestamp, name, PointType.DKP)
+    LOG:Message(L["New roster: [%s]"], name)
     roster:setTime(timestamp)
     LedgerManager:Submit(roster)
     return name, timestamp
@@ -121,7 +121,7 @@ local function UpdatePoints(uid, targets, value)
 
     local t = entry:targets()
     if not t or (#t == 0) then
-        LOG:Message(CLM.L["UpdatePoints(): Empty targets list"])
+        LOG:Message(L["UpdatePoints(): Empty targets list"])
         return
     end
 
@@ -156,12 +156,12 @@ end
 
 function Migration:_MigrateMonolithEssential(addonName)
 	if not ValidateAddon(addonName) then
-        LOG:Message(CLM.L["Skipping %s"], addonName)
+        LOG:Message(L["Skipping %s"], addonName)
         return
     end
     if not MonDKP_DKPTable then return end
     if not MonDKP_Loot then return end
-    LOG:Message(CLM.L["Migrating %s"], addonName)
+    LOG:Message(L["Migrating %s"], addonName)
     -- Detect oldest timestamp
     local oldestTimestamp = GetServerTime()
     for _,entry in ipairs(MonDKP_Loot) do
@@ -174,7 +174,7 @@ function Migration:_MigrateMonolithEssential(addonName)
     end
     self.timestamp = oldestTimestamp - 86400 -- Since we increment it later on then we want to have a buffer
     -- Import profiles
-    LOG:Message(CLM.L["Importing %s entries from DKPTable"], #MonDKP_DKPTable)
+    LOG:Message(L["Importing %s entries from DKPTable"], #MonDKP_DKPTable)
     self.playerDKP = {}
     self.playerList = {}
     local rosterCreated = false
@@ -200,11 +200,11 @@ function Migration:_MigrateMonolithEssential(addonName)
         end
     end
     if #self.playerList == 0 then
-        LOG:Error(CLM.L["Migration failure: Unable to create profiles"])
+        LOG:Error(L["Migration failure: Unable to create profiles"])
         return
     end
     -- Add profiles to roster
-    LOG:Message(CLM.L["Adding %s profiles to %s"], #self.playerList, rosterName)
+    LOG:Message(L["Adding %s profiles to %s"], #self.playerList, rosterName)
     AddProfilesToRoster(rosterUid, self.playerList)
     -- Import Loot History
     for _,entry in ipairs(MonDKP_Loot) do
@@ -223,7 +223,7 @@ function Migration:_MigrateMonolithEssential(addonName)
     for name,dkp in pairs(self.playerDKP) do
         UpdatePoints(rosterUid, GetPlayerGuid(self, name), dkp)
     end
-    LOG:Message(CLM.L["Import complete"])
+    LOG:Message(L["Import complete"])
 end
 
 local function CommDKP_GetRealmName()
@@ -232,14 +232,14 @@ end
 
 function Migration:_MigrateCommunity()
     if not ValidateAddon("CommunityDKP") then
-        LOG:Message(CLM.L["Skipping CommunityDKP"])
+        LOG:Message(L["Skipping CommunityDKP"])
         return
     end
     if not CommDKP_DB then return end
     if not CommDKP_DKPTable then return end
     if not CommDKP_Loot then return end
 
-    LOG:Message(CLM.L["Migrating %s"], "CommunityDKP")
+    LOG:Message(L["Migrating %s"], "CommunityDKP")
 
     local realmFaction = CommDKP_GetRealmName()
     local guild = GetGuildInfo("player") or ""
@@ -262,7 +262,7 @@ function Migration:_MigrateCommunity()
         table.insert(teams, {id = id, name = teamInfo.name})
     end
     if #teams == 0 then
-        LOG:Error(CLM.L["Migration failure: Detected 0 teams"])
+        LOG:Error(L["Migration failure: Detected 0 teams"])
         return
     end
     -- Detect oldest timestamp
@@ -285,7 +285,7 @@ function Migration:_MigrateCommunity()
     local playerProfiles = {}
     local teamProfiles = {}
     local teamRoster = {}
-    LOG:Message(CLM.L["Importing profiles from DKPTable"])
+    LOG:Message(L["Importing profiles from DKPTable"])
     for _, team in ipairs(teams) do
         local rosterCreated = false
         local rosterName, rosterUid
@@ -316,14 +316,14 @@ function Migration:_MigrateCommunity()
         end
     end
     if rawequal(next(playerProfiles), nil) then
-        LOG:Error(CLM.L["Migration failure: Unable to create profiles"])
+        LOG:Error(L["Migration failure: Unable to create profiles"])
         return
     end
     -- Add profiles to rosters
     for _, team in ipairs(teams) do
         if DKPTable[team.id] then
             if #teamProfiles[team.name] > 0 then
-                LOG:Message(CLM.L["Adding %s profiles to %s"], #teamProfiles[team.name], team.name)
+                LOG:Message(L["Adding %s profiles to %s"], #teamProfiles[team.name], team.name)
                 AddProfilesToRoster(teamRoster[team.name], teamProfiles[team.name])
             end
         end
@@ -345,7 +345,7 @@ function Migration:_MigrateCommunity()
                     end
                 end
             end
-            LOG:Message(CLM.L["Adding %s loot entries for team to %s"], lootCount, team.name)
+            LOG:Message(L["Adding %s loot entries for team to %s"], lootCount, team.name)
         end
     end
     -- Set player DKP
@@ -355,9 +355,9 @@ function Migration:_MigrateCommunity()
             UpdatePoints(teamRoster[teamName], GetPlayerGuid(self, name), dkp)
             dkpSet = dkpSet + 1
         end
-        LOG:Message(CLM.L["Set DKP for %s players for team to %s"], dkpSet, teamName)
+        LOG:Message(L["Set DKP for %s players for team to %s"], dkpSet, teamName)
     end
-    LOG:Message(CLM.L["Import complete"])
+    LOG:Message(L["Import complete"])
 end
 
 function Migration:RegisterSlash()
@@ -365,7 +365,7 @@ function Migration:RegisterSlash()
         migrate = {
             type = "execute",
             name = "Migrate",
-            desc = CLM.L["Execute migration from MonolithDKP, EssentialDKP or CommunityDKP"],
+            desc = L["Execute migration from MonolithDKP, EssentialDKP or CommunityDKP"],
             handler = self,
             func = "Migrate",
         }

@@ -66,8 +66,8 @@ resolve({
     [ItemValueMode.TIERED] = L["Tiered"],
 })
 end)
-define.module("RosterManager/Roster", {"Models", "Constants", "Utils", "L", "Log",
-"DifficultyIdMap", "RosterManager/RosterConfiguration"}, function(resolve, Models, CONSTANTS, UTILS, L, LOG, DifficultyIdMap, RosterConfiguration)
+define.module("Models/Roster", {"RosterManager/AttendanceTracker", "Constants", "Utils", "L", "Log",
+"DifficultyIdMap", "Models/RosterConfiguration", "Constants/SlotValueTier"}, function(resolve, AttendanceTracker, CONSTANTS, UTILS, L, LOG, DifficultyIdMap, RosterConfiguration, SlotValueTier)
 
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
 
@@ -78,7 +78,7 @@ local weekOffsetUS = UTILS.GetWeekOffsetUS()
 local GLOBAL_FAKE_INVENTORY_SLOT = "_GLOBAL"
 
 local function fillSlotsArray(array)
-    for key,_ in pairs(CONSTANTS.SLOT_VALUE_TIERS) do
+    for key,_ in pairs(SlotValueTierS) do
         array[key] = 0
     end
 end
@@ -86,7 +86,7 @@ end
 local function lazyCreateSlot(self, itemEquipLoc)
     if self.defaultSlotValues[itemEquipLoc] then return end
     self.defaultSlotValues[itemEquipLoc] = {}
-    for key,_ in pairs(CONSTANTS.SLOT_VALUE_TIERS) do
+    for key,_ in pairs(SlotValueTierS) do
         self.defaultSlotValues[itemEquipLoc][key] = self.defaultSlotValues[GLOBAL_FAKE_INVENTORY_SLOT][key]
     end
 end
@@ -123,7 +123,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.inRoster = {}             -- Profile is at all in roster
     o.standings = {}            -- Profile standing in roster (dict)
     o.pointInfo = {}            -- Profile point info
-    o.attendanceTracker = MODELS.AttendanceTracker:New(
+    o.attendanceTracker = AttendanceTracker:New(
        raidsForFullAttendance, attendanceWeeksWindow) -- Profile attendance in roster (dict)
     o.pointHistory = {}         -- Point changes in  roster (list)
     o.profilePointHistory = {}  -- Point changes in to players in roster (dict of lists)
@@ -147,7 +147,7 @@ function Roster:AddProfileByGUID(GUID)
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
     self.inRoster[GUID] = true
-    self.pointInfo[GUID] = MODELS.PointInfo:New()
+    self.pointInfo[GUID] = PointInfo:New()
 end
 
 function Roster:RemoveProfileByGUID(GUID)
@@ -227,7 +227,7 @@ function Roster:GetCurrentGainsForPlayer(GUID)
 end
 
 function Roster:GetPointInfoForPlayer(GUID)
-    return self.pointInfo[GUID] or MODELS.PointInfo:New()
+    return self.pointInfo[GUID] or PointInfo:New()
 end
 
 function Roster:GetWeeklyGainsForPlayerWeek(GUID, week)
@@ -303,7 +303,7 @@ function Roster:DecayStandings(GUID, value)
     self.standings[GUID] = new
 
     -- Spent in EPGP = GP -> thus needs to be decayed also
-    if self:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+    if self:GetPointType() == PointType.EPGP then
         new = UTILS.round(((self.pointInfo[GUID].spent * (100 - value)) / 100), self.configuration._.roundDecimals)
         self.pointInfo[GUID].spent = new
     end
@@ -368,7 +368,7 @@ end
 function Roster:SetDefaultSlotTierValue(itemEquipLoc, tier, value)
     LOG:Debug("Set Default Slot Tier Value: [%s]: [%s] [%s] for roster [%s]", itemEquipLoc, tier, value, self:UID())
     if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then return end
-    if not tier or not CONSTANTS.SLOT_VALUE_TIERS[tier] then return end
+    if not tier or not SlotValueTierS[tier] then return end
     lazyCreateSlot(self, itemEquipLoc)
 
     if itemEquipLoc ~= GLOBAL_FAKE_INVENTORY_SLOT then
@@ -393,7 +393,7 @@ function Roster:GetDefaultSlotTierValue(itemEquipLoc, tier)
     if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then
         itemEquipLoc = GLOBAL_FAKE_INVENTORY_SLOT
     end
-    if not tier or not CONSTANTS.SLOT_VALUE_TIERS[tier] then return 0 end
+    if not tier or not SlotValueTierS[tier] then return 0 end
     local values = self.defaultSlotValues[itemEquipLoc] or self.defaultSlotValues[GLOBAL_FAKE_INVENTORY_SLOT]
     return values[tier]
 end
@@ -442,7 +442,7 @@ function Roster:SetItemValues(itemId, values)
     if allSame then
         self:ClearItemValues(itemId)
     else
-        for key,_ in pairs(CONSTANTS.SLOT_VALUE_TIERS) do
+        for key,_ in pairs(SlotValueTierS) do
             self.itemValues[itemId][key] = values[key] or 0
         end
     end
@@ -480,14 +480,14 @@ function Roster:SetConfiguration(option, value)
 end
 
 function Roster:GetFieldName(field)
-    if not CONSTANTS.SLOT_VALUE_TIERS[field] then
+    if not SlotValueTierS[field] then
         LOG:Error("Roster:GetFieldName(): Unknown field %s", field)
     end
     return self.fieldNames[field] or ""
 end
 
 function Roster:SetFieldName(field, name)
-    if not CONSTANTS.SLOT_VALUE_TIERS[field] then
+    if not SlotValueTierS[field] then
         LOG:Error("Roster:SetFieldName(): Unknown field %s", field)
         return
     end
@@ -537,7 +537,7 @@ function Roster:AddLoot(loot, profile)
     self.raidLoot[#self.raidLoot+1] = loot
     if profile:IsLocked() then return end
     self.pointInfo[GUID]:AddSpent(loot:Value())
-    if self:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+    if self:GetPointType() == PointType.DKP then
         -- Charging for the item
         self:UpdateStandings(GUID, -loot:Value(), 0)
         -- Correct for the spending since it will be subtracted in update standings
@@ -599,7 +599,7 @@ function Roster:CopyDefaultSlotValues(s)
 end
 
 function Roster:CopyConfiguration(s)
-    self.configuration = MODELS.RosterConfiguration:New(UTILS.DeepCopy(s.configuration))
+    self.configuration = RosterConfiguration:New(UTILS.DeepCopy(s.configuration))
     self.bossKillBonusValues = UTILS.DeepCopy(s.bossKillBonusValues)
 end
 
@@ -625,29 +625,7 @@ function Roster:GetAttendance(GUID)
     return self.attendanceTracker:Get(GUID)
 end
 
-Models.Roster = Roster
-
--- Constants
-CONSTANTS.POINT_TYPE = {
-    DKP = 0,
-    EPGP = 1,
-    -- ROLL = 2,
-    -- SK = 3
-}
-
-CONSTANTS.POINT_TYPES = UTILS.Set({
-    CONSTANTS.POINT_TYPE.DKP, -- DKP
-    CONSTANTS.POINT_TYPE.EPGP, -- EPGP
-    -- CONSTANTS.POINT_TYPE.ROLL, -- ROLL
-    -- CONSTANTS.POINT_TYPE.SK  -- SK
-})
-
-CONSTANTS.POINT_TYPES_GUI = {
-    [CONSTANTS.POINT_TYPE.DKP] = L["DKP"],
-    [CONSTANTS.POINT_TYPE.EPGP] = L["EPGP"],
-    -- [CONSTANTS.POINT_TYPE.ROLL] = L["ROLL"],
-    -- [CONSTANTS.POINT_TYPE.SK] = L["SK"]
-}
+resolve(Roster)
 
 
 
@@ -785,23 +763,17 @@ CONSTANTS.ALLOWED_ROUNDINGS_GUI = {
     [2] = "0.01",
 }
 
-CONSTANTS.SLOT_VALUE_TIER = {
-    BASE   = "b",
-    SMALL  = "s",
-    MEDIUM = "m",
-    LARGE  = "l",
-    MAX    = "x"
-}
 
-CONSTANTS.SLOT_VALUE_TIERS = UTILS.Set({
-    CONSTANTS.SLOT_VALUE_TIER.BASE,
-    CONSTANTS.SLOT_VALUE_TIER.SMALL,
-    CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
-    CONSTANTS.SLOT_VALUE_TIER.LARGE,
-    CONSTANTS.SLOT_VALUE_TIER.MAX
+
+SlotValueTierS = UTILS.Set({
+    SlotValueTier.BASE,
+    SlotValueTier.SMALL,
+    SlotValueTier.MEDIUM,
+    SlotValueTier.LARGE,
+    SlotValueTier.MAX
 })
 
-CONSTANTS.SLOT_VALUE_TIERS_GUI = {
+SlotValueTierS_GUI = {
     ["b"] = L["Base"],
     ["s"] = L["Small"],
     ["m"] = L["Medium"],
@@ -809,12 +781,45 @@ CONSTANTS.SLOT_VALUE_TIERS_GUI = {
     ["x"] = L["Max"],
 }
 
-CONSTANTS.SLOT_VALUE_TIERS_ORDERED = {
-    CONSTANTS.SLOT_VALUE_TIER.BASE,
-    CONSTANTS.SLOT_VALUE_TIER.SMALL,
-    CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
-    CONSTANTS.SLOT_VALUE_TIER.LARGE,
-    CONSTANTS.SLOT_VALUE_TIER.MAX
+SlotValueTierS_ORDERED = {
+    SlotValueTier.BASE,
+    SlotValueTier.SMALL,
+    SlotValueTier.MEDIUM,
+    SlotValueTier.LARGE,
+    SlotValueTier.MAX
 }
   resolve(Roster)
 end)
+
+define.module("Constants/SlotValueTier", {}, function(resolve)
+    resolve({
+        BASE   = "b",
+        SMALL  = "s",
+        MEDIUM = "m",
+        LARGE  = "l",
+        MAX    = "x"
+    })
+end)
+
+define.module("Constants/PointType", {}, function(resolve)
+    return resolve({
+        DKP = 0,
+        EPGP = 1,
+    })
+end)
+define.module("Constants/PointTypes", {"Constants/PointType", "Utils"}, function(resolve, PointType, Utils)
+    return resolve(Utils.Set(PointType))
+end)
+
+define.module("Constants/PointTypesGui", {"Constants/PointType", "L"}, function(resolve, PointType, L)
+    return resolve({
+        [PointType.DKP] = L["DKP"],
+        [PointType.EPGP] = L["EPGP"],
+        -- [PointType.ROLL] = L["ROLL"],
+        -- [PointType.SK] = L["SK"]
+    })
+end)
+-- Constants
+
+
+

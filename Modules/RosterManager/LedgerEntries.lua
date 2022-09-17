@@ -1,6 +1,6 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("RosterManager/LedgerEntries", {"Utils", "Constants", "LibStub:EventSourcing/LogEntry", "RosterManager/RosterConfiguration"}, function(resolve, UTILS, Constants, LogEntry, RosterConfiguration)
+define.module("RosterManager/LedgerEntries", {"Utils", "Constants", "LibStub:EventSourcing/LogEntry", "Models/RosterConfiguration"}, function(resolve, UTILS, Constants, LogEntry, RosterConfiguration)
 
 local tonumber, tostring = tonumber, tostring
 

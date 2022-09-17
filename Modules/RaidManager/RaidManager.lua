@@ -2,7 +2,7 @@ local define = LibDependencyInjection.createContext(...)
 
 define.module("RaidManager", {
     "Log", "Utils", "GlobalConfigs",
-    "L", "LedgerManager", "RosterManager", "ProfileManager", "PointManager", "EventManager", "StandbyManager", "Constants/RaidStatus", "Acl", "RosterManager/RosterConfiguration", "Models/Ledger/Raid"
+    "L", "LedgerManager", "RosterManager", "ProfileManager", "PointManager", "EventManager", "StandbyManager", "Constants/RaidStatus", "Acl", "Models/RosterConfiguration", "Models/Ledger/Raid"
 }, function(resolve, LOG, UTILS, GlobalConfigs, L, LedgerManager, RosterManager, ProfileManager, PointManager, EventManager, StandbyManager, RaidStatus, Acl, RosterConfiguration, RaidModel)
 
 
@@ -298,7 +298,7 @@ function RaidManager:CreateRaid(roster, name, config)
         LOG:Error("RaidManager:CreateRaid(): Missing valid configuration")
         return
     end
-    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if not Acl:CheckAssistant() then
         LOG:Message(L["You are not allowed to create raids."])
         return
     end
@@ -320,7 +320,7 @@ function RaidManager:StartRaid(raid)
         LOG:Message(L["Missing valid raid"])
         return
     end
-    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if not Acl:CheckAssistant() then
         LOG:Message(L["You are not allowed to start raid."])
         return
     end
@@ -388,7 +388,7 @@ function RaidManager:EndRaid(raid)
         LOG:Message(L["Missing valid raid"])
         return
     end
-    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if not Acl:CheckAssistant() then
         LOG:Message(L["You are not allowed to start raid."])
         return
     end
@@ -427,7 +427,7 @@ function RaidManager:JoinRaid(raid)
         LOG:Message(L["Missing valid raid"])
         return
     end
-    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if not Acl:CheckAssistant() then
         LOG:Message(L["You are not allowed to join raid."])
         return
     end
@@ -456,7 +456,7 @@ function RaidManager:AddToStandby(raid, standby)
         LOG:Message(L["Missing valid raid"])
         return
     end
-    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if not Acl:CheckAssistant() then
         LOG:Message(L["You are not allowed to control raid."])
         return
     end
@@ -490,7 +490,7 @@ function RaidManager:RemoveFromStandby(raid, removed)
         LOG:Message(L["Missing valid raid"])
         return
     end
-    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT) then
+    if not Acl:CheckAssistant() then
         LOG:Message(L["You are not allowed to control raid."])
         return
     end

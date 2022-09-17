@@ -1,6 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("AuctionHistoryManager/Gui", {"Database", "Acl", "AuctionHistoryManager", "L", "Log", "Utils"}, function(resolve, Database, Acl, AuctionHistoryManager, L, LOG, UTILS)
+define.module("AuctionHistoryGui", {"Database", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "EventManager", "ProfileManager", "ConfigManager"},
+function(resolve, Database, Acl, AuctionHistoryManager, L, LOG, UTILS, EventManager, ProfileManager, ConfigManager)
 
 
 -- ------------------------------- --
@@ -91,12 +92,12 @@ function AuctionHistoryGUI:Initialize()
                 color = "cc0000"
             }
         },
-        Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        Acl:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckAssistant(),
+        Acl:CheckManager()
     )
 
     self:Create()
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:RegisterSlash()
     self._initialized = true
     self:Refresh()
@@ -138,7 +139,7 @@ local function CreateAuctionDisplay(self)
         local noBids = true
         for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
             noBids = false
-            local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
+            local bidderProfile = ProfileManager:GetProfileByName(bidder)
             if bidderProfile then
                 bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
             end
@@ -277,7 +278,7 @@ function AuctionHistoryGUI:RegisterSlash()
             func = "Toggle",
         }
     }
-    CLM.MODULES.ConfigManager:RegisterSlash(options)
+    ConfigManager:RegisterSlash(options)
 end
 
 function AuctionHistoryGUI:Reset()

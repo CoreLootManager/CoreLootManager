@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("UnifiedGui/Raids", {
-    "Log", "Constants", "Utils", "RosterManager/RosterConfiguration", "L", "RosterManager", "RaidManager", "StandbyStagingManager", "Acl", "LedgerManager", "UnifiedGUI", "Constants/RaidStatus", "Constants/RaidStatusGui", "Constants/AclLevel"
+    "Log", "Constants", "Utils", "Models/RosterConfiguration", "L", "RosterManager", "RaidManager", "StandbyStagingManager", "Acl", "LedgerManager", "UnifiedGUI", "Constants/RaidStatus", "Constants/RaidStatusGui", "Constants/AclLevel"
 }, function(resolve, LOG, CONSTANTS, UTILS, RosterConfiguration, L, RosterManager, RaidManager, StandbyStagingManager, Acl, LedgerManager, UnifiedGUI, RaidStatus, RaidStatusGui, AclLevel)
 
 
@@ -23,7 +23,7 @@ end
 
 local UnifiedGUI_Raids = {
     name = "raids",
-    -- filter = CLM.MODELS.Filters:New(
+    -- filter = CLM.Filter:New(
     -- (function() UnifiedGUI:FilterScrollingTable() end),
     -- UTILS.Set({"class", "inGuild", "external"}),
     -- UTILS.Set({"buttons", "search"}),
@@ -219,10 +219,10 @@ local function verticalOptionsFeeder()
         args = {}
     }
     -- UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_Raids))
-    if Acl:CheckLevel(AclLevel.ASSISTANT) then
+    if Acl:CheckAssistant() then
         UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_Raids))
     end
-    -- if Acl:CheckLevel(AclLevel.MANAGER) then
+    -- if Acl:CheckManager() then
     --     UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_Raids))
     -- end
     -- if Acl:CheckLevel(AclLevel.GUILD_MASTER) then
@@ -472,8 +472,8 @@ UnifiedGUI_Raids.RightClickMenu = UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             }
         },
-        Acl:CheckLevel(AclLevel.ASSISTANT),
-        Acl:CheckLevel(AclLevel.MANAGER)
+        Acl:CheckAssistant(),
+        Acl:CheckManager()
     )
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Raids.name, 3,

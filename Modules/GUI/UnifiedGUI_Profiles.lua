@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("UnifiedGUI/Profiles", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager", "Constants/AclLevel"},
-function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, AclLevel)
+define.module("UnifiedGUI/Profiles", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager", "Constants/AclLevel", "Models/Filter"},
+function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, AclLevel, Filter)
 local pairs, ipairs = pairs, ipairs
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
@@ -33,7 +33,7 @@ end
 
 local UnifiedGUI_Profiles = {
     name = "profiles",
-    filter = Models.Filters:New(
+    filter = Filter:New(
     (function() UnifiedGUI:FilterScrollingTable() end),
     UTILS.Set({"class", "inGuild", "external", "rank", "locked"}),
     UTILS.Set({"buttons", "search"}),
@@ -165,7 +165,7 @@ local function verticalOptionsFeeder()
         args = {}
     }
     UTILS.mergeDictsInline(options.args, GenerateUntrustedOptions(UnifiedGUI_Profiles))
-    if Acl:CheckLevel(AclLevel.ASSISTANT) then
+    if Acl:CheckAssistant() then
         UTILS.mergeDictsInline(options.args, GenerateAssistantOptions(UnifiedGUI_Profiles))
     end
     return options
@@ -265,7 +265,7 @@ local function beforeShowHandler()
     LOG:Trace("UnifiedGUI_Profiles beforeShowHandler()")
     if RaidManager:IsInRaid() then
         UnifiedGUI_Profiles.roster = RaidManager:GetRaid():UID()
-        UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
+        UnifiedGUI_Profiles.filter:SetFilterValue(FilterType.IN_RAID)
     end
 end
 UnifiedGUI_Profiles.RightClickMenu = UTILS.GenerateDropDownMenu(
@@ -304,8 +304,8 @@ UnifiedGUI_Profiles.RightClickMenu = UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             },
         },
-        Acl:CheckLevel(AclLevel.ASSISTANT),
-        Acl:CheckLevel(AclLevel.MANAGER)
+        Acl:CheckAssistant(),
+        Acl:CheckManager()
     )
 UnifiedGUI:RegisterTab(
     UnifiedGUI_Profiles.name, 4,

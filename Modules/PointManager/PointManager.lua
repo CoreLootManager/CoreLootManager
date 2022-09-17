@@ -297,7 +297,7 @@ CONSTANTS.POINT_MANAGER_ACTIONS = UTILS.Set({ 0, 1, 2 })
 
 
 
-CLM.MODULES.PointManager = PointManager
+PointManager = PointManager
 PointManager:Initialize()
 resolve(PointManager)
 end)

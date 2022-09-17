@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("RosterManager", {
-    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database", "RosterManager/Roster", "ProfileManager/Profile", "L", "Constants/Configs"
-}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database, Roster, Profile, L, Configs)
+    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database", "Models/Roster", "ProfileManager/Profile", "L", "ConfigManager", "Constants/PointTypes"
+}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database, Roster, Profile, L, ConfigManager, PointTypes)
 
 local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
@@ -39,7 +39,7 @@ function RosterManager:Initialize()
                 LOG:Debug("Roster [%s:%s] already exists. Verify data integrity with other officers.", name, uid)
                 return
             end
-            if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
+            if not (pointType and PointTypes[pointType] ~= nil) then return end
             local roster = Roster:New(uid, pointType, self.db.raidsForFullAttendance, self.db.attendanceWeeksWindow)
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
@@ -205,7 +205,7 @@ function RosterManager:Initialize()
                 if entry:remove() then
                     for _, iGUID in ipairs(profiles) do
                         local GUID = UTILS.getGuidFromInteger(iGUID)
-                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                        local profile = ProfileManager:GetProfileByGUID(GUID)
                         if profile then
                             roster:RemoveProfileByGUID(GUID)
                             -- If it is a main with linked alts - remove all alts
@@ -220,7 +220,7 @@ function RosterManager:Initialize()
                     for _, iGUID in ipairs(profiles) do
                         local GUID = UTILS.getGuidFromInteger(iGUID)
                         roster:AddProfileByGUID(GUID)
-                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                        local profile = ProfileManager:GetProfileByGUID(GUID)
                         if profile then
                             -- If it is an alt of a linked main - set its standings and gains from main
                             if profile:Main() ~= "" then
@@ -228,7 +228,7 @@ function RosterManager:Initialize()
                                 roster:AddProfileByGUID(profile:Main())
                                 roster:MirrorStandings(profile:Main(), { GUID })
                                 roster:MirrorWeeklyGains(profile:Main(), { GUID })
-                                CLM.MODULES.PointManager:AddFakePointHistory(roster, { GUID }, roster:Standings(profile:Main()), CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
+                                PointManager:AddFakePointHistory(roster, { GUID }, roster:Standings(profile:Main()), CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
                             end
                         end
                     end
@@ -315,7 +315,7 @@ function RosterManager:Initialize()
             order = 22
           }
     }
-    CLM.MODULES.ConfigManager:Register(Configs.GROUP.GLOBAL, options)
+    ConfigManager:RegisterGlobal(options)
 
 
 end
@@ -354,7 +354,7 @@ function RosterManager:NewRoster(pointType, name)
         uid = uid +  1
     end
 
-    if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then
+    if not (pointType and PointTypes[pointType] ~= nil) then
         LOG:Error("RosterManager:NewRoster(): Invalid point type")
         return
     end
@@ -662,13 +662,13 @@ function RosterManager:AddFromRaidToRoster(roster)
     end
     if not IsInRaid() then return end
     -- Lazy fill profiles
-    CLM.MODULES.ProfileManager:FillFromRaid()
+    ProfileManager:FillFromRaid()
     local missingProfiles = {}
     for i=1,MAX_RAID_MEMBERS do
         local name  = GetRaidRosterInfo(i)
         if name then
             name = UTILS.RemoveServer(name)
-            local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+            local profile = ProfileManager:GetProfileByName(name)
             if profile then
                 local GUID = profile:GUID()
                 if not roster:IsProfileInRoster(GUID) then
@@ -720,7 +720,7 @@ end
 
 
 RosterManager:Initialize()
-CLM.MODULES.RosterManager = RosterManager
+RosterManager = RosterManager
 resolve(RosterManager)
 
 CONSTANTS.ROSTER_NAME_GENERATOR = {

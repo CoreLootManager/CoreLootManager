@@ -14,9 +14,9 @@ local ChatFrame_AddMessageEventFilter = ChatFrame_AddMessageEventFilter
 
 local GlboalChatMessageHandlers = {}
 function GlboalChatMessageHandlers:Initialize()
-    if not CLM.MODULES.ACL:IsTrusted() then return end
+    if not Acl:IsTrusted() then return end
     if not CLM.GlobalConfigs:GetAllowChatCommands() then return end
-    CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_WHISPER", "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER"},
+    EventManager:RegisterWoWEvent({"CHAT_MSG_WHISPER", "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER"},
     (function(addon, event, text, playerName, ...)
         playerName = UTILS.RemoveServer(playerName)
         local params = { strsplit(" ", text) }
@@ -32,34 +32,34 @@ function GlboalChatMessageHandlers:Initialize()
                 target = playerName
             end
 
-            if command == CLM.L["!bid"] then
+            if command == L["!bid"] then
                 local value
                 if params[2] then
                     value = UTILS.Trim(params[2])
                 end
-                if not CLM.MODULES.AuctionManager:IsAuctionInProgress() then
+                if not AuctionManager:IsAuctionInProgress() then
                     LOG:Debug("Received submit bid from %s while no auctions are in progress", playerName)
                     return
                 end
                 local accept, reason = false, nil
-                if value == CLM.L["cancel"] then
-                    accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, nil)
-                elseif value == CLM.L["pass"] then
-                    accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CONSTANTS.AUCTION_COMM.BID_PASS)
+                if value == L["cancel"] then
+                    accept, reason = AuctionManager:UpdateBid(playerName, nil)
+                elseif value == L["pass"] then
+                    accept, reason = AuctionManager:UpdateBid(playerName, CONSTANTS.AUCTION_COMM.BID_PASS)
                 else
                     local numericValue = tonumber(value)
                     if type(numericValue) == "number" then
-                        accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, numericValue)
+                        accept, reason = AuctionManager:UpdateBid(playerName, numericValue)
                     end
                 end
-                local reasonString = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or CLM.L["Invalid value provided"]
-                local message = sformat(CLM.L["<CLM> Your bid (%s) was %s%s."],
+                local reasonString = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or L["Invalid value provided"]
+                local message = sformat(L["<CLM> Your bid (%s) was %s%s."],
                     tostring(value),
-                    accept and CLM.L["accepted"] or CLM.L["denied"],
+                    accept and L["accepted"] or L["denied"],
                     accept and "" or (": ".. reasonString))
                 SendChatMessage(message, responseChannel, nil, target)
 
-            elseif command == CLM.L["!dkp"] then
+            elseif command == L["!dkp"] then
                 responseChannel = "WHISPER" -- always respond in whisper to protect from spam
                 target = playerName
                 local player
@@ -71,19 +71,19 @@ function GlboalChatMessageHandlers:Initialize()
                 else
                     player = params[2]
                 end
-                local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
+                local profile = ProfileManager:GetProfileByName(player)
                 if not profile then
-                    SendChatMessage(sformat(CLM.L["<CLM> Missing profile for player %s."], tostring(player)), responseChannel, nil, target)
+                    SendChatMessage(sformat(L["<CLM> Missing profile for player %s."], tostring(player)), responseChannel, nil, target)
                     return
                 end
                 local rosters = {}
-                if CLM.MODULES.RaidManager:IsInActiveRaid() then
-                    local raid = CLM.MODULES.RaidManager:GetRaid()
+                if RaidManager:IsInActiveRaid() then
+                    local raid = RaidManager:GetRaid()
                     if raid then
                         rosters["_"] = raid:Roster()
                     end
                 else
-                    rosters = CLM.MODULES.RosterManager:GetRosters()
+                    rosters = RosterManager:GetRosters()
                 end
                 local rostersWithPlayer = {}
                 for _, roster in pairs(rosters) do
@@ -92,9 +92,9 @@ function GlboalChatMessageHandlers:Initialize()
                     end
                 end
                 if #rostersWithPlayer == 0 then
-                    SendChatMessage(sformat(CLM.L["<CLM> %s not present in any roster."], profile:Name()), responseChannel, nil, target)
+                    SendChatMessage(sformat(L["<CLM> %s not present in any roster."], profile:Name()), responseChannel, nil, target)
                 else
-                    SendChatMessage(sformat(CLM.L["<CLM> %s standings in %d %s:"], profile:Name(), #rostersWithPlayer, (#rostersWithPlayer == 1) and CLM.L["roster"] or CLM.L["rosters"]), responseChannel, nil, target)
+                    SendChatMessage(sformat(L["<CLM> %s standings in %d %s:"], profile:Name(), #rostersWithPlayer, (#rostersWithPlayer == 1) and L["roster"] or L["rosters"]), responseChannel, nil, target)
                 end
                 for _, roster in ipairs(rostersWithPlayer) do
                     local standings = roster:Standings(profile:GUID())
@@ -103,7 +103,7 @@ function GlboalChatMessageHandlers:Initialize()
                     if weeklyCap > 0 then
                         weeklyGains = weeklyGains .. " / " .. weeklyCap
                     end
-                    SendChatMessage(sformat(CLM.L["<CLM> %s: %d DKP (%d this week)."], CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()), standings, weeklyGains), responseChannel, nil, target)
+                    SendChatMessage(sformat(L["<CLM> %s: %d DKP (%d this week)."], RosterManager:GetRosterNameByUid(roster:UID()), standings, weeklyGains), responseChannel, nil, target)
                 end
             end
         end

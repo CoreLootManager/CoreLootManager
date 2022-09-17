@@ -1,11 +1,6 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
+local define = LibDependencyInjection.createContext(...)
 
+define.module("LootQueueGui", {"Database", "Log"}, function(resolve, Database, LOG)
 local CreateFrame, UIParent, ipairs = CreateFrame, UIParent, ipairs
 
 -- Libs
@@ -14,7 +9,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local RightClickMenu
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('lootQueue', {
+    self.db = Database:GUI('lootQueue', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -52,11 +47,11 @@ function LootQueueGUI:Initialize()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
-                title = CLM.L["Auction item"],
+                title = L["Auction item"],
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
-                    CLM.MODULES.EventManager:DispatchEvent("CLM_AUCTION_WINDOW_FILL", {
+                    EventManager:DispatchEvent("CLM_AUCTION_WINDOW_FILL", {
                         link = ST_GetItemLink(rowData),
                         start = false
                     })
@@ -65,11 +60,11 @@ function LootQueueGUI:Initialize()
                 color = "00cc00"
             },
             {
-                title = CLM.L["Remove item"],
+                title = L["Remove item"],
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
-                    CLM.MODULES.LootQueueManager:Remove(ST_GetItemSeq(rowData))
+                    LootQueueManager:Remove(ST_GetItemSeq(rowData))
                 end),
                 color = "cc0000"
             },
@@ -78,19 +73,19 @@ function LootQueueGUI:Initialize()
                 trustedOnly = true,
             },
             {
-                title = CLM.L["Remove all"],
+                title = L["Remove all"],
                 func = (function()
-                    CLM.MODULES.LootQueueManager:Wipe()
+                    LootQueueManager:Wipe()
                 end),
                 color = "cc0000"
             }
         },
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
-        CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
+        Acl:CheckAssistant(),
+        Acl:CheckManager()
     )
 
     self:Create()
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
     self:RegisterSlash()
     self._initialized = true
     self:Refresh()
@@ -151,10 +146,10 @@ local function CreateLootDisplay(self)
             UTILS.LibDD:CloseDropDownMenus()
             UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
         else
-            if IsAltKeyDown() and CLM.MODULES.ACL:IsTrusted() then
+            if IsAltKeyDown() and Acl:IsTrusted() then
                 local rowData = self.st:GetRow(realrow)
                 if not rowData or not rowData.cols then return status end
-                CLM.MODULES.EventManager:DispatchEvent("CLM_AUCTION_WINDOW_FILL", {
+                EventManager:DispatchEvent("CLM_AUCTION_WINDOW_FILL", {
                     link = ST_GetItemLink(rowData),
                     start = false
                 })
@@ -177,7 +172,7 @@ function LootQueueGUI:Create()
     LOG:Trace("LootQueueGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle(CLM.L["Loot Queue"])
+    f:SetTitle(L["Loot Queue"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
@@ -199,7 +194,7 @@ function LootQueueGUI:Refresh(visible)
     if visible and not self.top:IsVisible() then return end
 
     local data = {}
-    local queue = CLM.MODULES.LootQueueManager:GetQueue()
+    local queue = LootQueueManager:GetQueue()
     -- if #queue > 0 then
     -- Data
     local rowId = 1
@@ -260,12 +255,12 @@ function LootQueueGUI:RegisterSlash()
         queue = {
             type = "execute",
             name = "Loot Queue",
-            desc = CLM.L["Toggle Loot Queue window display"],
+            desc = L["Toggle Loot Queue window display"],
             handler = self,
             func = "Toggle",
         }
     }
-    CLM.MODULES.ConfigManager:RegisterSlash(options)
+    ConfigManager:RegisterSlash(options)
 end
 
 function LootQueueGUI:Reset()
@@ -274,4 +269,6 @@ function LootQueueGUI:Reset()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-CLM.GUI.LootQueue = LootQueueGUI
+resolve(LootQueueGUI)
+
+end)

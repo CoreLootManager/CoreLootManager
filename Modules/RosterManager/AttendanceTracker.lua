@@ -1,6 +1,6 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("RosterManager/AttendanceTracker", {"Constants", "RosterManager/Roster", "Utils", "Log"}, function(resolve,  CONSTANTS, Roster, Utils, Log)
+define.module("RosterManager/AttendanceTracker", {"Constants", "Utils", "Log"}, function(resolve,  CONSTANTS, Utils, Log)
 
 local pairs, GetServerTime = pairs, GetServerTime
 

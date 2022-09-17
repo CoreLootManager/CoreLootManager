@@ -105,14 +105,14 @@ function Debug:AddOptionDump()
         desc = "Clean current state dump.",
         type = "input",
         func = (function()
-            local db = CLM.MODULES.Database:Personal()
+            local db = Database:Personal()
             db.stateDump = {}
         end)
     }
 end
 
 function Debug:Dump(i, modulename)
-    local db = CLM.MODULES.Database:Personal()
+    local db = Database:Personal()
     db.stateDump = {}
     if (not modulename or (modulename == "")) then
         for k,_ in pairs(MODULES) do
@@ -140,7 +140,7 @@ end
 
 function Debug:KillCommand()
     if not self:IsEnabled() then return end
-    Comms:Send(COMM_CHANNEL, MESSAGE_KILL_COMMAND, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    Comms:Send(COMM_CHANNEL, MESSAGE_KILL_COMMAND, Distribution.GUILD)
 end
 
 function Debug:EnableKillCommand()
@@ -179,7 +179,7 @@ function Debug:HandleKillCommand(source)
     db.ledger = {}
     -- CreatePopup()-- not working
     -- StaticPopup_Show("KILL_COMMAND_RELOAD", tostring(source)) -- not working
-    LOG:Message(CLM.L["You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI."], UTILS.ColorCodeText(source, "FFD100"))
+    LOG:Message(L["You have just received Kill Command from %s. All Ledger data was wiped. Please reload the UI."], UTILS.ColorCodeText(source, "FFD100"))
 end
 
 --

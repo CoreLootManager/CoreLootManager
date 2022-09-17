@@ -1,8 +1,8 @@
 -- ------------------------------- --
 local define = LibDependencyInjection.createContext(...)
 
-define.module("BiddingManager/Gui", {"Log", "Utils", "L", "Database", "ConfigManager", "EventManager", "ProfileManager", "RosterManager", "BiddingManager", "Constants/ItemValueMode", "Constants/AuctionTypesOpen", "Constants/Configs"},
-function(resolve, LOG, UTILS, L, Database, ConfigManager, EventManager, ProfileManager, RosterManager, BiddingManager, ItemValueMode, AuctionTypesOpen, Configs)
+define.module("BiddingManager/Gui", {"Log", "Utils", "L", "Database", "ConfigManager", "EventManager", "ProfileManager", "RosterManager", "BiddingManager", "Constants/ItemValueMode", "Constants/AuctionTypesOpen", "Constants/SlotValueTier", "Constants/BidType"},
+function(resolve, LOG, UTILS, L, Database, ConfigManager, EventManager, ProfileManager, RosterManager, BiddingManager, ItemValueMode, AuctionTypesOpen, SlotValueTier, BidType)
 
 local pairs, ipairs = pairs, ipairs
 local tostring, tonumber = tostring, tonumber
@@ -89,7 +89,7 @@ local function CreateConfig(self)
             order = 75
         }
     }
-    ConfigManager:Register(Configs.GROUP.GLOBAL, options)
+    ConfigManager:RegisterGlobal(options)
 end
 
 function BiddingManagerGUI:Initialize()
@@ -168,7 +168,7 @@ local function GenerateValueButtonsAuctionOptions(self,
             desc = L["Bid input values as Off spec bid."],
             type = "execute",
             func = (function()
-                BiddingManager:Bid(self.bid, CONSTANTS.BID_TYPE.OFF_SPEC)
+                BiddingManager:Bid(self.bid, BidType.OFF_SPEC)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             width = 0.3,
@@ -229,8 +229,8 @@ local function GenerateValueButtonsAuctionOptions(self,
             return options
         else
             usedTiers = {
-                CONSTANTS.SLOT_VALUE_TIER.BASE,
-                CONSTANTS.SLOT_VALUE_TIER.MAX
+                SlotValueTier.BASE,
+                SlotValueTier.MAX
             }
         end
     end
@@ -291,8 +291,8 @@ local function GenerateNamedButtonsAuctionOptions(self,
         usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
     elseif itemValueMode ~= ItemValueMode.ASCENDING then
         usedTiers = {
-            CONSTANTS.SLOT_VALUE_TIER.BASE,
-            CONSTANTS.SLOT_VALUE_TIER.MAX
+            SlotValueTier.BASE,
+            SlotValueTier.MAX
         }
     end
     if usedTiers then
@@ -482,7 +482,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     self.duration = duration
     self:BuildBar(duration)
     local values = auctionInfo:Values()
-    self.bid = values[CONSTANTS.SLOT_VALUE_TIER.BASE]
+    self.bid = values[SlotValueTier.BASE]
     local myProfile = ProfileManager:GetMyProfile()
     if myProfile then
         local roster = RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())

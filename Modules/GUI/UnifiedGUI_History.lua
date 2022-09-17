@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("UnifiedGUI/History", {"Models", "Constants", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager", "LedgerManager", "EventManager", "UnifiedGUI", "RaidManager", "EncounterIdMap", "Constants/AclLevel"},
-function(resolve, Models, CONSTANTS, Acl, AuctionHistoryManager, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, LedgerManager, EventManager, UnifiedGUI, RaidManager, EncounterIdMap, AclLevel)
+define.module("UnifiedGUI/History", {"Models", "Constants", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "Models/Filter", "ProfileManager", "RosterManager", "LedgerManager", "EventManager", "UnifiedGUI", "RaidManager", "EncounterIdMap"},
+function(resolve, Models, CONSTANTS, Acl, AuctionHistoryManager, L, LOG, UTILS, Filter, ProfileManager, RosterManager, LedgerManager, EventManager, UnifiedGUI, RaidManager, EncounterIdMap)
 
 local pairs, ipairs = pairs, ipairs
 local sgsub, tsort =string.gsub, table.sort
@@ -39,7 +39,7 @@ end
 
 local UnifiedGUI_History = {
     name = "history",
-    filter = Models.Filters:New(
+    filter = Filter:New(
     refreshFn,
     {},
     UTILS.Set({
@@ -317,7 +317,7 @@ local function tableDataFeeder()
             end
 
             local row = {cols = {
-                {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
+                {value = PointChangeReasons.ALL[reason] or ""},
                 {value = value},
                 {value = date(L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
                 {value = multiple},
@@ -386,8 +386,8 @@ UnifiedGUI_History.RightClickMenu = UTILS.GenerateDropDownMenu(
                 color = "cc0000"
             }
         },
-        Acl:CheckLevel(AclLevel.ASSISTANT),
-        Acl:CheckLevel(AclLevel.MANAGER)
+        Acl:CheckAssistant(),
+        Acl:CheckManager()
     )
 
 UnifiedGUI:RegisterTab(
