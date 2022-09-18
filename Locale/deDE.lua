@@ -891,7 +891,7 @@ CLM.L["January"] = "Januar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:54
 CLM.L["Jin'do the Hexxer"] = "Jin'do der Verhexer"
 -- Global/GlobalConfigs.lua:39
-CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"] = "Für mehr Informationen kommt auf unseren Discord: |cff44cc44https://tiny.one/clm-discord|r"
+CLM.L["Join our discord for more info: "] = "Für mehr Informationen kommt auf unseren Discord: "
 -- Modules/GUI/UnifiedGUI_Raids.lua:414
 CLM.L["Join selected raid"] = "Dem ausgewählten Raid beitreten"
 -- Integrations/GUI.lua:145
