@@ -50,6 +50,10 @@ local function ST_GetHighlightFunction(row)
     return row.cols[5].value
 end
 
+local function ST_GetActualBidValue(row)
+    return row.cols[6].value
+end
+
 local highlightRole = {
     ["DAMAGER"] = UTILS.getHighlightMethod(colorRedTransparent),
     ["TANK"] = UTILS.getHighlightMethod(colorBlueTransparent),
@@ -240,9 +244,9 @@ local function CreateBidWindow(self)
             if type(selected) ~= "table" then return false end
             if selected.cols == nil then return false end -- Handle column titles click
             self.awardPlayer = selected.cols[1].value or ""
-            if not self.awardValue or self.awardValue == '' then
-                AuctionManagerGUI:UpdateBids()
-            end
+            -- if not self.awardValue or self.awardValue == '' then
+            AuctionManagerGUI:UpdateBids(ST_GetActualBidValue(selected))
+            -- end
             return selected
         end),
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -598,12 +602,13 @@ function AuctionManagerGUI:StartAuction()
     CLM.MODULES.AuctionManager:StartAuction(self.itemId, self.itemLink, self.itemEquipLoc, self.values, self.note, self.raid, self.configuration)
 end
 
-local function GetTopBids()
+local function GetTopBids(cutoff)
     LOG:Trace("AuctionManagerGUI:GetTopBids()")
+    cutoff = cutoff or math.huge
     local max = {name = "", bid = 0}
     for name,bid in pairs(CLM.MODULES.AuctionManager:Bids()) do
         bid = tonumber(bid) or 0
-        if bid > max.bid then
+        if bid > max.bid and bid <= cutoff then
             max.bid = bid
             max.name = name
         end
@@ -611,7 +616,7 @@ local function GetTopBids()
     local second = {name = "", bid = 0}
     for name,bid in pairs(CLM.MODULES.AuctionManager:Bids()) do
         bid = tonumber(bid) or 0
-        if bid > second.bid and name ~= max.name then
+        if bid > second.bid and bid <= max.bid and name ~= max.name then
             second.bid = bid
             second.name = name
         end
@@ -619,9 +624,9 @@ local function GetTopBids()
     return max, second
 end
 
-function AuctionManagerGUI:UpdateAwardValue()
+function AuctionManagerGUI:UpdateAwardValue(cutoff)
     LOG:Trace("AuctionManagerGUI:UpdateAwardValue()")
-    local max, second = GetTopBids()
+    local max, second = GetTopBids(cutoff)
     local isVickrey = (self.roster:GetConfiguration("auctionType") ==  CONSTANTS.AUCTION_TYPE.VICKREY)
     if isVickrey then
         if second.bid == 0 then
@@ -648,9 +653,9 @@ function AuctionManagerGUI:ClearSelectedBid()
     self.st:ClearSelection()
 end
 
-function AuctionManagerGUI:UpdateBids()
+function AuctionManagerGUI:UpdateBids(cutoff)
     LOG:Trace("AuctionManagerGUI:UpdateBids()")
-    AuctionManagerGUI:UpdateAwardValue()
+    AuctionManagerGUI:UpdateAwardValue(cutoff)
     self:Refresh()
 end
 
@@ -665,6 +670,7 @@ function AuctionManagerGUI:Refresh()
         local data = {}
         for name,bid in pairs(bids) do
             local color
+            local bidValue = bid
             if namedButtons then
                 bid = roster:GetFieldName(bidTypes[name]) or bid
             else
@@ -685,7 +691,9 @@ function AuctionManagerGUI:Refresh()
                     {value = UTILS.ColorCodeClass(profile:Class())},
                     {value = bid, color = color},
                     {value = current},
+                    -- not visible
                     {value = highlightRole[profile:Role()]},
+                    {value = bidValue}
                 },
                 DoCellUpdate = highlightRole[profile:Role()]
                 }
