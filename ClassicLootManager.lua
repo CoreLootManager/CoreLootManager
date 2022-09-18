@@ -133,6 +133,7 @@ function CORE:_InitializeFeatures()
     CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
     CLM.Integration:Initialize() -- Initialize external (to wow) integrations
     CLM.DatabaseUpgradeImporter:Initialize() -- Initialize import for JSON data from CLM1
+    CLM.ItemValueOverrideImporter:Initialize() -- Initialize import for item value overrides through CSV
 end
 
 function CORE:_InitializeMinimap()

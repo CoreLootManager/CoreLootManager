@@ -497,7 +497,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         name = "",
                         image = icon,
                         order = order,
-                        width = 0.5,
+                        width = 0.3,
                         type = "execute",
                         func = (function() end),
                         itemLink = shortItemLink,

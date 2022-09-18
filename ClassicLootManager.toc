@@ -137,10 +137,11 @@ Global\GlobalBindings.lua
 # Extra
 MinimapIcon.lua
 Migration.lua
-Import.lua
 
 # Integrations
 Integrations\Integrations.lua
 Integrations\Exporter.lua
 Integrations\ExportConfiguration.lua
 Integrations\GUI.lua
+Integrations\Import.lua
+Integrations\ImportCSV.lua
