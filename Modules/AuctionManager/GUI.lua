@@ -672,7 +672,8 @@ function AuctionManagerGUI:Refresh()
             local color
             local bidValue = bid
             if namedButtons then
-                bid = roster:GetFieldName(bidTypes[name]) or bid
+                bid = roster:GetFieldName(bidTypes[name])
+                if not bid or bid == "" then bid = bidValue end
             else
                 if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
                     color = colorTurquoise

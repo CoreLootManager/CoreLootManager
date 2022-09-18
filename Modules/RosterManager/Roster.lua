@@ -437,7 +437,7 @@ end
 
 function Roster:GetFieldName(field)
     if not CONSTANTS.SLOT_VALUE_TIERS[field] then
-        LOG:Error("Roster:GetFieldName(): Unknown field %s", field)
+        LOG:Debug("Roster:GetFieldName(): Unknown field %s", field)
     end
     return self.fieldNames[field] or ""
 end
