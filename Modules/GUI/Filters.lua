@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("Models/Filter", {"L", "Utils", "Constants/FilterType", "GuildInfoListener", "RaidManager", "ProfileManager", "StandbyStagingManager"},
-function(resolve, L, Utils, FilterType, GuildInfoListener, RaidManager, ProfileManager, StandbyStagingManager)
+define.module("Models/Filter", {"L", "Utils", "Constants/FilterType", "GuildInfoListener", "RaidManager", "ProfileRegistry", "StandbyStagingManager"},
+function(resolve, L, Utils, FilterType, GuildInfoListener, RaidManager, ProfileRegistry, StandbyStagingManager)
 
 ---------------------------------
 -- Filter is breaking MVC rule --
@@ -255,12 +255,12 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
         status = status and isInRaid[playerName]
     elseif self.inStandby and self.filters[FilterType.STANDBY] then
         if RaidManager:IsInProgressingRaid() then
-            local profile = ProfileManager:GetProfileByName(playerName)
+            local profile = ProfileRegistry.GetByName(playerName)
             if profile then
                 status = status and RaidManager:GetRaid():IsPlayerOnStandby(profile:GUID())
             end
         elseif RaidManager:IsInCreatedRaid() then
-            local profile = ProfileManager:GetProfileByName(playerName)
+            local profile = ProfileRegistry.GetByName(playerName)
             if profile then
                 status = status and StandbyStagingManager:IsPlayerOnStandby(RaidManager:GetRaid():UID(), profile:GUID())
             end
@@ -269,7 +269,7 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
         end
     end
 
-    local profile = ProfileManager:GetProfileByName(playerName)
+    local profile = ProfileRegistry.GetByName(playerName)
     if self.main and self.filters[FilterType.MAINS_ONLY] then
         if profile then
             status = status and (profile:Main() == "")

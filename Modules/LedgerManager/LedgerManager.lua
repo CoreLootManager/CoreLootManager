@@ -1,9 +1,22 @@
 local define = LibDependencyInjection.createContext(...)
 
+define.module("MutatorRegistry", {
+    "LedgerEntries/LootManager/Award",
+    "LedgerEntries/ProfileManager/Link",
+    "LedgerEntries/ProfileManager/Lock"
+}, function(resolve, ...)
+    -- this registry is filled with its dependencies, each dependency is a class and a callback
+    local handlers = {}
+    for _, pair in {...} do
+        handlers[pair[1]] = pair[2]
+    end
+    resolve(handlers)
+
+end)
 define.module("LedgerManager", {
     "Utils", "Log",
-    "Constants",  "LibStub:EventSourcing/LedgerFactory", "Comms", "Acl", "Database", "Modules", "GlobalConfigs", "Constants/AclLevel"
-}, function(resolve, UTILS, LOG, CONSTANTS, LedgerLib, Comms, Acl, Database, Modules, GlobalConfigs, AclLevel)
+    "LibStub:EventSourcing/LedgerFactory", "Comms", "Acl", "Database", "GlobalConfigs", "Constants/AclLevel", "MutatorRegistry"
+}, function(resolve, UTILS, LOG, LedgerLib, Comms, Acl, Database, GlobalConfigs, AclLevel, MutatorRegistry)
 local pairs, ipairs = pairs, ipairs
 local wipe, collectgarbage, tinsert = wipe, collectgarbage, table.insert
 
@@ -66,6 +79,10 @@ end
 local function createLedgerAndRegisterCallbacks(self, database)
     local ledger = createLedger(self, database)
 
+    -- mutators from registry
+    for class, mutatorFn in pairs(MutatorRegistry) do
+        ledger.registerMutator(class, mutatorFn)
+    end
     -- Mutators
     for class, mutatorFn in pairs(self.mutatorCallbacks) do
         ledger.registerMutator(class, mutatorFn)
@@ -92,31 +109,12 @@ local LedgerManager = {
 }
 LedgerManager.activeLedger = createLedger(LedgerManager, LedgerManager.activeDatabase)
 
-function LedgerManager:IsInitialized()
-    return true
-end
-
-function LedgerManager:Enable()
-    self.activeLedger.getStateManager():setUpdateInterval(50)
-    if GlobalConfigs:GetDisableSync() then
-        LedgerManager:Cutoff()
-        LOG:Message("Ledger synchronisation was disabled. Use this at your own risk.")
-    else
-        if Acl:CheckAssistant() then
-            self.activeLedger.enableSending()
-        end
-    end
-end
 
 -- This is not reversable until reload
 function LedgerManager:Cutoff()
     self.activeLedger.disableSending()
     Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
     Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
-end
-
-function LedgerManager:DisableAdvertising()
-    self.activeLedger.disableSending()
 end
 
 function LedgerManager:TimeTravel(timestamp)
@@ -303,7 +301,7 @@ function LedgerManager:CancelLastEntry()
 end
 
 function LedgerManager:Wipe()
-    self:DisableAdvertising()
+    self.activeLedger.disableSending()
     local db = Database:Ledger()
     wipe(db)
     collectgarbage()
@@ -316,6 +314,14 @@ function LedgerManager:Reset()
 end
 --@end-do-not-package@
 
-Modules.LedgerManager = LedgerManager
+LedgerManager.activeLedger.getStateManager():setUpdateInterval(50)
+if GlobalConfigs:GetDisableSync() then
+    LedgerManager:Cutoff()
+    LOG:Message("Ledger synchronisation was disabled. Use this at your own risk.")
+else
+    if Acl:CheckAssistant() then
+        LedgerManager.activeLedger.enableSending()
+    end
+end
 resolve(LedgerManager)
 end)

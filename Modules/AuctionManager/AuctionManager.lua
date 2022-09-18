@@ -497,7 +497,7 @@ function AuctionManager:ValidateBid(name, bid)
     end
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return true end
     -- sanity check
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = ProfileRegistry.GetByName(name)
     if not profile then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
     local GUID = profile:GUID()
     if not self.raid:Roster():IsProfileInRoster(GUID) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
@@ -687,7 +687,7 @@ function AuctionManager:FakeBids()
         local profiles = roster:Profiles()
         local numBids = math.random(1, #profiles)
         for _=1,numBids do
-            local bidder = ProfileManager:GetProfileByGUID(profiles[math.random(1, #profiles)]):Name()
+            local bidder = ProfileRegistry.Get(profiles[math.random(1, #profiles)]):Name()
             local bidType = math.random(1,6)
             if     bidType == 1 then -- none
             elseif bidType == 2 then -- value

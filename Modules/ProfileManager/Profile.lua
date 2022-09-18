@@ -1,17 +1,17 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("ProfileManager/Profile", {"Constants", "Models", "L"}, function(resolve, CONSTANTS, Models, L)
+define.module("Models/Profile", {"Constants", "Models", "L"}, function(resolve, CONSTANTS, Models, L)
 
 local setmetatable, tostring, tonumber, rawequal, sformat = setmetatable, tostring, tonumber, rawequal, string.format
 
 local Profile = {}
-function Profile:New(entry, name, class, main)
+function Profile:New(entry, name, class, main, GUID)
     local o = {}
 
     setmetatable(o, self)
     self.__index = self
 
-    o._GUID = ""
+    o._GUID = GUID
     o.entry = entry
     o.name  = (name ~= nil) and tostring(name) or ""
     o.class = (class ~= nil) and tostring(class) or ""
@@ -94,10 +94,6 @@ function Profile:RemoveAlt(GUID)
     if self.alts[GUID] then
         self.alts[GUID] = nil
     end
-end
-
-function Profile:SetGUID(GUID)
-    self._GUID = GUID
 end
 
 function Profile:GUID()

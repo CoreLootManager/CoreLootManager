@@ -1,9 +1,46 @@
 local define = LibDependencyInjection.createContext(...)
 
+define.module("ProfileRegistry", {"Utils"}, function(resolve, Utils)
+    local myGUID = Utils.whoamiGUID()
+    local profiles = {}
+    local nameIndex = {}
+
+
+    resolve({
+        Add = function(profile)
+            profiles[profile:GUID()] = profile
+            nameIndex[strlower(profile:Name())] = profile
+        end,
+        Update = function(GUID, callback)
+            -- Select a profile by GUID, and update it in the callback.
+            local profile = profiles[GUID]
+            if profile == nil then return false end
+            nameIndex[strlower(profile:Name())] = nil
+            profiles[profile:GUID()] = nil
+            callback(profile)
+            profiles[profile:GUID()] = profile
+            nameIndex[strlower(profile:Name())] = profile
+            return true
+        end,
+        Me = function()
+            return profiles[myGUID]
+        end,
+        Get = function(GUID)
+            return profiles[GUID]
+        end,
+        GetByName = function(name)
+            return nameIndex[strlower(name)]
+        end,
+        -- this leaks our table, we should implement a generator intead
+        All = function() return profiles end
+
+    })
+
+end)
 define.module("ProfileManager", {
-    "Log", "Utils", "ProfileManager/LedgerEntries", "ProfileManager/PruneLog", "Database", "ProfileManager/Profile",
-    "L", "LedgerManager", "RosterManager", "Modules"
-}, function(resolve, LOG, UTILS, LedgerEntries, PruneLog, Database, Profile, L, LedgerManager, RosterManager, Modules)
+    "Log", "Utils", "ProfileManager/PruneLog", "Database", "Models/Profile",
+    "L", "LedgerManager", "Modules", "ProfileRegistry"
+}, function(resolve, LOG, UTILS, LedgerEntries, PruneLog, Database, Profile, L, LedgerManager, Modules, ProfileRegistry)
 
 
 local pairs, type, strsplit, strlower = pairs, type, strsplit, strlower
@@ -14,134 +51,13 @@ local sformat = string.format
 local whoamiGUID = UTILS.whoamiGUID()
 
 local ProfileManager = {}
+
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")
-
-    self.cache = {
-        profilesGuidMap = {},
-        profiles = {}
-    }
 
     self.db = Database:Personal('profileManager', {
         pruneLog = {}
     })
-
-    -- Register mutators
-    LedgerManager:RegisterEntryType(
-        LedgerEntries.Update,
-        (function(entry)
-            LOG:TraceAndCount("mutator(ProfileUpdate)")
-            local iGUID = entry:GUID()
-            if type(iGUID) ~= "number" then return end
-            local GUID = UTILS.getGuidFromInteger(iGUID)
-            local name = entry:name()
-            if UTILS.empty(name) then return end
-
-            local class = UTILS.GetClassReadable(UTILS.NumberToClass(entry:ingameClass()))
-            local main = entry:main()
-            main =  (type(main) == "number" and main ~= 0) and UTILS.getGuidFromInteger(main) or ""
-            -- Check if it's an update
-            local profileInternal = self.cache.profiles[GUID]
-            if profileInternal then
-                if UTILS.empty(class) then
-                    class = profileInternal:Class()
-                end
-                if UTILS.empty(main) then
-                    main = profileInternal:Main()
-                end
-                profileInternal.class = class
-                profileInternal.main = main
-                -- Renam:
-                -- Remove old map
-                self.cache.profilesGuidMap[strlower(profileInternal.name)] = nil
-                -- set new name
-                profileInternal.name = name
-                self.cache.profilesGuidMap[strlower(name)] = GUID
-            else
-                local profile = Profile:New(entry, name, class, main)
-                profile:SetGUID(GUID)
-                self.cache.profiles[GUID] = profile
-                self.cache.profilesGuidMap[strlower(name)] = GUID
-                -- Check for conditional restore
-                local rosters = RosterManager:GetRosters()
-                for _, roster in pairs(rosters) do
-                    if roster:IsConditinallyRemoved(GUID) then
-                        roster:RestoreConditionallyRemoved(GUID)
-                    end
-                end
-            end
-        end))
-
-    LedgerManager:RegisterEntryType(
-        LedgerEntries.Remove,
-        (function(entry)
-            LOG:TraceAndCount("mutator(ProfileRemove)")
-            local GUID = entry:GUID()
-            if type(GUID) ~= "number" then return end
-            GUID = UTILS.getGuidFromInteger(GUID)
-            local profile = self.cache.profiles[GUID]
-            if profile then
-                -- Check alt-main linking before removing
-                if profile:HasAlts() then
-                    for altGUID in pairs(profile:Alts()) do
-                        local altProfile = self:GetProfileByGUID(altGUID)
-                        if altProfile then
-                            altProfile:SetMain("")
-                        end
-                    end
-                elseif (profile:Main() ~= "") then
-                    local mainProfile = self:GetProfileByGUID(profile:Main())
-                    if mainProfile then
-                        mainProfile:RemoveAlt(GUID)
-                    end
-                end
-                -- Remove
-                self.cache.profiles[GUID] = nil
-                -- Conditonally remove for backwards compatibility
-                local rosters = RosterManager:GetRosters()
-                for _, roster in pairs(rosters) do
-                    if roster:IsProfileInRoster(GUID) then
-                        roster:MarkAsConditionallyRemoved(GUID)
-                    end
-                end
-            end
-        end))
-
-
-
-    LedgerManager:RegisterEntryType(
-        LedgerEntries.Lock,
-        (function(entry)
-            LOG:TraceAndCount("mutator(ProfileLock)")
-            local action
-            if entry:lock() then
-                action = (function(p) p:Lock() end)
-            else
-                action = (function(p) p:Unlock() end)
-            end
-            -- Same action for all alts and mains
-            for _, target in ipairs(entry:targets()) do
-                local profile = self:GetProfileByGUID(UTILS.getGuidFromInteger(target))
-                if profile then
-                    action(profile) -- main lock/unlock
-                    if profile:HasAlts() then -- Is Main - has alts
-                        for altGUID in pairs(profile:Alts()) do
-                            local altProfile = self:GetProfileByGUID(altGUID)
-                            if altProfile then action(altProfile) end
-                        end
-                    elseif (profile:Main() ~= "") then -- is alt - has main
-                        local mainProfile = self:GetProfileByGUID(profile:Main())
-                        if mainProfile then
-                            action(mainProfile)
-                            for altGUID in pairs(mainProfile:Alts()) do
-                                local altProfile = self:GetProfileByGUID(altGUID)
-                                if altProfile then action(altProfile) end
-                            end
-                        end
-                    end
-                end
-            end
-        end))
 
     LedgerManager:RegisterOnRestart(function()
         self:WipeAll()
@@ -209,7 +125,7 @@ function ProfileManager:RemoveProfile(GUID)
 end
 
 local function PruneProfile(self, GUID, log)
-    local profile = self.cache.profiles[GUID]
+    local profile = ProfileRegistry.Get(GUID)
     if not profile then return end
     local entry = profile:Entry()
     if not entry then return end
@@ -332,7 +248,7 @@ function ProfileManager:PruneBelowLevel(minLevel, nop)
     if nop then
         LOG:Info("Pruning: No operation")
         prune = (function(GUID)
-            local profile = self.cache.profiles[GUID]
+            local profile = ProfileRegistry.Get(GUID)
             if not profile then return end
             log:Add(profile:Name())
         end)
@@ -358,7 +274,7 @@ function ProfileManager:PruneRank(rank, nop)
     if nop then
         LOG:Info("Pruning: No operation")
         prune = (function(GUID)
-            local profile = self.cache.profiles[GUID]
+            local profile = ProfileRegistry.Get(GUID)
             if not profile then return end
             log:Add(profile:Name())
         end)
@@ -395,7 +311,7 @@ function ProfileManager:PruneUnguilded(nop)
     if nop then
         LOG:Info("Pruning: No operation")
         prune = (function(GUID)
-            local profile = self.cache.profiles[GUID]
+            local profile = ProfileRegistry.Get(GUID)
             if not profile then return end
             log:Add(profile:Name())
         end)
@@ -423,27 +339,25 @@ function ProfileManager:WipeAll()
     self.cache = { profilesGuidMap = {}, profiles = {} }
 end
 
-function ProfileManager:GetMyProfile()
-    LOG:Trace("ProfileManager:GetMyProfile()")
+function ProfileRegistry.Me()
+    LOG:Trace("ProfileRegistry.Me()")
     return self:GetProfileByGUID(whoamiGUID)
 end
 
 -- Utility
 
-function ProfileManager:GetGUIDFromName(name)
-    return self.cache.profilesGuidMap[name]
+
+
+function ProfileRegistry.All()
+    return ProfileRegistry.All()
 end
 
-function ProfileManager:GetProfiles()
-    return self.cache.profiles
+function ProfileRegistry.Get(GUID)
+    return ProfileRegistry.Get(GUID)
 end
 
-function ProfileManager:GetProfileByGUID(GUID)
-    return self.cache.profiles[GUID]
-end
-
-function ProfileManager:GetProfileByName(name)
-    return self.cache.profiles[self.cache.profilesGuidMap[strlower(name)]]
+function ProfileRegistry.GetByName(name)
+    return ProfileRegistry.GetByName(name)
 end
 
 -- Publis API
@@ -452,68 +366,3 @@ Modules.ProfileManager = ProfileManager
 resolve(ProfileManager)
 end)
 
--- we register this entry outside the profile manager since it depends on pointmanager and we have a circular dependency otherwise
-define.await({"ProfileManager/LedgerEntries", "Log", "LedgerManager", "Utils", "ProfileManager", "PointManager", "RosterManager", "Constants", "ProfileManager/Profile"},
-function(LedgerEntries, LOG, LedgerManager, UTILS, ProfileManager, PointManager, RosterManager, CONSTANTS, Profile)
-    LedgerManager:RegisterEntryType(
-        LedgerEntries.Link,
-        (function(entry)
-            LOG:TraceAndCount("mutator(ProfileLink)")
-            local altGUID = entry:GUID()
-            if type(altGUID) ~= "number" then return end
-            altGUID = UTILS.getGuidFromInteger(altGUID)
-            local mainGUID = entry:main()
-            if type(mainGUID) ~= "number" then return end
-            if altGUID == mainGUID then return end
-            mainGUID = UTILS.getGuidFromInteger(mainGUID)
-            local altProfile = ProfileManager:GetProfileByGUID(altGUID)
-            if not UTILS.typeof(altProfile, Profile) then return end
-            local mainProfile = ProfileManager:GetProfileByGUID(mainGUID)
-            if not UTILS.typeof(mainProfile, Profile) then -- Unlink
-                -- Check if our main exists
-                local currentMainProfile = ProfileManager:GetProfileByGUID(altProfile:Main())
-                if not UTILS.typeof(currentMainProfile, Profile) then return end
-                -- Remove main from this alt
-                altProfile:ClearMain()
-                -- Remove alt count from main
-                currentMainProfile:RemoveAlt(altGUID)
-            else -- Link
-                -- Sanity check if not setting existing one
-                if altProfile:Main() == mainProfile:GUID() then return end
-                -- Do not allow alt chaining if main is alt
-                if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), Profile) then return end
-                -- Do not allow alt chaining if alt has alts
-                if altProfile:HasAlts() then return end
-                -- Set new main of this alt
-                altProfile:SetMain(mainGUID)
-                -- Add alt to our main
-                mainProfile:AddAlt(altGUID)
-                -- Handle consequences of linking:
-                -- For each roster this alt is present in:
-                local rosters = RosterManager:GetRosters()
-                for _,roster in pairs(rosters) do
-                    if roster:IsProfileInRoster(altGUID) then
-                        -- 1) Add main if not present in roster
-                        roster:AddProfileByGUID(mainGUID)
-                        -- 2) Sum points of the pool and new alt
-                        local pointSum = roster:Standings(mainGUID) + roster:Standings(altGUID)
-                        -- 3) Set new Main standings
-                        roster:SetStandings(mainGUID, pointSum)
-                        -- 2a) Sum spent points of the pool and new alt
-                        local spentSum = roster:GetPointInfoForPlayer(mainGUID).spent + roster:GetPointInfoForPlayer(altGUID).spent
-                        -- 3a) Set new Main spent
-                        roster:SetSpent(mainGUID, spentSum)
-                        -- 4) Mirror standings (includes spent) from main to alts
-                        roster:MirrorStandings(mainGUID, mainProfile:Alts(), true)
-                        -- 5) Mirror weekly gains from main to alts
-                        roster:MirrorWeeklyGains(mainGUID, mainProfile:Alts(), true)
-                        -- 6) History entry
-                        local targets = UTILS.keys(mainProfile:Alts())
-                        table.insert(targets, 1, mainGUID)
-                        PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
-                    end
-                end
-            end
-        end))
-
-end)

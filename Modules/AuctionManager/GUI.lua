@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("AuctionManagerGui", {"ConfigManager", "Constants/BidType", "Utils", "Log", "RaidManager", "AuctionManager", "ProfileManager", "Models/RosterConfiguration"},
-function(resolve, ConfigManager, BidType, UTILS, LOG, RaidManager, AuctionManager, ProfileManager, RosterConfiguration)
+define.module("AuctionManagerGui", {"ConfigManager", "Constants/BidType", "Utils", "Log", "RaidManager", "AuctionManager", "ProfileRegistry", "Models/RosterConfiguration"},
+function(resolve, ConfigManager, BidType, UTILS, LOG, RaidManager, AuctionManager, ProfileRegistry, RosterConfiguration)
 
 
 
@@ -481,7 +481,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                     if count > 0 then
                         userCodedString = "\n\n" .. UTILS.ColorCodeText(prefix .. ": ", "EAB221")
                         for i= 1, count do
-                            local profile = ProfileManager:GetProfileByName(dataList[i])
+                            local profile = ProfileRegistry.GetByName(dataList[i])
                             local coloredName = dataList[i]
                             if profile then
                                 coloredName = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
@@ -514,7 +514,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 -- no action
                 local raidersDict = {}
                 for _,GUID in ipairs(self.raid:Players()) do
-                    local profile = ProfileManager:GetProfileByGUID(GUID)
+                    local profile = ProfileRegistry.Get(GUID)
                     if profile then
                         raidersDict[profile:Name()] = true
                     end
@@ -670,7 +670,7 @@ function AuctionManagerGUI:Refresh()
                     color = colorYellow
                 end
             end
-            local profile = ProfileManager:GetProfileByName(name)
+            local profile = ProfileRegistry.GetByName(name)
             if profile then
                 local row = {cols = {
                     {value = profile:Name()},

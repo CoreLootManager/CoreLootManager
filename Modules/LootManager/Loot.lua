@@ -1,6 +1,6 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("LootManager/Loot", {"Models", "Utils"}, function(resolve, Models, Utils)
+define.module("Models/Loot", {"Models", "Utils"}, function(resolve, Models, Utils)
 
 local setmetatable = setmetatable
 

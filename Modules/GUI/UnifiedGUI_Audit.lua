@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("UnifiedGUI/Audit", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager","DifficultyIdMap", "EncounterIdMap", "Models/Filter", "LedgerManager"},
-function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, DifficultyIdMap, EncounterIdMap,Filter, LedgerManager)
+define.module("UnifiedGUI/Audit", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileRegistry", "RosterManager","RaidManager","DifficultyIdMap", "EncounterIdMap", "Models/Filter", "LedgerManager"},
+function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileRegistry, RosterManager, RaidManager, DifficultyIdMap, EncounterIdMap,Filter, LedgerManager)
 
 local pairs, ipairs = pairs, ipairs
 local strsub = strsub
@@ -306,7 +306,7 @@ local describeFunctions  = {
     end),
     ["P1"] = (function(entry)
         local guid = UTILS.getGuidFromInteger(entry:GUID())
-        local profile = ProfileManager:GetProfileByGUID(guid)
+        local profile = ProfileRegistry.Get(guid)
         return
             UTILS.ColorCodeText(profile and profile:Name() or guid,
                           profile and UTILS.GetClassColor(profile:Class()).hex or "6699ff")
@@ -314,8 +314,8 @@ local describeFunctions  = {
     ["P2"] = (function(entry)
         local guid = UTILS.getGuidFromInteger(entry:GUID())
         local mainGuid = UTILS.getGuidFromInteger(entry:main())
-        local profile = ProfileManager:GetProfileByGUID(guid)
-        local mainProfile = ProfileManager:GetProfileByGUID(mainGuid)
+        local profile = ProfileRegistry.Get(guid)
+        local mainProfile = ProfileRegistry.Get(mainGuid)
         if entry:main() ~= 0 then
             return
                 UTILS.ColorCodeText(profile and profile:Name() or guid,
@@ -475,7 +475,7 @@ local describeFunctions  = {
     ["IA"] = (function(entry)
         local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
         local guid = UTILS.getGuidFromInteger(entry:profile())
-        local profile = ProfileManager:GetProfileByGUID(guid)
+        local profile = ProfileRegistry.Get(guid)
         return
             string.format(L["%s to %s for %s in <%s>"],
                 safeItemIdToLink(entry:item()), (profile and profile:Name() or guid),
@@ -485,7 +485,7 @@ local describeFunctions  = {
     ["II"] = (function(entry)
         local raid = RaidManager:GetRaidByUid(entry:raidUid())
         local guid = UTILS.getGuidFromInteger(entry:profile())
-        local profile = ProfileManager:GetProfileByGUID(guid)
+        local profile = ProfileRegistry.Get(guid)
         return
             string.format(L["%s to %s for %s in <%s>"],
                 safeItemIdToLink(entry:item()), (profile and profile:Name() or guid),
@@ -533,7 +533,7 @@ local describeFunctions  = {
 local function concatenateNameFromList(list)
     local names = ""
     for _,iGUID in ipairs(list) do
-        local profile = ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(iGUID))
+        local profile = ProfileRegistry.Get(UTILS.getGuidFromInteger(iGUID))
         if profile then
             names = names .. profile:Name() .. ","
         end
@@ -591,7 +591,7 @@ local function getEntryInfo(entry)
     local time = date(L["%d/%m/%Y %H:%M:%S"], entry:time())
     local type = entry:class()
     local guid = UTILS.getGuidFromInteger(entry:creator())
-    local profile = ProfileManager:GetProfileByGUID(guid)
+    local profile = ProfileRegistry.Get(guid)
     local author = profile and profile:Name() or guid
     local description = describeEntry(entry)
     local extendedEntryData = extendEntryData(entry)

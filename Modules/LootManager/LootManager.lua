@@ -1,73 +1,78 @@
 local define = LibDependencyInjection.createContext(...)
 
+define.module("LootManager/mutateLootAward", {"Utils", "Log", "ProfileRegistry", "RosterManager", "EventManager", "PointManager", "Constants/PointChangeReason", "Constants/Events", "Models/Loot"},
+function(resolve, UTILS, LOG, ProfileRegistry, RosterManager, EventManager, RaidManager, PointManager, PointChangeReason, Events, Loot)
+    local function mutateLootAward(entry, roster)
+        local GUID = UTILS.getGuidFromInteger(entry:profile())
+        if not roster then
+            LOG:Debug("mutateLootAward(): Roster does not exist")
+            return
+        end
+        if roster:IsProfileInRoster(GUID) then
+            local profile = ProfileRegistry.Get(GUID)
+            if not profile then
+                LOG:Debug("mutateLootAward(): Profile with guid [%s] does not exist", GUID)
+                return
+            end
+            local loot = Loot:New(entry, profile)
+            RosterManager:AddLootToRoster(roster, loot, profile)
+
+            local main
+            if profile:Main() == "" then -- is main
+                if profile:HasAlts() then -- has alts
+                    main = profile
+                end
+            else -- is alt
+                main = ProfileRegistry.Get(profile:Main())
+            end
+            if main then
+                -- points are already awarded to alt in AddLoot
+                -- mirror them from the alt to all other alts + main
+                local mirrorTargets = UTILS.keys(main:Alts())
+                tinsert(mirrorTargets, main:GUID())
+                roster:MirrorStandings(profile:GUID(), mirrorTargets)
+            end
+
+            -- Force caching loot from server
+            GetItemInfo(loot:Id())
+            EventManager:DispatchEvent(Events.USER_RECEIVED_ITEM, { id = loot:Id() }, entry:time(), GUID)
+            -- Handle Zero-Sum Bank mode
+            local raid = RaidManager:GetRaidByUid(loot:RaidUid())
+            if not raid then
+                LOG:Debug("mutateLootAward(): Loot not awarded to raid. Skipping handling zero-sum bank.")
+                return
+            end
+            if raid:Configuration():Get("zeroSumBank") then
+                local players
+                if raid:Configuration():Get("autoAwardIncludeBench") then
+                    players = RaidManager:GetUniquePlayersListInRaid(raid)
+                else
+                    players = raid:Players()
+                end
+                local num_players = #players
+                if num_players > 0 then
+                    local value = (loot:Value()/num_players) + roster:GetConfiguration("zeroSumBankInflation")
+                    value = UTILS.round(value, raid:Configuration():Get("roundDecimals"))
+                    PointManager:UpdatePointsDirectly(roster, players, value, PointChangeReason.ZERO_SUM_AWARD, loot:Timestamp(), entry:creator())
+                else
+                    LOG:Debug("mutateLootAward(): Empty player list in raid.")
+                    return
+                end
+            end
+        else
+            LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
+            return
+        end
+    end
+    resolve(mutateLootAward)
+end)
 define.module("LootManager", {
-    "Log", "Constants", "Utils", "LootManager/LedgerEntries", "Meta:ADDON_TABLE", "ProfileManager", "L", "LedgerManager", "EventManager", "RosterManager", "RaidManager", "Models", "PointManager"
-}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, ProfileManager, L, LedgerManager, EventManager, RosterManager, RaidManager, Models, PointManager)
+    "Log", "Utils", "LootManager/LedgerEntries", "Meta:ADDON_TABLE", "ProfileRegistry", "L", "LedgerManager", "RosterManager", "RaidManager", "Models", "LootManager/mutateLootAward"
+}, function(resolve, LOG, UTILS, LedgerEntries, CLM, ProfileRegistry, L, LedgerManager, RosterManager, RaidManager, Models, mutateLootAward)
 
 local tinsert, type = table.insert, type
 
-local function mutateLootAward(entry, roster)
-    local GUID = UTILS.getGuidFromInteger(entry:profile())
-    if not roster then
-        LOG:Debug("mutateLootAward(): Roster does not exist")
-        return
-    end
-    if roster:IsProfileInRoster(GUID) then
-        local profile = ProfileManager:GetProfileByGUID(GUID)
-        if not profile then
-            LOG:Debug("mutateLootAward(): Profile with guid [%s] does not exist", GUID)
-            return
-        end
-        local loot = Models.Loot:New(entry, profile)
-        RosterManager:AddLootToRoster(roster, loot, profile)
 
-        local main
-        if profile:Main() == "" then -- is main
-            if profile:HasAlts() then -- has alts
-                main = profile
-            end
-        else -- is alt
-            main = ProfileManager:GetProfileByGUID(profile:Main())
-        end
-        if main then
-            -- points are already awarded to alt in AddLoot
-            -- mirror them from the alt to all other alts + main
-            local mirrorTargets = UTILS.keys(main:Alts())
-            tinsert(mirrorTargets, main:GUID())
-            roster:MirrorStandings(profile:GUID(), mirrorTargets)
-        end
-
-        -- Force caching loot from server
-        GetItemInfo(loot:Id())
-        EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_ITEM, { id = loot:Id() }, entry:time(), GUID)
-        -- Handle Zero-Sum Bank mode
-        local raid = RaidManager:GetRaidByUid(loot:RaidUid())
-        if not raid then
-            LOG:Debug("mutateLootAward(): Loot not awarded to raid. Skipping handling zero-sum bank.")
-            return
-        end
-        if raid:Configuration():Get("zeroSumBank") then
-            local players
-            if raid:Configuration():Get("autoAwardIncludeBench") then
-                players = RaidManager:GetUniquePlayersListInRaid(raid)
-            else
-                players = raid:Players()
-            end
-            local num_players = #players
-            if num_players > 0 then
-                local value = (loot:Value()/num_players) + roster:GetConfiguration("zeroSumBankInflation")
-                value = UTILS.round(value, raid:Configuration():Get("roundDecimals"))
-                PointManager:UpdatePointsDirectly(roster, players, value, CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD, loot:Timestamp(), entry:creator())
-            else
-                LOG:Debug("mutateLootAward(): Empty player list in raid.")
-                return
-            end
-        end
-    else
-        LOG:Debug("mutateLootAward(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
-        return
-    end
-end
 
 local LootManager = {}
 function LootManager:Initialize()
@@ -76,7 +81,7 @@ function LootManager:Initialize()
         LedgerEntries.Award,
         (function(entry)
             LOG:TraceAndCount("mutator(LootAward)")
-            local roster = RosterManager:GetRosterByUid(entry:rosterUid())
+            local roster = GetRosterByUid(entry:rosterUid())
             if not roster then
                 LOG:Debug("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
                 return
@@ -109,7 +114,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
             return false
         end
     end
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = ProfileRegistry.GetByName(name)
     if not UTILS.typeof(profile, Models.Profile) then
         LOG:Error("LootManager:AwardItem(): Missing valid profile")
         return false

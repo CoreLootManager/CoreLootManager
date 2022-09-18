@@ -1,9 +1,9 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("Integrations/Gui", {
-    "Log", "Utils", "Meta:ADDON_TABLE", "L", "Constants/ExportDataTypes", "Database", "ProfileManager", "LedgerManager", "ConfigManager", "RosterManager",
+    "Log", "Utils", "Meta:ADDON_TABLE", "L", "Constants/ExportDataTypes", "Database", "ProfileRegistry", "LedgerManager", "ConfigManager", "RosterManager",
     "LibStub:AceGUI-3.0", "LibStub:AceConfigRegistry-3.0", "LibStub:AceConfigDialog-3.0", "Constants/FormatValues"
-}, function(resolve, LOG, UTILS, CLM, L, ExportDataTypes, Database, ProfileManager, LedgerManager, ConfigManager, RosterManager, AceGUI, AceConfigRegistry, AceConfigDialog, FormatValues)
+}, function(resolve, LOG, UTILS, CLM, L, ExportDataTypes, Database, ProfileRegistry, LedgerManager, ConfigManager, RosterManager, AceGUI, AceConfigRegistry, AceConfigDialog, FormatValues)
 
 
 local pairs = pairs
@@ -75,7 +75,7 @@ local profileList = {}
 local function GetProfileList()
     if redoProfileList then
         profileList = {}
-        for _, profile in pairs(ProfileManager:GetProfiles()) do
+        for _, profile in pairs(ProfileRegistry.All()) do
             tinsert(profileList, UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex or "6699ff"))
         end
         redoProfileList = false
@@ -411,13 +411,13 @@ local function Create(self)
                     end
                     local profiles = {}
                     if self.profile_select_list[ALL] then
-                        for GUID, _ in pairs(ProfileManager:GetProfiles()) do
+                        for GUID, _ in pairs(ProfileRegistry.All()) do
                             tinsert(rosters, GUID)
                         end
                     else
                         for selectedId, status in pairs(self.profile_select_list) do
                             if status then
-                                local profile = ProfileManager:GetProfileByName(UTILS.RemoveColorCode(profileList[selectedId]))
+                                local profile = ProfileRegistry.GetByName(UTILS.RemoveColorCode(profileList[selectedId]))
                                 tinsert(profiles, profile:GUID())
                             end
                         end

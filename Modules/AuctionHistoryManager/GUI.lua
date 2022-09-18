@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("AuctionHistoryGui", {"Database", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "EventManager", "ProfileManager", "ConfigManager"},
-function(resolve, Database, Acl, AuctionHistoryManager, L, LOG, UTILS, EventManager, ProfileManager, ConfigManager)
+define.module("AuctionHistoryGui", {"Database", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "EventManager", "ProfileRegistry", "ConfigManager"},
+function(resolve, Database, Acl, AuctionHistoryManager, L, LOG, UTILS, EventManager, ProfileRegistry, ConfigManager)
 
 
 -- ------------------------------- --
@@ -139,7 +139,7 @@ local function CreateAuctionDisplay(self)
         local noBids = true
         for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
             noBids = false
-            local bidderProfile = ProfileManager:GetProfileByName(bidder)
+            local bidderProfile = ProfileRegistry.GetByName(bidder)
             if bidderProfile then
                 bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
             end

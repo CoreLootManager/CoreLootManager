@@ -23,7 +23,12 @@ define.module("GuildName", {}, function(resolve)
         resolve(guildName)
     end
 end)
-define.module("Database", {"Log", "Utils", "Config", "GuildName"}, function(resolve, LOG, UTILS, CLM2_DB, GuildName)
+
+define.module("NormalizedRealmName", {"FirstEvent:PLAYER_LOGIN"}, function(resolve, _)
+    resolve(GetNormalizedRealmName())
+end)
+
+define.module("Database", {"Log", "Utils", "Config", "GuildName", "NormalizedRealmName"}, function(resolve, LOG, UTILS, CLM2_DB, GuildName, NormalizedRealmName)
 
 
 
@@ -47,7 +52,7 @@ local DB_NAME_GLOBAL = 'global'
 
 
 local function UpdateGuild()
-    DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. GuildName)
+    DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. NormalizedRealmName .. " " .. GuildName)
     LOG:Debug("Using database: %s", DB.server_faction_guild)
 end
 
@@ -125,6 +130,7 @@ function DB:GUI(table, schema)
 end
 
 function DB:Ledger()
+    print(CLM2_DB[self.server_faction_guild][DB_NAME_LEDGER])
     return CLM2_DB[self.server_faction_guild][DB_NAME_LEDGER]
 end
 
@@ -133,5 +139,6 @@ function DB:UpdateLedger(ledger)
 end
 
 DB:Initialize()
+
 resolve(DB)
 end)

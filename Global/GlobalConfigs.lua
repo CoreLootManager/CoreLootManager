@@ -4,7 +4,7 @@ define.module("GlobalConfigs", {
     "Constants",
     "Utils",
     "Database",
-    "L",
+    "L"
 }, function(resolve,CONSTANTS, UTILS, Database, L)
 
     CONSTANTS.MODIFIER_COMBINATION = {
@@ -212,7 +212,7 @@ resolve(GlobalConfigs)
 
 end)
 
-define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Constants/ItemQuality"}, function(resolve, L, ConfigManager, GlobalConfigs, ItemQuality)
+define.module("GlobalConfigs/GUI", {"L", "ConfigManager", "GlobalConfigs", "Constants/ItemQuality", "LedgerManager"}, function(resolve, L, ConfigManager, GlobalConfigs, ItemQuality, LedgerManager)
 
     local options = {
         discord = {

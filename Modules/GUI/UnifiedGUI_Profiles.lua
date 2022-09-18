@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("UnifiedGUI/Profiles", {"Models", "Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager", "Constants/AclLevel", "Models/Filter"},
-function(resolve, Models, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, AclLevel, Filter)
+define.module("UnifiedGUI/Profiles", {"Constants", "Acl", "L", "Log", "Utils", "UnifiedGUI", "ProfileManager", "RosterManager","RaidManager", "Constants/AclLevel", "Models/Filter"},
+function(resolve, CONSTANTS, Acl, L, LOG, UTILS, UnifiedGUI, ProfileManager, RosterManager, RaidManager, AclLevel, Filter)
 local pairs, ipairs = pairs, ipairs
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
@@ -51,7 +51,7 @@ function UnifiedGUI_Profiles:GetSelection()
         return profiles
     end
     for _,s in pairs(selected) do
-        local profile = ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
+        local profile = ProfileRegistry.GetByName(ST_GetName(st:GetRow(s)))
         if profile then
             profiles[#profiles + 1] = profile
         else
@@ -151,7 +151,7 @@ local function GenerateAssistantOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                RosterManager:AddProfilesToRoster(RosterManager:GetRosterByUid(self.roster), self:GetSelection())
+                RosterManager:AddProfilesToRoster(GetRosterByUid(self.roster), self:GetSelection())
             end),
             confirm = true,
             order = 32
@@ -220,11 +220,11 @@ local tableStructure = {
 local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_Profiles tableDataFeeder()")
     local data = {}
-    local profiles = ProfileManager:GetProfiles()
+    local profiles = ProfileRegistry.All()
     for _,object in pairs(profiles) do
         local main = ""
         local isLocked = object:IsLocked()
-        local profile = ProfileManager:GetProfileByGUID(object:Main())
+        local profile = ProfileRegistry.Get(object:Main())
         if profile then
             main = profile:Name()
         end

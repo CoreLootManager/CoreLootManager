@@ -39,7 +39,7 @@ local function StoreWoWDKPBotData(self)
     local db = InitializeDB("wowdkpbot")
     db.profiles = {}
     -- Fill Profiles
-    for GUID,profile in pairs(ProfileManager:GetProfiles()) do
+    for GUID,profile in pairs(ProfileRegistry.All()) do
        db.profiles[GUID] = {
             name = profile:Name(),
             class = profile:Class(),
@@ -239,7 +239,7 @@ local function ExternalAwardEventHandler(_, data)
         local player, itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved = parseEventStructure(data)
         local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
         if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
-        local profile = ProfileManager:GetProfileByName(player)
+        local profile = ProfileRegistry.GetByName(player)
         if not profile then
             LOG:Debug("Gargul item awarded to player without profile")
             return

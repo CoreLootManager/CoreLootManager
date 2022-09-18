@@ -3,8 +3,8 @@ local define = LibDependencyInjection.createContext(...)
 define.module("PointManager/PointHistory", {
     "Utils",
     "Models",
-    "ProfileManager"
-}, function(resolve, Utils, Models, ProfileManager)
+    "ProfileRegistry"
+}, function(resolve, Utils, Models, ProfileRegistry)
 
 
 local tinsert, tsort = table.insert, table.sort
@@ -40,9 +40,9 @@ function PointHistory:Profiles()
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this
-            local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            local profile = ProfileRegistry.Get(getGuidFromInteger(target))
             if not profile then
-                profile = ProfileManager:GetProfileByGUID(target)
+                profile = ProfileRegistry.Get(target)
             end
             if profile then
                 tinsert(self.profiles, profile)
@@ -87,10 +87,9 @@ resolve(PointHistory)
 end)
 
 
-define.module("PointManager/FakePointHistory", {
-    "Models",
-    "ProfileManager"
-}, function(resolve, Models, ProfileManager)
+define.module("Models/FakePointHistory", {
+    "ProfileRegistry"
+}, function(resolve, ProfileRegistry)
 
 local FakePointHistory = {}
 
@@ -118,9 +117,9 @@ function FakePointHistory:Profiles()
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this
-            local profile = ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            local profile = ProfileRegistry.Get(getGuidFromInteger(target))
             if not profile then
-                profile = ProfileManager:GetProfileByGUID(target)
+                profile = ProfileRegistry.Get(target)
             end
             if profile then
                 tinsert(self.profiles, profile)
@@ -156,6 +155,6 @@ end
 function FakePointHistory:Entry()
     return nil
 end
-Models.FakePointHistory = FakePointHistory
+
     resolve(FakePointHistory)
 end)

@@ -71,7 +71,7 @@ function GlboalChatMessageHandlers:Initialize()
                 else
                     player = params[2]
                 end
-                local profile = ProfileManager:GetProfileByName(player)
+                local profile = ProfileRegistry.GetByName(player)
                 if not profile then
                     SendChatMessage(sformat(L["<CLM> Missing profile for player %s."], tostring(player)), responseChannel, nil, target)
                     return

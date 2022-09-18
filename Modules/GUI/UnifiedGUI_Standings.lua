@@ -89,7 +89,7 @@ function UnifiedGUI_Standings:GetSelection()
     local st = UnifiedGUI:GetScrollingTable()
     local profiles = {}
     -- Roster
-    local roster = RosterManager:GetRosterByUid(self.roster)
+    local roster = GetRosterByUid(self.roster)
     if not roster then
         return profiles
     end
@@ -99,7 +99,7 @@ function UnifiedGUI_Standings:GetSelection()
         return profiles
     end
     for _,s in pairs(selected) do
-        local profile = ProfileManager:GetProfileByName(ST_GetName(st:GetRow(s)))
+        local profile = ProfileRegistry.GetByName(ST_GetName(st:GetRow(s)))
         if profile then
             profiles[#profiles+1] = profile
         else
@@ -195,7 +195,7 @@ local function GenerateAssistantOptions(self)
                     LOG:Debug("UnifiedGUI_Standings(Award): missing reason");
                     awardReason = PointChangeReason.MANUAL_ADJUSTMENT
                 end
-                local roster = RosterManager:GetRosterByUid(self.roster)
+                local roster = GetRosterByUid(self.roster)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     if RaidManager:IsInRaid() then
                         PointManager:UpdateRaidPoints(RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
@@ -259,7 +259,7 @@ local function GenerateManagerOptions(self)
             set = function(i, v) self.includeNegative = v end,
             get = function(i) return self.includeNegative end,
             hidden = function()
-                local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+                local roster = GetRosterByUid(UnifiedGUI_Standings.roster)
                 if not roster then return false end
                 return (roster:GetPointType() == PointType.EPGP)
             end,
@@ -276,7 +276,7 @@ local function GenerateManagerOptions(self)
                 local decayValue = tonumber(self.decayValue)
                 if not decayValue then LOG:Debug("UnifiedGUI_Standings(Decay): missing decay value"); return end
                 if decayValue > 100 or decayValue < 0 then LOG:Warning("Standings: Decay value should be between 0 and 100%"); return end
-                local roster = RosterManager:GetRosterByUid(self.roster)
+                local roster = GetRosterByUid(self.roster)
                 if roster == nil then
                     LOG:Debug("UnifiedGUI_Standings(Decay): roster == nil")
                     return
@@ -466,14 +466,14 @@ local tableStructure = {
 
 local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_Standings tableDataFeeder()")
-    local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+    local roster = GetRosterByUid(UnifiedGUI_Standings.roster)
     if not roster then return {} end
     local weeklyCap = roster:GetConfiguration("weeklyCap")
     local rowId = 1
     local data = {}
     local isEPGP = (roster:GetPointType() == PointType.EPGP)
     for GUID,value in pairs(roster:Standings()) do
-        local profile = ProfileManager:GetProfileByGUID(GUID)
+        local profile = ProfileRegistry.Get(GUID)
         local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
         local pointInfo = roster:GetPointInfoForPlayer(GUID)
         local numColumnValue
@@ -521,7 +521,7 @@ end
 
 
 local function refreshHandler()
-    local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+    local roster = GetRosterByUid(UnifiedGUI_Standings.roster)
     if roster then
         if roster:GetPointType() == PointType.EPGP then
             UnifiedGUI:GetScrollingTable():SetDisplayCols(columnsEPGP)
@@ -555,7 +555,7 @@ end
 
 local function dataReadyHandler()
     LOG:Trace("UnifiedGUI_Standings dataReadyHandler()")
-    if not RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster) then
+    if not GetRosterByUid(UnifiedGUI_Standings.roster) then
         local _, roster = next(RosterManager:GetRosters())
         if roster then
             UnifiedGUI_Standings.roster = roster:UID()
@@ -591,7 +591,7 @@ UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
                     end
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     local raid = RaidManager:GetRaid()
-                    local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+                    local roster = GetRosterByUid(UnifiedGUI_Standings.roster)
                     if roster ~= raid:Roster() then
                         LOG:Message(sformat(
                             L["You can only bench players from same roster as the raid (%s)."],
@@ -636,7 +636,7 @@ UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
                     end
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     local raid = RaidManager:GetRaid()
-                    local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+                    local roster = GetRosterByUid(UnifiedGUI_Standings.roster)
                     if roster ~= raid:Roster() then
                         LOG:Message(sformat(
                             L["You can only remove from bench players from same roster as the raid (%s)."],
@@ -680,7 +680,7 @@ UnifiedGUI_Standings.RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
                 title = L["Remove from roster"],
                 func = (function(i)
                     local profiles = UnifiedGUI_Standings:GetSelection()
-                    local roster = RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+                    local roster = GetRosterByUid(UnifiedGUI_Standings.roster)
                     if roster == nil then
                         LOG:Debug("UnifiedGUI_Standings(Remove): roster == nil")
                         return

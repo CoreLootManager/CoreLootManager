@@ -2,8 +2,8 @@ local define = LibDependencyInjection.createContext(...)
 
 define.module("ConfigManager", {
     "Log",
-    "LibStub:AceConfigRegistry-3.0",  "LibStub:AceConfig-3.0", "LibStub:AceConfigDialog-3.0", "Constants/Configs", "L"
-}, function(resolve, LOG, AceConfigRegistry, AceConfig, AceConfigDialog, Configs, L)
+    "LibStub:AceConfigRegistry-3.0",  "LibStub:AceConfig-3.0", "LibStub:AceConfigDialog-3.0", "Constants/Configs", "L", "Utils"
+}, function(resolve, LOG, AceConfigRegistry, AceConfig, AceConfigDialog, Configs, L, Utils)
 local type, pairs, ipairs = type, pairs, ipairs
 
 local ConfigManager = { enabled = false }
@@ -74,10 +74,13 @@ function ConfigManager:Register(group, options, clean)
             self.options.args[group].args[option] = nil
         end
     end
-
+    Utils.DumpTable(options)
     for option, definition in pairs(options) do
         self.options.args[group].args[option] = definition
+        print("Adding option", group, option)
+        Utils.DumpTable(definition)
     end
+
     AceConfigRegistry:NotifyChange(appName)
 
     return true

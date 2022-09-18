@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("UnifiedGUI/History", {"Models", "Constants", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "Models/Filter", "ProfileManager", "RosterManager", "LedgerManager", "EventManager", "UnifiedGUI", "RaidManager", "EncounterIdMap"},
-function(resolve, Models, CONSTANTS, Acl, AuctionHistoryManager, L, LOG, UTILS, Filter, ProfileManager, RosterManager, LedgerManager, EventManager, UnifiedGUI, RaidManager, EncounterIdMap)
+define.module("UnifiedGUI/History", {"Models", "Constants", "Acl", "AuctionHistoryManager", "L", "Log", "Utils", "Models/Filter", "ProfileRegistry", "RosterManager", "LedgerManager", "EventManager", "UnifiedGUI", "RaidManager", "EncounterIdMap"},
+function(resolve, Models, CONSTANTS, Acl, AuctionHistoryManager, L, LOG, UTILS, Filter, ProfileRegistry, RosterManager, LedgerManager, EventManager, UnifiedGUI, RaidManager, EncounterIdMap)
 
 local pairs, ipairs = pairs, ipairs
 local sgsub, tsort =string.gsub, table.sort
@@ -72,13 +72,13 @@ end
 
 local function GenerateUntrustedOptions(self)
     local options = {}
-    local roster = RosterManager:GetRosterByUid(self.roster)
+    local roster = GetRosterByUid(self.roster)
     if not roster then return {} end
     local profiles = roster:Profiles()
     local profileNameMap = { [L["-- All --"]] = L["-- All --"]}
     local profileList = {L["-- All --"]}
     for _, GUID in ipairs(profiles) do
-        local profile = ProfileManager:GetProfileByGUID(GUID)
+        local profile = ProfileRegistry.Get(GUID)
         if profile then
             profileNameMap[profile:Name()] = profile:Name()
             profileList[#profileList + 1] = profile:Name()
@@ -172,7 +172,7 @@ local tableStructure = {
                 tooltip:SetHyperlink(itemString)
                 local loot = ST_GetObject(rowData)
                 if loot then
-                    local profile = ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
+                    local profile = ProfileRegistry.Get(UTILS.getGuidFromInteger(loot:Creator()))
                     local name
                     if profile then
                         name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
@@ -188,7 +188,7 @@ local tableStructure = {
                     if auction then
                         tooltip:AddLine(L["Bids"])
                         for bidder, bid in pairs(auction.bids) do
-                            local bidderProfile = ProfileManager:GetProfileByName(bidder)
+                            local bidderProfile = ProfileRegistry.GetByName(bidder)
                             if bidderProfile then
                                 bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
                             end
@@ -215,7 +215,7 @@ local tableStructure = {
                     end
                     tooltip:AddDoubleLine(L["Note"] .. "", note)
                 end
-                local profile = ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
+                local profile = ProfileRegistry.Get(UTILS.getGuidFromInteger(history:Creator()))
                 local name
                 if profile then
                     name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
@@ -249,10 +249,10 @@ local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_History tableDataFeeder()")
     local data = {}
 
-    local roster = RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
+    local roster = GetRosterByUid(UnifiedGUI_History.roster)
     if not roster then return {} end
     -- TODO: Change from loot type and profile name to filter as its faster
-    local profile = ProfileManager:GetProfileByName(UnifiedGUI_History.profile or "")
+    local profile = ProfileRegistry.GetByName(UnifiedGUI_History.profile or "")
     if UnifiedGUI_History.historyType ~= CONSTANTS.HISTORY_TYPE.POINT then
         local isProfileLoot = (profile and roster:IsProfileInRoster(profile:GUID()))
         local lootList
@@ -351,7 +351,7 @@ end
 
 local function dataReadyHandler()
     LOG:Trace("UnifiedGUI_History dataReadyHandler()")
-    if not RosterManager:GetRosterByUid(UnifiedGUI_History.roster) then
+    if not GetRosterByUid(UnifiedGUI_History.roster) then
         local _, roster = next(RosterManager:GetRosters())
         if roster then
             UnifiedGUI_History.roster = roster:UID()

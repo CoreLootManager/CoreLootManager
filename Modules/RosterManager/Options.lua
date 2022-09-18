@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("RosterManager/Options", {
-    "Constants", "Meta:ADDON_TABLE", "L", "RosterManager", "ConfigManager", "LedgerManager", "Constants/SlotValueTier", "Constants/Configs", "ProfileManager", "Acl", "Constants/PointType", "Constants/PointTypesGui"
-}, function(resolve, CONSTANTS, CLM, L, RosterManager, ConfigManager, LedgerManager, SlotValueTier, Configs, ProfileManager, Acl, PointType, PointTypesGui)
+    "Constants", "Meta:ADDON_TABLE", "L", "RosterManager", "ConfigManager", "LedgerManager", "Constants/SlotValueTier", "ProfileRegistry", "Acl", "Constants/PointType", "Constants/PointTypesGui"
+}, function(resolve, CONSTANTS, CLM, L, RosterManager, ConfigManager, LedgerManager, SlotValueTier, ProfileRegistry, Acl, PointType, PointTypesGui)
 
 local CBTYPE = {
     GETTER   = "get",
@@ -38,7 +38,7 @@ function RosterManagerOptions:Initialize()
             RosterManager:DeleteRosterByName(name)
         end),
         general_fill_profiles_execute = (function(name)
-            local profiles = ProfileManager:GetProfiles()
+            local profiles = ProfileRegistry.All()
             local profileList = {}
             for GUID, _ in pairs(profiles) do
                 table.insert(profileList, GUID)
@@ -320,7 +320,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = RosterManager:GetRosterByName(name)
     local isManager = Acl:CheckManager()
 
-    local default_slot_values_args = (function()
+    local success, default_slot_values_args = pcall(function()
         local args = {}
         local order = 0
         local prefix
@@ -359,7 +359,11 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             end
         end
         return args
-    end)()
+    end)
+    if not success then
+        print(default_slot_values_args)
+
+    end
 
     local item_value_overrides_args = (function()
         local items = roster:GetAllItemValues()
@@ -943,6 +947,7 @@ function RosterManagerOptions:UpdateOptions()
     local rosters = RosterManager:GetRosters()
     for name, _ in pairs(rosters) do
         options[name] = self:GenerateRosterOptions(name)
+
     end
     ConfigManager:Register("ROSTERS", options, true)
 end

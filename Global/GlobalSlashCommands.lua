@@ -111,7 +111,7 @@ function GlobalSlashCommands:Initialize()
                     name, _ = strsplit("-", name)
                     if strlower(name) == inputName then
                         LOG:Message(L["Found %s in guild."], name)
-                        local profile = ProfileManager:GetProfileByName(name)
+                        local profile = ProfileRegistry.GetByName(name)
                         if profile then
                             LOG:Message(L["%s profile exists."], name)
                         else
@@ -186,7 +186,7 @@ function GlobalSlashCommands:Award(args)
     if not name or name == "" then
         name = UTILS.GetUnitName("target")
     end
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = ProfileRegistry.GetByName(name)
     if not profile then
         LOG:Message(L["Missing profile %s"], name)
         return

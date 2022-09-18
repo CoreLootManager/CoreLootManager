@@ -65,7 +65,7 @@ local function OutOfDate(self, version, disable)
 end
 
 local function SetProfileVersion(name, version)
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = ProfileRegistry.GetByName(name)
     if profile then
         profile:SetVersion(version.major, version.minor, version.patch, version.changeset)
     end
@@ -128,7 +128,7 @@ local function AnnounceSpec()
 end
 
 local function SetProfileSpec(name, spec)
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = ProfileRegistry.GetByName(name)
     if profile then
         profile:SetSpec(spec.one, spec.two, spec.three)
     end
@@ -172,7 +172,7 @@ local function AnnounceRole()
 end
 
 local function SetProfileRole(name, role)
-    local profile = ProfileManager:GetProfileByName(name)
+    local profile = ProfileRegistry.GetByName(name)
     if profile then
         profile:SetRole(role)
     end

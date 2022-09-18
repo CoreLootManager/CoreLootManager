@@ -1,8 +1,8 @@
 -- ------------------------------- --
 local define = LibDependencyInjection.createContext(...)
 
-define.module("BiddingManager/Gui", {"Log", "Utils", "L", "Database", "ConfigManager", "EventManager", "ProfileManager", "RosterManager", "BiddingManager", "Constants/ItemValueMode", "Constants/AuctionTypesOpen", "Constants/SlotValueTier", "Constants/BidType"},
-function(resolve, LOG, UTILS, L, Database, ConfigManager, EventManager, ProfileManager, RosterManager, BiddingManager, ItemValueMode, AuctionTypesOpen, SlotValueTier, BidType)
+define.module("BiddingManager/Gui", {"Log", "Utils", "L", "Database", "ConfigManager", "EventManager", "ProfileRegistry", "BiddingManager", "Constants/ItemValueMode", "Constants/AuctionTypesOpen", "Constants/SlotValueTier", "Constants/BidType"},
+function(resolve, LOG, UTILS, L, Database, ConfigManager, EventManager, ProfileRegistry, BiddingManager, ItemValueMode, AuctionTypesOpen, SlotValueTier, BidType)
 
 local pairs, ipairs = pairs, ipairs
 local tostring, tonumber = tostring, tonumber
@@ -483,9 +483,9 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     self:BuildBar(duration)
     local values = auctionInfo:Values()
     self.bid = values[SlotValueTier.BASE]
-    local myProfile = ProfileManager:GetMyProfile()
+    local myProfile = ProfileRegistry.Me()
     if myProfile then
-        local roster = RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
+        local roster = GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
             self.auctionType = roster:GetConfiguration("auctionType")
             self.roster = roster

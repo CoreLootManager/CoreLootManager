@@ -1,8 +1,58 @@
 local define = LibDependencyInjection.createContext(...)
 
+define.module("RosterRegistry", {"Utils"}, function(resolve, Utils)
+    local myGUID = Utils.whoamiGUID()
+    local rosters = {}
+    local nameIndex = {}
+
+
+    resolve({
+        Add = function(roster)
+            rosters[profile:GUID()] = profile
+            nameIndex[strlower(profile:Name())] = profile
+        end,
+        Update = function(GUID, callback)
+            -- Select a profile by GUID, and update it in the callback.
+            local profile = profiles[GUID]
+            if profile == nil then return false end
+            nameIndex[strlower(profile:Name())] = nil
+            profiles[profile:GUID()] = nil
+            callback(profile)
+            profiles[profile:GUID()] = profile
+            nameIndex[strlower(profile:Name())] = profile
+            return true
+        end,
+        Me = function()
+            return profiles[myGUID]
+        end,
+        Get = function(GUID)
+            return profiles[GUID]
+        end,
+        GetByName = function(name)
+            return nameIndex[strlower(name)]
+        end,
+        -- this leaks our table, we should implement a generator intead
+        All = function() return profiles end
+
+    })
+
+end)
+define.module("RosterManagerCache", {}, function(resolve)
+    resolve( {
+        rostersUidMap = {},
+        rosters = {}
+    })
+
+end)
+define.module("GetRosterByUid", {"RosterManagerCache"}, function(resolve, RosterManagerCache)
+    return resolve(function(uid)
+        return RosterManagerCache.rosters[RosterManagerCache.rostersUidMap[uid]]
+
+    end)
+end)
 define.module("RosterManager", {
-    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database", "Models/Roster", "ProfileManager/Profile", "L", "ConfigManager", "Constants/PointTypes"
-}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database, Roster, Profile, L, ConfigManager, PointTypes)
+    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database", "Models/Roster", "Models/Profile", "L", "ConfigManager", "Constants/PointTypes", "Constants/SlotValueTiersGui", "RosterManagerCache"
+}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database, Roster, Profile, L, ConfigManager,  SlotValueTiersGui, RosterManagerCache)
 
 local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
@@ -22,10 +72,7 @@ function RosterManager:Initialize()
     LOG:Trace("RosterManager:Initialize()")
 
     -- Initialize Cache
-    self.cache = {
-        rostersUidMap = {},
-        rosters = {}
-    }
+    self.cache = RosterManagerCache
 
     -- Register mutators
     LedgerManager:RegisterEntryType(
@@ -205,7 +252,7 @@ function RosterManager:Initialize()
                 if entry:remove() then
                     for _, iGUID in ipairs(profiles) do
                         local GUID = UTILS.getGuidFromInteger(iGUID)
-                        local profile = ProfileManager:GetProfileByGUID(GUID)
+                        local profile = ProfileRegistry.Get(GUID)
                         if profile then
                             roster:RemoveProfileByGUID(GUID)
                             -- If it is a main with linked alts - remove all alts
@@ -220,7 +267,7 @@ function RosterManager:Initialize()
                     for _, iGUID in ipairs(profiles) do
                         local GUID = UTILS.getGuidFromInteger(iGUID)
                         roster:AddProfileByGUID(GUID)
-                        local profile = ProfileManager:GetProfileByGUID(GUID)
+                        local profile = ProfileRegistry.Get(GUID)
                         if profile then
                             -- If it is an alt of a linked main - set its standings and gains from main
                             if profile:Main() ~= "" then
@@ -332,7 +379,7 @@ function RosterManager:GetRosterByName(name)
     return self.cache.rosters[name]
 end
 
-function RosterManager:GetRosterByUid(uid)
+function GetRosterByUid(uid)
     return self.cache.rosters[self.cache.rostersUidMap[uid]]
 end
 
@@ -514,7 +561,7 @@ function RosterManager:CompareAndSanitizeSlotTierValues(current, new)
     for key,_ in pairs(CONSTANTS.SLOT_VALUE_TIERS) do
         local value = tonumber(new[key])
         if not value then
-            LOG:Error("RosterManager:CompareAndSanitizeSlotTierValues(): Missing valid value for tier %s", CONSTANTS.SLOT_VALUE_TIERS_GUI[key])
+            LOG:Error("RosterManager:CompareAndSanitizeSlotTierValues(): Missing valid value for tier %s", SlotValueTiersGui[key])
             return
         end
         if current[key] ~= value then
@@ -668,7 +715,7 @@ function RosterManager:AddFromRaidToRoster(roster)
         local name  = GetRaidRosterInfo(i)
         if name then
             name = UTILS.RemoveServer(name)
-            local profile = ProfileManager:GetProfileByName(name)
+            local profile = ProfileRegistry.GetByName(name)
             if profile then
                 local GUID = profile:GUID()
                 if not roster:IsProfileInRoster(GUID) then

@@ -5,8 +5,8 @@ local function mutate_update_standings(roster, GUID, value, timestamp)
 end
 
 define.module("PointManager", {
-    "Log", "Constants", "Utils", "PointManager/LedgerEntries", "Meta:ADDON_TABLE", "ProfileManager", "L", "LedgerManager", "PointManager/update_profile_standings", "RosterManager", "Models"
-}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, ProfileManager, L, LedgerManager, update_profile_standings, RosterManager, Models)
+    "Log", "Constants", "Utils", "PointManager/LedgerEntries", "LedgerManager", "PointManager/update_profile_standings", "Models"
+}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, LedgerManager, update_profile_standings, Models)
 
 local strsub, type, ipairs = strsub, type, ipairs
 
@@ -20,7 +20,7 @@ end
 
 
 local function apply_mutator(entry, mutate)
-    local roster = RosterManager:GetRosterByUid(entry:rosterUid())
+    local roster = GetRosterByUid(entry:rosterUid())
     if not roster then
         LOG:Debug("PointManager apply_mutator(): Unknown roster uid %s", entry:rosterUid())
         return
@@ -33,7 +33,7 @@ local function apply_mutator(entry, mutate)
 end
 
 local function apply_roster_mutator(entry, mutate)
-    local roster = RosterManager:GetRosterByUid(entry:rosterUid())
+    local roster = GetRosterByUid(entry:rosterUid())
     if not roster then
         LOG:Debug("PointManager apply_roster_mutator(): Unknown roster uid %s", entry:rosterUid())
         return
@@ -259,7 +259,7 @@ function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then
-            local targetProfile = ProfileManager:GetProfileByGUID(target)
+            local targetProfile = ProfileRegistry.Get(target)
             if targetProfile then
                 roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
             end
@@ -278,7 +278,7 @@ function PointManager:AddFakePointHistory(roster, targets, value, reason, timest
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then
-            local targetProfile = ProfileManager:GetProfileByGUID(target)
+            local targetProfile = ProfileRegistry.Get(target)
             if targetProfile then
                 roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
             end
@@ -384,7 +384,7 @@ function(RaidManager, LOG, PointHistory, PointManager, LedgerManager, LedgerEntr
         end))
 end)
 
-define.module("PointManager/update_profile_standings", {"Log", "Utils", "ProfileManager", "EventManager", "Constants/Events"}, function(resolve, LOG, Utils, ProfileManager, EventManager, Events)
+define.module("PointManager/update_profile_standings", {"Log", "Utils", "ProfileRegistry", "EventManager", "Constants/Events"}, function(resolve, LOG, Utils, ProfileRegistry, EventManager, Events)
 local function update_profile_standings(mutate, roster, targets, value, reason, timestamp, pointHistoryEntry, isGUID)
     local alreadyApplied = {}
     local getGuidFromInteger = Utils.getGuidFromInteger
@@ -401,7 +401,7 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
             LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
             return
         end
-        local targetProfile = ProfileManager:GetProfileByGUID(GUID)
+        local targetProfile = ProfileRegistry.Get(GUID)
         if targetProfile and not targetProfile:IsLocked() then
             if roster:IsProfileInRoster(GUID) and pointHistoryEntry then
                 roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
@@ -412,7 +412,7 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
                     mainProfile = targetProfile
                 end
             else -- is alt
-                mainProfile = ProfileManager:GetProfileByGUID(targetProfile:Main())
+                mainProfile = ProfileRegistry.Get(targetProfile:Main())
             end
             -- Check if we should schedule it for alert
             EventManager:DispatchEvent(Events.USER_RECEIVED_POINTS, { value = value, reason = reason, pointType = roster:GetPointType() }, timestamp, GUID)

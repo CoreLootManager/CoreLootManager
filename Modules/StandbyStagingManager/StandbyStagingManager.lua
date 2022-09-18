@@ -2,8 +2,8 @@ local define = LibDependencyInjection.createContext(...)
 
 define.module("StandbyStagingManager", {
     "Log", "Utils", "Acl",
-    "RaidManager", "L", "ProfileManager", "Comms", "UnifiedGUI_Standings", "Constants/RaidStatus", "Constants/StandbyStagingComm", "Constants/Comms/Distribution", "StandbyManager"
-}, function(resolve, LOG, UTILS, Acl, RaidManager, L, ProfileManager, Comms, UnifiedGUI_Standings, RaidStatus, StandbyStagingComm, Distribution, StandbyManager)
+    "RaidManager", "L", "ProfileRegistry", "Comms", "UnifiedGUI_Standings", "Constants/RaidStatus", "Constants/StandbyStagingComm", "Constants/Comms/Distribution", "StandbyManager"
+}, function(resolve, LOG, UTILS, Acl, RaidManager, L, ProfileRegistry, Comms, UnifiedGUI_Standings, RaidStatus, StandbyStagingComm, Distribution, StandbyManager)
 
 local STANDBY_STAGING_COMM_PREFIX = "Standby001"
 
@@ -32,7 +32,7 @@ local function HandleSubscribe(self, data, sender)
         LOG:Debug("Self-subscribe is disabled")
         return
     end
-    local profile = ProfileManager:GetProfileByName(sender)
+    local profile = ProfileRegistry.GetByName(sender)
     if profile then
         local updated = StandbyManager:AddToStandby(raidUid, profile:GUID())
         if updated then
@@ -62,7 +62,7 @@ local function HandleRevoke(self, data, sender)
         LOG:Debug("Self-subscribe is disabled")
         return
     end
-    local profile = ProfileManager:GetProfileByName(sender)
+    local profile = ProfileRegistry.GetByName(sender)
     if profile then
         local updated = StandbyManager:RemoveFromStandby(raidUid, profile:GUID())
         if updated then

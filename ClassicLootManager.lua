@@ -6,20 +6,19 @@ local define = LibDependencyInjection.createContext(...)
 define.module("Config", {"SavedVariable:CLM2_DB", "Log"}, function(resolve, CLM2_DB, Log)
     -- CLM2_DB will always be initialized to an empty table if not set. We check for key existence to decide whether to initialize
     if CLM2_DB.global == nil then
-        CLM2_DB = {
-            global = {
-                version = {
-                    major = 0,
-                    minor = 0,
-                    patch = 0,
-                    changeset = ""
-                },
-                logger = {
-                    severity = Log.SEVERITY.ERROR,
-                    verbosity = false
-                }
+        CLM2_DB.global = {
+            version = {
+                major = 0,
+                minor = 0,
+                patch = 0,
+                changeset = ""
+            },
+            logger = {
+                severity = Log.SEVERITY.ERROR,
+                verbosity = false
             }
         }
+
     end
     resolve(CLM2_DB)
 
@@ -209,7 +208,6 @@ end
 function CORE:_Enable()
     LOG:Trace("CORE:_Enable()")
     Comms:Enable()
-    LedgerManager:Enable()
 end
 
 local stages = {

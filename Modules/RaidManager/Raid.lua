@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("Models/Raid", {"Utils", "Constants/RaidStatus", "ProfileManager"},
-function(resolve, UTILS, RaidStatus, ProfileManager)
+define.module("Models/Raid", {"Utils", "Constants/RaidStatus", "ProfileRegistry"},
+function(resolve, UTILS, RaidStatus, ProfileRegistry)
 
 local setmetatable, ipairs, tinsert, tsort = setmetatable, ipairs, table.insert, table.sort
 
@@ -166,7 +166,7 @@ function Raid:Profiles(historical)
         -- The code below breaks Model-View-Controller rule as it accessess Managers
         -- Maybe the caching should be done in GUI module?
         -- TODO: resolve this
-        local profile = ProfileManager:GetProfileByGUID(player)
+        local profile = ProfileRegistry.Get(player)
         if profile then
             tinsert(self.playerProfileCache, profile)
         end
@@ -187,7 +187,7 @@ function Raid:Standby(historical)
         -- The code below breaks Model-View-Controller rule as it accessess Managers
         -- Maybe the caching should be done in GUI module?
         -- TODO: resolve this
-        local profile = ProfileManager:GetProfileByGUID(player)
+        local profile = ProfileRegistry.GetProfileByGUID(player)
         if profile then
             tinsert(self.standbyProfileCache, profile)
         end

@@ -1,8 +1,8 @@
 local define = LibDependencyInjection.createContext(...)
 
 define.module("UnifiedGUI_Standings", {
-    "Log", "Utils", "ProfileManager", "Meta:ADDON_TABLE", "L", "Integrations", "RosterManager", "Constants/ExportDataTypes", "Constants/FormatValues"
-}, function(resolve, LOG, UTILS, ProfileManager, CLM, L, _, RosterManager, ExportDataTypes, FormatValues)
+    "Log", "Utils", "ProfileRegistry", "Meta:ADDON_TABLE", "L", "Integrations", "RosterManager", "Constants/ExportDataTypes", "Constants/FormatValues"
+}, function(resolve, LOG, UTILS, ProfileRegistry, CLM, L, _, RosterManager, ExportDataTypes, FormatValues)
 
 local json = LibStub:GetLibrary("LibJsonLua")
 local XML = LibStub:GetLibrary("LibLuaXML")
@@ -87,7 +87,7 @@ local DATA_BUILDERS = {
                 }
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     if roster:IsProfileInRoster(GUID) then
-                        local profile = ProfileManager:GetProfileByGUID(GUID)
+                        local profile = ProfileRegistry.Get(GUID)
                         if profile then
                             tinsert(roster_data.standings.player, {
                                 guid = GUID,
@@ -112,7 +112,7 @@ local DATA_BUILDERS = {
                 }
                 local standings = roster:Standings()
                 for GUID,value in pairs(standings) do
-                    local profile = ProfileManager:GetProfileByGUID(GUID)
+                    local profile = ProfileRegistry.Get(GUID)
                     if profile then
                         tinsert(roster_data.standings.player, {
                             guid = GUID,
@@ -144,9 +144,9 @@ local DATA_BUILDERS = {
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     local lootList = roster:GetProfileLootByGUID(GUID)
                     for _, loot in ipairs(lootList) do
-                        local profile = ProfileManager:GetProfileByGUID(loot:OwnerGUID())
+                        local profile = ProfileRegistry.Get(loot:OwnerGUID())
                         if profile and self:TimestampInRange(loot:Timestamp()) then
-                            local awardedBy = ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
+                            local awardedBy = ProfileRegistry.Get(getGuidFromInteger(loot:Creator()))
                             local itemName, _, itemQuality = GetItemInfo(loot:Id())
                             tinsert(roster_data.lootHistory.item, {
                                 id = loot:Id(),
@@ -173,9 +173,9 @@ local DATA_BUILDERS = {
                 }
                 local lootList = roster:GetRaidLoot()
                 for _, loot in ipairs(lootList) do
-                    local profile = ProfileManager:GetProfileByGUID(loot:OwnerGUID())
+                    local profile = ProfileRegistry.Get(loot:OwnerGUID())
                     if profile and self:TimestampInRange(loot:Timestamp()) then
-                        local awardedBy = ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
+                        local awardedBy = ProfileRegistry.Get(getGuidFromInteger(loot:Creator()))
                         local itemName, _, itemQuality = GetItemInfo(loot:Id())
                         tinsert(roster_data.lootHistory.item, {
                             id = loot:Id(),
@@ -209,10 +209,10 @@ local DATA_BUILDERS = {
                 for GUID,_ in pairs(self.dataInfo.profiles) do
                     local historyList = roster:GetProfilePointHistoryByGUID(GUID)
                     for _, history in ipairs(historyList) do
-                        local profile = ProfileManager:GetProfileByGUID(GUID)
+                        local profile = ProfileRegistry.Get(GUID)
                         if profile and self:TimestampInRange(history:Timestamp()) then
                             local note = decodeNote(history:Note())
-                            local awardedBy = ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
+                            local awardedBy = ProfileRegistry.Get(getGuidFromInteger(history:Creator()))
                             tinsert(roster_data.pointHistory.point, {
                                 dkp = history:Value(),
                                 player = profile:Name(),
@@ -240,7 +240,7 @@ local DATA_BUILDERS = {
                     if self:TimestampInRange(history:Timestamp()) then
                         for _,profile in ipairs(history:Profiles()) do
                             local note = decodeNote(history:Note())
-                            local awardedBy = ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
+                            local awardedBy = ProfileRegistry.Get(getGuidFromInteger(history:Creator()))
                             tinsert(roster_data.pointHistory.point, {
                                 dkp = history:Value(),
                                 player = profile:Name(),
@@ -273,13 +273,13 @@ local DATA_BUILDERS = {
 function Exporter:Run(completeCallback, updateCallback)
     -- Prepare Data Info
     for _, UID in ipairs(self.config.rosters) do
-        local roster = RosterManager:GetRosterByUid(UID)
+        local roster = GetRosterByUid(UID)
         if roster then
             tinsert(self.dataInfo.rosters, roster)
         end
     end
     for _, GUID in ipairs(self.config.profiles) do
-        local profile = ProfileManager:GetProfileByGUID(GUID)
+        local profile = ProfileRegistry.Get(GUID)
         if profile then
             self.dataInfo.profiles[GUID] = profile
         end
