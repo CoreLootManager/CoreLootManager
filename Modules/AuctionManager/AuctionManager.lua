@@ -694,10 +694,9 @@ function AuctionManager:FakeBids()
             elseif bidType == 2 then -- value
                 local namedButtons = roster:GetConfiguration("namedButtons")
                 if namedButtons then
-                    local b = {"b","s" "m" "l" "x"}
-                    local bidType
-                    bidType = b[math.random(1,5)]
-                    self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(self.values[bidType], bidType), bidder)
+                    local b = {"b","s", "m", "l", "x"}
+                    local bt = b[math.random(1,5)]
+                    self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(self.values[bt], bt), bidder)
                 else
                     local min, max = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE], 10000
                     if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
