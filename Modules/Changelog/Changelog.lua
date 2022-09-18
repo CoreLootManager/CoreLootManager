@@ -1,6 +1,24 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.2.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    {header = "Item Value override CSV Import", body = "You can now import Item value overrides using CSV format through ui |cff44ee44/clm importcsv|r. Expected CSV format: |cff44ee44itemId,base,small,medium,large,max|r."}
+                }
+            },
+            {
+                name = "Fixes",
+                data = {
+                    {header = "All-In button", body = "All-In button is now available in every ascending types of auction and will bid players current DKP/EP."},
+                    {header = "Auction UI award value", body = "Logic for award value has been refined for both regular and Vickrey auctions in value and named button modes."},
+                }
+            }
+        }
+    },
+    {
         version = "v2.1.0",
         data = {
             {

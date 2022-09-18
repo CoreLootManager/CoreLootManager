@@ -39,7 +39,7 @@ local UnifiedGUI_Profiles = {
     name = "profiles",
     filter = CLM.MODELS.Filters:New(
     (function() CLM.GUI.Unified:FilterScrollingTable() end),
-    UTILS.Set({"class", "inGuild", "external", "rank", "locked"}),
+    UTILS.Set({"class", "inRaid", "inStandby", "inGuild", "external", "rank", "locked"}),
     UTILS.Set({"buttons", "search"}),
     nil, 1),
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIProfilesDialogTooltip", UIParent, "GameTooltipTemplate"),
@@ -312,7 +312,7 @@ local function beforeShowHandler()
     LOG:Trace("UnifiedGUI_Profiles beforeShowHandler()")
     if CLM.MODULES.RaidManager:IsInRaid() then
         UnifiedGUI_Profiles.roster = CLM.MODULES.RaidManager:GetRaid():UID()
-        UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID)
+        UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
     end
 end
 

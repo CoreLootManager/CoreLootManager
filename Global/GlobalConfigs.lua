@@ -36,9 +36,18 @@ function GlobalConfigs:Initialize()
     local options = {
         discord = {
             type = "description",
-            name = CLM.L["Join our discord for more info: |cff44cc44https://tiny.one/clm-discord|r"],
+            name = CLM.L["Join our discord for more info: "],
             fontSize = "medium",
+            width = 2,
             order = 0
+        },
+        discord_link = {
+            type = "input",
+            name = "",
+            get = (function(i) return "|cff44ee44https://tiny.one/clm-discord|r" end),
+            set = (function(i,v) end),
+            width = 1,
+            order = 0.5
         },
         global_header = {
             type = "header",

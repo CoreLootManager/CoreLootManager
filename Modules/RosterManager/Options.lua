@@ -663,8 +663,10 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         values = (function()
                             local v = {}
                             local r = CLM.MODULES.RosterManager:GetRosters()
-                            for n, _ in pairs(r) do
-                                v[n] = n
+                            for n, _r in pairs(r) do
+                                if _r:GetPointType() == roster:GetPointType() then
+                                    v[n] = n
+                                end
                             end
                             return v
                         end),

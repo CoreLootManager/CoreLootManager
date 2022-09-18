@@ -1,3 +1,14 @@
+# Classic Loot Manager v2.2.0
+## Features
+### Item Value override CSV Import
+You can now import Item value overrides using CSV format through ui `/clm importcsv`.
+Expected CSV format: `itemId,base,small,medium,large,max`.
+## Fixes
+### All-In button
+All-In button is now available in every ascending types of auction and will bid players current DKP/EP.
+### Auction UI award value
+Logic for award value has been refined for both regular and Vickrey auctions in value and named button modes.
+
 # Classic Loot Manager v2.1.0
 ## Features
 ### Dynamic value equations support
