@@ -833,7 +833,7 @@ CLM.L["Info"] = "Info"
 -- Modules/GUI/UnifiedGUI_Standings.lua:400
 CLM.L["Information"] = "Information"
 -- Integrations/ImportCSV.lua:73
---CLM.L["Input CSV Item value override data"] = ""
+CLM.L["Input CSV Item value override data"] = "Entrée Données de remplacement de la valeur de la valeur de l'élément CSV"
 -- Integrations/Import.lua:149
 CLM.L["Input JSON exported standings"] = "Entrée en classe exportée JSON"
 -- Global/GlobalSlashCommands.lua:108
@@ -1683,7 +1683,7 @@ CLM.L["Toggle Bidding auto-open"] = "Basculer l'ouverture automatique des enchè
 -- Modules/BiddingManager/GUI.lua:578
 CLM.L["Toggle Bidding window display"] = "Basculer l'affichage de la fenêtre d'enchères"
 -- Integrations/ImportCSV.lua:216
---CLM.L["Toggle CSV import window display"] = ""
+CLM.L["Toggle CSV import window display"] = "Affichage de la fenêtre d'importation CSV à CSV"
 -- Modules/LootQueueManager/GUI.lua:263
 CLM.L["Toggle Loot Queue window display"] = "Basculer l'affichage de la fenêtre de la file d'attente de butin"
 -- MinimapIcon.lua:77

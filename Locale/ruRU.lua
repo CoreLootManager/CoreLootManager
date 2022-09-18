@@ -833,7 +833,7 @@ CLM.L["Info"] = "Инфо"
 -- Modules/GUI/UnifiedGUI_Standings.lua:400
 CLM.L["Information"] = "Информация"
 -- Integrations/ImportCSV.lua:73
---CLM.L["Input CSV Item value override data"] = ""
+CLM.L["Input CSV Item value override data"] = "Введите данные о значении элемента CSV"
 -- Integrations/Import.lua:149
 CLM.L["Input JSON exported standings"] = "Введите экспортированные JSON данные"
 -- Global/GlobalSlashCommands.lua:108
@@ -1683,7 +1683,7 @@ CLM.L["Toggle Bidding auto-open"] = "Включить авто-открытие 
 -- Modules/BiddingManager/GUI.lua:578
 CLM.L["Toggle Bidding window display"] = "Включить отображение окна ставок"
 -- Integrations/ImportCSV.lua:216
---CLM.L["Toggle CSV import window display"] = ""
+CLM.L["Toggle CSV import window display"] = "Переключить дисплей импорта CSV"
 -- Modules/LootQueueManager/GUI.lua:263
 CLM.L["Toggle Loot Queue window display"] = "Включить отображение окна очереди предметов"
 -- MinimapIcon.lua:77
