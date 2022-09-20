@@ -105,6 +105,7 @@ Modules\AutoAwardManager\AutoAwardManager.lua
 Modules\LootQueueManager\LootQueueManager.lua
 Modules\AuctionHistoryManager\AuctionHistoryManager.lua
 Modules\AutoAwardManager\EncounterIDs.lua
+Modules\RosterManager\IndirectSlotMap.lua
 
 # Addon Options and GUIs (View)
 Modules\RosterManager\Options.lua

@@ -155,7 +155,7 @@ function ItemValueCalculator:Calculate(itemId, rounding)
 
     local baseValue = self.calculator(
         itemLevel, itemQuality,
-        self.multiplier, self:GetSlotMultiplier(itemEquipLoc))
+        self.multiplier, self:GetSlotMultiplier(CLM.IndirectSlotMap[itemId] or itemEquipLoc))
     for tier, tierMultiplier in pairs(self.tierMultipliers) do
         values[tier] = UTILS.round(baseValue * tierMultiplier, rounding)
     end
