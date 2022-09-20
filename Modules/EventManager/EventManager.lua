@@ -22,6 +22,7 @@ function EventManager:Initialize()
     self.callbacks = {}
     self.bucketCallbacks = {}
     -- External API
+    self.messageCallbacks = {}
 end
 
 function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
@@ -69,6 +70,53 @@ function EventManager:UnregisterWoWEvent(events)
     for _,event in ipairs(events) do
         CLM.CORE:UnregisterEvent(event)
         self.callbacks[event] = nil
+    end
+end
+
+function EventManager:RegisterMessage(messages, functionOrObject, methodName)
+    LOG:Trace("EventManager:RegisterMessage()")
+    local callback
+    if type(functionOrObject) == "table" and type(methodName) == "string" then
+        callback = (function(...) return functionOrObject[methodName](functionOrObject, ...) end)
+    elseif type(functionOrObject) == "function" then
+        callback = functionOrObject
+    else
+        LOG:Fatal("EventManager:RegisterMessage(): Invalid handler input")
+        return
+    end
+    if not messages then
+        LOG:Fatal("EventManager:RegisterMessage(): Invalid message")
+        return
+    end
+    if type(messages) == "string" then messages = { messages } end
+    for _,message in ipairs(messages) do
+        if not self.messageCallbacks[message] then-- lazy load event handlers
+            self.messageCallbacks[message] = {}
+            CLM.CORE:RegisterMessage(message, (function(...)
+                LOG:Debug("Handling [" .. message .. "]")
+                for _,cb in pairs(self.messageCallbacks[message]) do
+                    local status, error = pcall(cb, ...) -- if there are multiple handlers for an message we don't one to error out all of them
+                    if not status then
+                        LOG:Error("Error during handling %s message: %s", message, tostring(error))
+                    end
+                end
+            end))
+        end
+
+        tinsert(self.messageCallbacks[message], callback)
+    end
+end
+
+function EventManager:UnregisterMessage(messages)
+    LOG:Trace("EventManager:UnregisterMessage()")
+    if not messages then
+        LOG:Fatal("EventManager:UnregisterMessage(): Invalid messages")
+        return
+    end
+    if type(messages) == "string" then messages = { messages } end
+    for _,message in ipairs(messages) do
+        CLM.CORE:UnregisterMessage(message)
+        self.messageCallbacks[message] = nil
     end
 end
 

@@ -13,6 +13,7 @@ local collectgarbage = collectgarbage
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local EXTERNAL_AWARD_EVENT = "CLM_EXTERNAL_EVENT_ITEM_AWARDED"
+local RCLC_AWARD_EVENT = "RCMLAwardSuccess"
 
 CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
     NONE = 1,
@@ -170,6 +171,41 @@ local function InitializeGargulIntegration(self)
     return options
 end
 
+local function InitializeRCLCIntegration(self)
+    local options = {
+        global_rclc_integration_header = {
+            name = CLM.L["RCLC Integration"],
+            type = "header",
+            width = "full",
+            order = 20
+        },
+        global_rclc_integration = {
+            name = CLM.L["RCLC Integration"],
+            desc = CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award."],
+            type = "toggle",
+            set = function(i, v) self:SetRCLCIntegration(v) end,
+            get = function(i) return self:GetRCLCIntegration() end,
+            width = "full",
+            order = 21
+        },
+        global_rclc_action = {
+            name = CLM.L["Award"],
+            desc = CLM.L["Action to take upon RCLC loot award event happening during raid."],
+            type = "select",
+            values = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_GUI,
+            set = (function(i, v)
+                self:SetRCLCAwardAction(v)
+            end),
+            get = (function(i)
+                return self:GetRCLCAwardAction()
+            end),
+            order = 22
+        }
+    }
+
+    return options
+end
+
 local function InitializeConfigs(self)
     local options = {
         global_wodkpbot_integration = {
@@ -184,6 +220,7 @@ local function InitializeConfigs(self)
     }
 
     UTILS.mergeDictsInline(options, InitializeGargulIntegration(self))
+    UTILS.mergeDictsInline(options, InitializeRCLCIntegration(self))
 
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS, options)
 end
@@ -232,29 +269,66 @@ end
 
 -- LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forceInstant)
 local function ExternalAwardEventHandler(_, data)
-    if Integration:GetGargulIntegration() then
-        if not validateEventStructure(data, "Gargul") then
-            LOG:Warning("Malformed Gargul Event")
-            return
-        end
-        local player, itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved = parseEventStructure(data)
-        local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
-        if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
-        local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
-        if not profile then
-            LOG:Debug("Gargul item awarded to player without profile")
-            return
-        end
-        local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
-        if not raid then
-            LOG:Debug("Gargul item awarded outside of raid")
-            return
-        end
-        local value = getAwardValueFromAction(raid:Roster(), itemId, action)
-        CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, value)
+    if not Integration:GetGargulIntegration() then return end
+    if not validateEventStructure(data, "Gargul") then
+        LOG:Warning("Malformed Gargul Event")
+        return
     end
+    local player, itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved = parseEventStructure(data)
+    local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
+    if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
+    if not profile then
+        LOG:Debug("Gargul item awarded to player without profile")
+        return
+    end
+    local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
+    if not raid then
+        LOG:Debug("Gargul item awarded outside of raid")
+        return
+    end
+    local value = getAwardValueFromAction(raid:Roster(), itemId, action)
+    CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, value)
 end
 
+local function RCLCAwardMessageHandler(eventName, _, winner, _, link)
+    if eventName ~= RCLC_AWARD_EVENT then return end
+    if not Integration:GetRCLCIntegration() then return end
+
+    local action = Integration:GetRCLCAwardAction()
+    if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
+    if type(link) ~= "string" then
+        LOG:Debug("RCLCAwardMessageHandler() Missing Link")
+        return
+    end
+
+    local itemId = UTILS.GetItemIdFromLink(link)
+    if not GetItemInfoInstant(itemId) then
+        LOG:Debug("RCLCAwardMessageHandler() Unknown Item ID for %s", link)
+        return
+    end
+
+    if type(winner) ~= "string" then
+        LOG:Debug("RCLCAwardMessageHandler() Missing Winner")
+        return
+    end
+
+    winner = UTILS.RemoveServer(winner)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(winner)
+
+    if not profile then
+        LOG:Debug("RCLCAwardMessageHandler() item awarded to player without profile")
+        return
+    end
+
+    local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
+    if not raid then
+        LOG:Debug("RCLCAwardMessageHandler() item awarded outside of raid")
+        return
+    end
+    local value = getAwardValueFromAction(raid:Roster(), itemId, action)
+    CLM.MODULES.LootManager:AwardItem(raid, profile, link, itemId, value)
+end
 
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
@@ -269,7 +343,8 @@ function Integration:Initialize()
     end))
     -- External award integration
     CLM.MODULES.EventManager:RegisterEvent(EXTERNAL_AWARD_EVENT, ExternalAwardEventHandler)
-
+    -- RCLC award integartion
+    CLM.MODULES.EventManager:RegisterMessage(RCLC_AWARD_EVENT, RCLCAwardMessageHandler)
     self.exportInProgress = false
 end
 
@@ -298,6 +373,24 @@ end
 function Integration:GetGargulAwardAction(handler)
     local db = InitializeDB("gargul")
     return db[handler] or CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
+end
+
+function Integration:SetRCLCIntegration(value)
+    self.db.rclc_integration = value and true or false
+end
+
+function Integration:GetRCLCIntegration()
+    return self.db.rclc_integration
+end
+
+function Integration:SetRCLCAwardAction(action)
+    local db = InitializeDB("rclc")
+    db.handler = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS[action] and action or CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
+end
+
+function Integration:GetRCLCAwardAction()
+    local db = InitializeDB("rclc")
+    return db.handler or CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
 end
 
 function Integration:Export(config, completeCallback, updateCallback)
