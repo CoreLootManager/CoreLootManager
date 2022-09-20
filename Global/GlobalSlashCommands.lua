@@ -42,7 +42,7 @@ function GlobalSlashCommands:Initialize()
             confirm = true
         }
     end
-    if Acl:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
+    if Acl:CheckGuildMaster() then
         options.ignore = {
             type = "input",
             name = L["Ignore entry"],
@@ -172,10 +172,10 @@ function GlobalSlashCommands:Award(args)
             isRaid = true
             LOG:Info(L["Missing roster name. Using Raid Info"])
             roster = raid:Roster()
-            LOG:Info(L["Raid: %s Roster: %s"], raid:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
+            LOG:Info(L["Raid: %s Roster: %s"], raid:Name(), roster:Name())
         end
     else
-        roster = RosterManager:GetRosterByName(rosterName)
+        roster = RosterRegistry.GetByName(rosterName)
         if not roster then
             LOG:Message(L["Unknown roster %s"], rosterName)
             return
@@ -192,7 +192,7 @@ function GlobalSlashCommands:Award(args)
         return
     end
     if not roster:IsProfileInRoster(profile:GUID()) then
-        LOG:Message(L["%s is not part of the %s roster"], profile:Name(), RosterManager:GetRosterNameByUid(roster:UID()))
+        LOG:Message(L["%s is not part of the %s roster"], profile:Name(), roster:Name())
         return
     end
     -- Award --

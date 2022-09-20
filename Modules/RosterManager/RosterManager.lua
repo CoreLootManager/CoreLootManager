@@ -8,51 +8,43 @@ define.module("RosterRegistry", {"Utils"}, function(resolve, Utils)
 
     resolve({
         Add = function(roster)
-            rosters[profile:GUID()] = profile
-            nameIndex[strlower(profile:Name())] = profile
+            rosters[roster:UID()] = roster
+            nameIndex[strlower(roster:Name())] = roster
         end,
-        Update = function(GUID, callback)
+        Delete = function(uid)
+            local roster = rosters[uid]
+            if roster then
+            rosters[uid]  = nil
+            nameIndex[roster:Name()] = nil
+            end
+        end,
+        Update = function(UID, callback)
             -- Select a profile by GUID, and update it in the callback.
-            local profile = profiles[GUID]
-            if profile == nil then return false end
-            nameIndex[strlower(profile:Name())] = nil
-            profiles[profile:GUID()] = nil
-            callback(profile)
-            profiles[profile:GUID()] = profile
-            nameIndex[strlower(profile:Name())] = profile
+            local roster = rosters[UID]
+            if roster == nil then return false end
+            nameIndex[strlower(roster:Name())] = nil
+            rosters[roster:UID()] = nil
+            callback(roster)
+            rosters[roster:UID()] = roster
+            nameIndex[strlower(roster:Name())] = roster
             return true
         end,
-        Me = function()
-            return profiles[myGUID]
-        end,
-        Get = function(GUID)
-            return profiles[GUID]
+        Get = function(UID)
+            return rosters[UID]
         end,
         GetByName = function(name)
             return nameIndex[strlower(name)]
         end,
         -- this leaks our table, we should implement a generator intead
-        All = function() return profiles end
+        -- All = function() return profiles end
 
     })
 
 end)
-define.module("RosterManagerCache", {}, function(resolve)
-    resolve( {
-        rostersUidMap = {},
-        rosters = {}
-    })
 
-end)
-define.module("GetRosterByUid", {"RosterManagerCache"}, function(resolve, RosterManagerCache)
-    return resolve(function(uid)
-        return RosterManagerCache.rosters[RosterManagerCache.rostersUidMap[uid]]
-
-    end)
-end)
 define.module("RosterManager", {
-    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database", "Models/Roster", "Models/Profile", "L", "ConfigManager", "Constants/PointTypes", "Constants/SlotValueTiersGui", "RosterManagerCache"
-}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database, Roster, Profile, L, ConfigManager,  SlotValueTiersGui, RosterManagerCache)
+    "Log", "Constants", "Utils", "RosterManager/LedgerEntries", "Meta:ADDON_TABLE", "LedgerManager", "Database", "Models/Roster", "Models/Profile", "L", "ConfigManager", "Constants/PointTypes", "Constants/SlotValueTiersGui", "RosterRegistry"
+}, function(resolve, LOG, CONSTANTS, UTILS, LedgerEntries, CLM, LedgerManager, Database, Roster, Profile, L, ConfigManager,  SlotValueTiersGui, RosterRegistry)
 
 local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
@@ -71,9 +63,6 @@ end
 function RosterManager:Initialize()
     LOG:Trace("RosterManager:Initialize()")
 
-    -- Initialize Cache
-    self.cache = RosterManagerCache
-
     -- Register mutators
     LedgerManager:RegisterEntryType(
         LedgerEntries.Create,
@@ -82,14 +71,13 @@ function RosterManager:Initialize()
             local uid = entry:rosterUid()
             local name = entry:name()
             local pointType = entry:pointType()
-            if self.cache.rosters[name] or self.cache.rostersUidMap[uid] then
+            if RosterRegistry.Get(uid) or RosterRegistry.GetByName(name) then
                 LOG:Debug("Roster [%s:%s] already exists. Verify data integrity with other officers.", name, uid)
                 return
             end
             if not (pointType and PointTypes[pointType] ~= nil) then return end
-            local roster = Roster:New(uid, pointType, self.db.raidsForFullAttendance, self.db.attendanceWeeksWindow)
-            self.cache.rosters[name] = roster
-            self.cache.rostersUidMap[uid] = name
+            local roster = Roster:New(name, uid, pointType, self.db.raidsForFullAttendance, self.db.attendanceWeeksWindow)
+            RosterRegistry.Add(roster)
         end))
 
     LedgerManager:RegisterEntryType(
@@ -98,15 +86,12 @@ function RosterManager:Initialize()
             LOG:TraceAndCount("mutator(RosterDelete)")
             local uid = entry:rosterUid()
 
-            local roster = self:GetRosterByUid(uid)
+            local roster = RosterRegistry.Get(uid)
             if not roster then
                 LOG:Debug("Removing non-existent roster [%s]", uid)
                 return
             end
-
-            local name = self.cache.rostersUidMap[uid]
-            self.cache.rostersUidMap[uid] = nil
-            self.cache.rosters[name] = nil
+            RosterRegistry.Delete(uid)
         end))
 
         LedgerManager:RegisterEntryType(
@@ -116,7 +101,7 @@ function RosterManager:Initialize()
                 local uid = entry:rosterUid()
                 local name = entry:name()
 
-                local o = self:GetRosterByUid(uid)
+                local o = RosterRegistry.Get(uid)
                 if not o then
                     LOG:Debug("Renaming non-existent roster [%s]", uid)
                     return
@@ -127,13 +112,9 @@ function RosterManager:Initialize()
                     return
                 end
 
-                local oldname = self.cache.rostersUidMap[uid]
-                -- Attach roster to new name
-                self.cache.rosters[name] = o
-                self.cache.rostersUidMap[uid] = name
-
-                -- Remove old assignments
-                self.cache.rosters[oldname] = nil
+                RosterRegistry.Update(uid, function(roster)
+                    roster.name = name
+                end)
             end))
 
         LedgerManager:RegisterEntryType(
@@ -143,12 +124,12 @@ function RosterManager:Initialize()
                 local sourceUid = entry:sourceRosterUid()
                 local targetUid = entry:targetRosterUid()
 
-                local s = self:GetRosterByUid(sourceUid)
+                local s = RosterRegistry.Get(sourceUid)
                 if not s then
                     LOG:Debug("Copying from non-existent roster [%s]", sourceUid)
                     return
                 end
-                local t = self:GetRosterByUid(targetUid)
+                local t = RosterRegistry.Get(targetUid)
                 if not t then
                     LOG:Debug("Copying to non-existent roster [%s]", targetUid)
                     return
@@ -177,7 +158,7 @@ function RosterManager:Initialize()
                 LOG:TraceAndCount("mutator(RosterUpdateConfigSingle)")
                 local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
+                local roster = RosterRegistry.Get(rosterUid)
                 if not roster then
                     LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
@@ -192,7 +173,7 @@ function RosterManager:Initialize()
                 LOG:TraceAndCount("mutator(RosterUpdateDefaultSingle)")
                 local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
+                local roster = RosterRegistry.Get(rosterUid)
                 if not roster then
                     LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
@@ -207,7 +188,7 @@ function RosterManager:Initialize()
                     LOG:TraceAndCount("mutator(RosterUpdateOverrides)")
                     local rosterUid = entry:rosterUid()
 
-                    local roster = self:GetRosterByUid(rosterUid)
+                    local roster = RosterRegistry.Get(rosterUid)
                     if not roster then
                         LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                         return
@@ -222,7 +203,7 @@ function RosterManager:Initialize()
                     LOG:TraceAndCount("mutator(RosterUpdateOverridesSingle)")
                     local rosterUid = entry:rosterUid()
 
-                    local roster = self:GetRosterByUid(rosterUid)
+                    local roster = RosterRegistry.Get(rosterUid)
                     if not roster then
                         LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                         return
@@ -237,7 +218,7 @@ function RosterManager:Initialize()
                 LOG:TraceAndCount("mutator(RosterUpdateProfiles)")
                 local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
+                local roster = RosterRegistry.Get(rosterUid)
                 if not roster then
                     LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
@@ -288,7 +269,7 @@ function RosterManager:Initialize()
                 LOG:TraceAndCount("mutator(RosterBossKillBonus)")
                 local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
+                local roster = RosterRegistry.Get(rosterUid)
                 if not roster then
                     LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
@@ -302,7 +283,7 @@ function RosterManager:Initialize()
                 LOG:TraceAndCount("mutator(RosterRenameField)")
                 local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
+                local roster = RosterRegistry.Get(rosterUid)
                 if not roster then
                     LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
@@ -367,25 +348,8 @@ function RosterManager:Initialize()
 
 end
 
-function RosterManager:GetRosters()
-    return self.cache.rosters
-end
-
-function RosterManager:GetRostersUidMap()
+function RosterRegistry.All()
     return self.cache.rostersUidMap
-end
-
-function RosterManager:GetRosterByName(name)
-    return self.cache.rosters[name]
-end
-
-function GetRosterByUid(uid)
-    return self.cache.rosters[self.cache.rostersUidMap[uid]]
-end
-
-
-function RosterManager:GetRosterNameByUid(uid)
-    return self.cache.rostersUidMap[uid]
 end
 
 function RosterManager:NewRoster(pointType, name)

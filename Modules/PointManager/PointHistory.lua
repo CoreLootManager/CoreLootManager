@@ -1,6 +1,6 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("PointManager/PointHistory", {
+define.module("Models/PointHistory", {
     "Utils",
     "Models",
     "ProfileRegistry"

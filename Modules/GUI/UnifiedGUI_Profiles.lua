@@ -140,7 +140,7 @@ local function GenerateAssistantOptions(self)
             desc = L["Select roster to add profiles to."],
             type = "select",
             width = "full",
-            values = RosterManager:GetRostersUidMap(),
+            values = RosterRegistry.All(),
             set = function(i, v) self.roster = v end,
             get = function(i) return self.roster end,
             order = 31
@@ -151,7 +151,7 @@ local function GenerateAssistantOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                RosterManager:AddProfilesToRoster(GetRosterByUid(self.roster), self:GetSelection())
+                RosterManager:AddProfilesToRoster(RosterRegistry.Get(self.roster), self:GetSelection())
             end),
             confirm = true,
             order = 32
@@ -230,11 +230,11 @@ local function tableDataFeeder()
         end
         local name = object:Name()
         local rank = ""
-        if Acl:CheckLevel(AclLevel.GUILD_MASTER, name) then
+        if Acl:CheckGuildMaster(name) then
             rank = L["GM"]
-        elseif Acl:CheckLevel(AclLevel.MANAGER, name) then
+        elseif Acl:CheckManager(name) then
             rank = L["Manager"]
-        elseif Acl:CheckLevel(AclLevel.ASSISTANT, name) then
+        elseif Acl:CheckAssistant(name) then
             rank = L["Assistant"]
         end
         local highlight

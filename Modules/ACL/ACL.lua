@@ -30,12 +30,15 @@ function ACL:IsTrusted(name)
     return self:CheckLevel(AclLevel.ASSISTANT, name) or false
 end
 
-function ACL:CheckAssistant()
-    return self:CheckLevel(AclLevel.ASSISTANT)
+function ACL:CheckAssistant(name)
+    return self:CheckLevel(AclLevel.ASSISTANT, name)
 end
 
-function ACL:CheckManager()
-    return self:CheckLevel(AclLevel.MANAGER)
+function ACL:CheckManager(name)
+    return self:CheckLevel(AclLevel.MANAGER, name)
+end
+function ACL:CheckGuildMaster(name)
+    return self:CheckLevel(AclLevel.GUILD_MASTER, name)
 end
 
 function ACL:CheckLevel(level, name)

@@ -83,7 +83,7 @@ function GlboalChatMessageHandlers:Initialize()
                         rosters["_"] = raid:Roster()
                     end
                 else
-                    rosters = RosterManager:GetRosters()
+                    rosters = RosterRegistry.All()
                 end
                 local rostersWithPlayer = {}
                 for _, roster in pairs(rosters) do
@@ -103,7 +103,7 @@ function GlboalChatMessageHandlers:Initialize()
                     if weeklyCap > 0 then
                         weeklyGains = weeklyGains .. " / " .. weeklyCap
                     end
-                    SendChatMessage(sformat(L["<CLM> %s: %d DKP (%d this week)."], RosterManager:GetRosterNameByUid(roster:UID()), standings, weeklyGains), responseChannel, nil, target)
+                    SendChatMessage(sformat(L["<CLM> %s: %d DKP (%d this week)."], roster:Name(), standings, weeklyGains), responseChannel, nil, target)
                 end
             end
         end

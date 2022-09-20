@@ -82,7 +82,7 @@ end
 local function Import_CreateRosters(self)
     local delay = 0
     for _, info in pairs(self.actionDescriptor.rosterMap) do
-        if not RosterManager:GetRosterByName(info.name) then
+        if not RosterRegistry.GetByName(info.name) then
             delay = delay + 1
             C_Timer.After(delay, function()
                 LOG:Message(L["New roster: %s"], info.name)
@@ -100,8 +100,8 @@ end
 
 local function Import_AddProfilesToRosters(self)
     for _, info in pairs(self.actionDescriptor.rosterMap) do
-        local roster = RosterManager:GetRosterByName(info.name)
-        if RosterManager:GetRosterByName(info.name) then
+        local roster = RosterRegistry.GetByName(info.name)
+        if RosterRegistry.GetByName(info.name) then
             RosterManager:AddProfilesToRoster(roster, info.players)
         end
     end
@@ -109,8 +109,8 @@ end
 
 local function Import_SetStandings(self)
     for _, info in pairs(self.actionDescriptor.rosterMap) do
-        local roster = RosterManager:GetRosterByName(info.name)
-        if RosterManager:GetRosterByName(info.name) then
+        local roster = RosterRegistry.GetByName(info.name)
+        if RosterRegistry.GetByName(info.name) then
             for standings, GUID in pairs(info.standings) do
                 if standings ~= 0 then
                     LedgerManager:Submit(CLM.MODELS.LEDGER.DKP.Set:new(roster:UID(), GUID, standings, CONSTANTS.POINT_CHANGE_REASON.IMPORT))

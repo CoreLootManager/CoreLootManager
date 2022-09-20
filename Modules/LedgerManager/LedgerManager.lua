@@ -3,7 +3,12 @@ local define = LibDependencyInjection.createContext(...)
 define.module("MutatorRegistry", {
     "LedgerEntries/LootManager/Award",
     "LedgerEntries/ProfileManager/Link",
-    "LedgerEntries/ProfileManager/Lock"
+    "LedgerEntries/ProfileManager/Lock",
+    "LedgerEntries/PointManager/Modify",
+    "LedgerEntries/PointManager/Set",
+    "LedgerEntries/PointManager/Decay",
+
+
 }, function(resolve, ...)
     -- this registry is filled with its dependencies, each dependency is a class and a callback
     local handlers = {}
@@ -57,7 +62,7 @@ local function createLedger(self, database)
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
         (function(entry, sender)
-            return Acl:CheckLevel(AclLevel.ASSISTANT, sender)
+            return Acl:CheckAssistant(sender)
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
             return Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")

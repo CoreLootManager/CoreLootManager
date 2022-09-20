@@ -19,7 +19,7 @@ local function HandleSubscribe(self, data, sender)
     LOG:Trace("StandbyStagingManager:HandleSubscribe()")
     if not Acl:IsTrusted() then return end
     local raidUid = data:RaidUid()
-    local raid = RaidManager:GetRaidByUid(raidUid)
+    local raid = RaidRegistry.Get(raidUid)
     if not raid then
         LOG:Debug("Non existent raid: %s", raidUid)
         return
@@ -50,7 +50,7 @@ local function HandleRevoke(self, data, sender)
     LOG:Trace("StandbyStagingManager:HandleRevoke()")
     if not Acl:IsTrusted() then return end
     local raidUid = data:RaidUid()
-    local raid = RaidManager:GetRaidByUid(raidUid)
+    local raid = RaidRegistry.Get(raidUid)
     if not raid then
         LOG:Debug("Non existent raid: %s", raidUid)
         return

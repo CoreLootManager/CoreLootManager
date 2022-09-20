@@ -80,7 +80,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = roster:Name(),
                     standings = {
                         player = {}
                     }
@@ -105,7 +105,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = roster:Name(),
                     standings = {
                         player = {}
                     }
@@ -136,7 +136,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = roster:Name(),
                     lootHistory = {
                         item = {}
                     }
@@ -166,7 +166,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = roster:Name(),
                     lootHistory = {
                         item = {}
                     }
@@ -201,7 +201,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = roster:Name(),
                     pointHistory = {
                         point = {}
                     }
@@ -230,7 +230,7 @@ local DATA_BUILDERS = {
             for _, roster in ipairs(self.dataInfo.rosters) do
                 local roster_data = {
                     uid = roster:UID(),
-                    name = RosterManager:GetRosterNameByUid(roster:UID()),
+                    name = roster:Name(),
                     pointHistory = {
                         point = {}
                     }
@@ -273,7 +273,7 @@ local DATA_BUILDERS = {
 function Exporter:Run(completeCallback, updateCallback)
     -- Prepare Data Info
     for _, UID in ipairs(self.config.rosters) do
-        local roster = GetRosterByUid(UID)
+        local roster = RosterRegistry.Get(UID)
         if roster then
             tinsert(self.dataInfo.rosters, roster)
         end

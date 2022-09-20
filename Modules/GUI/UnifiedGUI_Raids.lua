@@ -48,7 +48,7 @@ end
 
 local function UpdateRaid(self, name)
     LOG:Trace("UnifiedGUI_Raids UpdateRaid()")
-    local roster = RosterManager:GetRosterByName(name)
+    local roster = RosterRegistry.GetByName(name)
     if roster then
         self.configuration = RosterConfiguration:New(UTILS.DeepCopy(roster.configuration))
         return true
@@ -165,7 +165,7 @@ local function GenerateAssistantOptions(self)
             type = "select",
             width = "full",
             values = (function()
-                local rosters = RosterManager:GetRosters()
+                local rosters = RosterRegistry.All()
                 local values = {}
                 for name,_ in pairs(rosters) do
                     values[name] = name
@@ -196,7 +196,7 @@ local function GenerateAssistantOptions(self)
             type = "execute",
             width = "full",
             func = (function(i)
-                RaidManager:CreateRaid(RosterManager:GetRosterByName(self.roster), self.raidName, self.configuration)
+                RaidManager:CreateRaid(RosterRegistry.GetByName(self.roster), self.raidName, self.configuration)
             end),
             disabled = (function() return RaidManager:IsInActiveRaid() end),
             confirm = true,
@@ -225,7 +225,7 @@ local function verticalOptionsFeeder()
     -- if Acl:CheckManager() then
     --     UTILS.mergeDictsInline(options.args, GenerateManagerOptions(UnifiedGUI_Raids))
     -- end
-    -- if Acl:CheckLevel(AclLevel.GUILD_MASTER) then
+    -- if Acl:CheckGuildMaster() then
     --     UTILS.mergeDictsInline(options.args, GenerateGMOptions(UnifiedGUI_Raids))
     -- end
     return options
@@ -304,7 +304,7 @@ local tableStructure = {
             end
 
             tooltip:AddLine(" ")
-            tooltip:AddDoubleLine(L["Roster"], RosterManager:GetRosterNameByUid(raid:Roster():UID()) or "")
+            tooltip:AddDoubleLine(L["Roster"], raid:Roster():Name() or "")
 
             tooltip:AddLine(" ")
             tooltip:AddLine(L["Configuration"] .. ":")
@@ -329,7 +329,7 @@ local tableStructure = {
 local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_Raids tableDataFeeder()")
     local data = {}
-    for _, raid in pairs(RaidManager:ListRaids()) do
+    for _, raid in pairs(RaidRegistry.All()) do
         local color = nil
         if RaidStatus.IN_PROGRESS == raid:Status() then
             color = colorGreen
@@ -367,8 +367,8 @@ end
 
 local function dataReadyHandler()
     LOG:Trace("UnifiedGUI_Raids dataReadyHandler()")
-    if not RosterManager:GetRosterByName(UnifiedGUI_Raids.roster) then
-        local _, roster = next(RosterManager:GetRosters())
+    if not RosterRegistry.GetByName(UnifiedGUI_Raids.roster) then
+        local _, roster = next(RosterRegistry.All())
         if roster then
             UnifiedGUI_Raids.roster = roster:UID()
         end

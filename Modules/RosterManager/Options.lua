@@ -14,7 +14,7 @@ local CBTYPE = {
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)
-    local roster = RosterManager:GetRosterByName(name)
+    local roster = RosterRegistry.GetByName(name)
     if roster == nil then return nil end
     return roster:GetConfiguration(option)
 end
@@ -43,7 +43,7 @@ function RosterManagerOptions:Initialize()
             for GUID, _ in pairs(profiles) do
                 table.insert(profileList, GUID)
             end
-            local roster = RosterManager:GetRosterByName(name)
+            local roster = RosterRegistry.GetByName(name)
             RosterManager:AddProfilesToRoster(roster, profileList)
         end),
         general_copy_execute = (function(name)
@@ -317,7 +317,7 @@ local valuesWithDesc = {
 }
 
 function RosterManagerOptions:GenerateRosterOptions(name)
-    local roster = RosterManager:GetRosterByName(name)
+    local roster = RosterRegistry.GetByName(name)
     local isManager = Acl:CheckManager()
 
     local success, default_slot_values_args = pcall(function()
@@ -535,7 +535,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "select",
                         values = (function()
                             local v = {}
-                            local r = RosterManager:GetRosters()
+                            local r = RosterRegistry.All()
                             for n, _ in pairs(r) do
                                 v[n] = n
                             end
@@ -944,7 +944,7 @@ function RosterManagerOptions:UpdateOptions()
             values = PointTypesGui
         },
     }
-    local rosters = RosterManager:GetRosters()
+    local rosters = RosterRegistry.All()
     for name, _ in pairs(rosters) do
         options[name] = self:GenerateRosterOptions(name)
 

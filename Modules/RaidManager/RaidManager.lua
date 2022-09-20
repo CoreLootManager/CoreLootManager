@@ -1,9 +1,66 @@
 local define = LibDependencyInjection.createContext(...)
 
+define.module("RaidRegistry", {}, function(resolve)
+    local raids = {}
+    local nameIndex = {}
+    local activeIndex = {}
+
+    local standby
+
+
+    resolve({
+        Add = function(raid)
+            raids[raid:UID()] = raid
+            nameIndex[strlower(raid:Name())] = raid
+            if raid:IsActive() then
+                activeIndex[raid:UID()] = raid
+            end
+        end,
+        Delete = function(uid)
+            local raid = raids[uid]
+            if raid then
+                raids[uid]  = nil
+            nameIndex[raid:Name()] = nil
+            end
+        end,
+        Update = function(UID, callback)
+            -- Select a raid by UID, and update it in the callback.
+            local raid = raids[UID]
+            if raid == nil then return false end
+            nameIndex[strlower(raid:Name())] = nil
+            raids[raid:UID()] = nil
+            callback(raid)
+            raids[raid:UID()] = raid
+            nameIndex[strlower(raid:Name())] = raid
+
+            return true
+        end,
+        Get = function(UID)
+            return raids[UID]
+        end,
+        GetByName = function(name)
+            return nameIndex[strlower(name)]
+        end,
+        -- this leaks our table, we should implement a generator intead
+        All = function() return raids end,
+
+        GetActiveRaidForGuid = function(GUID)
+            -- we do a dumb search
+            for _, raid in pairs(activeIndex) do
+                if raid:IsPlayerInRaid(GUID) then
+                    return raid
+                end
+
+            end
+        end,
+    })
+
+end)
+
 define.module("RaidManager", {
     "Log", "Utils", "GlobalConfigs",
-    "L", "LedgerManager", "RosterManager", "ProfileRegistry", "PointManager", "EventManager", "StandbyManager", "Constants/RaidStatus", "Acl", "Models/RosterConfiguration", "Models/Ledger/Raid"
-}, function(resolve, LOG, UTILS, GlobalConfigs, L, LedgerManager, RosterManager, ProfileRegistry, PointManager, EventManager, StandbyManager, RaidStatus, Acl, RosterConfiguration, RaidModel)
+    "L", "LedgerManager", "RosterManager", "ProfileRegistry", "PointManager", "EventManager", "StandbyManager", "Constants/RaidStatus", "Acl", "Models/RosterConfiguration", "Models/Ledger/Raid", "RosterRegistry", "RaidRegistry", "Models/Roster", "Models/Raid"
+}, function(resolve, LOG, UTILS, GlobalConfigs, L, LedgerManager, RosterManager, ProfileRegistry, PointManager, EventManager, StandbyManager, RaidStatus, Acl, RosterConfiguration, RaidModel, RosterRegistry, RaidRegistry, Roster, Raid)
 
 
 local UnitInBattleground, IsActiveBattlefieldArena = UnitInBattleground, IsActiveBattlefieldArena
@@ -45,16 +102,16 @@ function RaidManager:Initialize()
             config:inflate(entry:config())
             local rosterUid = entry:rosterUid()
 
-            local roster = GetRosterByUid(rosterUid)
+            local roster = RosterRegistry.Get(rosterUid)
             if not roster then
                 LOG:Debug("RaidManager mutator(): Unknown roster uid %s", rosterUid)
                 return
             end
             -- Handle existing raid gracefully
             local creator = getGuidFromInteger(entry:creator())
-            local raid = CLM.MODELS.Raid:New(raidUid, name, roster, config, creator, entry)
+            local raid = Raid:New(raidUid, name, roster, config, creator, entry)
             LOG:Debug("RaidManager mutator(): New raid %s(%s) from %s", name, raidUid, creator)
-            self.cache.raids[raidUid] = raid
+            RaidRegistry.Add(raid)
             self:UpdateProfileCurentRaid(creator, raid)
         end)
     )
@@ -105,7 +162,7 @@ function RaidManager:Initialize()
                         -- Bench leavers
                         self:UpdateProfileCurentStandby(GUID, raid)
                     else
-                        self:UpdateProfileCurentRaid(GUID, nil)
+                        RaidRegistry.RemoveGUID(GUID)
                     end
                 end
             end
@@ -114,7 +171,7 @@ function RaidManager:Initialize()
                 local GUID = getGuidFromInteger(iGUID)
                 local profile = ProfileRegistry.Get(GUID)
                 if profile then
-                    self:UpdateProfileCurentRaid(GUID, nil)
+                    RaidRegistry.RemoveGUID(GUID)
                     self:UpdateProfileCurentStandby(GUID, nil)
                 end
             end
@@ -164,18 +221,11 @@ function RaidManager:Initialize()
             LOG:TraceAndCount("mutator(RaidEnd)")
             local raidUid = entry:raid()
 
-            local raid = self:GetRaidByUid(raidUid)
-            if not raid then
+            if not RaidRegistry.Update(raidUid, function(raid)
+                raid:End(entry:time())
+            end) then
                 LOG:Debug("RaidManager mutator(): Unknown raid uid %s", raidUid)
                 return
-            end
-
-            raid:End(entry:time())
-
-            local players = raid:AllPlayers()
-            for _,GUID in ipairs(players) do
-                self:UpdateProfileCurentRaid(GUID, nil)
-                self:UpdateProfileCurentStandby(GUID, nil)
             end
         end)
     )
@@ -198,7 +248,7 @@ function RaidManager:ParseStatus()
     LOG:Trace("RaidManager:ParseStatus()")
     if not self._initialized then
         -- Mark raids as stale
-        for raid in ipairs(self.cache.raids) do
+        for raid in ipairs(RaidRegistry.All()) do
             if raid:IsActive() then
                 local referenceTime = raid:StartTime()
                 if referenceTime == 0 then
@@ -217,16 +267,8 @@ function RaidManager:ParseStatus()
     end
 end
 
-function RaidManager:ListRaids()
-    return self.cache.raids
-end
-
-function RaidManager:GetRaidByUid(raidUid)
-    return self.cache.raids[raidUid]
-end
-
 function RaidManager:IsInRaid()
-    return self.cache.profileRaidInfo[whoamiGUID] and true or false
+    return RaidRegistry.GetActiveRaidForGuid(whoamiGUID) ~= nil
 end
 
 function RaidManager:IsOnStandby()
@@ -249,12 +291,12 @@ end
 function RaidManager:UpdateProfileCurentRaid(GUID, raid)
     LOG:Debug("RaidManager:UpdateProfileCurentRaid(%s): %s", GUID, raid and "Add" or "Remove")
     if ProfileRegistry.Get(GUID) then
-        local current = self.cache.profileRaidInfo[GUID]
+        local current = RaidRegistry.GetActiveRaidForGuid(GUID)
         if current and current:IsActive() then
             current:RemovePlayer(GUID)
         end
         if raid then
-            self.cache.profileRaidInfo[GUID] = self.cache.raids[raid:UID()]
+            self.cache.profileRaidInfo[GUID] = RaidRegistry.Get(raid:UID())
             raid:AddPlayer(GUID)
             self:UpdateProfileCurentStandby(GUID, nil)
         else
@@ -271,7 +313,7 @@ function RaidManager:UpdateProfileCurentStandby(GUID, raid)
             current:RemoveFromStandbyPlayer(GUID)
         end
         if raid then
-            self.cache.profileStandbyInfo[GUID] = self.cache.raids[raid:UID()]
+            self.cache.profileStandbyInfo[GUID] = RaidRegistry.Get(raid:UID())
             raid:StandbyPlayer(GUID)
             self:UpdateProfileCurentRaid(GUID, nil)
         else
@@ -280,17 +322,11 @@ function RaidManager:UpdateProfileCurentStandby(GUID, raid)
     end
 end
 
-function RaidManager:GetProfileRaid(GUID)
-    return self.cache.profileRaidInfo[GUID]
-end
 
-function RaidManager:GetProfileStandby(GUID)
-    return self.cache.profileStandbyInfo[GUID]
-end
 
 function RaidManager:CreateRaid(roster, name, config)
     LOG:Trace("RaidManager:CreateRaid()")
-    if not UTILS.typeof(roster, CLM.MODELS.Roster) then
+    if not UTILS.typeof(roster, Roster) then
         LOG:Error("RaidManager:CreateRaid(): Missing valid roster")
         return
     end
@@ -316,7 +352,7 @@ end
 
 function RaidManager:StartRaid(raid)
     LOG:Trace("RaidManager:StartRaid()")
-    if not UTILS.typeof(raid, CLM.MODELS.Raid) then
+    if not UTILS.typeof(raid, Raid) then
         LOG:Message(L["Missing valid raid"])
         return
     end
@@ -377,7 +413,7 @@ function RaidManager:StartRaid(raid)
         end
         local onTimeBonusValue = config:Get("onTimeBonusValue")
         if config:Get("onTimeBonus") and onTimeBonusValue > 0 then
-            PointManager:UpdateRaidPoints(raid, onTimeBonusValue, CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+            PointManager:UpdateRaidPoints(raid, onTimeBonusValue, PointChangeReason.ON_TIME_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
         end
     end
 end
@@ -410,7 +446,7 @@ function RaidManager:EndRaid(raid)
         end
         local raidCompletionBonusValue = config:Get("raidCompletionBonusValue")
         if config:Get("raidCompletionBonus") and raidCompletionBonusValue > 0 then
-            PointManager:UpdateRaidPoints(raid, raidCompletionBonusValue, CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+            PointManager:UpdateRaidPoints(raid, raidCompletionBonusValue, PointChangeReason.RAID_COMPLETION_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
         end
     end
     -- End raid
@@ -690,7 +726,7 @@ function RaidManager:IsRaidOwner(name)
         LOG:Debug("Player in PvP")
         return false
     end
-    if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
+    if not Acl:CheckAssistant(name) then
         isOwner = false
         LOG:Debug("Not Assistant")
     else
@@ -717,7 +753,7 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
     name = name or whoami
 
     if not relaxed then -- Relaxed requirements: doesn't need to be assitant (for out of guild checks)
-        if not Acl:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
+        if not Acl:CheckAssistant(name) then
             LOG:Debug("Not Assistant")
             return false
         end

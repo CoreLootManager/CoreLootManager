@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("LedgerEntries/LootManager/Award", {"LibStub:EventSourcing/LogEntry", "Utils", "Log", "GetRosterByUid", "LootManager/mutateLootAward"},
-function(resolve, LogEntry, Utils, Log, GetRosterByUid, mutateLootAward)
+define.module("LedgerEntries/LootManager/Award", {"LibStub:EventSourcing/LogEntry", "Utils", "Log", "RosterRegistry", "LootManager/mutateLootAward"},
+function(resolve, LogEntry, Utils, Log, RosterRegistry, mutateLootAward)
     local GetGUIDFromEntry = Utils.GetGUIDFromEntry
     local Award     = LogEntry:extend("IA")
     function Award:new(rosterUid, profile, itemId, value)
@@ -37,7 +37,7 @@ function(resolve, LogEntry, Utils, Log, GetRosterByUid, mutateLootAward)
 
     local handler = function(entry)
         Log:TraceAndCount("mutator(LootAward)")
-        local roster = GetRosterByUid(entry:rosterUid())
+        local roster = RosterRegistry.Get(entry:rosterUid())
         if not roster then
             Log:Debug("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
             return

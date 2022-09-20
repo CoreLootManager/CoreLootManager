@@ -485,7 +485,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     self.bid = values[SlotValueTier.BASE]
     local myProfile = ProfileRegistry.Me()
     if myProfile then
-        local roster = GetRosterByUid(self.auctionInfo:RosterUid())
+        local roster = RosterRegistry.Get(self.auctionInfo:RosterUid())
         if roster then
             self.auctionType = roster:GetConfiguration("auctionType")
             self.roster = roster

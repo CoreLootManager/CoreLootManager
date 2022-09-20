@@ -98,7 +98,7 @@ local function lazyCreateItem(self, itemId)
 end
 
 local Roster = {} -- Roster information
-function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
+function Roster:New(name, uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
     local o = {}
 
     setmetatable(o, self)
@@ -106,6 +106,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
 
     -- CONFIGURATION --
     o.uid  = tonumber(uid)
+    o.name = name
     o.pointType = pointType
     o.configuration  = RosterConfiguration:New()
     o.defaultSlotValues = { [GLOBAL_FAKE_INVENTORY_SLOT] = {} }
@@ -179,6 +180,10 @@ end
 
 function Roster:UID()
     return self.uid
+end
+
+function Roster:Name()
+    return self.name
 end
 
 function Roster:Profiles()
@@ -530,8 +535,9 @@ end
  ****************************
 ]]--
 
-function Roster:AddLoot(loot, profile)
+function Roster:AddLoot(loot)
     -- History store
+    local profile = loot:Owner()
     local GUID = profile:GUID()
     self.profileLoot[GUID][#self.profileLoot[GUID]+1] = loot
     self.raidLoot[#self.raidLoot+1] = loot

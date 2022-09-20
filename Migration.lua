@@ -19,7 +19,7 @@ local LEDGER_LOOT = MODELS.LEDGER.LOOT
 
 local Migration = {}
 function Migration:Initialize()
-    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
+    if not Acl:CheckGuildMaster() then return end
     self:RegisterSlash()
     self.migrationOngoing = false
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
@@ -42,7 +42,7 @@ end
 
 local timestampCounter = {}
 function Migration:Migrate()
-    if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
+    if not Acl:CheckGuildMaster() then return end
     if LedgerManager:Length() > 0 then
         LOG:Message(L["Unable to execute migration. Entries already exist."])
         return

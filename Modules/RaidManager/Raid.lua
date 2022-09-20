@@ -80,6 +80,7 @@ end
 
 function Raid:AddPlayer(guid)
     self.players[guid] = true
+    self.standby[guid] = nil
     self.participated.inRaid[guid] = true
 end
 
@@ -101,6 +102,7 @@ end
 
 function Raid:StandbyPlayer(guid)
     self.standby[guid] = true
+    self.players[guid] = nil
     self.participated.standby[guid] = true
 end
 

@@ -1,7 +1,7 @@
 local define = LibDependencyInjection.createContext(...)
 
-define.module("LootManager/mutateLootAward", {"Utils", "Log", "ProfileRegistry", "RosterManager", "EventManager", "PointManager", "Constants/PointChangeReason", "Constants/Events", "Models/Loot"},
-function(resolve, UTILS, LOG, ProfileRegistry, RosterManager, EventManager, RaidManager, PointManager, PointChangeReason, Events, Loot)
+define.module("LootManager/mutateLootAward", {"Utils", "Log", "ProfileRegistry", "EventManager", "PointManager", "Constants/PointChangeReason", "Constants/Events", "Models/Loot", "RosterRegistry"},
+function(resolve, UTILS, LOG, ProfileRegistry, EventManager, RaidManager, PointManager, PointChangeReason, Events, Loot, RosterRegistry)
     local function mutateLootAward(entry, roster)
         local GUID = UTILS.getGuidFromInteger(entry:profile())
         if not roster then
@@ -15,7 +15,8 @@ function(resolve, UTILS, LOG, ProfileRegistry, RosterManager, EventManager, Raid
                 return
             end
             local loot = Loot:New(entry, profile)
-            RosterManager:AddLootToRoster(roster, loot, profile)
+            roster:AddLoot(loot)
+
 
             local main
             if profile:Main() == "" then -- is main
@@ -37,7 +38,7 @@ function(resolve, UTILS, LOG, ProfileRegistry, RosterManager, EventManager, Raid
             GetItemInfo(loot:Id())
             EventManager:DispatchEvent(Events.USER_RECEIVED_ITEM, { id = loot:Id() }, entry:time(), GUID)
             -- Handle Zero-Sum Bank mode
-            local raid = RaidManager:GetRaidByUid(loot:RaidUid())
+            local raid = RaidRegistry.Get(loot:RaidUid())
             if not raid then
                 LOG:Debug("mutateLootAward(): Loot not awarded to raid. Skipping handling zero-sum bank.")
                 return
@@ -81,7 +82,7 @@ function LootManager:Initialize()
         LedgerEntries.Award,
         (function(entry)
             LOG:TraceAndCount("mutator(LootAward)")
-            local roster = GetRosterByUid(entry:rosterUid())
+            local roster = RosterRegistry.Get(entry:rosterUid())
             if not roster then
                 LOG:Debug("PointManager mutator(): Unknown roster uid %s", entry:rosterUid())
                 return
@@ -93,7 +94,7 @@ function LootManager:Initialize()
         LedgerEntries.RaidAward,
         (function(entry)
             LOG:TraceAndCount("mutator(LootRaidAward)")
-            local raid = RaidManager:GetRaidByUid(entry:raidUid())
+            local raid = RaidRegistry.Get(entry:raidUid())
             if not raid then
                 LOG:Debug("PointManager mutator(): Unknown raid uid %s", entry:raidUid())
                 return

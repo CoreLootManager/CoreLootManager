@@ -347,7 +347,7 @@ local function Create(self)
                     local roster_list = {
                         [ALL] = UTILS.ColorCodeText("All", "6699ff")
                     }
-                    for name, roster in pairs(RosterManager:GetRosters()) do
+                    for name, roster in pairs(RosterRegistry.All()) do
                         roster_list[roster:UID()] = name
                     end
                     return roster_list
@@ -399,7 +399,7 @@ local function Create(self)
                 func = (function()
                     local rosters = {}
                     if self.roster_select_list[ALL] then
-                        for _, roster in pairs(RosterManager:GetRosters()) do
+                        for _, roster in pairs(RosterRegistry.All()) do
                             tinsert(rosters, roster:UID())
                         end
                     else

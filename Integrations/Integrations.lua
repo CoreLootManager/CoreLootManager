@@ -49,7 +49,7 @@ local function StoreWoWDKPBotData(self)
     end
     -- Fill config
     db.config = {}
-    for name,roster in pairs(RosterManager:GetRosters()) do
+    for name,roster in pairs(RosterRegistry.All()) do
         db.config[name] = {}
         -- Config
         local rounding = roster:GetConfiguration("roundDecimals")
@@ -58,7 +58,7 @@ local function StoreWoWDKPBotData(self)
     end
     -- Fill Rosters
     db.rosters = {}
-    for name,roster in pairs(RosterManager:GetRosters()) do
+    for name,roster in pairs(RosterRegistry.All()) do
         db.rosters[name] = {}
         -- For each profile in roster
         for GUID, value in pairs(roster.standings) do
@@ -244,7 +244,7 @@ local function ExternalAwardEventHandler(_, data)
             LOG:Debug("Gargul item awarded to player without profile")
             return
         end
-        local raid = RaidManager:GetProfileRaid(profile:GUID())
+        local raid = RaidRegistry.GetActiveRaidForGuid(profile:GUID())
         if not raid then
             LOG:Debug("Gargul item awarded outside of raid")
             return

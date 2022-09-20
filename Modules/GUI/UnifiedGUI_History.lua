@@ -72,7 +72,7 @@ end
 
 local function GenerateUntrustedOptions(self)
     local options = {}
-    local roster = GetRosterByUid(self.roster)
+    local roster = RosterRegistry.Get(self.roster)
     if not roster then return {} end
     local profiles = roster:Profiles()
     local profileNameMap = { [L["-- All --"]] = L["-- All --"]}
@@ -89,7 +89,7 @@ local function GenerateUntrustedOptions(self)
     options.roster = {
         name = L["Roster"],
         type = "select",
-        values = RosterManager:GetRostersUidMap(),
+        values = RosterRegistry.All(),
         set = function(i, v)
             self.roster = v
             refreshFn()
@@ -179,7 +179,7 @@ local tableStructure = {
                     else
                         name = L["Unknown"]
                     end
-                    local raid = RaidManager:GetRaidByUid(loot:RaidUid())
+                    local raid = RaidRegistry.Get(loot:RaidUid())
                     if raid then
                         tooltip:AddLine(raid:Name())
                     end
@@ -249,7 +249,7 @@ local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_History tableDataFeeder()")
     local data = {}
 
-    local roster = GetRosterByUid(UnifiedGUI_History.roster)
+    local roster = RosterRegistry.Get(UnifiedGUI_History.roster)
     if not roster then return {} end
     -- TODO: Change from loot type and profile name to filter as its faster
     local profile = ProfileRegistry.GetByName(UnifiedGUI_History.profile or "")
@@ -351,8 +351,8 @@ end
 
 local function dataReadyHandler()
     LOG:Trace("UnifiedGUI_History dataReadyHandler()")
-    if not GetRosterByUid(UnifiedGUI_History.roster) then
-        local _, roster = next(RosterManager:GetRosters())
+    if not RosterRegistry.Get(UnifiedGUI_History.roster) then
+        local _, roster = next(RosterRegistry.All())
         if roster then
             UnifiedGUI_History.roster = roster:UID()
         end

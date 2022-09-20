@@ -349,33 +349,33 @@ local describeFunctions  = {
             " <" .. UTILS.ColorCodeText(entry:name(), "ebb434") .. ">"
     end),
     ["R3"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. L[" Too much data to display"]
 
     end),
     ["R4"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         local config, value = decodeRosterConfig(entry:config(), entry:value())
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             config .. ": " .. value
     end),
     ["R5"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. L[" Too much data to display"]
 
     end),
     ["R6"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         local slot, values = decodeSlotValueConfig(entry)
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             slot .. ": " .. values
     end),
     ["R7"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         local link, values = decodeItemValueOverride(entry)
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
@@ -383,22 +383,22 @@ local describeFunctions  = {
 
     end),
     ["R8"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         local link, values = decodeItemValueOverrideSingle(entry)
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             link .. ": " .. values
     end),
     ["R9"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             (entry:remove() and L["Remove"] or L["Add"]) .. " " .. safeToString(#entry:profiles()) .. L[" profile(s)"]
 
     end),
     ["RC"] = (function(entry)
-        local source = RosterManager:GetRosterNameByUid(entry:sourceRosterUid())
-        local target = RosterManager:GetRosterNameByUid(entry:targetRosterUid())
+        local source = RosterRegistry.Get(entry:sourceRosterUid()):Name()
+        local target = RosterRegistry.Get(entry:targetRosterUid()):Name()
         return
             "From <" .. UTILS.ColorCodeText(source or entry:sourceRosterUid(), "ebb434") .. "> " ..
             "to <" .. UTILS.ColorCodeText(target or entry:targetRosterUid(), "ebb434") .. ">: " ..
@@ -409,7 +409,7 @@ local describeFunctions  = {
 
     end),
     ["RB"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         local encounter, difficulty, value = decodeBossKillBonus(entry:encounterId(), entry:difficultyId(), entry:value())
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
@@ -417,14 +417,14 @@ local describeFunctions  = {
 
     end),
     ["RF"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " ..
             safeToString(CONSTANTS.SLOT_VALUE_TIERS_GUI[entry:tier()]) .. ": " .. safeToString(entry:name())
     end),
     -- Points
     ["DM"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             string.format(L["Awarded %s DKP to %s players for %s in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
@@ -432,7 +432,7 @@ local describeFunctions  = {
             )
     end),
     ["DD"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             string.format(L["Decayed %s%% DKP to %s players in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
@@ -440,7 +440,7 @@ local describeFunctions  = {
             )
     end),
     ["DO"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             string.format(L["Awarded %s DKP to all players for %s in <%s>"],
                 safeToString(entry:value()), decodeReason(entry:reason()),
@@ -448,7 +448,7 @@ local describeFunctions  = {
             )
     end),
     ["DR"] = (function(entry)
-        local raid = RaidManager:GetRaidByUid(entry:raidUid())
+        local raid = RaidRegistry.Get(entry:raidUid())
         return
             string.format(L["Awarded %s DKP for %s to all players in raid %s"],
                 safeToString(entry:value()), decodeReason(entry:reason()),
@@ -456,7 +456,7 @@ local describeFunctions  = {
             )
     end),
     ["DT"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             string.format(L["Decayed %s%% DKP to all players %s in <%s>"],
                 safeToString(entry:value()), (entry:ignoreNegatives() and L["excluding negatives "] or ""),
@@ -464,7 +464,7 @@ local describeFunctions  = {
             )
     end),
     ["DS"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             string.format(L["Set %s DKP to %s players for %s in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
@@ -473,7 +473,7 @@ local describeFunctions  = {
     end),
     -- Loot
     ["IA"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         local guid = UTILS.getGuidFromInteger(entry:profile())
         local profile = ProfileRegistry.Get(guid)
         return
@@ -483,7 +483,7 @@ local describeFunctions  = {
             )
     end),
     ["II"] = (function(entry)
-        local raid = RaidManager:GetRaidByUid(entry:raidUid())
+        local raid = RaidRegistry.Get(entry:raidUid())
         local guid = UTILS.getGuidFromInteger(entry:profile())
         local profile = ProfileRegistry.Get(guid)
         return
@@ -494,7 +494,7 @@ local describeFunctions  = {
     end),
     -- Raid
     ["AC"] = (function(entry)
-        local name = RosterManager:GetRosterNameByUid(entry:rosterUid())
+        local name = RosterRegistry.Get(entry:rosterUid()):Name()
         return
             string.format(
                 L["Create raid %s %s in <%s>"],
@@ -503,14 +503,14 @@ local describeFunctions  = {
             )
     end),
     ["AS"] = (function(entry)
-        local raid = RaidManager:GetRaidByUid(entry:raid())
+        local raid = RaidRegistry.Get(entry:raid())
         return
             string.format(L["Started raid %s"],
                 UTILS.ColorCodeText(safeToString(raid and raid:Name() or entry:raid()), "d99212")
             )
     end),
     ["AU"] = (function(entry)
-        local raid = RaidManager:GetRaidByUid(entry:raid())
+        local raid = RaidRegistry.Get(entry:raid())
         return
             string.format(L["Updated raid <%s> %s joined, %s left, %s benched, %s removed"],
                 UTILS.ColorCodeText(raid and raid:Name() or entry:raid(), "d99212"),
@@ -519,7 +519,7 @@ local describeFunctions  = {
             )
     end),
     ["AE"] = (function(entry)
-        local raid = RaidManager:GetRaidByUid(entry:raid())
+        local raid = RaidRegistry.Get(entry:raid())
         return
             string.format(L["Finished raid %s"],
                 UTILS.ColorCodeText(raid and raid:Name() or entry:raid(), "d99212")

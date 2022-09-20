@@ -2,7 +2,7 @@ local define = LibDependencyInjection.createContext(...)
 
 
 define.module("LedgerEntries/ProfileManager/Update", {"Utils", "LibStub:EventSourcing/LogEntry", "Log", "ProfileRegistry", "Models/Profile"},
-function(resolve, UTILS, LogEntry, Log, ProfileRegistry, Profile, RosterManager)
+function(resolve, UTILS, LogEntry, Log, ProfileRegistry, Profile)
 
 local tostring = tostring
 
@@ -78,7 +78,7 @@ local handler = function(entry)
         local profile = Profile:New(entry, name, class, main, GUID)
         ProfileRegistry.Add(profile)
         -- Check for conditional restore
-        local rosters = RosterManager:GetRosters()
+        local rosters = RosterRegistry.All()
         for _, roster in pairs(rosters) do
             if roster:IsConditinallyRemoved(GUID) then
                 roster:RestoreConditionallyRemoved(GUID)
@@ -92,8 +92,8 @@ resolve({ProfileUpdate, handler})
 end)
 
 
-define.module("LedgerEntries/ProfileManager/Remove", {"Utils", "Log", "LibStub:EventSourcing/LogEntry", "ProfileRegistry", "RosterManager"},
-function(resolve, UTILS, Log, LogEntry, ProfileRegistry, RosterManager)
+define.module("LedgerEntries/ProfileManager/Remove", {"Utils", "Log", "LibStub:EventSourcing/LogEntry", "ProfileRegistry", "RosterRegistry"},
+function(resolve, UTILS, Log, LogEntry, ProfileRegistry, RosterRegistry)
     local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
     local ProfileRemove       = LogEntry:extend("P1")
     function ProfileRemove:new(GUID)
@@ -133,10 +133,10 @@ function(resolve, UTILS, Log, LogEntry, ProfileRegistry, RosterManager)
                 end
             end
             -- Remove
-            ProfileManager:RemoveProfileFromCache(GUID)
+            ProfileRegistry.Remove(GUID)
 
             -- Conditonally remove for backwards compatibility
-            local rosters = RosterManager:GetRosters()
+            local rosters = RosterRegistry.All()
             for _, roster in pairs(rosters) do
                 if roster:IsProfileInRoster(GUID) then
                     roster:MarkAsConditionallyRemoved(GUID)
@@ -205,8 +205,8 @@ define.module("LedgerEntries/ProfileManager/Lock", {"Utils", "Log", "LibStub:Eve
     resolve(ProfileLock, handler)
 end)
 
-define.module("LedgerEntries/ProfileManager/Link", {"Utils", "Log", "LibStub:EventSourcing/LogEntry", "Constants/PointChangeReason", "PointManager", "ProfileRegistry", "Models/Profile", "RosterManager"},
-function(resolve, UTILS, Log, LogEntry, PointChangeReason, PointManager, ProfileRegistry, Profile, RosterManager)
+define.module("LedgerEntries/ProfileManager/Link", {"Utils", "Log", "LibStub:EventSourcing/LogEntry", "Constants/PointChangeReason", "PointManager", "ProfileRegistry", "Models/Profile", "RosterRegistry"},
+function(resolve, UTILS, Log, LogEntry, PointChangeReason, PointManager, ProfileRegistry, Profile, RosterRegistry)
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local ProfileLink       = LogEntry:extend("P2")
 -- ------------- --
@@ -265,7 +265,7 @@ local handler = function(entry)
         mainProfile:AddAlt(altGUID)
         -- Handle consequences of linking:
         -- For each roster this alt is present in:
-        local rosters = RosterManager:GetRosters()
+        local rosters = RosterRegistry.All()
         for _,roster in pairs(rosters) do
             if roster:IsProfileInRoster(altGUID) then
                 -- 1) Add main if not present in roster
