@@ -23,6 +23,10 @@ function GlobalConfigs:Initialize()
         disable_sync = false,
         suppress_incoming_chat_commands = false,
         suppress_outgoing_chat_commands = false,
+        tooltips = {
+            display = true,
+            roster = 0
+        },
         raid_warnings = {
             raid = true,
             auction = true,
@@ -195,6 +199,31 @@ function GlobalConfigs:Initialize()
             name = CLM.L["Danger Zone - Use at own risk"],
             order = 10000
         },
+        tooltip_display_header = {
+            type = "header",
+            name = CLM.L["Price Tooltips"],
+            order = 900
+        },
+        tooltip_display_toggle = {
+            name = CLM.L["Display price"],
+            desc = CLM.L["Enables displaying item price on tooltip."],
+            type = "toggle",
+            set = function(i, v) self:SetPriceTooltip(v) end,
+            get = function(i) return self:GetPriceTooltip() end,
+            order = 901
+        },
+        tooltip_display_roster = {
+            name = CLM.L["Roster"],
+            desc = CLM.L["Default roster to display outside of raid."],
+            type = "select",
+            values = CLM.MODULES.RosterManager:GetRostersUidMap(),
+            set = function(i, v)
+                self:SetPriceTooltipDefaultRoster(v)
+            end,
+            get = function(i) return self:GetPriceTooltipDefaultRoster() end,
+            width = "full",
+            order = 902
+        },
         danger_zone_disable_sync = {
             type = "toggle",
             name = CLM.L["Disable data synchronisation"],
@@ -335,6 +364,25 @@ end
 function GlobalConfigs:GetBidsWarning()
     return self.db.raid_warnings.bids
 end
+
+
+function GlobalConfigs:SetPriceTooltip(v)
+    self.db.tooltips.display = v and true or false
+end
+
+function GlobalConfigs:GetPriceTooltip()
+    return self.db.tooltips.display
+end
+
+function GlobalConfigs:SetPriceTooltipDefaultRoster(v)
+    self.db.tooltips.roster = tonumber(v)
+end
+
+function GlobalConfigs:GetPriceTooltipDefaultRoster()
+    return self.db.tooltips.roster
+end
+
+
 
 function GlobalConfigs:GetDisableSync()
     return self.db.disable_sync
