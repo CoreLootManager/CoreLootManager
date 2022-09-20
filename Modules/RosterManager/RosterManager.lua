@@ -42,6 +42,9 @@ function RosterManager:Initialize()
             end
             if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
             local roster = CLM.MODELS.Roster:New(uid, pointType, self.db.raidsForFullAttendance, self.db.attendanceWeeksWindow)
+            if self.db.displayTooltipConfig[uid] == nil then
+                self.db.displayTooltipConfig[uid] = true
+            end
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
         end))
@@ -344,7 +347,8 @@ function RosterManager:Initialize()
 
     self.db = CLM.MODULES.Database:Personal('rosterManager', {
         raidsForFullAttendance = 2,
-        attendanceWeeksWindow = 10
+        attendanceWeeksWindow = 10,
+        displayTooltipConfig = {}
     })
 
     local options = {
@@ -388,9 +392,29 @@ function RosterManager:Initialize()
             end,
             get = function(i) return self.db.attendanceWeeksWindow end,
             order = 22
-          }
+          },
+          export_rosters = {
+            name = CLM.L["Select Rosters to display"],
+            type = "multiselect",
+            set = function(i, k, v)
+                self.db.displayTooltipConfig[tonumber(k) or 0] = v
+            end,
+            get = function(i, k) return self.db.displayTooltipConfig[k] end,
+            values = function()
+                local roster_list = {}
+                for uid, name in pairs(CLM.MODULES.RosterManager:GetRostersUidMap()) do
+                    roster_list[uid] = name
+                end
+                return roster_list
+            end,
+            order = 902
+        }
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+end
+
+function RosterManager:GetDisplayTooltip(rosterUid)
+    return self.db.displayTooltipConfig[tonumber(rosterUid) or 0]
 end
 
 function RosterManager:GetRosters()

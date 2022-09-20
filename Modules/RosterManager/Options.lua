@@ -606,6 +606,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         -- hidden = "Hider",
         func = "Handler",
         childGroups = "select",
+        order = roster:UID(),
         args = {
             general = {
                 name = CLM.L["General settings"],
@@ -1086,8 +1087,7 @@ function RosterManagerOptions:UpdateOptions()
             values = CONSTANTS.POINT_TYPES_GUI
         },
     }
-    local rosters = CLM.MODULES.RosterManager:GetRosters()
-    for name, _ in pairs(rosters) do
+    for _, name in pairs(CLM.MODULES.RosterManager:GetRostersUidMap()) do
         options[name] = self:GenerateRosterOptions(name)
     end
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.ROSTER, options, true)

@@ -212,18 +212,18 @@ function GlobalConfigs:Initialize()
             get = function(i) return self:GetPriceTooltip() end,
             order = 901
         },
-        tooltip_display_roster = {
-            name = CLM.L["Roster"],
-            desc = CLM.L["Default roster to display outside of raid."],
-            type = "select",
-            values = CLM.MODULES.RosterManager:GetRostersUidMap(),
-            set = function(i, v)
-                self:SetPriceTooltipDefaultRoster(v)
-            end,
-            get = function(i) return self:GetPriceTooltipDefaultRoster() end,
-            width = "full",
-            order = 902
-        },
+        -- tooltip_display_roster = {
+        --     name = CLM.L["Roster"],
+        --     desc = CLM.L["Default roster to display outside of raid."],
+        --     type = "select",
+        --     values = CLM.MODULES.RosterManager:GetRostersUidMap(),
+        --     set = function(i, v)
+        --         self:SetPriceTooltipDefaultRoster(v)
+        --     end,
+        --     get = function(i) return self:GetPriceTooltipDefaultRoster() end,
+        --     width = "full",
+        --     order = 902
+        -- },
         danger_zone_disable_sync = {
             type = "toggle",
             name = CLM.L["Disable data synchronisation"],
