@@ -524,7 +524,7 @@ CLM.L["Default Boss Kill Bonus Value"] = "Valeur du bonus de fin de raid"
 -- Modules/GUI/UnifiedGUI_Audit.lua:85
 CLM.L["Default Boss Kill Bonus value"] = "Valeur par défaut du bonus de Boss tué"
 -- Global/GlobalConfigs.lua:217
---CLM.L["Default roster to display outside of raid."] = ""
+CLM.L["Default roster to display outside of raid."] = "Roster par défaut à afficher hors raid"
 -- Modules/RosterManager/Options.lua:918
 CLM.L["Default slot values"] = "Valeurs d'emplacement par défaut"
 -- Modules/GUI/UnifiedGUI_Audit.lua:660
@@ -538,7 +538,7 @@ CLM.L["Disable"] = "Désactiver"
 -- Modules/Changelog/GUI.lua:39
 CLM.L["Disables display of the changelog for any new version."] = "Désactivation de  l'affichage du changelog pour toute nouvelle version."
 -- Global/GlobalConfigs.lua:208
---CLM.L["Display price"] = ""
+CLM.L["Display price"] = "Prix affiché"
 -- Modules/Changelog/GUI.lua:78
 CLM.L["Do not show again"] = "Ne pas montrer à nouveau"
 -- .:indirectly
@@ -596,7 +596,7 @@ CLM.L["Enables announcing raid start and end."] = "Permet d'annoncer le début e
 -- Modules/AuctionManager/AuctionManager.lua:86
 CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Permet l'échange automatique du butin après la vente aux enchères"
 -- Global/GlobalConfigs.lua:209
---CLM.L["Enables displaying item price on tooltip."] = ""
+CLM.L["Enables displaying item price on tooltip."] = "Active l'affichage du prix en infobulle"
 -- Global/GlobalConfigs.lua:175
 CLM.L["Enables raid-warning countdown for auctions."] = "Active le compte à rebours d'avertissement de raid pour les enchères."
 -- Modules/AuctionManager/AuctionManager.lua:110
@@ -1296,7 +1296,7 @@ CLM.L["Post bids"] = "Publier des offres"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:85
 CLM.L["Post channel"] = "Canal de publication"
 -- Global/GlobalConfigs.lua:204
---CLM.L["Price Tooltips"] = ""
+CLM.L["Price Tooltips"] = "Infobulle de prix"
 -- .:indirectly
 CLM.L["Priest"] = "Prêtre"
 -- Modules/AutoAwardManager/EncounterIDs.lua:73
@@ -1485,7 +1485,7 @@ CLM.L["Select DKP or EPGP point system."] = "Sélectionner un système de point 
 -- Integrations/GUI.lua:371
 CLM.L["Select Profiles to export"] = "Sélectionnez les profils à exporter"
 -- Modules/RosterManager/RosterManager.lua:397
---CLM.L["Select Rosters to display"] = ""
+CLM.L["Select Rosters to display"] = "Sélectionner les rosters à afficher"
 -- Integrations/GUI.lua:340
 CLM.L["Select Rosters to export"] = "Sélectionnez les listes à exporter"
 -- Modules/GUI/Filters.lua:183
