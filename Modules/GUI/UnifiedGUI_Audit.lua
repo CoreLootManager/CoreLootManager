@@ -354,7 +354,7 @@ local describeFunctions  = {
     ["R3"] = (function(entry)
         local name = CLM.MODULES.RosterManager:GetRosterNameByUid(entry:rosterUid())
         return
-            "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. CLM.L[" Too much data to display"]
+            "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " .. CLM.L["Too much data to display"]
 
     end),
     ["R4"] = (function(entry)
@@ -367,7 +367,7 @@ local describeFunctions  = {
     ["R5"] = (function(entry)
         local name = CLM.MODULES.RosterManager:GetRosterNameByUid(entry:rosterUid())
         return
-            "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. ">" .. CLM.L[" Too much data to display"]
+            "<" .. UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434") .. "> " .. CLM.L["Too much data to display"]
 
     end),
     ["R6"] = (function(entry)
