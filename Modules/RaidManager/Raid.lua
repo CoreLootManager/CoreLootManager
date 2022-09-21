@@ -9,11 +9,12 @@ local UTILS     = CLM.UTILS
 local setmetatable, ipairs, tsort = setmetatable, ipairs, table.sort
 
 local Raid = {} -- Raid information
+
+Raid.__index = Raid
 function Raid:New(uid, name, roster, config, creator, entry)
     local o = {}
 
     setmetatable(o, self)
-    self.__index = self
 
     o.entry = entry
 
