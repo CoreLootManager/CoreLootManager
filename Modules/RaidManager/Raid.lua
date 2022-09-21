@@ -31,8 +31,8 @@ function Raid:New(uid, name, roster, config, creator, entry)
     o.endTime = 0
 
     -- GUID dict
-    -- Dynamic status of tje raid
-    o.players = { [creator] = true } -- for raid mangement we check sometimes if creator is part of raid
+    -- Dynamic status of the raid
+    o.players = { [creator] = true } -- for raid management we check sometimes if creator is part of raid
     o.standby = { }
 
     -- Historical storage of the raid
