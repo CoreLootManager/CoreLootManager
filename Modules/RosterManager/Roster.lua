@@ -409,7 +409,7 @@ function Roster:GetItemValues(itemId)
             local dynamicValues = self.calculator:Calculate(itemId, self.configuration._.roundDecimals)
             if dynamicValues then return dynamicValues end
         end
-        return self:GetDefaultSlotValues(CLM.IndirectSlotMap[itemId] or itemEquipLoc)
+        return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or itemEquipLoc)
     end
     return itemValues
 end
