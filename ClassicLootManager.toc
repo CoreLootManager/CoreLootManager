@@ -135,6 +135,7 @@ Global\GlobalChatMessageHandlers.lua
 Global\GlobalBindings.lua
 
 # Extra
+Tooltips.lua
 MinimapIcon.lua
 Migration.lua
 

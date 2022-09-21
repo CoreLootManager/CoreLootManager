@@ -11,7 +11,6 @@ local tonumber, tostring = tonumber, tostring
 local type, MAX_RAID_MEMBERS, IsInRaid, GetRaidRosterInfo = type, MAX_RAID_MEMBERS, IsInRaid, GetRaidRosterInfo
 local tinsert, slen, strsub = table.insert, string.len, strsub
 
-
 local RosterManager = {}
 function RosterManager:GenerateName()
     local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX)]
@@ -43,6 +42,9 @@ function RosterManager:Initialize()
             end
             if not (pointType and CONSTANTS.POINT_TYPES[pointType] ~= nil) then return end
             local roster = CLM.MODELS.Roster:New(uid, pointType, self.db.raidsForFullAttendance, self.db.attendanceWeeksWindow)
+            if self.db.displayTooltipConfig[uid] == nil then
+                self.db.displayTooltipConfig[uid] = true
+            end
             self.cache.rosters[name] = roster
             self.cache.rostersUidMap[uid] = name
         end))
@@ -64,288 +66,289 @@ function RosterManager:Initialize()
             self.cache.rosters[name] = nil
         end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.Rename,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RosterRename)")
-                local uid = entry:rosterUid()
-                local name = entry:name()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.Rename,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterRename)")
+            local uid = entry:rosterUid()
+            local name = entry:name()
 
-                local o = self:GetRosterByUid(uid)
-                if not o then
-                    LOG:Debug("Renaming non-existent roster [%s]", uid)
-                    return
-                end
-                local n = self:GetRosterByName(name)
-                if n then
-                    LOG:Debug("Roster named [%s] already exists", name)
-                    return
-                end
+            local o = self:GetRosterByUid(uid)
+            if not o then
+                LOG:Debug("Renaming non-existent roster [%s]", uid)
+                return
+            end
+            local n = self:GetRosterByName(name)
+            if n then
+                LOG:Debug("Roster named [%s] already exists", name)
+                return
+            end
 
-                local oldname = self.cache.rostersUidMap[uid]
-                -- Attach roster to new name
-                self.cache.rosters[name] = o
-                self.cache.rostersUidMap[uid] = name
+            local oldname = self.cache.rostersUidMap[uid]
+            -- Attach roster to new name
+            self.cache.rosters[name] = o
+            self.cache.rostersUidMap[uid] = name
 
-                -- Remove old assignments
-                self.cache.rosters[oldname] = nil
-            end))
+            -- Remove old assignments
+            self.cache.rosters[oldname] = nil
+        end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.CopyData,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RosterCopyData)")
-                local sourceUid = entry:sourceRosterUid()
-                local targetUid = entry:targetRosterUid()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.CopyData,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterCopyData)")
+            local sourceUid = entry:sourceRosterUid()
+            local targetUid = entry:targetRosterUid()
 
-                local s = self:GetRosterByUid(sourceUid)
-                if not s then
-                    LOG:Debug("Copying from non-existent roster [%s]", sourceUid)
-                    return
-                end
-                local t = self:GetRosterByUid(targetUid)
-                if not t then
-                    LOG:Debug("Copying to non-existent roster [%s]", targetUid)
-                    return
-                end
+            local s = self:GetRosterByUid(sourceUid)
+            if not s then
+                LOG:Debug("Copying from non-existent roster [%s]", sourceUid)
+                return
+            end
+            local t = self:GetRosterByUid(targetUid)
+            if not t then
+                LOG:Debug("Copying to non-existent roster [%s]", targetUid)
+                return
+            end
 
-                if entry:config() then
-                    t:CopyConfiguration(s)
-                end
+            if entry:config() then
+                t:CopyConfiguration(s)
+            end
 
-                if entry:defaults() then
-                    t:CopyDefaultSlotValues(s)
-                end
+            if entry:defaults() then
+                t:CopyDefaultSlotValues(s)
+            end
 
-                if entry:overrides() then
-                    t:CopyItemValues(s)
-                end
+            if entry:overrides() then
+                t:CopyItemValues(s)
+            end
 
-                if entry:profiles() then
-                    t:CopyProfiles(s)
-                end
-            end))
+            if entry:profiles() then
+                t:CopyProfiles(s)
+            end
+        end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.UpdateConfigSingle,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RosterUpdateConfigSingle)")
-                local rosterUid = entry:rosterUid()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.UpdateConfigSingle,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterUpdateConfigSingle)")
+            local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                roster:SetConfiguration(entry:config(), entry:value())
-            end))
+            roster:SetConfiguration(entry:config(), entry:value())
+        end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.UpdateDefaultSingle,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RosterUpdateDefaultSingle)")
-                local rosterUid = entry:rosterUid()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.UpdateDefaultSingle,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterUpdateDefaultSingle)")
+            local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                roster:SetDefaultSlotTierValue(entry:slot(), entry:tier(), entry:value())
-            end))
+            roster:SetDefaultSlotTierValue(entry:slot(), entry:tier(), entry:value())
+        end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-                CLM.MODELS.LEDGER.ROSTER.UpdateOverrides,
-                (function(entry)
-                    LOG:TraceAndCount("mutator(RosterUpdateOverrides)")
-                    local rosterUid = entry:rosterUid()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.UpdateOverrides,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterUpdateOverrides)")
+            local rosterUid = entry:rosterUid()
 
-                    local roster = self:GetRosterByUid(rosterUid)
-                    if not roster then
-                        LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                        return
-                    end
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                    roster:SetItemValues(entry:itemId(), entry:values())
-                end))
+            roster:SetItemValues(entry:itemId(), entry:values())
+        end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.UpdateOverridesSingle,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RosterUpdateOverridesSingle)")
-                local rosterUid = entry:rosterUid()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.UpdateOverridesSingle,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterUpdateOverridesSingle)")
+            local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                roster:SetItemTierValue(entry:itemId(), entry:tier(), entry:value())
-            end))
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.RemoveOverrides,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RemoveOverrides)")
-                local rosterUid = entry:rosterUid()
+            roster:SetItemTierValue(entry:itemId(), entry:tier(), entry:value())
+        end))
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.RemoveOverrides,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RemoveOverrides)")
+            local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                roster:ClearItemValues(entry:itemId())
-            end))
+            roster:ClearItemValues(entry:itemId())
+        end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.UpdateProfiles,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RosterUpdateProfiles)")
-                local rosterUid = entry:rosterUid()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.UpdateProfiles,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterUpdateProfiles)")
+            local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                local profiles = entry:profiles()
-                if not profiles or type(profiles) ~= "table" or #profiles == 0 then
-                    LOG:Debug("Empty profiles table in mutator(RosterUpdateProfiles)")
-                    return
-                end
+            local profiles = entry:profiles()
+            if not profiles or type(profiles) ~= "table" or #profiles == 0 then
+                LOG:Debug("Empty profiles table in mutator(RosterUpdateProfiles)")
+                return
+            end
 
-                if entry:remove() then
-                    for _, iGUID in ipairs(profiles) do
-                        local GUID = UTILS.getGuidFromInteger(iGUID)
-                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-                        if profile then
-                            roster:RemoveProfileByGUID(GUID)
-                            -- If it is a main with linked alts - remove all alts
-                            if profile:HasAlts() then
-                                for altGUID, _ in pairs(profile:Alts()) do
-                                    roster:RemoveProfileByGUID(altGUID)
-                                end
-                            end
-                        end
-                    end
-                else
-                    for _, iGUID in ipairs(profiles) do
-                        local GUID = UTILS.getGuidFromInteger(iGUID)
-                        roster:AddProfileByGUID(GUID)
-                        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-                        if profile then
-                            -- If it is an alt of a linked main - set its standings and gains from main
-                            if profile:Main() ~= "" then
-                                -- add main in case it isnt there
-                                roster:AddProfileByGUID(profile:Main())
-                                roster:MirrorStandings(profile:Main(), { GUID })
-                                roster:MirrorWeeklyGains(profile:Main(), { GUID })
-                                CLM.MODULES.PointManager:AddFakePointHistory(roster, { GUID }, roster:Standings(profile:Main()), CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
+            if entry:remove() then
+                for _, iGUID in ipairs(profiles) do
+                    local GUID = UTILS.getGuidFromInteger(iGUID)
+                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                    if profile then
+                        roster:RemoveProfileByGUID(GUID)
+                        -- If it is a main with linked alts - remove all alts
+                        if profile:HasAlts() then
+                            for altGUID, _ in pairs(profile:Alts()) do
+                                roster:RemoveProfileByGUID(altGUID)
                             end
                         end
                     end
                 end
-            end))
-
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.BossKillBonus,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RosterBossKillBonus)")
-                local rosterUid = entry:rosterUid()
-
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
+            else
+                for _, iGUID in ipairs(profiles) do
+                    local GUID = UTILS.getGuidFromInteger(iGUID)
+                    roster:AddProfileByGUID(GUID)
+                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+                    if profile then
+                        -- If it is an alt of a linked main - set its standings and gains from main
+                        if profile:Main() ~= "" then
+                            -- add main in case it isnt there
+                            roster:AddProfileByGUID(profile:Main())
+                            roster:MirrorStandings(profile:Main(), { GUID })
+                            roster:MirrorWeeklyGains(profile:Main(), { GUID })
+                            CLM.MODULES.PointManager:AddFakePointHistory(roster, { GUID }, roster:Standings(profile:Main()), CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
+                        end
+                    end
                 end
-                roster:SetBossKillBonusValue(entry:encounterId(), entry:difficultyId(), entry:value())
-            end))
+            end
+        end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.FieldRename,
-            (function(entry)
-                LOG:TraceAndCount("mutator(RosterRenameField)")
-                local rosterUid = entry:rosterUid()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.BossKillBonus,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterBossKillBonus)")
+            local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
-                roster:SetFieldName(entry:tier(), entry:name())
-            end))
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
+            roster:SetBossKillBonusValue(entry:encounterId(), entry:difficultyId(), entry:value())
+        end))
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueEquation,
-            (function(entry)
-                LOG:TraceAndCount("mutator(DynamicItemValueEquation)")
-                local rosterUid = entry:rosterUid()
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.FieldRename,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterRenameField)")
+            local rosterUid = entry:rosterUid()
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
+            roster:SetFieldName(entry:tier(), entry:name())
+        end))
 
-                roster:GetCalculator():SetEquation(entry:equation())
-            end))
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.DynamicItemValueEquation,
+        (function(entry)
+            LOG:TraceAndCount("mutator(DynamicItemValueEquation)")
+            local rosterUid = entry:rosterUid()
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueMultiplier,
-            (function(entry)
-                LOG:TraceAndCount("mutator(DynamicItemValueMultiplier)")
-                local rosterUid = entry:rosterUid()
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            roster:GetCalculator():SetEquation(entry:equation())
+        end))
 
-                roster:GetCalculator():SetMultiplier(entry:multiplier())
-            end))
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.DynamicItemValueMultiplier,
+        (function(entry)
+            LOG:TraceAndCount("mutator(DynamicItemValueMultiplier)")
+            local rosterUid = entry:rosterUid()
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueSlotMultiplier,
-            (function(entry)
-                LOG:TraceAndCount("mutator(DynamicItemValueSlotMultiplier)")
-                local rosterUid = entry:rosterUid()
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            roster:GetCalculator():SetMultiplier(entry:multiplier())
+        end))
 
-                roster:GetCalculator():SetSlotMultiplier(entry:slot(), entry:multiplier())
-            end))
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.DynamicItemValueSlotMultiplier,
+        (function(entry)
+            LOG:TraceAndCount("mutator(DynamicItemValueSlotMultiplier)")
+            local rosterUid = entry:rosterUid()
 
-        CLM.MODULES.LedgerManager:RegisterEntryType(
-            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueTierMultiplier,
-            (function(entry)
-                LOG:TraceAndCount("mutator(DynamicItemValueTierMultiplier)")
-                local rosterUid = entry:rosterUid()
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
 
-                local roster = self:GetRosterByUid(rosterUid)
-                if not roster then
-                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
-                    return
-                end
+            roster:GetCalculator():SetSlotMultiplier(entry:slot(), entry:multiplier())
+        end))
 
-                roster:GetCalculator():SetTierMultiplier(entry:tier(), entry:multiplier())
-            end))
+    CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.DynamicItemValueTierMultiplier,
+        (function(entry)
+            LOG:TraceAndCount("mutator(DynamicItemValueTierMultiplier)")
+            local rosterUid = entry:rosterUid()
 
-        CLM.MODULES.LedgerManager:RegisterOnRestart(function()
-            self:WipeAll()
-        end)
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
+
+            roster:GetCalculator():SetTierMultiplier(entry:tier(), entry:multiplier())
+        end))
+
+    CLM.MODULES.LedgerManager:RegisterOnRestart(function()
+        self:WipeAll()
+    end)
 
     self.db = CLM.MODULES.Database:Personal('rosterManager', {
         raidsForFullAttendance = 2,
-        attendanceWeeksWindow = 10
+        attendanceWeeksWindow = 10,
+        displayTooltipConfig = {}
     })
 
     local options = {
@@ -389,11 +392,29 @@ function RosterManager:Initialize()
             end,
             get = function(i) return self.db.attendanceWeeksWindow end,
             order = 22
-          }
+          },
+          export_rosters = {
+            name = CLM.L["Select Rosters to display"],
+            type = "multiselect",
+            set = function(i, k, v)
+                self.db.displayTooltipConfig[tonumber(k) or 0] = v
+            end,
+            get = function(i, k) return self.db.displayTooltipConfig[k] end,
+            values = function()
+                local roster_list = {}
+                for uid, name in pairs(CLM.MODULES.RosterManager:GetRostersUidMap()) do
+                    roster_list[uid] = name
+                end
+                return roster_list
+            end,
+            order = 902
+        }
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+end
 
-
+function RosterManager:GetDisplayTooltip(rosterUid)
+    return self.db.displayTooltipConfig[tonumber(rosterUid) or 0]
 end
 
 function RosterManager:GetRosters()
