@@ -104,6 +104,7 @@ globals = {
 	"BonusRollFrame",
 	"GameTooltip",
 	"ItemRefTooltip",
+	"ItemRefCloseButton",
 	"InterfaceOptionsFrame_OpenToCategory",
 	"Minimap",
 	"MovieFrame",

@@ -434,16 +434,16 @@ end
 
 function AuctionManager:HandleSubmitBid(data, sender)
     LOG:Trace("AuctionManager:HandleSubmitBid()")
-    if not self.IsAuctionInProgress then
+    if not self:IsAuctionInProgress() then
         LOG:Debug("Received submit bid from %s while no auctions are in progress", sender)
         return
     end
-    self:UpdateBid(sender, data:Bid(), data:Type())
+    self:UpdateBid(sender, data:Bid(), data:Type(), data:Items())
 end
 
 function AuctionManager:HandleCancelBid(data, sender)
     LOG:Trace("AuctionManager:HandleCancelBid()")
-    if not self.IsAuctionInProgress then
+    if not self:IsAuctionInProgress() then
         LOG:Debug("Received cancel bid from %s while no auctions are in progress", sender)
         return
     end
@@ -452,7 +452,7 @@ end
 
 function AuctionManager:HandleNotifyPass(data, sender)
     LOG:Trace("AuctionManager:HandleNotifyPass()")
-    if not self.IsAuctionInProgress then
+    if not self:IsAuctionInProgress() then
         LOG:Debug("Received pass from %s while no auctions are in progress", sender)
         return
     end
@@ -462,7 +462,7 @@ end
 
 function AuctionManager:HandleNotifyHide(data, sender)
     LOG:Trace("AuctionManager:HandleNotifyHide()")
-    if not self.IsAuctionInProgress then
+    if not self:IsAuctionInProgress() then
         LOG:Debug("Received hide from %s while no auctions are in progress", sender)
         return
     end
@@ -471,7 +471,7 @@ end
 
 function AuctionManager:HandleNotifyCantUse(data, sender)
     LOG:Trace("AuctionManager:HandleNotifyCantUse()")
-    if not self.IsAuctionInProgress then
+    if not self:IsAuctionInProgress() then
         LOG:Debug("Received can't use from %s while no auctions are in progress", sender)
         return
     end
@@ -538,13 +538,13 @@ function AuctionManager:ValidateBid(name, bid)
     return true
 end
 
-function AuctionManager:UpdateBid(name, bid, type)
+function AuctionManager:UpdateBid(name, bid, type, items)
     LOG:Trace("AuctionManager:UpdateBid()")
     LOG:Debug("Bid from %s: %s", name, bid)
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local accept, reason = self:ValidateBid(name, bid)
     if accept then
-        local newHighBid = self:UpdateBidsInternal(name, bid, type)
+        local newHighBid = self:UpdateBidsInternal(name, bid, type, items)
         self:SendBidAccepted(name)
         self:AnnounceHighestBidder(newHighBid, name, bid)
     else
@@ -556,7 +556,7 @@ function AuctionManager:UpdateBid(name, bid, type)
     return accept, reason
 end
 
-function AuctionManager:UpdateBidsInternal(name, bid, type)
+function AuctionManager:UpdateBidsInternal(name, bid, type, items)
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
         -- We remove from the bids list but add to pass list
         self.userResponses.bids[name] = nil
@@ -565,6 +565,7 @@ function AuctionManager:UpdateBidsInternal(name, bid, type)
     end
     self.userResponses.bids[name] = bid
     self.userResponses.bidTypes[name] = type
+    self.userResponses.upgradedItems[name] = items
     self.userResponses.passes[name] = nil
 
     local newHighBid = false
@@ -579,7 +580,11 @@ function AuctionManager:UpdateBidsInternal(name, bid, type)
 end
 
 function AuctionManager:Bids()
-    return self.userResponses.bids, self.userResponses.bidTypes
+    return self.userResponses.bids
+end
+
+function AuctionManager:BidTypes()
+    return self.userResponses.bidTypes
 end
 
 function AuctionManager:Passes()
@@ -594,10 +599,15 @@ function AuctionManager:Hidden()
     return self.userResponses.hidden
 end
 
+function AuctionManager:UpgradedItems()
+    return self.userResponses.upgradedItems
+end
+
 function AuctionManager:ClearBids()
     self.userResponses = {
         bids    = {},
         bidTypes = {},
+        upgradedItems = {},
         passes  = {},
         cantUse = {},
         hidden  = {}

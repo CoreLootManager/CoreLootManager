@@ -41,6 +41,9 @@ local colorRedTransparentHex = "ED3333"
 local colorGreenTransparentHex = "33ED33"
 local colorBlueTransparentHex = "3333ED"
 
+local TOOLTIP_GAMETOOLTIP = 1
+local TOOLTIP_ITEMREF = 2
+
 local guiOptions = {
     type = "group",
     args = {}
@@ -52,6 +55,19 @@ end
 
 local function ST_GetActualBidValue(row)
     return row.cols[6].value
+end
+
+local function ST_GetUpgradedItems(row)
+    return row.cols[7].value
+end
+
+local function GetTooltip(self, id)
+    if id == TOOLTIP_ITEMREF then
+        self.tooltips[id] = ItemRefTooltip
+    else
+        self.tooltips[id] = GameTooltip
+    end
+    return self.tooltips[id]
 end
 
 local highlightRole = {
@@ -176,6 +192,7 @@ function AuctionManagerGUI:Initialize()
     end
     self.hookedSlots = { wow = {}, elv =  {}}
     self.values = {}
+    self.tooltips = {}
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function(...)self:HandleLootOpenedEvent() end))
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function(...)self:HandleLootClosedEvent() end))
     CLM.MODULES.EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
@@ -249,6 +266,41 @@ local function CreateBidWindow(self)
             -- end
             return selected
         end),
+        OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+
+            local upgradedItems = ST_GetUpgradedItems(rowData) or {}
+            local primaryItem = upgradedItems[1]
+            local secondaryItem = upgradedItems[2]
+            if (not primaryItem) and secondaryItem then
+                primaryItem = secondaryItem
+                secondaryItem = nil
+            end
+            if primaryItem and GetItemInfoInstant(primaryItem) then
+                local tooltip = GetTooltip(self, TOOLTIP_GAMETOOLTIP)
+                tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+                tooltip:SetHyperlink("item:" .. tostring(primaryItem))
+                tooltip:Show()
+
+                if secondaryItem and GetItemInfoInstant(secondaryItem) then
+                    local tooltipSecondary = GetTooltip(self, TOOLTIP_ITEMREF)
+                    tooltipSecondary:SetOwner(rowFrame, "ANCHOR_NONE")
+                    tooltipSecondary:SetPoint("TOPLEFT", tooltip, "BOTTOMLEFT")
+                    tooltipSecondary:SetHyperlink("item:" .. tostring(secondaryItem))
+                    tooltipSecondary:Show()
+
+                    if tooltipSecondary.PawnIconFrame then
+                        tooltipSecondary.PawnIconFrame:Hide()
+                    end
+
+                    ItemRefCloseButton:Hide()
+                    ItemRefTooltip:SetPadding(0,0)
+                end
+            end
+            return status
+        end),
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local rowData = table:GetRow(realrow)
@@ -256,6 +308,18 @@ local function CreateBidWindow(self)
             local highlight = ST_GetHighlightFunction(rowData)
             if highlight then
                 highlight(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            end
+            if self.tooltips[TOOLTIP_GAMETOOLTIP] then
+                self.tooltips[TOOLTIP_GAMETOOLTIP]:Hide()
+                self.tooltips[TOOLTIP_GAMETOOLTIP] = nil
+            end
+            if self.tooltips[TOOLTIP_ITEMREF] then -- Ugh that's dirty
+                self.tooltips[TOOLTIP_ITEMREF]:Hide()
+                self.tooltips[TOOLTIP_ITEMREF]:SetOwner(UIParent, "ANCHOR_CURSOR")
+                self.tooltips[TOOLTIP_ITEMREF] = nil
+
+                ItemRefCloseButton:Show()
+                ItemRefTooltip:SetPadding(16,0)
             end
             return status
         end),
@@ -666,7 +730,9 @@ function AuctionManagerGUI:Refresh()
     if CLM.MODULES.RaidManager:IsInActiveRaid() then
         local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
         local namedButtons = roster:GetConfiguration("namedButtons")
-        local bids, bidTypes = CLM.MODULES.AuctionManager:Bids()
+        local bids = CLM.MODULES.AuctionManager:Bids()
+        local bidTypes = CLM.MODULES.AuctionManager:BidTypes()
+        local upgradedItems = CLM.MODULES.AuctionManager:UpgradedItems()
         local data = {}
         for name,bid in pairs(bids) do
             local color
@@ -694,7 +760,8 @@ function AuctionManagerGUI:Refresh()
                     {value = current},
                     -- not visible
                     {value = highlightRole[profile:Role()]},
-                    {value = bidValue}
+                    {value = bidValue},
+                    {value = upgradedItems[name]}
                 },
                 DoCellUpdate = highlightRole[profile:Role()]
                 }
