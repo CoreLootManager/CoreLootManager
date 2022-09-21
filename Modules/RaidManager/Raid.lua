@@ -160,7 +160,7 @@ function Raid:IsPlayerOnStandby(GUID)
 end
 
 function Raid:Profiles(historical)
-    self.playerProfileCache = {}
+    local result = {}
     local players = self.players
     if historical then
         players = self.participated.inRaid
@@ -171,17 +171,17 @@ function Raid:Profiles(historical)
         -- TODO: resolve this
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(player)
         if profile then
-            tinsert(self.playerProfileCache, profile)
+            result[#result + 1] = profile
         end
     end
-    tsort(self.playerProfileCache, (function(first, second)
+    tsort(result, (function(first, second)
         return first:Name() < second:Name()
     end))
-    return self.playerProfileCache
+    return result
 end
 
 function Raid:Standby(historical)
-    self.standbyProfileCache = {}
+    local result = {}
     local standby = self.standby
     if historical then
         standby = self.participated.standby
@@ -192,13 +192,13 @@ function Raid:Standby(historical)
         -- TODO: resolve this
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(player)
         if profile then
-            tinsert(self.standbyProfileCache, profile)
+            result[#result + 1] = profile
         end
     end
-    tsort(self.standbyProfileCache, (function(first, second)
+    tsort(result, (function(first, second)
         return first:Name() < second:Name()
     end))
-    return self.standbyProfileCache
+    return result
 end
 
 function Raid:Entry()
