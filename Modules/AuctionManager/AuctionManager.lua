@@ -107,7 +107,7 @@ function AuctionManager:Initialize()
         },
         auctioning_chat_commands = {
             name = CLM.L["Enable chat commands"],
-            desc = CLM.L["Enble !dkp and !bid through whisper / raid. Change requires /reload."],
+            desc = CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."],
             type = "toggle",
             set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
