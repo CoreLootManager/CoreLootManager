@@ -355,7 +355,7 @@ function Migration:_MigrateCommunity()
             UpdatePoints(teamRoster[teamName], GetPlayerGuid(self, name), dkp)
             dkpSet = dkpSet + 1
         end
-        LOG:Message(CLM.L["Set DKP for %s players for team to %s"], dkpSet, teamName)
+        LOG:Message(CLM.L["Set points for %s players for team to %s"], dkpSet, teamName)
     end
     LOG:Message(CLM.L["Import complete"])
 end

@@ -307,7 +307,9 @@ local function AuctionEnd(self, postToChat)
         link = self.itemLink,
         id = self.itemId,
         bids = self.userResponses.bids,
+        items = self.userResponses.upgradedItems,
         time = self.lastAuctionEndTime,
+        isEPGP = (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.EPGP),
         postToChat = postToChat
      })
 end

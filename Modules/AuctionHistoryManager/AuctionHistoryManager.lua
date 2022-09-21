@@ -48,7 +48,7 @@ function AuctionHistoryManager:Initialize()
             local noBids = true
             for bidder,bid in pairs(data.bids) do
                 noBids = false
-                SendChatMessage(bidder .. ": " .. tostring(bid) .. CLM.L[" DKP "], channel)
+                SendChatMessage(bidder .. ": " .. tostring(bid) .. " " .. (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]), channel)
             end
             if noBids then
                 SendChatMessage(CLM.L["No bids"], channel)

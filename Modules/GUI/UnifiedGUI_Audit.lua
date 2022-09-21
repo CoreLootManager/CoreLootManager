@@ -106,10 +106,10 @@ local configDecodeFunctions = {
         return CLM.L["Interval Value"], safeToString(value)
     end),
     hardCap = (function(value)
-        return CLM.L["Hard DKP cap"], safeToString(value)
+        return CLM.L["Hard cap"], safeToString(value)
     end),
     weeklyCap = (function(value)
-        return CLM.L["Weekly DKP cap"], safeToString(value)
+        return CLM.L["Weekly cap"], safeToString(value)
     end),
     weeklyReset = (function(value)
         return CLM.L["Weekly reset"], CONSTANTS.WEEKLY_RESETS_GUI[value] or ""
@@ -429,7 +429,7 @@ local describeFunctions  = {
     ["DM"] = (function(entry)
         local name = CLM.MODULES.RosterManager:GetRosterNameByUid(entry:rosterUid())
         return
-            string.format(CLM.L["Awarded %s DKP to %s players for %s in <%s>"],
+            string.format(CLM.L["Awarded %s points to %s players for %s in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
                 decodeReason(entry:reason()), UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
@@ -437,7 +437,7 @@ local describeFunctions  = {
     ["DD"] = (function(entry)
         local name = CLM.MODULES.RosterManager:GetRosterNameByUid(entry:rosterUid())
         return
-            string.format(CLM.L["Decayed %s%% DKP to %s players in <%s>"],
+            string.format(CLM.L["Decayed %s%% points to %s players in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
                 UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
@@ -445,7 +445,7 @@ local describeFunctions  = {
     ["DO"] = (function(entry)
         local name = CLM.MODULES.RosterManager:GetRosterNameByUid(entry:rosterUid())
         return
-            string.format(CLM.L["Awarded %s DKP to all players for %s in <%s>"],
+            string.format(CLM.L["Awarded %s points to all players for %s in <%s>"],
                 safeToString(entry:value()), decodeReason(entry:reason()),
                 UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
@@ -453,7 +453,7 @@ local describeFunctions  = {
     ["DR"] = (function(entry)
         local raid = CLM.MODULES.RaidManager:GetRaidByUid(entry:raidUid())
         return
-            string.format(CLM.L["Awarded %s DKP for %s to all players in raid %s"],
+            string.format(CLM.L["Awarded %s points for %s to all players in raid %s"],
                 safeToString(entry:value()), decodeReason(entry:reason()),
                 (raid and ("(" .. UTILS.ColorCodeText(raid:Name(), "d99212") .. ")") or "")
             )
@@ -461,7 +461,7 @@ local describeFunctions  = {
     ["DT"] = (function(entry)
         local name = CLM.MODULES.RosterManager:GetRosterNameByUid(entry:rosterUid())
         return
-            string.format(CLM.L["Decayed %s%% DKP to all players %s in <%s>"],
+            string.format(CLM.L["Decayed %s%% points to all players %s in <%s>"],
                 safeToString(entry:value()), (entry:ignoreNegatives() and CLM.L["excluding negatives "] or ""),
                 UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
@@ -469,7 +469,7 @@ local describeFunctions  = {
     ["DS"] = (function(entry)
         local name = CLM.MODULES.RosterManager:GetRosterNameByUid(entry:rosterUid())
         return
-            string.format(CLM.L["Set %s DKP to %s players for %s in <%s>"],
+            string.format(CLM.L["Set %s points to %s players for %s in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
                 decodeReason(entry:reason()), UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434")
             )
