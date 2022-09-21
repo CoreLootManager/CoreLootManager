@@ -100,25 +100,6 @@ function Minimap:Initialize()
             title = CLM.L["Menu"],
             isTitle = true
         },
-        -- {
-        --     title = CLM.L["Standings"],
-        --     func = (function() CLM.GUI.Standings:Toggle() end)
-        -- },
-        -- {
-        --     title = CLM.L["Loot History"],
-        --     func = (function() CLM.GUI.Loot:Toggle() end)
-        -- },
-        -- {
-        --     title = CLM.L["Point History"],
-        --     func = (function() CLM.GUI.PointHistory:Toggle() end)
-        -- },
-        -- {
-        --     title = CLM.L["Raids"],
-        --     func = (function() CLM.GUI.RaidManager:Toggle() end),
-        -- },
-        -- {
-        --     separator = true,
-        -- },
         {
             title = CLM.L["Auctioning"],
             func = (function() CLM.GUI.AuctionManager:Toggle() end),
