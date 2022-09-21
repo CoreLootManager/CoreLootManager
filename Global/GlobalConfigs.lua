@@ -24,8 +24,7 @@ function GlobalConfigs:Initialize()
         suppress_incoming_chat_commands = false,
         suppress_outgoing_chat_commands = false,
         tooltips = {
-            display = true,
-            roster = 0
+            display = true
         },
         raid_warnings = {
             raid = true,
@@ -212,18 +211,6 @@ function GlobalConfigs:Initialize()
             get = function(i) return self:GetPriceTooltip() end,
             order = 901
         },
-        -- tooltip_display_roster = {
-        --     name = CLM.L["Roster"],
-        --     desc = CLM.L["Default roster to display outside of raid."],
-        --     type = "select",
-        --     values = CLM.MODULES.RosterManager:GetRostersUidMap(),
-        --     set = function(i, v)
-        --         self:SetPriceTooltipDefaultRoster(v)
-        --     end,
-        --     get = function(i) return self:GetPriceTooltipDefaultRoster() end,
-        --     width = "full",
-        --     order = 902
-        -- },
         danger_zone_disable_sync = {
             type = "toggle",
             name = CLM.L["Disable data synchronisation"],
@@ -373,15 +360,6 @@ end
 function GlobalConfigs:GetPriceTooltip()
     return self.db.tooltips.display
 end
-
-function GlobalConfigs:SetPriceTooltipDefaultRoster(v)
-    self.db.tooltips.roster = tonumber(v)
-end
-
-function GlobalConfigs:GetPriceTooltipDefaultRoster()
-    return self.db.tooltips.roster
-end
-
 
 
 function GlobalConfigs:GetDisableSync()
