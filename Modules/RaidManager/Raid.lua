@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local setmetatable, ipairs, tinsert, tsort = setmetatable, ipairs, table.insert, table.sort
+local setmetatable, ipairs, tsort = setmetatable, ipairs, table.sort
 
 local Raid = {} -- Raid information
 function Raid:New(uid, name, roster, config, creator, entry)
