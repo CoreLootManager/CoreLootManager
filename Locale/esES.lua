@@ -524,7 +524,7 @@ CLM.L["Default Boss Kill Bonus Value"] = "Valor de bonificación por muerte de j
 -- Modules/GUI/UnifiedGUI_Audit.lua:85
 CLM.L["Default Boss Kill Bonus value"] = "Valor predeterminado de la bonificación Boss Muerto"
 -- Global/GlobalConfigs.lua:217
---CLM.L["Default roster to display outside of raid."] = ""
+CLM.L["Default roster to display outside of raid."] = "Lista predeterminada para mostrar fuera de RAID."
 -- Modules/RosterManager/Options.lua:918
 CLM.L["Default slot values"] = "Valores de slot predeterminados"
 -- Modules/GUI/UnifiedGUI_Audit.lua:660
@@ -538,7 +538,7 @@ CLM.L["Disable"] = "Deshabilitar"
 -- Modules/Changelog/GUI.lua:39
 CLM.L["Disables display of the changelog for any new version."] = "Deshabilita la visualización del registro de cambios para cualquier versión nueva."
 -- Global/GlobalConfigs.lua:208
---CLM.L["Display price"] = ""
+CLM.L["Display price"] = "Precio de visualización"
 -- Modules/Changelog/GUI.lua:78
 CLM.L["Do not show again"] = "No mostrar de nuevo"
 -- .:indirectly
@@ -596,7 +596,7 @@ CLM.L["Enables announcing raid start and end."] = "Permite anunciar el inicio y 
 -- Modules/AuctionManager/AuctionManager.lua:86
 CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Permite el intercambio automático de botín después de la subasta."
 -- Global/GlobalConfigs.lua:209
---CLM.L["Enables displaying item price on tooltip."] = ""
+CLM.L["Enables displaying item price on tooltip."] = "Habilita mostrar el precio del artículo en la información sobre herramientas."
 -- Global/GlobalConfigs.lua:175
 CLM.L["Enables raid-warning countdown for auctions."] = "Habilita la cuenta regresiva de advertencia de raid para las subastas."
 -- Modules/AuctionManager/AuctionManager.lua:110
@@ -1296,7 +1296,7 @@ CLM.L["Post bids"] = "Publicar ofertas"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:85
 CLM.L["Post channel"] = "Publicar canal"
 -- Global/GlobalConfigs.lua:204
---CLM.L["Price Tooltips"] = ""
+CLM.L["Price Tooltips"] = "Tras de herramientas de precio"
 -- .:indirectly
 CLM.L["Priest"] = "Sacerdote"
 -- Modules/AutoAwardManager/EncounterIDs.lua:73
@@ -1485,7 +1485,7 @@ CLM.L["Select DKP or EPGP point system."] = "Seleccione el sistema de puntos DKP
 -- Integrations/GUI.lua:371
 CLM.L["Select Profiles to export"] = "Seleccionar Perfiles para exportar"
 -- Modules/RosterManager/RosterManager.lua:397
---CLM.L["Select Rosters to display"] = ""
+CLM.L["Select Rosters to display"] = "Seleccione las listas para mostrar"
 -- Integrations/GUI.lua:340
 CLM.L["Select Rosters to export"] = "Seleccionar Rosters para exportar"
 -- Modules/GUI/Filters.lua:183

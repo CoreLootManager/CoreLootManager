@@ -524,7 +524,7 @@ CLM.L["Default Boss Kill Bonus Value"] = "Значение по умолчани
 -- Modules/GUI/UnifiedGUI_Audit.lua:85
 CLM.L["Default Boss Kill Bonus value"] = "Значение по умолчанию за убийство босса"
 -- Global/GlobalConfigs.lua:217
---CLM.L["Default roster to display outside of raid."] = ""
+CLM.L["Default roster to display outside of raid."] = "Состав по умолчанию для отображения вне рейда."
 -- Modules/RosterManager/Options.lua:918
 CLM.L["Default slot values"] = "Значения слотов по умолчанию"
 -- Modules/GUI/UnifiedGUI_Audit.lua:660
@@ -538,7 +538,7 @@ CLM.L["Disable"] = "Отключить"
 -- Modules/Changelog/GUI.lua:39
 CLM.L["Disables display of the changelog for any new version."] = "Отключает отображение истории изменений для любой новой версии."
 -- Global/GlobalConfigs.lua:208
---CLM.L["Display price"] = ""
+CLM.L["Display price"] = "Отображать цену"
 -- Modules/Changelog/GUI.lua:78
 CLM.L["Do not show again"] = "Больше не показывать"
 -- .:indirectly
@@ -596,7 +596,7 @@ CLM.L["Enables announcing raid start and end."] = "Включает оповещ
 -- Modules/AuctionManager/AuctionManager.lua:86
 CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Включить автоматическую передачу вещи в окне обмена после завершения торгов"
 -- Global/GlobalConfigs.lua:209
---CLM.L["Enables displaying item price on tooltip."] = ""
+CLM.L["Enables displaying item price on tooltip."] = "Включает отображение цены вещи в подсказке."
 -- Global/GlobalConfigs.lua:175
 CLM.L["Enables raid-warning countdown for auctions."] = "Включает оповещения отсчета конца аукциона"
 -- Modules/AuctionManager/AuctionManager.lua:110
@@ -1296,7 +1296,7 @@ CLM.L["Post bids"] = "Публиковать ставки"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:85
 CLM.L["Post channel"] = "Канал публикации"
 -- Global/GlobalConfigs.lua:204
---CLM.L["Price Tooltips"] = ""
+CLM.L["Price Tooltips"] = "Подсказки цен"
 -- .:indirectly
 CLM.L["Priest"] = "Жрец"
 -- Modules/AutoAwardManager/EncounterIDs.lua:73
@@ -1485,7 +1485,7 @@ CLM.L["Select DKP or EPGP point system."] = "Выберите DKP или EPGP с
 -- Integrations/GUI.lua:371
 CLM.L["Select Profiles to export"] = "Выбор профилей для экспорта"
 -- Modules/RosterManager/RosterManager.lua:397
---CLM.L["Select Rosters to display"] = ""
+CLM.L["Select Rosters to display"] = "Выбрать составы для отображения"
 -- Integrations/GUI.lua:340
 CLM.L["Select Rosters to export"] = "Выбор составов для экспорта"
 -- Modules/GUI/Filters.lua:183
