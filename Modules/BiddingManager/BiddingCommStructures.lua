@@ -10,7 +10,7 @@ local tonumber, setmetatable, type = tonumber, setmetatable, type
 
 
 local BiddingCommSubmitBid = {}
-function BiddingCommSubmitBid:New(valueOrObject, bidType)
+function BiddingCommSubmitBid:New(valueOrObject, bidType, items)
     local isCopyConstructor = (type(valueOrObject) == "table")
     local o = isCopyConstructor and valueOrObject or {}
 
@@ -21,6 +21,7 @@ function BiddingCommSubmitBid:New(valueOrObject, bidType)
 
     o.d = valueOrObject
     o.b = CONSTANTS.BID_TYPES[bidType] and bidType or CONSTANTS.BID_TYPE.MAIN_SPEC
+    o.i = items
 
     return o
 end
@@ -31,6 +32,10 @@ end
 
 function BiddingCommSubmitBid:Type()
     return self.b or CONSTANTS.BID_TYPE.MAIN_SPEC
+end
+
+function BiddingCommSubmitBid:Items()
+    return self.i or {}
 end
 
 local BiddingCommStructure = {}
