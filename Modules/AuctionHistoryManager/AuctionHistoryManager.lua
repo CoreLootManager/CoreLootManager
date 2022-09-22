@@ -37,10 +37,12 @@ function AuctionHistoryManager:Initialize()
     CLM.MODULES.EventManager:RegisterEvent(EVENT_END_AUCTION, function(_, data)
         if not self:GetEnabled() then return end
         tinsert(self.db.stack, 1, {
-            link   = data.link,
-            id     = data.id,
-            bids   = data.bids,
-            time   = data.time
+            link      = data.link,
+            id        = data.id,
+            bids      = data.bids,
+            names     = data.bidNames,
+            upgraded  = data.items,
+            time      = data.time
         })
         if self:GetPostBids() and data.postToChat then
             local channel = CHANNELS[self:GetPostBidsChannel()] or "OFFICER"
@@ -48,7 +50,12 @@ function AuctionHistoryManager:Initialize()
             local noBids = true
             for bidder,bid in pairs(data.bids) do
                 noBids = false
-                SendChatMessage(bidder .. ": " .. tostring(bid) .. CLM.L[" DKP "], channel)
+                local bidName = ""
+                if data.bidNames[bidder] then
+                    bidName = " - " .. data.bidNames[bidder]
+                end
+
+                SendChatMessage(bidder .. ": " .. tostring(bid) .. " " .. (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) .. bidName, channel)
             end
             if noBids then
                 SendChatMessage(CLM.L["No bids"], channel)

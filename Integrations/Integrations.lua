@@ -210,7 +210,7 @@ local function InitializeConfigs(self)
     local options = {
         global_wodkpbot_integration = {
             name = CLM.L["WoW DKP Bot Integration"],
-            desc = CLM.L["Enble WoW DKP Bot Integration. This will result in additional data stored upon logout."],
+            desc = CLM.L["Enable WoW DKP Bot Integration. This will result in additional data stored upon logout."],
             type = "toggle",
             set = function(i, v) self:SetWoWDKPBotIntegration(v) end,
             get = function(i) return self:GetWoWDKPBotIntegration() end,

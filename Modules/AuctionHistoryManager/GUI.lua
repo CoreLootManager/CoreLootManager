@@ -49,6 +49,10 @@ local function ST_GetItemSeq(row)
     return row.cols[5].value
 end
 
+local function ST_GetBidNames(row)
+    return row.cols[6].value
+end
+
 local AuctionHistoryGUI = {}
 function AuctionHistoryGUI:Initialize()
     LOG:Trace("AuctionHistoryGUI:Initialize()")
@@ -135,9 +139,13 @@ local function CreateAuctionDisplay(self)
         tooltip:SetHyperlink(itemString)
         tooltip:AddLine(ST_GetAuctionTime(rowData))
         tooltip:AddLine(CLM.L["Bids"])
+        local bidNames = ST_GetBidNames(rowData)
         local noBids = true
         for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
             noBids = false
+            if bidNames[bidder] then
+                bid = tostring(bid) .. " (" .. bidNames[bidder] .. ")"
+            end
             local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
             if bidderProfile then
                 bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
@@ -220,7 +228,8 @@ function AuctionHistoryGUI:Refresh(visible)
                 { value = auction.id },
                 { value = auction.bids },
                 { value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], auction.time) },
-                { value = seq }
+                { value = seq },
+                { value = auction.names }
             }
         }
         data[rowId] = row

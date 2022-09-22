@@ -8,6 +8,47 @@ local UTILS     = CLM.UTILS
 
 local BIDDING_COMM_PREFIX = "Bidding1"
 
+local INVTYPE_to_INVSLOT_map = {
+    ["INVTYPE_HEAD"]            = {INVSLOT_HEAD},
+    ["INVTYPE_NECK"]            = {INVSLOT_NECK},
+    ["INVTYPE_SHOULDER"]        = {INVSLOT_SHOULDER},
+    ["INVTYPE_BODY"]            = {INVSLOT_BODY},
+    ["INVTYPE_CHEST"]           = {INVSLOT_CHEST},
+    ["INVTYPE_WAIST"]           = {INVSLOT_WAIST},
+    ["INVTYPE_LEGS"]            = {INVSLOT_LEGS},
+    ["INVTYPE_FEET"]            = {INVSLOT_FEET},
+    ["INVTYPE_WRIST"]           = {INVSLOT_WRIST},
+    ["INVTYPE_HAND"]            = {INVSLOT_HAND},
+    ["INVTYPE_FINGER"]          = {INVSLOT_FINGER1, INVSLOT_FINGER2},
+    ["INVTYPE_TRINKET"]         = {INVSLOT_TRINKET1, INVSLOT_TRINKET2},
+    ["INVTYPE_WEAPON"]          = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_SHIELD"]          = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_RANGED"]          = {INVSLOT_RANGED},
+    ["INVTYPE_CLOAK"]           = {INVSLOT_BACK},
+    ["INVTYPE_2HWEAPON"]        = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_TABARD"]          = {INVSLOT_TABARD},
+    ["INVTYPE_ROBE"]            = {INVSLOT_CHEST},
+    ["INVTYPE_WEAPONMAINHAND"]  = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_WEAPONOFFHAND"]   = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_HOLDABLE"]        = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_THROWN"]          = {INVSLOT_RANGED},
+    ["INVTYPE_RANGEDRIGHT"]     = {INVSLOT_RANGED},
+    ["INVTYPE_RELIC"]           = {INVSLOT_RANGED},
+}
+
+local function GetUpgradedItems(itemId)
+    local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+    local invslots = INVTYPE_to_INVSLOT_map[itemEquipLoc] or {}
+    local items =  {}
+    for _, invslot in ipairs(invslots) do
+        local inventoryItemId = GetInventoryItemID("player", invslot)
+        if inventoryItemId and inventoryItemId > 0 then
+            items[#items+1] = inventoryItemId
+        end
+    end
+    return items
+end
+
 local BiddingManager = {}
 function BiddingManager:Initialize()
     LOG:Trace("BiddingManager:Initialize()")
@@ -101,9 +142,10 @@ function BiddingManager:Bid(value, type)
     value = tonumber(value) or 0
     self.lastBid = value
     self.guiBid = true
+    local itemId = UTILS.GetItemIdFromLink(self.auctionInfo:ItemLink())
     local message = CLM.MODELS.BiddingCommStructure:New(
         CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
-        CLM.MODELS.BiddingCommSubmitBid:New(value, type)
+        CLM.MODELS.BiddingCommSubmitBid:New(value, type, GetUpgradedItems(itemId))
     )
     CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
