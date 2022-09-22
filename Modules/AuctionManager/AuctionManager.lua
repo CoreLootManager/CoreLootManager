@@ -302,11 +302,26 @@ end
 
 local function AuctionEnd(self, postToChat)
     self:SendAuctionEnd()
+    local bidTypeNames = {}
+    for bidder, type in pairs(self.userResponses.bidTypes) do
+        local bidTypeString = CLM.L["MS"]
+        if type == CONSTANTS.BID_TYPE.OFF_SPEC then
+            bidTypeString = CLM.L["OS"]
+        else
+            local name = self.raid:Roster():GetFieldName(type)
+            if name ~= "" then
+                bidTypeString = name
+            end
+        end
+        bidTypeNames[bidder] = bidTypeString
+    end
+
     self.lastAuctionEndTime = GetServerTime()
     CLM.MODULES.EventManager:DispatchEvent(EVENT_END_AUCTION, {
         link = self.itemLink,
         id = self.itemId,
         bids = self.userResponses.bids,
+        bidNames = bidTypeNames,
         items = self.userResponses.upgradedItems,
         time = self.lastAuctionEndTime,
         isEPGP = (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.EPGP),

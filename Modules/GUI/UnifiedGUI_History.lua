@@ -192,10 +192,14 @@ local tableStructure = {
                     if auction then
                         tooltip:AddLine(CLM.L["Bids"])
                         for bidder, bid in pairs(auction.bids) do
+                            if auction.names[bidder] then
+                                bid = tostring(bid) .. " (" .. auction.names[bidder] .. ")"
+                            end
                             local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
                             if bidderProfile then
                                 bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
                             end
+
                             tooltip:AddDoubleLine(bidder, bid)
                         end
                     end
