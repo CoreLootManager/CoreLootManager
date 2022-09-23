@@ -6,14 +6,15 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local setmetatable, ipairs, tinsert, tsort = setmetatable, ipairs, table.insert, table.sort
+local setmetatable, ipairs, tsort = setmetatable, ipairs, table.sort
 
 local Raid = {} -- Raid information
+
+Raid.__index = Raid
 function Raid:New(uid, name, roster, config, creator, entry)
     local o = {}
 
     setmetatable(o, self)
-    self.__index = self
 
     o.entry = entry
 
@@ -30,8 +31,8 @@ function Raid:New(uid, name, roster, config, creator, entry)
     o.endTime = 0
 
     -- GUID dict
-    -- Dynamic status of tje raid
-    o.players = { [creator] = true } -- for raid mangement we check sometimes if creator is part of raid
+    -- Dynamic status of the raid
+    o.players = { [creator] = true } -- for raid management we check sometimes if creator is part of raid
     o.standby = { }
 
     -- Historical storage of the raid
@@ -160,7 +161,7 @@ function Raid:IsPlayerOnStandby(GUID)
 end
 
 function Raid:Profiles(historical)
-    self.playerProfileCache = {}
+    local result = {}
     local players = self.players
     if historical then
         players = self.participated.inRaid
@@ -171,17 +172,17 @@ function Raid:Profiles(historical)
         -- TODO: resolve this
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(player)
         if profile then
-            tinsert(self.playerProfileCache, profile)
+            result[#result + 1] = profile
         end
     end
-    tsort(self.playerProfileCache, (function(first, second)
+    tsort(result, (function(first, second)
         return first:Name() < second:Name()
     end))
-    return self.playerProfileCache
+    return result
 end
 
 function Raid:Standby(historical)
-    self.standbyProfileCache = {}
+    local result = {}
     local standby = self.standby
     if historical then
         standby = self.participated.standby
@@ -192,13 +193,13 @@ function Raid:Standby(historical)
         -- TODO: resolve this
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(player)
         if profile then
-            tinsert(self.standbyProfileCache, profile)
+            result[#result + 1] = profile
         end
     end
-    tsort(self.standbyProfileCache, (function(first, second)
+    tsort(result, (function(first, second)
         return first:Name() < second:Name()
     end))
-    return self.standbyProfileCache
+    return result
 end
 
 function Raid:Entry()
