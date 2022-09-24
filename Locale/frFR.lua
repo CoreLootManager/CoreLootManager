@@ -112,7 +112,7 @@ CLM.L["Al'ar"] = "Al'ar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:125
 CLM.L["Algalon the Observer"] = "Algalon l'observateur"
 -- Modules/BiddingManager/GUI.lua:252
-CLM.L["All In"] = "Tout miser"
+CLM.L["All In"] = "Offre max"
 -- Migration.lua:28
 CLM.L["All migration entries were commited and executed. Congratulations!"] = "Toutes les entrées de migration ont été validées et exécutées. Toutes nos félicitations!"
 -- Modules/GUI/Filters.lua:182
@@ -121,9 +121,9 @@ CLM.L["All"] = "Tout"
 -- Modules/GUI/UnifiedGUI_Audit.lua:79
 CLM.L["Allow bidding below minimum points"] = "Permettre d'enchérir en-dessous du minimum de points"
 -- Modules/RosterManager/Options.lua:1009
-CLM.L["Allow biding more than current standings and ending up with less than minimum points."] = "Permettre de miser plus que le total de points actuel et terminer avec moins que le montant minimum"
+CLM.L["Allow biding more than current standings and ending up with less than minimum points."] = "Permettre de placer une offre supérieure au total de points actuels et terminer avec moins que le montant minimum"
 -- Modules/RosterManager/Options.lua:1008
-CLM.L["Allow biding more than current standings"] = "Permettre de miser plus que les points actuels"
+CLM.L["Allow biding more than current standings"] = "Permettre de placer une offre supérieure au points actuellement détenus"
 -- Modules/GUI/UnifiedGUI_Audit.lua:76
 CLM.L["Allow going below minimum points"] = "Permettre d'aller en-dessous du minimum de points"
 -- Modules/RosterManager/Options.lua:834
@@ -349,9 +349,9 @@ CLM.L["Bid your current DKP (%s)."] = "Enchérissez tous vos DKP actuels (%s)."
 -- Modules/AuctionManager/GUI.lua:243
 CLM.L["Bid"] = "Offre d'achat"
 -- Modules/AuctionManager/AuctionManager.lua:699
-CLM.L["Bidding over current standings not allowed"] = "Vous ne pouvez pas miser plus que votre montant actuel de points"
+CLM.L["Bidding over current standings not allowed"] = "Vous ne pouvez pas faire d’offre supérieure à votre montant actuel de points"
 -- Modules/AuctionManager/AuctionManager.lua:698
-CLM.L["Bidding while below minimum standings not allowed"] = "Vous ne pouvez pas miser quand vous êtes sous le minimum de points"
+CLM.L["Bidding while below minimum standings not allowed"] = "Vous ne pouvez pas faire d’offre quand vous êtes sous le minimum de points"
 -- MinimapIcon.lua:119
 -- Modules/BiddingManager/BiddingManager.lua:88
 -- Modules/BiddingManager/GUI.lua:414
@@ -1070,7 +1070,7 @@ CLM.L["Minimum level of players to fill from guild."] = "Niveau minimum des joue
 -- Modules/GUI/UnifiedGUI_Audit.lua:142
 CLM.L["Minimum points (DKP / EP)"] = "Points minimums (DKP / EP)"
 -- Modules/RosterManager/Options.lua:884
-CLM.L["Minimum points to be allowed to bid."] = "Montant minimum de points pour être autorisé à miser"
+CLM.L["Minimum points to be allowed to bid."] = "Montant minimum de points pour être autorisé à faire une offre"
 -- Modules/RosterManager/Options.lua:883
 CLM.L["Minimum points"] = "Montant minimum"
 -- Modules/GUI/UnifiedGUI_Standings.lua:232
@@ -1470,7 +1470,7 @@ CLM.L["Sartharion"] = "Sartharion"
 CLM.L["Saviana Ragefire"] = "Saviana Ragefeu"
 -- Modules/RosterManager/Roster.lua:625
 -- Modules/RosterManager/Roster.lua:632
-CLM.L["Sealed"] = "FerméeScellé"
+CLM.L["Sealed"] = "Fermée"
 -- Modules/GUI/Filters.lua:212
 CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."] = "Rechercher des noms de joueurs. Séparez les multiples par une virgule ','. 3 caractères minimum. Remplace le filtrage."
 -- Modules/GUI/Filters.lua:211
@@ -1592,9 +1592,9 @@ CLM.L["Status"] = "Status"
 -- Modules/AuctionManager/GUI.lua:461
 CLM.L["Stop"] = "Stop"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:76
-CLM.L["Store bids"] = "Sauvegarder les enchèresEnchères du magasin"
+CLM.L["Store bids"] = "Sauvegarder les enchères"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:77
-CLM.L["Store finished auction bids information."] = "Sauvegarder les informations d’enchères terminées.Store finished auction bids information."
+CLM.L["Store finished auction bids information."] = "Sauvegarder les informations d’enchères terminées."
 -- Integrations/Import.lua:183
 -- Integrations/ImportCSV.lua:118
 CLM.L["Success"] = "Succès"
@@ -1622,7 +1622,7 @@ CLM.L["Tabard"] = "Tabard"
 CLM.L["Tank"] = "Tank"
 -- Modules/RosterManager/Options.lua:1031
 -- Modules/GUI/UnifiedGUI_Audit.lua:139
-CLM.L["Tax"] = "TaxeImpôt"
+CLM.L["Tax"] = "Taxe"
 -- Modules/AutoAwardManager/EncounterIDs.lua:326
 CLM.L["Tempest Keep"] = "Donjon de la Tempête"
 -- Modules/AutoAwardManager/EncounterIDs.lua:215
@@ -1671,14 +1671,14 @@ CLM.L["Tiered"] = "Par niveau"
 -- MinimapIcon.lua:60
 CLM.L["Time Traveling"] = "Voyager dans le temps"
 -- Modules/RosterManager/Options.lua:908
-CLM.L["Time in seconds by which auction will be extended if bid is received during last 10 seconds."] = "Durée en secondes ajoutée à l’enchèrependant laquelle l'enchère sera prolongée si une offre est reçue au cours des 10 dernières secondes."
+CLM.L["Time in seconds by which auction will be extended if bid is received during last 10 seconds."] = "Durée en secondes ajoutée à l’enchère si une offre est reçue au cours des 10 dernières secondes."
 -- Modules/AuctionManager/GUI.lua:435
 CLM.L["Time settings"] = "Paramètres du temps"
 -- Modules/RosterManager/Options.lua:892
 -- Modules/GUI/UnifiedGUI_Audit.lua:658
 CLM.L["Time"] = "Temps"
 -- Modules/GUI/UnifiedGUI_Audit.lua:736
-CLM.L["Timetravel"] = "TimetravelVoyage dans le temps"
+CLM.L["Timetravel"] = "Timetravel"
 -- Modules/AuctionHistoryManager/GUI.lua:284
 CLM.L["Toggle Auction History window display"] = "Activer l'affichage de la fenêtre Historique des enchères"
 -- Modules/AuctionManager/GUI.lua:797
@@ -1688,13 +1688,13 @@ CLM.L["Toggle Bidding auto-open"] = "Activer l'ouverture automatique des enchèr
 -- Modules/BiddingManager/GUI.lua:578
 CLM.L["Toggle Bidding window display"] = "Activer l'affichage de la fenêtre d'enchères"
 -- Integrations/ImportCSV.lua:216
-CLM.L["Toggle CSV import window display"] = "Activer l’affichageAffichage de la fenêtre d'importation CSV"
+CLM.L["Toggle CSV import window display"] = "Activer l’affichage de la fenêtre d'importation CSV"
 -- Modules/LootQueueManager/GUI.lua:263
 CLM.L["Toggle Loot Queue window display"] = "Activer l'affichage de la fenêtre de la file d'attente de butin"
 -- MinimapIcon.lua:77
 CLM.L["Toggle Minimap Icon"] = "Afficher l'icône de minimap"
 -- Modules/BiddingManager/BiddingManager.lua:93
-CLM.L["Toggle auto open and auto close on auction start and stop"] = "Activer l'ouverture automatique et la fermeture automatiques au début et à l'arrêt des enchères"
+CLM.L["Toggle auto open and auto close on auction start and stop"] = "Activer l'ouverture et la fermeture automatiques au début et à l'arrêt des enchères"
 -- Modules/Changelog/GUI.lua:48
 -- Modules/Changelog/GUI.lua:158
 CLM.L["Toggle changelog window display"] = "Activer l'affichage de la fenêtre du journal des modifications"
@@ -1779,7 +1779,7 @@ CLM.L["Unlink Alt"] = "Dissocier Reroll"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:282
 CLM.L["Unlock selected"] = "Déverrouiller Sélectionné"
 -- Migration.lua:124
-CLM.L["UpdatePoints(): Empty targets list"] = "Maj des Points(): Liste de cibles videUpdatePoints(): Empty targets list"
+CLM.L["UpdatePoints(): Empty targets list"] = "Màj des Points(): Liste de cibles vide"
 -- Modules/GUI/UnifiedGUI_Audit.lua:518
 CLM.L["Updated raid <%s> %s joined, %s left, %s benched, %s removed"] = "Raid <%s> mis à jour %s joueurs ont rejoint, %s joueurs sont partis, %s joueurs sur le banc, %s joueurs ont été supprimés"
 -- Modules/RosterManager/Options.lua:946
@@ -1831,7 +1831,7 @@ CLM.L["Weekly reset timezone"] = "Timer de réinitialisation hebdomadaire"
 -- Modules/GUI/UnifiedGUI_Audit.lua:115
 CLM.L["Weekly reset"] = "Réinitialisation hebdomadaire"
 -- Global/GlobalConfigs.lua:126
-CLM.L["When enabled, this will make loot announcement display only if you're Master Looter or Raid Leader (if there is no Master Looter)."] = "QuandLorsqu'il est activé, cela affichera l'annonce du butin s’affichera uniquement si vous êtes Master Loot ou Raid Leader (s'il n'y a pas de Master Loot)."
+CLM.L["When enabled, this will make loot announcement display only if you're Master Looter or Raid Leader (if there is no Master Looter)."] = "Quand activé, l'annonce du butin s’affichera uniquement si vous êtes Master Loot ou Raid Leader (s'il n'y a pas de Master Loot)."
 -- Modules/RosterManager/Options.lua:947
 CLM.L["Will display names of the buttons instead of values in bidding UI"] = "Affichera les noms des boutons au lieu des valeurs dans l'interface d'enchères"
 -- Global/GlobalConfigs.lua:103
@@ -1891,7 +1891,7 @@ CLM.L["You can only end an active raid."] = "Vous ne pouvez terminer qu'un raid 
 -- Modules/RaidManager/RaidManager.lua:435
 CLM.L["You can only join an active raid."] = "Vous ne pouvez rejoindre qu'un raid actif."
 -- Modules/RaidManager/RaidManager.lua:439
-CLM.L["You can only join different raid than your current one."] = "Vous ne pouvez pas rejoindre qu’un raid différent de celui que vous avez actuellement."
+CLM.L["You can only join different raid than your current one."] = "Vous ne pouvez rejoindre qu’un raid différent de celui que vous avez actuellement."
 -- Modules/GUI/UnifiedGUI_Standings.lua:588
 CLM.L["You can only remove from bench players from same roster as the raid (%s)."] = "Vous ne pouvez retirer du banc que les joueurs du même roster que le raid (%s)."
 -- Modules/RaidManager/RaidManager.lua:328
@@ -1905,14 +1905,14 @@ CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"] = "Votre enchère (%s) a été
 -- Modules/BiddingManager/BiddingManager.lua:260
 CLM.L["Your bid (%s) was |cff00cc00accepted|r"] = "Votre enchère (%s) a été |cff00cc00acceptée|r"
 -- Modules/GUI/UnifiedGUI_Audit.lua:67
-CLM.L["Zero-Sum Bank Inflation"] = "Inflation de banque Zero-Sumbancaire à somme nulle"
+CLM.L["Zero-Sum Bank Inflation"] = "Inflation de banque Zero-Sum"
 -- Modules/RosterManager/Options.lua:991
 -- Modules/GUI/UnifiedGUI_Audit.lua:64
-CLM.L["Zero-Sum Bank"] = "Banque Zero-Sumà somme nulle"
+CLM.L["Zero-Sum Bank"] = "Banque Zero-Sum"
 -- Modules/RosterManager/Options.lua:999
-CLM.L["Zero-Sum Inflation Value"] = "Valeur d'inflation Zero-Sumà somme nulle"
+CLM.L["Zero-Sum Inflation Value"] = "Valeur d'inflation Zero-Sum"
 -- Modules/PointManager/PointManager.lua:403
-CLM.L["Zero-Sum award"] = "Attribution Zero-SumPrix à somme nulle"
+CLM.L["Zero-Sum award"] = "Attribution Zero-Sum"
 -- Modules/RosterManager/Options.lua:985
 CLM.L["Zero-Sum"] = "Zero-sum"
 -- Modules/AutoAwardManager/EncounterIDs.lua:362
@@ -1953,11 +1953,11 @@ CLM.L["[Point Set]: "] = "[Ensemble de points]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:208
 CLM.L["[Profile Lock]: "] = "[Verrouiller le profil]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:278
-CLM.L["[Raid Create]: "] = "[Créer le Raid créé]: "
+CLM.L["[Raid Create]: "] = "[Créer le Raid]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:287
-CLM.L["[Raid Finish]: "] = "[Terminer le Raid terminé]: "
+CLM.L["[Raid Finish]: "] = "[Terminer le Raid]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:281
-CLM.L["[Raid Start]: "] = "[Débuter du le Raid]: "
+CLM.L["[Raid Start]: "] = "[Débuter le Raid]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:284
 CLM.L["[Raid Update]: "] = "[Mise à jour du raid]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:202
@@ -1965,13 +1965,13 @@ CLM.L["[Remove Profile]: "] = "[Supprimer le profil]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:218
 CLM.L["[Rename Roster]: "] = "[Renommer le Roster]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:245
-CLM.L["[Roster Boss Kill Bonus]: "] = "[Roster - Bonus de boss tué du roster]: "
+CLM.L["[Roster Boss Kill Bonus]: "] = "[Bonus de boss tué pour le roster]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:224
 CLM.L["[Roster Config]: "] = "[Configuration du Roster]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:242
 CLM.L["[Roster Copy]: "] = "[Copie du Roster]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:230
-CLM.L["[Roster Default Slot Value]: "] = "[Valeur d’emplacementu Roster par défaut du roster]: "
+CLM.L["[Roster Default Slot Value]: "] = "[Valeur d’emplacementpar défaut du roster]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:248
 CLM.L["[Roster Field Rename]: "] = "[Renommer le champ du roster]:"
 -- Modules/GUI/UnifiedGUI_Audit.lua:236
@@ -2034,10 +2034,10 @@ CLM.L["rosters"] = "rosters"
 CLM.L["unguilded"] = "sans guilde"
 -- Modules/RosterManager/Options.lua:970
 -- Modules/RosterManager/Options.lua:1042
-CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = "|cff00ee44Ouverte:|r Enchère avec annonce de la plus haute mise. Le joueur avec la plus grosse mise remporte l’enchère. Deux joueurs ne peuvent pas miser la même valeur.\n\n|cff00ee44Anonyme Ouverte:|r Pareil qu’Ouverte mais le nom du plus haut enchérisseur n’est pas révélé.\n\n|cff00ee44Fermée:|r Enchères non annoncées. La mise la plus haute l’emporte.\n\n|cff00ee44Vickrey:|r Pareil que fermée mais le vainqueur paie avec la 2e enchère plus élevée."
+CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = "|cff00ee44Ouverte:|r Enchère avec annonce de la plus haute offre. Le joueur avec la plus grosse offre remporte l’enchère. Deux joueurs ne peuvent pas proposer la même valeur d’offre.\n\n|cff00ee44Anonyme Ouverte:|r Pareil qu’Ouverte mais le nom du plus haut enchérisseur n’est pas révélé.\n\n|cff00ee44Fermée:|r Offresnon annoncées. L’offre la plus haute l’emporte.\n\n|cff00ee44Vickrey:|r Pareil que fermée mais le vainqueur paie avec la 2e offre la plus élevée."
 -- Modules/RosterManager/Options.lua:863
 -- Modules/RosterManager/Options.lua:978
-CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|cff00ee44Prix uniquefixe:|r Mode à valeur fixestatique. Seule la Valeur de mise de base est supportée.n\n|cff00ee44Montante:|r Mode à intervalle de valeur d’intervalle. Permet de miser n’importe quelle valeur entre |cff44ee00<base, max>|r.\n\n|cff00ee44Par niveau:|r Mode à intervalle de valeur d’intervalle. Permet de miser uniquement des valeurs spécifiques. Jusqu’à 5 valeurs sont configurables dans |cff44ee00<base, petit, médium, grand, max>|r."
+CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|cff00ee44Prix unique:|r Mode à valeur fixe. Seule la Valeur d’offre de base est supportée.n\n|cff00ee44Montante:|r Mode à intervalle de valeur. Permet d’offrir n’importe quelle valeur entre |cff44ee00<base, max>|r.\n\n|cff00ee44Par niveau:|r Mode à intervalle de valeur. Permet d’offrir uniquement des valeurs spécifiques. Jusqu’à 5 valeurs sont configurables dans |cff44ee00<base, petit, médium, grand, max>|r."
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:54
 CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Classic Loot Manager est obsolète.|r La communication de l’addon a été désactivée. La version %s est disponible. Veuillez mettre à jour dès que possible."
 end
