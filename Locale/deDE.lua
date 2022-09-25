@@ -77,7 +77,7 @@ CLM.L["Action context"] = "Aktionskontext"
 -- Integrations/Integrations.lua:159
 CLM.L["Action to take upon Gargul loot award event happening during raid."] = "Maßnahmen zur Ausnahme von Gargul Loot AwardEvent während des Schlachtzugs."
 -- Integrations/Integrations.lua:263
---CLM.L["Action to take upon RCLC loot award event happening during raid. Trigger is based on RCLC award reason or player response if reason is not used. On Integration Enable the buttons will be prefilled with existing ones."] = ""
+CLM.L["Action to take upon RCLC loot award event happening during raid. Trigger is based on RCLC award reason or player response if reason is not used. On Integration Enable the buttons will be prefilled with existing ones."] = "Maßnahmen zum RCLC LOOT Award Event während der Razzia. Der Trigger basiert auf RCLC Award Grund oder Spielerantwort, wenn keine Vernunft verwendet wird. Bei der Integration werden die Tasten mit vorhandenen vorgefüllt."
 -- Integrations/Import.lua:132
 CLM.L["Add Profiles to Rosters"] = "Profile zu Roster hinzufügen"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:133
@@ -475,7 +475,7 @@ CLM.L["Created"] = "Erstellt"
 -- Modules/RosterManager/Options.lua:1064
 CLM.L["Creates new roster with default configuration"] = "Erstellt einen neuen Roster mit Standardkonfiguration"
 -- Integrations/Integrations.lua:250
---CLM.L["Creates new trigger to be used during RCLC award."] = ""
+CLM.L["Creates new trigger to be used during RCLC award."] = "Erstellt einen neuen Auslöser, der während des RCLC Preises verwendet werden soll."
 -- Global/GlobalConfigs.lua:403
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 -- Global/GlobalConfigs.lua:400
@@ -574,7 +574,7 @@ CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."] =
 -- Integrations/Integrations.lua:122
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "Aktivieren Sie die Gargul Integration. Dadurch kann Gargul die Kontrolle über einige Aspekte von CLM (Startauktion von Gargul und Vergabe) übernehmen."
 -- Integrations/Integrations.lua:236
---CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award."] = ""
+CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award."] = "Aktivieren Sie die RCLC Integration. Dies ermöglicht die Vergabe von DKP/GP Punkten zum RCLC Item Award."
 -- Integrations/Integrations.lua:359
 CLM.L["Enable WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Aktiviert die WoW DKP Bot Integration. Benötigte Daten werden nach dem Logout gespeichert."
 -- Global/GlobalConfigs.lua:158
@@ -1334,7 +1334,7 @@ CLM.L["Queen Lana'thel"] = "Königin Lana'thel"
 CLM.L["Quiver"] = "Köcher"
 -- Integrations/Integrations.lua:229
 -- Integrations/Integrations.lua:235
---CLM.L["RCLC Integration"] = ""
+CLM.L["RCLC Integration"] = "RCLC Integration"
 -- Modules/RosterManager/Roster.lua:605
 CLM.L["ROLL"] = "Würfeln"
 -- Modules/AutoAwardManager/EncounterIDs.lua:97
@@ -2015,11 +2015,11 @@ CLM.L["created"] = "erstellt"
 -- Global/GlobalChatMessageHandlers.lua:58
 CLM.L["denied"] = "ablehnen"
 -- Integrations/Integrations.lua:340
---CLM.L["else"] = ""
+CLM.L["else"] = "anders"
 -- Modules/GUI/UnifiedGUI_Audit.lua:465
 CLM.L["excluding negatives "] = "Negative auslassen"
 -- Integrations/Integrations.lua:275
---CLM.L["if reason/response contains"] = ""
+CLM.L["if reason/response contains"] = "Wenn Grund/Antwort enthält"
 -- Global/GlobalSlashCommands.lua:67
 CLM.L["level"] = "Level"
 -- Global/GlobalChatMessageHandlers.lua:47
@@ -2045,7 +2045,7 @@ CLM.L["roster"] = "Roster"
 -- Global/GlobalChatMessageHandlers.lua:97
 CLM.L["rosters"] = "Roster"
 -- Integrations/Integrations.lua:285
---CLM.L["then"] = ""
+CLM.L["then"] = "dann"
 -- Global/GlobalSlashCommands.lua:74
 CLM.L["unguilded"] = "Ohne Gilde"
 -- Modules/RosterManager/Options.lua:970
