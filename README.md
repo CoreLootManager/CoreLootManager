@@ -59,6 +59,7 @@ settings.
 * Simple item awarding
 * Award item without auction through slash command
 * Optional bid storing and posting to configured channel
+* Item Upgrade information during auction
 ### Bidding
 * Value increments (open bid mode only)
 * Alerts and notifications
@@ -82,9 +83,11 @@ settings.
 * Loot tracking queue for fast auctioning
 * Auto-posting loot to raid channel
 * Player spec and role tracking
+* DKP and GP price information on tooltip
 ## External integrations
 * [WoW DKP Discord Bot integration](http://tiny.one/wowdkpbot-discord)
 * [Gargul integration](https://github.com/papa-smurf/Gargul) for easy TMB-input
+* [RCLootCouncil integration](https://github.com/evil-morfar/RCLootCouncil_Classic) for even easier LC + EPGP/DKP combination
 * XML and JSON Exporting
 
 
