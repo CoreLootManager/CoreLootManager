@@ -74,8 +74,10 @@ CLM.L["<CLM> Missing profile for player %s."] = "<CLM> Profil manquant pour le j
 CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> Ton enchère (%s) est %s%s."
 -- Modules/GUI/UnifiedGUI_Standings.lua:144
 CLM.L["Action context"] = "Contexte de l'action"
--- Integrations/Integrations.lua:157
+-- Integrations/Integrations.lua:159
 CLM.L["Action to take upon Gargul loot award event happening during raid."] = "Action à effectuer lorsqu'un event Gargul d'attribution de loot eu lieu en raid."
+-- Integrations/Integrations.lua:263
+CLM.L["Action to take upon RCLC loot award event happening during raid. Trigger is based on RCLC award reason or player response if reason is not used. On Integration Enable the buttons will be prefilled with existing ones."] = "Action à effectuer lors de l'attribution d'objets RCLC en raid. Le déclencheur est basé sur la raison d'attribution RCLC ou sur la réponse du joueur si pas de raison. Si l'intégration est activée, le label des boutons sera pré-rempli."
 -- Integrations/Import.lua:132
 CLM.L["Add Profiles to Rosters"] = "Ajouter des profils aux rosters"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:133
@@ -254,17 +256,17 @@ CLM.L["Award %s points to %s selected players."] = "Attribuer %s points aux %s j
 CLM.L["Award %s points to everyone in raid."] = "Attribuer %s points à tous les membres du raid."
 -- Modules/GUI/UnifiedGUI_Standings.lua:236
 CLM.L["Award %s points to everyone in roster."] = "Attribuer %s points à tout le roster."
--- Integrations/Integrations.lua:360
+-- Integrations/Integrations.lua:620
 CLM.L["Award for Base"] = "Récompense de base"
--- Integrations/Integrations.lua:359
+-- Integrations/Integrations.lua:619
 CLM.L["Award for Free"] = "Récompense gratuite"
--- Integrations/Integrations.lua:363
+-- Integrations/Integrations.lua:623
 CLM.L["Award for Large"] = "Récompense grande"
--- Integrations/Integrations.lua:364
+-- Integrations/Integrations.lua:624
 CLM.L["Award for Max"] = "Récompense Max"
--- Integrations/Integrations.lua:362
+-- Integrations/Integrations.lua:622
 CLM.L["Award for Medium"] = "Récompense médium"
--- Integrations/Integrations.lua:361
+-- Integrations/Integrations.lua:621
 CLM.L["Award for Small"] = "Récompense petite"
 -- Global/GlobalSlashCommands.lua:20
 CLM.L["Award item without auctioning it."] = "Attribuer l'objet sans le mettre aux enchères."
@@ -464,6 +466,7 @@ CLM.L["Create new raid with provided name. You will automatically join this raid
 CLM.L["Create raid %s %s in <%s>"] = "Créer raid %s %s dans <%s>"
 -- Modules/GUI/UnifiedGUI_Raids.lua:195
 CLM.L["Create raid"] = "Créer raid"
+-- Integrations/Integrations.lua:249
 -- Modules/RosterManager/Options.lua:1063
 CLM.L["Create"] = "Créer"
 -- Modules/RaidManager/RaidManager.lua:776
@@ -471,6 +474,8 @@ CLM.L["Create"] = "Créer"
 CLM.L["Created"] = "Créé"
 -- Modules/RosterManager/Options.lua:1064
 CLM.L["Creates new roster with default configuration"] = "Crée un nouveau roster avec la configuration par défaut"
+-- Integrations/Integrations.lua:250
+CLM.L["Creates new trigger to be used during RCLC award."] = "Crée un nouveau déclencheur utilisé lors de l'attribution RCLC."
 -- Global/GlobalConfigs.lua:403
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 -- Global/GlobalConfigs.lua:400
@@ -566,9 +571,11 @@ CLM.L["Edge of Madness"] = "Frontière de la folie"
 CLM.L["Emalon the Storm Watcher"] = "Emalon le Guetteur d'orage"
 -- Modules/AuctionManager/AuctionManager.lua:110
 CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."] = "Activez !dkp et !bid via chuchotement / raid. Le changement nécessite /reload."
--- Integrations/Integrations.lua:120
+-- Integrations/Integrations.lua:122
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "Activer l'intégration de Gargul. Permettra à Gargul de prendre le contrôle de certains aspects de CLM (Démarrer les enchères et attributions via Gargul)."
--- Integrations/Integrations.lua:177
+-- Integrations/Integrations.lua:236
+CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award."] = "Activer l'intégration RCLC. Cela permet de donner des DKP/GP via l'attribution d'objets RCLC."
+-- Integrations/Integrations.lua:359
 CLM.L["Enable WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Activez l'intégration de WoW DKP Bot. Cela entraînera le stockage de données supplémentaires lors de la déconnexion."
 -- Global/GlobalConfigs.lua:158
 CLM.L["Enable announcing auction start and end."] = "Activer l'annonce de début et fin des enchères."
@@ -688,8 +695,8 @@ CLM.L["GM"] = "GM"
 CLM.L["GP"] = "GP"
 -- Modules/AutoAwardManager/EncounterIDs.lua:57
 CLM.L["Gahz'ranka"] = "Gahz'ranka"
--- Integrations/Integrations.lua:113
--- Integrations/Integrations.lua:119
+-- Integrations/Integrations.lua:115
+-- Integrations/Integrations.lua:121
 CLM.L["Gargul Integration"] = "Intégration Gargul"
 -- Modules/AutoAwardManager/EncounterIDs.lua:8
 CLM.L["Garr"] = "Garr"
@@ -980,8 +987,8 @@ CLM.L["Lord Marrowgar"] = "Seigneur Gargamoelle"
 CLM.L["Lucifron"] = "Lucifron"
 -- Modules/AutoAwardManager/EncounterIDs.lua:112
 CLM.L["M'uru"] = "M'uru"
--- Integrations/Integrations.lua:133
--- Integrations/Integrations.lua:138
+-- Integrations/Integrations.lua:135
+-- Integrations/Integrations.lua:140
 -- Modules/BiddingManager/GUI.lua:156
 -- Modules/AuctionManager/AuctionManager.lua:307
 CLM.L["MS"] = "MS"
@@ -1160,7 +1167,7 @@ CLM.L["No"] = "Non"
 -- Modules/RosterManager/Roster.lua:726
 -- Modules/RosterManager/Roster.lua:759
 CLM.L["Non-equippable"] = "Non-équipable"
--- Integrations/Integrations.lua:358
+-- Integrations/Integrations.lua:618
 -- Modules/GUI/Filters.lua:195
 -- Modules/GUI/UnifiedGUI_Raids.lua:302
 -- Modules/GUI/UnifiedGUI_History.lua:214
@@ -1192,8 +1199,8 @@ CLM.L["Notify that you are passing on the item."] = "Avertissez que vous passez 
 CLM.L["November"] = "Novembre"
 -- Modules/GUI/UnifiedGUI_Audit.lua:657
 CLM.L["Num"] = "Nombre"
--- Integrations/Integrations.lua:143
--- Integrations/Integrations.lua:148
+-- Integrations/Integrations.lua:145
+-- Integrations/Integrations.lua:150
 -- Modules/BiddingManager/GUI.lua:167
 -- Modules/AuctionManager/AuctionManager.lua:309
 CLM.L["OS"] = "OS"
@@ -1300,8 +1307,8 @@ CLM.L["Priest"] = "Prêtre"
 CLM.L["Prince Malchezaar"] = "Prince Malchezaar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:28
 CLM.L["Princess Huhuran"] = "Princesse Huhuran"
--- Integrations/Integrations.lua:138
--- Integrations/Integrations.lua:148
+-- Integrations/Integrations.lua:140
+-- Integrations/Integrations.lua:150
 CLM.L["Prioritized"] = "Priorisé"
 -- Modules/AutoAwardManager/EncounterIDs.lua:151
 CLM.L["Professor Putricide"] = "Professeur Putricide"
@@ -1325,6 +1332,9 @@ CLM.L["Queen Lana'thel"] = "Reine de sang Lana'thel"
 -- Modules/RosterManager/Roster.lua:730
 -- Modules/RosterManager/Roster.lua:763
 CLM.L["Quiver"] = "Carquois"
+-- Integrations/Integrations.lua:229
+-- Integrations/Integrations.lua:235
+CLM.L["RCLC Integration"] = "Integration RCLC"
 -- Modules/RosterManager/Roster.lua:605
 CLM.L["ROLL"] = "Jet de dés"
 -- Modules/AutoAwardManager/EncounterIDs.lua:97
@@ -1385,8 +1395,8 @@ CLM.L["Razorgore the Untamed"] = "Tranchetripe l'Indompté"
 CLM.L["Razorscale"] = "Tranchécaille"
 -- Modules/GUI/UnifiedGUI_Standings.lua:168
 CLM.L["Reason"] = "Raison"
--- Integrations/Integrations.lua:133
--- Integrations/Integrations.lua:143
+-- Integrations/Integrations.lua:135
+-- Integrations/Integrations.lua:145
 CLM.L["Regular"] = "Standard"
 -- Modules/RosterManager/Roster.lua:731
 -- Modules/RosterManager/Roster.lua:764
@@ -1842,7 +1852,7 @@ CLM.L["Wipe"] = "Effacer"
 CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "Efface tous les événements de la mémoire. Cela déclenchera la resynchronisation depuis les autres utilisateurs."
 -- Modules/Logger/Logger.lua:42
 CLM.L["Wipes the log history"] = "Efface l'historique du journal"
--- Integrations/Integrations.lua:176
+-- Integrations/Integrations.lua:358
 CLM.L["WoW DKP Bot Integration"] = "Intégration WoW DKP Bot"
 -- Modules/RosterManager/Options.lua:554
 CLM.L["WotLK - 10"] = "WotLK - 10"
@@ -2004,8 +2014,12 @@ CLM.L["cancel"] = "annuler"
 CLM.L["created"] = "créé"
 -- Global/GlobalChatMessageHandlers.lua:58
 CLM.L["denied"] = "refusé"
+-- Integrations/Integrations.lua:340
+CLM.L["else"] = "sinon"
 -- Modules/GUI/UnifiedGUI_Audit.lua:465
 CLM.L["excluding negatives "] = "à l'exclusion des négatifs"
+-- Integrations/Integrations.lua:275
+CLM.L["if reason/response contains"] = "Si la raison/réponse contient"
 -- Global/GlobalSlashCommands.lua:67
 CLM.L["level"] = "niveau"
 -- Global/GlobalChatMessageHandlers.lua:47
@@ -2030,6 +2044,8 @@ CLM.L["revoked"] = "révoqué"
 CLM.L["roster"] = "roster"
 -- Global/GlobalChatMessageHandlers.lua:97
 CLM.L["rosters"] = "rosters"
+-- Integrations/Integrations.lua:285
+CLM.L["then"] = "alors"
 -- Global/GlobalSlashCommands.lua:74
 CLM.L["unguilded"] = "sans guilde"
 -- Modules/RosterManager/Options.lua:970

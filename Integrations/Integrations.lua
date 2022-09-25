@@ -7,12 +7,14 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local pairs, ipairs = pairs, ipairs
-local tinsert, wipe = table.insert, wipe
+local tinsert, tremove, wipe = table.insert, table.remove, wipe
+local sfind, strlower = string.find, strlower
 local C_TimerAfter = C_Timer.After
 local collectgarbage = collectgarbage
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local EXTERNAL_AWARD_EVENT = "CLM_EXTERNAL_EVENT_ITEM_AWARDED"
+local RCLC_AWARD_EVENT = "RCMLAwardSuccess"
 
 CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
     NONE = 1,
@@ -170,7 +172,187 @@ local function InitializeGargulIntegration(self)
     return options
 end
 
-local function InitializeConfigs(self)
+local function GetRCLCReasonsAndResponses()
+    local info = {}
+    if not RCLootCouncil then return end
+
+    local numAwardReasons = RCLootCouncil.db.profile.numAwardReasons
+    -- Reasons
+    for i=1,3 do
+        if i <= numAwardReasons then
+            local reason = RCLootCouncil.db.profile.awardReasons[i]
+            info[#info+1] = reason and reason.txt or RCLootCouncil.db.profile.awardReasons[i].text
+        end
+    end
+    for i=4,10 do
+        if i <= numAwardReasons then
+            local reason = RCLootCouncil.db.profile.awardReasons[i]
+            if reason then
+                info[#info+1] = reason.txt
+            end
+        end
+    end
+    -- Buttons and responses
+    for section, buttons in pairs (RCLootCouncil.db.profile.responses) do
+        if RCLootCouncil.db.profile.enabledButtons[section] or section == "default" then
+            for _,button in ipairs(buttons) do
+                if button.text and strsub(button.text, 1, 6) ~= "Button" then
+                    info[#info+1] = button.text
+                end
+            end
+        end
+    end
+
+    return info
+end
+
+local function InitializeRCLCIntegration(self)
+    local db = InitializeDB("rclc.handlers")
+    if #db == 0 then
+        local success, result = pcall(GetRCLCReasonsAndResponses)
+        if success then
+            for _,text in ipairs(result) do
+                db[#db+1] = {
+                    trigger = text,
+                    action = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
+                }
+            end
+            self:InitializeConfigs()
+        end
+    end
+end
+
+local function CreateRCLCIntegration(self)
+    local db = InitializeDB("rclc.handlers")
+    local options = {
+        global_rclc_integration_header = {
+            name = CLM.L["RCLC Integration"],
+            type = "header",
+            width = "full",
+            order = 20
+        },
+        global_rclc_integration = {
+            name = CLM.L["RCLC Integration"],
+            desc = CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award."],
+            type = "toggle",
+            set = function(i, v)
+                self:SetRCLCIntegration(v)
+                if v then
+                    InitializeRCLCIntegration(self)
+                end
+            end,
+            get = function(i) return self:GetRCLCIntegration() end,
+            width = 1,
+            order = 21
+        },
+        global_rclc_add_reason = {
+            name = CLM.L["Create"],
+            desc = CLM.L["Creates new trigger to be used during RCLC award."],
+            type = "execute",
+            func = (function(i)
+                db[#db+1] = {
+                    trigger = "",
+                    action = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
+                }
+                self:InitializeConfigs()
+            end),
+            order = 22,
+            width = 1
+        },
+        global_rclc_desc = {
+            name = CLM.L["Action to take upon RCLC loot award event happening during raid. Trigger is based on RCLC award reason or player response if reason is not used. On Integration Enable the buttons will be prefilled with existing ones."],
+            type = "description",
+            width = "full",
+            fontSize = "medium",
+            order = 23
+        },
+    }
+
+    local order = 24
+    local prefix = "rclc_condition_"
+    for conditionId, condition in ipairs(db) do
+        options[prefix.."trigger"..conditionId] = {
+            name = CLM.L["if reason/response contains"],
+            type = "input",
+            hidden = (function() return (conditionId > #db) end),
+            set = (function(i, v) self:SetRCLCAwardTrigger(conditionId, v) end),
+            get = (function(i) return self:GetRCLCAwardTrigger(conditionId) end),
+            order = order,
+            width = 1.25
+        }
+        order = order + 1
+        options[prefix.."action"..conditionId] = {
+            name = CLM.L["then"],
+            type = "select",
+            hidden = (function() return (conditionId > #db) end),
+            values = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_GUI,
+            set = (function(i, v) self:SetRCLCAwardAction(conditionId, v) end),
+            get = (function(i) return self:GetRCLCAwardAction(conditionId) end),
+            order = order,
+            width = 1.25
+        }
+        order = order + 1
+        options[prefix.."up"..conditionId] = {
+            name = "",
+            type = "execute",
+            hidden = (function() return (conditionId > #db) end),
+            width = 0.15,
+            image = "Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Up",
+            disabled = (function() return conditionId == 1 end),
+            func = function()
+                tremove(db, conditionId)
+                tinsert(db, conditionId - 1, condition)
+                self:InitializeConfigs()
+            end,
+            order = order
+        }
+        order = order + 1
+        options[prefix.."down"..conditionId] = {
+            name = "",
+            type = "execute",
+            hidden = (function() return (conditionId > #db) end),
+            width = 0.15,
+            image = "Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Up",
+            disabled = (function() return conditionId == #db end),
+            func = function()
+                tremove(db, conditionId)
+                tinsert(db, conditionId+1, condition)
+                self:InitializeConfigs()
+            end,
+            order = order
+        }
+        order = order + 1
+        options[prefix.."remove"..conditionId] = {
+            name = "",
+            type = "execute",
+            hidden = (function() return (conditionId > #db) end),
+            width = 0.15,
+            image = "Interface\\Buttons\\UI-Panel-MinimizeButton-Up",
+            func = function()
+                tremove(db, conditionId)
+                self:InitializeConfigs()
+            end,
+            order = order
+        }
+        order = order + 1
+        if (conditionId < #db) then
+            options[prefix.."else"..conditionId] = {
+                name = CLM.L["else"],
+                type = "description",
+                fontSize = "medium",
+                hidden = (function() return (conditionId >= #db) end),
+                width = 0.3,
+                order = order,
+            }
+            order = order + 1
+        end
+    end
+
+    return options
+end
+
+local Integration = {}
+function Integration:InitializeConfigs()
     local options = {
         global_wodkpbot_integration = {
             name = CLM.L["WoW DKP Bot Integration"],
@@ -184,11 +366,10 @@ local function InitializeConfigs(self)
     }
 
     UTILS.mergeDictsInline(options, InitializeGargulIntegration(self))
+    UTILS.mergeDictsInline(options, CreateRCLCIntegration(self))
 
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS, options)
 end
-
-local Integration = {}
 
 local function validateEventStructure(data, source)
     if data.source ~= source then return end
@@ -232,35 +413,70 @@ end
 
 -- LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forceInstant)
 local function ExternalAwardEventHandler(_, data)
-    if Integration:GetGargulIntegration() then
-        if not validateEventStructure(data, "Gargul") then
-            LOG:Warning("Malformed Gargul Event")
-            return
-        end
-        local player, itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved = parseEventStructure(data)
-        local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
-        if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
-        local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
-        if not profile then
-            LOG:Debug("Gargul item awarded to player without profile")
-            return
-        end
-        local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
-        if not raid then
-            LOG:Debug("Gargul item awarded outside of raid")
-            return
-        end
-        local value = getAwardValueFromAction(raid:Roster(), itemId, action)
-        CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, value)
+    if not Integration:GetGargulIntegration() then return end
+    if not validateEventStructure(data, "Gargul") then
+        LOG:Warning("Malformed Gargul Event")
+        return
     end
+    local player, itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved = parseEventStructure(data)
+    local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
+    if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
+    if not profile then
+        LOG:Debug("Gargul item awarded to player without profile")
+        return
+    end
+    local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
+    if not raid then
+        LOG:Debug("Gargul item awarded outside of raid")
+        return
+    end
+    local value = getAwardValueFromAction(raid:Roster(), itemId, action)
+    CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, value)
 end
 
+local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
+    if not Integration:GetRCLCIntegration() then return end
+
+    local action = Integration:SearchRCLCAwardAction(response)
+    if action == CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
+    if type(link) ~= "string" then
+        LOG:Debug("RCLCAwardMessageHandler() Missing Link")
+        return
+    end
+
+    local itemId = UTILS.GetItemIdFromLink(link)
+    if not GetItemInfoInstant(itemId) then
+        LOG:Debug("RCLCAwardMessageHandler() Unknown Item ID for %s", link)
+        return
+    end
+
+    if type(winner) ~= "string" then
+        LOG:Debug("RCLCAwardMessageHandler() Missing Winner")
+        return
+    end
+
+    winner = UTILS.RemoveServer(winner)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(winner)
+    if not profile then
+        LOG:Debug("RCLCAwardMessageHandler() item awarded to player without profile")
+        return
+    end
+
+    local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
+    if not raid then
+        LOG:Debug("RCLCAwardMessageHandler() item awarded outside of raid")
+        return
+    end
+    local value = getAwardValueFromAction(raid:Roster(), itemId, action)
+    CLM.MODULES.LootManager:AwardItem(raid, winner, link, itemId, value)
+end
 
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
     self.db = InitializeDB("global")
     ClearWoWDKPBotData()
-    InitializeConfigs(self)
+    self:InitializeConfigs()
 
     -- WoW DKP Bot SV Data
     C_TimerAfter(10, (function() RequestWoWDKPBotData(self) end))
@@ -269,7 +485,8 @@ function Integration:Initialize()
     end))
     -- External award integration
     CLM.MODULES.EventManager:RegisterEvent(EXTERNAL_AWARD_EVENT, ExternalAwardEventHandler)
-
+    -- RCLC award integartion
+    CLM.MODULES.EventManager:RegisterMessage(RCLC_AWARD_EVENT, RCLCAwardMessageHandler)
     self.exportInProgress = false
 end
 
@@ -298,6 +515,49 @@ end
 function Integration:GetGargulAwardAction(handler)
     local db = InitializeDB("gargul")
     return db[handler] or CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
+end
+
+function Integration:SetRCLCIntegration(value)
+    self.db.rclc_integration = value and true or false
+end
+
+function Integration:GetRCLCIntegration()
+    return self.db.rclc_integration
+end
+
+function Integration:SetRCLCAwardTrigger(conditionNum, trigger)
+    local db = InitializeDB("rclc.handlers")
+    if not db[conditionNum] then return end
+    db[conditionNum].trigger = trigger or ""
+end
+
+function Integration:GetRCLCAwardTrigger(conditionNum)
+    local db = InitializeDB("rclc.handlers")
+    if not db[conditionNum] then return end
+    return db[conditionNum].trigger
+end
+
+function Integration:SetRCLCAwardAction(conditionNum, action)
+    local db = InitializeDB("rclc.handlers")
+    if not db[conditionNum] then return end
+    db[conditionNum].action = CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS[action] and action or CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
+end
+
+function Integration:GetRCLCAwardAction(conditionNum)
+    local db = InitializeDB("rclc.handlers")
+    if not db[conditionNum] then return end
+    return db[conditionNum].action
+end
+
+function Integration:SearchRCLCAwardAction(response)
+    response = strlower(tostring(response) or "")
+    for _, condition in ipairs(InitializeDB("rclc.handlers")) do
+        if(sfind(response, ".*" .. strlower(condition.trigger) .. ".*")) then
+            return condition.action
+        end
+    end
+
+    return CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
 end
 
 function Integration:Export(config, completeCallback, updateCallback)

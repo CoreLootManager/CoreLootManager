@@ -43,6 +43,8 @@ globals = {
 	"CommDKP_DKPTable",
 	"CommDKP_Loot",
 	"CommDKP_DB",
+	-- RCLC
+	"RCLootCouncil",
 	-- WoW 
 	"_G",
 	"MAX_RAID_MEMBERS",
