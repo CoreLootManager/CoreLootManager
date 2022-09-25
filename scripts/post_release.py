@@ -1,15 +1,14 @@
-from discord import Webhook, RequestsWebhookAdapter, Embed
+from locale import currency
+from disnake import Webhook, Embed
+import asyncio
+import aiohttp
 import requests
 import time
 import sys
 
-if len(sys.argv) != 2:
-    print("Invalid arguments")
-    exit(1)
-
 GIT_ENDPOINT = "https://api.github.com/repos/lantisnt/classiclootmanager/releases"
 
-def get_newest_release():
+def get_latest_release() -> list:
     num_calls = 0
     while True:
         num_calls = num_calls + 1
@@ -25,41 +24,120 @@ def get_newest_release():
                 print("Sleeping and retrying")
                 time.sleep(num_calls)
 
-releases = get_newest_release()
 
-if len(releases) == 0:
-    print("No releases found")
-    exit(20)
+def build_release_fields(body:str) -> list:
+    fields = []
+    current_field_title = ""
+    current_field = []
+    creating_field = False
 
-try:
-    author = releases[0]["author"]["login"]
-    body = releases[0]["body"]
+    lines = body.splitlines()
+    for line in lines:
+        new_bullet = False
+        new_field = False
 
-    tag = releases[0]["tag_name"]
-    name = releases[0]["name"]
-    prerelease = releases[0]["prerelease"]
-    url = releases[0]["html_url"]# 2F3136 dcb749
+        if line.startswith("###"):
+            new_bullet = True
+        elif line.startswith("##"):
+            new_field = True
+
+        if new_field:
+            if creating_field and len(current_field) > 0:
+                fields.append({
+                    "title": current_field_title,
+                    "body": "\n".join(current_field)
+                    })
+            creating_field = True
+            current_field_title = line.strip("#")
+            current_field = []
+        else:
+            if new_bullet and creating_field:
+                current_field.append("**"+line.strip("# ")+"**")
+            elif creating_field:
+                current_field.append(line.strip())
+
+    if creating_field and len(current_field) > 0:
+        fields.append({
+            "title": current_field_title,
+            "body": "\n".join(current_field)
+            })
+
+    return fields
+
+def build_release_embed(releases:list, o = 0) -> dict:
+    author = releases[o]["author"]["login"]
+    body = releases[o]["body"]
+
+    tag = releases[o]["tag_name"]
+    name = releases[o]["name"]
+    prerelease = releases[o]["prerelease"]
+    url = releases[o]["html_url"]# 2F3136 dcb749
+
+
+    author_field = "Classic Loot Manager has been updated!"
+    version_title = "**Version**"
+    # more_info_field = "For more information check out the full [release notes](" + url + ")."
+    support_us_field = "Become a [patron](https://patreon.com/classiclootmanager) or check out how to <#904660817889337404> if you enjoy using <:clm:892642400525242428>"
+    if author == 'lantisnt':
+        author = 'Lantis'
+    footer = "Released by " + author
+    size = len(author_field) + len(name) + len(url) + len(version_title) + len(tag) + 2 + len(support_us_field) + 2 + len(footer)
 
     embed = {
-        "author": {"name": "Classic Loot Manager has been updated!"},
+        "author": {"name": author_field},
         "title": name,
+        "url":url,
         "color": 14464841,
         "fields": [
-            {"name": "**Version**", "value": "`" + tag  + "`", "inline": False},
-            {"name": "**CHANGELOG**", "value": "```" + body[:1012] + ("..." if len(body) > 1013 else "") + "```", "inline": False},
-            {"name": "\u200b", "value": "For more information check out the full [release notes](" + url + ").", "inline": False}
+            {"name": version_title, "value": "`" + tag  + "`", "inline": False}
         ],
-        "footer": {"text": "Released by " + author}
+        "footer": {"text": footer}
     }
+    
+    fields = build_release_fields(body)
+    for field in fields:
+        title = field["title"]
+        body = field["body"]
+        if len(title) > 256:
+            title = title[:253]+"..."
+        if len(body) > 1024:
+            body = body[:1021]+"..."
 
-    if prerelease:
-        embed["description"] = "_This is a beta version and may still contain bugs_"
+        if size + (len(title) + len(body)) <= 6000:
+            embed["fields"].append({"name": title, "value": body, "inline": False})
+            size += (len(title) + len(body))
 
-    webhook = Webhook.from_url(sys.argv[1], adapter = RequestsWebhookAdapter())
-    if prerelease:
-        webhook.send(embed = Embed.from_dict(embed))
-    else:
-        webhook.send(content = "<@&852049281959591947>", embed = Embed.from_dict(embed))
-except Exception as e:
-    print(str(e))
-    exit(30)
+    # embed["fields"].append({"name": "\u200b", "value": more_info_field, "inline": False})
+
+    embed["fields"].append({"name": "\u200b", "value": support_us_field, "inline": False})
+
+    content = "<@&852049281959591947>" # @Announcements
+
+    return content, embed
+
+async def post(content, embed):
+    try:
+        async with aiohttp.ClientSession() as session:
+            webhook = Webhook.from_url(sys.argv[1], session=session)
+            await webhook.send(content = content, embed = Embed.from_dict(embed), username='New Release')
+    except Exception as e:
+        print(str(e))
+        exit(30)
+
+async def main():
+    if len(sys.argv) != 2:
+        print("Invalid arguments")
+        exit(1)
+
+    releases = get_latest_release()
+
+    if len(releases) == 0:
+        print("No releases found")
+        exit(20)
+
+    content, embed = build_release_embed(releases)
+
+    await post(content, embed)
+
+if __name__ == "__main__":
+    asyncio.run(main())
