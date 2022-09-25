@@ -74,8 +74,10 @@ CLM.L["<CLM> Missing profile for player %s."] = "<CLM> Нет профиля д�
 CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> Ваша ставка (%s) была %s%s."
 -- Modules/GUI/UnifiedGUI_Standings.lua:144
 CLM.L["Action context"] = "Контекст действия"
--- Integrations/Integrations.lua:157
+-- Integrations/Integrations.lua:159
 CLM.L["Action to take upon Gargul loot award event happening during raid."] = "Действие, в случае вручения добычи через Gargul loot, во время рейда."
+-- Integrations/Integrations.lua:263
+--CLM.L["Action to take upon RCLC loot award event happening during raid. Trigger is based on RCLC award reason or player response if reason is not used. On Integration Enable the buttons will be prefilled with existing ones."] = ""
 -- Integrations/Import.lua:132
 CLM.L["Add Profiles to Rosters"] = "Добавить профили в составы"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:133
@@ -254,17 +256,17 @@ CLM.L["Award %s points to %s selected players."] = "Выдать %s очков %
 CLM.L["Award %s points to everyone in raid."] = "Выдать %s очков всем в рейде."
 -- Modules/GUI/UnifiedGUI_Standings.lua:236
 CLM.L["Award %s points to everyone in roster."] = "Выдать %s очков всем в составе."
--- Integrations/Integrations.lua:360
+-- Integrations/Integrations.lua:620
 CLM.L["Award for Base"] = "Выдать за мин ставку"
--- Integrations/Integrations.lua:359
+-- Integrations/Integrations.lua:619
 CLM.L["Award for Free"] = "Выдать бесплатно"
--- Integrations/Integrations.lua:363
+-- Integrations/Integrations.lua:623
 CLM.L["Award for Large"] = "Выдать за большую ставку"
--- Integrations/Integrations.lua:364
+-- Integrations/Integrations.lua:624
 CLM.L["Award for Max"] = "Выдать за макс ставку"
--- Integrations/Integrations.lua:362
+-- Integrations/Integrations.lua:622
 CLM.L["Award for Medium"] = "Выдать за среднюю ставку"
--- Integrations/Integrations.lua:361
+-- Integrations/Integrations.lua:621
 CLM.L["Award for Small"] = "Награда за малую ставку"
 -- Global/GlobalSlashCommands.lua:20
 CLM.L["Award item without auctioning it."] = "Отдать вещь без аукциона."
@@ -464,6 +466,7 @@ CLM.L["Create new raid with provided name. You will automatically join this raid
 CLM.L["Create raid %s %s in <%s>"] = "Создать рейд %s %s в <%s>"
 -- Modules/GUI/UnifiedGUI_Raids.lua:195
 CLM.L["Create raid"] = "Создать рейд"
+-- Integrations/Integrations.lua:249
 -- Modules/RosterManager/Options.lua:1063
 CLM.L["Create"] = "Создать"
 -- Modules/RaidManager/RaidManager.lua:776
@@ -471,6 +474,8 @@ CLM.L["Create"] = "Создать"
 CLM.L["Created"] = "Создано"
 -- Modules/RosterManager/Options.lua:1064
 CLM.L["Creates new roster with default configuration"] = "Создает новый состав с настройками по умолчанию"
+-- Integrations/Integrations.lua:250
+--CLM.L["Creates new trigger to be used during RCLC award."] = ""
 -- Global/GlobalConfigs.lua:403
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 -- Global/GlobalConfigs.lua:400
@@ -566,9 +571,11 @@ CLM.L["Edge of Madness"] = "Грань безумия"
 CLM.L["Emalon the Storm Watcher"] = "Эмалон Страж Бури"
 -- Modules/AuctionManager/AuctionManager.lua:110
 CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."] = "Включить !dkp и !bid в личных сообщениях / рейде. Изменения требуют перезагрузки интерфейса."
--- Integrations/Integrations.lua:120
+-- Integrations/Integrations.lua:122
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "Включить интеграцию Gargul. Это позволит Gargul взять под контроль некоторые аспекты CLM (начинать аукцион из Gargul и вручать вещи)."
--- Integrations/Integrations.lua:177
+-- Integrations/Integrations.lua:236
+--CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award."] = ""
+-- Integrations/Integrations.lua:359
 CLM.L["Enable WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Включить интеграцию с WoW DKP Bot. Это приведет к сохранению дополнительных данных при выходе из игры."
 -- Global/GlobalConfigs.lua:158
 CLM.L["Enable announcing auction start and end."] = "Включает оповещения о старте и стопе аукциона"
@@ -688,8 +695,8 @@ CLM.L["GM"] = "ГМ"
 CLM.L["GP"] = "GP"
 -- Modules/AutoAwardManager/EncounterIDs.lua:57
 CLM.L["Gahz'ranka"] = "Газ'ранка"
--- Integrations/Integrations.lua:113
--- Integrations/Integrations.lua:119
+-- Integrations/Integrations.lua:115
+-- Integrations/Integrations.lua:121
 CLM.L["Gargul Integration"] = "Интеграция Gargul"
 -- Modules/AutoAwardManager/EncounterIDs.lua:8
 CLM.L["Garr"] = "Гарр"
@@ -980,8 +987,8 @@ CLM.L["Lord Marrowgar"] = "Лорд Ребрад"
 CLM.L["Lucifron"] = "Люцифрон"
 -- Modules/AutoAwardManager/EncounterIDs.lua:112
 CLM.L["M'uru"] = "М'уру"
--- Integrations/Integrations.lua:133
--- Integrations/Integrations.lua:138
+-- Integrations/Integrations.lua:135
+-- Integrations/Integrations.lua:140
 -- Modules/BiddingManager/GUI.lua:156
 -- Modules/AuctionManager/AuctionManager.lua:307
 CLM.L["MS"] = "МС"
@@ -1160,7 +1167,7 @@ CLM.L["No"] = "Нет"
 -- Modules/RosterManager/Roster.lua:726
 -- Modules/RosterManager/Roster.lua:759
 CLM.L["Non-equippable"] = "Неодеваемое"
--- Integrations/Integrations.lua:358
+-- Integrations/Integrations.lua:618
 -- Modules/GUI/Filters.lua:195
 -- Modules/GUI/UnifiedGUI_Raids.lua:302
 -- Modules/GUI/UnifiedGUI_History.lua:214
@@ -1192,8 +1199,8 @@ CLM.L["Notify that you are passing on the item."] = "Уведомьте, что 
 CLM.L["November"] = "Ноябрь"
 -- Modules/GUI/UnifiedGUI_Audit.lua:657
 CLM.L["Num"] = "Значение"
--- Integrations/Integrations.lua:143
--- Integrations/Integrations.lua:148
+-- Integrations/Integrations.lua:145
+-- Integrations/Integrations.lua:150
 -- Modules/BiddingManager/GUI.lua:167
 -- Modules/AuctionManager/AuctionManager.lua:309
 CLM.L["OS"] = "ОС"
@@ -1300,8 +1307,8 @@ CLM.L["Priest"] = "Жрец"
 CLM.L["Prince Malchezaar"] = "Принц Малчезар"
 -- Modules/AutoAwardManager/EncounterIDs.lua:28
 CLM.L["Princess Huhuran"] = "Принцесса Хухуран"
--- Integrations/Integrations.lua:138
--- Integrations/Integrations.lua:148
+-- Integrations/Integrations.lua:140
+-- Integrations/Integrations.lua:150
 CLM.L["Prioritized"] = "Приоритет"
 -- Modules/AutoAwardManager/EncounterIDs.lua:151
 CLM.L["Professor Putricide"] = "Профессор Мерзоцид"
@@ -1325,6 +1332,9 @@ CLM.L["Queen Lana'thel"] = "Королева Лана'Тель"
 -- Modules/RosterManager/Roster.lua:730
 -- Modules/RosterManager/Roster.lua:763
 CLM.L["Quiver"] = "Колчан"
+-- Integrations/Integrations.lua:229
+-- Integrations/Integrations.lua:235
+--CLM.L["RCLC Integration"] = ""
 -- Modules/RosterManager/Roster.lua:605
 CLM.L["ROLL"] = "РОЛЛ"
 -- Modules/AutoAwardManager/EncounterIDs.lua:97
@@ -1385,8 +1395,8 @@ CLM.L["Razorgore the Untamed"] = "Бритвосмерт Неукротимый"
 CLM.L["Razorscale"] = "Острокрылая"
 -- Modules/GUI/UnifiedGUI_Standings.lua:168
 CLM.L["Reason"] = "Причина"
--- Integrations/Integrations.lua:133
--- Integrations/Integrations.lua:143
+-- Integrations/Integrations.lua:135
+-- Integrations/Integrations.lua:145
 CLM.L["Regular"] = "Обычный"
 -- Modules/RosterManager/Roster.lua:731
 -- Modules/RosterManager/Roster.lua:764
@@ -1842,7 +1852,7 @@ CLM.L["Wipe"] = "Стереть"
 CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "Стереть все события. Это вызовет пересинхронизацию от других игроков."
 -- Modules/Logger/Logger.lua:42
 CLM.L["Wipes the log history"] = "Стирает историю логов"
--- Integrations/Integrations.lua:176
+-- Integrations/Integrations.lua:358
 CLM.L["WoW DKP Bot Integration"] = "Интеграция с WoW DKP Bot"
 -- Modules/RosterManager/Options.lua:554
 CLM.L["WotLK - 10"] = "Wotlk - 10"
@@ -2004,8 +2014,12 @@ CLM.L["cancel"] = "отмена"
 CLM.L["created"] = "создан"
 -- Global/GlobalChatMessageHandlers.lua:58
 CLM.L["denied"] = "отказ"
+-- Integrations/Integrations.lua:340
+--CLM.L["else"] = ""
 -- Modules/GUI/UnifiedGUI_Audit.lua:465
 CLM.L["excluding negatives "] = "исключая отрицательные "
+-- Integrations/Integrations.lua:275
+--CLM.L["if reason/response contains"] = ""
 -- Global/GlobalSlashCommands.lua:67
 CLM.L["level"] = "уровень"
 -- Global/GlobalChatMessageHandlers.lua:47
@@ -2030,6 +2044,8 @@ CLM.L["revoked"] = "отозван"
 CLM.L["roster"] = "состав"
 -- Global/GlobalChatMessageHandlers.lua:97
 CLM.L["rosters"] = "составы"
+-- Integrations/Integrations.lua:285
+--CLM.L["then"] = ""
 -- Global/GlobalSlashCommands.lua:74
 CLM.L["unguilded"] = "без гильдии"
 -- Modules/RosterManager/Options.lua:970
