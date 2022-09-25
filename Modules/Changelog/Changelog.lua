@@ -1,6 +1,29 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.3.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Price display in tooltip", body = "CLM will now display item prices in tooltips. You can disable this in configuration." },
+                    { header = "Upgraded item info", body = "During auction players using the newset CLM version will now inform ML what items they are upgrading. This info is available when hovering over bids. This data is also stored in Auction History." },
+                    { header = "RCLootCouncil Integration", body = "CLM can now allows for integration with RCLC. When enabled, on RCLC item award, CLM can award item to the player and charge with DKP/GP based on settings." },
+                    { header = "Token prices", body = "Tier Tokens (T7/T8) will now reflect price of the items they are changing into." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Named buttons", body = "Named buttons now are ordered in descending way." },
+                    { header = "Standby", body = "Fixed bug blocking players from subscribing to standby list." },
+                    { header = "EPGP / DKP Naming", body = "Fixed DKP showing in few places in EPGP mode. Added missing button names not showing in same places when expected. This data is also stored in Auction History." },
+                    { header = "Locale", body = "Various locale fixes thanks to the great community work!" },
+                },
+            },
+        },
+    },
+    {
         version = "v2.2.0",
         data = {
             {

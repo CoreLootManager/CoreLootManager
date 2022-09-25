@@ -1,3 +1,22 @@
+# Classic Loot Manager v2.3.0
+## Features
+### Price display in tooltip
+CLM will now display item prices in tooltips. You can disable this in configuration.
+### Upgraded item info
+During auction players using the newset CLM version will now inform ML what items they are upgrading. This info is available when hovering over bids. This data is also stored in Auction History.
+### RCLootCouncil Integration
+CLM can now allows for integration with RCLC. When enabled, on RCLC item award, CLM can award item to the player and charge with DKP/GP based on settings.
+### Token prices
+Tier Tokens (T7/T8) will now reflect price of the items they are changing into.
+## Fixes
+### Named buttons
+Named buttons now are ordered in descending way.
+### Standby
+Fixed bug blocking players from subscribing to standby list.
+### EPGP / DKP Naming
+Fixed DKP showing in few places in EPGP mode. Added missing button names not showing in same places when expected. This data is also stored in Auction History.
+### Locale
+Various locale fixes thanks to the great community work!
 # Classic Loot Manager v2.2.0
 ## Features
 ### Item Value override CSV Import
