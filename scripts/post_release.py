@@ -48,7 +48,7 @@ def build_release_fields(body:str) -> list:
                     "body": "\n".join(current_field)
                     })
             creating_field = True
-            current_field_title = line.strip("#")
+            current_field_title = line.strip("# ")
             current_field = []
         else:
             if new_bullet and creating_field:

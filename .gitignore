@@ -4,3 +4,5 @@ locales_*
 TESTING
 merger.py
 report.log
+scripts/mdin*
+scripts/mdout*
