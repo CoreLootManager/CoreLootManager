@@ -37,12 +37,19 @@ function GlobalConfigs:Initialize()
     })
 
     local options = {
+        clm_logo = {
+            name = "",
+            type = "description",
+            image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga",
+            width = 0.25,
+            order = 0
+        },
         discord = {
             type = "description",
             name = CLM.L["Join our discord for more info: "],
             fontSize = "medium",
-            width = 2,
-            order = 0
+            width = 1.75,
+            order = 0.1
         },
         discord_link = {
             type = "input",

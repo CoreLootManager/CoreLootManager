@@ -211,6 +211,7 @@ local function InitializeRCLCIntegration(self)
     if #db == 0 then
         local success, result = pcall(GetRCLCReasonsAndResponses)
         if success then
+            result = result or {}
             for _,text in ipairs(result) do
                 db[#db+1] = {
                     trigger = text,
