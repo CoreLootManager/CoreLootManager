@@ -23,9 +23,7 @@ function GlobalConfigs:Initialize()
         disable_sync = false,
         suppress_incoming_chat_commands = false,
         suppress_outgoing_chat_commands = false,
-        tooltips = {
-            display = true
-        },
+        tooltips_display = true,
         raid_warnings = {
             raid = true,
             auction = true,
@@ -207,7 +205,7 @@ function GlobalConfigs:Initialize()
         },
         tooltip_display_header = {
             type = "header",
-            name = CLM.L["Price Tooltips"],
+            name = CLM.L["Price Tooltips"] .. " - " .. CLM.L["Not in raid"],
             order = 900
         },
         tooltip_display_toggle = {
@@ -361,11 +359,11 @@ end
 
 
 function GlobalConfigs:SetPriceTooltip(v)
-    self.db.tooltips.display = v and true or false
+    self.db.tooltips_display = v and true or false
 end
 
 function GlobalConfigs:GetPriceTooltip()
-    return self.db.tooltips.display
+    return self.db.tooltips_display
 end
 
 
