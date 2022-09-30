@@ -1,9 +1,9 @@
 # Classic Loot Manager v2.3.1
 ## Fixes
 ### Tooltips
-Tooltips will now properly display only on items that a player can equip or tier tokens.
+Tooltips will now properly display only on items that a player can equip or tier tokens. They will also display properly when in CLM raid now.
 ### Script errors
-Script errors occuring in raer cases for the tooltips should now be fixed.
+Script errors occuring in rare cases for the tooltips should now be fixed.
 # Classic Loot Manager v2.3.0
 ## Features
 ### Price display in tooltip
