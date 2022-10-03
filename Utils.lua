@@ -758,5 +758,5 @@ CONSTANTS.ITEM_QUALITY = {
     [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
     [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
 }
-CONSTANTS.REGEXP_FLOAT = "^-?%d+.?%d*$"
-CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+.?%d*$"
+CONSTANTS.REGEXP_FLOAT = "^-?%d+%.?%d*$"
+CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+%.?%d*$"
