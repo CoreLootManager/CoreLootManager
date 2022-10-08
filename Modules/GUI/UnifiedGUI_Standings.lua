@@ -411,7 +411,9 @@ local tableStructure = {
             local isEPGP = ST_GetIsEPGP(rowData)
             if isEPGP then
                 tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
-                tooltip:AddDoubleLine(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], tostring(ST_GetGP(rowData)) .. " ".. CLM.L["GP"])
+                tooltip:AddDoubleLine(
+                    UTILS.ColorCodeText(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], "44ee44"),
+                    UTILS.ColorCodeText(tostring(ST_GetGP(rowData)) .. " ".. CLM.L["GP"], "44ee44"))
                 tooltip:AddDoubleLine(CLM.L["Weekly gains"], tostring(gains) .. " " .. CLM.L["EP"])
             else
                 tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
@@ -445,7 +447,7 @@ local tableStructure = {
                     end
                 end
             else
-                tooltip:AddLine(CLM.L["No loot received"])
+                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["No loot received"], "44ee44"))
             end
             -- Point History
             local pointList = ST_GetProfilePoints(rowData)
@@ -457,24 +459,19 @@ local tableStructure = {
                     local reason = point:Reason() or 0
                     local value = tostring(point:Value())
 
-                    if isEPGP then
-                        if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
-                            value = value .. "%"
-                        end
+                    if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
+                        value = value .. "%"
+                    elseif isEPGP then
                         if point:Spent() then
                             value = value .. " " .. CLM.L["GP"]
                         else
                             value = value .. " " .. CLM.L["EP"]
                         end
-                    else
-                        if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
-                            value = value .. "%"
-                        end
                     end
                     tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
                 end
             else
-                tooltip:AddLine(CLM.L["No points received"])
+                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["No points received"], "44ee44"))
             end
             -- Display
             tooltip:Show()

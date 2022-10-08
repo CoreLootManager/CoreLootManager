@@ -239,3 +239,7 @@ function AutoAwardManager:IsIntervalBonusAwardingEnabled()
 end
 
 CLM.MODULES.AutoAwardManager = AutoAwardManager
+
+--@do-not-package@
+CLM.awardBossKillBonus = awardBossKillBonus
+--@end-do-not-package@

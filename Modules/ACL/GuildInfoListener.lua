@@ -26,7 +26,7 @@ function GuildInfoListener:Initialize()
 end
 
 function GuildInfoListener:BuildCache()
-    LOG:Trace("GuildInfoListener:BuildCache()")
+    -- LOG:Trace("GuildInfoListener:BuildCache()")
     if self.cacheUpdateRequired then
         self:WipeAll()
         self:BuildRankCache()
