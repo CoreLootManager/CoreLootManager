@@ -428,7 +428,7 @@ local tableStructure = {
             local lootList = ST_GetProfileLoot(rowData)
             tooltip:AddLine("\n")
             if #lootList > 0 then
-                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest loot"], "44ee44"), isEPGP and CLM.L["GP"] or CLM.L["DKP"])
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest loot"], "44ee44"), isEPGP and "" or CLM.L["DKP"])
                 local limit = #lootList - 4 -- inclusive (- 5 + 1)
                 if limit < 1 then
                     limit = 1
@@ -437,7 +437,11 @@ local tableStructure = {
                     local loot = lootList[i]
                     local _, itemLink = GetItemInfo(loot:Id())
                     if itemLink then
-                        tooltip:AddDoubleLine(itemLink, loot:Value())
+                        local value = loot:Value()
+                        if isEPGP then
+                            value = tostring(value) .. " " .. CLM.L["GP"]
+                        end
+                        tooltip:AddDoubleLine(itemLink, value)
                     end
                 end
             else
@@ -447,13 +451,25 @@ local tableStructure = {
             local pointList = ST_GetProfilePoints(rowData)
             tooltip:AddLine("\n")
             if #pointList > 0 then
-                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest points"], "44ee44"), isEPGP and CLM.L["EP"] or CLM.L["DKP"])
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest points"], "44ee44"), isEPGP and "" or CLM.L["DKP"])
                 for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
                     if i > 5 then break end
                     local reason = point:Reason() or 0
                     local value = tostring(point:Value())
-                    if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
-                        value = value .. "%"
+
+                    if isEPGP then
+                        if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
+                            value = value .. "%"
+                        end
+                        if point:Spent() then
+                            value = value .. " " .. CLM.L["GP"]
+                        else
+                            value = value .. " " .. CLM.L["EP"]
+                        end
+                    else
+                        if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
+                            value = value .. "%"
+                        end
                     end
                     tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
                 end

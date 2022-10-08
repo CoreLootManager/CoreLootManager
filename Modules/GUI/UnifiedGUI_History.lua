@@ -9,6 +9,7 @@ local UTILS     = CLM.UTILS
 local pairs, ipairs = pairs, ipairs
 local sgsub, tsort =string.gsub, table.sort
 
+local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 
 CONSTANTS.HISTORY_TYPE = {
@@ -145,8 +146,13 @@ local tableStructure = {
         {name = CLM.L["Info"],  width = 235 },
         {name = CLM.L["Value"], width = 85, color = colorGreen,
             comparesort = UTILS.LibStCompareSortWrapper(function(a1,b1)
-                return tonumber(sgsub(a1, "%%", "")), tonumber(sgsub(b1, "%%", ""))
-            end)
+                a1 = strsplit(" ", a1)
+                a1 = sgsub(a1, "%%", "")
+                b1 = strsplit(" ", b1)
+                b1 = sgsub(b1, "%%", "")
+                return tonumber(a1), tonumber(b1)
+            end),
+            -- align = "RIGHT"
         },
         {name = CLM.L["Date"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC},
         {name = CLM.L["Player"],width = 95,
@@ -259,7 +265,7 @@ local function tableDataFeeder()
 
     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
     if not roster then return {} end
-    
+
     local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
     -- TODO: Change from loot type and profile name to filter as its faster
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(UnifiedGUI_History.profile or "")
@@ -294,9 +300,11 @@ local function tableDataFeeder()
 
         for _,lootData in ipairs(displayedLoot) do
             local loot = lootData[1]
-            local value = loot:Value()
+            local value = tostring(loot:Value())
             if isEPGP then
-                value = tostring(value) .. " " .. CLM.L["GP"]
+                value = (value) .. " " .. CLM.L["GP"]
+            -- else
+                -- value = (value) .. " " .. CLM.L["DKP"]
             end
             local row = {cols = {
                 {value = lootData[2]}, -- itemLink
@@ -331,13 +339,24 @@ local function tableDataFeeder()
                 value = value .. "%"
             end
 
-            if isEPGP and history:Spent() then
-                value = value .. " " .. CLM.L["GP"]
+            local suffix = ""
+            if isEPGP then
+                if history:Spent() then
+                    suffix = CLM.L["GP"]
+                -- else
+                    -- suffix = CLM.L["EP"]
+                end
+            -- else
+                -- suffix = CLM.L["DKP"]
             end
+
+            value = value .. " " .. suffix
 
             local row = {cols = {
                 {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
-                {value = value},
+                {value = value,
+                    color = ((isEPGP and history:Spent()) and colorTurquoise)
+                },
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
                 {value = multiple},
                 {value = false},
