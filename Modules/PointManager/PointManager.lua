@@ -134,7 +134,7 @@ local function mutate_update_standings(roster, GUID, value, timestamp)
 end
 
 local function mutate_update_spent(roster, GUID, value, timestamp)
-    roster:UpdateSpent(GUID, value, timestamp)
+    roster:UpdateSpent(GUID, value)
 end
 
 local function mutate_set_standings(roster, GUID, value, timestamp)

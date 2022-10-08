@@ -237,8 +237,7 @@ function Roster:UpdateStandings(GUID, value, timestamp)
     self.pointInfo[GUID]:AddBlocked(originalValue - value)
 end
 
-function Roster:UpdateSpent(GUID, value, timestamp)
-    timestamp = timestamp or 0
+function Roster:UpdateSpent(GUID, value)
     LOG:Debug("Roster:UpdateSpent(%s, %s, %s)", GUID, self.uid, value)
     local new = UTILS.round(self.pointInfo[GUID].spent + value, self.configuration._.roundDecimals)
     -- Handle the spent update
