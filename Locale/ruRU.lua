@@ -707,7 +707,7 @@ CLM.L["Gargul Integration"] = "Интеграция Gargul"
 -- Modules/AutoAwardManager/EncounterIDs.lua:8
 CLM.L["Garr"] = "Гарр"
 -- Modules/GUI/UnifiedGUI_Standings.lua:247
---CLM.L["Gear Points"] = ""
+CLM.L["Gear Points"] = "Точки передачи"
 -- Modules/AutoAwardManager/EncounterIDs.lua:7
 CLM.L["Gehennas"] = "Гееннас"
 -- Modules/AutoAwardManager/EncounterIDs.lua:59
