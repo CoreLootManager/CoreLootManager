@@ -26,7 +26,11 @@ function PointHistory:New(entry, targets, timestamp, value, reason, creator, not
     o.reason = tonumber(reason) or entry:reason()
     o.creator = creator or entry:creator()
     o.note = note or entry:note()
-    o.spent = spent or entry:spent()
+    if entry.spent then -- Not All entries have spent field
+        o.spent = spent or entry:spent()
+    else
+        o.spent = spent or false
+    end
 
     return o
 end
