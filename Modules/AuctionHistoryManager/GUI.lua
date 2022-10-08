@@ -143,7 +143,7 @@ local function CreateAuctionDisplay(self)
         local noBids = true
         for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
             noBids = false
-            if bidNames[bidder] then
+            if bidNames and bidNames[bidder] then
                 bid = tostring(bid) .. " (" .. bidNames[bidder] .. ")"
             end
             local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
