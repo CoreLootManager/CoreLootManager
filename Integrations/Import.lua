@@ -114,7 +114,7 @@ local function Import_SetStandings(self)
         if CLM.MODULES.RosterManager:GetRosterByName(info.name) then
             for standings, GUID in pairs(info.standings) do
                 if standings ~= 0 then
-                    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.DKP.Set:new(roster:UID(), GUID, standings, CONSTANTS.POINT_CHANGE_REASON.IMPORT))
+                    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.POINTS.Set:new(roster:UID(), GUID, standings, CONSTANTS.POINT_CHANGE_REASON.IMPORT))
                 end
             end
         end

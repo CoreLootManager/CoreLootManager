@@ -123,6 +123,7 @@ local function GenerateUntrustedOptions(self)
         set = function(i, v)
             self.roster = v
             self.context = CONSTANTS.ACTION_CONTEXT.ROSTER
+            self.awardGearPoints = false
             refreshFn()
         end,
         get = function(i) return self.roster end,
@@ -203,13 +204,13 @@ local function GenerateAssistantOptions(self)
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     if CLM.MODULES.RaidManager:IsInRaid() then
-                        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardGearPoints)
                     else
                         LOG:Warning("You are not in raid.")
                     end
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
                     if roster then
-                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
+                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note, self.awardGearPoints)
                     else
                         LOG:Warning("Missing valid roster.")
                     end
@@ -221,7 +222,7 @@ local function GenerateAssistantOptions(self)
                         return
                     end
                     if roster then
-                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardGearPoints)
                     else
                         LOG:Warning("Missing valid roster.")
                     end
@@ -241,7 +242,23 @@ local function GenerateAssistantOptions(self)
                 end
             end),
             order = 14
-        }
+        },
+        award_type = {
+            name = CLM.L["Gear Points"],
+            type = "toggle",
+            set = function(i, v) self.awardGearPoints = v and true or false end,
+            get = function(i) return self.awardGearPoints end,
+            hidden = (function()
+                local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+                if roster then
+                    return (roster:GetPointType() ~= CONSTANTS.POINT_TYPE.EPGP)
+                end
+
+                return true
+            end),
+            order = 15,
+            width = "full"
+        },
     }
 end
 

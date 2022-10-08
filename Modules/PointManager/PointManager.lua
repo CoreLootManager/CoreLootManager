@@ -133,6 +133,10 @@ local function mutate_update_standings(roster, GUID, value, timestamp)
     roster:UpdateStandings(GUID, value, timestamp)
 end
 
+local function mutate_update_spent(roster, GUID, value, timestamp)
+    roster:UpdateSpent(GUID, value, timestamp)
+end
+
 local function mutate_set_standings(roster, GUID, value, timestamp)
     roster:SetStandings(GUID, value)
 end
@@ -146,51 +150,64 @@ function PointManager:Initialize()
     LOG:Trace("PointManager:Initialize()")
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.DKP.Modify,
+        CLM.MODELS.LEDGER.POINTS.Modify,
         (function(entry)
-            LOG:TraceAndCount("mutator(DKPModify)")
-            apply_mutator(entry, mutate_update_standings)
+            LOG:TraceAndCount("mutator(PointsModify)")
+            local mutator = mutate_update_standings
+            if entry:spent() then
+                mutator = mutate_update_spent
+            end
+            apply_mutator(entry, mutator)
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.DKP.Set,
+        CLM.MODELS.LEDGER.POINTS.Set,
         (function(entry)
-            LOG:TraceAndCount("mutator(DKPSet)")
+            LOG:TraceAndCount("mutator(PointsSet)")
             apply_mutator(entry, mutate_set_standings)
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.DKP.Decay,
+        CLM.MODELS.LEDGER.POINTS.Decay,
         (function(entry)
-            LOG:TraceAndCount("mutator(DKPDecay)")
+            LOG:TraceAndCount("mutator(PointsDecay)")
             apply_mutator(entry, mutate_decay_standings)
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.DKP.ModifyRoster,
+        CLM.MODELS.LEDGER.POINTS.ModifyRoster,
         (function(entry)
-            LOG:TraceAndCount("mutator(DKPModifyRoster)")
-            apply_roster_mutator(entry, mutate_update_standings)
+            LOG:TraceAndCount("mutator(PointsModifyRoster)")
+
+            local mutator = mutate_update_standings
+            if entry:spent() then
+                mutator = mutate_update_spent
+            end
+            apply_roster_mutator(entry, mutator)
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.DKP.DecayRoster,
+        CLM.MODELS.LEDGER.POINTS.DecayRoster,
         (function(entry)
-            LOG:TraceAndCount("mutator(DKPDecayRoster)")
+            LOG:TraceAndCount("mutator(PointsDecayRoster)")
             apply_roster_mutator(entry, mutate_decay_standings)
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
-        CLM.MODELS.LEDGER.DKP.ModifyRaid,
+        CLM.MODELS.LEDGER.POINTS.ModifyRaid,
         (function(entry)
-            LOG:TraceAndCount("mutator(DKPModifyRaid)")
-            apply_raid_mutator(self, entry, mutate_update_standings)
+            LOG:TraceAndCount("mutator(PointsModifyRaid)")
+            local mutator = mutate_update_standings
+            if entry:spent() then
+                mutator = mutate_update_spent
+            end
+            apply_raid_mutator(self, entry, mutator)
         end))
 
 
 end
 
-function PointManager:UpdatePoints(roster, targets, value, reason, action, note, forceInstant)
+function PointManager:UpdatePoints(roster, targets, value, reason, action, note, isSpent, forceInstant)
     LOG:Trace("PointManager:UpdatePoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdatePoints(): Unknown action")
@@ -222,11 +239,11 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     note = strsub32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = CLM.MODELS.LEDGER.DKP.Modify:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.POINTS.Modify:new(uid, targets, value, reason, note, isSpent)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = CLM.MODELS.LEDGER.DKP.Set:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.POINTS.Set:new(uid, targets, value, reason, note)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = CLM.MODELS.LEDGER.DKP.Decay:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.POINTS.Decay:new(uid, targets, value, reason, note)
     end
 
     local t = entry:targets()
@@ -238,7 +255,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
-function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, note, forceInstant)
+function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, note, isSpent, forceInstant)
     LOG:Trace("PointManager:UpdateRosterPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdateRosterPoints(): Unknown action")
@@ -258,17 +275,17 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNe
     note = strsub32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = CLM.MODELS.LEDGER.DKP.ModifyRoster:new(uid, value, reason, note)
+        entry = CLM.MODELS.LEDGER.POINTS.ModifyRoster:new(uid, value, reason, note, isSpent)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-    --     entry = LEDGER.DKP.Set:new(uid, targets, value, reason)
+    --     entry = LEDGER.POINTS.Set:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = CLM.MODELS.LEDGER.DKP.DecayRoster:new(uid, value, reason, ignoreNegatives, note)
+        entry = CLM.MODELS.LEDGER.POINTS.DecayRoster:new(uid, value, reason, ignoreNegatives, note)
     end
 
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
-function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceInstant)
+function PointManager:UpdateRaidPoints(raid, value, reason, action, note, isSpent, forceInstant)
     LOG:Trace("PointManager:UpdateRaidPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdateRaidPoints(): Unknown action")
@@ -288,7 +305,7 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, forceI
     local includeBench = raid:Configuration():Get("autoAwardIncludeBench") and true or false
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
-        entry = CLM.MODELS.LEDGER.DKP.ModifyRaid:new(uid, value, reason, note, includeBench)
+        entry = CLM.MODELS.LEDGER.POINTS.ModifyRaid:new(uid, value, reason, note, includeBench, isSpent)
     end
 
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)

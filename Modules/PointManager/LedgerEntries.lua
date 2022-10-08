@@ -13,7 +13,6 @@ local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
--- Point DKP X
 local Modify        = LogEntry:extend("DM")
 local ModifyRaid    = LogEntry:extend("DR")
 local ModifyRoster  = LogEntry:extend("DO")
@@ -21,7 +20,7 @@ local Set           = LogEntry:extend("DS")
 local Decay         = LogEntry:extend("DD")
 local DecayRoster   = LogEntry:extend("DT")
 
-function Modify:new(rosterUid, playerList, value, reason, note)
+function Modify:new(rosterUid, playerList, value, reason, note, spent)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
@@ -29,6 +28,7 @@ function Modify:new(rosterUid, playerList, value, reason, note)
     o.e = tonumber(reason) or 0
     note = note or ""
     o.t = tostring(note)
+    o.n = spent and true or false
     return o
 end
 
@@ -52,12 +52,16 @@ function Modify:note()
     return self.t or ""
 end
 
-local modifyFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t"})
+function Modify:spent()
+    return self.n
+end
+
+local modifyFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t", "n"})
 function Modify:fields()
     return modifyFields
 end
 
-function ModifyRaid:new(raidUid, value, reason, note, includeStandby)
+function ModifyRaid:new(raidUid, value, reason, note, includeStandby, spent)
     local o = LogEntry.new(self);
     o.r = raidUid or ""
     o.v = tonumber(value) or 0
@@ -65,6 +69,7 @@ function ModifyRaid:new(raidUid, value, reason, note, includeStandby)
     note = note or ""
     o.t = tostring(note)
     o.s = includeStandby and true or false
+    o.n = spent and true or false
     return o
 end
 
@@ -88,18 +93,23 @@ function ModifyRaid:standby()
     return self.s
 end
 
-local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t", "s"})
+function ModifyRaid:spent()
+    return self.n
+end
+
+local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t", "s", "n"})
 function ModifyRaid:fields()
     return modifyRaidFields
 end
 
-function ModifyRoster:new(rosterUid, value, reason, note)
+function ModifyRoster:new(rosterUid, value, reason, note, spent)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
     note = note or ""
     o.t = tostring(note)
+    o.n = spent and true or false
     return o
 end
 
@@ -119,12 +129,16 @@ function ModifyRoster:note()
     return self.t or ""
 end
 
+function ModifyRoster:spent()
+    return self.n
+end
+
 -- Required for proper decay handling in common mutator
 function ModifyRoster:ignoreNegatives()
     return false
 end
 
-local modifyRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t"})
+local modifyRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t", "n"})
 function ModifyRoster:fields()
     return modifyRosterFields
 end
@@ -242,7 +256,7 @@ function DecayRoster:fields()
     return decayRosterFields
 end
 
-CLM.MODELS.LEDGER.DKP = {
+CLM.MODELS.LEDGER.POINTS = {
     Modify = Modify,
     Set = Set,
     Decay = Decay,
