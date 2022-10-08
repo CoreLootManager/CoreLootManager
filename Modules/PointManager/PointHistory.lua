@@ -152,7 +152,7 @@ function FakePointHistory:Entry()
 end
 
 function FakePointHistory:Spent()
-    return o.spent
+    return self.spent
 end
 
 CLM.MODELS.PointHistory = PointHistory

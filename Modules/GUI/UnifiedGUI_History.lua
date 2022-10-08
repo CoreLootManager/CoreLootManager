@@ -259,6 +259,8 @@ local function tableDataFeeder()
 
     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_History.roster)
     if not roster then return {} end
+    
+    local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
     -- TODO: Change from loot type and profile name to filter as its faster
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(UnifiedGUI_History.profile or "")
     if UnifiedGUI_History.historyType ~= CONSTANTS.HISTORY_TYPE.POINT then
@@ -291,10 +293,14 @@ local function tableDataFeeder()
         end
 
         for _,lootData in ipairs(displayedLoot) do
-            local loot = lootData[1] --
+            local loot = lootData[1]
+            local value = loot:Value()
+            if isEPGP then
+                value = tostring(value) .. " " .. CLM.L["GP"]
+            end
             local row = {cols = {
                 {value = lootData[2]}, -- itemLink
-                {value = loot:Value()},
+                {value = value},
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
                 {value = lootData[3]}, -- owner
                 -- Not visible
@@ -317,11 +323,16 @@ local function tableDataFeeder()
         end
 
         local multiple = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
+
         for _,history in ipairs(pointList) do
             local reason = history:Reason() or 0
             local value = tostring(history:Value())
             if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                 value = value .. "%"
+            end
+
+            if isEPGP and history:Spent() then
+                value = value .. " " .. CLM.L["GP"]
             end
 
             local row = {cols = {
