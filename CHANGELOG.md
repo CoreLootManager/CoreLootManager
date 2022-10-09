@@ -1,3 +1,24 @@
+# Classic Loot Manager v2.4.0
+## Features
+### Manual GP Awarding
+You can now manually award Gear Points to players, by checking the `Gear Points` checkbox in Standings UI.
+
+### That's My BiS exporting
+You can now export your loot in TMB-accepted format.
+
+## Fixes
+### Auction History
+Auction history tooltips are now handled properly in non-named button mode.
+
+### Gear Points cleanup
+In various UIs information related to GP (and to some extent EP) is now more readable.
+
+### Named button conditional display
+Named buttons will now only display if their related value is greater than 0. This allows for conditional display of them based on different Items.
+
+### Locale
+Multiple locale fixes
+
 # Classic Loot Manager v2.3.1
 ## Fixes
 ### Tooltips

@@ -1,6 +1,25 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.4.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Manual GP Awarding", body = "You can now manually award Gear Points to players, by checking the |cff44ee44Gear Points|r checkbox in Standings UI." },
+                    { header = "That's My BiS exporting", body = "You can now export your loot in TMB-accepted format." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Auction History", body = "Auction history tooltips are now handled properly in non-named button mode." },
+                    { header = "Gear Points cleanup", body = "In various UIs information related to GP (and to some extent EP) is now more readable." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.3.0",
         data = {
             {
