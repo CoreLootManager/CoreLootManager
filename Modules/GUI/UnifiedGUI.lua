@@ -75,6 +75,8 @@ local function UpdateTab(self)
         },
         alignV = "top"
     })
+    -- Before show also when changing tab
+    self.tabs[self.selectedTab].handlers.beforeShow()
     -- Update options
     self:RefreshOptionsPane()
     -- Redraw

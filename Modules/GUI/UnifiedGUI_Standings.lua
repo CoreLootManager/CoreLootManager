@@ -123,6 +123,7 @@ local function GenerateUntrustedOptions(self)
         set = function(i, v)
             self.roster = v
             self.context = CONSTANTS.ACTION_CONTEXT.ROSTER
+            self.awardGearPoints = false
             refreshFn()
         end,
         get = function(i) return self.roster end,
@@ -203,13 +204,13 @@ local function GenerateAssistantOptions(self)
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     if CLM.MODULES.RaidManager:IsInRaid() then
-                        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardGearPoints)
                     else
                         LOG:Warning("You are not in raid.")
                     end
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
                     if roster then
-                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note)
+                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note, self.awardGearPoints)
                     else
                         LOG:Warning("Missing valid roster.")
                     end
@@ -221,7 +222,7 @@ local function GenerateAssistantOptions(self)
                         return
                     end
                     if roster then
-                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note)
+                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardGearPoints)
                     else
                         LOG:Warning("Missing valid roster.")
                     end
@@ -241,7 +242,23 @@ local function GenerateAssistantOptions(self)
                 end
             end),
             order = 14
-        }
+        },
+        award_type = {
+            name = CLM.L["Gear Points"],
+            type = "toggle",
+            set = function(i, v) self.awardGearPoints = v and true or false end,
+            get = function(i) return self.awardGearPoints end,
+            hidden = (function()
+                local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+                if roster then
+                    return (roster:GetPointType() ~= CONSTANTS.POINT_TYPE.EPGP)
+                end
+
+                return true
+            end),
+            order = 15,
+            width = "full"
+        },
     }
 end
 
@@ -394,7 +411,9 @@ local tableStructure = {
             local isEPGP = ST_GetIsEPGP(rowData)
             if isEPGP then
                 tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
-                tooltip:AddDoubleLine(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], tostring(ST_GetGP(rowData)) .. " ".. CLM.L["GP"])
+                tooltip:AddDoubleLine(
+                    UTILS.ColorCodeText(tostring(ST_GetEP(rowData)) .. " ".. CLM.L["EP"], "44ee44"),
+                    UTILS.ColorCodeText(tostring(ST_GetGP(rowData)) .. " ".. CLM.L["GP"], "44ee44"))
                 tooltip:AddDoubleLine(CLM.L["Weekly gains"], tostring(gains) .. " " .. CLM.L["EP"])
             else
                 tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
@@ -411,7 +430,7 @@ local tableStructure = {
             local lootList = ST_GetProfileLoot(rowData)
             tooltip:AddLine("\n")
             if #lootList > 0 then
-                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest loot"], "44ee44"), isEPGP and CLM.L["GP"] or CLM.L["DKP"])
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest loot"], "44ee44"), isEPGP and "" or CLM.L["DKP"])
                 local limit = #lootList - 4 -- inclusive (- 5 + 1)
                 if limit < 1 then
                     limit = 1
@@ -420,28 +439,39 @@ local tableStructure = {
                     local loot = lootList[i]
                     local _, itemLink = GetItemInfo(loot:Id())
                     if itemLink then
-                        tooltip:AddDoubleLine(itemLink, loot:Value())
+                        local value = loot:Value()
+                        if isEPGP then
+                            value = tostring(value) .. " " .. CLM.L["GP"]
+                        end
+                        tooltip:AddDoubleLine(itemLink, value)
                     end
                 end
             else
-                tooltip:AddLine(CLM.L["No loot received"])
+                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["No loot received"], "44ee44"))
             end
             -- Point History
             local pointList = ST_GetProfilePoints(rowData)
             tooltip:AddLine("\n")
             if #pointList > 0 then
-                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest points"], "44ee44"), isEPGP and CLM.L["EP"] or CLM.L["DKP"])
+                tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest points"], "44ee44"), isEPGP and "" or CLM.L["DKP"])
                 for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
                     if i > 5 then break end
                     local reason = point:Reason() or 0
                     local value = tostring(point:Value())
+
                     if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                         value = value .. "%"
+                    elseif isEPGP then
+                        if point:Spent() then
+                            value = value .. " " .. CLM.L["GP"]
+                        else
+                            value = value .. " " .. CLM.L["EP"]
+                        end
                     end
                     tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
                 end
             else
-                tooltip:AddLine(CLM.L["No points received"])
+                tooltip:AddLine(UTILS.ColorCodeText(CLM.L["No points received"], "44ee44"))
             end
             -- Display
             tooltip:Show()

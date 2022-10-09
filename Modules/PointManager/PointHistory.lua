@@ -13,7 +13,7 @@ local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 local PointHistory = {}
 local FakePointHistory = {}
 
-function PointHistory:New(entry, targets, timestamp, value, reason, creator, note)
+function PointHistory:New(entry, targets, timestamp, value, reason, creator, note, spent)
     local o = {}
 
     setmetatable(o, self)
@@ -26,6 +26,11 @@ function PointHistory:New(entry, targets, timestamp, value, reason, creator, not
     o.reason = tonumber(reason) or entry:reason()
     o.creator = creator or entry:creator()
     o.note = note or entry:note()
+    if entry.spent then -- Not All entries have spent field
+        o.spent = spent or entry:spent()
+    else
+        o.spent = spent or false
+    end
 
     return o
 end
@@ -78,8 +83,11 @@ function PointHistory:Entry()
     return self.entry
 end
 
+function PointHistory:Spent()
+    return self.spent
+end
 
-function FakePointHistory:New(targets, timestamp, value, reason, creator, note)
+function FakePointHistory:New(targets, timestamp, value, reason, creator, note, spent)
     local o = {}
 
     setmetatable(o, self)
@@ -91,6 +99,7 @@ function FakePointHistory:New(targets, timestamp, value, reason, creator, note)
     o.reason = reason
     o.creator = creator or ""
     o.note = note or ""
+    o.spent = spent or false
 
     return o
 end
@@ -140,6 +149,10 @@ end
 
 function FakePointHistory:Entry()
     return nil
+end
+
+function FakePointHistory:Spent()
+    return self.spent
 end
 
 CLM.MODELS.PointHistory = PointHistory
