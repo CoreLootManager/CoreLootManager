@@ -11,7 +11,6 @@ local XML = LibStub:GetLibrary("LibLuaXML")
 
 local pairs, ipairs = pairs, ipairs
 local tonumber, date = tonumber, date
-local ssub = string.sub
 local tinsert = table.insert
 local setmetatable = setmetatable
 
@@ -21,22 +20,14 @@ local function buildTMBLine(item)
     -- yeah thats not a checksum but should be unique enough
     local checksum = tostring(item.timestamp) .. tostring(item.id)
 
-    if #checksum > 20 then
-        checksum = ssub(checksum,1, 20)
-    elseif #checksum < 20 then
-        for _=1,(20-#checksum) do
-            checksum = "0" .. checksum
-        end
-    end
-
-    return  date("%Y-%m-%d", item.timestamp) .. "," .. 
+    return  date("%Y-%m-%d", item.timestamp) .. "," ..
             item.player .. "," ..
             tostring(item.id) ..  "," ..
             checksum .. "\n"
 end
 
 local function CLM_TMB_encode(data)
-    local output = "date,name,itemID,ID\n"
+    local output = "date,name,itemID,id\n"
     for _, roster in ipairs(data.lootHistory.roster) do
         for _, item in ipairs(roster.lootHistory.item) do
             output = output .. buildTMBLine(item)
