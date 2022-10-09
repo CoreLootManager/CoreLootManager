@@ -357,7 +357,6 @@ local columnsDKP = {
     {   name = CLM.L["Class"],  width = 100,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
-    -- {   name = CLM.L["Spec"],   width = 60 },
     {   name = CLM.L["Att. [%]"], width = 60,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     }
@@ -365,12 +364,11 @@ local columnsDKP = {
 
 local columnsEPGP = {
     {   name = CLM.L["Name"], width = 85 },
-    {   name = CLM.L["EP/GP"], width = 75 },
-    {   name = CLM.L["PR"], width = 70, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = CLM.L["EP/GP"], width = 80 },
+    {   name = CLM.L["PR"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
     {   name = CLM.L["Class"],  width = 100,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
-    -- {   name = CLM.L["Spec"],   width = 60 },
     {   name = CLM.L["Att. [%]"], width = 60,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     }
@@ -704,6 +702,8 @@ local function beforeShowHandler()
         UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
         UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
     end
+
+    refreshHandler() -- this is actually here only for the structure update
 end
 
 local function storeHandler()

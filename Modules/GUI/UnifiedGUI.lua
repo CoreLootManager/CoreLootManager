@@ -103,7 +103,7 @@ local function CreateTabsWidget(self, content)
     tabsWidget:SetCallback("OnGroupSelected", function(_, _, tab)
         self.selectedTab = tab
         -- Before show also when changing tab
-        -- self.tabs[self.selectedTab].handlers.beforeShow()
+        self.tabs[self.selectedTab].handlers.beforeShow()
         ChangeScrollingTable(self)
         UpdateTab(self)
         UpdateScrollingTableData(self)
