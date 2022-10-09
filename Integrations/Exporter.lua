@@ -16,6 +16,26 @@ local setmetatable = setmetatable
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
+local function buildTMBLine(item)
+    -- yeah thats not a checksum but should be unique enough
+    local checksum = tostring(item.timestamp) .. tostring(item.id)
+
+    return  date("%Y-%m-%d", item.timestamp) .. "," ..
+            item.player .. "," ..
+            tostring(item.id) ..  "," ..
+            checksum .. "\n"
+end
+
+local function CLM_TMB_encode(data)
+    local output = "date,name,itemID,id\n"
+    for _, roster in ipairs(data.lootHistory.roster) do
+        for _, item in ipairs(roster.lootHistory.item) do
+            output = output .. buildTMBLine(item)
+        end
+    end
+    return output
+end
+
 local Exporter = {}
 function Exporter:New(config)
     local o = {}
@@ -67,6 +87,7 @@ local EXPORT_GROUP_NAME = {
 local ENCODERS =  {
     [CLM.CONSTANTS.FORMAT_VALUE.XML]  = (function(output) return XML.encode(output) end),
     [CLM.CONSTANTS.FORMAT_VALUE.CSV]  = (function() return "CSV not supported" end),
+    [CLM.CONSTANTS.FORMAT_VALUE.TMB]  = (function(output) return CLM_TMB_encode(output) end),
     [CLM.CONSTANTS.FORMAT_VALUE.JSON] = (function(output) return json.encode(output) end),
 }
 
@@ -96,7 +117,9 @@ local DATA_BUILDERS = {
                                 name = profile:Name(),
                                 class = profile:Class(),
                                 spec = profile:SpecString(),
-                                dkp = roster:Standings(GUID)
+                                role = profile:Role(),
+                                points = roster:Standings(GUID),
+                                spent = roster:GetPointInfoForPlayer(GUID).spent
                             })
                         end
                     end
@@ -121,7 +144,9 @@ local DATA_BUILDERS = {
                             name = profile:Name(),
                             class = profile:Class(),
                             spec = profile:SpecString(),
-                            dkp = value
+                            role = profile:Role(),
+                            points = value,
+                            spent = roster:GetPointInfoForPlayer(GUID).spent
                         })
                     end
                 end
@@ -156,7 +181,7 @@ local DATA_BUILDERS = {
                                 quality = itemQuality or 0,
                                 player = profile:Name(),
                                 awardedBy = awardedBy and awardedBy:Name() or "",
-                                dkp = loot:Value(),
+                                points = loot:Value(),
                                 timestamp = loot:Timestamp()
                             })
                         end
@@ -185,7 +210,7 @@ local DATA_BUILDERS = {
                             quality = itemQuality or 0,
                             player = profile:Name(),
                             awardedBy = awardedBy and awardedBy:Name() or "",
-                            dkp = loot:Value(),
+                            points = loot:Value(),
                             timestamp = loot:Timestamp()
                         })
                     end
@@ -216,7 +241,7 @@ local DATA_BUILDERS = {
                             local note = decodeNote(history:Note())
                             local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
                             tinsert(roster_data.pointHistory.point, {
-                                dkp = history:Value(),
+                                points = history:Value(),
                                 player = profile:Name(),
                                 reason = CLM.CONSTANTS.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
                                 note = note,
@@ -244,7 +269,7 @@ local DATA_BUILDERS = {
                             local note = decodeNote(history:Note())
                             local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(history:Creator()))
                             tinsert(roster_data.pointHistory.point, {
-                                dkp = history:Value(),
+                                points = history:Value(),
                                 player = profile:Name(),
                                 reason = CLM.CONSTANTS.POINT_CHANGE_REASONS.ALL[history:Reason()] or "",
                                 note = note,

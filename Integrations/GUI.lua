@@ -31,6 +31,7 @@ local EXPORT_DATA_TYPE_GUI = {
 local FORMAT_VALUES_GUI =  {
     [CONSTANTS.FORMAT_VALUE.XML] = "XML",
     -- [CONSTANTS.FORMAT_VALUE.CSV] = "CSV",
+    [CONSTANTS.FORMAT_VALUE.TMB] = "TMB",
     [CONSTANTS.FORMAT_VALUE.JSON] = "JSON"
 }
 
@@ -229,13 +230,21 @@ local function Create(self)
                     self.db.export_config.data[k] = v
                 end,
                 get = function(i, k) return self.db.export_config.data[k] end,
+                disabled = (function() return (self.db.export_config.format == CONSTANTS.FORMAT_VALUE.TMB) end),
                 values = EXPORT_DATA_TYPE_GUI,
                 order = 1
             },
             format = {
                 name = CLM.L["Format"],
                 type = "select",
-                set = function(i, v) self.db.export_config.format = v end,
+                set = function(i, v)
+                    self.db.export_config.format = v
+                    if self.db.export_config.format == CONSTANTS.FORMAT_VALUE.TMB then
+                        self.db.export_config.data[CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = false
+                        self.db.export_config.data[CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = false
+                        self.db.export_config.data[CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = true
+                    end
+                end,
                 get = function(i) return self.db.export_config.format end,
                 style = "radio",
                 values = FORMAT_VALUES_GUI,
