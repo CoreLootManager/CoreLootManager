@@ -15,6 +15,8 @@ CLM.ChangelogData = {
                 data = {
                     { header = "Auction History", body = "Auction history tooltips are now handled properly in non-named button mode." },
                     { header = "Gear Points cleanup", body = "In various UIs information related to GP (and to some extent EP) is now more readable." },
+                    { header = "Named button conditional display", body = "Named buttons will now only display if their related value is greater than 0. This allows for conditional display of them based on different Items." },
+                    { header = "Locale", body = "Multiple locale fixes" },
                 },
             },
         },

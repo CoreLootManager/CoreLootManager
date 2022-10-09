@@ -316,7 +316,7 @@ local function GenerateNamedButtonsAuctionOptions(self,
         for _,tier in ipairs(usedTiers) do
             local value = tonumber(values[tier]) or 0
             local name = self.roster:GetFieldName(tier)
-            if name and name ~= "" then
+            if name and name ~= "" and (value >= 0) then
                 options[tier] = {
                     name = name,
                     desc = tostring(value),
