@@ -558,7 +558,7 @@ function UTILS.GetWeekOffsetUS()
 end
 
 function UTILS.round(number, decimals)
-    local factor = 10 ^ decimals
+    local factor = 10 ^ (decimals or 0)
     return mfloor(number * factor + 0.5) / factor
 end
 

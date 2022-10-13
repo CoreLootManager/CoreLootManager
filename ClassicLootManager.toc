@@ -109,7 +109,8 @@ Modules\RosterManager\IndirectSlotMap.lua
 
 # Addon Options and GUIs (View)
 Modules\RosterManager\Options.lua
-Modules\AuctionManager\GUI.lua
+#Modules\AuctionManager\GUI.lua
+Modules\AuctionManager\MultiGUI.lua
 Modules\BiddingManager\GUI.lua
 Modules\Changelog\GUI.lua
 Modules\LootQueueManager\GUI.lua

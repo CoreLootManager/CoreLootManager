@@ -19,17 +19,19 @@ function AuctionCommStartAuction:New(typeOrObject, itemValueMode, values, itemLi
     self.__index = self
 
     if isCopyConstructor then return o end
-
+    -- Common
     o.t = typeOrObject
     o.i = itemValueMode
-    o.v = values
-    o.l = itemLink
+    o.c = increment
+    o.r = rosterUid
     o.e = time
     o.d = endtime
     o.s = antiSnipe
+
+    -- Item
+    o.v = values
+    o.l = itemLink
     o.n = note
-    o.c = increment
-    o.r = rosterUid
 
     return o
 end

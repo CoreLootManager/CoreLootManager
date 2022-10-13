@@ -14,7 +14,7 @@ local typeof = UTILS.typeof
 
 local whoami = UTILS.whoami()
 
-local AUCTION_COMM_PREFIX = "Auction1"
+local AUCTION_COMM_PREFIX = "Auction2"
 
 local EVENT_START_AUCTION = "CLM_AUCTION_START"
 local EVENT_END_AUCTION = "CLM_AUCTION_END"
