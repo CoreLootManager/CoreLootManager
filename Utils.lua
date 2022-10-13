@@ -750,6 +750,18 @@ function UTILS.DictNotEmpty(dict)
     return not rawequal(next(dict), nil)
 end
 
+function UTILS.ResizeFrame(frame, up, scale)
+    if up then
+        scale = scale + 0.1
+        if scale > 2 then scale = 2 end
+    else
+        scale = scale - 0.1
+        if scale < 0.5 then scale = 0.5 end
+    end
+    frame:SetScale(scale)
+    return scale
+end
+
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
     [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
