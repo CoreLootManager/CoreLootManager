@@ -254,6 +254,10 @@ function UnifiedGUI:Initialize()
         end
     end))
 
+    CLM.MODULES.EventManager:RegisterEvent("CLM_UI_RESIZE", (function(event, data)
+        self.aceObjects.top.frame:SetScale(data.scale)
+    end))
+
     self._initialized = true
 end
 
@@ -274,6 +278,7 @@ function UnifiedGUI:CreateAceGUIStructure()
     CreateTabsContent(self)
     CreateTabsWidget(self, self.aceObjects.tabularContent)
     RestoreLocation(self)
+    f.frame:SetScale(CLM.GlobalConfigs:GetUIScale())
     for _, tab in pairs(self.tabs) do
         tab.handlers.restore()
     end

@@ -421,9 +421,9 @@ function BiddingManagerGUI:Create()
     f:EnableResize(false)
     f:SetWidth(BASE_WIDTH)
     f:SetHeight(BASE_HEIGHT)
-    f.frame:SetScript("OnMouseWheel", (function(f, delta)
+    f.frame:SetScript("OnMouseWheel", (function(frame, delta)
         if IsControlKeyDown() then
-            self.db.scale = UTILS.ResizeFrame(f, (delta > 0), self.db.scale)
+            self.db.scale = UTILS.ResizeFrame(frame, (delta > 0), self.db.scale)
         end
     end))
     self.top = f
