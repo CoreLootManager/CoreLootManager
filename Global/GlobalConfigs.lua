@@ -74,7 +74,7 @@ function GlobalConfigs:Initialize()
         },
         global_ui_scale = {
             name = CLM.L["UI Scale"],
-            desc = CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel"],
+            desc = CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel. Some windows may require closing and reopening."],
             type = "range",
             min = 0.5,
             max = 2,
