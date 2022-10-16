@@ -507,7 +507,7 @@ function AuctionManager:ValidateBid(name, bid)
     -- bid passing
     if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
         -- only allow passing if no bids have been placed in open auctions
-        if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and self.userResponses.bids[name] then
+        if (self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and self.userResponses.bids[name] then
             return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.PASSING_NOT_ALLOWED
         else
             return true
