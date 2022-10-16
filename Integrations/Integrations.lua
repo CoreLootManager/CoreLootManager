@@ -512,7 +512,7 @@ function Integration:Initialize()
             local column = {name = "PR", colName = "clmpr", width = 50, align = "CENTER", DoCellUpdate = RCLC_PR, sortnext = sortnext}
             table.insert(RCVF.scrollCols, column)
             local prColumn = RCVF:GetColumnIndexFromName("clmpr")
-            RCVF.scrollCols[prColumn].sortnext = sortnext
+            RCVF.scrollCols[responseColumn].sortnext = prColumn
             RCVF:GetFrame().st:SetDisplayCols(RCVF.scrollCols)
         end
     end
