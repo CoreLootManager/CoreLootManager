@@ -10,7 +10,7 @@ CLM.ChangelogData = {
                     { header = "UI Scaling", body = "You can now scale UI through slider in the configuration. Bidding UI scales separately by Ctrl + Mouse Wheel." },
                     { header = "Standings display", body = "Points in standings tooltip now are displayed in the proper order." },
                     { header = "Attendance sorting", body = "Sorting by attendance works now as expected." },
-                    { header = "Passing in Tiered mode", body = "You can now pass in Tiered mode."}
+                    { header = "Passing", body = "You can now pass in Open Tiered and Static modes."}
                 },
             },
         },
