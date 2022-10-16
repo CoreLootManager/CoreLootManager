@@ -358,7 +358,7 @@ local columnsDKP = {
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
     {   name = CLM.L["Att. [%]"], width = 60,
-        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
 }
 
@@ -370,7 +370,7 @@ local columnsEPGP = {
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
     {   name = CLM.L["Att. [%]"], width = 60,
-        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
 }
 
@@ -452,8 +452,13 @@ local tableStructure = {
             tooltip:AddLine("\n")
             if #pointList > 0 then
                 tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest points"], "44ee44"), isEPGP and "" or CLM.L["DKP"])
-                for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
-                    if i > 5 then break end
+                local limit = #pointList - 4 -- inclusive (- 5 + 1)
+                if limit < 1 then
+                    limit = 1
+                end
+                for i=#pointList, limit, -1 do
+                    local point = pointList[i]
+
                     local reason = point:Reason() or 0
                     local value = tostring(point:Value())
 
@@ -529,7 +534,6 @@ local function tableDataFeeder()
                 {value = epgp},
                 {value = numColumnValue, color = (value > 0 and colorGreen or colorRed)},
                 {value = UTILS.ColorCodeClass(profile:Class())},
-                -- {value = profile:SpecString()},
                 {value = UTILS.ColorCodeByPercentage(attendance)},
                 -- not displayed
                 {value = roster:GetCurrentGainsForPlayer(GUID)},

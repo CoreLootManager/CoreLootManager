@@ -607,6 +607,10 @@ function UTILS.LibStModifierFn(a1, b1)
     return RemoveColorCode(a1), RemoveColorCode(b1)
 end
 
+function UTILS.LibStModifierFnNumber(a1, b1)
+    return (tonumber(RemoveColorCode(a1)) or 0), (tonumber(RemoveColorCode(b1)) or 0)
+end
+
 function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
     local leftClick = (button == "LeftButton")
     local rightClick = (button == "RightButton")
