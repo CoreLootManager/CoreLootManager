@@ -59,18 +59,23 @@ local BiddingManagerGUI = {}
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {
         location = {nil, nil, "CENTER", 0, 0 },
+        scale = 1,
         closeOnBid = false
     })
 end
 
 local function StoreLocation(self)
     self.db.location = { self.top:GetPoint() }
+    self.db.scale = self.top.frame:GetScale()
 end
 
 local function RestoreLocation(self)
     if self.db.location then
         self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+    if self.db.scale then
+        self.top.frame:SetScale(self.db.scale)
     end
 end
 
@@ -416,6 +421,11 @@ function BiddingManagerGUI:Create()
     f:EnableResize(false)
     f:SetWidth(BASE_WIDTH)
     f:SetHeight(BASE_HEIGHT)
+    f.frame:SetScript("OnMouseWheel", (function(frame, delta)
+        if IsControlKeyDown() then
+            self.db.scale = UTILS.ResizeFrame(frame, (delta > 0), self.db.scale)
+        end
+    end))
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Bidding_GUI")
     self.bid = 0

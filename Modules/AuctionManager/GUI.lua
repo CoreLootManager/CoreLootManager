@@ -214,6 +214,9 @@ function AuctionManagerGUI:Initialize()
             end
         end
     end)
+    CLM.MODULES.EventManager:RegisterEvent("CLM_UI_RESIZE", (function(event, data)
+        self.top.frame:SetScale(data.scale)
+    end))
     self:RegisterSlash()
     self._initialized = true
 end
@@ -641,6 +644,7 @@ function AuctionManagerGUI:Create()
     f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Auctioning_GUI")
+    f.frame:SetScale(CLM.GlobalConfigs:GetUIScale())
 
     self.configuration = CLM.MODELS.RosterConfiguration:New()
     self.itemLink = nil

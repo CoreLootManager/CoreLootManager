@@ -11,6 +11,7 @@ local tonumber = tonumber
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
     self.db = CLM.MODULES.Database:Personal('global', {
+        uiscale = 1.0,
         announce_award_to_guild = true,
         announce_loot_to_raid = false,
         announce_loot_to_raid_owner_only = true,
@@ -68,8 +69,29 @@ function GlobalConfigs:Initialize()
             type = "toggle",
             set = function(i, v) self:SetAlerts(v) end,
             get = function(i) return self:GetAlerts() end,
-            width = "double",
+            width = 1,
             order = 2
+        },
+        global_ui_scale = {
+            name = CLM.L["UI Scale"],
+            desc = CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel. Some windows may require closing and reopening."],
+            type = "range",
+            min = 0.5,
+            max = 2,
+            step = 0.1,
+            set = function(i, v)
+                if v < 0.5 then v = 0.5 end
+                if v > 2 then v = 2 end
+                self.db.uiscale = v
+
+                CLM.MODULES.EventManager:DispatchEvent("CLM_UI_RESIZE", {
+                    scale = self.db.uiscale
+                })
+
+            end,
+            get = function(i) return self.db.uiscale end,
+            order = 2.1,
+            width = 1
         },
         global_bindings = {
             name = CLM.L["Bindings"],
@@ -93,7 +115,7 @@ function GlobalConfigs:Initialize()
                 end
             end),
             width = 1,
-            order = 2.1
+            order = 2.2
         },
         global_sounds = {
             name = CLM.L["Addon sounds"],
@@ -357,7 +379,6 @@ function GlobalConfigs:GetBidsWarning()
     return self.db.raid_warnings.bids
 end
 
-
 function GlobalConfigs:SetPriceTooltip(v)
     self.db.tooltips_display = v and true or false
 end
@@ -373,6 +394,10 @@ end
 
 function GlobalConfigs:SetDisableSync(value)
     self.db.disable_sync = value and true or false
+end
+
+function GlobalConfigs:GetUIScale()
+    return self.db.uiscale
 end
 
 CONSTANTS.MODIFIER_COMBINATION = {
