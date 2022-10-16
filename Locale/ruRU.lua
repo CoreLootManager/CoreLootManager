@@ -1443,7 +1443,7 @@ CLM.L["Removes current roster."] = "Удалить текущий состав."
 -- Modules/GUI/UnifiedGUI_Raids.lua:356
 CLM.L["Request standby"] = "Запрос замены"
 -- Global/GlobalConfigs.lua:77
---CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel. Some windows may require closing and reopening."] = ""
+CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel. Some windows may require closing and reopening."] = "Rescales CLM UI, кроме окна торгов. Вы можете самостоятельно изменить окно торгов независимо, используя колесо CTRL + мыши. Некоторые окна могут потребовать закрытия и повторного открытия."
 -- Global/GlobalSlashCommands.lua:132
 CLM.L["Reset gui positions"] = "Сброс позиционирования интерфейса"
 -- Modules/GUI/UnifiedGUI_Raids.lua:369
@@ -1769,7 +1769,7 @@ CLM.L["Two-Hand"] = "Двуручное"
 -- Modules/GUI/UnifiedGUI_Audit.lua:659
 CLM.L["Type"] = "Тип"
 -- Global/GlobalConfigs.lua:76
---CLM.L["UI Scale"] = ""
+CLM.L["UI Scale"] = "Масштаб пользовательского интерфейса"
 -- Modules/AutoAwardManager/EncounterIDs.lua:437
 -- Modules/AutoAwardManager/EncounterIDs.lua:554
 CLM.L["Ulduar"] = "Ульдуар"
