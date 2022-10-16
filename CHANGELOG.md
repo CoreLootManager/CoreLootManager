@@ -1,3 +1,13 @@
+# Classic Loot Manager v2.4.1
+## Fixes
+### RCLC Integration
+RCLC Integration now displays PR in the RCLC window.
+### UI Scaling
+You can now scale UI through slider in the configuration. Bidding UI scales separately by Ctrl + Mouse Wheel.
+### Standings display
+Points in standings tooltip now are displayed in the proper order.
+### Attendance sorting
+Sorting by attendance works now as expected.
 # Classic Loot Manager v2.4.0
 ## Features
 ### Manual GP Awarding

@@ -1,6 +1,20 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.4.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "RCLC Integration", body = "RCLC Integration now displays PR in the RCLC window." },
+                    { header = "UI Scaling", body = "You can now scale UI through slider in the configuration. Bidding UI scales separately by Ctrl + Mouse Wheel." },
+                    { header = "Standings display", body = "Points in standings tooltip now are displayed in the proper order." },
+                    { header = "Attendance sorting", body = "Sorting by attendance works now as expected." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.4.0",
         data = {
             {
