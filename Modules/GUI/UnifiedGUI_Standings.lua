@@ -358,7 +358,7 @@ local columnsDKP = {
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
     {   name = CLM.L["Att. [%]"], width = 60,
-        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
 }
 
@@ -370,7 +370,7 @@ local columnsEPGP = {
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
     {   name = CLM.L["Att. [%]"], width = 60,
-        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
 }
 
@@ -534,7 +534,6 @@ local function tableDataFeeder()
                 {value = epgp},
                 {value = numColumnValue, color = (value > 0 and colorGreen or colorRed)},
                 {value = UTILS.ColorCodeClass(profile:Class())},
-                -- {value = profile:SpecString()},
                 {value = UTILS.ColorCodeByPercentage(attendance)},
                 -- not displayed
                 {value = roster:GetCurrentGainsForPlayer(GUID)},
