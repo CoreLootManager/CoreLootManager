@@ -74,9 +74,9 @@ CLM.L["<CLM> Missing profile for player %s."] = "<CLM> Profil manquant pour le j
 CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> Ton enchère (%s) est %s%s."
 -- Modules/GUI/UnifiedGUI_Standings.lua:145
 CLM.L["Action context"] = "Contexte de l'action"
--- Integrations/Integrations.lua:159
+-- Integrations/Integrations.lua:161
 CLM.L["Action to take upon Gargul loot award event happening during raid."] = "Action à effectuer lorsqu'un event Gargul d'attribution de loot eu lieu en raid."
--- Integrations/Integrations.lua:264
+-- Integrations/Integrations.lua:266
 CLM.L["Action to take upon RCLC loot award event happening during raid. Trigger is based on RCLC award reason or player response if reason is not used. On Integration Enable the buttons will be prefilled with existing ones."] = "Action à effectuer lors de l'attribution d'objets RCLC en raid. Le déclencheur est basé sur la raison d'attribution RCLC ou sur la réponse du joueur si pas de raison. Si l'intégration est activée, le label des boutons sera pré-rempli."
 -- Integrations/Import.lua:132
 CLM.L["Add Profiles to Rosters"] = "Ajouter des profils aux rosters"
@@ -101,7 +101,7 @@ CLM.L["Adding missing %s players to current roster"] = "Ajout de %s joueurs manq
 CLM.L["Additional cost (tax) to add to the award value."] = "Coût supplémentaire (taxe) à ajouter à la valeur de la récompense."
 -- Modules/RosterManager/Options.lua:1000
 CLM.L["Additional points to be given to players atop of the split value."] = "Points supplémentaires à attribuer aux joueurs en plus de la valeur partagée."
--- Global/GlobalConfigs.lua:121
+-- Global/GlobalConfigs.lua:99
 CLM.L["Addon sounds"] = "Sons de l'addon"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:154
 CLM.L["Adds selected players to the selected roster (from dropdown)."] = "Ajoute les joueurs sélectionnés au roster sélectionné depuis la liste déroulante."
@@ -113,7 +113,7 @@ CLM.L["Akil'zon"] = "Akil'zon"
 CLM.L["Al'ar"] = "Al'ar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:125
 CLM.L["Algalon the Observer"] = "Algalon l'observateur"
--- Modules/BiddingManager/GUI.lua:257
+-- Modules/BiddingManager/GUI.lua:252
 CLM.L["All In"] = "Offre max"
 -- Migration.lua:28
 CLM.L["All migration entries were commited and executed. Congratulations!"] = "Toutes les entrées de migration ont été validées et exécutées. Toutes nos félicitations!"
@@ -135,7 +135,7 @@ CLM.L["Allow players to subscribe to the bench through Raids menu"] = "Autoriser
 -- Modules/GUI/UnifiedGUI_Raids.lua:156
 -- Modules/GUI/UnifiedGUI_Audit.lua:136
 CLM.L["Allow subscription"] = "Autoriser l'abonnement"
--- Global/GlobalConfigs.lua:431
+-- Global/GlobalConfigs.lua:406
 CLM.L["Alt"] = "Alt"
 -- Modules/RosterManager/Roster.lua:786
 CLM.L["Americas"] = "Amériques"
@@ -146,11 +146,11 @@ CLM.L["Ammo"] = "Munitions"
 CLM.L["Anetheron"] = "Anetheron"
 -- Modules/AuctionManager/AuctionManager.lua:67
 CLM.L["Announce award to Guild"] = "Annoncer la récompense à la guilde"
--- Global/GlobalConfigs.lua:143
+-- Global/GlobalConfigs.lua:121
 CLM.L["Announce loot from corpse to Raid"] = "Annoncer le butin ramassé au raid"
--- Global/GlobalConfigs.lua:139
+-- Global/GlobalConfigs.lua:117
 CLM.L["Announce loot"] = "Annoncer le butin"
--- Global/GlobalConfigs.lua:161
+-- Global/GlobalConfigs.lua:139
 CLM.L["Announcement loot rarity"] = "Annonce de la rareté du butin"
 -- Modules/RosterManager/Roster.lua:634
 CLM.L["Anonymous Open"] = "Anonyme Ouvert"
@@ -158,7 +158,7 @@ CLM.L["Anonymous Open"] = "Anonyme Ouvert"
 CLM.L["Anti-snipe time"] = "Temps anti-snipe"
 -- Modules/AuctionManager/AuctionManager.lua:255
 CLM.L["Anti-snipe time: %s."] = "Temps anti-snipe : %s."
--- Modules/AuctionManager/GUI.lua:454
+-- Modules/AuctionManager/GUI.lua:451
 -- Modules/GUI/UnifiedGUI_Raids.lua:237
 -- Modules/GUI/UnifiedGUI_Audit.lua:73
 CLM.L["Anti-snipe"] = "Anti-snipe"
@@ -175,7 +175,7 @@ CLM.L["April"] = "Avril"
 CLM.L["Archavon the Stone Watcher"] = "Archavon le Gardien des pierres"
 -- Modules/AutoAwardManager/EncounterIDs.lua:101
 CLM.L["Archimonde"] = "Archimonde"
--- Modules/AuctionManager/GUI.lua:517
+-- Modules/AuctionManager/GUI.lua:514
 CLM.L["Are you sure, you want to award %s to %s for %s DKP?"] = "Êtes-vous sûr de vouloir attribuer %s à %s pour %s DKP ?"
 -- Modules/RosterManager/Roster.lua:661
 CLM.L["Ascending"] = "Ascendant"
@@ -188,14 +188,14 @@ CLM.L["Att. [%]"] = "Prés. [%]"
 CLM.L["Attendance"] = "Présence"
 -- Modules/AutoAwardManager/EncounterIDs.lua:64
 CLM.L["Attumen the Huntsman"] = "Attumen le Veneur"
--- Global/GlobalConfigs.lua:200
+-- Global/GlobalConfigs.lua:178
 CLM.L["Auction End Countdown"] = "Compte à rebours de fin d'enchères"
 -- MinimapIcon.lua:109
 -- Modules/AuctionHistoryManager/GUI.lua:199
 CLM.L["Auction History"] = "Historique de l'enchère"
--- Modules/AuctionManager/GUI.lua:478
+-- Modules/AuctionManager/GUI.lua:475
 CLM.L["Auction Results"] = "Résultat des enchères"
--- Global/GlobalConfigs.lua:184
+-- Global/GlobalConfigs.lua:162
 CLM.L["Auction Start/End"] = "Début/Fin de l'enchère"
 -- Modules/GUI/UnifiedGUI_Raids.lua:236
 -- Modules/GUI/UnifiedGUI_Audit.lua:70
@@ -210,7 +210,7 @@ CLM.L["Auction finished"] = "Enchère terminée"
 CLM.L["Auction item"] = "Enchère de l'objet"
 -- Modules/RosterManager/Options.lua:899
 CLM.L["Auction length in seconds."] = "Durée de l'enchère en secondes."
--- Modules/AuctionManager/GUI.lua:444
+-- Modules/AuctionManager/GUI.lua:441
 -- Modules/RosterManager/Options.lua:898
 CLM.L["Auction length"] = "Durée de l'enchère"
 -- Modules/BiddingManager/BiddingManager.lua:226
@@ -231,7 +231,7 @@ CLM.L["Auctioning - Chat Commands"] = "Enchères - Commandes de chat"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:72
 CLM.L["Auctioning - History"] = "Vente aux enchères - Historique"
 -- MinimapIcon.lua:104
--- Modules/AuctionManager/GUI.lua:639
+-- Modules/AuctionManager/GUI.lua:636
 -- Modules/AuctionManager/AuctionManager.lua:63
 CLM.L["Auctioning"] = "Vente aux enchères"
 -- Integrations/GUI.lua:147
@@ -256,21 +256,21 @@ CLM.L["Award %s points to %s selected players."] = "Attribuer %s points aux %s j
 CLM.L["Award %s points to everyone in raid."] = "Attribuer %s points à tous les membres du raid."
 -- Modules/GUI/UnifiedGUI_Standings.lua:237
 CLM.L["Award %s points to everyone in roster."] = "Attribuer %s points à tout le roster."
--- Integrations/Integrations.lua:622
+-- Integrations/Integrations.lua:650
 CLM.L["Award for Base"] = "Récompense de base"
--- Integrations/Integrations.lua:621
+-- Integrations/Integrations.lua:649
 CLM.L["Award for Free"] = "Récompense gratuite"
--- Integrations/Integrations.lua:625
+-- Integrations/Integrations.lua:653
 CLM.L["Award for Large"] = "Récompense grande"
--- Integrations/Integrations.lua:626
+-- Integrations/Integrations.lua:654
 CLM.L["Award for Max"] = "Récompense Max"
--- Integrations/Integrations.lua:624
+-- Integrations/Integrations.lua:652
 CLM.L["Award for Medium"] = "Récompense médium"
--- Integrations/Integrations.lua:623
+-- Integrations/Integrations.lua:651
 CLM.L["Award for Small"] = "Récompense petite"
 -- Global/GlobalSlashCommands.lua:20
 CLM.L["Award item without auctioning it."] = "Attribuer l'objet sans le mettre aux enchères."
--- Modules/AuctionManager/GUI.lua:483
+-- Modules/AuctionManager/GUI.lua:480
 -- Global/GlobalSlashCommands.lua:19
 CLM.L["Award item"] = "Attribuer l'objet"
 -- Modules/RosterManager/Options.lua:777
@@ -279,10 +279,10 @@ CLM.L["Award points only to online players"] = "Attribuer des points uniquement 
 CLM.L["Award points only to players in same zone"] = "Attribuer des points uniquement aux joueurs dans la même zone"
 -- Modules/GUI/UnifiedGUI_Standings.lua:189
 CLM.L["Award points to players based on context."] = "Attribuer des points aux joueurs en fonction du contexte."
--- Modules/AuctionManager/GUI.lua:489
+-- Modules/AuctionManager/GUI.lua:486
 -- Modules/GUI/UnifiedGUI_Standings.lua:178
 CLM.L["Award value"] = "Valeur attribuée"
--- Modules/AuctionManager/GUI.lua:497
+-- Modules/AuctionManager/GUI.lua:494
 -- Modules/GUI/UnifiedGUI_Standings.lua:188
 CLM.L["Award"] = "Récompense"
 -- Modules/GUI/UnifiedGUI_Audit.lua:456
@@ -334,9 +334,9 @@ CLM.L["Bid %s denied!"] = "Enchère %s refusée !"
 CLM.L["Bid cancelling not allowed"] = "Annulation d'enchère non autorisée"
 -- Modules/AuctionManager/AuctionManager.lua:703
 CLM.L["Bid increment too low"] = "Incrémentation d'enchère trop basse"
--- Modules/BiddingManager/GUI.lua:162
+-- Modules/BiddingManager/GUI.lua:157
 CLM.L["Bid input values as Main spec bid."] = "Entrer une offre pour une enchère de Main Spec"
--- Modules/BiddingManager/GUI.lua:173
+-- Modules/BiddingManager/GUI.lua:168
 CLM.L["Bid input values as Off spec bid."] = "Entrer une pour une enchère d'Off Spec"
 -- Modules/AuctionManager/AuctionManager.lua:244
 CLM.L["Bid tiers: %s."] = "Palier de l'enchère : %s"
@@ -344,11 +344,11 @@ CLM.L["Bid tiers: %s."] = "Palier de l'enchère : %s"
 CLM.L["Bid too high"] = "Enchère trop élevée"
 -- Modules/AuctionManager/AuctionManager.lua:700
 CLM.L["Bid too low"] = "Enchère trop basse"
--- Modules/BiddingManager/GUI.lua:152
+-- Modules/BiddingManager/GUI.lua:147
 CLM.L["Bid value"] = "Valeur de l'enchère"
--- Modules/BiddingManager/GUI.lua:258
+-- Modules/BiddingManager/GUI.lua:253
 CLM.L["Bid your current DKP (%s)."] = "Enchérissez tous vos DKP actuels (%s)."
--- Modules/AuctionManager/GUI.lua:246
+-- Modules/AuctionManager/GUI.lua:243
 CLM.L["Bid"] = "Offre d'achat"
 -- Modules/AuctionManager/AuctionManager.lua:699
 CLM.L["Bidding over current standings not allowed"] = "Vous ne pouvez pas faire d’offre supérieure à votre montant actuel de points"
@@ -356,17 +356,17 @@ CLM.L["Bidding over current standings not allowed"] = "Vous ne pouvez pas faire 
 CLM.L["Bidding while below minimum standings not allowed"] = "Vous ne pouvez pas faire d’offre quand vous êtes sous le minimum de points"
 -- MinimapIcon.lua:119
 -- Modules/BiddingManager/BiddingManager.lua:88
--- Modules/BiddingManager/GUI.lua:419
--- Modules/BiddingManager/GUI.lua:517
--- Modules/BiddingManager/GUI.lua:525
--- Modules/BiddingManager/GUI.lua:587
+-- Modules/BiddingManager/GUI.lua:414
+-- Modules/BiddingManager/GUI.lua:507
+-- Modules/BiddingManager/GUI.lua:515
+-- Modules/BiddingManager/GUI.lua:577
 -- Modules/RosterManager/Options.lua:877
 CLM.L["Bidding"] = "Enchère"
 -- Modules/AuctionHistoryManager/GUI.lua:141
 -- Modules/GUI/UnifiedGUI_History.lua:199
--- Global/GlobalConfigs.lua:216
+-- Global/GlobalConfigs.lua:194
 CLM.L["Bids"] = "Enchères"
--- Global/GlobalConfigs.lua:97
+-- Global/GlobalConfigs.lua:75
 CLM.L["Bindings"] = "Raccourcis clavier"
 -- Modules/AutoAwardManager/EncounterIDs.lua:336
 CLM.L["Black Temple"] = "Temple noir"
@@ -398,11 +398,11 @@ CLM.L["Buru the Gorger"] = "Buru Grandgosier"
 CLM.L["Button Names"] = "Noms des boutons"
 -- Modules/AutoAwardManager/EncounterIDs.lua:31
 CLM.L["C'Thun"] = "C'Thun"
--- Modules/BiddingManager/GUI.lua:204
--- Modules/BiddingManager/GUI.lua:371
+-- Modules/BiddingManager/GUI.lua:199
+-- Modules/BiddingManager/GUI.lua:366
 CLM.L["Cancel your bid."] = "Annulez votre offre."
--- Modules/BiddingManager/GUI.lua:203
--- Modules/BiddingManager/GUI.lua:370
+-- Modules/BiddingManager/GUI.lua:198
+-- Modules/BiddingManager/GUI.lua:365
 CLM.L["Cancel"] = "Annuler"
 -- Modules/RosterManager/Options.lua:618
 CLM.L["Change roster name."] = "Changer le nom du Roster."
@@ -410,7 +410,7 @@ CLM.L["Change roster name."] = "Changer le nom du Roster."
 CLM.L["Changelog"] = "Journal des modifications"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:93
 CLM.L["Channel for posting bids."] = "Canal où annoncer les enchères."
--- Global/GlobalConfigs.lua:192
+-- Global/GlobalConfigs.lua:170
 CLM.L["Chat Commands"] = "Commandes de discussion"
 -- Modules/AutoAwardManager/EncounterIDs.lua:72
 CLM.L["Chess Event"] = "Chess Event"
@@ -422,7 +422,7 @@ CLM.L["Chest (robes)"] = "Torse (robes)"
 CLM.L["Chest"] = "Torse"
 -- Modules/AutoAwardManager/EncounterIDs.lua:21
 CLM.L["Chromaggus"] = "Chromaggus"
--- Modules/AuctionManager/GUI.lua:243
+-- Modules/AuctionManager/GUI.lua:240
 -- Modules/GUI/UnifiedGUI_Standings.lua:357
 -- Modules/GUI/UnifiedGUI_Standings.lua:369
 -- Modules/GUI/UnifiedGUI_Profiles.lua:186
@@ -430,7 +430,7 @@ CLM.L["Class"] = "Classe"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:263
 CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s initialisation terminée."
 -- Modules/Changelog/GUI.lua:15
--- Modules/GUI/UnifiedGUI.lua:268
+-- Modules/GUI/UnifiedGUI.lua:264
 CLM.L["Classic Loot Manager"] = "Classic Loot Manager"
 -- Modules/RosterManager/Options.lua:544
 CLM.L["Classic"] = "Classic"
@@ -438,9 +438,9 @@ CLM.L["Classic"] = "Classic"
 CLM.L["Clear all classes."] = "Effacer toutes les classes."
 -- Integrations/GUI.lua:479
 CLM.L["Clear output"] = "Effacer la sortie"
--- Modules/BiddingManager/GUI.lua:89
+-- Modules/BiddingManager/GUI.lua:84
 CLM.L["Close on bid"] = "Fermer après l'offre"
--- Utils.lua:767
+-- Utils.lua:755
 CLM.L["Common"] = "Commun"
 -- MinimapIcon.lua:133
 -- Integrations/GUI.lua:23
@@ -466,7 +466,7 @@ CLM.L["Create new raid with provided name. You will automatically join this raid
 CLM.L["Create raid %s %s in <%s>"] = "Créer raid %s %s dans <%s>"
 -- Modules/GUI/UnifiedGUI_Raids.lua:195
 CLM.L["Create raid"] = "Créer raid"
--- Integrations/Integrations.lua:250
+-- Integrations/Integrations.lua:252
 -- Modules/RosterManager/Options.lua:1063
 CLM.L["Create"] = "Créer"
 -- Modules/RaidManager/RaidManager.lua:776
@@ -474,14 +474,14 @@ CLM.L["Create"] = "Créer"
 CLM.L["Created"] = "Créé"
 -- Modules/RosterManager/Options.lua:1064
 CLM.L["Creates new roster with default configuration"] = "Crée un nouveau roster avec la configuration par défaut"
--- Integrations/Integrations.lua:251
+-- Integrations/Integrations.lua:253
 CLM.L["Creates new trigger to be used during RCLC award."] = "Crée un nouveau déclencheur utilisé lors de l'attribution RCLC."
--- Global/GlobalConfigs.lua:433
+-- Global/GlobalConfigs.lua:408
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
--- Global/GlobalConfigs.lua:430
+-- Global/GlobalConfigs.lua:405
 CLM.L["Ctrl"] = "Ctrl"
--- Modules/BiddingManager/GUI.lua:525
--- Modules/AuctionManager/GUI.lua:251
+-- Modules/BiddingManager/GUI.lua:515
+-- Modules/AuctionManager/GUI.lua:248
 CLM.L["Current"] = "Actuel"
 -- Tooltips.lua:95
 -- Alerts/Alerts.lua:17
@@ -495,10 +495,10 @@ CLM.L["Current"] = "Actuel"
 -- Modules/GUI/UnifiedGUI_History.lua:307
 -- Modules/GUI/UnifiedGUI_History.lua:350
 CLM.L["DKP"] = "DKP"
--- Modules/AuctionManager/GUI.lua:531
+-- Modules/AuctionManager/GUI.lua:528
 -- Modules/ProfileManager/Profile.lua:153
 CLM.L["DPS"] = "DPS"
--- Global/GlobalConfigs.lua:225
+-- Global/GlobalConfigs.lua:203
 CLM.L["Danger Zone - Use at own risk"] = "Zone de danger - Utilisation à vos risques et périls"
 -- Integrations/GUI.lua:227
 CLM.L["Data"] = "Donnés"
@@ -533,15 +533,15 @@ CLM.L["Default Boss Kill Bonus value"] = "Valeur par défaut du bonus de Boss tu
 CLM.L["Default slot values"] = "Valeurs d'emplacement par défaut"
 -- Modules/GUI/UnifiedGUI_Audit.lua:660
 CLM.L["Description"] = "Description"
--- Global/GlobalConfigs.lua:243
+-- Global/GlobalConfigs.lua:221
 CLM.L["Disable data synchronisation"] = "Désactiver la synchronisation des données"
--- Global/GlobalConfigs.lua:244
+-- Global/GlobalConfigs.lua:222
 CLM.L["Disable data synchronisation. This might lead to unexpected consequences. Use this at your own risk. Requires /reload to apply."] = "Désactiver la synchro des données. Peut entraîner des conséquences inattendues. Utilisez à vos risques et périls. Nécessite /reload pour appliquer."
--- Global/GlobalConfigs.lua:428
+-- Global/GlobalConfigs.lua:403
 CLM.L["Disable"] = "Désactiver"
 -- Modules/Changelog/GUI.lua:39
 CLM.L["Disables display of the changelog for any new version."] = "Désactiver l'affichage du changelog pour toute nouvelle version."
--- Global/GlobalConfigs.lua:234
+-- Global/GlobalConfigs.lua:212
 CLM.L["Display price"] = "Prix affiché"
 -- Modules/Changelog/GUI.lua:78
 CLM.L["Do not show again"] = "Ne pas montrer à nouveau"
@@ -574,13 +574,13 @@ CLM.L["Edge of Madness"] = "Frontière de la folie"
 CLM.L["Emalon the Storm Watcher"] = "Emalon le Guetteur d'orage"
 -- Modules/AuctionManager/AuctionManager.lua:110
 CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."] = "Activez !dkp et !bid via chuchotement / raid. Le changement nécessite /reload."
--- Integrations/Integrations.lua:122
+-- Integrations/Integrations.lua:124
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "Activer l'intégration de Gargul. Permettra à Gargul de prendre le contrôle de certains aspects de CLM (Démarrer les enchères et attributions via Gargul)."
--- Integrations/Integrations.lua:237
-CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award."] = "Activer l'intégration RCLC. Cela permet de donner des DKP/GP via l'attribution d'objets RCLC."
--- Integrations/Integrations.lua:360
+-- Integrations/Integrations.lua:239
+CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award. Requires /reload."] = "Activer l'intégration RCLC. Cela permet de donner des DKP/GP via l'attribution d'objets RCLC. Nécessite /reload."
+-- Integrations/Integrations.lua:362
 CLM.L["Enable WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Activez l'intégration de WoW DKP Bot. Cela entraînera le stockage de données supplémentaires lors de la déconnexion."
--- Global/GlobalConfigs.lua:185
+-- Global/GlobalConfigs.lua:163
 CLM.L["Enable announcing auction start and end."] = "Activer l'annonce de début et fin des enchères."
 -- Modules/BiddingManager/BiddingManager.lua:102
 CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."] = "Activer la mise à jour automatique des valeurs d'enchères lorsque l'enchère actuelle la plus élevée change (enchère ouverte uniquement)."
@@ -596,25 +596,25 @@ CLM.L["Enable paid value splitting amongst raiders."] = "Activez la répartition
 CLM.L["Enables / disables minimap Icon"] = "Active/désactive l'icône de minimap"
 -- Modules/Logger/Logger.lua:34
 CLM.L["Enables / disables verbose data printing during logging"] = "Active/désactive l'impression de données détaillées dans les logs"
--- Global/GlobalConfigs.lua:193
+-- Global/GlobalConfigs.lua:171
 CLM.L["Enables announcing chat commands at auction start."] = "Permet d'annoncer les commandes de discussion au début de l'enchère."
--- Global/GlobalConfigs.lua:209
+-- Global/GlobalConfigs.lua:187
 CLM.L["Enables announcing loot awards."] = "Active l'annonce des récompenses de butin."
--- Global/GlobalConfigs.lua:217
+-- Global/GlobalConfigs.lua:195
 CLM.L["Enables announcing new highest bid (when applicable)."] = "Active l'annonce de la nouvelle offre la plus élevée (le cas échéant)."
--- Global/GlobalConfigs.lua:176
+-- Global/GlobalConfigs.lua:154
 CLM.L["Enables announcing raid start and end."] = "Active l'annonce de début et fin du raid."
 -- Modules/AuctionManager/AuctionManager.lua:86
 CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Active l'échange automatique du butin après la vente aux enchères depuis l’inventaire"
--- Global/GlobalConfigs.lua:235
+-- Global/GlobalConfigs.lua:213
 CLM.L["Enables displaying item price on tooltip."] = "Active l'affichage du prix en infobulle"
--- Global/GlobalConfigs.lua:201
+-- Global/GlobalConfigs.lua:179
 CLM.L["Enables raid-warning countdown for auctions."] = "Active le compte à rebours en avertissement de raid pour les enchères."
 -- Modules/GUI/UnifiedGUI_Audit.lua:747
 CLM.L["End Timetravel"] = "Mettre fin au Timetravel"
 -- Modules/GUI/UnifiedGUI_Raids.lua:400
 CLM.L["End selected raid"] = "Mettre fin au raid sélectionné"
--- Utils.lua:770
+-- Utils.lua:758
 CLM.L["Epic"] = "Épique"
 -- Modules/RosterManager/Options.lua:413
 CLM.L["Equation"] = "Equation"
@@ -701,8 +701,8 @@ CLM.L["GM"] = "GM"
 CLM.L["GP"] = "GP"
 -- Modules/AutoAwardManager/EncounterIDs.lua:57
 CLM.L["Gahz'ranka"] = "Gahz'ranka"
--- Integrations/Integrations.lua:115
--- Integrations/Integrations.lua:121
+-- Integrations/Integrations.lua:117
+-- Integrations/Integrations.lua:123
 CLM.L["Gargul Integration"] = "Intégration Gargul"
 -- Modules/AutoAwardManager/EncounterIDs.lua:8
 CLM.L["Garr"] = "Garr"
@@ -720,7 +720,7 @@ CLM.L["General Zarithrian"] = "Général Zarithrian"
 CLM.L["General settings"] = "Options générales"
 -- Modules/RosterManager/Roster.lua:709
 -- Modules/RosterManager/Roster.lua:742
--- Global/GlobalConfigs.lua:63
+-- Global/GlobalConfigs.lua:62
 CLM.L["Global"] = "Général"
 -- Modules/AutoAwardManager/EncounterIDs.lua:37
 CLM.L["Gluth"] = "Gluth"
@@ -753,7 +753,7 @@ CLM.L["Hard cap"] = "Hard cap"
 -- Modules/RosterManager/Roster.lua:710
 -- Modules/RosterManager/Roster.lua:743
 CLM.L["Head"] = "Tête"
--- Modules/AuctionManager/GUI.lua:531
+-- Modules/AuctionManager/GUI.lua:528
 -- Modules/ProfileManager/Profile.lua:152
 CLM.L["Healer"] = "Soigneur"
 -- Modules/AutoAwardManager/EncounterIDs.lua:40
@@ -898,9 +898,9 @@ CLM.L["Item value mode"] = "Mode de Valeur de l'objet"
 CLM.L["Item value must be positive"] = "La valeur de l'objet doit être positive"
 -- Modules/RosterManager/Options.lua:930
 CLM.L["Item value overrides"] = "Remplacements de la valeur de l'objet"
--- Modules/BiddingManager/GUI.lua:143
--- Modules/BiddingManager/GUI.lua:299
--- Modules/AuctionManager/GUI.lua:381
+-- Modules/BiddingManager/GUI.lua:138
+-- Modules/BiddingManager/GUI.lua:294
+-- Modules/AuctionManager/GUI.lua:378
 CLM.L["Item"] = "Objet"
 -- Modules/AutoAwardManager/EncounterIDs.lua:104
 CLM.L["Jan'alai"] = "Jan'alai"
@@ -908,7 +908,7 @@ CLM.L["Jan'alai"] = "Jan'alai"
 CLM.L["January"] = "Janvier"
 -- Modules/AutoAwardManager/EncounterIDs.lua:54
 CLM.L["Jin'do the Hexxer"] = "Jin'do le Maléficieur"
--- Global/GlobalConfigs.lua:48
+-- Global/GlobalConfigs.lua:47
 CLM.L["Join our discord for more info: "] = "Rejoignez notre discord pour plus d'infos : "
 -- Modules/GUI/UnifiedGUI_Raids.lua:414
 CLM.L["Join selected raid"] = "Rejoindre le raid sélectionné"
@@ -952,7 +952,7 @@ CLM.L["Last year"] = "L'année dernière"
 CLM.L["Latest loot"] = "Dernier butin"
 -- Modules/GUI/UnifiedGUI_Standings.lua:454
 CLM.L["Latest points"] = "Derniers points"
--- Utils.lua:771
+-- Utils.lua:759
 CLM.L["Legendary"] = "Légendaire"
 -- Modules/RosterManager/Roster.lua:721
 -- Modules/RosterManager/Roster.lua:754
@@ -977,7 +977,7 @@ CLM.L["Locked"] = "Fermé"
 CLM.L["Logging level"] = "Niveau Enregistrement"
 -- Modules/Logger/Logger.lua:20
 CLM.L["Logging"] = "Enregistrement"
--- Global/GlobalConfigs.lua:208
+-- Global/GlobalConfigs.lua:186
 CLM.L["Loot Awards"] = "Récompenses de butin"
 -- Integrations/GUI.lua:26
 CLM.L["Loot History"] = "Historique du butin"
@@ -995,9 +995,9 @@ CLM.L["Lord Marrowgar"] = "Seigneur Gargamoelle"
 CLM.L["Lucifron"] = "Lucifron"
 -- Modules/AutoAwardManager/EncounterIDs.lua:112
 CLM.L["M'uru"] = "M'uru"
--- Integrations/Integrations.lua:135
--- Integrations/Integrations.lua:140
--- Modules/BiddingManager/GUI.lua:161
+-- Integrations/Integrations.lua:137
+-- Integrations/Integrations.lua:142
+-- Modules/BiddingManager/GUI.lua:156
 -- Modules/AuctionManager/AuctionManager.lua:307
 CLM.L["MS"] = "MS"
 -- Modules/AutoAwardManager/EncounterIDs.lua:34
@@ -1126,7 +1126,7 @@ CLM.L["Multiplier used by the equations"] = "Multiplicateur utilisé par l'équa
 CLM.L["Multiplier"] = "Mutiplicateur"
 -- Modules/AutoAwardManager/EncounterIDs.lua:103
 CLM.L["Nalorakk"] = "Nalorakk"
--- Modules/AuctionManager/GUI.lua:242
+-- Modules/AuctionManager/GUI.lua:239
 -- Modules/RosterManager/Options.lua:617
 -- Modules/GUI/UnifiedGUI_Standings.lua:354
 -- Modules/GUI/UnifiedGUI_Standings.lua:366
@@ -1175,7 +1175,7 @@ CLM.L["No"] = "Non"
 -- Modules/RosterManager/Roster.lua:733
 -- Modules/RosterManager/Roster.lua:766
 CLM.L["Non-equippable"] = "Non-équipable"
--- Integrations/Integrations.lua:620
+-- Integrations/Integrations.lua:648
 -- Modules/GUI/Filters.lua:195
 -- Modules/GUI/UnifiedGUI_Raids.lua:302
 -- Modules/GUI/UnifiedGUI_History.lua:220
@@ -1184,33 +1184,33 @@ CLM.L["None"] = "Aucun"
 CLM.L["Northrend Beasts"] = "Les bêtes du Norfendre"
 -- Modules/AuctionManager/AuctionManager.lua:697
 CLM.L["Not in a roster"] = "Pas dans un roster"
--- Modules/AuctionManager/GUI.lua:532
+-- Modules/AuctionManager/GUI.lua:529
 -- Modules/GUI/UnifiedGUI_Standings.lua:563
 -- Modules/GUI/UnifiedGUI_Standings.lua:608
--- Global/GlobalConfigs.lua:230
+-- Global/GlobalConfigs.lua:208
 CLM.L["Not in raid"] = "Pas en raid"
 -- Modules/GUI/UnifiedGUI_Standings.lua:156
 CLM.L["Note to be added to award. Max 25 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."] = "Ajouter une note à l’attrib. de points. Maximum 25 lettres. Il est recommandé de ne pas inclure de date ni la raison ici. Si vous entrer l'ID de la rencontre, il sera transformé en nom du boss"
--- Modules/AuctionManager/GUI.lua:401
--- Modules/AuctionManager/GUI.lua:407
+-- Modules/AuctionManager/GUI.lua:398
+-- Modules/AuctionManager/GUI.lua:404
 -- Modules/GUI/UnifiedGUI_Standings.lua:154
 -- Modules/GUI/UnifiedGUI_History.lua:230
 CLM.L["Note"] = "Note"
 -- Modules/AutoAwardManager/EncounterIDs.lua:39
 CLM.L["Noth the Plaguebringer"] = "Noth le Porte-peste"
--- Modules/BiddingManager/GUI.lua:188
--- Modules/BiddingManager/GUI.lua:355
+-- Modules/BiddingManager/GUI.lua:183
+-- Modules/BiddingManager/GUI.lua:350
 CLM.L["Notify that you are passing on the item. Cancels any existing bids."] = "Avertissez que vous passez sur l'objet. Annule vos offres existantes."
--- Modules/BiddingManager/GUI.lua:186
--- Modules/BiddingManager/GUI.lua:353
+-- Modules/BiddingManager/GUI.lua:181
+-- Modules/BiddingManager/GUI.lua:348
 CLM.L["Notify that you are passing on the item."] = "Avertissez que vous passez sur l'objet."
 -- Integrations/GUI.lua:150
 CLM.L["November"] = "Novembre"
 -- Modules/GUI/UnifiedGUI_Audit.lua:657
 CLM.L["Num"] = "Nombre"
--- Integrations/Integrations.lua:145
--- Integrations/Integrations.lua:150
--- Modules/BiddingManager/GUI.lua:172
+-- Integrations/Integrations.lua:147
+-- Integrations/Integrations.lua:152
+-- Modules/BiddingManager/GUI.lua:167
 -- Modules/AuctionManager/AuctionManager.lua:309
 CLM.L["OS"] = "OS"
 -- Integrations/GUI.lua:149
@@ -1238,7 +1238,7 @@ CLM.L["One-Hand"] = "Une main"
 CLM.L["Online only"] = "En ligne seulement"
 -- Modules/GUI/Filters.lua:80
 CLM.L["Online"] = "En ligne"
--- Global/GlobalConfigs.lua:152
+-- Global/GlobalConfigs.lua:130
 CLM.L["Only when ML/RL"] = "Uniquement lorsque ML/RL"
 -- Modules/AutoAwardManager/EncounterIDs.lua:4
 CLM.L["Onyxia"] = "Onyxia"
@@ -1246,7 +1246,7 @@ CLM.L["Onyxia"] = "Onyxia"
 -- Modules/AutoAwardManager/EncounterIDs.lua:486
 -- Modules/AutoAwardManager/EncounterIDs.lua:603
 CLM.L["Onyxia's Lair"] = "Repaire d'Onyxia"
--- Global/GlobalConfigs.lua:98
+-- Global/GlobalConfigs.lua:76
 CLM.L["Open Key Bindings UI for AddOns"] = "Ouvrir les raccourcis clavier pour les addons"
 -- Modules/RosterManager/Roster.lua:631
 -- Modules/RosterManager/Roster.lua:638
@@ -1270,8 +1270,8 @@ CLM.L["PR"] = "PR"
 CLM.L["Paladin"] = "Paladin"
 -- Modules/GUI/UnifiedGUI_Raids.lua:289
 CLM.L["Participated"] = "Participé"
--- Modules/BiddingManager/GUI.lua:183
--- Modules/BiddingManager/GUI.lua:350
+-- Modules/BiddingManager/GUI.lua:178
+-- Modules/BiddingManager/GUI.lua:345
 CLM.L["Pass"] = "Passe"
 -- Modules/AuctionManager/AuctionManager.lua:706
 CLM.L["Passing after bidding not allowed"] = "Passer après une enchère n'est pas autorisé"
@@ -1287,7 +1287,7 @@ CLM.L["Player"] = "Joueur"
 -- Modules/GUI/UnifiedGUI_Raids.lua:420
 -- Modules/GUI/UnifiedGUI_Raids.lua:439
 CLM.L["Please select a raid"] = "Veuillez sélectionner un raid"
--- Global/GlobalConfigs.lua:67
+-- Global/GlobalConfigs.lua:66
 CLM.L["Point & Loot alerts"] = "Alertes de point et de butin"
 -- Integrations/GUI.lua:25
 CLM.L["Point History"] = "Historique des points"
@@ -1302,13 +1302,13 @@ CLM.L["Point"] = "Point"
 CLM.L["Points value that will be awarded."] = "Valeur des points qui seront attribués"
 -- Modules/GUI/UnifiedGUI_Standings.lua:356
 CLM.L["Points"] = "Points"
--- Utils.lua:766
+-- Utils.lua:754
 CLM.L["Poor"] = "Médiocre"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:84
 CLM.L["Post bids"] = "Annoncer les offres"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:92
 CLM.L["Post channel"] = "Canal d’annonce"
--- Global/GlobalConfigs.lua:230
+-- Global/GlobalConfigs.lua:208
 CLM.L["Price Tooltips"] = "Infobulle de prix"
 -- .:indirectly
 CLM.L["Priest"] = "Prêtre"
@@ -1316,8 +1316,8 @@ CLM.L["Priest"] = "Prêtre"
 CLM.L["Prince Malchezaar"] = "Prince Malchezaar"
 -- Modules/AutoAwardManager/EncounterIDs.lua:28
 CLM.L["Princess Huhuran"] = "Princesse Huhuran"
--- Integrations/Integrations.lua:140
--- Integrations/Integrations.lua:150
+-- Integrations/Integrations.lua:142
+-- Integrations/Integrations.lua:152
 CLM.L["Prioritized"] = "Priorisé"
 -- Modules/AutoAwardManager/EncounterIDs.lua:151
 CLM.L["Professor Putricide"] = "Professeur Putricide"
@@ -1341,8 +1341,8 @@ CLM.L["Queen Lana'thel"] = "Reine de sang Lana'thel"
 -- Modules/RosterManager/Roster.lua:737
 -- Modules/RosterManager/Roster.lua:770
 CLM.L["Quiver"] = "Carquois"
--- Integrations/Integrations.lua:230
--- Integrations/Integrations.lua:236
+-- Integrations/Integrations.lua:232
+-- Integrations/Integrations.lua:238
 CLM.L["RCLC Integration"] = "Integration RCLC"
 -- Modules/RosterManager/Roster.lua:612
 CLM.L["ROLL"] = "Jet de dés"
@@ -1365,9 +1365,9 @@ CLM.L["Raid Completion Bonus"] = "Bonus de fin de raid"
 CLM.L["Raid Completion Value"] = "Valeur de fin de raid"
 -- Modules/GUI/UnifiedGUI_Raids.lua:185
 CLM.L["Raid Name"] = "Nom du raid"
--- Global/GlobalConfigs.lua:175
+-- Global/GlobalConfigs.lua:153
 CLM.L["Raid Start/End"] = "Début/Fin du Raid"
--- Global/GlobalConfigs.lua:171
+-- Global/GlobalConfigs.lua:149
 CLM.L["Raid Warnings"] = "Avertissements de raid"
 -- Modules/RaidManager/RaidManager.lua:420
 CLM.L["Raid [%s] ended"] = "Raid [%s] terminé"
@@ -1396,7 +1396,7 @@ CLM.L["Ranged (wands)"] = "À distance (baguettes)"
 CLM.L["Ranged"] = "À distance"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:86
 CLM.L["Ranks"] = "Rangs"
--- Utils.lua:769
+-- Utils.lua:757
 CLM.L["Rare"] = "Rare"
 -- Modules/AutoAwardManager/EncounterIDs.lua:15
 CLM.L["Razorgore the Untamed"] = "Tranchetripe l'Indompté"
@@ -1404,8 +1404,8 @@ CLM.L["Razorgore the Untamed"] = "Tranchetripe l'Indompté"
 CLM.L["Razorscale"] = "Tranchécaille"
 -- Modules/GUI/UnifiedGUI_Standings.lua:169
 CLM.L["Reason"] = "Raison"
--- Integrations/Integrations.lua:135
--- Integrations/Integrations.lua:145
+-- Integrations/Integrations.lua:137
+-- Integrations/Integrations.lua:147
 CLM.L["Regular"] = "Standard"
 -- Modules/RosterManager/Roster.lua:738
 -- Modules/RosterManager/Roster.lua:771
@@ -1442,8 +1442,6 @@ CLM.L["Remove"] = "Supprimer"
 CLM.L["Removes current roster."] = "Supprime le roster actuel."
 -- Modules/GUI/UnifiedGUI_Raids.lua:356
 CLM.L["Request standby"] = "Demander une mise en veille"
--- Global/GlobalConfigs.lua:77
---CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel. Some windows may require closing and reopening."] = ""
 -- Global/GlobalSlashCommands.lua:132
 CLM.L["Reset gui positions"] = "Réinitialiser les positions de l'interface graphique"
 -- Modules/GUI/UnifiedGUI_Raids.lua:369
@@ -1510,7 +1508,7 @@ CLM.L["Select all classes."] = "Sélectionnez toutes les classes."
 CLM.L["Select equation"] = "Sélectionner l'équation"
 -- Modules/Logger/Logger.lua:25
 CLM.L["Select logging level for troubleshooting"] = "Sélectionnez le niveau du journal pour le dépannage"
--- Global/GlobalConfigs.lua:162
+-- Global/GlobalConfigs.lua:140
 CLM.L["Select loot rarity for the annoucement to raid."] = "Sélectionnez la rareté du butin annoncé au raid."
 -- Modules/LootQueueManager/LootQueueManager.lua:96
 CLM.L["Select loot rarity for the tracking unauctioned loot."] = "Sélectionnez la rareté du butin suivi non mis aux enchères."
@@ -1552,13 +1550,13 @@ CLM.L["Shazzrah"] = "Shazzrah"
 -- Modules/RosterManager/Roster.lua:730
 -- Modules/RosterManager/Roster.lua:763
 CLM.L["Shield"] = "Bouclier"
--- Global/GlobalConfigs.lua:432
+-- Global/GlobalConfigs.lua:407
 CLM.L["Shift + Alt"] = "Shift + Alt"
--- Global/GlobalConfigs.lua:435
+-- Global/GlobalConfigs.lua:410
 CLM.L["Shift + Ctrl + Alt"] = "Shift + Ctrl + Alt"
--- Global/GlobalConfigs.lua:434
+-- Global/GlobalConfigs.lua:409
 CLM.L["Shift + Ctrl"] = "Shift + Ctrl"
--- Global/GlobalConfigs.lua:429
+-- Global/GlobalConfigs.lua:404
 CLM.L["Shift"] = "Shift"
 -- Modules/RosterManager/Roster.lua:713
 -- Modules/RosterManager/Roster.lua:746
@@ -1599,7 +1597,7 @@ CLM.L["Standby"] = "En attente"
 CLM.L["Standings"] = "Aperçu roster"
 -- Modules/GUI/UnifiedGUI_Raids.lua:386
 CLM.L["Start selected raid"] = "Commencer le raid sélectionné"
--- Modules/AuctionManager/GUI.lua:464
+-- Modules/AuctionManager/GUI.lua:461
 CLM.L["Start"] = "Début"
 -- Modules/GUI/UnifiedGUI_Audit.lua:511
 CLM.L["Started raid %s"] = "Raid %s commencé"
@@ -1607,7 +1605,7 @@ CLM.L["Started raid %s"] = "Raid %s commencé"
 CLM.L["Statistics"] = "Statistiques"
 -- Modules/GUI/UnifiedGUI_Raids.lua:262
 CLM.L["Status"] = "Status"
--- Modules/AuctionManager/GUI.lua:464
+-- Modules/AuctionManager/GUI.lua:461
 CLM.L["Stop"] = "Stop"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:76
 CLM.L["Store bids"] = "Sauvegarder les enchères"
@@ -1635,7 +1633,7 @@ CLM.L["TBC"] = "TBC"
 -- Modules/RosterManager/Roster.lua:717
 -- Modules/RosterManager/Roster.lua:750
 CLM.L["Tabard"] = "Tabard"
--- Modules/AuctionManager/GUI.lua:531
+-- Modules/AuctionManager/GUI.lua:528
 -- Modules/ProfileManager/Profile.lua:151
 CLM.L["Tank"] = "Tank"
 -- Modules/RosterManager/Options.lua:1031
@@ -1690,7 +1688,7 @@ CLM.L["Tiered"] = "Par niveau"
 CLM.L["Time Traveling"] = "Voyager dans le temps"
 -- Modules/RosterManager/Options.lua:908
 CLM.L["Time in seconds by which auction will be extended if bid is received during last 10 seconds."] = "Durée en secondes ajoutée à l’enchère si une offre est reçue au cours des 10 dernières secondes."
--- Modules/AuctionManager/GUI.lua:438
+-- Modules/AuctionManager/GUI.lua:435
 CLM.L["Time settings"] = "Paramètres du temps"
 -- Modules/RosterManager/Options.lua:892
 -- Modules/GUI/UnifiedGUI_Audit.lua:658
@@ -1699,11 +1697,11 @@ CLM.L["Time"] = "Temps"
 CLM.L["Timetravel"] = "Timetravel"
 -- Modules/AuctionHistoryManager/GUI.lua:284
 CLM.L["Toggle Auction History window display"] = "Activer l'affichage de la fenêtre Historique des enchères"
--- Modules/AuctionManager/GUI.lua:801
+-- Modules/AuctionManager/GUI.lua:797
 CLM.L["Toggle Auctioning window display"] = "Activer l'affichage de la fenêtre d'enchères"
 -- Modules/BiddingManager/BiddingManager.lua:92
 CLM.L["Toggle Bidding auto-open"] = "Activer l'ouverture automatique des enchères"
--- Modules/BiddingManager/GUI.lua:588
+-- Modules/BiddingManager/GUI.lua:578
 CLM.L["Toggle Bidding window display"] = "Activer l'affichage de la fenêtre d'enchères"
 -- Integrations/ImportCSV.lua:216
 CLM.L["Toggle CSV import window display"] = "Activer l’affichage de la fenêtre d'importation CSV"
@@ -1718,19 +1716,19 @@ CLM.L["Toggle auto open and auto close on auction start and stop"] = "Activer l'
 CLM.L["Toggle changelog window display"] = "Activer l'affichage de la fenêtre du journal des modifications"
 -- Modules/Changelog/GUI.lua:47
 CLM.L["Toggle changelog"] = "Activer le journal des modifications"
--- Modules/BiddingManager/GUI.lua:90
+-- Modules/BiddingManager/GUI.lua:85
 CLM.L["Toggle closing bidding UI after submitting bid."] = "Fermer la fenêtre d'enchère après avoir fait une offre"
 -- Integrations/GUI.lua:518
 CLM.L["Toggle export window display"] = "Activer l’affichage de la fenêtre d'exportation"
 -- Integrations/Import.lua:226
 CLM.L["Toggle import window display"] = "Activer l’Affichage de la fenêtre d'importation"
--- Modules/GUI/UnifiedGUI.lua:424
+-- Modules/GUI/UnifiedGUI.lua:419
 CLM.L["Toggle standings window display"] = "Activer l'affichage de la fenêtre de l’aperçu roster"
--- Global/GlobalConfigs.lua:122
+-- Global/GlobalConfigs.lua:100
 CLM.L["Toggles addon sounds."] = "Activer les sons de l'addon"
--- Global/GlobalConfigs.lua:68
+-- Global/GlobalConfigs.lua:67
 CLM.L["Toggles alerts display when receiving Points or loot."] = "Activer les alertes affichées lors de la réception de points ou de butin."
--- Global/GlobalConfigs.lua:144
+-- Global/GlobalConfigs.lua:122
 CLM.L["Toggles loot announcement to raid"] = "Activer l'annonce de butin en raid"
 -- Modules/AuctionManager/AuctionManager.lua:68
 CLM.L["Toggles loot award announcement to guild"] = "Activer l'annonce de récompense de butin à la guilde"
@@ -1768,8 +1766,6 @@ CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%
 CLM.L["Two-Hand"] = "Deux mains"
 -- Modules/GUI/UnifiedGUI_Audit.lua:659
 CLM.L["Type"] = "Type"
--- Global/GlobalConfigs.lua:76
---CLM.L["UI Scale"] = ""
 -- Modules/AutoAwardManager/EncounterIDs.lua:437
 -- Modules/AutoAwardManager/EncounterIDs.lua:554
 CLM.L["Ulduar"] = "Ulduar"
@@ -1777,7 +1773,7 @@ CLM.L["Ulduar"] = "Ulduar"
 CLM.L["Unable to execute migration. Entries already exist."] = "Impossible d'exécuter la migration. Les entrées existent déjà."
 -- Modules/RosterManager/ItemValueCalculator.lua:152
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "Impossible de récupérer les infos de l'objet depuis le serveur. Essayez de relancer l'enchère"
--- Utils.lua:768
+-- Utils.lua:756
 CLM.L["Uncommon"] = "Commun"
 -- Modules/PointManager/PointManager.lua:417
 CLM.L["Unexcused absence"] = "Absence injustifiée"
@@ -1810,9 +1806,9 @@ CLM.L["Vaelastrasz the Corrupt"] = "Vaelastrasz le Corrompu"
 CLM.L["Val'kyr Twins"] = "Les jumelles Val'kyr"
 -- Modules/AutoAwardManager/EncounterIDs.lua:147
 CLM.L["Valithria Dreamwalker"] = "Valithria Marcherêve"
--- Modules/AuctionManager/GUI.lua:432
+-- Modules/AuctionManager/GUI.lua:429
 CLM.L["Value ranges"] = "Plages de valeurs"
--- Modules/BiddingManager/GUI.lua:153
+-- Modules/BiddingManager/GUI.lua:148
 CLM.L["Value you want to bid. Press Enter or click Okay button to accept."] = "Valeur que vous souhaitez enchérir. Appuyez sur Entrée ou cliquez sur le bouton OK pour accepter."
 -- Modules/GUI/UnifiedGUI_History.lua:147
 CLM.L["Value"] = "Valeur"
@@ -1850,19 +1846,19 @@ CLM.L["Weekly gains"] = "Gains hebdomadaires"
 CLM.L["Weekly reset timezone"] = "Timer de réinitialisation hebdomadaire"
 -- Modules/GUI/UnifiedGUI_Audit.lua:115
 CLM.L["Weekly reset"] = "Réinitialisation hebdomadaire"
--- Global/GlobalConfigs.lua:153
+-- Global/GlobalConfigs.lua:131
 CLM.L["When enabled, this will make loot announcement display only if you're Master Looter or Raid Leader (if there is no Master Looter)."] = "Quand activé, l'annonce du butin s’affichera uniquement si vous êtes Master Loot ou Raid Leader (s'il n'y a pas de Master Loot)."
 -- Modules/RosterManager/Options.lua:947
 CLM.L["Will display names of the buttons instead of values in bidding UI"] = "Affichera les noms des boutons au lieu des valeurs dans l'interface d'enchères"
--- Global/GlobalConfigs.lua:130
+-- Global/GlobalConfigs.lua:108
 CLM.L["Wipe events"] = "Effacer les événements"
 -- Modules/Logger/Logger.lua:41
 CLM.L["Wipe"] = "Effacer"
--- Global/GlobalConfigs.lua:131
+-- Global/GlobalConfigs.lua:109
 CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "Efface tous les événements de la mémoire. Cela déclenchera la resynchronisation depuis les autres utilisateurs."
 -- Modules/Logger/Logger.lua:42
 CLM.L["Wipes the log history"] = "Efface l'historique du journal"
--- Integrations/Integrations.lua:359
+-- Integrations/Integrations.lua:361
 CLM.L["WoW DKP Bot Integration"] = "Intégration WoW DKP Bot"
 -- Modules/RosterManager/Options.lua:554
 CLM.L["WotLK - 10"] = "WotLK - 10"
@@ -2024,11 +2020,11 @@ CLM.L["cancel"] = "annuler"
 CLM.L["created"] = "créé"
 -- Global/GlobalChatMessageHandlers.lua:58
 CLM.L["denied"] = "refusé"
--- Integrations/Integrations.lua:341
+-- Integrations/Integrations.lua:343
 CLM.L["else"] = "sinon"
 -- Modules/GUI/UnifiedGUI_Audit.lua:465
 CLM.L["excluding negatives "] = "à l'exclusion des négatifs"
--- Integrations/Integrations.lua:276
+-- Integrations/Integrations.lua:278
 CLM.L["if reason/response contains"] = "Si la raison/réponse contient"
 -- Global/GlobalSlashCommands.lua:67
 CLM.L["level"] = "niveau"
@@ -2054,7 +2050,7 @@ CLM.L["revoked"] = "révoqué"
 CLM.L["roster"] = "roster"
 -- Global/GlobalChatMessageHandlers.lua:97
 CLM.L["rosters"] = "rosters"
--- Integrations/Integrations.lua:286
+-- Integrations/Integrations.lua:288
 CLM.L["then"] = "alors"
 -- Global/GlobalSlashCommands.lua:74
 CLM.L["unguilded"] = "sans guilde"
