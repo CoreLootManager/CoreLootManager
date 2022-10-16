@@ -8,6 +8,8 @@ You can now scale UI through slider in the configuration. Bidding UI scales sepa
 Points in standings tooltip now are displayed in the proper order.
 ### Attendance sorting
 Sorting by attendance works now as expected.
+### Passing in Tiered mode
+You can now pass in Tiered mode
 # Classic Loot Manager v2.4.0
 ## Features
 ### Manual GP Awarding
