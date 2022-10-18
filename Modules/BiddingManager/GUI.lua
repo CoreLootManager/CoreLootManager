@@ -316,6 +316,10 @@ local function GenerateNamedButtonsAuctionOptions(self,
             CONSTANTS.SLOT_VALUE_TIER.BASE,
             CONSTANTS.SLOT_VALUE_TIER.MAX
         }
+    elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED then
+        usedTiers = {
+            CONSTANTS.SLOT_VALUE_TIER.BASE
+        }
     end
     if usedTiers then
         for _,tier in ipairs(usedTiers) do
