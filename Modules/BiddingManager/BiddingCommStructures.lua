@@ -26,7 +26,7 @@ function BiddingCommSubmitBid:New(valueOrObject, bidType, items)
     return o
 end
 
-function BiddingCommSubmitBid:Bid()
+function BiddingCommSubmitBid:Value()
     return self.d or 0
 end
 

@@ -220,6 +220,7 @@ function BiddingManager:HandleStartAuction(data, sender)
     end
     self.auctionInfo = data
     self.auctioneer = sender
+    self.bids = {}
     self.auctionInProgress = true
     PlayStartSound()
     CLM.GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
@@ -282,10 +283,23 @@ function BiddingManager:HandleDistributeBid(data, sender)
         LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
         return
     end
-    if self:GetAutoUpdateBidValue() then
-        local value = (tonumber(data:Value()) or 0) + self.auctionInfo:Increment()
-        CLM.GUI.BiddingManager:UpdateCurrentBidValue(value)
+    local bid = data:Value()
+    if type(bid) == "table" then
+        bid = CLM.MODELS.BiddingCommSubmitBid:New(bid)
+    else -- old comms
+        bid = CLM.MODELS.BiddingCommSubmitBid:New(tonumber(bid) or 0, CONSTANTS.BID_TYPE.PASS, {})
     end
+
+    self.bids[data:Name()] = bid
+    if self:GetAutoUpdateBidValue() then
+        CLM.GUI.BiddingManager:UpdateCurrentBidValue((tonumber(bid:Value()) or 0) + self.auctionInfo:Increment())
+    else
+        CLM.GUI.BiddingManager:Refresh()
+    end
+end
+
+function BiddingManager:GetBids()
+    return self.bids
 end
 
 CONSTANTS.BIDDING_COMM = {
@@ -308,8 +322,8 @@ CONSTANTS.BIDDING_COMM = {
 CONSTANTS.BID_TYPE = {
     MAIN_SPEC = 1,
     OFF_SPEC = 2,
-    -- PASS = 3,
-    -- CANCEL = 4,
+    PASS = 3,
+    CANCEL = 4,
     [CONSTANTS.SLOT_VALUE_TIER.BASE]    = CONSTANTS.SLOT_VALUE_TIER.BASE,
     [CONSTANTS.SLOT_VALUE_TIER.SMALL]   = CONSTANTS.SLOT_VALUE_TIER.SMALL,
     [CONSTANTS.SLOT_VALUE_TIER.MEDIUM]  = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
