@@ -1,3 +1,17 @@
+# Classic Loot Manager v2.5.0
+## Features
+### Open Auction
+Open Auction modes just got overhauled. You will now see list of bidders in bidding UI. Information is limited in anonymous mode. It is strongly recommended for all raiders to upgrade to this version.
+### Auctioning UI
+Auctioning UI got simplified a bit. Checking player upgrades should now be easier.
+### Bid posting
+Upgrades will now be posted together with bids.
+## Fixes
+### Boss kill bonus
+Boss kill bonus should work now for EoE/OS/VoA. Additionaly it can be set to negative value. 0 is still ignored.
+### Pass in open auctions
+In non-ascending auctions pass won't be grayed out anymore after bidding.
+
 # Classic Loot Manager v2.4.1
 ## Fixes
 ### RCLC Integration
