@@ -199,7 +199,11 @@ local function GenerateValueButtonsAuctionOptions(self,
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             disabled = (function()
-                    return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
+                    return (
+                        CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and
+                        (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and
+                        (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
+                    )
             end),
             width = rowMultiplier/2,
             order = 20
@@ -212,7 +216,12 @@ local function GenerateValueButtonsAuctionOptions(self,
                 CLM.MODULES.BiddingManager:CancelBid()
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
+            disabled = (function()
+                return (
+                    CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and
+                    (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING)
+                )
+            end),
             width = rowMultiplier/2,
             order = 21
         }
