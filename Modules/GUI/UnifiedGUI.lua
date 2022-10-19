@@ -243,7 +243,9 @@ function UnifiedGUI:Initialize()
     end)
 
     CLM.MODULES.LedgerManager:RegisterOnRestart(function()
-        self.aceObjects.loadingBanner:Show()
+        if CLM.MODULES.LegerManager:Length() > 0 then
+            self.aceObjects.loadingBanner:Show()
+        end
     end)
 
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"},
