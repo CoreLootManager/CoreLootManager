@@ -26,6 +26,19 @@ local multiWoWDifficultyIDs = {
     [176] = 4,
 }
 
+local bossKillEncounterWorkaround = {
+    -- EoE / OS / VoA
+    [742] = 1090,
+    [738] = 1091,
+    [736] = 1092,
+    [740] = 1093,
+    [734] = 1094,
+    [772] = 1126,
+    [774] = 1127,
+    [776] = 1128,
+    [885] = 1129,
+}
+
 local function normalizeDifficultyId(difficultyId)
     return multiWoWDifficultyIDs[difficultyId] or -1
 end
@@ -35,6 +48,7 @@ local function awardBossKillBonus(id, difficultyId)
         local _, _, difficultyID = GetInstanceInfo()
         difficultyId = difficultyID
     end
+    id = bossKillEncounterWorkaround[id] or id
     difficultyId = normalizeDifficultyId(difficultyId)
     LOG:Info("Award Boss Kill Bonus for %s %s", id, difficultyId)
     if CLM.MODULES.RaidManager:IsInActiveRaid() then
