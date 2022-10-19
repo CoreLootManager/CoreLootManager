@@ -605,10 +605,15 @@ function AuctionManager:UpdateBidsInternal(name, bid)
     end
     -- actual bid
     local value = bid:Value()
+    local items = bid:Items()
     self.userResponses.bids[name] = value
     self.userResponses.bidTypes[name] = bid:Type()
-    self.userResponses.upgradedItems[name] = bid:Items()
+    self.userResponses.upgradedItems[name] = items
     self.userResponses.passes[name] = nil
+
+    -- Force item caching
+    if items[1] then GetItemInfo(items[1]) end
+    if items[2] then GetItemInfo(items[2]) end
 
     local newHighBid = false
     if value > self.highestBid then

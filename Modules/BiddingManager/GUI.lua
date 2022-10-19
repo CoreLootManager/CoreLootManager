@@ -620,7 +620,7 @@ local function BuildBidderData(self)
             local current
             local class
             local color
-            local bidName = ""
+            local bidName = bid:Value()
             local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
             if profile then
                 class = profile:ClassInternal()
