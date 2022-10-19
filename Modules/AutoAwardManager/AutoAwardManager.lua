@@ -42,7 +42,7 @@ local function awardBossKillBonus(id, difficultyId)
         local config = CLM.MODULES.RaidManager:GetRaid():Configuration()
         if config:Get("bossKillBonus") then
             local value = roster:GetBossKillBonusValue(id, difficultyId)
-            if value > 0 then
+            if value ~= 0 then
                 CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
             end
         end
