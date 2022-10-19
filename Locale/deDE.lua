@@ -5,7 +5,7 @@ CLM.L[" alt of: "] = " Twink von: "
 -- Utils.lua:475
 CLM.L[" more"] = " mehr"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
---CLM.L[" over "] = ""
+CLM.L[" over "] = " Über "
 -- Modules/GUI/UnifiedGUI_Audit.lua:399
 CLM.L[" profile(s)"] = " Profil(e)"
 -- Global/GlobalChatMessageHandlers.lua:35

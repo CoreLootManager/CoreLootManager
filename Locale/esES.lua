@@ -5,7 +5,7 @@ CLM.L[" alt of: "] = " ater de "
 -- Utils.lua:475
 CLM.L[" more"] = " más "
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
---CLM.L[" over "] = ""
+CLM.L[" over "] = " sobre "
 -- Modules/GUI/UnifiedGUI_Audit.lua:399
 CLM.L[" profile(s)"] = " perfil(es)"
 -- Global/GlobalChatMessageHandlers.lua:35

@@ -5,7 +5,7 @@ CLM.L[" alt of: "] = " альт игрока: "
 -- Utils.lua:475
 CLM.L[" more"] = " подробнее "
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
---CLM.L[" over "] = ""
+CLM.L[" over "] = " над "
 -- Modules/GUI/UnifiedGUI_Audit.lua:399
 CLM.L[" profile(s)"] = " профиль(-ей)"
 -- Global/GlobalChatMessageHandlers.lua:35

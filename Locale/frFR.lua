@@ -5,7 +5,7 @@ CLM.L[" alt of: "] = " reroll de "
 -- Utils.lua:475
 CLM.L[" more"] = " suite "
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
---CLM.L[" over "] = ""
+CLM.L[" over "] = " plus de "
 -- Modules/GUI/UnifiedGUI_Audit.lua:399
 CLM.L[" profile(s)"] = " profil(s)"
 -- Global/GlobalChatMessageHandlers.lua:35
