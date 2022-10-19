@@ -425,7 +425,7 @@ local function CreateBidList(self)
     local BidList = AceGUI:Create("CLMLibScrollingTable")
     self.BidList = BidList
     BidList:SetDisplayRows(BID_ROWS, BID_ROW_HEIGHT)
-    local cols = {
+    local columns = {
         {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
         {name = CLM.L["Name"],  width = 86 },
         {name = CLM.L["Bid"],   width = 120, color = colorGreen,
@@ -443,7 +443,7 @@ local function CreateBidList(self)
         {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
         {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
     }
-    BidList:SetDisplayCols(cols)
+    BidList:SetDisplayCols(columns)
     BidList:RegisterEvents({
         OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             UTILS.LibStSingleSelectClickHandler(table, nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
@@ -666,7 +666,6 @@ end
 function BiddingManagerGUI:Refresh()
     LOG:Trace("BiddingManagerGUI:Refresh()")
     if not self._initialized then return end
-    
     if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
         BuildBidderData(self)
         self.BidList:Show()

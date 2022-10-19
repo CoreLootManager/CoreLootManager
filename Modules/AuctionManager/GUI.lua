@@ -33,48 +33,15 @@ local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorGold = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}
-local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
-local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
-local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
-
-local colorRedTransparentHex = "ED3333"
-local colorGreenTransparentHex = "33ED33"
-local colorBlueTransparentHex = "3333ED"
-
-local TOOLTIP_GAMETOOLTIP = 1
-local TOOLTIP_ITEMREF = 2
 
 local guiOptions = {
     type = "group",
     args = {}
 }
 
-local function ST_GetHighlightFunction(row)
-    return row.cols[5].value
-end
-
 local function ST_GetActualBidValue(row)
     return row.cols[3].value
 end
-
-local function ST_GetUpgradedItems(row)
-    return row.cols[7].value
-end
-
-local function GetTooltip(self, id)
-    if id == TOOLTIP_ITEMREF then
-        self.tooltips[id] = ItemRefTooltip
-    else
-        self.tooltips[id] = GameTooltip
-    end
-    return self.tooltips[id]
-end
-
-local highlightRole = {
-    ["DAMAGER"] = UTILS.getHighlightMethod(colorRedTransparent),
-    ["TANK"] = UTILS.getHighlightMethod(colorBlueTransparent),
-    ["HEALER"] = UTILS.getHighlightMethod(colorGreenTransparent),
-}
 
 local function GetModifierCombination()
     local combination = ""
@@ -486,9 +453,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         bid_stats_info = {
             name = "Info",
             desc = (function()
-                -- Legend
-                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].." ",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].." ",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
-                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] .. "\n" .. legend end
+                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] end
                 -- Unique did any action dict
                 local didAnyAction = {}
                 -- generateInfo closure
@@ -560,7 +525,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 -- Stats
                 local stats = sformat("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
                 -- Result
-                return stats .. passed .. cantUse .. closed .. noAction .. legend
+                return stats .. passed .. cantUse .. closed .. noAction
             end),
             type = "execute",
             func = (function() end),
