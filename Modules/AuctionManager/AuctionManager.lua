@@ -291,6 +291,9 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
             return
         end
     end))
+    -- Anonymous mapping
+    self.anonymousMap = {}
+    self.nextAnonymousId = 1
     -- Set auction in progress
     self.auctionInProgress = true
     -- UI
@@ -418,25 +421,38 @@ function AuctionManager:SendBidInfo(name, bid)
     CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
 
-function AuctionManager:AnnounceHighestBidder(newHighBid, name, bid)
+local nickMap = {
+    "Milhouse ",
+    "Jenkins ",
+    "Hemet ",
+    "Mrgl-Mrgl "
+}
+
+function AuctionManager:AnnounceBid(newHighBid, name, bid)
     if not CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then return end
-    if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
-    if not bid then return end
-    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return end
-    if not newHighBid then return end
 
     local message
     local nameModdified
     if self.auctionType == CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN then
         nameModdified = ""
-        self:SendBidInfo("", bid)
+        if not self.anonymousMap[name] then
+            self.anonymousMap[name] = nickMap[math.random(1,#nickMap)] .. tostring(self.nextAnonymousId)
+            self.nextAnonymousId = self.nextAnonymousId + 1
+        end
+        local modifiedBid = UTILS.DeepCopy(bid)
+        modifiedBid.i = {} -- Clear Upgraded items info
+        self:SendBidInfo(self.anonymousMap[name], modifiedBid)
     else
         nameModdified = "(" .. name .. ")"
         self:SendBidInfo(name, bid)
     end
 
+    -- Raid warning highest bidder
+    if not newHighBid then return end
     if not CLM.GlobalConfigs:GetBidsWarning() then return end
-    message = sformat(CLM.L["New highest bid: %d DKP %s"], bid, nameModdified)
+    if self.itemValueMode ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
+    if bid:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC then return end
+    message = sformat(CLM.L["New highest bid: %d DKP %s"], bid:Value(), nameModdified)
     SendChatMessage(message, "RAID_WARNING")
 end
 
@@ -455,7 +471,7 @@ function AuctionManager:HandleSubmitBid(data, sender)
         LOG:Debug("Received submit bid from %s while no auctions are in progress", sender)
         return
     end
-    self:UpdateBid(sender, data:Bid(), data:Type(), data:Items())
+    self:UpdateBid(sender, data)
 end
 
 function AuctionManager:HandleCancelBid(data, sender)
@@ -464,7 +480,8 @@ function AuctionManager:HandleCancelBid(data, sender)
         LOG:Debug("Received cancel bid from %s while no auctions are in progress", sender)
         return
     end
-    self:UpdateBid(sender, nil)
+
+    self:UpdateBid(sender, CLM.MODELS.BiddingCommSubmitBid:New(0, CONSTANTS.BID_TYPE.CANCEL, {}))
 end
 
 function AuctionManager:HandleNotifyPass(data, sender)
@@ -474,7 +491,7 @@ function AuctionManager:HandleNotifyPass(data, sender)
         return
     end
     -- Pass (unlike other notifciations) needs to go through update bid since it overwrites bid value
-    self:UpdateBid(sender, CONSTANTS.AUCTION_COMM.BID_PASS)
+    self:UpdateBid(sender, CLM.MODELS.BiddingCommSubmitBid:New(0, CONSTANTS.BID_TYPE.PASS, {}))
 end
 
 function AuctionManager:HandleNotifyHide(data, sender)
@@ -497,7 +514,7 @@ end
 
 function AuctionManager:ValidateBid(name, bid)
     -- bid cancelling
-    if bid == nil then
+    if bid:Type() == CONSTANTS.BID_TYPE.CANCEL then
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.CANCELLING_NOT_ALLOWED
         else
@@ -505,7 +522,7 @@ function AuctionManager:ValidateBid(name, bid)
         end
     end
     -- bid passing
-    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
+    if bid:Type() == CONSTANTS.BID_TYPE.PASS then
         -- only allow passing if no bids have been placed in open auctions
         if (self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and self.userResponses.bids[name] then
             return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.PASSING_NOT_ALLOWED
@@ -513,7 +530,7 @@ function AuctionManager:ValidateBid(name, bid)
             return true
         end
     end
-    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then return true end
+    local value = bid:Value()
     -- sanity check
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
     if not profile then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
@@ -523,47 +540,46 @@ function AuctionManager:ValidateBid(name, bid)
     local current = self.raid:Roster():Standings(GUID)
     if current < self.minimumPoints then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BELOW_MIN_BIDDER end
     -- allow negative standings after bid
-    local new = current - bid
+    local new = current - value
     if (new < self.minimumPoints) and not self.allowBelowMinStandings and (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.DKP) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
     -- bid value
     if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
         -- min
-        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 and bid < self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 and value < self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
-        if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and bid > self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and value > self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
             -- always allow bidding min in ascending mode if haven't bid yet
-            if bid == self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] and self.userResponses.bids[name] == nil then
+            if value == self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] and self.userResponses.bids[name] == nil then
                 return true
             end
-            if bid <= self.highestBid then
+            if value <= self.highestBid then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
             end
-            if (bid - self.highestBid) < self.minimalIncrement then
+            if (value - self.highestBid) < self.minimalIncrement then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_INCREMENT_TOO_LOW
             end
         end
     elseif self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
-        if not self.acceptedTierValues[bid] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
+        if not self.acceptedTierValues[value] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
     else
         -- single-priced
-        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] ~= bid then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
+        if self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] ~= value then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
     end
     -- accept otherwise
     return true
 end
 
-function AuctionManager:UpdateBid(name, bid, type, items)
+function AuctionManager:UpdateBid(name, bid)
     LOG:Trace("AuctionManager:UpdateBid()")
-    LOG:Debug("Bid from %s: %s", name, bid)
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local accept, reason = self:ValidateBid(name, bid)
     if accept then
-        local newHighBid = self:UpdateBidsInternal(name, bid, type, items)
+        local newHighBid = self:UpdateBidsInternal(name, bid)
         self:SendBidAccepted(name)
-        self:AnnounceHighestBidder(newHighBid, name, bid)
+        self:AnnounceBid(newHighBid, name, bid)
     else
         self:SendBidDenied(name, reason)
     end
@@ -573,26 +589,39 @@ function AuctionManager:UpdateBid(name, bid, type, items)
     return accept, reason
 end
 
-function AuctionManager:UpdateBidsInternal(name, bid, type, items)
-    if bid == CONSTANTS.AUCTION_COMM.BID_PASS then
+function AuctionManager:UpdateBidsInternal(name, bid)
+    if bid:Type() == CONSTANTS.BID_TYPE.CANCEL then
+        self.userResponses.bids[name] = nil
+        self.userResponses.bidTypes[name] = nil
+        self.userResponses.upgradedItems[name] = nil
+        self.userResponses.passes[name] = nil
+        return false
+    end
+    if bid:Type() == CONSTANTS.BID_TYPE.PASS then
         -- We remove from the bids list but add to pass list
         self.userResponses.bids[name] = nil
         self.userResponses.passes[name] = true
         return false
     end
-    self.userResponses.bids[name] = bid
-    self.userResponses.bidTypes[name] = type
+    -- actual bid
+    local value = bid:Value()
+    local items = bid:Items()
+    self.userResponses.bids[name] = value
+    self.userResponses.bidTypes[name] = bid:Type()
     self.userResponses.upgradedItems[name] = items
     self.userResponses.passes[name] = nil
 
+    -- Force item caching
+    if items[1] then GetItemInfo(items[1]) end
+    if items[2] then GetItemInfo(items[2]) end
+
     local newHighBid = false
-    if bid then
-        if bid > self.highestBid then
-            self.highestBid = bid
-            newHighBid = true
-        end
-        self:AntiSnipe()
+    if value > self.highestBid then
+        self.highestBid = value
+        newHighBid = true
     end
+    self:AntiSnipe()
+
     return newHighBid
 end
 

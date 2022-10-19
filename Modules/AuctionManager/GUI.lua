@@ -27,54 +27,21 @@ local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
-local BASE_WIDTH  = 365 + (isElvUI and 15 or 0)
+local BASE_WIDTH  = 375 + (isElvUI and 15 or 0)
 
 local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
--- local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
-local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
-local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
-local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
-
-local colorRedTransparentHex = "ED3333"
-local colorGreenTransparentHex = "33ED33"
-local colorBlueTransparentHex = "3333ED"
-
-local TOOLTIP_GAMETOOLTIP = 1
-local TOOLTIP_ITEMREF = 2
+local colorGold = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}
 
 local guiOptions = {
     type = "group",
     args = {}
 }
 
-local function ST_GetHighlightFunction(row)
-    return row.cols[5].value
-end
-
 local function ST_GetActualBidValue(row)
-    return row.cols[6].value
+    return row.cols[3].value
 end
-
-local function ST_GetUpgradedItems(row)
-    return row.cols[7].value
-end
-
-local function GetTooltip(self, id)
-    if id == TOOLTIP_ITEMREF then
-        self.tooltips[id] = ItemRefTooltip
-    else
-        self.tooltips[id] = GameTooltip
-    end
-    return self.tooltips[id]
-end
-
-local highlightRole = {
-    ["DAMAGER"] = UTILS.getHighlightMethod(colorRedTransparent),
-    ["TANK"] = UTILS.getHighlightMethod(colorBlueTransparent),
-    ["HEALER"] = UTILS.getHighlightMethod(colorGreenTransparent),
-}
 
 local function GetModifierCombination()
     local combination = ""
@@ -238,94 +205,53 @@ end
 local function CreateBidWindow(self)
     local BidWindowGroup = AceGUI:Create("SimpleGroup")
     BidWindowGroup:SetLayout("Flow")
+    local st = ScrollingTable:CreateST({}, 10, 18, nil, BidWindowGroup.frame)
     local columns = {
-        {name = CLM.L["Name"],  width = 70},
-        {name = CLM.L["Class"], width = 60,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
+        {name = CLM.L["Name"],  width = 86},
         {name = CLM.L["Bid"],   width = 120, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
             sortnext = 4,
-            align = "CENTER"
+            align = "CENTER",
+            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                st.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                frame.text:SetText(data[realrow].cols[7].value or data[realrow].cols[column].value)
+            end)
         },
-        {name = CLM.L["Current"],  width = 60, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
-            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
+        {name = CLM.L["Current"],  width = 60, color = colorGold,
+            align = "CENTER", sortnext = 2
         },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
     }
-    self.st = ScrollingTable:CreateST(columns, 10, 18, nil, BidWindowGroup.frame)
-    self.st:EnableSelection(true)
-    self.st.frame:SetPoint("TOPLEFT", BidWindowGroup.frame, "TOPLEFT", 0, -25)
-    self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
+    self.st = st
+    st:SetDisplayCols(columns)
+    st:EnableSelection(true)
+    st.frame:SetPoint("TOPLEFT", BidWindowGroup.frame, "TOPLEFT", 0, -25)
+    -- st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
 
-    self.st:RegisterEvents({
+    st:RegisterEvents({
         OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             self.st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local selected = self.st:GetRow(self.st:GetSelection())
             if type(selected) ~= "table" then return false end
             if selected.cols == nil then return false end -- Handle column titles click
-            self.awardPlayer = selected.cols[1].value or ""
-            -- if not self.awardValue or self.awardValue == '' then
+            self.awardPlayer = selected.cols[2].value or ""
             AuctionManagerGUI:UpdateBids(ST_GetActualBidValue(selected))
             -- end
             return selected
         end),
-        OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            local rowData = table:GetRow(realrow)
-            if not rowData or not rowData.cols then return status end
+        -- OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        --     local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+        --     local rowData = table:GetRow(realrow)
+        --     if not rowData or not rowData.cols then return status end
+        --     local highlight = ST_GetHighlightFunction(rowData)
+        --     if highlight then
+        --         highlight(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+        --     end
 
-            local upgradedItems = ST_GetUpgradedItems(rowData) or {}
-            local primaryItem = upgradedItems[1]
-            local secondaryItem = upgradedItems[2]
-            if (not primaryItem) and secondaryItem then
-                primaryItem = secondaryItem
-                secondaryItem = nil
-            end
-            if primaryItem and GetItemInfoInstant(primaryItem) then
-                local tooltip = GetTooltip(self, TOOLTIP_GAMETOOLTIP)
-                tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
-                tooltip:SetHyperlink("item:" .. tostring(primaryItem))
-                tooltip:Show()
-
-                if secondaryItem and GetItemInfoInstant(secondaryItem) then
-                    local tooltipSecondary = GetTooltip(self, TOOLTIP_ITEMREF)
-                    tooltipSecondary:SetOwner(rowFrame, "ANCHOR_NONE")
-                    tooltipSecondary:SetPoint("TOPLEFT", tooltip, "BOTTOMLEFT")
-                    tooltipSecondary:SetHyperlink("item:" .. tostring(secondaryItem))
-                    tooltipSecondary:Show()
-
-                    if tooltipSecondary.PawnIconFrame then
-                        tooltipSecondary.PawnIconFrame:Hide()
-                    end
-
-                    ItemRefCloseButton:Hide()
-                    ItemRefTooltip:SetPadding(0,0)
-                end
-            end
-            return status
-        end),
-        OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            local rowData = table:GetRow(realrow)
-            if not rowData or not rowData.cols then return status end
-            local highlight = ST_GetHighlightFunction(rowData)
-            if highlight then
-                highlight(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
-            end
-            if self.tooltips[TOOLTIP_GAMETOOLTIP] then
-                self.tooltips[TOOLTIP_GAMETOOLTIP]:Hide()
-                self.tooltips[TOOLTIP_GAMETOOLTIP] = nil
-            end
-            if self.tooltips[TOOLTIP_ITEMREF] then -- Ugh that's dirty
-                self.tooltips[TOOLTIP_ITEMREF]:Hide()
-                self.tooltips[TOOLTIP_ITEMREF]:SetOwner(UIParent, "ANCHOR_CURSOR")
-                self.tooltips[TOOLTIP_ITEMREF] = nil
-
-                ItemRefCloseButton:Show()
-                ItemRefTooltip:SetPadding(16,0)
-            end
-            return status
-        end),
+        --     return status
+        -- end),
     })
 
     return BidWindowGroup
@@ -527,9 +453,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
         bid_stats_info = {
             name = "Info",
             desc = (function()
-                -- Legend
-                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].." ",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].." ",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
-                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] .. "\n" .. legend end
+                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] end
                 -- Unique did any action dict
                 local didAnyAction = {}
                 -- generateInfo closure
@@ -601,7 +525,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
                 -- Stats
                 local stats = sformat("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
                 -- Result
-                return stats .. passed .. cantUse .. closed .. noAction .. legend
+                return stats .. passed .. cantUse .. closed .. noAction
             end),
             type = "execute",
             func = (function() end),
@@ -738,12 +662,12 @@ function AuctionManagerGUI:Refresh()
         local bidTypes = CLM.MODULES.AuctionManager:BidTypes()
         local upgradedItems = CLM.MODULES.AuctionManager:UpgradedItems()
         local data = {}
-        for name,bid in pairs(bids) do
+        for name, bid in pairs(bids) do
             local color
-            local bidValue = bid
+            local bidName = tostring(bid)
             if namedButtons then
-                bid = roster:GetFieldName(bidTypes[name])
-                if not bid or bid == "" then bid = bidValue end
+                bidName = roster:GetFieldName(bidTypes[name])
+                if not bidName or bidName == "" then bidName = tostring(bid) end
             else
                 if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
                     color = colorTurquoise
@@ -757,18 +681,25 @@ function AuctionManagerGUI:Refresh()
                 else
                     current = self.roster:Priority(profile:GUID())
                 end
+
+                local items = upgradedItems[name] or {}
+                local primaryItem = items[1]
+                local secondaryItem = items[2]
+                if (not primaryItem) and secondaryItem then
+                    primaryItem = secondaryItem
+                    secondaryItem = nil
+                end
+
                 local row = {cols = {
-                    {value = profile:Name()},
-                    {value = UTILS.ColorCodeClass(profile:Class())},
+                    {value = profile:ClassInternal()},
+                    {value = profile:Name(), color = UTILS.GetClassColor(profile:Class())},
                     {value = bid, color = color},
                     {value = current},
+                    {value = primaryItem},
+                    {value = secondaryItem},
                     -- not visible
-                    {value = highlightRole[profile:Role()]},
-                    {value = bidValue},
-                    {value = upgradedItems[name]}
-                },
-                DoCellUpdate = highlightRole[profile:Role()]
-                }
+                    {value = bidName}
+                }}
                 data[#data+1] = row
             end
         end

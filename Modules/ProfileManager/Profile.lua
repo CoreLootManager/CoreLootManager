@@ -3,7 +3,7 @@ local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
+local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local setmetatable, tostring, tonumber, rawequal, sformat = setmetatable, tostring, tonumber, rawequal, string.format
@@ -42,6 +42,10 @@ end
 
 function Profile:Class()
     return self.class
+end
+
+function Profile:ClassInternal()
+    return UTILS.NumberToClass(self.entry:ingameClass())
 end
 
 function Profile:Spec()

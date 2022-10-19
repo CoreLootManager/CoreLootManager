@@ -55,7 +55,20 @@ function AuctionHistoryManager:Initialize()
                     bidName = " - " .. data.bidNames[bidder]
                 end
 
-                SendChatMessage(bidder .. ": " .. tostring(bid) .. " " .. (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) .. bidName, channel)
+                local items = ""
+
+                if data.items and data.items[bidder] then
+                    local _, item1 = GetItemInfo(data.items[bidder][1] or 0)
+                    local _, item2 = GetItemInfo(data.items[bidder][2] or 0)
+
+                    if item1 or item2 then
+                        items = CLM.L[" over "]
+                        if item1 then items = items .. item1 end
+                        if item2 then items = items .. item2 end
+                    end
+                end
+
+                SendChatMessage(bidder .. ": " .. tostring(bid) .. " " .. (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) .. bidName .. items, channel)
             end
             if noBids then
                 SendChatMessage(CLM.L["No bids"], channel)
