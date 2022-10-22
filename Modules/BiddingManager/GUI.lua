@@ -460,7 +460,6 @@ end
 
 local function CreateBidList(self)
     local BidList = AceGUI:Create("CLMLibScrollingTable")
-    self.BidList = BidList
     BidList:SetDisplayRows(BID_ROWS, BID_ROW_HEIGHT)
     local columns = {
         {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
@@ -525,11 +524,13 @@ function BiddingManagerGUI:Create()
     BidInput:SetWidth(BID_INPUT_WIDTH)
     BidInputGroup:AddChild(BidInput)
     local ItemGroup, BidGroup, ButtonGroup = CreateOptions(self)
+    local BidList = CreateBidList(self)
+    self.BidList = BidList
     f:AddChild(ItemGroup)
     f:AddChild(BidInputGroup)
     f:AddChild(BidGroup)
     f:AddChild(ButtonGroup)
-    f:AddChild(CreateBidList(self))
+    f:AddChild(BidList)
     RestoreLocation(self)
     self:SetInputValue(0)
     -- Handle onHide information passing whenever the UI is closed
@@ -728,10 +729,17 @@ function BiddingManagerGUI:Refresh()
 
     local namedButtonsMode = self.roster and self.roster:GetConfiguration("namedButtons")
     if namedButtonsMode then
-        self.BidInput.frame:Hide()
+        self.BidInputGroup.frame:Hide()
+        self.BidGroup.frame:Hide()
+        self.top.children = {}
+        self.top:AddChildren(self.ItemGroup, self.ButtonGroup, self.BidList)
     else
-        self.BidInput.frame:Show()
+        self.top.children = {}
+        self.top:AddChildren(self.ItemGroup, self.BidInputGroup, self.BidGroup, self.ButtonGroup, self.BidList)
+        self.BidInputGroup.frame:Show()
+        self.BidGroup.frame:Show()
     end
+    self.top:DoLayout()
     self:RefreshBidList()
     UpdateOptions(self)
     AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
