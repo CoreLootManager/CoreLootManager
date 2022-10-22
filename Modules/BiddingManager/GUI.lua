@@ -672,15 +672,20 @@ local function BuildBidderData(self)
     end
 end
 
-function BiddingManagerGUI:Refresh()
-    LOG:Trace("BiddingManagerGUI:Refresh()")
-    if not self._initialized then return end
+function BiddingManagerGUI:RefreshBidList()
     if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
         BuildBidderData(self)
         self.BidList:Show()
     else
         self.BidList:Hide()
     end
+end
+
+function BiddingManagerGUI:Refresh()
+    LOG:Trace("BiddingManagerGUI:Refresh()")
+    if not self._initialized then return end
+
+    self:RefreshBidList()
     UpdateOptions(self)
     AceConfigRegistry:NotifyChange(REGISTRY)
     AceConfigDialog:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
