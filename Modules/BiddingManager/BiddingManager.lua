@@ -292,7 +292,6 @@ function BiddingManager:HandleDistributeBid(data, sender)
 
     self.bids[data:Name()] = bid
     if self:GetAutoUpdateBidValue() then
-        UTILS.DumpTable(bid)
         CLM.GUI.BiddingManager:UpdateCurrentBidValue((tonumber(bid:Value()) or 0) + self.auctionInfo:Increment())
     else
         CLM.GUI.BiddingManager:RefreshBidList()
