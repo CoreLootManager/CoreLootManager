@@ -734,24 +734,36 @@ local function RegenerateRows(self)
     if self.roster then
         namedButtonsMode = self.roster:GetConfiguration("namedButtons")
     end
-    self.top:Show() -- this helps to fix scaling issues with Ace3
     if namedButtonsMode then
         if (self.currentDisplayMode ~= DISPLAY_MODE_BUTTONS) then
+            local isVisible = self.top:IsVisible()
+            self.top:Show() -- this helps to fix scaling issues with Ace3
+
             self.BidInputGroup.frame:Hide()
             self.top.children = {}
             self.top:AddChildren(self.ItemGroup, self.ButtonGroup, self.BidList)
             self.top:DoLayout()
             self.currentDisplayMode = DISPLAY_MODE_BUTTONS
+
+            if not isVisible then
+                self.top:Hide() -- this helps to fix scaling issues with Ace3
+            end
         end
     else
         if (self.currentDisplayMode ~= DISPLAY_MODE_VALUES) then
+            local isVisible = self.top:IsVisible()
+            self.top:Show() -- this helps to fix scaling issues with Ace3
+
             self.top.children = {}
             self.top:AddChildren(self.ItemGroup, self.BidInputGroup, self.ButtonGroup, self.BidList)
             self.top:DoLayout()
             self.currentDisplayMode = DISPLAY_MODE_VALUES
+
+            if not isVisible then
+                self.top:Hide() -- this helps to fix scaling issues with Ace3
+            end
         end
     end
-    self.top:Hide() -- this helps to fix scaling issues with Ace3
 end
 
 function BiddingManagerGUI:Refresh()
