@@ -195,7 +195,7 @@ function BiddingManagerGUI:BidAllIn()
 end
 
 local function GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
-    local bidOptions = {
+    local generateBidOptions = {
         bid = {
             name = CLM.L["MS"],
             desc = CLM.L["Bid input values as Main spec bid."],
@@ -219,7 +219,7 @@ local function GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
             order = 5
         },
     }
-    local buttonOptions = {
+    local generateButtonOptions = {
         pass = {
             name = CLM.L["Pass"],
             desc = (function()
@@ -285,7 +285,7 @@ local function GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
             local value = tonumber(values[tier]) or 0
             if not alreadyExistingValues[value] and doDisplayValue(value) then -- this will display in ascending max 0
                 alreadyExistingValues[value] = true
-                buttonOptions[tier] = {
+                generateButtonOptions[tier] = {
                     name = value,
                     desc = CONSTANTS.SLOT_VALUE_TIERS_GUI[tier] or "",
                     type = "execute",
@@ -300,9 +300,9 @@ local function GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
             end
         end
 
-        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and not buttonOptions[CONSTANTS.SLOT_VALUE_TIER.MAX] then
-            local width = buttonOptions[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
-            buttonOptions["all_in"] = {
+        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and not generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.MAX] then
+            local width = generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
+            generateButtonOptions["all_in"] = {
                 name = CLM.L["All In"],
                 desc = sformat(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
                 type = "execute",
@@ -320,15 +320,15 @@ local function GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
             numRows = numRows + 1
             local row_width = rowMultiplier/numButtons
             for _,tier in ipairs(usedTiers) do
-                if buttonOptions[tier] then
-                    buttonOptions[tier].width = row_width
+                if generateButtonOptions[tier] then
+                    generateButtonOptions[tier].width = row_width
                 end
             end
         end
     end
 
     self.top:SetHeight(BASE_HEIGHT + (CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and BIDS_HEIGHT or 0) + (numRows*ROW_HEIGHT))
-    return bidOptions, buttonOptions
+    return generateBidOptions, generateButtonOptions
 end
 
 local function GenerateNamedButtonsAuctionOptions(self, itemValueMode, values)
