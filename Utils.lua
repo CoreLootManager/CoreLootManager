@@ -59,6 +59,10 @@ function UTILS.ColorCodeClass(className)
     return ColorCodeText(CLM.L[className], GetClassColor(className).hex);
 end
 
+function UTILS.ColorCodeNameByClass(name, className)
+    return ColorCodeText(name, GetClassColor(className).hex);
+end
+
 local colorCodedClassList = {}
 do
     for _,class in pairs(classOrdered) do
