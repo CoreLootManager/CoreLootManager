@@ -18,6 +18,9 @@ local LibCandyBar = LibStub("LibCandyBar-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
+local DISPLAY_MODE_VALUES  = 1
+local DISPLAY_MODE_BUTTONS = 2
+
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorGold = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}
 local itemOptions = {
@@ -36,13 +39,16 @@ local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
 local rowMultiplier = 2.05
 
-local BASE_WIDTH  = 375 + (isElvUI and 15 or 0)
+local BASE_WIDTH  = 375 + (isElvUI and 30 or 0)
 local ROW_HEIGHT = 25
 local BASE_HEIGHT = 110
 local BID_ROWS = 6
 local BID_ROW_HEIGHT = 18
 local BIDS_HEIGHT = ((BID_ROWS + 1) * BID_ROW_HEIGHT) + 5
-local BID_INPUT_WIDTH = 170*rowMultiplier*0.4
+local BID_INPUT_WIDTH  = 170*rowMultiplier*0.4
+local BID_BUTTON_WIDTH = 170*rowMultiplier*0.3
+
+local BID_BUTTON_PADDING = (isElvUI and 12 or 2)
 
 local ITEM_REGISTRY = "clm_bidding_manager_gui_item_options"
 local BID_REGISTRY = "clm_bidding_manager_gui_bid_options"
@@ -72,7 +78,7 @@ local function CreateOptions(self)
     -- Bid Display
     local BidGroup = AceGUI:Create("SimpleGroup")
     BidGroup:SetLayout("Flow")
-    BidGroup:SetWidth(BASE_WIDTH - BID_INPUT_WIDTH - 25)
+    BidGroup:SetWidth(2*BID_BUTTON_WIDTH + BID_BUTTON_PADDING)
     self.BidGroup = BidGroup
     -- Button Display
     local ButtonGroup = AceGUI:Create("SimpleGroup")
@@ -425,7 +431,10 @@ function BiddingManagerGUI:GenerateAuctionOptions()
     local itemValueMode = self.auctionInfo and self.auctionInfo:Mode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
     local values = self.auctionInfo and self.auctionInfo:Values() or {}
 
-    local namedButtonsMode = self.roster and self.roster:GetConfiguration("namedButtons")
+    local namedButtonsMode
+    if self.roster then
+        namedButtonsMode = self.roster:GetConfiguration("namedButtons")
+    end
 
     local _itemOptions = {
         icon = {
@@ -463,7 +472,7 @@ local function CreateBidList(self)
     BidList:SetDisplayRows(BID_ROWS, BID_ROW_HEIGHT)
     local columns = {
         {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
-        {name = CLM.L["Name"],  width = 86 },
+        {name = CLM.L["Name"],  width = (86 + (isElvUI and 30 or 0)) },
         {name = CLM.L["Bid"],   width = 120, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
             sortnext = 4,
@@ -501,7 +510,7 @@ function BiddingManagerGUI:Create()
     -- Main Frame
     local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Bidding"])
-    f:SetLayout("flow")
+    f:SetLayout("Flow")
     f:EnableResize(false)
     f:SetWidth(BASE_WIDTH)
     f:SetHeight(BASE_HEIGHT)
@@ -516,21 +525,18 @@ function BiddingManagerGUI:Create()
     self.barPreviousPercentageLeft = 1
     self.duration = 1
     local BidInputGroup = AceGUI:Create("SimpleGroup")
-    BidInputGroup:SetWidth(BID_INPUT_WIDTH)
+    BidInputGroup:SetLayout("Flow")
+    BidInputGroup:SetWidth(BASE_WIDTH)
     self.BidInputGroup = BidInputGroup
+    local _, BidGroup, _ = CreateOptions(self)
     local BidInput = AceGUI:Create("EditBox")
     self.BidInput = BidInput
     BidInput:DisableButton(true)
     BidInput:SetWidth(BID_INPUT_WIDTH)
     BidInputGroup:AddChild(BidInput)
-    local ItemGroup, BidGroup, ButtonGroup = CreateOptions(self)
+    BidInputGroup:AddChild(BidGroup)
     local BidList = CreateBidList(self)
     self.BidList = BidList
-    f:AddChild(ItemGroup)
-    f:AddChild(BidInputGroup)
-    f:AddChild(BidGroup)
-    f:AddChild(ButtonGroup)
-    f:AddChild(BidList)
     RestoreLocation(self)
     self:SetInputValue(0)
     -- Handle onHide information passing whenever the UI is closed
@@ -580,7 +586,7 @@ function BiddingManagerGUI:BuildBar(duration)
     end);
     self.bar:SetColor(0, 0.80, 0, 1)
     -- self.bar:SetParent(self.top.frame) -- makes the bar disappear
-    self.bar:SetPoint("CENTER", self.top.frame, "TOP", 0, 10)
+    self.bar:SetPoint("CENTER", self.top.frame, "TOP", 0, (isElvUI and 15 or 10))
     self.bar.candyBarBar:SetScript("OnMouseDown", function (_, button) if button == 'LeftButton' then self:Toggle() end end)
 
     if self.db.scale then
@@ -614,11 +620,11 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     self:SetInputValue(values[CONSTANTS.SLOT_VALUE_TIER.BASE] or 0)
     local myProfile = CLM.MODULES.ProfileManager:GetMyProfile()
     self.top:SetTitle(CLM.L["Bidding"])
+    local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
+    self.roster = roster
     if myProfile then
-        local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
             self.auctionType = roster:GetConfiguration("auctionType")
-            self.roster = roster
             if roster:IsProfileInRoster(myProfile:GUID()) then
                 if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
                     self.standings = roster:Priority(myProfile:GUID())
@@ -631,7 +637,7 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     end
 
     if not show then return end
-    self:Refresh()
+    -- self:Refresh()
     if C_ItemIsItemDataCachedByID(self.auctionInfo:ItemLink()) then
         EvaluateItemUsability(self)
         HandleWindowDisplay(self)
@@ -723,24 +729,35 @@ function BiddingManagerGUI:RefreshBidList()
     end
 end
 
+local function RegenerateRows(self)
+    local namedButtonsMode
+    if self.roster then
+        namedButtonsMode = self.roster:GetConfiguration("namedButtons")
+    end
+    self.top:Show() -- this helps to fix scaling issues with Ace3
+    if namedButtonsMode then
+        if (self.currentDisplayMode ~= DISPLAY_MODE_BUTTONS) then
+            self.BidInputGroup.frame:Hide()
+            self.top.children = {}
+            self.top:AddChildren(self.ItemGroup, self.ButtonGroup, self.BidList)
+            self.top:DoLayout()
+            self.currentDisplayMode = DISPLAY_MODE_BUTTONS
+        end
+    else
+        if (self.currentDisplayMode ~= DISPLAY_MODE_VALUES) then
+            self.top.children = {}
+            self.top:AddChildren(self.ItemGroup, self.BidInputGroup, self.ButtonGroup, self.BidList)
+            self.top:DoLayout()
+            self.currentDisplayMode = DISPLAY_MODE_VALUES
+        end
+    end
+    self.top:Hide() -- this helps to fix scaling issues with Ace3
+end
+
 function BiddingManagerGUI:Refresh()
     LOG:Trace("BiddingManagerGUI:Refresh()")
     if not self._initialized then return end
 
-    local namedButtonsMode = self.roster and self.roster:GetConfiguration("namedButtons")
-    if namedButtonsMode then
-        self.BidInputGroup.frame:Hide()
-        self.BidGroup.frame:Hide()
-        self.top.children = {}
-        self.top:AddChildren(self.ItemGroup, self.ButtonGroup, self.BidList)
-    else
-        self.top.children = {}
-        self.top:AddChildren(self.ItemGroup, self.BidInputGroup, self.BidGroup, self.ButtonGroup, self.BidList)
-        self.BidInputGroup.frame:Show()
-        self.BidGroup.frame:Show()
-    end
-    self.top:DoLayout()
-    self:RefreshBidList()
     UpdateOptions(self)
     AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
     AceConfigDialog:Open(ITEM_REGISTRY, self.ItemGroup) -- Refresh the config gui panel
@@ -748,6 +765,8 @@ function BiddingManagerGUI:Refresh()
     AceConfigDialog:Open(BID_REGISTRY, self.BidGroup) -- Refresh the config gui panel
     AceConfigRegistry:NotifyChange(BUTTON_REGISTRY)
     AceConfigDialog:Open(BUTTON_REGISTRY, self.ButtonGroup) -- Refresh the config gui panel
+    RegenerateRows(self)
+    self:RefreshBidList()
 end
 
 function BiddingManagerGUI:Toggle()
