@@ -351,9 +351,9 @@ local function verticalOptionsFeeder()
 end
 
 local columnsDKP = {
-    {   name = CLM.L["Name"],   width = 85 },
-    {   name = "", width = 60 },
-    {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = CLM.L["Name"],   width = 105 },
+    {   name = "", width = 50 },
+    {   name = CLM.L["Points"], width = 80, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
     {   name = CLM.L["Class"],  width = 100,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
@@ -363,9 +363,9 @@ local columnsDKP = {
 }
 
 local columnsEPGP = {
-    {   name = CLM.L["Name"], width = 85 },
+    {   name = CLM.L["Name"], width = 105 },
     {   name = CLM.L["EP/GP"], width = 80 },
-    {   name = CLM.L["PR"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = CLM.L["PR"], width = 50, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
     {   name = CLM.L["Class"],  width = 100,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
