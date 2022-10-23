@@ -351,7 +351,9 @@ local function verticalOptionsFeeder()
 end
 
 local columnsDKP = {
-    {   name = CLM.L["Name"],   width = 85 },
+    {   name = CLM.L["Name"],   width = 85,
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)    
+    },
     {   name = "", width = 60 },
     {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
     {   name = CLM.L["Class"],  width = 100,
@@ -363,7 +365,9 @@ local columnsDKP = {
 }
 
 local columnsEPGP = {
-    {   name = CLM.L["Name"], width = 85 },
+    {   name = CLM.L["Name"], width = 85,
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)    
+    },
     {   name = CLM.L["EP/GP"], width = 80 },
     {   name = CLM.L["PR"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
     {   name = CLM.L["Class"],  width = 100,
@@ -530,7 +534,7 @@ local function tableDataFeeder()
                 highlight = highlightPlayer
             end
             local row = { cols = {
-                {value = profile:Name()},
+                {value = UTILS.ColorCodeNameByClass(profile:Name(), profile:Class())},
                 {value = epgp},
                 {value = numColumnValue, color = (value > 0 and colorGreen or colorRed)},
                 {value = UTILS.ColorCodeClass(profile:Class())},
