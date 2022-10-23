@@ -1,6 +1,20 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.5.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Chat command bidding", body = "Chat command bidding should now work." },
+                    { header = "Chat command os bid", body = "You can now do OS bid through chat command |cff4ee44!bidos|r." },
+                    { header = "Auto-update bid values", body = "Auto-update bid values should work with new UI."},
+                    { header = "Bidding UI", body = "Bidding UI no longer needs Okay button. This however results in buttons being misplaced with some ElvUI scales." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.5.0",
         data = {
             {

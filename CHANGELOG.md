@@ -1,3 +1,13 @@
+# Classic Loot Manager v2.5.1
+## Fixes
+### Chat command bidding
+Chat command bidding should now work.
+### Chat command os bid
+You can now do OS bid through chat command `!bidos`.
+### Auto-update bid values
+Auto-update bid values should work with new UI.
+### Bidding UI
+Bidding UI no longer needs Okay button. This however results in buttons being misplaced with some ElvUI scales.
 # Classic Loot Manager v2.5.0
 ## Features
 ### Open Auction
