@@ -291,7 +291,8 @@ function BiddingManager:HandleDistributeBid(data, sender)
     end
 
     self.bids[data:Name()] = bid
-    if self:GetAutoUpdateBidValue() then
+    -- print("<<<RB[", data:Name(), bid:Value(), bid:Type(), "]")
+    if self:GetAutoUpdateBidValue() and (bid:Type() == (CONSTANTS.BID_TYPE.MAIN_SPEC)) then
         CLM.GUI.BiddingManager:UpdateCurrentBidValue((tonumber(bid:Value()) or 0) + self.auctionInfo:Increment())
     else
         CLM.GUI.BiddingManager:RefreshBidList()

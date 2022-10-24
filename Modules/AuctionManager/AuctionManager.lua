@@ -306,19 +306,20 @@ end
 local function AuctionEnd(self, postToChat)
     self:SendAuctionEnd()
     local bidTypeNames = {}
-    if self.raid:Roster():GetConfiguration("namedButtons") then
-        for bidder, type in pairs(self.userResponses.bidTypes) do
-            local bidTypeString = CLM.L["MS"]
-            if type == CONSTANTS.BID_TYPE.OFF_SPEC then
-                bidTypeString = CLM.L["OS"]
-            else
+
+    for bidder, type in pairs(self.userResponses.bidTypes) do
+        local bidTypeString = CLM.L["MS"]
+        if type == CONSTANTS.BID_TYPE.OFF_SPEC then
+            bidTypeString = CLM.L["OS"]
+        else
+            if self.raid:Roster():GetConfiguration("namedButtons") then
                 local name = self.raid:Roster():GetFieldName(type)
                 if name ~= "" then
                     bidTypeString = name
                 end
             end
-            bidTypeNames[bidder] = bidTypeString
         end
+        bidTypeNames[bidder] = bidTypeString
     end
 
     self.lastAuctionEndTime = GetServerTime()
@@ -420,7 +421,9 @@ function AuctionManager:SendBidInfo(name, bid)
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
         CLM.MODELS.AuctionCommDistributeBid:New(name, bid)
     )
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
+    -- TODO this must be batched cause of RAID throttling
+    -- print(">>>SB[", name, bid:Value(), bid:Type(), "]")
 end
 
 local nickMap = {
@@ -618,12 +621,14 @@ function AuctionManager:UpdateBidsInternal(name, bid)
     if items[2] then GetItemInfo(items[2]) end
 
     local newHighBid = false
-    if value > self.highestBid then
-        self.highestBid = value
-        newHighBid = true
-    end
-    self:AntiSnipe()
 
+    if bid:Type() == CONSTANTS.BID_TYPE.MAIN_SPEC then
+        if value > self.highestBid then
+            self.highestBid = value
+            newHighBid = true
+        end
+        self:AntiSnipe()
+    end
     return newHighBid
 end
 
@@ -744,7 +749,7 @@ function AuctionManager:FakeBids()
     if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then
         local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
         local profiles = roster:Profiles()
-        local numBids = math.random(1, #profiles)
+        local numBids = math.random(1, math.min(#profiles, 25))
         for _=1,numBids do
             local bidder = CLM.MODULES.ProfileManager:GetProfileByGUID(profiles[math.random(1, #profiles)]):Name()
             local bidType = math.random(1,6)
