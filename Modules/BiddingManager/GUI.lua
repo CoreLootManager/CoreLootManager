@@ -23,6 +23,8 @@ local DISPLAY_MODE_BUTTONS = 2
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorGold = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}
+local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
+
 local itemOptions = {
     type = "group",
     args = {}
@@ -703,10 +705,14 @@ local function BuildBidderData(self)
                 secondaryItem = nil
             end
             if (bid:Type() ~= CONSTANTS.BID_TYPE.PASS) and (bid:Type() ~= CONSTANTS.BID_TYPE.CANCEL) then
+                local bidColor
+                if bid:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC then
+                    bidColor = colorTurquoise
+                end
                 local row = {cols = {
                     {value = class}, -- Class Icon
                     {value = bidder, color = color}, -- Name
-                    {value = bid:Value()}, -- Bid Value
+                    {value = bid:Value(), color = bidColor}, -- Bid Value
                     {value = current}, -- Current standings / priority
                     {value = primaryItem}, -- Primary item Icon
                     {value = secondaryItem}, -- Secondary Item Icon
