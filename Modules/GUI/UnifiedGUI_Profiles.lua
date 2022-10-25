@@ -16,11 +16,11 @@ local highlightLocked = UTILS.getHighlightMethod(colorRedTransparent, true)
 local highlightTrusted = UTILS.getHighlightMethod(colorGreenTransparent, true)
 
 local function ST_GetName(row)
-    return row.cols[1].value
+    return row.cols[2].value
 end
 
 local function ST_GetClass(row)
-    return row.cols[3].value
+    return row.cols[9].value
 end
 
 -- local function ST_GetRank(row)
@@ -179,15 +179,18 @@ local tableStructure = {
     rows = 25,
     -- columns - structure of the ScrollingTable
     columns = {
-        {name = CLM.L["Name"],  width = 85, sort = LibStub("ScrollingTable").SORT_ASC},
-        {name = CLM.L["Main"],  width = 85,
-            color = colorGreen
-        },
-        {name = CLM.L["Class"], width = 100,
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate},
+        {name = CLM.L["Name"],  width = 115, sort = LibStub("ScrollingTable").SORT_ASC,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
+        {name = CLM.L["Main"],  width = 115,
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        },
+        -- {name = CLM.L["Class"], width = 100,
+        --     comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        -- },
         {name = CLM.L["Role"],  width = 60},
-        {name = CLM.L["Version"],  width = 60},
+        {name = CLM.L["Version"],  width = 70},
     },
     -- Function to filter ScrollingTable
     filter = (function(stobject, row)
@@ -228,10 +231,7 @@ local function tableDataFeeder()
     for _,object in pairs(profiles) do
         local main = ""
         local isLocked = object:IsLocked()
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(object:Main())
-        if profile then
-            main = profile:Name()
-        end
+        local profileMain = CLM.MODULES.ProfileManager:GetProfileByGUID(object:Main())
         local name = object:Name()
         local rank = ""
         if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER, name) then
@@ -241,26 +241,46 @@ local function tableDataFeeder()
         elseif CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             rank = CLM.L["Assistant"]
         end
+        local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
         local highlight
         if isLocked then
             highlight = highlightLocked
         elseif rank ~= "" then
             highlight = highlightTrusted
         end
-        local row = { cols = {
-            {value = name},
-            {value = main},
-            {value = UTILS.ColorCodeClass(object:Class())},
-            {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
-            {value = object:VersionString()},
-            -- hidden
-            {value = rank},
-            {value = isLocked},
-            {value = highlight}
-        },
-        DoCellUpdate = highlight
-        }
-        data[#data+1] = row
+        if profileMain then
+            local row = { cols = {
+                {value = profile:ClassInternal()},
+                {value = UTILS.ColorCodeNameByClass(profile:Name(), profile:Class())},
+                {value = UTILS.ColorCodeNameByClass(profileMain:Name(), profileMain:Class())},
+                {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
+                {value = object:VersionString()},
+                -- hidden
+                {value = rank},
+                {value = isLocked},
+                {value = highlight},
+                {value = UTILS.ColorCodeClass(object:Class())}
+            },
+            DoCellUpdate = highlight
+            }
+            data[#data+1] = row
+        else
+            local row = { cols = {
+                {value = profile:ClassInternal()},
+                {value = UTILS.ColorCodeNameByClass(profile:Name(), profile:Class())},
+                {value = ""},
+                {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
+                {value = object:VersionString()},
+                -- hidden
+                {value = rank},
+                {value = isLocked},
+                {value = highlight},
+                {value = UTILS.ColorCodeClass(object:Class())}
+            },
+            DoCellUpdate = highlight
+            }
+            data[#data+1] = row
+        end
     end
     return data
 end

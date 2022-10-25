@@ -19,39 +19,39 @@ local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local whoami = UTILS.whoami()
 
 local function ST_GetName(row)
-    return row.cols[1].value
+    return row.cols[2].value
 end
 
 local function ST_GetClass(row)
-    return row.cols[4].value
+    return row.cols[15].value
 end
 
 local function ST_GetWeeklyGains(row)
-    return row.cols[6].value
-end
-
-local function ST_GetWeeklyCap(row)
     return row.cols[7].value
 end
 
-local function ST_GetPointInfo(row)
+local function ST_GetWeeklyCap(row)
     return row.cols[8].value
 end
 
-local function ST_GetProfileLoot(row)
+local function ST_GetPointInfo(row)
     return row.cols[9].value
 end
 
-local function ST_GetProfilePoints(row)
+local function ST_GetProfileLoot(row)
     return row.cols[10].value
 end
 
-local function ST_GetIsEPGP(row)
+local function ST_GetProfilePoints(row)
     return row.cols[11].value
 end
 
-local function ST_GetEP(row)
+local function ST_GetIsEPGP(row)
     return row.cols[12].value
+end
+
+local function ST_GetEP(row)
+    return row.cols[4].value
 end
 
 local function ST_GetIsLocked(row)
@@ -63,7 +63,7 @@ local function ST_GetHighlight(row)
 end
 
 local function ST_GetGP(row)
-    return row.cols[15].value
+    return row.cols[5].value
 end
 
 local highlightPlayer = UTILS.getHighlightMethod(colorBlueTransparent, true)
@@ -351,24 +351,26 @@ local function verticalOptionsFeeder()
 end
 
 local columnsDKP = {
-    {   name = CLM.L["Name"],   width = 85 },
-    {   name = "", width = 60 },
-    {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {   name = CLM.L["Class"],  width = 100,
+    {   name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
+    {   name = CLM.L["Name"],   width = 105,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
+    {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = "", width = 40 },
+    {   name = "", width = 35 },
     {   name = CLM.L["Att. [%]"], width = 60,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
 }
 
 local columnsEPGP = {
-    {   name = CLM.L["Name"], width = 85 },
-    {   name = CLM.L["EP/GP"], width = 80 },
-    {   name = CLM.L["PR"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {   name = CLM.L["Class"],  width = 100,
+    {   name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
+    {   name = CLM.L["Name"], width = 105,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
     },
+    {   name = CLM.L["PR"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
+    {   name = CLM.L["EP"], width = 65 },
+    {   name = CLM.L["GP"], width = 65 },
     {   name = CLM.L["Att. [%]"], width = 60,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
@@ -515,10 +517,12 @@ local function tableDataFeeder()
         local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
         local pointInfo = roster:GetPointInfoForPlayer(GUID)
         local numColumnValue
-        local epgp
+        local ep
+        local gp
         if isEPGP then
             numColumnValue = roster:Priority(GUID)
-            epgp = tostring(value) .. "/" .. tostring(roster:GP(GUID))
+            ep = value
+            gp = roster:GP(GUID)
         else
             numColumnValue = value
         end
@@ -530,10 +534,11 @@ local function tableDataFeeder()
                 highlight = highlightPlayer
             end
             local row = { cols = {
-                {value = profile:Name()},
-                {value = epgp},
+                {value = profile:ClassInternal()},
+                {value = UTILS.ColorCodeNameByClass(profile:Name(), profile:Class())},
                 {value = numColumnValue, color = (value > 0 and colorGreen or colorRed)},
-                {value = UTILS.ColorCodeClass(profile:Class())},
+                {value = ep},
+                {value = gp},
                 {value = UTILS.ColorCodeByPercentage(attendance)},
                 -- not displayed
                 {value = roster:GetCurrentGainsForPlayer(GUID)},
@@ -542,10 +547,9 @@ local function tableDataFeeder()
                 {value = roster:GetProfileLootByGUID(GUID)},
                 {value = roster:GetProfilePointHistoryByGUID(GUID)},
                 {value = isEPGP},
-                {value = value},
                 {value = profile:IsLocked()},
                 {value = highlight},
-                {value = roster:GP(GUID)}
+                {value = UTILS.ColorCodeClass(profile:Class())}
             },
             DoCellUpdate = highlight
             }
