@@ -25,15 +25,15 @@ CONSTANTS.HISTORY_TYPES_GUI = {
 }
 
 local function ST_GetInfo(row)
-    return row.cols[1].value
+    return row.cols[1+1].value
 end
 
 local function ST_GetIsLoot(row)
-    return row.cols[5].value
+    return row.cols[5+1].value
 end
 
 local function ST_GetObject(row)
-    return row.cols[6].value
+    return row.cols[6+1].value
 end
 
 
@@ -143,6 +143,18 @@ local tableStructure = {
     rows = 22,
     -- columns - structure of the ScrollingTable
     columns = {
+        {name = "", width = 18, DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+            if data[realrow] then
+                local itemData = data[realrow].cols[column].value
+                local isLoot = ST_GetIsLoot(data[realrow])
+                if isLoot and itemData then
+                    local _, _, _, _, icon = GetItemInfoInstant(itemData)
+                    frame:SetNormalTexture(icon)
+                else
+                    frame:SetNormalTexture("Interface\\Icons\\INV_Misc_Head_Dragon_Bronze")
+                end
+            end
+        end)},
         {name = CLM.L["Info"],  width = 235 },
         {name = CLM.L["Value"], width = 85, color = colorGreen,
             comparesort = UTILS.LibStCompareSortWrapper(function(a1,b1)
@@ -152,7 +164,6 @@ local tableStructure = {
                 b1 = sgsub(b1, "%%", "")
                 return tonumber(a1), tonumber(b1)
             end),
-            -- align = "RIGHT"
         },
         {name = CLM.L["Date"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC},
         {name = CLM.L["Player"],width = 95,
@@ -307,6 +318,7 @@ local function tableDataFeeder()
                 -- value = (value) .. " " .. CLM.L["DKP"]
             end
             local row = {cols = {
+                {value = lootData[2]},
                 {value = lootData[2]}, -- itemLink
                 {value = value},
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
@@ -353,6 +365,7 @@ local function tableDataFeeder()
             value = value .. " " .. suffix
 
             local row = {cols = {
+                {value = ""},
                 {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
                 {value = value,
                     color = ((isEPGP and history:Spent()) and colorTurquoise)
