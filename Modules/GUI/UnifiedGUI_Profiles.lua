@@ -8,7 +8,6 @@ local UTILS     = CLM.UTILS
 
 local pairs, ipairs = pairs, ipairs
 
-local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
 local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 
@@ -22,14 +21,6 @@ end
 local function ST_GetClass(row)
     return row.cols[9].value
 end
-
--- local function ST_GetRank(row)
---     return row.cols[6].value
--- end
-
--- local function ST_GetIsLocked(row)
---     return row.cols[7].value
--- end
 
 local function ST_GetHighlight(row)
     return row.cols[8].value
@@ -180,15 +171,8 @@ local tableStructure = {
     -- columns - structure of the ScrollingTable
     columns = {
         {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate},
-        {name = CLM.L["Name"],  width = 115, sort = LibStub("ScrollingTable").SORT_ASC,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        },
-        {name = CLM.L["Main"],  width = 115,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        },
-        -- {name = CLM.L["Class"], width = 100,
-        --     comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        -- },
+        {name = CLM.L["Name"],  width = 115, sort = LibStub("ScrollingTable").SORT_ASC},
+        {name = CLM.L["Main"],  width = 115 },
         {name = CLM.L["Role"],  width = 60},
         {name = CLM.L["Version"],  width = 70},
     },
@@ -229,7 +213,6 @@ local function tableDataFeeder()
     local data = {}
     local profiles = CLM.MODULES.ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
-        local main = ""
         local isLocked = object:IsLocked()
         local profileMain = CLM.MODULES.ProfileManager:GetProfileByGUID(object:Main())
         local name = object:Name()
@@ -248,39 +231,28 @@ local function tableDataFeeder()
         elseif rank ~= "" then
             highlight = highlightTrusted
         end
+        local classColor = UTILS.GetClassColor(profile:ClassInternal())
+        local mainColor
+        local main = ""
         if profileMain then
-            local row = { cols = {
-                {value = profile:ClassInternal()},
-                {value = UTILS.ColorCodeNameByClass(profile:Name(), profile:Class())},
-                {value = UTILS.ColorCodeNameByClass(profileMain:Name(), profileMain:Class())},
-                {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
-                {value = object:VersionString()},
-                -- hidden
-                {value = rank},
-                {value = isLocked},
-                {value = highlight},
-                {value = UTILS.ColorCodeClass(object:Class())}
-            },
-            DoCellUpdate = highlight
-            }
-            data[#data+1] = row
-        else
-            local row = { cols = {
-                {value = profile:ClassInternal()},
-                {value = UTILS.ColorCodeNameByClass(profile:Name(), profile:Class())},
-                {value = ""},
-                {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
-                {value = object:VersionString()},
-                -- hidden
-                {value = rank},
-                {value = isLocked},
-                {value = highlight},
-                {value = UTILS.ColorCodeClass(object:Class())}
-            },
-            DoCellUpdate = highlight
-            }
-            data[#data+1] = row
+            main = profileMain:Name()
+            mainColor = UTILS.GetClassColor(profileMain:ClassInternal())
         end
+        local row = { cols = {
+            {value = profile:ClassInternal()},
+            {value = profile:Name(), color = classColor},
+            {value = main, color = mainColor},
+            {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
+            {value = object:VersionString()},
+            -- hidden
+            {value = rank},
+            {value = isLocked},
+            {value = highlight},
+            {value = object:Class()}
+        },
+        DoCellUpdate = highlight
+        }
+        data[#data+1] = row
     end
     return data
 end

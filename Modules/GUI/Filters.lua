@@ -249,7 +249,7 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
 
     local status = true
     if self.class then
-        for id, _class in pairs(UTILS.GetColorCodedClassList()) do
+        for id, _class in pairs(UTILS.GetClassList()) do
             if playerClass == _class then
                 status = self.filters[id]
             end
