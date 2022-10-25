@@ -514,7 +514,7 @@ local function tableDataFeeder()
         local pointInfo = roster:GetPointInfoForPlayer(GUID)
         local numColumnValue
         local primary
-        local secondary =""
+        local secondary
         if isEPGP then
             numColumnValue = roster:Priority(GUID)
             primary = value
