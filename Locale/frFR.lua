@@ -504,7 +504,7 @@ CLM.L["Data"] = "Donnés"
 -- Modules/GUI/UnifiedGUI_History.lua:168
 CLM.L["Date"] = "Date"
 -- Utils.lua:412
-CLM.L["Death Knight"] = "Chevalier de la mort"
+CLM.L["Deathknight"] = "Chevalier de la mort"
 -- Modules/AutoAwardManager/EncounterIDs.lua:145
 CLM.L["Deathbringer Saurfang"] = "Porte-mort Saurcroc"
 -- Modules/GUI/UnifiedGUI_Standings.lua:268

@@ -27,7 +27,7 @@ local function capitalize(string)
 end
 
 local classOrdered = {
-    "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior"
+    "Deathknight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior"
 }
 
 local classColors = {
@@ -409,7 +409,7 @@ function UTILS.NumberToClass(number)
 end
 
 function UTILS.GetClassReadable(class)
-    if class == "DEATHKNIGHT" then return CLM.L["Death Knight"] end
+    -- if class == "DEATHKNIGHT" then return CLM.L["Death Knight"] end
     return capitalize(class or "")
 end
 
@@ -613,6 +613,23 @@ end
 
 function UTILS.LibStModifierFnNumber(a1, b1)
     return (tonumber(RemoveColorCode(a1)) or 0), (tonumber(RemoveColorCode(b1)) or 0)
+end
+
+function UTILS.LibStModifierFnVersion(a1, b1)
+    local VersionStringToNumber = function(s)
+        if s == CLM.L["Unknown"] then
+            return 0
+        end
+        s = ssub(s, 2)
+        local versionNumber = 0
+        local idx = 1
+        for str in string.gmatch(s, "([^.]+)") do
+            versionNumber = versionNumber + tonumber(str)*(100^(3-idx))
+            idx = idx +1
+        end
+        return versionNumber
+    end
+    return VersionStringToNumber(a1), VersionStringToNumber(b1)
 end
 
 function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
