@@ -1,6 +1,40 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.5.4",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "GUI", body = "GUI revamp. Thanks brian#0179 for contribution." },
+                    { header = "Auctioning", body = "Auctioning and upgraded item info should now work properly for tokens and Sapphiron quest item." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.3",
+        data = {
+            {
+                name = "Hotfixes",
+                data = {
+                    { header = "Open Auction", body = "Open auction hotfixes." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.2",
+        data = {
+            {
+                name = "Hotfixes",
+                data = {
+                    { header = "Open Auction", body = "Open auction hotfixes." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.5.1",
         data = {
             {

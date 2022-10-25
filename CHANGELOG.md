@@ -1,3 +1,17 @@
+# Classic Loot Manager v2.5.4
+## Changes
+### GUI
+GUI revamp. Thanks brian#0179 for contribution.
+### Auctioning
+Auctioning and upgraded item info should now work properly for tokens and Sapphiron quest item.
+# Classic Loot Manager v2.5.3
+## Hotfixes
+### Open Auction
+Open auction hotfixes.
+# Classic Loot Manager v2.5.2
+## Hotfixes
+### Open Auction
+Open auction hotfixes.
 # Classic Loot Manager v2.5.1
 ## Fixes
 ### Chat command bidding
