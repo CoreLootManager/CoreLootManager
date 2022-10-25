@@ -38,7 +38,7 @@ local INVTYPE_to_INVSLOT_map = {
 
 local function GetUpgradedItems(itemId)
     local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
-    local invslots = INVTYPE_to_INVSLOT_map[itemEquipLoc] or {}
+    local invslots = INVTYPE_to_INVSLOT_map[CLM.IndirectMap.slot[itemId] or itemEquipLoc] or {}
     local items =  {}
     for _, invslot in ipairs(invslots) do
         local inventoryItemId = GetInventoryItemID("player", invslot)

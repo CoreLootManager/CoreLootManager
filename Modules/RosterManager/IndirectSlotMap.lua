@@ -1,6 +1,9 @@
 local _, CLM = ...
 local IndirectMap = {
     slot = {
+        -- Heroic Key to the Focusing Iris
+        [44577] = "INVTYPE_NECK",
+
         -- Helm of the Lost Vanquisher
         [40618] = "INVTYPE_HEAD",
         -- Chestguard of the Lost Vanquisher
@@ -134,6 +137,9 @@ local IndirectMap = {
         [45657] = "INVTYPE_SHOULDER",
     },
     ilvl = {
+        -- Heroic Key to the Focusing Iris
+        [44577] = 226,
+
         -- Helm of the Lost Vanquisher
         [40618] = 200,
         -- Chestguard of the Lost Vanquisher

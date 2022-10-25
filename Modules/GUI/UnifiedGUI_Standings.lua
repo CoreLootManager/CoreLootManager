@@ -353,9 +353,9 @@ end
 local columnsDKP = {
     {   name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
     {   name = CLM.L["Name"],   width = 107 },
-    {   name = CLM.L["DKP"], width = 165, sort = LibStub("ScrollingTable").SORT_DSC, color = colorGreen },
-    {   name = "", width = 15 },
-    {   name = "", width = 15 },
+    {   name = CLM.L["DKP"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = colorGreen },
+    {   name = CLM.L["Spent"], width = 65 },
+    {   name = CLM.L["Received"], width = 65 },
     {   name = CLM.L["Att. [%]"], width = 60,
         comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
@@ -513,13 +513,15 @@ local function tableDataFeeder()
         local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
         local pointInfo = roster:GetPointInfoForPlayer(GUID)
         local numColumnValue
-        local ep
-        local gp
+        local primary
+        local secondary =""
         if isEPGP then
             numColumnValue = roster:Priority(GUID)
-            ep = value
-            gp = roster:GP(GUID)
+            primary = value
+            secondary = roster:GP(GUID)
         else
+            primary = pointInfo.spent
+            secondary = pointInfo.received
             numColumnValue = value
         end
         if profile then
@@ -534,8 +536,8 @@ local function tableDataFeeder()
         --[[1]]  {value = profile:ClassInternal()},
         --[[2]]  {value = profile:Name(), color = classColor},
         --[[3]]  {value = numColumnValue, color = (value > 0 and colorGreen or colorRed)},
-        --[[4]]  {value = ep},
-        --[[5]]  {value = gp},
+        --[[4]]  {value = primary},
+        --[[5]]  {value = secondary},
         --[[6]]  {value = UTILS.ColorCodeByPercentage(attendance)},
             -- not displayed
         --[[7]]  {value = roster:GetCurrentGainsForPlayer(GUID)},                            -- 7

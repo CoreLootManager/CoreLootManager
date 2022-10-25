@@ -155,7 +155,7 @@ local tableStructure = {
                 end
             end
         end)},
-        {name = CLM.L["Info"],  width = 235 },
+        {name = CLM.L["Info"],  width = 217 },
         {name = CLM.L["Value"], width = 85, color = colorGreen,
             comparesort = UTILS.LibStCompareSortWrapper(function(a1,b1)
                 a1 = strsplit(" ", a1)
