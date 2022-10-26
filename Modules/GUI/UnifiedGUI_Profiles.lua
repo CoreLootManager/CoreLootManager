@@ -174,9 +174,7 @@ local tableStructure = {
         {name = CLM.L["Name"],  width = 115, sort = LibStub("ScrollingTable").SORT_ASC},
         {name = CLM.L["Main"],  width = 115 },
         {name = CLM.L["Role"],  width = 60},
-        {name = CLM.L["Version"],  width = 70,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnVersion)
-        }
+        {name = CLM.L["Version"],  width = 70},
     },
     -- Function to filter ScrollingTable
     filter = (function(stobject, row)

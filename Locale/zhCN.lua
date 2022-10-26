@@ -507,7 +507,7 @@ CLM.L["Data"] = "数据"
 -- Modules/GUI/UnifiedGUI_History.lua:157
 CLM.L["Date"] = "日期"
 -- Utils.lua:408
-CLM.L["Deathknight"] = "死亡骑士"
+CLM.L["Death Knight"] = "死亡骑士"
 -- Modules/AutoAwardManager/EncounterIDs.lua:145
 CLM.L["Deathbringer Saurfang"] = "死亡使者萨鲁法尔"
 -- Modules/GUI/UnifiedGUI_Standings.lua:268
@@ -691,7 +691,7 @@ CLM.L["Found %s in guild."] = "已找到 %s 在公会中。"
 -- Modules/AutoAwardManager/EncounterIDs.lua:128
 CLM.L["Freya"] = "弗蕾亚"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:238
-CLM.L["GM"] = "会长"
+CLM.L["GM"] = "GM"
 -- Tooltips.lua:95
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:71
 -- Modules/LootManager/LootManager.lua:139
@@ -1842,7 +1842,7 @@ CLM.L["Warrior"] = "战士"
 CLM.L["Weekly cap"] = "每周上限"
 -- Modules/GUI/UnifiedGUI_Standings.lua:415
 -- Modules/GUI/UnifiedGUI_Standings.lua:418
-CLM.L["Weekly gains"] = "本周收益"
+CLM.L["Weekly gains"] = "每周收益"
 -- Modules/RosterManager/Options.lua:800
 CLM.L["Weekly reset timezone"] = "每周重置时区"
 -- Modules/GUI/UnifiedGUI_Audit.lua:115
