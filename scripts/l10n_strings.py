@@ -17,6 +17,7 @@ locale_to_google = {
     'frFR': 'fr',
     'ruRU': 'ru',
     'esES': 'es'
+    'znCH': 'zn-CH'
 }
 
 class L10nStorage:
@@ -224,8 +225,7 @@ def main(args):
         files.extend(find_files(path, query, True))
 
     # Prepare
-    # locales = ["ruRU", "frFR"]
-    locales = ["frFR", "esES", "ruRU", "deDE"]
+    locales = ["frFR", "esES", "ruRU", "deDE", "znCH"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
     l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
     storage = L10nStorage(baseDir, args.parser, args.markdown)
