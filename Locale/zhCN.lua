@@ -185,7 +185,7 @@ CLM.L["Are you sure, you want to award %s to %s for %s DKP?"] = "你确定，你
 -- Modules/RosterManager/Roster.lua:661
 CLM.L["Ascending"] = "Ascending"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:242
-CLM.L["Assistant"] = "助手"
+CLM.L["Assistant"] = "Assistant"
 -- Modules/GUI/UnifiedGUI_Standings.lua:360
 -- Modules/GUI/UnifiedGUI_Standings.lua:372
 CLM.L["Att. [%]"] = "出勤 [%]"
@@ -692,7 +692,7 @@ CLM.L["Found %s in guild."] = "已找到 %s 在公会中。"
 -- Modules/AutoAwardManager/EncounterIDs.lua:128
 CLM.L["Freya"] = "弗蕾亚"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:238
-CLM.L["GM"] = "GM"
+CLM.L["GM"] = "Guild Master"
 -- Tooltips.lua:95
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:71
 -- Modules/LootManager/LootManager.lua:139
@@ -1026,7 +1026,7 @@ CLM.L["Malygos"] = "玛里苟斯"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:82
 CLM.L["Management"] = "管理"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:240
-CLM.L["Manager"] = "管理员"
+CLM.L["Manager"] = "Manager"
 -- Modules/PointManager/PointManager.lua:419
 CLM.L["Manual adjustment"] = "手动调整"
 -- Integrations/GUI.lua:142
@@ -1843,7 +1843,7 @@ CLM.L["Warrior"] = "战士"
 CLM.L["Weekly cap"] = "每周上限"
 -- Modules/GUI/UnifiedGUI_Standings.lua:415
 -- Modules/GUI/UnifiedGUI_Standings.lua:418
-CLM.L["Weekly gains"] = "每周收益"
+CLM.L["Weekly gains"] = "本周收益"
 -- Modules/RosterManager/Options.lua:800
 CLM.L["Weekly reset timezone"] = "每周重置时区"
 -- Modules/GUI/UnifiedGUI_Audit.lua:115
