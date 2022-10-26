@@ -16,7 +16,7 @@ locale_to_google = {
     'deDE': 'de',
     'frFR': 'fr',
     'ruRU': 'ru',
-    'esES': 'es'
+    'esES': 'es',
     'znCH': 'zn-CH'
 }
 
