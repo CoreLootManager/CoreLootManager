@@ -17,7 +17,7 @@ locale_to_google = {
     'frFR': 'fr',
     'ruRU': 'ru',
     'esES': 'es',
-    'znCH': 'zn-CH'
+    'zhCN': 'zh-CN'
 }
 
 class L10nStorage:
