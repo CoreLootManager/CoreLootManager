@@ -141,7 +141,11 @@ def output_to_file(filename, storage, locale):
     orderedData = dict(sorted(storage.data.items()))
     with open(filename, 'w') as f:
         f.write("local _, CLM = ...\n")
-        f.write("if GetLocale() == \"{}\" then\n".format(locale))
+        if locale == "zhCN":
+            f.write("local locale = GetLocale()\n")
+            f.write('if (locale == "zhCN") or (locale == "zhTW") then\n')
+        else:
+            f.write("if GetLocale() == \"{}\" then\n".format(locale))
         for string, dataDict in orderedData.items():
             for useTuple in dataDict:
                 f.write("-- {0}:{1}\n".format(useTuple[0], useTuple[1]))
