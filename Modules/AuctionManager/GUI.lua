@@ -211,8 +211,7 @@ local function CreateBidWindow(self)
         {name = CLM.L["Name"],  width = 86},
         {name = CLM.L["Bid"],   width = 120, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
-            sortnext = 4,
-            align = "CENTER",
+            sortnext = 4, align = "CENTER",
             DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
                 st.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
                 frame.text:SetText(data[realrow].cols[7].value or data[realrow].cols[column].value)
@@ -665,12 +664,13 @@ function AuctionManagerGUI:Refresh()
         local data = {}
         for name, bid in pairs(bids) do
             local color
+            local bidType = bidTypes[name]
             local bidName = tostring(bid)
             if namedButtons then
-                bidName = roster:GetFieldName(bidTypes[name])
+                bidName = roster:GetFieldName(bidType)
                 if not bidName or bidName == "" then bidName = tostring(bid) end
             else
-                if bidTypes[name] == CONSTANTS.BID_TYPE.OFF_SPEC then
+                if bidType == CONSTANTS.BID_TYPE.OFF_SPEC then
                     color = colorTurquoise
                 end
             end
