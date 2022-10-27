@@ -16,7 +16,9 @@ locale_to_google = {
     'deDE': 'de',
     'frFR': 'fr',
     'ruRU': 'ru',
-    'esES': 'es'
+    'esES': 'es',
+    'zhCN': 'zh-CN',
+    'zhTW': 'zh-TW',
 }
 
 class L10nStorage:
@@ -155,12 +157,6 @@ def output_to_file(filename, storage, locale):
             f.write('{0}{1} = "{2}"{3}\n'.format(prefix, string, translation, suffix))
         f.write("end")
 
-def cleanup(filenames):
-    for filename in filenames:
-        try:
-            os.remove(filename)
-        except Exception:
-            pass
 
 def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean, markdown_format:boolean):
     missing_translations = []
@@ -224,8 +220,7 @@ def main(args):
         files.extend(find_files(path, query, True))
 
     # Prepare
-    # locales = ["ruRU", "frFR"]
-    locales = ["frFR", "esES", "ruRU", "deDE"]
+    locales = ["frFR", "esES", "ruRU", "deDE", "zhCN", "zhTW"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
     l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
     storage = L10nStorage(baseDir, args.parser, args.markdown)

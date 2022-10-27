@@ -2,8 +2,6 @@ local _, CLM = ...
 
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-
-CLM.UTILS = {}
 local UTILS = CLM.UTILS
 
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
@@ -600,6 +598,16 @@ end
 
 function UTILS.LibStModifierFnNumber(a1, b1)
     return (tonumber(RemoveColorCode(a1)) or 0), (tonumber(RemoveColorCode(b1)) or 0)
+end
+
+-- Convert version string to number for comparision (e.g., "v2.5.4" to "20504")
+function UTILS.VersionStringToNumber(s)
+    local version = UTILS.ParseVersionString(s)
+    return version.major*10000 + version.minor*100 + version.patch
+end
+
+function UTILS.LibStModifierFnVersion(a1, b1)
+    return UTILS.VersionStringToNumber(a1), UTILS.VersionStringToNumber(b1)
 end
 
 function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)

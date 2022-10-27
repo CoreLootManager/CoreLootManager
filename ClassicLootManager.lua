@@ -10,6 +10,7 @@ CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0
 CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
+CLM.UTILS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
 CLM.ALERTS = {}
@@ -21,6 +22,17 @@ CLM.LOG = LibStub("LibLogger"):New()
 local CORE = CLM.CORE
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
+local UTILS     = CLM.UTILS
+
+function UTILS.ParseVersionString(versionString)
+    local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")
+    return {
+        major = tonumber(major) or 2,
+        minor = tonumber(minor) or 0,
+        patch = tonumber(patch) or 0,
+        changeset = changeset or ""
+    }
+end
 
 local function Initialize_SavedVariables()
     if type(CLM2_DB) ~= "table" then
@@ -54,18 +66,12 @@ end
 
 local function Initialize_Versioning()
     -- Parse autoversion
-    local major, minor, patch, changeset = string.match(CLM.AUTOVERSION, "^v(%d+).(%d+).(%d+)-?(.*)")
+    local new = UTILS.ParseVersionString(CLM.AUTOVERSION)
     local old = CLM2_DB.global.version
-    local new = {
-        major = tonumber(major) or 2,
-        minor = tonumber(minor) or 0,
-        patch = tonumber(patch) or 0,
-        changeset = changeset or ""
-    }
     -- set new version
     CLM2_DB.global.version = new
     -- update string
-    changeset = new.changeset
+    local changeset = new.changeset
     if changeset and changeset ~= "" then
         changeset = "-" .. changeset
     else
