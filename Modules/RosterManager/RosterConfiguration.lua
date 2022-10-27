@@ -91,7 +91,7 @@ end
 -- ----------------------- --
 -- ADD NEW ONLY AT THE END --
 -- ----------------------- --
-function RosterConfiguration:fields()
+local function fields()
     return {
         "auctionType",
         "itemValueMode",
@@ -169,26 +169,20 @@ local TRANSFORMS = {
 }
 
 function RosterConfiguration:inflate(data)
-    for i, key in ipairs(self:fields()) do
+    for i, key in ipairs(fields()) do
         self._[key] = TRANSFORMS[key](data[i])
     end
 end
 
-function RosterConfiguration:deflate()
-    local result = {}
-    for _, key in ipairs(self:fields()) do
-        table.insert(result, self._[key])
+local function validate(self, option, value)
+    local callback = "_validate_" .. option
+    if type(self[callback]) == "function" then
+        local r = self[callback](value)
+        return r
     end
 
-    return result
+    return true -- TODO: true or false?
 end
-
-function RosterConfiguration:Copy(o)
-    for k,v in pairs(o._) do
-        self._[k] = v
-    end
-end
-
 function RosterConfiguration:Get(option)
     if option ~= nil then
         return self._[option]
@@ -199,22 +193,14 @@ end
 function RosterConfiguration:Set(option, value)
     if option == nil then return end
     if self._[option] ~= nil then
-        if self:Validate(option, value) then
+        if validate(self, option, value) then
             self._[option] = TRANSFORMS[option](value)
             self:PostProcess(option)
         end
     end
 end
 
-function RosterConfiguration:Validate(option, value)
-    local callback = "_validate_" .. option
-    if type(self[callback]) == "function" then
-        local r = self[callback](value)
-        return r
-    end
 
-    return true -- TODO: true or false?
-end
 
 function RosterConfiguration:PostProcess(option)
     if option == "hardCap" then
