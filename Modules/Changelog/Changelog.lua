@@ -1,6 +1,25 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.5.5",
+        data = {
+            {
+                name = "Locale",
+                data = {
+                    { header = "Chinese", body = "CLM now supports Chinese locale. Thanks brian#0179 for all the translations." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Item values", body = "Bows and Crossbows should now properly be calculated as ranged weapons." },
+                    { header = "Vickrey award value", body = "Vickrey should now properly calculate second value based on the type of the selected bid." },
+                    { header = "Sorting fixes", body = "Sorting by version should now work as expected." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.5.4",
         data = {
             {

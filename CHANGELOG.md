@@ -1,3 +1,15 @@
+# Classic Loot Manager v2.5.5
+## Locales
+### Chinese
+CLM now supports Chinese locale. Thanks brian#0179 for all the translations.
+## Fixes
+### Item values
+Bows and Crossbows should now properly be calculated as ranged weapons.
+### Vickrey award value
+Vickrey should now properly calculate second value based on the type of the selected bid.
+### Sorting fixes
+Sorting by version should now work as expected.
+
 # Classic Loot Manager v2.5.4
 ## Changes
 ### GUI
