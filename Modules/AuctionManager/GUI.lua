@@ -606,9 +606,10 @@ local function GetTopBids(cutoff)
         end
     end
     local second = {name = "", bid = 0}
+    local bidTypes = CLM.MODULES.AuctionManager:BidTypes()
     for name,bid in pairs(CLM.MODULES.AuctionManager:Bids()) do
         bid = tonumber(bid) or 0
-        if bid > second.bid and bid <= max.bid and name ~= max.name then
+        if (bid > second.bid) and (bid <= max.bid) and (name ~= max.name) and (bidTypes[name] == bidTypes[max.name]) then
             second.bid = bid
             second.name = name
         end
