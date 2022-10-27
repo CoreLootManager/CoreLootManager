@@ -1,5 +1,5 @@
 local _, CLM = ...
-if GetLocale() == "zhCN" then
+if GetLocale() == "zhTW" then
 -- Modules/GUI/UnifiedGUI_Audit.lua:326
 CLM.L[" alt of: "] = " 的主号是: "
 -- Utils.lua:479
