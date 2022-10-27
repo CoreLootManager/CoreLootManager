@@ -81,7 +81,9 @@ function RosterConfiguration:New(i)
     -- Dynamic item value
     o._.dynamicValue = false
     -- Bench multiplier
-    o._.benchMultiplier = 1.0
+    o._.benchMultiplier = 1
+
+
     -- Additional settings
     o.hasHardCap = false
     o.hasWeeklyCap = false
@@ -173,7 +175,8 @@ local TRANSFORMS = {
 
 function RosterConfiguration:inflate(data)
     for i, key in ipairs(self:fields()) do
-        self._[key] = TRANSFORMS[key](data[i])
+        -- self._[key] = TRANSFORMS[key](data[i])
+        if data[i] ~= nil then self._[key] = data[i] end
     end
 end
 
