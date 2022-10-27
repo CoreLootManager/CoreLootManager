@@ -134,6 +134,12 @@ function RosterManagerOptions:Initialize()
         general_auto_bench_leavers_set = (function(name, value)
             SetRosterOption(name, "autoBenchLeavers", value)
         end),
+        general_bench_multiplier_get = (function(name)
+            return tostring(GetRosterOption(name, "benchMultiplier"))
+        end),
+        general_bench_multiplier_set = (function(name, value)
+            SetRosterOption(name, "benchMultiplier", value)
+        end),
         general_auto_award_include_bench_get = (function(name)
             return GetRosterOption(name, "autoAwardIncludeBench")
         end),
@@ -843,6 +849,15 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "toggle",
                         order = 23,
                         disabled = (function() return not isManager end),
+                        width = 1
+                    },
+                    bench_multiplier =  {
+                        name = CLM.L["Bench multiplier"],
+                        desc = CLM.L["Point award multiplier for players on bench."],
+                        type = "input",
+                        order = 23.5,
+                        disabled = (function() return not isManager end),
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1
                     },
                     named_buttons_header = {

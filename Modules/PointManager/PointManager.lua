@@ -116,14 +116,20 @@ local function apply_raid_mutator(self, entry, mutate)
         return
     end
 
-    local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, raid:Players())
-    self:AddPointHistory(roster, raid:Players(), pointHistoryEntry)
+    local players = raid:Players()
+    local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, players)
+    self:AddPointHistory(roster, players, pointHistoryEntry)
     local playersOnStandby = raid:PlayersOnStandby()
     if entry:standby() and (#playersOnStandby > 0) then
-        pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, playersOnStandby, nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
+        -- Regular players
+        update_profile_standings(mutate, roster, players, entry:value(), entry:reason(), entry:time(), nil, true)
+        -- Standby players
+        local config = raid:Configuration()
+        local newValue = UTILS.round(config:Get("benchMultiplier") * entry:value(), config:Get("roundDecimals"))
+        pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, playersOnStandby, newValue, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
         pointHistoryEntry.note = CONSTANTS.POINT_CHANGE_REASONS.ALL[entry:reason()] or ""
         self:AddPointHistory(roster, playersOnStandby, pointHistoryEntry)
-        update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), nil, true)
+        update_profile_standings(mutate, roster, playersOnStandby, newValue, entry:reason(), entry:time(), nil, true)
     else
         update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), nil, true)
     end
