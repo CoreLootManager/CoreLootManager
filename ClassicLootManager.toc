@@ -52,6 +52,7 @@ Locale\deDE.lua
 Locale\ruRU.lua
 Locale\frFR.lua
 Locale\esES.lua
+Locale\zhCN.lua
 #Locale\itIT.lua
 
 # Addon Core

@@ -16,7 +16,8 @@ locale_to_google = {
     'deDE': 'de',
     'frFR': 'fr',
     'ruRU': 'ru',
-    'esES': 'es'
+    'esES': 'es',
+    'zhCN': 'zh-CN'
 }
 
 class L10nStorage:
@@ -140,7 +141,11 @@ def output_to_file(filename, storage, locale):
     orderedData = dict(sorted(storage.data.items()))
     with open(filename, 'w') as f:
         f.write("local _, CLM = ...\n")
-        f.write("if GetLocale() == \"{}\" then\n".format(locale))
+        if locale == "zhCN":
+            f.write("local locale = GetLocale()\n")
+            f.write('if (locale == "zhCN") or (locale == "zhTW") then\n')
+        else:
+            f.write("if GetLocale() == \"{}\" then\n".format(locale))
         for string, dataDict in orderedData.items():
             for useTuple in dataDict:
                 f.write("-- {0}:{1}\n".format(useTuple[0], useTuple[1]))
@@ -224,8 +229,7 @@ def main(args):
         files.extend(find_files(path, query, True))
 
     # Prepare
-    # locales = ["ruRU", "frFR"]
-    locales = ["frFR", "esES", "ruRU", "deDE"]
+    locales = ["frFR", "esES", "ruRU", "deDE", "zhCN"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
     l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
     storage = L10nStorage(baseDir, args.parser, args.markdown)
