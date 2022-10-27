@@ -26,13 +26,12 @@ local UTILS     = CLM.UTILS
 
 function UTILS.ParseVersionString(versionString)
     local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")
-    local new = {
+    return {
         major = tonumber(major) or 2,
         minor = tonumber(minor) or 0,
         patch = tonumber(patch) or 0,
         changeset = changeset or ""
     }
-    return new
 end
 
 local function Initialize_SavedVariables()

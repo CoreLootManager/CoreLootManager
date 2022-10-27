@@ -614,16 +614,13 @@ function UTILS.LibStModifierFnNumber(a1, b1)
 end
 
 -- Convert version string to number for comparision (e.g., "v2.5.4" to "20504")
+function UTILS.VersionStringToNumber(s)
+    local version = UTILS.ParseVersionString(s)
+    return version.major*10000 + version.minor*100 + version.patch
+end
+
 function UTILS.LibStModifierFnVersion(a1, b1)
-    local VersionStringToNumber = function(s)
-        if s == CLM.L["Unknown"] then
-            return 0
-        else
-            local s_version = UTILS.ParseVersionString(s)
-            return s_version.major*10000 + s_version.minor*100 + s_version.patch
-        end
-    end
-    return VersionStringToNumber(a1), VersionStringToNumber(b1)
+    return UTILS.VersionStringToNumber(a1), UTILS.VersionStringToNumber(b1)
 end
 
 function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
