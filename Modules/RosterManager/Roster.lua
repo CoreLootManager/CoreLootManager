@@ -408,15 +408,28 @@ function Roster:ClearItemValues(itemId)
     self.itemValues[itemId] = nil
 end
 
+local invtypeWorkaround = {
+    [2] = {
+        [3] = "INVTYPE_RANGED", -- Weapon Guns
+        [18] = "INVTYPE_RANGED",-- Weapon Crossbow
+    }
+}
+
+local function GetInvType(class, subclass)
+    local classTable = invtypeWorkaround[class] or {}
+    return classTable[subclass]
+end
+
 function Roster:GetItemValues(itemId)
     local itemValues = self.itemValues[itemId]
     if itemValues == nil then
-        local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+        local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemId)
+        local equipLoc = GetInvType(classID, subclassID) or itemEquipLoc
         if self.configuration._.dynamicValue then
             local dynamicValues = self.calculator:Calculate(itemId, self.configuration._.roundDecimals)
             if dynamicValues then return dynamicValues end
         end
-        return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or itemEquipLoc)
+        return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or equipLoc)
     end
     return itemValues
 end
