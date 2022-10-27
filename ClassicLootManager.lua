@@ -71,7 +71,7 @@ local function Initialize_Versioning()
     -- set new version
     CLM2_DB.global.version = new
     -- update string
-    changeset = new.changeset
+    local changeset = new.changeset
     if changeset and changeset ~= "" then
         changeset = "-" .. changeset
     else

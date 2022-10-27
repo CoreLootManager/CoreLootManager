@@ -157,12 +157,6 @@ def output_to_file(filename, storage, locale):
             f.write('{0}{1} = "{2}"{3}\n'.format(prefix, string, translation, suffix))
         f.write("end")
 
-def cleanup(filenames):
-    for filename in filenames:
-        try:
-            os.remove(filename)
-        except Exception:
-            pass
 
 def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean, markdown_format:boolean):
     missing_translations = []
