@@ -1,5 +1,5 @@
 # Classic Loot Manager v2.5.5
-## Locales
+## Locale
 ### Chinese
 CLM now supports Chinese locale. Thanks brian#0179 for all the translations.
 ## Fixes
