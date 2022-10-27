@@ -37,7 +37,7 @@ function ProfileManager:Initialize()
             local name = entry:name()
             if UTILS.empty(name) then return end
 
-            local class = UTILS.GetClassReadable(UTILS.NumberToClass(entry:ingameClass()))
+            local class = UTILS.NumberToClass(entry:ingameClass()) or ""
             local main = entry:main()
             main =  (type(main) == "number" and main ~= 0) and UTILS.getGuidFromInteger(main) or ""
             -- Check if it's an update
