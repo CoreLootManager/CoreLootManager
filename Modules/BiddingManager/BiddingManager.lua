@@ -332,6 +332,18 @@ CONSTANTS.BID_TYPE = {
     [CONSTANTS.SLOT_VALUE_TIER.MAX]     = CONSTANTS.SLOT_VALUE_TIER.MAX
 }
 
+CONSTANTS.BID_TYPE_ORDER_DSC = {
+    [CONSTANTS.SLOT_VALUE_TIER.MAX]     = 104,
+    [CONSTANTS.SLOT_VALUE_TIER.LARGE]   = 103,
+    [CONSTANTS.SLOT_VALUE_TIER.MEDIUM]  = 102,
+    [CONSTANTS.SLOT_VALUE_TIER.SMALL]   = 101,
+    [CONSTANTS.SLOT_VALUE_TIER.BASE]    = 100,
+    MAIN_SPEC                           = 4,
+    OFF_SPEC                            = 3,
+    PASS                                = 2,
+    CANCEL                              = 1,
+}
+
 CONSTANTS.BID_TYPES = UTILS.Set(CONSTANTS.BID_TYPE)
 
 CLM.MODULES.BiddingManager = BiddingManager
