@@ -48,6 +48,9 @@ for k, v in pairs(numberToClass) do
     index = index +1
 end
 
+-- table.sort(classOrdered, function(a,b) return CLM.L[a]<CLM.L[b] end)
+table.sort(classOrdered)
+
 function UTILS.ClassToNumber(class)
     return classToNumber[class] or 0
 end
