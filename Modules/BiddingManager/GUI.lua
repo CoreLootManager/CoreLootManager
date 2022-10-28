@@ -706,7 +706,7 @@ local function BuildBidderData(self)
             end
             if (bid:Type() ~= CONSTANTS.BID_TYPE.PASS) and (bid:Type() ~= CONSTANTS.BID_TYPE.CANCEL) then
                 local bidColor
-                if bid:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC then
+                if (not namedButtons) and (bid:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC) then
                     bidColor = colorTurquoise
                 end
                 local row = {cols = {
