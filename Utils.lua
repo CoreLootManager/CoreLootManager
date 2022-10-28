@@ -43,7 +43,6 @@ local classOrdered = {}
 local classToNumber = {}
 local index = 0
 for k, v in pairs(numberToClass) do
-    print(tostring(v)..k)
     classToNumber[v] = k
     classOrdered[index] = v
     index = index +1
