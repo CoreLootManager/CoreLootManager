@@ -37,6 +37,7 @@ local function ParseImportData(self)
     local profileMap = {}
 
     local numStandingsToSet = 0
+    local numSpentToSet = 0
 
     for _, roster in ipairs(self.data.standings.roster) do
         -- uid             1624382252
@@ -45,7 +46,8 @@ local function ParseImportData(self)
         rosterMap[roster.uid] = {
             name = roster.name,
             standings = {},
-            players = {}
+            players = {},
+            spent = {}
         }
         for _, player in ipairs(roster.standings.player) do
             -- name    Specified
@@ -61,17 +63,34 @@ local function ParseImportData(self)
                 }
             end
             rosterMap[roster.uid].players[#rosterMap[roster.uid].players+1] = player.guid
-            if player.dkp ~= 0 then
+
+            if player.dkp and player.dkp ~= 0 then
                 numStandingsToSet = numStandingsToSet + 1
                 if not rosterMap[roster.uid].standings[player.dkp] then
                     rosterMap[roster.uid].standings[player.dkp] = {}
                 end
                 rosterMap[roster.uid].standings[player.dkp][#rosterMap[roster.uid].standings[player.dkp]+1] = player.guid
             end
+
+            if player.points and player.points ~= 0 then
+                numStandingsToSet = numStandingsToSet + 1
+                if not rosterMap[roster.uid].standings[player.points] then
+                    rosterMap[roster.uid].standings[player.points] = {}
+                end
+                rosterMap[roster.uid].standings[player.points][#rosterMap[roster.uid].standings[player.points]+1] = player.guid
+            end
+
+            if player.spent and player.spent ~= 0 then
+                numSpentToSet = numSpentToSet + 1
+                if not rosterMap[roster.uid].spent[player.spent] then
+                    rosterMap[roster.uid].spent[player.spent] = {}
+                end
+                rosterMap[roster.uid].spent[player.spent][#rosterMap[roster.uid].spent[player.spent]+1] = player.guid
+            end
         end
     end
 
-    local actions = numRosters + numRosters + numProfiles + numStandingsToSet
+    local actions = numRosters + numRosters + numProfiles + numStandingsToSet + numSpentToSet
 
     self.actionDescriptor = {
         numActions = actions,
@@ -115,6 +134,12 @@ local function Import_SetStandings(self)
             for standings, GUID in pairs(info.standings) do
                 if standings ~= 0 then
                     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.POINTS.Set:new(roster:UID(), GUID, standings, CONSTANTS.POINT_CHANGE_REASON.IMPORT))
+                end
+            end
+
+            for spent, GUID in pairs(info.spent) do
+                if spent ~= 0 then
+                    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.POINTS.Set:new(roster:UID(), GUID, spent, CONSTANTS.POINT_CHANGE_REASON.IMPORT, nil, true));
                 end
             end
         end

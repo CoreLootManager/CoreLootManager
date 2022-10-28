@@ -141,6 +141,10 @@ local function mutate_set_standings(roster, GUID, value, timestamp)
     roster:SetStandings(GUID, value)
 end
 
+local function mutate_set_spent(roster, GUID, value, timestamp)
+    roster:SetSpent(GUID, value)
+end
+
 local function mutate_decay_standings(roster, GUID, value, timestamp)
     roster:DecayStandings(GUID, value)
 end
@@ -164,7 +168,11 @@ function PointManager:Initialize()
         CLM.MODELS.LEDGER.POINTS.Set,
         (function(entry)
             LOG:TraceAndCount("mutator(PointsSet)")
-            apply_mutator(entry, mutate_set_standings)
+            local mutator = mutate_set_standings;
+            if entry:spent() then
+                mutator = mutate_set_spent
+            end
+            apply_mutator(entry, mutator)
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
@@ -241,7 +249,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
         entry = CLM.MODELS.LEDGER.POINTS.Modify:new(uid, targets, value, reason, note, isSpent)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = CLM.MODELS.LEDGER.POINTS.Set:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.POINTS.Set:new(uid, targets, value, reason, note, isSpent)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
         entry = CLM.MODELS.LEDGER.POINTS.Decay:new(uid, targets, value, reason, note)
     end

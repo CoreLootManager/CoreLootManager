@@ -143,13 +143,14 @@ function ModifyRoster:fields()
     return modifyRosterFields
 end
 
-function Set:new(rosterUid, playerList, value, reason, note)
+function Set:new(rosterUid, playerList, value, reason, note, spent)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0
     o.e = tonumber(reason) or 0
     o.t = tostring(note)
+    o.n = spent and true or false
     return o
 end
 
@@ -173,7 +174,11 @@ function Set:note()
     return self.t or ""
 end
 
-local setFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t"})
+function Set:spent()
+    return self.n
+end
+
+local setFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t", "n"})
 function Set:fields()
     return setFields
 end
