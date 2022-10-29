@@ -60,6 +60,7 @@ function Migration:Migrate()
     self:MigrateMonolithDKP()
     self:MigrateEssentialDKP()
     self:MigrateCommunityDKP()
+    self:MigrateBastion()
     LOG:Message(CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."],
         ColorCodeText("/reload", "00cc00"),
         ColorCodeText(CLM.L["Minimap Icon -> Configuration -> Wipe events"], "6699ff"))
@@ -85,9 +86,16 @@ function Migration:MigrateCommunityDKP()
     self:_MigrateCommunity()
 end
 
-local function NewRoster(name)
+function Migration:MigrateBastion()
+    LOG:Trace("Migration:MigrateBastion()");
+    self:_MigrateBastion();
+end
+
+local function NewRoster(name, epgp)
     local timestamp = Migration:GetOldTimestampUnique()
-    local roster = LEDGER_ROSTER.Create:new(timestamp, name, CONSTANTS.POINT_TYPE.DKP)
+    local pointType = CONSTANTS.POINT_TYPE.DKP;
+    if (epgp) then pointType = CONSTANTS.POINT_TYPE.EPGP end
+    local roster = LEDGER_ROSTER.Create:new(timestamp, name, pointType)
     LOG:Message(CLM.L["New roster: [%s]"], name)
     roster:setTime(timestamp)
     LedgerManager:Submit(roster)
@@ -108,7 +116,7 @@ local function AddProfilesToRoster(uid, profiles)
     LedgerManager:Submit(profilesUpdate)
 end
 
-local function UpdatePoints(uid, targets, value)
+local function UpdatePoints(uid, targets, value, spent)
     -- points need to be set with newest time so they will overwrite the loot cost
     local timestamp = GetServerTime()
     if not timestampCounter[timestamp] then
@@ -128,6 +136,21 @@ local function UpdatePoints(uid, targets, value)
     entry:setTime(timestamp)
     entry:setCounter(timestampCounter[timestamp])
     LedgerManager:Submit(entry)
+
+    if (spent ~= nil) then
+        timestampCounter[timestamp] = timestampCounter[timestamp] + 1
+        local spentEntry = LEDGER_DKP.Set:new(uid, { targets }, spent, CONSTANTS.POINT_CHANGE_REASON.IMPORT, nil, true)
+
+        local tt = spentEntry:targets()
+        if not tt or (#tt == 0) then
+            LOG:Message(CLM.L["UpdatePoints(): Empty targets list"])
+            return
+        end
+    
+        spentEntry:setTime(timestamp)
+        spentEntry:setCounter(timestampCounter[timestamp])
+        LedgerManager:Submit(spentEntry)
+    end
 end
 
 local function AwardItem(uid, GUID, itemId, value, timestamp)
@@ -360,12 +383,58 @@ function Migration:_MigrateCommunity()
     LOG:Message(CLM.L["Import complete"])
 end
 
+function Migration:_MigrateBastion()
+    local addonName = "BastionLoot";
+    if not ValidateAddon(addonName) then
+        LOG:Message(CLM.L["Skipping "..addonName])
+        return
+    end
+    LOG:Message(CLM.L["Migrating %s"], addonName)
+
+    -- BastionLoot records no history, setting timestamp to now - buffer
+    self.timestamp = GetServerTime() - 86400;
+    
+    -- Create BastionLoot Roster
+    local rosterName, rosterUid = NewRoster(addonName, true);
+    local playerProfiles = {};
+    self.playerList = {};
+
+    -- No loot history to import
+    
+    -- Add profiles and set epgp
+    for rosterNumber=1, GetNumGuildMembers() do
+        local name,_,_,_,_,_,_,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber);
+
+        -- Only add members with proper bastion loot info
+        if (string.match(officerNote, "%{%d+%:%d+%}")) then
+            -- Get Name sans Realm
+            name = UTILS.RemoveServer(name);
+
+            -- Get EP and GP from Officer Note
+            local ep, gp = select(3, string.find(officerNote, "%{(%d+)%:(%d+)%}"));
+
+            if not playerProfiles[name] then
+                NewProfile(guid, name, class)
+                table.insert(self.playerList, guid)
+                playerProfiles[name] = true
+            end
+
+            UpdatePoints(rosterUid, guid, ep, gp);
+        end
+    end
+
+    -- Add Profiles to Roster
+    AddProfilesToRoster(rosterUid, self.playerList)
+
+    LOG:Message(CLM.L["Import complete"])
+end
+
 function Migration:RegisterSlash()
     local options = {
         migrate = {
             type = "execute",
             name = "Migrate",
-            desc = CLM.L["Execute migration from MonolithDKP, EssentialDKP or CommunityDKP"],
+            desc = CLM.L["Execute migration from MonolithDKP, EssentialDKP, CommunityDKP, or BastionLoot"],
             handler = self,
             func = "Migrate",
         }
