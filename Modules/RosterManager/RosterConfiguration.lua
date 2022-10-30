@@ -81,10 +81,6 @@ function RosterConfiguration:New(i)
     -- Dynamic item value
     o._.dynamicValue = false
 
-    -- Additional settings
-    o.hasHardCap = false
-    o.hasWeeklyCap = false
-
     return o
 end
 
@@ -125,10 +121,6 @@ local function fields()
         "namedButtons",
         "dynamicValue"
     }
-end
-
-function RosterConfiguration:Storage()
-    return self._
 end
 
 local function transform_boolean(value) return value and true or false end
@@ -174,15 +166,57 @@ function RosterConfiguration:inflate(data)
     end
 end
 
-local function validate(self, option, value)
-    local callback = "_validate_" .. option
-    if type(self[callback]) == "function" then
-        local r = self[callback](value)
-        return r
+local validators = {}
+
+local function IsBoolean(value) return type(value) == "boolean" end
+local function IsNumeric(value) return type(value) == "number" end
+local function IsPositive(value) return value >= 0 end
+function validators.auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
+function validators.itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
+function validators.zeroSumBank(value) return IsBoolean(value) end
+function validators.allowBelowMinStandings(value) return IsBoolean(value) end
+function validators.zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.bossKillBonus(value) return IsBoolean(value) end
+function validators.onTimeBonus(value) return IsBoolean(value) end
+function validators.onTimeBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.bossKillBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.raidCompletionBonus(value) return IsBoolean(value) end
+function validators.raidCompletionBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.intervalBonus(value) return IsBoolean(value) end
+function validators.intervalBonusTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.intervalBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.hardCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.weeklyCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
+function validators.roundDecimals(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
+function validators.minimalIncrement(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.autoBenchLeavers(value) return IsBoolean(value) end
+function validators.autoAwardIncludeBench(value) return IsBoolean(value) end
+function validators.autoAwardOnlineOnly(value) return IsBoolean(value) end
+function validators.autoAwardSameZoneOnly(value) return IsBoolean(value) end
+function validators.selfBenchSubscribe(value) return IsBoolean(value) end
+function validators.tax(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.minimumPoints(value) return IsNumeric(tonumber(value)) end
+function validators.minGP(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function validators.namedButtons(value) return IsBoolean(value) end
+function validators.dynamicValue(value) return IsBoolean(value) end
+
+local function validate(option, value)
+    if type(validators[option]) == "function" then
+        return validators[option](value)
     end
 
     return true -- TODO: true or false?
 end
+
+function RosterConfiguration:Copy(o)
+    for k,v in pairs(o._) do
+        self._[k] = v
+    end
+end
+
 function RosterConfiguration:Get(option)
     if option ~= nil then
         return self._[option]
@@ -193,56 +227,12 @@ end
 function RosterConfiguration:Set(option, value)
     if option == nil then return end
     if self._[option] ~= nil then
-        if validate(self, option, value) then
+        if validate(option, value) then
             self._[option] = TRANSFORMS[option](value)
-            self:PostProcess(option)
         end
     end
 end
 
 
-
-function RosterConfiguration:PostProcess(option)
-    if option == "hardCap" then
-        self.hasHardCap = (self._[option] > 0)
-    elseif option == "weeklyCap" then
-        self.hasWeeklyCap = (self._[option] > 0)
-    end
-end
-
-local function IsBoolean(value) return type(value) == "boolean" end
-local function IsNumeric(value) return type(value) == "number" end
-local function IsPositive(value) return value >= 0 end
-function RosterConfiguration._validate_auctionType(value) return CONSTANTS.AUCTION_TYPES[value] ~= nil end
-function RosterConfiguration._validate_itemValueMode(value) return CONSTANTS.ITEM_VALUE_MODES[value] ~= nil end
-function RosterConfiguration._validate_zeroSumBank(value) return IsBoolean(value) end
-function RosterConfiguration._validate_allowBelowMinStandings(value) return IsBoolean(value) end
-function RosterConfiguration._validate_zeroSumBankInflation(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_auctionTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_antiSnipe(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_bossKillBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_onTimeBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_onTimeBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_bossKillBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_raidCompletionBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_raidCompletionBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_intervalBonus(value) return IsBoolean(value) end
-function RosterConfiguration._validate_intervalBonusTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_intervalBonusValue(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_hardCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_weeklyCap(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_weeklyReset(value) return CONSTANTS.WEEKLY_RESETS[value] ~= nil end
-function RosterConfiguration._validate_roundDecimals(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
-function RosterConfiguration._validate_minimalIncrement(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_autoBenchLeavers(value) return IsBoolean(value) end
-function RosterConfiguration._validate_autoAwardIncludeBench(value) return IsBoolean(value) end
-function RosterConfiguration._validate_autoAwardOnlineOnly(value) return IsBoolean(value) end
-function RosterConfiguration._validate_autoAwardSameZoneOnly(value) return IsBoolean(value) end
-function RosterConfiguration._validate_selfBenchSubscribe(value) return IsBoolean(value) end
-function RosterConfiguration._validate_tax(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_minimumPoints(value) return IsNumeric(tonumber(value)) end
-function RosterConfiguration._validate_minGP(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
-function RosterConfiguration._validate_namedButtons(value) return IsBoolean(value) end
-function RosterConfiguration._validate_dynamicValue(value) return IsBoolean(value) end
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration
