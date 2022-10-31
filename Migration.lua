@@ -93,8 +93,12 @@ end
 
 local function NewRoster(name, epgp)
     local timestamp = Migration:GetOldTimestampUnique()
-    local pointType = CONSTANTS.POINT_TYPE.DKP;
-    if (epgp) then pointType = CONSTANTS.POINT_TYPE.EPGP end
+    local pointType
+    if epgp then
+        pointType = CONSTANTS.POINT_TYPE.EPGP
+    else
+        pointType = CONSTANTS.POINT_TYPE.DKP
+    end
     local roster = LEDGER_ROSTER.Create:new(timestamp, name, pointType)
     LOG:Message(CLM.L["New roster: [%s]"], name)
     roster:setTime(timestamp)
