@@ -88,7 +88,7 @@ end
 
 function Migration:MigrateBastion()
     LOG:Trace("Migration:MigrateBastion()");
-    self:_MigrateBastion();
+    self:_MigrateOfficerNoteEPGP("BastionLoot", "%{(%d+)%:(%d+)%}");
 end
 
 local function NewRoster(name, epgp)
@@ -120,7 +120,7 @@ local function AddProfilesToRoster(uid, profiles)
     LedgerManager:Submit(profilesUpdate)
 end
 
-local function UpdatePoints(uid, targets, value, spent)
+local function UpdatePoints(uid, targets, value, isSpent)
     -- points need to be set with newest time so they will overwrite the loot cost
     local timestamp = GetServerTime()
     if not timestampCounter[timestamp] then
@@ -129,7 +129,12 @@ local function UpdatePoints(uid, targets, value, spent)
         timestampCounter[timestamp] = timestampCounter[timestamp] + 1
     end
 
-    local entry = LEDGER_DKP.Set:new(uid, { targets }, value, CONSTANTS.POINT_CHANGE_REASON.IMPORT)
+    local entry
+    if isSpent then
+        LEDGER_DKP.Set:new(uid, { targets }, value, CONSTANTS.POINT_CHANGE_REASON.IMPORT, nil, true)
+    else
+        LEDGER_DKP.Set:new(uid, { targets }, value, CONSTANTS.POINT_CHANGE_REASON.IMPORT)
+    end
 
     local t = entry:targets()
     if not t or (#t == 0) then
@@ -140,21 +145,6 @@ local function UpdatePoints(uid, targets, value, spent)
     entry:setTime(timestamp)
     entry:setCounter(timestampCounter[timestamp])
     LedgerManager:Submit(entry)
-
-    if (spent ~= nil) then
-        timestampCounter[timestamp] = timestampCounter[timestamp] + 1
-        local spentEntry = LEDGER_DKP.Set:new(uid, { targets }, spent, CONSTANTS.POINT_CHANGE_REASON.IMPORT, nil, true)
-
-        local tt = spentEntry:targets()
-        if not tt or (#tt == 0) then
-            LOG:Message(CLM.L["UpdatePoints(): Empty targets list"])
-            return
-        end
-    
-        spentEntry:setTime(timestamp)
-        spentEntry:setCounter(timestampCounter[timestamp])
-        LedgerManager:Submit(spentEntry)
-    end
 end
 
 local function AwardItem(uid, GUID, itemId, value, timestamp)
@@ -387,49 +377,48 @@ function Migration:_MigrateCommunity()
     LOG:Message(CLM.L["Import complete"])
 end
 
-function Migration:_MigrateBastion()
-    local addonName = "BastionLoot";
+function Migration:_MigrateOfficerNoteEPGP(addonName, pattern, gpFirst)
+    -- addonName - String - Name of the addon
+    -- pattern - Regex - Should select ep and gp when passed into match / find
+    -- gpFirst - Bool - True if gp is the first output using the given pattern
     if not ValidateAddon(addonName) then
         LOG:Message(CLM.L["Skipping "..addonName])
         return
     end
     LOG:Message(CLM.L["Migrating %s"], addonName)
-
     -- BastionLoot records no history, setting timestamp to now - buffer
     self.timestamp = GetServerTime() - 86400;
-    
     -- Create BastionLoot Roster
     local rosterName, rosterUid = NewRoster(addonName, true);
     local playerProfiles = {};
     self.playerList = {};
-
     -- No loot history to import
-    
+    --
     -- Add profiles and set epgp
     for rosterNumber=1, GetNumGuildMembers() do
         local name,_,_,_,_,_,_,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber);
-
         -- Only add members with proper bastion loot info
-        if (string.match(officerNote, "%{%d+%:%d+%}")) then
+        if (string.match(officerNote, pattern)) then
             -- Get Name sans Realm
             name = UTILS.RemoveServer(name);
-
             -- Get EP and GP from Officer Note
-            local ep, gp = select(3, string.find(officerNote, "%{(%d+)%:(%d+)%}"));
-
+            local ep, gp;
+            if gpFirst then
+                gp, ep = select(3, string.find(officerNote, pattern));
+            else
+                ep, gp = select(3, string.find(officerNote, pattern)); 
+            end
             if not playerProfiles[name] then
                 NewProfile(guid, name, class)
                 table.insert(self.playerList, guid)
                 playerProfiles[name] = true
             end
-
-            UpdatePoints(rosterUid, guid, ep, gp);
+            UpdatePoints(rosterUid, guid, ep);
+            UpdatePoints(rosterUid, guid, gp, true);
         end
     end
-
     -- Add Profiles to Roster
     AddProfilesToRoster(rosterUid, self.playerList)
-
     LOG:Message(CLM.L["Import complete"])
 end
 
