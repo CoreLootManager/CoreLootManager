@@ -342,8 +342,6 @@ local function tableDataFeeder()
             pointList = roster:GetRaidPointHistory()
         end
 
-        local multiple = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
-
         for _,history in ipairs(pointList) do
             local reason = history:Reason() or 0
             local value = tostring(history:Value())
@@ -364,6 +362,14 @@ local function tableDataFeeder()
 
             value = value .. " " .. suffix
 
+            local profiles = history:Profiles()
+            if #profiles == 1 then
+                local currentProfile = profiles[1]
+                local player = UTILS.ColorCodeText(currentProfile:Name(), UTILS.GetClassColor(currentProfile:Class()).hex)
+            else
+                local player = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
+            end
+
             local row = {cols = {
                 {value = ""},
                 {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
@@ -371,7 +377,7 @@ local function tableDataFeeder()
                     color = ((isEPGP and history:Spent()) and colorTurquoise)
                 },
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
-                {value = multiple},
+                {value = player},
                 {value = false},
                 {value = history}
             }}
