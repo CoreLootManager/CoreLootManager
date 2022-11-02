@@ -341,7 +341,7 @@ local function tableDataFeeder()
         else -- raid loot
             pointList = roster:GetRaidPointHistory()
         end
-
+        local player
         for _,history in ipairs(pointList) do
             local reason = history:Reason() or 0
             local value = tostring(history:Value())
@@ -365,9 +365,9 @@ local function tableDataFeeder()
             local profiles = history:Profiles()
             if #profiles == 1 then
                 local currentProfile = profiles[1]
-                local player = UTILS.ColorCodeText(currentProfile:Name(), UTILS.GetClassColor(currentProfile:Class()).hex)
+                player = UTILS.ColorCodeText(currentProfile:Name(), UTILS.GetClassColor(currentProfile:Class()).hex)
             else
-                local player = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
+                player = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
             end
 
             local row = {cols = {
