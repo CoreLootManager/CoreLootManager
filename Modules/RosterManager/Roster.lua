@@ -202,8 +202,8 @@ function Roster:UpdateStandings(GUID, value, timestamp)
     if isPointGain then
         -- Handle the caps if the update was a positive (gain)
         -- Hard Cap
-        if self.configuration.hasHardCap then
-            local hardCap = self.configuration._.hardCap
+        local hardCap = self.configuration._.hardCap
+        if hardCap > 0 then
             -- We do not modify points if they are already exceeded during newly introduced cap
             if (standings >= hardCap) then
                 return
@@ -218,8 +218,9 @@ function Roster:UpdateStandings(GUID, value, timestamp)
         end
         -- Weekly Cap
         week = UTILS.WeekNumber(timestamp, (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
-        if self.configuration.hasWeeklyCap then
-            local maxGain = self.configuration._.weeklyCap - self:GetWeeklyGainsForPlayerWeek(GUID, week)
+        local weeklyCap = self.configuration._.weeklyCap
+        if weeklyCap > 0 then
+            local maxGain = weeklyCap - self:GetWeeklyGainsForPlayerWeek(GUID, week)
             if maxGain < 0 then -- sanity check (here it can be 0 and this can happen if cap was lowered before awarding dkp)
                 LOG:Debug("Roster:UpdateStandings(): maxGain %d for %s(%s) is lower than 0 for weekly cap", maxGain, GUID, self.uid)
                 return
