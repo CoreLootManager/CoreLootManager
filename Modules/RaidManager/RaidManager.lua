@@ -359,8 +359,12 @@ function RaidManager:StartRaid(raid)
     local standby = {}
     for GUID,_ in pairs(CLM.MODULES.StandbyStagingManager:GetStandby(raid:UID())) do
         if not joining_players_guids[GUID] then
-            tinsert(standby, GUID)
+            standby[#standby+1] = GUID
         end
+    end
+    -- Lazy fill from standby
+    if #standby > 0 then
+        CLM.MODULES.RosterManager:AddProfilesToRoster(raid:Roster(), standby)
     end
     -- Start Raid
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Start:new(raid:UID(), players, standby), true)
