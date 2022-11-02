@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.5.6",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Standby", body = "Fix for standby points not being applied if one of the players requesting standby was not in the roster. Auto-add players to roster if they have requested standby." },
+                    { header = "History", body = "If point change affects only 1 player display the name instead of Multiple. If player is missing class (which should not happen when adding characters post pre-patch), do not error out but display empty field." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.5.5",
         data = {
             {
