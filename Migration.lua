@@ -87,8 +87,8 @@ function Migration:MigrateCommunityDKP()
 end
 
 function Migration:MigrateBastion()
-    LOG:Trace("Migration:MigrateBastion()");
-    self:_MigrateOfficerNoteEPGP("BastionLoot", "%{(%d+)%:(%d+)%}");
+    LOG:Trace("Migration:MigrateBastion()")
+    self:_MigrateOfficerNoteEPGP("BastionLoot", "%{(%d+)%:(%d+)%}")
 end
 
 local function NewRoster(name, epgp)
@@ -387,34 +387,34 @@ function Migration:_MigrateOfficerNoteEPGP(addonName, pattern, gpFirst)
     end
     LOG:Message(CLM.L["Migrating %s"], addonName)
     -- BastionLoot records no history, setting timestamp to now - buffer
-    self.timestamp = GetServerTime() - 86400;
+    self.timestamp = GetServerTime() - 86400
     -- Create BastionLoot Roster
-    local rosterName, rosterUid = NewRoster(addonName, true);
-    local playerProfiles = {};
-    self.playerList = {};
+    local rosterName, rosterUid = NewRoster(addonName, true)
+    local playerProfiles = {}
+    self.playerList = {}
     -- No loot history to import
     --
     -- Add profiles and set epgp
     for rosterNumber=1, GetNumGuildMembers() do
-        local name,_,_,_,_,_,_,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber);
+        local name,_,_,_,_,_,_,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber)
         -- Only add members with proper bastion loot info
         if (string.match(officerNote, pattern)) then
             -- Get Name sans Realm
-            name = UTILS.RemoveServer(name);
+            name = UTILS.RemoveServer(name)
             -- Get EP and GP from Officer Note
-            local ep, gp;
+            local ep, gp
             if gpFirst then
-                gp, ep = select(3, string.find(officerNote, pattern));
+                gp, ep = select(3, string.find(officerNote, pattern))
             else
-                ep, gp = select(3, string.find(officerNote, pattern)); 
+                ep, gp = select(3, string.find(officerNote, pattern))
             end
             if not playerProfiles[name] then
                 NewProfile(guid, name, class)
                 table.insert(self.playerList, guid)
                 playerProfiles[name] = true
             end
-            UpdatePoints(rosterUid, guid, ep);
-            UpdatePoints(rosterUid, guid, gp, true);
+            UpdatePoints(rosterUid, guid, ep)
+            UpdatePoints(rosterUid, guid, gp, true)
         end
     end
     -- Add Profiles to Roster

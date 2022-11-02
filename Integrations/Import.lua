@@ -139,7 +139,7 @@ local function Import_SetStandings(self)
 
             for spent, GUID in pairs(info.spent) do
                 if spent ~= 0 then
-                    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.POINTS.Set:new(roster:UID(), GUID, spent, CONSTANTS.POINT_CHANGE_REASON.IMPORT, nil, true));
+                    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.POINTS.Set:new(roster:UID(), GUID, spent, CONSTANTS.POINT_CHANGE_REASON.IMPORT, nil, true))
                 end
             end
         end

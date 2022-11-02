@@ -144,7 +144,7 @@ function ModifyRoster:fields()
 end
 
 function Set:new(rosterUid, playerList, value, reason, note, spent)
-    local o = LogEntry.new(self);
+    local o = LogEntry.new(self)
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
     o.v = tonumber(value) or 0

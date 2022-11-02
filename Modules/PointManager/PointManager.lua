@@ -168,7 +168,7 @@ function PointManager:Initialize()
         CLM.MODELS.LEDGER.POINTS.Set,
         (function(entry)
             LOG:TraceAndCount("mutator(PointsSet)")
-            local mutator = mutate_set_standings;
+            local mutator = mutate_set_standings
             if entry:spent() then
                 mutator = mutate_set_spent
             end
