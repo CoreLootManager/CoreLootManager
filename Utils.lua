@@ -708,7 +708,7 @@ end
 
 function UTILS.LibStClassCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local class = data[realrow].cols[column].value
-    if class then
+    if class and class ~= "" then
         frame:SetNormalTexture("Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES") -- this is the image containing all class icons
         local coords = CLASS_ICON_TCOORDS[class]
         frame:GetNormalTexture():SetTexCoord(unpack(coords))
