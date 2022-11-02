@@ -11,6 +11,7 @@ local sgsub, tsort =string.gsub, table.sort
 
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
+local colorGold = {a = 1, r = 1, g = 0.8, b = 0}
 
 CONSTANTS.HISTORY_TYPE = {
     ALL = 1,
@@ -362,12 +363,15 @@ local function tableDataFeeder()
 
             value = value .. " " .. suffix
 
+            local color
             local profiles = history:Profiles()
             if #profiles == 1 then
                 local currentProfile = profiles[1]
-                player = UTILS.ColorCodeText(currentProfile:Name(), UTILS.GetClassColor(currentProfile:Class()).hex)
+                player = currentProfile:Name()
+                color = UTILS.GetClassColor(currentProfile:Class())
             else
-                player = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
+                player = CLM.L["Multiple"]
+                color = colorGold
             end
 
             local row = {cols = {
@@ -377,7 +381,7 @@ local function tableDataFeeder()
                     color = ((isEPGP and history:Spent()) and colorTurquoise)
                 },
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
-                {value = player},
+                {value = player, color = color},
                 {value = false},
                 {value = history}
             }}
