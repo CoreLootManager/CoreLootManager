@@ -1,3 +1,11 @@
+# Classic Loot Manager v2.5.6
+## Fixes
+### Standby
+Fix for standby points not being applied if one of the players requesting standby was not in the roster.
+Auto-add players to roster if they have requested standby.
+### History
+If point change affects only 1 player display the name instead of `Multiple`.
+If player is missing class (which should not happen when adding characters post pre-patch), do not error out but display empty field.
 # Classic Loot Manager v2.5.5
 ## Locale
 ### Chinese
