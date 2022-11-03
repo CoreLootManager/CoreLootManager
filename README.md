@@ -79,7 +79,7 @@ settings.
 * Auditing UI - Check and manage all events that happened in the addon
 * Time travel mode - correct errors and add entries in history to keep the data in place
 ## Utilities
-* Built-in migration from MonolithDKP, EssentialDKP and CommunityDKP
+* Built-in migration from MonolithDKP, EssentialDKP, **CommunityDKP**, BastionLoot and **CEPGP**
 * Loot tracking queue for fast auctioning
 * Auto-posting loot to raid channel
 * Player spec and role tracking

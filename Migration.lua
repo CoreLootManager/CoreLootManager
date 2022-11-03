@@ -61,6 +61,7 @@ function Migration:Migrate()
     self:MigrateEssentialDKP()
     self:MigrateCommunityDKP()
     self:MigrateBastion()
+    self:MigrateCEPGP()
     LOG:Message(CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."],
         ColorCodeText("/reload", "00cc00"),
         ColorCodeText(CLM.L["Minimap Icon -> Configuration -> Wipe events"], "6699ff"))
@@ -89,6 +90,11 @@ end
 function Migration:MigrateBastion()
     LOG:Trace("Migration:MigrateBastion()")
     self:_MigrateOfficerNoteEPGP("BastionLoot", "%{(%d+)%:(%d+)%}")
+end
+
+function Migration:MigrateCEPGP()
+    LOG:Trace("Migration:MigrateCEPGP()")
+    self:_MigrateOfficerNoteEPGP("CEPGP", "(%d+),(%d+)")
 end
 
 local function NewRoster(name, epgp)
@@ -129,12 +135,7 @@ local function UpdatePoints(uid, targets, value, isSpent)
         timestampCounter[timestamp] = timestampCounter[timestamp] + 1
     end
 
-    local entry
-    if isSpent then
-        LEDGER_DKP.Set:new(uid, { targets }, value, CONSTANTS.POINT_CHANGE_REASON.IMPORT, nil, true)
-    else
-        LEDGER_DKP.Set:new(uid, { targets }, value, CONSTANTS.POINT_CHANGE_REASON.IMPORT)
-    end
+    local entry = LEDGER_DKP.Set:new(uid, { targets }, value, CONSTANTS.POINT_CHANGE_REASON.IMPORT, nil, isSpent)
 
     local t = entry:targets()
     if not t or (#t == 0) then
@@ -386,18 +387,17 @@ function Migration:_MigrateOfficerNoteEPGP(addonName, pattern, gpFirst)
         return
     end
     LOG:Message(CLM.L["Migrating %s"], addonName)
-    -- BastionLoot records no history, setting timestamp to now - buffer
+    -- Officer-note based EPGP records no goodhistory, setting timestamp to now - buffer
     self.timestamp = GetServerTime() - 86400
-    -- Create BastionLoot Roster
-    local rosterName, rosterUid = NewRoster(addonName, true)
+    -- Create Roster
+    local _, rosterUid = NewRoster(addonName, true)
     local playerProfiles = {}
     self.playerList = {}
     -- No loot history to import
-    --
-    -- Add profiles and set epgp
+    -- Add profiles and set EPGP
     for rosterNumber=1, GetNumGuildMembers() do
         local name,_,_,_,_,_,_,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber)
-        -- Only add members with proper bastion loot info
+        -- Only add members with proper note
         if (string.match(officerNote, pattern)) then
             -- Get Name sans Realm
             name = UTILS.RemoveServer(name)
@@ -427,7 +427,7 @@ function Migration:RegisterSlash()
         migrate = {
             type = "execute",
             name = "Migrate",
-            desc = CLM.L["Execute migration from MonolithDKP, EssentialDKP, CommunityDKP, or BastionLoot"],
+            desc = CLM.L["Execute migration from MonolithDKP, EssentialDKP, CommunityDKP, BastionLoot or CEPGP"],
             handler = self,
             func = "Migrate",
         }
