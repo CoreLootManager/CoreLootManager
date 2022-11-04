@@ -1,6 +1,6 @@
-## Interface: 30400
+## Interface: 10000
 ## Interface-Wrath: 30400
-## X-Min-Interface: 30400
+## X-Min-Interface: 10000
 ## X-Min-Interface-Wrath: 30400
 ## Title: Classic Loot Manager
 ## Notes: Robust, DKP and EPGP based Loot Manager system

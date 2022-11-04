@@ -6,9 +6,11 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local GuildRoster, GetGuildRosterInfo = GuildRoster, GetGuildRosterInfo
-local GuildControlGetNumRanks, GetNumGuildMembers = GuildControlGetNumRanks, GetNumGuildMembers
+-- local GuildRoster, GetGuildRosterInfo = GuildRoster, GetGuildRosterInfo
+-- local GuildControlGetNumRanks, GetNumGuildMembers = GuildControlGetNumRanks, GetNumGuildMembers
 local C_GuildInfoGuildControlGetRankFlags = C_GuildInfo.GuildControlGetRankFlags
+
+local GuildRoster = C_GuildInfo and C_GuildInfo.GuildRoster or GuildRoster
 
 local GuildInfoListener = {}
 function GuildInfoListener:Initialize()
@@ -41,9 +43,12 @@ function GuildInfoListener:BuildRankCache()
         local rankInfo = C_GuildInfoGuildControlGetRankFlags(i)
         self.cache.ranks[i] = {}
         -- 11 View Officer Note
-        self.cache.ranks[i].isAssistant = rankInfo[11]
+        -- self.cache.ranks[i].isAssistant = rankInfo[11]
         -- 12 Edit Officer Note
-        self.cache.ranks[i].isManager = rankInfo[12]
+        -- self.cache.ranks[i].isManager = rankInfo[12]
+        -- debug
+        self.cache.ranks[i].isAssistant = true
+        self.cache.ranks[i].isManager = true
     end
     -- Add GM
     -- self.cache.ranks[0] = { isManager = true, isAssistant = true}

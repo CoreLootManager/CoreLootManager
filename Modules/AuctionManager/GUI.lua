@@ -78,7 +78,7 @@ local function FillAuctionWindowFromTooltip(frame, button)
 end
 
 local function HookBagSlots()
-    hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", FillAuctionWindowFromTooltip)
+    -- hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", FillAuctionWindowFromTooltip)
 end
 
 local function HookCorpseSlots(hookedSlots)
@@ -300,7 +300,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             func = (function() end),
             width = 0.50,
             order = 1,
-            itemLink = itemLink,
+            -- itemLink = itemLink,
         },
         item = {
             name = CLM.L["Item"],
@@ -320,7 +320,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             disabled = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
             width = 1.4,
             order = 2,
-            itemLink = itemLink,
+            -- itemLink = itemLink,
         },
         note_label = {
             name = CLM.L["Note"],

@@ -16,7 +16,8 @@ local mfloor = math.floor
 local tostring, tonumber = tostring, tonumber
 local tinsert = table.insert
 local print, type, setmetatable, getmetatable, rawequal = print, type, setmetatable, getmetatable, rawequal
-local GetUnitName, UnitGUID, GetTalentTabInfo = GetUnitName, UnitGUID, GetTalentTabInfo
+-- local GetUnitName, UnitGUID, GetTalentTabInfo = GetUnitName, UnitGUID, GetTalentTabInfo
+local GetUnitName, UnitGUID = GetUnitName, UnitGUID
 local GetTalentGroupRole, GetActiveTalentGroup = GetTalentGroupRole, GetActiveTalentGroup
 
 local function capitalize(string)
@@ -565,11 +566,12 @@ function UTILS.round(number, decimals)
 end
 
 function UTILS.GetMyTalents()
-    local one, two, three
-    _, _, one   = GetTalentTabInfo(1)
-    _, _, two   = GetTalentTabInfo(2)
-    _, _, three = GetTalentTabInfo(3)
-    return one, two, three
+    -- local one, two, three
+    -- _, _, one   = GetTalentTabInfo(1)
+    -- _, _, two   = GetTalentTabInfo(2)
+    -- _, _, three = GetTalentTabInfo(3)
+    -- return one, two, three
+    return 0,0,0
 end
 
 function UTILS.GetMyRole()

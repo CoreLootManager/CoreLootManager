@@ -24,6 +24,8 @@ local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local UTILS     = CLM.UTILS
 
+local GuildRoster = C_GuildInfo and C_GuildInfo.GuildRoster or GuildRoster
+
 function UTILS.ParseVersionString(versionString)
     local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")
     return {
