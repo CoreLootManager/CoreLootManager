@@ -1,6 +1,37 @@
+externals:
+  Libs/LibStub:
+    url: https://repos.wowace.com/wow/libstub/trunk
+    tag: 1.0
+  Libs/Ace3:
+    url: https://repos.wowace.com/wow/ace3/trunk
+  Libs/CallbackHandler-1.0:
+    url: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
+    tag: latest
+  Libs/lib-st:
+    url: https://github.com/ddumont/lib-st
+    tag: v4.1.3
+  Libs/LibCandyBar-3.0:
+    url: https://repos.wowace.com/wow/libcandybar-3-0/trunk
+    tag: latest
+  Libs/LibLogger:
+    url: https://github.com/lantisnt/LibLogger
+    tag: latest
+  Libs/LibDBIcon-1.0:
+    url: https://repos.wowace.com/wow/libdbicon-1-0/trunk
+    tag: latest
+  Libs/LibDeflate:
+    url: https://github.com/SafeteeWoW/LibDeflate
+    tag: 1.0.2-release
+  Libs/LibSerialize:
+    url: https://github.com/rossnichols/LibSerialize
+    tag: v1.1.3
+  Libs/LibUIDropDownMenu:
+    url: https://repos.wowace.com/wow/libuidropdownmenu/trunk
+    tag: latest
+
 ignore:
-    - Debug.lua
-    - scripts
+  - Debug.lua
+  - scripts
 
 manual-changelog:
   filename: CHANGELOG.md

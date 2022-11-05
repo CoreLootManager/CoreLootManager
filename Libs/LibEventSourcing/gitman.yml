@@ -1,0 +1,22 @@
+location: libs
+sources:
+  - repo: https://github.com/kaytotes/LibStub
+    name: LibStub
+    rev: master
+    type: git
+    sparse_paths:
+      - "LibStub.lua"
+  - repo: https://github.com/lantisnt/LibLogger
+    name: LibLogger
+    rev: v1.1.1
+    type: git
+  - repo: https://github.com/ClassicLootManager/ChatOps.git
+    name: ChatOps
+    rev: v1.1.3
+    type: git
+
+sources_locked:
+
+default_group: ''
+groups:
+  -
