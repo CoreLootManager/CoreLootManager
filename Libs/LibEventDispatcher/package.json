@@ -1,0 +1,15 @@
+{
+  "name": "lua-eventsourcing",
+  "description": "N/A",
+  "private": true,
+  "devDependencies": {
+    "@commitlint/config-conventional": "^11.0.0",
+    "commitlint": "^11.0.0",
+    "conventional-changelog-conventionalcommits": "^4.4.0",
+    "husky": "^6.0.0",
+    "semantic-release": "^17.2.3"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}

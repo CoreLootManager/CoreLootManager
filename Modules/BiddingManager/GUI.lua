@@ -444,7 +444,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             type = "execute",
             image = icon,
             func = (function() end),
-            itemLink = shortItemLink,
+            tooltipHyperlink = shortItemLink,
             width = 0.25,
             order = 1
         },
@@ -455,7 +455,7 @@ function BiddingManagerGUI:GenerateAuctionOptions()
             set = (function(i,v) end), -- Intentionally: do not override
             width = rowMultiplier - 0.25,
             order = 2,
-            itemLink = shortItemLink,
+            tooltipHyperlink = shortItemLink,
         },
     }
 

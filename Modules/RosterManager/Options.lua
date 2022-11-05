@@ -500,7 +500,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         width = 0.3,
                         type = "execute",
                         func = (function() end),
-                        itemLink = shortItemLink,
+                        tooltipHyperlink = shortItemLink,
                     }
                 order = order + 1
                 for _, ivalues in ipairs(valuesWithDesc) do

@@ -300,7 +300,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             func = (function() end),
             width = 0.50,
             order = 1,
-            itemLink = itemLink,
+            tooltipHyperlink = itemLink,
         },
         item = {
             name = CLM.L["Item"],
@@ -320,7 +320,7 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             disabled = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
             width = 1.4,
             order = 2,
-            itemLink = itemLink,
+            tooltipHyperlink = itemLink,
         },
         note_label = {
             name = CLM.L["Note"],

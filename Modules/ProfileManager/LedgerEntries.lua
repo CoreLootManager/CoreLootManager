@@ -9,7 +9,7 @@ local UTILS     = CLM.UTILS
 local tostring = tostring
 
 local mergeLists = UTILS.mergeLists
-local ClassToNumber = UTILS.ClassToNumber
+local CanonicalClassToNumber = UTILS.CanonicalClassToNumber
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local CreateGUIDList = UTILS.CreateGUIDList
 
@@ -26,7 +26,7 @@ function ProfileUpdate:new(GUID, name, class, spec, main)
     local o = LogEntry.new(self);
     o.g = GetGUIDFromEntry(GUID or 0)
     o.n = (name ~= nil) and tostring(name) or ""
-    o.c = ClassToNumber(class)
+    o.c = CanonicalClassToNumber(class)
     o.s = (spec ~= nil) and tostring(spec) or ""
     o.m = GetGUIDFromEntry(main or 0)
     return o

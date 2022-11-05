@@ -69,7 +69,7 @@ local isEquipable = UTILS.Set({
 local function addItemPriceToTooltip(tooltip)
     -- Sanity Check
     if not tooltip then return end
-    local _, itemLink = GameTooltip:GetItem()
+    local _, itemLink = tooltip:GetItem()
     if not itemLink then return end
     local itemId = UTILS.GetItemIdFromLink(itemLink)
     if itemId == 0 then return end
@@ -99,5 +99,6 @@ local function addItemPriceToTooltip(tooltip)
     end
 end
 
+LibStub("AceConfigDialog-3.0").tooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)
 GameTooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)
 ItemRefTooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)

@@ -1,0 +1,13 @@
+location: libs
+sources:
+  - repo: https://github.com/kaytotes/LibStub
+    name: LibStub
+    rev: master
+    type: git
+    sparse_paths:
+      - "LibStub.lua"
+sources_locked:
+
+default_group: ''
+groups:
+  -

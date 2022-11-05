@@ -1,0 +1,1 @@
+sudo find Libs/ -type d -name ".*" -execdir rm -rf {} \;

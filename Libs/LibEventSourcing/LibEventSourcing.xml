@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="libs\LibStub\LibStub.lua"/>
+    <Script file="libs\LibLogger\LibLogger.lua"/>
+    <Include file="libs\ChatOps\ChatOps.xml"/>
+    <Script file="source\Util.lua"/>
+    <Script file="source\SlashCommands.lua"/>
+    <Script file="source\SortedList.lua"/>
+    <Script file="source\LogEntry.lua"/>
+    <Script file="source\IgnoreEntry.lua"/>
+    <Script file="source\StateManager.lua"/>
+    <Script file="source\Message.lua"/>
+    <Script file="source\AdvertiseHashMessage.lua"/>
+    <Script file="source\WeekDataMessage.lua"/>
+    <Script file="source\BulkDataMessage.lua"/>
+    <Script file="source\RequestWeekMessage.lua"/>
+    <Script file="source\RequestStateMessage.lua"/>
+    <Script file="source\StateMessage.lua"/>
+    <Script file="source\ListSync.lua"/>
+    <Script file="source\LedgerFactory.lua"/>
+</Ui>
