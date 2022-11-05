@@ -16,7 +16,7 @@ verify_file()
       fi
     done
   elif [ "${1: -4}" == ".toc" ]; then
-    cat $1 | grep -v '^#' | grep -v '^\s*$' | tr '\\' "/" | tr -d "\r" | while IFS="" read -r line || [ -n "$line" ]; do
+    cat $1 | grep -v '^#' | grep -v '^Libs' | grep -v '^\s*$' | tr '\\' "/" | tr -d "\r" | while IFS="" read -r line || [ -n "$line" ]; do
         verify_file "$line"
     done
   fi
