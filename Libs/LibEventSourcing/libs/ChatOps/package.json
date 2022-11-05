@@ -1,0 +1,13 @@
+{
+  "name": "LibChatOps",
+  "description": "N/A",
+  "private": true,
+  "devDependencies": {
+    "@semantic-release/exec": "^6.0.2",
+    "husky": "^6.0.0",
+    "@commitlint/config-conventional": "^14.1.0"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}

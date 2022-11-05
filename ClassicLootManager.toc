@@ -16,37 +16,36 @@
 
 # LIBS
 Libs\LibStub\LibStub.lua
+Libs\lib-st\lib-st.xml
+Libs\LibCandyBar-3.0\lib.xml
+Libs\LibLogger\lib.xml
 Libs\LibDeflate\lib.xml
 Libs\LibSerialize\lib.xml
-ExternalLibs\LibLogger\lib.xml
-ExternalLibs\lua-eventsourcing\LibEventSourcing.xml
-ExternalLibs\LibEventDispatcher\LibEventDispatcher.xml
+Libs\LibEventSourcing\LibEventSourcing.xml
+Libs\LibEventDispatcher\LibEventDispatcher.xml
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 Libs\LibDBIcon-1.0\lib.xml
 Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
-
-# ACE3
-Libs\AceAddon-3.0\AceAddon-3.0.xml
-Libs\AceEvent-3.0\AceEvent-3.0.xml
-Libs\AceTimer-3.0\AceTimer-3.0.xml
-Libs\AceBucket-3.0\AceBucket-3.0.xml
-Libs\AceHook-3.0\AceHook-3.0.xml
-Libs\AceDB-3.0\AceDB-3.0.xml
-Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
-Libs\AceLocale-3.0\AceLocale-3.0.xml
-Libs\AceConsole-3.0\AceConsole-3.0.xml
-Libs\AceGUI-3.0\AceGUI-3.0.xml
-Libs\AceConfig-3.0\AceConfig-3.0.xml
-Libs\AceComm-3.0\AceComm-3.0.xml
-Libs\AceTab-3.0\AceTab-3.0.xml
-Libs\AceSerializer-3.0\AceSerializer-3.0.xml
-Libs\lib-st\lib-st.xml
-
-# Additional
-Libs\LibCandyBar-3.0\lib.xml
 Libs\LibJsonLua\LibJsonLua.lua
 Libs\LibLuaXML\LibLuaXML.lua
+
+# ACE3
+Libs\Ace3\AceAddon-3.0\AceAddon-3.0.xml
+Libs\Ace3\AceEvent-3.0\AceEvent-3.0.xml
+Libs\Ace3\AceTimer-3.0\AceTimer-3.0.xml
+Libs\Ace3\AceBucket-3.0\AceBucket-3.0.xml
+Libs\Ace3\AceHook-3.0\AceHook-3.0.xml
+Libs\Ace3\AceConsole-3.0\AceConsole-3.0.xml
+Libs\Ace3\AceGUI-3.0\AceGUI-3.0.xml
+Libs\Ace3\AceConfig-3.0\AceConfig-3.0.xml
+Libs\Ace3\AceComm-3.0\AceComm-3.0.xml
+
+#Libs\Ace3\AceDB-3.0\AceDB-3.0.xml
+#Libs\Ace3\AceDBOptions-3.0\AceDBOptions-3.0.xml
+#Libs\Ace3\AceLocale-3.0\AceLocale-3.0.xml
+#Libs\Ace3\AceTab-3.0\AceTab-3.0.xml
+#Libs\Ace3\AceSerializer-3.0\AceSerializer-3.0.xml
 
 # Locale
 Locale\enUS.lua

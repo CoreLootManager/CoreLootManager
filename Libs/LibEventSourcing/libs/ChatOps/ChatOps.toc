@@ -1,0 +1,6 @@
+## Interface: 11306
+## Title: LibChatOps
+## Author: Sam Mousa
+## Version: {VERSION}
+## Notes: Library for chat based addon interaction
+ChatOps.xml
