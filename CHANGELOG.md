@@ -1,3 +1,23 @@
+# Classic Loot Manager v2.5.6
+## Fixes
+### Standby
+Fix for standby points not being applied if one of the players requesting standby was not in the roster.
+Auto-add players to roster if they have requested standby.
+### History
+If point change affects only 1 player display the name instead of `Multiple`.
+If player is missing class (which should not happen when adding characters post pre-patch), do not error out but display empty field.
+# Classic Loot Manager v2.5.5
+## Locale
+### Chinese
+CLM now supports Chinese locale. Thanks brian#0179 for all the translations.
+## Fixes
+### Item values
+Bows and Crossbows should now properly be calculated as ranged weapons.
+### Vickrey award value
+Vickrey should now properly calculate second value based on the type of the selected bid.
+### Sorting fixes
+Sorting by version should now work as expected.
+
 # Classic Loot Manager v2.5.4
 ## Changes
 ### GUI

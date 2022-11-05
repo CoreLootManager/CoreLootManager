@@ -6,7 +6,8 @@ max_line_length = false
 exclude_files = {
 	"**/Libs/**",
 	"**/ExternalLibs/**",
-	"**/.git/**"
+	"**/.git/**",
+	"**/scripts/**"
 }
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable

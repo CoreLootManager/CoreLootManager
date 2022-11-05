@@ -243,7 +243,7 @@ function UnifiedGUI:Initialize()
     end)
 
     CLM.MODULES.LedgerManager:RegisterOnRestart(function()
-        if CLM.MODULES.LegerManager:Length() > 0 then
+        if CLM.MODULES.LedgerManager:Length() > 0 then
             self.aceObjects.loadingBanner:Show()
         end
     end)

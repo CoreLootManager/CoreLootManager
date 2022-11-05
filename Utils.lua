@@ -24,26 +24,69 @@ local function capitalize(string)
     return supper(ssub(string, 1,1)) .. slower(ssub(string, 2))
 end
 
-local classOrdered = {
-    "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior"
+local numberToClass = {
+    [1]  = "Warrior",
+    [2]  = "Paladin",
+    [3]  = "Hunter",
+    [4]  = "Rogue",
+    [5]  = "Priest",
+    [6]  = "Death Knight",
+    [7]  = "Shaman",
+    [8]  = "Mage",
+    [9]  = "Warlock",
+    -- [10] = "Monk",
+    [11] = "Druid",
+    -- [12] = "Demon Hunter"
 }
 
+local classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+local classToNumber = {}
+for k, v in pairs(numberToClass) do
+    classToNumber[v] = k
+end
+
+function UTILS.ClassToNumber(class)
+    return classToNumber[class] or 0
+end
+
+function UTILS.NumberToClass(number)
+    return numberToClass[number] or ""
+end
+
+local classToCanonical = {
+    ["Warrior"] = "WARRIOR",
+    ["Paladin"] = "PALADIN",
+    ["Hunter"] = "HUNTER",
+    ["Rogue"] = "ROGUE",
+    ["Priest"] = "PRIEST",
+    ["Death Knight"] = "DEATHKNIGHT",
+    ["Shaman"] = "SHAMAN",
+    ["Mage"] = "MAGE",
+    ["Warlock"] = "WARLOCK",
+    -- ["Monk"] = "MONK",
+    ["Druid"] = "DRUID",
+    -- ["Demon Hunter"] = "DEMONHUNTER"
+}
+
+function UTILS.CanonicalClass(class)
+    return classToCanonical[class]
+end
+
 local classColors = {
-    ["deathknight"]     = { a = 1, r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" },
-    ["druid"]           = { a = 1, r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
-    ["hunter"]          = { a = 1, r = 0.67, g = 0.83, b = 0.45, hex = "ABD473" },
-    ["mage"]            = { a = 1, r = 0.25, g = 0.78, b = 0.92, hex = "40C7EB" },
-    ["priest"]          = { a = 1, r = 1,    g = 1,    b = 1,    hex = "FFFFFF" },
-    ["rogue"]           = { a = 1, r = 1,    g = 0.96, b = 0.41, hex = "FFF569" },
-    ["shaman"]          = { a = 1, r = 0.01, g = 0.44, b = 0.87, hex = "0270DD" },
-    ["paladin"]         = { a = 1, r = 0.96, g = 0.55, b = 0.73, hex = "F58CBA" },
-    ["warlock"]         = { a = 1, r = 0.53, g = 0.53, b = 0.93, hex = "8787ED" },
-    ["warrior"]         = { a = 1, r = 0.78, g = 0.61, b = 0.43, hex = "C79C6E" },
-    ["death knight"]    = { a = 1, r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" }
+    ["Druid"]           = { a = 1, r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
+    ["Hunter"]          = { a = 1, r = 0.67, g = 0.83, b = 0.45, hex = "ABD473" },
+    ["Mage"]            = { a = 1, r = 0.25, g = 0.78, b = 0.92, hex = "40C7EB" },
+    ["Priest"]          = { a = 1, r = 1,    g = 1,    b = 1,    hex = "FFFFFF" },
+    ["Rogue"]           = { a = 1, r = 1,    g = 0.96, b = 0.41, hex = "FFF569" },
+    ["Shaman"]          = { a = 1, r = 0.01, g = 0.44, b = 0.87, hex = "0270DD" },
+    ["Paladin"]         = { a = 1, r = 0.96, g = 0.55, b = 0.73, hex = "F58CBA" },
+    ["Warlock"]         = { a = 1, r = 0.53, g = 0.53, b = 0.93, hex = "8787ED" },
+    ["Warrior"]         = { a = 1, r = 0.78, g = 0.61, b = 0.43, hex = "C79C6E" },
+    ["Death Knight"]    = { a = 1, r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" }
 }
 
 function UTILS.GetClassColor(className)
-    local color = classColors[slower(className)]
+    local color = classColors[className]
     return (color or { r = 0.627, g = 0.627, b = 0.627, hex = "A0A0A0" })
 end
 local GetClassColor = UTILS.GetClassColor
@@ -370,47 +413,6 @@ function UTILS.mergeDictsInline(t, s)
     for k,v in pairs(s) do t[k] = v end
 end
 
-local classToNumber = {
-    ["WARRIOR"] = 1,
-    ["PALADIN"] = 2,
-    ["HUNTER"] = 3,
-    ["ROGUE"] = 4,
-    ["PRIEST"] = 5,
-    ["DEATHKNIGHT"] = 6,
-    ["SHAMAN"] = 7,
-    ["MAGE"] = 8,
-    ["WARLOCK"] = 9,
-    ["MONK"] = 10,
-    ["DRUID"] = 11,
-    ["DEMONHUNTER"] = 12
-}
-function UTILS.ClassToNumber(class)
-    return classToNumber[(class or ""):upper()] or 0
-end
-
-local numberToClass = {
-    [1]  = "WARRIOR",
-    [2]  = "PALADIN",
-    [3]  = "HUNTER",
-    [4]  = "ROGUE",
-    [5]  = "PRIEST",
-    [6]  = "DEATHKNIGHT",
-    [7]  = "SHAMAN",
-    [8]  = "MAGE",
-    [9]  = "WARLOCK",
-    -- [10] = "MONK",
-    [11] = "DRUID",
-    -- [12] = "DEMONHUNTER"
-}
-function UTILS.NumberToClass(number)
-    return supper((numberToClass[number] or ""))
-end
-
-function UTILS.GetClassReadable(class)
-    if class == "DEATHKNIGHT" then return CLM.L["Death Knight"] end
-    return capitalize(class or "")
-end
-
 function UTILS.capitalize(string)
     return capitalize(string)
 end
@@ -706,11 +708,12 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
     end
 end
 
+local CanonicalClass = UTILS.CanonicalClass
 function UTILS.LibStClassCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local class = data[realrow].cols[column].value
-    if class then
+    if class and class ~= "" then
         frame:SetNormalTexture("Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES") -- this is the image containing all class icons
-        local coords = CLASS_ICON_TCOORDS[class]
+        local coords = CLASS_ICON_TCOORDS[CanonicalClass(class)]
         frame:GetNormalTexture():SetTexCoord(unpack(coords))
         frame:Show()
     else
@@ -807,6 +810,17 @@ function UTILS.ResizeFrame(frame, up, scale)
     return scale
 end
 
+local invtypeWorkaround = {
+    [2] = {
+        [3] = "INVTYPE_RANGED", -- Weapon Guns
+        [18] = "INVTYPE_RANGED",-- Weapon Crossbow
+    }
+}
+
+function UTILS.WorkaroundEquipLoc(class, subclass)
+    local classTable = invtypeWorkaround[class] or {}
+    return classTable[subclass]
+end
 
 
 CONSTANTS.ITEM_QUALITY = {

@@ -27,40 +27,40 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
         local mainProfile = nil
         local GUID = getGUID(target)
         if not roster:IsProfileInRoster(GUID) then
-            LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
-            return
-        end
-        local targetProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-        if targetProfile and not targetProfile:IsLocked() then
-            if roster:IsProfileInRoster(GUID) and pointHistoryEntry then
-                roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
-            end
-            -- Check if we have main-alt linking
-            if targetProfile:Main() == "" then -- is main
-                if targetProfile:HasAlts() then -- has alts
-                    mainProfile = targetProfile
+            LOG:Debug("PointManager update_profile_standings(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
+        else
+            local targetProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+            if targetProfile and not targetProfile:IsLocked() then
+                if roster:IsProfileInRoster(GUID) and pointHistoryEntry then
+                    roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
                 end
-            else -- is alt
-                mainProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(targetProfile:Main())
-            end
-            -- Check if we should schedule it for alert
-            CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason, pointType = roster:GetPointType() }, timestamp, GUID)
-            -- If we have a linked case then we alter the GUID to mains guid
-            if mainProfile then
-                GUID = mainProfile:GUID()
-            end
-            if roster:IsProfileInRoster(GUID) then
-                if not alreadyApplied[GUID] then
-                    mutate(roster, GUID, value, timestamp)
-                    alreadyApplied[GUID] = true
-                    if mainProfile then
-                        -- if we have a linked case then we need to mirror the change to all alts
-                        roster:MirrorStandings(GUID, mainProfile:Alts(), true)
+                -- Check if we have main-alt linking
+                if targetProfile:Main() == "" then -- is main
+                    if targetProfile:HasAlts() then -- has alts
+                        mainProfile = targetProfile
                     end
+                else -- is alt
+                    mainProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(targetProfile:Main())
                 end
-            else
-                LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
-                return
+                -- Check if we should schedule it for alert
+                CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason, pointType = roster:GetPointType() }, timestamp, GUID)
+                -- If we have a linked case then we alter the GUID to mains guid
+                if mainProfile then
+                    GUID = mainProfile:GUID()
+                end
+                if roster:IsProfileInRoster(GUID) then
+                    if not alreadyApplied[GUID] then
+                        mutate(roster, GUID, value, timestamp)
+                        alreadyApplied[GUID] = true
+                        if mainProfile then
+                            -- if we have a linked case then we need to mirror the change to all alts
+                            roster:MirrorStandings(GUID, mainProfile:Alts(), true)
+                        end
+                    end
+                else
+                    LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
+                    return
+                end
             end
         end
     end
@@ -148,6 +148,10 @@ local function mutate_set_standings(roster, GUID, value, timestamp)
     roster:SetStandings(GUID, value)
 end
 
+local function mutate_set_spent(roster, GUID, value, timestamp)
+    roster:SetSpent(GUID, value)
+end
+
 local function mutate_decay_standings(roster, GUID, value, timestamp)
     roster:DecayStandings(GUID, value)
 end
@@ -171,7 +175,11 @@ function PointManager:Initialize()
         CLM.MODELS.LEDGER.POINTS.Set,
         (function(entry)
             LOG:TraceAndCount("mutator(PointsSet)")
-            apply_mutator(entry, mutate_set_standings)
+            local mutator = mutate_set_standings
+            if entry:spent() then
+                mutator = mutate_set_spent
+            end
+            apply_mutator(entry, mutator)
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
@@ -248,7 +256,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
         entry = CLM.MODELS.LEDGER.POINTS.Modify:new(uid, targets, value, reason, note, isSpent)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = CLM.MODELS.LEDGER.POINTS.Set:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.POINTS.Set:new(uid, targets, value, reason, note, isSpent)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
         entry = CLM.MODELS.LEDGER.POINTS.Decay:new(uid, targets, value, reason, note)
     end
