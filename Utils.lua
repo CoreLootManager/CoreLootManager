@@ -39,17 +39,11 @@ local numberToClass = {
     -- [12] = "Demon Hunter"
 }
 
-local classOrdered = {}
+local classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
 local classToNumber = {}
-local index = 0
 for k, v in pairs(numberToClass) do
     classToNumber[v] = k
-    classOrdered[index] = v
-    index = index +1
 end
-
--- table.sort(classOrdered, function(a,b) return CLM.L[a]<CLM.L[b] end)
-table.sort(classOrdered)
 
 function UTILS.ClassToNumber(class)
     return classToNumber[class] or 0
@@ -57,6 +51,25 @@ end
 
 function UTILS.NumberToClass(number)
     return numberToClass[number] or ""
+end
+
+local classToCanonical = {
+    ["Warrior"] = "WARRIOR",
+    ["Paladin"] = "PALADIN",
+    ["Hunter"] = "HUNTER",
+    ["Rogue"] = "ROGUE",
+    ["Priest"] = "PRIEST",
+    ["Death Knight"] = "DEATHKNIGHT",
+    ["Shaman"] = "SHAMAN",
+    ["Mage"] = "MAGE",
+    ["Warlock"] = "WARLOCK",
+    -- ["Monk"] = "MONK",
+    ["Druid"] = "DRUID",
+    -- ["Demon Hunter"] = "DEMONHUNTER"
+}
+
+function UTILS.CanonicalClass(class)
+    return classToCanonical[class]
 end
 
 local classColors = {
@@ -695,12 +708,12 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
     end
 end
 
+local CanonicalClass = UTILS.CanonicalClass
 function UTILS.LibStClassCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local class = data[realrow].cols[column].value
     if class and class ~= "" then
-        class = supper(sgsub(class, "%s", ""))  -- remove space and to uppercase
         frame:SetNormalTexture("Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES") -- this is the image containing all class icons
-        local coords = CLASS_ICON_TCOORDS[class]
+        local coords = CLASS_ICON_TCOORDS[CanonicalClass(class)]
         frame:GetNormalTexture():SetTexCoord(unpack(coords))
         frame:Show()
     else
