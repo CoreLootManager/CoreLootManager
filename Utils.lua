@@ -72,6 +72,25 @@ function UTILS.CanonicalClass(class)
     return classToCanonical[class]
 end
 
+local canonicalToNumber = {
+    ["WARRIOR"] = 1,
+    ["PALADIN"] = 2,
+    ["HUNTER"] = 3,
+    ["ROGUE"] = 4,
+    ["PRIEST"] = 5,
+    ["DEATHKNIGHT"] = 6,
+    ["SHAMAN"] = 7,
+    ["MAGE"] = 8,
+    ["WARLOCK"] = 9,
+    -- ["MONK"] = 10,
+    ["DRUID"] = 11,
+    -- ["DEMONHUNTER"] = 12
+}
+
+function UTILS.CanonicalClassToNumber(class)
+    return canonicalToNumber[class]
+end
+
 local classColors = {
     ["Druid"]           = { a = 1, r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
     ["Hunter"]          = { a = 1, r = 0.67, g = 0.83, b = 0.45, hex = "ABD473" },
