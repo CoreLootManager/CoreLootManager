@@ -175,7 +175,6 @@ local TRANSFORMS = {
 
 function RosterConfiguration:inflate(data)
     for i, key in ipairs(self:fields()) do
-        -- self._[key] = TRANSFORMS[key](data[i])
         if data[i] ~= nil then self._[key] = data[i] end
     end
 end

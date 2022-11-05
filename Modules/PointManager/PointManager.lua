@@ -126,7 +126,6 @@ local function apply_raid_mutator(self, entry, mutate)
         -- Standby players
         local config = raid:Configuration()
         local newValue = UTILS.round(config:Get("benchMultiplier") * entry:value(), config:Get("roundDecimals"))
-        print(config:Get("benchMultiplier"), entry:value(), config:Get("roundDecimals"), config:Get("benchMultiplier") * entry:value(), newValue)
         pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, playersOnStandby, nil, newValue, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
         pointHistoryEntry.note = CONSTANTS.POINT_CHANGE_REASONS.ALL[entry:reason()] or ""
         self:AddPointHistory(roster, playersOnStandby, pointHistoryEntry)
