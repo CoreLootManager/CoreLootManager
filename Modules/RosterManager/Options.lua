@@ -902,7 +902,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     },
                     use_os = {
                         name = CLM.L["OS"],
-                        desc = CLM.L["Enabled OS bids"],
+                        desc = CLM.L["Enable OS bids"],
                         type = "toggle",
                         disabled = (function() return not isManager end),
                         width = 1,
