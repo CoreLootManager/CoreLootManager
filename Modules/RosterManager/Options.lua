@@ -202,6 +202,12 @@ function RosterManagerOptions:Initialize()
         auction_dynamic_item_values_set = (function(name, value)
             SetRosterOption(name, "dynamicValue", value)
         end),
+        auction_use_os_get = (function(name)
+            return GetRosterOption(name, "useOS")
+        end),
+        auction_use_os_set = (function(name, value)
+            SetRosterOption(name, "useOS", value)
+        end),
         auction_zero_sum_bank_get = (function(name)
             return GetRosterOption(name, "zeroSumBank")
         end),
@@ -893,6 +899,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "header",
                         order = 10,
                         width = "full"
+                    },
+                    use_os = {
+                        name = CLM.L["OS"],
+                        desc = CLM.L["Enabled OS bids"],
+                        type = "toggle",
+                        disabled = (function() return not isManager end),
+                        width = 1,
+                        order = 11
                     },
                     minimum_points = {
                         name = CLM.L["Minimum points"],

@@ -212,6 +212,7 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
             return false
         end
     end
+    self.useOS = configuration:Get("useOS")
     self.values = values
     self.acceptedTierValues = {}
     for _,val in pairs(self.values) do
@@ -387,6 +388,7 @@ function AuctionManager:SendAuctionStart(rosterUid)
             self.antiSnipe,
             self.note,
             self.minimalIncrement,
+            not self.useOS, -- for backwards compatibility
             rosterUid
         )
     )
@@ -534,6 +536,9 @@ function AuctionManager:ValidateBid(name, bid)
         else
             return true
         end
+    end
+    if (not self.useOS) and (bid:Type() == CONSTANTS.BID_TYPE.OFF_SPEC) then
+        return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.OFF_SPEC_NOT_ALLOWED
     end
     local value = bid:Value()
     -- sanity check
@@ -716,6 +721,7 @@ CONSTANTS.AUCTION_COMM = {
         NO_AUCTION_IN_PROGRESS = 8,
         CANCELLING_NOT_ALLOWED = 9,
         PASSING_NOT_ALLOWED = 10,
+        OFF_SPEC_NOT_ALLOWED = 11
     },
     DENY_BID_REASONS = UTILS.Set({
         1, -- NOT_IN_ROSTER
@@ -727,7 +733,8 @@ CONSTANTS.AUCTION_COMM = {
         7, -- BID_INCREMENT_TOO_LOW
         8, -- NO_AUCTION_IN_PROGRESS
         9, -- CANCELLING_NOT_ALLOWED
-        10 -- PASSING_NOT_ALLOWED
+        10,-- PASSING_NOT_ALLOWED
+        11,-- OFF_SPEC_NOT_ALLOWED
     }),
     DENY_BID_REASONS_STRING = {
         [1] = CLM.L["Not in a roster"],
@@ -739,7 +746,8 @@ CONSTANTS.AUCTION_COMM = {
         [7] = CLM.L["Bid increment too low"],
         [8] = CLM.L["No auction in progress"],
         [9] = CLM.L["Bid cancelling not allowed"],
-        [10] = CLM.L["Passing after bidding not allowed"]
+        [10] = CLM.L["Passing after bidding not allowed"],
+        [11] = CLM.L["Off-spec bidding not allowed"]
     }
 }
 

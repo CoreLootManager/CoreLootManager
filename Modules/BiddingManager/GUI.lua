@@ -197,19 +197,25 @@ function BiddingManagerGUI:BidAllIn()
 end
 
 local function GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
+    local useOS = true
+    if self.auctionInfo then
+        useOS = not self.auctionInfo:DisableOS()
+    end
     local generateBidOptions = {
         bid = {
-            name = CLM.L["MS"],
+            name = useOS and CLM.L["MS"] or CLM.L["Bid"],
             desc = CLM.L["Bid input values as Main spec bid."],
             type = "execute",
             func = (function()
                 self:BidInputValue(CONSTANTS.BID_TYPE.MAIN_SPEC)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            width = rowMultiplier*0.3,
+            width = (useOS and 1 or 2)*rowMultiplier*0.3,
             order = 4
         },
-        os = {
+    }
+    if useOS then
+        generateBidOptions.os = {
             name = CLM.L["OS"],
             desc = CLM.L["Bid input values as Off spec bid."],
             type = "execute",
@@ -219,8 +225,8 @@ local function GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
             end),
             width = rowMultiplier*0.3,
             order = 5
-        },
-    }
+        }
+    end
     local generateButtonOptions = {
         pass = {
             name = CLM.L["Pass"],
