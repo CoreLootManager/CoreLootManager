@@ -2,7 +2,7 @@ local _, CLM = ...
 if GetLocale() == "frFR" then
 -- Modules/GUI/UnifiedGUI_Audit.lua:326
 CLM.L[" alt of: "] = " reroll de "
--- Utils.lua:479
+-- Utils.lua:498
 CLM.L[" more"] = " suite "
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
 CLM.L[" over "] = " plus de "
@@ -329,7 +329,7 @@ CLM.L["Begin Month"] = "Mois de début"
 -- Integrations/GUI.lua:276
 CLM.L["Begin Year"] = "Année de début"
 -- Modules/RosterManager/Options.lua:855
---CLM.L["Bench multiplier"] = ""
+CLM.L["Bench multiplier"] = "Multiplicateur du banc"
 -- Modules/RosterManager/Options.lua:833
 CLM.L["Bench"] = "Banc"
 -- Alerts/Alerts.lua:31
@@ -440,7 +440,7 @@ CLM.L["Clear all classes."] = "Effacer toutes les classes."
 CLM.L["Clear output"] = "Effacer la sortie"
 -- Modules/BiddingManager/GUI.lua:135
 CLM.L["Close on bid"] = "Fermer après l'offre"
--- Utils.lua:828
+-- Utils.lua:847
 CLM.L["Common"] = "Commun"
 -- MinimapIcon.lua:133
 -- Integrations/GUI.lua:23
@@ -613,7 +613,7 @@ CLM.L["Enables raid-warning countdown for auctions."] = "Active le compte à reb
 CLM.L["End Timetravel"] = "Mettre fin au Timetravel"
 -- Modules/GUI/UnifiedGUI_Raids.lua:400
 CLM.L["End selected raid"] = "Mettre fin au raid sélectionné"
--- Utils.lua:831
+-- Utils.lua:850
 CLM.L["Epic"] = "Épique"
 -- Modules/RosterManager/Options.lua:419
 CLM.L["Equation"] = "Equation"
@@ -950,7 +950,7 @@ CLM.L["Last year"] = "L'année dernière"
 CLM.L["Latest loot"] = "Dernier butin"
 -- Modules/GUI/UnifiedGUI_Standings.lua:452
 CLM.L["Latest points"] = "Derniers points"
--- Utils.lua:832
+-- Utils.lua:851
 CLM.L["Legendary"] = "Légendaire"
 -- Modules/RosterManager/Roster.lua:723
 -- Modules/RosterManager/Roster.lua:756
@@ -1170,7 +1170,7 @@ CLM.L["No loot received"] = "Aucun butin reçu"
 CLM.L["No players selected"] = "Aucun joueur sélectionné."
 -- Modules/GUI/UnifiedGUI_Standings.lua:475
 CLM.L["No points received"] = "Aucun point reçu"
--- Utils.lua:488
+-- Utils.lua:507
 CLM.L["No"] = "Non"
 -- Modules/RosterManager/Roster.lua:735
 -- Modules/RosterManager/Roster.lua:768
@@ -1292,7 +1292,7 @@ CLM.L["Point & Loot alerts"] = "Alertes de point et de butin"
 -- Integrations/GUI.lua:25
 CLM.L["Point History"] = "Historique des points"
 -- Modules/RosterManager/Options.lua:856
---CLM.L["Point award multiplier for players on bench."] = ""
+CLM.L["Point award multiplier for players on bench."] = "Multiplicateur de récompense pour les joueurs sur le banc"
 -- Modules/RosterManager/Options.lua:800
 CLM.L["Point caps"] = "Point caps"
 -- Modules/RosterManager/Options.lua:630
@@ -1302,7 +1302,7 @@ CLM.L["Point type"] = "Type de point"
 CLM.L["Point"] = "Point"
 -- Modules/GUI/UnifiedGUI_Standings.lua:179
 CLM.L["Points value that will be awarded."] = "Valeur des points qui seront attribués"
--- Utils.lua:827
+-- Utils.lua:846
 CLM.L["Poor"] = "Médiocre"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:97
 CLM.L["Post bids"] = "Annoncer les offres"
@@ -1396,7 +1396,7 @@ CLM.L["Ranged (wands)"] = "À distance (baguettes)"
 CLM.L["Ranged"] = "À distance"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:77
 CLM.L["Ranks"] = "Rangs"
--- Utils.lua:830
+-- Utils.lua:849
 CLM.L["Rare"] = "Rare"
 -- Modules/AutoAwardManager/EncounterIDs.lua:15
 CLM.L["Razorgore the Untamed"] = "Tranchetripe l'Indompté"
@@ -1780,7 +1780,7 @@ CLM.L["Ulduar"] = "Ulduar"
 CLM.L["Unable to execute migration. Entries already exist."] = "Impossible d'exécuter la migration. Les entrées existent déjà."
 -- Modules/RosterManager/ItemValueCalculator.lua:152
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "Impossible de récupérer les infos de l'objet depuis le serveur. Essayez de relancer l'enchère"
--- Utils.lua:829
+-- Utils.lua:848
 CLM.L["Uncommon"] = "Commun"
 -- Modules/PointManager/PointManager.lua:431
 CLM.L["Unexcused absence"] = "Absence injustifiée"
@@ -1876,7 +1876,7 @@ CLM.L["Wowpedia"] = "Wowpedia"
 CLM.L["Wrist"] = "Poignets"
 -- Modules/AutoAwardManager/EncounterIDs.lua:137
 CLM.L["XT-002 Deconstructor"] = "Déconstructeur XT-002"
--- Utils.lua:483
+-- Utils.lua:502
 CLM.L["Yes"] = "Oui"
 -- Modules/AutoAwardManager/EncounterIDs.lua:138
 CLM.L["Yogg-Saron"] = "Yogg-Saron"

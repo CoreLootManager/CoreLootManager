@@ -2,7 +2,7 @@ local _, CLM = ...
 if GetLocale() == "ruRU" then
 -- Modules/GUI/UnifiedGUI_Audit.lua:326
 CLM.L[" alt of: "] = " альт игрока: "
--- Utils.lua:479
+-- Utils.lua:498
 CLM.L[" more"] = " подробнее "
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
 CLM.L[" over "] = " над "
@@ -440,7 +440,7 @@ CLM.L["Clear all classes."] = "Убирает все классы."
 CLM.L["Clear output"] = "Очистить"
 -- Modules/BiddingManager/GUI.lua:135
 CLM.L["Close on bid"] = "Закрыть ставку"
--- Utils.lua:828
+-- Utils.lua:847
 CLM.L["Common"] = "Обычное"
 -- MinimapIcon.lua:133
 -- Integrations/GUI.lua:23
@@ -613,7 +613,7 @@ CLM.L["Enables raid-warning countdown for auctions."] = "Включает опо
 CLM.L["End Timetravel"] = "Завершить путешествие во времени"
 -- Modules/GUI/UnifiedGUI_Raids.lua:400
 CLM.L["End selected raid"] = "Завершить выбранный рейд"
--- Utils.lua:831
+-- Utils.lua:850
 CLM.L["Epic"] = "Эпическое"
 -- Modules/RosterManager/Options.lua:419
 CLM.L["Equation"] = "Уравнение"
@@ -950,7 +950,7 @@ CLM.L["Last year"] = "Прошлый год"
 CLM.L["Latest loot"] = "Последняя добыча"
 -- Modules/GUI/UnifiedGUI_Standings.lua:452
 CLM.L["Latest points"] = "Последние очки"
--- Utils.lua:832
+-- Utils.lua:851
 CLM.L["Legendary"] = "Легендарное"
 -- Modules/RosterManager/Roster.lua:723
 -- Modules/RosterManager/Roster.lua:756
@@ -1170,7 +1170,7 @@ CLM.L["No loot received"] = "Добыча не получена"
 CLM.L["No players selected"] = "Никто не выбран"
 -- Modules/GUI/UnifiedGUI_Standings.lua:475
 CLM.L["No points received"] = "Очки не получены"
--- Utils.lua:488
+-- Utils.lua:507
 CLM.L["No"] = "Нет"
 -- Modules/RosterManager/Roster.lua:735
 -- Modules/RosterManager/Roster.lua:768
@@ -1302,7 +1302,7 @@ CLM.L["Point type"] = "Тип очков"
 CLM.L["Point"] = "Очки"
 -- Modules/GUI/UnifiedGUI_Standings.lua:179
 CLM.L["Points value that will be awarded."] = "Значение, которое будет вручена."
--- Utils.lua:827
+-- Utils.lua:846
 CLM.L["Poor"] = "Низкое"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:97
 CLM.L["Post bids"] = "Публиковать ставки"
@@ -1396,7 +1396,7 @@ CLM.L["Ranged (wands)"] = "Жезлы"
 CLM.L["Ranged"] = "Дальний бой"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:77
 CLM.L["Ranks"] = "Ранги"
--- Utils.lua:830
+-- Utils.lua:849
 CLM.L["Rare"] = "Редкое"
 -- Modules/AutoAwardManager/EncounterIDs.lua:15
 CLM.L["Razorgore the Untamed"] = "Бритвосмерт Неукротимый"
@@ -1780,7 +1780,7 @@ CLM.L["Ulduar"] = "Ульдуар"
 CLM.L["Unable to execute migration. Entries already exist."] = "Невозможно выполнить миграцию. Записи уже существуют."
 -- Modules/RosterManager/ItemValueCalculator.lua:152
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "Не могу получить информацию о вещи от сервера. Попробуйте начать аукцион заново"
--- Utils.lua:829
+-- Utils.lua:848
 CLM.L["Uncommon"] = "Необычное"
 -- Modules/PointManager/PointManager.lua:431
 CLM.L["Unexcused absence"] = "Отсутствие"
@@ -1876,7 +1876,7 @@ CLM.L["Wowpedia"] = "Wowpedia"
 CLM.L["Wrist"] = "Запястья"
 -- Modules/AutoAwardManager/EncounterIDs.lua:137
 CLM.L["XT-002 Deconstructor"] = "Разрушитель XT-002"
--- Utils.lua:483
+-- Utils.lua:502
 CLM.L["Yes"] = "Да"
 -- Modules/AutoAwardManager/EncounterIDs.lua:138
 CLM.L["Yogg-Saron"] = "Йогг-Сарон"

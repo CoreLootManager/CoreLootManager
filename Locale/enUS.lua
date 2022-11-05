@@ -4,7 +4,7 @@ local L = {}
 
 -- For Lazy creating localization during runtime throug CLM.L[string]
 setmetatable(L, {
-    __index = function (table, key)
+    __index = function (_, key)
         return tostring(key)
     end
 })

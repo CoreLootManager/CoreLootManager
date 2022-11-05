@@ -2,7 +2,7 @@ local _, CLM = ...
 if GetLocale() == "zhCN" then
 -- Modules/GUI/UnifiedGUI_Audit.lua:326
 CLM.L[" alt of: "] = " 的主号是: "
--- Utils.lua:479
+-- Utils.lua:498
 CLM.L[" more"] = " 更多"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
 CLM.L[" over "] = " over "
@@ -440,7 +440,7 @@ CLM.L["Clear all classes."] = "清除所有职业。"
 CLM.L["Clear output"] = "清除输出"
 -- Modules/BiddingManager/GUI.lua:135
 CLM.L["Close on bid"] = "竞拍后关闭"
--- Utils.lua:828
+-- Utils.lua:847
 CLM.L["Common"] = "常见"
 -- MinimapIcon.lua:133
 -- Integrations/GUI.lua:23
@@ -613,7 +613,7 @@ CLM.L["Enables raid-warning countdown for auctions."] = "启用团队通知拍�
 CLM.L["End Timetravel"] = "结束时间旅行模式"
 -- Modules/GUI/UnifiedGUI_Raids.lua:400
 CLM.L["End selected raid"] = "结束选定的团本活动"
--- Utils.lua:831
+-- Utils.lua:850
 CLM.L["Epic"] = "史诗"
 -- Modules/RosterManager/Options.lua:419
 CLM.L["Equation"] = "方程"
@@ -950,7 +950,7 @@ CLM.L["Last year"] = "去年"
 CLM.L["Latest loot"] = "最新战利品"
 -- Modules/GUI/UnifiedGUI_Standings.lua:452
 CLM.L["Latest points"] = "最新分数"
--- Utils.lua:832
+-- Utils.lua:851
 CLM.L["Legendary"] = "传奇"
 -- Modules/RosterManager/Roster.lua:723
 -- Modules/RosterManager/Roster.lua:756
@@ -1170,7 +1170,7 @@ CLM.L["No loot received"] = "没有收到战利品"
 CLM.L["No players selected"] = "未选择角色"
 -- Modules/GUI/UnifiedGUI_Standings.lua:475
 CLM.L["No points received"] = "未获得分数"
--- Utils.lua:488
+-- Utils.lua:507
 CLM.L["No"] = "否"
 -- Modules/RosterManager/Roster.lua:735
 -- Modules/RosterManager/Roster.lua:768
@@ -1302,7 +1302,7 @@ CLM.L["Point type"] = "分数类型"
 CLM.L["Point"] = "分数"
 -- Modules/GUI/UnifiedGUI_Standings.lua:179
 CLM.L["Points value that will be awarded."] = "将被分配的分值。"
--- Utils.lua:827
+-- Utils.lua:846
 CLM.L["Poor"] = "较差的"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:97
 CLM.L["Post bids"] = "通告竞拍"
@@ -1396,7 +1396,7 @@ CLM.L["Ranged (wands)"] = "远程（魔杖）"
 CLM.L["Ranged"] = "远程"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:77
 CLM.L["Ranks"] = "会阶"
--- Utils.lua:830
+-- Utils.lua:849
 CLM.L["Rare"] = "稀有的"
 -- Modules/AutoAwardManager/EncounterIDs.lua:15
 CLM.L["Razorgore the Untamed"] = "狂野的拉佐格尔"
@@ -1780,7 +1780,7 @@ CLM.L["Ulduar"] = "奥杜尔"
 CLM.L["Unable to execute migration. Entries already exist."] = "无法执行迁移。条目已经存在。"
 -- Modules/RosterManager/ItemValueCalculator.lua:152
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "无法从服务器获取物品信息。请重新尝试拍卖"
--- Utils.lua:829
+-- Utils.lua:848
 CLM.L["Uncommon"] = "罕见"
 -- Modules/PointManager/PointManager.lua:431
 CLM.L["Unexcused absence"] = "无故缺席"
@@ -1876,7 +1876,7 @@ CLM.L["Wowpedia"] = "Wowpedia"
 CLM.L["Wrist"] = "手腕"
 -- Modules/AutoAwardManager/EncounterIDs.lua:137
 CLM.L["XT-002 Deconstructor"] = "XT-002拆解者"
--- Utils.lua:483
+-- Utils.lua:502
 CLM.L["Yes"] = "是的"
 -- Modules/AutoAwardManager/EncounterIDs.lua:138
 CLM.L["Yogg-Saron"] = "尤格萨隆"

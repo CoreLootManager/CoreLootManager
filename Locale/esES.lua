@@ -2,7 +2,7 @@ local _, CLM = ...
 if GetLocale() == "esES" then
 -- Modules/GUI/UnifiedGUI_Audit.lua:326
 CLM.L[" alt of: "] = " ater de "
--- Utils.lua:479
+-- Utils.lua:498
 CLM.L[" more"] = " más "
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:65
 CLM.L[" over "] = " sobre "
@@ -440,7 +440,7 @@ CLM.L["Clear all classes."] = "Borrar todas las clases."
 CLM.L["Clear output"] = "Borrar salida"
 -- Modules/BiddingManager/GUI.lua:135
 CLM.L["Close on bid"] = "Cerrar en la oferta"
--- Utils.lua:828
+-- Utils.lua:847
 CLM.L["Common"] = "Común"
 -- MinimapIcon.lua:133
 -- Integrations/GUI.lua:23
@@ -613,7 +613,7 @@ CLM.L["Enables raid-warning countdown for auctions."] = "Habilita la cuenta regr
 CLM.L["End Timetravel"] = "Fin de Timetravel"
 -- Modules/GUI/UnifiedGUI_Raids.lua:400
 CLM.L["End selected raid"] = "Finalizar raid seleccionada"
--- Utils.lua:831
+-- Utils.lua:850
 CLM.L["Epic"] = "Épico"
 -- Modules/RosterManager/Options.lua:419
 CLM.L["Equation"] = "Ecuación"
@@ -950,7 +950,7 @@ CLM.L["Last year"] = "El año pasado"
 CLM.L["Latest loot"] = "Último botín"
 -- Modules/GUI/UnifiedGUI_Standings.lua:452
 CLM.L["Latest points"] = "Últimos puntos"
--- Utils.lua:832
+-- Utils.lua:851
 CLM.L["Legendary"] = "Legendaria"
 -- Modules/RosterManager/Roster.lua:723
 -- Modules/RosterManager/Roster.lua:756
@@ -1170,7 +1170,7 @@ CLM.L["No loot received"] = "No se recibió botín"
 CLM.L["No players selected"] = "No hay jugadores seleccionados"
 -- Modules/GUI/UnifiedGUI_Standings.lua:475
 CLM.L["No points received"] = "No se recibieron puntos"
--- Utils.lua:488
+-- Utils.lua:507
 CLM.L["No"] = "No"
 -- Modules/RosterManager/Roster.lua:735
 -- Modules/RosterManager/Roster.lua:768
@@ -1302,7 +1302,7 @@ CLM.L["Point type"] = "Tipo de punto"
 CLM.L["Point"] = "Punto"
 -- Modules/GUI/UnifiedGUI_Standings.lua:179
 CLM.L["Points value that will be awarded."] = "Valor de puntos que se otorgará."
--- Utils.lua:827
+-- Utils.lua:846
 CLM.L["Poor"] = "Pobre"
 -- Modules/AuctionHistoryManager/AuctionHistoryManager.lua:97
 CLM.L["Post bids"] = "Publicar ofertas"
@@ -1396,7 +1396,7 @@ CLM.L["Ranged (wands)"] = "A distancia (varitas)"
 CLM.L["Ranged"] = "A distancia"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:77
 CLM.L["Ranks"] = "Rangos"
--- Utils.lua:830
+-- Utils.lua:849
 CLM.L["Rare"] = "Raro"
 -- Modules/AutoAwardManager/EncounterIDs.lua:15
 CLM.L["Razorgore the Untamed"] = "Sangrevaja el Indomable"
@@ -1780,7 +1780,7 @@ CLM.L["Ulduar"] = "Ulduar"
 CLM.L["Unable to execute migration. Entries already exist."] = "No se puede ejecutar la migración. Las entradas ya existen. "
 -- Modules/RosterManager/ItemValueCalculator.lua:152
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "No se puede obtener la información del elemento del servidor. Intente subastando de nuevo"
--- Utils.lua:829
+-- Utils.lua:848
 CLM.L["Uncommon"] = "Poco común"
 -- Modules/PointManager/PointManager.lua:431
 CLM.L["Unexcused absence"] = "Ausencia sin excusa"
@@ -1876,7 +1876,7 @@ CLM.L["Wowpedia"] = "Wowpedia"
 CLM.L["Wrist"] = "Muñeca"
 -- Modules/AutoAwardManager/EncounterIDs.lua:137
 CLM.L["XT-002 Deconstructor"] = "Deconstructor XT-002"
--- Utils.lua:483
+-- Utils.lua:502
 CLM.L["Yes"] = "Sí"
 -- Modules/AutoAwardManager/EncounterIDs.lua:138
 CLM.L["Yogg-Saron"] = "Yogug-saron"
