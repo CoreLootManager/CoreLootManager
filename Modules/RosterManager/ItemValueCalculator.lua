@@ -147,15 +147,17 @@ end
 function ItemValueCalculator:Calculate(itemId, rounding)
     local values = {}
 
-    local _, _, itemQuality, itemLevel, _, _, _,_, itemEquipLoc = GetItemInfo(itemId)
+    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID = GetItemInfo(itemId)
     if not itemQuality or not itemLevel or not itemEquipLoc then
         LOG:Warning(CLM.L["Unable to get item info from server. Please try auctioning again"])
         return nil
     end
 
+    local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
+
     local baseValue = self.calculator(
         CLM.IndirectMap.ilvl[itemId] or itemLevel, itemQuality,
-        self.multiplier, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or itemEquipLoc))
+        self.multiplier, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc))
     for tier, tierMultiplier in pairs(self.tierMultipliers) do
         values[tier] = UTILS.round(baseValue * tierMultiplier, rounding)
     end

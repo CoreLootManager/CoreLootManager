@@ -797,6 +797,17 @@ function UTILS.ResizeFrame(frame, up, scale)
     return scale
 end
 
+local invtypeWorkaround = {
+    [2] = {
+        [3] = "INVTYPE_RANGED", -- Weapon Guns
+        [18] = "INVTYPE_RANGED",-- Weapon Crossbow
+    }
+}
+
+function UTILS.WorkaroundEquipLoc(class, subclass)
+    local classTable = invtypeWorkaround[class] or {}
+    return classTable[subclass]
+end
 
 
 CONSTANTS.ITEM_QUALITY = {
