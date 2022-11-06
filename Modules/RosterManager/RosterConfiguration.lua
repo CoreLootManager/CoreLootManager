@@ -80,6 +80,9 @@ function RosterConfiguration:New(i)
     o._.namedButtons = false
     -- Dynamic item value
     o._.dynamicValue = false
+    -- Bench multiplier
+    o._.benchMultiplier = 1
+
 
     -- Additional settings
     o.hasHardCap = false
@@ -123,7 +126,8 @@ function RosterConfiguration:fields()
         "minimumPoints",
         "minGP",
         "namedButtons",
-        "dynamicValue"
+        "dynamicValue",
+        "benchMultiplier"
     }
 end
 
@@ -165,12 +169,13 @@ local TRANSFORMS = {
     minimumPoints = transform_number,
     minGP = transform_number,
     namedButtons = transform_boolean,
-    dynamicValue = transform_boolean
+    dynamicValue = transform_boolean,
+    benchMultiplier = transform_number,
 }
 
 function RosterConfiguration:inflate(data)
     for i, key in ipairs(self:fields()) do
-        self._[key] = TRANSFORMS[key](data[i])
+        if data[i] ~= nil then self._[key] = data[i] end
     end
 end
 
@@ -258,5 +263,7 @@ function RosterConfiguration._validate_minimumPoints(value) return IsNumeric(ton
 function RosterConfiguration._validate_minGP(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_namedButtons(value) return IsBoolean(value) end
 function RosterConfiguration._validate_dynamicValue(value) return IsBoolean(value) end
+function RosterConfiguration._validate_benchMultiplier(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration

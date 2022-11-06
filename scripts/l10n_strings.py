@@ -87,7 +87,7 @@ def add_indirectly_used_strings(storage:L10nStorage):
         storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
 def get_paths():
-    excludeDirs = ["ExternalLibs", "Libs", "Locale", ".github", "Media", ".vscode", ".git", "TESTING", "scripts"]
+    excludeDirs = [".release", "ExternalLibs", "Libs", "Locale", ".github", "Media", ".vscode", ".git", "TESTING", "scripts"]
 
     baseDir = Path().resolve()
     excludePaths = []
