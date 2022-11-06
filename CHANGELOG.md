@@ -1,3 +1,24 @@
+# Classic Loot Manager v2.6.0
+## Notes
+### Library overhaul
+CLM went through huge dependency and library overhaul and many of tooltip-related hacks were removed from CLM.
+This also means that integrations with some tooltip-modifying AddOns might require fixes from their respective authors to show up in CLM since they are not based in the CLM itself anymore.
+## Features
+### CEPGP and BastionLoot Migration
+/clm migrate now supports CEPGP and BastionLoot!
+### Standby value multiplier
+You can now configure multiplier for points received by players on standby (bench).
+### PR Rounding
+You can now configure PR rounding independently from the rest of the AddOn.
+### OS Bid
+You can now disable OS bidding support in the roster.
+## Fixes
+### EPGP Alt-Main Linking
+GP value during linking is now calculated properly. This is a backwards-affecting change thus if you are already using this feature, you might be required to update the GP manually.
+### Filtering
+Death Knights should be now allowed to be filtered out properly.
+### Item values in Dynamic mode
+Bows and Crossbows should now properly be calculated as ranged weapons in Dynamic item value mode.
 # Classic Loot Manager v2.5.6
 ## Fixes
 ### Standby
@@ -6,6 +27,8 @@ Auto-add players to roster if they have requested standby.
 ### History
 If point change affects only 1 player display the name instead of `Multiple`.
 If player is missing class (which should not happen when adding characters post pre-patch), do not error out but display empty field.
+### Memory usage
+CLM v1 database is no longer stored in the AddOn thus lowering effective memory usage for big databases. There is no longer option to migrate from v1.x.x to v2.x.x after installing this version of CLM.
 # Classic Loot Manager v2.5.5
 ## Locale
 ### Chinese

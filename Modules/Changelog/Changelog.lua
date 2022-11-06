@@ -1,6 +1,34 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.6.0",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    { header = "Library overhaul", body = "CLM went through huge dependency and library overhaul and many of tooltip-related hacks were removed from CLM. This also means that integrations with some tooltip-modifying AddOns might require fixes from their respective authors to show up in CLM since they are not based in the CLM itself anymore." },
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    { header = "CEPGP and BastionLoot Migration", body = "/clm migrate now supports CEPGP and BastionLoot!" },
+                    { header = "Standby value multiplier", body = "You can now configure multiplier for points received by players on standby (bench)." },
+                    { header = "PR Rounding", body = "You can now configure PR rounding independently from the rest of the AddOn." },
+                    { header = "OS Bid", body = "You can now disable OS bidding support in the roster." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "EPGP Alt-Main Linking", body = "GP value during linking is now calculated properly. This is a backwards-affecting change thus if you are already using this feature, you might be required to update the GP manually." },
+                    { header = "Filtering", body = "Death Knights should be now allowed to be filtered out properly." },
+                    { header = "Item values in Dynamic mode", body = "Bows and Crossbows should now properly be calculated as ranged weapons in Dynamic item value mode." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.5.6",
         data = {
             {
