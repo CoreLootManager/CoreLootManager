@@ -329,7 +329,7 @@ CLM.L["Begin Month"] = "Стартовый месяц"
 -- Integrations/GUI.lua:276
 CLM.L["Begin Year"] = "Стартовый год"
 -- Modules/RosterManager/Options.lua:855
---CLM.L["Bench multiplier"] = ""
+CLM.L["Bench multiplier"] = "Множитель скамейки"
 -- Modules/RosterManager/Options.lua:833
 CLM.L["Bench"] = "Замены"
 -- Alerts/Alerts.lua:31
@@ -1292,7 +1292,7 @@ CLM.L["Point & Loot alerts"] = "Оповещения очков и лута"
 -- Integrations/GUI.lua:25
 CLM.L["Point History"] = "История ДКП"
 -- Modules/RosterManager/Options.lua:856
---CLM.L["Point award multiplier for players on bench."] = ""
+CLM.L["Point award multiplier for players on bench."] = "Множитель Award Award для игроков на скамейке."
 -- Modules/RosterManager/Options.lua:800
 CLM.L["Point caps"] = "Лимит очков"
 -- Modules/RosterManager/Options.lua:630
