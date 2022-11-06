@@ -11,7 +11,7 @@
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
 ## X-Wago-ID: vEGPw4K1
-## SavedVariables: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon, CLM_DB
+## SavedVariables: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon
 ## LoadOnDemand: 0
 
 # LIBS
