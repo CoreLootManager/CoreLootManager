@@ -153,6 +153,9 @@ function ProfileManager:Initialize()
                         roster:SetStandings(mainGUID, pointSum)
                         -- 2a) Sum spent points of the pool and new alt
                         local spentSum = roster:GetPointInfoForPlayer(mainGUID).spent + roster:GetPointInfoForPlayer(altGUID).spent
+                        if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+                            spentSum = spentSum - roster:GetConfiguration("minGP")
+                        end
                         -- 3a) Set new Main spent
                         roster:SetSpent(mainGUID, spentSum)
                         -- 4) Mirror standings (includes spent) from main to alts
@@ -163,6 +166,8 @@ function ProfileManager:Initialize()
                         local targets = UTILS.keys(mainProfile:Alts())
                         table.insert(targets, 1, mainGUID)
                         CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
+                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, spentSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator(), nil, true)
+
                     end
                 end
             end
