@@ -329,7 +329,7 @@ CLM.L["Begin Month"] = "开始月份"
 -- Integrations/GUI.lua:276
 CLM.L["Begin Year"] = "开始年份"
 -- Modules/RosterManager/Options.lua:855
---CLM.L["Bench multiplier"] = ""
+CLM.L["Bench multiplier"] = "替补系数"
 -- Modules/RosterManager/Options.lua:833
 CLM.L["Bench"] = "替补名单"
 -- Alerts/Alerts.lua:31
@@ -1292,7 +1292,7 @@ CLM.L["Point & Loot alerts"] = "分数与战利品警报"
 -- Integrations/GUI.lua:25
 CLM.L["Point History"] = "分数历史记录"
 -- Modules/RosterManager/Options.lua:856
---CLM.L["Point award multiplier for players on bench."] = ""
+CLM.L["Point award multiplier for players on bench."] = "替补角色获得分数的系数"
 -- Modules/RosterManager/Options.lua:800
 CLM.L["Point caps"] = "分数上限"
 -- Modules/RosterManager/Options.lua:630
