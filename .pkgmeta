@@ -1,3 +1,5 @@
+package-as: ClassicLootManager
+
 externals:
   Libs/LibStub:
     url: https://repos.wowace.com/wow/libstub/trunk
@@ -29,8 +31,10 @@ externals:
     url: https://repos.wowace.com/wow/libuidropdownmenu/trunk
 
 ignore:
-  - Debug.lua
   - scripts
+
+move-folders:
+  ClassicLootManager/ClassicLootManager: ClassicLootManager
 
 manual-changelog:
   filename: CHANGELOG.md
