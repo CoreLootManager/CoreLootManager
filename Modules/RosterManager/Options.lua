@@ -177,6 +177,18 @@ function RosterManagerOptions:Initialize()
         general_round_decimals_set = (function(name, value)
             SetRosterOption(name, "roundDecimals", value)
         end),
+        general_round_pr_get = (function(name)
+            return GetRosterOption(name, "roundPR")
+        end),
+        general_round_pr_set = (function(name, value)
+            SetRosterOption(name, "roundPR", value)
+        end),
+        general_min_gp_get = (function(name)
+            return tostring(GetRosterOption(name, "minGP"))
+        end),
+        general_min_gp_set = (function(name, value)
+            SetRosterOption(name, "minGP", value)
+        end),
         general_weekly_cap_get = (function(name)
             return tostring(GetRosterOption(name, "weeklyCap"))
         end),
@@ -255,13 +267,7 @@ function RosterManagerOptions:Initialize()
         end),
         auction_minimum_points_set = (function(name, value)
             SetRosterOption(name, "minimumPoints", value)
-        end),
-        auction_min_gp_get = (function(name)
-            return tostring(GetRosterOption(name, "minGP"))
-        end),
-        auction_min_gp_set = (function(name, value)
-            SetRosterOption(name, "minGP", value)
-        end),
+        end)
     }
 
     self:UpdateOptions()
@@ -607,6 +613,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
     local isManager = CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
 
+    local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
     local disableManage = (function() return not isManager end)
 
     local equationGet, equationSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet = generateDynamicItemValuesHandlers(roster)
@@ -873,7 +880,33 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "header",
                         order = 24,
                         width = "full"
-                    }
+                    },
+                    epgp_header = {
+                        name = CLM.L["EPGP"],
+                        type = "header",
+                        order = 32,
+                        width = "full",
+                        hidden = not isEPGP,
+                    },
+                    min_gp = {
+                        name = CLM.L["Minimum GP"],
+                        desc = CLM.L["Minimum GP used in calculations when player has less GP than this value."],
+                        type = "input",
+                        disabled = disableManage,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        order = 33,
+                        hidden = not isEPGP,
+                    },
+                    round_pr = {
+                        name = CLM.L["PR Rounding"],
+                        desc = CLM.L["Round PR to selected number of decimals"],
+                        type = "select",
+                        width = 1,
+                        disabled = disableManage,
+                        order = 34,
+                        hidden = not isEPGP,
+                        values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
+                    },
                 },
             },
             auction = {
@@ -908,7 +941,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "toggle",
                         disabled = disableManage,
                         width = 1,
-                        order = 11
+                        order = 12
                     },
                     minimum_points = {
                         name = CLM.L["Minimum points"],
@@ -917,7 +950,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         disabled = disableManage,
                         pattern = CONSTANTS.REGEXP_FLOAT,
                         width = 1,
-                        order = 12
+                        order = 11
                     },
                     time_header = {
                         name = CLM.L["Time"],
@@ -1067,7 +1100,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             width = 1,
             order = 18
         }
-    elseif roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+    elseif isEPGP then
         options.args.auction.args.auction_type = {
             name = CLM.L["Auction type"],
             -- desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
@@ -1075,14 +1108,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             disabled = disableManage,
             order = 4,
             values = CONSTANTS.AUCTION_TYPES_EPGP_GUI
-        }
-        options.args.auction.args.min_gp = {
-            name = CLM.L["Minimum GP"],
-            desc = CLM.L["Minimum GP used in calculations when player has less GP than this value."],
-            type = "input",
-            disabled = disableManage,
-            pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-            order = 12.5
         }
     end
     return options

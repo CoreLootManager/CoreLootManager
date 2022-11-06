@@ -150,7 +150,7 @@ function Roster:Priority(GUID)
     if GUID == nil then
         return 0
     else
-        return UTILS.round((self.standings[GUID] or 0) / self:GP(GUID), self.configuration._.roundDecimals)
+        return UTILS.round((self.standings[GUID] or 0) / self:GP(GUID), self.configuration._.roundPR)
     end
 end
 

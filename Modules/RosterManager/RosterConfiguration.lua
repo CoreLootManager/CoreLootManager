@@ -84,6 +84,8 @@ function RosterConfiguration:New(i)
     o._.benchMultiplier = 1
     -- OS
     o._.useOS = true
+    -- Round PR Priority
+    o._.roundPR = 10
 
 
     -- Additional settings
@@ -130,7 +132,8 @@ function RosterConfiguration:fields()
         "namedButtons",
         "dynamicValue",
         "benchMultiplier",
-        "useOS"
+        "useOS",
+        "roundPR"
     }
 end
 
@@ -175,6 +178,7 @@ local TRANSFORMS = {
     dynamicValue = transform_boolean,
     benchMultiplier = transform_number,
     useOS = transform_boolean,
+    roundPR = transform_number,
 }
 
 function RosterConfiguration:inflate(data)
@@ -269,5 +273,6 @@ function RosterConfiguration._validate_namedButtons(value) return IsBoolean(valu
 function RosterConfiguration._validate_dynamicValue(value) return IsBoolean(value) end
 function RosterConfiguration._validate_benchMultiplier(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_useOS(value) return IsBoolean(value) end
+function RosterConfiguration._validate_roundPR(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration
