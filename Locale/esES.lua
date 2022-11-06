@@ -577,7 +577,7 @@ CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."] =
 -- Integrations/Integrations.lua:124
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "Habilitar la integración de Gargul. Esto permitirá a Gargul tomar el control sobre algunos aspectos de CLM (subasta inicial de Gargul y otorgar)."
 -- Modules/RosterManager/Options.lua:907
---CLM.L["Enable OS bids"] = ""
+CLM.L["Enable OS bids"] = "Habilitar ofertas del OS"
 -- Integrations/Integrations.lua:239
 CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award. Requires /reload."] = "Habilitar la integración de RCLC. Esto permitirá otorgar puntos DKP/GP en el premio RCLC Artem. El cambio requiere /recargar."
 -- Integrations/Integrations.lua:362
@@ -1223,7 +1223,7 @@ CLM.L["October"] = "Octubre"
 -- Modules/RosterManager/Roster.lua:762
 CLM.L["Off Hand"] = "Mano izquierda"
 -- Modules/AuctionManager/AuctionManager.lua:750
---CLM.L["Off-spec bidding not allowed"] = ""
+CLM.L["Off-spec bidding not allowed"] = "Pidiendo fuera de especificación no permitida"
 -- Modules/RosterManager/Options.lua:735
 -- Modules/GUI/UnifiedGUI_Raids.lua:94
 -- Modules/GUI/UnifiedGUI_Raids.lua:242
