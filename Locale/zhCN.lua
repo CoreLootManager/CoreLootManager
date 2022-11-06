@@ -638,7 +638,7 @@ CLM.L["Executing Addon Migration with comms disabled."] = "在禁用通信的情
 -- Integrations/GUI.lua:490
 CLM.L["Export"] = "导出"
 -- Modules/GUI/Filters.lua:83
-CLM.L["External"] = "外部的"
+CLM.L["External"] = "公会外"
 -- Modules/AutoAwardManager/EncounterIDs.lua:140
 CLM.L["Faction Champions"] = "阵营冠军"
 -- Modules/GUI/UnifiedGUI_Audit.lua:40
@@ -835,7 +835,7 @@ CLM.L["In Guild"] = "在公会"
 CLM.L["In Progress"] = "进行中"
 -- Modules/GUI/Filters.lua:79
 -- Modules/GUI/UnifiedGUI_Raids.lua:291
-CLM.L["In Raid"] = "在团本活动中"
+CLM.L["In Raid"] = "在团队"
 -- MinimapIcon.lua:48
 CLM.L["In-Sync"] = "同步中"
 -- Modules/RosterManager/Options.lua:789
@@ -1906,7 +1906,7 @@ CLM.L["You are not allowed to join raid."] = "您没有权限加入团本活动�
 -- Modules/RaidManager/RaidManager.lua:396
 CLM.L["You are not allowed to start raid."] = "您没有权限开始团本活动。"
 -- Modules/RaidManager/RaidManager.lua:337
-CLM.L["You are not in the raid."] = "你不在团本活动中。"
+CLM.L["You are not in the raid."] = "你不在团队/团本活动中。"
 -- Modules/GUI/UnifiedGUI_Standings.lua:632
 -- Modules/GUI/UnifiedGUI_Standings.lua:641
 CLM.L["You can %s max %d players from standby at the same time to a %s raid."] = "您最多可以同时%s %d 名角色从替补名单到 %s 团本活动。"
@@ -1967,11 +1967,11 @@ CLM.L["[Delete Roster]: "] = "[删除名册]："
 -- Modules/GUI/UnifiedGUI_Audit.lua:532
 CLM.L["[IGNORE]: Ignoring entry"] = "[IGNORE]：忽略条目"
 -- Modules/GUI/UnifiedGUI_Audit.lua:274
-CLM.L["[Item Award in Raid]: "] = "[物品分配在团本活动中]: "
+CLM.L["[Item Award in Raid]: "] = "[团本中的物品分配]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:271
 CLM.L["[Item Award]: "] = "[物品分配]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:261
-CLM.L["[Point Award to raid]: "] = "[分数奖励在团本活动中]: "
+CLM.L["[Point Award to raid]: "] = "[团队分数奖励]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:258
 CLM.L["[Point Award to roster]: "] = "[名册分数奖励]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:252
@@ -2077,5 +2077,5 @@ CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highe
 -- Modules/RosterManager/Options.lua:1042
 CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:54
-CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000您的 Classic Loot Manager 版本已经严重过期。|r 插件通信已被禁用。新版本 %s 可用，请尽快更新。"
+CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000您的 Classic Loot Manager 版本已经严重过期。|r 插件通信已被禁用。有新版本 %s 可用，请尽快更新。"
 end
