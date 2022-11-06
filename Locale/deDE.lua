@@ -329,7 +329,7 @@ CLM.L["Begin Month"] = "Monat beginnen"
 -- Integrations/GUI.lua:276
 CLM.L["Begin Year"] = "Jahr beginnen"
 -- Modules/RosterManager/Options.lua:855
---CLM.L["Bench multiplier"] = ""
+CLM.L["Bench multiplier"] = "Bank Multiplikator"
 -- Modules/RosterManager/Options.lua:833
 CLM.L["Bench"] = "Bank"
 -- Alerts/Alerts.lua:31
@@ -1292,7 +1292,7 @@ CLM.L["Point & Loot alerts"] = "Punkt- und Beutewarnungen"
 -- Integrations/GUI.lua:25
 CLM.L["Point History"] = "Punktehistorie"
 -- Modules/RosterManager/Options.lua:856
---CLM.L["Point award multiplier for players on bench."] = ""
+CLM.L["Point award multiplier for players on bench."] = "Point Award Multiplikator für Spieler auf der Bank."
 -- Modules/RosterManager/Options.lua:800
 CLM.L["Point caps"] = "Punktelimit"
 -- Modules/RosterManager/Options.lua:630
