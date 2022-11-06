@@ -166,6 +166,8 @@ function ProfileManager:Initialize()
                         local targets = UTILS.keys(mainProfile:Alts())
                         table.insert(targets, 1, mainGUID)
                         CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
+                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, spentSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator(), nil, true)
+
                     end
                 end
             end
