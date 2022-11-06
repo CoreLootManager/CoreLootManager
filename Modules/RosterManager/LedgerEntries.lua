@@ -32,6 +32,7 @@ local RosterBossKillBonus           = LogEntry:extend("RB")
 local RosterFieldRename             = LogEntry:extend("RF")
 
 local RosterDynamicItemValueEquation       = LogEntry:extend("VE")
+local RosterDynamicItemValueExpvar         = LogEntry:extend("VX")
 local RosterDynamicItemValueMultiplier     = LogEntry:extend("VM")
 local RosterDynamicItemValueSlotMultiplier = LogEntry:extend("VS")
 local RosterDynamicItemValueTierMultiplier = LogEntry:extend("VT")
@@ -452,6 +453,29 @@ function RosterDynamicItemValueEquation:fields()
     return RosterDynamicItemValueEquationFields
 end
 
+-- ---------------------------- --
+-- RosterDynamicItemValueExpvar --
+-- ---------------------------- --
+function RosterDynamicItemValueExpvar:new(rosterUid, expvar)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.m = tonumber(expvar) or 0
+    return o
+end
+
+function RosterDynamicItemValueExpvar:rosterUid()
+    return self.r
+end
+
+function RosterDynamicItemValueExpvar:expvar()
+    return self.m
+end
+
+local RosterDynamicItemValueExpvarFields = mergeLists(LogEntry:fields(), {"r", "m"})
+function RosterDynamicItemValueExpvar:fields()
+    return RosterDynamicItemValueExpvarFields
+end
+
 -- -------------------------------- --
 -- RosterDynamicItemValueMultiplier --
 -- -------------------------------- --
@@ -546,6 +570,7 @@ CLM.MODELS.LEDGER.ROSTER = {
     BossKillBonus                   = RosterBossKillBonus,
     FieldRename                     = RosterFieldRename,
     DynamicItemValueEquation        = RosterDynamicItemValueEquation,
+	DynamicItemValueExpvar          = RosterDynamicItemValueExpvar,
     DynamicItemValueMultiplier      = RosterDynamicItemValueMultiplier,
     DynamicItemValueSlotMultiplier  = RosterDynamicItemValueSlotMultiplier,
     DynamicItemValueTierMultiplier  = RosterDynamicItemValueTierMultiplier

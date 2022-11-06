@@ -14,6 +14,8 @@ local DEFAULT_MULTIPLIER = {
     wowpedia = 0.04
 }
 
+local DEFAULT_EXPVAR = 2.0
+
 CONSTANTS.ITEM_VALUE_EQUATION = {
     EPGPWEB = 1,
     WOWPEDIA = 2
@@ -38,11 +40,11 @@ local function getItemValue(rarity, ilvl)
 end
 
 local calculators = {
-    [CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB] = (function(ilvl, rarity, multiplier, slot_multiplier)
-        return multiplier * pow(2, (ilvl/26) + (rarity - 4)) * slot_multiplier
+    [CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB] = (function(ilvl, rarity, multiplier, expvar, slot_multiplier)
+        return multiplier * pow(expvar, (ilvl/26) + (rarity - 4)) * slot_multiplier
     end),
-    [CONSTANTS.ITEM_VALUE_EQUATION.WOWPEDIA] = (function(ilvl, rarity, multiplier, slot_multiplier)
-        return pow(getItemValue(rarity, ilvl), 2) * multiplier * slot_multiplier
+    [CONSTANTS.ITEM_VALUE_EQUATION.WOWPEDIA] = (function(ilvl, rarity, multiplier, expvar, slot_multiplier)
+        return pow(getItemValue(rarity, ilvl), expvar) * multiplier * slot_multiplier
     end),
 }
 
@@ -56,6 +58,14 @@ end
 
 local function SetDefaultMultiplier(self)
     self.multiplier = GetDefaultMultiplier(self.equation)
+end
+
+local function GetDefaultExpvar(equation)
+    return DEFAULT_EXPVAR or 2.0
+end
+
+local function SetDefaultExpvar(self)
+    self.expvar = GetDefaultExpvar(self.equation)
 end
 
 local function GetDefaultSlotMultiplier(equation, slot)
@@ -91,6 +101,7 @@ function ItemValueCalculator:New()
     o.equation = CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB
 
     o.multiplier = 1.0
+	o.expvar = 2.0
     SetDefaultMultiplier(o)
     o.slotMultipliers = {}
     SetDefaultSlotMultipliers(o)
@@ -126,6 +137,14 @@ function ItemValueCalculator:SetMultiplier(multiplier)
     self.multiplier = tonumber(multiplier) or GetDefaultMultiplier(self.equation)
 end
 
+function ItemValueCalculator:GetExpvar()
+    return self.expvar
+end
+
+function ItemValueCalculator:SetExpvar(expvar)
+    self.expvar = tonumber(expvar) or GetDefaultExpvar(self.equation)
+end
+
 function ItemValueCalculator:GetSlotMultiplier(slot)
     return self.slotMultipliers[slot] or 1.0
 end
@@ -157,7 +176,7 @@ function ItemValueCalculator:Calculate(itemId, rounding)
 
     local baseValue = self.calculator(
         CLM.IndirectMap.ilvl[itemId] or itemLevel, itemQuality,
-        self.multiplier, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc))
+        self.multiplier, self.expvar, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc))
     for tier, tierMultiplier in pairs(self.tierMultipliers) do
         values[tier] = UTILS.round(baseValue * tierMultiplier, rounding)
     end

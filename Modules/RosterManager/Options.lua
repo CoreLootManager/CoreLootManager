@@ -353,6 +353,12 @@ local function generateDynamicItemValuesHandlers(roster)
     local equationSet = (function(value)
         CLM.MODULES.RosterManager:SetRosterDynamicItemValueEquation(roster, value)
     end)
+    local expvarGet = (function()
+        return roster:GetCalculator():GetExpvar()
+    end)
+    local expvarSet = (function(value)
+        CLM.MODULES.RosterManager:SetRosterDynamicItemValueExpvar(roster, value)
+    end)
     local multiplierGet = (function()
         return roster:GetCalculator():GetMultiplier()
     end)
@@ -371,7 +377,7 @@ local function generateDynamicItemValuesHandlers(roster)
     local tierSet = (function(tier, value)
         CLM.MODULES.RosterManager:SetRosterDynamicItemValueTierMultiplier(roster, tier, value)
     end)
-    return equationGet, equationSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet
+    return equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet
 end
 
 local function default_slot_values(roster)
@@ -415,7 +421,7 @@ local function default_slot_values(roster)
     return args
 end
 
-local function dynamic_item_values(roster, equationGet, equationSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
     local args = {}
     local order = 0
     local prefix
@@ -425,9 +431,31 @@ local function dynamic_item_values(roster, equationGet, equationSet, multiplierG
         name = CLM.L["Equation"]
     }
     order = order + 1
-    local wowpedia = "WoWpedia: |c43eeee00[Multiplier] * [item value]^2 * [slot multiplier]|r\n\n"
-    local epgpweb = "EPGPWeb: |c43eeee00[Multiplier] * 2^(ilvl/26 + (rarity - 4)) * [slot multiplier]|r\n\n"
+    local wowpedia = "WoWpedia: |c43eeee00[Multiplier] * [item value]^[Exponent] * [slot multiplier]|r\n\n"
+    local epgpweb = "EPGPWeb: |c43eeee00[Multiplier] * [Base]^(ilvl/26 + (rarity - 4)) * [slot multiplier]|r\n\n"
     local equationNote = "|c43ee4444Changing this will reset slot multipliers to default values.|r"
+    args["equation_multiplier"] = {
+        type = "input",
+        desc = CLM.L["Multiplier used by the equations"],
+        order = order,
+        width = 0.5,
+        get = (function(i) return tostring(multiplierGet()) end),
+        set = (function(i, v) multiplierSet(tonumber(v)) end),
+        name = CLM.L["Multiplier"],
+        pattern = CONSTANTS.REGEXP_FLOAT,
+    }
+	order = order + 1
+    args["equation_expvar"] = {
+        type = "input",
+        desc = CLM.L["Exponential scaling value used by the equations; Base for EPGPWeb, or Exponent for WoWpedia"],
+        order = order,
+        width = 0.5,
+        get = (function(i) return tostring(expvarGet()) end),
+        set = (function(i, v) expvarSet(tonumber(v)) end),
+        name = CLM.L["ExpVar"],
+        pattern = CONSTANTS.REGEXP_FLOAT,
+    }
+    order = order + 1
     args["equation_select"] = {
         type = "select",
         style = "dropdown",
@@ -439,18 +467,7 @@ local function dynamic_item_values(roster, equationGet, equationSet, multiplierG
         get = (function(i) return equationGet() end),
         name = CLM.L["Select equation"]
     }
-    args["equation_multiplier"] = {
-        type = "input",
-        desc = CLM.L["Multiplier used by the equations"],
-        order = order,
-        width = 0.5,
-        get = (function(i) return tostring(multiplierGet()) end),
-        set = (function(i, v) multiplierSet(tonumber(v)) end),
-        name = CLM.L["Multiplier"],
-        pattern = CONSTANTS.REGEXP_FLOAT,
-    }
-    order = order + 1
-
+	order = order + 1
     args["slot_multipliers_header"] = {
         type = "header",
         order = order,
@@ -616,7 +633,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
     local disableManage = (function() return not isManager end)
 
-    local equationGet, equationSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet = generateDynamicItemValuesHandlers(roster)
+    local equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet = generateDynamicItemValuesHandlers(roster)
 
     local options = {
         type = "group",
@@ -988,7 +1005,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = CLM.L["Dynamic Item values"],
                 type = "group",
                 order = 4,
-                args = dynamic_item_values(roster, equationGet, equationSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+                args = dynamic_item_values(roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
             },
             item_value_overrides = {
                 name = CLM.L["Item value overrides"],
