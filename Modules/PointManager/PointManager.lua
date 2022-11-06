@@ -376,14 +376,14 @@ function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     end
 end
 
-function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note)
+function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note, isSpent)
     LOG:Trace("PointManager:AddFakePointHistory()")
     if not roster then
         LOG:Debug("PointManager:AddFakePointHistory(): Missing roster")
         return
     end
 
-    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note)
+    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note, isSpent)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then
