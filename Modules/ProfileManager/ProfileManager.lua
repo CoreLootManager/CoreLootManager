@@ -153,6 +153,9 @@ function ProfileManager:Initialize()
                         roster:SetStandings(mainGUID, pointSum)
                         -- 2a) Sum spent points of the pool and new alt
                         local spentSum = roster:GetPointInfoForPlayer(mainGUID).spent + roster:GetPointInfoForPlayer(altGUID).spent
+                        if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+                            spentSum = spentSum - roster:GetConfiguration("minGP")
+                        end
                         -- 3a) Set new Main spent
                         roster:SetSpent(mainGUID, spentSum)
                         -- 4) Mirror standings (includes spent) from main to alts
