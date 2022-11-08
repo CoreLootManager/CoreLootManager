@@ -469,7 +469,7 @@ CLM.L["Create raid %s %s in <%s>"] = "创建团本活动 %s %s in <%s>"
 CLM.L["Create raid"] = "创建团本活动"
 -- Integrations/Integrations.lua:252
 -- Modules/RosterManager/Options.lua:1119
-CLM.L["Create"] = "创造"
+CLM.L["Create"] = "新建"
 -- Modules/RaidManager/RaidManager.lua:780
 -- Modules/GUI/UnifiedGUI_Raids.lua:263
 CLM.L["Created"] = "已创建"
