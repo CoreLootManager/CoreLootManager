@@ -1,5 +1,5 @@
 local _, CLM = ...
-if GetLocale() == "zhTW" then
+if GetLocale() == "zhCN" then
 -- Modules/GUI/UnifiedGUI_Audit.lua:326
 CLM.L[" alt of: "] = " 的主号是: "
 -- Utils.lua:498
@@ -69,7 +69,7 @@ CLM.L["40 Player"] = "40人"
 -- Global/GlobalChatMessageHandlers.lua:96
 CLM.L["<CLM> %s not present in any roster."] = "<CLM> %s 不在任何名册中。"
 -- Global/GlobalChatMessageHandlers.lua:98
-CLM.L["<CLM> %s standings in %d %s:"] = "<CLM> %s standings in %d %s:"
+CLM.L["<CLM> %s standings in %d %s:"] = "<CLM> %s 积分榜 in %d %s:"
 -- Global/GlobalChatMessageHandlers.lua:107
 CLM.L["<CLM> %s: %d DKP (%d this week)."] = "<CLM> %s: %d DKP (%d 本周)."
 -- Global/GlobalChatMessageHandlers.lua:77
@@ -95,14 +95,14 @@ CLM.L["Add to standby"] = "添加到替补名单"
 -- Modules/GUI/UnifiedGUI_Audit.lua:399
 CLM.L["Add"] = "添加"
 -- Migration.lua:366
-CLM.L["Adding %s loot entries for team to %s"] = "Adding %s loot entries for team to %s"
+CLM.L["Adding %s loot entries for team to %s"] = "添加 %s 战利品给团队到 %s"
 -- Migration.lua:225
 -- Migration.lua:344
 CLM.L["Adding %s profiles to %s"] = "添加 %s 角色信息到 %s"
 -- Modules/RosterManager/RosterManager.lua:904
 CLM.L["Adding missing %s players to current roster"] = "添加缺少的 %s 角色到当前名册"
 -- Modules/RosterManager/Options.lua:1096
-CLM.L["Additional cost (tax) to add to the award value."] = "Additional cost (tax) to add to the award value."
+CLM.L["Additional cost (tax) to add to the award value."] = "在物品分值上增加额外的数值（税）。"
 -- Modules/RosterManager/Options.lua:1064
 CLM.L["Additional points to be given to players atop of the split value."] = "Additional points to be given to players atop of the split value."
 -- Global/GlobalConfigs.lua:121
@@ -429,7 +429,7 @@ CLM.L["Chest"] = "胸部"
 -- Modules/AutoAwardManager/EncounterIDs.lua:21
 CLM.L["Chromaggus"] = "克洛玛古斯"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:263
-CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s initialization complete."
+CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s 初始化完成。"
 -- Modules/Changelog/GUI.lua:15
 -- Modules/GUI/UnifiedGUI.lua:270
 CLM.L["Classic Loot Manager"] = "Classic Loot Manager"
@@ -578,7 +578,7 @@ CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."] =
 -- Integrations/Integrations.lua:124
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "启用 Gargul 集成。这将允许 Gargul 控制 CLM 的某些方面（从 Gargul 开始拍卖及分配）。"
 -- Modules/RosterManager/Options.lua:940
-CLM.L["Enable OS bids"] = "啟用操作系統出價"
+CLM.L["Enable OS bids"] = "启用操作系统出价"
 -- Integrations/Integrations.lua:239
 CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award. Requires /reload."] = "启用 RCLC 集成。这将允许通过 RCLC 物品分配获得DKP/GP分数。更改请重新加载界面。"
 -- Integrations/Integrations.lua:362
@@ -638,7 +638,7 @@ CLM.L["Executing Addon Migration with comms disabled."] = "在禁用通信的情
 -- Integrations/GUI.lua:490
 CLM.L["Export"] = "导出"
 -- Modules/GUI/Filters.lua:83
-CLM.L["External"] = "外部的"
+CLM.L["External"] = "公会外"
 -- Modules/AutoAwardManager/EncounterIDs.lua:140
 CLM.L["Faction Champions"] = "阵营冠军"
 -- Modules/GUI/UnifiedGUI_Audit.lua:40
@@ -835,7 +835,7 @@ CLM.L["In Guild"] = "在公会"
 CLM.L["In Progress"] = "进行中"
 -- Modules/GUI/Filters.lua:79
 -- Modules/GUI/UnifiedGUI_Raids.lua:291
-CLM.L["In Raid"] = "在团本活动中"
+CLM.L["In Raid"] = "在团队"
 -- MinimapIcon.lua:48
 CLM.L["In-Sync"] = "同步中"
 -- Modules/RosterManager/Options.lua:789
@@ -1224,7 +1224,7 @@ CLM.L["October"] = "十月"
 -- Modules/RosterManager/Roster.lua:762
 CLM.L["Off Hand"] = "副手"
 -- Modules/AuctionManager/AuctionManager.lua:750
-CLM.L["Off-spec bidding not allowed"] = "不允許不允許出價"
+CLM.L["Off-spec bidding not allowed"] = "不允许不允许出价"
 -- Modules/RosterManager/Options.lua:742
 -- Modules/GUI/UnifiedGUI_Raids.lua:94
 -- Modules/GUI/UnifiedGUI_Raids.lua:242
@@ -1906,7 +1906,7 @@ CLM.L["You are not allowed to join raid."] = "您没有权限加入团本活动�
 -- Modules/RaidManager/RaidManager.lua:396
 CLM.L["You are not allowed to start raid."] = "您没有权限开始团本活动。"
 -- Modules/RaidManager/RaidManager.lua:337
-CLM.L["You are not in the raid."] = "你不在团本活动中。"
+CLM.L["You are not in the raid."] = "你不在团队/团本活动中。"
 -- Modules/GUI/UnifiedGUI_Standings.lua:632
 -- Modules/GUI/UnifiedGUI_Standings.lua:641
 CLM.L["You can %s max %d players from standby at the same time to a %s raid."] = "您最多可以同时%s %d 名角色从替补名单到 %s 团本活动。"
@@ -1967,11 +1967,11 @@ CLM.L["[Delete Roster]: "] = "[删除名册]："
 -- Modules/GUI/UnifiedGUI_Audit.lua:532
 CLM.L["[IGNORE]: Ignoring entry"] = "[IGNORE]：忽略条目"
 -- Modules/GUI/UnifiedGUI_Audit.lua:274
-CLM.L["[Item Award in Raid]: "] = "[物品分配在团本活动中]: "
+CLM.L["[Item Award in Raid]: "] = "[团本中的物品分配]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:271
 CLM.L["[Item Award]: "] = "[物品分配]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:261
-CLM.L["[Point Award to raid]: "] = "[分数奖励在团本活动中]: "
+CLM.L["[Point Award to raid]: "] = "[团队分数奖励]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:258
 CLM.L["[Point Award to roster]: "] = "[名册分数奖励]: "
 -- Modules/GUI/UnifiedGUI_Audit.lua:252
@@ -2077,5 +2077,5 @@ CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highe
 -- Modules/RosterManager/Options.lua:1042
 CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:54
-CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000您的 Classic Loot Manager 版本已经严重过期。|r 插件通信已被禁用。新版本 %s 可用，请尽快更新。"
+CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000您的 Classic Loot Manager 版本已经严重过期。|r 插件通信已被禁用。有新版本 %s 可用，请尽快更新。"
 end
