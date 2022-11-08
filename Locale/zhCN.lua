@@ -69,7 +69,7 @@ CLM.L["40 Player"] = "40人"
 -- Global/GlobalChatMessageHandlers.lua:96
 CLM.L["<CLM> %s not present in any roster."] = "<CLM> %s 不在任何名册中。"
 -- Global/GlobalChatMessageHandlers.lua:98
-CLM.L["<CLM> %s standings in %d %s:"] = "<CLM> %s standings in %d %s:"
+CLM.L["<CLM> %s standings in %d %s:"] = "<CLM> %s 积分榜 in %d %s:"
 -- Global/GlobalChatMessageHandlers.lua:107
 CLM.L["<CLM> %s: %d DKP (%d this week)."] = "<CLM> %s: %d DKP (%d 本周)."
 -- Global/GlobalChatMessageHandlers.lua:77
@@ -95,14 +95,14 @@ CLM.L["Add to standby"] = "添加到替补名单"
 -- Modules/GUI/UnifiedGUI_Audit.lua:399
 CLM.L["Add"] = "添加"
 -- Migration.lua:366
-CLM.L["Adding %s loot entries for team to %s"] = "Adding %s loot entries for team to %s"
+CLM.L["Adding %s loot entries for team to %s"] = "添加 %s 战利品给团队到 %s"
 -- Migration.lua:225
 -- Migration.lua:344
 CLM.L["Adding %s profiles to %s"] = "添加 %s 角色信息到 %s"
 -- Modules/RosterManager/RosterManager.lua:904
 CLM.L["Adding missing %s players to current roster"] = "添加缺少的 %s 角色到当前名册"
 -- Modules/RosterManager/Options.lua:1096
-CLM.L["Additional cost (tax) to add to the award value."] = "Additional cost (tax) to add to the award value."
+CLM.L["Additional cost (tax) to add to the award value."] = "在物品分值上增加额外的数值（税）。"
 -- Modules/RosterManager/Options.lua:1064
 CLM.L["Additional points to be given to players atop of the split value."] = "Additional points to be given to players atop of the split value."
 -- Global/GlobalConfigs.lua:121
@@ -429,7 +429,7 @@ CLM.L["Chest"] = "胸部"
 -- Modules/AutoAwardManager/EncounterIDs.lua:21
 CLM.L["Chromaggus"] = "克洛玛古斯"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:263
-CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s initialization complete."
+CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s 初始化完成。"
 -- Modules/Changelog/GUI.lua:15
 -- Modules/GUI/UnifiedGUI.lua:270
 CLM.L["Classic Loot Manager"] = "Classic Loot Manager"
