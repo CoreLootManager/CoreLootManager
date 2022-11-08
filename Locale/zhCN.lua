@@ -85,7 +85,7 @@ CLM.L["Action to take upon RCLC loot award event happening during raid. Trigger 
 -- Integrations/Import.lua:157
 CLM.L["Add Profiles to Rosters"] = "将角色信息添加到名册"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:124
-CLM.L["Add currently selected target to list."] = "将当前选定的目标添加到列表中。"
+CLM.L["Add currently selected target to list."] = "将当前选中的目标添加到列表中。"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:123
 CLM.L["Add target"] = "添加目标"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:144
@@ -108,7 +108,7 @@ CLM.L["Additional points to be given to players atop of the split value."] = "Ad
 -- Global/GlobalConfigs.lua:121
 CLM.L["Addon sounds"] = "插件声音"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:145
-CLM.L["Adds selected players to the selected roster (from dropdown)."] = "将选中的角色添加到选定的名册中。"
+CLM.L["Adds selected players to the selected roster (from dropdown)."] = "将选中的角色添加到选中的名册中。"
 -- Modules/GUI/UnifiedGUI_History.lua:230
 CLM.L["Affected players:"] = "相关角色："
 -- Modules/AutoAwardManager/EncounterIDs.lua:102
@@ -449,7 +449,7 @@ CLM.L["Common"] = "常见"
 CLM.L["Configuration"] = "配置"
 -- Modules/RosterManager/Options.lua:675
 -- Modules/RosterManager/Options.lua:683
-CLM.L["Copy settings from selected roster."] = "从选定的名册复制设置。"
+CLM.L["Copy settings from selected roster."] = "从选中的名册复制设置。"
 -- Modules/RosterManager/Options.lua:668
 -- Modules/RosterManager/Options.lua:674
 CLM.L["Copy settings"] = "复制设置"
@@ -578,7 +578,7 @@ CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."] =
 -- Integrations/Integrations.lua:124
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "启用 Gargul 集成。这将允许 Gargul 控制 CLM 的某些方面（从 Gargul 开始拍卖及分配）。"
 -- Modules/RosterManager/Options.lua:940
-CLM.L["Enable OS bids"] = "启用操作系统出价"
+CLM.L["Enable OS bids"] = "启用副天赋出价"
 -- Integrations/Integrations.lua:239
 CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award. Requires /reload."] = "启用 RCLC 集成。这将允许通过 RCLC 物品分配获得DKP/GP分数。更改请重新加载界面。"
 -- Integrations/Integrations.lua:362
@@ -616,7 +616,7 @@ CLM.L["Enables raid-warning countdown for auctions."] = "启用团队通知拍�
 -- Modules/GUI/UnifiedGUI_Audit.lua:747
 CLM.L["End Timetravel"] = "结束时间旅行模式"
 -- Modules/GUI/UnifiedGUI_Raids.lua:400
-CLM.L["End selected raid"] = "结束选定的团本活动"
+CLM.L["End selected raid"] = "结束选中的团本活动"
 -- Utils.lua:850
 CLM.L["Epic"] = "史诗"
 -- Modules/RosterManager/Options.lua:425
@@ -913,7 +913,7 @@ CLM.L["Jin'do the Hexxer"] = "妖术师金度"
 -- Global/GlobalConfigs.lua:48
 CLM.L["Join our discord for more info: "] = "加入我们的Discord以获取更多信息："
 -- Modules/GUI/UnifiedGUI_Raids.lua:414
-CLM.L["Join selected raid"] = "加入选定的团本活动"
+CLM.L["Join selected raid"] = "加入选中的团本活动"
 -- Integrations/GUI.lua:146
 CLM.L["July"] = "七月"
 -- Integrations/GUI.lua:145
@@ -971,7 +971,7 @@ CLM.L["Loading..."] = "正在加载..."
 -- Modules/AutoAwardManager/EncounterIDs.lua:41
 CLM.L["Loatheb"] = "洛欧塞布"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:267
-CLM.L["Lock selected"] = "锁定选定"
+CLM.L["Lock selected"] = "锁定中的"
 -- Modules/GUI/Filters.lua:85
 -- Modules/GUI/UnifiedGUI_Standings.lua:397
 CLM.L["Locked"] = "锁定"
@@ -1441,7 +1441,7 @@ CLM.L["Remove override"] = "移除覆盖"
 -- Modules/RosterManager/Options.lua:699
 CLM.L["Remove roster"] = "移除名册"
 -- Modules/GUI/UnifiedGUI_Raids.lua:433
-CLM.L["Remove selected raid"] = "移除选定的团本活动"
+CLM.L["Remove selected raid"] = "移除选中的团本活动"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:289
 -- Modules/GUI/UnifiedGUI_History.lua:399
 -- Modules/GUI/UnifiedGUI_Audit.lua:757
@@ -1811,7 +1811,7 @@ CLM.L["Unknown"] = "未知"
 -- Global/GlobalSlashCommands.lua:38
 CLM.L["Unlink Alt"] = "取消链接小号"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:276
-CLM.L["Unlock selected"] = "解锁选定"
+CLM.L["Unlock selected"] = "解锁选中的"
 -- Migration.lua:142
 CLM.L["UpdatePoints(): Empty targets list"] = "UpdatePoints()：空目标列表"
 -- Modules/GUI/UnifiedGUI_Audit.lua:518
