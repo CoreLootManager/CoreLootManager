@@ -14,19 +14,26 @@
 ## SavedVariables: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon
 ## LoadOnDemand: 0
 
-# LIBS
+# Core Libs
 Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+
+# UI Libs
 Libs\lib-st\lib-st.xml
 Libs\LibCandyBar-3.0\lib.xml
-Libs\LibLogger\lib.xml
-Libs\LibDeflate\lib.xml
-Libs\LibSerialize\lib.xml
-Libs\LibEventSourcing\LibEventSourcing.xml
-Libs\LibEventDispatcher\LibEventDispatcher.xml
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibCandyBar-3.0\embeds.xml
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 Libs\LibDBIcon-1.0\LibDBIcon-1.0\lib.xml
 Libs\LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.lua
+
+# Data Libs
+Libs\LibDeflate\lib.xml
+Libs\LibSerialize\lib.xml
+Libs\LibLogger\lib.xml
+Libs\LibEventSourcing\LibEventSourcing.xml
+Libs\LibEventDispatcher\LibEventDispatcher.xml
+
+# Support Libs
 Libs\LibJsonLua\LibJsonLua.lua
 Libs\LibLuaXML\LibLuaXML.lua
 
