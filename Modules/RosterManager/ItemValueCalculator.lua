@@ -60,14 +60,6 @@ local function SetDefaultMultiplier(self)
     self.multiplier = GetDefaultMultiplier(self.equation)
 end
 
-local function GetDefaultExpvar(equation)
-    return DEFAULT_EXPVAR or 2.0
-end
-
-local function SetDefaultExpvar(self)
-    self.expvar = GetDefaultExpvar(self.equation)
-end
-
 local function GetDefaultSlotMultiplier(equation, slot)
     local param = getParamFromEquationID(equation)
     local slotValues = CONSTANTS.ITEM_SLOT_MULTIPLIERS[slot] or {}
@@ -101,7 +93,7 @@ function ItemValueCalculator:New()
     o.equation = CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB
 
     o.multiplier = 1.0
-	o.expvar = 2.0
+    o.expvar = 2.0
     SetDefaultMultiplier(o)
     o.slotMultipliers = {}
     SetDefaultSlotMultipliers(o)
@@ -142,7 +134,7 @@ function ItemValueCalculator:GetExpvar()
 end
 
 function ItemValueCalculator:SetExpvar(expvar)
-    self.expvar = tonumber(expvar) or GetDefaultExpvar(self.equation)
+    self.expvar = tonumber(expvar) or DEFAULT_EXPVAR
 end
 
 function ItemValueCalculator:GetSlotMultiplier(slot)

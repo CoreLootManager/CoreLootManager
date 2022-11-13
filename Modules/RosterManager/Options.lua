@@ -444,15 +444,15 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
         name = CLM.L["Multiplier"],
         pattern = CONSTANTS.REGEXP_FLOAT,
     }
-	order = order + 1
+    order = order + 1
     args["equation_expvar"] = {
         type = "input",
-        desc = CLM.L["Exponential scaling value used by the equations; Base for EPGPWeb, or Exponent for WoWpedia"],
+        desc = CLM.L["Exponential scaling value used by the equations (Base for EPGPWeb, or Exponent for WoWpedia)"],
         order = order,
         width = 0.5,
         get = (function(i) return tostring(expvarGet()) end),
         set = (function(i, v) expvarSet(tonumber(v)) end),
-        name = CLM.L["ExpVar"],
+        name = CLM.L["Exponent / Base"],
         pattern = CONSTANTS.REGEXP_FLOAT,
     }
     order = order + 1
@@ -467,7 +467,7 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
         get = (function(i) return equationGet() end),
         name = CLM.L["Select equation"]
     }
-	order = order + 1
+    order = order + 1
     args["slot_multipliers_header"] = {
         type = "header",
         order = order,
