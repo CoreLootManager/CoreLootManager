@@ -6,8 +6,6 @@
 [![Discord](https://img.shields.io/discord/813686248841019392?label=discord)](https://discord.gg/Qjn8KdD8yt)
 [![Patreon](https://img.shields.io/badge/Support%20CLM-Patreon-red)](https://www.patreon.com/classiclootmanager)
 
- ![Be sure to read before upgrading to v2.0.0](https://cdn.discordapp.com/attachments/843129642298376252/1017720926055452763/clm_read1.png)
-
 # About
 Classic Loot Manager is a robust Loot Tracking and awarding tool for guilds.
 It's designed to superseed old WoW Classic DKP and EPGP AddOns and it's derivatives and solves it's biggest painpoints by focusing on optimial communication and storage. CLM implements Event Sourcing and MVC programming models to achieve those targets. All data is synchronised automatically.
@@ -92,6 +90,7 @@ settings.
 
 
 # Upgrading to v2.0.0 from 1.9.x
+ ![Be sure to read before upgrading to v2.0.0](https://cdn.discordapp.com/attachments/843129642298376252/1017720926055452763/clm_read1.png)
 If you wish to use your current standings during prepatch, you can now import the data from version `1.9.x`. This will however import only your profiles (without linking), standings and rosters (without history and configuration).
 To export the data:  
 
