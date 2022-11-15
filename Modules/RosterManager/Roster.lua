@@ -259,7 +259,8 @@ function Roster:DecayStandings(GUID, value)
 
     -- Spent in EPGP = GP -> thus needs to be decayed also
     if self:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
-        new = UTILS.round(((self.pointInfo[GUID].spent * (100 - value)) / 100), self.configuration._.roundDecimals)
+        local excess = self.pointInfo[GUID].spent - self.configuration._.minGP
+        new = UTILS.round((self.pointInfo[GUID].spent - ((excess * (100 - value)) / 100)), self.configuration._.roundDecimals)
         self.pointInfo[GUID].spent = mmax(new, self.configuration._.minGP)
     end
 
