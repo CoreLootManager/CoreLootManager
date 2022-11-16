@@ -76,6 +76,8 @@ function RosterConfiguration:New(i)
     o._.minimumPoints = 0
     -- Minimum GP used in calculations when player has less
     o._.minGP = 1
+    -- Does decay account for minimum GP threshold.
+    o._.doUseMinForDecay = true
     -- Named Buttons Mode
     o._.namedButtons = false
     -- Dynamic item value
@@ -129,6 +131,7 @@ function RosterConfiguration:fields()
         "tax",
         "minimumPoints",
         "minGP",
+        "doUseMinForDecay",
         "namedButtons",
         "dynamicValue",
         "benchMultiplier",
@@ -174,6 +177,7 @@ local TRANSFORMS = {
     tax = transform_number,
     minimumPoints = transform_number,
     minGP = transform_number,
+    doUseMinForDecay = transform_boolean,
     namedButtons = transform_boolean,
     dynamicValue = transform_boolean,
     benchMultiplier = transform_number,
@@ -269,6 +273,7 @@ function RosterConfiguration._validate_selfBenchSubscribe(value) return IsBoolea
 function RosterConfiguration._validate_tax(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_minimumPoints(value) return IsNumeric(tonumber(value)) end
 function RosterConfiguration._validate_minGP(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_doUseMinForDecay(value) return IsBoolean(value) end
 function RosterConfiguration._validate_namedButtons(value) return IsBoolean(value) end
 function RosterConfiguration._validate_dynamicValue(value) return IsBoolean(value) end
 function RosterConfiguration._validate_benchMultiplier(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
