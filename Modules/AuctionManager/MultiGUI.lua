@@ -196,7 +196,7 @@ local function GenerateItemOptions(self)
             func = (function() end),
             width = 0.25,
             order = 1,
-            itemLink = itemLink,
+            tooltipHyperlink = itemLink,
         },
         item = {
             name = CLM.L["Item"],
@@ -214,7 +214,7 @@ local function GenerateItemOptions(self)
             disabled = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
             width = 1.25,
             order = 2,
-            itemLink = itemLink,
+            tooltipHyperlink = itemLink,
         },
         note = {
             name = CLM.L["Note"],
@@ -284,10 +284,11 @@ local function UpdateItemOptions(self)
     itemOptions.args = GenerateItemOptions(self)
 end
 
-local function CreateItemOptions(self)
+local function CreateItemOptions(self, width)
     local ItemOptionsGroup = AceGUI:Create("SimpleGroup")
     ItemOptionsGroup:SetLayout("Flow")
-    ItemOptionsGroup:SetWidth(1.5*ACE_GUI_COLUMN_WIDTH + 5)
+    -- ItemOptionsGroup:SetWidth(1.5*ACE_GUI_COLUMN_WIDTH + 5)
+    ItemOptionsGroup:SetWidth(width - 5)
     self.ItemOptionsGroup = ItemOptionsGroup
     UpdateItemOptions(self)
     AceConfigRegistry:RegisterOptionsTable(ITEM_REGISTRY, itemOptions)
@@ -298,21 +299,12 @@ end
 
 local function CreateLootList(self)
     local ItemList = AceGUI:Create("CLMLibScrollingTable")
+    ItemList:SetHeaderless()
     self.ItemList = ItemList
-    ItemList:SetDisplayRows(6, 32)
+    ItemList:SetDisplayRows(15, 32)
     ItemList:SetDisplayCols({
-        { name = "",  width = 32,
-            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                local item = data[realrow].cols[2]
-                if item then
-                    local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
-                    if icon then
-                        frame:SetNormalTexture(icon)
-                    end
-                end
-            end)
-        }, -- Icon
-        { name = "", width = 255 }
+        { name = "",  width = 32, DoCellUpdate = UTILS.LibStItemCellUpdate }, -- Icon
+        -- { name = "", width = 255 }
     })
     ItemList:RegisterEvents({
         OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
@@ -326,10 +318,17 @@ end
 local function GenerateAuctionOptions(self)
     local options = {
         auction_header = {
-            name = CLM.L["Auctioning"],
+            name = CLM.L["Auction settings"],
             type = "header",
             width = "full",
-            order = 1
+            order = 0
+        },
+        auction_filler = {
+            name = "",
+            desc = "",
+            type = "description",
+            width = 0.75,
+            order = 1,
         },
         time_auction = {
             name = CLM.L["Auction length"],
@@ -365,13 +364,19 @@ local function GenerateAuctionOptions(self)
             order = 4,
             disabled = (function() return not ((self.itemLink or false) and CLM.MODULES.RaidManager:IsInProgressingRaid()) end)
         },
+        bidding_header = {
+            name = CLM.L["Bidding"],
+            type = "header",
+            width = "full",
+            order = 10
+        },
         award_value = {
             name = CLM.L["Award value"],
             type = "input",
             set = (function(i,v) self:setInputAwardValue(v) end),
             get = (function(i) return tostring(self.awardValue) end),
             width = 0.5,
-            order = 5
+            order = 11
         },
         award = {
             name = CLM.L["Award"],
@@ -401,7 +406,7 @@ local function GenerateAuctionOptions(self)
                 )
             end),
             width = 0.5,
-            order = 6,
+            order = 12,
             disabled = (function() return (not (self.itemLink or false)) or CLM.MODULES.AuctionManager:IsAuctionInProgress() end)
         },
         bid_stats_info = {
@@ -486,8 +491,8 @@ local function GenerateAuctionOptions(self)
             type = "execute",
             func = (function() end),
             image = "Interface\\Icons\\INV_Misc_QuestionMark",
-            width = 0.3,
-            order = 4.5
+            width = 0.25,
+            order = 6
         }
     }
     return options
@@ -497,13 +502,15 @@ local auctionOptions = {
     type = "group",
     args = {}
 }
+
 local function UpdateAuctionOptions(self)
     itemOptions.args = GenerateAuctionOptions(self)
 end
-local function CreateAuctionOptions(self)
+
+local function CreateAuctionOptions(self, width)
     local AuctionOptionsGroup = AceGUI:Create("SimpleGroup")
     AuctionOptionsGroup:SetLayout("Flow")
-    AuctionOptionsGroup:SetWidth(BASE_WIDTH - 5)
+    AuctionOptionsGroup:SetWidth(width - 5)
     self.AuctionOptionsGroup = AuctionOptionsGroup
     UpdateAuctionOptions(self)
     AceConfigRegistry:RegisterOptionsTable(AUCTION_REGISTRY, itemOptions)
@@ -512,24 +519,14 @@ local function CreateAuctionOptions(self)
     return AuctionOptionsGroup
 end
 
-local function CreateBidList(self)
+local function CreateBidList(self, width)
     local BidList = AceGUI:Create("CLMLibScrollingTable")
     self.BidList = BidList
-    BidList:SetDisplayRows(11, 18)
+    BidList:SetDisplayRows(12, 18)
 
-    local totalWidth = 550
+    local totalWidth = width - 37
     local cols = {
-        {name = "", width = 18, DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-            local class = UTILS.NumberToClass(math.random(1,9))
-            if class then
-                frame:SetNormalTexture("Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"); -- this is the image containing all class icons
-                local coords = CLASS_ICON_TCOORDS[class]
-                frame:GetNormalTexture():SetTexCoord(unpack(coords))
-            else -- if there's no class
-                frame:SetNormalTexture("Interface/ICONS/INV_Misc_QuestionMark.png")
-            end
-        end)
-        },
+        { name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
         {name = CLM.L["Name"],  width = 100,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
@@ -594,15 +591,17 @@ local function CreateBidList(self)
     return BidList
 end
 
+
+
 local function Create(self)
     LOG:Trace("AuctionManagerGUI:Create()")
     -- Main Frame
     local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Auctioning"])
-    f:SetLayout("flow")
+    f:SetLayout("table")
     f:EnableResize(false)
+    f:SetHeight(560)
     f:SetWidth(BASE_WIDTH)
-    f:SetHeight(600)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Auctioning_MultiGUI")
 
@@ -615,10 +614,19 @@ local function Create(self)
     self.awardValue = 0
     self.bids = {}
 
-    f:AddChild(CreateItemOptions(self))
-    f:AddChild(CreateLootList(self))
-    f:AddChild(CreateAuctionOptions(self))
-    f:AddChild(CreateBidList(self))
+    local ItemList = CreateLootList(self)
+    local listWidth = self.ItemList:GetWidth()
+    local dataWidth = BASE_WIDTH - listWidth - 20
+    f:SetUserData("table", { columns = {listWidth, dataWidth}, alignV =  "top" })
+    local DataGroup = AceGUI:Create("SimpleGroup")
+    DataGroup:SetLayout("Flow")
+    DataGroup:SetWidth(dataWidth)
+    DataGroup:AddChild(CreateItemOptions(self, dataWidth))
+    DataGroup:AddChild(CreateAuctionOptions(self, dataWidth))
+    DataGroup:AddChild(CreateBidList(self, dataWidth))
+
+    f:AddChild(ItemList)
+    f:AddChild(DataGroup)
 
     -- Clear active bid on close
     -- f:SetCallback('OnClose', function() self:ClearSelectedBid() end)
@@ -674,12 +682,27 @@ function AuctionManagerGUI:Refresh()
         "|cffa335ee|Hitem:39763::::::::4:::::::::|h[Wraith Strike]|h|r",
         "|cffa335ee|Hitem:34341::::::::70:::::::::|h[Borderland Paingrips]|h|r",
         "|cffa335ee|Hitem:34335::::::::70:::::::::|h[Hammer of Sanctification]|h|r",
+        "|cffffffff|Hitem:2361::::::::4:::::::::|h[Battleworn Hammer]|h|r",
+        "|cffffffff|Hitem:6117::::::::4:::::::::|h[Squire's Shirt]|h|r",
+        "|cff0070dd|Hitem:187714::::::::70:::::::::|h[Enlistment Bonus]|h|r",
+        "|cff0070dd|Hitem:30351::::::::70:::::::::|h[Medallion of the Alliance]|h|r",
+        "|cffffffff|Hitem:6185::::::::4:::::::::|h[Bear Shawl]|h|r",
+        "|cffa335ee|Hitem:39763::::::::4:::::::::|h[Wraith Strike]|h|r",
+        "|cffa335ee|Hitem:34341::::::::70:::::::::|h[Borderland Paingrips]|h|r",
+        "|cffa335ee|Hitem:34335::::::::70:::::::::|h[Hammer of Sanctification]|h|r",
+        "|cffffffff|Hitem:2361::::::::4:::::::::|h[Battleworn Hammer]|h|r",
+        "|cffffffff|Hitem:6117::::::::4:::::::::|h[Squire's Shirt]|h|r",
+        "|cff0070dd|Hitem:187714::::::::70:::::::::|h[Enlistment Bonus]|h|r",
+        "|cff0070dd|Hitem:30351::::::::70:::::::::|h[Medallion of the Alliance]|h|r",
+        "|cffffffff|Hitem:6185::::::::4:::::::::|h[Bear Shawl]|h|r",
+        "|cffa335ee|Hitem:39763::::::::4:::::::::|h[Wraith Strike]|h|r",
+        "|cffa335ee|Hitem:34341::::::::70:::::::::|h[Borderland Paingrips]|h|r",
+        "|cffa335ee|Hitem:34335::::::::70:::::::::|h[Hammer of Sanctification]|h|r",
     }
 
 
     for _, d in ipairs(DEBUGDATA) do
         local row = {cols = {
-                {value = ""},
                 {value = d},
             },
         }
@@ -734,7 +757,7 @@ function AuctionManagerGUI:Toggle()
     if not self._initialized then return end
     if self.top:IsVisible() or not CLM.MODULES.ACL:IsTrusted() then
         -- Award reset on closing BidWindow.
-        AuctionManagerGUI:ClearSelectedBid()
+        -- AuctionManagerGUI:ClearSelectedBid()
         self.top:Hide()
     else
         self:Refresh()

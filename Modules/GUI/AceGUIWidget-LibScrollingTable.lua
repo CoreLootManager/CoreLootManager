@@ -53,6 +53,11 @@ local function Resize(self)
     self:SetHeight(self.st.frame:GetHeight() + self.st.rowHeight + 8)
 end
 
+local function SetHeaderless(self)
+    self:SetWidth(self.st.frame:GetWidth())
+    self:SetHeight(self.st.frame:GetHeight() - (self.st.rowHeight + 8))
+end
+
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
@@ -87,9 +92,11 @@ local methods = {
     ["SetBackdropColor"] = function(self, ...)
         self.st.frame:SetBackdropColor(...)
     end,
+    ["SetHeaderless"] = function(self, ...) 
+        SetHeaderless(self, ...)
+    end,
 
-
-        -- AFAIK needed for input type of AceConfigDialog
+    -- AFAIK needed for input type of AceConfigDialog
     ["SetDisabled"] = function(self)
     end,
     ["SetLabel"] = function(self)
