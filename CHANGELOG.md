@@ -1,3 +1,96 @@
+# Classic Loot Manager v2.6.0
+## Notes
+### Library overhaul
+CLM went through huge dependency and library overhaul and many of tooltip-related hacks were removed from CLM.
+This also means that integrations with some tooltip-modifying AddOns might require fixes from their respective authors to show up in CLM since they are not based in the CLM itself anymore.
+## Features
+### CEPGP and BastionLoot Migration
+/clm migrate now supports CEPGP and BastionLoot!
+### Standby value multiplier
+You can now configure multiplier for points received by players on standby (bench).
+### PR Rounding
+You can now configure PR rounding independently from the rest of the AddOn.
+### OS Bid
+You can now disable OS bidding support in the roster.
+## Fixes
+### EPGP Alt-Main Linking
+GP value during linking is now calculated properly. This is a backwards-affecting change thus if you are already using this feature, you might be required to update the GP manually.
+### Filtering
+Death Knights should be now allowed to be filtered out properly.
+### Item values in Dynamic mode
+Bows and Crossbows should now properly be calculated as ranged weapons in Dynamic item value mode.
+# Classic Loot Manager v2.5.6
+## Fixes
+### Standby
+Fix for standby points not being applied if one of the players requesting standby was not in the roster.
+Auto-add players to roster if they have requested standby.
+### History
+If point change affects only 1 player display the name instead of `Multiple`.
+If player is missing class (which should not happen when adding characters post pre-patch), do not error out but display empty field.
+### Memory usage
+CLM v1 database is no longer stored in the AddOn thus lowering effective memory usage for big databases. There is no longer option to migrate from v1.x.x to v2.x.x after installing this version of CLM.
+# Classic Loot Manager v2.5.5
+## Locale
+### Chinese
+CLM now supports Chinese locale. Thanks brian#0179 for all the translations.
+## Fixes
+### Item values
+Bows and Crossbows should now properly be calculated as ranged weapons.
+### Vickrey award value
+Vickrey should now properly calculate second value based on the type of the selected bid.
+### Sorting fixes
+Sorting by version should now work as expected.
+
+# Classic Loot Manager v2.5.4
+## Changes
+### GUI
+GUI revamp. Thanks brian#0179 for contribution.
+### Auctioning
+Auctioning and upgraded item info should now work properly for tokens and Sapphiron quest item.
+# Classic Loot Manager v2.5.3
+## Hotfixes
+### Open Auction
+Open auction hotfixes.
+# Classic Loot Manager v2.5.2
+## Hotfixes
+### Open Auction
+Open auction hotfixes.
+# Classic Loot Manager v2.5.1
+## Fixes
+### Chat command bidding
+Chat command bidding should now work.
+### Chat command os bid
+You can now do OS bid through chat command `!bidos`.
+### Auto-update bid values
+Auto-update bid values should work with new UI.
+### Bidding UI
+Bidding UI no longer needs Okay button. This however results in buttons being misplaced with some ElvUI scales.
+# Classic Loot Manager v2.5.0
+## Features
+### Open Auction
+Open Auction modes just got overhauled. You will now see list of bidders in bidding UI. Information is limited in anonymous mode. It is strongly recommended for all raiders to upgrade to this version.
+### Auctioning UI
+Auctioning UI got simplified a bit. Checking player upgrades should now be easier.
+### Bid posting
+Upgrades will now be posted together with bids.
+## Fixes
+### Boss kill bonus
+Boss kill bonus should work now for EoE/OS/VoA. Additionaly it can be set to negative value. 0 is still ignored.
+### Pass in open auctions
+In non-ascending auctions pass won't be grayed out anymore after bidding.
+
+# Classic Loot Manager v2.4.1
+## Fixes
+### RCLC Integration
+RCLC Integration now displays PR in the RCLC window.
+### UI Scaling
+You can now scale UI through slider in the configuration. Bidding UI scales separately by Ctrl + Mouse Wheel.
+### Standings display
+Points in standings tooltip now are displayed in the proper order.
+### Attendance sorting
+Sorting by attendance works now as expected.
+### Passing
+You can now pass in Open Tiered and Static modes.
 # Classic Loot Manager v2.4.0
 ## Features
 ### Manual GP Awarding

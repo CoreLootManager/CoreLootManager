@@ -12,46 +12,92 @@ local sformat = string.format
 local GetItemInfoInstant, GetItemInfo = GetItemInfoInstant, GetItemInfo
 local C_TimerAfter, C_ItemIsItemDataCachedByID = C_Timer.After, C_Item.IsItemDataCachedByID
 
+local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 local LibCandyBar = LibStub("LibCandyBar-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local guiOptions = {
+local DISPLAY_MODE_VALUES  = 1
+local DISPLAY_MODE_BUTTONS = 2
+
+local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
+local colorGold = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}
+local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
+
+local itemOptions = {
     type = "group",
     args = {}
 }
-
+local bidOptions = {
+    type = "group",
+    args = {}
+}
+local buttonOptions = {
+    type = "group",
+    args = {}
+}
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
-local BASE_WIDTH  = 335 + (isElvUI and 15 or 0)
+local rowMultiplier = 2.05
+
+local BASE_WIDTH  = 375 + (isElvUI and 30 or 0)
 local ROW_HEIGHT = 25
-local BASE_HEIGHT = 100
+local BASE_HEIGHT = 110
+local BID_ROWS = 6
+local BID_ROW_HEIGHT = 18
+local BIDS_HEIGHT = ((BID_ROWS + 1) * BID_ROW_HEIGHT) + 5
+local BID_INPUT_WIDTH  = 170*rowMultiplier*0.4
+local BID_BUTTON_WIDTH = 170*rowMultiplier*0.3
 
-local rowMultiplier = 1.8
+local BID_BUTTON_PADDING = (isElvUI and 12 or 2)
 
-local REGISTRY = "clm_bidding_manager_gui_options"
+local ITEM_REGISTRY = "clm_bidding_manager_gui_item_options"
+local BID_REGISTRY = "clm_bidding_manager_gui_bid_options"
+local BUTTON_REGISTRY = "clm_bidding_manager_gui_button_options"
 
 local function UpdateOptions(self)
     self.top:SetWidth(BASE_WIDTH)
-    for k,_ in pairs(guiOptions.args) do
-        guiOptions.args[k] = nil
-    end
-    UTILS.mergeDictsInline(guiOptions.args, self:GenerateAuctionOptions())
-    guiOptions.args.item.width = 1.45
-    self.OptionsGroup:SetWidth(BASE_WIDTH)
+    for k,_ in pairs(itemOptions.args) do itemOptions.args[k] = nil end
+    for k,_ in pairs(bidOptions.args) do bidOptions.args[k] = nil end
+    for k,_ in pairs(buttonOptions.args) do buttonOptions.args[k] = nil end
+    local _itemOptions, _bidOptions, _buttonOptions = self:GenerateAuctionOptions()
+    UTILS.mergeDictsInline(itemOptions.args, _itemOptions)
+    UTILS.mergeDictsInline(bidOptions.args, _bidOptions)
+    UTILS.mergeDictsInline(buttonOptions.args, _buttonOptions)
+
+
+    -- self.BidGroup:SetWidth(BASE_WIDTH)
+    -- self.ItemGroup:SetWidth(BASE_WIDTH)
 end
 
 local function CreateOptions(self)
-    local OptionsGroup = AceGUI:Create("SimpleGroup")
-    OptionsGroup:SetLayout("Flow")
-    OptionsGroup:SetWidth(BASE_WIDTH)
-    self.OptionsGroup = OptionsGroup
+    -- Item Display
+    local ItemGroup = AceGUI:Create("SimpleGroup")
+    ItemGroup:SetLayout("Flow")
+    ItemGroup:SetWidth(BASE_WIDTH)
+    self.ItemGroup = ItemGroup
+    -- Bid Display
+    local BidGroup = AceGUI:Create("SimpleGroup")
+    BidGroup:SetLayout("Flow")
+    BidGroup:SetWidth(2*BID_BUTTON_WIDTH + BID_BUTTON_PADDING)
+    self.BidGroup = BidGroup
+    -- Button Display
+    local ButtonGroup = AceGUI:Create("SimpleGroup")
+    ButtonGroup:SetLayout("Flow")
+    ButtonGroup:SetWidth(BASE_WIDTH)
+    self.ButtonGroup = ButtonGroup
+    -- Build options
     UpdateOptions(self)
-    AceConfigRegistry:RegisterOptionsTable(REGISTRY, guiOptions)
-    AceConfigDialog:Open(REGISTRY, OptionsGroup)
+    -- register
+    AceConfigRegistry:RegisterOptionsTable(ITEM_REGISTRY, itemOptions)
+    AceConfigDialog:Open(ITEM_REGISTRY, ItemGroup)
+    AceConfigRegistry:RegisterOptionsTable(BID_REGISTRY, bidOptions)
+    AceConfigDialog:Open(BID_REGISTRY, BidGroup)
+    AceConfigRegistry:RegisterOptionsTable(BUTTON_REGISTRY, buttonOptions)
+    AceConfigDialog:Open(BUTTON_REGISTRY, ButtonGroup)
 
-    return OptionsGroup
+    return ItemGroup, BidGroup, ButtonGroup
 end
 
 local BiddingManagerGUI = {}
@@ -59,18 +105,23 @@ local BiddingManagerGUI = {}
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {
         location = {nil, nil, "CENTER", 0, 0 },
+        scale = 1,
         closeOnBid = false
     })
 end
 
 local function StoreLocation(self)
     self.db.location = { self.top:GetPoint() }
+    self.db.scale = self.top.frame:GetScale()
 end
 
 local function RestoreLocation(self)
     if self.db.location then
         self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
+    end
+    if self.db.scale then
+        self.top.frame:SetScale(self.db.scale)
     end
 end
 
@@ -118,62 +169,65 @@ function BiddingManagerGUI:Initialize()
     self._initialized = true
 end
 
-function BiddingManagerGUI:BidCurrent()
-    CLM.MODULES.BiddingManager:Bid(self.bid)
+function BiddingManagerGUI:GetInputValue()
+    local input = self.BidInput:GetText()
+    -- TODO sanitize
+    return input
 end
 
-local function GenerateValueButtonsAuctionOptions(self,
-    icon, itemLink, shortItemLink, itemValueMode, values)
-    local options = {
-        icon = {
-            name = "",
-            type = "execute",
-            image = icon,
-            func = (function() end),
-            itemLink = shortItemLink,
-            width = 0.25,
-            order = 1
-        },
-        item = {
-            name = "",--CLM.L["Item"],
-            type = "input",
-            get = (function(i) return itemLink or "" end),
-            set = (function(i,v) end), -- Intentionally: do not override
-            width = 1.55,
-            order = 2,
-            itemLink = shortItemLink,
-        },
-        bid_value = {
-            name = "",--CLM.L["Bid value"],
-            desc = CLM.L["Value you want to bid. Press Enter or click Okay button to accept."],
-            type = "input",
-            set = (function(i,v) self.bid = tonumber(v) or 0 end),
-            get = (function(i) return tostring(self.bid) end),
-            width = 0.8,
-            order = 3
-        },
+function BiddingManagerGUI:SetInputValue(value)
+    -- TODO sanitize
+    self.BidInput:SetText(value)
+end
+
+function BiddingManagerGUI:BidInputValue(bidType)
+    self.bid = self:GetInputValue()
+    self:SetInputValue(self.bid)
+    CLM.MODULES.BiddingManager:Bid(self.bid, bidType)
+end
+
+function BiddingManagerGUI:BidValue(value, bidType)
+    self:SetInputValue(value)
+    self.bid = self:GetInputValue()
+    CLM.MODULES.BiddingManager:Bid(self.bid, bidType)
+end
+
+function BiddingManagerGUI:BidAllIn()
+    self:BidValue(self.standings, CONSTANTS.BID_TYPE.MAIN_SPEC)
+end
+
+local function GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
+    local useOS = true
+    if self.auctionInfo then
+        useOS = not self.auctionInfo:DisableOS()
+    end
+    local generateBidOptions = {
         bid = {
-            name = CLM.L["MS"],
+            name = useOS and CLM.L["MS"] or CLM.L["Bid"],
             desc = CLM.L["Bid input values as Main spec bid."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:Bid(self.bid)
+                self:BidInputValue(CONSTANTS.BID_TYPE.MAIN_SPEC)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            width = 0.5,
+            width = (useOS and 1 or 2)*rowMultiplier*0.3,
             order = 4
         },
-        os = {
+    }
+    if useOS then
+        generateBidOptions.os = {
             name = CLM.L["OS"],
             desc = CLM.L["Bid input values as Off spec bid."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:Bid(self.bid, CONSTANTS.BID_TYPE.OFF_SPEC)
+                self:BidInputValue(CONSTANTS.BID_TYPE.OFF_SPEC)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            width = 0.5,
+            width = rowMultiplier*0.3,
             order = 5
-        },
+        }
+    end
+    local generateButtonOptions = {
         pass = {
             name = CLM.L["Pass"],
             desc = (function()
@@ -189,7 +243,11 @@ local function GenerateValueButtonsAuctionOptions(self,
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             disabled = (function()
-                    return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
+                    return (
+                        CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and
+                        (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and
+                        (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
+                    )
             end),
             width = rowMultiplier/2,
             order = 20
@@ -202,7 +260,12 @@ local function GenerateValueButtonsAuctionOptions(self,
                 CLM.MODULES.BiddingManager:CancelBid()
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
+            disabled = (function()
+                return (
+                    CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and
+                    (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING)
+                )
+            end),
             width = rowMultiplier/2,
             order = 21
         }
@@ -230,13 +293,12 @@ local function GenerateValueButtonsAuctionOptions(self,
             local value = tonumber(values[tier]) or 0
             if not alreadyExistingValues[value] and doDisplayValue(value) then -- this will display in ascending max 0
                 alreadyExistingValues[value] = true
-                options[tier] = {
+                generateButtonOptions[tier] = {
                     name = value,
                     desc = CONSTANTS.SLOT_VALUE_TIERS_GUI[tier] or "",
                     type = "execute",
                     func = (function()
-                        self.bid = value
-                        CLM.MODULES.BiddingManager:Bid(self.bid, tier)
+                        self:BidInputValue(tier)
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     order = offset
@@ -246,15 +308,14 @@ local function GenerateValueButtonsAuctionOptions(self,
             end
         end
 
-        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and not options[CONSTANTS.SLOT_VALUE_TIER.MAX] then
-            local width = options[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
-            options["all_in"] = {
+        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and not generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.MAX] then
+            local width = generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
+            generateButtonOptions["all_in"] = {
                 name = CLM.L["All In"],
                 desc = sformat(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
                 type = "execute",
                 func = (function()
-                    self.bid = self.standings
-                    CLM.MODULES.BiddingManager:Bid(self.bid)
+                    self:BidAllIn()
                     if GetCloseOnBid(self) then self:Toggle() end
                 end),
                 width = width,
@@ -267,39 +328,19 @@ local function GenerateValueButtonsAuctionOptions(self,
             numRows = numRows + 1
             local row_width = rowMultiplier/numButtons
             for _,tier in ipairs(usedTiers) do
-                if options[tier] then
-                    options[tier].width = row_width
+                if generateButtonOptions[tier] then
+                    generateButtonOptions[tier].width = row_width
                 end
             end
         end
     end
 
-    self.top:SetHeight(BASE_HEIGHT + (numRows*ROW_HEIGHT))
-    return options
+    self.top:SetHeight(BASE_HEIGHT + (CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and BIDS_HEIGHT or 0) + (numRows*ROW_HEIGHT))
+    return generateBidOptions, generateButtonOptions
 end
 
-local function GenerateNamedButtonsAuctionOptions(self,
-    icon, itemLink, shortItemLink, itemValueMode, values)
-    local options = {
-        icon = {
-            name = "",
-            type = "execute",
-            image = icon,
-            func = (function() end),
-            itemLink = shortItemLink,
-            width = 0.25,
-            order = 1
-        },
-        item = {
-            name = "",--CLM.L["Item"],
-            type = "input",
-            get = (function(i) return itemLink or "" end),
-            set = (function(i,v) end), -- Intentionally: do not override
-            width = 1.65,
-            order = 2,
-            itemLink = shortItemLink,
-        },
-    }
+local function GenerateNamedButtonsAuctionOptions(self, itemValueMode, values)
+    local options = {}
     local offset = 3
     local row_width = rowMultiplier/2
     local numButtons = 0
@@ -310,6 +351,10 @@ local function GenerateNamedButtonsAuctionOptions(self,
         usedTiers = {
             CONSTANTS.SLOT_VALUE_TIER.BASE,
             CONSTANTS.SLOT_VALUE_TIER.MAX
+        }
+    elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED then
+        usedTiers = {
+            CONSTANTS.SLOT_VALUE_TIER.BASE
         }
     end
     if usedTiers then
@@ -322,8 +367,7 @@ local function GenerateNamedButtonsAuctionOptions(self,
                     desc = tostring(value),
                     type = "execute",
                     func = (function()
-                        self.bid = value
-                        CLM.MODULES.BiddingManager:Bid(self.bid, tier)
+                        self:BidValue(value, tier)
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     width = row_width,
@@ -377,9 +421,9 @@ local function GenerateNamedButtonsAuctionOptions(self,
     local numRows = 0
     if isEven then numRows = 1 end
 
-    self.top:SetHeight(BASE_HEIGHT + ((numRows + math.ceil(numButtons/2))*ROW_HEIGHT))
+    self.top:SetHeight(BASE_HEIGHT + (CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and BIDS_HEIGHT or 0) + ((numRows + math.ceil(numButtons/2))*ROW_HEIGHT))
 
-    return options
+    return {}, options
 end
 
 function BiddingManagerGUI:GenerateAuctionOptions()
@@ -395,16 +439,78 @@ function BiddingManagerGUI:GenerateAuctionOptions()
     local itemValueMode = self.auctionInfo and self.auctionInfo:Mode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
     local values = self.auctionInfo and self.auctionInfo:Values() or {}
 
-    local namedButtonsMode = self.roster and self.roster:GetConfiguration("namedButtons")
-
-    local options
-    if namedButtonsMode then
-        options = GenerateNamedButtonsAuctionOptions(self, icon, itemLink, shortItemLink, itemValueMode, values)
-    else
-        options = GenerateValueButtonsAuctionOptions(self, icon, itemLink, shortItemLink, itemValueMode, values)
+    local namedButtonsMode
+    if self.roster then
+        namedButtonsMode = self.roster:GetConfiguration("namedButtons")
     end
 
-    return options
+    local _itemOptions = {
+        icon = {
+            name = "",
+            type = "execute",
+            image = icon,
+            func = (function() end),
+            tooltipHyperlink = shortItemLink,
+            width = 0.25,
+            order = 1
+        },
+        item = {
+            name = "",
+            type = "input",
+            get = (function(i) return itemLink or "" end),
+            set = (function(i,v) end), -- Intentionally: do not override
+            width = rowMultiplier - 0.25,
+            order = 2,
+            tooltipHyperlink = shortItemLink,
+        },
+    }
+
+    local _bidOptions, _buttonOptions
+    if namedButtonsMode then
+        _bidOptions, _buttonOptions = GenerateNamedButtonsAuctionOptions(self, itemValueMode, values)
+    else
+        _bidOptions, _buttonOptions = GenerateValueButtonsAuctionOptions(self, itemValueMode, values)
+    end
+
+    return _itemOptions, _bidOptions, _buttonOptions
+end
+
+local function CreateBidList(self)
+    local BidList = AceGUI:Create("CLMLibScrollingTable")
+    BidList:SetDisplayRows(BID_ROWS, BID_ROW_HEIGHT)
+    local columns = {
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
+        {name = CLM.L["Name"],  width = (86 + (isElvUI and 30 or 0)) },
+        {name = CLM.L["Bid"],   width = 120, color = colorGreen,
+            sort = ScrollingTable.SORT_DSC,
+            sortnext = 4,
+            align = "CENTER",
+            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                BidList.st.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                frame.text:SetText(data[realrow].cols[7].value or data[realrow].cols[column].value)
+            end)
+        },
+        {name = CLM.L["Current"],  width = 60, color = colorGold,
+            align = "CENTER"
+        },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
+    }
+    BidList:SetDisplayCols(columns)
+    BidList:RegisterEvents({
+        OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UTILS.LibStSingleSelectClickHandler(table, nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            return true
+        end
+    })
+    return BidList
+end
+
+local function RescaleLibCandyBar(bar, scale)
+    if not bar then return end
+    bar:SetWidth(BASE_WIDTH*scale)
+    bar:SetHeight(25*scale)
+    bar.candyBarBar:SetScale(scale)
 end
 
 function BiddingManagerGUI:Create()
@@ -412,17 +518,35 @@ function BiddingManagerGUI:Create()
     -- Main Frame
     local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Bidding"])
-    f:SetLayout("flow")
+    f:SetLayout("Flow")
     f:EnableResize(false)
     f:SetWidth(BASE_WIDTH)
     f:SetHeight(BASE_HEIGHT)
+    f.frame:SetScript("OnMouseWheel", (function(frame, delta)
+        if IsControlKeyDown() then
+            self.db.scale = UTILS.ResizeFrame(frame, (delta > 0), self.db.scale)
+            RescaleLibCandyBar(self.bar, self.db.scale)
+        end
+    end))
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Bidding_GUI")
-    self.bid = 0
     self.barPreviousPercentageLeft = 1
     self.duration = 1
-    f:AddChild(CreateOptions(self))
+    local BidInputGroup = AceGUI:Create("SimpleGroup")
+    BidInputGroup:SetLayout("Flow")
+    BidInputGroup:SetWidth(BASE_WIDTH)
+    self.BidInputGroup = BidInputGroup
+    local _, BidGroup, _ = CreateOptions(self)
+    local BidInput = AceGUI:Create("EditBox")
+    self.BidInput = BidInput
+    BidInput:DisableButton(true)
+    BidInput:SetWidth(BID_INPUT_WIDTH)
+    BidInputGroup:AddChild(BidInput)
+    BidInputGroup:AddChild(BidGroup)
+    local BidList = CreateBidList(self)
+    self.BidList = BidList
     RestoreLocation(self)
+    self:SetInputValue(0)
     -- Handle onHide information passing whenever the UI is closed
     local oldOnHide = f.frame:GetScript("OnHide")
     f.frame:SetScript("OnHide", (function(...)
@@ -434,7 +558,7 @@ function BiddingManagerGUI:Create()
 end
 
 function BiddingManagerGUI:UpdateCurrentBidValue(value)
-    self.bid = tonumber(value or 0)
+    self:SetInputValue(value)
     self:Refresh()
 end
 
@@ -470,13 +594,12 @@ function BiddingManagerGUI:BuildBar(duration)
     end);
     self.bar:SetColor(0, 0.80, 0, 1)
     -- self.bar:SetParent(self.top.frame) -- makes the bar disappear
-    self.bar:SetPoint("CENTER", self.top.frame, "TOP", 0, 10)
+    self.bar:SetPoint("CENTER", self.top.frame, "TOP", 0, (isElvUI and 15 or 10))
+    self.bar.candyBarBar:SetScript("OnMouseDown", function (_, button) if button == 'LeftButton' then self:Toggle() end end)
 
-    self.bar.candyBarBar:SetScript("OnMouseDown", function (_, button)
-        if button == 'LeftButton' then
-            self:Toggle()
-        end
-    end)
+    if self.db.scale then
+        RescaleLibCandyBar(self.bar, self.db.scale)
+    end
 
     self.bar:Start(self.auctionInfo:Time())
 end
@@ -502,23 +625,27 @@ function BiddingManagerGUI:StartAuction(show, auctionInfo)
     self.duration = duration
     self:BuildBar(duration)
     local values = auctionInfo:Values()
-    self.bid = values[CONSTANTS.SLOT_VALUE_TIER.BASE]
+    self:SetInputValue(values[CONSTANTS.SLOT_VALUE_TIER.BASE] or 0)
     local myProfile = CLM.MODULES.ProfileManager:GetMyProfile()
     self.top:SetTitle(CLM.L["Bidding"])
+    local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
+    self.roster = roster
     if myProfile then
-        local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.auctionInfo:RosterUid())
         if roster then
             self.auctionType = roster:GetConfiguration("auctionType")
-            self.roster = roster
             if roster:IsProfileInRoster(myProfile:GUID()) then
-                self.standings = roster:Standings(myProfile:GUID())
+                if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+                    self.standings = roster:Priority(myProfile:GUID())
+                else
+                    self.standings = roster:Standings(myProfile:GUID())
+                end
                 self.top:SetTitle(CLM.L["Bidding"] ..  " | " .. CLM.L["Current"] .. ": " .. tostring(self.standings))
             end
         end
     end
 
     if not show then return end
-    self:Refresh()
+    -- self:Refresh()
     if C_ItemIsItemDataCachedByID(self.auctionInfo:ItemLink()) then
         EvaluateItemUsability(self)
         HandleWindowDisplay(self)
@@ -550,13 +677,120 @@ function BiddingManagerGUI:AntiSnipe()
     self.bar.exp = (self.bar.exp + self.auctionInfo:AntiSnipe()) -- trick to extend bar
 end
 
+local function BuildBidderData(self)
+    if CLM.MODULES.RaidManager:IsInRaid() and CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+        local data = {}
+        for bidder, bid in pairs(CLM.MODULES.BiddingManager:GetBids()) do
+            local profile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
+            local current
+            local class
+            local color
+            local bidName = bid:Value()
+            local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+            if profile then
+                class = profile:ClassInternal()
+                color = UTILS.GetClassColor(profile:Class())
+                if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+                    current = roster:Priority(profile:GUID())
+                else
+                    current = roster:Standings(profile:GUID())
+                end
+            else
+                current = ""
+            end
+            local namedButtons = roster:GetConfiguration("namedButtons")
+            if namedButtons then
+                bidName = roster:GetFieldName(bid:Type())
+                if not bidName or bidName == "" then bidName = tostring(bid:Value()) end
+            end
+            local items = bid:Items()
+            local primaryItem = items[1]
+            local secondaryItem = items[2]
+            if (not primaryItem) and secondaryItem then
+                primaryItem = secondaryItem
+                secondaryItem = nil
+            end
+            if (bid:Type() ~= CONSTANTS.BID_TYPE.PASS) and (bid:Type() ~= CONSTANTS.BID_TYPE.CANCEL) then
+                local bidColor
+                if (not namedButtons) and (bid:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC) then
+                    bidColor = colorTurquoise
+                end
+                local row = {cols = {
+                    {value = class}, -- Class Icon
+                    {value = bidder, color = color}, -- Name
+                    {value = bid:Value(), color = bidColor}, -- Bid Value
+                    {value = current}, -- Current standings / priority
+                    {value = primaryItem}, -- Primary item Icon
+                    {value = secondaryItem}, -- Secondary Item Icon
+                    -- Not visible
+                    {value = bidName}
+                }}
+                data[#data+1] = row
+            end
+        end
+        self.BidList:SetData(data)
+    end
+end
+
+function BiddingManagerGUI:RefreshBidList()
+    if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+        BuildBidderData(self)
+        self.BidList:Show()
+    else
+        self.BidList:Hide()
+    end
+end
+
+local function RegenerateRows(self)
+    local namedButtonsMode
+    if self.roster then
+        namedButtonsMode = self.roster:GetConfiguration("namedButtons")
+    end
+    if namedButtonsMode then
+        if (self.currentDisplayMode ~= DISPLAY_MODE_BUTTONS) then
+            local isVisible = self.top:IsVisible()
+            self.top:Show() -- this helps to fix scaling issues with Ace3
+
+            self.BidInputGroup.frame:Hide()
+            self.top.children = {}
+            self.top:AddChildren(self.ItemGroup, self.ButtonGroup, self.BidList)
+            self.top:DoLayout()
+            self.currentDisplayMode = DISPLAY_MODE_BUTTONS
+
+            if not isVisible then
+                self.top:Hide() -- this helps to fix scaling issues with Ace3
+            end
+        end
+    else
+        if (self.currentDisplayMode ~= DISPLAY_MODE_VALUES) then
+            local isVisible = self.top:IsVisible()
+            self.top:Show() -- this helps to fix scaling issues with Ace3
+
+            self.top.children = {}
+            self.top:AddChildren(self.ItemGroup, self.BidInputGroup, self.ButtonGroup, self.BidList)
+            self.top:DoLayout()
+            self.currentDisplayMode = DISPLAY_MODE_VALUES
+
+            if not isVisible then
+                self.top:Hide() -- this helps to fix scaling issues with Ace3
+            end
+        end
+    end
+end
+
 function BiddingManagerGUI:Refresh()
     LOG:Trace("BiddingManagerGUI:Refresh()")
     if not self._initialized then return end
 
     UpdateOptions(self)
-    AceConfigRegistry:NotifyChange(REGISTRY)
-    AceConfigDialog:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
+    AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
+    AceConfigDialog:Open(ITEM_REGISTRY, self.ItemGroup) -- Refresh the config gui panel
+    AceConfigRegistry:NotifyChange(BID_REGISTRY)
+    AceConfigDialog:Open(BID_REGISTRY, self.BidGroup) -- Refresh the config gui panel
+    AceConfigRegistry:NotifyChange(BUTTON_REGISTRY)
+    AceConfigDialog:Open(BUTTON_REGISTRY, self.ButtonGroup) -- Refresh the config gui panel
+    RegenerateRows(self)
+    self:RefreshBidList()
 end
 
 function BiddingManagerGUI:Toggle()

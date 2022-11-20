@@ -11,6 +11,7 @@ local sgsub, tsort =string.gsub, table.sort
 
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
+local colorGold = {a = 1, r = 1, g = 0.8, b = 0}
 
 CONSTANTS.HISTORY_TYPE = {
     ALL = 1,
@@ -25,15 +26,15 @@ CONSTANTS.HISTORY_TYPES_GUI = {
 }
 
 local function ST_GetInfo(row)
-    return row.cols[1].value
+    return row.cols[1+1].value
 end
 
 local function ST_GetIsLoot(row)
-    return row.cols[5].value
+    return row.cols[5+1].value
 end
 
 local function ST_GetObject(row)
-    return row.cols[6].value
+    return row.cols[6+1].value
 end
 
 
@@ -143,7 +144,19 @@ local tableStructure = {
     rows = 22,
     -- columns - structure of the ScrollingTable
     columns = {
-        {name = CLM.L["Info"],  width = 235 },
+        {name = "", width = 18, DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+            if data[realrow] then
+                local itemData = data[realrow].cols[column].value
+                local isLoot = ST_GetIsLoot(data[realrow])
+                if isLoot and itemData then
+                    local _, _, _, _, icon = GetItemInfoInstant(itemData)
+                    frame:SetNormalTexture(icon)
+                else
+                    frame:SetNormalTexture("Interface\\Icons\\INV_Misc_Head_Dragon_Bronze")
+                end
+            end
+        end)},
+        {name = CLM.L["Info"],  width = 217 },
         {name = CLM.L["Value"], width = 85, color = colorGreen,
             comparesort = UTILS.LibStCompareSortWrapper(function(a1,b1)
                 a1 = strsplit(" ", a1)
@@ -152,7 +165,6 @@ local tableStructure = {
                 b1 = sgsub(b1, "%%", "")
                 return tonumber(a1), tonumber(b1)
             end),
-            -- align = "RIGHT"
         },
         {name = CLM.L["Date"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC},
         {name = CLM.L["Player"],width = 95,
@@ -307,6 +319,7 @@ local function tableDataFeeder()
                 -- value = (value) .. " " .. CLM.L["DKP"]
             end
             local row = {cols = {
+                {value = lootData[2]},
                 {value = lootData[2]}, -- itemLink
                 {value = value},
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
@@ -329,9 +342,7 @@ local function tableDataFeeder()
         else -- raid loot
             pointList = roster:GetRaidPointHistory()
         end
-
-        local multiple = UTILS.ColorCodeText(CLM.L["Multiple"], "FFD100")
-
+        local player
         for _,history in ipairs(pointList) do
             local reason = history:Reason() or 0
             local value = tostring(history:Value())
@@ -352,13 +363,25 @@ local function tableDataFeeder()
 
             value = value .. " " .. suffix
 
+            local color
+            local profiles = history:Profiles()
+            if #profiles == 1 then
+                local currentProfile = profiles[1]
+                player = currentProfile:Name()
+                color = UTILS.GetClassColor(currentProfile:Class())
+            else
+                player = CLM.L["Multiple"]
+                color = colorGold
+            end
+
             local row = {cols = {
+                {value = ""},
                 {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
                 {value = value,
                     color = ((isEPGP and history:Spent()) and colorTurquoise)
                 },
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
-                {value = multiple},
+                {value = player, color = color},
                 {value = false},
                 {value = history}
             }}

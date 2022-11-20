@@ -31,8 +31,9 @@ function GlboalChatMessageHandlers:Initialize()
                 responseChannel = "WHISPER"
                 target = playerName
             end
-
-            if command == CLM.L["!bid"] then
+            local msbid = (command == CLM.L["!bid"])
+            local osbid = (command == CLM.L["!bidos"])
+            if msbid or osbid then
                 local value
                 if params[2] then
                     value = UTILS.Trim(params[2])
@@ -43,13 +44,13 @@ function GlboalChatMessageHandlers:Initialize()
                 end
                 local accept, reason = false, nil
                 if value == CLM.L["cancel"] then
-                    accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, nil)
+                    accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(0, CONSTANTS.BID_TYPE.CANCEL, {}))
                 elseif value == CLM.L["pass"] then
-                    accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CONSTANTS.AUCTION_COMM.BID_PASS)
+                    accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(0, CONSTANTS.BID_TYPE.PASS, {}))
                 else
                     local numericValue = tonumber(value)
                     if type(numericValue) == "number" then
-                        accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, numericValue)
+                        accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(numericValue, (osbid and CONSTANTS.BID_TYPE.OFF_SPEC or CONSTANTS.BID_TYPE.MAIN_SPEC), {}))
                     end
                 end
                 local reasonString = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or CLM.L["Invalid value provided"]

@@ -15,8 +15,8 @@ local function strsub32(s)
     return strsub(tostring(s or ""), 1, 32)
 end
 
-local function update_profile_standings(mutate, roster, targets, value, reason, timestamp, pointHistoryEntry, isGUID)
-    local alreadyApplied = {}
+local function update_profile_standings(mutate, roster, targets, value, reason, timestamp, pointHistoryEntry, isGUID, alreadyApplied)
+    alreadyApplied = alreadyApplied or {}
     local getGUID
     if isGUID then
         getGUID = (function(i) return i end)
@@ -27,40 +27,40 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
         local mainProfile = nil
         local GUID = getGUID(target)
         if not roster:IsProfileInRoster(GUID) then
-            LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
-            return
-        end
-        local targetProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-        if targetProfile and not targetProfile:IsLocked() then
-            if roster:IsProfileInRoster(GUID) and pointHistoryEntry then
-                roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
-            end
-            -- Check if we have main-alt linking
-            if targetProfile:Main() == "" then -- is main
-                if targetProfile:HasAlts() then -- has alts
-                    mainProfile = targetProfile
+            LOG:Debug("PointManager update_profile_standings(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
+        else
+            local targetProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+            if targetProfile and not targetProfile:IsLocked() then
+                if roster:IsProfileInRoster(GUID) and pointHistoryEntry then
+                    roster:AddProfilePointHistory(pointHistoryEntry, targetProfile)
                 end
-            else -- is alt
-                mainProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(targetProfile:Main())
-            end
-            -- Check if we should schedule it for alert
-            CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason, pointType = roster:GetPointType() }, timestamp, GUID)
-            -- If we have a linked case then we alter the GUID to mains guid
-            if mainProfile then
-                GUID = mainProfile:GUID()
-            end
-            if roster:IsProfileInRoster(GUID) then
-                if not alreadyApplied[GUID] then
-                    mutate(roster, GUID, value, timestamp)
-                    alreadyApplied[GUID] = true
-                    if mainProfile then
-                        -- if we have a linked case then we need to mirror the change to all alts
-                        roster:MirrorStandings(GUID, mainProfile:Alts(), true)
+                -- Check if we have main-alt linking
+                if targetProfile:Main() == "" then -- is main
+                    if targetProfile:HasAlts() then -- has alts
+                        mainProfile = targetProfile
                     end
+                else -- is alt
+                    mainProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(targetProfile:Main())
                 end
-            else
-                LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
-                return
+                -- Check if we should schedule it for alert
+                CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_POINTS, { value = value, reason = reason, pointType = roster:GetPointType() }, timestamp, GUID)
+                -- If we have a linked case then we alter the GUID to mains guid
+                if mainProfile then
+                    GUID = mainProfile:GUID()
+                end
+                if roster:IsProfileInRoster(GUID) then
+                    if not alreadyApplied[GUID] then
+                        mutate(roster, GUID, value, timestamp)
+                        alreadyApplied[GUID] = true
+                        if mainProfile then
+                            -- if we have a linked case then we need to mirror the change to all alts
+                            roster:MirrorStandings(GUID, mainProfile:Alts(), true)
+                        end
+                    end
+                else
+                    LOG:Debug("PointManager apply_mutator(): Unknown profile guid [%s] in roster [%s]", GUID, roster:UID())
+                    return
+                end
             end
         end
     end
@@ -116,14 +116,21 @@ local function apply_raid_mutator(self, entry, mutate)
         return
     end
 
-    local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, raid:Players())
-    self:AddPointHistory(roster, raid:Players(), pointHistoryEntry)
+    local players = raid:Players()
+    local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, players)
+    self:AddPointHistory(roster, players, pointHistoryEntry)
     local playersOnStandby = raid:PlayersOnStandby()
     if entry:standby() and (#playersOnStandby > 0) then
-        pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, playersOnStandby, nil, nil, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
+        local alreadyApplied = {}
+        -- Regular players
+        update_profile_standings(mutate, roster, players, entry:value(), entry:reason(), entry:time(), nil, true, alreadyApplied)
+        -- Standby players
+        local config = raid:Configuration()
+        local newValue = UTILS.round(config:Get("benchMultiplier") * entry:value(), config:Get("roundDecimals"))
+        pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, playersOnStandby, nil, newValue, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
         pointHistoryEntry.note = CONSTANTS.POINT_CHANGE_REASONS.ALL[entry:reason()] or ""
         self:AddPointHistory(roster, playersOnStandby, pointHistoryEntry)
-        update_profile_standings(mutate, roster, raid:AllPlayers(), entry:value(), entry:reason(), entry:time(), nil, true)
+        update_profile_standings(mutate, roster, playersOnStandby, newValue, entry:reason(), entry:time(), nil, true, alreadyApplied)
     else
         update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:time(), nil, true)
     end
@@ -139,6 +146,10 @@ end
 
 local function mutate_set_standings(roster, GUID, value, timestamp)
     roster:SetStandings(GUID, value)
+end
+
+local function mutate_set_spent(roster, GUID, value, timestamp)
+    roster:SetSpent(GUID, value)
 end
 
 local function mutate_decay_standings(roster, GUID, value, timestamp)
@@ -164,7 +175,11 @@ function PointManager:Initialize()
         CLM.MODELS.LEDGER.POINTS.Set,
         (function(entry)
             LOG:TraceAndCount("mutator(PointsSet)")
-            apply_mutator(entry, mutate_set_standings)
+            local mutator = mutate_set_standings
+            if entry:spent() then
+                mutator = mutate_set_spent
+            end
+            apply_mutator(entry, mutator)
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
@@ -241,7 +256,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
         entry = CLM.MODELS.LEDGER.POINTS.Modify:new(uid, targets, value, reason, note, isSpent)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
-        entry = CLM.MODELS.LEDGER.POINTS.Set:new(uid, targets, value, reason, note)
+        entry = CLM.MODELS.LEDGER.POINTS.Set:new(uid, targets, value, reason, note, isSpent)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
         entry = CLM.MODELS.LEDGER.POINTS.Decay:new(uid, targets, value, reason, note)
     end
@@ -362,14 +377,14 @@ function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     end
 end
 
-function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note)
+function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note, isSpent)
     LOG:Trace("PointManager:AddFakePointHistory()")
     if not roster then
         LOG:Debug("PointManager:AddFakePointHistory(): Missing roster")
         return
     end
 
-    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note)
+    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note, isSpent)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then

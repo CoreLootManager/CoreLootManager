@@ -10,7 +10,7 @@ local type, setmetatable = type, setmetatable
 local tonumber = tonumber
 
 local AuctionCommStartAuction = {}
-function AuctionCommStartAuction:New(typeOrObject, itemValueMode, values, itemLink, time, endtime, antiSnipe, note, increment, rosterUid)
+function AuctionCommStartAuction:New(typeOrObject, itemValueMode, values, itemLink, time, endtime, antiSnipe, note, increment, disableOS, rosterUid)
     local isCopyConstructor = (type(typeOrObject) == "table")
 
     local o = isCopyConstructor and typeOrObject or {}
@@ -32,6 +32,9 @@ function AuctionCommStartAuction:New(typeOrObject, itemValueMode, values, itemLi
     o.v = values
     o.l = itemLink
     o.n = note
+    o.c = increment
+    o.r = rosterUid
+    o.b = disableOS
 
     return o
 end
@@ -70,6 +73,10 @@ end
 
 function AuctionCommStartAuction:Increment()
     return tonumber(self.c) or 1
+end
+
+function AuctionCommStartAuction:DisableOS()
+    return self.b and true or false
 end
 
 function AuctionCommStartAuction:RosterUid()

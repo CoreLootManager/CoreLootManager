@@ -1,7 +1,7 @@
-location: ExternalLibs
+location: Libs
 sources:
   - repo: https://github.com/SamMousa/lua-eventsourcing.git
-    name: lua-eventsourcing
+    name: LibEventSourcing
     rev: v1.7.0
     type: git
     sparse_paths:
@@ -11,14 +11,6 @@ sources:
   - repo: https://github.com/ClassicLootManager/EventDispatcher.git
     name: LibEventDispatcher
     rev: v1.1.2
-    type: git
-    sparse_paths:
-      -
-    scripts:
-      -
-  - repo: https://github.com/lantisnt/LibLogger.git
-    name: LibLogger
-    rev: v1.2.1
     type: git
     sparse_paths:
       -

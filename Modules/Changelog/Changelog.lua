@@ -1,6 +1,148 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.6.0",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    { header = "Library overhaul", body = "CLM went through huge dependency and library overhaul and many of tooltip-related hacks were removed from CLM. This also means that integrations with some tooltip-modifying AddOns might require fixes from their respective authors to show up in CLM since they are not based in the CLM itself anymore." },
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    { header = "CEPGP and BastionLoot Migration", body = "/clm migrate now supports CEPGP and BastionLoot!" },
+                    { header = "Standby value multiplier", body = "You can now configure multiplier for points received by players on standby (bench)." },
+                    { header = "PR Rounding", body = "You can now configure PR rounding independently from the rest of the AddOn." },
+                    { header = "OS Bid", body = "You can now disable OS bidding support in the roster." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "EPGP Alt-Main Linking", body = "GP value during linking is now calculated properly. This is a backwards-affecting change thus if you are already using this feature, you might be required to update the GP manually." },
+                    { header = "Filtering", body = "Death Knights should be now allowed to be filtered out properly." },
+                    { header = "Item values in Dynamic mode", body = "Bows and Crossbows should now properly be calculated as ranged weapons in Dynamic item value mode." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.6",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Standby", body = "Fix for standby points not being applied if one of the players requesting standby was not in the roster. Auto-add players to roster if they have requested standby." },
+                    { header = "History", body = "If point change affects only 1 player display the name instead of Multiple. If player is missing class (which should not happen when adding characters post pre-patch), do not error out but display empty field." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.5",
+        data = {
+            {
+                name = "Locale",
+                data = {
+                    { header = "Chinese", body = "CLM now supports Chinese locale. Thanks brian#0179 for all the translations." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Item values", body = "Bows and Crossbows should now properly be calculated as ranged weapons." },
+                    { header = "Vickrey award value", body = "Vickrey should now properly calculate second value based on the type of the selected bid." },
+                    { header = "Sorting fixes", body = "Sorting by version should now work as expected." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.4",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "GUI", body = "GUI revamp. Thanks brian#0179 for contribution." },
+                    { header = "Auctioning", body = "Auctioning and upgraded item info should now work properly for tokens and Sapphiron quest item." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.3",
+        data = {
+            {
+                name = "Hotfixes",
+                data = {
+                    { header = "Open Auction", body = "Open auction hotfixes." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.2",
+        data = {
+            {
+                name = "Hotfixes",
+                data = {
+                    { header = "Open Auction", body = "Open auction hotfixes." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Chat command bidding", body = "Chat command bidding should now work." },
+                    { header = "Chat command os bid", body = "You can now do OS bid through chat command |cff4ee44!bidos|r." },
+                    { header = "Auto-update bid values", body = "Auto-update bid values should work with new UI."},
+                    { header = "Bidding UI", body = "Bidding UI no longer needs Okay button. This however results in buttons being misplaced with some ElvUI scales." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.5.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Open Auction", body = "Open Auction modes just got overhauled. You will now see list of bidders in bidding UI. Information is limited in anonymous mode. It is strongly recommended for all raiders to upgrade to this version." },
+                    { header = "Auctioning UI", body = "Auctioning UI got simplified a bit. Checking player upgrades should now be easier." },
+                    { header = "Bid posting", body = "Upgrades will now be posted together with bids." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Boss kill bonus", body = "Boss kill bonus should work now for EoE/OS/VoA. Additionaly it can be set to negative value. 0 is still ignored." },
+                    { header = "Pass in open auctions", body = "In non-ascending auctions pass won't be grayed out anymore after bidding." },
+                },
+            },
+        },
+    },
+    {
+        version = "v2.4.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "RCLC Integration", body = "RCLC Integration now displays PR in the RCLC window." },
+                    { header = "UI Scaling", body = "You can now scale UI through slider in the configuration. Bidding UI scales separately by Ctrl + Mouse Wheel." },
+                    { header = "Standings display", body = "Points in standings tooltip now are displayed in the proper order." },
+                    { header = "Attendance sorting", body = "Sorting by attendance works now as expected." },
+                    { header = "Passing", body = "You can now pass in Open Tiered and Static modes."}
+                },
+            },
+        },
+    },
+    {
         version = "v2.4.0",
         data = {
             {

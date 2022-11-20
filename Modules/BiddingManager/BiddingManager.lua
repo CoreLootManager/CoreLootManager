@@ -38,7 +38,7 @@ local INVTYPE_to_INVSLOT_map = {
 
 local function GetUpgradedItems(itemId)
     local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
-    local invslots = INVTYPE_to_INVSLOT_map[itemEquipLoc] or {}
+    local invslots = INVTYPE_to_INVSLOT_map[CLM.IndirectMap.slot[itemId] or itemEquipLoc] or {}
     local items =  {}
     for _, invslot in ipairs(invslots) do
         local inventoryItemId = GetInventoryItemID("player", invslot)
@@ -220,6 +220,7 @@ function BiddingManager:HandleStartAuction(data, sender)
     end
     self.auctionInfo = data
     self.auctioneer = sender
+    self.bids = {}
     self.auctionInProgress = true
     PlayStartSound()
     CLM.GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
@@ -282,10 +283,24 @@ function BiddingManager:HandleDistributeBid(data, sender)
         LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
         return
     end
-    if self:GetAutoUpdateBidValue() then
-        local value = (tonumber(data:Value()) or 0) + self.auctionInfo:Increment()
-        CLM.GUI.BiddingManager:UpdateCurrentBidValue(value)
+    local bid = data:Value()
+    if type(bid) == "table" then
+        bid = CLM.MODELS.BiddingCommSubmitBid:New(bid)
+    else -- old comms
+        bid = CLM.MODELS.BiddingCommSubmitBid:New(tonumber(bid) or 0, CONSTANTS.BID_TYPE.PASS, {})
     end
+
+    self.bids[data:Name()] = bid
+    -- print("<<<RB[", data:Name(), bid:Value(), bid:Type(), "]")
+    if self:GetAutoUpdateBidValue() and (bid:Type() == (CONSTANTS.BID_TYPE.MAIN_SPEC)) then
+        CLM.GUI.BiddingManager:UpdateCurrentBidValue((tonumber(bid:Value()) or 0) + self.auctionInfo:Increment())
+    else
+        CLM.GUI.BiddingManager:RefreshBidList()
+    end
+end
+
+function BiddingManager:GetBids()
+    return self.bids
 end
 
 CONSTANTS.BIDDING_COMM = {
@@ -308,13 +323,25 @@ CONSTANTS.BIDDING_COMM = {
 CONSTANTS.BID_TYPE = {
     MAIN_SPEC = 1,
     OFF_SPEC = 2,
-    -- PASS = 3,
-    -- CANCEL = 4,
+    PASS = 3,
+    CANCEL = 4,
     [CONSTANTS.SLOT_VALUE_TIER.BASE]    = CONSTANTS.SLOT_VALUE_TIER.BASE,
     [CONSTANTS.SLOT_VALUE_TIER.SMALL]   = CONSTANTS.SLOT_VALUE_TIER.SMALL,
     [CONSTANTS.SLOT_VALUE_TIER.MEDIUM]  = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
     [CONSTANTS.SLOT_VALUE_TIER.LARGE]   = CONSTANTS.SLOT_VALUE_TIER.LARGE,
     [CONSTANTS.SLOT_VALUE_TIER.MAX]     = CONSTANTS.SLOT_VALUE_TIER.MAX
+}
+
+CONSTANTS.BID_TYPE_ORDER_DSC = {
+    [CONSTANTS.SLOT_VALUE_TIER.MAX]     = 104,
+    [CONSTANTS.SLOT_VALUE_TIER.LARGE]   = 103,
+    [CONSTANTS.SLOT_VALUE_TIER.MEDIUM]  = 102,
+    [CONSTANTS.SLOT_VALUE_TIER.SMALL]   = 101,
+    [CONSTANTS.SLOT_VALUE_TIER.BASE]    = 100,
+    MAIN_SPEC                           = 4,
+    OFF_SPEC                            = 3,
+    PASS                                = 2,
+    CANCEL                              = 1,
 }
 
 CONSTANTS.BID_TYPES = UTILS.Set(CONSTANTS.BID_TYPE)

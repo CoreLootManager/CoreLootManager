@@ -16,6 +16,8 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 local EXTERNAL_AWARD_EVENT = "CLM_EXTERNAL_EVENT_ITEM_AWARDED"
 local RCLC_AWARD_EVENT = "RCMLAwardSuccess"
 
+local _, _, _, isRCLC = GetAddOnInfo("RCLootCouncil_Classic")
+
 CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
     NONE = 1,
     AWARD_FOR_FREE = 2,
@@ -234,7 +236,7 @@ local function CreateRCLCIntegration(self)
         },
         global_rclc_integration = {
             name = CLM.L["RCLC Integration"],
-            desc = CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award."],
+            desc = CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award. Requires /reload."],
             type = "toggle",
             set = function(i, v)
                 self:SetRCLCIntegration(v)
@@ -473,6 +475,20 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
     CLM.MODULES.LootManager:AwardItem(raid, winner, link, itemId, value)
 end
 
+local function RCLC_PR(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+    local value = 0
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.RemoveServer(data[realrow].name or ""))
+    if profile then
+        local raid = CLM.MODULES.RaidManager:GetRaid()
+        if raid then
+            value = raid:Roster():Priority(profile:GUID())
+        end
+    end
+
+    data[realrow].cols[column].value = value
+    frame.text:SetText(data[realrow].cols[column].value)
+end
+
 function Integration:Initialize()
     LOG:Trace("Integration:Initialize()")
     self.db = InitializeDB("global")
@@ -488,6 +504,18 @@ function Integration:Initialize()
     CLM.MODULES.EventManager:RegisterEvent(EXTERNAL_AWARD_EVENT, ExternalAwardEventHandler)
     -- RCLC award integartion
     CLM.MODULES.EventManager:RegisterMessage(RCLC_AWARD_EVENT, RCLCAwardMessageHandler)
+    if self:GetRCLCIntegration() and isRCLC and RCLootCouncil then
+        local RCVF = RCLootCouncil:GetModule("RCVotingFrame")
+        if RCVF then
+            local responseColumn = RCVF:GetColumnIndexFromName("response")
+            local sortnext = RCVF.scrollCols[responseColumn].sortnext
+            local column = {name = "PR", colName = "clmpr", width = 50, align = "CENTER", DoCellUpdate = RCLC_PR, sortnext = sortnext}
+            table.insert(RCVF.scrollCols, column)
+            local prColumn = RCVF:GetColumnIndexFromName("clmpr")
+            RCVF.scrollCols[responseColumn].sortnext = prColumn
+            RCVF:GetFrame().st:SetDisplayCols(RCVF.scrollCols)
+        end
+    end
     self.exportInProgress = false
 end
 

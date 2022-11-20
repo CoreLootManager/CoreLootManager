@@ -243,7 +243,9 @@ function UnifiedGUI:Initialize()
     end)
 
     CLM.MODULES.LedgerManager:RegisterOnRestart(function()
-        self.aceObjects.loadingBanner:Show()
+        if CLM.MODULES.LedgerManager:Length() > 0 then
+            self.aceObjects.loadingBanner:Show()
+        end
     end)
 
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"},
@@ -252,6 +254,10 @@ function UnifiedGUI:Initialize()
         for _, tab in pairs(self.tabs) do
             tab.handlers.store()
         end
+    end))
+
+    CLM.MODULES.EventManager:RegisterEvent("CLM_UI_RESIZE", (function(event, data)
+        self.aceObjects.top.frame:SetScale(data.scale)
     end))
 
     self._initialized = true
@@ -274,6 +280,7 @@ function UnifiedGUI:CreateAceGUIStructure()
     CreateTabsContent(self)
     CreateTabsWidget(self, self.aceObjects.tabularContent)
     RestoreLocation(self)
+    f.frame:SetScale(CLM.GlobalConfigs:GetUIScale())
     for _, tab in pairs(self.tabs) do
         tab.handlers.restore()
     end

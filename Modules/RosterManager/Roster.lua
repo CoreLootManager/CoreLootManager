@@ -150,7 +150,7 @@ function Roster:Priority(GUID)
     if GUID == nil then
         return 0
     else
-        return UTILS.round((self.standings[GUID] or 0) / self:GP(GUID), self.configuration._.roundDecimals)
+        return UTILS.round((self.standings[GUID] or 0) / self:GP(GUID), self.configuration._.roundPR)
     end
 end
 
@@ -408,15 +408,17 @@ function Roster:ClearItemValues(itemId)
     self.itemValues[itemId] = nil
 end
 
+
 function Roster:GetItemValues(itemId)
     local itemValues = self.itemValues[itemId]
     if itemValues == nil then
-        local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+        local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemId)
+        local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
         if self.configuration._.dynamicValue then
             local dynamicValues = self.calculator:Calculate(itemId, self.configuration._.roundDecimals)
             if dynamicValues then return dynamicValues end
         end
-        return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or itemEquipLoc)
+        return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or equipLoc)
     end
     return itemValues
 end

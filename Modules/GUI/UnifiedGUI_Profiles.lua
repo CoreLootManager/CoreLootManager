@@ -8,7 +8,6 @@ local UTILS     = CLM.UTILS
 
 local pairs, ipairs = pairs, ipairs
 
-local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
 local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 
@@ -16,20 +15,12 @@ local highlightLocked = UTILS.getHighlightMethod(colorRedTransparent, true)
 local highlightTrusted = UTILS.getHighlightMethod(colorGreenTransparent, true)
 
 local function ST_GetName(row)
-    return row.cols[1].value
+    return row.cols[2].value
 end
 
 local function ST_GetClass(row)
-    return row.cols[3].value
+    return row.cols[9].value
 end
-
--- local function ST_GetRank(row)
---     return row.cols[6].value
--- end
-
--- local function ST_GetIsLocked(row)
---     return row.cols[7].value
--- end
 
 local function ST_GetHighlight(row)
     return row.cols[8].value
@@ -179,15 +170,13 @@ local tableStructure = {
     rows = 25,
     -- columns - structure of the ScrollingTable
     columns = {
-        {name = CLM.L["Name"],  width = 85, sort = LibStub("ScrollingTable").SORT_ASC},
-        {name = CLM.L["Main"],  width = 85,
-            color = colorGreen
-        },
-        {name = CLM.L["Class"], width = 100,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate},
+        {name = CLM.L["Name"],  width = 115, sort = LibStub("ScrollingTable").SORT_ASC},
+        {name = CLM.L["Main"],  width = 115 },
         {name = CLM.L["Role"],  width = 60},
-        {name = CLM.L["Version"],  width = 60},
+        {name = CLM.L["Version"],  width = 70,
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnVersion)
+        }
     },
     -- Function to filter ScrollingTable
     filter = (function(stobject, row)
@@ -226,12 +215,8 @@ local function tableDataFeeder()
     local data = {}
     local profiles = CLM.MODULES.ProfileManager:GetProfiles()
     for _,object in pairs(profiles) do
-        local main = ""
         local isLocked = object:IsLocked()
-        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(object:Main())
-        if profile then
-            main = profile:Name()
-        end
+        local profileMain = CLM.MODULES.ProfileManager:GetProfileByGUID(object:Main())
         local name = object:Name()
         local rank = ""
         if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER, name) then
@@ -241,22 +226,31 @@ local function tableDataFeeder()
         elseif CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then
             rank = CLM.L["Assistant"]
         end
+        local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
         local highlight
         if isLocked then
             highlight = highlightLocked
         elseif rank ~= "" then
             highlight = highlightTrusted
         end
+        local classColor = UTILS.GetClassColor(profile:ClassInternal())
+        local mainColor
+        local main = ""
+        if profileMain then
+            main = profileMain:Name()
+            mainColor = UTILS.GetClassColor(profileMain:ClassInternal())
+        end
         local row = { cols = {
-            {value = name},
-            {value = main},
-            {value = UTILS.ColorCodeClass(object:Class())},
+            {value = profile:ClassInternal()},
+            {value = profile:Name(), color = classColor},
+            {value = main, color = mainColor},
             {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
             {value = object:VersionString()},
             -- hidden
             {value = rank},
             {value = isLocked},
-            {value = highlight}
+            {value = highlight},
+            {value = object:Class()}
         },
         DoCellUpdate = highlight
         }

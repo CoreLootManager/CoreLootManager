@@ -19,39 +19,39 @@ local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local whoami = UTILS.whoami()
 
 local function ST_GetName(row)
-    return row.cols[1].value
+    return row.cols[2].value
 end
 
 local function ST_GetClass(row)
-    return row.cols[4].value
+    return row.cols[15].value
 end
 
 local function ST_GetWeeklyGains(row)
-    return row.cols[6].value
-end
-
-local function ST_GetWeeklyCap(row)
     return row.cols[7].value
 end
 
-local function ST_GetPointInfo(row)
+local function ST_GetWeeklyCap(row)
     return row.cols[8].value
 end
 
-local function ST_GetProfileLoot(row)
+local function ST_GetPointInfo(row)
     return row.cols[9].value
 end
 
-local function ST_GetProfilePoints(row)
+local function ST_GetProfileLoot(row)
     return row.cols[10].value
 end
 
-local function ST_GetIsEPGP(row)
+local function ST_GetProfilePoints(row)
     return row.cols[11].value
 end
 
-local function ST_GetEP(row)
+local function ST_GetIsEPGP(row)
     return row.cols[12].value
+end
+
+local function ST_GetEP(row)
+    return row.cols[4].value
 end
 
 local function ST_GetIsLocked(row)
@@ -63,7 +63,7 @@ local function ST_GetHighlight(row)
 end
 
 local function ST_GetGP(row)
-    return row.cols[15].value
+    return row.cols[5].value
 end
 
 local highlightPlayer = UTILS.getHighlightMethod(colorBlueTransparent, true)
@@ -351,26 +351,24 @@ local function verticalOptionsFeeder()
 end
 
 local columnsDKP = {
-    {   name = CLM.L["Name"],   width = 85 },
-    {   name = "", width = 60 },
-    {   name = CLM.L["Points"], width = 85, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {   name = CLM.L["Class"],  width = 100,
-        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-    },
+    {   name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
+    {   name = CLM.L["Name"],   width = 107 },
+    {   name = CLM.L["DKP"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = colorGreen },
+    {   name = CLM.L["Spent"], width = 65 },
+    {   name = CLM.L["Received"], width = 65 },
     {   name = CLM.L["Att. [%]"], width = 60,
-        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
 }
 
 local columnsEPGP = {
-    {   name = CLM.L["Name"], width = 85 },
-    {   name = CLM.L["EP/GP"], width = 80 },
-    {   name = CLM.L["PR"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = {r = 0.0, g = 0.93, b = 0.0, a = 1.0} },
-    {   name = CLM.L["Class"],  width = 100,
-        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-    },
+    {   name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
+    {   name = CLM.L["Name"], width = 107 },
+    {   name = CLM.L["PR"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = colorGreen },
+    {   name = CLM.L["EP"], width = 65 },
+    {   name = CLM.L["GP"], width = 65 },
     {   name = CLM.L["Att. [%]"], width = 60,
-        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnNumber)
     }
 }
 
@@ -452,8 +450,13 @@ local tableStructure = {
             tooltip:AddLine("\n")
             if #pointList > 0 then
                 tooltip:AddDoubleLine(UTILS.ColorCodeText(CLM.L["Latest points"], "44ee44"), isEPGP and "" or CLM.L["DKP"])
-                for i, point in ipairs(pointList) do -- so I do have 2 different orders. Why tho
-                    if i > 5 then break end
+                local limit = #pointList - 4 -- inclusive (- 5 + 1)
+                if limit < 1 then
+                    limit = 1
+                end
+                for i=#pointList, limit, -1 do
+                    local point = pointList[i]
+
                     local reason = point:Reason() or 0
                     local value = tostring(point:Value())
 
@@ -510,11 +513,15 @@ local function tableDataFeeder()
         local attendance = UTILS.round(roster:GetAttendance(GUID) or 0, 0)
         local pointInfo = roster:GetPointInfoForPlayer(GUID)
         local numColumnValue
-        local epgp
+        local primary
+        local secondary
         if isEPGP then
             numColumnValue = roster:Priority(GUID)
-            epgp = tostring(value) .. "/" .. tostring(roster:GP(GUID))
+            primary = value
+            secondary = roster:GP(GUID)
         else
+            primary = pointInfo.spent
+            secondary = pointInfo.received
             numColumnValue = value
         end
         if profile then
@@ -524,24 +531,24 @@ local function tableDataFeeder()
             elseif profile:Name() == whoami then
                 highlight = highlightPlayer
             end
+            local classColor = UTILS.GetClassColor(profile:ClassInternal())
             local row = { cols = {
-                {value = profile:Name()},
-                {value = epgp},
-                {value = numColumnValue, color = (value > 0 and colorGreen or colorRed)},
-                {value = UTILS.ColorCodeClass(profile:Class())},
-                -- {value = profile:SpecString()},
-                {value = UTILS.ColorCodeByPercentage(attendance)},
-                -- not displayed
-                {value = roster:GetCurrentGainsForPlayer(GUID)},
-                {value = weeklyCap},
-                {value = pointInfo},
-                {value = roster:GetProfileLootByGUID(GUID)},
-                {value = roster:GetProfilePointHistoryByGUID(GUID)},
-                {value = isEPGP},
-                {value = value},
-                {value = profile:IsLocked()},
-                {value = highlight},
-                {value = roster:GP(GUID)}
+        --[[1]]  {value = profile:ClassInternal()},
+        --[[2]]  {value = profile:Name(), color = classColor},
+        --[[3]]  {value = numColumnValue, color = (value > 0 and colorGreen or colorRed)},
+        --[[4]]  {value = primary},
+        --[[5]]  {value = secondary},
+        --[[6]]  {value = UTILS.ColorCodeByPercentage(attendance)},
+            -- not displayed
+        --[[7]]  {value = roster:GetCurrentGainsForPlayer(GUID)},                            -- 7
+        --[[8]]  {value = weeklyCap},
+        --[[9]]  {value = pointInfo},
+        --[[10]] {value = roster:GetProfileLootByGUID(GUID)},
+        --[[11]] {value = roster:GetProfilePointHistoryByGUID(GUID)},
+        --[[12]] {value = isEPGP},
+        --[[13]] {value = profile:IsLocked()},
+        --[[14]] {value = highlight},
+        --[[15]] {value = profile:Class()}
             },
             DoCellUpdate = highlight
             }
