@@ -842,6 +842,18 @@ function UTILS.WorkaroundEquipLoc(class, subclass)
 end
 
 
+function UTILS.assertTypeOf(object, objectType)
+    if not typeof(object, objectType) then
+        error("Unexpected object type", 2)
+    end
+end
+
+-- function UTILS.assertType(object, objectType)
+--     if type(object) ~= objectType then
+--         error("Unexpected object type", 2)
+--     end
+-- end
+
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
     [1] = ColorCodeText(CLM.L["Common"], "ffffff"),

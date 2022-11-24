@@ -19,22 +19,83 @@ local AUCTION_COMM_PREFIX = "Auction2"
 local EVENT_START_AUCTION = "CLM_AUCTION_START"
 local EVENT_END_AUCTION = "CLM_AUCTION_END"
 
-local AuctionManager = {}
+local AuctionInfo = CLM.MODELS.AuctionInfo
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:Personal('auction', {
-        autoAward = true,
-        autoTrade = true
+        autoAssign = true,
+        autoTrade = true,
+        fillFromCorpse = true,
+        fillFromCorpseMLOnly = true,
+        fillFromLoot = true,
+        fillFromLootGLOnly = true,
+        lootThreshold = 4,
     })
 end
 
+-- CONFIGURATION
+
+local function SetAutoAssign(self, value)
+    self.db.autoAssign = value and true or false
+end
+
+local function GetAutoAssign(self)
+    return self.db.autoAssign
+end
+
+local function SetAutoTrade(self, value)
+    self.db.autoTrade = value and true or false
+end
+
+local function GetAutoTrade(self)
+    return self.db.autoTrade
+end
+
+local function SetFillAuctionListFromCorpse(self, value)
+    self.db.fillFromCorpse = value and true or false
+end
+
+local function GetFillAuctionListFromCorpse(self)
+    return self.db.fillFromCorpse
+end
+
+local function SetFillAuctionListFromCorpseMLOnly(self, value)
+    self.db.fillFromCorpseMLOnly = value and true or false
+end
+
+local function GetFillAuctionListFromCorpseMLOnly(self)
+    return self.db.fillFromCorpseMLOnly
+end
+
+local function SetFillAuctionListFromLoot(self, value)
+    self.db.fillFromLoot = value and true or false
+end
+
+local function GetFillAuctionListFromLoot(self)
+    return self.db.fillFromLoot
+end
+
+local function SetFillAuctionListFromLootGLOnly(self, value)
+    self.db.fillFromLootGLOnly = value and true or false
+end
+
+local function GetFillAuctionListFromLootGLOnly(self)
+    return self.db.fillFromLootGLOnly
+end
+
+local function SetFilledLootRarity(self, valuee)
+    self.db.lootThreshold = tonumber(value)
+end
+
+local function GetFilledLootRarity(self)
+    return self.db.lootThreshold or 4
+end
+
+local AuctionManager = {} -- Singleton
 function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
 
     InitializeDB(self)
-
-    self:ClearBids()
-    self.auctionInProgress = false
 
     CLM.MODULES.Comms:Register(AUCTION_COMM_PREFIX,
     (function(rawMessage, distribution, sender)
@@ -73,11 +134,11 @@ function AuctionManager:Initialize()
             order = 31
         },
         auctioning_enable_auto_award_from_corpse = {
-            name = CLM.L["Auto-award from corpse"],
-            desc = CLM.L["Enable loot auto-award (Master Looter UI) from corpse when item is awarded"],
+            name = CLM.L["Auto-assign from corpse"],
+            desc = CLM.L["Enable loot auto-assign (Master Looter UI) from corpse when item is awarded"],
             type = "toggle",
-            set = function(i, v) self:SetAutoAward(v) end,
-            get = function(i) return self:GetAutoAward() end,
+            set = function(i, v) SetAutoAssign(self, v) end,
+            get = function(i) return GetAutoAssign(self) end,
             width = "double",
             order = 32
         },
@@ -85,25 +146,82 @@ function AuctionManager:Initialize()
             name = CLM.L["Auto-trade after award"],
             desc = CLM.L["Enables auto-trade awarded loot after auctioning from bag"],
             type = "toggle",
-            set = function(i, v) self:SetAutoTrade(v) end,
-            get = function(i) return self:GetAutoTrade() end,
+            set = function(i, v) SetAutoTrade(self, v) end,
+            get = function(i) return GetAutoTrade(self) end,
             -- width = "double",
             order = 33
         },
+        auctioning_list_header = {
+            type = "header",
+            name = CLM.L["Auctioning - List Filling"],
+            order = 33.5
+        },
+        auction_fill_from_corpse = {
+            name = CLM.L["Fill auction list from corpse"],
+            desc = CLM.L["Fill auction list with items from corpse. Will happen only if you open the corpse loot window."],
+            type = "toggle",
+            set = function(i, v) SetFillAuctionListFromCorpse(self, v) end,
+            get = function(i) return GetFillAuctionListFromCorpse(self) end,
+            width = "double",
+            order = 34,
+        },
+        auction_fill_from_corpse_ml_only = {
+            name = CLM.L["Master Loot Only"],
+            desc = CLM.L["Fill from corpse only if you are the Loot Master."],
+            type = "toggle",
+            set = function(i, v) SetFillAuctionListFromCorpseMLOnly(self, v) end,
+            get = function(i) return GetFillAuctionListFromCorpseMLOnly(self) end,
+            -- width = "double",
+            order = 35,
+        },
+        auction_fill_from_loot = {
+            name = CLM.L["Fill auction list with looted items"],
+            desc = CLM.L["Fill auction list with looted items. This will automatically add all items you have received."],
+            type = "toggle",
+            set = function(i, v) SetFillAuctionListFromLoot(self, v) end,
+            get = function(i) return GetFillAuctionListFromLoot(self) end,
+            width = "double",
+            order = 36,
+        },
+        auction_fill_from_loot_gl_only = {
+            name = CLM.L["Group Loot Only"],
+            desc = CLM.L["Fill from loot only if you are using Group Loot."],
+            type = "toggle",
+            set = function(i, v) SetFillAuctionListFromLootGLOnly(self, v) end,
+            get = function(i) return GetFillAuctionListFromLootGLOnly(self) end,
+            -- width = "double",
+            order = 37,
+        },
+        auction_fill_threshold = {
+            name = CLM.L["Loot rarity"],
+            desc = CLM.L["Select loot rarity threshold to used to fill the auction list."],
+            type = "select",
+            values = CONSTANTS.ITEM_QUALITY,
+            set = function(i, v) SetFilledLootRarity(self, v) end,
+            get = function(i) return GetFilledLootRarity(self) end,
+            order = 38
+        },
+        global_auction_spacer = {
+            name = "",
+            desc = "",
+            type = "description",
+            width = 1,
+            order =  38.5
+        },
         global_auction_combination = {
             name = CLM.L["Modifier combination"],
-            desc = CLM.L["Select modifier combination for auctioning from bags and corpse."],
+            desc = CLM.L["Select modifier combination for filling auction from bags and corpse."],
             type = "select",
             values = CONSTANTS.MODIFIER_COMBINATIONS_GUI,
             sorting = CONSTANTS.MODIFIER_COMBINATIONS_SORTED,
             set = function(i, v) CLM.GlobalConfigs:SetModifierCombination(v) end,
             get = function(i) return CLM.GlobalConfigs:GetModifierCombination() end,
-            order = 31.5
+            order = 39.5
         },
         auctioning_chat_commands_header = {
             type = "header",
             name = CLM.L["Auctioning - Chat Commands"],
-            order = 34
+            order = 40
         },
         auctioning_chat_commands = {
             name = CLM.L["Enable chat commands"],
@@ -112,7 +230,7 @@ function AuctionManager:Initialize()
             set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
             width = "double",
-            order = 35
+            order = 41
         },
         auctioning_suppress_incoming = {
             name = CLM.L["Suppress incoming whispers"],
@@ -121,7 +239,7 @@ function AuctionManager:Initialize()
             set = function(i, v) CLM.GlobalConfigs:SetSuppressIncomingChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetSuppressIncomingChatCommands() end,
             width = "double",
-            order = 36
+            order = 42
         },
         auctioning_suppress_outgoing = {
             name = CLM.L["Suppress outgoing whispers"],
@@ -130,31 +248,15 @@ function AuctionManager:Initialize()
             set = function(i, v) CLM.GlobalConfigs:SetSuppressOutgoingChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() end,
             width = "double",
-            order = 37
+            order = 43
         },
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 
-
-
-    self._initialized = true
+    -- self.auction = AuctionInfo:New() -- TODO configuration
 end
 
-function AuctionManager:SetAutoAward(value)
-    self.db.autoAward = value and true or false
-end
-
-function AuctionManager:GetAutoAward()
-    return self.db.autoAward
-end
-
-function AuctionManager:SetAutoTrade(value)
-    self.db.autoTrade = value and true or false
-end
-
-function AuctionManager:GetAutoTrade()
-    return self.db.autoTrade
-end
+-- LOCAL AUCTION MANAGEMENT
 
 -- We pass configuration separately as it can be overriden on per-auction basis
 function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, raid, configuration)

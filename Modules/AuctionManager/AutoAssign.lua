@@ -23,7 +23,7 @@ local function ScanTooltip(self)
     local query = sgsub(BIND_TRADE_TIME_REMAINING, "%%s", ".*")
     local lineWithTimer
     for i = 1, self.fakeTooltip:NumLines() do
-        local line = _G["CLMAutoAwardBagItemCheckerFakeTooltipTextLeft" .. i]
+        local line = _G["CLMAutoAssignBagItemCheckerFakeTooltipTextLeft" .. i]
         if line then
             line = line:GetText() or ""
             if line == ITEM_SOULBOUND then
@@ -42,7 +42,7 @@ end
 
 local BagItemChecker = {}
 function BagItemChecker:Initialize()
-    self.fakeTooltip = CreateFrame("GameTooltip", "CLMAutoAwardBagItemCheckerFakeTooltip", UIParent, "GameTooltipTemplate")
+    self.fakeTooltip = CreateFrame("GameTooltip", "CLMAutoAssignBagItemCheckerFakeTooltip", UIParent, "GameTooltipTemplate")
     self.fakeTooltip:SetOwner(UIParent, "ANCHOR_NONE");
     self:Clear()
 end
@@ -182,9 +182,9 @@ local function HandleTradeSuccess(self)
 end
 
 
-local AutoAward = {}
-function AutoAward:Initialize()
-    LOG:Trace("AutoAward:Initialize()")
+local AutoAssign = {}
+function AutoAssign:Initialize()
+    LOG:Trace("AutoAssign:Initialize()")
     self.tracking = {}
     Clear(self)
 
@@ -214,25 +214,23 @@ function AutoAward:Initialize()
         self.lastTradeTarget = nil
     end))
     CLM.MODULES.EventManager:RegisterEvent(CLM.CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, function(_, data)
-        AutoAward:Remove(data.id, data.name)
+        AutoAssign:Remove(data.id, data.name)
     end)
 end
 
-local autoAwardIgnores = UTILS.Set({
+local autoAssignIgnores = UTILS.Set({
     22726, -- Splinter of Atiesh
     30183, -- Nether Vortex
     29434, -- Badge of Justice
     23572, -- Primal Nether
-    40752, -- Emblem of Heroism
-    40753, -- Emblem of Valor
     45038, -- Fragment of Val'anyr
 })
-function AutoAward:IsIgnored(itemId)
-    return autoAwardIgnores[itemId]
+function AutoAssign:IsIgnored(itemId)
+    return autoAssignIgnores[itemId]
 end
 
-function AutoAward:GiveMasterLooterItem(itemId, player)
-    LOG:Trace("AutoAward:GiveMasterLooterItem()")
+function AutoAssign:GiveMasterLooterItem(itemId, player)
+    LOG:Trace("AutoAssign:GiveMasterLooterItem()")
     if self:IsIgnored(itemId) then return end
     for itemIndex = 1, GetNumLootItems() do
         local _, _, _, _, _, locked = GetLootSlotInfo(itemIndex)
@@ -250,7 +248,7 @@ function AutoAward:GiveMasterLooterItem(itemId, player)
     end
 end
 
-function AutoAward:Track(itemId, player)
+function AutoAssign:Track(itemId, player)
     if self:IsIgnored(itemId) then return end
     -- Lazy start tracking player
     if not self.tracking[player] then
@@ -260,7 +258,7 @@ function AutoAward:Track(itemId, player)
     tinsert(self.tracking[player], itemId)
 end
 
-function AutoAward:Remove(itemId, player)
+function AutoAssign:Remove(itemId, player)
     if self:IsIgnored(itemId) then return end
     -- Sanity check: If we don't track player then return
     if not self.tracking[player] then
@@ -275,4 +273,4 @@ function AutoAward:Remove(itemId, player)
     end
 end
 
-CLM.MODULES.AutoAward = AutoAward
+CLM.MODULES.AutoAssign = AutoAssign

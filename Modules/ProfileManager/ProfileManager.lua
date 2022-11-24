@@ -283,6 +283,7 @@ end
 
 function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
+    LOG:Debug("MarkAsAltByNames(): Linking %s to %s", tostring(alt), tostring(main))
     local altProfile = self:GetProfileByName(alt)
     if not UTILS.typeof(altProfile, CLM.MODELS.Profile) then
         LOG:Error("MarkAsAltByNames(): Invalid alt")
@@ -293,17 +294,33 @@ function ProfileManager:MarkAsAltByNames(alt, main)
     if not UTILS.typeof(mainProfile, CLM.MODELS.Profile) then
         if altProfile:Main() ~= "" then
             CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), nil), true)
+            LOG:Debug("MarkAsAltByNames(): Main does not exist")
+        else
+            LOG:Debug("MarkAsAltByNames(): Unlink")
         end
     else -- Link
         -- Do not allow alt chaining if main is alt
-        if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), CLM.MODELS.Profile) then return end
+        if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), CLM.MODELS.Profile) then
+            LOG:Debug("MarkAsAltByNames(): Alt chaining: Main is alt")
+            return
+        end
         -- Do not allow alt chaining if alt has alts
-        if altProfile:HasAlts() then return end
+        if altProfile:HasAlts() then
+            LOG:Debug("MarkAsAltByNames(): Alt chaining: Alt has alt(s)")
+            return
+        end
         -- Don't allow self setting
-        if altProfile:GUID() == mainProfile:GUID() then return end
+        if altProfile:GUID() == mainProfile:GUID() then
+            LOG:Debug("MarkAsAltByNames(): Alt chaining: Self set")
+            return
+        end
         -- Don't allow re-setting
-        if altProfile:Main() == mainProfile:GUID() then return end
+        if altProfile:Main() == mainProfile:GUID() then
+            LOG:Debug("MarkAsAltByNames(): Alt chaining: Already exist")
+            return
+        end
         CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
+        LOG:Debug("MarkAsAltByNames(): Link success %s alt of %s", altProfile:Name(), mainProfile:Name())
     end
 end
 

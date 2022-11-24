@@ -107,7 +107,7 @@ Modules\LootManager\LootManager.lua
 Modules\RaidManager\RaidManager.lua
 Modules\StandbyStagingManager\StandbyStagingManager.lua
 Modules\AuctionManager\AuctionManager.lua
-Modules\AuctionManager\AutoAward.lua
+Modules\AuctionManager\AutoAssign.lua
 Modules\BiddingManager\BiddingManager.lua
 Modules\ProfileInfoManager\ProfileInfoManager.lua
 Modules\SandboxManager\SandboxManager.lua
