@@ -23,6 +23,7 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local ITEM_REGISTRY = "clm_auction_manager_multigui_item_options"
 local AUCTION_REGISTRY = "clm_auction_manager_multigui_auction_options"
+local AWARD_REGISTRY = "clm_auction_manager_multigui_award_options"
 
 local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
 
@@ -243,9 +244,10 @@ local function GenerateItemOptions(self)
         }
     }
 
-    -- TODO: Names and conditional display
+    -- TODO: Names of buttons instead of general
     local order = 4
-    for _,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.BASE, CONSTANTS.SLOT_VALUE_TIER.MAX}) do
+    local buttonOrder = {order, order + 4}
+    for i,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.BASE, CONSTANTS.SLOT_VALUE_TIER.MAX}) do
          options["value_"..key] = {
             name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
             type = "input",
@@ -254,11 +256,11 @@ local function GenerateItemOptions(self)
             disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
             pattern = CONSTANTS.REGEXP_FLOAT,
             width = 0.75,
-            order = order
+            order = buttonOrder[i]
         }
-        order = order + 1
     end
-
+    order = order + 1
+    -- TODO: Display below only if using tiered mode
     for _,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.SMALL, CONSTANTS.SLOT_VALUE_TIER.MEDIUM, CONSTANTS.SLOT_VALUE_TIER.LARGE,}) do
         options["value_"..key] = {
            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
@@ -299,9 +301,9 @@ end
 
 local function CreateLootList(self)
     local ItemList = AceGUI:Create("CLMLibScrollingTable")
-    ItemList:SetHeaderless()
     self.ItemList = ItemList
-    ItemList:SetDisplayRows(15, 32)
+    ItemList:SetHeaderless()
+    ItemList:SetDisplayRows(16, 32)
     ItemList:SetDisplayCols({
         { name = "",  width = 32, DoCellUpdate = UTILS.LibStItemCellUpdate }, -- Icon
         -- { name = "", width = 255 }
@@ -313,6 +315,184 @@ local function CreateLootList(self)
         end
     })
     return ItemList
+end
+
+local function GenerateAwardOptions(self)
+    local options = {
+        clear = {
+            name = CLM.L["Clear all"],
+            desc = CLM.L["Remove all items from auction list."],
+            type = "execute",
+            func = (function() end),
+            confirm = true,
+            width = 0.6,
+            order = 0,
+        },
+        clear_toggle = {
+            name = CLM.L["Remove on award"],
+            desc = CLM.L["Remove item from auction list after it's awarded."],
+            type = "toggle",
+            get = (function() end),
+            set = (function() end),
+            width = 0.9,
+            order = 1,
+        },
+        -- award_offset = {
+        --     name = "",
+        --     desc = "",
+        --     type = "description",
+        --     order = 0,
+        --     width = 1.1
+        -- },
+        -- award_label = {
+        --     name = CLM.L["Award:"],
+        --     fontSize = "medium",
+        --     type = "description",
+        --     width = 0.4,
+        --     order = 2
+        -- },
+        award_multiplier = {
+            name = CLM.L["Multiplier"],
+            type = "input",
+            set = (function(i,v)  end),
+            get = (function(i) return tostring(0) end),
+            width = 0.5,
+            order = 3
+        },
+        award_value = {
+            name = CLM.L["Value"],
+            type = "input",
+            set = (function(i,v) self:setInputAwardValue(v) end),
+            get = (function(i) return tostring(self.awardValue) end),
+            width = 0.5,
+            order = 4
+        },
+        award = {
+            name = CLM.L["Award"],
+            type = "execute",
+            func = (function()
+                local awarded = CLM.MODULES.AuctionManager:Award(self.itemLink, self.itemId, self.awardValue, self.awardPlayer)
+                if awarded and not CLM.MODULES.AutoAward:IsIgnored(self.itemId) then
+                    if CLM.MODULES.AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
+                        CLM.MODULES.AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
+                    elseif CLM.MODULES.AuctionManager:GetAutoTrade() then
+                        CLM.MODULES.AutoAward:Track(self.itemId, self.awardPlayer)
+                    end
+                end
+                self.itemLink = nil
+                self.itemId = 0
+                self.awardValue = 0
+                self.awardPlayer = ""
+                self.st:ClearSelection()
+                self:Refresh()
+            end),
+            confirm = (function()
+                return sformat(
+                    CLM.L["Are you sure, you want to award %s to %s for %s DKP?"],
+                    self.itemLink,
+                    UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
+                    tostring(self.awardValue)
+                )
+            end),
+            width = 0.5,
+            order = 5,
+            disabled = (function() return (not (self.itemLink or false)) or CLM.MODULES.AuctionManager:IsAuctionInProgress() end)
+        }
+    }
+    return options
+end
+
+local awardOptions = {
+    type = "group",
+    args = {}
+}
+
+local function UpdateAwardOptions(self)
+    awardOptions.args = GenerateAwardOptions(self)
+end
+
+local function CreateAwardOptions(self, width)
+    local AwardOptionsGroup = AceGUI:Create("SimpleGroup")
+    AwardOptionsGroup:SetLayout("Flow")
+    AwardOptionsGroup:SetWidth(width - 5)
+    self.AwardOptionsGroup = AwardOptionsGroup
+    UpdateAwardOptions(self)
+    AceConfigRegistry:RegisterOptionsTable(AWARD_REGISTRY, awardOptions)
+    AceConfigDialog:Open(AWARD_REGISTRY, AwardOptionsGroup)
+
+    return AwardOptionsGroup
+end
+
+local function CreateBidList(self, width)
+    local BidList = AceGUI:Create("CLMLibScrollingTable")
+    self.BidList = BidList
+    BidList:SetDisplayRows(12, 18)
+
+    local totalWidth = width - 37
+    local cols = {
+        { name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
+        {name = CLM.L["Name"],  width = 100,
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        },
+        {name = CLM.L["Bid"],   width = 80, color = colorGreen,
+            sort = ScrollingTable.SORT_DSC,
+            sortnext = 4,
+            align = "CENTER"
+        },
+        {name = CLM.L["Current"],  width = 80, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
+            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
+            sortnext = 5,
+            align = "CENTER"
+        },
+        {name = CLM.L["Roll"],  width = 40, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
+            align = "CENTER"
+        },
+        {name = "Prio", width = 30},
+        {name = "", width = 18,
+            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                local item = data[realrow].cols[5]
+                local item = { value = math.random(2500,45000)}
+                if item then
+                    local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
+                    if icon then
+                        frame:SetNormalTexture(icon)
+                    end
+                end
+            end)
+            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
+        },
+        {name = "", width = 18,
+            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                local item = data[realrow].cols[6]
+                local item = { value = math.random(2500,45000)}
+                if item then
+                    local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
+                    if icon then
+                        frame:SetNormalTexture(icon)
+                    end
+                end
+            end)
+        -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
+        },
+    }
+    local currentWidth = 0
+    for _, c in ipairs(cols) do
+        currentWidth = currentWidth + c.width
+    end
+    local expand = UTILS.round(((totalWidth-currentWidth)/(#cols-3)))
+    for i, _ in ipairs(cols) do
+        if cols[i].name ~= "" then
+            cols[i].width = cols[i].width + expand
+        end
+    end
+    BidList:SetDisplayCols(cols)
+    BidList:RegisterEvents({
+        OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UTILS.LibStSingleSelectClickHandler(table, --[[UnifiedGUI_Raids.RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            return true
+        end
+    })
+    return BidList
 end
 
 local function GenerateAuctionOptions(self)
@@ -369,45 +549,6 @@ local function GenerateAuctionOptions(self)
             type = "header",
             width = "full",
             order = 10
-        },
-        award_value = {
-            name = CLM.L["Award value"],
-            type = "input",
-            set = (function(i,v) self:setInputAwardValue(v) end),
-            get = (function(i) return tostring(self.awardValue) end),
-            width = 0.5,
-            order = 11
-        },
-        award = {
-            name = CLM.L["Award"],
-            type = "execute",
-            func = (function()
-                local awarded = CLM.MODULES.AuctionManager:Award(self.itemLink, self.itemId, self.awardValue, self.awardPlayer)
-                if awarded and not CLM.MODULES.AutoAward:IsIgnored(self.itemId) then
-                    if CLM.MODULES.AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
-                        CLM.MODULES.AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
-                    elseif CLM.MODULES.AuctionManager:GetAutoTrade() then
-                        CLM.MODULES.AutoAward:Track(self.itemId, self.awardPlayer)
-                    end
-                end
-                self.itemLink = nil
-                self.itemId = 0
-                self.awardValue = 0
-                self.awardPlayer = ""
-                self.st:ClearSelection()
-                self:Refresh()
-            end),
-            confirm = (function()
-                return sformat(
-                    CLM.L["Are you sure, you want to award %s to %s for %s DKP?"],
-                    self.itemLink,
-                    UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
-                    tostring(self.awardValue)
-                )
-            end),
-            width = 0.5,
-            order = 12,
-            disabled = (function() return (not (self.itemLink or false)) or CLM.MODULES.AuctionManager:IsAuctionInProgress() end)
         },
         bid_stats_info = {
             name = "Info",
@@ -519,80 +660,6 @@ local function CreateAuctionOptions(self, width)
     return AuctionOptionsGroup
 end
 
-local function CreateBidList(self, width)
-    local BidList = AceGUI:Create("CLMLibScrollingTable")
-    self.BidList = BidList
-    BidList:SetDisplayRows(12, 18)
-
-    local totalWidth = width - 37
-    local cols = {
-        { name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
-        {name = CLM.L["Name"],  width = 100,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        },
-        {name = CLM.L["Bid"],   width = 80, color = colorGreen,
-            sort = ScrollingTable.SORT_DSC,
-            sortnext = 4,
-            align = "CENTER"
-        },
-        {name = CLM.L["Current"],  width = 80, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
-            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
-            sortnext = 5,
-            align = "CENTER"
-        },
-        {name = CLM.L["Roll"],  width = 40, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
-            align = "CENTER"
-        },
-        {name = "Prio", width = 30},
-        {name = "", width = 18,
-            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                local item = data[realrow].cols[5]
-                local item = { value = math.random(2500,45000)}
-                if item then
-                    local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
-                    if icon then
-                        frame:SetNormalTexture(icon)
-                    end
-                end
-            end)
-            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
-        },
-        {name = "", width = 18,
-            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                local item = data[realrow].cols[6]
-                local item = { value = math.random(2500,45000)}
-                if item then
-                    local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
-                    if icon then
-                        frame:SetNormalTexture(icon)
-                    end
-                end
-            end)
-        -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
-        },
-    }
-    local currentWidth = 0
-    for _, c in ipairs(cols) do
-        currentWidth = currentWidth + c.width
-    end
-    local expand = UTILS.round(((totalWidth-currentWidth)/(#cols-3)))
-    for i, _ in ipairs(cols) do
-        if cols[i].name ~= "" then
-            cols[i].width = cols[i].width + expand
-        end
-    end
-    BidList:SetDisplayCols(cols)
-    BidList:RegisterEvents({
-        OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            UTILS.LibStSingleSelectClickHandler(table, --[[UnifiedGUI_Raids.RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            return true
-        end
-    })
-    return BidList
-end
-
-
-
 local function Create(self)
     LOG:Trace("AuctionManagerGUI:Create()")
     -- Main Frame
@@ -600,7 +667,7 @@ local function Create(self)
     f:SetTitle(CLM.L["Auctioning"])
     f:SetLayout("table")
     f:EnableResize(false)
-    f:SetHeight(560)
+    f:SetHeight(570)
     f:SetWidth(BASE_WIDTH)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Auctioning_MultiGUI")
@@ -624,6 +691,7 @@ local function Create(self)
     DataGroup:AddChild(CreateItemOptions(self, dataWidth))
     DataGroup:AddChild(CreateAuctionOptions(self, dataWidth))
     DataGroup:AddChild(CreateBidList(self, dataWidth))
+    DataGroup:AddChild(CreateAwardOptions(self, dataWidth))
 
     f:AddChild(ItemList)
     f:AddChild(DataGroup)
@@ -643,8 +711,6 @@ function AuctionManagerGUI:Initialize()
     InitializeDB(self)
     -- Initialize variables
     self.hookedSlots = { wow = {}, elv =  {}}
-    -- self.values = {}
-    -- self.tooltips = {}
     -- Create GUIs
     Create(self)
     -- Events

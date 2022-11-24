@@ -2,7 +2,7 @@
 LibScrollingTable Widget
 Wraps ScrollingTable provided by LibScrollingTable in AceGUI widget
 -------------------------------------------------------------------------------]]
-local Type, Version ="CLMLibScrollingTable", 1
+local Type, Version ="CLMLibScrollingTable", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local ScrollingTable = LibStub("ScrollingTable")
@@ -50,12 +50,14 @@ local STMethodsToExposeWithResize = {
 local function Resize(self)
     self:SetWidth(self.st.frame:GetWidth())
     -- self.st.rowHeight + 8 comes from the lib implementation of header frame
-    self:SetHeight(self.st.frame:GetHeight() + self.st.rowHeight + 8)
+    -- self:SetHeight(self.st.frame:GetHeight() + self.st.rowHeight + 8)
+    self:SetHeight(self.st.frame:GetHeight() + self.st.rowHeight)
 end
 
 local function SetHeaderless(self)
     self:SetWidth(self.st.frame:GetWidth())
-    self:SetHeight(self.st.frame:GetHeight() - (self.st.rowHeight + 8))
+    self:SetHeight(self.st.frame:GetHeight())
+    self.st.frame:SetPoint("TOPLEFT", self.frame , "TOPLEFT", 0, 0)
 end
 
 --[[-----------------------------------------------------------------------------
@@ -111,7 +113,14 @@ Constructor
 local function Constructor()
     local frame = CreateFrame("Frame", nil, UIParent)
     -- local st = ScrollingTable:CreateST({{name ="A", width = 1}}, 25, 18, nil, frame, true)
-    local st = ScrollingTable:CreateST({{name ="A", width = 1}}, 0, 18, nil, frame, true)
+    local st = ScrollingTable:CreateST({{name = "A", width = 1}}, 0, 18, nil, frame, true)
+    st.frame:SetPoint("TOPLEFT", frame , "TOPLEFT", 0, -18)
+    -- Override  Set height to ignore the  odd bottom 10px padding
+    -- st.SetHeight = function(self)
+	-- 	self.frame:SetHeight((self.displayRows * self.rowHeight))
+	-- 	self:Refresh();
+	-- end
+
     st:EnableSelection(true)
     frame:Hide()
     -- create widget
