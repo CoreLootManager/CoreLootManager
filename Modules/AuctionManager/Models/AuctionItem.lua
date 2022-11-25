@@ -10,24 +10,27 @@ local setmetatable = setmetatable
 
 local AuctionitemUserResponse = CLM.MODELS.AuctionitemUserResponse
 
-local assertTypeOf = UTILS.assertTypeOf
+local assertTypeof = UTILS.assertTypeof
 
 local AuctionItem = {} -- AuctionItem
 AuctionItem.__index = AuctionItem
 
-function AuctionItem:New(id)
+local emptyItem = CreateFromMixins(ItemMixin)
+
+function AuctionItem:New(item)
     local o = {}
     setmetatable(o, self)
 
-    o.id = id
+    o.item = item or emptyItem
     o.userResponses = {}
+    o.values = {}
     o.awardEntryId = nil
 
     return o
 end
 
 function AuctionItem:SetResponse(username, response)
-    assertTypeOf(response, AuctionitemUserResponse)
+    assertTypeof(response, AuctionitemUserResponse)
     self.userResponses[username] = response
 end
 
@@ -39,7 +42,8 @@ function AuctionItem:SetAwardId(entryId)
     self.awardEntryId = entryId
 end
 
-
-
+function AuctionItem:LoadValues(roster)
+    self.values = UTILS.ShallowCopy(roster:GetItemValues(self.item:GetItemID()))
+end
 
 CLM.MODELS.AuctionItem = AuctionItem

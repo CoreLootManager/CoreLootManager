@@ -21,11 +21,9 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local ITEM_REGISTRY = "clm_auction_manager_multigui_item_options"
-local AUCTION_REGISTRY = "clm_auction_manager_multigui_auction_options"
-local AWARD_REGISTRY = "clm_auction_manager_multigui_award_options"
-
-local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL"
+local ITEM_REGISTRY = "clm_am_item_options"
+local AUCTION_REGISTRY = "clm_am_auction_options"
+local AWARD_REGISTRY = "clm_am_award_options"
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
@@ -54,106 +52,6 @@ local highlightRole = {
     ["HEALER"] = UTILS.getHighlightMethod(colorGreenTransparent),
 }
 
-local function GetModifierCombination()
-    local combination = ""
-
-    if IsAltKeyDown() then
-        combination = combination .. "a"
-    end
-
-    if IsShiftKeyDown() then
-        combination = combination .. "s"
-    end
-
-    if IsControlKeyDown() then
-        combination = combination .. "c"
-    end
-
-    return combination
-end
-
-local function CheckModifierCombination()
-    return (CLM.GlobalConfigs:GetModifierCombination() == GetModifierCombination())
-end
-
-local function FillAuctionWindowFromTooltip(frame, button)
-    if GameTooltip and CheckModifierCombination() then
-        local _, itemLink = GameTooltip:GetItem()
-        if itemLink then
-            CLM.MODULES.EventManager:DispatchEvent(EVENT_FILL_AUCTION_WINDOW, {
-                link = itemLink,
-                start = (button == "RightButton")
-            })
-        end
-    end
-end
-
-local function HookBagSlots()
-    hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", FillAuctionWindowFromTooltip)
-end
-
-local function HookCorpseSlots(hookedSlots)
-    local UIs = {
-        wow = "LootButton",
-        elv = "ElvLootSlot"
-    }
-
-    local numLootItems = GetNumLootItems()
-
-    for ui, prefix in pairs(UIs) do
-        for buttonIndex = 1, numLootItems do
-            if not hookedSlots[ui][buttonIndex] then
-                local button = getglobal(prefix .. buttonIndex)
-                if button then
-                    button:HookScript("OnClick", FillAuctionWindowFromTooltip)
-                    hookedSlots[ui][buttonIndex] = true
-                end
-            end
-        end
-    end
-end
-
-local alreadyPostedLoot = {}
-local function PostLootToRaidChat()
-    if not IsInRaid() then return end
-    if not CLM.MODULES.ACL:IsTrusted() then return end
-    if not CLM.GlobalConfigs:GetAnnounceLootToRaid() then return end
-    if CLM.GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
-        if not CLM.MODULES.RaidManager:IsRaidOwner(whoami) then return end
-    end
-    local targetGuid = UnitGUID("target")
-    if targetGuid then
-        if alreadyPostedLoot[targetGuid] then return end
-        alreadyPostedLoot[targetGuid] = true
-    end
-
-    local numLootItems = GetNumLootItems()
-    local num = 1
-    for lootIndex = 1, numLootItems do
-        local _, _, _, _, rarity = GetLootSlotInfo(lootIndex)
-        local itemLink = GetLootSlotLink(lootIndex)
-        if itemLink then
-            if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then
-                SendChatMessage(num .. ". " .. itemLink, "RAID")
-                num = num + 1
-            end
-        end
-    end
-end
-
-local function HandleLootOpenedEvent(self)
-    -- Set window open
-    self.lootWindowIsOpen = true
-    -- Post loot to raid chat
-    PostLootToRaidChat()
-    -- Hook slots
-    HookCorpseSlots(self.hookedSlots)
-end
-
-local function HandleLootClosedEvent(self)
-    self.lootWindowIsOpen = false
-end
-
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('auction2', { -- TODO keep original 'auction' when done
         location = {nil, nil, "CENTER", 0, 0 },
@@ -172,23 +70,21 @@ local function RestoreLocation(self)
     end
 end
 
+local function genericDisable()
+    local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+    return auction:IsInProgress() or auction:Empty()
+end
+
 local function GenerateItemOptions(self)
-    local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
-    if self.itemLink then
-        self.itemId, _, _, self.itemEquipLoc, icon = GetItemInfoInstant(self.itemLink)
+
+    local icon, itemLink = "Interface\\Icons\\INV_Misc_QuestionMark", "item:0"
+    self.note = ""
+    local auctionItem = self.auctionItem
+    if auctionItem and not auctionItem.item:IsItemEmpty() then
+        _, _, _, _, icon = GetItemInfoInstant(auctionItem.item:GetItemID())
+        itemLink = auctionItem.item:GetItemLink()
     end
 
-    self.note = ""
-    self.values = {}
-    if CLM.MODULES.RaidManager:IsInRaid() then
-        self.raid = CLM.MODULES.RaidManager:GetRaid()
-        self.roster = self.raid:Roster()
-        if self.roster then
-            self.configuration:Copy(self.roster.configuration)
-            self.values = UTILS.ShallowCopy(self.roster:GetItemValues(self.itemId))
-        end
-    end
-    local itemLink = "item:" .. tostring(self.itemId)
     local options = {
         icon = {
             name = "",
@@ -202,17 +98,13 @@ local function GenerateItemOptions(self)
         item = {
             name = CLM.L["Item"],
             type = "input",
-            get = (function(i) return self.itemLink or "" end),
+            get = (function(i) return self.auctionItem and self.auctionItem.item:GetItemLink() or "" end),
             set = (function(i,v)
                 if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
-                    self.itemLink = v
-                    self.st:SetData({})
-                else
-                    self.itemLink = nil
+                    local itemID = GetItemInfoInstant(v)
+                    CLM.MODULES.AuctionManager:AddItemById(itemID, function(auctionItem) self:SetVisibleAuctionItem(auctionItem) end)
                 end
-                self:Refresh()
             end),
-            disabled = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
             width = 1.25,
             order = 2,
             tooltipHyperlink = itemLink,
@@ -222,23 +114,23 @@ local function GenerateItemOptions(self)
             type = "input",
             set = (function(i,v)
                 self.note = tostring(v)
-                if self.itemId then
+                if self.auctionItem then
                     if self.note ~= "" then
-                        self.db.notes[self.itemId] = self.note
+                        self.db.notes[self.auctionItem.item:GetItemID()] = self.note
                     else
-                        self.db.notes[self.itemId] = nil
+                        self.db.notes[self.auctionItem.item:GetItemID()] = nil
                     end
                 end
             end),
             get = (function(i)
-                if self.itemId then
-                    if self.db.notes[self.itemId] then
-                        self.note = self.db.notes[self.itemId]
+                if self.auctionItem then
+                    if self.db.notes[self.auctionItem.item:GetItemID()] then
+                        self.note = self.db.notes[self.auctionItem.item:GetItemID()]
                     end
                 end
                 return self.note
             end),
-            disabled = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            disabled = genericDisable,
             width = 1.5,
             order = 3
         }
@@ -251,9 +143,13 @@ local function GenerateItemOptions(self)
          options["value_"..key] = {
             name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
             type = "input",
-            set = (function(i,v) self.values[key] = tonumber(v) or 0 end),
-            get = (function(i) return tostring(self.values[key] or 0) end),
-            disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            set = (function(i,v)
+                if self.auctionItem then
+                    self.auctionItem.values[key] = tonumber(v) or 0
+                end
+            end),
+           get = (function(i) return self.auctionItem and tostring(self.auctionItem.values[key] or 0) or "0" end),
+            disabled = genericDisable,
             pattern = CONSTANTS.REGEXP_FLOAT,
             width = 0.75,
             order = buttonOrder[i]
@@ -265,9 +161,13 @@ local function GenerateItemOptions(self)
         options["value_"..key] = {
            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
            type = "input",
-           set = (function(i,v) self.values[key] = tonumber(v) or 0 end),
-           get = (function(i) return tostring(self.values[key] or 0) end),
-           disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+           set = (function(i,v)
+                if self.auctionItem then
+                    self.auctionItem.values[key] = tonumber(v) or 0
+                end
+            end),
+           get = (function(i) return self.auctionItem and tostring(self.auctionItem.values[key] or 0) or "0" end),
+           disabled = genericDisable,
            pattern = CONSTANTS.REGEXP_FLOAT,
            width = 0.5,
            order = order
@@ -309,10 +209,32 @@ local function CreateLootList(self)
         -- { name = "", width = 255 }
     })
     ItemList:RegisterEvents({
-        OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            UTILS.LibStSingleSelectClickHandler(table, --[[UnifiedGUI_Raids.RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+        OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UTILS.LibStSingleSelectClickHandler(table, --[[RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            print("CLICKEDY CLICK")
+            local _, selection = next(table:GetSelection())
+            local row = table:GetRow(selection)
+            if row then
+                self:SetVisibleAuctionItem(row.cols[2].value)
+            end
             return true
-        end
+        end),
+        -- OnEnter handler -> on hover
+        OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+            GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
+            GameTooltip:SetHyperlink("item:" .. (tonumber(rowData.cols[column].value) or 0))
+            GameTooltip:Show()
+            return status
+        end),
+        -- OnLeave handler -> on hover out
+        OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            GameTooltip:Hide()
+            return status
+        end),
     })
     return ItemList
 end
@@ -320,10 +242,10 @@ end
 local function GenerateAwardOptions(self)
     local options = {
         clear = {
-            name = CLM.L["Clear all"],
-            desc = CLM.L["Remove all items from auction list."],
+            name = CLM.L["Clear"],
+            desc = CLM.L["Remove all items from auction list. Populates new one if there are any pending."],
             type = "execute",
-            func = (function() end),
+            func = (function() CLM.MODULES.AuctionManager:ClearItemList() end),
             confirm = true,
             width = 0.6,
             order = 0,
@@ -396,7 +318,7 @@ local function GenerateAwardOptions(self)
             end),
             width = 0.5,
             order = 5,
-            disabled = (function() return (not (self.itemLink or false)) or CLM.MODULES.AuctionManager:IsAuctionInProgress() end)
+            disabled = genericDisable,
         }
     }
     return options
@@ -513,9 +435,9 @@ local function GenerateAuctionOptions(self)
         time_auction = {
             name = CLM.L["Auction length"],
             type = "input",
-            set = (function(i,v) self.configuration:Set("auctionTime", v or 0) end),
-            get = (function(i) return tostring(self.configuration:Get("auctionTime")) end),
-            disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            set = (function(i,v) CLM.MODULES.AuctionManager:SetAuctionTime(v) end),
+            get = (function(i) return tostring(CLM.MODULES.AuctionManager:GetAuctionTime()) end),
+            -- disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
             width = 0.5,
             order = 2
@@ -523,9 +445,9 @@ local function GenerateAuctionOptions(self)
         time_antiSnipe = {
             name = CLM.L["Anti-snipe"],
             type = "input",
-            set = (function(i,v) self.configuration:Set("antiSnipe", v or 0) end),
-            get = (function(i) return tostring(self.configuration:Get("antiSnipe")) end),
-            disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            set = (function(i,v) CLM.MODULES.AuctionManager:SetAntiSnipe(v) end),
+            get = (function(i) return tostring(CLM.MODULES.AuctionManager:GetAntiSnipe()) end),
+            -- disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
             pattern = "%d+",
             width = 0.5,
             order = 3
@@ -542,7 +464,7 @@ local function GenerateAuctionOptions(self)
             end),
             width = 1,
             order = 4,
-            disabled = (function() return not ((self.itemLink or false) and CLM.MODULES.RaidManager:IsInProgressingRaid()) end)
+            disabled = (function() return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():Empty() end)
         },
         bidding_header = {
             name = CLM.L["Bidding"],
@@ -645,7 +567,7 @@ local auctionOptions = {
 }
 
 local function UpdateAuctionOptions(self)
-    itemOptions.args = GenerateAuctionOptions(self)
+    auctionOptions.args = GenerateAuctionOptions(self)
 end
 
 local function CreateAuctionOptions(self, width)
@@ -654,7 +576,7 @@ local function CreateAuctionOptions(self, width)
     AuctionOptionsGroup:SetWidth(width - 5)
     self.AuctionOptionsGroup = AuctionOptionsGroup
     UpdateAuctionOptions(self)
-    AceConfigRegistry:RegisterOptionsTable(AUCTION_REGISTRY, itemOptions)
+    AceConfigRegistry:RegisterOptionsTable(AUCTION_REGISTRY, auctionOptions)
     AceConfigDialog:Open(AUCTION_REGISTRY, AuctionOptionsGroup)
 
     return AuctionOptionsGroup
@@ -672,17 +594,13 @@ local function Create(self)
     self.top = f
     UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Auctioning_MultiGUI")
 
-    self.configuration = CLM.MODELS.RosterConfiguration:New()
-
     -- Display placeholders
-    self.itemLink = nil
-    self.itemId = 0
+    self.item = nil
     self.note = ""
     self.awardValue = 0
-    self.bids = {}
 
     local ItemList = CreateLootList(self)
-    local listWidth = self.ItemList:GetWidth()
+    local listWidth = ItemList:GetWidth()
     local dataWidth = BASE_WIDTH - listWidth - 20
     f:SetUserData("table", { columns = {listWidth, dataWidth}, alignV =  "top" })
     local DataGroup = AceGUI:Create("SimpleGroup")
@@ -707,75 +625,42 @@ end
 local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
+    if not CLM.MODULES.ACL:IsTrusted() then return end
     -- Database
     InitializeDB(self)
-    -- Initialize variables
-    self.hookedSlots = { wow = {}, elv =  {}}
     -- Create GUIs
     Create(self)
     -- Events
-    if CLM.MODULES.ACL:IsTrusted() then
-        CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
-        CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function() HandleLootOpenedEvent(self) end))
-        CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function() HandleLootClosedEvent(self) end))
-        CLM.MODULES.EventManager:RegisterEvent(EVENT_FILL_AUCTION_WINDOW, function(event, data)
-            if not CLM.MODULES.RaidManager:IsInProgressingRaid() then
-                return
-            end
-            if not CLM.MODULES.AuctionManager:IsAuctionInProgress() then
-            -- TODO - filling queue
-            end
-        end)
-        HookBagSlots()
-    end
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
     -- Slash
     self:RegisterSlash()
     -- Done
     self._initialized = true
 end
 
+function AuctionManagerGUI:SetVisibleAuctionItem(auctionItem)
+    self.auctionItem = auctionItem
+    self:Refresh()
+end
+
+local function UpdateOptions(self)
+    UpdateItemOptions(self)
+    UpdateAuctionOptions(self)
+    UpdateAwardOptions(self)
+end
+
 function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
-    local data = {}
 
-    local DEBUGDATA = {
-        "|cffffffff|Hitem:2361::::::::4:::::::::|h[Battleworn Hammer]|h|r",
-        "|cffffffff|Hitem:6117::::::::4:::::::::|h[Squire's Shirt]|h|r",
-        "|cff0070dd|Hitem:187714::::::::70:::::::::|h[Enlistment Bonus]|h|r",
-        "|cff0070dd|Hitem:30351::::::::70:::::::::|h[Medallion of the Alliance]|h|r",
-        "|cffffffff|Hitem:6185::::::::4:::::::::|h[Bear Shawl]|h|r",
-        "|cffa335ee|Hitem:39763::::::::4:::::::::|h[Wraith Strike]|h|r",
-        "|cffa335ee|Hitem:34341::::::::70:::::::::|h[Borderland Paingrips]|h|r",
-        "|cffa335ee|Hitem:34335::::::::70:::::::::|h[Hammer of Sanctification]|h|r",
-        "|cffffffff|Hitem:2361::::::::4:::::::::|h[Battleworn Hammer]|h|r",
-        "|cffffffff|Hitem:6117::::::::4:::::::::|h[Squire's Shirt]|h|r",
-        "|cff0070dd|Hitem:187714::::::::70:::::::::|h[Enlistment Bonus]|h|r",
-        "|cff0070dd|Hitem:30351::::::::70:::::::::|h[Medallion of the Alliance]|h|r",
-        "|cffffffff|Hitem:6185::::::::4:::::::::|h[Bear Shawl]|h|r",
-        "|cffa335ee|Hitem:39763::::::::4:::::::::|h[Wraith Strike]|h|r",
-        "|cffa335ee|Hitem:34341::::::::70:::::::::|h[Borderland Paingrips]|h|r",
-        "|cffa335ee|Hitem:34335::::::::70:::::::::|h[Hammer of Sanctification]|h|r",
-        "|cffffffff|Hitem:2361::::::::4:::::::::|h[Battleworn Hammer]|h|r",
-        "|cffffffff|Hitem:6117::::::::4:::::::::|h[Squire's Shirt]|h|r",
-        "|cff0070dd|Hitem:187714::::::::70:::::::::|h[Enlistment Bonus]|h|r",
-        "|cff0070dd|Hitem:30351::::::::70:::::::::|h[Medallion of the Alliance]|h|r",
-        "|cffffffff|Hitem:6185::::::::4:::::::::|h[Bear Shawl]|h|r",
-        "|cffa335ee|Hitem:39763::::::::4:::::::::|h[Wraith Strike]|h|r",
-        "|cffa335ee|Hitem:34341::::::::70:::::::::|h[Borderland Paingrips]|h|r",
-        "|cffa335ee|Hitem:34335::::::::70:::::::::|h[Hammer of Sanctification]|h|r",
-    }
+    local itemList = {}
 
-
-    for _, d in ipairs(DEBUGDATA) do
-        local row = {cols = {
-                {value = d},
-            },
-        }
-        data[#data+1] = row
+    local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+    for id, auctionItem in pairs(auction:GetItems()) do
+        itemList[#itemList+1] = { cols = { {value = id}, {value = auctionItem} }}
     end
 
-    self.ItemList:SetData(data)
+    self.ItemList:SetData(itemList)
 
     local DEBUGDATA2 = {
         {"alpha", 1337.11, 255.11},
@@ -813,9 +698,13 @@ function AuctionManagerGUI:Refresh()
     end
 
     self.BidList:SetData(data2)
-    -- UpdateOptions(self)
-    -- AceConfigRegistry:NotifyChange(REGISTRY)
-    -- AceConfigDialog:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
+    UpdateOptions(self)
+    AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
+    AceConfigDialog:Open(ITEM_REGISTRY, self.ItemOptionsGroup)
+    -- AceConfigRegistry:NotifyChange(AWARD_REGISTRY)
+    -- AceConfigDialog:Open(AWARD_REGISTRY, self.AwardOptionsGroup)
+    AceConfigRegistry:NotifyChange(AUCTION_REGISTRY)
+    AceConfigDialog:Open(AUCTION_REGISTRY, self.AuctionOptionsGroup)
 end
 
 function AuctionManagerGUI:Toggle()
@@ -829,6 +718,13 @@ function AuctionManagerGUI:Toggle()
         self:Refresh()
         self.top:Show()
     end
+end
+
+function AuctionManagerGUI:Show()
+    LOG:Trace("AuctionManagerGUI:Show()")
+    if not self._initialized then return end
+    self:Refresh()
+    self.top:Show()
 end
 
 function AuctionManagerGUI:RegisterSlash()

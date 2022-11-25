@@ -10,16 +10,19 @@ local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
 local slen, sformat, mceil = string.len, string.format, math.ceil
 local SendChatMessage, C_TimerNewTicker, GetServerTime = SendChatMessage, C_Timer.NewTicker, GetServerTime
-local typeof = UTILS.typeof
+local typeof, assertType = UTILS.typeof, UTILS.assertType
 
 local whoami = UTILS.whoami()
 
 local AUCTION_COMM_PREFIX = "Auction2"
 
-local EVENT_START_AUCTION = "CLM_AUCTION_START"
-local EVENT_END_AUCTION = "CLM_AUCTION_END"
-
 local AuctionInfo = CLM.MODELS.AuctionInfo
+
+-- Singleton
+
+local AuctionManager = {}
+
+-- Database
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:Personal('auction', {
@@ -32,6 +35,105 @@ local function InitializeDB(self)
         lootThreshold = 4,
     })
 end
+
+-- HOOKING
+
+
+local function GetModifierCombination()
+    local combination = ""
+
+    if IsAltKeyDown() then
+        combination = combination .. "a"
+    end
+
+    if IsShiftKeyDown() then
+        combination = combination .. "s"
+    end
+
+    if IsControlKeyDown() then
+        combination = combination .. "c"
+    end
+
+    return combination
+end
+
+local function CheckModifierCombination()
+    return (CLM.GlobalConfigs:GetModifierCombination() == GetModifierCombination())
+end
+
+local function AddToAuctionListOnClickFromTooltip(frame, button)
+    if GameTooltip and CheckModifierCombination() then
+        local _, itemLink = GameTooltip:GetItem()
+        if itemLink then
+            AuctionManager:AddItemByLink(itemLink)
+            CLM.GUI.AuctionManager:Show() -- TBD
+        end
+    end
+end
+
+local function HookBagSlots()
+    hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", AddToAuctionListOnClickFromTooltip)
+end
+
+local hookedSlots =  {}
+local function HookCorpseSlots()
+    local UIs = {
+        wow = "LootButton",
+        elv = "ElvLootSlot"
+    }
+
+    local numLootItems = GetNumLootItems()
+
+    for ui, prefix in pairs(UIs) do
+        for buttonIndex = 1, numLootItems do
+            if not hookedSlots[ui][buttonIndex] then
+                local button = getglobal(prefix .. buttonIndex)
+                if button then
+                    button:HookScript("OnClick", AddToAuctionListOnClickFromTooltip)
+                    hookedSlots[ui][buttonIndex] = true
+                end
+            end
+        end
+    end
+end
+
+local alreadyPostedLoot = {}
+local function PostLootToRaidChat()
+    if not IsInRaid() then return end
+    if not CLM.MODULES.ACL:IsTrusted() then return end
+    if not CLM.GlobalConfigs:GetAnnounceLootToRaid() then return end
+    if CLM.GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
+        if not CLM.MODULES.RaidManager:IsRaidOwner(whoami) then return end
+    end
+    local targetGuid = UnitGUID("target")
+    if targetGuid then
+        if alreadyPostedLoot[targetGuid] then return end
+        alreadyPostedLoot[targetGuid] = true
+    end
+
+    local numLootItems = GetNumLootItems()
+    local num = 1
+    for lootIndex = 1, numLootItems do
+        local _, _, _, _, rarity = GetLootSlotInfo(lootIndex)
+        local itemLink = GetLootSlotLink(lootIndex)
+        if itemLink then
+            if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then
+                SendChatMessage(num .. ". " .. itemLink, "RAID")
+                num = num + 1
+            end
+        end
+    end
+end
+
+local function HandleLootOpenedEvent()
+    -- Post loot to raid chat
+    PostLootToRaidChat()
+    -- Hook slots
+    HookCorpseSlots()
+end
+
+-- local function HandleLootClosedEvent()
+-- end
 
 -- CONFIGURATION
 
@@ -83,7 +185,7 @@ local function GetFillAuctionListFromLootGLOnly(self)
     return self.db.fillFromLootGLOnly
 end
 
-local function SetFilledLootRarity(self, valuee)
+local function SetFilledLootRarity(self, value)
     self.db.lootThreshold = tonumber(value)
 end
 
@@ -91,33 +193,7 @@ local function GetFilledLootRarity(self)
     return self.db.lootThreshold or 4
 end
 
-local AuctionManager = {} -- Singleton
-function AuctionManager:Initialize()
-    LOG:Trace("AuctionManager:Initialize()")
-
-    InitializeDB(self)
-
-    CLM.MODULES.Comms:Register(AUCTION_COMM_PREFIX,
-    (function(rawMessage, distribution, sender)
-        local message = CLM.MODELS.AuctionCommStructure:New(rawMessage)
-        if CONSTANTS.AUCTION_COMM.TYPES[message:Type()] == nil then return end
-        -- Auction Manager is owner of the channel
-        -- pass handling to BidManager
-        CLM.MODULES.BiddingManager:HandleIncomingMessage(message, distribution, sender)
-    end),
-    (function(name)
-        return self:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
-    end),
-    true)
-
-    self.handlers = {
-        [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]        = "HandleSubmitBid",
-        [CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID]        = "HandleCancelBid",
-        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS]       = "HandleNotifyPass",
-        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE]       = "HandleNotifyHide",
-        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE]    = "HandleNotifyCantUse",
-    }
-
+local function CreateConfigurationOptions(self)
     local options = {
         auctioning_header = {
             type = "header",
@@ -251,12 +327,118 @@ function AuctionManager:Initialize()
             order = 43
         },
     }
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+    return options
+end
 
-    -- self.auction = AuctionInfo:New() -- TODO configuration
+-- Private
+
+local function UpdateAuctionInfo(self, raid)
+    for _, auction in ipairs({"currentAuction", "pendingAuction"}) do
+        self[auction]:UpdateRaid(raid)
+    end
+end
+
+local function SetRaidConnection(self)
+    if CLM.MODULES.RaidManager:IsInRaid() then
+        print("SetRaidConnection")
+        UpdateAuctionInfo(self, CLM.MODULES.RaidManager:GetRaid())
+    end
+end
+
+function AuctionManager:Initialize()
+    LOG:Trace("AuctionManager:Initialize()")
+
+    InitializeDB(self)
+
+    CLM.MODULES.Comms:Register(AUCTION_COMM_PREFIX,
+    (function(rawMessage, distribution, sender)
+        local message = CLM.MODELS.AuctionCommStructure:New(rawMessage)
+        if CONSTANTS.AUCTION_COMM.TYPES[message:Type()] == nil then return end
+        -- Auction Manager is owner of the channel
+        -- pass handling to BidManager
+        CLM.MODULES.BiddingManager:HandleIncomingMessage(message, distribution, sender)
+    end),
+    (function(name)
+        return self:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
+    end),
+    true)
+
+    if not CLM.MODULES.ACL:IsTrusted() then return end
+
+    self.handlers = {
+        [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]        = "HandleSubmitBid",
+        [CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID]        = "HandleCancelBid",
+        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS]       = "HandleNotifyPass",
+        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE]       = "HandleNotifyHide",
+        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE]    = "HandleNotifyCantUse",
+    }
+
+    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, CreateConfigurationOptions(self))
+
+    self.currentAuction = AuctionInfo:New()
+    self.pendingAuction = AuctionInfo:New()
+
+    HookBagSlots()
+    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, HandleLootOpenedEvent)
+    -- CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, HandleLootClosedEvent)
+
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then return end
+        SetRaidConnection(self)
+        self:RefreshGUI()
+    end)
 end
 
 -- LOCAL AUCTION MANAGEMENT
+
+local function DefaultCallback(_)
+    AuctionManager:RefreshGUI()
+end
+
+-- If using custom callback, function, then it is responsible for doing refresh
+local function AddItemToAuctionList(self, item, callbackFn)
+    callbackFn = callbackFn or DefaultCallback
+
+    local auctionInfo = self.currentAuction
+    if auctionInfo:IsInProgress() then
+        auctionInfo = self.pendingAuction
+    end
+
+    callbackFn(auctionInfo:AddItem(item))
+end
+
+local function AddItemProxy(self, item, callbackFn)
+    if not item:IsItemEmpty() then
+        if item:IsItemDataCached() then
+        AddItemToAuctionList(self, item, callbackFn)
+        else
+            item:ContinueOnItemLoad(function() AddItemToAuctionList(self, item, callbackFn) end)
+        end
+    end
+end
+
+function AuctionManager:AddItemById(itemId, callbackFn)
+    if not CLM.MODULES.RaidManager:IsInRaid() then
+        LOG:Message(CLM.L["Auctioning requires active raid or roster mode."])
+        return
+    end
+    AddItemProxy(self, Item:CreateFromItemID(itemId), callbackFn)
+end
+
+function AuctionManager:AddItemByLink(itemLink, callbackFn)
+    if not CLM.MODULES.RaidManager:IsInRaid() then
+        LOG:Message(CLM.L["Auctioning requires active raid or roster mode."])
+        return
+    end
+    AddItemProxy(self, Item:CreateFromItemLink(itemLink), callbackFn)
+end
+
+function AuctionManager:ClearItemList()
+    self.currentAuction = self.pendingAuction
+    self.pendingAuction = AuctionInfo:New() -- TODO config
+    CLM.GUI.AuctionManager:SetVisibleAuctionItem(nil)
+    self:RefreshGUI()
+end
 
 -- We pass configuration separately as it can be overriden on per-auction basis
 function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, raid, configuration)
@@ -477,6 +659,8 @@ function AuctionManager:AntiSnipe()
     end
 end
 
+-- COMMS
+
 function AuctionManager:SendAuctionStart(rosterUid)
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION,
@@ -620,6 +804,8 @@ function AuctionManager:HandleNotifyCantUse(data, sender)
     end
     self.userResponses.cantUse[sender] = true
 end
+
+-- BIDS
 
 function AuctionManager:ValidateBid(name, bid)
     -- bid cancelling
@@ -790,8 +976,44 @@ function AuctionManager:IsAuctioneer(name, relaxed)
     return CLM.MODULES.RaidManager:IsAllowedToAuction(name, relaxed)
 end
 
+-- NEW
+
 function AuctionManager:IsAuctionInProgress()
-    return self.auctionInProgress
+    return self.currentAuction:IsInProgress()
+end
+
+function AuctionManager:GetCurrentAuctionInfo()
+    return self.currentAuction
+end
+
+function AuctionManager:SetAuctionTime(time)
+    time = tonumber(time) or 0
+    if time <= 0 then
+        LOG:Warning("Trying to set 0s auction time.")
+        return
+    end
+    self.currentAuction:SetTime(time)
+end
+
+function AuctionManager:GetAuctionTime()
+    return self.currentAuction:GetTime()
+end
+
+function AuctionManager:SetAntiSnipe(time)
+    time = tonumber(time) or 0
+    if time < 0 then
+        LOG:Warning("Trying to set negative anti-snipe time.")
+        return
+    end
+    self.currentAuction:SetAntiSnipe(time)
+end
+
+function AuctionManager:GetAntiSnipe()
+    return self.currentAuction:GetAntiSnipe()
+end
+
+function AuctionManager:RefreshGUI()
+    CLM.GUI.AuctionManager:Refresh(true)
 end
 
 CONSTANTS.AUCTION_COMM = {

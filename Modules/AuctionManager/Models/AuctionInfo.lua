@@ -9,14 +9,15 @@ local UTILS     = CLM.UTILS
 local setmetatable = setmetatable
 
 local AuctionItem = CLM.MODELS.AuctionItem
-local assertTypeOf = UTILS.assertTypeOf
+local assertTypeof = UTILS.assertTypeof
+local assertType = UTILS.assertType
 
 local AuctionInfo = {} -- AuctionInfo
 AuctionInfo.__index = AuctionInfo
 
-local function assertIdle(self)
-    if self.state ~= CONSTANTS.AUCTION_INFO.STATE.IDLE then
-        error("Not allowed while auction is not IDLE.", 2)
+local function assertNotInProgress(self)
+    if self.state == CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS then
+        error("Not allowed while auction is IN PROGRESS.", 2)
     end
 end
 
@@ -26,54 +27,167 @@ local function assertInProgress(self)
     end
 end
 
-function AuctionInfo:New(configuration)
-    assertTypeOf(configuration, CLM.MODELS.RosterConfiguration)
+-- local function SetRosterInternal(self, roster)
+--     assertNotInProgress(self)
+--     if UTILS.typeof(roster, CLM.MODELS.Roster) then
+--         self.roster = roster
+--         self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
+--     end
+-- end
+
+function AuctionInfo:New()
     local o = {}
     setmetatable(o, self)
 
-    o.configuration = configuration
-    o.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
+    o.state = CONSTANTS.AUCTION_INFO.STATE.NOT_CONFIGURED
+
+    o.configuration = nil
+    o.roster = nil
+    o.raid = nil
+
+    -- SetRosterInternal(self, roster)
 
     o.items = {}
+    o.itemCount = 0
+
+    o.auctionTime = 0
+    o.antiSnipe = 0
 
     return o
 end
 
-local function AddItemInternal(self, id)
-    if self.items[id] then
-        LOG:Message("Item already in auction list.")
-        return
-    end
-    self.items[id] = AuctionItem:New(id)
+local function UpdateConfigurableData(self)
+    self.auctionTime = self.roster:GetConfiguration("auctionTime")
+    self.antiSnipe = self.roster:GetConfiguration("antiSnipe")
 end
 
-function AuctionInfo:AddItem(id)
-    assertIdle(self)
-    AddItemInternal(self, id)
+local function UpdateConfigurationInternal(self)
+    if self.raid then
+        self.configuration = self.raid:Configuration()
+    elseif self.roster then
+        self.configuration = self.roster.configuration
+    end
+    if self.configuration then
+        UpdateConfigurableData(self)
+    end
+end
+
+local function UpdateRosterInternal(self, roster)
+    self.roster = roster
+end
+
+local function UpdateRaidInternal(self, raid)
+    self.raid = raid
+end
+
+function AuctionInfo:UpdateRoster(roster)
+    assertTypeof(roster, CLM.MODELS.Roster)
+    if self:IsInProgress() then
+        LOG:Debug("AuctionInfo:UpdateRoster(): Called during auction. Ignoring.")
+        return
+    end
+
+    UpdateRosterInternal(self, roster)
+    UpdateRaidInternal(self, nil)
+    UpdateConfigurationInternal(self)
+
+    self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
+end
+
+-- Clears raid also
+function AuctionInfo:UpdateRaid(raid)
+    assertTypeof(raid, CLM.MODELS.Raid)
+    if self:IsInProgress() then
+        LOG:Debug("AuctionInfo:UpdateRaid(): Called during auction. Ignoring.")
+        return
+    end
+    print("AuctionInfo:UpdateRaid")
+    UpdateRaidInternal(self, raid)
+    UpdateRosterInternal(self, raid:Roster())
+    UpdateConfigurationInternal(self)
+
+    self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
+end
+
+local function AddItemInternal(self, item)
+    if self.items[item:GetItemID()] then
+        LOG:Message("%s already in auction list.", item:GetItemLink())
+        return
+    end
+    local auctionItem = AuctionItem:New(item)
+    self.items[item:GetItemID()] = auctionItem
+    self.itemCount = self.itemCount + 1
+    return auctionItem
+end
+
+function AuctionInfo:AddItem(item)
+    assertNotInProgress(self)
+    local auctionItem = AddItemInternal(self, item)
+    if auctionItem and self.roster then
+        auctionItem:LoadValues(self.roster)
+    end
+    return auctionItem
 end
 
 function AuctionInfo:RemoveItem(id)
-    assertIdle(self)
-    self.items[id] = nil
+    assertNotInProgress(self)
+    if self.items[id] then
+        self.items[id] = nil
+        self.itemCount = self.itemCount - 1
+    end
 end
 
 function AuctionInfo:GetItem(id)
     return self.items[id] or AuctionItem:New()
 end
 
+function AuctionInfo:GetItems()
+    return self.items
+end
+
 function AuctionInfo:SetResponse(id, username, response)
     assertInProgress(self)
     local auctionItem = self.items[id]
     if not auctionItem then
-        LOG:Warning("Received response to non existent item ")
+        LOG:Warning("Received response to non existent item.")
     end
     auctionItem:SetResponse(username, response)
 end
 
+function AuctionInfo:IsInProgress()
+    return self.state == CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
+end
+
+function AuctionInfo:SetTime(time)
+    assertType(time, 'number')
+    assertNotInProgress(self)
+    self.auctionTime = time
+end
+
+function AuctionInfo:GetTime()
+    return self.auctionTime
+end
+
+function AuctionInfo:SetAntiSnipe(time)
+    assertType(time, 'number')
+    assertNotInProgress(self)
+    self.antiSnipe = time
+end
+
+function AuctionInfo:GetAntiSnipe()
+    return self.antiSnipe
+end
+
+function AuctionInfo:Empty()
+    return (self.itemCount <= 0)
+end
+    
+
 CONSTANTS.AUCTION_INFO = {
     STATE = {
-        IDLE = 0,
-        IN_PROGRESS = 1
+        NOT_CONFIGURED = 0,
+        IDLE = 1,
+        IN_PROGRESS = 2
     }
 }
 

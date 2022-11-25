@@ -85,6 +85,9 @@ Modules\PointManager\PointHistory.lua
 Modules\LootManager\LedgerEntries.lua
 Modules\LootManager\Loot.lua
 Modules\AuctionManager\AuctionCommStructures.lua
+Modules\AuctionManager\Models\AuctionItemUserResponse.lua
+Modules\AuctionManager\Models\AuctionItem.lua
+Modules\AuctionManager\Models\AuctionInfo.lua
 Modules\BiddingManager\BiddingCommStructures.lua
 Modules\RaidManager\LedgerEntries.lua
 Modules\RaidManager\Raid.lua

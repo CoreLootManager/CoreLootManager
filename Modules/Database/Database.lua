@@ -79,7 +79,7 @@ function DB:Server()
 end
 
 function DB:Personal(table, schema)
-    assertType(table, 'table', 'string')
+    assertType(table, 'string')
 
     if not CLM2_DB[self.server_faction_guild][DB_NAME_PERSONAL][table] then
         CLM2_DB[self.server_faction_guild][DB_NAME_PERSONAL][table] = {}
@@ -91,7 +91,7 @@ function DB:Personal(table, schema)
 end
 
 function DB:GUI(table, schema)
-    assertType(table, 'table', 'string')
+    assertType(table, 'string')
 
     if not CLM2_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI][table] then
         CLM2_DB[self.server_faction_guild][DB_NAME_PERSONAL][DB_NAME_GUI][table] = {}

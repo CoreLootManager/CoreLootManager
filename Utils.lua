@@ -7,7 +7,6 @@ local UTILS = CLM.UTILS
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
-local assertType = LibStub("EventSourcing/Util").assertType
 
 local pairs, ipairs = pairs, ipairs
 local ssub, supper, slower, sformat, sfind = string.sub, string.upper, string.lower, string.format, string.find
@@ -377,10 +376,6 @@ end
 
 function UTILS.DumpTable(t)
     return DumpTable(t)
-end
-
-function UTILS.assertType(arg, name, expectedType, optional)
-    return assertType(arg, name, expectedType, optional)
 end
 
 function UTILS.inflate(object, data)
@@ -842,17 +837,17 @@ function UTILS.WorkaroundEquipLoc(class, subclass)
 end
 
 
-function UTILS.assertTypeOf(object, objectType)
+function UTILS.assertTypeof(object, objectType)
     if not typeof(object, objectType) then
         error("Unexpected object type", 2)
     end
 end
 
--- function UTILS.assertType(object, objectType)
---     if type(object) ~= objectType then
---         error("Unexpected object type", 2)
---     end
--- end
+function UTILS.assertType(object, objectType)
+    if type(object) ~= objectType then
+        error("Unexpected object type", 2)
+    end
+end
 
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
