@@ -10,31 +10,43 @@ local type, setmetatable = type, setmetatable
 local tonumber = tonumber
 
 local AuctionCommStartAuction = {}
-function AuctionCommStartAuction:New(typeOrObject, itemValueMode, values, itemLink, time, endtime, antiSnipe, note, increment, disableOS, rosterUid)
-    local isCopyConstructor = (type(typeOrObject) == "table")
+AuctionCommStartAuction.__index = AuctionCommStartAuction
 
-    local o = isCopyConstructor and typeOrObject or {}
-
+-- Empty or Copy constructor
+function AuctionCommStartAuction:New(object)
+    local o = (type(object) == "table") and object or {}
     setmetatable(o, self)
-    self.__index = self
 
-    if isCopyConstructor then return o end
-    -- Common
-    o.t = typeOrObject
-    o.i = itemValueMode
-    o.c = increment
-    o.r = rosterUid
-    o.e = time
-    o.d = endtime
-    o.s = antiSnipe
+    return o
+end
 
-    -- Item
-    o.v = values
-    o.l = itemLink
-    o.n = note
-    o.c = increment
-    o.r = rosterUid
-    o.b = disableOS
+local function SerializeItems(items)
+    local serialized = {}
+    for id, auctionItem in pairs(items) do
+        serialized[id] = {
+            values = auctionItem:GetValues(),
+            note = auctionItem:GetNote()
+        }
+    end
+    return serialized
+end
+
+function AuctionCommStartAuction:NewFromAuctionInfo(auction)
+    local o = {}
+    setmetatable(o, self)
+
+    -- Auction General settings
+    o.t = auction:GetType()
+    o.m = auction:GetMode()
+    o.d = auction:GetUseOS()
+    o.n = auction:GetNamedButtonsMode()
+    o.c = auction:GetIncrement()
+    o.r = auction:GetRosterUID()
+    o.e = auction:GetTime()
+    o.d = auction:GetEndTime()
+    o.s = auction:GetAntiSnipe()
+    -- Items
+    o.i = SerializeItems(auction:GetItems())
 
     return o
 end
@@ -44,7 +56,7 @@ function AuctionCommStartAuction:Type()
 end
 
 function AuctionCommStartAuction:Mode()
-    return self.i or 0
+    return self.m or 0
 end
 
 function AuctionCommStartAuction:Values()
@@ -67,15 +79,11 @@ function AuctionCommStartAuction:AntiSnipe()
     return tonumber(self.s) or 0
 end
 
-function AuctionCommStartAuction:Note()
-    return self.n or ""
-end
-
 function AuctionCommStartAuction:Increment()
     return tonumber(self.c) or 1
 end
 
-function AuctionCommStartAuction:DisableOS()
+function AuctionCommStartAuction:UseOS()
     return self.b and true or false
 end
 

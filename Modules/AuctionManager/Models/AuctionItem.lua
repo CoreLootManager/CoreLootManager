@@ -46,4 +46,16 @@ function AuctionItem:LoadValues(roster)
     self.values = UTILS.ShallowCopy(roster:GetItemValues(self.item:GetItemID()))
 end
 
+function AuctionItem:GetValues()
+    return self.values
+end
+
+function AuctionItem:SetNote(note)
+    self.note = note
+end
+
+function AuctionItem:GetNote()
+    return self.note or ""
+end
+
 CLM.MODELS.AuctionItem = AuctionItem

@@ -71,6 +71,9 @@ local methods = {
 
     ["Show"] = function(self)
         self.st:Show()
+        if self.metadata.hideScroll then
+            self.st.scrollframe:Hide()
+        end
     end,
 
     ["Hide"] = function(self)
@@ -88,16 +91,25 @@ local methods = {
     end,
 
     ["GetWidth"] = function(self)
-        return self.frame.width
+        local width = self.frame.width
+        if self.metadata.hideScroll then
+            width = width - 17
+        end
+        return width
     end,
-
+    ["SetBackdrop"] = function(self, ...)
+        self.st.frame:SetBackdrop(...)
+    end,
     ["SetBackdropColor"] = function(self, ...)
         self.st.frame:SetBackdropColor(...)
     end,
     ["SetHeaderless"] = function(self, ...) 
         SetHeaderless(self, ...)
     end,
-
+    ["HideScroll"] = function(self, ...)
+        self.metadata.hideScroll = true
+        self.st.scrollframe:Hide()
+    end,
     -- AFAIK needed for input type of AceConfigDialog
     ["SetDisabled"] = function(self)
     end,
@@ -121,13 +133,18 @@ local function Constructor()
 	-- 	self:Refresh();
 	-- end
 
+    local metadata = {
+        hideScroll = false
+    }
+
     st:EnableSelection(true)
     frame:Hide()
     -- create widget
     local widget = {
         st = st,
         frame = frame,
-        type  = Type
+        type  = Type,
+        metadata = metadata
     }
     for method, func in pairs(methods) do
 ---@diagnostic disable-next-line: assign-type-mismatch

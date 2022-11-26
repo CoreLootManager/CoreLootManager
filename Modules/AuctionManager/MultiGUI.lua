@@ -54,8 +54,7 @@ local highlightRole = {
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('auction2', { -- TODO keep original 'auction' when done
-        location = {nil, nil, "CENTER", 0, 0 },
-        notes = {}
+        location = {nil, nil, "CENTER", 0, 0 }
     })
 end
 
@@ -72,7 +71,7 @@ end
 
 local function genericDisable()
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
-    return auction:IsInProgress() or auction:Empty()
+    return auction:IsInProgress() or auction:IsEmpty()
 end
 
 local function GenerateItemOptions(self)
@@ -98,7 +97,7 @@ local function GenerateItemOptions(self)
         item = {
             name = CLM.L["Item"],
             type = "input",
-            get = (function(i) return self.auctionItem and self.auctionItem.item:GetItemLink() or "" end),
+            get = (function(i) return auctionItem and auctionItem.item:GetItemLink() or "" end),
             set = (function(i,v)
                 if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
                     local itemID = GetItemInfoInstant(v)
@@ -113,22 +112,21 @@ local function GenerateItemOptions(self)
             name = CLM.L["Note"],
             type = "input",
             set = (function(i,v)
-                self.note = tostring(v)
-                if self.auctionItem then
-                    if self.note ~= "" then
-                        self.db.notes[self.auctionItem.item:GetItemID()] = self.note
-                    else
-                        self.db.notes[self.auctionItem.item:GetItemID()] = nil
-                    end
+                if auctionItem then
+                    CLM.MODULES.AuctionManager:SetItemNote(auctionItem, tostring(v))
+                    -- if self.note ~= "" then
+                    --     self.db.notes[auctionItem.item:GetItemID()] = self.note
+                    -- else
+                    --     self.db.notes[auctionItem.item:GetItemID()] = nil
+                    -- end
                 end
             end),
             get = (function(i)
-                if self.auctionItem then
-                    if self.db.notes[self.auctionItem.item:GetItemID()] then
-                        self.note = self.db.notes[self.auctionItem.item:GetItemID()]
-                    end
+                local note = ""
+                if auctionItem then
+                    note = auctionItem:GetNote()
                 end
-                return self.note
+                return note
             end),
             disabled = genericDisable,
             width = 1.5,
@@ -189,7 +187,6 @@ end
 local function CreateItemOptions(self, width)
     local ItemOptionsGroup = AceGUI:Create("SimpleGroup")
     ItemOptionsGroup:SetLayout("Flow")
-    -- ItemOptionsGroup:SetWidth(1.5*ACE_GUI_COLUMN_WIDTH + 5)
     ItemOptionsGroup:SetWidth(width - 5)
     self.ItemOptionsGroup = ItemOptionsGroup
     UpdateItemOptions(self)
@@ -236,6 +233,9 @@ local function CreateLootList(self)
             return status
         end),
     })
+    -- ItemList:HideScroll()
+    ItemList:SetBackdrop({})
+    ItemList:SetBackdropColor({r=0,g=0,b=0,a=0})
     return ItemList
 end
 
@@ -457,14 +457,14 @@ local function GenerateAuctionOptions(self)
             type = "execute",
             func = (function()
                 if not CLM.MODULES.AuctionManager:IsAuctionInProgress() then
-                    self:StartAuction()
+                    CLM.MODULES.AuctionManager:StartAuction()
                 else
                     CLM.MODULES.AuctionManager:StopAuctionManual()
                 end
             end),
             width = 1,
             order = 4,
-            disabled = (function() return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():Empty() end)
+            disabled = (function() return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():IsEmpty() end)
         },
         bidding_header = {
             name = CLM.L["Bidding"],

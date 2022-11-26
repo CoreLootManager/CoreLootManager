@@ -33,6 +33,7 @@ local function InitializeDB(self)
         fillFromLoot = true,
         fillFromLootGLOnly = true,
         lootThreshold = 4,
+        notes = {}
     })
 end
 
@@ -404,7 +405,11 @@ local function AddItemToAuctionList(self, item, callbackFn)
         auctionInfo = self.pendingAuction
     end
 
-    callbackFn(auctionInfo:AddItem(item))
+    local auctionItem = auctionInfo:AddItem(item)
+    if auctionItem then
+        auctionItem:SetNote(self.db.notes[item:GetItemID()])
+    end
+    callbackFn(auctionItem)
 end
 
 local function AddItemProxy(self, item, callbackFn)
@@ -440,10 +445,10 @@ function AuctionManager:ClearItemList()
     self:RefreshGUI()
 end
 
--- We pass configuration separately as it can be overriden on per-auction basis
-function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, raid, configuration)
+function AuctionManager:StartAuction()
     LOG:Trace("AuctionManager:StartAuction()")
-    if self.auctionInProgress then
+    local auction = self.currentAuction
+    if auction:IsInProgress() then
         LOG:Warning("AuctionManager:StartAuction(): Auction in progress")
         return
     end
@@ -452,140 +457,86 @@ function AuctionManager:StartAuction(itemId, itemLink, itemSlot, values, note, r
         return
     end
     -- Auction parameters sanity checks
-    note = note or ""
-    if not typeof(raid, CLM.MODELS.Raid) then
+    if not typeof(auction.raid, CLM.MODELS.Raid) then
         LOG:Warning("AuctionManager:StartAuction(): Invalid raid object")
         return false
     end
-    self.raid = raid
-    itemId = tonumber(itemId)
-    if not itemId then
-        LOG:Warning("AuctionManager:StartAuction(): invalid item id")
-        return false
-    end
-    self.itemId = itemId
-    if not itemLink then
-        LOG:Warning("AuctionManager:StartAuction(): invalid item link")
-        return false
-    end
-    self.itemLink = itemLink
-    for key,_ in pairs(CLM.CONSTANTS.SLOT_VALUE_TIERS) do
-        if not tonumber(values[key]) then
-            LOG:Warning("AuctionManager:StartAuction(): invalid value [%s] for [%s]", tostring(values[key]), tostring(key))
-            return false
-        end
-    end
-    if not typeof(configuration, CLM.MODELS.RosterConfiguration) then
-        LOG:Warning("AuctionManager:StartAuction(): Invalid roster configuration object")
+    if auction:IsEmpty() then
+        LOG:Warning("AuctionManager:StartAuction(): Empty auction item list")
         return false
     end
     -- Auction Settings sanity checks
-    local auctionTime = configuration:Get("auctionTime")
-    if auctionTime <= 0 then
+    if auction:GetTime() <= 0 then
         LOG:Warning("AuctionManager:StartAuction(): 0s auction time")
         return false
     end
-    if auctionTime < 10 then
+    if auction:GetTime() < 10 then
         LOG:Warning("AuctionManager:StartAuction(): Very short (below 10s) auction time")
     end
-    self.auctionTime = auctionTime
-    self.itemValueMode = configuration:Get("itemValueMode")
-    if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
-        if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and values[CONSTANTS.SLOT_VALUE_TIER.BASE] > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then
-            LOG:Warning("AuctionManager:StartAuction(): base value must be smaller or equal to max values")
-            return false
-        end
-    end
-    self.useOS = configuration:Get("useOS")
-    self.values = values
-    self.acceptedTierValues = {}
-    for _,val in pairs(self.values) do
-        self.acceptedTierValues[val] = true
-    end
-    if self.auctionTime <= 0 then
-        LOG:Warning("AuctionManager:StartAuction(): Auction time must be greater than 0 seconds")
-        return false
-    end
-    self.minimumPoints = configuration:Get("minimumPoints")
-    self.allowBelowMinStandings = configuration:Get("allowBelowMinStandings")
-    -- Auctioning
-    -- Start Auction Messages
-    self.note = note
-    self.antiSnipe = configuration:Get("antiSnipe")
+    local commData = CLM.MODELS.AuctionCommStartAuction:NewFromAuctionInfo(auction)
     if CLM.GlobalConfigs:GetAuctionWarning() then
-        local auctionMessage = sformat(CLM.L["Auction of %s"], itemLink)
-        if slen(note) > 0 then
-            auctionMessage = auctionMessage .. " (" .. tostring(note) .. ")"
+        local numItems = auction:GetItemCount()
+        local _, item = next(auction:GetItems())
+        local auctionMessage
+        if numItems > 1 then
+            auctionMessage = sformat(CLM.L["Auction of %s items."], numItems)
+        else
+            auctionMessage = sformat(CLM.L["Auction of %s"], item:GetItemLink())
         end
-        -- Max 2 raid warnings are displayed at the same time
         SendChatMessage(auctionMessage , "RAID_WARNING")
         auctionMessage = ""
-        if self.itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
-            local tiers = ""
-            for _,key in ipairs(CLM.CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
-                tiers = tiers .. tostring(values[key]) .. ", "
-            end
-            tiers = UTILS.Trim(tiers)
-            auctionMessage = auctionMessage .. sformat(CLM.L["Bid tiers: %s."], tiers)  .. " "
-        else
-            if values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 then
-                auctionMessage = auctionMessage .. sformat(CLM.L["Minimum bid: %s."] .. " ", tostring(values[CONSTANTS.SLOT_VALUE_TIER.BASE]))
-            end
-            if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
-                auctionMessage = auctionMessage .. sformat(CLM.L["Maximum bid: %s."] .. " ", tostring(values[CONSTANTS.SLOT_VALUE_TIER.MAX]))
-            end
-        end
-        auctionMessage = auctionMessage .. sformat(CLM.L["Auction time: %s."] .. " ", tostring(auctionTime))
+        auctionMessage = auctionMessage .. sformat(CLM.L["Auction time: %s."] .. " ", auction:GetTime())
         if self.antiSnipe > 0 then
-            auctionMessage = auctionMessage .. sformat(CLM.L["Anti-snipe time: %s."], tostring(self.antiSnipe))
+            auctionMessage = auctionMessage .. sformat(CLM.L["Anti-snipe time: %s."], auction:GetAntiSnipe())
         end
         SendChatMessage(auctionMessage , "RAID_WARNING")
         if CLM.GlobalConfigs:GetCommandsWarning() and CLM.GlobalConfigs:GetAllowChatCommands() then
             SendChatMessage("Whisper me '!bid <amount>' to bid. Whisper '!dkp' to check your dkp.", "RAID_WARNING")
         end
     end
-    -- Get Auction Type info
-    self.auctionType = configuration:Get("auctionType")
-    -- AntiSnipe settings
-    self.antiSnipeLimit = (self.antiSnipe > 0) and (CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and 100 or 3) or 0
-    -- if values are different than current (or default if no override) item value we will need to update the config
-    CLM.MODULES.RosterManager:SetRosterItemValues(self.raid:Roster(), itemId, values)
-    -- clear bids
-    self:ClearBids()
-    -- calculate server end time
-    self.auctionEndTime = GetServerTime() + self.auctionTime
-    self.auctionTimeLeft = self.auctionEndTime
-    -- minimal increment
-    self.minimalIncrement = self.raid:Roster():GetConfiguration("minimalIncrement")
-    -- workaround for open bid to allow 0 bid
-    if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
-        self.highestBid = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] - self.minimalIncrement
-    end
-    -- Send auction information
-    self:SendAuctionStart(self.raid:Roster():UID())
-    -- Start Auction Ticker
-    self.lastCountdownValue = 5
-    self.ticker = C_TimerNewTicker(0.1, (function()
-        self.auctionTimeLeft = self.auctionEndTime - GetServerTime()
-        if CLM.GlobalConfigs:GetCountdownWarning() and self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5 then
-            SendChatMessage(tostring(mceil(self.auctionTimeLeft)), "RAID_WARNING")
-            self.lastCountdownValue = self.lastCountdownValue - 1
-        end
-        if self.auctionTimeLeft < 0.1 then
-            self:StopAuctionTimed()
-            return
-        end
-    end))
-    -- Anonymous mapping
-    self.anonymousMap = {}
-    self.nextAnonymousId = 1
-    -- Set auction in progress
-    self.auctionInProgress = true
-    -- UI
-    CLM.GUI.AuctionManager:UpdateBids()
-    -- Event
-    CLM.MODULES.EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = self.itemId })
-    return true
+    ---- TODO TODO TODO ----
+    ---- TODO TODO TODO ----
+    ---- TODO TODO TODO ----
+    -- -- if values are different than current (or default if no override) item value we will need to update the config
+    -- CLM.MODULES.RosterManager:SetRosterItemValues(self.raid:Roster(), itemId, values)
+    ---- TODO TODO TODO ----
+    ---- TODO TODO TODO ----
+
+    -- self:ClearBids()
+    -- -- calculate server end time
+    -- self.auctionEndTime = GetServerTime() + self.auctionTime
+    -- self.auctionTimeLeft = self.auctionEndTime
+
+    -- -- workaround for open bid to allow 0 bid
+    -- if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
+    --     self.highestBid = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] - self.minimalIncrement
+    -- end
+
+    -- -- Send auction information
+    -- self:SendAuctionStart(self.raid:Roster():UID())
+    -- -- Start Auction Ticker
+    -- self.lastCountdownValue = 5
+    -- self.ticker = C_TimerNewTicker(0.1, (function()
+    --     self.auctionTimeLeft = self.auctionEndTime - GetServerTime()
+    --     if CLM.GlobalConfigs:GetCountdownWarning() and self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5 then
+    --         SendChatMessage(tostring(mceil(self.auctionTimeLeft)), "RAID_WARNING")
+    --         self.lastCountdownValue = self.lastCountdownValue - 1
+    --     end
+    --     if self.auctionTimeLeft < 0.1 then
+    --         self:StopAuctionTimed()
+    --         return
+    --     end
+    -- end))
+    -- -- Anonymous mapping
+    -- self.anonymousMap = {}
+    -- self.nextAnonymousId = 1
+    -- -- Set auction in progress
+    -- self.auctionInProgress = true
+    -- -- UI
+    -- CLM.GUI.AuctionManager:UpdateBids()
+    -- -- Event
+    -- CLM.MODULES.EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = self.itemId })
+    -- return true
 end
 
 local function AuctionEnd(self, postToChat)
@@ -1010,6 +961,16 @@ end
 
 function AuctionManager:GetAntiSnipe()
     return self.currentAuction:GetAntiSnipe()
+end
+
+function AuctionManager:SetItemNote(auctionItem, note)
+    local itemId = auctionItem.item:GetItemID()
+    if note and note:len() > 0 then
+        self.db.notes[itemId] = note
+    else
+        self.db.notes[itemId] = nil
+    end
+    auctionItem:SetNote(note)
 end
 
 function AuctionManager:RefreshGUI()

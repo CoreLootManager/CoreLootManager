@@ -84,7 +84,7 @@ Modules\PointManager\LedgerEntries.lua
 Modules\PointManager\PointHistory.lua
 Modules\LootManager\LedgerEntries.lua
 Modules\LootManager\Loot.lua
-Modules\AuctionManager\AuctionCommStructures.lua
+Modules\AuctionManager\Models\AuctionCommStructures.lua
 Modules\AuctionManager\Models\AuctionItemUserResponse.lua
 Modules\AuctionManager\Models\AuctionItem.lua
 Modules\AuctionManager\Models\AuctionInfo.lua

@@ -53,6 +53,8 @@ function AuctionInfo:New()
     o.auctionTime = 0
     o.antiSnipe = 0
 
+    o.endTime = 0
+
     return o
 end
 
@@ -158,6 +160,27 @@ function AuctionInfo:IsInProgress()
     return self.state == CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
 end
 
+function AuctionInfo:IsEmpty()
+    return (self.itemCount <= 0)
+end
+
+function AuctionInfo:GetItemCount()
+    return self.itemCount
+end
+
+
+function AuctionInfo:Start()
+    assertNotInProgress(self)
+    self.endTime = GetServerTime() + self.auctionTime
+    self.state = CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
+end
+
+function AuctionInfo:End()
+    assertInProgress(self)
+end
+
+-- Configuration API
+
 function AuctionInfo:SetTime(time)
     assertType(time, 'number')
     assertNotInProgress(self)
@@ -166,6 +189,10 @@ end
 
 function AuctionInfo:GetTime()
     return self.auctionTime
+end
+
+function AuctionInfo:GetEndTime()
+    return self.endTime
 end
 
 function AuctionInfo:SetAntiSnipe(time)
@@ -178,10 +205,29 @@ function AuctionInfo:GetAntiSnipe()
     return self.antiSnipe
 end
 
-function AuctionInfo:Empty()
-    return (self.itemCount <= 0)
+function AuctionInfo:GetType()
+    return self.configuration:Get("auctionType")
 end
-    
+
+function AuctionInfo:GetMode()
+    return self.configuration:Get("itemValueMode")
+end
+
+function AuctionInfo:GetUseOS()
+    return self.configuration:Get("useOS")
+end
+
+function AuctionInfo:GetNamedButtonsMode()
+    return self.configuration:Get("namedButtons")
+end
+
+function AuctionInfo:GetIncrement()
+    return self.configuration:Get("minimalIncrement")
+end
+
+function AuctionInfo:GetRosterUID()
+    return self.roster:UID()
+end
 
 CONSTANTS.AUCTION_INFO = {
     STATE = {
