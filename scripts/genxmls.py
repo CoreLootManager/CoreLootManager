@@ -13,12 +13,16 @@ def beginsWithAny(i: str, b:list) -> bool:
 def isIgnored(p:PosixPath):
     return beginsWithAny(p.as_posix(), IGNORE_PREFIX)
 
+def isExtensionUsed(p:PosixPath):
+    return (p.suffix in ['lua', 'xml', ''])
+
+
 def writeFilelistFile(fhandler: TextIOWrapper, files: list, dirs: list):
     lines = []
     lines.append('<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/')
     lines.append('\t..\\FrameXML\\UI.xsd">')
     for dir in dirs:
-        lines.append('<Include file="' + dir + '"/>')
+        lines.append('<Include file="' + dir + FILELIST + '"/>')
     for file in files:
         lines.append('<Script file="' + file + '"/>')
     lines.append('</Ui>')
@@ -30,13 +34,15 @@ def writeFilelist(path: PosixPath, base:PosixPath):
     dirs = []
     for node in path.iterdir():
         node_relative = node.relative_to(base)
-        if node.is_dir():
-            dirs.append(node_relative.as_posix())
-            writeFilelist(node, path)
-        elif not isIgnored(node_relative):
-            files.append(node_relative.as_posix())
-    with open(path / FILELIST, "w", encoding="utf-8") as fhandler:
-        writeFilelistFile(fhandler, files, dirs)
+        print(node_relative, isIgnored(node_relative), isExtensionUsed(node_relative))
+        if not isIgnored(node_relative) and isExtensionUsed(node_relative):
+            if node.is_dir():
+                dirs.append(node_relative.as_posix())
+                writeFilelist(node, path)
+            else:
+                files.append(node_relative.as_posix())
+    # with open(path / FILELIST, "w", encoding="utf-8") as fhandler:
+        # writeFilelistFile(fhandler, files, dirs)
 
 writeFilelist(PosixPath("."), PosixPath("."))
 
