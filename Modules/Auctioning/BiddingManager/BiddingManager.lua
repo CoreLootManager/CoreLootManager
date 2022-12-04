@@ -220,7 +220,6 @@ function BiddingManager:HandleStartAuction(data, sender)
     end
     self.auctionInfo = data
     self.auctioneer = sender
-    self.bids = {}
     self.auctionInProgress = true
     PlayStartSound()
     CLM.GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)

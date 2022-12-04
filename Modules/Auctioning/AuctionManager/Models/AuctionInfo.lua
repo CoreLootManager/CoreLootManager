@@ -45,8 +45,6 @@ function AuctionInfo:New()
     o.roster = nil
     o.raid = nil
 
-    -- SetRosterInternal(self, roster)
-
     o.items = {}
     o.itemCount = 0
 
@@ -54,6 +52,10 @@ function AuctionInfo:New()
     o.antiSnipe = 0
 
     o.endTime = 0
+
+    -- Auxilary
+
+    o.enableCountdown = true
 
     return o
 end
@@ -168,11 +170,22 @@ function AuctionInfo:GetItemCount()
     return self.itemCount
 end
 
+function AuctionInfo:SetCountdown(value)
+    self.countdown = tonumber(value) or 5
+end
 
 function AuctionInfo:Start()
     assertNotInProgress(self)
     self.endTime = GetServerTime() + self.auctionTime
     self.state = CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
+
+    for _, item in pairs(self.items) do
+        item:ClearResponses()
+    end
+
+    -- TODO
+    -- Start Auction Ticker
+    self.ticker = CreateNewTicker()
 end
 
 function AuctionInfo:End()

@@ -331,6 +331,52 @@ local function CreateConfigurationOptions(self)
     return options
 end
 
+-- Comms 
+
+
+-- COMMS
+
+local function SendAuctionStart(self)
+    local message = CLM.MODELS.AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION,
+        CLM.MODELS.AuctionCommStartAuction:NewFromAuctionInfo(self.currentAuction)
+    )
+    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+end
+
+function AuctionManager:SendAuctionEnd()
+    local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.STOP_AUCTION, {})
+    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+end
+
+function AuctionManager:SendAntiSnipe()
+    local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ANTISNIPE, {})
+    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+end
+
+function AuctionManager:SendBidAccepted(name)
+    local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID, {})
+    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
+end
+
+function AuctionManager:SendBidDenied(name, reason)
+    local message = CLM.MODELS.AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.DENY_BID,
+        CLM.MODELS.AuctionCommDenyBid:New(reason)
+    )
+    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
+end
+
+function AuctionManager:SendBidInfo(name, bid)
+    local message = CLM.MODELS.AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
+        CLM.MODELS.AuctionCommDistributeBid:New(name, bid)
+    )
+    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
+    -- TODO this must be batched cause of RAID throttling
+    -- print(">>>SB[", name, bid:Value(), bid:Type(), "]")
+end
+
 -- Private
 
 local function UpdateAuctionInfo(self, raid)
@@ -438,11 +484,86 @@ function AuctionManager:AddItemByLink(itemLink, callbackFn)
     AddItemProxy(self, Item:CreateFromItemLink(itemLink), callbackFn)
 end
 
+local function EndAuction(self, postToChat)
+    self:SendAuctionEnd()
+    local bidTypeNames = {}
+
+    for bidder, type in pairs(self.userResponses.bidTypes) do
+        local bidTypeString = CLM.L["MS"]
+        if type == CONSTANTS.BID_TYPE.OFF_SPEC then
+            bidTypeString = CLM.L["OS"]
+        else
+            if self.raid:Roster():GetConfiguration("namedButtons") then
+                local name = self.raid:Roster():GetFieldName(type)
+                if name ~= "" then
+                    bidTypeString = name
+                end
+            end
+        end
+        bidTypeNames[bidder] = bidTypeString
+    end
+
+    self.lastAuctionEndTime = GetServerTime()
+    CLM.MODULES.EventManager:DispatchEvent(EVENT_END_AUCTION, {
+        link = self.itemLink,
+        id = self.itemId,
+        bids = self.userResponses.bids,
+        bidNames = bidTypeNames,
+        items = self.userResponses.upgradedItems,
+        time = self.lastAuctionEndTime,
+        isEPGP = (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.EPGP),
+        postToChat = postToChat
+     })
+end
+
+function AuctionManager:StopAuctionManual()
+    LOG:Trace("AuctionManager:StopAuctionManual()")
+    self.ticker:Cancel()
+    if CLM.GlobalConfigs:GetAuctionWarning() then
+        SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
+    end
+    EndAuction(self, false)
+    CLM.GUI.AuctionManager:UpdateBids()
+end
+
+local function StopAuctionTimed(self)
+    LOG:Trace("AuctionManager:StopAuctionTimed()")
+    self.auctionInProgress = false
+    self.ticker:Cancel()
+    if CLM.GlobalConfigs:GetAuctionWarning() then
+        SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
+    end
+    EndAuction(self, true)
+    CLM.GUI.AuctionManager:UpdateBids()
+end
+
+local function CreateNewTicker(self, countdown, endTime)
+    local auctionTimeLeft = 0
+    local lastCountdownValue = countdown
+    return C_TimerNewTicker(0.2, (function()
+        auctionTimeLeft = endTime - GetServerTime()
+        if lastCountdownValue > 0 and auctionTimeLeft <= lastCountdownValue then
+            SendChatMessage(tostring(mceil(auctionTimeLeft)), "RAID_WARNING")
+            lastCountdownValue = lastCountdownValue - 1
+        end
+        if auctionTimeLeft < 0.1 then
+            StopAuctionTimed(self)
+            return
+        end
+    end))
+end
+
 function AuctionManager:ClearItemList()
     self.currentAuction = self.pendingAuction
     self.pendingAuction = AuctionInfo:New() -- TODO config
     CLM.GUI.AuctionManager:SetVisibleAuctionItem(nil)
     self:RefreshGUI()
+end
+
+local function StartAuction(self, auction)
+    auction:SetCountdown(CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0)
+    auction:Start()
+    SendAuctionStart(self)
 end
 
 function AuctionManager:StartAuction()
@@ -494,40 +615,19 @@ function AuctionManager:StartAuction()
             SendChatMessage("Whisper me '!bid <amount>' to bid. Whisper '!dkp' to check your dkp.", "RAID_WARNING")
         end
     end
-    ---- TODO TODO TODO ----
-    ---- TODO TODO TODO ----
-    ---- TODO TODO TODO ----
-    -- -- if values are different than current (or default if no override) item value we will need to update the config
-    -- CLM.MODULES.RosterManager:SetRosterItemValues(self.raid:Roster(), itemId, values)
-    ---- TODO TODO TODO ----
-    ---- TODO TODO TODO ----
+    for id, auctionItem in pairs(auction:GetItems()) do
+        CLM.MODULES.RosterManager:SetRosterItemValues(auction.roster, id, auctionItem:GetValues())    
+    end
 
-    -- self:ClearBids()
-    -- -- calculate server end time
-    -- self.auctionEndTime = GetServerTime() + self.auctionTime
-    -- self.auctionTimeLeft = self.auctionEndTime
-
+    StartAuction(self, auction)
+    
+    -- TODO move to auction info
     -- -- workaround for open bid to allow 0 bid
     -- if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
     --     self.highestBid = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] - self.minimalIncrement
     -- end
 
-    -- -- Send auction information
-    -- self:SendAuctionStart(self.raid:Roster():UID())
-    -- -- Start Auction Ticker
-    -- self.lastCountdownValue = 5
-    -- self.ticker = C_TimerNewTicker(0.1, (function()
-    --     self.auctionTimeLeft = self.auctionEndTime - GetServerTime()
-    --     if CLM.GlobalConfigs:GetCountdownWarning() and self.lastCountdownValue > 0 and self.auctionTimeLeft <= self.lastCountdownValue and self.auctionTimeLeft <= 5 then
-    --         SendChatMessage(tostring(mceil(self.auctionTimeLeft)), "RAID_WARNING")
-    --         self.lastCountdownValue = self.lastCountdownValue - 1
-    --     end
-    --     if self.auctionTimeLeft < 0.1 then
-    --         self:StopAuctionTimed()
-    --         return
-    --     end
-    -- end))
-    -- -- Anonymous mapping
+    -- -- Anonymous mappin g
     -- self.anonymousMap = {}
     -- self.nextAnonymousId = 1
     -- -- Set auction in progress
@@ -537,60 +637,6 @@ function AuctionManager:StartAuction()
     -- -- Event
     -- CLM.MODULES.EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = self.itemId })
     -- return true
-end
-
-local function AuctionEnd(self, postToChat)
-    self:SendAuctionEnd()
-    local bidTypeNames = {}
-
-    for bidder, type in pairs(self.userResponses.bidTypes) do
-        local bidTypeString = CLM.L["MS"]
-        if type == CONSTANTS.BID_TYPE.OFF_SPEC then
-            bidTypeString = CLM.L["OS"]
-        else
-            if self.raid:Roster():GetConfiguration("namedButtons") then
-                local name = self.raid:Roster():GetFieldName(type)
-                if name ~= "" then
-                    bidTypeString = name
-                end
-            end
-        end
-        bidTypeNames[bidder] = bidTypeString
-    end
-
-    self.lastAuctionEndTime = GetServerTime()
-    CLM.MODULES.EventManager:DispatchEvent(EVENT_END_AUCTION, {
-        link = self.itemLink,
-        id = self.itemId,
-        bids = self.userResponses.bids,
-        bidNames = bidTypeNames,
-        items = self.userResponses.upgradedItems,
-        time = self.lastAuctionEndTime,
-        isEPGP = (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.EPGP),
-        postToChat = postToChat
-     })
-end
-
-function AuctionManager:StopAuctionTimed()
-    LOG:Trace("AuctionManager:StopAuctionTimed()")
-    self.auctionInProgress = false
-    self.ticker:Cancel()
-    if CLM.GlobalConfigs:GetAuctionWarning() then
-        SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
-    end
-    AuctionEnd(self, true)
-    CLM.GUI.AuctionManager:UpdateBids()
-end
-
-function AuctionManager:StopAuctionManual()
-    LOG:Trace("AuctionManager:StopAuctionManual()")
-    self.auctionInProgress = false
-    self.ticker:Cancel()
-    if CLM.GlobalConfigs:GetAuctionWarning() then
-        SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
-    end
-    AuctionEnd(self, false)
-    CLM.GUI.AuctionManager:UpdateBids()
 end
 
 function AuctionManager:AntiSnipe()
@@ -608,61 +654,6 @@ function AuctionManager:AntiSnipe()
             end
         end
     end
-end
-
--- COMMS
-
-function AuctionManager:SendAuctionStart(rosterUid)
-    local message = CLM.MODELS.AuctionCommStructure:New(
-        CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION,
-        CLM.MODELS.AuctionCommStartAuction:New(
-            self.auctionType,
-            self.itemValueMode,
-            self.values,
-            self.itemLink,
-            self.auctionTime,
-            self.auctionEndTime,
-            self.antiSnipe,
-            self.note,
-            self.minimalIncrement,
-            not self.useOS, -- for backwards compatibility
-            rosterUid
-        )
-    )
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-end
-
-function AuctionManager:SendAuctionEnd()
-    local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.STOP_AUCTION, {})
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-end
-
-function AuctionManager:SendAntiSnipe()
-    local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ANTISNIPE, {})
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
-end
-
-function AuctionManager:SendBidAccepted(name)
-    local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID, {})
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
-end
-
-function AuctionManager:SendBidDenied(name, reason)
-    local message = CLM.MODELS.AuctionCommStructure:New(
-        CONSTANTS.AUCTION_COMM.TYPE.DENY_BID,
-        CLM.MODELS.AuctionCommDenyBid:New(reason)
-    )
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
-end
-
-function AuctionManager:SendBidInfo(name, bid)
-    local message = CLM.MODELS.AuctionCommStructure:New(
-        CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
-        CLM.MODELS.AuctionCommDistributeBid:New(name, bid)
-    )
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
-    -- TODO this must be batched cause of RAID throttling
-    -- print(">>>SB[", name, bid:Value(), bid:Type(), "]")
 end
 
 local nickMap = {

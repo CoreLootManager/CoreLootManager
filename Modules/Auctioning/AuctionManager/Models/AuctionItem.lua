@@ -38,6 +38,10 @@ function AuctionItem:GetAllResponses()
     return self.userResponses
 end
 
+function AuctionItem:ClearResponses()
+    self.userResponses = {}
+end
+
 function AuctionItem:SetAwardId(entryId)
     self.awardEntryId = entryId
 end

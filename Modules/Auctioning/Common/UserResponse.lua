@@ -13,7 +13,7 @@ local assertType = UTILS.assertType
 local AuctionItemUserResponse = {} -- AuctionItemUserResponse
 AuctionItemUserResponse.__index = AuctionItemUserResponse
 
-function AuctionItemUserResponse:New(value, type, upgradedItems)
+function AuctionItemUserResponse:New(value, type)
     local o = {}
     setmetatable(o, self)
 

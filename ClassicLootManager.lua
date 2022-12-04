@@ -10,6 +10,7 @@ CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0
 CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
+CLM.COMM_CHANNELS = {}
 CLM.UTILS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
