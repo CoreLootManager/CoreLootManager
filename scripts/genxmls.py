@@ -22,11 +22,11 @@ def writeFilelistFile(fhandler: TextIOWrapper, files: list, dirs: list):
     lines.append('<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/')
     lines.append('\t..\\FrameXML\\UI.xsd">')
     for dir in dirs:
-        lines.append('<Include file="' + dir + FILELIST + '"/>')
+        lines.append('\t<Include file="' + dir + "\\" + FILELIST + '"/>')
     for file in files:
-        lines.append('<Script file="' + file + '"/>')
+        lines.append('\t<Script file="' + file + '"/>')
     lines.append('</Ui>')
-    fhandler.writelines(lines)
+    fhandler.write('\n'.join(lines))
 
 def writeFilelist(path: PosixPath, base:PosixPath):
     if not path.is_dir(): return
@@ -41,8 +41,8 @@ def writeFilelist(path: PosixPath, base:PosixPath):
                 writeFilelist(node, path)
             else:
                 files.append(node_relative.as_posix())
-    # with open(path / FILELIST, "w", encoding="utf-8") as fhandler:
-        # writeFilelistFile(fhandler, files, dirs)
+    with open(path / FILELIST, "w", encoding="utf-8") as fhandler:
+        writeFilelistFile(fhandler, files, dirs)
 
 writeFilelist(PosixPath("."), PosixPath("."))
 
