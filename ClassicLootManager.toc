@@ -14,39 +14,7 @@
 ## SavedVariables: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon
 ## LoadOnDemand: 0
 
-# Core Libs
-Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
-
-# UI Libs
-Libs\lib-st\lib-st.xml
-Libs\LibCandyBar-3.0\lib.xml
-Libs\LibCandyBar-3.0\embeds.xml
-Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
-Libs\LibDBIcon-1.0\LibDBIcon-1.0\lib.xml
-Libs\LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.lua
-
-# Data Libs
-Libs\LibDeflate\lib.xml
-Libs\LibSerialize\lib.xml
-Libs\LibLogger\lib.xml
-Libs\LibEventSourcing\LibEventSourcing.xml
-Libs\LibEventDispatcher\LibEventDispatcher.xml
-
-# Support Libs
-Libs\LibJsonLua\LibJsonLua.lua
-Libs\LibLuaXML\LibLuaXML.lua
-
-# ACE3
-Libs\Ace3\AceAddon-3.0\AceAddon-3.0.xml
-Libs\Ace3\AceEvent-3.0\AceEvent-3.0.xml
-Libs\Ace3\AceTimer-3.0\AceTimer-3.0.xml
-Libs\Ace3\AceBucket-3.0\AceBucket-3.0.xml
-Libs\Ace3\AceHook-3.0\AceHook-3.0.xml
-Libs\Ace3\AceConsole-3.0\AceConsole-3.0.xml
-Libs\Ace3\AceGUI-3.0\AceGUI-3.0.xml
-Libs\Ace3\AceConfig-3.0\AceConfig-3.0.xml
-Libs\Ace3\AceComm-3.0\AceComm-3.0.xml
+_filelist.xml
 
 #Libs\Ace3\AceDB-3.0\AceDB-3.0.xml
 #Libs\Ace3\AceDBOptions-3.0\AceDBOptions-3.0.xml
@@ -54,110 +22,110 @@ Libs\Ace3\AceComm-3.0\AceComm-3.0.xml
 #Libs\Ace3\AceTab-3.0\AceTab-3.0.xml
 #Libs\Ace3\AceSerializer-3.0\AceSerializer-3.0.xml
 
-# Locale
-Locale\enUS.lua
-Locale\deDE.lua
-Locale\ruRU.lua
-Locale\frFR.lua
-Locale\esES.lua
-Locale\zhCN.lua
-Locale\zhTW.lua
-#Locale\itIT.lua
+# # Locale
+# Locale\enUS.lua
+# Locale\deDE.lua
+# Locale\ruRU.lua
+# Locale\frFR.lua
+# Locale\esES.lua
+# Locale\zhCN.lua
+# Locale\zhTW.lua
+# #Locale\itIT.lua
 
-# Addon Core
-ClassicLootManager.lua
-Utils.lua
+# # Addon Core
+# ClassicLootManager.lua
+# Utils.lua
 
-Modules\Logger\Logger.lua
-Modules\Changelog\Changelog.lua
+# Modules\Logger\Logger.lua
+# Modules\Changelog\Changelog.lua
 
-# Addon models
-Modules\ProfileManager\Profile.lua
-Modules\ProfileManager\PruneLog.lua
-Modules\RosterManager\PointInfo.lua
-Modules\RosterManager\RosterConfiguration.lua
-Modules\RosterManager\ItemValueCalculator.lua
-Modules\RosterManager\Roster.lua
-Modules\ProfileManager\LedgerEntries.lua
-Modules\RosterManager\LedgerEntries.lua
-Modules\PointManager\LedgerEntries.lua
-Modules\PointManager\PointHistory.lua
-Modules\LootManager\LedgerEntries.lua
-Modules\LootManager\Loot.lua
-Modules\AuctionManager\Models\AuctionCommStructures.lua
-Modules\AuctionManager\Models\AuctionItemUserResponse.lua
-Modules\AuctionManager\Models\AuctionItem.lua
-Modules\AuctionManager\Models\AuctionInfo.lua
-Modules\BiddingManager\BiddingCommStructures.lua
-Modules\RaidManager\LedgerEntries.lua
-Modules\RaidManager\Raid.lua
-Modules\StandbyStagingManager\StandbyStagingCommStructures.lua
-Modules\ProfileInfoManager\ProfileInfoCommStructures.lua
+# # Addon models
+# Modules\ProfileManager\Profile.lua
+# Modules\ProfileManager\PruneLog.lua
+# Modules\RosterManager\PointInfo.lua
+# Modules\RosterManager\RosterConfiguration.lua
+# Modules\RosterManager\ItemValueCalculator.lua
+# Modules\RosterManager\Roster.lua
+# Modules\ProfileManager\LedgerEntries.lua
+# Modules\RosterManager\LedgerEntries.lua
+# Modules\PointManager\LedgerEntries.lua
+# Modules\PointManager\PointHistory.lua
+# Modules\LootManager\LedgerEntries.lua
+# Modules\LootManager\Loot.lua
+# Modules\AuctionManager\Models\AuctionCommStructures.lua
+# Modules\AuctionManager\Models\AuctionItemUserResponse.lua
+# Modules\AuctionManager\Models\AuctionItem.lua
+# Modules\AuctionManager\Models\AuctionInfo.lua
+# Modules\BiddingManager\BiddingCommStructures.lua
+# Modules\RaidManager\LedgerEntries.lua
+# Modules\RaidManager\Raid.lua
+# Modules\StandbyStagingManager\StandbyStagingCommStructures.lua
+# Modules\ProfileInfoManager\ProfileInfoCommStructures.lua
 
-# Addon modules (Controllers)
-Modules\Database\Database.lua
-Modules\ACL\GuildInfoListener.lua
-Modules\ACL\ACL.lua
-Modules\Comms\Comms.lua
-Modules\EventManager\EventManager.lua
-Modules\ConfigManager\ConfigManager.lua
-Modules\LedgerManager\LedgerManager.lua
-Modules\ProfileManager\ProfileManager.lua
-Modules\RosterManager\AttendanceTracker.lua
-Modules\RosterManager\RosterManager.lua
-Modules\PointManager\PointManager.lua
-Modules\LootManager\LootManager.lua
-Modules\RaidManager\RaidManager.lua
-Modules\StandbyStagingManager\StandbyStagingManager.lua
-Modules\AuctionManager\AuctionManager.lua
-Modules\AuctionManager\AutoAssign.lua
-Modules\BiddingManager\BiddingManager.lua
-Modules\ProfileInfoManager\ProfileInfoManager.lua
-Modules\SandboxManager\SandboxManager.lua
-Modules\AutoAwardManager\AutoAwardManager.lua
-Modules\LootQueueManager\LootQueueManager.lua
-Modules\AuctionHistoryManager\AuctionHistoryManager.lua
-Modules\AutoAwardManager\EncounterIDs.lua
-Modules\RosterManager\IndirectSlotMap.lua
+# # Addon modules (Controllers)
+# Modules\Database\Database.lua
+# Modules\ACL\GuildInfoListener.lua
+# Modules\ACL\ACL.lua
+# Modules\Comms\Comms.lua
+# Modules\EventManager\EventManager.lua
+# Modules\ConfigManager\ConfigManager.lua
+# Modules\LedgerManager\LedgerManager.lua
+# Modules\ProfileManager\ProfileManager.lua
+# Modules\RosterManager\AttendanceTracker.lua
+# Modules\RosterManager\RosterManager.lua
+# Modules\PointManager\PointManager.lua
+# Modules\LootManager\LootManager.lua
+# Modules\RaidManager\RaidManager.lua
+# Modules\StandbyStagingManager\StandbyStagingManager.lua
+# Modules\AuctionManager\AuctionManager.lua
+# Modules\AuctionManager\AutoAssign.lua
+# Modules\BiddingManager\BiddingManager.lua
+# Modules\ProfileInfoManager\ProfileInfoManager.lua
+# Modules\SandboxManager\SandboxManager.lua
+# Modules\AutoAwardManager\AutoAwardManager.lua
+# Modules\LootQueueManager\LootQueueManager.lua
+# Modules\AuctionHistoryManager\AuctionHistoryManager.lua
+# Modules\AutoAwardManager\EncounterIDs.lua
+# Modules\RosterManager\IndirectSlotMap.lua
 
-# Addon Options and GUIs (View)
-Modules\RosterManager\Options.lua
-#Modules\AuctionManager\GUI.lua
-Modules\AuctionManager\MultiGUI.lua
-Modules\BiddingManager\GUI.lua
-Modules\Changelog\GUI.lua
-Modules\LootQueueManager\GUI.lua
-Modules\AuctionHistoryManager\GUI.lua
+# # Addon Options and GUIs (View)
+# Modules\RosterManager\Options.lua
+# #Modules\AuctionManager\GUI.lua
+# Modules\AuctionManager\MultiGUI.lua
+# Modules\BiddingManager\GUI.lua
+# Modules\Changelog\GUI.lua
+# Modules\LootQueueManager\GUI.lua
+# Modules\AuctionHistoryManager\GUI.lua
 
-Modules\GUI\AceGUIWidget-LibScrollingTable.lua
-Modules\GUI\Filters.lua
-Modules\GUI\UnifiedGUI.lua
-Modules\GUI\UnifiedGUI_Standings.lua
-Modules\GUI\UnifiedGUI_History.lua
-Modules\GUI\UnifiedGUI_Profiles.lua
-Modules\GUI\UnifiedGUI_Raids.lua
-Modules\GUI\UnifiedGUI_Audit.lua
+# Modules\GUI\AceGUIWidget-LibScrollingTable.lua
+# Modules\GUI\Filters.lua
+# Modules\GUI\UnifiedGUI.lua
+# Modules\GUI\UnifiedGUI_Standings.lua
+# Modules\GUI\UnifiedGUI_History.lua
+# Modules\GUI\UnifiedGUI_Profiles.lua
+# Modules\GUI\UnifiedGUI_Raids.lua
+# Modules\GUI\UnifiedGUI_Audit.lua
 
 
-# Alerts
-Alerts\Alerts.xml
-Alerts\Alerts.lua
+# # Alerts
+# Alerts\Alerts.xml
+# Alerts\Alerts.lua
 
-# Global
-Global\GlobalSlashCommands.lua
-Global\GlobalConfigs.lua
-Global\GlobalChatMessageHandlers.lua
-Global\GlobalBindings.lua
+# # Global
+# Global\GlobalSlashCommands.lua
+# Global\GlobalConfigs.lua
+# Global\GlobalChatMessageHandlers.lua
+# Global\GlobalBindings.lua
 
-# Extra
-Tooltips.lua
-MinimapIcon.lua
-Migration.lua
+# # Extra
+# Tooltips.lua
+# MinimapIcon.lua
+# Migration.lua
 
-# Integrations
-Integrations\Integrations.lua
-Integrations\Exporter.lua
-Integrations\ExportConfiguration.lua
-Integrations\GUI.lua
-Integrations\Import.lua
-Integrations\ImportCSV.lua
+# # Integrations
+# Integrations\Integrations.lua
+# Integrations\Exporter.lua
+# Integrations\ExportConfiguration.lua
+# Integrations\GUI.lua
+# Integrations\Import.lua
+# Integrations\ImportCSV.lua

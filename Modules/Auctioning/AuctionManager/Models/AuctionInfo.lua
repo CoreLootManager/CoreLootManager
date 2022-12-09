@@ -53,10 +53,6 @@ function AuctionInfo:New()
 
     o.endTime = 0
 
-    -- Auxilary
-
-    o.enableCountdown = true
-
     return o
 end
 
@@ -170,10 +166,6 @@ function AuctionInfo:GetItemCount()
     return self.itemCount
 end
 
-function AuctionInfo:SetCountdown(value)
-    self.countdown = tonumber(value) or 5
-end
-
 function AuctionInfo:Start()
     assertNotInProgress(self)
     self.endTime = GetServerTime() + self.auctionTime
@@ -182,14 +174,11 @@ function AuctionInfo:Start()
     for _, item in pairs(self.items) do
         item:ClearResponses()
     end
-
-    -- TODO
-    -- Start Auction Ticker
-    self.ticker = CreateNewTicker()
 end
 
 function AuctionInfo:End()
     assertInProgress(self)
+    self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
 end
 
 -- Configuration API

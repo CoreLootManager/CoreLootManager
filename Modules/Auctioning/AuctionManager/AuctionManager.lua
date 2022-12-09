@@ -485,35 +485,36 @@ function AuctionManager:AddItemByLink(itemLink, callbackFn)
 end
 
 local function EndAuction(self, postToChat)
+    self.currentAuction:End()
     self:SendAuctionEnd()
-    local bidTypeNames = {}
+    -- local bidTypeNames = {}
 
-    for bidder, type in pairs(self.userResponses.bidTypes) do
-        local bidTypeString = CLM.L["MS"]
-        if type == CONSTANTS.BID_TYPE.OFF_SPEC then
-            bidTypeString = CLM.L["OS"]
-        else
-            if self.raid:Roster():GetConfiguration("namedButtons") then
-                local name = self.raid:Roster():GetFieldName(type)
-                if name ~= "" then
-                    bidTypeString = name
-                end
-            end
-        end
-        bidTypeNames[bidder] = bidTypeString
-    end
+    -- for bidder, type in pairs(self.userResponses.bidTypes) do
+    --     local bidTypeString = CLM.L["MS"]
+    --     if type == CONSTANTS.BID_TYPE.OFF_SPEC then
+    --         bidTypeString = CLM.L["OS"]
+    --     else
+    --         if self.raid:Roster():GetConfiguration("namedButtons") then
+    --             local name = self.raid:Roster():GetFieldName(type)
+    --             if name ~= "" then
+    --                 bidTypeString = name
+    --             end
+    --         end
+    --     end
+    --     bidTypeNames[bidder] = bidTypeString
+    -- end
 
-    self.lastAuctionEndTime = GetServerTime()
-    CLM.MODULES.EventManager:DispatchEvent(EVENT_END_AUCTION, {
-        link = self.itemLink,
-        id = self.itemId,
-        bids = self.userResponses.bids,
-        bidNames = bidTypeNames,
-        items = self.userResponses.upgradedItems,
-        time = self.lastAuctionEndTime,
-        isEPGP = (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.EPGP),
-        postToChat = postToChat
-     })
+    -- self.lastAuctionEndTime = GetServerTime()
+    -- CLM.MODULES.EventManager:DispatchEvent(EVENT_END_AUCTION, {
+    --     link = self.itemLink,
+    --     id = self.itemId,
+    --     bids = self.userResponses.bids,
+    --     bidNames = bidTypeNames,
+    --     items = self.userResponses.upgradedItems,
+    --     time = self.lastAuctionEndTime,
+    --     isEPGP = (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.EPGP),
+    --     postToChat = postToChat
+    --  })
 end
 
 function AuctionManager:StopAuctionManual()
@@ -523,28 +524,29 @@ function AuctionManager:StopAuctionManual()
         SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
     end
     EndAuction(self, false)
-    CLM.GUI.AuctionManager:UpdateBids()
+    -- CLM.GUI.AuctionManager:UpdateBids()
+    CLM.GUI.AuctionManager:Refresh()
 end
 
 local function StopAuctionTimed(self)
     LOG:Trace("AuctionManager:StopAuctionTimed()")
-    self.auctionInProgress = false
     self.ticker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
     end
     EndAuction(self, true)
-    CLM.GUI.AuctionManager:UpdateBids()
+    -- CLM.GUI.AuctionManager:UpdateBids()
+    CLM.GUI.AuctionManager:Refresh()
 end
 
-local function CreateNewTicker(self, countdown, endTime)
-    local auctionTimeLeft = 0
-    local lastCountdownValue = countdown
-    return C_TimerNewTicker(0.2, (function()
-        auctionTimeLeft = endTime - GetServerTime()
-        if lastCountdownValue > 0 and auctionTimeLeft <= lastCountdownValue then
+local function CreateNewTicker(self, countdown, _endTime)
+    self.tickerLastCountdownValue = countdown
+    self.tickerEndTime = _endTime
+    self.ticker = C_TimerNewTicker(0.2, (function()
+        local auctionTimeLeft = self.tickerEndTime - GetServerTime()
+        if self.tickerLastCountdownValue > 0 and auctionTimeLeft <= self.tickerLastCountdownValue then
             SendChatMessage(tostring(mceil(auctionTimeLeft)), "RAID_WARNING")
-            lastCountdownValue = lastCountdownValue - 1
+            self.tickerLastCountdownValue = self.tickerLastCountdownValue - 1
         end
         if auctionTimeLeft < 0.1 then
             StopAuctionTimed(self)
@@ -558,12 +560,6 @@ function AuctionManager:ClearItemList()
     self.pendingAuction = AuctionInfo:New() -- TODO config
     CLM.GUI.AuctionManager:SetVisibleAuctionItem(nil)
     self:RefreshGUI()
-end
-
-local function StartAuction(self, auction)
-    auction:SetCountdown(CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0)
-    auction:Start()
-    SendAuctionStart(self)
 end
 
 function AuctionManager:StartAuction()
@@ -597,17 +593,17 @@ function AuctionManager:StartAuction()
     local commData = CLM.MODELS.AuctionCommStartAuction:NewFromAuctionInfo(auction)
     if CLM.GlobalConfigs:GetAuctionWarning() then
         local numItems = auction:GetItemCount()
-        local _, item = next(auction:GetItems())
+        local _, auctionItem = next(auction:GetItems())
         local auctionMessage
         if numItems > 1 then
             auctionMessage = sformat(CLM.L["Auction of %s items."], numItems)
         else
-            auctionMessage = sformat(CLM.L["Auction of %s"], item:GetItemLink())
+            auctionMessage = sformat(CLM.L["Auction of %s"], auctionItem.item:GetItemLink())
         end
         SendChatMessage(auctionMessage , "RAID_WARNING")
         auctionMessage = ""
         auctionMessage = auctionMessage .. sformat(CLM.L["Auction time: %s."] .. " ", auction:GetTime())
-        if self.antiSnipe > 0 then
+        if auction:GetAntiSnipe() > 0 then
             auctionMessage = auctionMessage .. sformat(CLM.L["Anti-snipe time: %s."], auction:GetAntiSnipe())
         end
         SendChatMessage(auctionMessage , "RAID_WARNING")
@@ -616,11 +612,9 @@ function AuctionManager:StartAuction()
         end
     end
     for id, auctionItem in pairs(auction:GetItems()) do
-        CLM.MODULES.RosterManager:SetRosterItemValues(auction.roster, id, auctionItem:GetValues())    
+        CLM.MODULES.RosterManager:SetRosterItemValues(auction.roster, id, auctionItem:GetValues())
     end
 
-    StartAuction(self, auction)
-    
     -- TODO move to auction info
     -- -- workaround for open bid to allow 0 bid
     -- if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
@@ -637,6 +631,12 @@ function AuctionManager:StartAuction()
     -- -- Event
     -- CLM.MODULES.EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = self.itemId })
     -- return true
+
+    auction:Start()
+
+    SendAuctionStart(self)
+
+    CreateNewTicker(self, CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0, auction:GetEndTime())
 end
 
 function AuctionManager:AntiSnipe()

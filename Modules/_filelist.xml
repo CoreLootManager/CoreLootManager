@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+	..\FrameXML\UI.xsd">
+	<Include file="Common\_filelist.xml"/>
+	<Include file="Ledger\_filelist.xml"/>
+	<Include file="Profiles\_filelist.xml"/>
+	<Include file="Rosters\_filelist.xml"/>
+	<Include file="Raids\_filelist.xml"/>
+	
+	<Include file="Points\_filelist.xml"/>
+	<Include file="Loot\_filelist.xml"/>
+	<Include file="Auctioning\_filelist.xml"/>
+
+	<Include file="Integrations\_filelist.xml"/>
+	<Include file="Global\_filelist.xml"/>
+	<Include file="Alerts\_filelist.xml"/>
+	<Include file="GUI\_filelist.xml"/>
+</Ui>
