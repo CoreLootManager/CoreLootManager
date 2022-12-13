@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local BIDDING_COMM_PREFIX = "Bidding1"
-
 local INVTYPE_to_INVSLOT_map = {
     ["INVTYPE_HEAD"]            = {INVSLOT_HEAD},
     ["INVTYPE_NECK"]            = {INVSLOT_NECK},
@@ -49,39 +47,30 @@ local function GetUpgradedItems(itemId)
     return items
 end
 
-local BiddingManager = {}
-function BiddingManager:Initialize()
-    LOG:Trace("BiddingManager:Initialize()")
-
-    self.bids = {}
-    self.lastBid = 0
-    self.guiBid = false -- hiding responses for bidding through chat command (which shouldnt be used anyway)
-    self.auctionInProgress = false
-
-    CLM.MODULES.Comms:Register(BIDDING_COMM_PREFIX, (function(rawMessage, distribution, sender)
-        local message = CLM.MODELS.BiddingCommStructure:New(rawMessage)
-        if CONSTANTS.BIDDING_COMM.TYPES[message:Type()] == nil then return end
-        -- Bidding Manager is owner of the channel
-        -- pass handling to Auction Manager
-        CLM.MODULES.AuctionManager:HandleIncomingMessage(message, distribution, sender)
-    end), CONSTANTS.ACL.LEVEL.PLEBS, true)
-
-    self:ClearAuctionInfo()
-
-    self.handlers = {
-        [CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION]     = "HandleStartAuction",
-        [CONSTANTS.AUCTION_COMM.TYPE.STOP_AUCTION]      = "HandleStopAuction",
-        [CONSTANTS.AUCTION_COMM.TYPE.ANTISNIPE]         = "HandleAntiSnipe",
-        [CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID]        = "HandleAcceptBid",
-        [CONSTANTS.AUCTION_COMM.TYPE.DENY_BID]          = "HandleDenyBid",
-        [CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID]    = "HandleDistributeBid"
-    }
-
+local function InitializeDB(self)
     self.db = CLM.MODULES.Database:Personal('bidding', {
         autoOpen = true,
         autoUpdateBidValue = false
     })
+end
 
+local function SetAutoOpen(self, value)
+    self.db.autoOpen = value and true or false
+end
+
+local function GetAutoOpen(self)
+    return self.db.autoOpen
+end
+
+local function SetAutoUpdateBidValue(self, value)
+    self.db.autoUpdateBidValue = value and true or false
+end
+
+local function GetAutoUpdateBidValue(self)
+    return self.db.autoUpdateBidValue
+end
+
+local function CreateOptions(self)
     local options = {
         bidding_header = {
             type = "header",
@@ -92,8 +81,8 @@ function BiddingManager:Initialize()
             name = CLM.L["Toggle Bidding auto-open"],
             desc = CLM.L["Toggle auto open and auto close on auction start and stop"],
             type = "toggle",
-            set = function(i, v) self:SetAutoOpen(v) end,
-            get = function(i) return self:GetAutoOpen() end,
+            set = function(i, v) SetAutoOpen(self, v) end,
+            get = function(i) return GetAutoOpen(self) end,
             width = "full",
             order = 71
           },
@@ -101,32 +90,42 @@ function BiddingManager:Initialize()
             name = CLM.L["Enable auto-update bid values"],
             desc = CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."],
             type = "toggle",
-            set = function(i, v) self:SetAutoUpdateBidValue(v) end,
-            get = function(i) return self:GetAutoUpdateBidValue() end,
+            set = function(i, v) SetAutoUpdateBidValue(self, v) end,
+            get = function(i) return GetAutoUpdateBidValue(self) end,
             width = "full",
             order = 72
           }
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
-
-
-    self._initialized = true
 end
 
-function BiddingManager:SetAutoOpen(value)
-    self.db.autoOpen = value and true or false
-end
+local BiddingManager = {}
+function BiddingManager:Initialize()
+    LOG:Trace("BiddingManager:Initialize()")
 
-function BiddingManager:GetAutoOpen()
-    return self.db.autoOpen
-end
+    InitializeDB(self)
 
-function BiddingManager:SetAutoUpdateBidValue(value)
-    self.db.autoUpdateBidValue = value and true or false
-end
+    CreateOptions(self)
 
-function BiddingManager:GetAutoUpdateBidValue()
-    return self.db.autoUpdateBidValue
+    CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.AUCTION,
+    (function(rawMessage, distribution, sender)
+        local message = CLM.MODELS.AuctionCommStructure:New(rawMessage)
+        if CLM.CONSTANTS.AUCTION_COMM.TYPES[message:Type()] == nil then return end
+        self:HandleIncomingMessage(message, distribution, sender)
+    end),
+    (function(name)
+        return CLM.MODULES.AuctionManager:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
+    end),
+    true)
+
+    self.handlers = {
+        [CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION]     = "HandleStartAuction",
+        [CONSTANTS.AUCTION_COMM.TYPE.STOP_AUCTION]      = "HandleStopAuction",
+        [CONSTANTS.AUCTION_COMM.TYPE.ANTISNIPE]         = "HandleAntiSnipe",
+        [CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID]        = "HandleAcceptBid",
+        [CONSTANTS.AUCTION_COMM.TYPE.DENY_BID]          = "HandleDenyBid",
+        [CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID]    = "HandleDistributeBid"
+    }
 end
 
 function BiddingManager:GetLastBidValue()
@@ -147,7 +146,7 @@ function BiddingManager:Bid(value, type)
         CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
         CLM.MODELS.BiddingCommSubmitBid:New(value, type, GetUpgradedItems(itemId))
     )
-    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:CancelBid()
@@ -156,7 +155,7 @@ function BiddingManager:CancelBid()
     self.lastBid = nil
     self.guiBid = true
     local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID, {})
-    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyPass()
@@ -165,21 +164,21 @@ function BiddingManager:NotifyPass()
     self.lastBid = CLM.L["PASS"]
     self.guiBid = true
     local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
-    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyCantUse()
     LOG:Trace("BiddingManager:NotifyCantUse()")
     if not self.auctionInProgress then return end
     local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE, {})
-    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:NotifyHide()
     LOG:Trace("BiddingManager:NotifyHide()")
     if not self.auctionInProgress then return end
     local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE, {})
-    CLM.MODULES.Comms:Send(BIDDING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:ClearAuctionInfo()
@@ -195,6 +194,7 @@ function BiddingManager:HandleIncomingMessage(message, _, sender)
         LOG:Error("Received unauthorised auction command from %s", sender)
         return
     end
+
     local mtype = message:Type() or 0
     if self.handlers[mtype] then
         self[self.handlers[mtype]](self, message:Data(), sender)
@@ -207,115 +207,165 @@ PlayStartSound = function()
     if not CLM.GlobalConfigs:GetSounds() then return end
     PlaySound(12889)
 end
+
 PlayEndSound = function()
     if not CLM.GlobalConfigs:GetSounds() then return end
     PlaySound(12867)
 end
 
+local function DefaultCallback(_)
+    -- AuctionManager:RefreshGUI()
+end
+
+local function AddItemInternal(auctionInfo, item, note, values, callbackFn)
+    callbackFn = callbackFn or DefaultCallback
+
+    local auctionItem = auctionInfo:AddItem(item)
+    if auctionItem then
+        auctionItem:SetNote(note)
+        auctionItem:SetValues(values)
+    end
+    callbackFn(auctionItem)
+end
+
+local function AddItemToAuction(auctionInfo, item, note, values, callbackFn)
+    if not item:IsItemEmpty() then
+        if item:IsItemDataCached() then
+            AddItemInternal(auctionInfo, item, note, values, callbackFn)
+        else
+            item:ContinueOnItemLoad(function() AddItemInternal(auctionInfo, item, note, values, callbackFn) end)
+        end
+    end
+end
+
+local function StartAuction(self, data)
+    local auction = CLM.MODELS.AuctionInfo:New()
+    auction:UpdateRaid(CLM.MODULES.RaidManager:GetRaid())
+
+    for id, info in data:Items() do
+        AddItemToAuction(auction, Item:CreateFromItemID(id), info.note, info.values)
+    end
+
+    auction:SetTime(data:Time())
+    auction:SetAntiSnipe(data:AntiSnipe())
+    auction:Start(data:EndTime())
+
+    self.auction = auction
+end
+
+local function EndAuction(self)
+    self.auction:End()
+end
+
+function BiddingManager:IsAuctionInProgress()
+    return self.auction and self.auction:IsInProgress()
+end
+
 function BiddingManager:HandleStartAuction(data, sender)
     LOG:Trace("BiddingManager:HandleStartAuction()")
-    if self.auctionInProgress then
+    if self:IsAuctionInProgress() then
         LOG:Debug("Received new auction from %s while auction is in progress", sender)
         return
     end
-    self.auctionInfo = data
     self.auctioneer = sender
-    self.auctionInProgress = true
+    if not CLM.MODULES.RaidManager:IsInRaid() then
+        LOG:Message("Received new auction while not in raid.")
+        return
+    end
+    StartAuction(self, data)
     PlayStartSound()
-    CLM.GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
-    LOG:Message(CLM.L["Auction of "] .. self.auctionInfo:ItemLink())
+    -- CLM.GUI.BiddingManager:StartAuction(self:GetAutoOpen(), self.auctionInfo)
+    -- LOG:Message(CLM.L["Auction of "] .. self.auctionInfo:ItemLink())
 end
 
 function BiddingManager:HandleStopAuction(_, sender)
     LOG:Trace("BiddingManager:HandleStopAuction()")
-    if not self.auctionInProgress then
+    if not self:IsAuctionInProgress() then
         LOG:Debug("Received auction stop from %s while no auctions are in progress", sender)
         return
     end
-    self.auctionInProgress = false
-    self:ClearAuctionInfo()
+    EndAuction(self)
     PlayEndSound()
-    CLM.GUI.BiddingManager:EndAuction()
-    LOG:Message(CLM.L["Auction finished"])
+    -- TODO Auction Finish
+    -- CLM.GUI.BiddingManager:EndAuction()
+    -- LOG:Message(CLM.L["Auction finished"])
 end
 
 function BiddingManager:HandleAntiSnipe(_, sender)
     LOG:Trace("BiddingManager:HandleAntiSnipe()")
-    if not self.auctionInProgress then
-        LOG:Debug("Received antisnipe from %s while no auctions are in progress", sender)
-        return
-    end
-    CLM.GUI.BiddingManager:AntiSnipe()
+    -- if not self.auctionInProgress then
+    --     LOG:Debug("Received antisnipe from %s while no auctions are in progress", sender)
+    --     return
+    -- end
+    -- CLM.GUI.BiddingManager:AntiSnipe()
 end
 
 function BiddingManager:HandleAcceptBid(_, sender)
     LOG:Trace("BiddingManager:HandleAcceptBid()")
-    if not self.auctionInProgress then
-        LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
-        return
-    end
-    if self.guiBid then
-        local value =  self.lastBid or CLM.L["cancel"]
-        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
-        LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], value)
-        self.guiBid = false
-    end
+    -- if not self.auctionInProgress then
+    --     LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
+    --     return
+    -- end
+    -- if self.guiBid then
+    --     local value =  self.lastBid or CLM.L["cancel"]
+    --     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
+    --     LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], value)
+    --     self.guiBid = false
+    -- end
 end
 
 function BiddingManager:HandleDenyBid(data, sender)
     LOG:Trace("BiddingManager:HandleDenyBid()")
-    if not self.auctionInProgress then
-        LOG:Debug("Received deny bid from %s while no auctions are in progress", sender)
-        return
-    end
-    if self.guiBid then
-        local value = self.lastBid or CLM.L["cancel"]
-        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
-        LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], value, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"])
-        self.guiBid = false
-    end
+    -- if not self.auctionInProgress then
+    --     LOG:Debug("Received deny bid from %s while no auctions are in progress", sender)
+    --     return
+    -- end
+    -- if self.guiBid then
+    --     local value = self.lastBid or CLM.L["cancel"]
+    --     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
+    --     LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], value, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"])
+    --     self.guiBid = false
+    -- end
 end
 
 function BiddingManager:HandleDistributeBid(data, sender)
     LOG:Trace("BiddingManager:HandleDistributeBid()")
-    if not self.auctionInProgress then
-        LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
-        return
-    end
-    local bid = data:Value()
-    if type(bid) == "table" then
-        bid = CLM.MODELS.BiddingCommSubmitBid:New(bid)
-    else -- old comms
-        bid = CLM.MODELS.BiddingCommSubmitBid:New(tonumber(bid) or 0, CONSTANTS.BID_TYPE.PASS, {})
-    end
+    -- if not self.auctionInProgress then
+    --     LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
+    --     return
+    -- end
+    -- local bid = data:Value()
+    -- if type(bid) == "table" then
+    --     bid = CLM.MODELS.BiddingCommSubmitBid:New(bid)
+    -- else -- old comms
+    --     bid = CLM.MODELS.BiddingCommSubmitBid:New(tonumber(bid) or 0, CONSTANTS.BID_TYPE.PASS, {})
+    -- end
 
-    self.bids[data:Name()] = bid
-    -- print("<<<RB[", data:Name(), bid:Value(), bid:Type(), "]")
-    if self:GetAutoUpdateBidValue() and (bid:Type() == (CONSTANTS.BID_TYPE.MAIN_SPEC)) then
-        CLM.GUI.BiddingManager:UpdateCurrentBidValue((tonumber(bid:Value()) or 0) + self.auctionInfo:Increment())
-    else
-        CLM.GUI.BiddingManager:RefreshBidList()
-    end
+    -- self.bids[data:Name()] = bid
+    -- -- print("<<<RB[", data:Name(), bid:Value(), bid:Type(), "]")
+    -- if self:GetAutoUpdateBidValue() and (bid:Type() == (CONSTANTS.BID_TYPE.MAIN_SPEC)) then
+    --     CLM.GUI.BiddingManager:UpdateCurrentBidValue((tonumber(bid:Value()) or 0) + self.auctionInfo:Increment())
+    -- else
+    --     CLM.GUI.BiddingManager:RefreshBidList()
+    -- end
 end
 
-function BiddingManager:GetBids()
-    return self.bids
+function BiddingManager:GetAuctionInfo()
+    return self.auction
 end
+
+-- function BiddingManager:GetBids()
+--     return self.bids
+-- end
 
 CONSTANTS.BIDDING_COMM = {
     TYPE = {
         SUBMIT_BID  = 1,
-        CANCEL_BID  = 2,
-        NOTIFY_PASS = 3,
-        NOTIFY_HIDE = 4,
-        NOTIFY_CANTUSE = 5
+        NOTIFY_CANTUSE = 3
     },
     TYPES = UTILS.Set({
         1, -- SUBMIT BID
-        2, -- CANCEL BID
-        3, -- NOTIFY_PASS
-        4, -- NOTIFY_HIDE
-        5  -- NOTIFY_CANTUSE
+        2  -- NOTIFY_CANTUSE
     })
 }
 

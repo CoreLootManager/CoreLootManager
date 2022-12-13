@@ -10,7 +10,10 @@ CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0
 CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
-CLM.COMM_CHANNELS = {}
+CLM.COMM_CHANNEL = {
+    AUCTION = "Auction2",
+    BIDDING = "Bidding2",
+}
 CLM.UTILS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
@@ -23,7 +26,7 @@ CLM.LOG = LibStub("LibLogger"):New()
 local CORE = CLM.CORE
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
-local UTILS     = CLM.UTILS
+local UTILS = CLM.UTILS
 
 function UTILS.ParseVersionString(versionString)
     local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")

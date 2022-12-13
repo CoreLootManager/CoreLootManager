@@ -14,8 +14,6 @@ local typeof, assertType = UTILS.typeof, UTILS.assertType
 
 local whoami = UTILS.whoami()
 
-local AUCTION_COMM_PREFIX = "Auction2"
-
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
 -- Singleton
@@ -341,22 +339,22 @@ local function SendAuctionStart(self)
         CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION,
         CLM.MODELS.AuctionCommStartAuction:NewFromAuctionInfo(self.currentAuction)
     )
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
 
 function AuctionManager:SendAuctionEnd()
     local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.STOP_AUCTION, {})
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
 
 function AuctionManager:SendAntiSnipe()
     local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ANTISNIPE, {})
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
 
 function AuctionManager:SendBidAccepted(name)
     local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID, {})
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function AuctionManager:SendBidDenied(name, reason)
@@ -364,7 +362,7 @@ function AuctionManager:SendBidDenied(name, reason)
         CONSTANTS.AUCTION_COMM.TYPE.DENY_BID,
         CLM.MODELS.AuctionCommDenyBid:New(reason)
     )
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function AuctionManager:SendBidInfo(name, bid)
@@ -372,7 +370,7 @@ function AuctionManager:SendBidInfo(name, bid)
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
         CLM.MODELS.AuctionCommDistributeBid:New(name, bid)
     )
-    CLM.MODULES.Comms:Send(AUCTION_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
     -- TODO this must be batched cause of RAID throttling
     -- print(">>>SB[", name, bid:Value(), bid:Type(), "]")
 end
@@ -397,18 +395,11 @@ function AuctionManager:Initialize()
 
     InitializeDB(self)
 
-    CLM.MODULES.Comms:Register(AUCTION_COMM_PREFIX,
-    (function(rawMessage, distribution, sender)
-        local message = CLM.MODELS.AuctionCommStructure:New(rawMessage)
-        if CONSTANTS.AUCTION_COMM.TYPES[message:Type()] == nil then return end
-        -- Auction Manager is owner of the channel
-        -- pass handling to BidManager
-        CLM.MODULES.BiddingManager:HandleIncomingMessage(message, distribution, sender)
-    end),
-    (function(name)
-        return self:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
-    end),
-    true)
+    CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.BIDDING, (function(rawMessage, distribution, sender)
+        local message = CLM.MODELS.BiddingCommStructure:New(rawMessage)
+        if CONSTANTS.BIDDING_COMM.TYPES[message:Type()] == nil then return end
+        self:HandleIncomingMessage(message, distribution, sender)
+    end), CONSTANTS.ACL.LEVEL.PLEBS, true)
 
     if not CLM.MODULES.ACL:IsTrusted() then return end
 
@@ -524,8 +515,6 @@ function AuctionManager:StopAuctionManual()
         SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
     end
     EndAuction(self, false)
-    -- CLM.GUI.AuctionManager:UpdateBids()
-    CLM.GUI.AuctionManager:Refresh()
 end
 
 local function StopAuctionTimed(self)
@@ -535,7 +524,6 @@ local function StopAuctionTimed(self)
         SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
     end
     EndAuction(self, true)
-    -- CLM.GUI.AuctionManager:UpdateBids()
     CLM.GUI.AuctionManager:Refresh()
 end
 

@@ -56,6 +56,50 @@ local ITEM_REGISTRY = "clm_bidding_manager_gui_item_options"
 local BID_REGISTRY = "clm_bidding_manager_gui_bid_options"
 local BUTTON_REGISTRY = "clm_bidding_manager_gui_button_options"
 
+local function Create(self)
+    LOG:Trace("BiddingManagerGUI:Create()")
+    -- Main Frame
+    local f = AceGUI:Create("Window")
+    f:SetTitle(CLM.L["Bidding"])
+    f:SetLayout("Flow")
+    f:EnableResize(false)
+    f:SetWidth(BASE_WIDTH)
+    f:SetHeight(BASE_HEIGHT)
+    f.frame:SetScript("OnMouseWheel", (function(frame, delta)
+        if IsControlKeyDown() then
+            self.db.scale = UTILS.ResizeFrame(frame, (delta > 0), self.db.scale)
+            RescaleLibCandyBar(self.bar, self.db.scale)
+        end
+    end))
+    self.top = f
+    UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Bidding_GUI")
+    self.barPreviousPercentageLeft = 1
+    self.duration = 1
+    local BidInputGroup = AceGUI:Create("SimpleGroup")
+    BidInputGroup:SetLayout("Flow")
+    BidInputGroup:SetWidth(BASE_WIDTH)
+    self.BidInputGroup = BidInputGroup
+    local _, BidGroup, _ = CreateOptions(self)
+    local BidInput = AceGUI:Create("EditBox")
+    self.BidInput = BidInput
+    BidInput:DisableButton(true)
+    BidInput:SetWidth(BID_INPUT_WIDTH)
+    BidInputGroup:AddChild(BidInput)
+    BidInputGroup:AddChild(BidGroup)
+    local BidList = CreateBidList(self)
+    self.BidList = BidList
+    RestoreLocation(self)
+    self:SetInputValue(0)
+    -- Handle onHide information passing whenever the UI is closed
+    local oldOnHide = f.frame:GetScript("OnHide")
+    f.frame:SetScript("OnHide", (function(...)
+        CLM.MODULES.BiddingManager:NotifyHide()
+        oldOnHide(...)
+    end))
+    -- Hide by default
+    f:Hide()
+end
+
 local function UpdateOptions(self)
     self.top:SetWidth(BASE_WIDTH)
     for k,_ in pairs(itemOptions.args) do itemOptions.args[k] = nil end
@@ -65,10 +109,6 @@ local function UpdateOptions(self)
     UTILS.mergeDictsInline(itemOptions.args, _itemOptions)
     UTILS.mergeDictsInline(bidOptions.args, _bidOptions)
     UTILS.mergeDictsInline(buttonOptions.args, _buttonOptions)
-
-
-    -- self.BidGroup:SetWidth(BASE_WIDTH)
-    -- self.ItemGroup:SetWidth(BASE_WIDTH)
 end
 
 local function CreateOptions(self)
@@ -99,8 +139,6 @@ local function CreateOptions(self)
 
     return ItemGroup, BidGroup, ButtonGroup
 end
-
-local BiddingManagerGUI = {}
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {
@@ -143,11 +181,55 @@ local function CreateConfig(self)
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
+local function CreateLootList(self)
+    local ItemList = AceGUI:Create("CLMLibScrollingTable")
+    self.ItemList = ItemList
+    ItemList:SetHeaderless()
+    ItemList:SetDisplayRows(16, 32)
+    ItemList:SetDisplayCols({
+        { name = "",  width = 32, DoCellUpdate = UTILS.LibStItemCellUpdate }, -- Icon
+        -- { name = "", width = 255 }
+    })
+    ItemList:RegisterEvents({
+        OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UTILS.LibStSingleSelectClickHandler(table, --[[RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            print("CLICKEDY CLICK")
+            local _, selection = next(table:GetSelection())
+            local row = table:GetRow(selection)
+            if row then
+                self:SetVisibleAuctionItem(row.cols[2].value)
+            end
+            return true
+        end),
+        -- OnEnter handler -> on hover
+        OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local rowData = table:GetRow(realrow)
+            if not rowData or not rowData.cols then return status end
+            GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
+            GameTooltip:SetHyperlink("item:" .. (tonumber(rowData.cols[column].value) or 0))
+            GameTooltip:Show()
+            return status
+        end),
+        -- OnLeave handler -> on hover out
+        OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            GameTooltip:Hide()
+            return status
+        end),
+    })
+    -- ItemList:HideScroll()
+    ItemList:SetBackdrop({})
+    ItemList:SetBackdropColor({r=0,g=0,b=0,a=0})
+    return ItemList
+end
+
+local BiddingManagerGUI = {}
 function BiddingManagerGUI:Initialize()
     LOG:Trace("BiddingManagerGUI:Initialize()")
     InitializeDB(self)
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
-    self:Create()
+    Create(self)
     CreateConfig(self)
     self:RegisterSlash()
     self.standings = 0
@@ -511,50 +593,6 @@ local function RescaleLibCandyBar(bar, scale)
     bar:SetWidth(BASE_WIDTH*scale)
     bar:SetHeight(25*scale)
     bar.candyBarBar:SetScale(scale)
-end
-
-function BiddingManagerGUI:Create()
-    LOG:Trace("BiddingManagerGUI:Create()")
-    -- Main Frame
-    local f = AceGUI:Create("Window")
-    f:SetTitle(CLM.L["Bidding"])
-    f:SetLayout("Flow")
-    f:EnableResize(false)
-    f:SetWidth(BASE_WIDTH)
-    f:SetHeight(BASE_HEIGHT)
-    f.frame:SetScript("OnMouseWheel", (function(frame, delta)
-        if IsControlKeyDown() then
-            self.db.scale = UTILS.ResizeFrame(frame, (delta > 0), self.db.scale)
-            RescaleLibCandyBar(self.bar, self.db.scale)
-        end
-    end))
-    self.top = f
-    UTILS.MakeFrameCloseOnEsc(f.frame, "CLM_Bidding_GUI")
-    self.barPreviousPercentageLeft = 1
-    self.duration = 1
-    local BidInputGroup = AceGUI:Create("SimpleGroup")
-    BidInputGroup:SetLayout("Flow")
-    BidInputGroup:SetWidth(BASE_WIDTH)
-    self.BidInputGroup = BidInputGroup
-    local _, BidGroup, _ = CreateOptions(self)
-    local BidInput = AceGUI:Create("EditBox")
-    self.BidInput = BidInput
-    BidInput:DisableButton(true)
-    BidInput:SetWidth(BID_INPUT_WIDTH)
-    BidInputGroup:AddChild(BidInput)
-    BidInputGroup:AddChild(BidGroup)
-    local BidList = CreateBidList(self)
-    self.BidList = BidList
-    RestoreLocation(self)
-    self:SetInputValue(0)
-    -- Handle onHide information passing whenever the UI is closed
-    local oldOnHide = f.frame:GetScript("OnHide")
-    f.frame:SetScript("OnHide", (function(...)
-        CLM.MODULES.BiddingManager:NotifyHide()
-        oldOnHide(...)
-    end))
-    -- Hide by default
-    f:Hide()
 end
 
 function BiddingManagerGUI:UpdateCurrentBidValue(value)

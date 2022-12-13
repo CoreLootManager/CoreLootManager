@@ -25,6 +25,7 @@ function AuctionItem:New(item)
     o.userResponses = {}
     o.values = {}
     o.awardEntryId = nil
+    o.bid = nil
 
     return o
 end
@@ -50,6 +51,16 @@ function AuctionItem:LoadValues(roster)
     self.values = UTILS.ShallowCopy(roster:GetItemValues(self.item:GetItemID()))
 end
 
+function AuctionItem:SetValues(values)
+    if type(values) ~= 'table' then return end
+    for key,_ in pairs(CLM.CONSTANTS.SLOT_VALUE_TIERS) do
+        local value = tonumber(values[key])
+        if value then
+            self.values[key] = value
+        end
+    end
+end
+
 function AuctionItem:GetValues()
     return self.values
 end
@@ -60,6 +71,14 @@ end
 
 function AuctionItem:GetNote()
     return self.note or ""
+end
+
+function AuctionItem:SetBid(bid)
+
+end
+
+function AuctionItem:GetBid()
+    return self.bid
 end
 
 CLM.MODELS.AuctionItem = AuctionItem

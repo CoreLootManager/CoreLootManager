@@ -9,6 +9,9 @@ local CONSTANTS = CLM.CONSTANTS
 local type, setmetatable = type, setmetatable
 local tonumber = tonumber
 
+-------------------------------
+--- AuctionCommStartAuction ---
+-------------------------------
 local AuctionCommStartAuction = {}
 AuctionCommStartAuction.__index = AuctionCommStartAuction
 
@@ -35,36 +38,12 @@ function AuctionCommStartAuction:NewFromAuctionInfo(auction)
     local o = {}
     setmetatable(o, self)
 
-    -- Auction General settings
-    o.t = auction:GetType()
-    o.m = auction:GetMode()
-    o.d = auction:GetUseOS()
-    o.n = auction:GetNamedButtonsMode()
-    o.c = auction:GetIncrement()
-    o.r = auction:GetRosterUID()
     o.e = auction:GetTime()
     o.d = auction:GetEndTime()
     o.s = auction:GetAntiSnipe()
-    -- Items
     o.i = SerializeItems(auction:GetItems())
 
     return o
-end
-
-function AuctionCommStartAuction:Type()
-    return self.t or 0
-end
-
-function AuctionCommStartAuction:Mode()
-    return self.m or 0
-end
-
-function AuctionCommStartAuction:Values()
-    return self.v or {}
-end
-
-function AuctionCommStartAuction:ItemLink()
-    return self.l or ""
 end
 
 function AuctionCommStartAuction:Time()
@@ -79,18 +58,13 @@ function AuctionCommStartAuction:AntiSnipe()
     return tonumber(self.s) or 0
 end
 
-function AuctionCommStartAuction:Increment()
-    return tonumber(self.c) or 1
+function AuctionCommStartAuction:Items()
+    return self.i or {}
 end
 
-function AuctionCommStartAuction:UseOS()
-    return self.b and true or false
-end
-
-function AuctionCommStartAuction:RosterUid()
-    return self.r or 0
-end
-
+--------------------------
+--- AuctionCommDenyBid ---
+--------------------------
 local AuctionCommDenyBid = {}
 function AuctionCommDenyBid:New(valueOrObject)
     local isCopyConstructor = (type(valueOrObject) == "table")
@@ -110,6 +84,9 @@ function AuctionCommDenyBid:Reason()
     return self.d or 0
 end
 
+--------------------------------
+--- AuctionCommDistributeBid ---
+--------------------------------
 local AuctionCommDistributeBid = {}
 function AuctionCommDistributeBid:New(nameOrObject, value)
     local isCopyConstructor = (type(nameOrObject) == "table")

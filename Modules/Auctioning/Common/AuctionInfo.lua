@@ -166,9 +166,9 @@ function AuctionInfo:GetItemCount()
     return self.itemCount
 end
 
-function AuctionInfo:Start()
+function AuctionInfo:Start(endTime)
     assertNotInProgress(self)
-    self.endTime = GetServerTime() + self.auctionTime
+    self.endTime = endTime and endTime or (GetServerTime() + self.auctionTime)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
 
     for _, item in pairs(self.items) do

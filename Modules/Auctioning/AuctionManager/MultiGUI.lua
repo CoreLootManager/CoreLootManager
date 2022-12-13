@@ -104,6 +104,7 @@ local function GenerateItemOptions(self)
                     CLM.MODULES.AuctionManager:AddItemById(itemID, function(auctionItem) self:SetVisibleAuctionItem(auctionItem) end)
                 end
             end),
+            disabled = genericDisable,
             width = 1.25,
             order = 2,
             tooltipHyperlink = itemLink,
@@ -247,6 +248,7 @@ local function GenerateAwardOptions(self)
             type = "execute",
             func = (function() CLM.MODULES.AuctionManager:ClearItemList() end),
             confirm = true,
+            disabled = genericDisable,
             width = 0.6,
             order = 0,
         },
@@ -254,8 +256,9 @@ local function GenerateAwardOptions(self)
             name = CLM.L["Remove on award"],
             desc = CLM.L["Remove item from auction list after it's awarded."],
             type = "toggle",
-            get = (function() end),
-            set = (function() end),
+            set = (function(i, v) self.removeOnAward = v and true or false end),
+            get = (function(i) return self.removeOnAward end),
+            disabled = genericDisable,
             width = 0.9,
             order = 1,
         },
@@ -278,6 +281,7 @@ local function GenerateAwardOptions(self)
             type = "input",
             set = (function(i,v)  end),
             get = (function(i) return tostring(0) end),
+            disabled = genericDisable,
             width = 0.5,
             order = 3
         },
@@ -286,6 +290,7 @@ local function GenerateAwardOptions(self)
             type = "input",
             set = (function(i,v) self:setInputAwardValue(v) end),
             get = (function(i) return tostring(self.awardValue) end),
+            disabled = genericDisable,
             width = 0.5,
             order = 4
         },
@@ -437,7 +442,7 @@ local function GenerateAuctionOptions(self)
             type = "input",
             set = (function(i,v) CLM.MODULES.AuctionManager:SetAuctionTime(v) end),
             get = (function(i) return tostring(CLM.MODULES.AuctionManager:GetAuctionTime()) end),
-            -- disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            disabled = genericDisable,
             pattern = "%d+",
             width = 0.5,
             order = 2
@@ -447,7 +452,7 @@ local function GenerateAuctionOptions(self)
             type = "input",
             set = (function(i,v) CLM.MODULES.AuctionManager:SetAntiSnipe(v) end),
             get = (function(i) return tostring(CLM.MODULES.AuctionManager:GetAntiSnipe()) end),
-            -- disabled = (function(i) return CLM.MODULES.AuctionManager:IsAuctionInProgress() end),
+            disabled = genericDisable,
             pattern = "%d+",
             width = 0.5,
             order = 3
@@ -461,6 +466,7 @@ local function GenerateAuctionOptions(self)
                 else
                     CLM.MODULES.AuctionManager:StopAuctionManual()
                 end
+                self:Refresh()
             end),
             width = 1,
             order = 4,
@@ -598,6 +604,7 @@ local function Create(self)
     self.item = nil
     self.note = ""
     self.awardValue = 0
+    self.removeOnAward = true
 
     local ItemList = CreateLootList(self)
     local listWidth = ItemList:GetWidth()
@@ -701,10 +708,10 @@ function AuctionManagerGUI:Refresh()
     UpdateOptions(self)
     AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
     AceConfigDialog:Open(ITEM_REGISTRY, self.ItemOptionsGroup)
-    -- AceConfigRegistry:NotifyChange(AWARD_REGISTRY)
-    -- AceConfigDialog:Open(AWARD_REGISTRY, self.AwardOptionsGroup)
     AceConfigRegistry:NotifyChange(AUCTION_REGISTRY)
     AceConfigDialog:Open(AUCTION_REGISTRY, self.AuctionOptionsGroup)
+    AceConfigRegistry:NotifyChange(AWARD_REGISTRY)
+    AceConfigDialog:Open(AWARD_REGISTRY, self.AwardOptionsGroup)
 end
 
 function AuctionManagerGUI:Toggle()
