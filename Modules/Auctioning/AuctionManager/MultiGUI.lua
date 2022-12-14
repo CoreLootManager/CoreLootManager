@@ -345,10 +345,10 @@ local function CreateBidList(self, width)
             sort = ScrollingTable.SORT_DSC,
             sortnext = 4,
             align = "CENTER",
-            -- DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-            --     table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-            --     frame.text:SetText(data[realrow].cols[column].text or data[realrow].cols[column].value)
-            -- end)
+            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                frame.text:SetText(data[realrow].cols[column].text or data[realrow].cols[column].value)
+            end)
         },
         {name = CLM.L["Current"],  width = 80, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
@@ -634,15 +634,19 @@ local function UpdateOptions(self)
     UpdateAwardOptions(self)
 end
 
-local function BuildBidRow(name, response, roster)
+local function BuildBidRow(name, response, roster, namedButtonMode)
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
     local name, class, classColor = name, "", nil
     if profile then
         class = profile:ClassInternal()
-        classColor =  UTILS.GetClassColor(profile:Class())
+        classColor = UTILS.GetClassColor(profile:Class())
     end
-    local bidTypeString = roster:GetFieldName(response:Type())
-    if not bidTypeString or bidTypeString == "" then bidTypeString = tostring(response:Value()) end
+    local bidTypeString
+    if namedButtonMode then
+        bidTypeString = roster:GetFieldName(response:Type())
+        if not bidTypeString or bidTypeString == "" then bidTypeString = nil end
+    end
+
     local current = 0
 
     local items = response:Items()
@@ -680,10 +684,11 @@ function AuctionManagerGUI:Refresh()
     local bidList = {}
     local item = self.auctionItem
     if item then
+        local namedButtonsMode = auction:GetNamedButtonsMode()
         local roster = auction:GetRoster()
         for name, response in pairs(item:GetAllResponses()) do
         if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
-                bidList[#bidList+1] = BuildBidRow(name, response, roster)
+                bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode)
             end
         end
     end

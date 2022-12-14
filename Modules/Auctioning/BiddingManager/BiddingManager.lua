@@ -388,10 +388,6 @@ function BiddingManager:GetAuctionInfo()
     return self.auction
 end
 
--- function BiddingManager:GetBids()
---     return self.bids
--- end
-
 CONSTANTS.BIDDING_COMM = {
     TYPE = {
         SUBMIT_BID  = 1,

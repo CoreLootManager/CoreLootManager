@@ -340,8 +340,9 @@ local function GenerateNamedButtonsAuctionOptions(self, auctionInfo)
                     desc = tostring(value),
                     type = "execute",
                     func = (function()
-                        -- self:BidValue(value, tier)
-                        -- if GetCloseOnBid(self) then self:Toggle() end
+                        SetInputValue(self, value)
+                        BidInputValue(self, tier)
+                        if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     width = row_width,
                     order = offset
