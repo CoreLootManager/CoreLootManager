@@ -8,9 +8,9 @@ local UTILS     = CLM.UTILS
 
 local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
-local slen, sformat, mceil = string.len, string.format, math.ceil
+local sformat, mceil = string.format, math.ceil
 local SendChatMessage, C_TimerNewTicker, GetServerTime = SendChatMessage, C_Timer.NewTicker, GetServerTime
-local typeof, assertType = UTILS.typeof, UTILS.assertType
+local typeof = UTILS.typeof
 
 local whoami = UTILS.whoami()
 
@@ -329,7 +329,7 @@ local function CreateConfigurationOptions(self)
     return options
 end
 
--- Comms 
+-- Comms
 
 
 -- COMMS
@@ -405,9 +405,6 @@ function AuctionManager:Initialize()
 
     self.handlers = {
         [CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID]        = "HandleSubmitBid",
-        [CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID]        = "HandleCancelBid",
-        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS]       = "HandleNotifyPass",
-        [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_HIDE]       = "HandleNotifyHide",
         [CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE]    = "HandleNotifyCantUse",
     }
 
@@ -527,9 +524,9 @@ local function StopAuctionTimed(self)
     CLM.GUI.AuctionManager:Refresh()
 end
 
-local function CreateNewTicker(self, countdown, _endTime)
+local function CreateNewTicker(self, countdown, endTimeValue)
     self.tickerLastCountdownValue = countdown
-    self.tickerEndTime = _endTime
+    self.tickerEndTime = endTimeValue
     self.ticker = C_TimerNewTicker(0.2, (function()
         local auctionTimeLeft = self.tickerEndTime - GetServerTime()
         if self.tickerLastCountdownValue > 0 and auctionTimeLeft <= self.tickerLastCountdownValue then
@@ -578,7 +575,7 @@ function AuctionManager:StartAuction()
     if auction:GetTime() < 10 then
         LOG:Warning("AuctionManager:StartAuction(): Very short (below 10s) auction time")
     end
-    local commData = CLM.MODELS.AuctionCommStartAuction:NewFromAuctionInfo(auction)
+    -- local commData = CLM.MODELS.AuctionCommStartAuction:NewFromAuctionInfo(auction)
     if CLM.GlobalConfigs:GetAuctionWarning() then
         local numItems = auction:GetItemCount()
         local _, auctionItem = next(auction:GetItems())
@@ -586,7 +583,7 @@ function AuctionManager:StartAuction()
         if numItems > 1 then
             auctionMessage = sformat(CLM.L["Auction of %s items."], numItems)
         else
-            auctionMessage = sformat(CLM.L["Auction of %s"], auctionItem.item:GetItemLink())
+            auctionMessage = sformat(CLM.L["Auction of %s"], auctionItem:GetItemLink())
         end
         SendChatMessage(auctionMessage , "RAID_WARNING")
         auctionMessage = ""
@@ -943,7 +940,7 @@ function AuctionManager:GetAntiSnipe()
 end
 
 function AuctionManager:SetItemNote(auctionItem, note)
-    local itemId = auctionItem.item:GetItemID()
+    local itemId = auctionItem:GetItemID()
     if note and note:len() > 0 then
         self.db.notes[itemId] = note
     else

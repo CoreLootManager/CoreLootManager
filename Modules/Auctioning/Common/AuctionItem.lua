@@ -74,11 +74,19 @@ function AuctionItem:GetNote()
 end
 
 function AuctionItem:SetBid(bid)
-
+    self.bid = bid
 end
 
 function AuctionItem:GetBid()
     return self.bid
+end
+
+function AuctionItem:GetItemID()
+    return self.item:GetItemID()
+end
+
+function AuctionItem:GetItemLink()
+    return self.item:GetItemLink()
 end
 
 CLM.MODELS.AuctionItem = AuctionItem

@@ -10,11 +10,7 @@ local tonumber, tostring = tonumber, tostring
 local pairs, ipairs = pairs, ipairs
 local sformat, tinsert = string.format, table.insert
 local GameTooltip = GameTooltip
-local IsAltKeyDown,IsInRaid = IsAltKeyDown, IsInRaid
-local hooksecurefunc, getglobal = hooksecurefunc, getglobal
-local UnitGUID, GetNumLootItems, GetLootSlotLink, GetLootSlotInfo = UnitGUID, GetNumLootItems, GetLootSlotLink, GetLootSlotInfo
 local GetItemInfoInstant = GetItemInfoInstant
-local SendChatMessage = SendChatMessage
 
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
@@ -27,30 +23,19 @@ local AWARD_REGISTRY = "clm_am_award_options"
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
-local ACE_GUI_COLUMN_WIDTH = 170
 -- 3.5 columns + 20
 local BASE_WIDTH  = 605 + (isElvUI and 15 or 0)
 
-local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 -- local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
-local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
-local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
-local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
-local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
+-- local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
+-- local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
+-- local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
+-- local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
 
 local colorRedTransparentHex    = "ED3333"
 local colorGreenTransparentHex  = "33ED33"
 local colorBlueTransparentHex   = "3333ED"
-
-local TOOLTIP_GAMETOOLTIP = 1
-local TOOLTIP_ITEMREF = 2
-
-local highlightRole = {
-    ["DAMAGER"] = UTILS.getHighlightMethod(colorRedTransparent),
-    ["TANK"] = UTILS.getHighlightMethod(colorBlueTransparent),
-    ["HEALER"] = UTILS.getHighlightMethod(colorGreenTransparent),
-}
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('auction2', { -- TODO keep original 'auction' when done
@@ -80,8 +65,8 @@ local function GenerateItemOptions(self)
     self.note = ""
     local auctionItem = self.auctionItem
     if auctionItem and not auctionItem.item:IsItemEmpty() then
-        _, _, _, _, icon = GetItemInfoInstant(auctionItem.item:GetItemID())
-        itemLink = auctionItem.item:GetItemLink()
+        _, _, _, _, icon = GetItemInfoInstant(auctionItem:GetItemID())
+        itemLink = auctionItem:GetItemLink()
     end
 
     local options = {
@@ -97,11 +82,11 @@ local function GenerateItemOptions(self)
         item = {
             name = CLM.L["Item"],
             type = "input",
-            get = (function(i) return auctionItem and auctionItem.item:GetItemLink() or "" end),
+            get = (function(i) return auctionItem and auctionItem:GetItemLink() or "" end),
             set = (function(i,v)
                 if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
                     local itemID = GetItemInfoInstant(v)
-                    CLM.MODULES.AuctionManager:AddItemById(itemID, function(auctionItem) self:SetVisibleAuctionItem(auctionItem) end)
+                    CLM.MODULES.AuctionManager:AddItemById(itemID, function(ai) self:SetVisibleAuctionItem(ai) end)
                 end
             end),
             disabled = genericDisable,
@@ -115,11 +100,6 @@ local function GenerateItemOptions(self)
             set = (function(i,v)
                 if auctionItem then
                     CLM.MODULES.AuctionManager:SetItemNote(auctionItem, tostring(v))
-                    -- if self.note ~= "" then
-                    --     self.db.notes[auctionItem.item:GetItemID()] = self.note
-                    -- else
-                    --     self.db.notes[auctionItem.item:GetItemID()] = nil
-                    -- end
                 end
             end),
             get = (function(i)
@@ -138,7 +118,7 @@ local function GenerateItemOptions(self)
     -- TODO: Names of buttons instead of general
     local order = 4
     local buttonOrder = {order, order + 4}
-    for i,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.BASE, CONSTANTS.SLOT_VALUE_TIER.MAX}) do
+    for j,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.BASE, CONSTANTS.SLOT_VALUE_TIER.MAX}) do
          options["value_"..key] = {
             name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
             type = "input",
@@ -151,7 +131,7 @@ local function GenerateItemOptions(self)
             disabled = genericDisable,
             pattern = CONSTANTS.REGEXP_FLOAT,
             width = 0.75,
-            order = buttonOrder[i]
+            order = buttonOrder[j]
         }
     end
     order = order + 1
@@ -211,9 +191,9 @@ local function CreateLootList(self)
             UTILS.LibStSingleSelectClickHandler(table, --[[RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             print("CLICKEDY CLICK")
             local _, selection = next(table:GetSelection())
-            local row = table:GetRow(selection)
-            if row then
-                self:SetVisibleAuctionItem(row.cols[2].value)
+            local dataRow = table:GetRow(selection)
+            if dataRow then
+                self:SetVisibleAuctionItem(dataRow.cols[2].value)
             end
             return true
         end),
@@ -377,7 +357,7 @@ local function CreateBidList(self, width)
         {name = "Prio", width = 30},
         {name = "", width = 18,
             DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                local item = data[realrow].cols[5]
+                -- local item = data[realrow].cols[5]
                 local item = { value = math.random(2500,45000)}
                 if item then
                     local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
@@ -390,7 +370,7 @@ local function CreateBidList(self, width)
         },
         {name = "", width = 18,
             DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                local item = data[realrow].cols[6]
+                -- local item = data[realrow].cols[6]
                 local item = { value = math.random(2500,45000)}
                 if item then
                     local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
@@ -629,6 +609,19 @@ local function Create(self)
     f:Hide()
 end
 
+local function RegisterSlash(self)
+    local options = {
+        auction = {
+            type = "execute",
+            name = "Auctioning",
+            desc = CLM.L["Toggle Auctioning window display"],
+            handler = self,
+            func = "Toggle",
+        }
+    }
+    CLM.MODULES.ConfigManager:RegisterSlash(options)
+end
+
 local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
@@ -640,7 +633,7 @@ function AuctionManagerGUI:Initialize()
     -- Events
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
     -- Slash
-    self:RegisterSlash()
+    RegisterSlash(self)
     -- Done
     self._initialized = true
 end
@@ -668,7 +661,7 @@ function AuctionManagerGUI:Refresh()
     end
 
     self.ItemList:SetData(itemList)
-
+    -- TODO TO DO
     local DEBUGDATA2 = {
         {"alpha", 1337.11, 255.11},
         {"Beta", 2137.11, 255.1},
@@ -687,7 +680,7 @@ function AuctionManagerGUI:Refresh()
         {"Slurpyslurp", 100, 205},
         {"Andromedae", 100, 245},
     }
-    data2 = {}
+    local data2 = {}
     for _, d in ipairs(DEBUGDATA2) do
         local row = {cols = {
                 {value = ""},
@@ -705,6 +698,7 @@ function AuctionManagerGUI:Refresh()
     end
 
     self.BidList:SetData(data2)
+    -- END TODO
     UpdateOptions(self)
     AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
     AceConfigDialog:Open(ITEM_REGISTRY, self.ItemOptionsGroup)
@@ -732,19 +726,6 @@ function AuctionManagerGUI:Show()
     if not self._initialized then return end
     self:Refresh()
     self.top:Show()
-end
-
-function AuctionManagerGUI:RegisterSlash()
-    local options = {
-        auction = {
-            type = "execute",
-            name = "Auctioning",
-            desc = CLM.L["Toggle Auctioning window display"],
-            handler = self,
-            func = "Toggle",
-        }
-    }
-    CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
 function AuctionManagerGUI:Reset()

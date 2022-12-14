@@ -227,8 +227,12 @@ function AuctionInfo:GetIncrement()
     return self.configuration:Get("minimalIncrement")
 end
 
-function AuctionInfo:GetRosterUID()
-    return self.roster:UID()
+function AuctionInfo:GetFieldName(tier)
+    return self.roster:GetFieldName(tier)
+end
+
+function AuctionInfo:GetRoster()
+    return self.roster
 end
 
 CONSTANTS.AUCTION_INFO = {

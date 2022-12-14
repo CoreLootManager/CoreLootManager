@@ -46,8 +46,9 @@ globals = {
 	"CommDKP_DB",
 	-- RCLC
 	"RCLootCouncil",
-	-- WoW 
+	-- WoW
 	"_G",
+	"Item",
 	"MAX_RAID_MEMBERS",
 	"LootAlertSystem",
 	"KeyBindingFrame_LoadUI",

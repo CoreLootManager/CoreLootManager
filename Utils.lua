@@ -707,12 +707,19 @@ end
 
 function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local itemId = data[realrow].cols[column].value
+    local color = data[realrow].cols[column].color
     local _, _, _, _, icon = GetItemInfoInstant(itemId or 0)
     if icon then
         frame:SetNormalTexture(icon)
+        frame:SetHighlightTexture(136580, "ADD")
+        frame:GetHighlightTexture():SetTexCoord(0, 1, 0.23, 0.77)
+        if color then
+            -- 0.26, 0.93, 0.26
+            frame:GetNormalTexture():SetVertexColor(color.r, color.g, color.b)
+        end
         frame:Show()
         frame:SetScript("OnEnter", function()
-            GameTooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
             GameTooltip:SetHyperlink("item:" .. tostring(itemId))
             GameTooltip:Show()
         end)
