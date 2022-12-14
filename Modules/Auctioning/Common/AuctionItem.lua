@@ -17,6 +17,29 @@ AuctionItem.__index = AuctionItem
 
 local emptyItem = CreateFromMixins(ItemMixin)
 
+
+local scanTooltip = CreateFrame("GameTooltip", "CLMAuctionItemScanTooltip", UIParent, "GameTooltipTemplate")
+
+local function CheckUsability(self)
+    scanTooltip:SetScript('OnTooltipSetItem', (function(s)
+        local tooltipName = s:GetName()
+        for i = 1, s:NumLines() do
+            local l = _G[tooltipName..'TextLeft'..i]
+            local r = _G[tooltipName..'TextRight'..i]
+            if UTILS.IsTooltipTextRed(l) or UTILS.IsTooltipTextRed(r) then
+                self.canUse = false
+                break
+            end
+        end
+        s:Hide()
+        s:SetScript('OnTooltipSetItem', (function(s) end))
+    end))
+
+    if not self.item:IsItemEmpty() then
+        scanTooltip:SetHyperlink(self.item:GetItemLink())
+    end
+end
+
 function AuctionItem:New(item)
     local o = {}
     setmetatable(o, self)
@@ -26,6 +49,10 @@ function AuctionItem:New(item)
     o.values = {}
     o.awardEntryId = nil
     o.bid = nil
+    o.canUse = true
+    o.highestBid = -math.mininteger
+
+    CheckUsability(o)
 
     return o
 end
@@ -33,10 +60,20 @@ end
 function AuctionItem:SetResponse(username, response)
     assertTypeof(response, AuctionitemUserResponse)
     self.userResponses[username] = response
+
+    if response:Type() == CLM.CONSTANTS.BID_TYPE.MAIN_SPEC then
+        if response:Value() > self.highestBid then
+            self.highestBid = response:Value()
+        end
+    end
 end
 
 function AuctionItem:GetAllResponses()
     return self.userResponses
+end
+
+function AuctionItem:GetResponse(username)
+    return self.userResponses[username]
 end
 
 function AuctionItem:ClearResponses()
@@ -73,20 +110,27 @@ function AuctionItem:GetNote()
     return self.note or ""
 end
 
-function AuctionItem:SetBid(bid)
-    self.bid = bid
-end
-
-function AuctionItem:GetBid()
-    return self.bid
-end
-
 function AuctionItem:GetItemID()
     return self.item:GetItemID()
 end
 
 function AuctionItem:GetItemLink()
     return self.item:GetItemLink()
+end
+
+function AuctionItem:GetCanUse()
+    return self.canUse
+end
+
+function AuctionItem:GetHighestBid()
+    return self.highestBid
+end
+
+function AuctionItem:IsValueAccepted(value)
+    if not self.acceptedValues then
+        self.acceptedValues = UTILS.Set(self.values)
+    end
+    return self.acceptedValues[value]
 end
 
 CLM.MODELS.AuctionItem = AuctionItem

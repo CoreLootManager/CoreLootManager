@@ -32,7 +32,7 @@ local BASE_WIDTH  = 375 + (isElvUI and 15 or 0)
 local whoami = UTILS.whoami()
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
-local colorGold = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}
+local colorGold = {r = 0.93, g = 0.70, b = 0.13, a = 1.0}
 
 local guiOptions = {
     type = "group",

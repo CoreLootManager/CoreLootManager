@@ -17,8 +17,9 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local DISPLAY_MODE_VALUES  = 1
 local DISPLAY_MODE_BUTTONS = 2
 
-local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
-local colorGold = {r = 0.92, g = 0.70, b = 0.13, a = 1.0}
+local colorGreen = {r = 0.27, g = 0.93, b = 0.27, a = 1.0}
+local colorGold = {r = 0.93, g = 0.70, b = 0.13, a = 1.0}
+local colorRed = {r = 0.93, g = 0.27, b = 0.2, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
@@ -447,7 +448,6 @@ local function UpdateOptions(self)
 end
 
 local function CreateOptions(self)
-    print("CreateOptions")
     -- Item Display
     local ItemGroup = AceGUI:Create("SimpleGroup")
     ItemGroup:SetLayout("Flow")
@@ -479,7 +479,6 @@ end
 --- UI Creation ---
 -------------------
 local function CreateBidInputGroup(self)
-    print("CreateBidInputGroup")
     local BidInputGroup = AceGUI:Create("SimpleGroup")
     BidInputGroup:SetLayout("Flow")
     BidInputGroup:SetWidth(DATA_GROUP_WIDTH)
@@ -496,7 +495,6 @@ local function CreateBidInputGroup(self)
 end
 
 local function CreateItemList(self)
-    print("CreateItemList")
     local ItemList = AceGUI:Create("CLMLibScrollingTable")
     self.ItemList = ItemList
     ItemList:SetHeaderless()
@@ -539,7 +537,6 @@ local function CreateItemList(self)
 end
 
 local function CreateBidList(self)
-    print("CreateBidList")
     local BidList = AceGUI:Create("CLMLibScrollingTable")
     BidList:SetDisplayRows(BID_ROWS, BID_ROW_HEIGHT)
     local columns = {
@@ -587,7 +584,6 @@ local function CreateDataGroup(self)
 end
 
 local function UpdateUIStructure(self)
-    print("UpdateUIStructure")
     local auctionInfo = CLM.MODULES.BiddingManager:GetAuctionInfo()
     if (auctionInfo and auctionInfo:GetNamedButtonsMode() or false) then
         if (self.currentDisplayMode ~= DISPLAY_MODE_BUTTONS) then
@@ -625,7 +621,6 @@ end
 
 local function Create(self)
     LOG:Trace("BiddingManagerGUI:Create()")
-    print("Create")
     -- Main Frame
     local f = AceGUI:Create("Window")
     self.top = f
@@ -673,7 +668,11 @@ local function RefreshItemList(self)
     if auction then
         local itemList = {}
         for id, auctionItem in pairs(auction:GetItems()) do
-            itemList[#itemList+1] = { cols = { {value = id}, {value = auctionItem} }}
+            local iconColor
+            if not auctionItem:GetCanUse() then
+                iconColor = colorRed
+            end
+            itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor}, {value = auctionItem} }}
         end
         self.ItemList:SetData(itemList)
     end
@@ -684,7 +683,6 @@ end
 --------------
 function BiddingManagerGUI:Initialize()
     LOG:Trace("BiddingManagerGUI:Initialize()")
-    print("BIDDING MANAGER CREATE")
     InitializeDB(self)
 
     CreateConfig(self)

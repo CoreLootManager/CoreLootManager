@@ -50,6 +50,7 @@ function AuctionInfo:New()
 
     o.auctionTime = 0
     o.antiSnipe = 0
+    o.antiSnipeLimit = 0
 
     o.endTime = 0
 
@@ -138,7 +139,7 @@ function AuctionInfo:RemoveItem(id)
 end
 
 function AuctionInfo:GetItem(id)
-    return self.items[id] or AuctionItem:New()
+    return self.items[id]
 end
 
 function AuctionInfo:GetItems()
@@ -170,6 +171,8 @@ function AuctionInfo:Start(endTime)
     assertNotInProgress(self)
     self.endTime = endTime and endTime or (GetServerTime() + self.auctionTime)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
+
+    self.antiSnipeLimit = CONSTANTS.AUCTION_TYPES_OPEN[self:GetType()] and 100 or 3
 
     for _, item in pairs(self.items) do
         item:ClearResponses()
@@ -207,6 +210,14 @@ function AuctionInfo:GetAntiSnipe()
     return self.antiSnipe
 end
 
+function AuctionInfo:AntiSnipe()
+    self.antiSnipeLimit = self.antiSnipeLimit - 1
+end
+
+function AuctionInfo:IsAntiSnipeAvailable()
+    return self.antiSnipeLimit > 0
+end
+
 function AuctionInfo:GetType()
     return self.configuration:Get("auctionType")
 end
@@ -227,12 +238,28 @@ function AuctionInfo:GetIncrement()
     return self.configuration:Get("minimalIncrement")
 end
 
+function AuctionInfo:GetMinimumPoints()
+    return self.configuration:Get("minimumPoints")
+end
+
+function AuctionInfo:GetAllowBelowMinStandings()
+    return self.configuration:Get("allowBelowMinStandings")
+end
+
 function AuctionInfo:GetFieldName(tier)
     return self.roster:GetFieldName(tier)
 end
 
 function AuctionInfo:GetRoster()
     return self.roster
+end
+
+function AuctionInfo:HasBids(itemId, username)
+    local item = self.items[itemId]
+    if item then
+        return (item:GetResponse(username) ~= nil)
+    end
+    return false
 end
 
 CONSTANTS.AUCTION_INFO = {

@@ -29,9 +29,9 @@ local BASE_WIDTH  = 605 + (isElvUI and 15 or 0)
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 -- local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
 -- local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
--- local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
+-- local colorRedTransparent = {r = 0.93, g = 0.27, b = 0.2, a = 0.3}
 -- local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
--- local colorBlueTransparent = {r = 0.2, g = 0.2, b = 0.93, a = 0.3}
+-- local colorBlueTransparent = {r = 0.2, g = 0.27, b = 0.93, a = 0.3}
 
 local colorRedTransparentHex    = "ED3333"
 local colorGreenTransparentHex  = "33ED33"
@@ -346,12 +346,12 @@ local function CreateBidList(self, width)
             sortnext = 4,
             align = "CENTER"
         },
-        {name = CLM.L["Current"],  width = 80, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
+        {name = CLM.L["Current"],  width = 80, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
             sortnext = 5,
             align = "CENTER"
         },
-        {name = CLM.L["Roll"],  width = 40, color = {r = 0.92, g = 0.70, b = 0.13, a = 1.0},
+        {name = CLM.L["Roll"],  width = 40, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
             align = "CENTER"
         },
         {name = "Prio", width = 30},

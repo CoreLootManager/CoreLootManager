@@ -10,32 +10,46 @@ local setmetatable, ipairs = setmetatable, ipairs
 
 local assertType = UTILS.assertType
 
-local AuctionItemUserResponse = {} -- AuctionItemUserResponse
-AuctionItemUserResponse.__index = AuctionItemUserResponse
+local UserResponse = {} -- UserResponse
+UserResponse.__index = UserResponse
 
-function AuctionItemUserResponse:New(value, type)
+function UserResponse:New(value, type, upgradedItems)
     local o = {}
     setmetatable(o, self)
 
     o.value = tonumber(value) or 0
     o.type = CONSTANTS.BID_TYPES[type] and type or CONSTANTS.BID_TYPE.MAIN_SPEC
     o.upgradedItems = {}
+    o:SetUpgradedItems(upgradedItems)
 
     return o
 end
 
-function AuctionItemUserResponse:SetUpgradedItems(upgradedItems)
+function UserResponse:SetUpgradedItems(upgradedItems)
     assertType(upgradedItems, "table")
     for _,id in ipairs(upgradedItems) do
         id = tonumber(id) or 0
         if GetItemInfoInstant(id) then
             self.upgradedItems[#self.upgradedItems+1] = id
+            GetItemInfo(id) -- cache force
         end
     end
 end
 
-function AuctionItemUserResponse:Get()
+function UserResponse:Get()
     return self.value, self.type, self.upgradedItems
 end
 
-CLM.MODELS.AuctionItemUserResponse = AuctionItemUserResponse
+function UserResponse:Value()
+    return self.value
+end
+
+function UserResponse:Type()
+    return self.type
+end
+
+function UserResponse:Items()
+    return self.upgradedItems
+end
+
+CLM.MODELS.UserResponse = UserResponse

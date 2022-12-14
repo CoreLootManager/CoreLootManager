@@ -8,7 +8,7 @@ local UTILS     = CLM.UTILS
 
 local pairs, ipairs = pairs, ipairs
 
-local colorRedTransparent = {r = 0.93, g = 0.2, b = 0.2, a = 0.3}
+local colorRedTransparent = {r = 0.93, g = 0.27, b = 0.2, a = 0.3}
 local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 
 local highlightLocked = UTILS.getHighlightMethod(colorRedTransparent, true)

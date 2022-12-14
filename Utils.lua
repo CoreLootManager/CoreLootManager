@@ -707,15 +707,16 @@ end
 
 function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local itemId = data[realrow].cols[column].value
-    local color = data[realrow].cols[column].color
+    local iconColor = data[realrow].cols[column].iconColor
     local _, _, _, _, icon = GetItemInfoInstant(itemId or 0)
     if icon then
         frame:SetNormalTexture(icon)
         frame:SetHighlightTexture(136580, "ADD")
         frame:GetHighlightTexture():SetTexCoord(0, 1, 0.23, 0.77)
-        if color then
-            -- 0.26, 0.93, 0.26
-            frame:GetNormalTexture():SetVertexColor(color.r, color.g, color.b)
+        if iconColor then
+            frame:GetNormalTexture():SetVertexColor(iconColor.r, iconColor.g, iconColor.b, iconColor.a or 1)
+        else
+            frame:GetNormalTexture():SetVertexColor(1,1,1,1)
         end
         frame:Show()
         frame:SetScript("OnEnter", function()
