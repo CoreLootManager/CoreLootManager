@@ -19,6 +19,7 @@ function UserResponse:New(value, type, upgradedItems)
 
     o.value = tonumber(value) or 0
     o.type = CONSTANTS.BID_TYPES[type] and type or CONSTANTS.BID_TYPE.MAIN_SPEC
+    o.roll = 0
     o.upgradedItems = {}
     o:SetUpgradedItems(upgradedItems)
 
@@ -36,8 +37,8 @@ function UserResponse:SetUpgradedItems(upgradedItems)
     end
 end
 
-function UserResponse:Get()
-    return self.value, self.type, self.upgradedItems
+function UserResponse:SetRoll(value)
+    self.roll = tonumber(value) or 0
 end
 
 function UserResponse:Value()
@@ -46,6 +47,10 @@ end
 
 function UserResponse:Type()
     return self.type
+end
+
+function UserResponse:Roll()
+    return self.roll
 end
 
 function UserResponse:Items()

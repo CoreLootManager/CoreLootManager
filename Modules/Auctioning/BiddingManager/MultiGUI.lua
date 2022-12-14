@@ -162,7 +162,7 @@ local buttonOptions = {
 
 local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
     local itemValueMode = auctionInfo and auctionInfo:GetMode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
-    local useOS = auctionInfo and auctionInfo:GetUseOS() or true
+    local useOS = auctionInfo and auctionInfo:GetUseOS()
     local auctionType = auctionInfo and auctionInfo:GetType() or 0
 
     local generateBidOptions = {
@@ -671,6 +671,10 @@ local function RefreshItemList(self)
             local iconColor
             if not auctionItem:GetCanUse() then
                 iconColor = colorRed
+            elseif auctionItem:BidAccepted() then
+                iconColor = colorGreen
+            elseif auctionItem:BidDenied() then
+                iconColor = colorGold
             end
             itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor}, {value = auctionItem} }}
         end

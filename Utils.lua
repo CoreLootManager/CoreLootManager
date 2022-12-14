@@ -720,7 +720,7 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
         end
         frame:Show()
         frame:SetScript("OnEnter", function()
-            GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
+            GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
             GameTooltip:SetHyperlink("item:" .. tostring(itemId))
             GameTooltip:Show()
         end)

@@ -353,7 +353,8 @@ local function SendAntiSnipe()
 end
 
 local function SendBidAccepted(itemId, name)
-    local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID, itemId)
+    local message = CLM.MODELS.AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID, itemId)
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
@@ -629,9 +630,8 @@ local function AntiSnipe(self, auction)
     local antiSnipe = auction:GetAntiSnipe()
     if auction:IsAntiSnipeAvailable() then
         if self.auctionTimeLeft < antiSnipe then
-            self.auctionEndTime = self.auctionEndTime + antiSnipe
             auction:AntiSnipe()
-            self:SendAntiSnipe()
+            SendAntiSnipe()
             -- Cheeky update the warning countdown, but only if above 3/5s
             if antiSnipe >= 5 then
                 self.lastCountdownValue = 5
@@ -643,7 +643,7 @@ local function AntiSnipe(self, auction)
 end
 
 local nickMap = {
-    "Milhouse ",
+    "Millhouse ",
     "Jenkins ",
     "Hemet ",
     "Mrgl-Mrgl "
@@ -664,9 +664,8 @@ function AuctionManager:HandleSubmitBid(data, sender)
         LOG:Debug("Received submit bid from %s while no auctions are in progress", sender)
         return
     end
-    local submit = CLM.MODELS.BiddingCommSubmitBid:New(data)
-    local response = CLM.MODELS.UserResponse:New(submit:Value(), submit:Type(), submit:Items())
-    self:UpdateBid(sender, submit:Item(), response)
+    local response = CLM.MODELS.UserResponse:New(data:Value(), data:Type(), data:Items())
+    self:UpdateBid(sender, data:ItemId(), response)
 end
 
 -- function AuctionManager:HandleCancelBid(data, sender)
@@ -816,8 +815,8 @@ function AuctionManager:UpdateBid(name, itemId, userResponse)
 
     local accept, reason = ValidateBid(auction, item, name, userResponse)
     if accept then
-        if not CONSTANTS.BID_TYPE_WITHOUT_ANTISNIPE[userResponse:Type()] then
-            AntiSnipe(self)
+        if not CONSTANTS.BID_TYPE_HIDDEN[userResponse:Type()] then
+            AntiSnipe(self, auction)
         end
         local newHighBid = item:SetResponse(name, userResponse)
         AnnounceBid(auction, item, name, userResponse, newHighBid)

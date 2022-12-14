@@ -144,7 +144,15 @@ function BiddingManager:Bid(itemId, value, type)
     value = tonumber(value) or 0
     type = CONSTANTS.BID_TYPES[type] and type or CONSTANTS.BID_TYPE.MAIN_SPEC
 
-    -- self.lastBid = value
+    local item = self.auction:GetItem(itemId)
+    
+    if not item then
+        LOG:Debug("BiddingManager:Bid(): Invalid item")
+        return
+    end
+
+    item:SetBid(CLM.MODELS.UserResponse:New(value, type, {}))
+
     self.guiBid = true
 
     local message = CLM.MODELS.BiddingCommStructure:New(
@@ -312,12 +320,19 @@ function BiddingManager:HandleAntiSnipe(_, sender)
     -- CLM.GUI.BiddingManager:AntiSnipe()
 end
 
-function BiddingManager:HandleAcceptBid(_, sender)
+function BiddingManager:HandleAcceptBid(itemId, sender)
     LOG:Trace("BiddingManager:HandleAcceptBid()")
-    -- if not self.auctionInProgress then
-    --     LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
-    --     return
-    -- end
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
+        return
+    end
+    local item = self.auction:GetItem(itemId)
+    if not item then return end
+    local bid = item:GetBid()
+    if not bid then return end
+    item:SetBidStatus(true)
+    CLM.GUI.BiddingManager:Refresh()
+    LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], bid:Value()) -- TODO
     -- if self.guiBid then
     --     local value =  self.lastBid or CLM.L["cancel"]
     --     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
@@ -328,10 +343,17 @@ end
 
 function BiddingManager:HandleDenyBid(data, sender)
     LOG:Trace("BiddingManager:HandleDenyBid()")
-    -- if not self.auctionInProgress then
-    --     LOG:Debug("Received deny bid from %s while no auctions are in progress", sender)
-    --     return
-    -- end
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received deny bid from %s while no auctions are in progress", sender)
+        return
+    end
+    local item = self.auction:GetItem(data:ItemId())
+    if not item then return end
+    local bid = item:GetBid()
+    if not bid then return end
+    item:SetBidStatus(false)
+    CLM.GUI.BiddingManager:Refresh()
+    LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], bid:Value(), CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"]) -- TODO
     -- if self.guiBid then
     --     local value = self.lastBid or CLM.L["cancel"]
     --     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
@@ -393,7 +415,7 @@ CONSTANTS.BID_TYPE = {
     [CONSTANTS.SLOT_VALUE_TIER.MAX]     = CONSTANTS.SLOT_VALUE_TIER.MAX
 }
 
-CONSTANTS.BID_TYPE_WITHOUT_ANTISNIPE = UTILS.Set({
+CONSTANTS.BID_TYPE_HIDDEN = UTILS.Set({
     CONSTANTS.BID_TYPE.PASS,
     CONSTANTS.BID_TYPE.CANCEL
 })

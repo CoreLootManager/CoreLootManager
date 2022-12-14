@@ -344,7 +344,11 @@ local function CreateBidList(self, width)
         {name = CLM.L["Bid"],   width = 80, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
             sortnext = 4,
-            align = "CENTER"
+            align = "CENTER",
+            -- DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+            --     table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+            --     frame.text:SetText(data[realrow].cols[column].text or data[realrow].cols[column].value)
+            -- end)
         },
         {name = CLM.L["Current"],  width = 80, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
@@ -354,31 +358,13 @@ local function CreateBidList(self, width)
         {name = CLM.L["Roll"],  width = 40, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
             align = "CENTER"
         },
-        {name = "Prio", width = 30},
+        {name = "", width = 30},
         {name = "", width = 18,
-            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                -- local item = data[realrow].cols[5]
-                local item = { value = math.random(2500,45000)}
-                if item then
-                    local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
-                    if icon then
-                        frame:SetNormalTexture(icon)
-                    end
-                end
-            end)
+            DoCellUpdate = UTILS.LibStItemCellUpdate
             -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
         },
         {name = "", width = 18,
-            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                -- local item = data[realrow].cols[6]
-                local item = { value = math.random(2500,45000)}
-                if item then
-                    local _, _, _, _, icon = GetItemInfoInstant(item.value or "")
-                    if icon then
-                        frame:SetNormalTexture(icon)
-                    end
-                end
-            end)
+            DoCellUpdate = UTILS.LibStItemCellUpdate
         -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
         },
     }
@@ -462,8 +448,7 @@ local function GenerateAuctionOptions(self)
             name = "Info",
             desc = (function()
                 -- Legend
-                local legend = "\n\nColor legend:\n" .. UTILS.ColorCodeText(CLM.L["Tank"].." ",colorBlueTransparentHex) .. UTILS.ColorCodeText(CLM.L["Healer"].." ",colorGreenTransparentHex) .. UTILS.ColorCodeText(CLM.L["DPS"],colorRedTransparentHex)
-                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] .. "\n" .. legend end
+                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] end
                 -- Unique did any action dict
                 local didAnyAction = {}
                 -- generateInfo closure
@@ -535,7 +520,7 @@ local function GenerateAuctionOptions(self)
                 -- Stats
                 local stats = sformat("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
                 -- Result
-                return stats .. passed .. cantUse .. closed .. noAction .. legend
+                return stats .. passed .. cantUse .. closed .. noAction
             end),
             type = "execute",
             func = (function() end),
@@ -649,56 +634,61 @@ local function UpdateOptions(self)
     UpdateAwardOptions(self)
 end
 
+local function BuildBidRow(name, response, roster)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+    local name, class, classColor = name, "", nil
+    if profile then
+        class = profile:ClassInternal()
+        classColor =  UTILS.GetClassColor(profile:Class())
+    end
+    local bidTypeString = roster:GetFieldName(response:Type())
+    if not bidTypeString or bidTypeString == "" then bidTypeString = tostring(response:Value()) end
+    local current = 0
+
+    local items = response:Items()
+    local primaryItem = items[1]
+    local secondaryItem = items[2]
+    if (not primaryItem) and secondaryItem then
+        primaryItem = secondaryItem
+        secondaryItem = nil
+    end
+
+    return {cols = {
+            {value = class},
+            {value = name, color = classColor},
+            {value = response:Value(), text = bidTypeString},
+            {value = current},
+            {value = response:Roll()},
+            {value = ""},
+            {value = primaryItem},
+            {value = secondaryItem},
+        },
+    }
+end
+
 function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
+    local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
 
     local itemList = {}
-
-    local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
     for id, auctionItem in pairs(auction:GetItems()) do
         itemList[#itemList+1] = { cols = { {value = id}, {value = auctionItem} }}
     end
-
     self.ItemList:SetData(itemList)
-    -- TODO TO DO
-    local DEBUGDATA2 = {
-        {"alpha", 1337.11, 255.11},
-        {"Beta", 2137.11, 255.1},
-        {"Gamma", 420.69, 245},
-        {"Slurpyslurp", 100, 205},
-        {"Andromedae", 100, 245},
-        {"alpha", 1337.11, 255.11},
-        {"Beta", 2137.11, 255.1},
-        {"Gamma", 420.69, 245},
-        {"Slurpyslurp", 100, 205},
-        {"Andromedae", 100, 245},
-        {"Andromedae", 100, 245},
-        {"alpha", 1337.11, 255.11},
-        {"Beta", 2137.11, 255.1},
-        {"Gamma", 420.69, 245},
-        {"Slurpyslurp", 100, 205},
-        {"Andromedae", 100, 245},
-    }
-    local data2 = {}
-    for _, d in ipairs(DEBUGDATA2) do
-        local row = {cols = {
-                {value = ""},
-                {value = d[1]},
-                {value = d[2]},
-                {value = d[3]},
-                {value = math.random(1,100)},
-                {value = ""},
-                {value = ""},
-                -- {value = math.random(2500,45000)},
-                -- {value = math.random(2000,44000)},
-            },
-        }
-        data2[#data2+1] = row
-    end
 
-    self.BidList:SetData(data2)
-    -- END TODO
+    local bidList = {}
+    local item = self.auctionItem
+    if item then
+        local roster = auction:GetRoster()
+        for name, response in pairs(item:GetAllResponses()) do
+        if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
+                bidList[#bidList+1] = BuildBidRow(name, response, roster)
+            end
+        end
+    end
+    self.BidList:SetData(bidList)
+
     UpdateOptions(self)
     AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
     AceConfigDialog:Open(ITEM_REGISTRY, self.ItemOptionsGroup)
@@ -716,14 +706,18 @@ function AuctionManagerGUI:Toggle()
         -- AuctionManagerGUI:ClearSelectedBid()
         self.top:Hide()
     else
-        self:Refresh()
-        self.top:Show()
+        self:Show()
     end
 end
 
 function AuctionManagerGUI:Show()
     LOG:Trace("AuctionManagerGUI:Show()")
     if not self._initialized then return end
+    if not self.auctionItem  then
+        local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+        local _, item = next(auction:GetItems())
+        self.auctionItem = item
+    end
     self:Refresh()
     self.top:Show()
 end

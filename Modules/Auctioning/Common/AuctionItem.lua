@@ -46,11 +46,12 @@ function AuctionItem:New(item)
 
     o.item = item or emptyItem
     o.userResponses = {}
+    o.userRolls = {}
     o.values = {}
     o.awardEntryId = nil
     o.bid = nil
     o.canUse = true
-    o.highestBid = -math.mininteger
+    o.highestBid = -100000000
 
     CheckUsability(o)
 
@@ -58,7 +59,7 @@ function AuctionItem:New(item)
 end
 
 function AuctionItem:SetResponse(username, response)
-    assertTypeof(response, AuctionitemUserResponse)
+    assertTypeof(response, CLM.MODELS.UserResponse)
     self.userResponses[username] = response
 
     if response:Type() == CLM.CONSTANTS.BID_TYPE.MAIN_SPEC then
@@ -66,6 +67,10 @@ function AuctionItem:SetResponse(username, response)
             self.highestBid = response:Value()
         end
     end
+    if not self.userRolls[username] then
+        self.userRolls[username] = math.random(1,100)
+    end
+    response:SetRoll(self.userRolls[username])
 end
 
 function AuctionItem:GetAllResponses()
@@ -78,6 +83,7 @@ end
 
 function AuctionItem:ClearResponses()
     self.userResponses = {}
+    self.userRolls = {}
 end
 
 function AuctionItem:SetAwardId(entryId)
@@ -131,6 +137,26 @@ function AuctionItem:IsValueAccepted(value)
         self.acceptedValues = UTILS.Set(self.values)
     end
     return self.acceptedValues[value]
+end
+
+function AuctionItem:SetBid(bid)
+    self.bid = bid
+end
+
+function AuctionItem:GetBid()
+    return self.bid
+end
+
+function AuctionItem:SetBidStatus(status)
+    self.bidStatus = status
+end
+
+function AuctionItem:BidAccepted()
+    return (self.bidStatus == true)
+end
+
+function AuctionItem:BidDenied()
+    return (self.bidStatus == false)
 end
 
 CLM.MODELS.AuctionItem = AuctionItem

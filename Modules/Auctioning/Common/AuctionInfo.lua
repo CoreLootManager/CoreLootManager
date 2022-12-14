@@ -212,6 +212,7 @@ end
 
 function AuctionInfo:AntiSnipe()
     self.antiSnipeLimit = self.antiSnipeLimit - 1
+    self.endTime = self.endTime + self.antiSnipe
 end
 
 function AuctionInfo:IsAntiSnipeAvailable()

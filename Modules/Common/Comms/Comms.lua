@@ -129,17 +129,17 @@ function Comms:Send(prefix, message, distribution, target, priority)
         LOG:Error("Comms:Send() unable to serialize message: %s", message)
         return false
     end
-    local lenSerial = #tmp
+    -- local lenSerial = #tmp
     -- Compress
     tmp = codec:CompressDeflate(tmp, { level = 4 })
     if tmp == nil then
         LOG:Error("Comms:Send() unable to compress message: %s", message)
         return false
     end
-    local lenCompressed = #tmp
-    if lenCompressed > lenSerial then
-        LOG:Message("Compression inreased size for message on channel %s from %s to %s (%s%%)", prefix, lenSerial, lenCompressed, (100*(lenCompressed/lenSerial)))
-    end
+    -- local lenCompressed = #tmp
+    -- if lenCompressed > lenSerial then
+    --     LOG:Message("Compression inreased size for message on channel %s from %s to %s (%s%%)", prefix, lenSerial, lenCompressed, (100*(lenCompressed/lenSerial)))
+    -- end
     -- Encode for WoW
     tmp = codec:EncodeForWoWAddonChannel(tmp)
     if tmp == nil then
