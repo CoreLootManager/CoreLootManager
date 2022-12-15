@@ -35,24 +35,24 @@ end
 --     end
 -- end
 
-function AuctionInfo:New()
+function AuctionInfo:New(object)
     local o = {}
+    object = object or {}
     setmetatable(o, self)
 
-    o.state = CONSTANTS.AUCTION_INFO.STATE.NOT_CONFIGURED
+    o.state = object.state or CONSTANTS.AUCTION_INFO.STATE.NOT_CONFIGURED
 
-    o.configuration = nil
-    o.roster = nil
-    o.raid = nil
+    o.configuration = object.configuration
+    o.roster = object.roster
+    o.raid = object.raid
 
     o.items = {}
     o.itemCount = 0
 
-    o.auctionTime = 0
-    o.antiSnipe = 0
-    o.antiSnipeLimit = 0
-
-    o.endTime = 0
+    o.auctionTime = object.auctionTime or 0
+    o.endTime = object.endTime or 0
+    o.antiSnipe = object.antiSnipe or 0
+    o.antiSnipeLimit = object.antiSnipeLimit or 0
 
     return o
 end
@@ -151,6 +151,7 @@ function AuctionInfo:SetResponse(id, username, response)
     local auctionItem = self.items[id]
     if not auctionItem then
         LOG:Warning("Received response to non existent item.")
+        return
     end
     auctionItem:SetResponse(username, response)
 end
@@ -239,6 +240,14 @@ function AuctionInfo:GetIncrement()
     return self.configuration:Get("minimalIncrement")
 end
 
+function AuctionInfo:GetTax()
+    return self.configuration:Get("tax")
+end
+
+function AuctionInfo:GetRounding()
+    return self.configuration:Get("roundDecimals")
+end
+
 function AuctionInfo:GetMinimumPoints()
     return self.configuration:Get("minimumPoints")
 end
@@ -253,6 +262,10 @@ end
 
 function AuctionInfo:GetRoster()
     return self.roster
+end
+
+function AuctionInfo:GetRaid()
+    return self.raid
 end
 
 function AuctionInfo:HasBids(itemId, username)

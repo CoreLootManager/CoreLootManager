@@ -54,13 +54,27 @@ local function RestoreLocation(self)
     end
 end
 
+local function UpdateAwardPrice(self)
+    local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+    self.awardPrice = UTILS.round(self.awardValue * self.awardMultiplier, auction:GetRounding())
+end
+
+local function SetInputAwardValue(self, value)
+    self.awardValue = tonumber(value) or 1
+    UpdateAwardPrice(self)
+end
+
+local function SetInputAwardMultiplier(self, value)
+    self.awardMultiplier = tonumber(value) or 1
+    UpdateAwardPrice(self)
+end
+
 local function genericDisable()
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
     return auction:IsInProgress() or auction:IsEmpty()
 end
 
 local function GenerateItemOptions(self)
-
     local icon, itemLink = "Interface\\Icons\\INV_Misc_QuestionMark", "item:0"
     self.note = ""
     local auctionItem = self.auctionItem
@@ -189,12 +203,12 @@ local function CreateLootList(self)
     ItemList:RegisterEvents({
         OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             UTILS.LibStSingleSelectClickHandler(table, --[[RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            print("CLICKEDY CLICK")
             local _, selection = next(table:GetSelection())
             local dataRow = table:GetRow(selection)
             if dataRow then
                 self:SetVisibleAuctionItem(dataRow.cols[2].value)
             end
+            self.BidList:ClearSelection()
             return true
         end),
         -- OnEnter handler -> on hover
@@ -259,8 +273,8 @@ local function GenerateAwardOptions(self)
         award_multiplier = {
             name = CLM.L["Multiplier"],
             type = "input",
-            set = (function(i,v)  end),
-            get = (function(i) return tostring(0) end),
+            set = (function(i,v) SetInputAwardMultiplier(self, v) end),
+            get = (function(i) return tostring(self.awardMultiplier) end),
             disabled = genericDisable,
             width = 0.5,
             order = 3
@@ -268,7 +282,7 @@ local function GenerateAwardOptions(self)
         award_value = {
             name = CLM.L["Value"],
             type = "input",
-            set = (function(i,v) self:setInputAwardValue(v) end),
+            set = (function(i,v) SetInputAwardValue(self, v) end),
             get = (function(i) return tostring(self.awardValue) end),
             disabled = genericDisable,
             width = 0.5,
@@ -278,27 +292,21 @@ local function GenerateAwardOptions(self)
             name = CLM.L["Award"],
             type = "execute",
             func = (function()
-                local awarded = CLM.MODULES.AuctionManager:Award(self.itemLink, self.itemId, self.awardValue, self.awardPlayer)
-                if awarded and not CLM.MODULES.AutoAward:IsIgnored(self.itemId) then
-                    if CLM.MODULES.AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
-                        CLM.MODULES.AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
-                    elseif CLM.MODULES.AuctionManager:GetAutoTrade() then
-                        CLM.MODULES.AutoAward:Track(self.itemId, self.awardPlayer)
-                    end
+                CLM.MODULES.AuctionManager:Award(self.auctionItem, self.awardPlayer, self.awardPrice)
+                self.BidList:ClearSelection()
+                if self.removeOnAward then
+                    CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():RemoveItem(self.auctionItem:GetItemID())
+                    self.auctionItem = nil
                 end
-                self.itemLink = nil
-                self.itemId = 0
-                self.awardValue = 0
-                self.awardPlayer = ""
-                self.st:ClearSelection()
                 self:Refresh()
             end),
             confirm = (function()
                 return sformat(
-                    CLM.L["Are you sure, you want to award %s to %s for %s DKP?"],
-                    self.itemLink,
+                    CLM.L["Are you sure, you want to award %s to %s for %s %s?"],
+                    self.auctionItem:GetItemLink(),
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
-                    tostring(self.awardValue)
+                    tostring(self.awardPrice),
+                    CLM.L["DKP"]
                 )
             end),
             width = 0.5,
@@ -328,6 +336,35 @@ local function CreateAwardOptions(self, width)
     AceConfigDialog:Open(AWARD_REGISTRY, AwardOptionsGroup)
 
     return AwardOptionsGroup
+end
+
+local function ST_GetPlayerName(row)
+    return row.cols[2].value
+end
+
+local function ST_GetPlayerBidValue(row)
+    return row.cols[3].value
+end
+
+local function ST_GetPlayerBidType(row)
+    return row.cols[3].bidType
+end
+
+local function UpdateBids(self, cutoff, type)
+    LOG:Trace("AuctionManagerGUI:UpdateAwardValue()")
+    local max, second = self.auctionItem:GetTopBids(cutoff, type)
+    local values = self.auctionItem:GetValues()
+    local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+    local isVickrey = (auction:GetType() ==  CONSTANTS.AUCTION_TYPE.VICKREY)
+    if isVickrey then
+        if second.bid == 0 then
+            SetInputAwardValue(self, values[CONSTANTS.SLOT_VALUE_TIER.BASE] or 0)
+        else
+            SetInputAwardValue(self, second.bid)
+        end
+    else
+        SetInputAwardValue(self, max.bid)
+    end
 end
 
 local function CreateBidList(self, width)
@@ -382,6 +419,13 @@ local function CreateBidList(self, width)
     BidList:RegisterEvents({
         OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             UTILS.LibStSingleSelectClickHandler(table, --[[UnifiedGUI_Raids.RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            local _, selection = next(table:GetSelection())
+            local selected = table:GetRow(selection)
+            if selected then
+                self.awardPlayer = ST_GetPlayerName(selected)
+                UpdateBids(self, ST_GetPlayerBidValue(selected), ST_GetPlayerBidType(selected))
+                self:Refresh()
+            end
             return true
         end
     })
@@ -569,6 +613,8 @@ local function Create(self)
     self.item = nil
     self.note = ""
     self.awardValue = 0
+    self.awardMultiplier = 1
+    self.awardPrice = 0
     self.removeOnAward = true
 
     local ItemList = CreateLootList(self)
@@ -636,18 +682,17 @@ end
 
 local function BuildBidRow(name, response, roster, namedButtonMode)
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
-    local name, class, classColor = name, "", nil
+    local name, class, classColor, current = name, "", nil, 0
     if profile then
         class = profile:ClassInternal()
         classColor = UTILS.GetClassColor(profile:Class())
+        current = roster:Standings(profile:GUID())
     end
     local bidTypeString
     if namedButtonMode then
         bidTypeString = roster:GetFieldName(response:Type())
         if not bidTypeString or bidTypeString == "" then bidTypeString = nil end
     end
-
-    local current = 0
 
     local items = response:Items()
     local primaryItem = items[1]
@@ -660,7 +705,7 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
     return {cols = {
             {value = class},
             {value = name, color = classColor},
-            {value = response:Value(), text = bidTypeString},
+            {value = response:Value(), text = bidTypeString, bidType = response:Type()},
             {value = current},
             {value = response:Roll()},
             {value = ""},
@@ -674,6 +719,11 @@ function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+
+    if not self.auctionItem  then
+        local _, item = next(auction:GetItems())
+        self.auctionItem = item
+    end
 
     local itemList = {}
     for id, auctionItem in pairs(auction:GetItems()) do
@@ -718,11 +768,7 @@ end
 function AuctionManagerGUI:Show()
     LOG:Trace("AuctionManagerGUI:Show()")
     if not self._initialized then return end
-    if not self.auctionItem  then
-        local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
-        local _, item = next(auction:GetItems())
-        self.auctionItem = item
-    end
+    self.BidList:ClearSelection()
     self:Refresh()
     self.top:Show()
 end

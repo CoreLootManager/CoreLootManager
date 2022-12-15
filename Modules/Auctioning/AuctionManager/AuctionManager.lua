@@ -124,15 +124,19 @@ local function PostLootToRaidChat()
     end
 end
 
+local lootWindowIsOpen = false
 local function HandleLootOpenedEvent()
     -- Post loot to raid chat
     PostLootToRaidChat()
     -- Hook slots
     HookCorpseSlots()
+    --
+    lootWindowIsOpen = true
 end
 
--- local function HandleLootClosedEvent()
--- end
+local function HandleLootClosedEvent()
+    lootWindowIsOpen = false
+end
 
 -- CONFIGURATION
 
@@ -416,7 +420,7 @@ function AuctionManager:Initialize()
 
     HookBagSlots()
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, HandleLootOpenedEvent)
-    -- CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, HandleLootClosedEvent)
+    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, HandleLootClosedEvent)
 
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
@@ -543,7 +547,7 @@ end
 
 function AuctionManager:ClearItemList()
     self.currentAuction = self.pendingAuction
-    self.pendingAuction = AuctionInfo:New() -- TODO config
+    self.pendingAuction = AuctionInfo:New(self.currentAuction) -- TODO config
     CLM.GUI.AuctionManager:SetVisibleAuctionItem(nil)
     self:RefreshGUI()
 end
@@ -576,7 +580,6 @@ function AuctionManager:StartAuction()
     if auction:GetTime() < 10 then
         LOG:Warning("AuctionManager:StartAuction(): Very short (below 10s) auction time")
     end
-    -- local commData = CLM.MODELS.AuctionCommStartAuction:NewFromAuctionInfo(auction)
     if CLM.GlobalConfigs:GetAuctionWarning() then
         local numItems = auction:GetItemCount()
         local _, auctionItem = next(auction:GetItems())
@@ -809,6 +812,7 @@ end
 
 function AuctionManager:UpdateBid(name, itemId, userResponse)
     LOG:Trace("AuctionManager:UpdateBid()")
+    print(name, itemId, userResponse:Value(), userResponse:Type())
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local auction = self.currentAuction
     local item = auction:GetItem(itemId)
@@ -867,13 +871,19 @@ function AuctionManager:ClearBids()
     self.highestBid = 0
 end
 
-function AuctionManager:Award(itemLink, itemId, price, name)
+function AuctionManager:Award(item, name, price)
     LOG:Trace("AuctionManager:Award()")
-    local success, uuid = CLM.MODULES.LootManager:AwardItem(self.raid, name, itemLink, itemId, price)
+    local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price)
     if success then
-        CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(self.lastAuctionEndTime, uuid)
+        -- CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(self.lastAuctionEndTime, uuid)
+        if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
+            if GetAutoAssign(self) and lootWindowIsOpen then
+                CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)
+            elseif GetAutoTrade(self) then
+                CLM.MODULES.AutoAssign:Track(item:GetItemID(), name)
+            end
+        end
     end
-    return success
 end
 
 function AuctionManager:IsAuctioneer(name, relaxed)
@@ -996,38 +1006,68 @@ CONSTANTS.AUCTION_COMM = {
 
 CLM.MODULES.AuctionManager = AuctionManager
 --@do-not-package@
+-- /run CLMCORE.MODULES.AuctionManager:FakeBids()
 function AuctionManager:FakeBids()
+    local _SendBidAccepted = SendBidAccepted
+    local _SendBidDenied   = SendBidDenied
+    SendBidAccepted = (function(...) print("SendBidAccepted", ...) end)
+    SendBidDenied = (function(...) print("SendBidDenied", ...) end)
     if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then
         local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
         local profiles = roster:Profiles()
         local numBids = math.random(1, math.min(#profiles, 25))
+        local numItems = self.currentAuction:GetItemCount()
+        local auctionItem
+        
+        local selectedItem = math.random(1,numItems)
+        local i = 1
+        for id, itemData in pairs(self.currentAuction:GetItems()) do
+            if i == selectedItem then
+                auctionItem = itemData
+                print("Selected", itemData:GetItemLink())
+                UTILS.DumpTable(itemData:GetValues())
+                break
+            end
+            i = i+1
+        end
         for _=1,numBids do
             local bidder = CLM.MODULES.ProfileManager:GetProfileByGUID(profiles[math.random(1, #profiles)]):Name()
-            local bidType = math.random(1,6)
-            if     bidType == 1 then -- none
-            elseif bidType == 2 then -- value
-                local namedButtons = roster:GetConfiguration("namedButtons")
-                if namedButtons then
-                    local b = {"b","s", "m", "l", "x"}
-                    local bt = b[math.random(1,5)]
-                    self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(self.values[bt], bt), bidder)
-                else
-                    local min, max = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE], 10000
-                    if self.values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 then
-                        max = self.values[CONSTANTS.SLOT_VALUE_TIER.MAX]
-                    end
-                    self:HandleSubmitBid(CLM.MODELS.BiddingCommSubmitBid:New(math.random(min, max), math.random(1,2)), bidder)
+            local bidType = math.random(1,70)
+            if     bidType < 10 then -- none
+            elseif bidType < 50 then -- value
+                -- local namedButtons = roster:GetConfiguration("namedButtons")
+                --local auctionType = roster:GetConfiguration("auctionType")
+                local itemValueMode = roster:GetConfiguration("itemValueMode")
+                local values = auctionItem:GetValues()
+                local items = {}
+                local bid
+                for i=1,math.random(1,2) do
+                    items[#items+1] = math.random(44000, 55000)
                 end
-            elseif bidType == 3 then -- pass
+                if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
+                    local min, max = values[CONSTANTS.SLOT_VALUE_TIER.BASE], values[CONSTANTS.SLOT_VALUE_TIER.MAX]
+                    if max == 0 then max = 10000 end
+                    bid = CLM.MODELS.BiddingCommSubmitBid:New(math.random(min, max), math.random(1,2), auctionItem:GetItemID(), items)
+                elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
+                    local r = {"b", "s", "m", "l", "x"}
+                    local t = math.random(1,5)
+                    bid = CLM.MODELS.BiddingCommSubmitBid:New(values[r[t]], r[t], auctionItem:GetItemID(), items)
+                else
+                    bid = CLM.MODELS.BiddingCommSubmitBid:New(values[CONSTANTS.SLOT_VALUE_TIER.BASE], math.random(1,2), auctionItem:GetItemID(), items)
+                end
+                self:HandleSubmitBid(bid, bidder)
+            elseif bidType < 55 then -- pass
                 -- self:HandleNotifyPass(nil, bidder)
-            elseif bidType == 4 then -- cancel
+            elseif bidType < 60 then -- cancel
                 -- self:HandleCancelBid(nil, bidder)
-            elseif bidType == 5 then -- hide
+            elseif bidType < 65 then -- hide
                 -- self:HandleNotifyHide(nil, bidder)
-            elseif bidType == 6 then -- cant use
-                self:HandleNotifyCantUse(nil, bidder)
+            elseif bidType <= 70 then -- cant use
+                -- self:HandleNotifyCantUse(nil, bidder)
             end
         end
     end
+    SendBidAccepted = _SendBidAccepted
+    SendBidDenied = _SendBidDenied
 end
 --@end-do-not-package@

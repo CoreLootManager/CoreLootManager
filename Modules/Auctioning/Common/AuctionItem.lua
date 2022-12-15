@@ -51,7 +51,7 @@ function AuctionItem:New(item)
     o.awardEntryId = nil
     o.bid = nil
     o.canUse = true
-    o.highestBid = -100000000
+    o.highestBid = -math.huge
 
     CheckUsability(o)
 
@@ -71,6 +71,30 @@ function AuctionItem:SetResponse(username, response)
         self.userRolls[username] = math.random(1,100)
     end
     response:SetRoll(self.userRolls[username])
+end
+
+function AuctionItem:GetTopBids(cutoff, type)
+    cutoff = cutoff or math.huge
+    type = CLM.CONSTANTS.BID_TYPES[type] and type or nil
+    local max = {name = "", bid = 0}
+    for name,response in pairs(self.userResponses) do
+        if (response:Type() == type) or (type == nil) then
+            local bid = response:Value()
+            if bid > max.bid and bid <= cutoff then
+                max.bid = bid
+                max.name = name
+            end
+        end
+    end
+    local second = {name = "", bid = 0}
+    for name,response in pairs(self.userResponses) do
+        local bid = response:Value()
+        if (bid > second.bid) and (bid <= max.bid) and (name ~= max.name) and ((type == nil) or (response:Type() == type)) then
+            second.bid = bid
+            second.name = name
+        end
+    end
+    return max, second
 end
 
 function AuctionItem:GetAllResponses()

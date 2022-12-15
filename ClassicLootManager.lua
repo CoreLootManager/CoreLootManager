@@ -260,6 +260,9 @@ function CORE:GUILD_ROSTER_UPDATE(...)
 end
 
 --@do-not-package@
+
+CLMCORE = CLM
+
 function CORE.Debug()
     CLM.Debug:Initialize()
     CLM.Debug:RegisterSlash()

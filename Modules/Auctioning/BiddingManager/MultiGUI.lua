@@ -559,12 +559,13 @@ local function CreateBidList(self)
         {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
     }
     BidList:SetDisplayCols(columns)
-    BidList:RegisterEvents({
-        OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            UTILS.LibStSingleSelectClickHandler(table, nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            return true
-        end
-    })
+    -- BidList:RegisterEvents({
+    --     OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+    --         UTILS.LibStSingleSelectClickHandler(table, nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+    --         return true
+    --     end
+    -- })
+    -- TODO disable click
     self.BidList = BidList
     return BidList
 end
