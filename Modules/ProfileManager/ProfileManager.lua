@@ -301,7 +301,7 @@ function ProfileManager:MarkAsAltByNames(alt, main)
     if not UTILS.typeof(mainProfile, CLM.MODELS.Profile) then
         if altProfile:Main() ~= "" then
             CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), nil), true)
-            LOG:Message(sformat("%s: %s", CLM.L["Unlink Alt"], altProfile:Name()))
+            LOG:Message(sformat("%s: %s", CLM.L["Unlink Alt"], UTILS.ColorCodeText(altProfile:Name(), UTILS.GetClassColor(altProfile:Class()).hex)))
         else
             LOG:Error("Main does not exist.")
         end
@@ -327,7 +327,11 @@ function ProfileManager:MarkAsAltByNames(alt, main)
             return
         end
         CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
-        LOG:Message(sformat("%s%s %s", altProfile:Name(), CLM.L[" alt of:"], mainProfile:Name()))
+        LOG:Message(sformat("%s%s %s",
+            UTILS.ColorCodeText(altProfile:Name(), UTILS.GetClassColor(altProfile:Class()).hex),
+            CLM.L[" alt of:"], 
+            UTILS.ColorCodeText(mainProfile:Name(), UTILS.GetClassColor(mainProfile:Class()).hex)
+        ))
     end
 end
 
