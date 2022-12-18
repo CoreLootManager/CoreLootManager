@@ -124,6 +124,7 @@ Modules\BiddingManager\GUI.lua
 Modules\Changelog\GUI.lua
 Modules\LootQueueManager\GUI.lua
 Modules\AuctionHistoryManager\GUI.lua
+Modules\LootManager\AwardGUI.lua
 
 Modules\GUI\AceGUIWidget-LibScrollingTable.lua
 Modules\GUI\Filters.lua
