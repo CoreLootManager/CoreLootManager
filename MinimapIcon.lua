@@ -119,6 +119,11 @@ function Minimap:Initialize()
             title = CLM.L["Bidding"],
             func = (function() CLM.GUI.BiddingManager:Toggle() end)
         },
+        {
+            title = CLM.L["Award"],
+            func = (function() CLM.GUI.Award:Toggle() end),
+            trustedOnly = true
+        },
         -- Management
         {
             separator = true,

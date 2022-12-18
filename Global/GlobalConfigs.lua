@@ -18,6 +18,7 @@ function GlobalConfigs:Initialize()
         announce_loot_to_raid_level = 3,
         wowdkpbot_integration = false,
         modifier_combination = CONSTANTS.MODIFIER_COMBINATION.ALT,
+        award_modifier_combination = CONSTANTS.MODIFIER_COMBINATION.ALT_SHIFT,
         chat_commands = false,
         alerts = true,
         sounds = true,
@@ -305,6 +306,14 @@ end
 
 function GlobalConfigs:GetModifierCombination()
     return self.db.modifier_combination or CONSTANTS.MODIFIER_COMBINATION.ALT
+end
+
+function GlobalConfigs:SetAwardModifierCombination(value)
+    self.db.award_modifier_combination = CONSTANTS.MODIFIER_COMBINATIONS[value] and value or CONSTANTS.MODIFIER_COMBINATION.ALT
+end
+
+function GlobalConfigs:GetAwardModifierCombination()
+    return self.db.award_modifier_combination or CONSTANTS.MODIFIER_COMBINATION.ALT
 end
 
 function GlobalConfigs:SetAllowChatCommands(value)

@@ -439,10 +439,11 @@ function AuctionManagerGUI:GenerateAuctionOptions()
             end),
             confirm = (function()
                 return sformat(
-                    CLM.L["Are you sure, you want to award %s to %s for %s DKP?"],
+                    CLM.L["Are you sure, you want to award %s to %s for %s %s?"],
                     self.itemLink,
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
-                    tostring(self.awardValue)
+                    tostring(self.awardValue),
+                    (self.roster and self.roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and CLM.L["GP"] or CLM.L["DKP"]
                 )
             end),
             width = 0.55,
