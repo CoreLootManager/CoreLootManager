@@ -307,7 +307,7 @@ function ProfileManager:MarkAsAltByNames(alt, main)
         end
     else -- Link
         -- Do not allow alt chaining if main is alt
-        if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), CLM.MODELS.Profile) then 
+        if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), CLM.MODELS.Profile) then
             LOG:Error("Alt chaining: Main is an alt.")
             return
         end
@@ -327,9 +327,9 @@ function ProfileManager:MarkAsAltByNames(alt, main)
             return
         end
         CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
-        LOG:Message(sformat("%s%s %s",
+        LOG:Message(sformat("%s%s%s",
             UTILS.ColorCodeText(altProfile:Name(), UTILS.GetClassColor(altProfile:Class()).hex),
-            CLM.L[" alt of:"], 
+            CLM.L[" alt of: "],
             UTILS.ColorCodeText(mainProfile:Name(), UTILS.GetClassColor(mainProfile:Class()).hex)
         ))
     end
