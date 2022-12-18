@@ -44,12 +44,45 @@ function GlobalConfigs:Initialize()
             width = 0.25,
             order = 0
         },
+        author = {
+            type = "description",
+            name = [=[Created by |cffe6cc80Lantis|r Annalina-Mirage Raceway]=],
+            fontSize = "large",
+            descStyle = "inline",
+            width = 3,
+            order = 0.1
+        },
+        spacing1 = {
+            type = "description",
+            fontSize = "large",
+            name = "",
+            width = 0.25,
+            order = 0.2
+        },
+        patron_kudos = {
+            type = "description",
+            name = [=[
+Thank you patrons, especially:
+|cffff8000Allcoast|r, |cffff8000BigSpoon|r, |cffff8000Cyber|r, |cffff8000naimious|r, |cffff8000Nosirrahdrof|r
+]=],
+            fontSize = "medium",
+            descStyle = "inline",
+            width = 3,
+            order = 0.3
+        },
+        spacing2 = {
+            type = "description",
+            fontSize = "large",
+            name = "",
+            width = 0.25,
+            order = 0.7
+        },
         discord = {
             type = "description",
             name = CLM.L["Join our discord for more info: "],
             fontSize = "medium",
-            width = 1.75,
-            order = 0.1
+            width = 1.1,
+            order = 0.8
         },
         discord_link = {
             type = "input",
@@ -57,7 +90,7 @@ function GlobalConfigs:Initialize()
             get = (function(i) return "|cff44ee44https://tiny.one/clm-discord|r" end),
             set = (function(i,v) end),
             width = 1,
-            order = 0.5
+            order = 0.9
         },
         global_header = {
             type = "header",
