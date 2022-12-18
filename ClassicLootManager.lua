@@ -261,6 +261,10 @@ end
 
 --@do-not-package@
 
+if ViragDevTool then
+    ViragDevTool_AddData(CLM, "CLM")
+end
+
 CLMCORE = CLM
 
 function CORE.Debug()

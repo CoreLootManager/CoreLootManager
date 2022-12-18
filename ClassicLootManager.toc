@@ -6,7 +6,7 @@
 ## Notes: Robust, DKP and EPGP based Loot Manager system
 ## Author: Lantis
 ## Version: @project-version@
-## OptionalDeps: LibStub, Gargul, RCLootCouncil_Classic, Ace3
+## OptionalDeps: LibStub, Gargul, RCLootCouncil_Classic, Ace3, ViragDevTool
 ## X-Donate: https://www.patreon.com/classiclootmanager
 ## X-License: MIT
 ## X-Curse-Project-ID: 481373
