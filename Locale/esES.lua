@@ -430,7 +430,7 @@ CLM.L["Chest"] = "Pecho"
 -- Modules/AutoAwardManager/EncounterIDs.lua:21
 CLM.L["Chromaggus"] = "Chromaggus"
 -- Modules/ProfileInfoManager/ProfileInfoManager.lua:263
-CLM.L["Classic Loot Manager %s initialization complete."] = "Classic Loot Manager %s inicialización completa."
+CLM.L["Classic Loot Manager %s initialization complete. %s"] = "Classic Loot Manager %s inicialización completa. %s"
 -- Modules/Changelog/GUI.lua:15
 -- Modules/GUI/UnifiedGUI.lua:270
 CLM.L["Classic Loot Manager"] = "Classic Loot Manager"
