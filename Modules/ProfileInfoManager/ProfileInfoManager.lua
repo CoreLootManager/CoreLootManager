@@ -260,7 +260,7 @@ function ProfileInfoManager:Initialize()
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
-            LOG:Message(CLM.L["Classic Loot Manager %s initialization complete."], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"))
+            LOG:Message(CLM.L["Classic Loot Manager %s initialization complete. %s"], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"), "Created by |cffe6cc80Lantis|r Annalina-Mirage Raceway")
             C_Timer.After(1, function()
                 RestoreVersions(self)
                 RestoreSpecs(self)

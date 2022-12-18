@@ -1,6 +1,30 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v2.7.0",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    { header = "Thank you patrons!", body = "Thank you patrons, especially: |cffff8000Allcoast|r, |cffff8000BigSpoon|r, |cffff8000Cyber|r, |cffff8000naimious|r, |cffff8000Nosirrahdrof|r" },
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    { header = "Award GUI", body = "No more tedious typing in slash commands! You can now award items through this new UI. You can access it through minimap icon or |cff44ee44/clm award|r. Award slash command accepts also item link as a parameter to directly fill |cff44ee44/clm award [item link]|r. By default also |cff44ee44ALT+SHIFT click|r in bags or corpse will open this window. Supports auto-trade and auto-assign." },
+                    { header = "Configurable equations", body = "You can now configure base / exponent of your dynamic item value equations. This was possible thanks to |cff44ee44psiven|r. Use of this feature requires everyone in raid to have installed at least this version." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Alt-Main linking", body = "Re-linking alt will no longer prevent the alts previous main to be marked as alt itself. Improved messages in the linking flow." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.6.0",
         data = {
             {
@@ -100,7 +124,7 @@ CLM.ChangelogData = {
                 name = "Fixes",
                 data = {
                     { header = "Chat command bidding", body = "Chat command bidding should now work." },
-                    { header = "Chat command os bid", body = "You can now do OS bid through chat command |cff4ee44!bidos|r." },
+                    { header = "Chat command os bid", body = "You can now do OS bid through chat command |cff44ee44!bidos|r." },
                     { header = "Auto-update bid values", body = "Auto-update bid values should work with new UI."},
                     { header = "Bidding UI", body = "Bidding UI no longer needs Okay button. This however results in buttons being misplaced with some ElvUI scales." },
                 },
