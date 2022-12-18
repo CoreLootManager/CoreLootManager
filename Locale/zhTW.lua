@@ -1526,7 +1526,7 @@ CLM.L["Select loot rarity for the tracking unauctioned loot."] = "为记录未�
 -- Modules/AuctionManager/AuctionManager.lua:95
 CLM.L["Select modifier combination for auctioning from bags and corpse."] = "选择用于从背包和BOSS尸体中拍卖的快捷键组合。"
 -- Modules/LootManager/AwardGUI.lua:236
---CLM.L["Select modifier combination for awarding."] = ""
+CLM.L["Select modifier combination for awarding."] = "選擇用於授予的修飾符組合。"
 -- Modules/GUI/UnifiedGUI_Profiles.lua:135
 CLM.L["Select roster to add profiles to."] = "选择名册以添加角色信息。"
 -- Modules/GUI/UnifiedGUI_Raids.lua:165
@@ -1578,7 +1578,7 @@ CLM.L["Shirt"] = "衬衣"
 -- Modules/RosterManager/Roster.lua:747
 CLM.L["Shoulder"] = "肩部"
 -- Modules/LootManager/AwardGUI.lua:219
---CLM.L["Show Award window"] = ""
+CLM.L["Show Award window"] = "展示獎勵窗口"
 -- Modules/AutoAwardManager/EncounterIDs.lua:24
 CLM.L["Silithid Royalty"] = "吉祥三宝"
 -- Modules/AutoAwardManager/EncounterIDs.lua:154

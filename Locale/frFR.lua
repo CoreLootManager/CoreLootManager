@@ -1526,7 +1526,7 @@ CLM.L["Select loot rarity for the tracking unauctioned loot."] = "Sélectionnez 
 -- Modules/AuctionManager/AuctionManager.lua:95
 CLM.L["Select modifier combination for auctioning from bags and corpse."] = "Sélectionner la combinaison de touche pour lancer l'enchère depuis votre sac ou le cadavre"
 -- Modules/LootManager/AwardGUI.lua:236
---CLM.L["Select modifier combination for awarding."] = ""
+CLM.L["Select modifier combination for awarding."] = "Sélectionnez la combinaison de modificateurs pour l'attribution."
 -- Modules/GUI/UnifiedGUI_Profiles.lua:135
 CLM.L["Select roster to add profiles to."] = "Sélectionner le roster auquel ajouter des profils."
 -- Modules/GUI/UnifiedGUI_Raids.lua:165
@@ -1578,7 +1578,7 @@ CLM.L["Shirt"] = "Chemise"
 -- Modules/RosterManager/Roster.lua:747
 CLM.L["Shoulder"] = "Épaule"
 -- Modules/LootManager/AwardGUI.lua:219
---CLM.L["Show Award window"] = ""
+CLM.L["Show Award window"] = "Fenêtre de récompense de spectacles"
 -- Modules/AutoAwardManager/EncounterIDs.lua:24
 CLM.L["Silithid Royalty"] = "Bug Trio"
 -- Modules/AutoAwardManager/EncounterIDs.lua:154
