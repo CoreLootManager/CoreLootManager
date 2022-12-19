@@ -110,6 +110,19 @@ local methods = {
         self.metadata.hideScroll = true
         self.st.scrollframe:Hide()
     end,
+    ["SetTransparent"] = function(self, ...)
+        self:SetBackdrop({})
+        self:SetBackdropColor({r=0,g=0,b=0,a=0})
+        local name = self.st.frame:GetName()
+        local stScrollBar = _G[name .. "ScrollTrough"]
+        local stScrollBarBorder = _G[name .. "ScrollTroughBorder"]
+        if stScrollBar then
+            stScrollBar.background:Hide()
+        end
+        if stScrollBarBorder then
+            stScrollBarBorder.background:Hide()
+        end
+    end,
     -- AFAIK needed for input type of AceConfigDialog
     ["SetDisabled"] = function(self)
     end,

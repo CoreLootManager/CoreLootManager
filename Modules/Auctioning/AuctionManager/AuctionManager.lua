@@ -390,7 +390,6 @@ end
 
 local function SetRaidConnection(self)
     if CLM.MODULES.RaidManager:IsInRaid() then
-        print("SetRaidConnection")
         UpdateAuctionInfo(self, CLM.MODULES.RaidManager:GetRaid())
     end
 end
@@ -546,8 +545,9 @@ local function CreateNewTicker(self, countdown, endTimeValue)
 end
 
 function AuctionManager:ClearItemList()
+    self.pendingAuction:CopySettings(self.currentAuction)
     self.currentAuction = self.pendingAuction
-    self.pendingAuction = AuctionInfo:New(self.currentAuction) -- TODO config
+    self.pendingAuction = AuctionInfo:New()
     CLM.GUI.AuctionManager:SetVisibleAuctionItem(nil)
     self:RefreshGUI()
 end

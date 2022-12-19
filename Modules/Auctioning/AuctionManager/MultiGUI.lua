@@ -228,9 +228,7 @@ local function CreateLootList(self)
             return status
         end),
     })
-    -- ItemList:HideScroll()
-    ItemList:SetBackdrop({})
-    ItemList:SetBackdropColor({r=0,g=0,b=0,a=0})
+    ItemList:SetTransparent()
     return ItemList
 end
 
@@ -298,20 +296,22 @@ local function GenerateAwardOptions(self)
                     CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():RemoveItem(self.auctionItem:GetItemID())
                     self.auctionItem = nil
                 end
+                self.awardPlayer = nil
                 self:Refresh()
             end),
             confirm = (function()
+                local roster = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():Roster()
                 return sformat(
                     CLM.L["Are you sure, you want to award %s to %s for %s %s?"],
-                    self.auctionItem:GetItemLink(),
+                    self.itemLink,
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
-                    tostring(self.awardPrice),
-                    CLM.L["DKP"]
+                    tostring(self.awardValue),
+                    (roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and CLM.L["GP"] or CLM.L["DKP"]
                 )
             end),
             width = 0.5,
             order = 5,
-            disabled = genericDisable,
+            disabled = (function() return genericDisable() or not self.awardPlayer end),
         }
     }
     return options

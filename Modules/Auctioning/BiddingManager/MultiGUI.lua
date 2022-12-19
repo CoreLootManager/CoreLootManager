@@ -506,7 +506,6 @@ local function CreateItemList(self)
     ItemList:RegisterEvents({
         OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             UTILS.LibStSingleSelectClickHandler(table, nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            print("CLICKEDY CLICK BIDDING")
             local _, selection = next(table:GetSelection())
             local row = table:GetRow(selection)
             if row then
@@ -531,9 +530,7 @@ local function CreateItemList(self)
             return status
         end),
     })
-    -- ItemList:HideScroll()
-    ItemList:SetBackdrop({})
-    ItemList:SetBackdropColor({r=0,g=0,b=0,a=0})
+    ItemList:SetTransparent()
     return ItemList
 end
 
@@ -618,6 +615,13 @@ local function UpdateUIStructure(self)
                 self.top:Hide() -- this helps to fix scaling issues with Ace3
             end
         end
+    end
+    if CONSTANTS.AUCTION_TYPES_OPEN[auctionInfo and auctionInfo:GetType()] then
+        self.BidList:Show()
+        self.ItemList:SetDisplayRows(8, 32)
+    else
+        self.BidList:Hide()
+        self.ItemList:SetDisplayRows(4, 32)
     end
 end
 
@@ -739,6 +743,14 @@ function BiddingManagerGUI:Show()
     if not self.top:IsVisible() then
         self:Refresh()
         self.top:Show()
+    end
+end
+
+function BiddingManagerGUI:Hide()
+    LOG:Trace("BiddingManagerGUI:Hide()")
+    -- if not self._initialized then return end
+    if self.top:IsVisible() then
+        self.top:Hide()
     end
 end
 

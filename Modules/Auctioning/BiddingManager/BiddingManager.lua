@@ -308,7 +308,8 @@ function BiddingManager:HandleStopAuction(_, sender)
     PlayEndSound()
     -- TODO Auction Finish
     -- CLM.GUI.BiddingManager:EndAuction()
-    -- LOG:Message(CLM.L["Auction finished"])
+    CLM.GUI.BiddingManager:Hide()
+    LOG:Message(CLM.L["Auction finished"])
 end
 
 function BiddingManager:HandleAntiSnipe(_, sender)

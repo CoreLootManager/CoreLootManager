@@ -50,11 +50,33 @@ function AuctionInfo:New(object)
     o.itemCount = 0
 
     o.auctionTime = object.auctionTime or 0
-    o.endTime = object.endTime or 0
     o.antiSnipe = object.antiSnipe or 0
+
+    o.endTime = object.endTime or 0
     o.antiSnipeLimit = object.antiSnipeLimit or 0
 
     return o
+end
+
+function AuctionInfo:CopySettings(object)
+    assertTypeof(object, AuctionInfo)
+    self.state = object.state or CONSTANTS.AUCTION_INFO.STATE.IDLE
+
+    self.configuration = object.configuration
+    self.roster = object.roster
+    self.raid = object.raid
+
+    self.auctionTime = object.auctionTime or 0
+    self.antiSnipe = object.antiSnipe or 0
+
+    if self.roster then
+        for _,item in pairs(self.items) do
+            item:LoadValues(self.roster)
+        end
+    end
+
+    -- self.endTime = object.endTime or 0
+    -- self.antiSnipeLimit = object.antiSnipeLimit or 0
 end
 
 local function UpdateConfigurableData(self)
@@ -102,7 +124,6 @@ function AuctionInfo:UpdateRaid(raid)
         LOG:Debug("AuctionInfo:UpdateRaid(): Called during auction. Ignoring.")
         return
     end
-    print("AuctionInfo:UpdateRaid")
     UpdateRaidInternal(self, raid)
     UpdateRosterInternal(self, raid:Roster())
     UpdateConfigurationInternal(self)
