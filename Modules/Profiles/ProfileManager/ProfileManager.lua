@@ -136,6 +136,14 @@ function ProfileManager:Initialize()
                 if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), CLM.MODELS.Profile) then return end
                 -- Do not allow alt chaining if alt has alts
                 if altProfile:HasAlts() then return end
+                -- Unlink old main
+                local currentMainProfile = self:GetProfileByGUID(altProfile:Main())
+                if UTILS.typeof(currentMainProfile, CLM.MODELS.Profile) then
+                    -- Remove main from this alt
+                    altProfile:ClearMain()
+                    -- Remove alt count from main
+                    currentMainProfile:RemoveAlt(altGUID)
+                end
                 -- Set new main of this alt
                 altProfile:SetMain(mainGUID)
                 -- Add alt to our main
@@ -283,10 +291,9 @@ end
 
 function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
-    LOG:Debug("MarkAsAltByNames(): Linking %s to %s", tostring(alt), tostring(main))
     local altProfile = self:GetProfileByName(alt)
     if not UTILS.typeof(altProfile, CLM.MODELS.Profile) then
-        LOG:Error("MarkAsAltByNames(): Invalid alt")
+        LOG:Error("Alt does not exist. Aborting")
         return
     end
     local mainProfile = self:GetProfileByName(main)
@@ -294,33 +301,37 @@ function ProfileManager:MarkAsAltByNames(alt, main)
     if not UTILS.typeof(mainProfile, CLM.MODELS.Profile) then
         if altProfile:Main() ~= "" then
             CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), nil), true)
-            LOG:Debug("MarkAsAltByNames(): Main does not exist")
+            LOG:Message(sformat("%s: %s", CLM.L["Unlink Alt"], UTILS.ColorCodeText(altProfile:Name(), UTILS.GetClassColor(altProfile:Class()).hex)))
         else
-            LOG:Debug("MarkAsAltByNames(): Unlink")
+            LOG:Error("Main does not exist.")
         end
     else -- Link
         -- Do not allow alt chaining if main is alt
         if UTILS.typeof(self:GetProfileByGUID(mainProfile:Main()), CLM.MODELS.Profile) then
-            LOG:Debug("MarkAsAltByNames(): Alt chaining: Main is alt")
+            LOG:Error("Alt chaining: Main is an alt.")
             return
         end
         -- Do not allow alt chaining if alt has alts
         if altProfile:HasAlts() then
-            LOG:Debug("MarkAsAltByNames(): Alt chaining: Alt has alt(s)")
+            LOG:Error("Alt chaining: Alt has alts.")
             return
         end
         -- Don't allow self setting
         if altProfile:GUID() == mainProfile:GUID() then
-            LOG:Debug("MarkAsAltByNames(): Alt chaining: Self set")
+            LOG:Error("Alt and main are same character.")
             return
         end
         -- Don't allow re-setting
         if altProfile:Main() == mainProfile:GUID() then
-            LOG:Debug("MarkAsAltByNames(): Alt chaining: Already exist")
+            LOG:Error("Alt already set.")
             return
         end
         CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
-        LOG:Debug("MarkAsAltByNames(): Link success %s alt of %s", altProfile:Name(), mainProfile:Name())
+        LOG:Message(sformat("%s%s%s",
+            UTILS.ColorCodeText(altProfile:Name(), UTILS.GetClassColor(altProfile:Class()).hex),
+            CLM.L[" alt of: "],
+            UTILS.ColorCodeText(mainProfile:Name(), UTILS.GetClassColor(mainProfile:Class()).hex)
+        ))
     end
 end
 

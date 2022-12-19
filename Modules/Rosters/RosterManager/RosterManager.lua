@@ -297,6 +297,21 @@ function RosterManager:Initialize()
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.DynamicItemValueExpvar,
+        (function(entry)
+            LOG:TraceAndCount("mutator(DynamicItemValueExpvar)")
+            local rosterUid = entry:rosterUid()
+
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
+
+            roster:GetCalculator():SetExpvar(entry:expvar())
+        end))
+
+    CLM.MODULES.LedgerManager:RegisterEntryType(
         CLM.MODELS.LEDGER.ROSTER.DynamicItemValueMultiplier,
         (function(entry)
             LOG:TraceAndCount("mutator(DynamicItemValueMultiplier)")
@@ -589,6 +604,31 @@ function RosterManager:SetRosterDynamicItemValueEquation(nameOrRoster, equation)
     end
 
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueEquation:new(roster:UID(), equation), true)
+end
+
+function RosterManager:SetRosterDynamicItemValueExpvar(nameOrRoster, expvar)
+    LOG:Trace("RosterManager:SetRosterDynamicItemValueExpvar()")
+    expvar = tonumber(expvar)
+    local roster
+    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueExpvar(): Invalid roster object or name")
+        return nil
+    end
+    if not expvar then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueExpvar(): Missing expvar")
+        return
+    end
+    if roster:GetCalculator():GetExpvar() == expvar then
+        LOG:Debug("RosterManager:SetRosterDynamicItemValueExpvar(): No change to value. Skipping.")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueExpvar:new(roster:UID(), expvar), true)
 end
 
 function RosterManager:SetRosterDynamicItemValueMultiplier(nameOrRoster, multiplier)

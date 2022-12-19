@@ -1,3 +1,15 @@
+# Classic Loot Manager v2.7.0
+## Notes
+Thank you to all the patrons, especially: `Allcoast, BigSpoon, Cyber, naimious, Nosirrahdrof`
+## Features
+### Award GUI
+No more tedious typing in slash commands! You can now award items through this new UI.
+You can access it through minimap icon or `/clm award`. Award slash command accepts also item link as a parameter to directly fill `/clm award [item link]`. By default also `ALT+SHIFT click` in bags or corpse will open this window. Supports auto-trade and auto-assign.
+### Configurable equations
+You can now configure base / exponent of your dynamic item value equations. This was possible thanks to `psiven`. Use of this feature requires everyone in raid to have installed at least this version.
+## Fixes
+### Alt-Main linking
+Re-linking alt will no longer prevent the alts previous main to be marked as alt itself. Improved messages in the linking flow.
 # Classic Loot Manager v2.6.0
 ## Notes
 ### Library overhaul

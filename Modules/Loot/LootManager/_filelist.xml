@@ -3,4 +3,5 @@
 	<Script file="Loot.lua"/>
 	<Script file="LedgerEntries.lua"/>
 	<Script file="LootManager.lua"/>
+	<Script file="AwardGUI.lua"/>
 </Ui>
