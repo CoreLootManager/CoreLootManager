@@ -206,7 +206,19 @@ local function CreateLootList(self)
             local _, selection = next(table:GetSelection())
             local dataRow = table:GetRow(selection)
             if dataRow then
-                self:SetVisibleAuctionItem(dataRow.cols[2].value)
+                local item = dataRow.cols[2].value
+                if button == "RightButton" then
+                    local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+                    if auction:IsInProgress() then
+                        LOG:Message(CLM.L["Removing items not allowed during auction."])
+                    else
+                        CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(item)
+                        self.auctionitem = nil
+                        self:Refresh()
+                    end
+                else
+                    self:SetVisibleAuctionItem(item)
+                end
             end
             self.BidList:ClearSelection()
             return true
@@ -228,6 +240,7 @@ local function CreateLootList(self)
             return status
         end),
     })
+    ItemList:EnableSelection(false)
     ItemList:SetTransparent()
     return ItemList
 end
@@ -293,7 +306,7 @@ local function GenerateAwardOptions(self)
                 CLM.MODULES.AuctionManager:Award(self.auctionItem, self.awardPlayer, self.awardPrice)
                 self.BidList:ClearSelection()
                 if self.removeOnAward then
-                    CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():RemoveItem(self.auctionItem:GetItemID())
+                    CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
                     self.auctionItem = nil
                 end
                 self.awardPlayer = nil

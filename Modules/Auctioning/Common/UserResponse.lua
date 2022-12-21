@@ -28,6 +28,7 @@ end
 
 function UserResponse:SetUpgradedItems(upgradedItems)
     assertType(upgradedItems, "table")
+    self.upgradedItems = {}
     for _,id in ipairs(upgradedItems) do
         id = tonumber(id) or 0
         if GetItemInfoInstant(id) then
@@ -55,6 +56,14 @@ end
 
 function UserResponse:Items()
     return self.upgradedItems
+end
+
+function UserResponse:MarkInvalid()
+    self.invalid = true
+end
+
+function UserResponse:IsInvalid()
+    return self.invalid
 end
 
 CLM.MODELS.UserResponse = UserResponse

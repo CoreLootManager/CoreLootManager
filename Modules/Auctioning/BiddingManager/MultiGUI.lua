@@ -530,6 +530,7 @@ local function CreateItemList(self)
             return status
         end),
     })
+    ItemList:EnableSelection(false)
     ItemList:SetTransparent()
     return ItemList
 end
@@ -563,6 +564,7 @@ local function CreateBidList(self)
     --     end
     -- })
     -- TODO disable click
+    BidList:EnableSelection(false)
     self.BidList = BidList
     return BidList
 end

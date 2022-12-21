@@ -199,6 +199,9 @@ function AuctionInfo:Start(endTime)
     for _, item in pairs(self.items) do
         item:ClearResponses()
     end
+
+    self.anonymousMap = {}
+    self.nextAnonymousId = 1
 end
 
 function AuctionInfo:End()
@@ -295,6 +298,20 @@ function AuctionInfo:HasBids(itemId, username)
         return (item:GetResponse(username) ~= nil)
     end
     return false
+end
+
+local nickMap = {
+    "Millhouse ",
+    "Jenkins ",
+    "Hemet ",
+    "Mrgl-Mrgl "
+}
+
+function AuctionInfo:GetAnonymousName(name)
+    if not self.anonymousMap[name] then
+        self.anonymousMap[name] = nickMap[math.random(1,#nickMap)] .. tostring(self.nextAnonymousId)
+        self.nextAnonymousId = self.nextAnonymousId + 1
+    end
 end
 
 CONSTANTS.AUCTION_INFO = {
