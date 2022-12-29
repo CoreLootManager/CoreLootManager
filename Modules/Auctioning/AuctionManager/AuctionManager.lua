@@ -735,7 +735,6 @@ local function ValidateBid(auction, item, name, userResponse)
                 return true
             end
             if value <= item:GetHighestBid() then
-                print("<=3", value, item:GetHighestBid())
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
             end
             if (value - item:GetHighestBid()) < auction:GetIncrement() then
@@ -777,7 +776,7 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
     message = sformat(CLM.L["New highest bid on %s: %d %s %s"],
                         item:GetItemLink(),
                         userResponse:Value(),
-                        auction:Roster():GetPointType() == CONSTANTS.POINT_TYPE.DKP and CLM.L["DKP"] or CLM.L["GP"],
+                        auction:GetRoster():GetPointType() == CONSTANTS.POINT_TYPE.DKP and CLM.L["DKP"] or CLM.L["GP"],
                         nameModdified)
     SendChatMessage(message, "RAID_WARNING")
 end
@@ -812,7 +811,12 @@ function AuctionManager:UpgradedItems()
 end
 
 local function RevalidateBids(self)
-
+    for _, item in pairs(self.currentAuction:GetItems()) do
+        for name, userResponse in pairs(item:GetAllResponses()) do
+            local valid = ValidateBid(self.currentAuction, item, name, userResponse)
+            if not valid then userResponse:MarkInvalid() end
+        end
+    end
 end
 
 function AuctionManager:Award(item, name, price)
@@ -960,7 +964,7 @@ function AuctionManager:FakeBids()
     SendBidAccepted = (function(...) end)
     SendBidDenied = (function(...) end)
     if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then
-        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+        local roster = CLM.MODULES.RaidManager:GetRaid():GetRoster()
         local profiles = roster:Profiles()
         local numBids = math.random(1, math.min(#profiles, 25))
         local numItems = self.currentAuction:GetItemCount()

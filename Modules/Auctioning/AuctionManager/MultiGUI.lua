@@ -29,9 +29,11 @@ local BASE_WIDTH  = 605 + (isElvUI and 15 or 0)
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 -- local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
 -- local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
--- local colorRedTransparent = {r = 0.93, g = 0.27, b = 0.2, a = 0.3}
+local colorRedTransparent = {r = 0.93, g = 0.27, b = 0.2, a = 0.3}
 -- local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 -- local colorBlueTransparent = {r = 0.2, g = 0.27, b = 0.93, a = 0.3}
+
+local highlightInvalid = UTILS.getHighlightMethod(colorRedTransparent, true)
 
 local colorRedTransparentHex    = "ED3333"
 local colorGreenTransparentHex  = "33ED33"
@@ -424,6 +426,20 @@ local function CreateBidList(self, width)
     end
     BidList:SetDisplayCols(cols)
     BidList:RegisterEvents({
+        -- OnEnter handler -> on hover
+        OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            return status
+        end),
+        -- OnLeave handler -> on hover out
+        OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
+            local rowData = table:GetRow(realrow)
+            if rowData and rowData.highlight then
+                rowData.highlight(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            end
+            return status
+        end),
         OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             UTILS.LibStSingleSelectClickHandler(table, --[[UnifiedGUI_Raids.RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             local _, selection = next(table:GetSelection())
@@ -709,6 +725,11 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
         secondaryItem = nil
     end
 
+    local highlight
+    if response:IsInvalid() then
+        highlight = highlightInvalid
+    end
+
     return {cols = {
             {value = class},
             {value = name, color = classColor},
@@ -718,6 +739,8 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
             {value = primaryItem},
             {value = secondaryItem},
         },
+        highlight = highlight,
+        DoCellUpdate = highlight
     }
 end
 
