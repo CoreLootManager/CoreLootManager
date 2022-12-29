@@ -743,7 +743,7 @@ function AuctionManagerGUI:Refresh()
         local namedButtonsMode = auction:GetNamedButtonsMode()
         local roster = auction:GetRoster()
         for name, response in pairs(item:GetAllResponses()) do
-        if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
+            if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then -- TODO configurable
                 bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode)
             end
         end

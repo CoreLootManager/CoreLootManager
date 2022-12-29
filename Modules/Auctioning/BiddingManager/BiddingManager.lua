@@ -333,7 +333,11 @@ function BiddingManager:HandleAcceptBid(itemId, sender)
     if not bid then return end
     item:SetBidStatus(true)
     CLM.GUI.BiddingManager:Refresh()
-    LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], bid:Value()) -- TODO
+    local bidValue = bid:Value()
+    if CONSTANTS.BID_TYPE_HIDDEN[bid:Type()] then
+        bidValue = bid:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
+    end
+    LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], bidValue)
     -- if self.guiBid then
     --     local value =  self.lastBid or CLM.L["cancel"]
     --     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
@@ -354,7 +358,11 @@ function BiddingManager:HandleDenyBid(data, sender)
     if not bid then return end
     item:SetBidStatus(false)
     CLM.GUI.BiddingManager:Refresh()
-    LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], bid:Value(), CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"]) -- TODO
+    local bidValue = bid:Value()
+    if CONSTANTS.BID_TYPE_HIDDEN[bid:Type()] then
+        bidValue = bid:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
+    end
+    LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], bidValue, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"]) -- TODO
     -- if self.guiBid then
     --     local value = self.lastBid or CLM.L["cancel"]
     --     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
@@ -370,10 +378,6 @@ function BiddingManager:HandleDistributeBid(data, sender)
         return
     end
     local bids = data:Data()
-    if not CLM.__DBG_BIDS then
-        CLM.__DBG_BIDS =  {}
-    end
-    CLM.__DBG_BIDS[#CLM.__DBG_BIDS+1] = bids
     for itemId, playerData in pairs(bids) do
         local item = self.auction:GetItem(itemId)
         if item then

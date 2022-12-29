@@ -47,6 +47,7 @@ function AuctionItem:New(item)
     o.item = item or emptyItem
     o.userResponses = {}
     o.userRolls = {}
+    o.rollValues = {}
     o.values = {}
     o.awardEntryId = nil
     o.bid = nil
@@ -68,11 +69,15 @@ function AuctionItem:SetResponse(username, response, doNotRoll)
         end
     end
     if doNotRoll then
-        -- store current roll just in case
-        self.userRolls[username] = response:Roll()
+        self.userRolls[username] = response:Roll() -- store current roll just in case
     else
         if not self.userRolls[username] then
-            self.userRolls[username] = math.random(1,100)
+            local roll
+            repeat
+                roll = math.random(1,100)
+            until (self.rollValues[roll] == nil)
+            self.userRolls[username] = roll
+            self.rollValues[roll] = true
         end
         response:SetRoll(self.userRolls[username])
     end
@@ -113,6 +118,7 @@ end
 function AuctionItem:ClearResponses()
     self.userResponses = {}
     self.userRolls = {}
+    self.rollValues = {}
 end
 
 function AuctionItem:SetAwardId(entryId)

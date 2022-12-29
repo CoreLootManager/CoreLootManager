@@ -532,7 +532,7 @@ local function StopAuctionTimed(self)
 end
 
 local TICKER_INTERVAL = 0.2
-local SENDING_INTERVAL = 3
+local SENDING_INTERVAL = 2
 local function CreateNewAuctionIntervalHandlers(self, countdown, endTimeValue)
     self.bidInfoSender = CLM.MODELS.BidInfoSender:New(SENDING_INTERVAL, SendBidInfoInternal)
     self.auctionTickerLastCountdownValue = countdown
