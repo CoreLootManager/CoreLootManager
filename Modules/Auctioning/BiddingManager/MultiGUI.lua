@@ -725,6 +725,8 @@ end
 
 function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     self.auctionItem = auctionItem
+    local values = self.auctionItem:GetValues()
+    SetInputValue(self, values[CONSTANTS.SLOT_VALUE_TIER.BASE])
     self:Refresh()
 end
 
@@ -778,6 +780,19 @@ function BiddingManagerGUI:RefreshBidList()
     self.BidList:SetData(bidList)
 end
 
+local function AutoUpdate(self)
+    if CLM.MODULES.BiddingManager:GetAutoUpdateBidValue() then
+        local item = self.auctionItem
+        local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+        if item and auction then
+            local value = item:GetHighestBid() + auction:GetIncrement()
+            if value >= 0 then
+                SetInputValue(self, value)
+            end
+        end
+    end
+end
+
 function BiddingManagerGUI:Refresh()
     LOG:Trace("BiddingManagerGUI:Refresh()")
     -- if not self._initialized then return end
@@ -793,6 +808,8 @@ function BiddingManagerGUI:Refresh()
     RefreshItemList(self)
 
     self:RefreshBidList()
+
+    AutoUpdate(self)
 end
 
 function BiddingManagerGUI:Toggle()

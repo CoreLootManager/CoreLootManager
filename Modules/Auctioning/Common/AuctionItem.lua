@@ -45,14 +45,8 @@ function AuctionItem:New(item)
     setmetatable(o, self)
 
     o.item = item or emptyItem
-    o.userResponses = {}
-    o.userRolls = {}
-    o.rollValues = {}
-    o.values = {}
-    o.awardEntryId = nil
-    o.bid = nil
-    o.canUse = true
-    o.highestBid = -math.huge
+    self.values = {}
+    self:Clear()
 
     CheckUsability(o)
 
@@ -63,9 +57,11 @@ function AuctionItem:SetResponse(username, response, doNotRoll)
     assertTypeof(response, CLM.MODELS.UserResponse)
     self.userResponses[username] = response
 
-    if response:Type() == CLM.CONSTANTS.BID_TYPE.MAIN_SPEC then
+    print("SET RESPONSE", response:Type(), response:Value(), response:Value() > self.highestBid)
+    if response:Type() ~= CLM.CONSTANTS.BID_TYPE.OFF_SPEC then
         if response:Value() > self.highestBid then
             self.highestBid = response:Value()
+            print("NEW HIGHEST BID", self.highestBid)
         end
     end
     if doNotRoll then
@@ -115,10 +111,14 @@ function AuctionItem:GetResponse(username)
     return self.userResponses[username]
 end
 
-function AuctionItem:ClearResponses()
+function AuctionItem:Clear()
     self.userResponses = {}
     self.userRolls = {}
     self.rollValues = {}
+    self.awardEntryId = nil
+    self.bid = nil
+    self.canUse = true
+    self.highestBid = -math.huge
 end
 
 function AuctionItem:SetAwardId(entryId)

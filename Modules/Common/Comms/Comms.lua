@@ -141,7 +141,6 @@ function Comms:Send(prefix, message, distribution, target, priority)
         LOG:Error("Comms:Send() unable to compress message: %s", message)
         return false
     end
-    print(prefix, #tmp)
     -- local lenCompressed = #tmp
     -- if lenCompressed > lenSerial then
     --     LOG:Message("Compression inreased size for message on channel %s from %s to %s (%s%%)", prefix, lenSerial, lenCompressed, (100*(lenCompressed/lenSerial)))

@@ -197,7 +197,7 @@ function AuctionInfo:Start(endTime)
     self.antiSnipeLimit = CONSTANTS.AUCTION_TYPES_OPEN[self:GetType()] and 100 or 3
 
     for _, item in pairs(self.items) do
-        item:ClearResponses()
+        item:Clear()
     end
 
     self.anonymousMap = {}

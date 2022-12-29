@@ -68,10 +68,6 @@ local function SetAutoUpdateBidValue(self, value)
     self.db.autoUpdateBidValue = value and true or false
 end
 
-local function GetAutoUpdateBidValue(self)
-    return self.db.autoUpdateBidValue
-end
-
 local function CreateOptions(self)
     local options = {
         bidding_header = {
@@ -93,7 +89,7 @@ local function CreateOptions(self)
             desc = CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."],
             type = "toggle",
             set = function(i, v) SetAutoUpdateBidValue(self, v) end,
-            get = function(i) return GetAutoUpdateBidValue(self) end,
+            get = function(i) return self:GetAutoUpdateBidValue() end,
             width = "full",
             order = 72
           }
@@ -128,6 +124,10 @@ function BiddingManager:Initialize()
         [CONSTANTS.AUCTION_COMM.TYPE.DENY_BID]          = "HandleDenyBid",
         [CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID]    = "HandleDistributeBid"
     }
+end
+
+function BiddingManager:GetAutoUpdateBidValue()
+    return self.db.autoUpdateBidValue
 end
 
 function BiddingManager:GetLastBidValue()
@@ -387,13 +387,7 @@ function BiddingManager:HandleDistributeBid(data, sender)
             end
         end
     end
-
-    -- TODO: AutoUpdate
-    -- if self:GetAutoUpdateBidValue() and (bid:Type() == (CONSTANTS.BID_TYPE.MAIN_SPEC)) then
-    --     CLM.GUI.BiddingManager:UpdateCurrentBidValue((tonumber(bid:Value()) or 0) + self.auctionInfo:Increment())
-    -- else
-    -- end
-    CLM.GUI.BiddingManager:RefreshBidList()
+    CLM.GUI.BiddingManager:Refresh()
 end
 
 function BiddingManager:GetAuctionInfo()

@@ -735,6 +735,7 @@ local function ValidateBid(auction, item, name, userResponse)
                 return true
             end
             if value <= item:GetHighestBid() then
+                print("<=3", value, item:GetHighestBid())
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
             end
             if (value - item:GetHighestBid()) < auction:GetIncrement() then
