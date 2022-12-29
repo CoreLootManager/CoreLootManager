@@ -857,6 +857,13 @@ function UTILS.assertType(object, objectType)
     end
 end
 
+function UTILS.Saturate(value, low, high)
+    if value <= low then return low end
+    if value >= high then return high end
+    return value
+end
+
+
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
     [1] = ColorCodeText(CLM.L["Common"], "ffffff"),

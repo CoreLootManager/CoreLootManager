@@ -24,7 +24,8 @@ local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
-local rowMultiplier = 2.05
+-- local rowMultiplier = 2.05
+local rowMultiplier = 2.4
 
 local ROW_HEIGHT = 25
 local BASE_HEIGHT = 115
@@ -32,10 +33,13 @@ local BID_ROWS = 7
 local BID_ROW_HEIGHT = 18
 local BIDS_HEIGHT = ((BID_ROWS + 1) * BID_ROW_HEIGHT) + 5
 
+local BASE_ACE_WIDTH = 170
+
 -- local BASE_WIDTH       = 400 + (isElvUI and 30 or 0)
-local DATA_GROUP_WIDTH = 375 + (isElvUI and 30 or 0)
-local BID_INPUT_WIDTH  = 170*rowMultiplier*0.4
-local BID_BUTTON_WIDTH = 170*rowMultiplier*0.3
+-- local DATA_GROUP_WIDTH = 375 + (isElvUI and 30 or 0)
+local DATA_GROUP_WIDTH = BASE_ACE_WIDTH*(rowMultiplier + 0.15) + (isElvUI and 30 or 0)
+local BID_INPUT_WIDTH  = BASE_ACE_WIDTH*rowMultiplier*0.4
+local BID_BUTTON_WIDTH = BASE_ACE_WIDTH*rowMultiplier*0.3
 
 local BID_BUTTON_PADDING = (isElvUI and 12 or 2)
 
@@ -99,9 +103,9 @@ local function RestoreLocation(self)
         self.top:ClearAllPoints()
         self.top:SetPoint(self.db.location[3], self.db.location[4], self.db.location[5])
     end
-    if self.db.scale then
-        self.top.frame:SetScale(self.db.scale)
-    end
+    -- if self.db.scale then
+        -- self.top.frame:SetScale(self.db.scale)
+    -- end
 end
 
 local function GetInputValue(self)
@@ -160,10 +164,14 @@ local buttonOptions = {
     args = {}
 }
 
+local numRows
+
 local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
     local itemValueMode = auctionInfo and auctionInfo:GetMode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
     local useOS = auctionInfo and auctionInfo:GetUseOS()
     local auctionType = auctionInfo and auctionInfo:GetType() or 0
+
+    numRows = 2
 
     local generateBidOptions = {
         bid = {
@@ -235,7 +243,6 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
         }
     }
     local offset = 8
-    local numRows = 2
     local usedTiers
 
     local doDisplayValue
@@ -302,7 +309,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
     end
 
     self.top:SetHeight(BASE_HEIGHT + (CONSTANTS.AUCTION_TYPES_OPEN[auctionType] and BIDS_HEIGHT or 0) + (numRows*ROW_HEIGHT))
-    -- return generateBidOptions, generateButtonOptions
+    
     bidOptions.args = generateBidOptions
     buttonOptions.args = generateButtonOptions
 end
@@ -392,10 +399,11 @@ local function GenerateNamedButtonsAuctionOptions(self, auctionInfo)
         order = offset + 1
     }
 
-    local numRows = 0
+    numRows = 0
     if isEven then numRows = 1 end
+    numRows = numRows + math.ceil(numButtons/2)
 
-    self.top:SetHeight(BASE_HEIGHT + (CONSTANTS.AUCTION_TYPES_OPEN[auctionInfo and auctionInfo:GetType()] and BIDS_HEIGHT or 0) + ((numRows + math.ceil(numButtons/2))*ROW_HEIGHT))
+    self.top:SetHeight(BASE_HEIGHT + (CONSTANTS.AUCTION_TYPES_OPEN[auctionInfo and auctionInfo:GetType()] and BIDS_HEIGHT or 0) + ((numRows)*ROW_HEIGHT))
 
     bidOptions.args = {}
     buttonOptions.args = options
@@ -540,17 +548,24 @@ local function CreateBidList(self)
     BidList:SetDisplayRows(BID_ROWS, BID_ROW_HEIGHT)
     local columns = {
         {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
-        {name = CLM.L["Name"],  width = (86 + (isElvUI and 30 or 0)) },
-        {name = CLM.L["Bid"],   width = 120, color = colorGreen,
+        {name = CLM.L["Name"],  width = 100,
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        }, -- + (isElvUI and 30 or 0)) },
+        {name = CLM.L["Bid"],   width = 100, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
             sortnext = 4,
             align = "CENTER",
             DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                BidList.st.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                frame.text:SetText(data[realrow].cols[7].value or data[realrow].cols[column].value)
+                table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                frame.text:SetText(data[realrow].cols[column].text or data[realrow].cols[column].value)
             end)
         },
-        {name = CLM.L["Current"],  width = 60, color = colorGold,
+        {name = CLM.L["Current"],  width = 80, color = colorGold,
+            sortnext = 5,
+            align = "CENTER"
+        },
+        {name = CLM.L["Roll"],  width = 40, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
+            sortnext = 2,
             align = "CENTER"
         },
         {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
@@ -620,10 +635,12 @@ local function UpdateUIStructure(self)
     end
     if CONSTANTS.AUCTION_TYPES_OPEN[auctionInfo and auctionInfo:GetType()] then
         self.BidList:Show()
-        self.ItemList:SetDisplayRows(8, 32)
+        local itemRows = UTILS.Saturate(numRows + 6, 1, 8)
+        self.ItemList:SetDisplayRows(itemRows, 32)
     else
         self.BidList:Hide()
-        self.ItemList:SetDisplayRows(4, 32)
+        local itemRows = UTILS.Saturate(numRows + 1, 1, 4)
+        self.ItemList:SetDisplayRows(itemRows, 32)
     end
 end
 
@@ -711,6 +728,56 @@ function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     self:Refresh()
 end
 
+local function BuildBidRow(name, response, roster, namedButtonMode)
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+    local name, class, classColor, current = name, "", nil, 0
+    if profile then
+        class = profile:ClassInternal()
+        classColor = UTILS.GetClassColor(profile:Class())
+        current = roster:Standings(profile:GUID())
+    end
+    local bidTypeString
+    if namedButtonMode then
+        bidTypeString = roster:GetFieldName(response:Type())
+        if not bidTypeString or bidTypeString == "" then bidTypeString = nil end
+    end
+
+    local items = response:Items()
+    local primaryItem = items[1]
+    local secondaryItem = items[2]
+    if (not primaryItem) and secondaryItem then
+        primaryItem = secondaryItem
+        secondaryItem = nil
+    end
+
+    return {cols = {
+            {value = class},
+            {value = name, color = classColor},
+            {value = response:Value(), text = bidTypeString, bidType = response:Type()},
+            {value = current},
+            {value = response:Roll()},
+            {value = primaryItem},
+            {value = secondaryItem},
+        },
+    }
+end
+
+function BiddingManagerGUI:RefreshBidList()
+    local bidList = {}
+    local item = self.auctionItem
+    local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+    if item and auction then
+        local namedButtonsMode = auction:GetNamedButtonsMode()
+        local roster = auction:GetRoster()
+        for name, response in pairs(item:GetAllResponses()) do
+        if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
+                bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode)
+            end
+        end
+    end
+    self.BidList:SetData(bidList)
+end
+
 function BiddingManagerGUI:Refresh()
     LOG:Trace("BiddingManagerGUI:Refresh()")
     -- if not self._initialized then return end
@@ -725,7 +792,7 @@ function BiddingManagerGUI:Refresh()
     UpdateUIStructure(self)
     RefreshItemList(self)
 
-    -- self:RefreshBidList()
+    self:RefreshBidList()
 end
 
 function BiddingManagerGUI:Toggle()

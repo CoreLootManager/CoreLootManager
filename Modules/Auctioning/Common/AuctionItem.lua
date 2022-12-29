@@ -58,7 +58,7 @@ function AuctionItem:New(item)
     return o
 end
 
-function AuctionItem:SetResponse(username, response)
+function AuctionItem:SetResponse(username, response, doNotRoll)
     assertTypeof(response, CLM.MODELS.UserResponse)
     self.userResponses[username] = response
 
@@ -67,10 +67,15 @@ function AuctionItem:SetResponse(username, response)
             self.highestBid = response:Value()
         end
     end
-    if not self.userRolls[username] then
-        self.userRolls[username] = math.random(1,100)
+    if doNotRoll then
+        -- store current roll just in case
+        self.userRolls[username] = response:Roll()
+    else
+        if not self.userRolls[username] then
+            self.userRolls[username] = math.random(1,100)
+        end
+        response:SetRoll(self.userRolls[username])
     end
-    response:SetRoll(self.userRolls[username])
 end
 
 function AuctionItem:GetTopBids(cutoff, type)

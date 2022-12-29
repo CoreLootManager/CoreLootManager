@@ -391,7 +391,7 @@ local function CreateBidList(self, width)
         {name = CLM.L["Name"],  width = 100,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
         },
-        {name = CLM.L["Bid"],   width = 80, color = colorGreen,
+        {name = CLM.L["Bid"],   width = 100, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,
             sortnext = 4,
             align = "CENTER",
@@ -406,17 +406,11 @@ local function CreateBidList(self, width)
             align = "CENTER"
         },
         {name = CLM.L["Roll"],  width = 40, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
+            sortnext = 2,
             align = "CENTER"
         },
-        {name = "", width = 30},
-        {name = "", width = 18,
-            DoCellUpdate = UTILS.LibStItemCellUpdate
-            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
-        },
-        {name = "", width = 18,
-            DoCellUpdate = UTILS.LibStItemCellUpdate
-        -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
-        },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
     }
     local currentWidth = 0
     for _, c in ipairs(cols) do
@@ -721,7 +715,6 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
             {value = response:Value(), text = bidTypeString, bidType = response:Type()},
             {value = current},
             {value = response:Roll()},
-            {value = ""},
             {value = primaryItem},
             {value = secondaryItem},
         },

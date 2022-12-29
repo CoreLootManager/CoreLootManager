@@ -13,12 +13,18 @@ local assertType = UTILS.assertType
 local UserResponse = {} -- UserResponse
 UserResponse.__index = UserResponse
 
-function UserResponse:New(value, type, upgradedItems)
-    local o = {}
-    setmetatable(o, self)
+function UserResponse:New(valueOrObject, responseType, upgradedItems)
 
-    o.value = tonumber(value) or 0
-    o.type = CONSTANTS.BID_TYPES[type] and type or CONSTANTS.BID_TYPE.MAIN_SPEC
+    local isCopyConstructor = (type(valueOrObject) == "table")
+
+    local o = isCopyConstructor and valueOrObject or {}
+
+    setmetatable(o, self)
+    self.__index = self
+    if isCopyConstructor then return o end
+
+    o.value = tonumber(valueOrObject) or 0
+    o.type = CONSTANTS.BID_TYPES[responseType] and responseType or CONSTANTS.BID_TYPE.MAIN_SPEC
     o.roll = 0
     o.upgradedItems = {}
     o:SetUpgradedItems(upgradedItems)

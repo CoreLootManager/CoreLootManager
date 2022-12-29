@@ -93,28 +93,32 @@ end
 --- AuctionCommDistributeBid ---
 --------------------------------
 local AuctionCommDistributeBid = {}
-function AuctionCommDistributeBid:New(nameOrObject, value)
-    local isCopyConstructor = (type(nameOrObject) == "table")
+function AuctionCommDistributeBid:New(object)
+    local isCopyConstructor = (type(object) == "table")
 
-    local o = isCopyConstructor and nameOrObject or {}
+    local o = isCopyConstructor and object or {}
 
     setmetatable(o, self)
     self.__index = self
 
     if isCopyConstructor then return o end
 
-    o.n = nameOrObject
-    o.d = value
+    o.d = object
 
     return o
 end
 
-function AuctionCommDistributeBid:Name()
-    return self.n
+function AuctionCommDistributeBid:NewFromAggregatedData(data)
+    local o = {}
+    setmetatable(o, self)
+
+    o.d = data
+
+    return o
 end
 
-function AuctionCommDistributeBid:Value()
-    return self.d
+function AuctionCommDistributeBid:Data()
+    return self.d or {}
 end
 
 local AuctionCommStructure = {}

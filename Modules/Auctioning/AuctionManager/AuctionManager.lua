@@ -370,15 +370,17 @@ local function SendBidDenied(itemId, name, reason)
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
-local function SendBidInfo(itemId, name, userResponse)
-    -- TODO rework for throtthling
-    -- local message = CLM.MODELS.AuctionCommStructure:New(
-    --     CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID,
-    --     CLM.MODELS.AuctionCommDistributeBid:New(name, userResponse)
-    -- )
-    -- CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
-    -- TODO this must be batched cause of RAID throttling
-    -- print(">>>SB[", name, bid:Value(), bid:Type(), "]")
+local function SendBidInfoInternal(auctionDistributeBidData)
+    print("SendBidInfoInternal", GetTimePreciseSec())
+    local message = CLM.MODELS.AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID, auctionDistributeBidData
+        -- CLM.MODELS.AuctionCommDistributeBid:New(data)
+    )
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
+end
+
+local function SendBidInfo(self, itemId, name, userResponse)
+    self.bidInfoSender:Send(itemId, name, userResponse)
 end
 
 -- Private
@@ -512,7 +514,7 @@ end
 
 function AuctionManager:StopAuctionManual()
     LOG:Trace("AuctionManager:StopAuctionManual()")
-    self.ticker:Cancel()
+    self.auctionTicker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
     end
@@ -521,7 +523,7 @@ end
 
 local function StopAuctionTimed(self)
     LOG:Trace("AuctionManager:StopAuctionTimed()")
-    self.ticker:Cancel()
+    self.auctionTicker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
     end
@@ -529,16 +531,21 @@ local function StopAuctionTimed(self)
     CLM.GUI.AuctionManager:Refresh()
 end
 
-local function CreateNewTicker(self, countdown, endTimeValue)
-    self.tickerLastCountdownValue = countdown
-    self.tickerEndTime = endTimeValue
-    self.ticker = C_TimerNewTicker(0.2, (function()
-        self.auctionTimeLeft = self.tickerEndTime - GetServerTime()
-        if self.tickerLastCountdownValue > 0 and self.auctionTimeLeft <= self.tickerLastCountdownValue then
+local TICKER_INTERVAL = 0.2
+local SENDING_INTERVAL = 3
+local function CreateNewAuctionIntervalHandlers(self, countdown, endTimeValue)
+    self.bidInfoSender = CLM.MODELS.BidInfoSender:New(SENDING_INTERVAL, SendBidInfoInternal)
+    self.auctionTickerLastCountdownValue = countdown
+    self.auctionTickerEndTime = endTimeValue
+    self.auctionTicker = C_TimerNewTicker(TICKER_INTERVAL, (function()
+        self.auctionTimeLeft = self.auctionTickerEndTime - GetServerTime()
+        self.bidInfoSender:Tick(TICKER_INTERVAL)
+        if self.auctionTickerLastCountdownValue > 0 and self.auctionTimeLeft <= self.auctionTickerLastCountdownValue then
             SendChatMessage(tostring(mceil(self.auctionTimeLeft)), "RAID_WARNING")
-            self.tickerLastCountdownValue = self.tickerLastCountdownValue - 1
+            self.auctionTickerLastCountdownValue = self.auctionTickerLastCountdownValue - 1
         end
         if self.auctionTimeLeft < 0.1 then
+            self.bidInfoSender:Flush()
             StopAuctionTimed(self)
             return
         end
@@ -616,17 +623,6 @@ function AuctionManager:StartAuction()
         CLM.MODULES.RosterManager:SetRosterItemValues(auction.roster, id, auctionItem:GetValues())
     end
 
-    -- TODO move to auction info
-    -- -- workaround for open bid to allow 0 bid
-    -- if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
-    --     self.highestBid = self.values[CONSTANTS.SLOT_VALUE_TIER.BASE] - self.minimalIncrement
-    -- end
-
-    -- Anonymous mapping
-    -- -- Set auction in progress
-    -- self.auctionInProgress = true
-    -- -- UI
-    -- CLM.GUI.AuctionManager:UpdateBids()
     -- -- Event
     -- CLM.MODULES.EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = self.itemId })
     -- return true
@@ -635,7 +631,7 @@ function AuctionManager:StartAuction()
 
     SendAuctionStart(self)
 
-    CreateNewTicker(self, CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0, auction:GetEndTime())
+    CreateNewAuctionIntervalHandlers(self, CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0, auction:GetEndTime())
 end
 
 local function AntiSnipe(self, auction)
@@ -766,10 +762,10 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
         local anonomizedName = auction:GetAnonymousName(name)
         local modifiedResponse = UTILS.DeepCopy(userResponse)
         modifiedResponse:SetUpgradedItems({}) -- Clear Upgraded items info
-        SendBidInfo(item:GetItemID(), anonomizedName, modifiedResponse)
+        SendBidInfo(AuctionManager, item:GetItemID(), anonomizedName, modifiedResponse)
     else
         nameModdified = "(" .. name .. ")"
-        SendBidInfo(item:GetItemID(),name, userResponse)
+        SendBidInfo(AuctionManager, item:GetItemID(),name, userResponse)
     end
 
     -- -- Raid warning highest bidder
@@ -787,7 +783,7 @@ end
 
 function AuctionManager:UpdateBid(name, itemId, userResponse)
     LOG:Trace("AuctionManager:UpdateBid()")
-    print(name, itemId, userResponse:Value(), userResponse:Type())
+    -- print(name, itemId, userResponse:Value(), userResponse:Type())
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local auction = self.currentAuction
     local item = auction:GetItem(itemId)
@@ -958,8 +954,10 @@ CLM.MODULES.AuctionManager = AuctionManager
 function AuctionManager:FakeBids()
     local _SendBidAccepted = SendBidAccepted
     local _SendBidDenied   = SendBidDenied
-    SendBidAccepted = (function(...) print("SendBidAccepted", ...) end)
-    SendBidDenied = (function(...) print("SendBidDenied", ...) end)
+    -- SendBidAccepted = (function(...) print("SendBidAccepted", ...) end)
+    -- SendBidDenied = (function(...) print("SendBidDenied", ...) end)
+    SendBidAccepted = (function(...) end)
+    SendBidDenied = (function(...) end)
     if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then
         local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
         local profiles = roster:Profiles()
@@ -972,8 +970,8 @@ function AuctionManager:FakeBids()
         for id, itemData in pairs(self.currentAuction:GetItems()) do
             if i == selectedItem then
                 auctionItem = itemData
-                print("Selected", itemData:GetItemLink())
-                UTILS.DumpTable(itemData:GetValues())
+                -- print("Selected", itemData:GetItemLink())
+                -- UTILS.DumpTable(itemData:GetValues())
                 break
             end
             i = i+1

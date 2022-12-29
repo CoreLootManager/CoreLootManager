@@ -365,24 +365,31 @@ end
 
 function BiddingManager:HandleDistributeBid(data, sender)
     LOG:Trace("BiddingManager:HandleDistributeBid()")
-    -- if not self.auctionInProgress then
-    --     LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
-    --     return
-    -- end
-    -- local bid = data:Value()
-    -- if type(bid) == "table" then
-    --     bid = CLM.MODELS.BiddingCommSubmitBid:New(bid)
-    -- else -- old comms
-    --     bid = CLM.MODELS.BiddingCommSubmitBid:New(tonumber(bid) or 0, CONSTANTS.BID_TYPE.PASS, {})
-    -- end
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
+        return
+    end
+    local bids = data:Data()
+    if not CLM.__DBG_BIDS then
+        CLM.__DBG_BIDS =  {}
+    end
+    CLM.__DBG_BIDS[#CLM.__DBG_BIDS+1] = bids
+    for itemId, playerData in pairs(bids) do
+        local item = self.auction:GetItem(itemId)
+        if item then
+            for playerName, response in pairs(playerData) do
+                local userResponse = CLM.MODELS.UserResponse:New(response)
+                item:SetResponse(playerName, userResponse, true) -- to block rolling internally
+            end
+        end
+    end
 
-    -- self.bids[data:Name()] = bid
-    -- -- print("<<<RB[", data:Name(), bid:Value(), bid:Type(), "]")
+    -- TODO: AutoUpdate
     -- if self:GetAutoUpdateBidValue() and (bid:Type() == (CONSTANTS.BID_TYPE.MAIN_SPEC)) then
     --     CLM.GUI.BiddingManager:UpdateCurrentBidValue((tonumber(bid:Value()) or 0) + self.auctionInfo:Increment())
     -- else
-    --     CLM.GUI.BiddingManager:RefreshBidList()
     -- end
+    CLM.GUI.BiddingManager:RefreshBidList()
 end
 
 function BiddingManager:GetAuctionInfo()
