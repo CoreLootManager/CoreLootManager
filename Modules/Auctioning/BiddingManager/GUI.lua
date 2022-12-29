@@ -193,7 +193,6 @@ local function CreateLootList(self)
     ItemList:RegisterEvents({
         OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             UTILS.LibStSingleSelectClickHandler(table, --[[RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            print("CLICKEDY CLICK")
             local _, selection = next(table:GetSelection())
             local row = table:GetRow(selection)
             if row then

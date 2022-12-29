@@ -10,7 +10,7 @@ local sformat = string.format
 
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
-local LibCandyBar = LibStub("LibCandyBar-3.0")
+-- local LibCandyBar = LibStub("LibCandyBar-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -20,7 +20,7 @@ local DISPLAY_MODE_BUTTONS = 2
 local colorGreen = {r = 0.27, g = 0.93, b = 0.27, a = 1.0}
 local colorGold = {r = 0.93, g = 0.70, b = 0.13, a = 1.0}
 local colorRed = {r = 0.93, g = 0.27, b = 0.2, a = 1.0}
-local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
+-- local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
@@ -309,7 +309,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
     end
 
     self.top:SetHeight(BASE_HEIGHT + (CONSTANTS.AUCTION_TYPES_OPEN[auctionType] and BIDS_HEIGHT or 0) + (numRows*ROW_HEIGHT))
-    
+
     bidOptions.args = generateBidOptions
     buttonOptions.args = generateButtonOptions
 end
@@ -515,9 +515,9 @@ local function CreateItemList(self)
         OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             UTILS.LibStSingleSelectClickHandler(table, nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             local _, selection = next(table:GetSelection())
-            local row = table:GetRow(selection)
-            if row then
-                self:SetVisibleAuctionItem(row.cols[2].value)
+            local rowData = table:GetRow(selection)
+            if rowData then
+                self:SetVisibleAuctionItem(rowData.cols[2].value)
             end
             return true
         end),
@@ -732,7 +732,7 @@ end
 
 local function BuildBidRow(name, response, roster, namedButtonMode)
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
-    local name, class, classColor, current = name, "", nil, 0
+    local class, classColor, current = "", nil, 0
     if profile then
         class = profile:ClassInternal()
         classColor = UTILS.GetClassColor(profile:Class())

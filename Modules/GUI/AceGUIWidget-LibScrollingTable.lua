@@ -103,7 +103,7 @@ local methods = {
     ["SetBackdropColor"] = function(self, ...)
         self.st.frame:SetBackdropColor(...)
     end,
-    ["SetHeaderless"] = function(self, ...) 
+    ["SetHeaderless"] = function(self, ...)
         SetHeaderless(self, ...)
     end,
     ["HideScroll"] = function(self, ...)

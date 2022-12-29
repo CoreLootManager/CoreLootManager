@@ -305,7 +305,7 @@ function AwardGUI:Initialize()
 
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function()
         self.lootWindowIsOpen = true
-        HookCorpseSlots(hookedSlots)
+        HookCorpseSlots()
     end))
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function()
         self.lootWindowIsOpen = false

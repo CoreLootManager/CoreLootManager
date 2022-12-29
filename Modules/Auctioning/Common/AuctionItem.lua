@@ -8,8 +8,6 @@ local UTILS     = CLM.UTILS
 
 local setmetatable = setmetatable
 
-local AuctionitemUserResponse = CLM.MODELS.AuctionitemUserResponse
-
 local assertTypeof = UTILS.assertTypeof
 
 local AuctionItem = {} -- AuctionItem
@@ -32,7 +30,7 @@ local function CheckUsability(self)
             end
         end
         s:Hide()
-        s:SetScript('OnTooltipSetItem', (function(s) end))
+        s:SetScript('OnTooltipSetItem', (function() end))
     end))
 
     if not self.item:IsItemEmpty() then
@@ -57,11 +55,9 @@ function AuctionItem:SetResponse(username, response, doNotRoll)
     assertTypeof(response, CLM.MODELS.UserResponse)
     self.userResponses[username] = response
 
-    print("SET RESPONSE", response:Type(), response:Value(), response:Value() > self.highestBid)
     if response:Type() ~= CLM.CONSTANTS.BID_TYPE.OFF_SPEC then
         if response:Value() > self.highestBid then
             self.highestBid = response:Value()
-            print("NEW HIGHEST BID", self.highestBid)
         end
     end
     if doNotRoll then

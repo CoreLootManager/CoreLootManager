@@ -46,7 +46,12 @@ globals = {
 	"CommDKP_DB",
 	-- RCLC
 	"RCLootCouncil",
+	-- VDT 
+	"ViragDevTool",
+	"ViragDevTool_AddData",
 	-- WoW
+	"CreateFromMixins",
+	"ItemMixin",
 	"_G",
 	"Item",
 	"MAX_RAID_MEMBERS",

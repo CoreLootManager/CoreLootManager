@@ -188,8 +188,7 @@ local tableStructure = {
     events = {
         -- OnEnter handler -> on hover
         OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            return status
+            return table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         end),
         -- OnLeave handler -> on hover out
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)

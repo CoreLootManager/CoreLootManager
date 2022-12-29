@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 -- ------------------------------- --
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
@@ -35,9 +36,7 @@ local colorRedTransparent = {r = 0.93, g = 0.27, b = 0.2, a = 0.3}
 
 local highlightInvalid = UTILS.getHighlightMethod(colorRedTransparent, true)
 
-local colorRedTransparentHex    = "ED3333"
-local colorGreenTransparentHex  = "33ED33"
-local colorBlueTransparentHex   = "3333ED"
+local tooltip = CreateFrame("GameTooltip", "CLMAuctionManagerGUIDialogTooltip", UIParent, "GameTooltipTemplate")
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('auction2', { -- TODO keep original 'auction' when done
@@ -81,6 +80,7 @@ local function GenerateItemOptions(self)
     self.note = ""
     local auctionItem = self.auctionItem
     if auctionItem and not auctionItem.item:IsItemEmpty() then
+---@diagnostic disable-next-line: cast-local-type
         _, _, _, _, icon = GetItemInfoInstant(auctionItem:GetItemID())
         itemLink = auctionItem:GetItemLink()
     end
@@ -315,10 +315,10 @@ local function GenerateAwardOptions(self)
                 self:Refresh()
             end),
             confirm = (function()
-                local roster = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():Roster()
+                local roster = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():GetRoster()
                 return sformat(
                     CLM.L["Are you sure, you want to award %s to %s for %s %s?"],
-                    self.itemLink,
+                    self.auctionItem:GetItemLink(),
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
                     tostring(self.awardValue),
                     (roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and CLM.L["GP"] or CLM.L["DKP"]
@@ -388,7 +388,7 @@ local function CreateBidList(self, width)
     BidList:SetDisplayRows(12, 18)
 
     local totalWidth = width - 37
-    local cols = {
+    local columns = {
         { name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
         {name = CLM.L["Name"],  width = 100,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
@@ -415,28 +415,34 @@ local function CreateBidList(self, width)
         {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
     }
     local currentWidth = 0
-    for _, c in ipairs(cols) do
+    for _, c in ipairs(columns) do
         currentWidth = currentWidth + c.width
     end
-    local expand = UTILS.round(((totalWidth-currentWidth)/(#cols-3)))
-    for i, _ in ipairs(cols) do
-        if cols[i].name ~= "" then
-            cols[i].width = cols[i].width + expand
+    local expand = UTILS.round(((totalWidth-currentWidth)/(#columns-3)))
+    for i, _ in ipairs(columns) do
+        if columns[i].name ~= "" then
+            columns[i].width = columns[i].width + expand
         end
     end
-    BidList:SetDisplayCols(cols)
+    BidList:SetDisplayCols(columns)
     BidList:RegisterEvents({
         -- OnEnter handler -> on hover
         OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            local status = table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-            return status
+            local rowData = table:GetRow(realrow)
+            if rowData and rowData.invalidReason then
+                tooltip:SetOwner(cellFrame, "ANCHOR_LEFT")
+                tooltip:AddLine(UTILS.ColorCodeText(CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[rowData.invalidReason] or CLM.L["Unknown"], "ee4444"))
+                tooltip:Show()
+            end
+            return table.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         end),
         -- OnLeave handler -> on hover out
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local rowData = table:GetRow(realrow)
-            if rowData and rowData.highlight then
-                rowData.highlight(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
+            tooltip:Hide()
+            if rowData and rowData.highlightFn then
+                rowData.highlightFn(rowFrame, cellFrame, data, cols, row, realrow, column, true, table, ...)
             end
             return status
         end),
@@ -705,7 +711,7 @@ end
 
 local function BuildBidRow(name, response, roster, namedButtonMode)
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
-    local name, class, classColor, current = name, "", nil, 0
+    local class, classColor, current = "", nil, 0
     if profile then
         class = profile:ClassInternal()
         classColor = UTILS.GetClassColor(profile:Class())
@@ -725,9 +731,10 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
         secondaryItem = nil
     end
 
-    local highlight
+    local highlight, invalidReason
     if response:IsInvalid() then
         highlight = highlightInvalid
+        invalidReason = response:GetInvalidReason()
     end
 
     return {cols = {
@@ -739,7 +746,8 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
             {value = primaryItem},
             {value = secondaryItem},
         },
-        highlight = highlight,
+        invalidReason = invalidReason,
+        highlightFn = highlight,
         DoCellUpdate = highlight
     }
 end

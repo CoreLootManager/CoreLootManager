@@ -758,7 +758,6 @@ function UTILS.getHighlightMethod(highlightColor, multiselect)
         else
             color = highlightColor
         end
-
         table:SetHighLightColor(rowFrame, color)
     end)
 end

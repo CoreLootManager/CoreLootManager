@@ -2,11 +2,11 @@
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
+-- local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local setmetatable, ipairs = setmetatable, ipairs
+local setmetatable = setmetatable
 local assertType = UTILS.assertType
 
 
@@ -22,7 +22,7 @@ function BidInfoSender:New(interval, commsCallback)
 
     o.interval = interval
     o.commsCallback = commsCallback
-    
+
     o.data = {}
 
     o.current = o.interval
@@ -43,7 +43,6 @@ local function BuildCommData(data)
 end
 
 function BidInfoSender:Flush()
-    
     local _, hasData = next(self.data)
     if hasData then
         self.commsCallback(BuildCommData(self.data))

@@ -371,7 +371,7 @@ local function SendBidDenied(itemId, name, reason)
 end
 
 local function SendBidInfoInternal(auctionDistributeBidData)
-    print("SendBidInfoInternal", GetTimePreciseSec())
+    -- print("SendBidInfoInternal", GetTimePreciseSec())
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID, auctionDistributeBidData
         -- CLM.MODELS.AuctionCommDistributeBid:New(data)
@@ -751,6 +751,37 @@ local function ValidateBid(auction, item, name, userResponse)
     return true
 end
 
+local function ValidateBidLimited(auction, item, name, userResponse)
+    if not item then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.INVALID_ITEM end
+    local roster = auction:GetRoster()
+    -- bid cancelling
+    if userResponse:Type() == CONSTANTS.BID_TYPE.CANCEL then
+        return true
+    end
+    -- bid passing
+    if userResponse:Type() == CONSTANTS.BID_TYPE.PASS then
+        return true
+    end
+    if (not auction:GetUseOS()) and (userResponse:Type() == CONSTANTS.BID_TYPE.OFF_SPEC) then
+        return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.OFF_SPEC_NOT_ALLOWED
+    end
+    local value = userResponse:Value()
+    -- sanity check
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+    if not profile then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
+    local GUID = profile:GUID()
+    if not roster:IsProfileInRoster(GUID) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NOT_IN_ROSTER end
+    -- allow negative bidders
+    local current = roster:Standings(GUID)
+    local minimumPoints = auction:GetMinimumPoints()
+    if current < minimumPoints then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BELOW_MIN_BIDDER end
+    -- allow negative standings after bid
+    local new = current - value
+    if (new < minimumPoints) and not auction:GetAllowBelowMinStandings() and (roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
+    -- accept otherwise
+    return true
+end
+
 local function AnnounceBid(auction, item, name, userResponse, newHighBid)
     local auctionType = auction:GetType()
     if not CONSTANTS.AUCTION_TYPES_OPEN[auctionType] then return end
@@ -783,7 +814,6 @@ end
 
 function AuctionManager:UpdateBid(name, itemId, userResponse)
     LOG:Trace("AuctionManager:UpdateBid()")
-    -- print(name, itemId, userResponse:Value(), userResponse:Type())
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local auction = self.currentAuction
     local item = auction:GetItem(itemId)
@@ -813,17 +843,17 @@ end
 local function RevalidateBids(self)
     for _, item in pairs(self.currentAuction:GetItems()) do
         for name, userResponse in pairs(item:GetAllResponses()) do
-            local valid = ValidateBid(self.currentAuction, item, name, userResponse)
-            if not valid then userResponse:MarkInvalid() end
+            local valid, reason = ValidateBidLimited(self.currentAuction, item, name, userResponse)
+            if not valid then userResponse:MarkInvalid(reason) end
         end
     end
 end
 
 function AuctionManager:Award(item, name, price)
     LOG:Trace("AuctionManager:Award()")
-    local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price)
+    local success--[[, uuid]] = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
     if success then
-        -- CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(self.lastAuctionEndTime, uuid)
+        -- CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item, uuid)
         if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
             if GetAutoAssign(self) and lootWindowIsOpen then
                 CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)
@@ -964,19 +994,16 @@ function AuctionManager:FakeBids()
     SendBidAccepted = (function(...) end)
     SendBidDenied = (function(...) end)
     if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then
-        local roster = CLM.MODULES.RaidManager:GetRaid():GetRoster()
+        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
         local profiles = roster:Profiles()
         local numBids = math.random(1, math.min(#profiles, 25))
         local numItems = self.currentAuction:GetItemCount()
         local auctionItem
-        
         local selectedItem = math.random(1,numItems)
         local i = 1
-        for id, itemData in pairs(self.currentAuction:GetItems()) do
+        for _, itemData in pairs(self.currentAuction:GetItems()) do
             if i == selectedItem then
                 auctionItem = itemData
-                -- print("Selected", itemData:GetItemLink())
-                -- UTILS.DumpTable(itemData:GetValues())
                 break
             end
             i = i+1
@@ -987,12 +1014,12 @@ function AuctionManager:FakeBids()
             if     bidType < 10 then -- none
             elseif bidType < 50 then -- value
                 -- local namedButtons = roster:GetConfiguration("namedButtons")
-                --local auctionType = roster:GetConfiguration("auctionType")
+                -- local auctionType = roster:GetConfiguration("auctionType")
                 local itemValueMode = roster:GetConfiguration("itemValueMode")
                 local values = auctionItem:GetValues()
                 local items = {}
                 local bid
-                for i=1,math.random(1,2) do
+                for _=1,math.random(1,2) do
                     items[#items+1] = math.random(44000, 55000)
                 end
                 if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then

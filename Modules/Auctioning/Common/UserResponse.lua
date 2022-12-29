@@ -64,11 +64,15 @@ function UserResponse:Items()
     return self.upgradedItems
 end
 
-function UserResponse:MarkInvalid()
-    self.invalid = true
+function UserResponse:MarkInvalid(reason)
+    self.invalid = reason
 end
 
 function UserResponse:IsInvalid()
+    return (self.invalid ~= nil)
+end
+
+function UserResponse:GetInvalidReason()
     return self.invalid
 end
 

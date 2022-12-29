@@ -114,9 +114,6 @@ function CORE:_InitializeBackend()
     MODULES.EventManager:Initialize()
     MODULES.GuildInfoListener:Initialize()
     MODULES.LedgerManager:Initialize()
-    -- if type(self.Debug) == "function" then
-    --     self.Debug()
-    -- end
 end
 
 function CORE:_InitializeFeatures()
@@ -263,12 +260,5 @@ end
 
 if ViragDevTool then
     ViragDevTool_AddData(CLM, "CLM")
-end
-
-CLMCORE = CLM
-
-function CORE.Debug()
-    CLM.Debug:Initialize()
-    CLM.Debug:RegisterSlash()
 end
 --@end-do-not-package@
