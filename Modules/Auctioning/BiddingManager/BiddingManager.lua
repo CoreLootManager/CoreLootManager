@@ -284,6 +284,7 @@ function BiddingManager:HandleStartAuction(data, sender)
 
     local _, item = next(self.auction:GetItems())
     CLM.GUI.BiddingManager:SetVisibleAuctionItem(item)
+    CLM.GUI.BiddingManager:StartAuction()
     if GetAutoOpen(self) then
         CLM.GUI.BiddingManager:Show()
     end
@@ -306,7 +307,7 @@ function BiddingManager:HandleStopAuction(_, sender)
     EndAuction(self)
     PlayEndSound()
     -- TODO Auction Finish
-    -- CLM.GUI.BiddingManager:EndAuction()
+    CLM.GUI.BiddingManager:EndAuction()
     CLM.GUI.BiddingManager:Hide()
     LOG:Message(CLM.L["Auction finished"])
 end

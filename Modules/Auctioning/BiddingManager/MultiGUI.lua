@@ -10,7 +10,7 @@ local sformat = string.format
 
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
--- local LibCandyBar = LibStub("LibCandyBar-3.0")
+local LibCandyBar = LibStub("LibCandyBar-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -723,6 +723,28 @@ function BiddingManagerGUI:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
 end
 
+local toggleCb = (function() BiddingManagerGUI:Toggle() end)
+function BiddingManagerGUI:StartAuction()
+    self.bar = CLM.MODELS.BiddingTimerBar:New(
+        self.top.frame,
+        self.auctionItem,
+        CLM.MODULES.BiddingManager:GetAuctionInfo(),
+        {
+            width = DATA_GROUP_WIDTH,
+            height = 25,
+            callback = toggleCb
+        }
+    )
+end
+
+function BiddingManagerGUI:EndAuction()
+    self.bar:Stop()
+end
+
+function BiddingManagerGUI:AntiSnipe()
+    self.bar:UpdateTime(CLM.MODULES.BiddingManager:GetAuctionInfo():GetAntiSnipe())
+end
+
 function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     self.auctionItem = auctionItem
     local values = self.auctionItem:GetValues()
@@ -793,6 +815,10 @@ local function AutoUpdate(self)
     end
 end
 
+local function UpdateBarInfo(self)
+    self.bar:UpdateInfo(self.auctionItem)
+end
+
 function BiddingManagerGUI:Refresh()
     LOG:Trace("BiddingManagerGUI:Refresh()")
     -- if not self._initialized then return end
@@ -806,7 +832,7 @@ function BiddingManagerGUI:Refresh()
     AceConfigDialog:Open(BUTTON_REGISTRY, self.ButtonGroup) -- Refresh the config gui panel
     UpdateUIStructure(self)
     RefreshItemList(self)
-
+    UpdateBarInfo(self)
     self:RefreshBidList()
 
     AutoUpdate(self)
