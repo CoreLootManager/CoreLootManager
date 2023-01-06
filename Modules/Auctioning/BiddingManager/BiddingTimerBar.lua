@@ -1,9 +1,9 @@
 -- ------------------------------- --
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
+-- local LOG       = CLM.LOG
+-- local CONSTANTS = CLM.CONSTANTS
+-- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local LibCandyBar = LibStub("LibCandyBar-3.0")
@@ -39,7 +39,7 @@ local function Create(self, parent, item, auction, options)
     local duration = auction:GetEndTime() - GetServerTime()
     self.bar:SetDuration(duration)
     self.duration = duration
-    
+
     self:UpdateInfo(item)
 
     if type(options.callback) == 'function' then
