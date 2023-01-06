@@ -518,6 +518,7 @@ local function CreateItemList(self)
             local rowData = table:GetRow(selection)
             if rowData then
                 self:SetVisibleAuctionItem(rowData.cols[2].value)
+                self:Refresh()
             end
             return true
         end),
@@ -730,7 +731,7 @@ function BiddingManagerGUI:StartAuction()
         self.auctionItem,
         CLM.MODULES.BiddingManager:GetAuctionInfo(),
         {
-            width = DATA_GROUP_WIDTH,
+            width = DATA_GROUP_WIDTH + self.ItemList:GetWidth(),
             height = 25,
             callback = toggleCb
         }
@@ -749,7 +750,6 @@ function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     self.auctionItem = auctionItem
     local values = self.auctionItem:GetValues()
     SetInputValue(self, values[CONSTANTS.SLOT_VALUE_TIER.BASE])
-    self:Refresh()
 end
 
 local function BuildBidRow(name, response, roster, namedButtonMode)
