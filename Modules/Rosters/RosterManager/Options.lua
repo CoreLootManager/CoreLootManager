@@ -214,6 +214,24 @@ function RosterManagerOptions:Initialize()
         auction_dynamic_item_values_set = (function(name, value)
             SetRosterOption(name, "dynamicValue", value)
         end),
+        auction_base_always_get = (function(name)
+            return GetRosterOption(name, "baseAlways")
+        end),
+        auction_base_always_set = (function(name, value)
+            SetRosterOption(name, "baseAlways", value)
+        end),
+        auction_allin_always_get = (function(name)
+            return GetRosterOption(name, "allInAlways")
+        end),
+        auction_allin_always_set = (function(name, value)
+            SetRosterOption(name, "allInAlways", value)
+        end),
+        auction_equalbids_get = (function(name)
+            return GetRosterOption(name, "allowEqualMax")
+        end),
+        auction_equalbids_set = (function(name, value)
+            SetRosterOption(name, "allowEqualMax", value)
+        end),
         auction_use_os_get = (function(name)
             return GetRosterOption(name, "useOS")
         end),
@@ -957,12 +975,36 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = CLM.L["Enable OS bids"],
                         type = "toggle",
                         disabled = disableManage,
-                        width = 1,
+                        width = "full",
                         order = 12
                     },
+                    base_always = {
+                        name = CLM.L["Always allow Base bids"],
+                        desc = CLM.L["Enable to allow base bids even if higher bids are present if player didn't bid yet. Affects Open-Ascending Auction."],
+                        type = "toggle",
+                        disabled = disableManage,
+                        width = 1,
+                        order = 12.1
+                    },
+                    allin_always = {
+                        name = CLM.L["Always allow All-In bids"],
+                        desc = CLM.L["Enable to always allow All-In bids. Affects Open-Ascending Auction."],
+                        type = "toggle",
+                        disabled = disableManage,
+                        width = 1,
+                        order = 12.2
+                    },
+                    equalbids = {
+                        name = CLM.L["Allow equal bids"],
+                        desc = CLM.L["Enable to allow equal bids. Affects Open-Ascending Auction."],
+                        type = "toggle",
+                        disabled = disableManage,
+                        width = 1,
+                        order = 12.3
+                    },
                     minimum_points = {
-                        name = CLM.L["Minimum points"],
-                        desc = CLM.L["Minimum points to be allowed to bid."],
+                        name = CLM.L["Minimum standing"],
+                        desc = CLM.L["Minimum standing required to be allowed to bid."],
                         type = "input",
                         disabled = disableManage,
                         pattern = CONSTANTS.REGEXP_FLOAT,
@@ -1087,7 +1129,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         }
         options.args.auction.args.allow_below_min_standings = {
             name = CLM.L["Allow biding more than current standings"],
-            desc = CLM.L["Allow biding more than current standings and ending up with less than minimum points."],
+            desc = CLM.L["Allow biding more than current standings and ending up with less than minimum standings."],
             type = "toggle",
             disabled = disableManage,
             width = 2,

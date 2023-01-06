@@ -256,6 +256,18 @@ function AuctionInfo:GetUseOS()
     return self.configuration:Get("useOS")
 end
 
+function AuctionInfo:GetAlwaysAllowBaseBids()
+    return self.configuration:Get("baseAlways")
+end
+
+function AuctionInfo:GetAlwaysAllowAllInBids()
+    return self.configuration:Get("allInAlways")
+end
+
+function AuctionInfo:GetAllowEqualBids()
+    return self.configuration:Get("allowEqualMax")
+end
+
 function AuctionInfo:GetNamedButtonsMode()
     return self.configuration:Get("namedButtons")
 end

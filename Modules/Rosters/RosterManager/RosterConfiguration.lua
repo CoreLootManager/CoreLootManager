@@ -84,9 +84,14 @@ function RosterConfiguration:New(i)
     o._.benchMultiplier = 1
     -- OS
     o._.useOS = true
+    -- Always allow bidding base
+    o._.baseAlways = false
+    -- Always allow all-in bids
+    o._.allInAlways = false
+    -- Allow equal top bids
+    o._.allowEqualMax = false
     -- Round PR Priority
     o._.roundPR = 10
-
 
     -- Additional settings
     o.hasHardCap = false
@@ -133,7 +138,10 @@ function RosterConfiguration:fields()
         "dynamicValue",
         "benchMultiplier",
         "useOS",
-        "roundPR"
+        "roundPR",
+        "baseAlways",
+        "allInAlways",
+        "allowEqualMax"
     }
 end
 
@@ -178,6 +186,9 @@ local TRANSFORMS = {
     dynamicValue = transform_boolean,
     benchMultiplier = transform_number,
     useOS = transform_boolean,
+    baseAlways = transform_boolean,
+    allInAlways = transform_boolean,
+    allowEqualMax = transform_boolean,
     roundPR = transform_number,
 }
 
@@ -273,6 +284,9 @@ function RosterConfiguration._validate_namedButtons(value) return IsBoolean(valu
 function RosterConfiguration._validate_dynamicValue(value) return IsBoolean(value) end
 function RosterConfiguration._validate_benchMultiplier(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_useOS(value) return IsBoolean(value) end
+function RosterConfiguration._validate_baseAlways(value) return IsBoolean(value) end
+function RosterConfiguration._validate_allInAlways(value) return IsBoolean(value) end
+function RosterConfiguration._validate_allowEqualMax(value) return IsBoolean(value) end
 function RosterConfiguration._validate_roundPR(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration

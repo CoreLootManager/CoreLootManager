@@ -730,13 +730,25 @@ local function ValidateBid(auction, item, name, userResponse)
         if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and value > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[auctionType] then
-            -- always allow bidding min in ascending mode if haven't bid yet
-            if value == values[CONSTANTS.SLOT_VALUE_TIER.BASE] and not auction:HasBids(item:GetItemID(), name) then
+
+            if auction:GetAlwaysAllowAllInBids() and (current == value) then
                 return true
             end
-            if value <= item:GetHighestBid() then
+            -- always allow bidding min in ascending mode but ONLY if player haven't bid yet
+            if value == values[CONSTANTS.SLOT_VALUE_TIER.BASE] and auction:GetAlwaysAllowBaseBids() and not auction:HasBids(item:GetItemID(), name) then
+                return true
+            end
+
+            if value < item:GetHighestBid() then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
             end
+
+            if not auction:GetAllowEqualBids() then
+                if value == item:GetHighestBid() then
+                    return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
+                end
+            end
+
             if (value - item:GetHighestBid()) < auction:GetIncrement() then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_INCREMENT_TOO_LOW
             end
