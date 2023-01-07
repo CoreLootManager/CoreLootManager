@@ -5,8 +5,8 @@ max_line_length = false
 
 exclude_files = {
 	"**/Libs/**",
-	"**/ExternalLibs/**",
 	"**/.git/**",
+	"**/.vscode/**",
 	"**/scripts/**"
 }
 ignore = {

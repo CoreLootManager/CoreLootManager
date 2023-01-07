@@ -1,0 +1,25 @@
+## Interface: 30400
+## Interface-Wrath: 30400
+## X-Min-Interface: 30400
+## X-Min-Interface-Wrath: 30400
+## Title: |cffdcb749Classic Loot Manager|r |cff44ee44Integrations|r
+## Notes: External Integration System for |cffdcb749Classic Loot Manager|r
+## Author: Lantis
+## Version: @project-version@
+## RequiredDeps: ClassicLootManager
+## OptionalDeps: LibStub
+## X-Donate: https://www.patreon.com/classiclootmanager
+## X-License: MIT
+## X-Curse-Project-ID: 481373
+## X-Wago-ID: vEGPw4K1
+
+LibJsonLua\LibJsonLua.lua
+LibLuaXML\LibLuaXML.lua
+
+ClassicLootManager_Integrations.lua
+Models/Exporter.lua
+Models/ExportConfiguration.lua
+Migration.lua
+Integrations.lua
+GUI.lua
+ImportCSV.lua

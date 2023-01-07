@@ -231,7 +231,7 @@ def main(args):
         scan_file_for_l10n_string(file, l10n_query, storage)
     # Scan for existing translations and create outputs of them with report
     for locale in locales:
-        scan_file_for_l10n_translation(baseDir / ("Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
+        scan_file_for_l10n_translation(baseDir / ("ClassicLootManager/Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
 
     total_missing, total_done, last_percent = 0, 0, 0    
     status = 0
