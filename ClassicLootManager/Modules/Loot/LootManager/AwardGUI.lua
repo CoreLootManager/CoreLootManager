@@ -146,11 +146,11 @@ local function UpdateOptions(self)
             type = "execute",
             func = (function()
                 local success, _ = CLM.MODULES.LootManager:AwardItem(self.roster, self.awardPlayer, self.itemLink, self.itemId, self.awardValue)
-                if success and not CLM.MODULES.AutoAward:IsIgnored(self.itemId) then
-                    if CLM.MODULES.AuctionManager:GetAutoAward() and self.lootWindowIsOpen then
-                        CLM.MODULES.AutoAward:GiveMasterLooterItem(self.itemId, self.awardPlayer)
+                if success and not CLM.MODULES.AutoAssign:IsIgnored(self.itemId) then
+                    if CLM.MODULES.AuctionManager:GetAutoAssign() and self.lootWindowIsOpen then
+                        CLM.MODULES.AutoAssign:GiveMasterLooterItem(self.itemId, self.awardPlayer)
                     elseif CLM.MODULES.AuctionManager:GetAutoTrade() then
-                        CLM.MODULES.AutoAward:Track(self.itemId, self.awardPlayer)
+                        CLM.MODULES.AutoAssign:Track(self.itemId, self.awardPlayer)
                     end
                 end
                 self.itemLink = nil

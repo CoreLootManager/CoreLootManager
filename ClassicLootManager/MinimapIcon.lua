@@ -128,12 +128,12 @@ function Minimap:Initialize()
         {
             separator = true,
         },
-        {
-            title = CLM.L["Export"],
-            func = (function() CLM.GUI.Export:Toggle() end),
-            trustedOnly = true,
-            managerOnly = true
-        },
+        -- { -- TODO this should come from the Integrations addon
+        --     title = CLM.L["Export"],
+        --     func = (function() CLM.GUI.Export:Toggle() end),
+        --     trustedOnly = true,
+        --     managerOnly = true
+        -- },
         {
             title = CLM.L["Configuration"],
             icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-green-32.tga",
