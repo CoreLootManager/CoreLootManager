@@ -13,8 +13,8 @@
 ## X-Curse-Project-ID: 481373
 ## X-Wago-ID: vEGPw4K1
 
-LibJsonLua\LibJsonLua.lua
-LibLuaXML\LibLuaXML.lua
+Libs\LibJsonLua\LibJsonLua.lua
+Libs\LibLuaXML\LibLuaXML.lua
 
 ClassicLootManager_Integrations.lua
 Models/Exporter.lua

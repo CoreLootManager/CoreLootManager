@@ -10,7 +10,6 @@
 	<Include file="Loot\_filelist.xml"/>
 	<Include file="Auctioning\_filelist.xml"/>
 
-	<Include file="Integrations\_filelist.xml"/>
 	<Include file="Global\_filelist.xml"/>
 	<Include file="GUI\_filelist.xml"/>
 </Ui>
