@@ -3,7 +3,6 @@ local _, PRIV = ...
 local CLM = LibStub("ClassicLootManager").CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
--- local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
@@ -74,11 +73,11 @@ local function decodeNote(note)
 end
 
 local EXPORT_GROUP_NAME = {
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = "standings",
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = "pointHistory",
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = "lootHistory",
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = "raids",
-    -- [CLM.CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = "configs"
+    [PRIV.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = "standings",
+    [PRIV.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = "pointHistory",
+    [PRIV.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = "lootHistory",
+    [PRIV.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = "raids",
+    -- [PRIV.CONSTANTS.EXPORT_DATA_TYPE.CONFIGS] = "configs"
 }
 
 -- -------- --
@@ -86,10 +85,10 @@ local EXPORT_GROUP_NAME = {
 -- -------- --
 
 local ENCODERS =  {
-    [CLM.CONSTANTS.FORMAT_VALUE.XML]  = (function(output) return XML.encode(output) end),
-    [CLM.CONSTANTS.FORMAT_VALUE.CSV]  = (function() return "CSV not supported" end),
-    [CLM.CONSTANTS.FORMAT_VALUE.TMB]  = (function(output) return CLM_TMB_encode(output) end),
-    [CLM.CONSTANTS.FORMAT_VALUE.JSON] = (function(output) return json.encode(output) end),
+    [PRIV.CONSTANTS.FORMAT_VALUE.XML]  = (function(output) return XML.encode(output) end),
+    [PRIV.CONSTANTS.FORMAT_VALUE.CSV]  = (function() return "CSV not supported" end),
+    [PRIV.CONSTANTS.FORMAT_VALUE.TMB]  = (function(output) return CLM_TMB_encode(output) end),
+    [PRIV.CONSTANTS.FORMAT_VALUE.JSON] = (function(output) return json.encode(output) end),
 }
 
 -- ------------- --
@@ -97,7 +96,7 @@ local ENCODERS =  {
 -- ------------- --
 
 local DATA_BUILDERS = {
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = (function(self)
+    [PRIV.CONSTANTS.EXPORT_DATA_TYPE.STANDINGS] = (function(self)
         local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
         if filterPlayers then
@@ -156,7 +155,7 @@ local DATA_BUILDERS = {
         end
         return data
     end),
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = (function(self)
+    [PRIV.CONSTANTS.EXPORT_DATA_TYPE.LOOT_HISTORY] = (function(self)
         local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
 
@@ -221,7 +220,7 @@ local DATA_BUILDERS = {
         end
         return data
     end),
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = (function(self)
+    [PRIV.CONSTANTS.EXPORT_DATA_TYPE.POINT_HISTORY] = (function(self)
         local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         local data = { roster = {} }
 
@@ -285,7 +284,7 @@ local DATA_BUILDERS = {
         end
         return data
     end),
-    [CLM.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = (function(self)
+    [PRIV.CONSTANTS.EXPORT_DATA_TYPE.RAIDS] = (function(self)
         -- local filterPlayers = UTILS.DictNotEmpty(self.dataInfo.profiles)
         -- local workEstimate = 0
         -- local now = GetServerTime()

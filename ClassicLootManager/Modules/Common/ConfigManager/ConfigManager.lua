@@ -20,11 +20,17 @@ end
 
 function ConfigManager:Initialize()
     LOG:Trace("ConfigManager:Initialize()")
-    self.generators = {
-        [CONSTANTS.CONFIGS.GROUP.GLOBAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
-        [CONSTANTS.CONFIGS.GROUP.ROSTER] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end),
-        [CONSTANTS.CONFIGS.GROUP.INTEGRATIONS] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS) end)
-    }
+
+    self.generators = {}
+    for _,groupName in pairs(CONSTANTS.CONFIGS.GROUP) do
+        self.generators[groupName] = (function() return ConfigGenerator(groupName) end)
+    end
+
+    -- self.generators = {
+    --     [CONSTANTS.CONFIGS.GROUP.GLOBAL] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.GLOBAL) end),
+    --     [CONSTANTS.CONFIGS.GROUP.ROSTER] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.ROSTER) end),
+    --     [CONSTANTS.CONFIGS.GROUP.INTEGRATIONS] = (function() return ConfigGenerator(CONSTANTS.CONFIGS.GROUP.INTEGRATIONS) end)
+    -- }
 
     self.options = {}
     for _, config in ipairs(CONSTANTS.CONFIGS.ORDERED_GROUPS) do
@@ -106,6 +112,22 @@ function ConfigManager:UpdateOptions(group, register)
     AceConfigRegistry:NotifyChange(group)
 end
 
+function ConfigManager:AddGroup(groupName, append)
+    if CONSTANTS.CONFIGS.GROUPS[groupName] then
+        error("Config group %s already exists.", groupName)
+        return
+    end
+    -- Never allow changing first group
+    if append then
+        table.insert(CONSTANTS.CONFIGS.ORDERED_GROUPS, groupName)
+    else
+        table.insert(CONSTANTS.CONFIGS.ORDERED_GROUPS, 2, groupName)
+    end
+    CONSTANTS.CONFIGS.GROUPS[groupName] = true
+    CONSTANTS.CONFIGS.GROUP[groupName] = groupName
+
+end
+
 -- Publish API
 CLM.MODULES.ConfigManager = ConfigManager
 
@@ -113,16 +135,16 @@ CONSTANTS.CONFIGS = {
     GROUPS = UTILS.Set({
         "Classic Loot Manager",
         CLM.L["Rosters"],
-        CLM.L["Integrations"]
+        -- CLM.L["Integrations"]
     }),
     ORDERED_GROUPS = {
         "Classic Loot Manager",
         CLM.L["Rosters"],
-        CLM.L["Integrations"]
+        -- CLM.L["Integrations"]
     },
     GROUP = {
         GLOBAL = "Classic Loot Manager",
         ROSTER = CLM.L["Rosters"],
-        INTEGRATIONS = CLM.L["Integrations"]
+        -- INTEGRATIONS = CLM.L["Integrations"]
     },
 }

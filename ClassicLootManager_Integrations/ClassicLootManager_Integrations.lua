@@ -17,5 +17,6 @@ function Integrations:Initialize()
         gui:Initialize()
     end
 end
-
+PRIV.CONSTANTS.INTEGRATIONS = CLM.L["Integrations"]
+CLM.MODULES.ConfigManager:AddGroup(PRIV.CONSTANTS.INTEGRATIONS, true)
 CLM:RegisterExternal("Integrations", Integrations)

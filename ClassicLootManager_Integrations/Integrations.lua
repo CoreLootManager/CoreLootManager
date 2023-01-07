@@ -371,7 +371,7 @@ function Integration:InitializeConfigs()
     UTILS.mergeDictsInline(options, InitializeGargulIntegration(self))
     UTILS.mergeDictsInline(options, CreateRCLCIntegration(self))
 
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.INTEGRATIONS, options)
+    CLM.MODULES.ConfigManager:Register(PRIV.CONSTANTS.INTEGRATIONS, options)
 end
 
 local function validateEventStructure(data, source)

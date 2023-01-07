@@ -17,9 +17,9 @@ Libs\LibJsonLua\LibJsonLua.lua
 Libs\LibLuaXML\LibLuaXML.lua
 
 ClassicLootManager_Integrations.lua
-Models/Exporter.lua
-Models/ExportConfiguration.lua
 Migration.lua
 Integrations.lua
 GUI.lua
 ImportCSV.lua
+Models/Exporter.lua
+Models/ExportConfiguration.lua
