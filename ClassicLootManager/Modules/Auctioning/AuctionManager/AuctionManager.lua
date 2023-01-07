@@ -721,15 +721,19 @@ local function ValidateBid(auction, item, name, userResponse)
     local minimumPoints = auction:GetMinimumPoints()
     if current < minimumPoints then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BELOW_MIN_BIDDER end
     -- allow negative standings after bid
-    local new = current - value
-    if (new < minimumPoints) and not auction:GetAllowBelowMinStandings() and (roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
+    local new = UTILS.round(current - value, auction:GetRounding())
+    if (new < minimumPoints) and not auction:GetAllowBelowMinStandings() and (roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP) then
+        return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER
+    end
     -- bid value
     if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
         -- min
         if values[CONSTANTS.SLOT_VALUE_TIER.BASE] > 0 and value < values[CONSTANTS.SLOT_VALUE_TIER.BASE] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW end
         -- max
-        if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and value > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH end
+        if values[CONSTANTS.SLOT_VALUE_TIER.MAX] > 0 and value > values[CONSTANTS.SLOT_VALUE_TIER.MAX] then
+            return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_HIGH
+        end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[auctionType] then
 
@@ -750,8 +754,7 @@ local function ValidateBid(auction, item, name, userResponse)
                     return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
                 end
             end
-
-            if (value - item:GetHighestBid()) < auction:GetIncrement() then
+            if UTILS.round(value - item:GetHighestBid(), auction:GetRounding()) < auction:GetIncrement() then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_INCREMENT_TOO_LOW
             end
         end
@@ -818,7 +821,7 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
     if auction:GetMode() ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not CLM.GlobalConfigs:GetBidsWarning() then return end
     if userResponse:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC then return end
-    message = sformat(CLM.L["New highest bid on %s: %d %s %s"],
+    message = sformat(CLM.L["New highest bid on %s: %s %s %s"],
                         item:GetItemLink(),
                         userResponse:Value(),
                         auction:GetRoster():GetPointType() == CONSTANTS.POINT_TYPE.DKP and CLM.L["DKP"] or CLM.L["GP"],
