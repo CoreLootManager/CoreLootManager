@@ -55,9 +55,11 @@ function AuctionItem:SetResponse(username, response, doNotRoll)
     assertTypeof(response, CLM.MODELS.UserResponse)
     self.userResponses[username] = response
 
+    local newHighestBid = false
     if response:Type() ~= CLM.CONSTANTS.BID_TYPE.OFF_SPEC then
         if response:Value() > self.highestBid then
             self.highestBid = response:Value()
+            newHighestBid = true
         end
     end
     if doNotRoll then
@@ -73,6 +75,7 @@ function AuctionItem:SetResponse(username, response, doNotRoll)
         end
         response:SetRoll(self.userRolls[username])
     end
+    return newHighestBid
 end
 
 function AuctionItem:GetTopBids(cutoff, type)

@@ -640,6 +640,8 @@ local function AntiSnipe(self, auction)
     if auction:IsAntiSnipeAvailable() then
         if self.auctionTimeLeft < antiSnipe then
             auction:AntiSnipe()
+            self.auctionTimeLeft = self.auctionTimeLeft + antiSnipe
+            self.auctionTickerEndTime = self.auctionTickerEndTime + antiSnipe
             SendAntiSnipe()
             -- Cheeky update the warning countdown, but only if above 3/5s
             if antiSnipe >= 5 then

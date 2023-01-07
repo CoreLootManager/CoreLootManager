@@ -314,11 +314,11 @@ end
 
 function BiddingManager:HandleAntiSnipe(_, sender)
     LOG:Trace("BiddingManager:HandleAntiSnipe()")
-    -- if not self.auctionInProgress then
-    --     LOG:Debug("Received antisnipe from %s while no auctions are in progress", sender)
-    --     return
-    -- end
-    -- CLM.GUI.BiddingManager:AntiSnipe()
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received antisnipe from %s while no auctions are in progress", sender)
+        return
+    end
+    CLM.GUI.BiddingManager:AntiSnipe()
 end
 
 function BiddingManager:HandleAcceptBid(itemId, sender)
@@ -338,12 +338,7 @@ function BiddingManager:HandleAcceptBid(itemId, sender)
         bidValue = bid:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
     end
     LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], bidValue)
-    -- if self.guiBid then
-    --     local value =  self.lastBid or CLM.L["cancel"]
-    --     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = value })
-    --     LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], value)
-    --     self.guiBid = false
-    -- end
+    CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = bidValue })
 end
 
 function BiddingManager:HandleDenyBid(data, sender)
@@ -362,13 +357,9 @@ function BiddingManager:HandleDenyBid(data, sender)
     if CONSTANTS.BID_TYPE_HIDDEN[bid:Type()] then
         bidValue = bid:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
     end
-    LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], bidValue, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"]) -- TODO
-    -- if self.guiBid then
-    --     local value = self.lastBid or CLM.L["cancel"]
-    --     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = value, reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"] })
-    --     LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], value, CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"])
-    --     self.guiBid = false
-    -- end
+    local reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"]
+    LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], bidValue, reason)
+    CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = bidValue, reason = reason })
 end
 
 function BiddingManager:HandleDistributeBid(data, sender)
