@@ -59,7 +59,7 @@ local function mutateLootAward(entry, roster)
             if num_players > 0 then
                 local value = (loot:Value()/num_players) + roster:GetConfiguration("zeroSumBankInflation")
                 value = UTILS.round(value, raid:Configuration():Get("roundDecimals"))
-                CLM.MODULES.PointManager:UpdatePointsDirectly(roster, players, value, CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD, loot:Timestamp(), entry:creator())
+                CLM.MODULES.PointManager:UpdatePointsDirectly(roster, players, value, CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD, false, loot:Timestamp(), entry:creator())
             else
                 LOG:Debug("mutateLootAward(): Empty player list in raid.")
                 return

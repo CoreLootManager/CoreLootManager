@@ -217,6 +217,10 @@ function Decay:note()
     return self.t or ""
 end
 
+function Decay:spent()
+    return false
+end
+
 local decayFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t"})
 function Decay:fields()
     return decayFields
@@ -254,6 +258,10 @@ end
 
 function DecayRoster:note()
     return self.t or ""
+end
+
+function DecayRoster:spent()
+    return false
 end
 
 local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "n", "t"})

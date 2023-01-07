@@ -17,6 +17,7 @@ CLM.COMM_CHANNEL = {
 CLM.UTILS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
+CLM.EVENTS = {}
 CLM.ALERTS = {}
 
 CLM.AUTOVERSION = "@project-version@"
