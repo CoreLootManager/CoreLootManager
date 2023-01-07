@@ -1,7 +1,7 @@
-## Interface: 30400
-## Interface-Wrath: 30400
-## X-Min-Interface: 30400
-## X-Min-Interface-Wrath: 30400
+## Interface: 30401
+## Interface-Wrath: 30401
+## X-Min-Interface: 30401
+## X-Min-Interface-Wrath: 30401
 ## Title: |cffdcb749Classic Loot Manager|r |cff44ee44Alerts|r
 ## Notes: Alert System for |cffdcb749Classic Loot Manager|r
 ## Author: Lantis
