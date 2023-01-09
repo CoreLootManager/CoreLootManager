@@ -32,6 +32,7 @@ function RaidManager:Initialize()
     self.RaidLeader = ""
     self.MasterLooter = ""
     self.IsMasterLootSystem = false
+    self.IsGroupLootSystem = true
     self.RaidAssistants = {}
 
     -- Register mutators
@@ -629,6 +630,7 @@ function RaidManager:UpdateGameRaidInformation()
     LOG:Info("Loot method: %s (id: %s)", lootmethod, masterlooterRaidID)
     self.RaidAssistants = {}
     self.IsMasterLootSystem = false
+    self.IsGroupLootSystem = false
     if lootmethod == "master" and masterlooterRaidID then
         local name = GetRaidRosterInfo(masterlooterRaidID)
         if name then
@@ -638,6 +640,8 @@ function RaidManager:UpdateGameRaidInformation()
             self.RaidAssistants[name] = true -- we add it in case ML is not an assistant
             LOG:Info("Master Looter: %s", name)
         end
+    elseif lootmethod == "group" then
+        self.IsGroupLootSystem = true
     end
 
     for i=1,MAX_RAID_MEMBERS do
@@ -722,6 +726,15 @@ function RaidManager:IsRaidOwner(name)
         LOG:Debug("%s is not raid owner.", name)
     end
     return isOwner
+end
+
+function RaidManager:IsGroupLoot()
+    return self.IsGroupLootSystem
+end
+
+
+function RaidManager:IsMasterLooter(name)
+    return self.IsMasterLootSystem and (self.MasterLooter == (name or whoami)) or false
 end
 
 function RaidManager:IsAllowedToAuction(name, relaxed)

@@ -31,13 +31,90 @@ local function InitializeDB(self)
         fillFromLoot = true,
         fillFromLootGLOnly = true,
         lootThreshold = 4,
-        notes = {}
+        notes = {},
+        ignoredClasses = {},
+        ignoredItems = UTILS.Set({
+            22726, -- Splinter of Atiesh
+            30183, -- Nether Vortex
+            29434, -- Badge of Justice
+            23572, -- Primal Nether
+            40752, -- Emblem of Heroism
+            40753, -- Emblem of Valor
+            45038, -- Fragment of Val'anyr
+        }),
     })
 end
 
+-- Filling
+local ItemClasses = {}
+do
+    local ignoredClasses = {
+        [8] = true,
+        [10] = true,
+        [14] = true,
+    }
+    for _, id in pairs(Enum.ItemClass) do
+        if not ignoredClasses[id] then
+            ItemClasses[id] = GetItemClassInfo(id)
+        end
+    end
+end
+
+local function DefaultCallback(_)
+    AuctionManager:RefreshGUI()
+end
+
+-- If using custom callback, function, then it is responsible for doing refresh
+local function AddItemToAuctionList(self, item, callbackFn)
+    callbackFn = callbackFn or DefaultCallback
+
+    local auctionInfo = self.currentAuction
+    if auctionInfo:IsInProgress() then
+        auctionInfo = self.pendingAuction
+    end
+
+    local auctionItem = auctionInfo:AddItem(item)
+    if auctionItem then
+        auctionItem:SetNote(self.db.notes[item:GetItemID()])
+    end
+    callbackFn(auctionItem)
+end
+
+local function AutoAddItemInternal(self, item)
+    local _, _, _, _, _, _, _, _, _, _, _, classId = GetItemInfo(item:GetItemID())
+    if (item:GetItemQuality() >= self:GetFilledLootRarity())
+    and not (self.db.ignoredClasses[classId])
+    and not (self.db.ignoredItems[item:GetItemID()]) then
+        AddItemToAuctionList(self, item)
+    end
+end
+
+local function AutoAddItemProxy(self, item)
+    if not item:IsItemEmpty() then
+        if item:IsItemDataCached() then
+            AutoAddItemInternal(self, item)
+        else
+            item:ContinueOnItemLoad(function()
+                AutoAddItemInternal(self, item)
+            end)
+        end
+    end
+end
+
+local function HandleLootMessage(addon, event, message, _, _, _, playerName, ...)
+    local self = AuctionManager
+    if playerName ~= whoami then return end
+    if not message then return end
+    if not CLM.MODULES.RaidManager:IsInActiveRaid() then return end
+    if not self:IsAuctioneer() then return end
+    local itemId = string.match(message, 'Hitem:(%d*):')
+    if self:GetFillAuctionListFromLootGLOnly() then
+        if not CLM.MODULES.RaidManager:IsGroupLoot() then return end
+    end
+    AutoAddItemProxy(self, Item:CreateFromItemID(tonumber(itemId) or 0))
+end
+
 -- HOOKING
-
-
 local function GetModifierCombination()
     local combination = ""
 
@@ -99,7 +176,6 @@ end
 local alreadyPostedLoot = {}
 local function PostLootToRaidChat()
     if not IsInRaid() then return end
-    if not CLM.MODULES.ACL:IsTrusted() then return end
     if not CLM.GlobalConfigs:GetAnnounceLootToRaid() then return end
     if CLM.GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
         if not CLM.MODULES.RaidManager:IsRaidOwner(whoami) then return end
@@ -117,9 +193,32 @@ local function PostLootToRaidChat()
         local itemLink = GetLootSlotLink(lootIndex)
         if itemLink then
             if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then
-                SendChatMessage(num .. ". " .. itemLink, "RAID")
+                SendChatMessage("[CLM] " .. num .. ") " .. itemLink, "RAID")
                 num = num + 1
             end
+        end
+    end
+end
+
+local alreadyAddedLoot = {}
+local function FillLootFromCorpse()
+    if not CLM.MODULES.RaidManager:IsInActiveRaid() then return end
+    if not AuctionManager:IsAuctioneer() then return end
+    if AuctionManager:GetFillAuctionListFromCorpseMLOnly() then
+        if not CLM.MODULES.RaidManager:IsMasterLooter() then return end
+    end
+
+    local targetGuid = UnitGUID("target")
+    if targetGuid then
+        if alreadyPostedLoot[targetGuid] then return end
+        alreadyPostedLoot[targetGuid] = true
+    end
+
+    local numLootItems = GetNumLootItems()
+    for lootIndex = 1, numLootItems do
+        local itemLink = GetLootSlotLink(lootIndex)
+        if itemLink then
+            AutoAddItemProxy(AuctionManager, Item:CreateFromItemLink(itemLink))
         end
     end
 end
@@ -280,6 +379,17 @@ local function CreateConfigurationOptions(self)
             get = function(i) return GetFilledLootRarity(self) end,
             order = 38
         },
+        loot_queue_ignore_classes = {
+            name = CLM.L["Ignore"],
+            type = "multiselect",
+            set = function(i, k, v)
+                local n = tonumber(k) or 0
+                self.db.ignoredClasses[n] = v
+            end,
+            get = function(i, v) return self.db.ignoredClasses[tonumber(v)] end,
+            values = ItemClasses,
+            order = 38.1
+        },
         global_auction_spacer = {
             name = "",
             desc = "",
@@ -423,6 +533,7 @@ function AuctionManager:Initialize()
     HookBagSlots()
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, HandleLootOpenedEvent)
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, HandleLootClosedEvent)
+    CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_LOOT"}, HandleLootMessage)
 
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
@@ -432,26 +543,6 @@ function AuctionManager:Initialize()
 end
 
 -- LOCAL AUCTION MANAGEMENT
-
-local function DefaultCallback(_)
-    AuctionManager:RefreshGUI()
-end
-
--- If using custom callback, function, then it is responsible for doing refresh
-local function AddItemToAuctionList(self, item, callbackFn)
-    callbackFn = callbackFn or DefaultCallback
-
-    local auctionInfo = self.currentAuction
-    if auctionInfo:IsInProgress() then
-        auctionInfo = self.pendingAuction
-    end
-
-    local auctionItem = auctionInfo:AddItem(item)
-    if auctionItem then
-        auctionItem:SetNote(self.db.notes[item:GetItemID()])
-    end
-    callbackFn(auctionItem)
-end
 
 local function AddItemProxy(self, item, callbackFn)
     if not item:IsItemEmpty() then
