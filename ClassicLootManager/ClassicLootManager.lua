@@ -156,7 +156,6 @@ function CORE:_InitializeFeatures()
     MODULES.BiddingManager:Initialize()
     MODULES.ProfileInfoManager:Initialize()
     MODULES.AutoAwardManager:Initialize()
-    MODULES.LootQueueManager:Initialize()
     MODULES.AuctionHistoryManager:Initialize()
     MODULES.SandboxManager:Initialize()
     -- Globals

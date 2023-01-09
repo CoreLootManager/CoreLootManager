@@ -32,7 +32,13 @@ local function InitializeDB(self)
         fillFromLootGLOnly = true,
         lootThreshold = 4,
         notes = {},
-        ignoredClasses = {},
+        ignoredClasses = {
+            false, false, false, false,
+            false, false, false, true,
+            false, true, false, false,
+            false, true, false, false,
+            false, false, false, false
+        },
         ignoredItems = UTILS.Set({
             22726, -- Splinter of Atiesh
             30183, -- Nether Vortex
@@ -43,6 +49,48 @@ local function InitializeDB(self)
             45038, -- Fragment of Val'anyr
         }),
     })
+end
+
+-- helpers
+
+local function SetFillAuctionListFromCorpse(self, value)
+    self.db.fillFromCorpse = value and true or false
+end
+
+local function GetFillAuctionListFromCorpse(self)
+    return self.db.fillFromCorpse
+end
+
+local function SetFillAuctionListFromCorpseMLOnly(self, value)
+    self.db.fillFromCorpseMLOnly = value and true or false
+end
+
+local function GetFillAuctionListFromCorpseMLOnly(self)
+    return self.db.fillFromCorpseMLOnly
+end
+
+local function SetFillAuctionListFromLoot(self, value)
+    self.db.fillFromLoot = value and true or false
+end
+
+local function GetFillAuctionListFromLoot(self)
+    return self.db.fillFromLoot
+end
+
+local function SetFillAuctionListFromLootGLOnly(self, value)
+    self.db.fillFromLootGLOnly = value and true or false
+end
+
+local function GetFillAuctionListFromLootGLOnly(self)
+    return self.db.fillFromLootGLOnly
+end
+
+local function SetFilledLootRarity(self, value)
+    self.db.lootThreshold = tonumber(value)
+end
+
+local function GetFilledLootRarity(self)
+    return self.db.lootThreshold or 4
 end
 
 -- Filling
@@ -82,7 +130,7 @@ end
 
 local function AutoAddItemInternal(self, item)
     local _, _, _, _, _, _, _, _, _, _, _, classId = GetItemInfo(item:GetItemID())
-    if (item:GetItemQuality() >= self:GetFilledLootRarity())
+    if (item:GetItemQuality() >= GetFilledLootRarity(self))
     and not (self.db.ignoredClasses[classId])
     and not (self.db.ignoredItems[item:GetItemID()]) then
         AddItemToAuctionList(self, item)
@@ -108,9 +156,10 @@ local function HandleLootMessage(addon, event, message, _, _, _, playerName, ...
     if not CLM.MODULES.RaidManager:IsInActiveRaid() then return end
     if not self:IsAuctioneer() then return end
     local itemId = string.match(message, 'Hitem:(%d*):')
-    if self:GetFillAuctionListFromLootGLOnly() then
+    if GetFillAuctionListFromLootGLOnly(self) then
         if not CLM.MODULES.RaidManager:IsGroupLoot() then return end
     end
+    if not GetFillAuctionListFromLoot(self) then return end
     AutoAddItemProxy(self, Item:CreateFromItemID(tonumber(itemId) or 0))
 end
 
@@ -162,6 +211,9 @@ local function HookCorpseSlots()
 
     for ui, prefix in pairs(UIs) do
         for buttonIndex = 1, numLootItems do
+            if not hookedSlots[ui] then
+                hookedSlots[ui] = {}
+            end
             if not hookedSlots[ui][buttonIndex] then
                 local button = getglobal(prefix .. buttonIndex)
                 if button then
@@ -204,14 +256,15 @@ local alreadyAddedLoot = {}
 local function FillLootFromCorpse()
     if not CLM.MODULES.RaidManager:IsInActiveRaid() then return end
     if not AuctionManager:IsAuctioneer() then return end
-    if AuctionManager:GetFillAuctionListFromCorpseMLOnly() then
+    if GetFillAuctionListFromCorpseMLOnly(AuctionManager) then
         if not CLM.MODULES.RaidManager:IsMasterLooter() then return end
     end
+    if not GetFillAuctionListFromCorpse(AuctionManager) then return end
 
     local targetGuid = UnitGUID("target")
     if targetGuid then
-        if alreadyPostedLoot[targetGuid] then return end
-        alreadyPostedLoot[targetGuid] = true
+        if alreadyAddedLoot[targetGuid] then return end
+        alreadyAddedLoot[targetGuid] = true
     end
 
     local numLootItems = GetNumLootItems()
@@ -229,6 +282,8 @@ local function HandleLootOpenedEvent()
     PostLootToRaidChat()
     -- Hook slots
     HookCorpseSlots()
+    -- Fill auction
+    FillLootFromCorpse()
     --
     lootWindowIsOpen = true
 end
@@ -253,46 +308,6 @@ end
 
 local function GetAutoTrade(self)
     return self.db.autoTrade
-end
-
-local function SetFillAuctionListFromCorpse(self, value)
-    self.db.fillFromCorpse = value and true or false
-end
-
-local function GetFillAuctionListFromCorpse(self)
-    return self.db.fillFromCorpse
-end
-
-local function SetFillAuctionListFromCorpseMLOnly(self, value)
-    self.db.fillFromCorpseMLOnly = value and true or false
-end
-
-local function GetFillAuctionListFromCorpseMLOnly(self)
-    return self.db.fillFromCorpseMLOnly
-end
-
-local function SetFillAuctionListFromLoot(self, value)
-    self.db.fillFromLoot = value and true or false
-end
-
-local function GetFillAuctionListFromLoot(self)
-    return self.db.fillFromLoot
-end
-
-local function SetFillAuctionListFromLootGLOnly(self, value)
-    self.db.fillFromLootGLOnly = value and true or false
-end
-
-local function GetFillAuctionListFromLootGLOnly(self)
-    return self.db.fillFromLootGLOnly
-end
-
-local function SetFilledLootRarity(self, value)
-    self.db.lootThreshold = tonumber(value)
-end
-
-local function GetFilledLootRarity(self)
-    return self.db.lootThreshold or 4
 end
 
 local function CreateConfigurationOptions(self)
@@ -379,6 +394,16 @@ local function CreateConfigurationOptions(self)
             get = function(i) return GetFilledLootRarity(self) end,
             order = 38
         },
+        global_auction_combination = {
+            name = CLM.L["Modifier combination"],
+            desc = CLM.L["Select modifier combination for filling auction from bags and corpse."],
+            type = "select",
+            values = CONSTANTS.MODIFIER_COMBINATIONS_GUI,
+            sorting = CONSTANTS.MODIFIER_COMBINATIONS_SORTED,
+            set = function(i, v) CLM.GlobalConfigs:SetModifierCombination(v) end,
+            get = function(i) return CLM.GlobalConfigs:GetModifierCombination() end,
+            order = 39
+        },
         loot_queue_ignore_classes = {
             name = CLM.L["Ignore"],
             type = "multiselect",
@@ -388,25 +413,15 @@ local function CreateConfigurationOptions(self)
             end,
             get = function(i, v) return self.db.ignoredClasses[tonumber(v)] end,
             values = ItemClasses,
-            order = 38.1
-        },
-        global_auction_spacer = {
-            name = "",
-            desc = "",
-            type = "description",
-            width = 1,
-            order =  38.5
-        },
-        global_auction_combination = {
-            name = CLM.L["Modifier combination"],
-            desc = CLM.L["Select modifier combination for filling auction from bags and corpse."],
-            type = "select",
-            values = CONSTANTS.MODIFIER_COMBINATIONS_GUI,
-            sorting = CONSTANTS.MODIFIER_COMBINATIONS_SORTED,
-            set = function(i, v) CLM.GlobalConfigs:SetModifierCombination(v) end,
-            get = function(i) return CLM.GlobalConfigs:GetModifierCombination() end,
             order = 39.5
         },
+        -- global_auction_spacer = {
+        --     name = "",
+        --     desc = "",
+        --     type = "description",
+        --     width = 1,
+        --     order =  38.5
+        -- },
         auctioning_chat_commands_header = {
             type = "header",
             name = CLM.L["Auctioning - Chat Commands"],
@@ -481,7 +496,6 @@ local function SendBidDenied(itemId, name, reason)
 end
 
 local function SendBidInfoInternal(auctionDistributeBidData)
-    -- print("SendBidInfoInternal", GetTimePreciseSec())
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID, auctionDistributeBidData
         -- CLM.MODELS.AuctionCommDistributeBid:New(data)
