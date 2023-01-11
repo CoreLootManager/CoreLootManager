@@ -1,6 +1,55 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.0.0",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    { header = "Important!", body = "With CLM v3 There comes a big mentality shift in the auctioning system towards becoming a more robust, point-based loot management framework. Notion of "English" or "Swedish" auction has been dropped towards bigger flexibility. This is a major change and as a consequence CLM v2 communication is not compatible with CLM v3 (but the database is preserved unlike when migrating from v1 to v2)."},
+                    { header = "Thank you patrons!", body = "Thank you patrons, especially: |cffff8000Allcoast|r, |cffff8000BigSpoon|r, |cffff8000naimious|r, |cffff8000Nosirrahdrof|r" },
+                },
+            },
+            {
+                name = "Multi Item Auction",
+                data = {
+                    { header = "Notes", body = "Classic Loot Manager now allows you to auction virtually any amount of items simultaneously. There are however some quirks that need to be looked into by officers for this to work as expected." },
+                    { header = "Configuration", body = "This rework brings some changes to auctioning configuration. Be sure to review them to ensure your auction is working as expected. Most significant changes are related to minimum, all-in and equal bids in Open Auction Mode." },
+                    { header = "Invalid Bids", body = "Bids are validated during auction. However the correctness might not apply anymore after items were awarded. To solve this, after every item award, CLM re-calculates if the bids would be accepted and marks invalid bid with red color. This way the bids are not lost and it's up to Loot Master to decide how to handle it." },
+                    { header = "Rolling", body = "CLM includes internal rolling system (random) that appends a new random value to players bid whenever a bid comes in for the first time. This value is guarnateed to be unique and is meant for the ML to help with solving ties. However it does not come from `/random` server-side call thus is not visible in the chat." },
+                    { header = "Handling items in the auction", body = "Items can be added to the auction same as previously through alt-click (configurable). In addition to that, the previous Loot Queue has been merged with Auctioning into auto-fill auction feature. CLM can automatically add looted (received) items and items seen on corpse to the current auction. This can be configured per Master Looter prefference. Important! If items are added to auction during existing auction (manually or automatically) then CLM will remember it in a pending auction and display them when current auction is cleared of all items. Auctioneer can manually remove items from auction by right clicking item icon on the list." },
+                    { header = "Chat bidding", body = "Chat bidding is currently disabled." },
+                },
+            },
+            {
+                name = "Refinements",
+                data = {
+                    { header = "History", body = "Loot history now shows simple history when hovering over items but more extensive if hovering while holding `CTRL` modifier." },
+                    { header = "Migration", body = "Migration should now be slightly more resilient when executed multiple times by accident." },
+                    { header = "Renames", body = "Several options were renamed" },
+                    { header = "Multi AddOn", body = "Classic Loot Manager is now split into multiple smaller addons. This is a first step towards even greater modularity. If you are using external `Integration` you will need to enable that module first! Export is currently only accessible through `/clm export` slash command." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Please post your feedback", body = "Be sure to post feedback about the changes, suggestions and bug reports on our discord (link can be found in the configuration, README and github)." },
+                    { header = "All-in", body = "All-in should no longer be denied unexpectedly." },
+                    { header = "History error", body = "History should no longer get stuck on `Loading...` or generate lua-error when handling old historical data." },
+                    { header = "Alerts", body = "Alerts should now display proper currency." },
+                },
+            },
+            {
+                name = "Known issues",
+                data = {
+                    { header = "Multi Item Auction", body = "Award value Multiplier is not stored nor configurable." },
+                    { header = "Scaling", body = "Bidding GUI cannot be scaled at this time." },
+                    { header = "GUI", body = "Bidding GUI still needs some refinements and might change anytime." },
+                },
+            },
+        },
+    },
+    {
         version = "v2.7.0",
         data = {
             {
