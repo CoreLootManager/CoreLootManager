@@ -11,8 +11,6 @@ local tinsert, tremove = table.insert, table.remove
 local tostring, tonumber = tostring, tonumber
 local GetServerTime = GetServerTime
 
-local EVENT_END_AUCTION = "CLM_AUCTION_END" -- TODO CONSTANTS
-
 local CHANNELS = {
     [1] = "SAY",
     [2] = "EMOTE",
