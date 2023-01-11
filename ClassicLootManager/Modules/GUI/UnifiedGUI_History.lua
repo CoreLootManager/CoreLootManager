@@ -42,6 +42,14 @@ local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
 end
 
+local tooltipPool = CreateObjectPool(function(pool)
+    if not pool.nextId then
+        pool.nextId = 0
+    end
+    pool.nextId = pool.nextId + 1
+    return CreateFrame("GameTooltip", "CLMHistoryTT" .. tostring(pool.nextId), UIParent, "GameTooltipTemplate")
+end, function(_, frame) frame:Hide() end)
+
 local UnifiedGUI_History = {
     name = "history",
     filter = CLM.MODELS.Filters:New(
@@ -184,7 +192,12 @@ local tableStructure = {
             if not rowData or not rowData.cols then return status end
             local tooltip = UnifiedGUI_History.tooltip
             if not tooltip then return end
-            tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+            local detailsMode = IsControlKeyDown()
+            if detailsMode then
+                tooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+            else
+                tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
+            end
             -- ------------------------------ --
             if ST_GetIsLoot(rowData) == true then
                 -- ----------- Loot ------------- --
@@ -207,7 +220,7 @@ local tableStructure = {
                     end
                     tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
                     local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
-                    if auction then
+                    if detailsMode and auction then
                         tooltip:AddLine("\n")
                         for bidder, bid in pairs(auction.bids) do
                             local names = auction.names or {}
@@ -225,6 +238,23 @@ local tableStructure = {
                             end
 
                             tooltip:AddDoubleLine(bidder, bid)
+                        end
+                        if detailsMode then
+                            local upgraded = auction.upgraded or {}
+                            local previousUpgradeTooltip
+                            for _, it in ipairs(upgraded[loot:Owner():Name()] or {}) do
+                                local upgradeTooltip = tooltipPool:Acquire()
+                                if previousUpgradeTooltip then
+                                    upgradeTooltip:SetOwner(previousUpgradeTooltip, "ANCHOR_NONE")
+                                    upgradeTooltip:ClearAllPoints()
+                                    upgradeTooltip:SetPoint("TOPLEFT", previousUpgradeTooltip, "BOTTOMLEFT")
+                                else
+                                    upgradeTooltip:SetOwner(tooltip, "ANCHOR_RIGHT")
+                                end
+                                upgradeTooltip:SetHyperlink("item:" .. tonumber(it))
+                                upgradeTooltip:Show()
+                                previousUpgradeTooltip = upgradeTooltip
+                            end
                         end
                     end
                 end
@@ -267,6 +297,7 @@ local tableStructure = {
         OnLeave = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             local status = table.DefaultEvents["OnLeave"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
             UnifiedGUI_History.tooltip:Hide()
+            tooltipPool:ReleaseAll()
             return status
         end),
         -- OnClick handler -> click
