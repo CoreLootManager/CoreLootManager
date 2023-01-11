@@ -135,7 +135,7 @@ local function GenerateItemOptions(self)
     local order = 4
     local buttonOrder = {order, order + 4}
     for j,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.BASE, CONSTANTS.SLOT_VALUE_TIER.MAX}) do
-         options["value_"..key] = {
+        options["value_"..key] = {
             name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
             type = "input",
             set = (function(i,v)
@@ -143,7 +143,7 @@ local function GenerateItemOptions(self)
                     self.auctionItem.values[key] = tonumber(v) or 0
                 end
             end),
-           get = (function(i) return self.auctionItem and tostring(self.auctionItem.values[key] or 0) or "0" end),
+            get = (function(i) return self.auctionItem and tostring(self.auctionItem.values[key] or 0) or "0" end),
             disabled = genericDisable,
             pattern = CONSTANTS.REGEXP_FLOAT,
             width = 0.75,
@@ -154,18 +154,18 @@ local function GenerateItemOptions(self)
     -- TODO: Display below only if using tiered mode
     for _,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.SMALL, CONSTANTS.SLOT_VALUE_TIER.MEDIUM, CONSTANTS.SLOT_VALUE_TIER.LARGE,}) do
         options["value_"..key] = {
-           name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
-           type = "input",
-           set = (function(i,v)
+            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
+            type = "input",
+            set = (function(i,v)
                 if self.auctionItem then
                     self.auctionItem.values[key] = tonumber(v) or 0
                 end
             end),
-           get = (function(i) return self.auctionItem and tostring(self.auctionItem.values[key] or 0) or "0" end),
-           disabled = genericDisable,
-           pattern = CONSTANTS.REGEXP_FLOAT,
-           width = 0.5,
-           order = order
+            get = (function(i) return self.auctionItem and tostring(self.auctionItem.values[key] or 0) or "0" end),
+            disabled = genericDisable,
+            pattern = CONSTANTS.REGEXP_FLOAT,
+            width = 0.5,
+            order = order
        }
        order = order + 1
    end

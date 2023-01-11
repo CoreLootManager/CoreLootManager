@@ -24,58 +24,35 @@ local CHANNELS = {
     [8] = "RAID_WARNING"
 }
 
+
+local function SetEnabled(self, value)
+    self.db.enable = value and true or false
+end
+
+local function GetEnabled(self)
+    return self.db.enable
+end
+
+local function SetPostBidsChannel(self, value)
+    local channel = CHANNELS[value]
+    if channel then
+        self.db.post_bids_channel = value
+    end
+end
+
+local function GetPostBidsChannel(self)
+    return self.db.post_bids_channel
+end
+
 local AuctionHistoryManager = {}
 function AuctionHistoryManager:Initialize()
     LOG:Trace("AuctionHistoryManager:Initialize()")
-    self.db = CLM.MODULES.Database:Personal('auctionHistory', {
+    self.db = CLM.MODULES.Database:Personal('auctionHistory2', {
         stack = {},
         -- config
         enable = true,
-        post_bids = true,
         post_bids_channel = 5
     })
-    CLM.MODULES.EventManager:RegisterEvent(EVENT_END_AUCTION, function(_, data)
-        if not self:GetEnabled() then return end
-        tinsert(self.db.stack, 1, {
-            link      = data.link,
-            id        = data.id,
-            bids      = data.bids,
-            names     = data.bidNames,
-            upgraded  = data.items,
-            time      = data.time
-        })
-        if self:GetPostBids() and data.postToChat then
-            local channel = CHANNELS[self:GetPostBidsChannel()] or "OFFICER"
-            SendChatMessage(data.link, channel)
-            local noBids = true
-            for bidder,bid in pairs(data.bids) do
-                noBids = false
-                local bidName = ""
-                if data.bidNames[bidder] then
-                    bidName = " - " .. data.bidNames[bidder]
-                end
-
-                local items = ""
-
-                if data.items and data.items[bidder] then
-                    local _, item1 = GetItemInfo(data.items[bidder][1] or 0)
-                    local _, item2 = GetItemInfo(data.items[bidder][2] or 0)
-
-                    if item1 or item2 then
-                        items = CLM.L[" over "]
-                        if item1 then items = items .. item1 end
-                        if item2 then items = items .. item2 end
-                    end
-                end
-
-                SendChatMessage(bidder .. ": " .. tostring(bid) .. " " .. (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) .. bidName .. items, channel)
-            end
-            if noBids then
-                SendChatMessage(CLM.L["No bids"], channel)
-            end
-        end
-        CLM.GUI.AuctionHistory:Refresh(true)
-    end)
 
     self.uuidCache = {}
 
@@ -89,58 +66,60 @@ function AuctionHistoryManager:Initialize()
             name = CLM.L["Store bids"],
             desc = CLM.L["Store finished auction bids information."],
             type = "toggle",
-            set = function(i, v) self:SetEnabled(v) end,
-            get = function(i) return self:GetEnabled() end,
+            set = function(i, v) SetEnabled(self, v) end,
+            get = function(i) return GetEnabled(self) end,
             order = 51
-        },
-        auction_history_post_bids = {
-            name = CLM.L["Post bids"],
-            desc = CLM.L["Toggles posting bids in selected channel after auction has ended."],
-            type = "toggle",
-            set = function(i, v) self:SetPostBids(v) end,
-            get = function(i) return self:GetPostBids() end,
-            order = 52
         },
         auction_history_post_bids_channel = {
             name = CLM.L["Post channel"],
             desc = CLM.L["Channel for posting bids."],
             type = "select",
             values = CHANNELS,
-            set = function(i, v) self:SetPostBidsChannel(v) end,
-            get = function(i) return self:GetPostBidsChannel() end,
-            order = 53
+            set = function(i, v) SetPostBidsChannel(self, v) end,
+            get = function(i) return GetPostBidsChannel(self) end,
+            order = 52
         }
     }
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
-
-
 end
 
-function AuctionHistoryManager:SetEnabled(value)
-    self.db.enable = value and true or false
-end
+function AuctionHistoryManager:AddAuctionItem(auctionItem, uuid)
+        if not self:GetEnabled() then return end
+        -- Translate new data format to old history format
+        -- TODO new format in history! -> Requires  DB and dependant UIs changes
+        local auction CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+        local roster = auction:GetRoster()
+        local namedButtonsMode = auction:GetNamedButtonsMode()
+        local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
+        local bids = {}
+        local bidNames = {}
+        local rolls = {}
+        local items =  {}
 
-function AuctionHistoryManager:GetEnabled()
-    return self.db.enable
-end
+        for player,response in pairs(auctionItem:GetAllResponses()) do
+            bids[player] = response:Value()
+            rolls[player] = response:Roll()
+            -- TODO unify bid name sourcing globally in addon
+            local bidName = CONSTANTS.BID_TYPE_NAMES[response:Type()]
+            if namedButtonsMode then
+                bidName = bidName or roster:GetFieldName(response:Type())
+            end
+            bidNames[player] = bidName
+            items[player] = response:Items()
+        end
 
-function AuctionHistoryManager:SetPostBids(value)
-    self.db.post_bids = value and true or false
-end
-
-function AuctionHistoryManager:GetPostBids()
-    return self.db.post_bids
-end
-
-function AuctionHistoryManager:SetPostBidsChannel(value)
-    local channel = CHANNELS[value]
-    if channel then
-        self.db.post_bids_channel = value
-    end
-end
-
-function AuctionHistoryManager:GetPostBidsChannel()
-    return self.db.post_bids_channel
+        tinsert(self.db.stack, 1, {
+            link      = auctionItem:GetItemLink(),
+            id        = auctionItem:GetItemID(),
+            bids      = bids,
+            names     = bidNames,
+            rolls     = rolls,
+            upgraded  = items,
+            time      = GetServerTime(),
+            isEPGP    = isEPGP,
+            uuid      = uuid
+        })
+        CLM.GUI.AuctionHistory:Refresh(true)
 end
 
 function AuctionHistoryManager:CorrelateWithLoot(time, uuid)
@@ -171,6 +150,40 @@ end
 
 function AuctionHistoryManager:GetHistory()
     return self.db.stack
+end
+
+function AuctionHistoryManager:PostById(id)
+    local data = self.db.stack[id]
+    if data then
+        local channel = CHANNELS[self:GetPostBidsChannel()] or "OFFICER"
+        SendChatMessage(data.link, channel)
+        local noBids = true
+        for bidder,bid in pairs(data.bids) do
+            noBids = false
+            local bidName = ""
+            if data.bidNames[bidder] then
+                bidName = " - " .. data.bidNames[bidder]
+            end
+
+            local items = ""
+
+            if data.items and data.items[bidder] then
+                local _, item1 = GetItemInfo(data.items[bidder][1] or 0)
+                local _, item2 = GetItemInfo(data.items[bidder][2] or 0)
+
+                if item1 or item2 then
+                    items = CLM.L[" over "]
+                    if item1 then items = items .. item1 end
+                    if item2 then items = items .. item2 end
+                end
+            end
+
+            SendChatMessage(bidder .. ": " .. tostring(bid) .. " " .. (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) .. bidName .. items, channel)
+        end
+        if noBids then
+            SendChatMessage(CLM.L["No bids"], channel)
+        end
+    end
 end
 
 function AuctionHistoryManager:Remove(id)

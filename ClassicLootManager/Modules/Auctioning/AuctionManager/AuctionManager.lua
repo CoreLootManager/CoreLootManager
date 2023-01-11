@@ -973,9 +973,9 @@ end
 
 function AuctionManager:Award(item, name, price)
     LOG:Trace("AuctionManager:Award()")
-    local success--[[, uuid]] = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
+    local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
     if success then
-        -- CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item, uuid)
+        CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item, uuid)
         if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
             if GetAutoAssign(self) and lootWindowIsOpen then
                 CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)

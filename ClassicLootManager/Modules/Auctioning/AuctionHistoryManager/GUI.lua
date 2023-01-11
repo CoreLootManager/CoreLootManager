@@ -60,9 +60,21 @@ function AuctionHistoryGUI:Initialize()
     InitializeDB(self)
 
     self.tooltip = GameTooltip
-
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
+            {
+                title = CLM.L["Post bids"],
+                func = (function()
+                    local rowData = self.st:GetRow(self.st:GetSelection())
+                    if not rowData or not rowData.cols then return end
+                    CLM.MODULES.AuctionHistoryManager:PostById(ST_GetItemSeq(rowData))
+                end),
+                color = "0000cc"
+            },
+            {
+                separator = true,
+                trustedOnly = true,
+            },
             {
                 title = CLM.L["Remove auction"],
                 func = (function()
