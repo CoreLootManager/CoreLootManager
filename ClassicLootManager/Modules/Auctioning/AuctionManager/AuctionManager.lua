@@ -584,37 +584,12 @@ function AuctionManager:AddItemByLink(itemLink, callbackFn)
     AddItemProxy(self, Item:CreateFromItemLink(itemLink), callbackFn)
 end
 
-local function EndAuction(self, postToChat)
+local function EndAuction(self)
     self.currentAuction:End()
     SendAuctionEnd()
-    -- local bidTypeNames = {}
-
-    -- for bidder, type in pairs(self.userResponses.bidTypes) do
-    --     local bidTypeString = CLM.L["MS"]
-    --     if type == CONSTANTS.BID_TYPE.OFF_SPEC then
-    --         bidTypeString = CLM.L["OS"]
-    --     else
-    --         if self.raid:Roster():GetConfiguration("namedButtons") then
-    --             local name = self.raid:Roster():GetFieldName(type)
-    --             if name ~= "" then
-    --                 bidTypeString = name
-    --             end
-    --         end
-    --     end
-    --     bidTypeNames[bidder] = bidTypeString
-    -- end
-
-    -- self.lastAuctionEndTime = GetServerTime()
-    -- CLM.MODULES.EventManager:DispatchEvent(EVENT_END_AUCTION, {
-    --     link = self.itemLink,
-    --     id = self.itemId,
-    --     bids = self.userResponses.bids,
-    --     bidNames = bidTypeNames,
-    --     items = self.userResponses.upgradedItems,
-    --     time = self.lastAuctionEndTime,
-    --     isEPGP = (self.raid:Roster():GetPointType() == CONSTANTS.POINT_TYPE.EPGP),
-    --     postToChat = postToChat
-    --  })
+    for _, item in pairs(self.currentAuction:GetItems()) do
+        CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item)
+    end
 end
 
 function AuctionManager:StopAuctionManual()
@@ -623,7 +598,7 @@ function AuctionManager:StopAuctionManual()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction stopped by Master Looter"], "RAID_WARNING")
     end
-    EndAuction(self, false)
+    EndAuction(self)
 end
 
 local function StopAuctionTimed(self)
@@ -632,7 +607,7 @@ local function StopAuctionTimed(self)
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction complete"], "RAID_WARNING")
     end
-    EndAuction(self, true)
+    EndAuction(self)
     CLM.GUI.AuctionManager:Refresh()
 end
 
@@ -975,7 +950,8 @@ function AuctionManager:Award(item, name, price)
     LOG:Trace("AuctionManager:Award()")
     local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
     if success then
-        CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item, uuid)
+        CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
+        -- CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item, uuid)
         if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
             if GetAutoAssign(self) and lootWindowIsOpen then
                 CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)

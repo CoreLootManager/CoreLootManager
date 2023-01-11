@@ -208,10 +208,16 @@ local tableStructure = {
                     tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
                     local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
                     if auction then
-                        tooltip:AddLine(CLM.L["Bids"])
+                        tooltip:AddLine("\n")
                         for bidder, bid in pairs(auction.bids) do
-                            if auction.names and auction.names[bidder] then
-                                bid = tostring(bid) .. " (" .. auction.names[bidder] .. ")"
+                            local names = auction.names or {}
+                            local rolls = auction.rolls or {}
+                            bid  = tostring(bid)
+                            if rolls[bidder] then
+                                bid  = bid .. "/" .. tostring(rolls[bidder])
+                            end
+                            if names[bidder] then
+                                bid = bid .. " (" .. names[bidder] .. ")"
                             end
                             local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
                             if bidderProfile then

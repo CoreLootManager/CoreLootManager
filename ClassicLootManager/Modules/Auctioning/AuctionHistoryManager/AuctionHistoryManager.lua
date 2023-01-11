@@ -84,10 +84,11 @@ function AuctionHistoryManager:Initialize()
 end
 
 function AuctionHistoryManager:AddAuctionItem(auctionItem, uuid)
-        if not self:GetEnabled() then return end
+        if not GetEnabled(self) then return end
         -- Translate new data format to old history format
         -- TODO new format in history! -> Requires  DB and dependant UIs changes
-        local auction CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+        -- uuid also in weird state as there can be multiple awards towards 1 auction
+        local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
         local roster = auction:GetRoster()
         local namedButtonsMode = auction:GetNamedButtonsMode()
         local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
@@ -107,6 +108,10 @@ function AuctionHistoryManager:AddAuctionItem(auctionItem, uuid)
             bidNames[player] = bidName
             items[player] = response:Items()
         end
+        local uuidData
+        if uuid then
+            uuidData = { [uuid] = true }
+        end
 
         tinsert(self.db.stack, 1, {
             link      = auctionItem:GetItemLink(),
@@ -115,16 +120,16 @@ function AuctionHistoryManager:AddAuctionItem(auctionItem, uuid)
             names     = bidNames,
             rolls     = rolls,
             upgraded  = items,
-            time      = GetServerTime(),
+            time      = auction:GetEndTime(),
             isEPGP    = isEPGP,
-            uuid      = uuid
+            uuid      = uuidData
         })
         CLM.GUI.AuctionHistory:Refresh(true)
 end
 
-function AuctionHistoryManager:CorrelateWithLoot(time, uuid)
+function AuctionHistoryManager:CorrelateWithLoot(link, time, uuid)
     for _, auction in ipairs(self.db.stack) do
-        if auction.time == time then
+        if auction.link == link and auction.time == time then
             if not auction.uuid then
                 auction.uuid = {}
             end
@@ -155,21 +160,21 @@ end
 function AuctionHistoryManager:PostById(id)
     local data = self.db.stack[id]
     if data then
-        local channel = CHANNELS[self:GetPostBidsChannel()] or "OFFICER"
+        local channel = CHANNELS[GetPostBidsChannel(self)] or "OFFICER"
         SendChatMessage(data.link, channel)
         local noBids = true
         for bidder,bid in pairs(data.bids) do
             noBids = false
             local bidName = ""
-            if data.bidNames[bidder] then
-                bidName = " - " .. data.bidNames[bidder]
+            if data.names[bidder] then
+                bidName = " - " .. data.names[bidder]
             end
 
             local items = ""
 
-            if data.items and data.items[bidder] then
-                local _, item1 = GetItemInfo(data.items[bidder][1] or 0)
-                local _, item2 = GetItemInfo(data.items[bidder][2] or 0)
+            if data.upgraded and data.upgraded[bidder] then
+                local _, item1 = GetItemInfo(data.upgraded[bidder][1] or 0)
+                local _, item2 = GetItemInfo(data.upgraded[bidder][2] or 0)
 
                 if item1 or item2 then
                     items = CLM.L[" over "]
@@ -178,7 +183,18 @@ function AuctionHistoryManager:PostById(id)
                 end
             end
 
-            SendChatMessage(bidder .. ": " .. tostring(bid) .. " " .. (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) .. bidName .. items, channel)
+            local rolls = ""
+            if data.rolls and data.rolls[bidder] then
+                rolls  = rolls .. "/" .. tostring(data.rolls[bidder])
+            end
+            SendChatMessage(
+                bidder .. ": " ..
+                tostring(bid) ..
+                rolls .. " " ..
+                (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) ..
+                bidName ..
+                items,
+            channel)
         end
         if noBids then
             SendChatMessage(CLM.L["No bids"], channel)

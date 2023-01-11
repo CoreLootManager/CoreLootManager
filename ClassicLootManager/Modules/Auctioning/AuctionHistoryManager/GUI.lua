@@ -53,6 +53,10 @@ local function ST_GetBidNames(row)
     return row.cols[6].value
 end
 
+local function ST_GetRolls(row)
+    return row.cols[7].value
+end
+
 local AuctionHistoryGUI = {}
 function AuctionHistoryGUI:Initialize()
     LOG:Trace("AuctionHistoryGUI:Initialize()")
@@ -150,13 +154,17 @@ local function CreateAuctionDisplay(self)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
         tooltip:AddLine(ST_GetAuctionTime(rowData))
-        tooltip:AddLine(CLM.L["Bids"])
-        local bidNames = ST_GetBidNames(rowData)
+        local bidNames = ST_GetBidNames(rowData) or {}
+        local rolls = ST_GetRolls(rowData) or {}
         local noBids = true
         for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
             noBids = false
-            if bidNames and bidNames[bidder] then
-                bid = tostring(bid) .. " (" .. bidNames[bidder] .. ")"
+            bid  = tostring(bid)
+            if rolls[bidder] then
+                bid  = bid .. "/" .. tostring(rolls[bidder])
+            end
+            if bidNames[bidder] then
+                bid = bid .. " (" .. bidNames[bidder] .. ")"
             end
             local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
             if bidderProfile then
@@ -241,7 +249,8 @@ function AuctionHistoryGUI:Refresh(visible)
                 { value = auction.bids },
                 { value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], auction.time) },
                 { value = seq },
-                { value = auction.names }
+                { value = auction.names },
+                { value = auction.rolls }
             }
         }
         data[rowId] = row
