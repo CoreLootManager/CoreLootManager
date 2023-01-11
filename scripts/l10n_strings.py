@@ -87,7 +87,7 @@ def add_indirectly_used_strings(storage:L10nStorage):
         storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
 def get_paths():
-    excludeDirs = [".release", "ExternalLibs", "Libs", "Locale", ".github", "Media", ".vscode", ".git", "TESTING", "scripts"]
+    excludeDirs = [".release", "ClassicLootManager/ExternalLibs", "ClassicLootManager/Libs", "ClassicLootManager/Locale", ".github", "ClassicLootManager/Media", ".vscode", ".git", "TESTING", "scripts"]
 
     baseDir = Path().resolve()
     excludePaths = []
@@ -246,7 +246,7 @@ def main(args):
         if args.translate:
             total_missing, total_done, last_percent = translate_missing(missing_translations[locale], storage, locale, total_missing, total_done, last_percent, args.dry_run)
         if args.regenerate:
-            output_to_file('Locale/{0}.lua'.format(locale), storage, locale)
+            output_to_file('ClassicLootManager/Locale/{0}.lua'.format(locale), storage, locale)
 
     exit(status)
 
