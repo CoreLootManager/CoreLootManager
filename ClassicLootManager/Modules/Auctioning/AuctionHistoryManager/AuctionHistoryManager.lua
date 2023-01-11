@@ -189,9 +189,9 @@ function AuctionHistoryManager:PostById(id)
             end
             SendChatMessage(
                 bidder .. ": " ..
-                tostring(bid) ..
-                rolls .. " " ..
+                tostring(bid) .. " " ..
                 (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) ..
+                rolls ..
                 bidName ..
                 items,
             channel)
