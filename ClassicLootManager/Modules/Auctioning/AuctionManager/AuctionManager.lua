@@ -703,10 +703,6 @@ function AuctionManager:StartAuction()
         CLM.MODULES.RosterManager:SetRosterItemValues(auction.roster, id, auctionItem:GetValues())
     end
 
-    -- -- Event
-    -- CLM.MODULES.EventManager:DispatchEvent(EVENT_START_AUCTION, { itemId = self.itemId })
-    -- return true
-
     auction:Start()
 
     SendAuctionStart(self)
@@ -757,7 +753,7 @@ function AuctionManager:HandleNotifyCantUse(data, sender)
         LOG:Debug("Received can't use from %s while no auctions are in progress", sender)
         return
     end
-    self.userResponses.cantUse[sender] = true
+    -- self.userResponses.cantUse[sender] = true
 end
 
 -- BIDS
@@ -888,6 +884,7 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
     if auctionType == CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN then
         nameModdified = ""
         local anonomizedName = auction:GetAnonymousName(name)
+        print(name, anonomizedName)
         local modifiedResponse = UTILS.DeepCopy(userResponse)
         modifiedResponse:SetUpgradedItems({}) -- Clear Upgraded items info
         SendBidInfo(AuctionManager, item:GetItemID(), anonomizedName, modifiedResponse)

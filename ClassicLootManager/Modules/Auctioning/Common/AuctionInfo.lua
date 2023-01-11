@@ -324,6 +324,7 @@ function AuctionInfo:GetAnonymousName(name)
         self.anonymousMap[name] = nickMap[math.random(1,#nickMap)] .. tostring(self.nextAnonymousId)
         self.nextAnonymousId = self.nextAnonymousId + 1
     end
+    return self.anonymousMap[name]
 end
 
 CONSTANTS.AUCTION_INFO = {

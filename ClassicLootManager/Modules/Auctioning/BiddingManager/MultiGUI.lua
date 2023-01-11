@@ -134,17 +134,6 @@ local function BidAllIn(self)
         BidInputValue(self, CONSTANTS.BID_TYPE.MAIN_SPEC)
     end
 end
-
-local function BidPass(self)
-    local itemId = self.auctionItem and self.auctionItem:GetItemID() or 0
-    CLM.MODULES.BiddingManager:Bid(itemId, 0, CONSTANTS.BID_TYPE.PASS)
-end
-
-local function BidCancel(self)
-    local itemId = self.auctionItem and self.auctionItem:GetItemID() or 0
-    CLM.MODULES.BiddingManager:Bid(itemId, 0, CONSTANTS.BID_TYPE.CANCEL)
-end
-
 ------------------------
 --- Options Creation ---
 ------------------------
@@ -201,16 +190,10 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
     local generateButtonOptions = {
         pass = {
             name = CLM.L["Pass"],
-            -- desc = (function()
-            --     if CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] then
-            --         return CLM.L["Notify that you are passing on the item."]
-            --     else
-            --         return CLM.L["Notify that you are passing on the item. Cancels any existing bids."]
-            --     end
-            -- end),
+            desc = CLM.L["Notify that you are passing on the item."],
             type = "execute",
             func = (function()
-                BidPass(self)
+                CLM.MODULES.BiddingManager:Pass()
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             -- disabled = (function()
@@ -228,7 +211,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             desc = CLM.L["Cancel your bid."],
             type = "execute",
             func = (function()
-                BidCancel(self)
+                CLM.MODULES.BiddingManager:CancelBid()
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             -- disabled = (function()
@@ -244,7 +227,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
     local offset = 8
     local usedTiers
 
-    local doDisplayValue
+    local doDisplayValue = (function() return true end)
     if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
         usedTiers = CONSTANTS.SLOT_VALUE_TIERS_ORDERED
         doDisplayValue = (function(value) return (value >= 0) end)
@@ -280,7 +263,9 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             end
         end
 
-        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and not generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.MAX] then
+        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING)
+            -- and not generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.MAX]
+            and not doDisplayValue(values[CONSTANTS.SLOT_VALUE_TIER.MAX]) then
             local width = generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
             generateButtonOptions["all_in"] = {
                 name = CLM.L["All In"],
@@ -367,16 +352,10 @@ local function GenerateNamedButtonsAuctionOptions(self, auctionInfo)
 
     options.pass = {
         name = CLM.L["Pass"],
-        desc = (function()
-            if CONSTANTS.AUCTION_TYPES_OPEN[auctionInfo:GetType()] then
-                return CLM.L["Notify that you are passing on the item."]
-            else
-                return CLM.L["Notify that you are passing on the item. Cancels any existing bids."]
-            end
-        end),
+        desc = CLM.L["Notify that you are passing on the item."],
         type = "execute",
         func = (function()
-            -- CLM.MODULES.BiddingManager:NotifyPass()
+            CLM.MODULES.BiddingManager:Pass()
             if GetCloseOnBid(self) then self:Toggle() end
         end),
         -- disabled = (function()

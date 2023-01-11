@@ -152,8 +152,6 @@ function BiddingManager:Bid(itemId, value, type)
 
     item:SetBid(CLM.MODELS.UserResponse:New(value, type, {}))
 
-    self.guiBid = true
-
     local message = CLM.MODELS.BiddingCommStructure:New(
         CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
         CLM.MODELS.BiddingCommSubmitBid:New(value, type, itemId, GetUpgradedItems(itemId))
@@ -163,37 +161,13 @@ end
 
 function BiddingManager:CancelBid(itemId)
     LOG:Trace("BiddingManager:CancelBid()")
-    -- if not self.auctionInProgress then return end
-    -- self.lastBid = nil
-    -- self.guiBid = true
-    -- local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.CANCEL_BID, {})
-    -- CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
     self:Bid(itemId, 0, CONSTANTS.BID_TYPE.CANCEL)
 end
 
 function BiddingManager:Pass(itemId)
     LOG:Trace("BiddingManager:NotifyPass()")
-    -- if not self.auctionInProgress then return end
-    -- self.lastBid = CLM.L["PASS"]
-    -- self.guiBid = true
-    -- local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_PASS, {})
-    -- CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
     self:Bid(itemId, 0, CONSTANTS.BID_TYPE.PASS)
 end
-
-function BiddingManager:NotifyCantUse()
-    LOG:Trace("BiddingManager:NotifyCantUse()")
-    if not self:IsAuctionInProgress() then return end
-    local message = CLM.MODELS.BiddingCommStructure:New(CONSTANTS.BIDDING_COMM.TYPE.NOTIFY_CANTUSE, {})
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
-end
-
--- function BiddingManager:ClearAuctionInfo()
---     self.auctionInfo = nil
---     self.auctioneer = nil
---     self.lastBid = nil
---     self.guiBid = false
--- end
 
 function BiddingManager:HandleIncomingMessage(message, _, sender)
     LOG:Trace("BiddingManager:HandleIncomingMessage()")
@@ -221,7 +195,7 @@ PlayEndSound = function()
 end
 
 local function DefaultCallback(_)
-    -- AuctionManager:RefreshGUI()
+    
 end
 
 local function AddItemInternal(auctionInfo, item, note, values, callbackFn)
