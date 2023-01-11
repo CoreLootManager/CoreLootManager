@@ -34,32 +34,32 @@ function GlboalChatMessageHandlers:Initialize()
             local msbid = (command == CLM.L["!bid"])
             local osbid = (command == CLM.L["!bidos"])
             if msbid or osbid then
-                local value
-                if params[2] then
-                    value = UTILS.Trim(params[2])
-                end
-                if not CLM.MODULES.AuctionManager:IsAuctionInProgress() then
-                    LOG:Debug("Received submit bid from %s while no auctions are in progress", playerName)
-                    return
-                end
-                local accept, reason = false, nil
-                if value == CLM.L["cancel"] then
-                    accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(0, CONSTANTS.BID_TYPE.CANCEL, {}))
-                elseif value == CLM.L["pass"] then
-                    accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(0, CONSTANTS.BID_TYPE.PASS, {}))
-                else
-                    local numericValue = tonumber(value)
-                    if type(numericValue) == "number" then
-                        accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(numericValue, (osbid and CONSTANTS.BID_TYPE.OFF_SPEC or CONSTANTS.BID_TYPE.MAIN_SPEC), {}))
-                    end
-                end
-                local reasonString = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or CLM.L["Invalid value provided"]
-                local message = sformat(CLM.L["<CLM> Your bid (%s) was %s%s."],
-                    tostring(value),
-                    accept and CLM.L["accepted"] or CLM.L["denied"],
-                    accept and "" or (": ".. reasonString))
-                SendChatMessage(message, responseChannel, nil, target)
-
+                -- local value
+                -- if params[2] then
+                --     value = UTILS.Trim(params[2])
+                -- end
+                -- if not CLM.MODULES.AuctionManager:IsAuctionInProgress() then
+                --     LOG:Debug("Received submit bid from %s while no auctions are in progress", playerName)
+                --     return
+                -- end
+                -- local accept, reason = false, nil
+                -- if value == CLM.L["cancel"] then
+                --     accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(0, CONSTANTS.BID_TYPE.CANCEL, {}))
+                -- elseif value == CLM.L["pass"] then
+                --     accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(0, CONSTANTS.BID_TYPE.PASS, {}))
+                -- else
+                --     local numericValue = tonumber(value)
+                --     if type(numericValue) == "number" then
+                --         accept, reason = CLM.MODULES.AuctionManager:UpdateBid(playerName, CLM.MODELS.BiddingCommSubmitBid:New(numericValue, (osbid and CONSTANTS.BID_TYPE.OFF_SPEC or CONSTANTS.BID_TYPE.MAIN_SPEC), {}))
+                --     end
+                -- end
+                -- local reasonString = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or CLM.L["Invalid value provided"]
+                -- local message = sformat(CLM.L["<CLM> Your bid (%s) was %s%s."],
+                --     tostring(value),
+                --     accept and CLM.L["accepted"] or CLM.L["denied"],
+                --     accept and "" or (": ".. reasonString))
+                -- SendChatMessage(message, responseChannel, nil, target)
+                SendChatMessage(CLM.L["Chat bidding is currently disabled."], responseChannel, nil, target)
             elseif command == CLM.L["!dkp"] then
                 responseChannel = "WHISPER" -- always respond in whisper to protect from spam
                 target = playerName
