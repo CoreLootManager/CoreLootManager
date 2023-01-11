@@ -1119,7 +1119,7 @@ function AuctionManager:FakeBids()
                 end
                 if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
                     local min, max = values[CONSTANTS.SLOT_VALUE_TIER.BASE], values[CONSTANTS.SLOT_VALUE_TIER.MAX]
-                    if max == 0 then max = 10000 end
+                    if max <= 0 then max = 10000 end
                     bid = CLM.MODELS.BiddingCommSubmitBid:New(math.random(min, max), math.random(1,2), auctionItem:GetItemID(), items)
                 elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
                     local r = {"b", "s", "m", "l", "x"}
