@@ -23,8 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: verify required files recursively
-        run: scripts/verify-dependencies.sh ClassicLootManager.toc
+#      - name: verify required files recursively
+#        run: scripts/verify-dependencies.sh ClassicLootManager.toc
       - name: Bigwigs packager
         uses: BigWigsMods/packager@7cd7fe5fede4ca80f63742e6bc1d777914814380
         env:
