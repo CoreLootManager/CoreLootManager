@@ -22,4 +22,4 @@ jobs:
           luacheck --version
           echo "##[endgroup]"
       - name: luacheck
-        run: luacheck -- ClassicLootManager.lua Migration.lua MinimapIcon.lua Utils.lua Alerts/ Integrations/ Global/ Modules/ Locale/
+        run: luacheck .
