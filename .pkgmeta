@@ -1,36 +1,42 @@
+package-as: ClassicLootManager
+
 externals:
-  Libs/LibStub:
+  ClassicLootManager/Libs/LibStub:
     url: https://repos.wowace.com/wow/libstub/trunk
     tag: 1.0
-  Libs/Ace3:
+  ClassicLootManager/Libs/Ace3:
     url: https://repos.wowace.com/wow/ace3/trunk
-  Libs/CallbackHandler-1.0:
+  ClassicLootManager/Libs/CallbackHandler-1.0:
     url: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
     tag: latest
-  Libs/lib-st:
+  ClassicLootManager/Libs/lib-st:
     url: https://github.com/ddumont/lib-st
     tag: v4.1.3
-  Libs/LibCandyBar-3.0:
+  ClassicLootManager/Libs/LibCandyBar-3.0:
     url: https://repos.wowace.com/wow/libcandybar-3-0/trunk
     tag: latest
-  Libs/LibLogger:
+  ClassicLootManager/Libs/LibLogger:
     url: https://github.com/lantisnt/LibLogger
     tag: latest
-  Libs/LibDBIcon-1.0:
+  ClassicLootManager/Libs/LibDBIcon-1.0:
     url: https://repos.wowace.com/wow/libdbicon-1-0/trunk
     tag: latest
-  Libs/LibDeflate:
+  ClassicLootManager/Libs/LibDeflate:
     url: https://github.com/SafeteeWoW/LibDeflate
     tag: 1.0.2-release
-  Libs/LibSerialize:
+  ClassicLootManager/Libs/LibSerialize:
     url: https://github.com/rossnichols/LibSerialize
     tag: v1.1.3
-  Libs/LibUIDropDownMenu:
+  ClassicLootManager/Libs/LibUIDropDownMenu:
     url: https://repos.wowace.com/wow/libuidropdownmenu/trunk
 
 ignore:
-  - Debug.lua
   - scripts
+
+move-folders:
+  ClassicLootManager/ClassicLootManager: ClassicLootManager
+  ClassicLootManager/ClassicLootManager_Alerts: ClassicLootManager_Alerts
+  ClassicLootManager/ClassicLootManager_Integrations: ClassicLootManager_Integrations
 
 manual-changelog:
   filename: CHANGELOG.md

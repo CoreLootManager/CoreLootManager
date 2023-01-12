@@ -5,8 +5,8 @@ max_line_length = false
 
 exclude_files = {
 	"**/Libs/**",
-	"**/ExternalLibs/**",
 	"**/.git/**",
+	"**/.vscode/**",
 	"**/scripts/**"
 }
 ignore = {
@@ -46,8 +46,14 @@ globals = {
 	"CommDKP_DB",
 	-- RCLC
 	"RCLootCouncil",
-	-- WoW 
+	-- VDT 
+	"ViragDevTool",
+	"ViragDevTool_AddData",
+	-- WoW
+	"CreateFromMixins",
+	"ItemMixin",
 	"_G",
+	"Item",
 	"MAX_RAID_MEMBERS",
 	"LootAlertSystem",
 	"KeyBindingFrame_LoadUI",

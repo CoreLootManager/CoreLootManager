@@ -1,0 +1,11 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+	..\FrameXML\UI.xsd">
+	<Script file="AceGUIWidget-LibScrollingTable.lua"/>
+	<Script file="Filters.lua"/>
+	<Script file="UnifiedGUI.lua"/>
+	<Script file="UnifiedGUI_Standings.lua"/>
+	<Script file="UnifiedGUI_Raids.lua"/>
+	<Script file="UnifiedGUI_Profiles.lua"/>
+	<Script file="UnifiedGUI_History.lua"/>
+	<Script file="UnifiedGUI_Audit.lua"/>
+</Ui>

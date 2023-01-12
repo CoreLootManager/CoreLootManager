@@ -1,3 +1,50 @@
+# Classic Loot Manager v3.0.0
+## Notes
+With CLM v3 There comes a big mentality shift in the auctioning system towards becoming a more robust, point-based loot management framework. Notion of "English" or "Swedish" auction has been dropped towards bigger flexibility. This is a major change and as a consequence CLM v2 communication is not compatible with CLM v3 (but the database is preserved unlike when migrating from v1 to v2).
+This wouldn't be possible without all the contributors, translators and patrons, especially: `Allcoast, BigSpoon, naimious, Nosirrahdrof`.
+## Multi Item Auction
+### Notes
+Classic Loot Manager now allows you to auction virtually any amount of items simultaneously. There are however some quirks that need to be looked into by officers for this to work as expected.
+### Configuration
+This rework brings some changes to auctioning configuration. Be sure to review them to ensure your auction is working as expected. Most significant changes are related to minimum, all-in and equal bids in Open Auction Mode.
+### Invalid Bids
+Bids are validated during auction. However the correctness might not apply anymore after items were awarded.
+To solve this, after every item award, CLM re-calculates if the bids would be accepted and marks invalid bid with red color. This way the bids are not lost and it's up to Loot Master to decide how to handle it.
+### Rolling
+CLM includes internal rolling system (random) that appends a new random value to players bid whenever a bid comes in for the first time. This value is guarnateed to be unique and is meant for the ML to help with solving ties. However it does not come from `/random` server-side call thus is not visible in the chat.
+### Handling items in the auction
+Items can be added to the auction same as previously through alt-click (configurable). In addition to that, the previous Loot Queue has been merged with Auctioning into auto-fill auction feature. CLM can automatically add looted (received) items and items seen on corpse to the current auction. This can be configured per Master Looter prefference. Important! If items are added to auction during existing auction (manually or automatically) then CLM will remember it in a pending auction and display them when current auction is cleared of all items.
+Auctioneer can manually remove items from auction by right clicking item icon on the list.
+### Chat bidding
+Chat bidding is currently disabled.
+## Refinements
+### History
+Loot history now shows simple history when hovering over items but more extensive if hovering while holding `CTRL` modifier.
+### Migration
+Migration should now be slightly more resilient when executed multiple times by accident.
+### Renames
+Several options were renamed
+### Multi AddOn
+Classic Loot Manager is now split into multiple smaller addons. This is a first step towards even greater modularity. If you are using external `Integration` you will need to enable that module first! Export is currently only accessible through `/clm export` slash command.
+## Feedback
+### Please post your feedback
+Be sure to post feedback about the changes, suggestions and bug reports on our discord (link can be found in the configuration, README and github).
+## Fixes
+### All-in
+All-in should no longer be denied unexpectedly.
+### History error
+History should no longer get stuck on `Loading...` or generate lua-error when handling old historical data.
+### Alerts
+Alerts should now display proper currency.
+## Known issues
+### Multi Item Auction
+Award value Multiplier is not stored nor configurable.
+### Scaling
+Bidding GUI cannot be scaled at this time.
+### GUI
+Bidding GUI still needs some refinements and might change anytime.
+### ElvUI skins
+ElvUI bidding UI reskin might not be ideal. Best way to ensure the bidding UI looks properly you should not open the UI manually before first auction, otherwise `/reload` will be required for the UI to get fixed. Another option is to disable Ace3 reskin.
 # Classic Loot Manager v2.7.0
 ## Notes
 Thank you to all the patrons, especially: `Allcoast, BigSpoon, Cyber, naimious, Nosirrahdrof`

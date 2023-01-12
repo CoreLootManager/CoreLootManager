@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+	..\FrameXML\UI.xsd">
+	<Script file="RosterConfiguration.lua"/>
+	<Script file="Roster.lua"/>
+	<Script file="LedgerEntries.lua"/>
+	<Script file="IndirectSlotMap.lua"/>
+	<Script file="ItemValueCalculator.lua"/>
+	<Script file="RosterManager.lua"/>
+	<Script file="Options.lua"/>
+	<Script file="AttendanceTracker.lua"/>
+	<Script file="PointInfo.lua"/>
+</Ui>

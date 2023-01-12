@@ -12,6 +12,10 @@ import pprint
 from xmlrpc.client import boolean
 pp = pprint.PrettyPrinter(indent=4)
 
+def _print(*args):
+    # pass
+    print(*args)
+
 locale_to_google = {
     'deDE': 'de',
     'frFR': 'fr',
@@ -45,14 +49,14 @@ class L10nStorage:
         if not self.data.get(string):
             self.not_used[string] = True
             if self.parser:
-                print("Info:Locale/{0}.lua:{1} Not Used".format(locale, string))
+                _print("Info:Locale/{0}.lua:{1} Not Used".format(locale, string))
             elif self.markdown:
                 if  not self._displayed_not_used_header_markdown:
                     self._displayed_not_used_header_markdown = True
-                    print("## Unused strings:")
-                print('`{}`'.format(string))
+                    _print("## Unused strings:")
+                _print('`{}`'.format(string))
             else:
-                print('Not used: {}'.format(string))
+                _print('Not used: {}'.format(string))
             return
         if self.not_used.get(string):
             del self.not_used[string]
@@ -87,7 +91,17 @@ def add_indirectly_used_strings(storage:L10nStorage):
         storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
 def get_paths():
-    excludeDirs = [".release", "ExternalLibs", "Libs", "Locale", ".github", "Media", ".vscode", ".git", "TESTING", "scripts"]
+    excludeDirs = [
+        ".release",
+        ".github",
+        ".vscode",
+        ".git",
+        "TESTING",
+        "scripts",
+        "ClassicLootManager/ExternalLibs",
+        "ClassicLootManager/Libs",
+        "ClassicLootManager/Locale",
+        "ClassicLootManager/Media",]
 
     baseDir = Path().resolve()
     excludePaths = []
@@ -95,8 +109,7 @@ def get_paths():
         excludePaths.append(baseDir / Path(e))
     subdirs = [x for x in baseDir.iterdir() if x.is_dir()]
     paths = [x for x in subdirs if (x not in excludePaths)]
-
-    return baseDir, paths
+    return baseDir, paths, excludeDirs
 
 def find_files(path: Path, query, recursive):
     files = []
@@ -173,22 +186,22 @@ def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean, ma
     if len(missing_translations) > 0:
         if parser_format:
             for key in missing_translations:
-                print("Warning:Locale/{0}.lua:{1} Missing".format(locale, key))
+                _print("Warning:Locale/{0}.lua:{1} Missing".format(locale, key))
         elif markdown_format:
-            print("## Missing translations for locale {}:".format(locale))
+            _print("## Missing translations for locale {}:".format(locale))
             for key in missing_translations:
-                print("`" + key + "`")
+                _print("`" + key + "`")
         else:
-            print("=====================================")
-            print("Missing translations for locale {}:".format(locale))
+            _print("=====================================")
+            _print("Missing translations for locale {}:".format(locale))
             for key in missing_translations:
-                print(key)
+                _print(key)
         return 1, missing_translations
     if ignored_translations_count > 0:
         if markdown_format:
-            print("**Ignored {} locale translations**".format(ignored_translations_count))
+            _print("**Ignored {} locale translations**".format(ignored_translations_count))
         elif not parser_format:
-            print("Ignored {} locale translations".format(ignored_translations_count))
+            _print("Ignored {} locale translations".format(ignored_translations_count))
     return 0, []
 
 sanitize_sentence_regex = re.compile("CLM\.L\[[\"\'](.*?)[\'\"]]")
@@ -197,7 +210,7 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
         for sentence in missing:
             sanitized_sentence = sanitize_sentence_regex.findall(sentence)[0]
             if dry_run:
-                print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_google[locale]))
+                _print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_google[locale]))
                 
             else:
                 translation = ts.google(sanitized_sentence, from_language='en', to_language=locale_to_google[locale])
@@ -205,7 +218,7 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
                 total_done += 1
                 percent = math.floor(100*(total_done/total_missing))
                 if percent > last_percent:
-                    print("Translation progress: {0}% [{1}]".format(percent, locale))
+                    _print("Translation progress: {0}% [{1}]".format(percent, locale))
                 last_percent = percent
     return total_missing, total_done, last_percent
 
@@ -213,11 +226,25 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
 # Always needs to be run from the top directory of the project!
 def main(args):
     # Generate filelist
-    baseDir, paths = get_paths()
+    baseDir, paths, excludeDirs = get_paths()
     query = re.compile("\.lua$", re.I)
-    files = find_files(baseDir, query, False)
+    _files = find_files(baseDir, query, False)
     for path in paths:
-        files.extend(find_files(path, query, True))
+        _files.extend(find_files(path, query, True))
+
+    # pp.pprint(_files)
+    files = []
+
+    for file in _files:
+        isExcluded = False
+        for excluded in excludeDirs:
+            if str(excluded) in str(file):
+                isExcluded = True
+                # print("excluded " + str(file))
+                break
+        if not isExcluded:
+            files.append(file)
+            
 
     # Prepare
     locales = ["frFR", "esES", "ruRU", "deDE", "zhCN", "zhTW"]
@@ -231,7 +258,7 @@ def main(args):
         scan_file_for_l10n_string(file, l10n_query, storage)
     # Scan for existing translations and create outputs of them with report
     for locale in locales:
-        scan_file_for_l10n_translation(baseDir / ("Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
+        scan_file_for_l10n_translation(baseDir / ("ClassicLootManager/Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
 
     total_missing, total_done, last_percent = 0, 0, 0    
     status = 0
@@ -246,7 +273,7 @@ def main(args):
         if args.translate:
             total_missing, total_done, last_percent = translate_missing(missing_translations[locale], storage, locale, total_missing, total_done, last_percent, args.dry_run)
         if args.regenerate:
-            output_to_file('Locale/{0}.lua'.format(locale), storage, locale)
+            output_to_file('ClassicLootManager/Locale/{0}.lua'.format(locale), storage, locale)
 
     exit(status)
 
