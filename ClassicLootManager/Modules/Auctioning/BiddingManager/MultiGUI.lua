@@ -34,9 +34,7 @@ local BIDS_HEIGHT = ((BID_ROWS + 1) * BID_ROW_HEIGHT) + 5
 
 local BASE_ACE_WIDTH = 170
 
--- local BASE_WIDTH       = 400 + (isElvUI and 30 or 0)
--- local DATA_GROUP_WIDTH = 375 + (isElvUI and 30 or 0)
-local DATA_GROUP_WIDTH = BASE_ACE_WIDTH*(rowMultiplier + 0.15) + (isElvUI and 30 or 0)
+local DATA_GROUP_WIDTH = BASE_ACE_WIDTH*(rowMultiplier + 0.15) + (isElvUI and 15 or 0)
 local BID_INPUT_WIDTH  = BASE_ACE_WIDTH*rowMultiplier*0.4
 local BID_BUTTON_WIDTH = BASE_ACE_WIDTH*rowMultiplier*0.3
 
@@ -45,7 +43,6 @@ local BID_BUTTON_PADDING = (isElvUI and 12 or 2)
 local ITEM_REGISTRY     = "clm_bm_gui_opt_item"
 local BID_REGISTRY      = "clm_bm_gui_opt_bid"
 local BUTTON_REGISTRY   = "clm_bm_gui_opt_button"
-
 
 local BiddingManagerGUI = {}
 
@@ -578,6 +575,7 @@ local function CreateDataGroup(self)
     return DataGroup
 end
 
+local prevBLH
 local function UpdateUIStructure(self)
     local auctionInfo = CLM.MODULES.BiddingManager:GetAuctionInfo()
     if (auctionInfo and auctionInfo:GetNamedButtonsMode() or false) then
@@ -614,10 +612,18 @@ local function UpdateUIStructure(self)
     end
     if CONSTANTS.AUCTION_TYPES_OPEN[auctionInfo and auctionInfo:GetType()] then
         self.BidList:Show()
+        if isElvUI and prevBLH then
+            self.BidList:SetHeight(prevBLH)
+        end
         local itemRows = UTILS.Saturate(numRows + 6, 1, 8)
         self.ItemList:SetDisplayRows(itemRows, 32)
     else
         self.BidList:Hide()
+        if isElvUI then
+            prevBLH = self.BidList.frame:GetHeight()
+            self.BidList:SetHeight(0)
+        end
+
         local itemRows = UTILS.Saturate(numRows + 1, 1, 4)
         self.ItemList:SetDisplayRows(itemRows, 32)
     end
@@ -646,7 +652,7 @@ local function Create(self)
     local ItemList = CreateItemList(self)
     local DataGroup = CreateDataGroup(self)
     local listWidth = ItemList:GetWidth()
-    f:SetWidth(DATA_GROUP_WIDTH + listWidth)
+    f:SetWidth(DATA_GROUP_WIDTH + listWidth + (isElvUI and 30 or 0))
     f:SetUserData("table", { columns = {listWidth, DATA_GROUP_WIDTH}, alignV =  "top" })
 
     f:AddChild(ItemList)
@@ -794,7 +800,9 @@ local function AutoUpdate(self)
 end
 
 local function UpdateBarInfo(self)
-    self.bar:UpdateInfo(self.auctionItem)
+    if self.bar then
+        self.bar:UpdateInfo(self.auctionItem)
+    end
 end
 
 function BiddingManagerGUI:Refresh()

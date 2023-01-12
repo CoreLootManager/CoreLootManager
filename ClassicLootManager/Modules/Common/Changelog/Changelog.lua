@@ -31,9 +31,14 @@ CLM.ChangelogData = {
                 },
             },
             {
-                name = "Fixes",
+                name = "Feedback",
                 data = {
                     { header = "Please post your feedback", body = "Be sure to post feedback about the changes, suggestions and bug reports on our discord (link can be found in the configuration, README and github)." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
                     { header = "All-in", body = "All-in should no longer be denied unexpectedly." },
                     { header = "History error", body = "History should no longer get stuck on |cff44ee44Loading...|r or generate lua-error when handling old historical data." },
                     { header = "Alerts", body = "Alerts should now display proper currency." },
@@ -45,6 +50,7 @@ CLM.ChangelogData = {
                     { header = "Multi Item Auction", body = "Award value Multiplier is not stored nor configurable." },
                     { header = "Scaling", body = "Bidding GUI cannot be scaled at this time." },
                     { header = "GUI", body = "Bidding GUI still needs some refinements and might change anytime." },
+                    { header = "ElvUI skins", body = "ElvUI bidding UI reskin might not be ideal. Best way to ensure the bidding UI looks properly you should not open the UI manually before first auction, otherwise `/reload` will be required for the UI to get fixed. Another option is to disable Ace3 reskin."}
                 },
             },
         },

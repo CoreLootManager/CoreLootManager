@@ -1,7 +1,7 @@
 # Classic Loot Manager v3.0.0
 ## Notes
 With CLM v3 There comes a big mentality shift in the auctioning system towards becoming a more robust, point-based loot management framework. Notion of "English" or "Swedish" auction has been dropped towards bigger flexibility. This is a major change and as a consequence CLM v2 communication is not compatible with CLM v3 (but the database is preserved unlike when migrating from v1 to v2).
-This wouldn't be possible without all the contributors, translators and patrons, especially: `Allcoast, BigSpoon, Cyber, naimious, Nosirrahdrof`.
+This wouldn't be possible without all the contributors, translators and patrons, especially: `Allcoast, BigSpoon, naimious, Nosirrahdrof`.
 ## Multi Item Auction
 ### Notes
 Classic Loot Manager now allows you to auction virtually any amount of items simultaneously. There are however some quirks that need to be looked into by officers for this to work as expected.
@@ -43,6 +43,8 @@ Award value Multiplier is not stored nor configurable.
 Bidding GUI cannot be scaled at this time.
 ### GUI
 Bidding GUI still needs some refinements and might change anytime.
+### ElvUI skins
+ElvUI bidding UI reskin might not be ideal. Best way to ensure the bidding UI looks properly you should not open the UI manually before first auction, otherwise `/reload` will be required for the UI to get fixed. Another option is to disable Ace3 reskin.
 # Classic Loot Manager v2.7.0
 ## Notes
 Thank you to all the patrons, especially: `Allcoast, BigSpoon, Cyber, naimious, Nosirrahdrof`
