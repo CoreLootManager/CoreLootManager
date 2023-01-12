@@ -13,8 +13,8 @@ from xmlrpc.client import boolean
 pp = pprint.PrettyPrinter(indent=4)
 
 def _print(*args):
-    pass
-    # print(*args)
+    # pass
+    print(*args)
 
 locale_to_google = {
     'deDE': 'de',
@@ -111,14 +111,12 @@ def get_paths():
     paths = [x for x in subdirs if (x not in excludePaths)]
     return baseDir, paths, excludeDirs
 
-def find_files(path: Path, excludeDirs:list, query, recursive):
+def find_files(path: Path, query, recursive):
     files = []
     if path.is_dir():
-        _print(path, excludeDirs)
-        # exit(2)
         for subPath in path.iterdir():
             if subPath.is_dir() and recursive:
-                files.extend(find_files(subPath, excludeDirs, query, recursive))
+                files.extend(find_files(subPath, query, recursive))
             elif query.search(str(subPath)):
                 files.append(subPath)
     elif query.search(path):
@@ -230,11 +228,24 @@ def main(args):
     # Generate filelist
     baseDir, paths, excludeDirs = get_paths()
     query = re.compile("\.lua$", re.I)
-    files = find_files(baseDir, excludeDirs, query, False)
+    _files = find_files(baseDir, query, False)
     for path in paths:
-        files.extend(find_files(path, excludeDirs, query, True))
+        _files.extend(find_files(path, query, True))
 
-    pp.pprint(files)
+    # pp.pprint(_files)
+    files = []
+
+    for file in _files:
+        isExcluded = False
+        for excluded in excludeDirs:
+            if str(excluded) in str(file):
+                isExcluded = True
+                # print("excluded " + str(file))
+                break
+        if not isExcluded:
+            files.append(file)
+            
+
     # Prepare
     locales = ["frFR", "esES", "ruRU", "deDE", "zhCN", "zhTW"]
     l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
