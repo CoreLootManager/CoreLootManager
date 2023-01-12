@@ -190,7 +190,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             desc = CLM.L["Notify that you are passing on the item."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:Pass()
+                CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             -- disabled = (function()
@@ -208,7 +208,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             desc = CLM.L["Cancel your bid."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:CancelBid()
+                CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             -- disabled = (function()
@@ -352,7 +352,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auctionInfo)
         desc = CLM.L["Notify that you are passing on the item."],
         type = "execute",
         func = (function()
-            CLM.MODULES.BiddingManager:Pass()
+            CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
             if GetCloseOnBid(self) then self:Toggle() end
         end),
         -- disabled = (function()
@@ -366,7 +366,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auctionInfo)
         desc = CLM.L["Cancel your bid."],
         type = "execute",
         func = (function()
-            CLM.MODULES.BiddingManager:CancelBid()
+            CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
             if GetCloseOnBid(self) then self:Toggle() end
         end),
         -- disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
