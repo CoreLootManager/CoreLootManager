@@ -145,7 +145,7 @@ CLM.L["Always allow All-In bids"] = "Всегда разрешать All-In ст
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:988
 CLM.L["Always allow Base bids"] = "Всегда разрешать базовую ставку"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1012
-CLM.L["Always allow cancel/pass"] = "Всегда разрешайте отмену/проход"
+CLM.L["Always allow cancel/pass"] = "Всегда разрешать отмена/пасс"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:788
 CLM.L["Americas"] = "Америка"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:737
@@ -426,13 +426,13 @@ CLM.L["Change roster name."] = "Изменить название состава
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:15
 CLM.L["Changelog"] = "Лог изменений"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1090
-CLM.L["Changing bid from Main-spec to Off-Spec not allowed"] = "Изменение ставки с основного спецификации на OFF-SPEC не разрешено"
+CLM.L["Changing bid from Main-spec to Off-Spec not allowed"] = "Изменение ставки с МС на ОС не разрешено"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:73
 CLM.L["Channel for posting bids."] = "Канал публикации ставок."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:217
 CLM.L["Chat Commands"] = "Чат команды"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:62
-CLM.L["Chat bidding is currently disabled."] = "Торги чата в настоящее время отключены."
+CLM.L["Chat bidding is currently disabled."] = "Ставки в чате отключены."
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:72
 CLM.L["Chess Event"] = "Шахматный турнир"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:718
@@ -616,7 +616,7 @@ CLM.L["Enable to allow equal bids. Affects Open-Ascending Auction."] = "Разр
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:997
 CLM.L["Enable to always allow All-In bids. Affects Open-Ascending Auction."] = "Включить разрешение All-in ставок. Применимо в открытом аукционе с повышением ставок."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1013
-CLM.L["Enable to always allow cancelling or passing bids. Affects Open-Ascending Auction."] = "Позвольте всегда разрешать отмену или передачу заявок. Влияет на открытый аукцион."
+CLM.L["Enable to always allow cancelling or passing bids. Affects Open-Ascending Auction."] = "Включить возможность всегда отменять ставки или пасовать. Влияет только на открытый аукцион."
 -- ClassicLootManager/MinimapIcon.lua:78
 CLM.L["Enables / disables minimap Icon"] = "Включает / отключает значок у миникарты"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:34
@@ -1182,7 +1182,7 @@ CLM.L["Netherspite"] = "Гнев Пустоты"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:38
 CLM.L["Never show changelog"] = "Никогда не показывать изменения"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:911
-CLM.L["New highest bid on %s: %s %s %s"] = "Новая самая высокая ставка на %s: %s %s %s"
+CLM.L["New highest bid on %s: %s %s %s"] = "Новая наивысшая ставка на %s: %s %s %s"
 -- ClassicLootManager_Integrations/Migration.lua:111
 CLM.L["New roster: [%s]"] = "Новый состав: [%s]"
 -- ClassicLootManager/Modules/Profiles/ProfileInfoManager/ProfileInfoManager.lua:61
