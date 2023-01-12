@@ -59,14 +59,14 @@ function AuctionItem:SetResponse(username, response, doNotRoll)
     if CLM.CONSTANTS.BID_TYPE_REMOVING_BIDS[response:Type()] then
         -- Force rescan for highest bid
         self.highestBid = -math.huge
-        for _,subResponse in pairs(self.responses) do
-            if not CLM.CONSTANTS.BID_TYPE.BID_TYPE_NOT_AFFECTING_HIGHEST_BID[subResponse:Type()] then
+        for _,subResponse in pairs(self.userResponses) do
+            if not CLM.CONSTANTS.BID_TYPE_NOT_AFFECTING_HIGHEST_BID[subResponse:Type()] then
                 if subResponse:Value() > self.highestBid then
                     self.highestBid = subResponse:Value()
                 end
             end
         end
-    elseif not CLM.CONSTANTS.BID_TYPE.BID_TYPE_NOT_AFFECTING_HIGHEST_BID[response:Type()] then
+    elseif not CLM.CONSTANTS.BID_TYPE_NOT_AFFECTING_HIGHEST_BID[response:Type()] then
         if response:Value() > self.highestBid then
             self.highestBid = response:Value()
             newHighestBid = true
