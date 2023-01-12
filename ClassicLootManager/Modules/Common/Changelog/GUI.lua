@@ -63,6 +63,8 @@ function ChangelogGUI:Initialize()
     CreateConfigs(self)
     self:RegisterSlash()
     self._initialized = true
+    self.top:SetWidth(1200)
+    self.top:SetHeight(700)
 end
 
 local function Create(self)
