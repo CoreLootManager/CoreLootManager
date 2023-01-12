@@ -344,7 +344,7 @@ local function tableDataFeeder()
         end
 
         if UnifiedGUI_History.pendingLoot then
-            return {{cols = { {value = ""}, {value = ""}, {value = CLM.L["Loading..."]}, {value = ""}, {value = nil} }}}
+            return {{cols = { {value = ""}, {value = ""}, {value = CLM.L["Loading..."]}, {value = ""}, {value = nil}, {value = nil} }}}
         end
 
         for _,lootData in ipairs(displayedLoot) do
