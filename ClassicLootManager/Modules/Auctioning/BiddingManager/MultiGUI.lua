@@ -811,7 +811,7 @@ end
 local function UpdateCurrentStandings(self)
     local roster = CLM.MODULES.BiddingManager:GetAuctionInfo():GetRoster()
     if roster:IsProfileInRoster(whoamiGUID) then
-        local value = 0
+        local value
         if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
             value = tostring(roster:Standings(whoamiGUID)) .. " " .. CLM.L["DKP"]
         else

@@ -20,6 +20,8 @@ Classic Loot Manager currently supports **DKP** and **EPGP**. There are also mec
 ## Auto-magical synchronisation
 ## Multiple roster (teams) support
 With CLM unconquered scalability, you can run multiple DKP, EPGP and SK systems in your guild, even at the same time!
+## Multiple item auction
+CLM allows to auction virtually any amount of items during single auction.
 ## Alt-main linking
 ## Profile locking
 If you want to block some players from receiving points or being charged for items just lock their profile!
@@ -43,6 +45,8 @@ settings.
 * Configurable per-item min and max item values
 * **Static** (constant) and **Ascending** item value systems for bidding
 * **Tiered** bid system, extending min and max values to up to 5 tiers
+* Configurable edge-case handling
+* Configurable award multipliers per class
 
 ## Named buttons for bidding
 * You can now use named buttons instead of numbers for ease of implementing various loot systems while still keeping the value-based functionalities.
