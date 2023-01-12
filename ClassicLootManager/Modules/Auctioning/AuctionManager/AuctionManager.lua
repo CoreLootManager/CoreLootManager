@@ -815,6 +815,15 @@ local function ValidateBid(auction, item, name, userResponse)
         end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[auctionType] then
+            -- Do not allow swapping from OS to MS
+            local currentResponse = item:GetResponse(name)
+            if currentResponse then
+                -- Do not allow changing Main Spec bid to Off Spec
+                if currentResponse:Type() == CONSTANTS.BID_TYPE.MAIN_SPEC and
+                      userResponse:Type() == CONSTANTS.BID_TYPE.OFF_SPEC then
+                    return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.SPEC_CHANGE
+                end
+            end
             if auction:GetAlwaysAllowAllInBids() and (current == value) then
                 return true
             end
@@ -1048,6 +1057,7 @@ CONSTANTS.AUCTION_COMM = {
         PASSING_NOT_ALLOWED = 10,
         OFF_SPEC_NOT_ALLOWED = 11,
         INVALID_ITEM = 12,
+        SPEC_CHANGE = 13,
     },
     DENY_BID_REASONS = UTILS.Set({
         1, -- NOT_IN_ROSTER
@@ -1062,6 +1072,7 @@ CONSTANTS.AUCTION_COMM = {
         10,-- PASSING_NOT_ALLOWED
         11,-- OFF_SPEC_NOT_ALLOWED
         12,-- INVALID_ITEM
+        13,-- SPEC_CHANGE
     }),
     DENY_BID_REASONS_STRING = {
         [1] = CLM.L["Not in a roster"],
@@ -1075,7 +1086,8 @@ CONSTANTS.AUCTION_COMM = {
         [9] = CLM.L["Bid cancelling not allowed"],
         [10] = CLM.L["Passing after bidding not allowed"],
         [11] = CLM.L["Off-spec bidding not allowed"],
-        [12] = CLM.L["Invalid item"]
+        [12] = CLM.L["Invalid item"],
+        [13] = CLM.L["Changing bid from Main-spec to Off-Spec not allowed"]
     }
 }
 
