@@ -29,7 +29,7 @@ local BASE_WIDTH  = 605 + (isElvUI and 15 or 0)
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 -- local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
--- local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
+local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.27, b = 0.2, a = 0.3}
 -- local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 -- local colorBlueTransparent = {r = 0.2, g = 0.27, b = 0.93, a = 0.3}
@@ -722,7 +722,10 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
         bidTypeString = roster:GetFieldName(response:Type())
         if not bidTypeString or bidTypeString == "" then bidTypeString = nil end
     end
-
+    local bidColor
+    if response:Type() == CONSTANTS.BID_TYPE.OFF_SPEC then
+        bidColor = colorTurquoise
+    end
     local items = response:Items()
     local primaryItem = items[1]
     local secondaryItem = items[2]
@@ -740,7 +743,7 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
     return {cols = {
             {value = class},
             {value = name, color = classColor},
-            {value = response:Value(), text = bidTypeString, bidType = response:Type()},
+            {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = bidColor},
             {value = current},
             {value = response:Roll()},
             {value = primaryItem},

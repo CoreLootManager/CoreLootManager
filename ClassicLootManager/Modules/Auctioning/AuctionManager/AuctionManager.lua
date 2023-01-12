@@ -815,7 +815,6 @@ local function ValidateBid(auction, item, name, userResponse)
         end
         -- open bid ascending
         if CONSTANTS.AUCTION_TYPES_OPEN[auctionType] then
-
             if auction:GetAlwaysAllowAllInBids() and (current == value) then
                 return true
             end
@@ -823,16 +822,16 @@ local function ValidateBid(auction, item, name, userResponse)
             if value == values[CONSTANTS.SLOT_VALUE_TIER.BASE] and auction:GetAlwaysAllowBaseBids() and not auction:HasBids(item:GetItemID(), name) then
                 return true
             end
+            if value == item:GetHighestBid() then
+                if auction:GetAllowEqualBids() then
+                    return true
+                end
+            end
 
             if value < item:GetHighestBid() then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
             end
 
-            if not auction:GetAllowEqualBids() then
-                if value == item:GetHighestBid() then
-                    return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_TOO_LOW
-                end
-            end
             if UTILS.round(value - item:GetHighestBid(), auction:GetRounding()) < auction:GetIncrement() then
                 return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_INCREMENT_TOO_LOW
             end
@@ -887,7 +886,6 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
     if auctionType == CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN then
         nameModdified = ""
         local anonomizedName = auction:GetAnonymousName(name)
-        print(name, anonomizedName)
         local modifiedResponse = UTILS.DeepCopy(userResponse)
         modifiedResponse:SetUpgradedItems({}) -- Clear Upgraded items info
         SendBidInfo(AuctionManager, item:GetItemID(), anonomizedName, modifiedResponse)
@@ -1083,7 +1081,6 @@ CONSTANTS.AUCTION_COMM = {
 
 CLM.MODULES.AuctionManager = AuctionManager
 --@do-not-package@
--- /run CLMCORE.MODULES.AuctionManager:FakeBids()
 function AuctionManager:FakeBids()
     local _SendBidAccepted = SendBidAccepted
     local _SendBidDenied   = SendBidDenied

@@ -981,7 +981,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = CLM.L["Enable OS bids"],
                         type = "toggle",
                         disabled = disableManage,
-                        width = 2,
+                        width = 1,
                         order = 12
                     },
                     base_always = {
@@ -1013,8 +1013,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = CLM.L["Enable to always allow cancelling or passing bids. Affects Open-Ascending Auction."],
                         type = "toggle",
                         disabled = disableManage,
-                        width = 1,
-                        order = 12.3
+                        width = 2,
+                        order = 12.4
                     },
                     minimum_points = {
                         name = CLM.L["Minimum standing"],

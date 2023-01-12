@@ -19,7 +19,7 @@ local DISPLAY_MODE_BUTTONS = 2
 local colorGreen = {r = 0.27, g = 0.93, b = 0.27, a = 1.0}
 local colorGold = {r = 0.93, g = 0.70, b = 0.13, a = 1.0}
 local colorRed = {r = 0.93, g = 0.27, b = 0.2, a = 1.0}
--- local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
+local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
@@ -266,7 +266,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             local width = generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
             generateButtonOptions["all_in"] = {
                 name = CLM.L["All In"],
-                desc = sformat(CLM.L["Bid your current DKP (%s)."], tostring(self.standings)),
+                desc = sformat(CLM.L["Bid your current DKP (%s)."], ""),
                 type = "execute",
                 func = (function()
                     BidAllIn(self)
@@ -749,7 +749,10 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
         bidTypeString = roster:GetFieldName(response:Type())
         if not bidTypeString or bidTypeString == "" then bidTypeString = nil end
     end
-
+    local bidColor
+    if response:Type() == CONSTANTS.BID_TYPE.OFF_SPEC then
+        bidColor = colorTurquoise
+    end
     local items = response:Items()
     local primaryItem = items[1]
     local secondaryItem = items[2]
@@ -761,7 +764,7 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
     return {cols = {
             {value = class},
             {value = name, color = classColor},
-            {value = response:Value(), text = bidTypeString, bidType = response:Type()},
+            {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = bidColor},
             {value = current},
             {value = response:Roll()},
             {value = primaryItem},
@@ -805,6 +808,19 @@ local function UpdateBarInfo(self)
     end
 end
 
+local function UpdateCurrentStandings(self)
+    local roster = CLM.MODULES.BiddingManager:GetAuctionInfo():GetRoster()
+    if roster:IsProfileInRoster(whoamiGUID) then
+        local value = 0
+        if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+            value = tostring(roster:Standings(whoamiGUID)) .. " " .. CLM.L["DKP"]
+        else
+            value = tostring(roster:Priority(whoamiGUID)) .. " " .. CLM.L["PR"]
+        end
+        self.top:SetTitle(CLM.L["Bidding"] .. " | " .. CLM.L["Current"] .. ": " .. value)
+    end
+end
+
 function BiddingManagerGUI:Refresh()
     LOG:Trace("BiddingManagerGUI:Refresh()")
     -- if not self._initialized then return end
@@ -819,6 +835,7 @@ function BiddingManagerGUI:Refresh()
     UpdateUIStructure(self)
     RefreshItemList(self)
     UpdateBarInfo(self)
+    UpdateCurrentStandings(self)
     self:RefreshBidList()
 
     AutoUpdate(self)
