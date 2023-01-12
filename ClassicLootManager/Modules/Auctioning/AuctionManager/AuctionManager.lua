@@ -766,6 +766,8 @@ local function ValidateBid(auction, item, name, userResponse)
     local values = item:GetValues()
     -- bid cancelling
     if userResponse:Type() == CONSTANTS.BID_TYPE.CANCEL then
+        if auction:GetAllowCancelPass() then return true end
+        -- only allow cancellin in closed auction
         if CONSTANTS.AUCTION_TYPES_OPEN[auctionType] then
             return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.CANCELLING_NOT_ALLOWED
         else
@@ -774,6 +776,7 @@ local function ValidateBid(auction, item, name, userResponse)
     end
     -- bid passing
     if userResponse:Type() == CONSTANTS.BID_TYPE.PASS then
+        if auction:GetAllowCancelPass() then return true end
         -- only allow passing if no bids have been placed in open auctions
         if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and
             CONSTANTS.AUCTION_TYPES_OPEN[auctionType] and

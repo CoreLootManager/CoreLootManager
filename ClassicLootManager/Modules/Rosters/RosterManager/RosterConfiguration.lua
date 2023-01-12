@@ -90,6 +90,8 @@ function RosterConfiguration:New(i)
     o._.allInAlways = false
     -- Allow equal top bids
     o._.allowEqualMax = false
+    -- Allow cancelling and passing bids
+    o._.allowCancelPass = false
     -- Round PR Priority
     o._.roundPR = 10
 
@@ -141,7 +143,8 @@ function RosterConfiguration:fields()
         "roundPR",
         "baseAlways",
         "allInAlways",
-        "allowEqualMax"
+        "allowEqualMax",
+        "allowCancelPass"
     }
 end
 
@@ -189,6 +192,7 @@ local TRANSFORMS = {
     baseAlways = transform_boolean,
     allInAlways = transform_boolean,
     allowEqualMax = transform_boolean,
+    allowCancelPass = transform_boolean,
     roundPR = transform_number,
 }
 
@@ -287,6 +291,7 @@ function RosterConfiguration._validate_useOS(value) return IsBoolean(value) end
 function RosterConfiguration._validate_baseAlways(value) return IsBoolean(value) end
 function RosterConfiguration._validate_allInAlways(value) return IsBoolean(value) end
 function RosterConfiguration._validate_allowEqualMax(value) return IsBoolean(value) end
+function RosterConfiguration._validate_allowCancelPass(value) return IsBoolean(value) end
 function RosterConfiguration._validate_roundPR(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration

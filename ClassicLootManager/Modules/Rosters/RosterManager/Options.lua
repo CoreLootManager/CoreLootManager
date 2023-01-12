@@ -232,6 +232,12 @@ function RosterManagerOptions:Initialize()
         auction_equalbids_set = (function(name, value)
             SetRosterOption(name, "allowEqualMax", value)
         end),
+        auction_cancelpass_get = (function(name)
+            return GetRosterOption(name, "allowCancelPass")
+        end),
+        auction_cancelpass_set = (function(name, value)
+            SetRosterOption(name, "allowCancelPass", value)
+        end),
         auction_use_os_get = (function(name)
             return GetRosterOption(name, "useOS")
         end),
@@ -975,7 +981,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         desc = CLM.L["Enable OS bids"],
                         type = "toggle",
                         disabled = disableManage,
-                        width = "full",
+                        width = 2,
                         order = 12
                     },
                     base_always = {
@@ -997,6 +1003,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     equalbids = {
                         name = CLM.L["Allow equal bids"],
                         desc = CLM.L["Enable to allow equal bids. Affects Open-Ascending Auction."],
+                        type = "toggle",
+                        disabled = disableManage,
+                        width = 1,
+                        order = 12.3
+                    },
+                    cancelpass = {
+                        name = CLM.L["Always allow cancel/pass"],
+                        desc = CLM.L["Enable to always allow cancelling or passing bids. Affects Open-Ascending Auction."],
                         type = "toggle",
                         disabled = disableManage,
                         width = 1,

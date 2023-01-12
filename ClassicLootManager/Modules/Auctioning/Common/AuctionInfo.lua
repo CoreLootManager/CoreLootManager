@@ -268,6 +268,10 @@ function AuctionInfo:GetAllowEqualBids()
     return self.configuration:Get("allowEqualMax")
 end
 
+function AuctionInfo:GetAllowCancelPass()
+    return self.configuration:Get("allowCancelPass")
+end
+
 function AuctionInfo:GetNamedButtonsMode()
     return self.configuration:Get("namedButtons")
 end
