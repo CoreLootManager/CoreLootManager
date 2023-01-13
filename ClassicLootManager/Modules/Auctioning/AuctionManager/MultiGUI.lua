@@ -771,7 +771,11 @@ function AuctionManagerGUI:Refresh()
 
     local itemList = {}
     for id, auctionItem in pairs(auction:GetItems()) do
-        itemList[#itemList+1] = { cols = { {value = id}, {value = auctionItem} }}
+        local iconColor
+        if not auctionItem:HasValidBids() then
+            iconColor = colorRedTransparent
+        end
+        itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor }, {value = auctionItem} }}
     end
     self.ItemList:SetData(itemList)
 
@@ -781,7 +785,7 @@ function AuctionManagerGUI:Refresh()
         local namedButtonsMode = auction:GetNamedButtonsMode()
         local roster = auction:GetRoster()
         for name, response in pairs(item:GetAllResponses()) do
-            if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then -- TODO configurable
+            if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then -- TODO configurable?
                 bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode)
             end
         end

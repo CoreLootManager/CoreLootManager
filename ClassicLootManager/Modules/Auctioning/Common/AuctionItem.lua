@@ -55,6 +55,8 @@ function AuctionItem:SetResponse(username, response, doNotRoll)
     assertTypeof(response, CLM.MODELS.UserResponse)
     self.userResponses[username] = response
 
+    self.hasValidBids = nil -- invalidate valid bid cache
+
     local newHighestBid = false
     if CLM.CONSTANTS.BID_TYPE_REMOVING_BIDS[response:Type()] then
         -- Force rescan for highest bid
@@ -110,6 +112,20 @@ function AuctionItem:GetTopBids(cutoff, type)
         end
     end
     return max, second
+end
+
+function AuctionItem:HasValidBids()
+    if self.hasValidBids == nil then
+        self.hasValidBids = false
+        for _, response in pairs(self.userResponses) do
+            if not CLM.CONSTANTS.BID_TYPE_REMOVING_BIDS[response:Type()] then
+                self.hasValidBids = true
+                break
+            end
+        end
+    end
+
+    return self.hasValidBids
 end
 
 function AuctionItem:GetAllResponses()
