@@ -742,7 +742,11 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
     if profile then
         class = profile:ClassInternal()
         classColor = UTILS.GetClassColor(profile:Class())
-        current = roster:Standings(profile:GUID())
+        if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+            current = roster:Standings(profile:GUID())
+        else
+            current = roster:Priority(profile:GUID())
+        end
     end
     local bidTypeString
     if namedButtonMode then
