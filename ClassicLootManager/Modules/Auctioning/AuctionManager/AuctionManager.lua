@@ -298,7 +298,7 @@ local function SetAutoAssign(self, value)
     self.db.autoAssign = value and true or false
 end
 
-local function GetAutoAssign(self)
+function AuctionManager:GetAutoAssign()
     return self.db.autoAssign
 end
 
@@ -306,7 +306,7 @@ local function SetAutoTrade(self, value)
     self.db.autoTrade = value and true or false
 end
 
-local function GetAutoTrade(self)
+function AuctionManager:GetAutoTrade()
     return self.db.autoTrade
 end
 
@@ -331,7 +331,7 @@ local function CreateConfigurationOptions(self)
             desc = CLM.L["Enable loot auto-assign (Master Looter UI) from corpse when item is awarded"],
             type = "toggle",
             set = function(i, v) SetAutoAssign(self, v) end,
-            get = function(i) return GetAutoAssign(self) end,
+            get = function(i) return self:GetAutoAssign() end,
             width = "double",
             order = 32
         },
@@ -340,7 +340,7 @@ local function CreateConfigurationOptions(self)
             desc = CLM.L["Enables auto-trade awarded loot after auctioning from bag"],
             type = "toggle",
             set = function(i, v) SetAutoTrade(self, v) end,
-            get = function(i) return GetAutoTrade(self) end,
+            get = function(i) return self:GetAutoTrade() end,
             -- width = "double",
             order = 33
         },
@@ -960,9 +960,9 @@ function AuctionManager:Award(item, name, price)
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         -- CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item, uuid)
         if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
-            if GetAutoAssign(self) and lootWindowIsOpen then
+            if self:GetAutoAssign() and lootWindowIsOpen then
                 CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)
-            elseif GetAutoTrade(self) then
+            elseif self:GetAutoTrade() then
                 CLM.MODULES.AutoAssign:Track(item:GetItemID(), name)
             end
         end
