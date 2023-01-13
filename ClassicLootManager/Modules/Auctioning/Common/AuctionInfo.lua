@@ -27,13 +27,11 @@ local function assertInProgress(self)
     end
 end
 
--- local function SetRosterInternal(self, roster)
---     assertNotInProgress(self)
---     if UTILS.typeof(roster, CLM.MODELS.Roster) then
---         self.roster = roster
---         self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
---     end
--- end
+local function assertCantAddItems(self)
+    if self:CanAddItems() then
+        error("Not allowed to add items in current state.", 2)
+    end
+end
 
 function AuctionInfo:New(object)
     local o = {}
@@ -143,7 +141,7 @@ local function AddItemInternal(self, item)
 end
 
 function AuctionInfo:AddItem(item)
-    assertNotInProgress(self)
+    assertCantAddItems(self)
     local auctionItem = AddItemInternal(self, item)
     if auctionItem and self.roster then
         auctionItem:LoadValues(self.roster)
@@ -181,6 +179,14 @@ function AuctionInfo:IsInProgress()
     return self.state == CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
 end
 
+function AuctionInfo:IsComplete()
+    return self.state == CONSTANTS.AUCTION_INFO.STATE.COMPLETE
+end
+
+function AuctionInfo:CanAddItems()
+    return CONSTANTS.AUCTION_INFO.STATES_ALLOW_ADDING_ITEMS[self.state]
+end
+
 function AuctionInfo:IsEmpty()
     return (self.itemCount <= 0)
 end
@@ -206,7 +212,7 @@ end
 
 function AuctionInfo:End()
     assertInProgress(self)
-    self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
+    self.state = CONSTANTS.AUCTION_INFO.STATE.COMPLETE
 end
 
 -- Configuration API
@@ -335,8 +341,14 @@ CONSTANTS.AUCTION_INFO = {
     STATE = {
         NOT_CONFIGURED = 0,
         IDLE = 1,
-        IN_PROGRESS = 2
+        IN_PROGRESS = 2,
+        COMPLETE = 3
     }
 }
+
+CONSTANTS.AUCTION_INFO.STATES_ALLOW_ADDING_ITEMS = UTILS.Set({
+    CONSTANTS.AUCTION_INFO.STATE.NOT_CONFIGURED,
+    CONSTANTS.AUCTION_INFO.STATE.IDLE
+})
 
 CLM.MODELS.AuctionInfo = AuctionInfo
