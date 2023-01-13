@@ -29,6 +29,7 @@ local BASE_WIDTH  = 605 + (isElvUI and 15 or 0)
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 -- local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
+local colorGold = {r = 0.93, g = 0.70, b = 0.13, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.27, b = 0.2, a = 0.3}
 -- local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
@@ -39,7 +40,7 @@ local highlightInvalid = UTILS.getHighlightMethod(colorRedTransparent, true)
 local tooltip = CreateFrame("GameTooltip", "CLMAuctionManagerGUIDialogTooltip", UIParent, "GameTooltipTemplate")
 
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('auction2', { -- TODO keep original 'auction' when done
+    self.db = CLM.MODULES.Database:GUI('auction2', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -773,7 +774,7 @@ function AuctionManagerGUI:Refresh()
     for id, auctionItem in pairs(auction:GetItems()) do
         local iconColor
         if not auctionItem:HasValidBids() then
-            iconColor = colorRedTransparent
+            iconColor = colorGold
         end
         itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor }, {value = auctionItem} }}
     end
