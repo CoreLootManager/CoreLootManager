@@ -723,11 +723,15 @@ function BiddingManagerGUI:StartAuction()
 end
 
 function BiddingManagerGUI:EndAuction()
-    self.bar:Stop()
+    if self.bar then
+        self.bar:Stop()
+    end
 end
 
 function BiddingManagerGUI:AntiSnipe()
-    self.bar:UpdateTime(CLM.MODULES.BiddingManager:GetAuctionInfo():GetAntiSnipe())
+    if self.bar then
+        self.bar:UpdateTime(CLM.MODULES.BiddingManager:GetAuctionInfo():GetAntiSnipe())
+    end
 end
 
 function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
