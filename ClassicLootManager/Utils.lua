@@ -664,17 +664,19 @@ function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, co
             end
 
             st:ClearSelection()
-            if selected <= first then -- clicked above first
+            if (selected and first) and selected <= first then -- clicked above first
                 for _row=selected,last do
                     st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
                 end
-            elseif selected >= last then -- clicked below last
+            elseif (selected and last) and selected >= last then -- clicked below last
                 for _row=first,selected do
                     st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
                 end
             else -- clicked in between
-                for _row=first,last do
-                    st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
+                if first and last then
+                    for _row=first,last do
+                        st.DefaultEvents["OnClick"](rowFrame, cellFrame, data, cols, _row, st.filtered[_row], column, table, "LeftButton", ...)
+                    end
                 end
             end
         end
