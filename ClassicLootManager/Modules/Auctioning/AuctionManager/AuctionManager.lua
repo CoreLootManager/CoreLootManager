@@ -163,66 +163,75 @@ local function HandleLootMessage(addon, event, message, _, _, _, playerName, ...
     AutoAddItemProxy(self, Item:CreateFromItemID(tonumber(itemId) or 0))
 end
 
--- HOOKING
-local function GetModifierCombination()
-    local combination = ""
+-- -- HOOKING
+-- local function GetModifierCombination()
+--     local combination = ""
 
-    if IsAltKeyDown() then
-        combination = combination .. "a"
-    end
+--     if IsAltKeyDown() then
+--         combination = combination .. "a"
+--     end
 
-    if IsShiftKeyDown() then
-        combination = combination .. "s"
-    end
+--     if IsShiftKeyDown() then
+--         combination = combination .. "s"
+--     end
 
-    if IsControlKeyDown() then
-        combination = combination .. "c"
-    end
+--     if IsControlKeyDown() then
+--         combination = combination .. "c"
+--     end
 
-    return combination
-end
+--     return combination
+-- end
 
-local function CheckModifierCombination()
-    return (CLM.GlobalConfigs:GetModifierCombination() == GetModifierCombination())
-end
+-- local function CheckModifierCombination()
+--     return (CLM.GlobalConfigs:GetModifierCombination() == GetModifierCombination())
+-- end
 
-local function AddToAuctionListOnClickFromTooltip(frame, button)
-    if GameTooltip and CheckModifierCombination() then
-        local _, itemLink = GameTooltip:GetItem()
-        if itemLink then
-            AuctionManager:AddItemByLink(itemLink)
-            CLM.GUI.AuctionManager:Show() -- TBD
-        end
-    end
-end
+-- local function AddToAuctionListOnClickFromTooltip(frame, button)
+--     if GameTooltip and CheckModifierCombination() then
+--         local _, itemLink = GameTooltip:GetItem()
+--         if itemLink then
+--             AuctionManager:AddItemByLink(itemLink)
+--             CLM.GUI.AuctionManager:Show() -- TBD
+--         end
+--     end
+-- end
 
-local function HookBagSlots()
-    hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", AddToAuctionListOnClickFromTooltip)
-end
+-- local function HookBagSlots()
+--     hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", AddToAuctionListOnClickFromTooltip)
+-- end
 
-local hookedSlots =  {}
-local function HookCorpseSlots()
-    local UIs = {
-        wow = "LootButton",
-        elv = "ElvLootSlot"
-    }
+-- local hookedSlots =  {}
+-- local function HookCorpseSlots()
+--     local UIs = {
+--         wow = "LootButton",
+--         elv = "ElvLootSlot"
+--     }
 
-    local numLootItems = GetNumLootItems()
+--     local numLootItems = GetNumLootItems()
 
-    for ui, prefix in pairs(UIs) do
-        for buttonIndex = 1, numLootItems do
-            if not hookedSlots[ui] then
-                hookedSlots[ui] = {}
-            end
-            if not hookedSlots[ui][buttonIndex] then
-                local button = getglobal(prefix .. buttonIndex)
-                if button then
-                    button:HookScript("OnClick", AddToAuctionListOnClickFromTooltip)
-                    hookedSlots[ui][buttonIndex] = true
-                end
-            end
-        end
-    end
+--     for ui, prefix in pairs(UIs) do
+--         for buttonIndex = 1, numLootItems do
+--             if not hookedSlots[ui] then
+--                 hookedSlots[ui] = {}
+--             end
+--             if not hookedSlots[ui][buttonIndex] then
+--                 local button = getglobal(prefix .. buttonIndex)
+--                 if button then
+--                     button:HookScript("OnClick", AddToAuctionListOnClickFromTooltip)
+--                     hookedSlots[ui][buttonIndex] = true
+--                 end
+--             end
+--         end
+--     end
+-- end
+
+local function HookAuctionFilling()
+    CLM.MODULES.Hooks:RegisterModifiedItemLinkClickHandler(function(modifiers, itemLink)
+        if CLM.GlobalConfigs:GetModifierCombination() ~= modifiers then return end
+        if not itemLink then return end
+        AuctionManager:AddItemByLink(itemLink)
+        CLM.GUI.AuctionManager:Show()
+    end)
 end
 
 local alreadyPostedLoot = {}
@@ -281,7 +290,7 @@ local function HandleLootOpenedEvent()
     -- Post loot to raid chat
     PostLootToRaidChat()
     -- Hook slots
-    HookCorpseSlots()
+    -- HookCorpseSlots()
     -- Fill auction
     FillLootFromCorpse()
     --
@@ -544,7 +553,8 @@ function AuctionManager:Initialize()
     self.currentAuction = AuctionInfo:New()
     self.pendingAuction = AuctionInfo:New()
 
-    HookBagSlots()
+    -- HookBagSlots()
+    HookAuctionFilling()
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, HandleLootOpenedEvent)
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, HandleLootClosedEvent)
     CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_LOOT"}, HandleLootMessage)
