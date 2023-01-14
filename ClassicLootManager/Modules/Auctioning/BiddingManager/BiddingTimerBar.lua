@@ -3,7 +3,7 @@ local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
+local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local LibCandyBar = LibStub("LibCandyBar-3.0")
@@ -19,13 +19,15 @@ local function RecolorBar(self)
     local currentPercentageLeft = (self.bar.remaining / self.duration)
     local percentageChange = self.previousPercentageLeft - currentPercentageLeft
     if percentageChange >= 0.05 or percentageChange < 0 then
-        if (currentPercentageLeft >= 0.5) then
-            self.bar:SetColor(0, 0.80, 0, 1)        -- green
-        elseif (currentPercentageLeft >= 0.2) then
-            self.bar:SetColor(0.92, 0.70, 0.20, 1)  -- gold
-        else
-            self.bar:SetColor(0.8, 0, 0, 1)         -- red
-        end
+        -- if (currentPercentageLeft >= 0.5) then
+        --     self.bar:SetColor(0, 0.80, 0, 1)        -- green
+        -- elseif (currentPercentageLeft >= 0.2) then
+        --     self.bar:SetColor(0.92, 0.70, 0.20, 1)  -- gold
+        -- else
+        --     self.bar:SetColor(0.8, 0, 0, 1)         -- red
+        -- end
+        local r, g, b, a = UTILS.GetColorByPercentage(currentPercentageLeft * 100)
+        self.bar:SetColor(r, g, b, a)
         self.previousPercentageLeft = currentPercentageLeft
     end
 end

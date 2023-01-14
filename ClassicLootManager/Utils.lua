@@ -146,6 +146,20 @@ function UTILS.ColorCodeByPercentage(percentage)
     return sformat("|cff%s%s|r", sformat("%02x%02x%02x", red, green, blue), percentage)
 end
 
+function UTILS.GetColorByPercentage(percentage)
+    percentage = tonumber(percentage) or 0
+    if percentage < 0 then percentage = 0 end
+    if percentage > 100 then percentage = 100 end
+
+    local red, green, blue = 1.0, 1.0, 0.0
+    if percentage < 50 then
+        green = UTILS.round((percentage * 2)/100, 0)
+    elseif percentage > 50 then
+        red = UTILS.round((100 - percentage)/100, 0)
+    end
+    return red, green, blue, 1.0
+end
+
 function UTILS.RemoveColorCode(s)
     return ssub(s or "", 11, -3)
 end
