@@ -139,9 +139,9 @@ function UTILS.ColorCodeByPercentage(percentage)
 
     local red, green, blue = 255, 255, 0
     if percentage < 50 then
-        green = UTILS.round(255*(percentage * 2)/100, 0)
+        green = UTILS.round(5.1*percentage, 0) -- (255 * 2 / 100) * percentage
     elseif percentage > 50 then
-        red = UTILS.round(255*(100 - percentage)/100, 0)
+        red = UTILS.round(5.1*(100 - percentage), 0) -- (2*255)*(100 - percentage)/100,
     end
     return sformat("|cff%s%s|r", sformat("%02x%02x%02x", red, green, blue), percentage)
 end
