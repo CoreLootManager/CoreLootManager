@@ -28,7 +28,7 @@ local function assertInProgress(self)
 end
 
 local function assertCantAddItems(self)
-    if self:CanAddItems() then
+    if not self:CanAddItems() then
         error("Not allowed to add items in current state.", 2)
     end
 end
@@ -58,7 +58,7 @@ end
 
 function AuctionInfo:CopySettings(object)
     assertTypeof(object, AuctionInfo)
-    self.state = object.state or CONSTANTS.AUCTION_INFO.STATE.IDLE
+    self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
 
     self.configuration = object.configuration
     self.roster = object.roster

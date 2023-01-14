@@ -143,7 +143,6 @@ function BiddingManager:Bid(itemId, value, type)
 
     value = tonumber(value) or 0
     type = CONSTANTS.BID_TYPES[type] and type or CONSTANTS.BID_TYPE.MAIN_SPEC
-    print("bid", itemId, value, type)
     local item = self.auction:GetItem(itemId)
     if not item then
         LOG:Debug("BiddingManager:Bid(): Invalid item")

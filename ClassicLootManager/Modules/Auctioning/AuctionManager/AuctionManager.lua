@@ -117,7 +117,7 @@ local function AddItemToAuctionList(self, item, callbackFn)
     callbackFn = callbackFn or DefaultCallback
 
     local auctionInfo = self.currentAuction
-    if auctionInfo:IsInProgress() then
+    if not auctionInfo:CanAddItems() then
         auctionInfo = self.pendingAuction
     end
 
