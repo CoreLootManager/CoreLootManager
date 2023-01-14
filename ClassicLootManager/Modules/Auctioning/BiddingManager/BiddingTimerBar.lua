@@ -18,7 +18,7 @@ BiddingTimerBar.__index = BiddingTimerBar
 local function RecolorBar(self)
     local currentPercentageLeft = (self.bar.remaining / self.duration)
     local percentageChange = self.previousPercentageLeft - currentPercentageLeft
-    if percentageChange >= 0.05 or percentageChange < 0 then
+    if percentageChange >= 0.01 or percentageChange < 0 then
         -- if (currentPercentageLeft >= 0.5) then
         --     self.bar:SetColor(0, 0.80, 0, 1)        -- green
         -- elseif (currentPercentageLeft >= 0.2) then
@@ -50,7 +50,7 @@ local function Create(self, parent, item, auction, options)
         self.callback = (function() end)
     end
 
-    self.bar:SetColor(0, 0.80, 0, 1)
+    self.bar:SetColor(0, 1, 0, 1)
     self.bar:AddUpdateFunction(function()
         RecolorBar(self)
     end)

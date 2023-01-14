@@ -153,9 +153,9 @@ function UTILS.GetColorByPercentage(percentage)
 
     local red, green, blue = 1.0, 1.0, 0.0
     if percentage < 50 then
-        green = UTILS.round((percentage * 2)/100, 0)
+        green = UTILS.round((percentage * 2)/100, 2)
     elseif percentage > 50 then
-        red = UTILS.round((100 - percentage)/100, 0)
+        red = UTILS.round(2*(100 - percentage)/100, 2)
     end
     return red, green, blue, 1.0
 end
