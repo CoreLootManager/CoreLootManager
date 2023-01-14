@@ -19,6 +19,7 @@ local DISPLAY_MODE_BUTTONS = 2
 local colorGreen = {r = 0.27, g = 0.93, b = 0.27, a = 1.0}
 local colorGold = {r = 0.93, g = 0.70, b = 0.13, a = 1.0}
 local colorRed = {r = 0.93, g = 0.27, b = 0.2, a = 1.0}
+local colorBlue = {r = 0.2, g = 0.2, b = 0.93, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
@@ -682,7 +683,11 @@ local function RefreshItemList(self)
             if not auctionItem:GetCanUse() then
                 iconColor = colorRed
             elseif auctionItem:BidAccepted() then
-                iconColor = colorGreen
+                if CONSTANTS.BID_TYPE_REMOVING_BIDS[auctionItem:GetBid():Type()] then
+                    iconColor = colorBlue
+                else
+                    iconColor = colorGreen
+                end
             elseif auctionItem:BidDenied() then
                 iconColor = colorGold
             end
@@ -723,11 +728,15 @@ function BiddingManagerGUI:StartAuction()
 end
 
 function BiddingManagerGUI:EndAuction()
-    self.bar:Stop()
+    if self.bar then
+        self.bar:Stop()
+    end
 end
 
 function BiddingManagerGUI:AntiSnipe()
-    self.bar:UpdateTime(CLM.MODULES.BiddingManager:GetAuctionInfo():GetAntiSnipe())
+    if self.bar then
+        self.bar:UpdateTime(CLM.MODULES.BiddingManager:GetAuctionInfo():GetAntiSnipe())
+    end
 end
 
 function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
@@ -742,7 +751,11 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
     if profile then
         class = profile:ClassInternal()
         classColor = UTILS.GetClassColor(profile:Class())
-        current = roster:Standings(profile:GUID())
+        if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+            current = roster:Standings(profile:GUID())
+        else
+            current = roster:Priority(profile:GUID())
+        end
     end
     local bidTypeString
     if namedButtonMode then

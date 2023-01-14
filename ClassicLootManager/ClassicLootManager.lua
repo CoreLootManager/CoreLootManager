@@ -131,6 +131,7 @@ function CORE:_InitializeCore()
     MODULES.Database:Initialize()
     MODULES.ConfigManager:Initialize()
     MODULES.ACL:Initialize()
+    MODULES.Hooks:Initialize()
 end
 
 function CORE:_InitializeBackend()

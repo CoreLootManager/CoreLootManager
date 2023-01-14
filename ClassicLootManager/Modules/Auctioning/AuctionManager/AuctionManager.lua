@@ -163,66 +163,13 @@ local function HandleLootMessage(addon, event, message, _, _, _, playerName, ...
     AutoAddItemProxy(self, Item:CreateFromItemID(tonumber(itemId) or 0))
 end
 
--- HOOKING
-local function GetModifierCombination()
-    local combination = ""
-
-    if IsAltKeyDown() then
-        combination = combination .. "a"
-    end
-
-    if IsShiftKeyDown() then
-        combination = combination .. "s"
-    end
-
-    if IsControlKeyDown() then
-        combination = combination .. "c"
-    end
-
-    return combination
-end
-
-local function CheckModifierCombination()
-    return (CLM.GlobalConfigs:GetModifierCombination() == GetModifierCombination())
-end
-
-local function AddToAuctionListOnClickFromTooltip(frame, button)
-    if GameTooltip and CheckModifierCombination() then
-        local _, itemLink = GameTooltip:GetItem()
-        if itemLink then
-            AuctionManager:AddItemByLink(itemLink)
-            CLM.GUI.AuctionManager:Show() -- TBD
-        end
-    end
-end
-
-local function HookBagSlots()
-    hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", AddToAuctionListOnClickFromTooltip)
-end
-
-local hookedSlots =  {}
-local function HookCorpseSlots()
-    local UIs = {
-        wow = "LootButton",
-        elv = "ElvLootSlot"
-    }
-
-    local numLootItems = GetNumLootItems()
-
-    for ui, prefix in pairs(UIs) do
-        for buttonIndex = 1, numLootItems do
-            if not hookedSlots[ui] then
-                hookedSlots[ui] = {}
-            end
-            if not hookedSlots[ui][buttonIndex] then
-                local button = getglobal(prefix .. buttonIndex)
-                if button then
-                    button:HookScript("OnClick", AddToAuctionListOnClickFromTooltip)
-                    hookedSlots[ui][buttonIndex] = true
-                end
-            end
-        end
-    end
+local function HookAuctionFilling(self)
+    CLM.MODULES.Hooks:RegisterModifiedItemLinkClickHandler(function(modifiers, itemLink)
+        if CLM.GlobalConfigs:GetModifierCombination() ~= modifiers then return end
+        if not itemLink then return end
+        self:AddItemByLink(itemLink)
+        CLM.GUI.AuctionManager:Show()
+    end)
 end
 
 local alreadyPostedLoot = {}
@@ -281,7 +228,7 @@ local function HandleLootOpenedEvent()
     -- Post loot to raid chat
     PostLootToRaidChat()
     -- Hook slots
-    HookCorpseSlots()
+    -- HookCorpseSlots()
     -- Fill auction
     FillLootFromCorpse()
     --
@@ -298,7 +245,7 @@ local function SetAutoAssign(self, value)
     self.db.autoAssign = value and true or false
 end
 
-local function GetAutoAssign(self)
+function AuctionManager:GetAutoAssign()
     return self.db.autoAssign
 end
 
@@ -306,7 +253,7 @@ local function SetAutoTrade(self, value)
     self.db.autoTrade = value and true or false
 end
 
-local function GetAutoTrade(self)
+function AuctionManager:GetAutoTrade()
     return self.db.autoTrade
 end
 
@@ -331,7 +278,7 @@ local function CreateConfigurationOptions(self)
             desc = CLM.L["Enable loot auto-assign (Master Looter UI) from corpse when item is awarded"],
             type = "toggle",
             set = function(i, v) SetAutoAssign(self, v) end,
-            get = function(i) return GetAutoAssign(self) end,
+            get = function(i) return self:GetAutoAssign() end,
             width = "double",
             order = 32
         },
@@ -340,7 +287,7 @@ local function CreateConfigurationOptions(self)
             desc = CLM.L["Enables auto-trade awarded loot after auctioning from bag"],
             type = "toggle",
             set = function(i, v) SetAutoTrade(self, v) end,
-            get = function(i) return GetAutoTrade(self) end,
+            get = function(i) return self:GetAutoTrade() end,
             -- width = "double",
             order = 33
         },
@@ -544,7 +491,7 @@ function AuctionManager:Initialize()
     self.currentAuction = AuctionInfo:New()
     self.pendingAuction = AuctionInfo:New()
 
-    HookBagSlots()
+    HookAuctionFilling(self)
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, HandleLootOpenedEvent)
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, HandleLootClosedEvent)
     CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_LOOT"}, HandleLootMessage)
@@ -960,9 +907,9 @@ function AuctionManager:Award(item, name, price)
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         -- CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item, uuid)
         if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
-            if GetAutoAssign(self) and lootWindowIsOpen then
+            if self:GetAutoAssign() and lootWindowIsOpen then
                 CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)
-            elseif GetAutoTrade(self) then
+            elseif self:GetAutoTrade() then
                 CLM.MODULES.AutoAssign:Track(item:GetItemID(), name)
             end
         end

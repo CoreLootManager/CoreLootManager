@@ -245,55 +245,22 @@ local function CreateConfig(self)
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, config)
 end
 
+local function SetItemLink(self, args)
+    local itemId = UTILS.GetItemIdFromLink(args)
+    if GetItemInfoInstant(itemId) then
+        self.itemLink = args
+    end
+end
+
+local function HookAwardFilling(self)
+    CLM.MODULES.Hooks:RegisterModifiedItemLinkClickHandler(function(modifiers, itemLink)
+        if CLM.GlobalConfigs:GetAwardModifierCombination() ~= modifiers then return end
+        if not itemLink then return end
+        self:Show(_, itemLink)
+    end)
+end
+
 local AwardGUI = {}
--- Below code is dirty and double with auction manager gui but will be redone for multi item auction
-local function GetModifierCombination()
-    local combination = ""
-    if IsAltKeyDown() then combination = combination .. "a" end
-    if IsShiftKeyDown() then combination = combination .. "s" end
-    if IsControlKeyDown() then combination = combination .. "c" end
-    return combination
-end
-
-local function CheckModifierCombination()
-    return (CLM.GlobalConfigs:GetAwardModifierCombination() == GetModifierCombination())
-end
-
-local function FillAwardWindowFromTooltip(frame, button)
-    if GameTooltip and CheckModifierCombination() then
-        local _, itemLink = GameTooltip:GetItem()
-        if itemLink then
-            AwardGUI:Show(nil, itemLink)
-        end
-    end
-end
-
-local function HookBagSlots()
-    hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", FillAwardWindowFromTooltip)
-end
-
-local hookedSlots = { wow = {}, elv =  {}}
-local function HookCorpseSlots()
-    local UIs = {
-        wow = "LootButton",
-        elv = "ElvLootSlot"
-    }
-
-    local numLootItems = GetNumLootItems()
-
-    for ui, prefix in pairs(UIs) do
-        for buttonIndex = 1, numLootItems do
-            if not hookedSlots[ui][buttonIndex] then
-                local button = getglobal(prefix .. buttonIndex)
-                if button then
-                    button:HookScript("OnClick", FillAwardWindowFromTooltip)
-                    hookedSlots[ui][buttonIndex] = true
-                end
-            end
-        end
-    end
-end
-
 function AwardGUI:Initialize()
     LOG:Trace("AwardGUI:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end
@@ -301,15 +268,8 @@ function AwardGUI:Initialize()
     Create(self)
     CreateConfig(self)
     RegisterSlash(self)
-    HookBagSlots()
+    HookAwardFilling(self)
 
-    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function()
-        self.lootWindowIsOpen = true
-        HookCorpseSlots()
-    end))
-    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function()
-        self.lootWindowIsOpen = false
-    end))
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
@@ -334,13 +294,6 @@ function AwardGUI:Toggle()
         self.top:Hide()
     else
         self:Show()
-    end
-end
-
-local function SetItemLink(self, args)
-    local itemId = UTILS.GetItemIdFromLink(args)
-    if GetItemInfoInstant(itemId) then
-        self.itemLink = args
     end
 end
 
