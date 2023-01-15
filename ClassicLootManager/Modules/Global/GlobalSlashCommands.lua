@@ -130,6 +130,14 @@ function GlobalSlashCommands:Initialize()
         end),
         confirm = true
     }
+    options.testbar = {
+        type = "execute",
+        name = CLM.L["Toggle test bar"],
+        func = (function()
+            CLM.GUI.BiddingManager:ToggleTestBar()
+        end),
+        confirm = true
+    }
     CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 

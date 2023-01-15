@@ -51,9 +51,37 @@ local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {
         location = {nil, nil, "CENTER", 0, 0 },
         scale = 1,
+        barWidth = 340,
         closeOnBid = false,
         advanceOnBid = true
     })
+end
+
+local function ShowTestBar(self)
+    self.testBar = CLM.MODELS.BiddingTimerBar:Test(
+        {
+            anchor = self.db.barLocation,
+            width = self.db.barWidth,
+            height = 25,
+        }
+    )
+end
+
+local function HideTestBar(self)
+    if self.testBar then
+        self.db.barLocation = { self.testBar:GetPoint() }
+        self.testBar:Stop()
+    end
+    self.testBar = nil
+end
+
+local function ToggleTestBar(self)
+    if CLM.MODULES.BiddingManager:IsAuctionInProgress() then return end
+    if self.testBar then
+        HideTestBar(self)
+    else
+        ShowTestBar(self)
+    end
 end
 
 local function SetCloseOnBid(self, value)
@@ -88,8 +116,41 @@ local function CreateConfig(self)
             type = "toggle",
             set = function(i, v) SetAdvanceOnBid(self, v) end,
             get = function(i) return GetAdvanceOnBid(self) end,
+            width = 2,
             order = 76
-        }
+        },
+        bidding_gui_bar_width = {
+            name = CLM.L["Auction timer bar width"],
+            desc = CLM.L["Changes auction timer bar width."],
+            type = "range",
+            min = 0,
+            max = 1000,
+            step = 1,
+            set = function(i, v)
+                v = tonumber(v) or 0
+                if v < 0 then v = 0 end
+                if v > 1000 then v = 1000 end
+                self.db.barWidth = v
+
+                if self.bar then
+                    self.bar.bar:SetWidth(self.db.barWidth)
+                elseif self.testBar then
+                    self.testBar.bar:SetWidth(self.db.barWidth)
+                end
+            end,
+            get = function(i) return self.db.barWidth end,
+            order = 77,
+            width = 1
+        },
+        bidding_gui_bar_test_bar = {
+            name = CLM.L["Toggle test bar"],
+            type = "execute",
+            func = function()
+                ToggleTestBar(self)
+            end,
+            order = 78,
+            width = 1
+        },
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
@@ -109,6 +170,9 @@ end
 
 local function StoreLocation(self)
     self.db.location = { self.top:GetPoint() }
+    if self.bar then
+        self.db.barLocation = { self.bar:GetPoint() }
+    end
     self.db.scale = self.top.frame:GetScale()
 end
 
@@ -741,6 +805,8 @@ function BiddingManagerGUI:Initialize()
 
     RegisterSlash(self)
 
+    self.ToggleTestBar = ToggleTestBar
+
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
 end
 
@@ -763,13 +829,15 @@ function BiddingManagerGUI:StartAuction()
     self.nextItem = 1
 
     self:Advance()
+    -- Hide Test Bar if present
+    HideTestBar(self)
     -- Build Bar
     self.bar = CLM.MODELS.BiddingTimerBar:New(
-        self.top.frame,
         self.auctionItem,
         CLM.MODULES.BiddingManager:GetAuctionInfo(),
         {
-            width = DATA_GROUP_WIDTH + self.ItemList:GetWidth(),
+            anchor = self.db.barLocation,
+            width = self.db.barWidth,
             height = 25,
             callback = toggleCb
         }
@@ -777,6 +845,7 @@ function BiddingManagerGUI:StartAuction()
 end
 
 function BiddingManagerGUI:EndAuction()
+    StoreLocation(self)
     if self.bar then
         self.bar:Stop()
     end
@@ -948,6 +1017,8 @@ function BiddingManagerGUI:Reset()
     LOG:Trace("BiddingManagerGUI:Reset()")
     self.top:ClearAllPoints()
     self.top:SetPoint("CENTER", 0, 0)
+    self.db.location = nil
+    self.db.barLocation = nil
 end
 
 CLM.GUI.BiddingManager = BiddingManagerGUI

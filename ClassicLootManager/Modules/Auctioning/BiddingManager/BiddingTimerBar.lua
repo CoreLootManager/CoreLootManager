@@ -32,9 +32,9 @@ local function RecolorBar(self)
     end
 end
 
-local function Create(self, parent, item, auction, options)
+local function Create(self, item, auction, options)
     self.bar = LibCandyBar:New(
-        "Interface\\AddOns\\ClassicLootManager\\Media\\Bars\\AceBarFrames.tga",
+        "Interface\\AddOns\\ClassicLootManager\\Media\\Bars\\Ruben.tga",
         tonumber(options.width) or 100,
         tonumber(options.height) or 25)
 
@@ -43,7 +43,6 @@ local function Create(self, parent, item, auction, options)
     self.duration = duration
 
     self:UpdateInfo(item)
-
     if type(options.callback) == 'function' then
         self.callback = options.callback
     else
@@ -55,30 +54,62 @@ local function Create(self, parent, item, auction, options)
         RecolorBar(self)
     end)
 
-    -- self.bar:SetParent(parent) -- makes the bar disappear
-    self.bar:SetPoint("CENTER", parent, "TOP", 0, (isElvUI and 15 or 10))
+    self.parent = CreateFrame("Frame")
 
-    self.bar.candyBarBar:SetScript("OnMouseDown", function (_, button)
+    -- self.bar:SetParent(parent) -- makes the bar disappear
+    self.bar:SetPoint("CENTER", self.parent, "CENTER", 0, 0)
+
+    self.parent:ClearAllPoints()
+    self.parent:SetFrameLevel(self.bar:GetFrameLevel() + 1)
+    self.parent:SetWidth(self.bar:GetWidth())
+    self.parent:SetHeight(self.bar:GetHeight())
+    if options.anchor then
+        self.parent:SetPoint(options.anchor[3], options.anchor[4], options.anchor[5])
+    else
+        self.parent:SetPoint("CENTER", 0, 185 + (isElvUI and 15 or 0))
+    end
+    self.parent:Show()
+    self.parent:RegisterForDrag("LeftButton")
+    self.parent:EnableMouse(true)
+    self.parent:SetMovable(true)
+    self.parent:SetScript("OnDragStart", function(frame) frame:StartMoving() end)
+    self.parent:SetScript("OnDragStop",  function(frame) frame:StopMovingOrSizing() end)
+
+    self.parent:SetScript("OnMouseDown", function (_, button)
         if button == 'LeftButton' then
             self:callback()
         end
     end)
 
-    -- if self.db.scale then
-    --     RescaleLibCandyBar(self.bar, self.db.scale)
-    -- end
-
     self.bar:Start(auction:GetTime())
+
+    BARDEBUG = self.bar
 end
 
-function BiddingTimerBar:New(parent, item, auction, options)
+function BiddingTimerBar:New(item, auction, options)
     local o = {}
     setmetatable(o, self)
 
-    Create(o, parent, item, auction, options)
+    Create(o, item, auction, options)
     o.previousPercentageLeft = 1
 
     return o
+end
+
+function BiddingTimerBar:Test(options)
+    local item = {
+        GetItemLink = function() return "|cffa335ee|Hitem:39468::::::::80:::::::::|h[The Stray]|h|r" end,
+        GetNote = function() return "Test Bar" end
+    }
+    local auction = {
+        GetEndTime = function() return GetServerTime() + 300 end,
+        GetTime = function() return 300 end,
+    }
+    return BiddingTimerBar:New(item, auction, options)
+end
+
+function BiddingTimerBar:GetPoint()
+    return self.parent:GetPoint()
 end
 
 function BiddingTimerBar:UpdateInfo(item)
@@ -98,6 +129,7 @@ end
 
 function BiddingTimerBar:Stop()
     if self.bar.running then
+        self.parent:Hide()
         self.bar:Stop()
     end
 end
