@@ -171,8 +171,20 @@ local DifficultyIDsMap = {
 
 CLM.EncounterIDsMap = EncounterIDsMap
 CLM.DifficultyIDsMap = DifficultyIDsMap
-CLM.EncounterIDs = {}
 
+CLM.EncounterHasHardMode = CLM.UTILS.Set({
+    1132, -- Flame Leviathan
+    1133, -- Freya
+    1134, -- General Vezax
+    1135, -- Hodir
+    1138, -- Mimiron
+    1140, -- The Assembly of Iron
+    1141, -- Thorim
+    1142, -- XT-002 Deconstructor
+    1143, -- Yogg-Saron
+})
+
+CLM.EncounterIDs = {}
 CLM.EncounterIDs.Classic = {
     {
         name = CLM.L["Onyxia's Lair"],

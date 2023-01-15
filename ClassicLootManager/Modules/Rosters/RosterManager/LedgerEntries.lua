@@ -372,12 +372,13 @@ end
 -- -------------------- --
 -- RosterBossKillBonus --
 -- -------------------- --
-function RosterBossKillBonus:new(rosterUid, encounterId, difficultyId, value)
+function RosterBossKillBonus:new(rosterUid, encounterId, difficultyId, isHardMode, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.e = tonumber(encounterId) or 0
     o.v = tonumber(value) or 0
     o.d = tonumber(difficultyId) or -1
+    o.h = isHardMode and true or false
     return o
 end
 
@@ -393,11 +394,15 @@ function RosterBossKillBonus:difficultyId()
     return (self.d or -1)
 end
 
+function RosterBossKillBonus:isHardMode()
+    return self.h
+end
+
 function RosterBossKillBonus:value()
     return self.v
 end
 
-local RosterBossKillBonusFields = mergeLists(LogEntry:fields(), {"r", "e", "v", "d"})
+local RosterBossKillBonusFields = mergeLists(LogEntry:fields(), {"r", "e", "v", "d", "h"})
 function RosterBossKillBonus:fields()
     return RosterBossKillBonusFields
 end

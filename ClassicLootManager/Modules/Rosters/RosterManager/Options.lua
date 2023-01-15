@@ -590,6 +590,25 @@ local function item_value_overrides(roster, self)
     return args
 end
 
+local function generateBossKillAwardValueInputField(self, roster, info, instanceName, name, difficultyId, order, isHardMode)
+    local nameModified = info.name .. (isHardMode and (" " .. CLM.UTILS.ColorCodeText(CLM.L["Hard Mode"], "ee4444")) or "")
+    return {
+        name = nameModified,
+        desc = instanceName,
+        type = "input",
+        width = "full",
+        -- width = (#nameModified > 20) and 2 or 1,
+        order = order,
+        set = (function(i, v)
+            if self.readOnly then return end
+            CLM.MODULES.RosterManager:SetRosterBossKillBonusValue(name, info.id, difficultyId, isHardMode, v)
+        end),
+        get = (function(i)
+            return tostring(roster:GetBossKillBonusValue(info.id, difficultyId, isHardMode))
+        end)
+    }
+end
+
 local function boss_kill_award_values(roster, self, name)
     local args = {
         classic = {
@@ -629,20 +648,21 @@ local function boss_kill_award_values(roster, self, name)
                 }
                 for _, info in ipairs(instanceData.data) do
                     order = order + 1
-                    args[expansion].args["encounter" .. info.id .. difficultyId] = {
-                        name = info.name,
-                        desc = instanceName,
-                        type = "input",
-                        width = "full",
-                        order = order,
-                        set = (function(i, v)
-                            if self.readOnly then return end
-                            CLM.MODULES.RosterManager:SetRosterBossKillBonusValue(name, info.id, difficultyId, v)
-                        end),
-                        get = (function(i)
-                            return tostring(roster:GetBossKillBonusValue(info.id, difficultyId))
-                        end)
-                    }
+                    args[expansion].args["encounter" .. info.id .. difficultyId] =
+                        generateBossKillAwardValueInputField(
+                            self, roster, info,
+                            instanceName, name, difficultyId,
+                            order, false
+                        )
+                    if CLM.EncounterHasHardMode[info.id] then
+                        order = order + 1
+                        args[expansion].args["encounter" .. info.id .. difficultyId .. "hardmode"] =
+                        generateBossKillAwardValueInputField(
+                            self, roster, info,
+                            instanceName, name, difficultyId,
+                            order, true
+                        )
+                    end
                 end
             end
         end

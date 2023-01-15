@@ -264,7 +264,7 @@ function RosterManager:Initialize()
                 LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                 return
             end
-            roster:SetBossKillBonusValue(entry:encounterId(), entry:difficultyId(), entry:value())
+            roster:SetBossKillBonusValue(entry:encounterId(), entry:difficultyId(), entry:isHardMode(), entry:value())
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
@@ -840,7 +840,7 @@ function RosterManager:SetRosterItemTierValue(nameOrRoster, itemId, tier, value)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateOverridesSingle:new(roster:UID(), itemId, tier, value), true)
 end
 
-function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, difficultyId, value)
+function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, difficultyId, isHardMode, value)
     LOG:Trace("RosterManager:SetRosterBossKillBonusValue()")
     local roster
     if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
@@ -864,12 +864,12 @@ function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, di
         LOG:Error("RosterManager:SetRosterBossKillBonusValue(): Missing value")
         return
     end
-    local currentBonus = roster:GetBossKillBonusValue(encounterId)
+    local currentBonus = roster:GetBossKillBonusValue(encounterId, difficultyId, isHardMode)
     if currentBonus == value then
         LOG:Debug("RosterManager:SetRosterBossKillBonusValue(): No change to value. Skipping.")
         return
     end
-    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.BossKillBonus:new(roster:UID(), encounterId, difficultyId, value), true)
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.BossKillBonus:new(roster:UID(), encounterId, difficultyId, isHardMode, value), true)
 end
 
 function RosterManager:AddProfilesToRoster(roster, profiles)
