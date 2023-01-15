@@ -107,7 +107,7 @@ CLM.L["Addon sounds"] = "Sons de l'addon"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:145
 CLM.L["Adds selected players to the selected roster (from dropdown)."] = "Ajoute les joueurs sélectionnés au roster sélectionné depuis la liste déroulante."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:114
---CLM.L["Advance to next item after bid"] = ""
+CLM.L["Advance to next item after bid"] = "Passer à l'article suivant après le soumission"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:266
 CLM.L["Affected players:"] = "Joueurs concernés:"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:102
@@ -235,7 +235,7 @@ CLM.L["Auction stopped by Master Looter"] = "Enchères arrêtées par le maître
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:640
 CLM.L["Auction time: %s."] = "Temps de l'enchère: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:123
---CLM.L["Auction timer bar width"] = ""
+CLM.L["Auction timer bar width"] = "Largeur du bar de la minuterie aux enchères"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1126
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1198
 CLM.L["Auction type"] = "Type d'enchère"
@@ -421,7 +421,7 @@ CLM.L["Button Names"] = "Noms des boutons"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:31
 CLM.L["C'Thun"] = "C'Thun"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:776
---CLM.L["Can't use"] = ""
+CLM.L["Can't use"] = "Impossible d'utiliser"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:293
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:456
 CLM.L["Cancel your bid."] = "Annulez votre offre."
@@ -437,7 +437,7 @@ CLM.L["Change roster name."] = "Changer le nom du Roster."
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:15
 CLM.L["Changelog"] = "Journal des modifications"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:124
---CLM.L["Changes auction timer bar width."] = ""
+CLM.L["Changes auction timer bar width."] = "Modifie la largeur de la barre de la minuterie d'enchères."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1037
 CLM.L["Changing bid from Main-spec to Off-Spec not allowed"] = "Changer une offre depuis mainspec vers offspec non autorisé"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:73
@@ -809,7 +809,7 @@ CLM.L["Halion"] = "Halion"
 CLM.L["Hands"] = "Mains"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:57
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:594
---CLM.L["Hard Mode"] = ""
+CLM.L["Hard Mode"] = "Mode difficile"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:900
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:109
 CLM.L["Hard cap"] = "Hard cap"
@@ -1229,7 +1229,7 @@ CLM.L["Non-equippable"] = "Non-équipable"
 -- ClassicLootManager_Integrations/Integrations.lua:648
 CLM.L["None"] = "Aucun"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:56
---CLM.L["Normal Mode"] = ""
+CLM.L["Normal Mode"] = "Mode normal"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:142
 CLM.L["Northrend Beasts"] = "Les bêtes du Norfendre"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1025
@@ -1594,7 +1594,7 @@ CLM.L["Select roster"] = "Sélectionner le roster"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:883
 CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "Sélectionnez le fuseau horaire de réinitialisation hebdomadaire. UE : Mercredi 07h00 GMT ou États-Unis : Mar 15h00 GMT"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:55
---CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = ""
+CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = "Sélectionnez | CffEeeEe 00% S | R Rencontre Difficulté pour la récompense de valeur bonus (% s)."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:745
 CLM.L["Selected"] = "Sélectionné"
 -- ClassicLootManager_Integrations/GUI.lua:148
@@ -1779,7 +1779,7 @@ CLM.L["Toggle CSV import window display"] = "Activer l’affichage de la fenêtr
 -- ClassicLootManager/MinimapIcon.lua:77
 CLM.L["Toggle Minimap Icon"] = "Afficher l'icône de minimap"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:115
---CLM.L["Toggle advancing to next item on the list after bid."] = ""
+CLM.L["Toggle advancing to next item on the list after bid."] = "Basculez en avance vers l'élément suivant sur la liste après le soumission."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:80
 CLM.L["Toggle auto open and auto close on auction start and stop"] = "Activer l'ouverture et la fermeture automatiques au début et à l'arrêt des enchères"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:48
@@ -1795,7 +1795,7 @@ CLM.L["Toggle export window display"] = "Activer l’affichage de la fenêtre d'
 CLM.L["Toggle standings window display"] = "Activer l'affichage de la fenêtre de l’aperçu roster"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:146
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:135
---CLM.L["Toggle test bar"] = ""
+CLM.L["Toggle test bar"] = "Barre d'essai à bascule"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:147
 CLM.L["Toggles addon sounds."] = "Activer les sons de l'addon"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:169

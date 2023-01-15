@@ -107,7 +107,7 @@ CLM.L["Addon sounds"] = "插件声音"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:145
 CLM.L["Adds selected players to the selected roster (from dropdown)."] = "将选中的角色添加到选中的名册中。"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:114
---CLM.L["Advance to next item after bid"] = ""
+CLM.L["Advance to next item after bid"] = "出價後前往下一個項目"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:266
 CLM.L["Affected players:"] = "相关角色："
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:102
@@ -235,7 +235,7 @@ CLM.L["Auction stopped by Master Looter"] = "被Master Looter停止拍卖"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:640
 CLM.L["Auction time: %s."] = "拍卖时间: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:123
---CLM.L["Auction timer bar width"] = ""
+CLM.L["Auction timer bar width"] = "拍賣定時器條寬度"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1126
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1198
 CLM.L["Auction type"] = "拍卖类型"
@@ -421,7 +421,7 @@ CLM.L["Button Names"] = "按钮名称"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:31
 CLM.L["C'Thun"] = "克苏恩"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:776
---CLM.L["Can't use"] = ""
+CLM.L["Can't use"] = "無法使用"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:293
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:456
 CLM.L["Cancel your bid."] = "取消您的出价。"
@@ -437,7 +437,7 @@ CLM.L["Change roster name."] = "更改名册名称。"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:15
 CLM.L["Changelog"] = "更新日志"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:124
---CLM.L["Changes auction timer bar width."] = ""
+CLM.L["Changes auction timer bar width."] = "更改拍賣定時器條寬度。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1037
 CLM.L["Changing bid from Main-spec to Off-Spec not allowed"] = "不允许将出价从主天赋改为副天赋"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:73
@@ -809,7 +809,7 @@ CLM.L["Halion"] = "海里昂"
 CLM.L["Hands"] = "手"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:57
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:594
---CLM.L["Hard Mode"] = ""
+CLM.L["Hard Mode"] = "困難模式"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:900
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:109
 CLM.L["Hard cap"] = "最大上限"
@@ -1229,7 +1229,7 @@ CLM.L["Non-equippable"] = "不可装备"
 -- ClassicLootManager_Integrations/Integrations.lua:648
 CLM.L["None"] = "无"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:56
---CLM.L["Normal Mode"] = ""
+CLM.L["Normal Mode"] = "正常模式"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:142
 CLM.L["Northrend Beasts"] = "诺森德猛兽"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1025
@@ -1594,7 +1594,7 @@ CLM.L["Select roster"] = "选择名册"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:883
 CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "选择每周重置时区。EU：周三 07:00 GMT 或 US：周二 15:00 GMT"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:55
---CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = ""
+CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = "選擇| cffeee00％s | r的獎金價值獎（％）遇到困難。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:745
 CLM.L["Selected"] = "已选中"
 -- ClassicLootManager_Integrations/GUI.lua:148
@@ -1779,7 +1779,7 @@ CLM.L["Toggle CSV import window display"] = "开关 CSV 导入窗口显示"
 -- ClassicLootManager/MinimapIcon.lua:77
 CLM.L["Toggle Minimap Icon"] = "开关小地图图标"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:115
---CLM.L["Toggle advancing to next item on the list after bid."] = ""
+CLM.L["Toggle advancing to next item on the list after bid."] = "出價後切換到列表中的下一個項目。"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:80
 CLM.L["Toggle auto open and auto close on auction start and stop"] = "开关在拍卖开始和停止时自动打开和自动关闭"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:48
@@ -1795,7 +1795,7 @@ CLM.L["Toggle export window display"] = "开关导出窗口显示"
 CLM.L["Toggle standings window display"] = "开关积分榜窗口显示"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:146
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:135
---CLM.L["Toggle test bar"] = ""
+CLM.L["Toggle test bar"] = "切換測試欄"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:147
 CLM.L["Toggles addon sounds."] = "开关插件声音。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:169

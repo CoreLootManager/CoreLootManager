@@ -235,7 +235,7 @@ CLM.L["Auction stopped by Master Looter"] = "Auktion wurde vom Lootmeister gesto
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:640
 CLM.L["Auction time: %s."] = "Auktionszeit: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:123
---CLM.L["Auction timer bar width"] = ""
+CLM.L["Auction timer bar width"] = "Auktions -Timer -Bar Breite"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1126
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1198
 CLM.L["Auction type"] = "Auktionstyp"
@@ -437,7 +437,7 @@ CLM.L["Change roster name."] = "Rostername ändern."
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:15
 CLM.L["Changelog"] = "Änderungsprotokoll"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:124
---CLM.L["Changes auction timer bar width."] = ""
+CLM.L["Changes auction timer bar width."] = "Ändert die Auktions -Timer -Balkenbreite."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1037
 CLM.L["Changing bid from Main-spec to Off-Spec not allowed"] = "Bieten von Main-Spec zu Off-Spec nicht erlaubt"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:73
@@ -1795,7 +1795,7 @@ CLM.L["Toggle export window display"] = "Exportfensters Anzeige ein / ausschalte
 CLM.L["Toggle standings window display"] = "Zeigt das Punktestand Fenster"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:146
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:135
---CLM.L["Toggle test bar"] = ""
+CLM.L["Toggle test bar"] = "Schaltertestleiste"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:147
 CLM.L["Toggles addon sounds."] = "Addon Geräusche ein / ausschalten."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:169
