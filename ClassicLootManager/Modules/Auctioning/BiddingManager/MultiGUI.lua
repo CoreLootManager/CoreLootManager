@@ -766,7 +766,6 @@ end
 
 local function RefreshItemList(self)
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
-    local namedButtonsMode = auction:GetNamedButtonsMode()
     if auction then
         local itemList = {}
         for id, auctionItem in pairs(auction:GetItems()) do
@@ -813,7 +812,7 @@ end
 function BiddingManagerGUI:Advance()
     if (self.nextItem > #self.auctionOrder) then self.nextItem = 1 end
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
-    
+
     self:SetVisibleAuctionItem(auction:GetItem(self.auctionOrder[self.nextItem]))
     self.nextItem = self.nextItem + 1
     self:Refresh()

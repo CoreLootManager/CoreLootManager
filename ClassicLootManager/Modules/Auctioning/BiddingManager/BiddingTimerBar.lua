@@ -82,8 +82,6 @@ local function Create(self, item, auction, options)
     end)
 
     self.bar:Start(auction:GetTime())
-
-    BARDEBUG = self.bar
 end
 
 function BiddingTimerBar:New(item, auction, options)

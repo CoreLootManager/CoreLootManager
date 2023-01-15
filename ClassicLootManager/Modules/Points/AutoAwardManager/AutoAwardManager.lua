@@ -63,7 +63,7 @@ StaticPopupDialogs[POPUP] = {
     end,
     OnButton3 = function()
     end,
-    -- sound = 
+    -- sound =
     multiple = true,
     enterClicksFirstButton = false,
     noCancelOnReuse = true,
