@@ -6,7 +6,7 @@ CLM.ChangelogData = {
             {
                 name = "Notes",
                 data = {
-                    { header = "Important!", body = "With CLM v3 There comes a big mentality shift in the auctioning system towards becoming a more robust, point-based loot management framework. Notion of |cff44ee44English|r or |cff44ee44Swedish|r auction has been dropped towards bigger flexibility. This is a major change and as a consequence CLM v2 communication is not compatible with CLM v3 (but the database is preserved unlike when migrating from v1 to v2)."},
+                    { header = "Important!", body = "With CLM v3 There comes a big mentality shift in the auctioning system towards becoming a more robust, point-based loot management framework. Notion of |cff44ee44English|r or |cff44ee44Swedish|r auction has been dropped towards bigger flexibility. This is a major change and as a consequence CLM v2 communication is not compatible with CLM v3 (but the database is preserved unlike when migrating from v1 to v2). Be aware that CLM does not allow multiple MAJOR versions to be used in one guild thus all v2 users will have their CLM disabled once someone starts to use v3."},
                     { header = "Thank you patrons!", body = "Thank you patrons, especially: |cffff8000Allcoast|r, |cffff8000BigSpoon|r, |cffff8000naimious|r, |cffff8000Nosirrahdrof|r" },
                 },
             },
@@ -18,12 +18,14 @@ CLM.ChangelogData = {
                     { header = "Invalid Bids", body = "Bids are validated during auction. However the correctness might not apply anymore after items were awarded. To solve this, after every item award, CLM re-calculates if the bids would be accepted and marks invalid bid with red color. This way the bids are not lost and it's up to Loot Master to decide how to handle it." },
                     { header = "Rolling", body = "CLM includes internal rolling system (random) that appends a new random value to players bid whenever a bid comes in for the first time. This value is guarnateed to be unique and is meant for the ML to help with solving ties. However it does not come from |cff44ee44/random|r server-side call thus is not visible in the chat." },
                     { header = "Handling items in the auction", body = "Items can be added to the auction same as previously through alt-click (configurable). In addition to that, the previous Loot Queue has been merged with Auctioning into auto-fill auction feature. CLM can automatically add looted (received) items and items seen on corpse to the current auction. This can be configured per Master Looter prefference. Important! If items are added to auction during existing auction (manually or automatically) then CLM will remember it in a pending auction and display them when current auction is cleared of all items. Auctioneer can manually remove items from auction by right clicking item icon on the list." },
+                    { header = "Bidding GUI", body = "Bidding GUI was reworked and now is more flexible. You can move the bar separately (and even test it through |cff44ee44/clm testbar|r or through configuration button) and modify it's width. You should now more verbosely see if your bid was accepted, denied, or you passed or cancelled."},
                     { header = "Chat bidding", body = "Chat bidding is currently disabled." },
                 },
             },
             {
                 name = "Refinements",
                 data = {
+                    { header = "Hard Mode support", body = "Ulduar hard mode is now supported through configuration. If Boss Kill Bonus is enabled with normal and hardmode bonuses set to different (non-zero) values, after the kill a popup will show to decide if it was a normal or hard mode kill."},
                     { header = "History", body = "Loot history now shows simple history when hovering over items but more extensive if hovering while holding |cff44ee44CTRL|r modifier." },
                     { header = "Migration", body = "Migration should now be slightly more resilient when executed multiple times by accident." },
                     { header = "Renames", body = "Several options were renamed" },
@@ -42,6 +44,7 @@ CLM.ChangelogData = {
                     { header = "All-in", body = "All-in should no longer be denied unexpectedly." },
                     { header = "History error", body = "History should no longer get stuck on |cff44ee44Loading...|r or generate lua-error when handling old historical data." },
                     { header = "Alerts", body = "Alerts should now display proper currency." },
+                    { header = "B.E.T.A.", body = "Fixed all bugs found during B.E.T.A. testing. Thank you all for participating!"},
                 },
             },
             {

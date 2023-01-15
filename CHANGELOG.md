@@ -1,12 +1,12 @@
 # Classic Loot Manager v3.0.0
 ## Notes
-With CLM v3 There comes a big mentality shift in the auctioning system towards becoming a more robust, point-based loot management framework. Notion of "English" or "Swedish" auction has been dropped towards bigger flexibility. This is a major change and as a consequence CLM v2 communication is not compatible with CLM v3 (but the database is preserved unlike when migrating from v1 to v2).
+With CLM v3 There comes a big mentality shift in the auctioning system towards becoming a more robust, point-based loot management framework. Notion of "English" or "Swedish" auction has been dropped towards bigger flexibility. This is a major change and as a consequence CLM v2 communication is not compatible with CLM v3 (but the database is preserved unlike when migrating from v1 to v2). Be aware that CLM does not allow multiple MAJOR versions to be used in one guild thus all v2 users will have their CLM disabled once someone starts to use v3.
 This wouldn't be possible without all the contributors, translators and patrons, especially: `Allcoast, BigSpoon, naimious, Nosirrahdrof`.
 ## Multi Item Auction
 ### Notes
 Classic Loot Manager now allows you to auction virtually any amount of items simultaneously. There are however some quirks that need to be looked into by officers for this to work as expected.
 ### Configuration
-This rework brings some changes to auctioning configuration. Be sure to review them to ensure your auction is working as expected. Most significant changes are related to minimum, all-in and equal bids in Open Auction Mode.
+This rework brings some changes to auctioning configuration. **Be sure to review them to ensure your auction is working as expected.** Most significant changes are related to minimum, all-in and equal bids in Open Auction Mode.
 ### Invalid Bids
 Bids are validated during auction. However the correctness might not apply anymore after items were awarded.
 To solve this, after every item award, CLM re-calculates if the bids would be accepted and marks invalid bid with red color. This way the bids are not lost and it's up to Loot Master to decide how to handle it.
@@ -15,9 +15,13 @@ CLM includes internal rolling system (random) that appends a new random value to
 ### Handling items in the auction
 Items can be added to the auction same as previously through alt-click (configurable). In addition to that, the previous Loot Queue has been merged with Auctioning into auto-fill auction feature. CLM can automatically add looted (received) items and items seen on corpse to the current auction. This can be configured per Master Looter prefference. Important! If items are added to auction during existing auction (manually or automatically) then CLM will remember it in a pending auction and display them when current auction is cleared of all items.
 Auctioneer can manually remove items from auction by right clicking item icon on the list.
+### Bidding GUI
+Bidding GUI was reworked and now is more flexible. You can move the bar separately (and even test it through `/clm testbar` or through configuration button) and modify it's width. You should now more verbosely see if your bid was accepted, denied, or you passed or cancelled.
 ### Chat bidding
 Chat bidding is currently disabled.
 ## Refinements
+### Hard Mode support
+Ulduar hard mode is now supported through configuration. If Boss Kill Bonus is enabled with normal and hardmode bonuses set to different (non-zero) values, after the kill a popup will show to decide if it was a normal or hard mode kill.
 ### History
 Loot history now shows simple history when hovering over items but more extensive if hovering while holding `CTRL` modifier.
 ### Migration
@@ -36,6 +40,8 @@ All-in should no longer be denied unexpectedly.
 History should no longer get stuck on `Loading...` or generate lua-error when handling old historical data.
 ### Alerts
 Alerts should now display proper currency.
+### B.E.T.A.
+Fixed all bugs found during B.E.T.A. testing. Thank you all for participating!
 ## Known issues
 ### Multi Item Auction
 Award value Multiplier is not stored nor configurable.
