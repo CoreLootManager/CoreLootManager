@@ -772,11 +772,12 @@ function AuctionManagerGUI:Refresh()
 
     local itemList = {}
     for id, auctionItem in pairs(auction:GetItems()) do
-        local iconColor
+        local iconColor, note
         if not auctionItem:HasValidBids() and auction:IsComplete() then
             iconColor = colorGold
+            note = CLM.L["No bids"]
         end
-        itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor }, {value = auctionItem} }}
+        itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor, note = note }, {value = auctionItem} }}
     end
     self.ItemList:SetData(itemList)
 
