@@ -255,8 +255,6 @@ function BiddingManager:HandleStartAuction(data, sender)
     StartAuction(self, CLM.MODELS.AuctionCommStartAuction:New(data))
     PlayStartSound()
 
-    local _, item = next(self.auction:GetItems())
-    CLM.GUI.BiddingManager:SetVisibleAuctionItem(item)
     CLM.GUI.BiddingManager:StartAuction()
     if GetAutoOpen(self) then
         CLM.GUI.BiddingManager:Show()
@@ -266,6 +264,7 @@ function BiddingManager:HandleStartAuction(data, sender)
     if numItems > 1 then
         auctionMessage = sformat(CLM.L["Auction of %s items."], numItems)
     else
+        local _, item = next(self.auction:GetItems())
         auctionMessage = sformat(CLM.L["Auction of %s"], item:GetItemLink())
     end
     LOG:Message(auctionMessage)

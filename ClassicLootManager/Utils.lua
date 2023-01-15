@@ -4,6 +4,8 @@ local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 
+local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga"
+
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
@@ -724,6 +726,7 @@ end
 function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local itemId = data[realrow].cols[column].value
     local iconColor = data[realrow].cols[column].iconColor
+    local note = data[realrow].cols[column].note
     local _, _, _, _, icon = GetItemInfoInstant(itemId or 0)
     if icon then
         frame:SetNormalTexture(icon)
@@ -738,6 +741,11 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
         frame:SetScript("OnEnter", function()
             GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
             GameTooltip:SetHyperlink("item:" .. tostring(itemId))
+            if note then
+                GameTooltip:AddLine("\n")
+                GameTooltip:AddLine(note)
+                GameTooltip:AddTexture(CLM_ICON_DARK)
+            end
             GameTooltip:Show()
         end)
         frame:SetScript("OnLeave", function() GameTooltip:Hide() end)

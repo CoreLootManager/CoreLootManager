@@ -51,7 +51,8 @@ local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {
         location = {nil, nil, "CENTER", 0, 0 },
         scale = 1,
-        closeOnBid = false
+        closeOnBid = false,
+        advanceOnBid = true
     })
 end
 
@@ -63,6 +64,14 @@ local function GetCloseOnBid(self)
     return self.db.closeOnBid
 end
 
+local function SetAdvanceOnBid(self, value)
+    self.db.advanceOnBid = value and true or false
+end
+
+local function GetAdvanceOnBid(self)
+    return self.db.advanceOnBid
+end
+
 local function CreateConfig(self)
     local options = {
         bidding_gui_close_on_bid = {
@@ -72,6 +81,14 @@ local function CreateConfig(self)
             set = function(i, v) SetCloseOnBid(self, v) end,
             get = function(i) return GetCloseOnBid(self) end,
             order = 75
+        },
+        bidding_gui_advance_on_bid = {
+            name = CLM.L["Advance to next item after bid"],
+            desc = CLM.L["Toggle advancing to next item on the list after bid."],
+            type = "toggle",
+            set = function(i, v) SetAdvanceOnBid(self, v) end,
+            get = function(i) return GetAdvanceOnBid(self) end,
+            order = 76
         }
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
@@ -166,6 +183,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             type = "execute",
             func = (function()
                 BidInputValue(self, CONSTANTS.BID_TYPE.MAIN_SPEC)
+                if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             width = (useOS and 1 or 2)*rowMultiplier*0.3,
@@ -179,6 +197,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             type = "execute",
             func = (function()
                 BidInputValue(self, CONSTANTS.BID_TYPE.OFF_SPEC)
+                if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             width = rowMultiplier*0.3,
@@ -192,6 +211,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             type = "execute",
             func = (function()
                 CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
+                if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             -- disabled = (function()
@@ -210,6 +230,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
             type = "execute",
             func = (function()
                 CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
+                if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
             -- disabled = (function()
@@ -252,6 +273,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
                     func = (function()
                         SetInputValue(self, value)
                         BidInputValue(self, tier)
+                        if GetAdvanceOnBid(self) then self:Advance() end
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     order = offset
@@ -271,6 +293,7 @@ local function GenerateValueButtonsAuctionOptions(self, auctionInfo)
                 type = "execute",
                 func = (function()
                     BidAllIn(self)
+                    if GetAdvanceOnBid(self) then self:Advance() end
                     if GetCloseOnBid(self) then self:Toggle() end
                 end),
                 width = width,
@@ -331,6 +354,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auctionInfo)
                     func = (function()
                         SetInputValue(self, value)
                         BidInputValue(self, tier)
+                        if GetAdvanceOnBid(self) then self:Advance() end
                         if GetCloseOnBid(self) then self:Toggle() end
                     end),
                     width = row_width,
@@ -354,6 +378,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auctionInfo)
         type = "execute",
         func = (function()
             CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
+            if GetAdvanceOnBid(self) then self:Advance() end
             if GetCloseOnBid(self) then self:Toggle() end
         end),
         -- disabled = (function()
@@ -368,6 +393,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auctionInfo)
         type = "execute",
         func = (function()
             CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
+            if GetAdvanceOnBid(self) then self:Advance() end
             if GetCloseOnBid(self) then self:Toggle() end
         end),
         -- disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
@@ -676,22 +702,27 @@ end
 
 local function RefreshItemList(self)
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+    local namedButtonsMode = auction:GetNamedButtonsMode()
     if auction then
         local itemList = {}
         for id, auctionItem in pairs(auction:GetItems()) do
-            local iconColor
+            local iconColor, note
             if not auctionItem:GetCanUse() then
                 iconColor = colorRed
+                note = CLM.L["Can't use"]
             elseif auctionItem:BidAccepted() then
                 if CONSTANTS.BID_TYPE_REMOVING_BIDS[auctionItem:GetBid():Type()] then
                     iconColor = colorBlue
+                    note = CLM.L["Pass"] .. " / " .. CLM.L["Cancel"]
                 else
                     iconColor = colorGreen
+                    note = CLM.L["Bid accepted!"]
                 end
             elseif auctionItem:BidDenied() then
                 iconColor = colorGold
+                note = CLM.L["Bid denied!"]
             end
-            itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor}, {value = auctionItem} }}
+            itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor, note = note}, {value = auctionItem} }}
         end
         self.ItemList:SetData(itemList)
     end
@@ -713,8 +744,26 @@ function BiddingManagerGUI:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
 end
 
+function BiddingManagerGUI:Advance()
+    if (self.nextItem > #self.auctionOrder) then self.nextItem = 1 end
+    local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+    
+    self:SetVisibleAuctionItem(auction:GetItem(self.auctionOrder[self.nextItem]))
+    self.nextItem = self.nextItem + 1
+    self:Refresh()
+end
+
 local toggleCb = (function() BiddingManagerGUI:Toggle() end)
 function BiddingManagerGUI:StartAuction()
+    local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+    self.auctionOrder = {}
+    for id in pairs(auction:GetItems()) do
+        self.auctionOrder[#self.auctionOrder+1] = id
+    end
+    self.nextItem = 1
+
+    self:Advance()
+    -- Build Bar
     self.bar = CLM.MODELS.BiddingTimerBar:New(
         self.top.frame,
         self.auctionItem,
