@@ -43,6 +43,71 @@ local function normalizeDifficultyId(difficultyId)
     return multiWoWDifficultyIDs[difficultyId] or -1
 end
 
+local function awardBonusValue(id, value)
+    if value ~= 0 then
+        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
+    end
+end
+
+local POPUP = "CLM_BOSS_KILL_BONUS_HARD_MODE"
+
+StaticPopupDialogs[POPUP] = {
+    text = CLM.L["Select |cffeeee00%s|r kill mode for bonus value award (%s)."],
+    button1 = CLM.L["Normal Mode"],
+    button2 = CLM.L["Hard Mode"],
+    -- button3 = CLM.L["Custom"],
+    -- button3 = CLM.L["Cancel"],
+    -- hasDropDown = true,
+	-- dropDownOptions = {},
+    -- dropDownDefaultOption = 1,
+    OnShow = function (self, data)
+        -- self.DropDownControl:SetOptions({1, 2, 3 }, 1)
+        -- self.text:SetWidth(450)
+        -- self.center:SetWidth(320)
+        -- self.editBox:SetText(CLM.L["Custom value"])
+        -- self.button3:Disable()
+        local buttonPadding = 10
+        local minButtonWidth = 120
+        -- self.button1:ClearAllPoints()
+        -- self.button2:ClearAllPoints()
+        -- self.button3:ClearAllPoints()
+        -- self.button4:ClearAllPoints()
+        -- self.button1:SetPoint("TOP", self.editBox, "BOTTOM", -(minButtonWidth + buttonPadding)/2, -16)
+        -- self.button2:SetPoint("BOTTOMLEFT", self.button1, "BOTTOMRIGHT", buttonPadding, 0)
+        -- self.button3:SetPoint("TOP", self.button1, "BOTTOM", 0, -6)
+        -- self.button4:SetPoint("BOTTOMLEFT", self.button3, "BOTTOMRIGHT", buttonPadding, 0)
+    end,
+    -- EditBoxOnTextChanged = function (editBoxSelf, data)
+    --     if tonumber(editBoxSelf:GetText()) then
+    --         editBoxSelf:GetParent().button3:Enable()
+    --     else
+    --         editBoxSelf:GetParent().button3:Disable()
+    --     end
+    -- end,
+    OnButton1 = function(self)
+        awardBonusValue(self.encounterId, self.bonus.normal)
+     end,
+    OnButton2 = function(self)
+        awardBonusValue(self.encounterId, self.bonus.hardMode)
+    end,
+    -- OnButton3 = function(self)
+    --     awardBonusValue(self.encounterId, tonumber(self.editBox:GetText()) or 0)
+    -- end,
+    OnButton3 = function()
+    end,
+    -- sound = 
+    -- verticalButtonLayout = true,
+    multiple = true,
+    enterClicksFirstButton = false,
+    noCancelOnReuse = true,
+    notClosableByLogout = true,
+    timeout = 30,
+    -- hasEditBox = true,
+    whileDead = true,
+    hideOnEscape = false,
+    selectCallbackByIndex = true
+}
+
 local function awardBossKillBonus(id, difficultyId)
     if not difficultyId then
         local _, _, difficultyID = GetInstanceInfo()
@@ -55,9 +120,20 @@ local function awardBossKillBonus(id, difficultyId)
         local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
         local config = CLM.MODULES.RaidManager:GetRaid():Configuration()
         if config:Get("bossKillBonus") then
-            local value = roster:GetBossKillBonusValue(id, difficultyId)
-            if value ~= 0 then
-                CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
+            local normalBonus = roster:GetBossKillBonusValue(id, difficultyId, false)
+            local hardModeBonus = roster:GetBossKillBonusValue(id, difficultyId, true)
+            if CLM.EncounterHasHardMode[id] and hardModeBonus ~= normalBonus then
+                local bonusValueString  = string.format("|cff44ee44%d|r/|cffee4444%d|r", normalBonus, hardModeBonus)
+                local dialog = StaticPopup_Show(POPUP, CLM.EncounterIDsMap[id], bonusValueString)
+                if dialog then
+                    dialog.encounterId = id
+                    dialog.bonus = {
+                        normal = normalBonus,
+                        hardMode = hardModeBonus
+                    }
+                end
+            else
+                awardBonusValue(id, normalBonus)
             end
         end
     end
