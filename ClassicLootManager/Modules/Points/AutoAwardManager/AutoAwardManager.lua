@@ -57,25 +57,9 @@ StaticPopupDialogs[POPUP] = {
     button2 = CLM.L["Hard Mode"],
     -- button3 = CLM.L["Custom"],
     -- button3 = CLM.L["Cancel"],
-    -- hasDropDown = true,
-	-- dropDownOptions = {},
-    -- dropDownDefaultOption = 1,
-    OnShow = function (self, data)
-        -- self.DropDownControl:SetOptions({1, 2, 3 }, 1)
-        -- self.text:SetWidth(450)
-        -- self.center:SetWidth(320)
+    OnShow = function (self)
         -- self.editBox:SetText(CLM.L["Custom value"])
         -- self.button3:Disable()
-        local buttonPadding = 10
-        local minButtonWidth = 120
-        -- self.button1:ClearAllPoints()
-        -- self.button2:ClearAllPoints()
-        -- self.button3:ClearAllPoints()
-        -- self.button4:ClearAllPoints()
-        -- self.button1:SetPoint("TOP", self.editBox, "BOTTOM", -(minButtonWidth + buttonPadding)/2, -16)
-        -- self.button2:SetPoint("BOTTOMLEFT", self.button1, "BOTTOMRIGHT", buttonPadding, 0)
-        -- self.button3:SetPoint("TOP", self.button1, "BOTTOM", 0, -6)
-        -- self.button4:SetPoint("BOTTOMLEFT", self.button3, "BOTTOMRIGHT", buttonPadding, 0)
     end,
     -- EditBoxOnTextChanged = function (editBoxSelf, data)
     --     if tonumber(editBoxSelf:GetText()) then
@@ -101,7 +85,7 @@ StaticPopupDialogs[POPUP] = {
     enterClicksFirstButton = false,
     noCancelOnReuse = true,
     notClosableByLogout = true,
-    timeout = 30,
+    timeout = 60,
     -- hasEditBox = true,
     whileDead = true,
     hideOnEscape = false,
