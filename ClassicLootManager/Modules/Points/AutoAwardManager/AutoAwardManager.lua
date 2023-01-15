@@ -55,38 +55,20 @@ StaticPopupDialogs[POPUP] = {
     text = CLM.L["Select |cffeeee00%s|r kill mode for bonus value award (%s)."],
     button1 = CLM.L["Normal Mode"],
     button2 = CLM.L["Hard Mode"],
-    -- button3 = CLM.L["Custom"],
-    -- button3 = CLM.L["Cancel"],
-    OnShow = function (self)
-        -- self.editBox:SetText(CLM.L["Custom value"])
-        -- self.button3:Disable()
-    end,
-    -- EditBoxOnTextChanged = function (editBoxSelf, data)
-    --     if tonumber(editBoxSelf:GetText()) then
-    --         editBoxSelf:GetParent().button3:Enable()
-    --     else
-    --         editBoxSelf:GetParent().button3:Disable()
-    --     end
-    -- end,
     OnButton1 = function(self)
         awardBonusValue(self.encounterId, self.bonus.normal)
      end,
     OnButton2 = function(self)
         awardBonusValue(self.encounterId, self.bonus.hardMode)
     end,
-    -- OnButton3 = function(self)
-    --     awardBonusValue(self.encounterId, tonumber(self.editBox:GetText()) or 0)
-    -- end,
     OnButton3 = function()
     end,
     -- sound = 
-    -- verticalButtonLayout = true,
     multiple = true,
     enterClicksFirstButton = false,
     noCancelOnReuse = true,
     notClosableByLogout = true,
     timeout = 60,
-    -- hasEditBox = true,
     whileDead = true,
     hideOnEscape = false,
     selectCallbackByIndex = true
