@@ -1589,7 +1589,7 @@ CLM.L["Select roster"] = "Roster auswählen"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:883
 CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "Wöchentliche Reset Zeitzone auswählen. EU: Mi 07:00 GMT oder US: Die 15:00 GMT"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:55
---CLM.L["Select |cffeeee00%s|r kill mode for bonus value award (%s)."] = ""
+--CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = ""
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:745
 CLM.L["Selected"] = "Ausgewählt"
 -- ClassicLootManager_Integrations/GUI.lua:148

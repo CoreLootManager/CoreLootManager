@@ -52,7 +52,7 @@ end
 local POPUP = "CLM_BOSS_KILL_BONUS_HARD_MODE"
 
 StaticPopupDialogs[POPUP] = {
-    text = CLM.L["Select |cffeeee00%s|r kill mode for bonus value award (%s)."],
+    text = CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."],
     button1 = CLM.L["Normal Mode"],
     button2 = CLM.L["Hard Mode"],
     OnButton1 = function(self)
