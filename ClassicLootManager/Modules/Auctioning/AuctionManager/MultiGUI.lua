@@ -760,6 +760,7 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
     }
 end
 
+local xcnt = 0
 function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
@@ -807,8 +808,6 @@ function AuctionManagerGUI:Toggle()
     LOG:Trace("AuctionManagerGUI:Toggle()")
     if not self._initialized then return end
     if self.top:IsVisible() or not CLM.MODULES.ACL:IsTrusted() then
-        -- Award reset on closing BidWindow.
-        -- AuctionManagerGUI:ClearSelectedBid()
         self.top:Hide()
     else
         self:Show()
