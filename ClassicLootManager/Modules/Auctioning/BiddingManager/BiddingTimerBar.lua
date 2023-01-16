@@ -103,6 +103,7 @@ function BiddingTimerBar:Test(options)
         GetEndTime = function() return GetServerTime() + 300 end,
         GetTime = function() return 300 end,
     }
+    options.callback = function() CLM.LOG:Message("Test Bar Clicked") end
     return BiddingTimerBar:New(item, auction, options)
 end
 
