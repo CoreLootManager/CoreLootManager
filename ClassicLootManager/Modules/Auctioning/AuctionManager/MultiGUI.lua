@@ -760,7 +760,6 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
     }
 end
 
-local xcnt = 0
 function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
