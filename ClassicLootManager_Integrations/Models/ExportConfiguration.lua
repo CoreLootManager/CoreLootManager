@@ -10,7 +10,7 @@ function ExportConfiguration:New(format, jobs, timerange, rosters, profiles)
     setmetatable(o, self)
     self.__index = self
 
-    o.format = CLM.CONSTANTS.FORMAT_VALUES[format] and format or CLM.CONSTANTS.FORMAT_VALUE.XML
+    o.format = PRIV.CONSTANTS.FORMAT_VALUES[format] and format or PRIV.CONSTANTS.FORMAT_VALUE.XML
     o.jobs = jobs
     o.timerange = {
         begin = timerange.begin or 0,
