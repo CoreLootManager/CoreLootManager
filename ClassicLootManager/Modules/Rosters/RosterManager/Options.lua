@@ -1004,30 +1004,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         width = 1,
                         order = 12
                     },
-                    base_always = {
-                        name = CLM.L["Always allow Base bids"],
-                        desc = CLM.L["Enable to allow base bids even if higher bids are present if player didn't bid yet. Affects Open-Ascending Auction."],
-                        type = "toggle",
-                        disabled = disableManage,
-                        width = 1,
-                        order = 12.1
-                    },
-                    allin_always = {
-                        name = CLM.L["Always allow All-In bids"],
-                        desc = CLM.L["Enable to always allow All-In bids. Affects Open-Ascending Auction."],
-                        type = "toggle",
-                        disabled = disableManage,
-                        width = 1,
-                        order = 12.2
-                    },
-                    equalbids = {
-                        name = CLM.L["Allow equal bids"],
-                        desc = CLM.L["Enable to allow equal bids. Affects Open-Ascending Auction."],
-                        type = "toggle",
-                        disabled = disableManage,
-                        width = 1,
-                        order = 12.3
-                    },
                     cancelpass = {
                         name = CLM.L["Always allow cancel/pass"],
                         desc = CLM.L["Enable to always allow cancelling or passing bids. Affects Open-Ascending Auction."],
@@ -1122,6 +1098,30 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     end
     -- Point Specific auction settings
     if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+        options.args.auction.args.base_always = {
+            name = CLM.L["Always allow Base bids"],
+            desc = CLM.L["Enable to allow base bids even if higher bids are present if player didn't bid yet. Affects Open-Ascending Auction."],
+            type = "toggle",
+            disabled = disableManage,
+            width = 1,
+            order = 12.1
+        }
+        options.args.auction.args.allin_always = {
+            name = CLM.L["Always allow All-In bids"],
+            desc = CLM.L["Enable to always allow All-In bids. Affects Open-Ascending Auction."],
+            type = "toggle",
+            disabled = disableManage,
+            width = 1,
+            order = 12.2
+        }
+        options.args.auction.args.equalbids = {
+            name = CLM.L["Allow equal bids"],
+            desc = CLM.L["Enable to allow equal bids. Affects Open-Ascending Auction."],
+            type = "toggle",
+            disabled = disableManage,
+            width = 1,
+            order = 12.3
+        }
         options.args.auction.args.auction_type = {
             name = CLM.L["Auction type"],
             desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],

@@ -1,6 +1,28 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.0.1",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    { header = "v3.0.0", body = "Be sure to read v3.0.0 release note if you haven't yet!" },
+                    { header = "Missed change: Bid posting", body = "v3.0.0 removes automatic bid posting. You can do it manually through Auction History UI."}
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Lingering invisible bars", body = "There should be no more invisible bars lingering during auctioning." },
+                    { header = "Auto-Trade", body = "Auto trade should work now as expected." },
+                    { header = "Unusable detection", body = "Detection of unusable items should be working agian." },
+                    { header = "Award slash command", body = "Award slash command has returned in old form as `/clm aw`." },
+                    { header = "ElvUI", body = "Open Auction list should be visible now." },
+                },
+            },
+        }
+    },
+    {
         version = "v3.0.0",
         data = {
             {

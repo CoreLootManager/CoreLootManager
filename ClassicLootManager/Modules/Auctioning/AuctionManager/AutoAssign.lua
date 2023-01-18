@@ -15,7 +15,7 @@ local ipairs = ipairs
 local BIND_TRADE_TIME_REMAINING, ITEM_SOULBOUND, ERR_TRADE_COMPLETE  = BIND_TRADE_TIME_REMAINING, ITEM_SOULBOUND, ERR_TRADE_COMPLETE
 local sgsub, sfind = string.gsub, string.find
 local tinsert, tremove = table.insert, table.remove
-local C_TimerAfter, UseContainerItem, GetTradePlayerItemLink = C_Timer.After, UseContainerItem, GetTradePlayerItemLink
+local C_TimerAfter, GetTradePlayerItemLink = C_Timer.After, GetTradePlayerItemLink
 local GetNumLootItems, GetLootSlotInfo, GetItemInfoInstant, GetLootSlotLink, GetNumGroupMembers, GetMasterLootCandidate, GiveMasterLoot = GetNumLootItems, GetLootSlotInfo, GetItemInfoInstant, GetLootSlotLink, GetNumGroupMembers, GetMasterLootCandidate, GiveMasterLoot
 local UnitName = UnitName
 
@@ -106,7 +106,7 @@ end
 local function ScanBagsForItem(itemId, tradeableOnly)
     local found = {}
     for bag = 0, 4 do
-        for slot = 1, GetContainerNumSlots(bag) do
+        for slot = 1, C_Container.GetContainerNumSlots(bag) do
             BagItemChecker:Set(bag, slot)
             if not BagItemChecker:IsLocked() and (BagItemChecker:GetItemId() == itemId) then
                 local isTradeable = true
@@ -155,7 +155,7 @@ local function HandleTradeShow(self)
                 local loc = tremove(foundItems[itemId])
                 totalQueued = totalQueued + 1
                 C_TimerAfter(0.25*totalQueued, function()
-                    UseContainerItem(loc.bag, loc.slot)
+                    C_Container.UseContainerItem(loc.bag, loc.slot)
                 end)
                 if totalQueued == 6 then
                     break
