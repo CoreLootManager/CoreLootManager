@@ -3,6 +3,8 @@
 ### v3.0.0
 Be sure to read v3.0.0 release note if you haven't yet!
 ## Fixes
+### Out of Guild bidding
+Players not in guild can now again participate in auctions. Both ML and player require at least this version of CLM.
 ### Lingering invisible bars
 There should be no more invisible bars lingering during auctioning.
 ### Auto-Trade
