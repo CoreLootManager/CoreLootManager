@@ -611,7 +611,7 @@ end
 function UTILS.IsTooltipTextRed(text)
     if text and text:GetText() then
         local r,g,b = text:GetTextColor()
-        return mfloor(r*256) == 255 and mfloor(g*256) == 32 and mfloor(b*256) == 32
+        return mfloor(r*256) >= 255 and mfloor(g*256) == 32 and mfloor(b*256) == 32
     end
     return false
 end

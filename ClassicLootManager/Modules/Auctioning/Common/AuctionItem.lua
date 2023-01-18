@@ -43,8 +43,9 @@ function AuctionItem:New(item)
     setmetatable(o, self)
 
     o.item = item or emptyItem
-    self.values = {}
-    self:Clear()
+    o.canUse = true
+    o.values = {}
+    o:Clear()
 
     CheckUsability(o)
 
@@ -142,7 +143,7 @@ function AuctionItem:Clear()
     self.rollValues = {}
     self.awardEntryId = nil
     self.bid = nil
-    self.canUse = true
+    -- self.canUse = true
     self.highestBid = -math.huge
 end
 
