@@ -219,8 +219,28 @@ local function AddItemToAuction(auctionInfo, item, note, values, callbackFn)
 end
 
 local function StartAuction(self, data)
-    local auction = CLM.MODELS.AuctionInfo:New()
-    -- auction:UpdateRaid(CLM.MODULES.RaidManager:GetRaid())
+    local auction
+
+    local raid = CLM.MODULES.RaidManager:GetRaid()
+    if raid then -- If we have raid in our cache that we are in, use it
+        auction = CLM.MODELS.AuctionInfo:New()
+        auction:UpdateRaid(raid)
+    else -- Check if we have extended configuration available
+        if data:Version() == 2 then
+            -- Extended configuration came from channel
+            auction = CLM.MODELS.AuctionInfo:NewShim(
+                data:GetType(),
+                data:GetMode(),
+                data:GetUseOS(),
+                data:GetNamedButtonsMode(),
+                data:GetIncrement(),
+                data:GetFieldNames()
+            )
+        else
+            LOG:Message("Out of guild bidding requires newer version of CLM from Master Looter.")
+            return false
+        end
+    end
 
     for id, info in pairs(data:Items()) do
         AddItemToAuction(auction, Item:CreateFromItemID(id), info.note, info.values)
@@ -231,6 +251,8 @@ local function StartAuction(self, data)
     auction:Start(data:EndTime())
 
     self.auction = auction
+
+    return true
 end
 
 local function EndAuction(self)
@@ -248,11 +270,8 @@ function BiddingManager:HandleStartAuction(data, sender)
         return
     end
     self.auctioneer = sender
-    -- if not CLM.MODULES.RaidManager:IsInRaid() then
-    --     LOG:Message("Received new auction while not in raid.")
-    --     return
-    -- end
-    StartAuction(self, CLM.MODELS.AuctionCommStartAuction:New(data))
+    local success = StartAuction(self, CLM.MODELS.AuctionCommStartAuction:New(data))
+    if not success then return end
     PlayStartSound()
 
     CLM.GUI.BiddingManager:StartAuction()

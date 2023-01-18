@@ -12,6 +12,13 @@ local AuctionItem = CLM.MODELS.AuctionItem
 local assertTypeof = UTILS.assertTypeof
 local assertType = UTILS.assertType
 
+local nickMap = {
+    "Millhouse ",
+    "Jenkins ",
+    "Hemet ",
+    "Mrgl-Mrgl "
+}
+
 local AuctionInfo = {} -- AuctionInfo
 AuctionInfo.__index = AuctionInfo
 
@@ -52,6 +59,67 @@ function AuctionInfo:New(object)
 
     o.endTime = object.endTime or 0
     o.antiSnipeLimit = object.antiSnipeLimit or 0
+
+    return o
+end
+
+function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, fieldNames)
+    local o = {}
+    setmetatable(o, self)
+
+    o.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
+    o.items = {}
+    o.itemCount = 0
+
+    o.auctionTime = 0
+    o.antiSnipe = 0
+    o.endTime = 0
+    o.antiSnipeLimit =  0
+
+    -- Remove unsupported
+    o.UpdateRaid = nil
+    o.UpdateRoster = nil
+    o.GetAlwaysAllowBaseBids = nil
+    o.GetAlwaysAllowAllInBids = nil
+    o.GetAllowEqualBids = nil
+    o.GetAllowCancelPass = nil
+    o.GetTax = nil
+    o.GetRounding = nil
+    o.GetMinimumPoints = nil
+    o.GetAllowBelowMinStandings = nil
+
+    -- Overwrite new ones
+    self.auctionType = auctionType
+    self.mode = mode
+    self.useOS = useOS
+    self.namedButtons = namedButtons
+
+    self.increment = increment
+    self.fieldNames = UTILS.DeepCopy(fieldNames)
+    
+    o.GetType = function(self)
+        return self.auctionType
+    end
+    
+    o.GetMode = function(self)
+        return self.mode
+    end
+    
+    o.GetUseOS = function(self)
+        return self.useOS
+    end
+    
+    o.GetNamedButtonsMode = function(self)
+        return self.namedButtons
+    end
+    
+    o.GetFieldName = function(self, tier)
+        return self.fieldNames[tier] or ""
+    end
+
+    o.GetIncrement = function(self)
+        return self.increment
+    end
 
     return o
 end
@@ -324,13 +392,6 @@ function AuctionInfo:HasBids(itemId, username)
     return false
 end
 
-local nickMap = {
-    "Millhouse ",
-    "Jenkins ",
-    "Hemet ",
-    "Mrgl-Mrgl "
-}
-
 function AuctionInfo:GetAnonymousName(name)
     if not self.anonymousMap[name] then
         self.anonymousMap[name] = nickMap[math.random(1,#nickMap)] .. tostring(self.nextAnonymousId)
@@ -339,6 +400,9 @@ function AuctionInfo:GetAnonymousName(name)
     return self.anonymousMap[name]
 end
 
+-----------------
+--- CONSTANTS ---
+-----------------
 CONSTANTS.AUCTION_INFO = {
     STATE = {
         NOT_CONFIGURED = 0,
@@ -354,3 +418,4 @@ CONSTANTS.AUCTION_INFO.STATES_ALLOW_ADDING_ITEMS = UTILS.Set({
 })
 
 CLM.MODELS.AuctionInfo = AuctionInfo
+CLM.MODELS.ShimAuctionInfo = ShimAuctionInfo

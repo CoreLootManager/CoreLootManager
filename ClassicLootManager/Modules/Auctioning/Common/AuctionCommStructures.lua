@@ -20,6 +20,8 @@ function AuctionCommStartAuction:New(object)
     local o = (type(object) == "table") and object or {}
     setmetatable(o, self)
 
+    CLM.UTILS.DumpTable(o)
+
     return o
 end
 
@@ -60,7 +62,6 @@ function AuctionCommStartAuction:NewFromAuctionInfo(auction)
     o.d = auction:GetEndTime()
     o.s = auction:GetAntiSnipe()
     o.c = GetConfig(auction)
-    -- o.c = auction.configuration
 
     o.i = SerializeItems(auction:GetItems())
 
@@ -81,6 +82,38 @@ end
 
 function AuctionCommStartAuction:Items()
     return self.i or {}
+end
+
+function AuctionCommStartAuction:GetRosterUID()
+    return self.c.r or 0
+end
+
+function AuctionCommStartAuction:GetType()
+    return self.c.t or CONSTANTS.AUCTION_TYPE.SEALED
+end
+
+function AuctionCommStartAuction:GetMode()
+    return self.c.m or CONSTANTS.ITEM_VALUE_MODE.ASCENDING
+end
+
+function AuctionCommStartAuction:GetUseOS()
+    return self.c.o or true
+end
+
+function AuctionCommStartAuction:GetNamedButtonsMode()
+    return self.c.n or false
+end
+
+function AuctionCommStartAuction:GetIncrement()
+    return self.c.i or 1
+end
+
+function AuctionCommStartAuction:GetFieldNames()
+    return self.c.f or {}
+end
+
+function AuctionCommStartAuction:Version()
+    return (self.c ~= nil) and 2 or 1
 end
 
 --------------------------

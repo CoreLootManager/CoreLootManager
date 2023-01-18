@@ -207,7 +207,7 @@ end
 local whoamiGUID = UTILS.whoamiGUID()
 local function BidAllIn(self)
     local roster = CLM.MODULES.BiddingManager:GetAuctionInfo():GetRoster()
-    if roster:IsProfileInRoster(whoamiGUID) then
+    if roster and roster:IsProfileInRoster(whoamiGUID) then
         local standings = roster:Standings(whoamiGUID)
         SetInputValue(self, standings)
         BidInputValue(self, CONSTANTS.BID_TYPE.MAIN_SPEC)
@@ -862,21 +862,23 @@ function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     SetInputValue(self, values[CONSTANTS.SLOT_VALUE_TIER.BASE])
 end
 
-local function BuildBidRow(name, response, roster, namedButtonMode)
+local function BuildBidRow(name, response, roster, namedButtonMode, auction)
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
     local class, classColor, current = "", nil, 0
     if profile then
         class = profile:ClassInternal()
         classColor = UTILS.GetClassColor(profile:Class())
-        if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
-            current = roster:Standings(profile:GUID())
-        else
-            current = roster:Priority(profile:GUID())
+        if roster then
+            if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
+                current = roster:Standings(profile:GUID())
+            else
+                current = roster:Priority(profile:GUID())
+            end
         end
     end
     local bidTypeString
     if namedButtonMode then
-        bidTypeString = roster:GetFieldName(response:Type())
+        bidTypeString = auction:GetFieldName(response:Type())
         if not bidTypeString or bidTypeString == "" then bidTypeString = nil end
     end
     local bidColor
@@ -912,7 +914,7 @@ function BiddingManagerGUI:RefreshBidList()
         local roster = auction:GetRoster()
         for name, response in pairs(item:GetAllResponses()) do
             if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then -- TODO CONFIGURABLE
-                bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode)
+                bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode, auction)
             end
         end
     end
@@ -942,7 +944,7 @@ local function UpdateCurrentStandings(self)
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
     if not auction then return end
     local roster = CLM.MODULES.BiddingManager:GetAuctionInfo():GetRoster()
-    if roster:IsProfileInRoster(whoamiGUID) then
+    if roster and roster:IsProfileInRoster(whoamiGUID) then
         local value
         if roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
             value = tostring(roster:Standings(whoamiGUID)) .. " " .. CLM.L["DKP"]
