@@ -59,7 +59,7 @@ function RosterConfiguration:New(i)
     -- Round Decimals
     o._.roundDecimals = 10
     -- Minimal bid increment for open auction
-    o._.minimalIncrement = 1
+    o._.minimalIncrement = 0
     -- Bench players leaving raid
     o._.autoBenchLeavers = false
     -- Include bench in auto-awards
