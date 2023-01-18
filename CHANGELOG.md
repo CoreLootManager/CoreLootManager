@@ -1,3 +1,18 @@
+# Classic Loot Manager v3.0.1
+## Notes
+### v3.0.0
+Be sure to read v3.0.0 release note if you haven't yet!
+## Fixes
+### Lingering invisible bars
+There should be no more invisible bars lingering during auctioning.
+### Auto-Trade
+Auto trade should work now as expected.
+### Unusable detection
+Detection of unusable items should be working agian.
+### Award slash command
+Award slash command has returned in old form as `/clm aw`.
+### ElvUI
+Open Auction list should be visible now.
 # Classic Loot Manager v3.0.0
 ## Notes
 With CLM v3 There comes a big mentality shift in the auctioning system towards becoming a more robust, point-based loot management framework. Notion of "English" or "Swedish" auction has been dropped towards bigger flexibility. This is a major change and as a consequence CLM v2 communication is not compatible with CLM v3 (but the database is preserved unlike when migrating from v1 to v2). Be aware that CLM does not allow multiple MAJOR versions to be used in one guild thus all v2 users will have their CLM disabled once someone starts to use v3.

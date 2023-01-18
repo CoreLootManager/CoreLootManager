@@ -666,7 +666,7 @@ local function CreateDataGroup(self)
     return DataGroup
 end
 
-local prevBLH
+local originalBidListHeight -- ElvUI Workaround. fix it TODO
 local function UpdateUIStructure(self)
     local auctionInfo = CLM.MODULES.BiddingManager:GetAuctionInfo()
     if (auctionInfo and auctionInfo:GetNamedButtonsMode() or false) then
@@ -703,17 +703,17 @@ local function UpdateUIStructure(self)
     end
     if CONSTANTS.AUCTION_TYPES_OPEN[auctionInfo and auctionInfo:GetType()] then
         self.BidList:Show()
-        if isElvUI and prevBLH then
-            self.BidList:SetHeight(prevBLH)
+        if isElvUI and originalBidListHeight then
+            self.BidList:SetHeight(originalBidListHeight)
         end
         local itemRows = UTILS.Saturate(numRows + 6, 1, 8)
         self.ItemList:SetDisplayRows(itemRows, 32)
     else
-        self.BidList:Hide()
-        if isElvUI then
-            prevBLH = self.BidList.frame:GetHeight()
+        if isElvUI and not originalBidListHeight then
+            originalBidListHeight = self.BidList.frame:GetHeight()
             self.BidList:SetHeight(0)
         end
+        self.BidList:Hide()
 
         local itemRows = UTILS.Saturate(numRows + 1, 1, 4)
         self.ItemList:SetDisplayRows(itemRows, 32)
