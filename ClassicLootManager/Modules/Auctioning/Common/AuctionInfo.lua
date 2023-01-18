@@ -12,6 +12,13 @@ local AuctionItem = CLM.MODELS.AuctionItem
 local assertTypeof = UTILS.assertTypeof
 local assertType = UTILS.assertType
 
+local nickMap = {
+    "Millhouse ",
+    "Jenkins ",
+    "Hemet ",
+    "Mrgl-Mrgl "
+}
+
 local AuctionInfo = {} -- AuctionInfo
 AuctionInfo.__index = AuctionInfo
 
@@ -56,6 +63,69 @@ function AuctionInfo:New(object)
     return o
 end
 
+local function _GetType(s)
+    return s.auctionType
+end
+local function _GetMode(s)
+    return s.mode
+end
+local function _GetUseOS(s)
+    return s.useOS
+end
+local function _GetNamedButtonsMode(s)
+    return s.namedButtons
+end
+local function _GetFieldName(s, tier)
+    return s.fieldNames[tier] or ""
+end
+local function _GetIncrement(s)
+    return s.increment
+end
+
+function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, fieldNames)
+    local o = {}
+    setmetatable(o, self)
+
+    o.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
+    o.items = {}
+    o.itemCount = 0
+
+    o.auctionTime = 0
+    o.antiSnipe = 0
+    o.endTime = 0
+    o.antiSnipeLimit =  0
+
+    -- Remove unsupported
+    o.UpdateRaid = nil
+    o.UpdateRoster = nil
+    o.GetAlwaysAllowBaseBids = nil
+    o.GetAlwaysAllowAllInBids = nil
+    o.GetAllowEqualBids = nil
+    o.GetAllowCancelPass = nil
+    o.GetTax = nil
+    o.GetRounding = nil
+    o.GetMinimumPoints = nil
+    o.GetAllowBelowMinStandings = nil
+
+    -- Overwrite new ones
+    self.auctionType = auctionType
+    self.mode = mode
+    self.useOS = useOS
+    self.namedButtons = namedButtons
+
+    self.increment = increment
+    self.fieldNames = UTILS.DeepCopy(fieldNames)
+
+    o.GetType = _GetType
+    o.GetMode = _GetMode
+    o.GetUseOS = _GetUseOS
+    o.GetNamedButtonsMode = _GetNamedButtonsMode
+    o.GetFieldName = _GetFieldName
+    o.GetIncrement = _GetIncrement
+
+    return o
+end
+
 function AuctionInfo:CopySettings(object)
     assertTypeof(object, AuctionInfo)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
@@ -72,9 +142,6 @@ function AuctionInfo:CopySettings(object)
             item:LoadValues(self.roster)
         end
     end
-
-    -- self.endTime = object.endTime or 0
-    -- self.antiSnipeLimit = object.antiSnipeLimit or 0
 end
 
 local function UpdateConfigurableData(self)
@@ -327,13 +394,6 @@ function AuctionInfo:HasBids(itemId, username)
     return false
 end
 
-local nickMap = {
-    "Millhouse ",
-    "Jenkins ",
-    "Hemet ",
-    "Mrgl-Mrgl "
-}
-
 function AuctionInfo:GetAnonymousName(name)
     if not self.anonymousMap[name] then
         self.anonymousMap[name] = nickMap[math.random(1,#nickMap)] .. tostring(self.nextAnonymousId)
@@ -342,6 +402,9 @@ function AuctionInfo:GetAnonymousName(name)
     return self.anonymousMap[name]
 end
 
+-----------------
+--- CONSTANTS ---
+-----------------
 CONSTANTS.AUCTION_INFO = {
     STATE = {
         NOT_CONFIGURED = 0,

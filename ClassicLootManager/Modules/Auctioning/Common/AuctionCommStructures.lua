@@ -34,6 +34,24 @@ local function SerializeItems(items)
     return serialized
 end
 
+local function GetConfig(auction)
+    local c = {
+        r = auction:GetRoster():UID(),
+        t = auction:GetType(),
+        m = auction:GetMode(),
+        o = auction:GetUseOS(),
+        n = auction:GetNamedButtonsMode(),
+        i = auction:GetIncrement(),
+        f = {}
+    }
+
+    for _,tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
+        c.f[tier] = auction:GetFieldName(tier)
+    end
+
+    return c
+end
+
 function AuctionCommStartAuction:NewFromAuctionInfo(auction)
     local o = {}
     setmetatable(o, self)
@@ -41,6 +59,8 @@ function AuctionCommStartAuction:NewFromAuctionInfo(auction)
     o.e = auction:GetTime()
     o.d = auction:GetEndTime()
     o.s = auction:GetAntiSnipe()
+    o.c = GetConfig(auction)
+
     o.i = SerializeItems(auction:GetItems())
 
     return o
@@ -60,6 +80,38 @@ end
 
 function AuctionCommStartAuction:Items()
     return self.i or {}
+end
+
+function AuctionCommStartAuction:GetRosterUID()
+    return self.c.r or 0
+end
+
+function AuctionCommStartAuction:GetType()
+    return self.c.t or CONSTANTS.AUCTION_TYPE.SEALED
+end
+
+function AuctionCommStartAuction:GetMode()
+    return self.c.m or CONSTANTS.ITEM_VALUE_MODE.ASCENDING
+end
+
+function AuctionCommStartAuction:GetUseOS()
+    return self.c.o or true
+end
+
+function AuctionCommStartAuction:GetNamedButtonsMode()
+    return self.c.n or false
+end
+
+function AuctionCommStartAuction:GetIncrement()
+    return self.c.i or 1
+end
+
+function AuctionCommStartAuction:GetFieldNames()
+    return self.c.f or {}
+end
+
+function AuctionCommStartAuction:Version()
+    return (self.c ~= nil) and 2 or 1
 end
 
 --------------------------
