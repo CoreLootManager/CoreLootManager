@@ -154,7 +154,7 @@ local function HandleTradeShow(self)
             if foundItems[itemId] and #foundItems[itemId] > 0 then
                 local loc = tremove(foundItems[itemId])
                 totalQueued = totalQueued + 1
-                C_TimerAfter(0.25*totalQueued, function()
+                C_TimerAfter(0.5*totalQueued, function()
                     C_Container.UseContainerItem(loc.bag, loc.slot)
                 end)
                 if totalQueued == 6 then
