@@ -220,7 +220,6 @@ end
 
 local function StartAuction(self, data)
     local auction
-
     local raid = CLM.MODULES.RaidManager:GetRaid()
     if raid then -- If we have raid in our cache that we are in, use it
         auction = CLM.MODELS.AuctionInfo:New()

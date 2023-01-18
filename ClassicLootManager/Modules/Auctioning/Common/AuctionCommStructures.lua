@@ -20,8 +20,6 @@ function AuctionCommStartAuction:New(object)
     local o = (type(object) == "table") and object or {}
     setmetatable(o, self)
 
-    CLM.UTILS.DumpTable(o)
-
     return o
 end
 

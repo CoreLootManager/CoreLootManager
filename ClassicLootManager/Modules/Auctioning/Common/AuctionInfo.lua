@@ -63,6 +63,25 @@ function AuctionInfo:New(object)
     return o
 end
 
+local function _GetType(s)
+    return s.auctionType
+end
+local function _GetMode(s)
+    return s.mode
+end
+local function _GetUseOS(s)
+    return s.useOS
+end
+local function _GetNamedButtonsMode(s)
+    return s.namedButtons
+end
+local function _GetFieldName(s, tier)
+    return s.fieldNames[tier] or ""
+end
+local function _GetIncrement(s)
+    return s.increment
+end
+
 function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, fieldNames)
     local o = {}
     setmetatable(o, self)
@@ -96,30 +115,13 @@ function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, 
 
     self.increment = increment
     self.fieldNames = UTILS.DeepCopy(fieldNames)
-    
-    o.GetType = function(self)
-        return self.auctionType
-    end
-    
-    o.GetMode = function(self)
-        return self.mode
-    end
-    
-    o.GetUseOS = function(self)
-        return self.useOS
-    end
-    
-    o.GetNamedButtonsMode = function(self)
-        return self.namedButtons
-    end
-    
-    o.GetFieldName = function(self, tier)
-        return self.fieldNames[tier] or ""
-    end
 
-    o.GetIncrement = function(self)
-        return self.increment
-    end
+    o.GetType = _GetType
+    o.GetMode = _GetMode
+    o.GetUseOS = _GetUseOS
+    o.GetNamedButtonsMode = _GetNamedButtonsMode
+    o.GetFieldName = _GetFieldName
+    o.GetIncrement = _GetIncrement
 
     return o
 end
@@ -418,4 +420,3 @@ CONSTANTS.AUCTION_INFO.STATES_ALLOW_ADDING_ITEMS = UTILS.Set({
 })
 
 CLM.MODELS.AuctionInfo = AuctionInfo
-CLM.MODELS.ShimAuctionInfo = ShimAuctionInfo
