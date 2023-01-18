@@ -10,6 +10,68 @@ local pairs = pairs
 local strsplit, strlower, tonumber = strsplit, strlower, tonumber
 local GetNumGuildMembers, GetGuildRosterInfo = GetNumGuildMembers, GetGuildRosterInfo
 
+local function Award(args)
+    args = args or ""
+    local values = {strsplit("/", args)}
+    -- Item --
+    local itemLink = values[1]
+    local itemId = UTILS.GetItemIdFromLink(itemLink)
+    if not itemId or itemId == 0 then
+        LOG:Message(CLM.L["Invalid item link"])
+        return
+    end
+    -- Value --
+    local value = tonumber(values[2] or 0)
+    if value < 0 then
+        LOG:Message(CLM.L["Item value must be positive"])
+        return
+    end
+    -- Roster --
+    local isRaid = false
+    local raid
+    local rosterName = values[3]
+    local roster
+    if not rosterName or rosterName == "" then
+        raid = CLM.MODULES.RaidManager:GetRaid()
+        if not raid then
+            LOG:Message(CLM.L["Missing roster name and you are not in raid"])
+            return
+        else
+            isRaid = true
+            LOG:Info(CLM.L["Missing roster name. Using Raid Info"])
+            roster = raid:Roster()
+            LOG:Info(CLM.L["Raid: %s Roster: %s"], raid:Name(), CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()))
+        end
+    else
+        roster = CLM.MODULES.RosterManager:GetRosterByName(rosterName)
+        if not roster then
+            LOG:Message(CLM.L["Unknown roster %s"], rosterName)
+            return
+        end
+    end
+    -- Profile --
+    local name = values[4]
+    if not name or name == "" then
+        name = UTILS.GetUnitName("target")
+    end
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+    if not profile then
+        LOG:Message(CLM.L["Missing profile %s"], name)
+        return
+    end
+    if not roster:IsProfileInRoster(profile:GUID()) then
+        LOG:Message(CLM.L["%s is not part of the %s roster"], profile:Name(), CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()))
+        return
+    end
+    -- Award --
+    local awarded = CLM.MODULES.LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
+    if awarded and not CLM.MODULES.AutoAward:IsIgnored(itemId) then
+        if CLM.MODULES.AuctionManager:GetAutoTrade() then
+            CLM.MODULES.AutoAward:Track(itemId, name)
+        end
+    end
+end
+
 local GlobalSlashCommands = {}
 function GlobalSlashCommands:Initialize()
     local options = {}
@@ -130,6 +192,15 @@ function GlobalSlashCommands:Initialize()
         end),
         confirm = true
     }
+    if CLM.MODULES.ACL:IsTrusted() then
+        options.aw = {
+            type = "input",
+            name = CLM.L["Award item"],
+            set = (function(_, args)
+                Award(args)
+            end)
+        }
+    end
     options.testbar = {
         type = "execute",
         name = CLM.L["Toggle test bar"],
