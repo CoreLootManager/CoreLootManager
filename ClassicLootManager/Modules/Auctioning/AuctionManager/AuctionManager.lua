@@ -711,6 +711,7 @@ local function ValidateBid(auction, item, name, userResponse)
     local itemValueMode = auction:GetMode()
     local roster = auction:GetRoster()
     local values = item:GetValues()
+    local isDKP  = roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP
     -- bid cancelling
     if userResponse:Type() == CONSTANTS.BID_TYPE.CANCEL then
         if auction:GetAllowCancelPass() then return true end
@@ -748,7 +749,7 @@ local function ValidateBid(auction, item, name, userResponse)
     if current < minimumPoints then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BELOW_MIN_BIDDER end
     -- allow negative standings after bid
     local new = UTILS.round(current - value, auction:GetRounding())
-    if (new < minimumPoints) and not auction:GetAllowBelowMinStandings() and (roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP) then
+    if (new < minimumPoints) and not auction:GetAllowBelowMinStandings() and isDKP then
         return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER
     end
     -- bid value
@@ -770,6 +771,9 @@ local function ValidateBid(auction, item, name, userResponse)
                       userResponse:Type() == CONSTANTS.BID_TYPE.OFF_SPEC then
                     return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.SPEC_CHANGE
                 end
+            end
+            if not isDKP then
+                return true
             end
             if auction:GetAlwaysAllowAllInBids() and (current == value) then
                 return true
