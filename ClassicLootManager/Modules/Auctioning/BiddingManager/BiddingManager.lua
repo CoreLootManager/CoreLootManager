@@ -220,7 +220,7 @@ end
 
 local function StartAuction(self, data)
     local auction = CLM.MODELS.AuctionInfo:New()
-    auction:UpdateRaid(CLM.MODULES.RaidManager:GetRaid())
+    -- auction:UpdateRaid(CLM.MODULES.RaidManager:GetRaid())
 
     for id, info in pairs(data:Items()) do
         AddItemToAuction(auction, Item:CreateFromItemID(id), info.note, info.values)
@@ -248,10 +248,10 @@ function BiddingManager:HandleStartAuction(data, sender)
         return
     end
     self.auctioneer = sender
-    if not CLM.MODULES.RaidManager:IsInRaid() then
-        LOG:Message("Received new auction while not in raid.")
-        return
-    end
+    -- if not CLM.MODULES.RaidManager:IsInRaid() then
+    --     LOG:Message("Received new auction while not in raid.")
+    --     return
+    -- end
     StartAuction(self, CLM.MODELS.AuctionCommStartAuction:New(data))
     PlayStartSound()
 
@@ -278,7 +278,6 @@ function BiddingManager:HandleStopAuction(_, sender)
     end
     EndAuction(self)
     PlayEndSound()
-    -- TODO Auction Finish
     CLM.GUI.BiddingManager:EndAuction()
     CLM.GUI.BiddingManager:Hide()
     LOG:Message(CLM.L["Auction finished"])

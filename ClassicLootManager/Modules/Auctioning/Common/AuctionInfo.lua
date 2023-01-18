@@ -72,9 +72,6 @@ function AuctionInfo:CopySettings(object)
             item:LoadValues(self.roster)
         end
     end
-
-    -- self.endTime = object.endTime or 0
-    -- self.antiSnipeLimit = object.antiSnipeLimit or 0
 end
 
 local function UpdateConfigurableData(self)

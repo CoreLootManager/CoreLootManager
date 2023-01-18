@@ -34,6 +34,24 @@ local function SerializeItems(items)
     return serialized
 end
 
+local function GetConfig(auction)
+    local c = {
+        r = auction:GetRoster():UID(),
+        t = auction:GetType(),
+        m = auction:GetMode(),
+        o = auction:GetUseOS(),
+        n = auction:GetNamedButtonsMode(),
+        i = auction:GetIncrement(),
+        f = {}
+    }
+
+    for _,tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
+        c.f[tier] = auction:GetFieldName(tier)
+    end
+
+    return c
+end
+
 function AuctionCommStartAuction:NewFromAuctionInfo(auction)
     local o = {}
     setmetatable(o, self)
@@ -41,6 +59,9 @@ function AuctionCommStartAuction:NewFromAuctionInfo(auction)
     o.e = auction:GetTime()
     o.d = auction:GetEndTime()
     o.s = auction:GetAntiSnipe()
+    o.c = GetConfig(auction)
+    -- o.c = auction.configuration
+
     o.i = SerializeItems(auction:GetItems())
 
     return o
