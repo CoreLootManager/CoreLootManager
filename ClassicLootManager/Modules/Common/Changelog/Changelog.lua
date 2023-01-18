@@ -13,7 +13,7 @@ CLM.ChangelogData = {
             {
                 name = "Fixes",
                 data = {
-                    { header = "Out of Guild bidding", data = "Players not in guild can now again participate in auctions. Both ML and player require at least this version of CLM."},
+                    { header = "Out of Guild bidding", body = "Players not in guild can now again participate in auctions. Both ML and player require at least this version of CLM."},
                     { header = "Lingering invisible bars", body = "There should be no more invisible bars lingering during auctioning." },
                     { header = "Auto-Trade", body = "Auto trade should work now as expected." },
                     { header = "Unusable detection", body = "Detection of unusable items should be working agian." },

@@ -89,7 +89,7 @@ local function Create(self)
     for _,versionData in ipairs(CLM.ChangelogData) do
         local args = {}
         for _, group in ipairs(versionData.data) do
-            local name = group.name
+            local name = group.name or ""
             args[name..counter..versionData.version.."bar"] = {
                 name = UTILS.capitalize(name),
                 type = "header",
@@ -105,7 +105,7 @@ local function Create(self)
                 }
                 counter = counter + 1
                 args[name..i..versionData.version.."body"] = {
-                    name = data.body,
+                    name = data.body or "",
                     type = "description",
                     fontSize = "medium",
                     order = counter
