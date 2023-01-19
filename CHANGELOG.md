@@ -1,3 +1,14 @@
+# Classic Loot Manager v3.0.3
+## Notes
+### v3.0.0
+Be sure to read v3.0.0 release note if you haven't yet!
+## Fixes
+### Auto-Trade
+Auto trade should work now as expected. This time really. I hope.
+### Bidding item display
+Preemptively try to refresh item list for bidders in case they load with significant delay.
+# Classic  Loot Manager v3.0.2
+Hotfix to not loading v3.0.1
 # Classic Loot Manager v3.0.1
 ## Notes
 ### v3.0.0

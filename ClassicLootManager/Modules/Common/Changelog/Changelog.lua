@@ -1,6 +1,35 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.0.3",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    { header = "v3.0.0", body = "Be sure to read v3.0.0 release note if you haven't yet!" },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Auto-Trade", body = "Auto trade should work now as expected. This time really. I hope." },
+                    { header = "Bidding item display", body = "Preemptively try to refresh item list for bidders in case they load with significant delay." },
+                },
+            },
+        },
+    },
+    {
+        version = "v3.0.2",
+        data = {
+            {
+                name = "Hotfix",
+                data = {
+                    { header = "Hotfix", body = "Hotfix for not loading CLM v3.0.1" },
+                },
+            },
+        },
+    },
+    {
         version = "v3.0.1",
         data = {
             {
