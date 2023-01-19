@@ -71,6 +71,11 @@ local function SetInputAwardMultiplier(self, value)
     UpdateAwardPrice(self)
 end
 
+local function disableInProgress()
+    local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+    return auction:IsInProgress()
+end
+
 local function genericDisable()
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
     return auction:IsInProgress() or auction:IsEmpty()
@@ -106,7 +111,7 @@ local function GenerateItemOptions(self)
                     CLM.MODULES.AuctionManager:AddItemById(itemID, function(ai) self:SetVisibleAuctionItem(ai) end)
                 end
             end),
-            disabled = genericDisable,
+            disabled = disableInProgress,
             width = 1.25,
             order = 2,
             tooltipHyperlink = itemLink,

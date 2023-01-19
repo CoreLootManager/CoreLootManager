@@ -1,6 +1,24 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.0.4",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    { header = "v3.0.0", body = "Be sure to read v3.0.0 release note if you haven't yet!" },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Auto-Trade", body = "Auto trade should work now as expected. Third time's the charm!" },
+                    { header = "Auction UI drag and drop", body = "You can now drag and drop items to the Auction UI even when it's empty." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.0.3",
         data = {
             {

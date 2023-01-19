@@ -1,3 +1,12 @@
+# Classic Loot Manager v3.0.4
+## Notes
+### v3.0.0
+Be sure to read v3.0.0 release note if you haven't yet!
+## Fixes
+### Auto-Trade
+Auto trade should work now as expected. Third time's the charm!
+### Auction UI drag and drop
+You can now drag and drop items to the Auction UI even when it's empty.
 # Classic Loot Manager v3.0.3
 ## Notes
 ### v3.0.0
