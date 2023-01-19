@@ -61,15 +61,18 @@ function BagItemChecker:Clear()
 end
 
 local function BagItemCheck(self)
-    local _, _, locked, _, _, _, itemLink, _, _, itemId = C_Container.GetContainerItemInfo(self.bag, self.slot)
-    self.itemInfo.locked = locked or false
-    self.itemInfo.id = itemId or -1
+    local info = C_Container.GetContainerItemInfo(self.bag, self.slot)
+    if not info then return end
+    self.itemInfo.locked = info.isLocked or false
+    self.itemInfo.id = info.itemID or -1
     self.itemInfo.soulbound = false
-    self.itemInfo.link = itemLink or ""
+    self.itemInfo.link = info.hyperlink or ""
     ScanTooltip(self)
 end
 
 function BagItemChecker:Set(bag, slot)
+    self:Clear()
+
     self.bag = bag
     self.slot = slot
 
@@ -153,10 +156,10 @@ local function HandleTradeShow(self)
         for _, itemId in ipairs(self.tracking[self.lastTradeTarget]) do
             if foundItems[itemId] and #foundItems[itemId] > 0 then
                 local loc = tremove(foundItems[itemId])
-                totalQueued = totalQueued + 1
                 C_TimerAfter(0.5*totalQueued, function()
                     C_Container.UseContainerItem(loc.bag, loc.slot)
                 end)
+                totalQueued = totalQueued + 1
                 if totalQueued == 6 then
                     break
                 end
