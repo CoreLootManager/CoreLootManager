@@ -194,7 +194,7 @@ PlayEndSound = function()
 end
 
 local function DefaultCallback(_)
-
+    CLM.GUI.BiddingManager:RefreshItemList()
 end
 
 local function AddItemInternal(auctionInfo, item, note, values, callbackFn)

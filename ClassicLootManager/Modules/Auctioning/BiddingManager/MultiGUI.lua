@@ -764,7 +764,7 @@ local function Create(self)
     f:Hide()
 end
 
-local function RefreshItemList(self)
+function BiddingManagerGUI:RefreshItemList()
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
     if auction then
         local itemList = {}
@@ -967,7 +967,7 @@ function BiddingManagerGUI:Refresh()
     AceConfigRegistry:NotifyChange(BUTTON_REGISTRY)
     AceConfigDialog:Open(BUTTON_REGISTRY, self.ButtonGroup) -- Refresh the config gui panel
     UpdateUIStructure(self)
-    RefreshItemList(self)
+    self:RefreshItemList()
     UpdateBarInfo(self)
     UpdateCurrentStandings(self)
     self:RefreshBidList()
