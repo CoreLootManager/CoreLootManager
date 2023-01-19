@@ -61,7 +61,7 @@ function BagItemChecker:Clear()
 end
 
 local function BagItemCheck(self)
-    local _, _, locked, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(self.bag, self.slot)
+    local _, _, locked, _, _, _, itemLink, _, _, itemId = C_Container.GetContainerItemInfo(self.bag, self.slot)
     self.itemInfo.locked = locked or false
     self.itemInfo.id = itemId or -1
     self.itemInfo.soulbound = false
