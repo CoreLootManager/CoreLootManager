@@ -112,6 +112,12 @@ local function DefaultCallback(_)
     AuctionManager:RefreshGUI()
 end
 
+local function PendingAuctionCallback(item)
+    if item then
+        LOG:Message("%s added to pending auction list.", item:GetItemLink())
+    end
+end
+
 -- If using custom callback, function, then it is responsible for doing refresh
 local function AddItemToAuctionList(self, item, callbackFn)
     callbackFn = callbackFn or DefaultCallback
@@ -119,6 +125,7 @@ local function AddItemToAuctionList(self, item, callbackFn)
     local auctionInfo = self.currentAuction
     if not auctionInfo:CanAddItems() then
         auctionInfo = self.pendingAuction
+        callbackFn = PendingAuctionCallback
     end
 
     local auctionItem = auctionInfo:AddItem(item)
