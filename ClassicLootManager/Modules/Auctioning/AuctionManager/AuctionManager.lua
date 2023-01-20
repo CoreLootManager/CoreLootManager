@@ -538,6 +538,16 @@ function AuctionManager:AddItemByLink(itemLink, callbackFn)
     AddItemProxy(self, Item:CreateFromItemLink(itemLink), callbackFn)
 end
 
+function AuctionManager:MoveItemToPendingList(item)
+    if self.currentAuction:IsInProgress() then
+        LOG:Warning(CLM.L["Removing items not allowed during auction."])
+        return
+    end
+    self:RemoveItemFromCurrentAuction(item)
+    self.pendingAuction:AddExistingAuctionItem(item)
+
+end
+
 local function EndAuction(self)
     self.currentAuction:End()
     SendAuctionEnd()
@@ -589,7 +599,7 @@ end
 function AuctionManager:RemoveItemFromCurrentAuction(item)
     if self.currentAuction:IsInProgress() then
         LOG:Warning(CLM.L["Removing items not allowed during auction."])
-        do return end
+        return
     end
     self.currentAuction:RemoveItem(item:GetItemID())
     if self.currentAuction:IsEmpty() then

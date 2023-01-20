@@ -201,14 +201,28 @@ function AuctionInfo:UpdateRaid(raid)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
 end
 
+local function AddAuctionItemToList(self, auctionItem)
+    self.items[auctionItem:GetItemID()] = auctionItem
+    self.itemCount = self.itemCount + 1
+end
+
 local function AddItemInternal(self, item)
     if self.items[item:GetItemID()] then
         LOG:Message("%s already in auction list.", item:GetItemLink())
         return
     end
     local auctionItem = AuctionItem:New(item)
-    self.items[item:GetItemID()] = auctionItem
-    self.itemCount = self.itemCount + 1
+    AddAuctionItemToList(self, auctionItem)
+    return auctionItem
+end
+
+function AuctionInfo:AddExistingAuctionItem(auctionItem)
+    assertCantAddItems(self)
+    if self.items[auctionItem:GetItemID()] then
+        LOG:Message("%s already in auction list.", auctionItem:GetItemLink())
+        return
+    end
+    AddAuctionItemToList(self, auctionItem)
     return auctionItem
 end
 
