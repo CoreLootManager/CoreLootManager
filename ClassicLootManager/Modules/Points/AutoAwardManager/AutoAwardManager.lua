@@ -37,6 +37,21 @@ local bossKillEncounterWorkaround = {
     [774] = 1127,
     [776] = 1128,
     [885] = 1129,
+    -- Ulduar
+    [757] = 1130, -- Might require workaround
+    [750] = 1131,
+    [744] = 1132,
+    [753] = 1133,
+    [755] = 1134,
+    [751] = 1135,
+    [745] = 1136,
+    [749] = 1137,
+    [754] = 1138,
+    [746] = 1139,
+    [748] = 1140, -- Might require workaround
+    [752] = 1141,
+    [747] = 1142,
+    [756] = 1143
 }
 
 local function normalizeDifficultyId(difficultyId)
