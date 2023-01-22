@@ -837,12 +837,18 @@ end
 
 function BiddingManagerGUI:BuildBidOrder()
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+    local previousSize = self.auctionOrder and #self.auctionOrder or 0
+
     self.auctionOrder = {}
     self.nextItem = 1
     if not auction then return end
 
     for id in pairs(auction:GetItems()) do
         self.auctionOrder[#self.auctionOrder+1] = id
+    end
+
+    if previousSize ~= #self.auctionOrder then
+        self:Advance()
     end
 end
 
@@ -876,6 +882,13 @@ function BiddingManagerGUI:AntiSnipe()
     if self.bar then
         self.bar:UpdateTime(CLM.MODULES.BiddingManager:GetAuctionInfo():GetAntiSnipe())
     end
+end
+
+function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
+    self.auctionItem = auctionItem
+    if not auctionItem then return end
+    local values = self.auctionItem:GetValues()
+    SetInputValue(self, values[CONSTANTS.SLOT_VALUE_TIER.BASE])
 end
 
 function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
