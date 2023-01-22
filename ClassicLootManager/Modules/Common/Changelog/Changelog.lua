@@ -1,6 +1,31 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.1.0",
+        data = {
+            {
+                name = "Notes",
+                data = {
+                    { header = "Apache2 License", body = "Classic Loot Manager has been relicensed from MIT to Apache2. That means CLM is still fully FOSS but now when reusing the code you not only need to attribute ownership to the CLM creators but you also have to explicitly state which parts are reused and modified." },
+                    { header = "v3.0.0", body = "Be sure to read v3.0.0 release note if you haven't yet!" },
+                },
+            },
+            {
+                name = "Changes",
+                data = {
+                    { header = "Moving items to the pending queue", body = "Auctioner UI behavior was modified slightly. When right clicking on items they are moved to the pending queue (the additonal queue that is hidden and populated automatically when current auction is in progress) instead of being removed. This means that after current auction is completed and cleared those will still show up. This allows players to easily utilize tracking if not auctioning all the items at the same time. You can still completely remove item from the queue through |ff44ee44Ctrl + Right click|r." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Missing items", body = "Multi Item Auction should no longer have missing items or errors. You will notice that sometimes items might load with a slight delay which is expected on laggy realms." },
+                    { header = "Boss Kill Bonus", body = "Ulduar boss encounter IDs are updated now per Blizzard changes and should work properly." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.0.4",
         data = {
             {
