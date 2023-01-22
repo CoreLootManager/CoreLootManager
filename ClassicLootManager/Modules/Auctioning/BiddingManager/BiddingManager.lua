@@ -194,6 +194,9 @@ PlayEndSound = function()
 end
 
 local function DefaultCallback(_)
+    -- Update Bid Order for auto-move
+    CLM.GUI.BiddingManager:BuildBidOrder()
+    -- Refresh view
     CLM.GUI.BiddingManager:RefreshItemList()
 end
 
@@ -245,6 +248,7 @@ local function StartAuction(self, data)
         AddItemToAuction(auction, Item:CreateFromItemID(id), info.note, info.values)
     end
 
+    auction:SetPassiveMode()
     auction:SetTime(data:Time())
     auction:SetAntiSnipe(data:AntiSnipe())
     auction:Start(data:EndTime())
@@ -283,7 +287,9 @@ function BiddingManager:HandleStartAuction(data, sender)
         auctionMessage = sformat(CLM.L["Auction of %s items."], numItems)
     else
         local _, item = next(self.auction:GetItems())
-        auctionMessage = sformat(CLM.L["Auction of %s"], item:GetItemLink())
+        if item then
+            auctionMessage = sformat(CLM.L["Auction of %s"], item:GetItemLink())
+        end
     end
     LOG:Message(auctionMessage)
 end
@@ -435,3 +441,73 @@ CONSTANTS.BID_TYPE_NAMES = {
 }
 
 CLM.MODULES.BiddingManager = BiddingManager
+--@do-not-package@
+
+local isFakeAuctionInProgress
+function BiddingManager:FakeAuction()
+    if  isFakeAuctionInProgress then
+        BiddingManager:HandleStopAuction()
+        isFakeAuctionInProgress = false
+        return
+    end
+    -- Store original send
+    local _Send = CLM.MODULES.Comms.Send
+    -- Fake send
+    CLM.MODULES.Comms.Send = function(self, prefix, message, distribution, target, priority)
+        C_Timer.After(0, function()
+            BiddingManager:HandleIncomingMessage(CLM.MODELS.AuctionCommStructure:New(message), _, target)
+        end)
+    end
+    -- Build Message
+    local fakeAuctionStart = CLM.MODELS.AuctionCommStartAuction:New()
+
+    fakeAuctionStart.c = {
+        r = 0,
+        t = CONSTANTS.AUCTION_TYPE.SEALED,
+        m = CONSTANTS.ITEM_VALUE_MODE.ASCENDING,
+        o = true,
+        n = false,
+        i = 1,
+        f = {}
+    }
+
+    fakeAuctionStart.e = 300
+    fakeAuctionStart.d = GetServerTime() + 300
+    fakeAuctionStart.s = 30
+
+    local nItems
+    fakeAuctionStart.i, nItems = (function()
+        local numItems = math.random(3, 7)
+        local items = {}
+        for i=1,numItems do
+            local id
+            local doBreak = false
+            repeat
+                id = math.random(10000,58000)
+                if items[id] == nil and GetItemInfoInstant(id) then
+                    doBreak = true
+                    items[id] = {
+                        values = {
+                            [CONSTANTS.SLOT_VALUE_TIER.BASE] = math.random(0, 20),
+                            [CONSTANTS.SLOT_VALUE_TIER.MAX] = math.random(0, 10000)
+                        },
+                        note = "item note for id " .. tostring(id)
+                    }
+                end
+            until (doBreak)
+        end
+        return items, numItems
+    end)()
+    LOG:Message("Auction of " .. tostring(nItems) .. " items [FAKE]")
+    local message = CLM.MODELS.AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION,
+        fakeAuctionStart
+    )
+    -- Send Message
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+    -- Restore
+    CLM.MODULES.Comms.Send = _Send
+
+    isFakeAuctionInProgress = true
+end
+--@end-do-not-package@

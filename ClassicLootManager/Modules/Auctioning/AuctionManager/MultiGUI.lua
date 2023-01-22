@@ -210,6 +210,7 @@ local function CreateLootList(self)
     })
     ItemList:RegisterEvents({
         OnClick = (function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            if not (row or realrow) then return true end -- Disable sort
             UTILS.LibStSingleSelectClickHandler(table, --[[RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             local _, selection = next(table:GetSelection())
             local dataRow = table:GetRow(selection)

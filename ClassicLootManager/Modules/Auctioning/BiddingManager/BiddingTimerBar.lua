@@ -114,6 +114,7 @@ function BiddingTimerBar:GetPoint()
 end
 
 function BiddingTimerBar:UpdateInfo(item)
+    if not item then return end
     local note = ""
     if item:GetNote():len() > 0 then
         note = "(" .. item:GetNote() .. ")"

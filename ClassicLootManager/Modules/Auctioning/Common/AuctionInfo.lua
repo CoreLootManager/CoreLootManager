@@ -23,21 +23,31 @@ local AuctionInfo = {} -- AuctionInfo
 AuctionInfo.__index = AuctionInfo
 
 local function assertNotInProgress(self)
-    if self.state == CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS then
+    if not self.passiveMode and self.state == CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS then
         error("Not allowed while auction is IN PROGRESS.", 2)
     end
 end
 
 local function assertInProgress(self)
-    if self.state ~= CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS then
+    if not self.passiveMode and self.state ~= CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS then
         error("Not allowed while auction is not IN PROGRESS.", 2)
     end
 end
 
 local function assertCantAddItems(self)
-    if not self:CanAddItems() then
+    if not self.passiveMode and not self:CanAddItems() then
         error("Not allowed to add items in current state.", 2)
     end
+end
+
+
+local function Clear(self)
+    for _, item in pairs(self.items) do
+        item:Clear()
+    end
+
+    self.anonymousMap = {}
+    self.nextAnonymousId = 1
 end
 
 function AuctionInfo:New(object)
@@ -81,6 +91,18 @@ end
 local function _GetIncrement(s)
     return s.increment
 end
+
+-- local function _Start(endTime)
+--     assertNotInProgress(self)
+--     self.endTime = endTime and endTime or (GetServerTime() + self.auctionTime)
+--     -- self.state = CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
+--     -- Do not set IN_Progress here as it will disable the delayed addition of items.
+--     -- Need to rework the code so it wont be a problem anymore TODO
+--     self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
+--     self.antiSnipeLimit = CONSTANTS.AUCTION_TYPES_OPEN[self:GetType()] and 100 or 3
+
+--     Clear(self)
+-- end
 
 function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, fieldNames)
     local o = {}
@@ -285,20 +307,19 @@ function AuctionInfo:Start(endTime)
     assertNotInProgress(self)
     self.endTime = endTime and endTime or (GetServerTime() + self.auctionTime)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
-
     self.antiSnipeLimit = CONSTANTS.AUCTION_TYPES_OPEN[self:GetType()] and 100 or 3
 
-    for _, item in pairs(self.items) do
-        item:Clear()
-    end
-
-    self.anonymousMap = {}
-    self.nextAnonymousId = 1
+    Clear(self)
 end
 
 function AuctionInfo:End()
     assertInProgress(self)
     self.state = CONSTANTS.AUCTION_INFO.STATE.COMPLETE
+end
+
+-- Passive mode for bidders
+function AuctionInfo:SetPassiveMode()
+    self.passiveMode = true
 end
 
 -- Configuration API
