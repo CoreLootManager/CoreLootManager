@@ -453,7 +453,7 @@ function BiddingManager:FakeAuction()
     -- Store original send
     local _Send = CLM.MODULES.Comms.Send
     -- Fake send
-    CLM.MODULES.Comms.Send = function(self, prefix, message, distribution, target, priority)
+    CLM.MODULES.Comms.Send = function(_, _, message, _, target, _)
         C_Timer.After(0, function()
             BiddingManager:HandleIncomingMessage(CLM.MODELS.AuctionCommStructure:New(message), _, target)
         end)
@@ -479,7 +479,7 @@ function BiddingManager:FakeAuction()
     fakeAuctionStart.i, nItems = (function()
         local numItems = math.random(3, 7)
         local items = {}
-        for i=1,numItems do
+        for _=1,numItems do
             local id
             local doBreak = false
             repeat
