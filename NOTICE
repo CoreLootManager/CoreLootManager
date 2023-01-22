@@ -1,1 +1,5 @@
 Copyright 2021-2023 Lantis and the Classic Loot Manager contributors
+
+In-tree third party libraries in the `Libs` folder are subject to their own licenses.
+
+Any third party files included during the build process are also subject to their own licenses.

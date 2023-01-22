@@ -118,5 +118,4 @@ If the data parse will be successfull you will now be able to import it by click
 License
 --------------
 
-This project is licensed under the MIT license, see the `LICENSE` file. In-tree third party libraries in the `Libs` folder are subject to their own licenses.
-Any third party files included during the build process are also subject to their own licenses.
+This project is licensed under the Apache License 2.0. See the `LICENSE` and `NOTICE` files for more.
