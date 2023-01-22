@@ -6,7 +6,7 @@ CLM.ChangelogData = {
             {
                 name = "Notes",
                 data = {
-                    { header = "Apache2 License", body = "Classic Loot Manager has been relicensed from MIT to Apache2. That means CLM is still fully FOSS but now when reusing the code you not only need to attribute ownership to the CLM creators but you also have to explicitly state which parts are reused and modified." },
+                    { header = "Apache License 2.0", body = "Classic Loot Manager has been relicensed from MIT to Apache2. That means CLM is still fully FOSS but now when reusing the code you not only need to attribute ownership to the CLM creators but you also have to explicitly state which parts are reused and modified." },
                     { header = "v3.0.0", body = "Be sure to read v3.0.0 release note if you haven't yet!" },
                 },
             },

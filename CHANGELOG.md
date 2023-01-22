@@ -1,6 +1,6 @@
 # Classic Loot Manager v3.1.0
 ## Notes
-### Apache2 License
+### Apache License 2.0
 Classic Loot Manager has been relicensed from MIT to Apache2.
 That means CLM is still fully FOSS but now when reusing the code you not only need to attribute ownership to the CLM creators but you also have to explicitly state which parts are reused and modified.
 ### v3.0.0
