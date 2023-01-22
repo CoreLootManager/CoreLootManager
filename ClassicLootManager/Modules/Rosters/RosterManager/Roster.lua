@@ -52,11 +52,12 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.itemValues = {}
     -- Boss Kill Bonus values
     o.bossKillBonusValues = {}
+    o.hardModeBossKillBonusValues = {}
     for id,_ in pairs(CLM.DifficultyIDsMap) do
         o.bossKillBonusValues[id] = {}
+            -- Hard Modes Boss Kill Bonus values
+        o.hardModeBossKillBonusValues[id] = {}
     end
-    -- Hard Modes Boss Kill Bonus values
-    o.hardModeBossKillBonusValues = {}
     -- END CONFIGURATION --
 
     -- ROSTER STATE --
@@ -545,7 +546,7 @@ end
 function Roster:SetBossKillBonusValue(encounterId, difficultyId, isHardMode, value)
     LOG:Debug("Roster:SetBossKillBonusValue() Trying to set encounterId: %s difficultyId: %s value: %s (HM: %s)", encounterId, difficultyId, value, isHardMode)
     if isHardMode then
-        self.hardModeBossKillBonusValues[encounterId] = tonumber(value)
+        self.hardModeBossKillBonusValues[difficultyId][encounterId] = tonumber(value)
     else
         self.bossKillBonusValues[difficultyId][encounterId] = tonumber(value)
     end
@@ -553,7 +554,7 @@ end
 
 function Roster:GetBossKillBonusValue(encounterId, difficultyId, isHardMode)
     if isHardMode then
-        return self.hardModeBossKillBonusValues[encounterId] or self.configuration._.bossKillBonusValue
+        return self.hardModeBossKillBonusValues[difficultyId or -1][encounterId] or self.configuration._.bossKillBonusValue
     else
         return self.bossKillBonusValues[difficultyId or -1][encounterId] or self.configuration._.bossKillBonusValue
     end
