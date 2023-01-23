@@ -1,3 +1,7 @@
+# Classic Loot Manager v3.1.1
+## Hotfix
+### Bidding UI
+Bidding UI shouldn't error out on laggy servers anymore.
 # Classic Loot Manager v3.1.0
 ## Notes
 ### Apache License 2.0
