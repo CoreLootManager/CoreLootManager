@@ -245,8 +245,14 @@ local buttonOptions = {
     args = {}
 }
 
-local numRows
+local emptyTierValues = {}
+do
+    for _, tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
+        emptyTierValues[tier] = 0
+    end
+end
 
+local numRows
 local function GenerateValueButtonsAuctionOptions(self, auction)
     local itemValueMode = auction and auction:GetMode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
     local useOS = auction and auction:GetUseOS()
@@ -336,7 +342,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
         doDisplayValue = (function(value) return (value > 0) end)
     end
 
-    local values = self.auctionItem and self.auctionItem:GetValues() or {}
+    local values = self.auctionItem and self.auctionItem:GetValues() or emptyTierValues
     if usedTiers then
         local alreadyExistingValues = {}
         local numButtons = 0
@@ -419,7 +425,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
         }
     end
 
-    local values = self.auctionItem and self.auctionItem:GetValues() or {}
+    local values = self.auctionItem and self.auctionItem:GetValues() or emptyTierValues
     if usedTiers then
         for _,tier in ipairs(usedTiers) do
             local value = tonumber(values[tier]) or 0
@@ -882,13 +888,6 @@ function BiddingManagerGUI:AntiSnipe()
     if self.bar then
         self.bar:UpdateTime(CLM.MODULES.BiddingManager:GetAuctionInfo():GetAntiSnipe())
     end
-end
-
-function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
-    self.auctionItem = auctionItem
-    if not auctionItem then return end
-    local values = self.auctionItem:GetValues()
-    SetInputValue(self, values[CONSTANTS.SLOT_VALUE_TIER.BASE])
 end
 
 function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)

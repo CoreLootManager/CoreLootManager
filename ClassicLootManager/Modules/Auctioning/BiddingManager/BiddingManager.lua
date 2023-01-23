@@ -443,6 +443,7 @@ CONSTANTS.BID_TYPE_NAMES = {
 CLM.MODULES.BiddingManager = BiddingManager
 --@do-not-package@
 
+local ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 -_=[];:<>,.?"
 local isFakeAuctionInProgress
 function BiddingManager:FakeAuction()
     if  isFakeAuctionInProgress then
@@ -465,11 +466,22 @@ function BiddingManager:FakeAuction()
         r = 0,
         t = CONSTANTS.AUCTION_TYPE.SEALED,
         m = CONSTANTS.ITEM_VALUE_MODE.ASCENDING,
-        o = true,
-        n = false,
+        o = (math.random(4,5) == 4) and true or false,
+        n = (math.random(1,2) == 2) and true or false,
         i = 1,
-        f = {}
+        f = {
+
+        }
     }
+    for _, tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
+        local fname = ""
+        local fnameLen = math.random(1,16)
+        for _=1,fnameLen do
+            local char = math.random(1,75)
+            fname = fname .. string.sub( ALPHABET, char, char)
+        end
+        fakeAuctionStart.c.f[tier] = fname
+    end
 
     fakeAuctionStart.e = 300
     fakeAuctionStart.d = GetServerTime() + 300
