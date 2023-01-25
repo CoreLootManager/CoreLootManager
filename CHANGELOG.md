@@ -1,3 +1,13 @@
+# Classic Loot Manager v3.1.2
+## Fixes
+### Tax
+Tax is now properly applied.
+### Invalid bid
+Invalid bid marking after award should now work properly.
+### History UI
+You can now link history entry in chat. You can't select multiple entries anymore.
+### Auctioning UI
+Auctioning UI won't open anymore outside UI when modifier-clicking on link or items.
 # Classic Loot Manager v3.1.1
 ## Hotfix
 ### Bidding UI

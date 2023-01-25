@@ -1,6 +1,31 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.1.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Tax", body = "Tax is now properly applied." },
+                    { header = "Invalid bid", body = "Invalid bid marking after award should now work properly." },
+                    { header = "History UI", body = "You can now link history entry in chat. You can't select multiple entries anymore." },
+                    { header = "Auctioning UI", body = "Auctioning UI won't open anymore outside UI when modifier-clicking on link or items." },
+                },
+            },
+        },
+    },
+    {
+        version = "v3.1.1",
+        data = {
+            {
+                name = "Hotfix",
+                data = {
+                    { header = "Bidding UI", body = "Bidding UI shouldn't error out on laggy servers anymore." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.1.0",
         data = {
             {
