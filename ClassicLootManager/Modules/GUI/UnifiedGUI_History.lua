@@ -26,15 +26,27 @@ CONSTANTS.HISTORY_TYPES_GUI = {
 }
 
 local function ST_GetInfo(row)
-    return row.cols[1+1].value
+    return row.cols[2].value
+end
+
+local function ST_GetValue(row)
+    return row.cols[3].value
+end
+
+local function ST_GetDate(row)
+    return row.cols[4].value
+end
+
+local function ST_GetPlayer(row)
+    return row.cols[5].value
 end
 
 local function ST_GetIsLoot(row)
-    return row.cols[5+1].value
+    return row.cols[6].value
 end
 
 local function ST_GetObject(row)
-    return row.cols[6+1].value
+    return row.cols[7].value
 end
 
 
@@ -302,7 +314,14 @@ local tableStructure = {
         end),
         -- OnClick handler -> click
         OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
-            UTILS.LibStClickHandler(table, UnifiedGUI_History.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            UTILS.LibStSingleSelectClickHandler(table, UnifiedGUI_History.RightClickMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            if IsModifiedClick() then
+                local rowData = table:GetRow(realrow)
+                if rowData and rowData.cols then
+                    local message = (ST_GetInfo(rowData) or "") .. " - " .. (ST_GetValue(rowData) or "") .. " - " .. (ST_GetDate(rowData) or "") .. " - " .. (ST_GetPlayer(rowData) or "")
+                    HandleModifiedItemClick(message)
+                end
+            end
             return true
         end
     }
@@ -338,7 +357,7 @@ local function tableDataFeeder()
                     UnifiedGUI_History.pendingLoot = true
                 elseif not UnifiedGUI_History.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
                     local owner = loot:Owner()
-                    displayedLoot[#displayedLoot+1] = {loot, itemLink, UTILS.ColorCodeText(owner:Name(), UTILS.GetClassColor(owner:Class()).hex)}
+                    displayedLoot[#displayedLoot+1] = {loot, itemLink, owner:Name(), UTILS.GetClassColor(owner:Class())}
                 end
             end
         end
@@ -360,7 +379,7 @@ local function tableDataFeeder()
                 {value = lootData[2]}, -- itemLink
                 {value = value},
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
-                {value = lootData[3]}, -- owner
+                {value = lootData[3], color = lootData[4]}, -- owner
                 -- Not visible
                 {value = true}, -- is Loot
                 {value = loot} -- Loot Object
