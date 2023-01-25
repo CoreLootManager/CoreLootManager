@@ -58,7 +58,7 @@ end
 
 local function UpdateAwardPrice(self)
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
-    self.awardPrice = UTILS.round(self.awardValue * self.awardMultiplier, auction:GetRounding())
+    self.awardPrice = UTILS.round((self.awardValue * self.awardMultiplier) + (auction:GetTax() or 0), auction:GetRounding())
 end
 
 local function SetInputAwardValue(self, value)
