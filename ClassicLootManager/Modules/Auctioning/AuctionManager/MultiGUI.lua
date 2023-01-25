@@ -460,6 +460,7 @@ local function CreateBidList(self, width)
             return status
         end),
         OnClick = function(rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
+            if not (row or realrow) then return true end -- Disable sort
             UTILS.LibStSingleSelectClickHandler(table, --[[UnifiedGUI_Raids.RightClickMenu]]nil, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
             local _, selection = next(table:GetSelection())
             local selected = table:GetRow(selection)
