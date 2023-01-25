@@ -173,6 +173,8 @@ end
 local function HookAuctionFilling(self)
     CLM.MODULES.Hooks:RegisterModifiedItemLinkClickHandler(function(modifiers, itemLink)
         if CLM.GlobalConfigs:GetModifierCombination() ~= modifiers then return end
+        if not CLM.MODULES.RaidManager:IsInActiveRaid() then return end
+
         if not itemLink then return end
         self:AddItemByLink(itemLink)
         CLM.GUI.AuctionManager:Show()
