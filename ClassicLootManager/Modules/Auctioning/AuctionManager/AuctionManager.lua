@@ -848,7 +848,7 @@ local function ValidateBidLimited(auction, item, name, userResponse)
     local minimumPoints = auction:GetMinimumPoints()
     if current < minimumPoints then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BELOW_MIN_BIDDER end
     -- allow negative standings after bid
-    local new = current - value
+    local new = UTILS.round(current - value, auction:GetRounding())
     if (new < minimumPoints) and not auction:GetAllowBelowMinStandings() and (roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NEGATIVE_STANDING_AFTER end
     -- accept otherwise
     return true
