@@ -48,7 +48,7 @@ function FADE:Update(elapsed)
         end
         fadeInfo.fadeTimer = fadeInfo.fadeTimer + elapsed
 
-        -- If the fadeTimer is less then the desired fade time then set the alpha otherwise hold the fade state, call the finished function, or just finish the fade 
+        -- If the fadeTimer is less then the desired fade time then set the alpha otherwise hold the fade state, call the finished function, or just finish the fade
         if fadeInfo.fadeTimer < fadeInfo.timeToFade then
             if fadeInfo.mode == 'IN' then
                 frame:SetAlpha((fadeInfo.fadeTimer / fadeInfo.timeToFade) * (fadeInfo.endAlpha - fadeInfo.startAlpha) + fadeInfo.startAlpha)
@@ -69,10 +69,10 @@ function FADE:Update(elapsed)
                 end
             end
         end
-        
+
         index = index + 1
     end
-    
+
     if #self == 0 then
         self:SetScript('OnUpdate', nil)
     end
@@ -109,7 +109,6 @@ CLM.UTILS.FadeIn = (function (frame, timeToFade, startAlpha, endAlpha, info)
     fadeInfo.endAlpha = endAlpha or 1.0
     FADE:Add(frame, fadeInfo)
 end)
-
 
 CLM.UTILS.FadeOut = (function (frame, timeToFade, startAlpha, endAlpha, info)
     if not frame then return end
@@ -175,12 +174,12 @@ end
 function FLASH:Update(elapsed)
     local frame
     local index = #self
-    
+
     -- Update timers for all synced frames
     for syncId, timer in pairs(FlashTimers) do
         FlashTimers[syncId] = timer + elapsed
     end
-    
+
     while index > 0 and self[index] do
         frame = self[index]
         frame.flashTimer = frame.flashTimer + elapsed
@@ -190,11 +189,11 @@ function FLASH:Update(elapsed)
         else
             local flashTime = frame.flashTimer
             local alpha
-            
+
             if frame.syncId then
                 flashTime = FlashTimers[frame.syncId]
             end
-            
+
             flashTime = flashTime%(frame.fadeInTime+frame.fadeOutTime+(frame.flashInHoldTime or 0)+(frame.flashOutHoldTime or 0))
             if flashTime < frame.fadeInTime then
                 alpha = flashTime/frame.fadeInTime
@@ -205,15 +204,15 @@ function FLASH:Update(elapsed)
             else
                 alpha = 0
             end
-            
+
             frame:SetAlpha(alpha)
             frame:Show()
         end
-        
+
         -- Loop in reverse so that removing frames is safe
         index = index - 1
     end
-    
+
     if #self == 0 then
         self:SetScript('OnUpdate', nil)
     end
@@ -246,7 +245,7 @@ CLM.UTILS.StartFlash = function(frame, fadeInTime, fadeOutTime, flashDuration, s
         else
             frame.syncId = nil
         end
-        
+
         -- Time it takes to fade in a flashing frame
         frame.fadeInTime = fadeInTime
         -- Time it takes to fade out a flashing frame
@@ -261,9 +260,9 @@ CLM.UTILS.StartFlash = function(frame, fadeInTime, fadeOutTime, flashDuration, s
         frame.flashInHoldTime = flashInHoldTime
         -- How long to hold the faded out state
         frame.flashOutHoldTime = flashOutHoldTime
-        
+
         tinsert(FLASH, frame)
-        
+
         FLASH:SetScript('OnUpdate', FLASH.Update)
     end
 end
