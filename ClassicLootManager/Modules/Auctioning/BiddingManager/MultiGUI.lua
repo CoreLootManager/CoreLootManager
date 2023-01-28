@@ -53,7 +53,10 @@ local function InitializeDB(self)
         scale = 1,
         barWidth = 340,
         closeOnBid = false,
-        advanceOnBid = true
+        advanceOnBid = true,
+        hideInCombat = true,
+        autoOpen = true,
+        autoUpdateBidValue = false
     })
 end
 
@@ -92,6 +95,14 @@ local function GetCloseOnBid(self)
     return self.db.closeOnBid
 end
 
+local function SetAutoOpen(self, value)
+    self.db.autoOpen = value and true or false
+end
+
+local function GetAutoOpen(self)
+    return self.db.autoOpen
+end
+
 local function SetAdvanceOnBid(self, value)
     self.db.advanceOnBid = value and true or false
 end
@@ -100,8 +111,47 @@ local function GetAdvanceOnBid(self)
     return self.db.advanceOnBid
 end
 
+local function SetHideInCombat(self, value)
+    self.db.hideInCombat = value and true or false
+end
+
+local function GetHideInCombat(self)
+    return self.db.hideInCombat
+end
+
+local function SetAutoUpdateBidValue(self, value)
+    self.db.autoUpdateBidValue = value and true or false
+end
+
+local function GetAutoUpdateBidValue(self)
+    return self.db.autoUpdateBidValue
+end
+
 local function CreateConfig(self)
     local options = {
+        bidding_header = {
+            type = "header",
+            name = CLM.L["Bidding"],
+            order = 70
+        },
+          bidding_auto_update = {
+            name = CLM.L["Enable auto-update bid values"],
+            desc = CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."],
+            type = "toggle",
+            set = function(i, v) SetAutoUpdateBidValue(self, v) end,
+            get = function(i) return GetAutoUpdateBidValue(self) end,
+            width = "full",
+            order = 72
+        },
+        bidding_auto_open = {
+            name = CLM.L["Toggle Bidding auto-open"],
+            desc = CLM.L["Toggle auto open and auto close on auction start and stop"],
+            type = "toggle",
+            set = function(i, v) SetAutoOpen(self, v) end,
+            get = function(i) return GetAutoOpen(self) end,
+            width = "full",
+            order = 71
+        },
         bidding_gui_close_on_bid = {
             name = CLM.L["Close on bid"],
             desc = CLM.L["Toggle closing bidding UI after submitting bid for all items."],
@@ -150,6 +200,15 @@ local function CreateConfig(self)
             end,
             order = 78,
             width = 1
+        },
+        bidding_gui_hide_in_combat = {
+            name = CLM.L["Hide in combat"],
+            desc = CLM.L["Will hide bidding window if you enter combat and show it again when you exit. Will also delay auto opening if needed."],
+            type = "toggle",
+            set = function(i, v) SetHideInCombat(self, v) end,
+            get = function(i) return GetHideInCombat(self) end,
+            width = 1,
+            order = 79
         },
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
@@ -830,6 +889,21 @@ function BiddingManagerGUI:Initialize()
     self.ToggleTestBar = ToggleTestBar
 
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_REGEN_DISABLED"}, (function()
+        if GetHideInCombat(self) then
+            if self.top:IsVisible() then
+                self.showAfterCombat = true
+                self:Hide()
+            end
+        end
+    end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_REGEN_ENABLED"}, (function()
+        if self.showAfterCombat then
+            self.showAfterCombat = nil
+            self:Show()
+        end
+    end))
+
 end
 
 function BiddingManagerGUI:Advance()
@@ -875,6 +949,19 @@ function BiddingManagerGUI:StartAuction()
             callback = toggleCb
         }
     )
+
+    if GetAutoOpen(self) then
+        if GetHideInCombat(self) and InCombatLockdown() then
+            self.showAfterCombat = true
+
+        else
+            self:Show()
+        end
+    end
+    -- if self.top:IsVisible() then
+    --     self.showAfterCombat = true
+    --     self:Show()
+    -- end
 end
 
 function BiddingManagerGUI:EndAuction()
@@ -957,7 +1044,7 @@ function BiddingManagerGUI:RefreshBidList()
 end
 
 local function AutoUpdate(self)
-    if CLM.MODULES.BiddingManager:GetAutoUpdateBidValue() then
+    if GetAutoUpdateBidValue(self) then
         local item = self.auctionItem
         if not item then return end
         local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
@@ -1015,10 +1102,10 @@ function BiddingManagerGUI:Toggle()
     LOG:Trace("BiddingManagerGUI:Toggle()")
     -- if not self._initialized then return end
     if self.top:IsVisible() then
-        self.top:Hide()
+        self:Hide()
     else
         self:Refresh()
-        self.top:Show()
+        self:Show()
     end
 end
 
@@ -1028,14 +1115,21 @@ function BiddingManagerGUI:Show()
     if not self.top:IsVisible() then
         self:Refresh()
         self.top:Show()
+        UTILS.FadeIn(self.top.frame, 0.5)
     end
+end
+
+local function HideInternal()
+    BiddingManagerGUI.top:Hide()
 end
 
 function BiddingManagerGUI:Hide()
     LOG:Trace("BiddingManagerGUI:Hide()")
     -- if not self._initialized then return end
     if self.top:IsVisible() then
-        self.top:Hide()
+        UTILS.FadeOut(self.top.frame, 0.5, 1, 0, {
+            finishedFunc = HideInternal
+        })
     end
 end
 

@@ -49,61 +49,25 @@ local function GetUpgradedItems(itemId)
     return items
 end
 
-local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:Personal('bidding', {
-        autoOpen = true,
-        autoUpdateBidValue = false
-    })
-end
+-- local function InitializeDB(self)
+--     self.db = CLM.MODULES.Database:Personal('bidding', {
 
-local function SetAutoOpen(self, value)
-    self.db.autoOpen = value and true or false
-end
+--     })
+-- end
 
-local function GetAutoOpen(self)
-    return self.db.autoOpen
-end
 
-local function SetAutoUpdateBidValue(self, value)
-    self.db.autoUpdateBidValue = value and true or false
-end
-
-local function CreateOptions(self)
-    local options = {
-        bidding_header = {
-            type = "header",
-            name = CLM.L["Bidding"],
-            order = 70
-        },
-        bidding_auto_open = {
-            name = CLM.L["Toggle Bidding auto-open"],
-            desc = CLM.L["Toggle auto open and auto close on auction start and stop"],
-            type = "toggle",
-            set = function(i, v) SetAutoOpen(self, v) end,
-            get = function(i) return GetAutoOpen(self) end,
-            width = "full",
-            order = 71
-          },
-          bidding_auto_update = {
-            name = CLM.L["Enable auto-update bid values"],
-            desc = CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."],
-            type = "toggle",
-            set = function(i, v) SetAutoUpdateBidValue(self, v) end,
-            get = function(i) return self:GetAutoUpdateBidValue() end,
-            width = "full",
-            order = 72
-          }
-    }
-    CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
-end
+-- local function CreateOptions(self)
+--     local options = {}
+--     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
+-- end
 
 local BiddingManager = {}
 function BiddingManager:Initialize()
     LOG:Trace("BiddingManager:Initialize()")
 
-    InitializeDB(self)
+    -- InitializeDB(self)
 
-    CreateOptions(self)
+    -- CreateOptions(self)
 
     CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.AUCTION,
     (function(rawMessage, distribution, sender)
@@ -124,10 +88,6 @@ function BiddingManager:Initialize()
         [CONSTANTS.AUCTION_COMM.TYPE.DENY_BID]          = "HandleDenyBid",
         [CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID]    = "HandleDistributeBid"
     }
-end
-
-function BiddingManager:GetAutoUpdateBidValue()
-    return self.db.autoUpdateBidValue
 end
 
 function BiddingManager:GetLastBidValue()
@@ -278,9 +238,6 @@ function BiddingManager:HandleStartAuction(data, sender)
     PlayStartSound()
 
     CLM.GUI.BiddingManager:StartAuction()
-    if GetAutoOpen(self) then
-        CLM.GUI.BiddingManager:Show()
-    end
     local numItems = self.auction:GetItemCount()
     local auctionMessage
     if numItems > 1 then
