@@ -441,12 +441,14 @@ local configurationCallbacks = {
         self.attendanceTracker:UpdateWeeklyReset(value)
     end,
     minGP = function(self, value)
-        for GUID, pointInfo in pairs(self.pointInfo) do
-            self.pointInfo[GUID].spent = mmax(pointInfo.spent, self.configuration._.minGP)
+        for _, pointInfo in pairs(self.pointInfo) do
+            pointInfo.spent = mmax(pointInfo.spent, self.configuration._.minGP)
         end
     end,
     roundDecimals = function(self, value)
-        self.pointInfo:SetRounding(value)
+        for _, pointInfo in pairs(self.pointInfo) do
+            pointInfo:SetRounding(value)
+        end
     end
 }
 
