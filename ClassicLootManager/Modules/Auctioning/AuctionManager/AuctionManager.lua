@@ -725,7 +725,10 @@ end
 -- BIDS
 
 local function ValidateBid(auction, item, name, userResponse)
-    if not item then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.INVALID_ITEM end
+    if not item then
+        LOG:Warning("Received bid for not auctioned item from [%s]", name)
+        return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.INVALID_ITEM
+    end
     local auctionType = auction:GetType()
     local itemValueMode = auction:GetMode()
     local roster = auction:GetRoster()
@@ -901,7 +904,7 @@ function AuctionManager:UpdateBid(name, itemId, userResponse)
         AnnounceBid(auction, item, name, userResponse, newHighBid)
         SendBidAccepted(item:GetItemID(), name)
     else
-        SendBidDenied(item:GetItemID(), name, reason)
+        SendBidDenied(itemId, name, reason)
     end
 
     -- TODO update Bids only
