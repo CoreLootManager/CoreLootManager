@@ -903,7 +903,7 @@ function BiddingManagerGUI:Initialize()
             self:Show()
         end
     end))
-
+    self._initialized = true
 end
 
 function BiddingManagerGUI:Advance()
@@ -1080,7 +1080,7 @@ end
 
 function BiddingManagerGUI:Refresh()
     LOG:Trace("BiddingManagerGUI:Refresh()")
-    -- if not self._initialized then return end
+    if not self._initialized then return end
 
     UpdateOptions(self)
     AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
@@ -1100,7 +1100,7 @@ end
 
 function BiddingManagerGUI:Toggle()
     LOG:Trace("BiddingManagerGUI:Toggle()")
-    -- if not self._initialized then return end
+    if not self._initialized then return end
     if self.top:IsVisible() then
         self:Hide()
     else
@@ -1111,7 +1111,7 @@ end
 
 function BiddingManagerGUI:Show()
     LOG:Trace("BiddingManagerGUI:Show()")
-    -- if not self._initialized then return end
+    if not self._initialized then return end
     if not self.top:IsVisible() then
         self:Refresh()
         self.top:Show()
@@ -1125,7 +1125,7 @@ end
 
 function BiddingManagerGUI:Hide()
     LOG:Trace("BiddingManagerGUI:Hide()")
-    -- if not self._initialized then return end
+    if not self._initialized then return end
     if self.top:IsVisible() then
         UTILS.FadeOut(self.top.frame, 0.5, 1, 0, {
             finishedFunc = HideInternal
