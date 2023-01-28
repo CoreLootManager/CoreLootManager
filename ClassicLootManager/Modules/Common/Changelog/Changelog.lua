@@ -6,9 +6,9 @@ CLM.ChangelogData = {
             {
                 name = "Changes",
                 data = {
-                    { header = "Hide in combat", body = "Bidding UI will now automatically hide in combat and show when out of combat. You can disable this behavior in onfiguration." },
-                    { header = "Bidding UI Config reset", body = "Auto update bid values and close on bid settings were reset due to database restructure needed for hiding in combat. Be sure to re-check your settings!" },
-                    { header = "Auction", body = "Another wave of auction bugs was fixed." },
+                    { header = "Hide in combat", body = "Bidding UI will now automatically hide in combat and show when out of combat. You can disable this behavior in configuration." },
+                    { header = "Bidding UI Config reset", body = "Auto update bid values and close on bid settings were reset due to database restructure needed for hiding in combat. |cff44ee44Be sure to re-check your settings!|r" },
+                    { header = "Auction", body = "Another batch of auction bugs fixes." },
                     { header = "Rounding", body = "Fixed missing rounding in point statistics." },
                 },
             },
