@@ -1,3 +1,13 @@
+# Classic Loot Manager v3.1.3
+## Changes
+### Hide in combat
+Bidding UI will now automatically hide in combat and show when out of combat. You can disable this behavior in onfiguration.
+### Bidding UI Config reset
+Auto update bid values and close on bid settings were reset due to database restructure needed for hiding in combat. Be sure to re-check your settings!
+### Auction
+Another wave of auction bugs was fixed.
+### Rounding
+Fixed missing rounding in point statistics.
 # Classic Loot Manager v3.1.2
 ## Fixes
 ### Tax
