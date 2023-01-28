@@ -893,14 +893,16 @@ function BiddingManagerGUI:Initialize()
         if GetHideInCombat(self) then
             if self.top:IsVisible() then
                 self.showAfterCombat = true
-                self:Hide()
+                self:HideDelayed()
             end
         end
     end))
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_REGEN_ENABLED"}, (function()
         if self.showAfterCombat then
             self.showAfterCombat = nil
-            self:Show()
+
+            if not CLM.MODULES.BiddingManager:IsAuctionInProgress() then return end
+            self:ShowDelayed()
         end
     end))
     self._initialized = true
@@ -1115,23 +1117,53 @@ function BiddingManagerGUI:Show()
     if not self.top:IsVisible() then
         self:Refresh()
         self.top:Show()
-        UTILS.FadeIn(self.top.frame, 0.5)
     end
-end
-
-local function HideInternal()
-    BiddingManagerGUI.top:Hide()
 end
 
 function BiddingManagerGUI:Hide()
     LOG:Trace("BiddingManagerGUI:Hide()")
     if not self._initialized then return end
     if self.top:IsVisible() then
-        UTILS.FadeOut(self.top.frame, 0.5, 1, 0, {
+        self.top:Hide()
+    end
+end
+
+function BiddingManagerGUI:ShowDelayed()
+    LOG:Trace("BiddingManagerGUI:ShowDelayed()")
+    if not self._initialized then return end
+    if not self.top:IsVisible() then
+        self:Refresh()
+        self.top:Show()
+        UTILS.FadeIn(self.top.frame, 0.3)
+    end
+end
+
+local function HideInternal()
+    BiddingManagerGUI.top:Hide()
+    BiddingManagerGUI.top.frame:SetAlpha(1)
+end
+
+function BiddingManagerGUI:HideDelayed()
+    LOG:Trace("BiddingManagerGUI:HideDelayed()")
+    if not self._initialized then return end
+    if self.top:IsVisible() then
+        UTILS.FadeOut(self.top.frame, 0.3, 1, 0, {
             finishedFunc = HideInternal
         })
     end
 end
+
+-- function BiddingManagerGUI:HideIfDone()
+--     LOG:Trace("BiddingManagerGUI:HideIfDone()")
+--     if not self._initialized then return end
+--     if self.top:IsVisible() then
+--         local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+--         if auction then
+
+--             self.top:Hide()
+--         end
+--     end
+-- end
 
 function BiddingManagerGUI:RegisterSlash()
     local options = {
