@@ -1,5 +1,7 @@
 local name, CLM = ...
 
+local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
+
 local LIB_CLM, _ = LibStub:NewLibrary("ClassicLootManager", 1)
 if LIB_CLM then
     LIB_CLM.CLM = CLM
