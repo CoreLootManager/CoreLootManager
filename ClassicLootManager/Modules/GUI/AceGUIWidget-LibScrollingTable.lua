@@ -104,7 +104,7 @@ local methods = {
         self.st.frame:SetBackdropColor(...)
     end,
     ["SetHeaderless"] = function(self, ...)
-        SetHeaderless(self, ...)
+        SetHeaderless(self)
     end,
     ["HideScroll"] = function(self, ...)
         self.metadata.hideScroll = true

@@ -23,7 +23,12 @@
         "MonDKP_Loot",
         "CommDKP_DB",
         "CommDKP_DKPTable",
-        "CommDKP_Loot"
+        "CommDKP_Loot",
+        "GuildRoster",
+        "ViragDevTool",
+        "ViragDevTool_AddData",
+        "KeyBindingFrame",
+        "InterfaceOptionsFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

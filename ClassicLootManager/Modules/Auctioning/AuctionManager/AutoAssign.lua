@@ -200,6 +200,7 @@ function AutoAssign:Initialize()
         end)
         if not self.lastTradeTarget then
              -- NPC Because that's how the engine holds the trade peer
+---@diagnostic disable-next-line: param-type-mismatch
             self.lastTradeTarget = UnitName("NPC")
         end
         if not self.lastTradeTarget then return end

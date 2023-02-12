@@ -264,6 +264,7 @@ function AuctionHistoryGUI:Refresh(visible)
 
     local height = MIN_HEIGHT + ROW_HEIGHT*(rows-1)
     if height < MIN_HEIGHT then height = MIN_HEIGHT end
+---@diagnostic disable-next-line: missing-parameter
     local _, _, point, x, y = self.top:GetPoint()
     self.top:SetHeight(height)
     self.AuctionHistoryGroup:SetHeight(height)
