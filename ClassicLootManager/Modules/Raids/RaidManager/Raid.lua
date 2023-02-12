@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local setmetatable, ipairs, tsort = setmetatable, ipairs, table.sort
-
 local Raid = {} -- Raid information
 
 Raid.__index = Raid

@@ -1,8 +1,6 @@
 local _, PRIV = ...
 local CLM = LibStub("ClassicLootManager").CLM
 
-local setmetatable = setmetatable
-
 local ExportConfiguration = {}
 function ExportConfiguration:New(format, jobs, timerange, rosters, profiles)
     local o = {}

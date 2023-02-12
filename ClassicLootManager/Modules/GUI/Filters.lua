@@ -10,10 +10,6 @@ local UTILS     = CLM.UTILS
 -- Filter is breaking MVC rule --
 ---------------------------------
 
--- local setmetatable = setmetatable
--- local ipairs, tonumber, tostring = ipairs, tonumber, tostring
--- local sfind, strlower, strlen = string.find, strlower, strlen
-
 local filterInstanceId = 1
 
 local supportedFilters = {

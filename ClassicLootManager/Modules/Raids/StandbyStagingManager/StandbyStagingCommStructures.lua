@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local setmetatable, type = setmetatable, type
-
 local StandbyStagingCommSubscribe = {}
 function StandbyStagingCommSubscribe:New(raidUidOrObject)
     local isCopyConstructor = (type(raidUidOrObject) == "table")

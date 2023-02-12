@@ -6,8 +6,6 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local type, pairs = type, pairs
-
 local DeepCopy = UTILS.DeepCopy
 local assertType = UTILS.assertType
 

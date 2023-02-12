@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local setmetatable, tostring, tonumber, rawequal, sformat = setmetatable, tostring, tonumber, rawequal, string.format
-
 local Profile = {}
 function Profile:New(entry, name, class, main)
     local o = {}

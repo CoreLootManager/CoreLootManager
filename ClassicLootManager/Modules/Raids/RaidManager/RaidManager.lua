@@ -6,11 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local UnitInBattleground, IsActiveBattlefieldArena = UnitInBattleground, IsActiveBattlefieldArena
--- local ipairs, pairs = ipairs, pairs
--- local MAX_RAID_MEMBERS, GetRaidRosterInfo, GetServerTime, IsInRaid = MAX_RAID_MEMBERS, GetRaidRosterInfo, GetServerTime, IsInRaid
--- local tinsert = table.insert
-
 local whoami = UTILS.whoami()
 local whoamiGUID = UTILS.whoamiGUID()
 

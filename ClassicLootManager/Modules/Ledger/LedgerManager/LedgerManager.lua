@@ -6,9 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs, ipairs = pairs, ipairs
--- local wipe, collectgarbage, tinsert = wipe, collectgarbage, table.insert
-
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
 local STATUS_SYNCED = "synced"

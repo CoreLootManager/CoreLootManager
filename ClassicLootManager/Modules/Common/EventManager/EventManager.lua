@@ -6,9 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local type, pcall, pairs, ipairs = type, pcall, pairs, ipairs
--- local tinsert = table.insert
-
 local eventDispatcher = LibStub("EventDispatcher")
 
 local myGUID = UTILS.whoamiGUID()

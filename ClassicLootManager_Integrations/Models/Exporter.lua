@@ -9,11 +9,6 @@ local UTILS     = CLM.UTILS
 local json = LibStub:GetLibrary("LibJsonLua")
 local XML = LibStub:GetLibrary("LibLuaXML")
 
-local pairs, ipairs = pairs, ipairs
-local tonumber, date = tonumber, date
-local tinsert = table.insert
-local setmetatable = setmetatable
-
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local function buildTMBLine(item)

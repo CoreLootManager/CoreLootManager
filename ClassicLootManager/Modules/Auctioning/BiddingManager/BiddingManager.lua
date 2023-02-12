@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local sformat = string.format
-
 local INVTYPE_to_INVSLOT_map = {
     ["INVTYPE_HEAD"]            = {INVSLOT_HEAD},
     ["INVTYPE_NECK"]            = {INVSLOT_NECK},

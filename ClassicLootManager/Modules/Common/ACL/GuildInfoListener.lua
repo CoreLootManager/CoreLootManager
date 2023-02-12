@@ -6,10 +6,6 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local GuildRoster, GetGuildRosterInfo = GuildRoster, GetGuildRosterInfo
--- local GuildControlGetNumRanks, GetNumGuildMembers = GuildControlGetNumRanks, GetNumGuildMembers
--- local C_GuildInfoGuildControlGetRankFlags = C_GuildInfo.GuildControlGetRankFlags
-
 local GuildInfoListener = {}
 function GuildInfoListener:Initialize()
     LOG:Trace("GuildInfoListener:Initialize()")

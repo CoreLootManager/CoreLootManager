@@ -6,10 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local tonumber, tostring = tonumber, tostring
--- local IsInRaid, CombatLogGetCurrentEventInfo = IsInRaid, CombatLogGetCurrentEventInfo
--- local strsplit, GetServerTime, C_TimerNewTicker = strsplit, GetServerTime, C_Timer.NewTicker
-
 local HYDROSS_ENCOUNTER_ID = 623
 local HYDROSS_NPC_ID = 21216
 

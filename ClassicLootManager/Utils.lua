@@ -10,16 +10,6 @@ local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
--- local pairs, ipairs = pairs, ipairs
--- local ssub, supper, slower, sformat, sfind = string.sub, string.upper, string.lower, string.format, string.find
--- local sgsub = string.gsub
--- local mfloor = math.floor
--- local tostring, tonumber = tostring, tonumber
--- local tinsert = table.insert
--- local print, type, setmetatable, getmetatable, rawequal = print, type, setmetatable, getmetatable, rawequal
--- local GetUnitName, UnitGUID, GetTalentTabInfo = GetUnitName, UnitGUID, GetTalentTabInfo
--- local GetTalentGroupRole, GetActiveTalentGroup = GetTalentGroupRole, GetActiveTalentGroup
-
 local function capitalize(string)
     string = string or ""
     return string.upper(string.sub(string, 1,1)) .. string.lower(string.sub(string, 2))

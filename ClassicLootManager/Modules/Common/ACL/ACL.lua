@@ -5,9 +5,6 @@ local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
-
--- local IsGuildLeader = IsGuildLeader
-
 local whoami = UTILS.whoami()
 
 local ACL = {}

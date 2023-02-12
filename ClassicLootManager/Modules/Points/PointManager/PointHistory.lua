@@ -6,8 +6,6 @@ local  _, CLM = ...
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local tinsert, tsort = table.insert, table.sort
-
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
 local PointHistory = {}

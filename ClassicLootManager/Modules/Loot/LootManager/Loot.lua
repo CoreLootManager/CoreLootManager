@@ -6,8 +6,6 @@ local  _, CLM = ...
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local setmetatable = setmetatable
-
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
 local Loot = {}

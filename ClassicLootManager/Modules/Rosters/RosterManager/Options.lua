@@ -13,9 +13,6 @@ local CBTYPE = {
     HIDER    = "hide"
 }
 
--- local sformat = string.format
--- local pairs, ipairs = pairs, ipairs
-
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)

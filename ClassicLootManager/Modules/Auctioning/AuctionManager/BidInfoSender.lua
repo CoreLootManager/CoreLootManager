@@ -6,9 +6,7 @@ local  _, CLM = ...
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local setmetatable = setmetatable
 local assertType = UTILS.assertType
-
 
 local BidInfoSender = {} -- BidInfoSender
 BidInfoSender.__index = BidInfoSender

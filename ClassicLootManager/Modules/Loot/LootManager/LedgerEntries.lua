@@ -6,8 +6,6 @@ local  _, CLM = ...
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local tonumber = tonumber
-
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local mergeLists = UTILS.mergeLists
 

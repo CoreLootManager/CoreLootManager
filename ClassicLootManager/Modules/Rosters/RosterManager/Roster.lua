@@ -6,12 +6,8 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs, ipairs, tonumber = pairs, ipairs, tonumber
--- local mmax = math.max
-
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
-
 
 local GLOBAL_FAKE_INVENTORY_SLOT = "_GLOBAL"
 

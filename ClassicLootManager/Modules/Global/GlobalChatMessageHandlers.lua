@@ -6,12 +6,6 @@ local  _, CLM = ...
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs, ipairs = pairs, ipairs
--- local tostring = tostring
--- local tinsert, sformat, sfind, slower, strsplit = table.insert, string.format, string.find, string.lower, strsplit
--- local SendChatMessage = SendChatMessage
--- local ChatFrame_AddMessageEventFilter = ChatFrame_AddMessageEventFilter
-
 local GlboalChatMessageHandlers = {}
 function GlboalChatMessageHandlers:Initialize()
     if not CLM.MODULES.ACL:IsTrusted() then return end

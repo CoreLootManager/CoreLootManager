@@ -6,9 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs, ipairs = pairs, ipairs
--- local sgsub, tsort = string.gsub, table.sort
-
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorGold = {a = 1, r = 1, g = 0.8, b = 0}

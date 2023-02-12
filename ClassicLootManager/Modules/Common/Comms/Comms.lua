@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local ssub, type = string.sub,type
-
 local SERIALIATION_OPTIONS = {
     errorOnUnserializableType = false,
     stable = false,

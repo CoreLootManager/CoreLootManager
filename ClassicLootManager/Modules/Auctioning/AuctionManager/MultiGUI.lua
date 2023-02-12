@@ -7,12 +7,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local tonumber, tostring = tonumber, tostring
--- local pairs, ipairs = pairs, ipairs
--- local sformat, tinsert = string.format, table.insert
--- local GameTooltip = GameTooltip
--- local GetItemInfoInstant = GetItemInfoInstant
-
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")

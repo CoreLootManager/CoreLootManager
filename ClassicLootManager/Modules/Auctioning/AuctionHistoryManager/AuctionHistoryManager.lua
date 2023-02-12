@@ -6,11 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs, ipairs = pairs, ipairs
--- local tinsert, tremove = table.insert, table.remove
--- local tostring, tonumber = tostring, tonumber
--- local GetServerTime = GetServerTime
-
 local CHANNELS = {
     [1] = "SAY",
     [2] = "EMOTE",

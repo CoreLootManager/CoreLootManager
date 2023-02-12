@@ -11,14 +11,6 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local ipairs = ipairs
--- local BIND_TRADE_TIME_REMAINING, ITEM_SOULBOUND, ERR_TRADE_COMPLETE  = BIND_TRADE_TIME_REMAINING, ITEM_SOULBOUND, ERR_TRADE_COMPLETE
--- local sgsub, sfind = string.gsub, string.find
--- local tinsert, tremove = table.insert, table.remove
--- local C_TimerAfter, GetTradePlayerItemLink = C_Timer.After, GetTradePlayerItemLink
--- local GetNumLootItems, GetLootSlotInfo, GetItemInfoInstant, GetLootSlotLink, GetNumGroupMembers, GetMasterLootCandidate, GiveMasterLoot = GetNumLootItems, GetLootSlotInfo, GetItemInfoInstant, GetLootSlotLink, GetNumGroupMembers, GetMasterLootCandidate, GiveMasterLoot
--- local UnitName = UnitName
-
 local function ScanTooltip(self)
     local query = string.gsub(BIND_TRADE_TIME_REMAINING, "%%s", ".*")
     local lineWithTimer
@@ -200,7 +192,6 @@ function AutoAssign:Initialize()
         end)
         if not self.lastTradeTarget then
              -- NPC Because that's how the engine holds the trade peer
----@diagnostic disable-next-line: param-type-mismatch
             self.lastTradeTarget = UnitName("NPC")
         end
         if not self.lastTradeTarget then return end

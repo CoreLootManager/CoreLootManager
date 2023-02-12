@@ -6,15 +6,12 @@ local  _, CLM = ...
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local setmetatable = setmetatable
-
 local assertTypeof = UTILS.assertTypeof
 
 local AuctionItem = {} -- AuctionItem
 AuctionItem.__index = AuctionItem
 
 local emptyItem = CreateFromMixins(ItemMixin)
-
 
 local scanTooltip = CreateFrame("GameTooltip", "CLMAuctionItemScanTooltip", UIParent, "GameTooltipTemplate")
 

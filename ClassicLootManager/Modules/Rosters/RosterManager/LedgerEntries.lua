@@ -6,8 +6,6 @@ local  _, CLM = ...
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local tonumber, tostring = tonumber, tostring
-
 local mergeLists = UTILS.mergeLists
 local typeof = UTILS.typeof
 local CreateGUIDList = UTILS.CreateGUIDList

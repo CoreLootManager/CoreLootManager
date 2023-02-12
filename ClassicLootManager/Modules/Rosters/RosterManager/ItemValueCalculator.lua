@@ -6,9 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pow = math.pow
--- local GetItemInfo = GetItemInfo
-
 local DEFAULT_MULTIPLIER = {
     epgpweb = 0.483,
     wowpedia = 0.04

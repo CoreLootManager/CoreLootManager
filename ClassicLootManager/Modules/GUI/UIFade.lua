@@ -5,15 +5,6 @@
 
 local  _, CLM = ...
 
----------------------------------------------------------------
--- UIFade.lua: Taint-free alpha animation framework
----------------------------------------------------------------
--- Provides a framework for managing alpha animations without
--- risk of spreading taint.
--- Args:
---    Fade: frame, timeToFade, startAlpha, endAlpha, info
---     Flash: frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, syncId
-
 local FADE = CreateFrame('Frame')
 
 function FADE:Remove(frame)

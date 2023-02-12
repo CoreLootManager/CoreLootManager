@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local tonumber = tonumber
-
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
     self.db = CLM.MODULES.Database:Personal('global', {

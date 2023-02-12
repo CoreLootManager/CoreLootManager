@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local type, pairs, ipairs = type, pairs, ipairs
-
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -119,9 +117,9 @@ function ConfigManager:AddGroup(groupName, append)
     end
     -- Never allow changing first group
     if append then
-        table.insert(CONSTANTS.CONFIGS.ORDERED_GROUPS, groupName)
+        tinsert(CONSTANTS.CONFIGS.ORDERED_GROUPS, groupName)
     else
-        table.insert(CONSTANTS.CONFIGS.ORDERED_GROUPS, 2, groupName)
+        tinsert(CONSTANTS.CONFIGS.ORDERED_GROUPS, 2, groupName)
     end
     CONSTANTS.CONFIGS.GROUPS[groupName] = true
     CONSTANTS.CONFIGS.GROUP[groupName] = groupName

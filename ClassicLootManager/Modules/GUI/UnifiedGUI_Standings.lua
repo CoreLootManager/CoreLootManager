@@ -6,11 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs, ipairs = pairs, ipairs
--- local CreateFrame, UIParent = CreateFrame, UIParent
--- local tonumber, tostring = tonumber, tostring
--- local strlen, sformat = strlen, string.format
-
 local colorRed = {r = 0.93, g = 0.276, b = 0.27, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.276, b = 0.27, a = 0.3}
 local colorBlueTransparent = {r = 0.27, g = 0.276, b = 0.93, a = 0.3}

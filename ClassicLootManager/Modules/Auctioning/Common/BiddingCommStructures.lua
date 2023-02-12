@@ -6,9 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local tonumber, setmetatable, type = tonumber, setmetatable, type
-
-
 local BiddingCommSubmitBid = {}
 function BiddingCommSubmitBid:New(valueOrObject, bidType, itemId, items)
     local isCopyConstructor = (type(valueOrObject) == "table")

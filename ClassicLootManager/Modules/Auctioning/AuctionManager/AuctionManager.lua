@@ -6,15 +6,9 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs, ipairs = pairs, ipairs
--- local tonumber, tostring = tonumber, tostring
--- local sformat, mceil = string.format, math.ceil
--- local SendChatMessage, C_TimerNewTicker, GetServerTime = SendChatMessage, C_Timer.NewTicker, GetServerTime
-
 local typeof = UTILS.typeof
 
 local whoami = UTILS.whoami()
-
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
 -- Singleton

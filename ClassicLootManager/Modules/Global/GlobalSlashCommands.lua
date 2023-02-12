@@ -6,10 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs = pairs
--- local strsplit, strlower, tonumber = strsplit, strlower, tonumber
--- local GetNumGuildMembers, GetGuildRosterInfo = GetNumGuildMembers, GetGuildRosterInfo
-
 local function Award(args)
     args = args or ""
     local values = {strsplit("/", args)}

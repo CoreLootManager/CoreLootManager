@@ -6,11 +6,6 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs = pairs
-local tonumber, date = tonumber, date
-local tinsert, tsort = table.insert, table.sort
-local GetServerTime = GetServerTime
-
 -- Libs
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")

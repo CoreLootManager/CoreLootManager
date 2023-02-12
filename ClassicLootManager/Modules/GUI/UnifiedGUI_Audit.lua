@@ -6,9 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local pairs, ipairs = pairs, ipairs
--- local strsub = strsub
-
 local function ST_GetDescription(row)
     return row.cols[4].value
 end

@@ -6,11 +6,6 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs = pairs, ipairs
-local tinsert, tremove, wipe = table.insert, table.remove, wipe
-local sfind, strlower = string.find, strlower
-local C_TimerAfter = C_Timer.After
-local collectgarbage = collectgarbage
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local EXTERNAL_AWARD_EVENT = "CLM_EXTERNAL_EVENT_ITEM_AWARDED"

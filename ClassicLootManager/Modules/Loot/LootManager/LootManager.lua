@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local tinsert, type = table.insert, type
-
 local function mutateLootAward(entry, roster)
     local GUID = UTILS.getGuidFromInteger(entry:profile())
     if not roster then

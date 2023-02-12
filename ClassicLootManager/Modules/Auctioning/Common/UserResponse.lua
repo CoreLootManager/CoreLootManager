@@ -5,9 +5,6 @@ local  _, CLM = ...
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
-
--- local setmetatable, ipairs = setmetatable, ipairs
-
 local assertType = UTILS.assertType
 
 local UserResponse = {} -- UserResponse

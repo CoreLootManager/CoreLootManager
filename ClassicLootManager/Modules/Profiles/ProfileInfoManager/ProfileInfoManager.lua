@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local string.format = string.format
-
 local PROFILEINFO_COMM_PREFIX = "Version001" -- Keep it for version sync with older ones
 
 local function stringifyVersion(version)
