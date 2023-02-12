@@ -34,7 +34,7 @@ function ProfileManager:Initialize()
 
             local class = UTILS.NumberToClass(entry:ingameClass()) or ""
             local main = entry:main()
-            main =  (type(main) == "number" and main ~= 0) and UTILS.getGuidFromInteger(main) or ""
+            main = (type(main) == "number" and main ~= 0) and UTILS.getGuidFromInteger(main) or ""
             -- Check if it's an update
             local profileInternal = self.cache.profiles[GUID]
             if profileInternal then

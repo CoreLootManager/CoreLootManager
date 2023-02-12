@@ -11,7 +11,6 @@ local ACL = {}
 function ACL:Initialize()
     LOG:Trace("ACL:Initialize()")
     self.guildMaster = IsGuildLeader()
-
 end
 
 function ACL:IsTrusted(name)
