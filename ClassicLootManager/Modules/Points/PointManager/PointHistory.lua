@@ -6,7 +6,7 @@ local  _, CLM = ...
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local tinsert, tsort = table.insert, table.sort
+-- local tinsert, tsort = table.insert, table.sort
 
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
@@ -52,7 +52,7 @@ function PointHistory:Profiles()
                 tinsert(self.profiles, profile)
             end
         end
-        tsort(self.profiles, (function(first, second)
+        table.sort(self.profiles, (function(first, second)
             return first:Name() < second:Name()
         end))
     end
@@ -120,7 +120,7 @@ function FakePointHistory:Profiles()
                 tinsert(self.profiles, profile)
             end
         end
-        tsort(self.profiles, (function(first, second)
+        table.sort(self.profiles, (function(first, second)
             return first:Name() < second:Name()
         end))
     end

@@ -6,12 +6,12 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local sformat = string.format
+-- local string.format = string.format
 
 local PROFILEINFO_COMM_PREFIX = "Version001" -- Keep it for version sync with older ones
 
 local function stringifyVersion(version)
-    return sformat("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
+    return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
 end
 
 local function GetProfileDb(self, name)
@@ -118,47 +118,47 @@ end
 --[[
     --- SPEC ---
 ]]
-local function AnnounceSpec()
-    LOG:Trace("ProfileInfoManager:AnnounceSpec()")
-    local one, two, three = UTILS.GetMyTalents()
-    local message = CLM.MODELS.ProfileInfoCommStructure:New(
-        CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC,
-        CLM.MODELS.ProfileInfoCommAnnounceSpec:New(one, two, three))
-    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
-end
+-- local function AnnounceSpec()
+--     LOG:Trace("ProfileInfoManager:AnnounceSpec()")
+--     local one, two, three = UTILS.GetMyTalents()
+--     local message = CLM.MODELS.ProfileInfoCommStructure:New(
+--         CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC,
+--         CLM.MODELS.ProfileInfoCommAnnounceSpec:New(one, two, three))
+--     CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+-- end
 
-local function SetProfileSpec(name, spec)
-    local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
-    if profile then
-        profile:SetSpec(spec.one, spec.two, spec.three)
-    end
-end
+-- local function SetProfileSpec(name, spec)
+--     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
+--     if profile then
+--         profile:SetSpec(spec.one, spec.two, spec.three)
+--     end
+-- end
 
-local function StoreProfileSpec(self, name, spec)
-    GetProfileDb(self, name).spec = spec
-end
+-- local function StoreProfileSpec(self, name, spec)
+--     GetProfileDb(self, name).spec = spec
+-- end
 
-local function RestoreSpecs(self)
-    for name, info in pairs(self.db) do
-        SetProfileSpec(name, info.spec)
-    end
-end
+-- local function RestoreSpecs(self)
+--     for name, info in pairs(self.db) do
+--         SetProfileSpec(name, info.spec)
+--     end
+-- end
 
-local function HandleAnnounceSpec(self, data, sender)
-    LOG:Trace("ProfileInfoManager:HandleAnnounceSpec()")
-    local receivedSpec = data:Spec()
-    SetProfileSpec(sender, receivedSpec)
-    StoreProfileSpec(self, sender, receivedSpec)
-end
+-- local function HandleAnnounceSpec(self, data, sender)
+--     LOG:Trace("ProfileInfoManager:HandleAnnounceSpec()")
+--     local receivedSpec = data:Spec()
+--     SetProfileSpec(sender, receivedSpec)
+--     StoreProfileSpec(self, sender, receivedSpec)
+-- end
 
-local function HandleRequestSpec(self, data, sender)
-    LOG:Trace("ProfileInfoManager:HandleRequestSpec()")
-    local currentTime = GetServerTime()
-    if (currentTime - self._lastRequestResponse.spec) > 30  then
-        AnnounceSpec()
-        self._lastRequestResponse.spec = currentTime
-    end
-end
+-- local function HandleRequestSpec(self, data, sender)
+--     LOG:Trace("ProfileInfoManager:HandleRequestSpec()")
+--     local currentTime = GetServerTime()
+--     if (currentTime - self._lastRequestResponse.spec) > 30  then
+--         AnnounceSpec()
+--         self._lastRequestResponse.spec = currentTime
+--     end
+-- end
 
 --[[
     --- ROLE ---
@@ -245,8 +245,8 @@ function ProfileInfoManager:Initialize()
     self.handlers = {
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC]     = HandleAnnounceSpec,
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec,
+        -- [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC]     = HandleAnnounceSpec,
+        -- [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE]     = HandleAnnounceRole,
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE]      = HandleRequestRole
     }
@@ -263,12 +263,12 @@ function ProfileInfoManager:Initialize()
             LOG:Message(CLM.L["Classic Loot Manager %s initialization complete. %s"], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"), "Created by |cffe6cc80Lantis|r Annalina-Mirage Raceway")
             C_Timer.After(1, function()
                 RestoreVersions(self)
-                RestoreSpecs(self)
+                -- RestoreSpecs(self)
                 RestoreRoles(self)
             end)
             C_Timer.After(math.random(2, 5), function()
                 AnnounceVersion()
-                AnnounceSpec()
+                -- AnnounceSpec()
                 AnnounceRole()
             end)
             self._initialized = true
@@ -277,7 +277,7 @@ function ProfileInfoManager:Initialize()
 
     CLM.MODULES.EventManager:RegisterWoWEvent("READY_CHECK", (function(...)
         AnnounceVersion()
-        AnnounceSpec()
+        -- AnnounceSpec()
         AnnounceRole()
     end))
 

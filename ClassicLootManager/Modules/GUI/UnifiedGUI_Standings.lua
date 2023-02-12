@@ -6,10 +6,10 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs = pairs, ipairs
-local CreateFrame, UIParent = CreateFrame, UIParent
-local tonumber, tostring = tonumber, tostring
-local strlen, sformat = strlen, string.format
+-- local pairs, ipairs = pairs, ipairs
+-- local CreateFrame, UIParent = CreateFrame, UIParent
+-- local tonumber, tostring = tonumber, tostring
+-- local strlen, sformat = strlen, string.format
 
 local colorRed = {r = 0.93, g = 0.276, b = 0.27, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.276, b = 0.27, a = 0.3}
@@ -232,13 +232,13 @@ local function GenerateAssistantOptions(self)
                 local awardValue = tonumber(self.awardValue)
                 if not awardValue then return CLM.L["Missing award value"] end
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
-                    return sformat(CLM.L["Award %s points to everyone in raid."], awardValue)
+                    return string.format(CLM.L["Award %s points to everyone in raid."], awardValue)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    return sformat(CLM.L["Award %s points to everyone in roster."], awardValue)
+                    return string.format(CLM.L["Award %s points to everyone in roster."], awardValue)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles then profiles = {} end
-                    return sformat(CLM.L["Award %s points to %s selected players."], awardValue, #profiles)
+                    return string.format(CLM.L["Award %s points to %s selected players."], awardValue, #profiles)
                 end
             end),
             order = 14
@@ -323,11 +323,11 @@ local function GenerateManagerOptions(self)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     return CLM.L["Invalid context. You should not decay raid only."]
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    return sformat(CLM.L["Decay %s%% points to everyone in roster."], decayValue)
+                    return string.format(CLM.L["Decay %s%% points to everyone in roster."], decayValue)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles then profiles = {} end
-                    return sformat(CLM.L["Decay %s%% points to %s selected players."], decayValue, #profiles)
+                    return string.format(CLM.L["Decay %s%% points to %s selected players."], decayValue, #profiles)
                 end
             end),
             order = 22
@@ -574,7 +574,7 @@ local function initializeHandler()
                     local raid = CLM.MODULES.RaidManager:GetRaid()
                     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
                     if roster ~= raid:Roster() then
-                        LOG:Message(sformat(
+                        LOG:Message(string.format(
                             CLM.L["You can only bench players from same roster as the raid (%s)."],
                             CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
                         ))
@@ -583,7 +583,7 @@ local function initializeHandler()
 
                     if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                         if #profiles > 10 then
-                            LOG:Message(sformat(
+                            LOG:Message(string.format(
                                 CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
                                 CLM.L["add"], 10, CLM.L["progressing"]
                             ))
@@ -592,7 +592,7 @@ local function initializeHandler()
                         CLM.MODULES.RaidManager:AddToStandby(CLM.MODULES.RaidManager:GetRaid(), profiles)
                     elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
                         if #profiles > 25 then
-                            LOG:Message(sformat(
+                            LOG:Message(string.format(
                                 CLM.L["You can %s max %d players to standby at the same time to a %s raid."],
                                 CLM.L["add"], 25, CLM.L["created"]
                             ))
@@ -619,7 +619,7 @@ local function initializeHandler()
                     local raid = CLM.MODULES.RaidManager:GetRaid()
                     local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
                     if roster ~= raid:Roster() then
-                        LOG:Message(sformat(
+                        LOG:Message(string.format(
                             CLM.L["You can only remove from bench players from same roster as the raid (%s)."],
                             CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())
                         ))
@@ -628,7 +628,7 @@ local function initializeHandler()
 
                     if CLM.MODULES.RaidManager:IsInProgressingRaid() then
                         if #profiles > 10 then
-                            LOG:Message(sformat(
+                            LOG:Message(string.format(
                                 CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
                                 CLM.L["remove"], 10, CLM.L["progressing"]
                             ))
@@ -637,7 +637,7 @@ local function initializeHandler()
                         CLM.MODULES.RaidManager:RemoveFromStandby(CLM.MODULES.RaidManager:GetRaid(), profiles)
                     elseif CLM.MODULES.RaidManager:IsInCreatedRaid() then
                         if #profiles > 25 then
-                            LOG:Message(sformat(
+                            LOG:Message(string.format(
                                 CLM.L["You can %s max %d players from standby at the same time to a %s raid."],
                                 CLM.L["remove"], 25, CLM.L["created"]
                             ))
@@ -671,7 +671,7 @@ local function initializeHandler()
                         return
                     end
                     if #profiles > 10 then
-                        LOG:Message(sformat(
+                        LOG:Message(string.format(
                             CLM.L["You can remove max %d players from roster at the same time."],
                             10
                         ))

@@ -28,7 +28,9 @@
         "ViragDevTool",
         "ViragDevTool_AddData",
         "KeyBindingFrame",
-        "InterfaceOptionsFrame"
+        "InterfaceOptionsFrame",
+        "GetTalentGroupRole",
+        "GetActiveTalentGroup"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

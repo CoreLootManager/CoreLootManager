@@ -6,7 +6,7 @@ local  _, CLM = ...
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local tostring = tostring
+-- local tostring = tostring
 
 local mergeLists = UTILS.mergeLists
 local CanonicalClassToNumber = UTILS.CanonicalClassToNumber

@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local type, setmetatable, tonumber = type, setmetatable, tonumber
+-- local type, setmetatable, tonumber = type, setmetatable, tonumber
 
 local ProfileInfoCommAnnounceVersion = {}
 function ProfileInfoCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)

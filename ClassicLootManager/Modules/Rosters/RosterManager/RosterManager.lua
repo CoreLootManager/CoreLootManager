@@ -6,10 +6,10 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs = pairs, ipairs
-local tonumber, tostring = tonumber, tostring
-local type, MAX_RAID_MEMBERS, IsInRaid, GetRaidRosterInfo = type, MAX_RAID_MEMBERS, IsInRaid, GetRaidRosterInfo
-local tinsert, slen, strsub = table.insert, string.len, strsub
+-- local pairs, ipairs = pairs, ipairs
+-- local tonumber, tostring = tonumber, tostring
+-- local type, MAX_RAID_MEMBERS, IsInRaid, GetRaidRosterInfo = type, MAX_RAID_MEMBERS, IsInRaid, GetRaidRosterInfo
+-- local tinsert, slen, strsub = table.insert, string.len, strsub
 
 local RosterManager = {}
 function RosterManager:GenerateName()
@@ -735,7 +735,7 @@ function RosterManager:SetFieldName(nameOrRoster, field, name)
         return
     end
     name = tostring(name)
-    if slen(name) > 16 then
+    if string.len(name) > 16 then
         LOG:Warning("RosterManager:SetFieldName(): Truncating name %s for field %s to 16 chars.", name, field)
         name = strsub(name, 1, 16)
     end

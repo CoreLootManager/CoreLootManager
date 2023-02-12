@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local type, pairs, ipairs = type, pairs, ipairs
+-- local type, pairs, ipairs = type, pairs, ipairs
 
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfig = LibStub("AceConfig-3.0")

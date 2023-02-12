@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local tsort, sformat = table.sort, string.format
+-- local tsort, sformat = table.sort, string.format
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
@@ -61,7 +61,7 @@ local function UpdateOptions(self)
                     profileList[#profileList + 1] = profile:Name()
                 end
             end
-            tsort(profileList)
+            table.sort(profileList)
         end
     end
 
@@ -160,7 +160,7 @@ local function UpdateOptions(self)
                 self:Refresh()
             end),
             confirm = (function()
-                return sformat(
+                return string.format(
                     CLM.L["Are you sure, you want to award %s to %s for %s %s?"],
                     self.itemLink,
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),

@@ -6,9 +6,9 @@ local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local tonumber, tostring = tonumber, tostring
-local IsInRaid, CombatLogGetCurrentEventInfo = IsInRaid, CombatLogGetCurrentEventInfo
-local strsplit, GetServerTime, C_TimerNewTicker = strsplit, GetServerTime, C_Timer.NewTicker
+-- local tonumber, tostring = tonumber, tostring
+-- local IsInRaid, CombatLogGetCurrentEventInfo = IsInRaid, CombatLogGetCurrentEventInfo
+-- local strsplit, GetServerTime, C_TimerNewTicker = strsplit, GetServerTime, C_Timer.NewTicker
 
 local HYDROSS_ENCOUNTER_ID = 623
 local HYDROSS_NPC_ID = 21216
@@ -293,7 +293,7 @@ function AutoAwardManager:EnableIntervalBonusAwarding()
     self.intervalBonusAwardingEnabled = true
     handleIntervalBonus(self) -- additional handle for cases of relogs / reloads if time has already passed
     if not self.intervalTimer then
-        self.intervalTimer = C_TimerNewTicker(60, function()
+        self.intervalTimer = C_Timer.NewTicker(60, function()
             handleIntervalBonus(self)
         end)
     end

@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local CreateFrame, UIParent, pairs = CreateFrame, UIParent, pairs
+-- local CreateFrame, UIParent, pairs = CreateFrame, UIParent, pairs
 
 local GreenYes = UTILS.GreenYes()
 local RedNo = UTILS.RedNo()

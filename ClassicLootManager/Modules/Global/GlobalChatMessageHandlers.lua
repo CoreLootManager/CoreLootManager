@@ -6,11 +6,11 @@ local  _, CLM = ...
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs = pairs, ipairs
-local tostring = tostring
-local tinsert, sformat, sfind, slower, strsplit = table.insert, string.format, string.find, string.lower, strsplit
-local SendChatMessage = SendChatMessage
-local ChatFrame_AddMessageEventFilter = ChatFrame_AddMessageEventFilter
+-- local pairs, ipairs = pairs, ipairs
+-- local tostring = tostring
+-- local tinsert, sformat, sfind, slower, strsplit = table.insert, string.format, string.find, string.lower, strsplit
+-- local SendChatMessage = SendChatMessage
+-- local ChatFrame_AddMessageEventFilter = ChatFrame_AddMessageEventFilter
 
 local GlboalChatMessageHandlers = {}
 function GlboalChatMessageHandlers:Initialize()
@@ -22,7 +22,7 @@ function GlboalChatMessageHandlers:Initialize()
         local params = { strsplit(" ", text) }
         local command = params[1]
         if command then
-            command = slower(command)
+            command = string.lower(command)
             local responseChannel, target
             if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
                 responseChannel = "RAID"
@@ -54,7 +54,7 @@ function GlboalChatMessageHandlers:Initialize()
                 --     end
                 -- end
                 -- local reasonString = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[reason] or CLM.L["Invalid value provided"]
-                -- local message = sformat(CLM.L["<CLM> Your bid (%s) was %s%s."],
+                -- local message = string.format(CLM.L["<CLM> Your bid (%s) was %s%s."],
                 --     tostring(value),
                 --     accept and CLM.L["accepted"] or CLM.L["denied"],
                 --     accept and "" or (": ".. reasonString))
@@ -74,7 +74,7 @@ function GlboalChatMessageHandlers:Initialize()
                 end
                 local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
                 if not profile then
-                    SendChatMessage(sformat(CLM.L["<CLM> Missing profile for player %s."], tostring(player)), responseChannel, nil, target)
+                    SendChatMessage(string.format(CLM.L["<CLM> Missing profile for player %s."], tostring(player)), responseChannel, nil, target)
                     return
                 end
                 local rosters = {}
@@ -93,9 +93,9 @@ function GlboalChatMessageHandlers:Initialize()
                     end
                 end
                 if #rostersWithPlayer == 0 then
-                    SendChatMessage(sformat(CLM.L["<CLM> %s not present in any roster."], profile:Name()), responseChannel, nil, target)
+                    SendChatMessage(string.format(CLM.L["<CLM> %s not present in any roster."], profile:Name()), responseChannel, nil, target)
                 else
-                    SendChatMessage(sformat(CLM.L["<CLM> %s standings in %d %s:"], profile:Name(), #rostersWithPlayer, (#rostersWithPlayer == 1) and CLM.L["roster"] or CLM.L["rosters"]), responseChannel, nil, target)
+                    SendChatMessage(string.format(CLM.L["<CLM> %s standings in %d %s:"], profile:Name(), #rostersWithPlayer, (#rostersWithPlayer == 1) and CLM.L["roster"] or CLM.L["rosters"]), responseChannel, nil, target)
                 end
                 for _, roster in ipairs(rostersWithPlayer) do
                     local standings = roster:Standings(profile:GUID())
@@ -104,7 +104,7 @@ function GlboalChatMessageHandlers:Initialize()
                     if weeklyCap > 0 then
                         weeklyGains = weeklyGains .. " / " .. weeklyCap
                     end
-                    SendChatMessage(sformat(CLM.L["<CLM> %s: %d DKP (%d this week)."], CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()), standings, weeklyGains), responseChannel, nil, target)
+                    SendChatMessage(string.format(CLM.L["<CLM> %s: %d DKP (%d this week)."], CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()), standings, weeklyGains), responseChannel, nil, target)
                 end
             end
         end
@@ -112,8 +112,8 @@ function GlboalChatMessageHandlers:Initialize()
     -- Suppress incoming chat commands
     if CLM.GlobalConfigs:GetSuppressIncomingChatCommands() then
         ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", (function(_, _, message, ...)
-            message = slower(message)
-            if sfind(message, "!dkp") or sfind(message, "!bid") then
+            message = string.lower(message)
+            if string.find(message, "!dkp") or string.find(message, "!bid") then
                 return true
             end
             return false
@@ -122,7 +122,7 @@ function GlboalChatMessageHandlers:Initialize()
     -- Suppress outgoing CLM responses
     if CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() then
         ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", (function(_, _, message, ...)
-            if sfind(message, "<CLM>") then
+            if string.find(message, "<CLM>") then
                 return true
             end
             return false

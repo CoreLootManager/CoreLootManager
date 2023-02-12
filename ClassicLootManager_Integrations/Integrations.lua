@@ -496,7 +496,7 @@ function Integration:Initialize()
     self:InitializeConfigs()
 
     -- WoW DKP Bot SV Data
-    C_TimerAfter(10, (function() RequestWoWDKPBotData(self) end))
+    C_Timer.After(10, (function() RequestWoWDKPBotData(self) end))
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
         StoreWoWDKPBotData(self)
     end))
@@ -581,7 +581,7 @@ end
 function Integration:SearchRCLCAwardAction(response)
     response = strlower(tostring(response) or "")
     for _, condition in ipairs(InitializeDB("rclc.handlers")) do
-        if(sfind(response, ".*" .. strlower(condition.trigger) .. ".*")) then
+        if(string.find(response, ".*" .. strlower(condition.trigger) .. ".*")) then
             return condition.action
         end
     end

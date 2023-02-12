@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local tonumber, setmetatable, type = tonumber, setmetatable, type
+-- local tonumber, setmetatable, type = tonumber, setmetatable, type
 
 
 local BiddingCommSubmitBid = {}

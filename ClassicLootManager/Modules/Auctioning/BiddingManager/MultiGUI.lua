@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local sformat = string.format
+-- local sformat = string.format
 
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
@@ -432,7 +432,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             local width = generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
             generateButtonOptions["all_in"] = {
                 name = CLM.L["All In"],
-                desc = sformat(CLM.L["Bid your current DKP (%s)."], ""),
+                desc = string.format(CLM.L["Bid your current DKP (%s)."], ""),
                 type = "execute",
                 func = (function()
                     BidAllIn(self)

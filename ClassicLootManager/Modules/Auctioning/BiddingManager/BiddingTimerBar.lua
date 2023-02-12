@@ -8,7 +8,7 @@ local UTILS     = CLM.UTILS
 
 local LibCandyBar = LibStub("LibCandyBar-3.0")
 
-local setmetatable, GetAddOnInfo  = setmetatable, GetAddOnInfo
+-- local setmetatable, GetAddOnInfo  = setmetatable, GetAddOnInfo
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 

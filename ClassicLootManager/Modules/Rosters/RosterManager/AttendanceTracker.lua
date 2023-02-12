@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, GetServerTime = pairs, GetServerTime
+-- local pairs, GetServerTime = pairs, GetServerTime
 
 local WeekNumber = UTILS.WeekNumber
 local weekOffsetEU = UTILS.GetWeekOffsetEU()

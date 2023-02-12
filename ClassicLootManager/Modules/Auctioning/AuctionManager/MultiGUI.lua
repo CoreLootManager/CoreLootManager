@@ -7,11 +7,11 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local tonumber, tostring = tonumber, tostring
-local pairs, ipairs = pairs, ipairs
-local sformat, tinsert = string.format, table.insert
-local GameTooltip = GameTooltip
-local GetItemInfoInstant = GetItemInfoInstant
+-- local tonumber, tostring = tonumber, tostring
+-- local pairs, ipairs = pairs, ipairs
+-- local sformat, tinsert = string.format, table.insert
+-- local GameTooltip = GameTooltip
+-- local GetItemInfoInstant = GetItemInfoInstant
 
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
@@ -329,7 +329,7 @@ local function GenerateAwardOptions(self)
             end),
             confirm = (function()
                 local roster = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():GetRoster()
-                return sformat(
+                return string.format(
                     CLM.L["Are you sure, you want to award %s to %s for %s %s?"],
                     self.auctionItem:GetItemLink(),
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
@@ -605,7 +605,7 @@ local function GenerateAuctionOptions(self)
                 local didAnyActionCount = 0
                 for _,_ in pairs(didAnyAction) do didAnyActionCount = didAnyActionCount + 1 end
                 -- Stats
-                local stats = sformat("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
+                local stats = string.format("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
                 -- Result
                 return stats .. passed .. cantUse .. closed .. noAction
             end),

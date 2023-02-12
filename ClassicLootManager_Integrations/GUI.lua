@@ -87,7 +87,7 @@ local function GetProfileList()
         end
         redoProfileList = false
     end
-    tsort(profileList, function(a, b)
+    table.sort(profileList, function(a, b)
         return UTILS.RemoveColorCode(a) < UTILS.RemoveColorCode(b)
     end)
     profileList[ALL] = UTILS.ColorCodeText("Everyone", "6699ff")

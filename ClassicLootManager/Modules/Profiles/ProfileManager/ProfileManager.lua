@@ -6,10 +6,10 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, type, strsplit, strlower = pairs, type, strsplit, strlower
-local GetNumGuildMembers, GetGuildRosterInfo, UnitIsPlayer = GetNumGuildMembers, GetGuildRosterInfo, UnitIsPlayer
-local GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID = GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID
-local sformat = string.format
+-- local pairs, type, strsplit, strlower = pairs, type, strsplit, strlower
+-- local GetNumGuildMembers, GetGuildRosterInfo, UnitIsPlayer = GetNumGuildMembers, GetGuildRosterInfo, UnitIsPlayer
+-- local GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID = GetRaidRosterInfo, MAX_RAID_MEMBERS, IsInRaid, UnitGUID
+-- local string.format = string.format
 
 local whoamiGUID = UTILS.whoamiGUID()
 
@@ -244,7 +244,7 @@ function ProfileManager:NewProfile(GUID, name, class)
             else -- 2 different profiles exist. Warning
                 discard = true
                 LOG:Debug("NewProfile(): guidProfile:GUID() ~= nameProfile:GUID()")
-                warning = sformat(CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."], GUID, name, guidProfile:GUID(), guidProfile:Name(), nameProfile:GUID(), nameProfile:Name())
+                warning = string.format(CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."], GUID, name, guidProfile:GUID(), guidProfile:Name(), nameProfile:GUID(), nameProfile:Name())
             end
         else -- profile with this name does not exist - this is an actual rename
             discard = false
@@ -254,7 +254,7 @@ function ProfileManager:NewProfile(GUID, name, class)
         if nameProfile then -- name is used already by different profile? Warning
             discard = true
             LOG:Debug("NewProfile(): no guidProfile and nameProfile")
-            warning = sformat(CLM.L["Profile %s already exists and is used by different GUID %s (%s). "], name, nameProfile:GUID(), nameProfile:Name())
+            warning = string.format(CLM.L["Profile %s already exists and is used by different GUID %s (%s). "], name, nameProfile:GUID(), nameProfile:Name())
         else -- New profile!
             discard = false
             LOG:Debug("NewProfile(): not guidProfile and not nameProfile")
@@ -301,7 +301,7 @@ function ProfileManager:MarkAsAltByNames(alt, main)
     if not UTILS.typeof(mainProfile, CLM.MODELS.Profile) then
         if altProfile:Main() ~= "" then
             CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), nil), true)
-            LOG:Message(sformat("%s: %s", CLM.L["Unlink Alt"], UTILS.ColorCodeText(altProfile:Name(), UTILS.GetClassColor(altProfile:Class()).hex)))
+            LOG:Message(string.format("%s: %s", CLM.L["Unlink Alt"], UTILS.ColorCodeText(altProfile:Name(), UTILS.GetClassColor(altProfile:Class()).hex)))
         else
             LOG:Error("Main does not exist.")
         end
@@ -327,7 +327,7 @@ function ProfileManager:MarkAsAltByNames(alt, main)
             return
         end
         CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Link:new(altProfile:GUID(), mainProfile:GUID()), true)
-        LOG:Message(sformat("%s%s%s",
+        LOG:Message(string.format("%s%s%s",
             UTILS.ColorCodeText(altProfile:Name(), UTILS.GetClassColor(altProfile:Class()).hex),
             CLM.L[" alt of: "],
             UTILS.ColorCodeText(mainProfile:Name(), UTILS.GetClassColor(mainProfile:Class()).hex)

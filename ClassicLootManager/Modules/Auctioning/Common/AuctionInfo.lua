@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local setmetatable = setmetatable
+-- local setmetatable = setmetatable
 
 local AuctionItem = CLM.MODELS.AuctionItem
 local assertTypeof = UTILS.assertTypeof

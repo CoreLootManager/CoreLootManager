@@ -6,7 +6,7 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, tsort = pairs, table.sort
+-- local pairs, tsort = pairs, table.sort
 
 -- Libs
 
@@ -93,7 +93,7 @@ local function CreateTabsWidget(self, content)
         }
     end
 
-    tsort(tabs, (function(a, b) return a.order < b.order end))
+    table.sort(tabs, (function(a, b) return a.order < b.order end))
 
     self.selectedTab = "standings"
     tabsWidget:SetTabs(tabs)

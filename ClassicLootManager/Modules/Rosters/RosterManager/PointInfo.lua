@@ -6,7 +6,7 @@ local  _, CLM = ...
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local setmetatable = setmetatable
+-- local setmetatable = setmetatable
 
 local PointInfo = {}
 function PointInfo:New()

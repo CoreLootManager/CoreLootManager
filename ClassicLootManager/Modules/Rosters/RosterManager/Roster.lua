@@ -6,8 +6,8 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs, tonumber = pairs, ipairs, tonumber
-local mmax = math.max
+-- local pairs, ipairs, tonumber = pairs, ipairs, tonumber
+-- local mmax = math.max
 
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
@@ -244,7 +244,7 @@ function Roster:UpdateSpent(GUID, value)
     LOG:Debug("Roster:UpdateSpent(%s, %s, %s)", GUID, self.uid, value)
     local new = UTILS.round(self.pointInfo[GUID].spent + value, self.configuration._.roundDecimals)
     -- Handle the spent update
-    self.pointInfo[GUID].spent = mmax(new, self.configuration._.minGP)
+    self.pointInfo[GUID].spent = math.max(new, self.configuration._.minGP)
 end
 
 function Roster:SetStandings(GUID, value)
@@ -263,7 +263,7 @@ function Roster:DecayStandings(GUID, value)
     -- Spent in EPGP = GP -> thus needs to be decayed also
     if self:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
         new = UTILS.round(((self.pointInfo[GUID].spent * (100 - value)) / 100), self.configuration._.roundDecimals)
-        self.pointInfo[GUID].spent = mmax(new, self.configuration._.minGP)
+        self.pointInfo[GUID].spent = math.max(new, self.configuration._.minGP)
     end
 
 end
@@ -442,7 +442,7 @@ local configurationCallbacks = {
     end,
     minGP = function(self, value)
         for _, pointInfo in pairs(self.pointInfo) do
-            pointInfo.spent = mmax(pointInfo.spent, self.configuration._.minGP)
+            pointInfo.spent = math.max(pointInfo.spent, self.configuration._.minGP)
         end
     end,
     roundDecimals = function(self, value)

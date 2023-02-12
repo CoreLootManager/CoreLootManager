@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local ssub, type = string.sub,type
+-- local ssub, type = string.sub,type
 
 local SERIALIATION_OPTIONS = {
     errorOnUnserializableType = false,
@@ -39,7 +39,7 @@ function Comms:IsEnabled()
 end
 
 local function _prefix(prefix)
-    return CommsPrefix .. ssub(prefix or "", 0, 12)
+    return CommsPrefix .. string.sub(prefix or "", 0, 12)
 end
 
 function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfReceive)

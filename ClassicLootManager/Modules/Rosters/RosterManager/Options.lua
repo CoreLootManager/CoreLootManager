@@ -13,8 +13,8 @@ local CBTYPE = {
     HIDER    = "hide"
 }
 
-local sformat = string.format
-local pairs, ipairs = pairs, ipairs
+-- local sformat = string.format
+-- local pairs, ipairs = pairs, ipairs
 
 local RosterManagerOptions = { externalOptions = {} }
 
@@ -524,7 +524,7 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
         args[prefix .. "_" .. ivalues.type] = {
             type = "input",
             order = order,
-            desc = sformat(CLM.L["Multiplier for tier %s (if used by the auction type)."], tierName),
+            desc = string.format(CLM.L["Multiplier for tier %s (if used by the auction type)."], tierName),
             width = 0.6,
             get = (function(i) return tostring(tierGet(ivalues.type)) end),
             set = (function(i, v) tierSet(ivalues.type, tonumber(v)) end),

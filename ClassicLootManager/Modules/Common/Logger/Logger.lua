@@ -6,7 +6,7 @@ local LOG       = CLM.LOG
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local wipe, collectgarbage = wipe, collectgarbage
+-- local wipe, collectgarbage = wipe, collectgarbage
 
 -- Module part
 local Logger = {}

@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local sformat = string.format
+-- local sformat = string.format
 
 local INVTYPE_to_INVSLOT_map = {
     ["INVTYPE_HEAD"]            = {INVSLOT_HEAD},
@@ -241,11 +241,11 @@ function BiddingManager:HandleStartAuction(data, sender)
     local numItems = self.auction:GetItemCount()
     local auctionMessage
     if numItems > 1 then
-        auctionMessage = sformat(CLM.L["Auction of %s items."], numItems)
+        auctionMessage = string.format(CLM.L["Auction of %s items."], numItems)
     else
         local _, item = next(self.auction:GetItems())
         if item then
-            auctionMessage = sformat(CLM.L["Auction of %s"], item:GetItemLink())
+            auctionMessage = string.format(CLM.L["Auction of %s"], item:GetItemLink())
         end
     end
     LOG:Message(auctionMessage)

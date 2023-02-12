@@ -6,7 +6,7 @@ local  _, CLM = ...
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local GetServerTime, tinsert, setmetatable = GetServerTime, table.insert, setmetatable
+-- local GetServerTime, tinsert, setmetatable = GetServerTime, table.insert, setmetatable
 
 local PruneLog = {}
 function PruneLog:New(type, nop)

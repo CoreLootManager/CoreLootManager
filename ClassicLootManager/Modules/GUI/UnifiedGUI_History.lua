@@ -6,8 +6,8 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs = pairs, ipairs
-local sgsub, tsort = string.gsub, table.sort
+-- local pairs, ipairs = pairs, ipairs
+-- local sgsub, tsort = string.gsub, table.sort
 
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
@@ -110,7 +110,7 @@ local function GenerateUntrustedOptions(self)
             profileList[#profileList + 1] = profile:Name()
         end
     end
-    tsort(profileList)
+    table.sort(profileList)
 
     options.roster = {
         name = CLM.L["Roster"],
@@ -180,9 +180,9 @@ local tableStructure = {
         {name = CLM.L["Value"], width = 85, color = colorGreen,
             comparesort = UTILS.LibStCompareSortWrapper(function(a1,b1)
                 a1 = strsplit(" ", a1)
-                a1 = sgsub(a1, "%%", "")
+                a1 = string.gsub(a1, "%%", "")
                 b1 = strsplit(" ", b1)
-                b1 = sgsub(b1, "%%", "")
+                b1 = string.gsub(b1, "%%", "")
                 return tonumber(a1), tonumber(b1)
             end),
         },

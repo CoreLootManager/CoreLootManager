@@ -6,10 +6,11 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local pairs, ipairs = pairs, ipairs
-local tonumber, tostring = tonumber, tostring
-local sformat, mceil = string.format, math.ceil
-local SendChatMessage, C_TimerNewTicker, GetServerTime = SendChatMessage, C_Timer.NewTicker, GetServerTime
+-- local pairs, ipairs = pairs, ipairs
+-- local tonumber, tostring = tonumber, tostring
+-- local sformat, mceil = string.format, math.ceil
+-- local SendChatMessage, C_TimerNewTicker, GetServerTime = SendChatMessage, C_Timer.NewTicker, GetServerTime
+
 local typeof = UTILS.typeof
 
 local whoami = UTILS.whoami()
@@ -583,11 +584,11 @@ local function CreateNewAuctionIntervalHandlers(self, countdown, endTimeValue)
     self.bidInfoSender = CLM.MODELS.BidInfoSender:New(SENDING_INTERVAL, SendBidInfoInternal)
     self.auctionTickerLastCountdownValue = countdown
     self.auctionTickerEndTime = endTimeValue
-    self.auctionTicker = C_TimerNewTicker(TICKER_INTERVAL, (function()
+    self.auctionTicker = C_Timer.NewTicker(TICKER_INTERVAL, (function()
         self.auctionTimeLeft = self.auctionTickerEndTime - GetServerTime()
         self.bidInfoSender:Tick(TICKER_INTERVAL)
         if self.auctionTickerLastCountdownValue > 0 and self.auctionTimeLeft <= self.auctionTickerLastCountdownValue then
-            SendChatMessage(tostring(mceil(self.auctionTimeLeft)), "RAID_WARNING")
+            SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), "RAID_WARNING")
             self.auctionTickerLastCountdownValue = self.auctionTickerLastCountdownValue - 1
         end
         if self.auctionTimeLeft < 0.1 then
@@ -650,15 +651,15 @@ function AuctionManager:StartAuction()
         local _, auctionItem = next(auction:GetItems())
         local auctionMessage
         if numItems > 1 then
-            auctionMessage = sformat(CLM.L["Auction of %s items."], numItems)
+            auctionMessage = string.format(CLM.L["Auction of %s items."], numItems)
         else
-            auctionMessage = sformat(CLM.L["Auction of %s"], auctionItem:GetItemLink())
+            auctionMessage = string.format(CLM.L["Auction of %s"], auctionItem:GetItemLink())
         end
         SendChatMessage(auctionMessage , "RAID_WARNING")
         auctionMessage = ""
-        auctionMessage = auctionMessage .. sformat(CLM.L["Auction time: %s."] .. " ", auction:GetTime())
+        auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."] .. " ", auction:GetTime())
         if auction:GetAntiSnipe() > 0 then
-            auctionMessage = auctionMessage .. sformat(CLM.L["Anti-snipe time: %s."], auction:GetAntiSnipe())
+            auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], auction:GetAntiSnipe())
         end
         SendChatMessage(auctionMessage , "RAID_WARNING")
         if CLM.GlobalConfigs:GetCommandsWarning() and CLM.GlobalConfigs:GetAllowChatCommands() then
@@ -881,7 +882,7 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
     if auction:GetMode() ~= CONSTANTS.ITEM_VALUE_MODE.ASCENDING then return end
     if not CLM.GlobalConfigs:GetBidsWarning() then return end
     if userResponse:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC then return end
-    message = sformat(CLM.L["New highest bid on %s: %s %s %s"],
+    message = string.format(CLM.L["New highest bid on %s: %s %s %s"],
                         item:GetItemLink(),
                         userResponse:Value(),
                         auction:GetRoster():GetPointType() == CONSTANTS.POINT_TYPE.DKP and CLM.L["DKP"] or CLM.L["GP"],

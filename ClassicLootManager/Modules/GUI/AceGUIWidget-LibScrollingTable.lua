@@ -8,11 +8,11 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local ScrollingTable = LibStub("ScrollingTable")
 if not ScrollingTable then return end
 
--- Lua APIs
-local pairs = pairs
+-- -- Lua APIs
+-- local pairs = pairs
 
--- WoW APIs
-local CreateFrame, UIParent = CreateFrame, UIParent
+-- -- WoW APIs
+-- local CreateFrame, UIParent = CreateFrame, UIParent
 
 
 --[[-----------------------------------------------------------------------------

@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local IsGuildLeader = IsGuildLeader
+-- local IsGuildLeader = IsGuildLeader
 
 local whoami = UTILS.whoami()
 

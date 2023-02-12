@@ -6,8 +6,8 @@ local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local type, setmetatable = type, setmetatable
-local tonumber = tonumber
+-- local type, setmetatable = type, setmetatable
+-- local tonumber = tonumber
 
 -------------------------------
 --- AuctionCommStartAuction ---
