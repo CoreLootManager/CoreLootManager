@@ -687,10 +687,10 @@ local function award_multipliers(roster)
                 type = "input",
                 order = order,
                 width = 0.5,
-                get = (function(i)
+                get = (function()
                     return tostring(roster:GetSlotClassMultiplierValue(class, slot.type))
                 end),
-                set = (function(i, v)
+                set = (function(_, v)
                     CLM.MODULES.RosterManager:SetSlotClassMultiplierValue(roster, class, slot.type, tonumber(v))
                 end),
                 name = slot.name,

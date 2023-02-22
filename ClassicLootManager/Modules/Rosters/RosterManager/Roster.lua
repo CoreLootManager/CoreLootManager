@@ -59,7 +59,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
             -- Hard Modes Boss Kill Bonus values
         o.hardModeBossKillBonusValues[id] = {}
     end
-    -- 
+    -- Multipliers
     o.classMultipliers = {}
     for _, class in ipairs(UTILS.GetClassList()) do
         o.classMultipliers[class] = {}
