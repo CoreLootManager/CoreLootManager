@@ -63,8 +63,7 @@ local function StoreWoWDKPBotData(self)
         -- For each profile in roster
         for GUID, value in pairs(roster.standings) do
             db.rosters[name][GUID] = {
-                points = value, -- DKP / EP
-                spent = roster:GetPointInfoForPlayer(GUID).spent, -- spent DKP / GP
+                dkp = value, -- set standings
                 loot = {},
                 history = {}
             }

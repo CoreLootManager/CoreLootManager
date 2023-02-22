@@ -99,6 +99,8 @@ local DATA_BUILDERS = {
                 local roster_data = {
                     uid = roster:UID(),
                     name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    type = roster:GetPointType(),
+                    config = roster.configuration._,
                     standings = {
                         player = {}
                     }
@@ -111,6 +113,7 @@ local DATA_BUILDERS = {
                                 guid = GUID,
                                 name = profile:Name(),
                                 class = profile:Class(),
+                                classInternal = profile:ClassInternal(),
                                 spec = profile:SpecString(),
                                 role = profile:Role(),
                                 points = roster:Standings(GUID),
@@ -126,6 +129,8 @@ local DATA_BUILDERS = {
                 local roster_data = {
                     uid = roster:UID(),
                     name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    type = roster:GetPointType(),
+                    config = roster.configuration._,
                     standings = {
                         player = {}
                     }
@@ -159,6 +164,8 @@ local DATA_BUILDERS = {
                 local roster_data = {
                     uid = roster:UID(),
                     name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    type = roster:GetPointType(),
+                    config = roster.configuration._,
                     lootHistory = {
                         item = {}
                     }
@@ -189,6 +196,8 @@ local DATA_BUILDERS = {
                 local roster_data = {
                     uid = roster:UID(),
                     name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    type = roster:GetPointType(),
+                    config = roster.configuration._,
                     lootHistory = {
                         item = {}
                     }
@@ -224,6 +233,8 @@ local DATA_BUILDERS = {
                 local roster_data = {
                     uid = roster:UID(),
                     name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    type = roster:GetPointType(),
+                    config = roster.configuration._,
                     pointHistory = {
                         point = {}
                     }
@@ -253,6 +264,8 @@ local DATA_BUILDERS = {
                 local roster_data = {
                     uid = roster:UID(),
                     name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
+                    type = roster:GetPointType(),
+                    config = roster.configuration._,
                     pointHistory = {
                         point = {}
                     }

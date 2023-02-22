@@ -30,7 +30,8 @@
         "KeyBindingFrame",
         "InterfaceOptionsFrame",
         "GetTalentGroupRole",
-        "GetActiveTalentGroup"
+        "GetActiveTalentGroup",
+        "class"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

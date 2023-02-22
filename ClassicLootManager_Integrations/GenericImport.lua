@@ -1,8 +1,9 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local _, PRIV = ...
+local CLM = LibStub("ClassicLootManager").CLM
 -- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+local LOG       = CLM.LOG
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
@@ -13,9 +14,9 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local json = LibStub:GetLibrary("LibJsonLua")
 
-local ServerSwapImporter = {}
-function ServerSwapImporter:Initialize()
-    LOG:Trace("Import:Initialize()")
+local GenericImport = {}
+function GenericImport:Initialize()
+    LOG:Trace("GenericImport:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end
     self:Create()
     self:RegisterSlash()
@@ -45,6 +46,8 @@ local function ParseImportData(self)
         -- standings       table: 0x555b4a36d450
         rosterMap[roster.uid] = {
             name = roster.name,
+            type = roster.type,
+            config = roster.config,
             standings = {},
             players = {},
             spent = {}
@@ -55,7 +58,7 @@ local function ParseImportData(self)
             -- class   Warlock
             -- spec    0/43/18
             -- dkp     13.445
-            local guid = self.guidCache[player.name]
+            local guid = self.guidCache[player.name] or player.guid
             if guid then
                 if not profileMap[guid] then
                     numProfiles = numProfiles + 1
@@ -96,18 +99,28 @@ local function Import_CreateRosters(self)
     local delay = 0
     for _, info in pairs(self.actionDescriptor.rosterMap) do
         if not CLM.MODULES.RosterManager:GetRosterByName(info.name) then
-            delay = delay + 1
+            delay = delay + 0.5
             C_Timer.After(delay, function()
                 LOG:Message(CLM.L["New roster: %s"], info.name)
-                CLM.MODULES.RosterManager:NewRoster(CONSTANTS.POINT_TYPE.DKP, info.name)
+                CLM.MODULES.RosterManager:NewRoster(info.type or CONSTANTS.POINT_TYPE.DKP, info.name)
             end)
+        end
+    end
+end
+
+local function Import_ConfigureRosters(self)
+    for _, info in pairs(self.actionDescriptor.rosterMap) do
+        if CLM.MODULES.RosterManager:GetRosterByName(info.name) then
+            for config, value in pairs(info.config) do
+                CLM.MODULES.RosterManager:SetRosterConfiguration(info.name, config, value)
+            end
         end
     end
 end
 
 local function Import_CreateProfiles(self)
     for guid, info in pairs(self.actionDescriptor.profileMap) do
-        CLM.MODULES.ProfileManager:NewProfile(guid, info.name, info.class)
+        CLM.MODULES.ProfileManager:NewProfile(guid, info.name, CLM.UTILS.CanonicalClass(info.class))
     end
 end
 
@@ -151,19 +164,23 @@ local function CacheNewGuidData(self)
 end
 
 local function Import(self)
-    C_Timer.After(1, function()
-        LOG:Message(CLM.L["Create Rosters"])
+    C_Timer.After(0.5, function()
+        LOG:Message("1/5: ".. CLM.L["Create Rosters"])
         Import_CreateRosters(self)
         C_Timer.After(5, function()
-            LOG:Message(CLM.L["Create Profiles"])
-            Import_CreateProfiles(self)
+            LOG:Message("2/5: " .. CLM.L["Configure Rosters"])
+            Import_ConfigureRosters(self)
             C_Timer.After(5, function()
-                LOG:Message(CLM.L["Add Profiles to Rosters"])
-                Import_AddProfilesToRosters(self)
-                C_Timer.After(1, function()
-                    LOG:Message(CLM.L["Set Profiles standings in Rosters"])
-                    Import_SetStandings(self)
-                    self.inProgress = false
+                LOG:Message("3/5: " .. CLM.L["Create Profiles"])
+                Import_CreateProfiles(self)
+                C_Timer.After(5, function()
+                    LOG:Message("4/5: ".. CLM.L["Add Profiles to Rosters"])
+                    Import_AddProfilesToRosters(self)
+                    C_Timer.After(1, function()
+                        LOG:Message("5/5: " .. CLM.L["Set Profiles standings in Rosters"])
+                        Import_SetStandings(self)
+                        self.inProgress = false
+                    end)
                 end)
             end)
         end)
@@ -178,15 +195,20 @@ local function UpdateOptions(self)
                 name = CLM.L["Input JSON exported standings"],
                 type = "input",
                 multiline = 10,
-                set = function(i, v)
+                set = function(_, v)
                     self.importJson = v
                     local status, data = pcall(json.decode, self.importJson)
                     if status then
                         self.data = data
-                        ParseImportData(self)
+                        CacheNewGuidData(self)
+                        C_Timer.After(0.1, function()
+                            ParseImportData(self)
+                            C_Timer.After(0.1, function()
+                                self.importExecuted = true
+                                UpdateOptions(self)
+                            end)
+                        end)
                     end
-                    self.importExecuted = true
-                    UpdateOptions(self)
                 end,
                 get = function(i) return self.importJson end,
                 width = "full",
@@ -197,7 +219,6 @@ local function UpdateOptions(self)
                 type = "execute",
                 func = (function()
                     self.inProgress = true
-                    CacheNewGuidData(self)
                     Import(self)
                 end),
                 disabled = (function() return not self.actionDescriptor or self.inProgress end),
@@ -231,7 +252,7 @@ local function UpdateOptions(self)
     AceConfigDialog:Open(CLM.L["Import"], self.options)
 end
 
-function ServerSwapImporter:Create()
+function GenericImport:Create()
     local f = AceGUI:Create("Window")
     f:SetLayout("Flow")
     f:EnableResize(false)
@@ -248,11 +269,11 @@ function ServerSwapImporter:Create()
     f:Hide()
 end
 
-function ServerSwapImporter:RegisterSlash()
+function GenericImport:RegisterSlash()
     local options = {
-        serverswap = {
+        importgeneric = {
             type = "execute",
-            name = "Server swap Import",
+            name = "Generic Import",
             desc = CLM.L["Toggle import window display"],
             handler = self,
             func = "Toggle",
@@ -261,8 +282,8 @@ function ServerSwapImporter:RegisterSlash()
     CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
-function ServerSwapImporter:Toggle()
-    LOG:Trace("ServerSwapImporter:Toggle()")
+function GenericImport:Toggle()
+    LOG:Trace("GenericImport:Toggle()")
     if not self._initialized then return end
     if self.top:IsVisible() then
         self.top:Hide()
@@ -271,4 +292,4 @@ function ServerSwapImporter:Toggle()
     end
 end
 
-CLM.ServerSwapImporter = ServerSwapImporter
+PRIV.MODULES.GenericImport = GenericImport
