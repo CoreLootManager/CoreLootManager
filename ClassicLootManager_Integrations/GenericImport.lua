@@ -48,6 +48,7 @@ local function ParseImportData(self)
             name = roster.name,
             type = roster.type,
             config = roster.config,
+            fieldNames = roster.fieldNames,
             standings = {},
             players = {},
             spent = {}
@@ -58,7 +59,7 @@ local function ParseImportData(self)
             -- class   Warlock
             -- spec    0/43/18
             -- dkp     13.445
-            local guid = self.guidCache[player.name] or player.guid
+            local guid = self.guidCache[player.name]
             if guid then
                 if not profileMap[guid] then
                     numProfiles = numProfiles + 1
@@ -113,6 +114,9 @@ local function Import_ConfigureRosters(self)
         if CLM.MODULES.RosterManager:GetRosterByName(info.name) then
             for config, value in pairs(info.config) do
                 CLM.MODULES.RosterManager:SetRosterConfiguration(info.name, config, value)
+            end
+            for field, name in pairs(info.fieldNames) do
+                CLM.MODULES.RosterManager:SetFieldName(info.name, field, name)
             end
         end
     end

@@ -101,6 +101,7 @@ local DATA_BUILDERS = {
                     name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
                     type = roster:GetPointType(),
                     config = roster.configuration._,
+                    fieldNames = roster.fieldNames,
                     standings = {
                         player = {}
                     }
@@ -131,6 +132,7 @@ local DATA_BUILDERS = {
                     name = CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID()),
                     type = roster:GetPointType(),
                     config = roster.configuration._,
+                    fieldNames = roster.fieldNames,
                     standings = {
                         player = {}
                     }
