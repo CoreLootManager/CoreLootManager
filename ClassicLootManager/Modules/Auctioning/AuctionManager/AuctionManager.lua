@@ -938,6 +938,21 @@ function AuctionManager:Award(item, name, price)
     end
 end
 
+function AuctionManager:Disenchant(item)
+    LOG:Trace("AuctionManager:Disenchant()")
+    -- local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
+    -- if success then
+        -- CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
+    if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
+        if self:GetAutoAssign() and lootWindowIsOpen then
+            CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)
+        elseif self:GetAutoTrade() then
+            CLM.MODULES.AutoAssign:Track(item:GetItemID(), name)
+        end
+    end
+    -- end
+end
+
 function AuctionManager:IsAuctioneer(name, relaxed)
     LOG:Trace("AuctionManager:IsAuctioneer()")
     name = name or whoami
