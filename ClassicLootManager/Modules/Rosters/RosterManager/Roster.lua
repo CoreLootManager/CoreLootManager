@@ -31,7 +31,12 @@ local function lazyCreateItem(self, itemId)
     fillSlotsArray(self.itemValues[itemId])
 end
 
-local Roster = {} -- Roster information
+---@class Roster
+local Roster = {}
+---@param uid integer
+---@param pointType any
+---@param raidsForFullAttendance integer
+---@param attendanceWeeksWindow integer
 function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
     local o = {}
 
