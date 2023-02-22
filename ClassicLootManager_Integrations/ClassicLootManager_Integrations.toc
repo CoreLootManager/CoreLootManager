@@ -22,5 +22,6 @@ Migration.lua
 Integrations.lua
 GUI.lua
 ImportCSV.lua
+ServerSwapImport.lua
 Models/Exporter.lua
 Models/ExportConfiguration.lua
