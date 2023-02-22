@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.1.4",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Generic Import", body = "You can now export data through /clm export using Standings option and import it through /clm importgeneric when moving servers or changing guilds. This will retain rosters together with generic and auction configs. Iitem, slot and dynamic values are not retained. History is also lost. Profiles are recreated with new GUIDs (without links) and standings are retained." },
+                    { header = "Global cleanup", body = "Big cleanup in global codespace was done. If you enconter any lua errors be sure to report them!" },
+                },
+            },
+        },
+    },
+    {
         version = "v3.1.3",
         data = {
             {
@@ -128,7 +140,7 @@ CLM.ChangelogData = {
                     { header = "Lingering invisible bars", body = "There should be no more invisible bars lingering during auctioning." },
                     { header = "Auto-Trade", body = "Auto trade should work now as expected." },
                     { header = "Unusable detection", body = "Detection of unusable items should be working agian." },
-                    { header = "Award slash command", body = "Award slash command has returned in old form as `/clm aw`." },
+                    { header = "Award slash command", body = "Award slash command has returned in old form as /clm aw." },
                     { header = "ElvUI", body = "Open Auction list should be visible now." },
                 },
             },
@@ -187,7 +199,7 @@ CLM.ChangelogData = {
                     { header = "Multi Item Auction", body = "Award value Multiplier is not stored nor configurable." },
                     { header = "Scaling", body = "Bidding GUI cannot be scaled at this time." },
                     { header = "GUI", body = "Bidding GUI still needs some refinements and might change anytime." },
-                    { header = "ElvUI skins", body = "ElvUI bidding UI reskin might not be ideal. Best way to ensure the bidding UI looks properly you should not open the UI manually before first auction, otherwise `/reload` will be required for the UI to get fixed. Another option is to disable Ace3 reskin."}
+                    { header = "ElvUI skins", body = "ElvUI bidding UI reskin might not be ideal. Best way to ensure the bidding UI looks properly you should not open the UI manually before first auction, otherwise /reload will be required for the UI to get fixed. Another option is to disable Ace3 reskin."}
                 },
             },
         },

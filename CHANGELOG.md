@@ -1,3 +1,9 @@
+# Classic Loot Manager v3.1.4
+## Changes
+### Generic Import
+You can now export data through `/clm export` using `Standings` option and import it through `/clm importgeneric` when moving servers or changing guilds. This will retain rosters together with generic and auction configs. Iitem, slot and dynamic values are not retained. History is also lost. Profiles are recreated with new GUIDs (without links) and standings are retained.
+### Global cleanup
+Big cleanup in global codespace was done. If you enconter any lua errors be sure to report them!
 # Classic Loot Manager v3.1.3
 ## Changes
 ### Hide in combat
