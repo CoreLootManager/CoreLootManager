@@ -3,7 +3,7 @@ local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
+local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local CBTYPE = {
@@ -667,6 +667,41 @@ local function boss_kill_award_values(roster, self, name)
     return args
 end
 
+local function award_multipliers(roster)
+    local args = {}
+
+    for i, coloredClass in ipairs(UTILS.GetColorCodedClassList()) do
+        local class = UTILS.RemoveColorCode(coloredClass)
+        args[class] = {
+            type = "group",
+            name = coloredClass,
+            order = i,
+            args = {}
+        }
+        local order = 0
+        local prefix
+        for _, slot in ipairs(CONSTANTS.INVENTORY_TYPES_SORTED) do
+            prefix = slot.type:lower()
+            order = order + 1
+            args[class].args[prefix .. "_value"] = {
+                type = "input",
+                order = order,
+                width = 0.5,
+                get = (function(i)
+                    return tostring(roster:GetSlotClassMultiplierValue(class, slot.type))
+                end),
+                set = (function(i, v)
+                    CLM.MODULES.RosterManager:SetSlotClassMultiplierValue(roster, class, slot.type, tonumber(v))
+                end),
+                name = slot.name,
+                pattern = CONSTANTS.REGEXP_FLOAT,
+            }
+            order = order + 1
+        end
+    end
+    return args
+end
+
 function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
     local isManager = CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
@@ -1050,11 +1085,12 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 3,
                 args = default_slot_values(roster)
             },
-            dynamic_item_values = {
-                name = CLM.L["Dynamic Item values"],
+            award_multipliers = {
+                name = CLM.L["Award"] .. " " .. CLM.L["Multiplier"],
                 type = "group",
                 order = 4,
-                args = dynamic_item_values(roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+                childGroups = "tab",
+                args = award_multipliers(roster)
             },
             item_value_overrides = {
                 name = CLM.L["Item value overrides"],
@@ -1062,10 +1098,16 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 order = 5,
                 args = item_value_overrides(roster, self)
             },
+            dynamic_item_values = {
+                name = CLM.L["Dynamic Item values"],
+                type = "group",
+                order = 6,
+                args = dynamic_item_values(roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+            },
             boss_kill_award_values = {
                 name = CLM.L["Boss kill award values"],
                 type = "group",
-                order = 6,
+                order = 7,
                 childGroups = "tab",
                 args = boss_kill_award_values(roster, self, name)
             }

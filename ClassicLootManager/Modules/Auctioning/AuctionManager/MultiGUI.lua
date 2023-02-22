@@ -60,6 +60,7 @@ local function SetInputAwardValue(self, value)
     UpdateAwardPrice(self)
 end
 
+
 local function SetInputAwardMultiplier(self, value)
     self.awardMultiplier = tonumber(value) or 1
     UpdateAwardPrice(self)
@@ -327,7 +328,7 @@ local function GenerateAwardOptions(self)
                     CLM.L["Are you sure, you want to award %s to %s for %s %s?"],
                     self.auctionItem:GetItemLink(),
                     UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
-                    tostring(self.awardValue),
+                    tostring(self.awardPrice),
                     (roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and CLM.L["GP"] or CLM.L["DKP"]
                 )
             end),
@@ -358,6 +359,10 @@ local function CreateAwardOptions(self, width)
     AceConfigDialog:Open(AWARD_REGISTRY, AwardOptionsGroup)
 
     return AwardOptionsGroup
+end
+
+local function ST_GetPlayerClass(row)
+    return row.cols[1].value
 end
 
 local function ST_GetPlayerName(row)
@@ -460,6 +465,8 @@ local function CreateBidList(self, width)
             local selected = table:GetRow(selection)
             if selected then
                 self.awardPlayer = ST_GetPlayerName(selected)
+                local multiplier = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():GetAwardMultiplier(ST_GetPlayerClass(selected), self.auctionItem:GetItemID())
+                SetInputAwardMultiplier(self, multiplier)
                 UpdateBids(self, ST_GetPlayerBidValue(selected), ST_GetPlayerBidType(selected))
                 self:Refresh()
             end
