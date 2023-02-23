@@ -13,12 +13,14 @@ local colorGold = {a = 1, r = 1, g = 0.8, b = 0}
 CONSTANTS.HISTORY_TYPE = {
     ALL = 1,
     LOOT = 2,
-    POINT = 3
+    DISENCHANTED = 3,
+    POINT = 4
 }
 
 CONSTANTS.HISTORY_TYPES_GUI = {
     [CONSTANTS.HISTORY_TYPE.ALL] = CLM.L["All"],
     [CONSTANTS.HISTORY_TYPE.LOOT] = CLM.L["Loot"],
+    [CONSTANTS.HISTORY_TYPE.DISENCHANTED] = CLM.L["Disenchanted"],
     [CONSTANTS.HISTORY_TYPE.POINT] = CLM.L["Point"]
 }
 

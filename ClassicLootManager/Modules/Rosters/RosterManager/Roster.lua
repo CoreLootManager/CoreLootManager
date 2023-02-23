@@ -71,6 +71,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.profilePointHistory = {}  -- Point changes in to players in roster (dict of lists)
     o.raidLoot = {}             -- Loot received in the roster (list). Time descending
     o.profileLoot = {}          -- Loot received by players (dict of lists). Time descending per player
+    o.disenchantedLoot = {}     -- Loot disenchanted
     o.weeklyGains = {}          -- Weekly point gains per player
     o.calculator = CLM.MODELS.ItemValueCalculator:New() -- Dynamic item value calculator
     -- END ROSTER STATE --
@@ -533,6 +534,14 @@ end
 
 function Roster:GetProfileLootByGUID(GUID)
     return self.profileLoot[GUID] or {}
+end
+
+function Roster:AddDisenchanted(loot)
+    self.disenchantedLoot[#self.disenchantedLoot+1] = loot
+end
+
+function Roster:GetDisenchantedLoot()
+    return self.disenchantedLoot or {}
 end
 
 function Roster:AddProfilePointHistory(history, profile)

@@ -227,20 +227,11 @@ local function FillLootFromCorpse()
     end
 end
 
-local lootWindowIsOpen = false
 local function HandleLootOpenedEvent()
     -- Post loot to raid chat
     PostLootToRaidChat()
-    -- Hook slots
-    -- HookCorpseSlots()
     -- Fill auction
     FillLootFromCorpse()
-    --
-    lootWindowIsOpen = true
-end
-
-local function HandleLootClosedEvent()
-    lootWindowIsOpen = false
 end
 
 -- CONFIGURATION
@@ -497,7 +488,6 @@ function AuctionManager:Initialize()
 
     HookAuctionFilling(self)
     CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, HandleLootOpenedEvent)
-    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, HandleLootClosedEvent)
     CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_LOOT"}, HandleLootMessage)
 
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
@@ -926,14 +916,7 @@ function AuctionManager:Award(item, name, price)
     local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
-        -- CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item, uuid)
-        if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
-            if self:GetAutoAssign() and lootWindowIsOpen then
-                CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)
-            elseif self:GetAutoTrade() then
-                CLM.MODULES.AutoAssign:Track(item:GetItemID(), name)
-            end
-        end
+        CLM.MODULES.AutoAssign:Handle(item:GetItemID(), name)
         RevalidateBids(self)
     end
 end
@@ -943,14 +926,10 @@ function AuctionManager:Disenchant(item)
     -- local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
     -- if success then
         -- CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
-    if not CLM.MODULES.AutoAssign:IsIgnored(item:GetItemID()) then
-        if self:GetAutoAssign() and lootWindowIsOpen then
-            CLM.MODULES.AutoAssign:GiveMasterLooterItem(item:GetItemID(), name)
-        elseif self:GetAutoTrade() then
-            CLM.MODULES.AutoAssign:Track(item:GetItemID(), name)
-        end
+    local disenchanter = CLM.MODULES.RaidManager:GetDisenchanter()
+    if disenchanter then
+        CLM.MODULES.AutoAssign:Handle(item:GetItemID(), disenchanter)
     end
-    -- end
 end
 
 function AuctionManager:IsAuctioneer(name, relaxed)
