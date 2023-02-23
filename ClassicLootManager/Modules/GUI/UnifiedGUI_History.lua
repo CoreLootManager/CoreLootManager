@@ -334,6 +334,18 @@ local tableStructure = {
     }
 }
 
+local function fillLootList(displayedLoot, loot)
+    if GetItemInfoInstant(loot:Id()) then
+        local _, itemLink = GetItemInfo(loot:Id())
+        if not itemLink then
+            UnifiedGUI_History.pendingLoot = true
+        elseif not UnifiedGUI_History.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
+            local owner = loot:Owner()
+            displayedLoot[#displayedLoot+1] = {loot, itemLink, owner:Name(), UTILS.GetClassColor(owner:Class())}
+        end
+    end
+end
+
 local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_History tableDataFeeder()")
     local data = {}
@@ -354,22 +366,18 @@ local function tableDataFeeder()
             disenchantedList = {}
         else -- raid loot
             lootList = roster:GetRaidLoot()
-            disenchantedList = roster:GetDisenchanted()
+            disenchantedList = roster:GetDisenchantedLoot()
         end
 
-        local displayedLoot = {}
+        local displayedLoot, displayedDe = {}, {}
         UnifiedGUI_History.pendingLoot = false
 
         for _,loot in ipairs(lootList) do
-            if GetItemInfoInstant(loot:Id()) then
-                local _, itemLink = GetItemInfo(loot:Id())
-                if not itemLink then
-                    UnifiedGUI_History.pendingLoot = true
-                elseif not UnifiedGUI_History.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
-                    local owner = loot:Owner()
-                    displayedLoot[#displayedLoot+1] = {loot, itemLink, owner:Name(), UTILS.GetClassColor(owner:Class())}
-                end
-            end
+            fillLootList(displayedLoot, loot)
+        end
+
+        for _,loot in ipairs(disenchantedList) do
+            fillLootList(displayedDe, loot)
         end
 
         if UnifiedGUI_History.pendingLoot then
@@ -388,6 +396,21 @@ local function tableDataFeeder()
                 {value = lootData[2]},
                 {value = lootData[2]}, -- itemLink
                 {value = value},
+                {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
+                {value = lootData[3], color = lootData[4]}, -- owner
+                -- Not visible
+                {value = true}, -- is Loot
+                {value = loot} -- Loot Object
+            }}
+            data[#data + 1] =  row
+        end
+
+        for _,lootData in ipairs(displayedDe) do
+            local loot = lootData[1]
+            local row = {cols = {
+                {value = lootData[2]},
+                {value = lootData[2]}, -- itemLink
+                {value = ""},
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
                 {value = lootData[3], color = lootData[4]}, -- owner
                 -- Not visible

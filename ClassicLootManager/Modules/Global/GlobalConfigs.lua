@@ -197,8 +197,8 @@ Thank you patrons, especially:
         },
         de_list = {
             type = "input",
-            name = "",
-            desc = CLM.L["Comma-separated (CSV) list of disenchanter names. Case insensitive."],
+            -- name = "",
+            name = CLM.L["Comma-separated (CSV) list of disenchanter names. Case insensitive."],
             get = (function(i) return self:GetDisenchanterCSV() end),
             set = (function(i,v) self:SetDisenchanterCSV(v) end),
             width = "full",
