@@ -201,8 +201,7 @@ function TradeListGUI:Create()
     f:AddChild(CreateTradeDisplay(self))
     RestoreLocation(self)
     -- Hide by default
-    -- f:Hide()
-
+    f:Hide()
 end
 
 function TradeListGUI:UpdateSize(rows)
