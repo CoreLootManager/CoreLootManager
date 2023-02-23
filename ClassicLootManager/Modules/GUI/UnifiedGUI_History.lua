@@ -157,6 +157,91 @@ local function horizontalOptionsFeeder()
     return options
 end
 
+local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
+    local itemId = UTILS.GetItemIdFromLink(itemLink)
+    local itemString = "item:" .. tonumber(itemId)
+    tooltip:SetHyperlink(itemString)
+    if loot then
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
+        local name
+        if profile then
+            name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+        else
+            name = CLM.L["Unknown"]
+        end
+        local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
+        if raid then
+            tooltip:AddLine(raid:Name())
+        end
+        tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+        local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
+        if detailsMode and auction then
+            tooltip:AddLine("\n")
+            for bidder, bid in pairs(auction.bids) do
+                local names = auction.names or {}
+                local rolls = auction.rolls or {}
+                bid  = tostring(bid)
+                if rolls[bidder] then
+                    bid  = bid .. "/" .. tostring(rolls[bidder])
+                end
+                if names[bidder] then
+                    bid = bid .. " (" .. names[bidder] .. ")"
+                end
+                local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
+                if bidderProfile then
+                    bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
+                end
+
+                tooltip:AddDoubleLine(bidder, bid)
+            end
+            if detailsMode then
+                local upgraded = auction.upgraded or {}
+                local previousUpgradeTooltip
+                for _, it in ipairs(upgraded[loot:Owner():Name()] or {}) do
+                    local upgradeTooltip = tooltipPool:Acquire()
+                    if previousUpgradeTooltip then
+                        upgradeTooltip:SetOwner(previousUpgradeTooltip, "ANCHOR_NONE")
+                        upgradeTooltip:ClearAllPoints()
+                        upgradeTooltip:SetPoint("TOPLEFT", previousUpgradeTooltip, "BOTTOMLEFT")
+                    else
+                        upgradeTooltip:SetOwner(tooltip, "ANCHOR_RIGHT")
+                    end
+                    upgradeTooltip:SetHyperlink("item:" .. tonumber(it))
+                    upgradeTooltip:Show()
+                    previousUpgradeTooltip = upgradeTooltip
+                end
+            end
+        end
+    end
+end
+
+local function buildPointTooltip(tooltip, history)
+    local profiles = history:Profiles()
+    local numProfiles = #profiles
+    tooltip:AddDoubleLine(CLM.L["Affected players:"], tostring(numProfiles))
+    if not profiles or numProfiles == 0 then
+        tooltip:AddLine(CLM.L["None"])
+    else
+        UTILS.buildPlayerListForTooltip(profiles, tooltip)
+    end
+    local note = history:Note()
+    if note ~= "" then
+        local numNote = tonumber(note)
+        if numNote then
+            note = CLM.EncounterIDsMap[numNote] or note
+        end
+        tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
+    end
+    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
+    local name
+    if profile then
+        name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+    else
+        name = CLM.L["Unknown"]
+    end
+    tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+end
+
 local tableStructure = {
     rows = 22,
     -- columns - structure of the ScrollingTable
@@ -189,7 +274,7 @@ local tableStructure = {
         }
     },
     -- Function to filter ScrollingTable
-    filter = (function(stobject, row)
+    filter = (function(_, row)
         return UnifiedGUI_History.filter:Filter("", "", {ST_GetInfo(row)})
     end),
     -- Events to override for ScrollingTable
@@ -202,98 +287,17 @@ local tableStructure = {
             local tooltip = UnifiedGUI_History.tooltip
             if not tooltip then return end
             local detailsMode = IsControlKeyDown()
+
             if detailsMode then
                 tooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
             else
                 tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
             end
-            -- ------------------------------ --
-            if ST_GetIsLoot(rowData) == true then
-                -- ----------- Loot ------------- --
-                local itemLink = ST_GetInfo(rowData) or ""
-                local itemId = UTILS.GetItemIdFromLink(itemLink)
-                local itemString = "item:" .. tonumber(itemId)
-                tooltip:SetHyperlink(itemString)
-                local loot = ST_GetObject(rowData)
-                if loot then
-                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
-                    local name
-                    if profile then
-                        name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
-                    else
-                        name = CLM.L["Unknown"]
-                    end
-                    local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
-                    if raid then
-                        tooltip:AddLine(raid:Name())
-                    end
-                    tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
-                    local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
-                    if detailsMode and auction then
-                        tooltip:AddLine("\n")
-                        for bidder, bid in pairs(auction.bids) do
-                            local names = auction.names or {}
-                            local rolls = auction.rolls or {}
-                            bid  = tostring(bid)
-                            if rolls[bidder] then
-                                bid  = bid .. "/" .. tostring(rolls[bidder])
-                            end
-                            if names[bidder] then
-                                bid = bid .. " (" .. names[bidder] .. ")"
-                            end
-                            local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
-                            if bidderProfile then
-                                bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
-                            end
 
-                            tooltip:AddDoubleLine(bidder, bid)
-                        end
-                        if detailsMode then
-                            local upgraded = auction.upgraded or {}
-                            local previousUpgradeTooltip
-                            for _, it in ipairs(upgraded[loot:Owner():Name()] or {}) do
-                                local upgradeTooltip = tooltipPool:Acquire()
-                                if previousUpgradeTooltip then
-                                    upgradeTooltip:SetOwner(previousUpgradeTooltip, "ANCHOR_NONE")
-                                    upgradeTooltip:ClearAllPoints()
-                                    upgradeTooltip:SetPoint("TOPLEFT", previousUpgradeTooltip, "BOTTOMLEFT")
-                                else
-                                    upgradeTooltip:SetOwner(tooltip, "ANCHOR_RIGHT")
-                                end
-                                upgradeTooltip:SetHyperlink("item:" .. tonumber(it))
-                                upgradeTooltip:Show()
-                                previousUpgradeTooltip = upgradeTooltip
-                            end
-                        end
-                    end
-                end
+            if ST_GetIsLoot(rowData) == true then
+                buildLootTooltip(tooltip, ST_GetObject(rowData), ST_GetInfo(rowData) or "", detailsMode)
             elseif ST_GetIsLoot(rowData) == false then
-                -- ----------- Point ------------ --
-                local history = ST_GetObject(rowData)
-                local profiles = history:Profiles()
-                local numProfiles = #profiles
-                tooltip:AddDoubleLine(CLM.L["Affected players:"], tostring(numProfiles))
-                if not profiles or numProfiles == 0 then
-                    tooltip:AddLine(CLM.L["None"])
-                else
-                    UTILS.buildPlayerListForTooltip(profiles, tooltip)
-                end
-                local note = history:Note()
-                if note ~= "" then
-                    local numNote = tonumber(note)
-                    if numNote then
-                        note = CLM.EncounterIDsMap[numNote] or note
-                    end
-                    tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
-                end
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
-                local name
-                if profile then
-                    name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
-                else
-                    name = CLM.L["Unknown"]
-                end
-                tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+                buildPointTooltip(tooltip, ST_GetObject(rowData))
             else
                 return status
             end
@@ -324,6 +328,18 @@ local tableStructure = {
     }
 }
 
+local function fillLootList(displayedLoot, loot)
+    if GetItemInfoInstant(loot:Id()) then
+        local _, itemLink = GetItemInfo(loot:Id())
+        if not itemLink then
+            UnifiedGUI_History.pendingLoot = true
+        elseif not UnifiedGUI_History.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
+            local owner = loot:Owner()
+            displayedLoot[#displayedLoot+1] = {loot, itemLink, owner:Name(), UTILS.GetClassColor(owner:Class())}
+        end
+    end
+end
+
 local function tableDataFeeder()
     LOG:Trace("UnifiedGUI_History tableDataFeeder()")
     local data = {}
@@ -337,26 +353,25 @@ local function tableDataFeeder()
     if UnifiedGUI_History.historyType ~= CONSTANTS.HISTORY_TYPE.POINT then
         local isProfileLoot = (profile and roster:IsProfileInRoster(profile:GUID()))
         local lootList
+        local disenchantedList
         -- player loot
         if isProfileLoot then
             lootList = roster:GetProfileLootByGUID(profile:GUID())
+            disenchantedList = {}
         else -- raid loot
             lootList = roster:GetRaidLoot()
+            disenchantedList = roster:GetDisenchantedLoot()
         end
 
-        local displayedLoot = {}
+        local displayedLoot, displayedDe = {}, {}
         UnifiedGUI_History.pendingLoot = false
 
         for _,loot in ipairs(lootList) do
-            if GetItemInfoInstant(loot:Id()) then
-                local _, itemLink = GetItemInfo(loot:Id())
-                if not itemLink then
-                    UnifiedGUI_History.pendingLoot = true
-                elseif not UnifiedGUI_History.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
-                    local owner = loot:Owner()
-                    displayedLoot[#displayedLoot+1] = {loot, itemLink, owner:Name(), UTILS.GetClassColor(owner:Class())}
-                end
-            end
+            fillLootList(displayedLoot, loot)
+        end
+
+        for _,loot in ipairs(disenchantedList) do
+            fillLootList(displayedDe, loot)
         end
 
         if UnifiedGUI_History.pendingLoot then
@@ -375,6 +390,21 @@ local function tableDataFeeder()
                 {value = lootData[2]},
                 {value = lootData[2]}, -- itemLink
                 {value = value},
+                {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
+                {value = lootData[3], color = lootData[4]}, -- owner
+                -- Not visible
+                {value = true}, -- is Loot
+                {value = loot} -- Loot Object
+            }}
+            data[#data + 1] =  row
+        end
+
+        for _,lootData in ipairs(displayedDe) do
+            local loot = lootData[1]
+            local row = {cols = {
+                {value = lootData[2]},
+                {value = lootData[2]}, -- itemLink
+                {value = ""},
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], loot:Timestamp())},
                 {value = lootData[3], color = lootData[4]}, -- owner
                 -- Not visible

@@ -111,6 +111,11 @@ function Minimap:Initialize()
             trustedOnly = true
         },
         {
+            title = CLM.L["Trade List"],
+            func = (function() CLM.GUI.TradeList:Toggle() end),
+            trustedOnly = true
+        },
+        {
             title = CLM.L["Bidding"],
             func = (function() CLM.GUI.BiddingManager:Toggle() end)
         },

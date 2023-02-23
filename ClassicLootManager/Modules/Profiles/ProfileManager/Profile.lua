@@ -6,7 +6,9 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@class Profile
 local Profile = {}
+
 function Profile:New(entry, name, class, main)
     local o = {}
 

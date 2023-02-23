@@ -158,5 +158,7 @@ globals = {
 	"UISpecialFrames",
 	"GetTalentGroupRole",
 	"GetActiveTalentGroup",
-	"CLASS_ICON_TCOORDS"
+	"CLASS_ICON_TCOORDS",
+	"TradeFrame",
+	"InitiateTrade"
 }
