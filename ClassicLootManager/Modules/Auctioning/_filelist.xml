@@ -2,6 +2,7 @@
 	..\FrameXML\UI.xsd">
 	<Include file="Common\_filelist.xml"/>
 	<Include file="BiddingManager\_filelist.xml"/>
+	<Include file="AutoAssign\_filelist.xml"/>
 	<Include file="AuctionManager\_filelist.xml"/>
 	<Include file="AuctionHistoryManager\_filelist.xml"/>
 </Ui>
