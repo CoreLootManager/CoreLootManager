@@ -292,6 +292,21 @@ function RosterManager:Initialize()
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
+        CLM.MODELS.LEDGER.ROSTER.AwardMultiplier,
+        (function(entry)
+            LOG:TraceAndCount("mutator(RosterAwardMultiplier)")
+            local rosterUid = entry:rosterUid()
+
+            local roster = self:GetRosterByUid(rosterUid)
+            if not roster then
+                LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                return
+            end
+
+            roster:SetSlotClassMultiplierValue(UTILS.NumberToClass(entry:ingameClass()), entry:slot(), entry:value())
+        end))
+
+    CLM.MODULES.LedgerManager:RegisterEntryType(
         CLM.MODELS.LEDGER.ROSTER.DynamicItemValueExpvar,
         (function(entry)
             LOG:TraceAndCount("mutator(DynamicItemValueExpvar)")
@@ -579,6 +594,35 @@ function RosterManager:SetRosterDefaultSlotTierValue(nameOrRoster, slot, tier, v
     end
 
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, tier, value), true)
+end
+
+function RosterManager:SetSlotClassMultiplierValue(nameOrRoster, class, slot, value)
+    LOG:Trace("RosterManager:SetSlotClassMultiplierValue()")
+    local roster
+    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetSlotClassMultiplierValue(): Invalid roster object or name")
+        return nil
+    end
+    value = tonumber(value)
+    if not value then
+        LOG:Error("RosterManager:SetSlotClassMultiplierValue(): Missing value")
+        return
+    end
+    if not slot or not CONSTANTS.INVENTORY_TYPES_SET[slot] then
+        LOG:Error("RosterManager:SetSlotClassMultiplierValue(): Missing slot")
+        return
+    end
+    if roster:GetSlotClassMultiplierValue(class, slot) == value then
+        LOG:Debug("RosterManager:SetSlotClassMultiplierValue(): No change to value. Skipping.")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.AwardMultiplier:new(roster:UID(), class, slot, value), true)
 end
 
 function RosterManager:SetRosterDynamicItemValueEquation(nameOrRoster, equation)

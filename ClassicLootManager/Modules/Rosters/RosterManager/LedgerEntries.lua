@@ -28,6 +28,7 @@ local RosterUpdateProfiles          = LogEntry:extend("R9")
 local RosterCopyData                = LogEntry:extend("RC")
 local RosterBossKillBonus           = LogEntry:extend("RB")
 local RosterFieldRename             = LogEntry:extend("RF")
+local RosterAwardMultiplier         = LogEntry:extend("RM")
 
 local RosterDynamicItemValueEquation       = LogEntry:extend("VE")
 local RosterDynamicItemValueExpvar         = LogEntry:extend("VX")
@@ -432,7 +433,38 @@ local RosterFieldRenameFields = mergeLists(LogEntry:fields(), {"r", "i", "a"})
 function RosterFieldRename:fields()
     return RosterFieldRenameFields
 end
+-- ------------------------- --
+-- RosterAwardMultiplier --
+-- ------------------------- --
+function RosterAwardMultiplier:new(rosterUid, class, slot, value)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.c = tonumber(class) or UTILS.ClassToNumber(class)
+    o.s = tostring(slot) or "" -- not the most optimal but i don't expect it to be changed too often
+    o.v = tonumber(value)
+    return o
+end
 
+function RosterAwardMultiplier:rosterUid()
+    return self.r
+end
+
+function RosterAwardMultiplier:ingameClass()
+    return self.c
+end
+
+function RosterAwardMultiplier:slot()
+    return self.s
+end
+
+function RosterAwardMultiplier:value()
+    return self.v
+end
+
+local RosterAwardMultiplierFields = mergeLists(LogEntry:fields(), {"r", "c", "s", "v"})
+function RosterAwardMultiplier:fields()
+    return RosterAwardMultiplierFields
+end
 -- ------------------------------ --
 -- RosterDynamicItemValueEquation --
 -- ------------------------------ --
@@ -572,6 +604,7 @@ CLM.MODELS.LEDGER.ROSTER = {
     CopyData                        = RosterCopyData,
     BossKillBonus                   = RosterBossKillBonus,
     FieldRename                     = RosterFieldRename,
+    AwardMultiplier                 = RosterAwardMultiplier,
     DynamicItemValueEquation        = RosterDynamicItemValueEquation,
     DynamicItemValueExpvar          = RosterDynamicItemValueExpvar,
     DynamicItemValueMultiplier      = RosterDynamicItemValueMultiplier,

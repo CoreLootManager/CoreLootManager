@@ -59,6 +59,12 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
             -- Hard Modes Boss Kill Bonus values
         o.hardModeBossKillBonusValues[id] = {}
     end
+    -- Multipliers
+    o.classMultipliers = {}
+    for _, class in ipairs(UTILS.GetClassList()) do
+        o.classMultipliers[class] = {}
+    end
+
     -- END CONFIGURATION --
 
     -- ROSTER STATE --
@@ -428,6 +434,27 @@ function Roster:GetItemValues(itemId)
     return itemValues
 end
 
+function Roster:GetSlotClassMultiplierValue(class, slot)
+    return self.classMultipliers[class][slot] or self.classMultipliers[class][GLOBAL_FAKE_INVENTORY_SLOT] or 1
+end
+
+function Roster:SetSlotClassMultiplierValue(class, slot, value)
+    LOG:Debug("Set Default Class Slot Value: [%s] [%s]: [%s] for roster [%s]", class, slot, value, self:UID())
+    if not self.classMultipliers[class] then return end
+    if not slot or not CONSTANTS.INVENTORY_TYPES_SET[slot] then return end
+    self.classMultipliers[class][slot] = tonumber(value)
+    if slot ~= GLOBAL_FAKE_INVENTORY_SLOT then
+        if self.classMultipliers[class][slot] == self.classMultipliers[class][GLOBAL_FAKE_INVENTORY_SLOT] then
+            self.classMultipliers[class][slot] = nil
+        end
+    end
+end
+
+function Roster:GetClassItemMultiplierValue(class, itemId)
+    local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemId)
+    local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
+    return self:GetSlotClassMultiplierValue(class, CLM.IndirectMap.slot[itemId] or equipLoc)
+end
 --[[
  *****************
  * Configuration *
