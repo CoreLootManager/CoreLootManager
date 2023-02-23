@@ -564,6 +564,20 @@ function RaidManager:GetUniquePlayersListInRaid(raid)
     return UTILS.keys(uniquePlayerDict)
 end
 
+function RaidManager:GetDisenchanter()
+    if not self:IsInActiveRaid() then return end
+    local raid = self:GetRaid()
+    local disenchanters = CLM.GlobalConfigs:GetDisenchanterList()
+    for _, disenchanter in ipairs(disenchanters) do
+        local deProfile = CLM.MODULES.ProfileManager:GetProfileByName(disenchanter)
+        if deProfile and raid.players[deProfile:GUID()] then
+            return disenchanter
+        end
+    end
+
+    return nil
+end
+
 function RaidManager:RegisterEventHandling()
     if self.isEventHandlingRegistered then return end
     CLM.MODULES.EventManager:RegisterWoWBucketEvent({"RAID_ROSTER_UPDATE", "GROUP_ROSTER_UPDATE", "READY_CHECK"}, 3, (function(...)

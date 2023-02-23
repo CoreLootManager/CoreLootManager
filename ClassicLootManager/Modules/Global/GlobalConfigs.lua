@@ -31,7 +31,8 @@ function GlobalConfigs:Initialize()
             bids = true,
             loot = true,
             commands = false
-        }
+        },
+        disenchanters = ""
     })
 
     local options = {
@@ -188,6 +189,20 @@ Thank you patrons, especially:
             set = function(i, v) self:SetAnnounceLootToRaidLevel(v) end,
             get = function(i) return self:GetAnnounceLootToRaidLevel() end,
             order = 8
+        },
+        de_header = {
+            type = "header",
+            name = CLM.L["Disenchanters"],
+            order = 80
+        },
+        de_list = {
+            type = "input",
+            name = "",
+            desc = CLM.L["Comma-separated (CSV) list of disenchanter names. Case insensitive."],
+            get = (function(i) return self:GetDisenchanterCSV() end),
+            set = (function(i,v) self:SetDisenchanterCSV(v) end),
+            width = "full",
+            order = 81
         },
         rw_header = {
             type = "header",
@@ -421,6 +436,25 @@ end
 
 function GlobalConfigs:GetUIScale()
     return self.db.uiscale
+end
+
+function GlobalConfigs:SetDisenchanterCSV(v)
+    self.db.disenchanters = v or ""
+    self.deList = nil
+end
+
+function GlobalConfigs:GetDisenchanterCSV()
+    return self.db.disenchanters
+end
+
+function GlobalConfigs:GetDisenchanterList()
+    if not self.deList then
+        self.deList = {}
+        for _, deName in ipairs({strsplit(",", self.db.disenchanters)}) do
+            self.deList[#self.deList+1] = UTILS.Trim(deName)
+        end
+    end
+    return self.deList
 end
 
 CONSTANTS.MODIFIER_COMBINATION = {

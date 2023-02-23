@@ -12,6 +12,8 @@ local ProfileManager = {}
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")
 
+    self._deProfile = CLM.MODELS.Profile:New(nil, CLM.L["Disenchanted"])
+
     self.cache = {
         profilesGuidMap = {},
         profiles = {}
@@ -531,6 +533,10 @@ end
 
 function ProfileManager:GetProfileByName(name)
     return self.cache.profiles[self.cache.profilesGuidMap[strlower(name)]]
+end
+
+function ProfileManager:GetDisenchanterProfile()
+    return self._deProfile
 end
 
 -- Publis API

@@ -959,6 +959,20 @@ function RosterManager:AddLootToRoster(roster, loot, profile)
     roster:AddLoot(loot, profile)
 end
 
+function RosterManager:AddDisenchantedToRoster(roster, loot)
+    LOG:Trace("RosterManager:AddDisenchantedToRoster()")
+    if not UTILS.typeof(roster, CLM.MODELS.Roster) then
+        LOG:Error("RosterManager:AddDisenchantedToRoster(): Invalid roster object")
+        return
+    end
+    if not UTILS.typeof(loot, CLM.MODELS.Loot) then
+        LOG:Error("RosterManager:AddDisenchantedToRoster(): Invalid loot object")
+        return
+    end
+    LOG:Debug("RosterManager:AddDisenchantedToRoster(): Roster [%s] Loot Id [%s]", roster:UID(), loot:Id())
+    roster:AddDisenchanted(loot)
+end
+
 function RosterManager:WipeStandings()
     LOG:Trace("RosterManager:WipeStandings()")
     for _, roster in pairs(self.cache.rosters) do
