@@ -29,28 +29,16 @@ local function RestoreLocation(self)
     end
 end
 
+local function ST_GetItemLink(row)
+    return row.cols[1].value
+end
+
 local function ST_GetItemId(row)
+    return row.cols[1].id
+end
+
+local function ST_GetTradeTarget(row)
     return row.cols[2].value
-end
-
-local function ST_GetAuctionBids(row)
-    return row.cols[3].value
-end
-
-local function ST_GetAuctionTime(row)
-    return row.cols[4].value
-end
-
-local function ST_GetItemSeq(row)
-    return row.cols[5].value
-end
-
-local function ST_GetBidNames(row)
-    return row.cols[6].value
-end
-
-local function ST_GetRolls(row)
-    return row.cols[7].value
 end
 
 local TradeListGUI = {}
@@ -105,12 +93,19 @@ function TradeListGUI:Initialize()
     self:RegisterSlash()
     self._initialized = true
     self:Refresh()
+
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then
+            self:Refresh(true)
+        end
+    end)
+
 end
 
 local ROW_HEIGHT = 18
 local MIN_HEIGHT = 105
 
-local function CreateAuctionDisplay(self)
+local function CreateTradeDisplay(self)
     local columns = {
         {name = "", width = 200},
         {name = "", width = 95,
@@ -119,7 +114,7 @@ local function CreateAuctionDisplay(self)
     }
     local TradeHistoryGroup = AceGUI:Create("SimpleGroup")
     TradeHistoryGroup:SetLayout("Flow")
-    TradeHistoryGroup:SetWidth(265 + 95)
+    TradeHistoryGroup:SetWidth(360)
     TradeHistoryGroup:SetHeight(MIN_HEIGHT)
     self.TradeHistoryGroup = TradeHistoryGroup
     -- Standings
@@ -133,37 +128,15 @@ local function CreateAuctionDisplay(self)
     -- OnEnter handler -> on hover
     local OnEnterHandler = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
         local status = self.st.DefaultEvents["OnEnter"](rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
-        -- local rowData = self.st:GetRow(realrow)
-        -- if not rowData or not rowData.cols then return status end
-        -- local tooltip = self.tooltip
-        -- if not tooltip then return end
-        -- local itemId = ST_GetItemId(rowData)
-        -- local itemString = "item:" .. tonumber(itemId)
-        -- tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
-        -- tooltip:SetHyperlink(itemString)
-        -- tooltip:AddLine(ST_GetAuctionTime(rowData))
-        -- local bidNames = ST_GetBidNames(rowData) or {}
-        -- local rolls = ST_GetRolls(rowData) or {}
-        -- local noBids = true
-        -- for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
-        --     noBids = false
-        --     bid  = tostring(bid)
-        --     if rolls[bidder] then
-        --         bid  = bid .. "/" .. tostring(rolls[bidder])
-        --     end
-        --     if bidNames[bidder] then
-        --         bid = bid .. " (" .. bidNames[bidder] .. ")"
-        --     end
-        --     local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
-        --     if bidderProfile then
-        --         bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
-        --     end
-        --     tooltip:AddDoubleLine(bidder, bid)
-        -- end
-        -- if noBids then
-        --     tooltip:AddLine(CLM.L["No bids"])
-        -- end
-        -- tooltip:Show()
+        local rowData = self.st:GetRow(realrow)
+        if not rowData or not rowData.cols then return status end
+        local tooltip = self.tooltip
+        if not tooltip then return end
+        local itemId = ST_GetItemId(rowData)
+        local itemString = "item:" .. tonumber(itemId)
+        tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
+        tooltip:SetHyperlink(itemString)
+        tooltip:Show()
         return status
     end)
     -- OnLeave handler -> on hover out
@@ -215,11 +188,11 @@ function TradeListGUI:Create()
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(265)
+    f:SetWidth(360)
     f:SetHeight(MIN_HEIGHT)
     self.top = f
 
-    f:AddChild(CreateAuctionDisplay(self))
+    f:AddChild(CreateTradeDisplay(self))
     RestoreLocation(self)
     -- Hide by default
     f:Hide()
@@ -232,26 +205,22 @@ function TradeListGUI:Refresh(visible)
     if visible and not self.top:IsVisible() then return end
 
     local data = {}
-    local stack = CLM.MODULES.AuctionHistoryManager:GetHistory()
+    local tracked = CLM.MODULES.AutoAssign:GetTracked()
     -- Data
-    local rowId = 1
-    for seq, auction in ipairs(stack) do
-        local row = {
-            cols = {
-                { value = auction.link},
-                { value = auction.id },
-                { value = auction.bids },
-                { value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], auction.time) },
-                { value = seq },
-                { value = auction.names },
-                { value = auction.rolls }
+    for playerName, trackedList in pairs(tracked) do
+        for _, itemId in ipairs(trackedList) do
+            local _, itemLink = GetItemInfo(itemId)
+            local row = {
+                cols = {
+                    { value = itemLink or itemId, id = itemId},
+                    { value = playerName },
+                }
             }
-        }
-        data[rowId] = row
-        rowId = rowId + 1
+            data[#data+1] = row
+        end
     end
     -- View
-    local rows = (#stack < 20) and #stack or 20
+    local rows = (#data < 20) and #data or 20
     local previousRows = self.previousRows or rows
     local rowDiff = rows - previousRows
     self.previousRows = rows

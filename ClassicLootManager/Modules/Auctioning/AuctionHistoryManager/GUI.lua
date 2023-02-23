@@ -116,6 +116,12 @@ function AuctionHistoryGUI:Initialize()
     self:RegisterSlash()
     self._initialized = true
     self:Refresh()
+
+    CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
+        if lag ~= 0 or uncommitted ~= 0 then
+            self:Refresh(true)
+        end
+    end)
 end
 
 local ROW_HEIGHT = 18

@@ -273,6 +273,10 @@ function AutoAssign:Remove(itemId, player)
     end
 end
 
+function AutoAssign:GetTracked()
+    return self.tracking
+end
+
 function AutoAssign:Handle(itemId, target)
     if not self:IsIgnored(itemId) then
         if CLM.MODULES.AuctionManager:GetAutoAssign() and lootWindowIsOpen then
