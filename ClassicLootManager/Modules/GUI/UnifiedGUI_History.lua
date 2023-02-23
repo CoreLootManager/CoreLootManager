@@ -13,14 +13,12 @@ local colorGold = {a = 1, r = 1, g = 0.8, b = 0}
 CONSTANTS.HISTORY_TYPE = {
     ALL = 1,
     LOOT = 2,
-    DISENCHANTED = 3,
-    POINT = 4
+    POINT = 3
 }
 
 CONSTANTS.HISTORY_TYPES_GUI = {
     [CONSTANTS.HISTORY_TYPE.ALL] = CLM.L["All"],
     [CONSTANTS.HISTORY_TYPE.LOOT] = CLM.L["Loot"],
-    [CONSTANTS.HISTORY_TYPE.DISENCHANTED] = CLM.L["Disenchanted"],
     [CONSTANTS.HISTORY_TYPE.POINT] = CLM.L["Point"]
 }
 
@@ -159,6 +157,91 @@ local function horizontalOptionsFeeder()
     return options
 end
 
+local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
+    local itemId = UTILS.GetItemIdFromLink(itemLink)
+    local itemString = "item:" .. tonumber(itemId)
+    tooltip:SetHyperlink(itemString)
+    if loot then
+        local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
+        local name
+        if profile then
+            name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+        else
+            name = CLM.L["Unknown"]
+        end
+        local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
+        if raid then
+            tooltip:AddLine(raid:Name())
+        end
+        tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+        local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
+        if detailsMode and auction then
+            tooltip:AddLine("\n")
+            for bidder, bid in pairs(auction.bids) do
+                local names = auction.names or {}
+                local rolls = auction.rolls or {}
+                bid  = tostring(bid)
+                if rolls[bidder] then
+                    bid  = bid .. "/" .. tostring(rolls[bidder])
+                end
+                if names[bidder] then
+                    bid = bid .. " (" .. names[bidder] .. ")"
+                end
+                local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
+                if bidderProfile then
+                    bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
+                end
+
+                tooltip:AddDoubleLine(bidder, bid)
+            end
+            if detailsMode then
+                local upgraded = auction.upgraded or {}
+                local previousUpgradeTooltip
+                for _, it in ipairs(upgraded[loot:Owner():Name()] or {}) do
+                    local upgradeTooltip = tooltipPool:Acquire()
+                    if previousUpgradeTooltip then
+                        upgradeTooltip:SetOwner(previousUpgradeTooltip, "ANCHOR_NONE")
+                        upgradeTooltip:ClearAllPoints()
+                        upgradeTooltip:SetPoint("TOPLEFT", previousUpgradeTooltip, "BOTTOMLEFT")
+                    else
+                        upgradeTooltip:SetOwner(tooltip, "ANCHOR_RIGHT")
+                    end
+                    upgradeTooltip:SetHyperlink("item:" .. tonumber(it))
+                    upgradeTooltip:Show()
+                    previousUpgradeTooltip = upgradeTooltip
+                end
+            end
+        end
+    end
+end
+
+local function buildPointTooltip(tooltip, history)
+    local profiles = history:Profiles()
+    local numProfiles = #profiles
+    tooltip:AddDoubleLine(CLM.L["Affected players:"], tostring(numProfiles))
+    if not profiles or numProfiles == 0 then
+        tooltip:AddLine(CLM.L["None"])
+    else
+        UTILS.buildPlayerListForTooltip(profiles, tooltip)
+    end
+    local note = history:Note()
+    if note ~= "" then
+        local numNote = tonumber(note)
+        if numNote then
+            note = CLM.EncounterIDsMap[numNote] or note
+        end
+        tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
+    end
+    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
+    local name
+    if profile then
+        name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+    else
+        name = CLM.L["Unknown"]
+    end
+    tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+end
+
 local tableStructure = {
     rows = 22,
     -- columns - structure of the ScrollingTable
@@ -209,93 +292,18 @@ local tableStructure = {
             else
                 tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
             end
-            -- ------------------------------ --
             if ST_GetIsLoot(rowData) == true then
-                -- ----------- Loot ------------- --
-                local itemLink = ST_GetInfo(rowData) or ""
-                local itemId = UTILS.GetItemIdFromLink(itemLink)
-                local itemString = "item:" .. tonumber(itemId)
-                tooltip:SetHyperlink(itemString)
-                local loot = ST_GetObject(rowData)
-                if loot then
-                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
-                    local name
-                    if profile then
-                        name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
-                    else
-                        name = CLM.L["Unknown"]
-                    end
-                    local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
-                    if raid then
-                        tooltip:AddLine(raid:Name())
-                    end
-                    tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
-                    local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
-                    if detailsMode and auction then
-                        tooltip:AddLine("\n")
-                        for bidder, bid in pairs(auction.bids) do
-                            local names = auction.names or {}
-                            local rolls = auction.rolls or {}
-                            bid  = tostring(bid)
-                            if rolls[bidder] then
-                                bid  = bid .. "/" .. tostring(rolls[bidder])
-                            end
-                            if names[bidder] then
-                                bid = bid .. " (" .. names[bidder] .. ")"
-                            end
-                            local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
-                            if bidderProfile then
-                                bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
-                            end
-
-                            tooltip:AddDoubleLine(bidder, bid)
-                        end
-                        if detailsMode then
-                            local upgraded = auction.upgraded or {}
-                            local previousUpgradeTooltip
-                            for _, it in ipairs(upgraded[loot:Owner():Name()] or {}) do
-                                local upgradeTooltip = tooltipPool:Acquire()
-                                if previousUpgradeTooltip then
-                                    upgradeTooltip:SetOwner(previousUpgradeTooltip, "ANCHOR_NONE")
-                                    upgradeTooltip:ClearAllPoints()
-                                    upgradeTooltip:SetPoint("TOPLEFT", previousUpgradeTooltip, "BOTTOMLEFT")
-                                else
-                                    upgradeTooltip:SetOwner(tooltip, "ANCHOR_RIGHT")
-                                end
-                                upgradeTooltip:SetHyperlink("item:" .. tonumber(it))
-                                upgradeTooltip:Show()
-                                previousUpgradeTooltip = upgradeTooltip
-                            end
-                        end
-                    end
-                end
+                buildLootTooltip(
+                    tooltip,
+                    ST_GetObject(rowData),
+                    ST_GetInfo(rowData) or "",
+                    detailsMode
+                )
             elseif ST_GetIsLoot(rowData) == false then
-                -- ----------- Point ------------ --
-                local history = ST_GetObject(rowData)
-                local profiles = history:Profiles()
-                local numProfiles = #profiles
-                tooltip:AddDoubleLine(CLM.L["Affected players:"], tostring(numProfiles))
-                if not profiles or numProfiles == 0 then
-                    tooltip:AddLine(CLM.L["None"])
-                else
-                    UTILS.buildPlayerListForTooltip(profiles, tooltip)
-                end
-                local note = history:Note()
-                if note ~= "" then
-                    local numNote = tonumber(note)
-                    if numNote then
-                        note = CLM.EncounterIDsMap[numNote] or note
-                    end
-                    tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
-                end
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
-                local name
-                if profile then
-                    name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
-                else
-                    name = CLM.L["Unknown"]
-                end
-                tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
+                buildPointTooltip(
+                    tooltip,
+                    ST_GetObject(rowData)
+                )
             else
                 return status
             end
@@ -339,11 +347,14 @@ local function tableDataFeeder()
     if UnifiedGUI_History.historyType ~= CONSTANTS.HISTORY_TYPE.POINT then
         local isProfileLoot = (profile and roster:IsProfileInRoster(profile:GUID()))
         local lootList
+        local disenchantedList
         -- player loot
         if isProfileLoot then
             lootList = roster:GetProfileLootByGUID(profile:GUID())
+            disenchantedList = {}
         else -- raid loot
             lootList = roster:GetRaidLoot()
+            disenchantedList = roster:GetDisenchanted()
         end
 
         local displayedLoot = {}
