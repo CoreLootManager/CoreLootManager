@@ -274,7 +274,7 @@ local tableStructure = {
         }
     },
     -- Function to filter ScrollingTable
-    filter = (function(stobject, row)
+    filter = (function(_, row)
         return UnifiedGUI_History.filter:Filter("", "", {ST_GetInfo(row)})
     end),
     -- Events to override for ScrollingTable
@@ -287,23 +287,17 @@ local tableStructure = {
             local tooltip = UnifiedGUI_History.tooltip
             if not tooltip then return end
             local detailsMode = IsControlKeyDown()
+
             if detailsMode then
                 tooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
             else
                 tooltip:SetOwner(rowFrame, "ANCHOR_RIGHT")
             end
+
             if ST_GetIsLoot(rowData) == true then
-                buildLootTooltip(
-                    tooltip,
-                    ST_GetObject(rowData),
-                    ST_GetInfo(rowData) or "",
-                    detailsMode
-                )
+                buildLootTooltip(tooltip, ST_GetObject(rowData), ST_GetInfo(rowData) or "", detailsMode)
             elseif ST_GetIsLoot(rowData) == false then
-                buildPointTooltip(
-                    tooltip,
-                    ST_GetObject(rowData)
-                )
+                buildPointTooltip(tooltip, ST_GetObject(rowData))
             else
                 return status
             end

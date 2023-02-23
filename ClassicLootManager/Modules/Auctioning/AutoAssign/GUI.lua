@@ -53,11 +53,11 @@ function TradeListGUI:Initialize()
             {
                 title = CLM.L["Open trade"],
                 func = (function()
-                    -- local rowData = self.st:GetRow(self.st:GetSelection())
-                    -- if not rowData or not rowData.cols then return end
-                    -- CLM.MODULES.AuctionHistoryManager:Remove(ST_GetItemSeq(rowData))
+                    local rowData = self.st:GetRow(self.st:GetSelection())
+                    if not rowData or not rowData.cols then return end
+                    CLM.MODULES.AutoAssign:InitiateTrade(ST_GetTradeTarget(rowData))
                 end),
-                color = "0000cc"
+                color = "00cc00"
             },
             {
                 separator = true,
@@ -66,30 +66,33 @@ function TradeListGUI:Initialize()
             {
                 title = CLM.L["Remove"],
                 func = (function()
-                    -- local rowData = self.st:GetRow(self.st:GetSelection())
-                    -- if not rowData or not rowData.cols then return end
-                    -- CLM.MODULES.AuctionHistoryManager:Remove(ST_GetItemSeq(rowData))
+                    local rowData = self.st:GetRow(self.st:GetSelection())
+                    if not rowData or not rowData.cols then return end
+                    CLM.MODULES.AutoAssign:Remove(ST_GetItemId(rowData), ST_GetTradeTarget(rowData))
                 end),
                 color = "cc0000"
             },
-            {
-                separator = true,
-                trustedOnly = true,
-            },
-            {
-                title = CLM.L["Remove all"],
-                func = (function()
-                    -- CLM.MODULES.AuctionHistoryManager:Wipe()
-                end),
-                color = "cc0000"
-            }
+            -- {
+            --     separator = true,
+            --     trustedOnly = true,
+            -- },
+            -- {
+            --     title = CLM.L["Remove all"],
+            --     func = (function()
+            --         -- CLM.MODULES.AuctionHistoryManager:Wipe()
+            --     end),
+            --     color = "cc0000"
+            -- }
         },
         CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
         CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
     )
 
     self:Create()
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
+        TradeListGUI:UpdateSize(0) -- workaround for the movement
+        StoreLocation(self)
+    end))
     self:RegisterSlash()
     self._initialized = true
     self:Refresh()
@@ -103,7 +106,7 @@ function TradeListGUI:Initialize()
 end
 
 local ROW_HEIGHT = 18
-local MIN_HEIGHT = 105
+local MIN_HEIGHT = 75--105
 
 local function CreateTradeDisplay(self)
     local columns = {
@@ -114,7 +117,7 @@ local function CreateTradeDisplay(self)
     }
     local TradeHistoryGroup = AceGUI:Create("SimpleGroup")
     TradeHistoryGroup:SetLayout("Flow")
-    TradeHistoryGroup:SetWidth(360)
+    TradeHistoryGroup:SetWidth(350)
     TradeHistoryGroup:SetHeight(MIN_HEIGHT)
     self.TradeHistoryGroup = TradeHistoryGroup
     -- Standings
@@ -159,10 +162,13 @@ local function CreateTradeDisplay(self)
         if rightButton then
             UTILS.LibDD:CloseDropDownMenus()
             UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
-        elseif IsModifiedClick() then
-            local rowData = table:GetRow(realrow)
-            if rowData and rowData.cols then
-                -- local message = (ST_GetInfo(rowData) or "") .. " - " .. (ST_GetValue(rowData) or "") .. " - " .. (ST_GetDate(rowData) or "") .. " - " .. (ST_GetPlayer(rowData) or "")
+        else
+            local rowData = self.st:GetRow(selected)
+            if not rowData or not rowData.cols then return status end
+            if IsAltKeyDown() then
+                CLM.MODULES.AutoAssign:InitiateTrade(ST_GetTradeTarget(rowData))
+            elseif IsModifiedClick() then
+                local message = string.format(CLM.L["%s trade me for %s"], ST_GetTradeTarget(rowData), ST_GetItemLink(rowData))
                 HandleModifiedItemClick(message)
             end
         end
@@ -182,45 +188,24 @@ end
 function TradeListGUI:Create()
     LOG:Trace("TradeListGUI:Create()")
     -- Main Frame
-    local f = AceGUI:Create("Frame")
+    local f = AceGUI:Create("Window")
     f:SetTitle(CLM.L["Trade List"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(360)
+    f:SetWidth(350)
     f:SetHeight(MIN_HEIGHT)
     self.top = f
 
     f:AddChild(CreateTradeDisplay(self))
     RestoreLocation(self)
     -- Hide by default
-    f:Hide()
+    -- f:Hide()
 
 end
 
-function TradeListGUI:Refresh(visible)
-    LOG:Trace("TradeListGUI:Refresh()")
-    if not self._initialized then return end
-    if visible and not self.top:IsVisible() then return end
-
-    local data = {}
-    local tracked = CLM.MODULES.AutoAssign:GetTracked()
-    -- Data
-    for playerName, trackedList in pairs(tracked) do
-        for _, itemId in ipairs(trackedList) do
-            local _, itemLink = GetItemInfo(itemId)
-            local row = {
-                cols = {
-                    { value = itemLink or itemId, id = itemId},
-                    { value = playerName },
-                }
-            }
-            data[#data+1] = row
-        end
-    end
-    -- View
-    local rows = (#data < 20) and #data or 20
+function TradeListGUI:UpdateSize(rows)
     local previousRows = self.previousRows or rows
     local rowDiff = rows - previousRows
     self.previousRows = rows
@@ -247,6 +232,35 @@ function TradeListGUI:Refresh(visible)
             self.top:SetPoint(point, x, y + (-rowDiff*ROW_HEIGHT/2))
         end
     end
+end
+
+function TradeListGUI:Refresh(visible)
+    LOG:Trace("TradeListGUI:Refresh()")
+    if not self._initialized then return end
+    if visible and not self.top:IsVisible() then return end
+
+    local data = {}
+    local tracked = CLM.MODULES.AutoAssign:GetTracked()
+    -- Data
+    for playerName, trackedList in pairs(tracked) do
+        for _, itemId in ipairs(trackedList) do
+            local _, itemLink = GetItemInfo(itemId)
+            local color
+            local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
+            if profile then
+                color = UTILS.GetClassColor(profile:Class())
+            end
+            local row = {
+                cols = {
+                    { value = itemLink or itemId, id = itemId},
+                    { value = playerName, color = color },
+                }
+            }
+            data[#data+1] = row
+        end
+    end
+    -- View
+    self:UpdateSize((#data < 20) and #data or 20)
     self.st:SetData(data)
 end
 

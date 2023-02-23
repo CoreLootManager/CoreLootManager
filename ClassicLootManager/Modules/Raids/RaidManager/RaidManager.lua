@@ -571,7 +571,7 @@ function RaidManager:GetDisenchanter()
     for _, disenchanter in ipairs(disenchanters) do
         local deProfile = CLM.MODULES.ProfileManager:GetProfileByName(disenchanter)
         if deProfile and raid.players[deProfile:GUID()] then
-            return disenchanter
+            return deProfile:Name()
         end
     end
 

@@ -32,7 +32,8 @@
         "GetTalentGroupRole",
         "GetActiveTalentGroup",
         "class",
-        "message"
+        "message",
+        "TradeFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

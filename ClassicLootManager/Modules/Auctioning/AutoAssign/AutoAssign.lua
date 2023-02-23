@@ -256,6 +256,8 @@ function AutoAssign:Track(itemId, player)
     end
     -- Update
     tinsert(self.tracking[player], itemId)
+    --
+    CLM.GUI.TradeList:Refresh(true)
 end
 
 function AutoAssign:Remove(itemId, player)
@@ -271,6 +273,7 @@ function AutoAssign:Remove(itemId, player)
             break
         end
     end
+    CLM.GUI.TradeList:Refresh(true)
 end
 
 function AutoAssign:GetTracked()
@@ -287,4 +290,19 @@ function AutoAssign:Handle(itemId, target)
     end
 end
 
+function AutoAssign:InitiateTrade(target)
+    if lootWindowIsOpen then return end
+    if TradeFrame:IsShown() then return end
+    InitiateTrade(target)
+end
+
 CLM.MODULES.AutoAssign = AutoAssign
+
+
+function AutoAssign:FakeTrack(num)
+    local target = UTILS.RemoveServer(UnitName("player"))
+    for _=1,(num or 25) do
+        local id = math.random(10000,50000)
+        self:Track(id, target)
+    end
+end
