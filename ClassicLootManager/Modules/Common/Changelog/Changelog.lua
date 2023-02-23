@@ -1,6 +1,25 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.2.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Disenchant tracking", body = "You can now track disenchanted items! They will show up in your loot history. There is a new disenchant button available in auction UI to mark item as disenchanted. You can also set players as disenchanters and addon will automatically trade it to one of them currently in raid." },
+                    { header = "Multipliers", body = "You can now configure per class and per slot multipliers for item awarding value. This makes item awarding easier for different classes!" },
+                    { header = "Trade List", body = "Currently pending trades are now viewable in new Trade List UI." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "ElvUI", body = "ElvUI MS/OS buttons should no longer be stacked." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.1.4",
         data = {
             {

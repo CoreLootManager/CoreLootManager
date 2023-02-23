@@ -1,3 +1,14 @@
+# Classic Loot Manager v3.2.0
+## Features
+### Disenchant tracking
+You can now track disenchanted items! They will show up in your loot history. There is a new disenchant button available in auction UI to mark item as disenchanted. You can also set players as disenchanters and addon will automatically trade it to one of them currently in raid.
+### Multipliers
+You can now configure per class and per slot multipliers for item awarding value. This makes item awarding easier for different classes!
+### Trade List
+Currently pending trades are now viewable in new Trade List UI.
+## Fixes
+### ElvUI
+ElvUI MS/OS buttons should no longer be stacked.
 # Classic Loot Manager v3.1.4
 ## Changes
 ### Generic Import
