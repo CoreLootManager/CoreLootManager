@@ -13,7 +13,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local RightClickMenu
 
 local function InitializeDB(self)
-    self.db = CLM.MODULES.Database:GUI('auctionHistory', {
+    self.db = CLM.MODULES.Database:GUI('tradeList', {
         location = {nil, nil, "CENTER", 0, 0 }
     })
 end
@@ -29,33 +29,21 @@ local function RestoreLocation(self)
     end
 end
 
+local function ST_GetItemLink(row)
+    return row.cols[1].value
+end
+
 local function ST_GetItemId(row)
+    return row.cols[1].id
+end
+
+local function ST_GetTradeTarget(row)
     return row.cols[2].value
 end
 
-local function ST_GetAuctionBids(row)
-    return row.cols[3].value
-end
-
-local function ST_GetAuctionTime(row)
-    return row.cols[4].value
-end
-
-local function ST_GetItemSeq(row)
-    return row.cols[5].value
-end
-
-local function ST_GetBidNames(row)
-    return row.cols[6].value
-end
-
-local function ST_GetRolls(row)
-    return row.cols[7].value
-end
-
-local AuctionHistoryGUI = {}
-function AuctionHistoryGUI:Initialize()
-    LOG:Trace("AuctionHistoryGUI:Initialize()")
+local TradeListGUI = {}
+function TradeListGUI:Initialize()
+    LOG:Trace("TradeListGUI:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end
     InitializeDB(self)
 
@@ -63,56 +51,48 @@ function AuctionHistoryGUI:Initialize()
     RightClickMenu = CLM.UTILS.GenerateDropDownMenu(
         {
             {
-                title = CLM.L["Post bids"],
+                title = CLM.L["Open trade"],
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
-                    CLM.MODULES.AuctionHistoryManager:PostById(ST_GetItemSeq(rowData))
+                    CLM.MODULES.AutoAssign:InitiateTrade(ST_GetTradeTarget(rowData))
                 end),
-                color = "0000cc"
+                color = "00cc00"
             },
             {
                 separator = true,
                 trustedOnly = true,
             },
             {
-                title = CLM.L["Remove auction"],
+                title = CLM.L["Remove"],
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
-                    CLM.MODULES.AuctionHistoryManager:Remove(ST_GetItemSeq(rowData))
+                    CLM.MODULES.AutoAssign:Remove(ST_GetItemId(rowData), ST_GetTradeTarget(rowData))
                 end),
                 color = "cc0000"
             },
-            {
-                separator = true,
-                trustedOnly = true,
-            },
-            {
-                title = CLM.L["Remove old"],
-                func = (function()
-                    CLM.MODULES.AuctionHistoryManager:RemoveOld()
-                end),
-                color = "cc0000"
-            },
-            {
-                separator = true,
-                trustedOnly = true,
-            },
-            {
-                title = CLM.L["Remove all"],
-                func = (function()
-                    CLM.MODULES.AuctionHistoryManager:Wipe()
-                end),
-                color = "cc0000"
-            }
+            -- {
+            --     separator = true,
+            --     trustedOnly = true,
+            -- },
+            -- {
+            --     title = CLM.L["Remove all"],
+            --     func = (function()
+            --         -- CLM.MODULES.AuctionHistoryManager:Wipe()
+            --     end),
+            --     color = "cc0000"
+            -- }
         },
         CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT),
         CLM.MODULES.ACL:CheckLevel(CLM.CONSTANTS.ACL.LEVEL.MANAGER)
     )
 
     self:Create()
-    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function(...) StoreLocation(self) end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function()
+        TradeListGUI:UpdateSize(0) -- workaround for the movement
+        StoreLocation(self)
+    end))
     self:RegisterSlash()
     self._initialized = true
     self:Refresh()
@@ -122,24 +102,28 @@ function AuctionHistoryGUI:Initialize()
             self:Refresh(true)
         end
     end)
+
 end
 
 local ROW_HEIGHT = 18
-local MIN_HEIGHT = 105
+local MIN_HEIGHT = 75--105
 
-local function CreateAuctionDisplay(self)
+local function CreateTradeDisplay(self)
     local columns = {
-        {name = "",  width = 200},
+        {name = "", width = 200},
+        {name = "", width = 95,
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        }
     }
-    local AuctionHistoryGroup = AceGUI:Create("SimpleGroup")
-    AuctionHistoryGroup:SetLayout("Flow")
-    AuctionHistoryGroup:SetWidth(265)
-    AuctionHistoryGroup:SetHeight(MIN_HEIGHT)
-    self.AuctionHistoryGroup = AuctionHistoryGroup
+    local TradeHistoryGroup = AceGUI:Create("SimpleGroup")
+    TradeHistoryGroup:SetLayout("Flow")
+    TradeHistoryGroup:SetWidth(350)
+    TradeHistoryGroup:SetHeight(MIN_HEIGHT)
+    self.TradeHistoryGroup = TradeHistoryGroup
     -- Standings
-    self.st = ScrollingTable:CreateST(columns, 1, ROW_HEIGHT, nil, AuctionHistoryGroup.frame)
+    self.st = ScrollingTable:CreateST(columns, 1, ROW_HEIGHT, nil, TradeHistoryGroup.frame)
     self.st:EnableSelection(true)
-    self.st.frame:SetPoint("TOPLEFT", AuctionHistoryGroup.frame, "TOPLEFT", 0, 0)
+    self.st.frame:SetPoint("TOPLEFT", TradeHistoryGroup.frame, "TOPLEFT", 0, 0)
     self.st.frame:SetBackdropColor(0.1, 0.1, 0.1, 0.1)
     self.st:SetData({})
     -- fix weird behavior when scaling down list and scrollbar not hiding
@@ -155,28 +139,6 @@ local function CreateAuctionDisplay(self)
         local itemString = "item:" .. tonumber(itemId)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
-        tooltip:AddLine(ST_GetAuctionTime(rowData))
-        local bidNames = ST_GetBidNames(rowData) or {}
-        local rolls = ST_GetRolls(rowData) or {}
-        local noBids = true
-        for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
-            noBids = false
-            bid  = tostring(bid)
-            if rolls[bidder] then
-                bid  = bid .. "/" .. tostring(rolls[bidder])
-            end
-            if bidNames[bidder] then
-                bid = bid .. " (" .. bidNames[bidder] .. ")"
-            end
-            local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
-            if bidderProfile then
-                bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
-            end
-            tooltip:AddDoubleLine(bidder, bid)
-        end
-        if noBids then
-            tooltip:AddLine(CLM.L["No bids"])
-        end
         tooltip:Show()
         return status
     end)
@@ -200,6 +162,15 @@ local function CreateAuctionDisplay(self)
         if rightButton then
             UTILS.LibDD:CloseDropDownMenus()
             UTILS.LibDD:ToggleDropDownMenu(1, nil, RightClickMenu, cellFrame, -20, 0)
+        else
+            local rowData = self.st:GetRow(selected)
+            if not rowData or not rowData.cols then return status end
+            if IsAltKeyDown() then
+                CLM.MODULES.AutoAssign:InitiateTrade(ST_GetTradeTarget(rowData))
+            elseif IsModifiedClick() then
+                local message = string.format(CLM.L["%s trade me for %s"], ST_GetTradeTarget(rowData), ST_GetItemLink(rowData))
+                HandleModifiedItemClick(message)
+            end
         end
         return status
     end
@@ -211,55 +182,29 @@ local function CreateAuctionDisplay(self)
         OnClick = OnClickHandler
     })
 
-    return AuctionHistoryGroup
+    return TradeHistoryGroup
 end
 
-function AuctionHistoryGUI:Create()
-    LOG:Trace("AuctionHistoryGUI:Create()")
+function TradeListGUI:Create()
+    LOG:Trace("TradeListGUI:Create()")
     -- Main Frame
-    local f = AceGUI:Create("Frame")
-    f:SetTitle(CLM.L["Auction History"])
+    local f = AceGUI:Create("Window")
+    f:SetTitle(CLM.L["Trade List"])
     f:SetStatusText("")
     f:SetLayout("Table")
     f:SetUserData("table", { columns = {0, 0}, alignV =  "top" })
     f:EnableResize(false)
-    f:SetWidth(265)
+    f:SetWidth(350)
     f:SetHeight(MIN_HEIGHT)
     self.top = f
 
-    f:AddChild(CreateAuctionDisplay(self))
+    f:AddChild(CreateTradeDisplay(self))
     RestoreLocation(self)
     -- Hide by default
     f:Hide()
-
 end
 
-function AuctionHistoryGUI:Refresh(visible)
-    LOG:Trace("AuctionHistoryGUI:Refresh()")
-    if not self._initialized then return end
-    if visible and not self.top:IsVisible() then return end
-
-    local data = {}
-    local stack = CLM.MODULES.AuctionHistoryManager:GetHistory()
-    -- Data
-    local rowId = 1
-    for seq, auction in ipairs(stack) do
-        local row = {
-            cols = {
-                { value = auction.link},
-                { value = auction.id },
-                { value = auction.bids },
-                { value = date(CLM.L["%Y/%m/%d %a %H:%M:%S"], auction.time) },
-                { value = seq },
-                { value = auction.names },
-                { value = auction.rolls }
-            }
-        }
-        data[rowId] = row
-        rowId = rowId + 1
-    end
-    -- View
-    local rows = (#stack < 20) and #stack or 20
+function TradeListGUI:UpdateSize(rows)
     local previousRows = self.previousRows or rows
     local rowDiff = rows - previousRows
     self.previousRows = rows
@@ -269,7 +214,7 @@ function AuctionHistoryGUI:Refresh(visible)
 ---@diagnostic disable-next-line: missing-parameter
     local _, _, point, x, y = self.top:GetPoint()
     self.top:SetHeight(height)
-    self.AuctionHistoryGroup:SetHeight(height)
+    self.TradeHistoryGroup:SetHeight(height)
     self.st:SetDisplayRows((rows == 0) and 1 or rows, ROW_HEIGHT)
 
     -- Makes it grow down / shorten up instead of omnidirectional
@@ -286,11 +231,40 @@ function AuctionHistoryGUI:Refresh(visible)
             self.top:SetPoint(point, x, y + (-rowDiff*ROW_HEIGHT/2))
         end
     end
+end
+
+function TradeListGUI:Refresh(visible)
+    LOG:Trace("TradeListGUI:Refresh()")
+    if not self._initialized then return end
+    if visible and not self.top:IsVisible() then return end
+
+    local data = {}
+    local tracked = CLM.MODULES.AutoAssign:GetTracked()
+    -- Data
+    for playerName, trackedList in pairs(tracked) do
+        for _, itemId in ipairs(trackedList) do
+            local _, itemLink = GetItemInfo(itemId)
+            local color
+            local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
+            if profile then
+                color = UTILS.GetClassColor(profile:Class())
+            end
+            local row = {
+                cols = {
+                    { value = itemLink or itemId, id = itemId},
+                    { value = playerName, color = color },
+                }
+            }
+            data[#data+1] = row
+        end
+    end
+    -- View
+    self:UpdateSize((#data < 20) and #data or 20)
     self.st:SetData(data)
 end
 
-function AuctionHistoryGUI:Toggle()
-    LOG:Trace("AuctionHistoryGUI:Toggle()")
+function TradeListGUI:Toggle()
+    LOG:Trace("TradeListGUI:Toggle()")
     if not self._initialized then return end
     if self.top:IsVisible() then
         self.top:Hide()
@@ -300,12 +274,12 @@ function AuctionHistoryGUI:Toggle()
     end
 end
 
-function AuctionHistoryGUI:RegisterSlash()
+function TradeListGUI:RegisterSlash()
     local options = {
-        auction_history = {
+        trade = {
             type = "execute",
-            name = "Auction History",
-            desc = CLM.L["Toggle Auction History window display"],
+            name = "Trade List",
+            desc = CLM.L["Toggle Trade List window display"],
             handler = self,
             func = "Toggle",
         }
@@ -313,10 +287,10 @@ function AuctionHistoryGUI:RegisterSlash()
     CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
-function AuctionHistoryGUI:Reset()
-    LOG:Trace("AuctionHistoryGUI:Reset()")
+function TradeListGUI:Reset()
+    LOG:Trace("TradeListGUI:Reset()")
     self.top:ClearAllPoints()
     self.top:SetPoint("CENTER", 0, 0)
 end
 
-CLM.GUI.AuctionHistory = AuctionHistoryGUI
+CLM.GUI.TradeList = TradeListGUI

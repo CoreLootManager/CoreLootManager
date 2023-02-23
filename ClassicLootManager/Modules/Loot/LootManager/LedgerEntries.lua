@@ -11,8 +11,10 @@ local mergeLists = UTILS.mergeLists
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
-local Award     = LogEntry:extend("IA")
-local RaidAward = LogEntry:extend("II")
+local Award          = LogEntry:extend("IA")
+local RaidAward      = LogEntry:extend("II")
+local Disenchant     = LogEntry:extend("ID")
+local RaidDisenchant = LogEntry:extend("IE")
 
 function Award:new(rosterUid, profile, itemId, value)
     local o = LogEntry.new(self);
@@ -74,7 +76,49 @@ function RaidAward:fields()
     return raidAwardFields
 end
 
+function Disenchant:new(rosterUid, itemId)
+    local o = LogEntry.new(self);
+    o.r = tonumber(rosterUid) or 0
+    o.i = tonumber(itemId) or 0
+    return o
+end
+
+function Disenchant:rosterUid()
+    return self.r
+end
+
+function Disenchant:item()
+    return self.i
+end
+
+local disenchantFields = mergeLists(LogEntry:fields(), {"r", "i"})
+function Disenchant:fields()
+    return disenchantFields
+end
+
+function RaidDisenchant:new(raidUid, itemId)
+    local o = LogEntry.new(self);
+    o.r = raidUid or ""
+    o.i = tonumber(itemId) or 0
+    return o
+end
+
+function RaidDisenchant:raidUid()
+    return self.r
+end
+
+function RaidDisenchant:item()
+    return self.i
+end
+
+local raidDisenchantFields = mergeLists(LogEntry:fields(), {"r", "i"})
+function RaidDisenchant:fields()
+    return raidDisenchantFields
+end
+
 CLM.MODELS.LEDGER.LOOT = {
     Award = Award,
-    RaidAward = RaidAward
+    RaidAward = RaidAward,
+    Disenchant = Disenchant,
+    RaidDisenchant = RaidDisenchant,
 }

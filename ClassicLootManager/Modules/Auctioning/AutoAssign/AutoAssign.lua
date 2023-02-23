@@ -177,6 +177,8 @@ local function HandleTradeSuccess(self)
 end
 
 
+local lootWindowIsOpen = false
+
 local AutoAssign = {}
 function AutoAssign:Initialize()
     LOG:Trace("AutoAssign:Initialize()")
@@ -208,6 +210,8 @@ function AutoAssign:Initialize()
         end
         self.lastTradeTarget = nil
     end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, (function() lootWindowIsOpen = true end))
+    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_CLOSED"}, (function() lootWindowIsOpen = false end))
     CLM.MODULES.EventManager:RegisterEvent(CLM.CONSTANTS.EVENTS.GLOBAL_LOOT_REMOVED, function(_, data)
         AutoAssign:Remove(data.id, data.name)
     end)
@@ -252,6 +256,8 @@ function AutoAssign:Track(itemId, player)
     end
     -- Update
     tinsert(self.tracking[player], itemId)
+    --
+    CLM.GUI.TradeList:Refresh(true)
 end
 
 function AutoAssign:Remove(itemId, player)
@@ -267,6 +273,36 @@ function AutoAssign:Remove(itemId, player)
             break
         end
     end
+    CLM.GUI.TradeList:Refresh(true)
+end
+
+function AutoAssign:GetTracked()
+    return self.tracking
+end
+
+function AutoAssign:Handle(itemId, target)
+    if not self:IsIgnored(itemId) then
+        if CLM.MODULES.AuctionManager:GetAutoAssign() and lootWindowIsOpen then
+            self:GiveMasterLooterItem(itemId, target)
+        elseif CLM.MODULES.AuctionManager:GetAutoTrade() then
+            self:Track(itemId, target)
+        end
+    end
+end
+
+function AutoAssign:InitiateTrade(target)
+    if lootWindowIsOpen then return end
+    if TradeFrame:IsShown() then return end
+    InitiateTrade(target)
 end
 
 CLM.MODULES.AutoAssign = AutoAssign
+--@do-not-package@
+function AutoAssign:FakeTrack(num)
+    local target = UTILS.RemoveServer(UnitName("player"))
+    for _=1,(num or 25) do
+        local id = math.random(10000,50000)
+        self:Track(id, target)
+    end
+end
+--@end-do-not-package@

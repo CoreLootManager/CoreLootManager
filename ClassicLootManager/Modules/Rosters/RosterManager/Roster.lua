@@ -77,6 +77,7 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     o.profilePointHistory = {}  -- Point changes in to players in roster (dict of lists)
     o.raidLoot = {}             -- Loot received in the roster (list). Time descending
     o.profileLoot = {}          -- Loot received by players (dict of lists). Time descending per player
+    o.disenchantedLoot = {}     -- Loot disenchanted
     o.weeklyGains = {}          -- Weekly point gains per player
     o.calculator = CLM.MODELS.ItemValueCalculator:New() -- Dynamic item value calculator
     -- END ROSTER STATE --
@@ -562,6 +563,14 @@ function Roster:GetProfileLootByGUID(GUID)
     return self.profileLoot[GUID] or {}
 end
 
+function Roster:AddDisenchanted(loot)
+    self.disenchantedLoot[#self.disenchantedLoot+1] = loot
+end
+
+function Roster:GetDisenchantedLoot()
+    return self.disenchantedLoot or {}
+end
+
 function Roster:AddProfilePointHistory(history, profile)
     self.profilePointHistory[profile:GUID()][#self.profilePointHistory[profile:GUID()]+1] = history
 end
@@ -757,39 +766,37 @@ CONSTANTS.INVENTORY_TYPES = {
 
 CONSTANTS.INVENTORY_TYPES_SET = UTILS.Set(CONSTANTS.INVENTORY_TYPES)
 
-
-local PAPERDOLL = "Interface\\AddOns\\ClassicLootManager\\Media\\Paperdoll\\"
 CONSTANTS.INVENTORY_TYPES_SORTED = {
-    { type = GLOBAL_FAKE_INVENTORY_SLOT,    name = CLM.L["Global"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_HEAD",                name = CLM.L["Head"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-head.blp" },
-    { type = "INVTYPE_NECK",                name = CLM.L["Neck"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-neck.blp" },
-    { type = "INVTYPE_SHOULDER",            name = CLM.L["Shoulder"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-shoulder.blp" },
-    { type = "INVTYPE_BODY",                name = CLM.L["Shirt"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-shirt.blp" },
-    { type = "INVTYPE_CLOAK",               name = CLM.L["Back"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_CHEST",               name = CLM.L["Chest"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_ROBE",                name = CLM.L["Chest (robes)"],     icon = PAPERDOLL .. "Ui-paperdoll-slot-chest.blp" },
-    { type = "INVTYPE_TABARD",              name = CLM.L["Tabard"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-tabard.blp" },
-    { type = "INVTYPE_WRIST",               name = CLM.L["Wrist"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-wrists.blp" },
-    { type = "INVTYPE_HAND",                name = CLM.L["Hands"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-hands.blp" },
-    { type = "INVTYPE_WAIST",               name = CLM.L["Waist"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-waist.blp" },
-    { type = "INVTYPE_LEGS",                name = CLM.L["Legs"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-legs.blp" },
-    { type = "INVTYPE_FEET",                name = CLM.L["Feet"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-feet.blp" },
-    { type = "INVTYPE_FINGER",              name = CLM.L["Finger"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-finger.blp" },
-    { type = "INVTYPE_TRINKET",             name = CLM.L["Trinket"],           icon = PAPERDOLL .. "Ui-paperdoll-slot-trinket.blp" },
-    { type = "INVTYPE_WEAPON",              name = CLM.L["One-Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_WEAPONMAINHAND",      name = CLM.L["Main Hand"],         icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_WEAPONOFFHAND",       name = CLM.L["Off Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_HOLDABLE",            name = CLM.L["Held In Off-hand"],  icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_2HWEAPON",            name = CLM.L["Two-Hand"],          icon = PAPERDOLL .. "Ui-paperdoll-slot-mainhand.blp" },
-    { type = "INVTYPE_SHIELD",              name = CLM.L["Shield"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-secondaryhand.blp" },
-    { type = "INVTYPE_RANGED",              name = CLM.L["Ranged"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
-    { type = "INVTYPE_RANGEDRIGHT",         name = CLM.L["Ranged (wands)"],    icon = PAPERDOLL .. "Ui-paperdoll-slot-ranged.blp" },
-    { type = "INVTYPE_NON_EQUIP",           name = CLM.L["Non-equippable"],    icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_BAG",                 name = CLM.L["Bag"],               icon = PAPERDOLL .. "Ui-paperdoll-slot-bag.blp" },
-    { type = "INVTYPE_AMMO",                name = CLM.L["Ammo"],              icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_THROWN",              name = CLM.L["Thrown"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_QUIVER",              name = CLM.L["Quiver"],            icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" },
-    { type = "INVTYPE_RELIC",               name = CLM.L["Relic"],             icon = PAPERDOLL .. "Ui-paperdoll-slot-relic.blp" }
+    { type = GLOBAL_FAKE_INVENTORY_SLOT,    name = CLM.L["Global"],            icon = 136522 },
+    { type = "INVTYPE_HEAD",                name = CLM.L["Head"],              icon = 136516 },
+    { type = "INVTYPE_NECK",                name = CLM.L["Neck"],              icon = 136519 },
+    { type = "INVTYPE_SHOULDER",            name = CLM.L["Shoulder"],          icon = 136526 },
+    { type = "INVTYPE_BODY",                name = CLM.L["Shirt"],             icon = 136525 },
+    { type = "INVTYPE_CLOAK",               name = CLM.L["Back"],              icon = 136525 },
+    { type = "INVTYPE_CHEST",               name = CLM.L["Chest"],             icon = 136525 },
+    { type = "INVTYPE_ROBE",                name = CLM.L["Chest (robes)"],     icon = 136525 },
+    { type = "INVTYPE_TABARD",              name = CLM.L["Tabard"],            icon = 136527 },
+    { type = "INVTYPE_WRIST",               name = CLM.L["Wrist"],             icon = 136530 },
+    { type = "INVTYPE_HAND",                name = CLM.L["Hands"],             icon = 136515 },
+    { type = "INVTYPE_WAIST",               name = CLM.L["Waist"],             icon = 136529 },
+    { type = "INVTYPE_LEGS",                name = CLM.L["Legs"],              icon = 136517 },
+    { type = "INVTYPE_FEET",                name = CLM.L["Feet"],              icon = 136513 },
+    { type = "INVTYPE_FINGER",              name = CLM.L["Finger"],            icon = 136514 },
+    { type = "INVTYPE_TRINKET",             name = CLM.L["Trinket"],           icon = 136528 },
+    { type = "INVTYPE_WEAPON",              name = CLM.L["One-Hand"],          icon = 136518 },
+    { type = "INVTYPE_WEAPONMAINHAND",      name = CLM.L["Main Hand"],         icon = 136518 },
+    { type = "INVTYPE_WEAPONOFFHAND",       name = CLM.L["Off Hand"],          icon = 136524 },
+    { type = "INVTYPE_HOLDABLE",            name = CLM.L["Held In Off-hand"],  icon = 136524 },
+    { type = "INVTYPE_2HWEAPON",            name = CLM.L["Two-Hand"],          icon = 136518 },
+    { type = "INVTYPE_SHIELD",              name = CLM.L["Shield"],            icon = 136524 },
+    { type = "INVTYPE_RANGED",              name = CLM.L["Ranged"],            icon = 136520 },
+    { type = "INVTYPE_RANGEDRIGHT",         name = CLM.L["Ranged (wands)"],    icon = 136520 },
+    { type = "INVTYPE_NON_EQUIP",           name = CLM.L["Non-equippable"],    icon = 136511 },
+    { type = "INVTYPE_BAG",                 name = CLM.L["Bag"],               icon = 136511 },
+    { type = "INVTYPE_AMMO",                name = CLM.L["Ammo"],              icon = 136510 },
+    { type = "INVTYPE_THROWN",              name = CLM.L["Thrown"],            icon = 136522 },
+    { type = "INVTYPE_QUIVER",              name = CLM.L["Quiver"],            icon = 136522 },
+    { type = "INVTYPE_RELIC",               name = CLM.L["Relic"],             icon = 136522 }
 }
 
 CONSTANTS.INVENTORY_TYPES_GUI = {

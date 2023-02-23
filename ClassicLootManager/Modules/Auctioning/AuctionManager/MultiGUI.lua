@@ -264,17 +264,18 @@ local function GenerateAwardOptions(self)
             func = (function() CLM.MODULES.AuctionManager:ClearItemList() end),
             confirm = true,
             disabled = disableInProgress,
-            width = 0.6,
+            width = 0.5,
             order = 0,
         },
         clear_toggle = {
             name = CLM.L["Remove on award"],
+            -- name = CLM.L["Remove"],
             desc = CLM.L["Remove item from auction list after it's awarded."],
             type = "toggle",
             set = (function(i, v) self.removeOnAward = v and true or false end),
             get = (function(i) return self.removeOnAward end),
             disabled = genericDisable,
-            width = 0.9,
+            width = 0.8,
             order = 1,
         },
         -- award_offset = {
@@ -335,6 +336,29 @@ local function GenerateAwardOptions(self)
             width = 0.5,
             order = 5,
             disabled = (function() return genericDisable() or not self.awardPlayer end),
+        },
+        disenchant = {
+            name = CLM.L["Disenchant"],
+            type = "execute",
+            func = (function()
+                CLM.MODULES.AuctionManager:Disenchant(self.auctionItem)
+                self.BidList:ClearSelection()
+                if self.removeOnAward then
+                    CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
+                    self.auctionItem = nil
+                end
+                self.awardPlayer = nil
+                self:Refresh()
+            end),
+            confirm = (function()
+                return string.format(CLM.L["Are you sure, you want to disenchant %s?"], self.auctionItem:GetItemLink())
+            end),
+            control = "CLMIconNoLabel",
+            width = 0.2,
+            order = 6,
+            image = "Interface\\Buttons\\UI-GroupLoot-DE-Up",
+            -- image = "Interface\\AddOns\\ClassicLootManager\\Media\\Buttons\\delete2.tga",
+            disabled = (function() return genericDisable() end),
         }
     }
     return options
