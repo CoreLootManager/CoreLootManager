@@ -118,7 +118,7 @@ function LootManager:Initialize()
                 end
                 mutateLootDisenchant(entry, roster)
             end))
-    
+
         CLM.MODULES.LedgerManager:RegisterEntryType(
             CLM.MODELS.LEDGER.LOOT.RaidDisenchant,
             (function(entry)

@@ -739,8 +739,6 @@ CONSTANTS.INVENTORY_TYPES = {
 
 CONSTANTS.INVENTORY_TYPES_SET = UTILS.Set(CONSTANTS.INVENTORY_TYPES)
 
-
-local PAPERDOLL = "Interface\\AddOns\\ClassicLootManager\\Media\\Paperdoll\\"
 CONSTANTS.INVENTORY_TYPES_SORTED = {
     { type = GLOBAL_FAKE_INVENTORY_SLOT,    name = CLM.L["Global"],            icon = 136522 },
     { type = "INVTYPE_HEAD",                name = CLM.L["Head"],              icon = 136516 },

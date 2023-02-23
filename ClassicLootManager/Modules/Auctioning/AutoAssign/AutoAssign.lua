@@ -297,8 +297,7 @@ function AutoAssign:InitiateTrade(target)
 end
 
 CLM.MODULES.AutoAssign = AutoAssign
-
-
+--@do-not-package@
 function AutoAssign:FakeTrack(num)
     local target = UTILS.RemoveServer(UnitName("player"))
     for _=1,(num or 25) do
@@ -306,3 +305,4 @@ function AutoAssign:FakeTrack(num)
         self:Track(id, target)
     end
 end
+--@end-do-not-package@
