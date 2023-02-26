@@ -38,6 +38,12 @@ local function assertCantAddItems(self)
     end
 end
 
+local function assertIsAcceptingRolls(self)
+    if self.isAcceptingRolls then
+        error("Not allowed while auction is accepting ROLLS.", 2)
+    end
+end
+
 
 local function Clear(self)
     for _, item in pairs(self.items) do
@@ -293,16 +299,59 @@ function AuctionInfo:GetItemCount()
     return self.itemCount
 end
 
-function AuctionInfo:AcceptRolls()
+local function acceptRolls(self)
     self.isAcceptingRolls = true
 end
 
-function AuctionInfo:IgnoreRolls()
+local function ignoreRolls(self)
     self.isAcceptingRolls = nil
+end
+
+function AuctionInfo:Roll(auctionItem)
+    assertNotInProgress(self)
+    assertIsAcceptingRolls(self)
+     -- Reset rolls if there were any responses
+     local responses = auctionItem:GetAllResponses()
+     for _,response in pairs(responses) do
+         response:SetRoll(0)
+     end
+
+    self.rollItem = auctionItem
+
+    self:AcceptRolls()
+end
+
+function AuctionInfo:EndRoll()
+    ignoreRolls(self)
+    self.rollItem = nil
+end
+
+function AuctionInfo:HandleRoll(who, roll)
+    local response = self.rollItem:GetResponse(who)
+    if not response then
+        response = CLM.MODELS.UserResponse:New()
+        self.rollItem:SetResponse(who, response, true)
+    else
+        -- very dirty override for hidden types
+        if CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
+            response.type = CONSTANTS.BID_TYPE.MAIN_SPEC
+        end
+    end
+
+    -- re-rolls are ignored
+    if response:Roll() == 0 then
+        response:SetRoll(roll)
+    end
+
+end
+
+function AuctionInfo:GetRollItem()
+    return self.rollItem
 end
 
 function AuctionInfo:Start(endTime)
     assertNotInProgress(self)
+    assertIsAcceptingRolls(self)
     self.endTime = endTime and endTime or (GetServerTime() + self.auctionTime)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
     self.antiSnipeLimit = CONSTANTS.AUCTION_TYPES_OPEN[self:GetType()] and 100 or 3
