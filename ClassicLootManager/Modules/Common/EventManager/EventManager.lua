@@ -22,6 +22,17 @@ function EventManager:Initialize()
     self.messageCallbacks = {}
 end
 
+local function addCallbackInternal(self, event, callback)
+    local name
+    repeat
+        name = UTILS.randomString(8)
+    until(self.callbacks[event][name] == nil)
+
+    self.callbacks[event][name] = callback
+
+    return (function() self.callbacks[event][name] = nil end)
+end
+
 function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
     LOG:Trace("EventManager:RegisterWoWEvent()")
     local callback
@@ -37,6 +48,7 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
         LOG:Fatal("EventManager:RegisterWoWEvent(): Invalid event")
         return
     end
+    local unregistrars = {}
     if type(events) == "string" then events = { events } end
     for _,event in ipairs(events) do
         if not self.callbacks[event] then-- lazy load event handlers
@@ -53,8 +65,14 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
             CLM.CORE:RegisterEvent(event)
         end
 
-        tinsert(self.callbacks[event], callback)
+        unregistrars[event] = addCallbackInternal(self, event, callback)
     end
+
+    return (function()
+        for _,unregister in pairs(unregistrars) do
+            unregister()
+        end
+    end), unregistrars
 end
 
 function EventManager:UnregisterWoWEvent(events)

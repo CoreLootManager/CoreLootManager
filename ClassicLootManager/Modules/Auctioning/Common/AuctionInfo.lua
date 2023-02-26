@@ -90,18 +90,6 @@ local function _GetIncrement(s)
     return s.increment
 end
 
--- local function _Start(endTime)
---     assertNotInProgress(self)
---     self.endTime = endTime and endTime or (GetServerTime() + self.auctionTime)
---     -- self.state = CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
---     -- Do not set IN_Progress here as it will disable the delayed addition of items.
---     -- Need to rework the code so it wont be a problem anymore TODO
---     self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
---     self.antiSnipeLimit = CONSTANTS.AUCTION_TYPES_OPEN[self:GetType()] and 100 or 3
-
---     Clear(self)
--- end
-
 function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, fieldNames)
     local o = {}
     setmetatable(o, self)

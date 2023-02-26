@@ -546,8 +546,28 @@ local function GenerateAuctionOptions(self)
                 end
                 self:Refresh()
             end),
-            width = 1,
+            width = 0.8,
             order = 4,
+            disabled = (function() return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():IsEmpty() end)
+        },
+        roll = {
+            name = CLM.L["Roll"],
+            type = "execute",
+            func = (function()
+                -- CLM.MODULES.AuctionManager:Disenchant(self.auctionItem)
+                -- self.BidList:ClearSelection()
+                -- if self.removeOnAward then
+                --     CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
+                --     self.auctionItem = nil
+                -- end
+                -- self.awardPlayer = nil
+                -- self:Refresh()
+                SendChatMessage(string.format(CLM.L["Accepting rolls on %s"], self.auctionItem:GetItemLink()),"RAID_WARNING");
+            end),
+            control = "CLMIconNoLabel",
+            width = 0.2,
+            order = 4.5,
+            image = "Interface\\Buttons\\UI-GroupLoot-Dice-Up",
             disabled = (function() return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():IsEmpty() end)
         },
         bidding_header = {

@@ -562,22 +562,30 @@ local function StopAuctionTimed(self)
     CLM.GUI.AuctionManager:Refresh()
 end
 
-local TICKER_INTERVAL = 0.2
-local SENDING_INTERVAL = 2
-local function CreateNewAuctionIntervalHandlers(self, countdown, endTimeValue)
-    self.bidInfoSender = CLM.MODELS.BidInfoSender:New(SENDING_INTERVAL, SendBidInfoInternal)
+local SENDING_INTERVAL, TICKER_INTERVAL = 2, 0.2
+local defaultIntervalCallbacks = {
+    init = function() end,
+    ticker = function() end,
+    final = function() end,
+}
+local function CreateNewAuctionIntervalHandlers(self, countdown, endTimeValue, callbacks)
+    callbacks = callbacks or defaultIntervalCallbacks
+    --[[ Prepare ]]
+    callbacks.init(SENDING_INTERVAL)
     self.auctionTickerLastCountdownValue = countdown
     self.auctionTickerEndTime = endTimeValue
+    --[[ Create Timer ]]
     self.auctionTicker = C_Timer.NewTicker(TICKER_INTERVAL, (function()
+        --[[ Tick ]]
         self.auctionTimeLeft = self.auctionTickerEndTime - GetServerTime()
-        self.bidInfoSender:Tick(TICKER_INTERVAL)
+        callbacks.ticker(TICKER_INTERVAL)
         if self.auctionTickerLastCountdownValue > 0 and self.auctionTimeLeft <= self.auctionTickerLastCountdownValue then
             SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), "RAID_WARNING")
             self.auctionTickerLastCountdownValue = self.auctionTickerLastCountdownValue - 1
         end
+        --[[ Final ]]
         if self.auctionTimeLeft < 0.1 then
-            self.bidInfoSender:Flush()
-            StopAuctionTimed(self)
+            callbacks.final()
             return
         end
     end))
@@ -658,7 +666,73 @@ function AuctionManager:StartAuction()
 
     SendAuctionStart(self)
 
-    CreateNewAuctionIntervalHandlers(self, CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0, auction:GetEndTime())
+    if not self.auctionTickerCallbacks then
+        self.auctionTickerCallbacks = {
+            init = (function(interval)
+                self.bidInfoSender = CLM.MODELS.BidInfoSender:New(interval, SendBidInfoInternal)
+            end),
+            ticker = (function(interval)
+                self.bidInfoSender:Tick(interval)
+            end),
+            final = (function()
+                self.bidInfoSender:Flush()
+                StopAuctionTimed(self)
+            end)
+        }
+    end
+
+    CreateNewAuctionIntervalHandlers(self,
+        CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0,
+        auction:GetEndTime(), self.auctionTickerCallbacks
+    )
+end
+
+local function handleIncomingRoll(auctionItem, ...)
+    print(...)
+end
+
+function AuctionManager:StartRoll(itemId)
+    LOG:Trace("AuctionManager:StartRoll()")
+    local auction = self.currentAuction
+    if auction:IsInProgress() then
+        LOG:Warning("AuctionManager:StartRoll(): Auction in progress")
+        return
+    end
+    if not self:IsAuctioneer() then
+        LOG:Message(CLM.L["You are not allowed to auction items"])
+        return
+    end
+    -- Auction parameters sanity checks
+    if not typeof(auction.raid, CLM.MODELS.Raid) then
+        LOG:Warning("AuctionManager:StartRoll(): Invalid raid object")
+        return false
+    end
+    local auctionItem = auction:GetItem(itemId)
+    if not auctionItem then
+        LOG:Error("AuctionManager:StartRoll(): Item not in auction list")
+        return false
+    end
+    local message = string.format(CLM.L["Accepting rolls on %s for %s%s"], auctionItem:GetItemLink(), "20", "s")
+    SendChatMessage(message, "RAID_WARNING")
+
+    local unregister = CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_SYSTEM"}, (function(...)
+        handleIncomingRoll(auctionItem, ...)
+    end))
+
+    -- Reset rolls if there were any responses
+    local responses = auctionItem:GetAllResponses()
+    for _,response in pairs(responses) do
+        response:SetRoll(0)
+    end
+
+    CreateNewAuctionIntervalHandlers(self, 5, GetServerTime() + 20, {
+        init = (function() end),
+        ticker = (function() end),
+        final = (function()
+            unregister()
+            SendChatMessage(CLM.L["Rolling complete"], "RAID_WARNING")
+        end),
+    })
 end
 
 local function AntiSnipe(self, auction)
