@@ -11,6 +11,7 @@ local typeof = UTILS.typeof
 local whoami = UTILS.whoami()
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
+-- luacheck: ignore CHAT_MESSAGE_CHANNEL
 local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 --@debug@
 CHAT_MESSAGE_CHANNEL = "GUILD"
