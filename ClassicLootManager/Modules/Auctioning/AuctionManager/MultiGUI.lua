@@ -73,7 +73,7 @@ end
 
 local function genericDisable()
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
-    return auction:IsInProgress() or auction:IsEmpty()
+    return auction:IsInProgress() or auction:IsEmpty() or auction:IsAcceptingRolls()
 end
 
 local function GenerateItemOptions(self)
@@ -358,7 +358,7 @@ local function GenerateAwardOptions(self)
             order = 6,
             image = "Interface\\Buttons\\UI-GroupLoot-DE-Up",
             -- image = "Interface\\AddOns\\ClassicLootManager\\Media\\Buttons\\delete2.tga",
-            disabled = (function() return genericDisable() end),
+            disabled = genericDisable,
         }
     }
     return options
