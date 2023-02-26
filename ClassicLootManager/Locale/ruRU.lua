@@ -81,7 +81,7 @@ CLM.L["<CLM> Missing profile for player %s."] = "<CLM> Нет профиля д�
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:51
 CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> Ваша ставка (%s) была %s%s."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:762
---CLM.L["Accepting rolls on %s for %s %s"] = ""
+CLM.L["Accepting rolls on %s for %s %s"] = "Принятие рулонов на %s для %s %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:140
 CLM.L["Action context"] = "Контекст действия"
 -- ClassicLootManager_Integrations/Integrations.lua:156
@@ -1580,7 +1580,7 @@ CLM.L["Role"] = "Роль"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:557
 CLM.L["Roll"] = "Ролл"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:793
---CLM.L["Rolling complete"] = ""
+CLM.L["Rolling complete"] = "Прокатится"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1260
 CLM.L["Roster Name"] = "Поле ввода названия состава"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1259
@@ -2194,7 +2194,7 @@ CLM.L["roster"] = "состав"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:92
 CLM.L["rosters"] = "составы"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:762
---CLM.L["seconds"] = ""
+CLM.L["seconds"] = "секунды"
 -- ClassicLootManager_Integrations/Integrations.lua:283
 CLM.L["then"] = "то"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:123

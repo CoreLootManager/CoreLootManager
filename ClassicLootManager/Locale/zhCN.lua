@@ -81,7 +81,7 @@ CLM.L["<CLM> Missing profile for player %s."] = "<CLM> 角色信息缺失 %s."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:51
 CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> 您的竞拍 (%s) 是 %s%s."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:762
---CLM.L["Accepting rolls on %s for %s %s"] = ""
+CLM.L["Accepting rolls on %s for %s %s"] = "接受 %s 以 %s %s 接受卷"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:140
 CLM.L["Action context"] = "动作选定范围"
 -- ClassicLootManager_Integrations/Integrations.lua:156
@@ -1580,7 +1580,7 @@ CLM.L["Role"] = "角色"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:557
 CLM.L["Roll"] = "卷"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:793
---CLM.L["Rolling complete"] = ""
+CLM.L["Rolling complete"] = "滚动完成"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1260
 CLM.L["Roster Name"] = "名册名称"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1259
@@ -2194,7 +2194,7 @@ CLM.L["roster"] = "名册"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:92
 CLM.L["rosters"] = "名册"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:762
---CLM.L["seconds"] = ""
+CLM.L["seconds"] = "秒"
 -- ClassicLootManager_Integrations/Integrations.lua:283
 CLM.L["then"] = "然后"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:123
