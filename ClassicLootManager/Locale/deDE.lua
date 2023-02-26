@@ -81,7 +81,7 @@ CLM.L["<CLM> Missing profile for player %s."] = "<CLM> Fehlendes Profil für Spi
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:51
 CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> Dein Gebot (%s) wurde %s%s."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:761
---CLM.L["Accepting rolls on %s for %s %s"] = ""
+CLM.L["Accepting rolls on %s for %s %s"] = "Würfeln auf %s akzeptieren für %s %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:140
 CLM.L["Action context"] = "Aktionskontext"
 -- ClassicLootManager_Integrations/Integrations.lua:156
@@ -1580,7 +1580,7 @@ CLM.L["Role"] = "Rolle"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:557
 CLM.L["Roll"] = "Würfeln"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:792
---CLM.L["Rolling complete"] = ""
+CLM.L["Rolling complete"] = "Würfeln beendet"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1260
 CLM.L["Roster Name"] = "Rostername"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1259
@@ -2194,7 +2194,7 @@ CLM.L["roster"] = "Roster"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:92
 CLM.L["rosters"] = "Roster"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:761
---CLM.L["seconds"] = ""
+CLM.L["seconds"] = "Sekunden"
 -- ClassicLootManager_Integrations/Integrations.lua:283
 CLM.L["then"] = "dann"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:123
