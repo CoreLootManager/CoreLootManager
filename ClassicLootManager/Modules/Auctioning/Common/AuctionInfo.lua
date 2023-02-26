@@ -277,6 +277,10 @@ function AuctionInfo:IsComplete()
     return self.state == CONSTANTS.AUCTION_INFO.STATE.COMPLETE
 end
 
+function AuctionInfo:IsAcceptingRolls()
+    return self.isAcceptingRolls
+end
+
 function AuctionInfo:CanAddItems()
     return CONSTANTS.AUCTION_INFO.STATES_ALLOW_ADDING_ITEMS[self.state]
 end
@@ -287,6 +291,14 @@ end
 
 function AuctionInfo:GetItemCount()
     return self.itemCount
+end
+
+function AuctionInfo:AcceptRolls()
+    self.isAcceptingRolls = true
+end
+
+function AuctionInfo:IgnoreRolls()
+    self.isAcceptingRolls = nil
 end
 
 function AuctionInfo:Start(endTime)

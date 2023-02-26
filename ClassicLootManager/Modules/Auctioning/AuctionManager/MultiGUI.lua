@@ -512,7 +512,7 @@ local function GenerateAuctionOptions(self)
             name = "",
             desc = "",
             type = "description",
-            width = 0.75,
+            width = 0.75+0.25,
             order = 1,
         },
         time_auction = {
@@ -539,36 +539,37 @@ local function GenerateAuctionOptions(self)
             name = (function() return CLM.MODULES.AuctionManager:IsAuctionInProgress() and CLM.L["Stop"] or CLM.L["Start"] end),
             type = "execute",
             func = (function()
-                if not CLM.MODULES.AuctionManager:IsAuctionInProgress() then
-                    CLM.MODULES.AuctionManager:StartAuction()
-                else
+                if CLM.MODULES.AuctionManager:IsAuctionInProgress() then
                     CLM.MODULES.AuctionManager:StopAuctionManual()
+                else
+                    CLM.MODULES.AuctionManager:StartAuction()
                 end
                 self:Refresh()
             end),
             width = 0.8,
             order = 4,
-            disabled = (function() return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():IsEmpty() end)
+            disabled = (function()
+                local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+                return auction:IsEmpty() or auction:IsAcceptingRolls()
+            end)
         },
         roll = {
-            name = CLM.L["Roll"],
+            name = (function() return (CLM.MODULES.AuctionManager:IsAcceptingRolls() and CLM.L["Stop"] or CLM.L["Start"])  .. " " .. CLM.L["Roll"] end),
             type = "execute",
             func = (function()
-                -- CLM.MODULES.AuctionManager:Disenchant(self.auctionItem)
-                -- self.BidList:ClearSelection()
-                -- if self.removeOnAward then
-                --     CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
-                --     self.auctionItem = nil
-                -- end
-                -- self.awardPlayer = nil
-                -- self:Refresh()
-                SendChatMessage(string.format(CLM.L["Accepting rolls on %s"], self.auctionItem:GetItemLink()),"RAID_WARNING");
+                if CLM.MODULES.AuctionManager:IsAcceptingRolls() then
+                    CLM.MODULES.AuctionManager:StopRoll()
+                else
+                    CLM.MODULES.AuctionManager:StartRoll(self.auctionItem:GetItemID())
+                end
             end),
             control = "CLMIconNoLabel",
             width = 0.2,
             order = 4.5,
             image = "Interface\\Buttons\\UI-GroupLoot-Dice-Up",
-            disabled = (function() return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():IsEmpty() end)
+            disabled = (function()
+                return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():IsEmpty() or not self.auctionItem or CLM.MODULES.AuctionManager:IsAuctionInProgress()
+            end)
         },
         bidding_header = {
             name = CLM.L["Bidding"],
@@ -576,90 +577,90 @@ local function GenerateAuctionOptions(self)
             width = "full",
             order = 10
         },
-        bid_stats_info = {
-            name = "Info",
-            desc = (function()
-                -- Legend
-                if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] end
-                -- Unique did any action dict
-                local didAnyAction = {}
-                -- generateInfo closure
-                local _generateInfo = (function(dataDict, ignoreListOfDicts, prefix, skipAction)
-                    local dataList, userCodedString = {}, ""
-                    for p,_ in pairs(dataDict) do
-                        local inIgnoreList = false
-                        for _,d in ipairs(ignoreListOfDicts) do
-                            if d[p] then
-                                inIgnoreList = true
-                                break
-                            end
-                        end
-                        if not inIgnoreList then
-                            tinsert(dataList, p)
-                            if not skipAction then
-                                didAnyAction[p] = true
-                            end
-                        end
-                    end
-                    local count = #dataList
-                    if count > 0 then
-                        userCodedString = "\n\n" .. UTILS.ColorCodeText(prefix .. ": ", "EAB221")
-                        for i= 1, count do
-                            local profile = CLM.MODULES.ProfileManager:GetProfileByName(dataList[i])
-                            local coloredName = dataList[i]
-                            if profile then
-                                coloredName = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
-                            end
-                            userCodedString = userCodedString .. coloredName
-                            if i ~= count then
-                                userCodedString = userCodedString .. ", "
-                            end
-                        end
-                    end
-                    return count, userCodedString
-                end)
-                for p,_ in pairs(CLM.MODULES.AuctionManager:Bids()) do
-                    didAnyAction[p] = true
-                end
-                -- passess list
-                local _, passed = _generateInfo(
-                    CLM.MODULES.AuctionManager:Passes(),
-                                            { CLM.MODULES.AuctionManager:Bids() },
-                                            "Passed")
-                -- cant use actions
-                local _, cantUse = _generateInfo(
-                    CLM.MODULES.AuctionManager:CantUse(),
-                                                { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes() },
-                                                "Can't use")
-                -- closed actions
-                local _, closed = _generateInfo(CLM.MODULES.AuctionManager:Hidden(),
-                                            { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes(), CLM.MODULES.AuctionManager:CantUse() },
-                                            "Closed")
-                -- no action
-                local raidersDict = {}
-                for _,GUID in ipairs(self.raid:Players()) do
-                    local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-                    if profile then
-                        raidersDict[profile:Name()] = true
-                    end
-                end
-                local _, noAction = _generateInfo(raidersDict,
-                                    { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes(), CLM.MODULES.AuctionManager:CantUse(), CLM.MODULES.AuctionManager:Hidden() },
-                                    "No action", true)
-                -- did any actions count
-                local didAnyActionCount = 0
-                for _,_ in pairs(didAnyAction) do didAnyActionCount = didAnyActionCount + 1 end
-                -- Stats
-                local stats = string.format("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
-                -- Result
-                return stats .. passed .. cantUse .. closed .. noAction
-            end),
-            type = "execute",
-            func = (function() end),
-            image = "Interface\\Icons\\INV_Misc_QuestionMark",
-            width = 0.25,
-            order = 6
-        }
+        -- bid_stats_info = {
+        --     name = "Info",
+        --     desc = (function()
+        --         -- Legend
+        --         if not CLM.MODULES.RaidManager:IsInActiveRaid() or self.raid == nil then return CLM.L["Not in raid"] end
+        --         -- Unique did any action dict
+        --         local didAnyAction = {}
+        --         -- generateInfo closure
+        --         local _generateInfo = (function(dataDict, ignoreListOfDicts, prefix, skipAction)
+        --             local dataList, userCodedString = {}, ""
+        --             for p,_ in pairs(dataDict) do
+        --                 local inIgnoreList = false
+        --                 for _,d in ipairs(ignoreListOfDicts) do
+        --                     if d[p] then
+        --                         inIgnoreList = true
+        --                         break
+        --                     end
+        --                 end
+        --                 if not inIgnoreList then
+        --                     tinsert(dataList, p)
+        --                     if not skipAction then
+        --                         didAnyAction[p] = true
+        --                     end
+        --                 end
+        --             end
+        --             local count = #dataList
+        --             if count > 0 then
+        --                 userCodedString = "\n\n" .. UTILS.ColorCodeText(prefix .. ": ", "EAB221")
+        --                 for i= 1, count do
+        --                     local profile = CLM.MODULES.ProfileManager:GetProfileByName(dataList[i])
+        --                     local coloredName = dataList[i]
+        --                     if profile then
+        --                         coloredName = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+        --                     end
+        --                     userCodedString = userCodedString .. coloredName
+        --                     if i ~= count then
+        --                         userCodedString = userCodedString .. ", "
+        --                     end
+        --                 end
+        --             end
+        --             return count, userCodedString
+        --         end)
+        --         for p,_ in pairs(CLM.MODULES.AuctionManager:Bids()) do
+        --             didAnyAction[p] = true
+        --         end
+        --         -- passess list
+        --         local _, passed = _generateInfo(
+        --             CLM.MODULES.AuctionManager:Passes(),
+        --                                     { CLM.MODULES.AuctionManager:Bids() },
+        --                                     "Passed")
+        --         -- cant use actions
+        --         local _, cantUse = _generateInfo(
+        --             CLM.MODULES.AuctionManager:CantUse(),
+        --                                         { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes() },
+        --                                         "Can't use")
+        --         -- closed actions
+        --         local _, closed = _generateInfo(CLM.MODULES.AuctionManager:Hidden(),
+        --                                     { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes(), CLM.MODULES.AuctionManager:CantUse() },
+        --                                     "Closed")
+        --         -- no action
+        --         local raidersDict = {}
+        --         for _,GUID in ipairs(self.raid:Players()) do
+        --             local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
+        --             if profile then
+        --                 raidersDict[profile:Name()] = true
+        --             end
+        --         end
+        --         local _, noAction = _generateInfo(raidersDict,
+        --                             { CLM.MODULES.AuctionManager:Bids(), CLM.MODULES.AuctionManager:Passes(), CLM.MODULES.AuctionManager:CantUse(), CLM.MODULES.AuctionManager:Hidden() },
+        --                             "No action", true)
+        --         -- did any actions count
+        --         local didAnyActionCount = 0
+        --         for _,_ in pairs(didAnyAction) do didAnyActionCount = didAnyActionCount + 1 end
+        --         -- Stats
+        --         local stats = string.format("%d/%d %s", didAnyActionCount, #self.raid:Players(), "total")
+        --         -- Result
+        --         return stats .. passed .. cantUse .. closed .. noAction
+        --     end),
+        --     type = "execute",
+        --     func = (function() end),
+        --     image = "Interface\\Icons\\INV_Misc_QuestionMark",
+        --     width = 0.25,
+        --     order = 6
+        -- }
     }
     return options
 end

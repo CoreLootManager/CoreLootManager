@@ -617,6 +617,10 @@ function AuctionManager:StartAuction()
         LOG:Warning("AuctionManager:StartAuction(): Auction in progress")
         return
     end
+    if auction:IsAcceptingRolls() then
+        LOG:Warning("AuctionManager:StartAuction(): Accepting rolls currently")
+        return
+    end
     if not self:IsAuctioneer() then
         LOG:Message(CLM.L["You are not allowed to auction items"])
         return
@@ -687,8 +691,44 @@ function AuctionManager:StartAuction()
     )
 end
 
-local function handleIncomingRoll(auctionItem, ...)
-    print(...)
+local function handleIncomingRoll(auctionItem, _, _, message, ...)
+    local who, roll, min, max = string.match(message, "^(%w+).-(%d+).-(%d+)-(%d+)")
+    roll, min, max = tonumber(roll), tonumber(min), tonumber(max)
+
+    if not who then
+        LOG:Debug("Missing <who>")
+        return
+    end
+    if not roll then
+        LOG:Debug("Missing <roll [%s]>", roll)
+        return
+    end
+    if (min ~= 1) or (max ~= 100) then
+        LOG:Debug("Missing <min [%s], max [%s]>", min, max)
+        return
+    end
+
+    if roll < min or roll > max then
+        LOG:Debug("Roll not between <min, max>")
+        return
+    end
+
+    local rollerProfile = CLM.MODULES.ProfileManager:GetProfileByName(who)
+    if not rollerProfile then
+        LOG:Debug("No profile for %s", who)
+        return
+    end
+    local response = auctionItem:GetResponse(rollerProfile:Name())
+    if not response then
+        response = CLM.MODELS.UserResponse:New()
+        auctionItem:SetResponse(rollerProfile:Name(), response, true)
+    end
+
+    if response:Roll() == 0 then
+        response:SetRoll(roll)
+    end -- re-roll ignored
+
+    CLM.GUI.AuctionManager:Refresh()
 end
 
 function AuctionManager:StartRoll(itemId)
@@ -696,6 +736,10 @@ function AuctionManager:StartRoll(itemId)
     local auction = self.currentAuction
     if auction:IsInProgress() then
         LOG:Warning("AuctionManager:StartRoll(): Auction in progress")
+        return
+    end
+    if auction:IsAcceptingRolls() then
+        LOG:Warning("AuctionManager:StartRoll(): Accepting rolls currently")
         return
     end
     if not self:IsAuctioneer() then
@@ -713,9 +757,10 @@ function AuctionManager:StartRoll(itemId)
         return false
     end
     local message = string.format(CLM.L["Accepting rolls on %s for %s%s"], auctionItem:GetItemLink(), "20", "s")
-    SendChatMessage(message, "RAID_WARNING")
+    SendChatMessage(message, "GUILD")--"RAID_WARNING")
 
     local unregister = CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_SYSTEM"}, (function(...)
+        -- TODO this might be actually good to be centralized inside auction and not auctionItem
         handleIncomingRoll(auctionItem, ...)
     end))
 
@@ -725,14 +770,31 @@ function AuctionManager:StartRoll(itemId)
         response:SetRoll(0)
     end
 
+    auction:AcceptRolls()
+
     CreateNewAuctionIntervalHandlers(self, 5, GetServerTime() + 20, {
         init = (function() end),
         ticker = (function() end),
         final = (function()
+            self:StopRoll()
             unregister()
-            SendChatMessage(CLM.L["Rolling complete"], "RAID_WARNING")
         end),
     })
+
+    CLM.GUI.AuctionManager:Refresh()
+end
+
+function AuctionManager:StopRoll()
+    local auction = self.currentAuction
+    if not auction:IsAcceptingRolls() then
+        LOG:Warning("AuctionManager:StartRoll(): Not accepting rolls currently")
+        return
+    end
+
+    auction:IgnoreRolls()
+    self.auctionTicker:Cancel()
+
+    SendChatMessage(CLM.L["Rolling complete"], "GUILD")--"RAID_WARNING")
 end
 
 local function AntiSnipe(self, auction)
@@ -1017,6 +1079,10 @@ end
 
 function AuctionManager:IsAuctionInProgress()
     return self.currentAuction:IsInProgress()
+end
+
+function AuctionManager:IsAcceptingRolls()
+    return self.currentAuction:IsAcceptingRolls()
 end
 
 function AuctionManager:GetCurrentAuctionInfo()
