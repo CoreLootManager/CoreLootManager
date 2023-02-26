@@ -318,7 +318,7 @@ function AuctionInfo:Roll(auctionItem)
 
     self.rollItem = auctionItem
 
-    self:AcceptRolls()
+    acceptRolls(self)
 end
 
 function AuctionInfo:EndRoll()

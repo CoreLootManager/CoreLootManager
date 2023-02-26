@@ -160,5 +160,6 @@ globals = {
 	"GetActiveTalentGroup",
 	"CLASS_ICON_TCOORDS",
 	"TradeFrame",
-	"InitiateTrade"
+	"InitiateTrade",
+	"Mixin"
 }
