@@ -39,7 +39,7 @@ local function assertCantAddItems(self)
 end
 
 local function assertIsAcceptingRolls(self)
-    if self.isAcceptingRolls then
+    if self.acceptingRolls then
         error("Not allowed while auction is accepting ROLLS.", 2)
     end
 end
@@ -284,7 +284,7 @@ function AuctionInfo:IsComplete()
 end
 
 function AuctionInfo:IsAcceptingRolls()
-    return self.isAcceptingRolls
+    return (self.acceptingRolls == true)
 end
 
 function AuctionInfo:CanAddItems()
@@ -300,11 +300,11 @@ function AuctionInfo:GetItemCount()
 end
 
 local function acceptRolls(self)
-    self.isAcceptingRolls = true
+    self.acceptingRolls = true
 end
 
 local function ignoreRolls(self)
-    self.isAcceptingRolls = nil
+    self.acceptingRolls = false
 end
 
 function AuctionInfo:Roll(auctionItem)

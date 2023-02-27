@@ -278,20 +278,6 @@ local function GenerateAwardOptions(self)
             width = 0.8,
             order = 1,
         },
-        -- award_offset = {
-        --     name = "",
-        --     desc = "",
-        --     type = "description",
-        --     order = 0,
-        --     width = 1.1
-        -- },
-        -- award_label = {
-        --     name = CLM.L["Award:"],
-        --     fontSize = "medium",
-        --     type = "description",
-        --     width = 0.4,
-        --     order = 2
-        -- },
         award_multiplier = {
             name = CLM.L["Multiplier"],
             type = "input",
@@ -568,7 +554,9 @@ local function GenerateAuctionOptions(self)
             order = 4.5,
             image = "Interface\\Buttons\\UI-GroupLoot-Dice-Up",
             disabled = (function()
-                return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():IsEmpty() or not self.auctionItem or CLM.MODULES.AuctionManager:IsAuctionInProgress()
+                return CLM.MODULES.AuctionManager:GetCurrentAuctionInfo():IsEmpty() or
+                        not self.auctionItem or
+                        CLM.MODULES.AuctionManager:IsAuctionInProgress()
             end)
         },
         bidding_header = {

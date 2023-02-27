@@ -551,7 +551,7 @@ end
 
 function AuctionManager:StopAuctionManual()
     LOG:Trace("AuctionManager:StopAuctionManual()")
-    self.auctionTicker:Cancel()
+    self.intervalTicker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction stopped by Master Looter"], CHAT_MESSAGE_CHANNEL)
     end
@@ -560,28 +560,32 @@ end
 
 local function StopAuctionTimed(self)
     LOG:Trace("AuctionManager:StopAuctionTimed()")
-    self.auctionTicker:Cancel()
+    self.intervalTicker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
         SendChatMessage(CLM.L["Auction complete"], CHAT_MESSAGE_CHANNEL)
     end
     EndAuction(self)
-    CLM.GUI.AuctionManager:Refresh()
+    self:RefreshGUI()
 end
 
 local TICKER_INTERVAL = 0.2
-local defaultIntervalCallbacks = {
-    init = function() end,
-    ticker = function(_) end,
-    final = function() end,
-}
-local function CreateNewAuctionIntervalHandlers(self, countdown, endTimeValue, callbacks)
-    callbacks = Mixin(callbacks or {}, defaultIntervalCallbacks)
+
+local defaultHandlersTypes = {"init", "ticker", "final"}
+local function GenerateIntervalHandlerCallbacks(input)
+    local o = input or {}
+    for _, handler in ipairs(defaultHandlersTypes) do
+        if not o[handler] then o[handler] = (function() end) end
+    end
+    return o
+end
+
+local function NewIntervalHandlers(self, countdown, endTimeValue, callbacks)
     --[[ Prepare ]]
     callbacks.init()
     self.auctionTickerLastCountdownValue = countdown
     self.auctionTickerEndTime = endTimeValue
     --[[ Create Timer ]]
-    self.auctionTicker = C_Timer.NewTicker(TICKER_INTERVAL, (function()
+    self.intervalTicker = C_Timer.NewTicker(TICKER_INTERVAL, (function()
         --[[ Tick ]]
         self.auctionTimeLeft = self.auctionTickerEndTime - GetServerTime()
         callbacks.ticker(TICKER_INTERVAL)
@@ -678,7 +682,7 @@ function AuctionManager:StartAuction()
     SendAuctionStart(self)
 
     if not self.auctionTickerCallbacks then
-        self.auctionTickerCallbacks = {
+        self.auctionTickerCallbacks = GenerateIntervalHandlerCallbacks({
             init = (function()
                 self.bidInfoSender = CLM.MODELS.BidInfoSender:New(SENDING_INTERVAL, SendBidInfoInternal)
             end),
@@ -689,10 +693,10 @@ function AuctionManager:StartAuction()
                 self.bidInfoSender:Flush()
                 StopAuctionTimed(self)
             end)
-        }
+        })
     end
 
-    CreateNewAuctionIntervalHandlers(self,
+    NewIntervalHandlers(self,
         CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0,
         auction:GetEndTime(), self.auctionTickerCallbacks
     )
@@ -731,7 +735,7 @@ local function handleIncomingRoll(_, _, message, ...)
 
     auction:HandleRoll(rollerProfile:Name(), roll)
 
-    CLM.GUI.AuctionManager:Refresh()
+    AuctionManager:RefreshGUI()
 end
 
 function AuctionManager:StartRoll(itemId)
@@ -764,32 +768,35 @@ function AuctionManager:StartRoll(itemId)
 
     auction:Roll(auctionItem)
 
-    local unregister = CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_SYSTEM"}, handleIncomingRoll)
-
-    CreateNewAuctionIntervalHandlers(self,
+    self.unregisterRolls =  CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_SYSTEM"}, handleIncomingRoll)
+    NewIntervalHandlers(self,
         CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0,
-        GetServerTime() + 20, -- TODO configure time
-        {
+        GetServerTime() + 20,
+        GenerateIntervalHandlerCallbacks({
             final = (function()
                 self:StopRoll()
-                unregister()
+                self:RefreshGUI()
             end),
         })
+    )
 
-    CLM.GUI.AuctionManager:Refresh()
+    self:RefreshGUI()
 end
 
 function AuctionManager:StopRoll()
     local auction = self.currentAuction
     if not auction:IsAcceptingRolls() then
-        LOG:Warning("AuctionManager:StartRoll(): Not accepting rolls currently")
+        LOG:Warning("AuctionManager:StopRoll(): Not accepting rolls currently")
         return
     end
 
+    self.intervalTicker:Cancel()
+
+    self.unregisterRolls()
+    self.unregisterRolls = nil
+
     auction:EndRoll()
-
-    self.auctionTicker:Cancel()
-
+    
     SendChatMessage(CLM.L["Rolling complete"], CHAT_MESSAGE_CHANNEL)
 end
 
@@ -1025,7 +1032,7 @@ function AuctionManager:UpdateBid(name, itemId, userResponse)
     end
 
     -- TODO update Bids only
-    CLM.GUI.AuctionManager:Refresh()
+    self:RefreshGUI()
 
     return accept, reason
 end
