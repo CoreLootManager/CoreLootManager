@@ -848,6 +848,7 @@ function BiddingManagerGUI:RefreshItemList()
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
     if auction then
         local itemList = {}
+        local current = self.auctionItem
         for id, auctionItem in pairs(auction:GetItems()) do
             local iconColor, note
             if not auctionItem:GetCanUse() then
@@ -864,6 +865,9 @@ function BiddingManagerGUI:RefreshItemList()
             elseif auctionItem:BidDenied() then
                 iconColor = colorGold
                 note = CLM.L["Bid denied!"]
+            end
+            if current and current:GetItemID() == auctionItem:GetItemID() then
+                iconColor = colorTurquoise
             end
             itemList[#itemList+1] = { cols = { {value = id, item = auctionItem, iconColor = iconColor, note = note}}}
         end
