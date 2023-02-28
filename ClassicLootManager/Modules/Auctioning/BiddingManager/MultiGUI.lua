@@ -909,7 +909,6 @@ end
 function BiddingManagerGUI:Advance()
     if (self.nextItem > #self.auctionOrder) then self.nextItem = 1 end
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
-
     self:SetVisibleAuctionItem(auction:GetItem(self.auctionOrder[self.nextItem]))
     self.nextItem = self.nextItem + 1
     self:Refresh()
@@ -917,7 +916,6 @@ end
 
 function BiddingManagerGUI:BuildBidOrder()
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
-    local previousSize = self.auctionOrder and #self.auctionOrder or 0
 
     self.auctionOrder = {}
     self.nextItem = 1
@@ -927,15 +925,12 @@ function BiddingManagerGUI:BuildBidOrder()
         self.auctionOrder[#self.auctionOrder+1] = id
     end
 
-    if previousSize ~= #self.auctionOrder then
-        self:Advance()
-    end
+    self:Advance()
 end
 
 local toggleCb = (function() BiddingManagerGUI:Toggle() end)
 function BiddingManagerGUI:StartAuction()
     self:BuildBidOrder()
-    self:Advance()
     -- Hide Test Bar if present
     HideTestBar(self)
     -- Build Bar
