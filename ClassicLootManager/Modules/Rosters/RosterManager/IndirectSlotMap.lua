@@ -207,70 +207,70 @@ local IndirectMap = {
         [40638] = 213,
 
         -- Chestguard of the Wayward Vanquisher
-        [45637] = 219,
+        [45637] = 225,
         -- Helm of the Wayward Vanquisher
-        [45649] = 219,
+        [45649] = 225,
         -- Gloves of the Wayward Vanquisher
-        [45646] = 219,
+        [45646] = 225,
         -- Leggings of the Wayward Vanquisher
-        [45652] = 219,
+        [45652] = 225,
         -- Spaulders of the Wayward Vanquisher
-        [45661] = 219,
+        [45661] = 225,
 
         -- Gloves of the Wayward Protector
-        [45645] = 219,
+        [45645] = 225,
         -- Helm of the Wayward Protector
-        [45648] = 219,
+        [45648] = 225,
         -- Leggings of the Wayward Protector
-        [45651] = 219,
+        [45651] = 225,
         -- Spaulders of the Wayward Protector
-        [45660] = 219,
+        [45660] = 225,
         -- Chestguard of the Wayward Protector
-        [45636] = 219,
+        [45636] = 225,
 
         -- Gloves of the Wayward Conqueror
-        [45644] = 219,
+        [45644] = 225,
         -- Leggings of the Wayward Conqueror
-        [45650] = 219,
+        [45650] = 225,
         -- Helm of the Wayward Conqueror
-        [45647] = 219,
+        [45647] = 225,
         -- Spaulders of the Wayward Conqueror
-        [45659] = 219,
+        [45659] = 225,
         -- Chestguard of the Wayward Conqueror
-        [45635] = 219,
+        [45635] = 225,
 
         -- Breastplate of the Wayward Vanquisher
-        [45634] = 226,
+        [45634] = 232,
         -- Gauntlets of the Wayward Vanquisher
-        [45643] = 226,
+        [45643] = 232,
         -- Crown of the Wayward Vanquisher
-        [45640] = 226,
+        [45640] = 232,
         -- Legplates of the Wayward Vanquisher
-        [45655] = 226,
+        [45655] = 232,
         -- Mantle of the Wayward Vanquisher
-        [45658] = 226,
+        [45658] = 232,
 
         -- Gauntlets of the Wayward Conqueror
-        [45641] = 226,
+        [45641] = 232,
         -- Mantle of the Wayward Conqueror
-        [45656] = 226,
+        [45656] = 232,
         -- Breastplate of the Wayward Conqueror
-        [45632] = 226,
+        [45632] = 232,
         -- Legplates of the Wayward Conqueror
-        [45653] = 226,
+        [45653] = 232,
         -- Crown of the Wayward Conqueror
-        [45638] = 226,
+        [45638] = 232,
 
         -- Breastplate of the Wayward Protector
-        [45633] = 226,
+        [45633] = 232,
         -- Gauntlets of the Wayward Protector
-        [45642] = 226,
+        [45642] = 232,
         -- Crown of the Wayward Protector
-        [45639] = 226,
+        [45639] = 232,
         -- Legplates of the Wayward Protector
-        [45654] = 226,
+        [45654] = 232,
         -- Mantle of the Wayward Protector
-        [45657] = 226,
+        [45657] = 232,
     }
 }
 CLM.IndirectMap = IndirectMap
