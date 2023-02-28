@@ -279,7 +279,8 @@ local function stringifyBidInfo(auction, item, response)
         -- If its not named button mode but tier comes, display as MS
         responseTypeName = responseTypeName or CONSTANTS.BID_TYPE_NAMES[CONSTANTS.BID_TYPE.MAIN_SPEC]
     end
-    local short, spacer, value, points = "", "", "", ""
+    local spacer, value, points = "", "", ""
+    local short
     if CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
         short = response:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
     else
