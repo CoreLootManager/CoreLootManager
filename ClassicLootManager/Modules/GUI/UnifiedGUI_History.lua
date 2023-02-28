@@ -265,7 +265,7 @@ local tableStructure = {
                 a1 = string.gsub(a1, "%%", "")
                 b1 = strsplit(" ", b1)
                 b1 = string.gsub(b1, "%%", "")
-                return tonumber(a1), tonumber(b1)
+                return (tonumber(a1) or 0), (tonumber(b1) or 0)
             end),
         },
         {name = CLM.L["Date"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC},
