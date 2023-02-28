@@ -980,7 +980,15 @@ function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     self.auctionItem = auctionItem
     if not auctionItem then return end
     local values = self.auctionItem:GetValues()
-    SetInputValue(self, values[CONSTANTS.SLOT_VALUE_TIER.BASE])
+    local bid = self.auctionItem:GetBid()
+    local value
+    if bid then
+        value = bid:Value()
+    else
+        value = values[CONSTANTS.SLOT_VALUE_TIER.BASE]
+    end
+
+    SetInputValue(self, value)
 end
 
 local function BuildBidRow(name, response, roster, namedButtonMode, auction)
