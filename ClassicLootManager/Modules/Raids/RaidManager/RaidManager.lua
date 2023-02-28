@@ -6,6 +6,12 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+-- luacheck: ignore CHAT_MESSAGE_CHANNEL
+local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
+--@debug@
+CHAT_MESSAGE_CHANNEL = "GUILD"
+--@end-debug@
+
 local whoami = UTILS.whoami()
 local whoamiGUID = UTILS.whoamiGUID()
 
@@ -365,7 +371,7 @@ function RaidManager:StartRaid(raid)
     -- Start Raid
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Start:new(raid:UID(), players, standby), true)
     if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
-        SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , "RAID_WARNING")
+        SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , CHAT_MESSAGE_CHANNEL)
     end
     self:HandleRosterUpdateEvent()
     -- On Time Bonus
@@ -417,7 +423,7 @@ function RaidManager:EndRaid(raid)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.End:new(raid:UID()), true)
 
     if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
-        SendChatMessage(string.format(CLM.L["Raid [%s] ended"], raid:Name()) , "RAID_WARNING")
+        SendChatMessage(string.format(CLM.L["Raid [%s] ended"], raid:Name()) , CHAT_MESSAGE_CHANNEL)
     end
 end
 

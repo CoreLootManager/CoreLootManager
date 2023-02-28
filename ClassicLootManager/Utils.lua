@@ -876,6 +876,17 @@ function UTILS.Saturate(value, low, high)
     return value
 end
 
+local defaultCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 -_=[];:<>,.?"
+function UTILS.randomString(length, customCharset)
+    local charset = customCharset or defaultCharset
+    local charsetLength = #charset
+    local result = ""
+    while #result < length do
+        local char = math.random(1, charsetLength)
+        result = result .. strsub(charset, char, char)
+    end
+    return result
+end
 
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),

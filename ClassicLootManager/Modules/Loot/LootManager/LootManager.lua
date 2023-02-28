@@ -6,6 +6,12 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+-- luacheck: ignore CHAT_MESSAGE_CHANNEL
+local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
+--@debug@
+CHAT_MESSAGE_CHANNEL = "GUILD"
+--@end-debug@
+
 local function mutateLootAward(entry, roster)
     local GUID = UTILS.getGuidFromInteger(entry:profile())
     if not roster then
@@ -172,7 +178,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
         if CLM.GlobalConfigs:GetLootWarning() then
             local message = string.format(CLM.L["%s awarded to %s for %s %s"], itemLink, name, value, pointTypeSuffix)
-            SendChatMessage(message, "RAID_WARNING")
+            SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
             if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
                 SendChatMessage(message, "GUILD")
             end
@@ -212,7 +218,7 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, itemId, forceInstant
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
     if CLM.GlobalConfigs:GetLootWarning() then
         local message = CLM.L["Disenchanted"] .. " " .. itemLink
-        SendChatMessage(message, "RAID_WARNING")
+        SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
         if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
             SendChatMessage(message, "GUILD")
         end

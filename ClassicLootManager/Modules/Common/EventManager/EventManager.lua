@@ -22,6 +22,39 @@ function EventManager:Initialize()
     self.messageCallbacks = {}
 end
 
+local function unregisterWoWEvent(self, events)
+    LOG:Trace("EventManager unregisterWoWEvent()")
+    if not events then
+        LOG:Fatal("EventManager:unregisterWoWEvent(): Invalid events")
+        return
+    end
+    if type(events) == "string" then events = { events } end
+    for _,event in ipairs(events) do
+        CLM.CORE:UnregisterEvent(event)
+        self.callbacks[event] = nil
+    end
+end
+
+local function unregisterIfEmpty(self, event)
+    if rawequal(next(self.callbacks[event]), nil) then
+        unregisterWoWEvent(self, event)
+    end
+end
+
+local function addCallbackInternal(self, event, callback)
+    local name
+    repeat
+        name = UTILS.randomString(8)
+    until(self.callbacks[event][name] == nil)
+
+    self.callbacks[event][name] = callback
+
+    return (function()
+        self.callbacks[event][name] = nil
+        unregisterIfEmpty(self, event)
+    end)
+end
+
 function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
     LOG:Trace("EventManager:RegisterWoWEvent()")
     local callback
@@ -37,6 +70,7 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
         LOG:Fatal("EventManager:RegisterWoWEvent(): Invalid event")
         return
     end
+    local unregistrars = {}
     if type(events) == "string" then events = { events } end
     for _,event in ipairs(events) do
         if not self.callbacks[event] then-- lazy load event handlers
@@ -53,21 +87,14 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
             CLM.CORE:RegisterEvent(event)
         end
 
-        tinsert(self.callbacks[event], callback)
+        unregistrars[event] = addCallbackInternal(self, event, callback)
     end
-end
 
-function EventManager:UnregisterWoWEvent(events)
-    LOG:Trace("EventManager:RegisterWoWEvent()")
-    if not events then
-        LOG:Fatal("EventManager:UnregisterWoWEvent(): Invalid events")
-        return
-    end
-    if type(events) == "string" then events = { events } end
-    for _,event in ipairs(events) do
-        CLM.CORE:UnregisterEvent(event)
-        self.callbacks[event] = nil
-    end
+    return (function()
+        for _,unregister in pairs(unregistrars) do
+            unregister()
+        end
+    end), unregistrars
 end
 
 function EventManager:RegisterMessage(messages, functionOrObject, methodName)
