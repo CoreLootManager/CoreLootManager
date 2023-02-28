@@ -92,6 +92,8 @@ function RosterConfiguration:New(i)
     o._.allowCancelPass = false
     -- Round PR Priority
     o._.roundPR = 10
+    -- Time for rolling
+    o._.rollTime = 20
 
     -- Additional settings
     o.hasHardCap = false
@@ -142,7 +144,8 @@ function RosterConfiguration:fields()
         "baseAlways",
         "allInAlways",
         "allowEqualMax",
-        "allowCancelPass"
+        "allowCancelPass",
+        "rollTime"
     }
 end
 
@@ -192,6 +195,7 @@ local TRANSFORMS = {
     allowEqualMax = transform_boolean,
     allowCancelPass = transform_boolean,
     roundPR = transform_number,
+    rollTime = transform_number,
 }
 
 function RosterConfiguration:inflate(data)
@@ -291,5 +295,6 @@ function RosterConfiguration._validate_allInAlways(value) return IsBoolean(value
 function RosterConfiguration._validate_allowEqualMax(value) return IsBoolean(value) end
 function RosterConfiguration._validate_allowCancelPass(value) return IsBoolean(value) end
 function RosterConfiguration._validate_roundPR(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
+function RosterConfiguration._validate_rollTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration

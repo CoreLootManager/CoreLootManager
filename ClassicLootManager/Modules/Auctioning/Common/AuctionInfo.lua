@@ -456,6 +456,10 @@ function AuctionInfo:GetAllowBelowMinStandings()
     return self.configuration:Get("allowBelowMinStandings")
 end
 
+function AuctionInfo:GetRollTime()
+    return self.configuration:Get("rollTime")
+end
+
 function AuctionInfo:GetFieldName(tier)
     return self.roster:GetFieldName(tier)
 end

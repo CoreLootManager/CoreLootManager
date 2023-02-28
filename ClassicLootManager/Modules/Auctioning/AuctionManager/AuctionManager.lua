@@ -763,7 +763,8 @@ function AuctionManager:StartRoll(itemId)
         LOG:Error("AuctionManager:StartRoll(): Item not in auction list")
         return false
     end
-    local message = string.format(CLM.L["Accepting rolls on %s for %s %s"], auctionItem:GetItemLink(), "20", CLM.L["seconds"])
+    local rollTime = auction:GetRollTime()
+    local message = string.format(CLM.L["Accepting rolls on %s for %s %s"], auctionItem:GetItemLink(), rollTime, CLM.L["seconds"])
     SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
 
     auction:Roll(auctionItem)
@@ -771,7 +772,7 @@ function AuctionManager:StartRoll(itemId)
     self.unregisterRolls =  CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_SYSTEM"}, handleIncomingRoll)
     NewIntervalHandlers(self,
         CLM.GlobalConfigs:GetCountdownWarning() and 5 or 0,
-        GetServerTime() + 20,
+        GetServerTime() + rollTime,
         GenerateIntervalHandlerCallbacks({
             final = (function()
                 self:StopRoll()

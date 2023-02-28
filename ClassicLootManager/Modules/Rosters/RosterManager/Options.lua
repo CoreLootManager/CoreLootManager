@@ -283,6 +283,12 @@ function RosterManagerOptions:Initialize()
         auction_antisnipe_time_set = (function(name, value)
             SetRosterOption(name, "antiSnipe", value)
         end),
+        auction_roll_time_get = (function(name)
+            return tostring(GetRosterOption(name, "rollTime"))
+        end),
+        auction_roll_time_set = (function(name, value)
+            SetRosterOption(name, "rollTime", value)
+        end),
         auction_minimum_points_get = (function(name)
             return tostring(GetRosterOption(name, "minimumPoints"))
         end),
@@ -1076,6 +1082,15 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1,
                         order = 15
+                    },
+                    roll_time = {
+                        name = CLM.L["Roll"] .. " " .. CLM.L["Time"],
+                        desc = CLM.L["Roll"] .. " " .. CLM.L["Time"],
+                        type = "input",
+                        disabled = disableManage,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                        width = 1,
+                        order = 20
                     },
                 },
             },
