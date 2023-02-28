@@ -271,6 +271,29 @@ function BiddingManager:HandleAntiSnipe(_, sender)
     CLM.GUI.BiddingManager:AntiSnipe()
 end
 
+local function stringifyBidInfo(auction, item, response)
+    local responseTypeName = CONSTANTS.BID_TYPE_NAMES[response:Type()]
+    if auction:GetNamedButtonsMode() then
+        responseTypeName = responseTypeName or auction:GetFieldName(response:Type())
+    else
+        -- If its not named button mode but tier comes, display as MS
+        responseTypeName = responseTypeName or CONSTANTS.BID_TYPE_NAMES[CONSTANTS.BID_TYPE.MAIN_SPEC]
+    end
+    local short, spacer, value, points = "", "", "", ""
+    if CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
+        short = response:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
+    else
+        local roster = auction:GetRoster()
+        points = (roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and CLM.L["GP"] or CLM.L["DKP"]
+        value = response:Value()
+        spacer = " "
+
+        short = value
+    end
+
+    return string.format("%s %s%s%s%s%s", item:GetItemLink(), responseTypeName, spacer, value, spacer, points), short
+end
+
 function BiddingManager:HandleAcceptBid(itemId, sender)
     LOG:Trace("BiddingManager:HandleAcceptBid()")
     if not self:IsAuctionInProgress() then
@@ -283,12 +306,9 @@ function BiddingManager:HandleAcceptBid(itemId, sender)
     if not bid then return end
     item:SetBidStatus(true)
     CLM.GUI.BiddingManager:Refresh()
-    local bidValue = bid:Value()
-    if CONSTANTS.BID_TYPE_HIDDEN[bid:Type()] then
-        bidValue = bid:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
-    end
-    LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], bidValue)
-    CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = bidValue })
+    local text, short = stringifyBidInfo(self.auction, item, bid)
+    LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], text)
+    CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = short })
 end
 
 function BiddingManager:HandleDenyBid(data, sender)
@@ -303,13 +323,10 @@ function BiddingManager:HandleDenyBid(data, sender)
     if not bid then return end
     item:SetBidStatus(false)
     CLM.GUI.BiddingManager:Refresh()
-    local bidValue = bid:Value()
-    if CONSTANTS.BID_TYPE_HIDDEN[bid:Type()] then
-        bidValue = bid:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
-    end
+    local text, short = stringifyBidInfo(self.auction, item, bid)
     local reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"]
-    LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], bidValue, reason)
-    CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = bidValue, reason = reason })
+    LOG:Message(CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"], text, reason)
+    CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = short, reason = reason })
 end
 
 function BiddingManager:HandleDistributeBid(data, sender)
