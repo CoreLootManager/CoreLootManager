@@ -34,7 +34,10 @@
         "class",
         "message",
         "TradeFrame",
-        "RANDOM_ROLL_RESULT"
+        "RANDOM_ROLL_RESULT",
+        "FauxScrollFrame_Update",
+        "FauxScrollFrame_OnVerticalScroll",
+        "FauxScrollFrame_GetOffset"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

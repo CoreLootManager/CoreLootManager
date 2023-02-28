@@ -126,7 +126,7 @@ function Roster:RestoreConditionallyRemoved(GUID)
     self.inRoster[GUID] = true
 end
 
-function Roster:IsConditinallyRemoved(GUID)
+function Roster:IsConditionallyRemoved(GUID)
     return self.standings[GUID] and not self.inRoster[GUID]
 end
 
