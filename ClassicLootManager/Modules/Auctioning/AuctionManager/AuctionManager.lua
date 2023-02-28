@@ -791,7 +791,6 @@ function AuctionManager:StopRoll()
     end
 
     self.intervalTicker:Cancel()
-
     self.unregisterRolls()
     self.unregisterRolls = nil
 
