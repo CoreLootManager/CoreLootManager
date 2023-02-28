@@ -55,15 +55,16 @@ function ProfileManager:Initialize()
                 profileInternal.name = name
                 self.cache.profilesGuidMap[strlower(name)] = GUID
             else
-                local profile = CLM.MODELS.Profile:New(entry, name, class, main)
-                profile:SetGUID(GUID)
-                self.cache.profiles[GUID] = profile
                 -- If profile with this name already exists we need to remove it
                 -- before updating guid map
                 local oldProfile = self:GetProfileByName(name)
                 if oldProfile then
                     self.cache.profiles[oldProfile:GUID()] = nil
                 end
+                -- New mapping
+                local profile = CLM.MODELS.Profile:New(entry, name, class, main)
+                profile:SetGUID(GUID)
+                self.cache.profiles[GUID] = profile
                 self.cache.profilesGuidMap[strlower(name)] = GUID
                 -- Check for conditional restore
                 local rosters = CLM.MODULES.RosterManager:GetRosters()
