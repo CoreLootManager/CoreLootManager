@@ -795,7 +795,7 @@ function AuctionManager:StopRoll()
     self.unregisterRolls = nil
 
     auction:EndRoll()
-    
+
     SendChatMessage(CLM.L["Rolling complete"], CHAT_MESSAGE_CHANNEL)
 end
 
