@@ -1,6 +1,25 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.3.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Rolling", body = "You can now allow players in your raid to `/roll` for an item as a separte or additional step in your auctioning process. This is a very simple mechanism to enhance the existing built-in rolling." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Dynamic Item value mode", body = "Dynamic ilvl value calculation is now fixed for Tier 8 tokens. You should notice increase in the value." },
+                    { header = "History", body = "Disenchanted item sorting should no longer error out." },
+                    { header = "Bidding UI", body = "* Currently selected item is now tinted turquoise.\n* Values after bid are retained when going back to item.\n* Chat message is more descriptive now.\n* Bids should no longer start from 2nd item.\n* Bid timer should no longer error out." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.2.0",
         data = {
             {
