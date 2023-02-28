@@ -33,7 +33,11 @@
         "GetActiveTalentGroup",
         "class",
         "message",
-        "TradeFrame"
+        "TradeFrame",
+        "RANDOM_ROLL_RESULT",
+        "FauxScrollFrame_Update",
+        "FauxScrollFrame_OnVerticalScroll",
+        "FauxScrollFrame_GetOffset"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
