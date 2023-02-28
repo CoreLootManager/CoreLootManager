@@ -58,11 +58,17 @@ function ProfileManager:Initialize()
                 local profile = CLM.MODELS.Profile:New(entry, name, class, main)
                 profile:SetGUID(GUID)
                 self.cache.profiles[GUID] = profile
+                -- If profile with this name already exists we need to remove it
+                -- before updating guid map
+                local oldProfile = self:GetProfileByName(name)
+                if oldProfile then
+                    self.cache.profiles[oldProfile:GUID()] = nil
+                end
                 self.cache.profilesGuidMap[strlower(name)] = GUID
                 -- Check for conditional restore
                 local rosters = CLM.MODULES.RosterManager:GetRosters()
                 for _, roster in pairs(rosters) do
-                    if roster:IsConditinallyRemoved(GUID) then
+                    if roster:IsConditionallyRemoved(GUID) then
                         roster:RestoreConditionallyRemoved(GUID)
                     end
                 end
