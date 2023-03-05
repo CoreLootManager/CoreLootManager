@@ -225,13 +225,14 @@ function Util.getIntegerGuid(target)
 end
 
 function Util.getIntegerFromGuid(guid)
-    return tonumber(string.sub(guid, -8), 16)
+    local _, realm, int = strsplit("-", guid)
+    return tonumber(int, 16), tonumber(realm, 10)
 end
 
-local GUIDPrefix = string.sub(UnitGUID("player"), 1, -9)
+local _, myRealm = Util.getIntegerGuid("player")
 
-function Util.getGuidFromInteger(int)
-    return GUIDPrefix .. string.format("%08X", int)
+function Util.getGuidFromInteger(int, realm)
+    return string.format("Player-%d-%08X", realm or myRealm, int)
 end
 
 function Util.guid()

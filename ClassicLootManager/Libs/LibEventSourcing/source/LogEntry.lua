@@ -28,6 +28,7 @@ local privateCreator = '_a'
 local privateCounter = '_b'
 local privateTimestamp = '_c'
 local privateClass = '_d'
+local privateRealm = '_e'
 
 
 
@@ -36,6 +37,7 @@ LogEntry[privateStaticClass] = 'LE'
 
 local counter = 0
 local lastTimestamp = 0
+local _, myRealm = Util.getIntegerGuid("player")
 
 -- private constructor
 local function constructor(self)
@@ -72,7 +74,7 @@ function LogEntry.staticClassName(metatable)
 end
 
 
-function LogEntry:new(creator)
+function LogEntry:new(creator, realm)
     local o = constructor(self)
     o[privateClass] = LogEntry.staticClassName(self)
 
@@ -85,14 +87,21 @@ function LogEntry:new(creator)
     end
     o[privateCounter] = counter
     if creator == nil then
-        o[privateCreator] = Util.getIntegerGuid("player")
+        o[privateCreator], o[privateRealm] = Util.getIntegerGuid("player")
     elseif type(creator) == 'string' then
-        o[privateCreator] = Util.getIntegerGuid(creator)
-        if (o[privateCreator] == nil) then
+        o[privateCreator], o[privateRealm] = Util.getIntegerGuid(creator)
+        if (o[privateCreator] == nil) or (o[privateRealm] == nil) then
             error(string.format("Failed to convert string `%s` into number", creator))
         end
     else
         o[privateCreator] = creator
+        o[privateRealm] = realm
+    end
+
+    if type(o[privateCreator]) ~= 'number' or type(o[privateRealm]) ~= 'number'then
+        error(string.format("Failed to fill creator data from `[%s] -> %s | [%s] -> %s` ",
+        tostring(creator), tostring(o[privateCreator]),
+        tostring(realm), tostring(o[privateRealm])))
     end
 
     return o
@@ -122,12 +131,17 @@ end
     Returns the numbers to be used
 ]]--
 function LogEntry:numbersForHash()
-    return {self[privateTimestamp], self[privateCounter], self[privateCreator]}
+    return {self[privateTimestamp], self[privateCounter], self[privateRealm] or myRealm, self[privateCreator]}
 end
 
 function LogEntry:creator()
     return self[privateCreator]
 end
+
+function LogEntry:realm()
+    return self[privateRealm] or myRealm
+end
+
 
 function LogEntry:counter()
     return self[privateCounter]
@@ -148,7 +162,7 @@ function LogEntry.sortedList(data)
 end
 
 function LogEntry.fields()
-    return {privateTimestamp, privateCounter, privateCreator}
+    return {privateTimestamp, privateCounter, privateRealm, privateCreator}
 end
 
 function LogEntry:uuid()
