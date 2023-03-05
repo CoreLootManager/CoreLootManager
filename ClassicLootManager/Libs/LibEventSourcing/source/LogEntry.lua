@@ -94,14 +94,12 @@ function LogEntry:new(creator, realm)
             error(string.format("Failed to convert string `%s` into number", creator))
         end
     else
-        o[privateCreator] = creator
-        o[privateRealm] = realm
-    end
-
-    if type(o[privateCreator]) ~= 'number' or type(o[privateRealm]) ~= 'number'then
-        error(string.format("Failed to fill creator data from `[%s] -> %s | [%s] -> %s` ",
-        tostring(creator), tostring(o[privateCreator]),
-        tostring(realm), tostring(o[privateRealm])))
+        o[privateCreator], o[privateRealm] = creator, realm
+        if type(o[privateCreator]) ~= 'number' or type(o[privateRealm]) ~= 'number'then
+            error(string.format("Failed to fill data `creator [%s] -> %s | realm [%s] -> %s` ",
+            tostring(creator), tostring(o[privateCreator]),
+            tostring(realm), tostring(o[privateRealm])))
+        end
     end
 
     return o
