@@ -334,9 +334,6 @@ function UTILS.empty(object)
     end
     return false
 end
-function UTILS.getCreatorGuid(iGUID)
-    return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
-end
 local playerGUID = UnitGUID("player")
 local getIntegerGuid, myRealm
 if WoW10 then -- only support cross-server for Retail for now
