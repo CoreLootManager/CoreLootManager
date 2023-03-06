@@ -29,14 +29,14 @@ function ProfileManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileUpdate)")
             local iGUID = entry:GUID()
-            if type(iGUID) ~= "number" then return end
+            if not UTILS.ValidateIntegerGUID(iGUID) then return end
             local GUID = UTILS.getGuidFromInteger(iGUID)
             local name = entry:name()
             if UTILS.empty(name) then return end
 
             local class = UTILS.NumberToClass(entry:ingameClass()) or ""
             local main = entry:main()
-            main = (type(main) == "number" and main ~= 0) and UTILS.getGuidFromInteger(main) or ""
+            main = UTILS.ValidateIntegerGUID(main) and UTILS.getGuidFromInteger(main) or ""
             -- Check if it's an update
             local profileInternal = self.cache.profiles[GUID]
             if profileInternal then
@@ -81,7 +81,7 @@ function ProfileManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileRemove)")
             local GUID = entry:GUID()
-            if type(GUID) ~= "number" then return end
+            if not UTILS.ValidateIntegerGUID(GUID) then return end
             GUID = UTILS.getGuidFromInteger(GUID)
             local profile = self.cache.profiles[GUID]
             if profile then
@@ -116,10 +116,10 @@ function ProfileManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLink)")
             local altGUID = entry:GUID()
-            if type(altGUID) ~= "number" then return end
+            if not UTILS.ValidateIntegerGUID(altGUID) then return end
             altGUID = UTILS.getGuidFromInteger(altGUID)
             local mainGUID = entry:main()
-            if type(mainGUID) ~= "number" then return end
+            if not UTILS.ValidateIntegerGUID(mainGUID) then return end
             if altGUID == mainGUID then return end
             mainGUID = UTILS.getGuidFromInteger(mainGUID)
             local altProfile = self:GetProfileByGUID(altGUID)

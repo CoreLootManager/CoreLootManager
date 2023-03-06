@@ -16,6 +16,7 @@ local whoami = UTILS.whoami()
 local whoamiGUID = UTILS.whoamiGUID()
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
+local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local function IsPlayerInPvP()
 	local bg = UnitInBattleground("player")

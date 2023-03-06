@@ -10,6 +10,8 @@ local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
+local WoW10 = select(4, GetBuildInfo()) >= 100000
+
 local function capitalize(string)
     string = string or ""
     return string.upper(string.sub(string, 1,1)) .. string.lower(string.sub(string, 2))
@@ -332,16 +334,50 @@ function UTILS.empty(object)
     end
     return false
 end
-
-function UTILS.getIntegerGuid(GUID)
-    return tonumber(string.sub(GUID, -8), 16)
+function UTILS.getCreatorGuid(iGUID)
+    return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
 end
-local getIntegerGuid = UTILS.getIntegerGuid
-
-local playerGUID = UnitGUID("player") or ""
-local GUIDPrefix = string.sub(playerGUID, 1, -9)
-function UTILS.getGuidFromInteger(int)
-    return GUIDPrefix .. string.format("%08X", tonumber(int) or 0)
+local playerGUID = UnitGUID("player")
+local getIntegerGuid, myRealm
+if WoW10 then -- only support cross-server for Retail for now
+-- if true then
+    function UTILS.getIntegerGuid(GUID)
+        local _, realm, int = strsplit("-", GUID)
+        return {tonumber(realm, 10), tonumber(int, 16)}
+    end
+    getIntegerGuid = UTILS.getIntegerGuid
+    myRealm = unpack(getIntegerGuid(playerGUID), 1)
+    function UTILS.getGuidFromInteger(iGUID)
+        return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
+    end
+    function UTILS.ValidateIntegerGUID(iGUID)
+        if type(iGUID) ~= "table" then return false end
+        for i=1,2 do if type(iGUID[i]) ~= "number" then return false end end
+        return true
+    end
+else
+    function UTILS.getIntegerGuid(GUID)
+        local _, realm, int = strsplit("-", GUID)
+        return {tonumber(realm, 10), tonumber(int, 16)}
+    end
+    getIntegerGuid = UTILS.getIntegerGuid
+    myRealm = unpack(getIntegerGuid(playerGUID), 1)
+    -- function UTILS.getGuidFromInteger(iGUID)
+    --     -- dynamic for testing. this should not be used in final version
+    --     if type(iGUID) == 'table' then
+    --         return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
+    --     else
+    --         return string.format("Player-%d-%08X", myRealm, iGUID)
+    --     end
+    -- end
+    function UTILS.getGuidFromInteger(iGUID) -- this should be used in final version
+        return string.format("Player-%d-%08X", myRealm, iGUID)
+    end
+    function UTILS.ValidateIntegerGUID(iGUID)
+        if type(iGUID) ~= "number" then return false end
+        if iGUID == 0 then return false end
+        return false
+    end
 end
 
 local playerName = UTILS.GetUnitName("player")
@@ -356,10 +392,10 @@ end
 function UTILS.GetGUIDFromEntry(e)
     if typeof(e, CLM.MODELS.Profile) then
         return getIntegerGuid(e:GUID())
-    elseif type(e) == "number" then
-        return e
     elseif type(e) == "string" then
         return getIntegerGuid(e)
+    elseif type(e) == "number" then
+        return {myRealm, e}
     else
         return nil
     end

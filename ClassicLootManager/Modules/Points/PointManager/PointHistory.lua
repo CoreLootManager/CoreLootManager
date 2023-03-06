@@ -7,6 +7,7 @@ local  _, CLM = ...
 -- ------------------------------- --
 
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
+local ValidateIntegerGUID = CLM.UTILS.ValidateIntegerGUID
 
 local PointHistory = {}
 local FakePointHistory = {}
@@ -38,12 +39,14 @@ function PointHistory:Profiles()
     if self.profiles == nil then
         self.profiles = {}
         local targets = self.targets
-        for _,target in ipairs(targets) do
+        for i,target in ipairs(targets) do
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this
-            local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
-            if not profile then
+            local profile
+            if ValidateIntegerGUID(target) then
+                profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            else
                 profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
             end
             if profile then
@@ -110,8 +113,14 @@ function FakePointHistory:Profiles()
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this
-            local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
-            if not profile then
+            -- local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            -- if not profile then
+            --     profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
+            -- end
+            local profile
+            if ValidateIntegerGUID(target) then
+                profile = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(target))
+            else
                 profile = CLM.MODULES.ProfileManager:GetProfileByGUID(target)
             end
             if profile then

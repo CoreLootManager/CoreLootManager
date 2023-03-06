@@ -232,6 +232,7 @@ local function buildPointTooltip(tooltip, history)
         end
         tooltip:AddDoubleLine(CLM.L["Note"] .. "", note)
     end
+    print(history:Creator(), UTILS.getGuidFromInteger(history:Creator()))
     local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
     local name
     if profile then

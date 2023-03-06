@@ -59,7 +59,7 @@ local function ParseImportData(self)
             -- class   Warlock
             -- spec    0/43/18
             -- dkp     13.445
-            local guid = self.guidCache[player.name]
+            local guid = self.guidCache[player.name] or player.guid
             if guid then
                 if not profileMap[guid] then
                     numProfiles = numProfiles + 1
