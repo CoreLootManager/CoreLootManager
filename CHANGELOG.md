@@ -1,3 +1,9 @@
+# Classic Loot Manager v3.3.2
+## Fixes
+### Roster configuration
+Assistants no longer can modify roster options.
+### Bidding UI
+Fixed timer bar bug blocking auctions display.
 # Classic Loot Manager v3.3.0
 ## Features
 ### Rolling

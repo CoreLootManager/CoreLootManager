@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.3.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Roster configuration", body = "Assistants no longer can modify roster options." },
+                    { header = "Bidding UI", body = "Fixed timer bar bug blocking auctions display." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.3.0",
         data = {
             {
