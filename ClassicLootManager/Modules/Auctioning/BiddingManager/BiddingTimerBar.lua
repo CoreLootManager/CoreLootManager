@@ -117,9 +117,10 @@ function BiddingTimerBar:UpdateInfo(item)
     if item:GetNote():len() > 0 then
         note = "(" .. item:GetNote() .. ")"
     end
-    self.bar:SetLabel((item:GetItemLink() or "") .. " " .. note)
+    local link = item:GetItemLink() or ""
+    self.bar:SetLabel(link .. " " .. note)
 
-    local _, _, _, _, icon = GetItemInfoInstant(item:GetItemLink())
+    local _, _, _, _, icon = GetItemInfoInstant(link)
     self.bar:SetIcon(icon)
 end
 
