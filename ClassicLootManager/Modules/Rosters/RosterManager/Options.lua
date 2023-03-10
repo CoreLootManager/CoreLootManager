@@ -692,11 +692,10 @@ end
 local function award_multipliers(self, roster)
     local args = {}
 
-    for i, coloredClass in ipairs(UTILS.GetColorCodedClassList()) do
-        local class = UTILS.RemoveColorCode(coloredClass)
+    for i, class in ipairs(UTILS.GetClassList()) do
         args[class] = {
             type = "group",
-            name = coloredClass,
+            name = UTILS.ColorCodeAndLocalizeClass(class),
             order = i,
             args = {}
         }

@@ -106,14 +106,14 @@ function UTILS.ColorCodeText(text, color)
 end
 local ColorCodeText = UTILS.ColorCodeText
 
-function UTILS.ColorCodeClass(className)
+function UTILS.ColorCodeAndLocalizeClass(className)
     return ColorCodeText(CLM.L[className], GetClassColor(className).hex);
 end
 
 local colorCodedClassList = {}
 do
     for _,class in pairs(classOrdered) do
-        tinsert(colorCodedClassList, UTILS.ColorCodeClass(class))
+        tinsert(colorCodedClassList, UTILS.ColorCodeAndLocalizeClass(class))
     end
 end
 function UTILS.GetColorCodedClassList()

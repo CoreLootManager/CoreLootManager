@@ -8,6 +8,7 @@ CLM.ChangelogData = {
                 data = {
                     { header = "Import", body = "Import should no longer sync improperly due to missing note." },
                     { header = "Raid", body = "Raid names are now limited to 128 characters. |cfff48cbaZalán|r." },
+                    { header = "Multipliers", body = "Multipliers configuration will now work using any Locale." },
                 },
             },
         },

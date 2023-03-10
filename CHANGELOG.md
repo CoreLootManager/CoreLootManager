@@ -4,6 +4,8 @@
 Import should no longer sync improperly due to missing note.
 ### Raid
 Raid names are now limited to 128 characters. Zalán.
+### Multipliers
+Multipliers configuration will now work using any Locale.
 # Classic Loot Manager v3.3.2
 ## Fixes
 ### Roster configuration
