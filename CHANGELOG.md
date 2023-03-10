@@ -3,7 +3,7 @@
 ### Import
 Import should no longer sync improperly due to missing note.
 ### Raid
-Raid names are now limited. Zalán.
+Raid names are now limited to 128 characters. Zalán.
 # Classic Loot Manager v3.3.2
 ## Fixes
 ### Roster configuration
