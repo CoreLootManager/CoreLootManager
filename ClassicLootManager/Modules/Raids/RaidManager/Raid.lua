@@ -21,7 +21,8 @@ function Raid:New(uid, name, roster, config, creator, entry)
     o.roster = roster
 
     o.config = config
-    o.name = name
+    o.name = strsub(tostring(name or ""), 1, 128)
+
     o.status = CONSTANTS.RAID_STATUS.CREATED
     -- o.owner = creator
 

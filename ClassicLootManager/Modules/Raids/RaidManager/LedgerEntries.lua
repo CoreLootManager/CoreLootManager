@@ -26,7 +26,7 @@ CLM.MODELS.LEDGER.RAID = {
 function Create:new(rosterUid, name, config)
     local o = LogEntry.new(self)
     o.r = tonumber(rosterUid) or 0
-    o.n = name or ""
+    o.n = strsub(tostring(name or ""), 1, 128)
     o.c = config:deflate()
     return o
 end
