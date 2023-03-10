@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.3.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Import", body = "Import should no longer sync improperly due to missing note." },
+                    { header = "Raid", body = "Raid names are now limited. |cfff48cbaZalán|r." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.3.2",
         data = {
             {
