@@ -161,5 +161,8 @@ globals = {
 	"CLASS_ICON_TCOORDS",
 	"TradeFrame",
 	"InitiateTrade",
-	"Mixin"
+	"Mixin",
+	"PlaySoundFile",
+	"IsInInstance",
+	"ReloadUI"
 }
