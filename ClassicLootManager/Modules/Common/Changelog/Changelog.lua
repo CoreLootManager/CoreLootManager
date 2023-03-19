@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.3.4",
+        data = {
+            {
+                name = "Cleanup",
+                data = {
+                    { header = "AddOn footprint", body = "Remove unused assets that were missed in previous releases to lower AddOn footprint." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.3.3",
         data = {
             {

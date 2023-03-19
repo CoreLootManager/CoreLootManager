@@ -1,3 +1,7 @@
+# Classic Loot Manager v3.3.4
+## Cleanup
+### AddOn footprint
+Remove unused assets that were missed in previous releases to lower AddOn footprint.
 # Classic Loot Manager v3.3.3
 ## Fixes
 ### Import
