@@ -182,6 +182,61 @@ local function HookAuctionFilling(self)
     end)
 end
 
+GetItemInfo(19019)
+local function Joke()
+    local L1, L2, R = "", "", math.random(1,6)
+
+    if R == 1 then
+        L1 = "What do you call a druid who melees in tree form?"
+        L2 = "A combat log."
+    elseif R == 2 then
+        L1 = "Why do mages and warlocks get invited to all parties?"
+        L2 = "Because mages bring the food and warlocks get you stoned."
+    elseif R == 3 then
+        L1 = "What's a rogue's favourite drink?"
+        L2 = "Subtle tea."
+    elseif R == 4 then
+        L1 = "How does Naxxramas fly?"
+        L2 = "With its four wings."
+    elseif R == 5 then
+        L1 = "How many Blizzard developers does it take to get an expansion right?"
+        L2 = "Nobody knows because it hasn't been done yet."
+    elseif R == 6 then
+        L1 = "What do you call a gnome priest?"
+        L2 = "A compact disc."
+    end
+
+    C_Timer.After(1, function()
+        SendChatMessage(L1, "RAID")
+        SendChatMessage(L2, "RAID")
+    end)
+end
+local function AprilFools()
+    if CLM.AF then
+        local _, instanceType = IsInInstance()
+        if instanceType ~= "raid" then return end
+        if math.random(1,100) > 95 then
+            local L, C, D = nil, nil, 0
+            local R = math.random(1,4)
+            if R == 1 then
+                local _, itemLink= GetItemInfo(19019)
+                if itemLink then
+                    L, C, D = ("Did someone say " .. itemLink .. "?"), "RAID", 2
+                end
+            elseif R == 2 then
+                L, C, D = "[The Unclickable] just dropped!", "GUILD", 1
+            elseif R == 3 then
+                L, C, D = "mrrglrlrlrmgrrr", "YELL", 1
+            elseif R > 3 then
+                D = 0
+                Joke()
+            end
+            if D > 0 then C_Timer.After(D, function() SendChatMessage(L, C) end) end
+            C_Timer.After(2, function() LOG:Message("Happy |cff44ee44April Fools'|r raid week!") end)
+        end
+    end
+end
+
 local alreadyPostedLoot = {}
 local function PostLootToRaidChat()
     if not IsInRaid() then return end
@@ -479,6 +534,8 @@ function AuctionManager:Initialize()
         if CONSTANTS.BIDDING_COMM.TYPES[message:Type()] == nil then return end
         self:HandleIncomingMessage(message, distribution, sender)
     end), CONSTANTS.ACL.LEVEL.PLEBS, true)
+
+    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, AprilFools)
 
     if not CLM.MODULES.ACL:IsTrusted() then return end
 

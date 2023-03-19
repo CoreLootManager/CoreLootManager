@@ -37,7 +37,12 @@
         "RANDOM_ROLL_RESULT",
         "FauxScrollFrame_Update",
         "FauxScrollFrame_OnVerticalScroll",
-        "FauxScrollFrame_GetOffset"
+        "FauxScrollFrame_GetOffset",
+        "GetCursorPosition",
+        "ADDON_ACTION_FORBIDDEN",
+        "DISABLE",
+        "IGNORE_DIALOG",
+        "ReloadUI"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
