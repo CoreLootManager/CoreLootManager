@@ -63,16 +63,12 @@ local function UpdateOptions(self)
         end
     end
 
-    -- self.note = ""
-    -- self.values = {}
-    -- if CLM.MODULES.RaidManager:IsInRaid() then
-    --     self.raid = CLM.MODULES.RaidManager:GetRaid()
-    --     self.roster = self.raid:Roster()
-    --     if self.roster then
-    --         self.configuration:Copy(self.roster.configuration)
-    --         self.values = UTILS.ShallowCopy(self.roster:GetItemValues(self.itemId))
-    --     end
-    -- end
+    if CLM.MODULES.RaidManager:IsInRaid() then
+        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+        if roster then
+            self.rosterId = roster:UID()
+        end
+    end
 
     local itemLink = "item:" .. tostring(self.itemId)
     options.args = {
@@ -143,7 +139,15 @@ local function UpdateOptions(self)
             name = CLM.L["Award"],
             type = "execute",
             func = (function()
-                local success, _ = CLM.MODULES.LootManager:AwardItem(self.roster, self.awardPlayer, self.itemLink, self.itemId, self.awardValue)
+                local awardTarget = self.roster
+                if CLM.MODULES.RaidManager:IsInRaid() then
+                    local raid = CLM.MODULES.RaidManager:GetRaid()
+                    local roster = raid:Roster()
+                    if self.roster == roster then
+                        awardTarget = raid
+                    end
+                end
+                local success, _ = CLM.MODULES.LootManager:AwardItem(awardTarget, self.awardPlayer, self.itemLink, self.itemId, self.awardValue)
                 if success then
                     CLM.MODULES.AutoAssign:Handle(self.itemId, self.awardPlayer)
                 end
