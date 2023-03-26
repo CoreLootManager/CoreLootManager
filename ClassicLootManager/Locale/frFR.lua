@@ -1534,9 +1534,9 @@ CLM.L["Remove from standby"] = "Retirer du mode veille"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:273
 CLM.L["Remove item from auction list after it's awarded."] = "Retirer l'item de la liste d'enchères lorsqu'il est attribué"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:412
---CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."] = ""
+CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."] = "Retirez les articles sans offres de la liste des enchères. Cela rendra les articles de marquage comme désenchantés non possibles."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:411
---CLM.L["Remove items without bids"] = ""
+CLM.L["Remove items without bids"] = "Retirer les articles sans offres"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:92
 CLM.L["Remove old"] = "Supprimer l'ancien"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:271

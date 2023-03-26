@@ -1534,9 +1534,9 @@ CLM.L["Remove from standby"] = "从替补名单中移除"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:273
 CLM.L["Remove item from auction list after it's awarded."] = "分配后，从拍卖列表中移除物品。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:412
---CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."] = ""
+CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."] = "從拍賣列表中刪除沒有投標的項目。 這將使標記物品變得不可能。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:411
---CLM.L["Remove items without bids"] = ""
+CLM.L["Remove items without bids"] = "刪除沒有投標的項目"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:92
 CLM.L["Remove old"] = "移除旧的"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:271
