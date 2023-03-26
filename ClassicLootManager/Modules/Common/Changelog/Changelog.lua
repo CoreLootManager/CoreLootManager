@@ -1,6 +1,21 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.3.5",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Award UI", body = "Award UI will now respect being in raid and correlate the loot to it. This also means zero-sum will now work properly." },
+                    { header = "Auctioning UI", body = "You can now enable auto-removing unauctioned items from auction list. Optionally you can automatically mark those items as disenchanted." },
+                    { header = "EPGP Auction Types", body = "You can now use Vickrey and Anonymous open modes with EPGP." },
+                    { header = "Vickrey handling", body = "Vickrey is now properly handled when using named buttons mode." },
+                    { header = "Field Names", body = "If using named buttons mode, field names now will be used in configuration and auctioning also for consistency." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.3.4",
         data = {
             {

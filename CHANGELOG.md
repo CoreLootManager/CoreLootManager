@@ -1,3 +1,15 @@
+# Classic Loot Manager v3.3.5
+## Changes
+### Award UI
+Award UI will now respect being in raid and correlate the loot to it. This also means zero-sum will now work properly.
+### Auctioning UI
+You can now enable auto-removing unauctioned items from auction list. Optionally you can automatically mark those items as disenchanted.
+### EPGP Auction Types
+You can now use Vickrey and Anonymous open modes with EPGP.
+### Vickrey handling
+Vickrey is now properly handled when using named buttons mode.
+### Field Names
+If using named buttons mode, field names now will be used in configuration and auctioning also for consistency.
 # Classic Loot Manager v3.3.4
 ## Cleanup
 ### AddOn footprint

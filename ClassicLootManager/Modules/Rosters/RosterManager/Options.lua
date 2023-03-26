@@ -440,7 +440,8 @@ local function default_slot_values(self, roster)
                     if self.readOnly then return end
                     CLM.MODULES.RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
                 end),
-                name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                -- name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                name = UTILS.GetRosterConditionalFieldName(ivalues.type, roster),
                 pattern = CONSTANTS.REGEXP_FLOAT,
             }
             order = order + 1
@@ -449,7 +450,7 @@ local function default_slot_values(self, roster)
     return args
 end
 
-local function dynamic_item_values(self, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+local function dynamic_item_values(self, roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
     local args = {}
     local order = 0
     local prefix
@@ -536,7 +537,8 @@ local function dynamic_item_values(self, equationGet, equationSet, expvarGet, ex
     }
     order = order + 1
     for _, ivalues in ipairs(valuesWithDesc) do
-        local tierName = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or "")
+        -- local tierName = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or "")
+        local tierName = UTILS.GetRosterConditionalFieldName(ivalues.type, roster)
         args[prefix .. "_" .. ivalues.type] = {
             type = "input",
             order = order,
@@ -589,7 +591,8 @@ local function item_value_overrides(self, roster)
                         local values = roster:GetItemValues(id)
                         return tostring(values[ivalues.type])
                     end),
-                    name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                    -- name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                    name = UTILS.GetRosterConditionalFieldName(ivalues.type, roster),
                     pattern = CONSTANTS.REGEXP_FLOAT,
                 }
                 order = order + 1
@@ -1133,7 +1136,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = CLM.L["Dynamic Item values"],
                 type = "group",
                 order = 6,
-                args = dynamic_item_values(self, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+                args = dynamic_item_values(self, roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
             },
             boss_kill_award_values = {
                 name = CLM.L["Boss kill award values"],
@@ -1164,7 +1167,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     local order = 26
     for _, tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
         options.args.general.args["named_button_tier_" .. tostring(tier)] = {
-            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[tier],
+            -- name = CONSTANTS.SLOT_VALUE_TIERS_GUI[tier],
+            name = UTILS.GetRosterConditionalFieldName(tier, roster),
             type = "input",
             set = (function(i, v) CLM.MODULES.RosterManager:SetFieldName(roster, tier, v) end),
             get = (function(i) return roster:GetFieldName(tier) end),

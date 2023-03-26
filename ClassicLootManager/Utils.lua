@@ -888,6 +888,34 @@ function UTILS.randomString(length, customCharset)
     return result
 end
 
+function UTILS.GetAuctionConditionalFieldName(key, auction, prefix, suffix)
+    local name
+    prefix = prefix or "["
+    suffix = suffix or "]"
+    if auction and auction:GetNamedButtonsMode() then
+        name = auction:GetFieldName(key)
+        if name == "" then name = nil end
+    end
+    if not name then
+        name = prefix .. CONSTANTS.SLOT_VALUE_TIERS_GUI[key] .. suffix
+    end
+    return name
+end
+
+function UTILS.GetRosterConditionalFieldName(key, roster, prefix, suffix)
+    local name
+    prefix = prefix or "["
+    suffix = suffix or "]"
+    if roster and roster:GetConfiguration("namedButtons") then
+        name = roster:GetFieldName(key)
+        if name == "" then name = nil end
+    end
+    if not name then
+        name = prefix .. CONSTANTS.SLOT_VALUE_TIERS_GUI[key] .. suffix
+    end
+    return name
+end
+
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
     [1] = ColorCodeText(CLM.L["Common"], "ffffff"),

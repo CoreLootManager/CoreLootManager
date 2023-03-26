@@ -103,6 +103,13 @@ local function GetRemoveOnNoBids(self)
     return self.db.removeOnNoBids
 end
 
+local function SetDisenchantAutoRemoved(self, value)
+    self.db.disenchantAutoRemoved = value and true or false
+end
+
+local function GetDisenchantAutoRemoved(self)
+    return self.db.disenchantAutoRemoved
+end
 
 -- Filling
 local ItemClasses = {}
@@ -407,15 +414,6 @@ local function CreateConfigurationOptions(self)
             get = function(i) return GetFilledLootRarity(self) end,
             order = 38
         },
-        auction_remove_on_no_bids = {
-            name = CLM.L["Remove items without bids"],
-            desc = CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."],
-            type = "toggle",
-            set = function(i, v) SetRemoveOnNoBids(self, v) end,
-            get = function(i) return GetRemoveOnNoBids(self) end,
-            width = "double",
-            order = 40,
-        },
         global_auction_combination = {
             name = CLM.L["Modifier combination"],
             desc = CLM.L["Select modifier combination for filling auction from bags and corpse."],
@@ -425,6 +423,24 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetModifierCombination(v) end,
             get = function(i) return CLM.GlobalConfigs:GetModifierCombination() end,
             order = 39
+        },
+        auction_remove_on_no_bids = {
+            name = CLM.L["Remove items without bids"],
+            desc = CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."],
+            type = "toggle",
+            set = function(i, v) SetRemoveOnNoBids(self, v) end,
+            get = function(i) return GetRemoveOnNoBids(self) end,
+            width = "double",
+            order = 40,
+        },
+        auction_disenchant_autoremoved = {
+            name = CLM.L["Disenchant removed items"],
+            desc = CLM.L["Automatically mark auto-removed items as disencahnted"],
+            type = "toggle",
+            set = function(i, v) SetDisenchantAutoRemoved(self, v) end,
+            get = function(i) return GetDisenchantAutoRemoved(self) end,
+            width = 1,
+            order = 41,
         },
         loot_queue_ignore_classes = {
             name = CLM.L["Ignore"],
@@ -440,7 +456,7 @@ local function CreateConfigurationOptions(self)
         auctioning_chat_commands_header = {
             type = "header",
             name = CLM.L["Auctioning - Chat Commands"],
-            order = 42
+            order = 43
         },
         auctioning_chat_commands = {
             name = CLM.L["Enable chat commands"],
@@ -449,7 +465,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
             width = "double",
-            order = 43
+            order = 44
         },
         auctioning_suppress_incoming = {
             name = CLM.L["Suppress incoming whispers"],
@@ -458,7 +474,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetSuppressIncomingChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetSuppressIncomingChatCommands() end,
             width = "double",
-            order = 44
+            order = 45
         },
         auctioning_suppress_outgoing = {
             name = CLM.L["Suppress outgoing whispers"],
@@ -467,7 +483,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetSuppressOutgoingChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() end,
             width = "double",
-            order = 45
+            order = 46
         },
     }
     return options
@@ -619,6 +635,9 @@ local function EndAuction(self)
         if GetRemoveOnNoBids(self) then
             if not item:HasValidBids() then
                 self:RemoveItemFromCurrentAuction(item)
+                if GetDisenchantAutoRemoved(self) then
+                    self:Disenchant(item)
+                end
             end
         end
     end
