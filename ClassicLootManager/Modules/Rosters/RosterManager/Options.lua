@@ -1144,6 +1144,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             }
         }
     }
+    options.args.auction.args.auction_type = {
+        name = CLM.L["Auction type"],
+        desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
+        type = "select",
+        disabled = disableManage,
+        order = 4,
+        values = CONSTANTS.AUCTION_TYPES_GUI
+    }
     -- Button names
     options.args.general.args.named_buttons_toggle = {
         name = CLM.L["Use named buttons"],
@@ -1191,14 +1199,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             disabled = disableManage,
             width = 1,
             order = 12.3
-        }
-        options.args.auction.args.auction_type = {
-            name = CLM.L["Auction type"],
-            desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
-            type = "select",
-            disabled = disableManage,
-            order = 4,
-            values = CONSTANTS.AUCTION_TYPES_GUI
         }
         options.args.auction.args.item_value_mode = {
             name = CLM.L["Item value mode"],
@@ -1262,15 +1262,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             width = 1,
             order = 18
-        }
-    elseif isEPGP then
-        options.args.auction.args.auction_type = {
-            name = CLM.L["Auction type"],
-            -- desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
-            type = "select",
-            disabled = disableManage,
-            order = 4,
-            values = CONSTANTS.AUCTION_TYPES_EPGP_GUI
         }
     end
     return options
