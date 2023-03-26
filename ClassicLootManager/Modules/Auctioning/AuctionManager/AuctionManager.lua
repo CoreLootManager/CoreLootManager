@@ -414,7 +414,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) SetRemoveOnNoBids(self, v) end,
             get = function(i) return GetRemoveOnNoBids(self) end,
             width = "double",
-            order = 39,
+            order = 40,
         },
         global_auction_combination = {
             name = CLM.L["Modifier combination"],
@@ -424,7 +424,7 @@ local function CreateConfigurationOptions(self)
             sorting = CONSTANTS.MODIFIER_COMBINATIONS_SORTED,
             set = function(i, v) CLM.GlobalConfigs:SetModifierCombination(v) end,
             get = function(i) return CLM.GlobalConfigs:GetModifierCombination() end,
-            order = 40
+            order = 39
         },
         loot_queue_ignore_classes = {
             name = CLM.L["Ignore"],
