@@ -37,11 +37,19 @@ local options = {
     args = {}
 }
 
+local override = false
 local function UpdateOptions(self)
     local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
     self.itemId = 0
     if self.itemLink then
         self.itemId, _, _, _, icon = GetItemInfoInstant(self.itemLink)
+    end
+
+    if CLM.MODULES.RaidManager:IsInRaid() and not override then
+        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+        if roster then
+            self.rosterId = roster:UID()
+        end
     end
 
     local profileNameMap = {}
@@ -60,13 +68,6 @@ local function UpdateOptions(self)
                 end
             end
             table.sort(profileList)
-        end
-    end
-
-    if CLM.MODULES.RaidManager:IsInRaid() then
-        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
-        if roster then
-            self.rosterId = roster:UID()
         end
     end
 
@@ -104,6 +105,7 @@ local function UpdateOptions(self)
             type = "select",
             set = function(i, v)
                 self.rosterId = v
+                override = true
                 self:Refresh()
             end,
             get = function(i) return self.rosterId end,
@@ -222,7 +224,7 @@ local function RegisterSlash(self)
     CLM.MODULES.ConfigManager:RegisterSlash(slash)
 end
 
-local function CreateConfig(self)
+local function CreateConfig()
     local config = {
         awarding_header = {
             type = "header",
@@ -299,6 +301,7 @@ function AwardGUI:Show(_, args)
     LOG:Trace("AwardGUI:Show()")
     if not self._initialized then return end
     SetItemLink(self, args)
+    override = false
     self:Refresh()
     if not self.top:IsVisible() then
         self.top:Show()
