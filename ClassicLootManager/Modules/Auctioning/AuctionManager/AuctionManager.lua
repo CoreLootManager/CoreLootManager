@@ -32,6 +32,7 @@ local function InitializeDB(self)
         fillFromLoot = true,
         fillFromLootGLOnly = true,
         lootThreshold = 4,
+        removeOnNoBids = false,
         notes = {},
         ignoredClasses = {
             false, false, false, false,
@@ -93,6 +94,15 @@ end
 local function GetFilledLootRarity(self)
     return self.db.lootThreshold or 4
 end
+
+local function SetRemoveOnNoBids(self, value)
+    self.db.removeOnNoBids = value and true or false
+end
+
+local function GetRemoveOnNoBids(self)
+    return self.db.removeOnNoBids
+end
+
 
 -- Filling
 local ItemClasses = {}
@@ -397,6 +407,15 @@ local function CreateConfigurationOptions(self)
             get = function(i) return GetFilledLootRarity(self) end,
             order = 38
         },
+        auction_remove_on_no_bids = {
+            name = CLM.L["Remove items without bids"],
+            desc = CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."],
+            type = "toggle",
+            set = function(i, v) SetRemoveOnNoBids(self, v) end,
+            get = function(i) return GetRemoveOnNoBids(self) end,
+            width = "double",
+            order = 39,
+        },
         global_auction_combination = {
             name = CLM.L["Modifier combination"],
             desc = CLM.L["Select modifier combination for filling auction from bags and corpse."],
@@ -405,7 +424,7 @@ local function CreateConfigurationOptions(self)
             sorting = CONSTANTS.MODIFIER_COMBINATIONS_SORTED,
             set = function(i, v) CLM.GlobalConfigs:SetModifierCombination(v) end,
             get = function(i) return CLM.GlobalConfigs:GetModifierCombination() end,
-            order = 39
+            order = 40
         },
         loot_queue_ignore_classes = {
             name = CLM.L["Ignore"],
@@ -416,19 +435,12 @@ local function CreateConfigurationOptions(self)
             end,
             get = function(i, v) return self.db.ignoredClasses[tonumber(v)] end,
             values = ItemClasses,
-            order = 39.5
+            order = 51
         },
-        -- global_auction_spacer = {
-        --     name = "",
-        --     desc = "",
-        --     type = "description",
-        --     width = 1,
-        --     order =  38.5
-        -- },
         auctioning_chat_commands_header = {
             type = "header",
             name = CLM.L["Auctioning - Chat Commands"],
-            order = 40
+            order = 42
         },
         auctioning_chat_commands = {
             name = CLM.L["Enable chat commands"],
@@ -437,7 +449,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
             width = "double",
-            order = 41
+            order = 43
         },
         auctioning_suppress_incoming = {
             name = CLM.L["Suppress incoming whispers"],
@@ -446,7 +458,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetSuppressIncomingChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetSuppressIncomingChatCommands() end,
             width = "double",
-            order = 42
+            order = 44
         },
         auctioning_suppress_outgoing = {
             name = CLM.L["Suppress outgoing whispers"],
@@ -455,7 +467,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetSuppressOutgoingChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() end,
             width = "double",
-            order = 43
+            order = 45
         },
     }
     return options
@@ -599,10 +611,16 @@ function AuctionManager:MoveItemToPendingList(item)
 end
 
 local function EndAuction(self)
-    self.currentAuction:End()
+    local auction = self.currentAuction
+    auction:End()
     SendAuctionEnd()
-    for _, item in pairs(self.currentAuction:GetItems()) do
+    for _, item in pairs(auction:GetItems()) do
         CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item)
+        if GetRemoveOnNoBids(self) then
+            if not item:HasValidBids() then
+                auction:RemoveItem(item:GetItemID())
+            end
+        end
     end
 end
 
