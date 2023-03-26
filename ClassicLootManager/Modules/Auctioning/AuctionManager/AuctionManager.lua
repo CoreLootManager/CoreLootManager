@@ -618,7 +618,7 @@ local function EndAuction(self)
         CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item)
         if GetRemoveOnNoBids(self) then
             if not item:HasValidBids() then
-                auction:RemoveItem(item:GetItemID())
+                self:RemoveItemFromCurrentAuction(item)
             end
         end
     end

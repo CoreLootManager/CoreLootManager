@@ -389,9 +389,13 @@ end
 
 local function UpdateBids(self, cutoff, type)
     LOG:Trace("AuctionManagerGUI:UpdateAwardValue()")
-    local max, second = self.auctionItem:GetTopBids(cutoff, type)
-    local values = self.auctionItem:GetValues()
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+    local bidType = type
+    if auction:GetNamedButtonsMode() then
+        bidType = nil
+    end
+    local max, second = self.auctionItem:GetTopBids(cutoff, bidType)
+    local values = self.auctionItem:GetValues()
     local isVickrey = (auction:GetType() ==  CONSTANTS.AUCTION_TYPE.VICKREY)
     if isVickrey then
         if second.bid == 0 then
