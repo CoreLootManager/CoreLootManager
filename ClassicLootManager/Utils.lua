@@ -610,6 +610,11 @@ function UTILS.round(number, decimals)
     return math.floor(number * factor + 0.5) / factor
 end
 
+function UTILS.GetMyRole()
+    -- return GetTalentGroupRole(GetActiveTalentGroup())
+    return "NONE"
+end
+
 function UTILS.IsTooltipTextRed(text)
     if text and text:GetText() then
         local r,g,b = text:GetTextColor()
