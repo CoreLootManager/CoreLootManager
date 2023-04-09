@@ -26,13 +26,6 @@ local EncounterIDsMap = {
 
 local DifficultyIDsMap = {
     [-1]    = "Fake", -- Trick for handling easily not-supported encounter ids
-    -- Classic
-    [3]	    = CLM.L["10 Player"],
-    [4]	    = CLM.L["25 Player"],
-    [5]	    = CLM.L["10 Player (Heroic)"],
-    [6]	    = CLM.L["25 Player (Heroic)"],
-    [9]     = CLM.L["40 Player"],
-    [148]   = CLM.L["20 Player"],
     -- Retail
     [14]   = CLM.L["Normal"],
     [15]   = CLM.L["Heroic"],
@@ -47,14 +40,13 @@ CLM.EncounterHasHardMode = CLM.UTILS.Set({})
 CLM.EncounterIDs = {}
 
 local diffMapGenerator = {
-    { name = "N", difficulty = 14},
-    { name = "H", difficulty = 15},
-    { name = "M", difficulty = 16},
+    { name = "n", difficulty = 14},
+    { name = "h", difficulty = 15},
+    { name = "m", difficulty = 16},
 }
 
 local instanceMapGenerator = {
     {
-        slug = "VoI",
         name = EJ_GetInstanceInfo(1200),
         data = {
             { id = 2587, name = EncounterIDsMap[2587] },
@@ -68,7 +60,7 @@ local instanceMapGenerator = {
         }
     },
     {
-        slug = "Aberrus",
+        slug = "",
         name = "Aberrus",
         -- name = EJ_GetInstanceInfo(1200), -- TODO Aberrus instance name
         data = {
@@ -86,8 +78,10 @@ local instanceMapGenerator = {
 }
 
 for _, difficulty in ipairs(diffMapGenerator) do
+    local expansion = "df" .. difficulty.name
+    CLM.EncounterIDs[expansion] = {}
     for _, instance in  ipairs(instanceMapGenerator) do
-        CLM.EncounterIDs[instance.slug .. difficulty.name] = {
+        CLM.EncounterIDs[expansion][#CLM.EncounterIDs[expansion]+1] = {
             name = instance.name,
             difficulty = difficulty.difficulty,
             data = instance.data

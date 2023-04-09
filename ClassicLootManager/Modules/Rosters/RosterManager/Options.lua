@@ -631,33 +631,29 @@ local function generateBossKillAwardValueInputField(self, roster, info, instance
     }
 end
 
+local bossKillBonusTabNameMap = {
+    classic = CLM.L["Classic"],
+    tbc     = CLM.L["TBC"],
+    wotlk10 = CLM.L["WotLK - 10"],
+    wotlk25 = CLM.L["WotLK - 25"],
+    dfn     = CLM.L["DF - Normal"],
+    dfh     = CLM.L["DF - Heroic"],
+    dfm     = CLM.L["DF - Mythic"],
+}
+
 local function boss_kill_award_values(self, roster, name)
-    local args = {
-        classic = {
-            type = "group",
-            name = CLM.L["Classic"],
-            args = {}
-        },
-        tbc = {
-            type = "group",
-            name = CLM.L["TBC"],
-            args = {}
-        },
-        wotlk10 = {
-            type = "group",
-            name = CLM.L["WotLK - 10"],
-            args = {}
-        },
-        wotlk25 = {
-            type = "group",
-            name = CLM.L["WotLK - 25"],
-            args = {}
-        }
-    }
+    local args = {}
     -- Common
     local order = 1
     for expansion,expansionEncounterData in pairs(CLM.EncounterIDs) do
         expansion = string.lower( expansion )
+        if not args[expansion] then
+            args[expansion] = {
+                type = "group",
+                name = bossKillBonusTabNameMap[expansion] or "???",
+                args = {}
+            }
+        end
         for _, instanceData in ipairs(expansionEncounterData) do
             for _,difficultyId in ipairs(instanceData.difficulty) do
                 order = order + 1

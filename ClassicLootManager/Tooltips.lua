@@ -6,6 +6,9 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+local WoW10 = select(4, GetBuildInfo()) >= 100000
+if WoW10 then return end
+
 local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga"
 
 local function formatPriceText(values, itemValueMode)
