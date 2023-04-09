@@ -164,5 +164,11 @@ globals = {
 	"Mixin",
 	"PlaySoundFile",
 	"IsInInstance",
-	"ReloadUI"
+	"ReloadUI",
+	"GetBuildInfo",
+	-- Retail only
+	"EJ_GetEncounterInfo",
+	"GetSpecialization",
+	"GetSpecializationInfo",
+	"EJ_GetInstanceInfo"
 }

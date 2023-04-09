@@ -227,8 +227,10 @@ end
 
 local function StoreLocation(self)
     self.db.location = { self.top:GetPoint() }
+    self.db.location[2] = nil
     if self.bar then
         self.db.barLocation = { self.bar:GetPoint() }
+        self.db.barLocation[2] = nil
     end
     self.db.scale = self.top.frame:GetScale()
 end

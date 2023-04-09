@@ -23,7 +23,7 @@ function PointHistory:New(entry, targets, timestamp, value, reason, creator, not
     o.timestamp = tonumber(timestamp) or entry:time()
     o.value = tonumber(value) or entry:value()
     o.reason = tonumber(reason) or entry:reason()
-    o.creator = creator or entry:creator()
+    o.creator = creator or entry:creatorFull()
     o.note = note or entry:note()
     if entry.spent then -- Not All entries have spent field
         o.spent = spent or entry:spent()
@@ -39,7 +39,7 @@ function PointHistory:Profiles()
     if self.profiles == nil then
         self.profiles = {}
         local targets = self.targets
-        for i,target in ipairs(targets) do
+        for _,target in ipairs(targets) do
             -- The code below breaks Model-View-Controller rule as it accessess Managers
             -- Maybe the caching should be done in GUI module?
             -- TODO: resolve this

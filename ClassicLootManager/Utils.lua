@@ -10,8 +10,6 @@ local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
-local WoW10 = select(4, GetBuildInfo()) >= 100000
-
 local function capitalize(string)
     string = string or ""
     return string.upper(string.sub(string, 1,1)) .. string.lower(string.sub(string, 2))
@@ -336,7 +334,7 @@ function UTILS.empty(object)
 end
 local playerGUID = UnitGUID("player")
 local getIntegerGuid, myRealm
-if WoW10 then -- only support cross-server for Retail for now
+if CLM.WoW10 then -- only support cross-server for Retail for now
     function UTILS.getIntegerGuid(GUID)
         local _, realm, int = strsplit("-", GUID)
         return {tonumber(realm, 10), tonumber(int, 16)}
@@ -375,6 +373,10 @@ end
 
 function UTILS.whoamiGUID()
     return playerGUID
+end
+
+function UTILS.myRealm()
+    return myRealm
 end
 
 function UTILS.GetGUIDFromEntry(e)
@@ -610,9 +612,19 @@ function UTILS.round(number, decimals)
     return math.floor(number * factor + 0.5) / factor
 end
 
-function UTILS.GetMyRole()
-    -- return GetTalentGroupRole(GetActiveTalentGroup())
-    return "NONE"
+if CLM.WoW10 then
+    function UTILS.GetMyRole()
+        local currentSpec = GetSpecialization()
+        local role = "NONE"
+        if currentSpec then
+            _, _, _, _, role = GetSpecializationInfo(currentSpec)
+        end
+        return role
+    end
+else
+    function UTILS.GetMyRole()
+        return GetTalentGroupRole(GetActiveTalentGroup())
+    end
 end
 
 function UTILS.IsTooltipTextRed(text)

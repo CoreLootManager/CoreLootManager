@@ -1,7 +1,7 @@
-local WoW10 = select(4, GetBuildInfo()) >= 100000
-if WoW10 then return end
-
 local _, CLM = ...
+
+if CLM.WoW10 then return end
+
 local EncounterIDsMap = {
     -- Classic
     [1084] = CLM.L["Onyxia"],

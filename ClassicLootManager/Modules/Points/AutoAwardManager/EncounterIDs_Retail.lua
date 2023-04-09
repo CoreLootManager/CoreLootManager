@@ -1,7 +1,7 @@
-local WoW10 = select(4, GetBuildInfo()) >= 100000
-if not WoW10 then return end
-
 local _, CLM = ...
+
+if not CLM.WoW10 then return end
+
 local EncounterIDsMap = {
     -- VoI
     [2587] = EJ_GetEncounterInfo(2480),

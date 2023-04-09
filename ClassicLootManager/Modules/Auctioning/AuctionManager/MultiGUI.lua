@@ -41,6 +41,7 @@ end
 
 local function StoreLocation(self)
     self.db.location = { self.top:GetPoint() }
+    self.db.location[2] = nil
 end
 
 local function RestoreLocation(self)

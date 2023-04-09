@@ -16,7 +16,6 @@ local whoami = UTILS.whoami()
 local whoamiGUID = UTILS.whoamiGUID()
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
-local getGuidFromInteger = UTILS.getGuidFromInteger
 
 local function IsPlayerInPvP()
 	local bg = UnitInBattleground("player")
@@ -54,7 +53,7 @@ function RaidManager:Initialize()
                 return
             end
             -- Handle existing raid gracefully
-            local creator = getGuidFromInteger(entry:creator())
+            local creator = getGuidFromInteger(entry:creatorFull())
             local raid = CLM.MODELS.Raid:New(raidUid, name, roster, config, creator, entry)
             LOG:Debug("RaidManager mutator(): New raid %s(%s) from %s", name, raidUid, creator)
             self.cache.raids[raidUid] = raid

@@ -130,6 +130,10 @@ function LogEntry:creator()
     return self[privateCreator]
 end
 
+function LogEntry:creatorFull()
+    return self[privateCreator]
+end
+
 function LogEntry:counter()
     return self[privateCounter]
 end

@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local SERIALIATION_OPTIONS = {
+local SERIALIZATION_OPTIONS = {
     errorOnUnserializableType = false,
     stable = false,
 }
@@ -127,7 +127,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         priority = CONSTANTS.COMMS.PRIORITY.NORMAL
     end
     -- Serialize
-    local tmp = serdes:SerializeEx(SERIALIATION_OPTIONS, message)
+    local tmp = serdes:SerializeEx(SERIALIZATION_OPTIONS, message)
     if tmp == nil then
         LOG:Error("Comms:Send() unable to serialize message: %s", message)
         return false

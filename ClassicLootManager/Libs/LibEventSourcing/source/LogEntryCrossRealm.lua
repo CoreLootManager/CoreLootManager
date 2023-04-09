@@ -144,6 +144,10 @@ function LogEntry:realm()
     return self[privateRealm]
 end
 
+function LogEntry:creatorFull()
+    return {self[privateRealm], self[privateCreator]}
+end
+
 function LogEntry:counter()
     return self[privateCounter]
 end

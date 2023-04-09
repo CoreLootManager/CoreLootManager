@@ -49,7 +49,7 @@ function Loot:OwnerGUID()
 end
 
 function Loot:Creator()
-    return self.entry:creator()
+    return self.entry:creatorFull()
 end
 
 function Loot:Entry()
