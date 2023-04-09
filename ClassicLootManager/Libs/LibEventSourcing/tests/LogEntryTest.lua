@@ -7,7 +7,7 @@ local sortedList = LogEntry.sortedList(data)
 
 local entries = {}
 for i = 1, 100 do
-    local entry = LogEntry:new(15)
+    local entry = LogEntry:new(15, 123)
     entries[#entries + 1] = entry
     sortedList:uniqueInsert(entry)
     -- try duplicate insert

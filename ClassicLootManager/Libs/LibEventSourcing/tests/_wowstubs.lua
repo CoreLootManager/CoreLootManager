@@ -49,11 +49,11 @@ end
 
 function UnitGUID(target)
     if target == "player" then
-        return "00000000-0000-BOB-0000-0ABCDABCD"
+        return "Player-1234-ABCDABCD"
     elseif target == "Bob" then
-        return "00000000-0000-BOB-0000-0ABCDABCD"
+        return "Player-111-0ABCDABC"
     elseif target == "Joe" then
-        return "00000000-0000-JOE-0000-0ABCDABCE"
+        return "Player-012-ABCDABCE"
     else
         error(string.format("Unknown target '%s'", target))
     end
@@ -61,7 +61,7 @@ function UnitGUID(target)
 end
 
 function GetPlayerInfoByGUID(guid)
-    if "00000000-0000-BOB-0000-0000000000" == guid then
+    if "Player-111-0ABCDABC" == guid then
         return nil, nil, nil, nil, nil, "Bob", nil
     else
         error(string.format("Unknown GUID: %s", guid))
@@ -74,3 +74,22 @@ end
 date = os.date
 
 WOW_STUB = true
+
+strsplit = function(delimiter, str, pieces)
+    pieces = tonumber(pieces) or math.huge
+    if delimiter == nil then
+        delimiter = "%s"
+    end
+    local t = {}
+    for token in string.gmatch(str, "([^"..delimiter.."]+)") do
+        t[#t+1] = token
+        if #t >= pieces then
+            break
+        end
+    end
+    return unpack(t)
+end
+
+GetBuildInfo = function()
+    return "3.4.1", "45678", "Apr 01 2023", 30401
+end

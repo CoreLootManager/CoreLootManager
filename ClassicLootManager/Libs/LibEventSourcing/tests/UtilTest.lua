@@ -4,8 +4,8 @@ beginTests()
 local Util = LibStub("EventSourcing/Util")
 
 
-local int = Util.getIntegerGuid("player")
-local guid = Util.getGuidFromInteger(int)
+local int, realm = Util.getIntegerGuid("player")
+local guid = Util.getGuidFromInteger(int, realm)
 
 assertSame(guid, UnitGUID("player"))
 

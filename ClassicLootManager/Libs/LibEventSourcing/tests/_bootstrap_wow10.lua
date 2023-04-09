@@ -1,4 +1,4 @@
-require "tests/_wowstubs"
+require "tests/_wowstubs_wow10"
 
 local addonName = "DoesNotMatter"
 local addonTable = {}
