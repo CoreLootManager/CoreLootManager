@@ -336,41 +336,36 @@ function UTILS.empty(object)
 end
 local playerGUID = UnitGUID("player")
 local getIntegerGuid, myRealm
--- if WoW10 then -- only support cross-server for Retail for now
-if true then
-
-function UTILS.getIntegerGuid(GUID)
-    local _, realm, int = strsplit("-", GUID)
-    return {tonumber(realm, 10), tonumber(int, 16)}
-end
-getIntegerGuid = UTILS.getIntegerGuid
-myRealm = unpack(getIntegerGuid(playerGUID), 1)
-function UTILS.getGuidFromInteger(iGUID)
-    return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
-end
-function UTILS.ValidateIntegerGUID(iGUID)
-    if type(iGUID) ~= "table" then return false end
-    for i=1,2 do if type(iGUID[i]) ~= "number" then return false end end
-    return true
-end
-
-else
-
-function UTILS.getIntegerGuid(GUID)
-    local _, realm, int = strsplit("-", GUID)
-    return {tonumber(realm, 10), tonumber(int, 16)}
-end
-getIntegerGuid = UTILS.getIntegerGuid
-myRealm = unpack(getIntegerGuid(playerGUID), 1)
-function UTILS.getGuidFromInteger(iGUID)
-    return string.format("Player-%d-%08X", myRealm, iGUID)
-end
-function UTILS.ValidateIntegerGUID(iGUID)
-    if type(iGUID) ~= "number" then return false end
-    if iGUID == 0 then return false end
-    return false
-end
-
+if WoW10 then -- only support cross-server for Retail for now
+    function UTILS.getIntegerGuid(GUID)
+        local _, realm, int = strsplit("-", GUID)
+        return {tonumber(realm, 10), tonumber(int, 16)}
+    end
+    getIntegerGuid = UTILS.getIntegerGuid
+    myRealm = unpack(getIntegerGuid(playerGUID), 1)
+    function UTILS.getGuidFromInteger(iGUID)
+        return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
+    end
+    function UTILS.ValidateIntegerGUID(iGUID)
+        if type(iGUID) ~= "table" then return false end
+        for i=1,2 do if type(iGUID[i]) ~= "number" then return false end end
+        return true
+    end
+else -- non-WoW10 and not cross-server
+    function UTILS.getIntegerGuid(GUID)
+        local _, realm, int = strsplit("-", GUID)
+        return {tonumber(realm, 10), tonumber(int, 16)}
+    end
+    getIntegerGuid = UTILS.getIntegerGuid
+    myRealm = unpack(getIntegerGuid(playerGUID), 1)
+    function UTILS.getGuidFromInteger(iGUID)
+        return string.format("Player-%d-%08X", myRealm, iGUID)
+    end
+    function UTILS.ValidateIntegerGUID(iGUID)
+        if type(iGUID) ~= "number" then return false end
+        if iGUID == 0 then return false end
+        return false
+    end
 end
 
 local playerName = UTILS.GetUnitName("player")
