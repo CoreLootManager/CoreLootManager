@@ -13,15 +13,15 @@ local EncounterIDsMap = {
     [2639] = EJ_GetEncounterInfo(2500),
     [2635] = EJ_GetEncounterInfo(2502),
     -- Aberrus
-    [2688] = EJ_GetEncounterInfo(2522), -- Kazzara
-    [2687] = EJ_GetEncounterInfo(2529), -- Molgoth
-    [2693] = EJ_GetEncounterInfo(2530), -- Experimentation of the Dracthyr
-    [2682] = EJ_GetEncounterInfo(2524), -- Zaqali Invasion
-    [2680] = EJ_GetEncounterInfo(2525), -- Rashok
-    [2689] = EJ_GetEncounterInfo(2532), -- Zskarn
-    [2683] = EJ_GetEncounterInfo(2527), -- Magmorax
-    [2684] = EJ_GetEncounterInfo(2523), -- Neltharion
-    [2685] = EJ_GetEncounterInfo(2520), -- Scalecommander Sarkareth
+    [2688] = EJ_GetEncounterInfo(2522) or "Kazzara", -- Kazzara
+    [2687] = EJ_GetEncounterInfo(2529) or "Molgoth", -- Molgoth
+    [2693] = EJ_GetEncounterInfo(2530) or "Experimentation of the Dracthyr", -- Experimentation of the Dracthyr
+    [2682] = EJ_GetEncounterInfo(2524) or "Zaqali Invasion", -- Zaqali Invasion
+    [2680] = EJ_GetEncounterInfo(2525) or "Rashok", -- Rashok
+    [2689] = EJ_GetEncounterInfo(2532) or "Zskarn", -- Zskarn
+    [2683] = EJ_GetEncounterInfo(2527) or "Magmorax", -- Magmorax
+    [2684] = EJ_GetEncounterInfo(2523) or "Neltharion", -- Neltharion
+    [2685] = EJ_GetEncounterInfo(2520) or "Scalecommander Sarkareth", -- Scalecommander Sarkareth
 }
 
 local DifficultyIDsMap = {
@@ -60,7 +60,6 @@ local instanceMapGenerator = {
         }
     },
     {
-        slug = "",
         name = "Aberrus",
         -- name = EJ_GetInstanceInfo(1200), -- TODO Aberrus instance name
         data = {
@@ -83,7 +82,7 @@ for _, difficulty in ipairs(diffMapGenerator) do
     for _, instance in  ipairs(instanceMapGenerator) do
         CLM.EncounterIDs[expansion][#CLM.EncounterIDs[expansion]+1] = {
             name = instance.name,
-            difficulty = difficulty.difficulty,
+            difficulty = { difficulty.difficulty },
             data = instance.data
         }
     end

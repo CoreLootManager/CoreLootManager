@@ -631,27 +631,29 @@ local function generateBossKillAwardValueInputField(self, roster, info, instance
     }
 end
 
-local bossKillBonusTabNameMap = {
-    classic = CLM.L["Classic"],
-    tbc     = CLM.L["TBC"],
-    wotlk10 = CLM.L["WotLK - 10"],
-    wotlk25 = CLM.L["WotLK - 25"],
-    dfn     = CLM.L["DF - Normal"],
-    dfh     = CLM.L["DF - Heroic"],
-    dfm     = CLM.L["DF - Mythic"],
+local bossKillBonusTabMap = {
+    classic = { name = CLM.L["Classic"],     offset = 0},
+    tbc     = { name = CLM.L["TBC"],         offset = 1000},
+    wotlk10 = { name = CLM.L["WotLK - 10"],  offset = 2000},
+    wotlk25 = { name = CLM.L["WotLK - 25"],  offset = 3000},
+    dfn     = { name = CLM.L["DF - Normal"], offset = 4000},
+    dfh     = { name = CLM.L["DF - Heroic"], offset = 5000},
+    dfm     = { name = CLM.L["DF - Mythic"], offset = 6000},
 }
 
 local function boss_kill_award_values(self, roster, name)
     local args = {}
     -- Common
-    local order = 1
+    local order
     for expansion,expansionEncounterData in pairs(CLM.EncounterIDs) do
-        expansion = string.lower( expansion )
+        expansion = string.lower(expansion)
+        order = bossKillBonusTabMap[expansion].offset
         if not args[expansion] then
             args[expansion] = {
                 type = "group",
-                name = bossKillBonusTabNameMap[expansion] or "???",
-                args = {}
+                name = bossKillBonusTabMap[expansion].name,
+                args = {},
+                order = order
             }
         end
         for _, instanceData in ipairs(expansionEncounterData) do
@@ -659,7 +661,7 @@ local function boss_kill_award_values(self, roster, name)
                 order = order + 1
                 local instanceName = instanceData.name .. " - " .. CLM.DifficultyIDsMap[difficultyId]
                 args[expansion].args["encounter_header_" .. instanceData.name .. difficultyId] = {
-                    name = instanceName,
+                    name = instanceName or "???",
                     type = "header",
                     order = order,
                     width = "full"
