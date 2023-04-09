@@ -1,6 +1,57 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v3.3.5",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Award UI", body = "Award UI will now respect being in raid and correlate the loot to it. This also means zero-sum will now work properly." },
+                    { header = "Auctioning UI", body = "You can now enable auto-removing unauctioned items from auction list. Optionally you can automatically mark those items as disenchanted." },
+                    { header = "EPGP Auction Types", body = "You can now use Vickrey and Anonymous open modes with EPGP." },
+                    { header = "Vickrey handling", body = "Vickrey is now properly handled when using named buttons mode." },
+                    { header = "Field Names", body = "If using named buttons mode, field names now will be used in configuration and auctioning also for consistency." },
+                },
+            },
+        },
+    },
+    {
+        version = "v3.3.4",
+        data = {
+            {
+                name = "Cleanup",
+                data = {
+                    { header = "AddOn footprint", body = "Remove unused assets that were missed in previous releases to lower AddOn footprint." },
+                },
+            },
+        },
+    },
+    {
+        version = "v3.3.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Import", body = "Import should no longer sync improperly due to missing note." },
+                    { header = "Raid", body = "Raid names are now limited to 128 characters. |cfff48cbaZalán|r." },
+                    { header = "Multipliers", body = "Multipliers configuration will now work using any Locale." },
+                },
+            },
+        },
+    },
+    {
+        version = "v3.3.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Roster configuration", body = "Assistants no longer can modify roster options." },
+                    { header = "Bidding UI", body = "Fixed timer bar bug blocking auctions display." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.3.0",
         data = {
             {

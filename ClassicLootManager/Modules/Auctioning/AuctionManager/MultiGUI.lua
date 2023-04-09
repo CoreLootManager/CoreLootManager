@@ -133,11 +133,15 @@ local function GenerateItemOptions(self)
     }
 
     -- TODO: Names of buttons instead of general
+    local auction
+    if CLM.MODULES.RaidManager:IsInRaid() then
+        auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+    end
     local order = 4
     local buttonOrder = {order, order + 4}
     for j,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.BASE, CONSTANTS.SLOT_VALUE_TIER.MAX}) do
         options["value_"..key] = {
-            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
+            name = UTILS.GetAuctionConditionalFieldName(key, auction),
             type = "input",
             set = (function(i,v)
                 if self.auctionItem then
@@ -155,7 +159,7 @@ local function GenerateItemOptions(self)
     -- TODO: Display below only if using tiered mode
     for _,key in ipairs({CONSTANTS.SLOT_VALUE_TIER.SMALL, CONSTANTS.SLOT_VALUE_TIER.MEDIUM, CONSTANTS.SLOT_VALUE_TIER.LARGE,}) do
         options["value_"..key] = {
-            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[key],
+            name = UTILS.GetAuctionConditionalFieldName(key, auction),
             type = "input",
             set = (function(i,v)
                 if self.auctionItem then
@@ -389,9 +393,13 @@ end
 
 local function UpdateBids(self, cutoff, type)
     LOG:Trace("AuctionManagerGUI:UpdateAwardValue()")
-    local max, second = self.auctionItem:GetTopBids(cutoff, type)
-    local values = self.auctionItem:GetValues()
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
+    local bidType = type
+    if auction:GetNamedButtonsMode() then
+        bidType = nil
+    end
+    local max, second = self.auctionItem:GetTopBids(cutoff, bidType)
+    local values = self.auctionItem:GetValues()
     local isVickrey = (auction:GetType() ==  CONSTANTS.AUCTION_TYPE.VICKREY)
     if isVickrey then
         if second.bid == 0 then

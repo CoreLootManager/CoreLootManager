@@ -407,7 +407,7 @@ local function generateDynamicItemValuesHandlers(roster)
     return equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet
 end
 
-local function default_slot_values(roster)
+local function default_slot_values(self, roster)
     local args = {}
     local order = 0
     local prefix
@@ -437,9 +437,11 @@ local function default_slot_values(roster)
                     return tostring(roster:GetDefaultSlotTierValue(slot.type, ivalues.type))
                 end),
                 set = (function(i, v)
+                    if self.readOnly then return end
                     CLM.MODULES.RosterManager:SetRosterDefaultSlotTierValue(roster, slot.type, ivalues.type, tonumber(v))
                 end),
-                name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                -- name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                name = UTILS.GetRosterConditionalFieldName(ivalues.type, roster),
                 pattern = CONSTANTS.REGEXP_FLOAT,
             }
             order = order + 1
@@ -448,7 +450,7 @@ local function default_slot_values(roster)
     return args
 end
 
-local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+local function dynamic_item_values(self, roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
     local args = {}
     local order = 0
     local prefix
@@ -467,7 +469,10 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
         order = order,
         width = 0.5,
         get = (function(i) return tostring(multiplierGet()) end),
-        set = (function(i, v) multiplierSet(tonumber(v)) end),
+        set = (function(i, v)
+            if self.readOnly then return end
+            multiplierSet(tonumber(v))
+        end),
         name = CLM.L["Multiplier"],
         pattern = CONSTANTS.REGEXP_FLOAT,
     }
@@ -478,7 +483,10 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
         order = order,
         width = 0.5,
         get = (function(i) return tostring(expvarGet()) end),
-        set = (function(i, v) expvarSet(tonumber(v)) end),
+        set = (function(i, v)
+            if self.readOnly then return end
+            expvarSet(tonumber(v))
+        end),
         name = CLM.L["Exponent / Base"],
         pattern = CONSTANTS.REGEXP_FLOAT,
     }
@@ -490,7 +498,10 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
         order = order,
         values = CONSTANTS.ITEM_VALUE_EQUATIONS_GUI,
         sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
-        set = (function(i, v) equationSet(tonumber(v)) end),
+        set = (function(i, v)
+            if self.readOnly then return end
+            equationSet(tonumber(v))
+        end),
         get = (function(i) return equationGet() end),
         name = CLM.L["Select equation"]
     }
@@ -509,7 +520,10 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
                 order = order,
                 width = 0.5,
                 get = (function(i) return tostring(slotGet(slot.type)) end),
-                set = (function(i, v) slotSet(slot.type, tonumber(v)) end),
+                set = (function(i, v)
+                    if self.readOnly then return end
+                    slotSet(slot.type, tonumber(v))
+                end),
                 name = slot.name,
                 pattern = CONSTANTS.REGEXP_FLOAT,
             }
@@ -523,14 +537,18 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
     }
     order = order + 1
     for _, ivalues in ipairs(valuesWithDesc) do
-        local tierName = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or "")
+        -- local tierName = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or "")
+        local tierName = UTILS.GetRosterConditionalFieldName(ivalues.type, roster)
         args[prefix .. "_" .. ivalues.type] = {
             type = "input",
             order = order,
             desc = string.format(CLM.L["Multiplier for tier %s (if used by the auction type)."], tierName),
             width = 0.6,
             get = (function(i) return tostring(tierGet(ivalues.type)) end),
-            set = (function(i, v) tierSet(ivalues.type, tonumber(v)) end),
+            set = (function(i, v)
+                if self.readOnly then return end
+                tierSet(ivalues.type, tonumber(v))
+            end),
             name = tierName,
             pattern = CONSTANTS.REGEXP_FLOAT,
         }
@@ -539,7 +557,7 @@ local function dynamic_item_values(roster, equationGet, equationSet, expvarGet, 
     return args
 end
 
-local function item_value_overrides(roster, self)
+local function item_value_overrides(self, roster)
     local items = roster:GetAllItemValues()
     local args = {}
     local order = 1
@@ -573,7 +591,8 @@ local function item_value_overrides(roster, self)
                         local values = roster:GetItemValues(id)
                         return tostring(values[ivalues.type])
                     end),
-                    name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                    -- name = (CONSTANTS.SLOT_VALUE_TIERS_GUI[ivalues.type] or ""),
+                    name = UTILS.GetRosterConditionalFieldName(ivalues.type, roster),
                     pattern = CONSTANTS.REGEXP_FLOAT,
                 }
                 order = order + 1
@@ -612,7 +631,7 @@ local function generateBossKillAwardValueInputField(self, roster, info, instance
     }
 end
 
-local function boss_kill_award_values(roster, self, name)
+local function boss_kill_award_values(self, roster, name)
     local args = {
         classic = {
             type = "group",
@@ -673,14 +692,13 @@ local function boss_kill_award_values(roster, self, name)
     return args
 end
 
-local function award_multipliers(roster)
+local function award_multipliers(self, roster)
     local args = {}
 
-    for i, coloredClass in ipairs(UTILS.GetColorCodedClassList()) do
-        local class = UTILS.RemoveColorCode(coloredClass)
+    for i, class in ipairs(UTILS.GetClassList()) do
         args[class] = {
             type = "group",
-            name = coloredClass,
+            name = UTILS.ColorCodeAndLocalizeClass(class),
             order = i,
             args = {}
         }
@@ -697,6 +715,7 @@ local function award_multipliers(roster)
                     return tostring(roster:GetSlotClassMultiplierValue(class, slot.type))
                 end),
                 set = (function(_, v)
+                    if self.readOnly then return end
                     CLM.MODULES.RosterManager:SetSlotClassMultiplierValue(roster, class, slot.type, tonumber(v))
                 end),
                 name = slot.name,
@@ -1098,35 +1117,43 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = CLM.L["Default slot values"],
                 type = "group",
                 order = 3,
-                args = default_slot_values(roster)
+                args = default_slot_values(self, roster)
             },
             award_multipliers = {
                 name = CLM.L["Award"] .. " " .. CLM.L["Multiplier"],
                 type = "group",
                 order = 4,
                 childGroups = "tab",
-                args = award_multipliers(roster)
+                args = award_multipliers(self, roster)
             },
             item_value_overrides = {
                 name = CLM.L["Item value overrides"],
                 type = "group",
                 order = 5,
-                args = item_value_overrides(roster, self)
+                args = item_value_overrides(self, roster)
             },
             dynamic_item_values = {
                 name = CLM.L["Dynamic Item values"],
                 type = "group",
                 order = 6,
-                args = dynamic_item_values(roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+                args = dynamic_item_values(self, roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
             },
             boss_kill_award_values = {
                 name = CLM.L["Boss kill award values"],
                 type = "group",
                 order = 7,
                 childGroups = "tab",
-                args = boss_kill_award_values(roster, self, name)
+                args = boss_kill_award_values(self, roster, name)
             }
         }
+    }
+    options.args.auction.args.auction_type = {
+        name = CLM.L["Auction type"],
+        desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
+        type = "select",
+        disabled = disableManage,
+        order = 4,
+        values = CONSTANTS.AUCTION_TYPES_GUI
     }
     -- Button names
     options.args.general.args.named_buttons_toggle = {
@@ -1140,7 +1167,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     local order = 26
     for _, tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
         options.args.general.args["named_button_tier_" .. tostring(tier)] = {
-            name = CONSTANTS.SLOT_VALUE_TIERS_GUI[tier],
+            -- name = CONSTANTS.SLOT_VALUE_TIERS_GUI[tier],
+            name = UTILS.GetRosterConditionalFieldName(tier, roster),
             type = "input",
             set = (function(i, v) CLM.MODULES.RosterManager:SetFieldName(roster, tier, v) end),
             get = (function(i) return roster:GetFieldName(tier) end),
@@ -1175,14 +1203,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             disabled = disableManage,
             width = 1,
             order = 12.3
-        }
-        options.args.auction.args.auction_type = {
-            name = CLM.L["Auction type"],
-            desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
-            type = "select",
-            disabled = disableManage,
-            order = 4,
-            values = CONSTANTS.AUCTION_TYPES_GUI
         }
         options.args.auction.args.item_value_mode = {
             name = CLM.L["Item value mode"],
@@ -1246,15 +1266,6 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
             width = 1,
             order = 18
-        }
-    elseif isEPGP then
-        options.args.auction.args.auction_type = {
-            name = CLM.L["Auction type"],
-            -- desc = CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."],
-            type = "select",
-            disabled = disableManage,
-            order = 4,
-            values = CONSTANTS.AUCTION_TYPES_EPGP_GUI
         }
     end
     return options

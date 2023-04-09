@@ -158,6 +158,16 @@ Thank you patrons, especially:
             func = function() CLM.MODULES.LedgerManager:Wipe() end,
             order = 4
         },
+        nofunallowed = {
+            type = "execute",
+            name = "No fun allowed",
+            desc = "Disable April fools jokes",
+            func = (function()
+                StaticPopup_Show("CLMNoFunAllowedReload")
+            end),
+            order = 4.5,
+            hidden = (function() return not CLM.AF end)
+        },
         global_loot_announcement_header = {
             type = "header",
             name = CLM.L["Announce loot"],

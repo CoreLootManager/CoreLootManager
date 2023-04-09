@@ -259,6 +259,7 @@ function ProfileInfoManager:Initialize()
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
             LOG:Message(CLM.L["Classic Loot Manager %s initialization complete. %s"], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"), "Created by |cffe6cc80Lantis|r Annalina-Mirage Raceway")
+            if CLM.AF then LOG:Message("Happy |cff44ee44April Fools'|r raid week!") end
             C_Timer.After(1, function()
                 RestoreVersions(self)
                 -- RestoreSpecs(self)

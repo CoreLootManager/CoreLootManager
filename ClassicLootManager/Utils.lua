@@ -108,14 +108,14 @@ function UTILS.ColorCodeText(text, color)
 end
 local ColorCodeText = UTILS.ColorCodeText
 
-function UTILS.ColorCodeClass(className)
+function UTILS.ColorCodeAndLocalizeClass(className)
     return ColorCodeText(CLM.L[className], GetClassColor(className).hex);
 end
 
 local colorCodedClassList = {}
 do
     for _,class in pairs(classOrdered) do
-        tinsert(colorCodedClassList, UTILS.ColorCodeClass(class))
+        tinsert(colorCodedClassList, UTILS.ColorCodeAndLocalizeClass(class))
     end
 end
 function UTILS.GetColorCodedClassList()
@@ -915,6 +915,34 @@ function UTILS.randomString(length, customCharset)
         result = result .. strsub(charset, char, char)
     end
     return result
+end
+
+function UTILS.GetAuctionConditionalFieldName(key, auction, prefix, suffix)
+    local name
+    prefix = prefix or "["
+    suffix = suffix or "]"
+    if auction and auction:GetNamedButtonsMode() then
+        name = auction:GetFieldName(key)
+        if name == "" then name = nil end
+    end
+    if not name then
+        name = prefix .. CONSTANTS.SLOT_VALUE_TIERS_GUI[key] .. suffix
+    end
+    return name
+end
+
+function UTILS.GetRosterConditionalFieldName(key, roster, prefix, suffix)
+    local name
+    prefix = prefix or "["
+    suffix = suffix or "]"
+    if roster and roster:GetConfiguration("namedButtons") then
+        name = roster:GetFieldName(key)
+        if name == "" then name = nil end
+    end
+    if not name then
+        name = prefix .. CONSTANTS.SLOT_VALUE_TIERS_GUI[key] .. suffix
+    end
+    return name
 end
 
 CONSTANTS.ITEM_QUALITY = {

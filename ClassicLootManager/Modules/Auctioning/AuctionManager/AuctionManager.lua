@@ -32,6 +32,7 @@ local function InitializeDB(self)
         fillFromLoot = true,
         fillFromLootGLOnly = true,
         lootThreshold = 4,
+        removeOnNoBids = false,
         notes = {},
         ignoredClasses = {
             false, false, false, false,
@@ -92,6 +93,22 @@ end
 
 local function GetFilledLootRarity(self)
     return self.db.lootThreshold or 4
+end
+
+local function SetRemoveOnNoBids(self, value)
+    self.db.removeOnNoBids = value and true or false
+end
+
+local function GetRemoveOnNoBids(self)
+    return self.db.removeOnNoBids
+end
+
+local function SetDisenchantAutoRemoved(self, value)
+    self.db.disenchantAutoRemoved = value and true or false
+end
+
+local function GetDisenchantAutoRemoved(self)
+    return self.db.disenchantAutoRemoved
 end
 
 -- Filling
@@ -180,6 +197,61 @@ local function HookAuctionFilling(self)
         self:AddItemByLink(itemLink)
         CLM.GUI.AuctionManager:Show()
     end)
+end
+
+GetItemInfo(19019)
+local function Joke()
+    local L1, L2, R = "", "", math.random(1,6)
+
+    if R == 1 then
+        L1 = "What do you call a druid who melees in tree form?"
+        L2 = "A combat log."
+    elseif R == 2 then
+        L1 = "Why do mages and warlocks get invited to all parties?"
+        L2 = "Because mages bring the food and warlocks get you stoned."
+    elseif R == 3 then
+        L1 = "What's a rogue's favourite drink?"
+        L2 = "Subtle tea."
+    elseif R == 4 then
+        L1 = "How does Naxxramas fly?"
+        L2 = "With its four wings."
+    elseif R == 5 then
+        L1 = "How many Blizzard developers does it take to get an expansion right?"
+        L2 = "Nobody knows because it hasn't been done yet."
+    elseif R == 6 then
+        L1 = "What do you call a gnome priest?"
+        L2 = "A compact disc."
+    end
+
+    C_Timer.After(1, function()
+        SendChatMessage(L1, "RAID")
+        SendChatMessage(L2, "RAID")
+    end)
+end
+local function AprilFools()
+    if CLM.AF then
+        local _, instanceType = IsInInstance()
+        if instanceType ~= "raid" then return end
+        if math.random(1,100) > 95 then
+            local L, C, D = nil, nil, 0
+            local R = math.random(1,4)
+            if R == 1 then
+                local _, itemLink= GetItemInfo(19019)
+                if itemLink then
+                    L, C, D = ("Did someone say " .. itemLink .. "?"), "RAID", 2
+                end
+            elseif R == 2 then
+                L, C, D = "[The Unclickable] just dropped!", "GUILD", 1
+            elseif R == 3 then
+                L, C, D = "mrrglrlrlrmgrrr", "YELL", 1
+            elseif R > 3 then
+                D = 0
+                Joke()
+            end
+            if D > 0 then C_Timer.After(D, function() SendChatMessage(L, C) end) end
+            C_Timer.After(2, function() LOG:Message("Happy |cff44ee44April Fools'|r raid week!") end)
+        end
+    end
 end
 
 local alreadyPostedLoot = {}
@@ -352,6 +424,24 @@ local function CreateConfigurationOptions(self)
             get = function(i) return CLM.GlobalConfigs:GetModifierCombination() end,
             order = 39
         },
+        auction_remove_on_no_bids = {
+            name = CLM.L["Remove items without bids"],
+            desc = CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."],
+            type = "toggle",
+            set = function(i, v) SetRemoveOnNoBids(self, v) end,
+            get = function(i) return GetRemoveOnNoBids(self) end,
+            width = "double",
+            order = 40,
+        },
+        auction_disenchant_autoremoved = {
+            name = CLM.L["Disenchant removed items"],
+            desc = CLM.L["Automatically mark auto-removed items as disenchanted"],
+            type = "toggle",
+            set = function(i, v) SetDisenchantAutoRemoved(self, v) end,
+            get = function(i) return GetDisenchantAutoRemoved(self) end,
+            width = 1,
+            order = 41,
+        },
         loot_queue_ignore_classes = {
             name = CLM.L["Ignore"],
             type = "multiselect",
@@ -361,19 +451,12 @@ local function CreateConfigurationOptions(self)
             end,
             get = function(i, v) return self.db.ignoredClasses[tonumber(v)] end,
             values = ItemClasses,
-            order = 39.5
+            order = 51
         },
-        -- global_auction_spacer = {
-        --     name = "",
-        --     desc = "",
-        --     type = "description",
-        --     width = 1,
-        --     order =  38.5
-        -- },
         auctioning_chat_commands_header = {
             type = "header",
             name = CLM.L["Auctioning - Chat Commands"],
-            order = 40
+            order = 43
         },
         auctioning_chat_commands = {
             name = CLM.L["Enable chat commands"],
@@ -382,7 +465,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
             width = "double",
-            order = 41
+            order = 44
         },
         auctioning_suppress_incoming = {
             name = CLM.L["Suppress incoming whispers"],
@@ -391,7 +474,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetSuppressIncomingChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetSuppressIncomingChatCommands() end,
             width = "double",
-            order = 42
+            order = 45
         },
         auctioning_suppress_outgoing = {
             name = CLM.L["Suppress outgoing whispers"],
@@ -400,7 +483,7 @@ local function CreateConfigurationOptions(self)
             set = function(i, v) CLM.GlobalConfigs:SetSuppressOutgoingChatCommands(v) end,
             get = function(i) return CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() end,
             width = "double",
-            order = 43
+            order = 46
         },
     }
     return options
@@ -480,6 +563,8 @@ function AuctionManager:Initialize()
         self:HandleIncomingMessage(message, distribution, sender)
     end), CONSTANTS.ACL.LEVEL.PLEBS, true)
 
+    CLM.MODULES.EventManager:RegisterWoWEvent({"LOOT_OPENED"}, AprilFools)
+
     if not CLM.MODULES.ACL:IsTrusted() then return end
 
     self.handlers = {
@@ -542,10 +627,19 @@ function AuctionManager:MoveItemToPendingList(item)
 end
 
 local function EndAuction(self)
-    self.currentAuction:End()
+    local auction = self.currentAuction
+    auction:End()
     SendAuctionEnd()
-    for _, item in pairs(self.currentAuction:GetItems()) do
+    for _, item in pairs(auction:GetItems()) do
         CLM.MODULES.AuctionHistoryManager:AddAuctionItem(item)
+        if GetRemoveOnNoBids(self) then
+            if not item:HasValidBids() then
+                self:RemoveItemFromCurrentAuction(item)
+                if GetDisenchantAutoRemoved(self) then
+                    self:Disenchant(item)
+                end
+            end
+        end
     end
 end
 

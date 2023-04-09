@@ -37,11 +37,19 @@ local options = {
     args = {}
 }
 
+local override = false
 local function UpdateOptions(self)
     local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
     self.itemId = 0
     if self.itemLink then
         self.itemId, _, _, _, icon = GetItemInfoInstant(self.itemLink)
+    end
+
+    if CLM.MODULES.RaidManager:IsInRaid() and not override then
+        local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
+        if roster then
+            self.rosterId = roster:UID()
+        end
     end
 
     local profileNameMap = {}
@@ -62,17 +70,6 @@ local function UpdateOptions(self)
             table.sort(profileList)
         end
     end
-
-    -- self.note = ""
-    -- self.values = {}
-    -- if CLM.MODULES.RaidManager:IsInRaid() then
-    --     self.raid = CLM.MODULES.RaidManager:GetRaid()
-    --     self.roster = self.raid:Roster()
-    --     if self.roster then
-    --         self.configuration:Copy(self.roster.configuration)
-    --         self.values = UTILS.ShallowCopy(self.roster:GetItemValues(self.itemId))
-    --     end
-    -- end
 
     local itemLink = "item:" .. tostring(self.itemId)
     options.args = {
@@ -108,6 +105,7 @@ local function UpdateOptions(self)
             type = "select",
             set = function(i, v)
                 self.rosterId = v
+                override = true
                 self:Refresh()
             end,
             get = function(i) return self.rosterId end,
@@ -143,7 +141,15 @@ local function UpdateOptions(self)
             name = CLM.L["Award"],
             type = "execute",
             func = (function()
-                local success, _ = CLM.MODULES.LootManager:AwardItem(self.roster, self.awardPlayer, self.itemLink, self.itemId, self.awardValue)
+                local awardTarget = self.roster
+                if CLM.MODULES.RaidManager:IsInRaid() then
+                    local raid = CLM.MODULES.RaidManager:GetRaid()
+                    local roster = raid:Roster()
+                    if self.roster == roster then
+                        awardTarget = raid
+                    end
+                end
+                local success, _ = CLM.MODULES.LootManager:AwardItem(awardTarget, self.awardPlayer, self.itemLink, self.itemId, self.awardValue)
                 if success then
                     CLM.MODULES.AutoAssign:Handle(self.itemId, self.awardPlayer)
                 end
@@ -218,7 +224,7 @@ local function RegisterSlash(self)
     CLM.MODULES.ConfigManager:RegisterSlash(slash)
 end
 
-local function CreateConfig(self)
+local function CreateConfig()
     local config = {
         awarding_header = {
             type = "header",
@@ -295,6 +301,7 @@ function AwardGUI:Show(_, args)
     LOG:Trace("AwardGUI:Show()")
     if not self._initialized then return end
     SetItemLink(self, args)
+    override = false
     self:Refresh()
     if not self.top:IsVisible() then
         self.top:Show()

@@ -142,13 +142,20 @@ end
 
 local PlayStartSound, PlayEndSound
 PlayStartSound = function()
-    if not CLM.GlobalConfigs:GetSounds() then return end
-    PlaySound(12889)
+    if CLM.AF then
+        PlaySoundFile("Interface\\AddOns\\ClassicLootManager\\Media\\Audio\\lifestock_auction.ogg", "MASTER")
+    else
+        if not CLM.GlobalConfigs:GetSounds() then return end
+        PlaySound(12889)
+    end
 end
-
 PlayEndSound = function()
-    if not CLM.GlobalConfigs:GetSounds() then return end
-    PlaySound(12867)
+    if CLM.AF then
+        PlaySoundFile("Interface\\AddOns\\ClassicLootManager\\Media\\Audio\\lifestock_auction_sold.ogg", "MASTER")
+    else
+        if not CLM.GlobalConfigs:GetSounds() then return end
+        PlaySound(12867)
+    end
 end
 
 local function DefaultCallback(_)
