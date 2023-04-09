@@ -364,7 +364,7 @@ else -- non-WoW10 and not cross-server
     function UTILS.ValidateIntegerGUID(iGUID)
         if type(iGUID) ~= "number" then return false end
         if iGUID == 0 then return false end
-        return false
+        return true
     end
 end
 
