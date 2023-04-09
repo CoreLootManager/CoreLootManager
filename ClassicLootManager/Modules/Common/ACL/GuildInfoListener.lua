@@ -5,6 +5,7 @@ local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
+local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
 local GuildInfoListener = {}
 function GuildInfoListener:Initialize()
