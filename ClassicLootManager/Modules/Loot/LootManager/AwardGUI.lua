@@ -43,6 +43,7 @@ local function UpdateOptions(self)
     local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
     self.itemId = 0
     if self.itemLink then
+---@diagnostic disable-next-line: cast-local-type
         self.itemId, _, _, _, icon = GetItemInfoInstant(self.itemLink)
     end
 
@@ -267,7 +268,7 @@ function AwardGUI:Initialize()
     if not CLM.MODULES.ACL:IsTrusted() then return end
     InitializeDB(self)
     Create(self)
-    CreateConfig(self)
+    CreateConfig()
     RegisterSlash(self)
     HookAwardFilling(self)
 

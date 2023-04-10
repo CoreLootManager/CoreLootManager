@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 local _, CLM = ...
 
 local LOG = CLM.LOG
@@ -392,7 +393,6 @@ else -- non-WoW10 and not cross-server
         end
     end
 end
-
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 
 local Disambiguate = UTILS.Disambiguate
