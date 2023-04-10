@@ -284,11 +284,12 @@ function LedgerManager:RequestPeerStatusFromRaid()
     self.activeLedger.requestPeerStatusFromRaid()
 end
 
+local whoami = UTILS.whoami()
 function LedgerManager:Submit(entry, catchup)
     LOG:Trace("LedgerManager:Submit()")
     if not entry then return end
     self.lastEntry = entry
-    self.activeLedger.submitEntry(entry)
+    self.activeLedger.submitEntry(entry, whoami)
     if catchup then
         self.activeLedger.catchup()
     end

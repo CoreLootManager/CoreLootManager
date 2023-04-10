@@ -348,15 +348,29 @@ if CLM.WoW10 then -- only support cross-server for Retail for now
         end
         return name
     end
+    function UTILS.GetGUIDFromEntry(e)
+        if typeof(e, CLM.MODELS.Profile) then
+            return getIntegerGuid(e:GUID())
+        elseif type(e) == "string" then
+            return getIntegerGuid(e)
+        elseif type(e) == "number" then
+            return {myRealm, e}
+        else
+            return nil
+        end
+    end
 else -- non-WoW10 and not cross-server
     function UTILS.getIntegerGuid(GUID)
-        local _, realm, int = strsplit("-", GUID)
-        return {tonumber(realm, 10), tonumber(int, 16)}
+        local _, _, int = strsplit("-", GUID)
+        return tonumber(int, 16)
     end
     getIntegerGuid = UTILS.getIntegerGuid
-    myRealm = unpack(getIntegerGuid(playerGUID), 1)
-    function UTILS.getGuidFromInteger(iGUID)
-        return string.format("Player-%d-%08X", myRealm, iGUID)
+    _, myRealm = strsplit("-", playerGUID)
+    do
+        local guidConversionFormat = "Player-"..tostring(myRealm).."-%08X"
+        function UTILS.getGuidFromInteger(iGUID)
+            return string.format(guidConversionFormat, iGUID)
+        end
     end
     function UTILS.ValidateIntegerGUID(iGUID)
         if type(iGUID) ~= "number" then return false end
@@ -366,7 +380,20 @@ else -- non-WoW10 and not cross-server
     function UTILS.Disambiguate(name)
         return UTILS.RemoveServer(name)
     end
+    function UTILS.GetGUIDFromEntry(e)
+        if typeof(e, CLM.MODELS.Profile) then
+            return getIntegerGuid(e:GUID())
+        elseif type(e) == "string" then
+            return getIntegerGuid(e)
+        elseif type(e) == "number" then
+            return e
+        else
+            return nil
+        end
+    end
 end
+
+local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 
 local Disambiguate = UTILS.Disambiguate
 function UTILS.GetUnitName(unit)
@@ -386,19 +413,6 @@ end
 function UTILS.myRealm()
     return myRealm
 end
-
-function UTILS.GetGUIDFromEntry(e)
-    if typeof(e, CLM.MODELS.Profile) then
-        return getIntegerGuid(e:GUID())
-    elseif type(e) == "string" then
-        return getIntegerGuid(e)
-    elseif type(e) == "number" then
-        return {myRealm, e}
-    else
-        return nil
-    end
-end
-local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 
 function UTILS.CreateGUIDList(playerList)
     local playerGUIDList = {}
