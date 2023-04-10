@@ -328,7 +328,7 @@ function ListSync:new(stateManager, sendMessage, registerReceiveHandler, authori
         state = stateManager:getSortedList():state(),
         entries = {}
     }
-    o.playerName = UnitName("player")
+    o.playerName = UnitName("player") -- TODO disambiguate
     registerReceiveHandler(function(message, distribution, sender)
         handleMessage(o, message, distribution, sender)
     end)

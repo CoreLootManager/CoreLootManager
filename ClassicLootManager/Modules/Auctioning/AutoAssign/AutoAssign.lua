@@ -194,7 +194,7 @@ function AutoAssign:Initialize()
         end)
         if not self.lastTradeTarget then
              -- NPC Because that's how the engine holds the trade peer
-            self.lastTradeTarget = UnitName("npc")
+            self.lastTradeTarget = UTILS.GetUnitName("npc")
         end
         if not self.lastTradeTarget then return end
         HandleTradeShow(self)

@@ -16,6 +16,7 @@ local emptyItem = CreateFromMixins(ItemMixin)
 local scanTooltip = CreateFrame("GameTooltip", "CLMAuctionItemScanTooltip", UIParent, "GameTooltipTemplate")
 
 local function CheckUsability(self)
+    if CLM.WoW10 then return end
     scanTooltip:SetScript('OnTooltipSetItem', (function(s)
         local tooltipName = s:GetName()
         for i = 1, s:NumLines() do

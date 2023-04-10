@@ -388,9 +388,8 @@ function ProfileManager:FillFromGuild(selectedRank, minLevel)
 
     for i=1,GetNumGuildMembers() do
         local name, _, rankIndex, level, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
-        name, _ = strsplit("-", name)
         if rankFilterFn(rankIndex) and minLevelFn(level, minLevel) then
-            self:NewProfile(GUID, name, class)
+            self:NewProfile(GUID, UTILS.Disambiguate(name), class)
         end
     end
 end
@@ -401,9 +400,8 @@ function ProfileManager:FillFromRaid()
     for i=1,MAX_RAID_MEMBERS do
         local name, _, _, _, _, class = GetRaidRosterInfo(i)
         if name ~= nil then
-            name, _ = strsplit("-", name)
             local GUID = UnitGUID("raid" .. tostring(i))
-            self:NewProfile(GUID, name, class)
+            self:NewProfile(GUID, UTILS.Disambiguate(name), class)
         end
     end
 end

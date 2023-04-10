@@ -326,14 +326,15 @@ function UTILS.RemoveServer(name)
     return name
 end
 local playerGUID = UnitGUID("player")
-local getIntegerGuid, myRealm
+local playerName, playerRealm = UnitFullName("player")
+local getIntegerGuid, myRealmId
 if CLM.WoW10 then -- only support cross-server for Retail for now
     function UTILS.getIntegerGuid(GUID)
         local _, realm, int = strsplit("-", GUID)
         return {tonumber(realm, 10), tonumber(int, 16)}
     end
     getIntegerGuid = UTILS.getIntegerGuid
-    myRealm = unpack(getIntegerGuid(playerGUID), 1)
+    myRealmId = unpack(getIntegerGuid(playerGUID), 1)
     function UTILS.getGuidFromInteger(iGUID)
         return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
     end
@@ -344,7 +345,7 @@ if CLM.WoW10 then -- only support cross-server for Retail for now
     end
     function UTILS.Disambiguate(name)
         if string.find(name, "-") == nil then
-            name = name .. "-" .. myRealm
+            name = name .. "-" .. playerRealm
         end
         return name
     end
@@ -354,7 +355,7 @@ if CLM.WoW10 then -- only support cross-server for Retail for now
         elseif type(e) == "string" then
             return getIntegerGuid(e)
         elseif type(e) == "number" then
-            return {myRealm, e}
+            return {myRealmId, e}
         else
             return nil
         end
@@ -365,9 +366,9 @@ else -- non-WoW10 and not cross-server
         return tonumber(int, 16)
     end
     getIntegerGuid = UTILS.getIntegerGuid
-    _, myRealm = strsplit("-", playerGUID)
+    _, myRealmId = strsplit("-", playerGUID)
     do
-        local guidConversionFormat = "Player-"..tostring(myRealm).."-%08X"
+        local guidConversionFormat = "Player-"..tostring(myRealmId).."-%08X"
         function UTILS.getGuidFromInteger(iGUID)
             return string.format(guidConversionFormat, iGUID)
         end
@@ -401,17 +402,13 @@ function UTILS.GetUnitName(unit)
     return Disambiguate(name or "")
 end
 
-local playerName = UTILS.GetUnitName("player")
+local playerFullName = UTILS.GetUnitName("player")
 function UTILS.whoami()
-    return playerName
+    return playerFullName
 end
 
 function UTILS.whoamiGUID()
     return playerGUID
-end
-
-function UTILS.myRealm()
-    return myRealm
 end
 
 function UTILS.CreateGUIDList(playerList)

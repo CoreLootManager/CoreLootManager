@@ -160,6 +160,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         LOG:Debug("Comms:OnReceive(): Disabled")
         return false
     end
+    sender = UTILS.Disambiguate(sender)
     -- Ignore messages from self if not allowing them specifically
     if not self.allowSelfReceive[prefix] and (sender == whoami) then
         return false
