@@ -161,7 +161,7 @@ local function CacheNewGuidData(self)
     for num=1, GetNumGuildMembers() do
         local name,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,guid = GetGuildRosterInfo(num)
         if name and guid then
-            name = CLM.UTILS.RemoveServer(name)
+            name = CLM.UTILS.Disambiguate(name)
             self.guidCache[name] = guid
         end
     end

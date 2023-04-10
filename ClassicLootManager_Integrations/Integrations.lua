@@ -454,7 +454,7 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
         return
     end
 
-    winner = UTILS.RemoveServer(winner)
+    winner = UTILS.Disambiguate(winner)
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(winner)
     if not profile then
         LOG:Debug("RCLCAwardMessageHandler() item awarded to player without profile")
@@ -472,7 +472,7 @@ end
 
 local function RCLC_PR(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local value = 0
-    local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.RemoveServer(data[realrow].name or ""))
+    local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.Disambiguate(data[realrow].name or ""))
     if profile then
         local raid = CLM.MODULES.RaidManager:GetRaid()
         if raid then

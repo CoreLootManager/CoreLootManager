@@ -54,7 +54,7 @@ function Migration:Migrate()
     self.playerCache = {}
     for i=1,GetNumGuildMembers() do
         local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
-        self.playerCache[UTILS.RemoveServer(name)] = GUID
+        self.playerCache[UTILS.Disambiguate(name)] = GUID
     end
     self.migrationOngoing = true
 
@@ -401,8 +401,7 @@ function Migration:_MigrateOfficerNoteEPGP(addonName, pattern, gpFirst)
         local name,_,_,_,_,_,_,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber)
         -- Only add members with proper note
         if (string.match(officerNote, pattern)) then
-            -- Get Name sans Realm
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             -- Get EP and GP from Officer Note
             local ep, gp
             if gpFirst then

@@ -299,7 +299,7 @@ end
 CLM.MODULES.AutoAssign = AutoAssign
 --@do-not-package@
 function AutoAssign:FakeTrack(num)
-    local target = UTILS.RemoveServer(UnitName("player"))
+    local target = UTILS.whoami()
     for _=1,(num or 25) do
         local id = math.random(10000,50000)
         self:Track(id, target)

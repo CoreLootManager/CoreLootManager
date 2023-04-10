@@ -300,23 +300,6 @@ function UTILS.DeepCopy(orig, copies)
     return copy
 end
 
-if CLM.WoW10 then
-    function UTILS.RemoveServer(name)
-        return name
-    end
-else
-    function UTILS.RemoveServer(name)
-        name, _ = strsplit("-", name or "")
-        return name
-    end
-end
-
-function UTILS.GetUnitName(unit)
-    local name = GetUnitName(unit)
-    name = name or ""
-    return UTILS.RemoveServer(name)
-end
-
 function UTILS.typeof(object, objectType)
     if not object or not objectType then
         return false
@@ -338,6 +321,10 @@ function UTILS.empty(object)
     end
     return false
 end
+function UTILS.RemoveServer(name)
+    name, _ = strsplit("-", name or "")
+    return name
+end
 local playerGUID = UnitGUID("player")
 local getIntegerGuid, myRealm
 if CLM.WoW10 then -- only support cross-server for Retail for now
@@ -355,6 +342,12 @@ if CLM.WoW10 then -- only support cross-server for Retail for now
         for i=1,2 do if type(iGUID[i]) ~= "number" then return false end end
         return true
     end
+    function UTILS.Disambiguate(name)
+        if string.find(name, "-") == nil then
+            name = name .. "-" .. myRealm
+        end
+        return name
+    end
 else -- non-WoW10 and not cross-server
     function UTILS.getIntegerGuid(GUID)
         local _, realm, int = strsplit("-", GUID)
@@ -370,6 +363,15 @@ else -- non-WoW10 and not cross-server
         if iGUID == 0 then return false end
         return true
     end
+    function UTILS.Disambiguate(name)
+        return UTILS.RemoveServer(name)
+    end
+end
+
+local Disambiguate = UTILS.Disambiguate
+function UTILS.GetUnitName(unit)
+    local name = GetUnitName(unit, true)
+    return Disambiguate(name or "")
 end
 
 local playerName = UTILS.GetUnitName("player")

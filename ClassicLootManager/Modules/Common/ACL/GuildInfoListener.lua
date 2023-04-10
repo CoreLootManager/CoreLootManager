@@ -56,8 +56,7 @@ function GuildInfoListener:BuildGuildCache()
             -- Number - The number corresponding to the guild's rank.
             -- The Rank Index starts at 0, add 1 to correspond with the index used in GuildControlGetRankName(index)
             rankIndex = rankIndex + 1
-            print("GUILDIE name", name)
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             self.cache.guildies[name] = rankIndex
             self.cache.ranks[rankIndex].name = rankName
             if self.cache.ranks[rankIndex] then

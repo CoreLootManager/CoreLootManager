@@ -349,7 +349,7 @@ function RaidManager:StartRaid(raid)
     for i=1,MAX_RAID_MEMBERS do
         local name = GetRaidRosterInfo(i)
         if name then
-            local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.RemoveServer(name))
+            local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.Disambiguate(name))
             if profile then
                 tinsert(players, profile)
                 joining_players_guids[profile:GUID()] = true
@@ -649,7 +649,7 @@ function RaidManager:UpdateGameRaidInformation()
     if lootmethod == "master" and masterlooterRaidID then
         local name = GetRaidRosterInfo(masterlooterRaidID)
         if name then
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             self.IsMasterLootSystem = true
             self.MasterLooter = name
             self.RaidAssistants[name] = true -- we add it in case ML is not an assistant
@@ -662,7 +662,7 @@ function RaidManager:UpdateGameRaidInformation()
     for i=1,MAX_RAID_MEMBERS do
         local name, rank = GetRaidRosterInfo(i)
         if name then
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             if rank >= 1 then
                 self.RaidAssistants[name] = true
             end
@@ -693,7 +693,7 @@ function RaidManager:UpdateRaiderList()
     for i=1,MAX_RAID_MEMBERS do
         local name = GetRaidRosterInfo(i)
         if name then
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             current[name] = true
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
             if profile then

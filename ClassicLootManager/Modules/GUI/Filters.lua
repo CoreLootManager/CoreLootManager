@@ -257,7 +257,7 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
         for i=1,MAX_RAID_MEMBERS do
             local name = GetRaidRosterInfo(i)
             if name then
-                name = UTILS.RemoveServer(name)
+                name = UTILS.Disambiguate(name)
                 isInRaid[name] = true
             end
         end

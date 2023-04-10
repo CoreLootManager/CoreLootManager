@@ -71,10 +71,10 @@ LedgerFactory.createLedger = function(table, send, registerReceiveHandler, autho
         registerMutator = function(metatable, mutatorFunc)
             stateManager:registerHandler(metatable, mutatorFunc)
         end,
-        submitEntry = function(entry)
+        submitEntry = function(entry, creator)
             -- not applying timetravel before auth, because from an addon perspective it is the current time.
             -- check authorization
-            if not authorizationHandler(entry, UnitName("player")) then
+            if not authorizationHandler(entry, creator or UnitName("player")) then
                 error("Attempted to submit entries for which you are not authorized")
                 return
             end

@@ -967,7 +967,7 @@ function RosterManager:AddFromRaidToRoster(roster)
     for i=1,MAX_RAID_MEMBERS do
         local name  = GetRaidRosterInfo(i)
         if name then
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
             if profile then
                 local GUID = profile:GUID()
