@@ -300,9 +300,15 @@ function UTILS.DeepCopy(orig, copies)
     return copy
 end
 
-function UTILS.RemoveServer(name)
-    name, _ = strsplit("-", name or "")
-    return name
+if CLM.WoW10 then
+    function UTILS.RemoveServer(name)
+        return name
+    end
+else
+    function UTILS.RemoveServer(name)
+        name, _ = strsplit("-", name or "")
+        return name
+    end
 end
 
 function UTILS.GetUnitName(unit)
