@@ -26,12 +26,17 @@ local numberToClass = {
     [7]  = "Shaman",
     [8]  = "Mage",
     [9]  = "Warlock",
-    -- [10] = "Monk",
+    [10] = "Monk",
     [11] = "Druid",
-    -- [12] = "Demon Hunter"
+    [12] = "Demon Hunter",
+    [13] = "Evoker"
 }
-
-local classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+local classOrdered
+if CLM.WoW10 then
+    classOrdered = { "Death Knight", "Demon Hunter", "Druid", "Evoker", "Hunter", "Mage", "Monk", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+else
+    classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+end
 local classToNumber = {}
 for k, v in pairs(numberToClass) do
     classToNumber[v] = k
@@ -55,9 +60,10 @@ local classToCanonical = {
     ["Shaman"] = "SHAMAN",
     ["Mage"] = "MAGE",
     ["Warlock"] = "WARLOCK",
-    -- ["Monk"] = "MONK",
+    ["Monk"] = "MONK",
     ["Druid"] = "DRUID",
-    -- ["Demon Hunter"] = "DEMONHUNTER"
+    ["Demon Hunter"] = "DEMONHUNTER",
+    ["Evoker"] = "EVOKER",
 }
 
 function UTILS.CanonicalClass(class)
@@ -74,9 +80,10 @@ local canonicalToNumber = {
     ["SHAMAN"] = 7,
     ["MAGE"] = 8,
     ["WARLOCK"] = 9,
-    -- ["MONK"] = 10,
+    ["MONK"] = 10,
     ["DRUID"] = 11,
-    -- ["DEMONHUNTER"] = 12
+    ["DEMONHUNTER"] = 12,
+    ["EVOKER"] = 13,
 }
 
 function UTILS.CanonicalClassToNumber(class)
@@ -93,7 +100,10 @@ local classColors = {
     ["Paladin"]         = { a = 1, r = 0.96, g = 0.55, b = 0.73, hex = "F58CBA" },
     ["Warlock"]         = { a = 1, r = 0.53, g = 0.53, b = 0.93, hex = "8787ED" },
     ["Warrior"]         = { a = 1, r = 0.78, g = 0.61, b = 0.43, hex = "C79C6E" },
-    ["Death Knight"]    = { a = 1, r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" }
+    ["Death Knight"]    = { a = 1, r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" },
+    ["Demon Hunter"]    = { a = 1, r = 0.64, g = 0.19, b = 0.79, hex = "A330C9" },
+    ["Monk"]            = { a = 1, r = 0,    g = 1.00, b = 0.60, hex = "00FF98" },
+    ["Evoker"]          = { a = 1, r = 0.20, g = 0.58, b = 0.50, hex = "33937F" },
 }
 
 function UTILS.GetClassColor(className)

@@ -83,7 +83,7 @@ class L10nStorage:
         return self.translations[locale][string]
 
 def add_indirectly_used_strings(storage:L10nStorage):
-    for s in ["Hunter", "Warrior", "Druid", "Priest", "Mage", "Paladin", "Rogue", "Warlock", "Shaman"]:
+    for s in ["Hunter", "Warrior", "Druid", "Priest", "Mage", "Paladin", "Rogue", "Warlock", "Shaman", "Death Knight", "Demon Hunter", "Evoker"]:
         storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
     # tabs
