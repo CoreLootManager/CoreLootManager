@@ -1,7 +1,6 @@
 name: wowless
 on: 
   workflow_dispatch:
-  push:
 
 jobs:
   test:
