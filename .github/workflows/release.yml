@@ -16,10 +16,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  bigwigs_release_wrath:
+  packager_release:
     needs:
       - create_github_release
-    name: Build via BigWigs packager for Wrath Classic
+    name: Build via BigWigs packager for DF and WotLK
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,7 +31,7 @@ jobs:
           CF_API_KEY: ${{ secrets.CF_TOKEN }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_TOKEN }}
         with:
-          args: "-o -u -m .pkgmeta -g wrath"
+          args: "-o -u -m .pkgmeta -S"
       - name: Get name of zip file
         run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
       - name: Upload artifact to github
@@ -42,7 +42,7 @@ jobs:
 
   discord_announce:
     needs:
-      - bigwigs_release_wrath
+      - packager_release
     name: Post a Discord Announcement
     runs-on: ubuntu-latest
     steps:

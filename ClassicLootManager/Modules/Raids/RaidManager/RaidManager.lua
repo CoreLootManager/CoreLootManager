@@ -12,7 +12,6 @@ local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 CHAT_MESSAGE_CHANNEL = "GUILD"
 --@end-debug@
 
-local whoami = UTILS.whoami()
 local whoamiGUID = UTILS.whoamiGUID()
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
@@ -719,7 +718,7 @@ end
 
 function RaidManager:IsRaidOwner(name)
     LOG:Trace("RaidManager:IsRaidOwner()")
-    name = name or whoami
+    name = name or UTILS.whoami()
     local isOwner
     if IsPlayerInPvP() then
         LOG:Debug("Player in PvP")
@@ -749,7 +748,7 @@ end
 
 
 function RaidManager:IsMasterLooter(name)
-    return self.IsMasterLootSystem and (self.MasterLooter == (name or whoami)) or false
+    return self.IsMasterLootSystem and (self.MasterLooter == (name or UTILS.whoami())) or false
 end
 
 function RaidManager:IsAllowedToAuction(name, relaxed)
@@ -758,7 +757,7 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
     --@end-debug@
     --[===[@non-debug@
     LOG:Trace("RaidManager:IsAllowedToAuction()")
-    name = name or whoami
+    name = name or UTILS.whoami()
 
     if not relaxed then -- Relaxed requirements: doesn't need to be assitant (for out of guild checks)
         if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then

@@ -326,7 +326,6 @@ function UTILS.RemoveServer(name)
     return name
 end
 local playerGUID = UnitGUID("player")
-local _, playerRealm = UnitFullName("player")
 local getIntegerGuid, myRealmId
 if CLM.WoW10 then -- only support cross-server for Retail for now
     function UTILS.getIntegerGuid(GUID)
@@ -345,7 +344,7 @@ if CLM.WoW10 then -- only support cross-server for Retail for now
     end
     function UTILS.Disambiguate(name)
         if string.find(name, "-") == nil then
-            name = name .. "-" .. playerRealm
+            name = name .. "-" .. GetNormalizedRealmName()
         end
         return name
     end
@@ -402,11 +401,15 @@ function UTILS.GetUnitName(unit)
     return Disambiguate(name or "")
 end
 
-local playerFullName = UTILS.GetUnitName("player")
-function UTILS.whoami()
-    return playerFullName
+do
+    local playerFullName
+    function UTILS.whoami()
+        if not playerFullName then
+            playerFullName = UTILS.GetUnitName("player")
+        end
+        return playerFullName
+    end
 end
-
 function UTILS.whoamiGUID()
     return playerGUID
 end

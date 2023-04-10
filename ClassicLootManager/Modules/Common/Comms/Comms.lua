@@ -11,8 +11,6 @@ local SERIALIZATION_OPTIONS = {
     stable = false,
 }
 
-local whoami = UTILS.whoami()
-
 local serdes = LibStub("LibSerialize")
 local codec = LibStub("LibDeflate")
 
@@ -113,7 +111,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return
     end
     -- Check ACL before working on data to prevent UI Freeze DoS
-    if not self.securityCallbacks[prefix](whoami, message and #message or 0) then
+    if not self.securityCallbacks[prefix](UTILS.whoami(), message and #message or 0) then
         LOG:Warning("Trying to send privileged message [%s]", prefix)
         return false
     end
@@ -162,7 +160,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     end
     sender = UTILS.Disambiguate(sender)
     -- Ignore messages from self if not allowing them specifically
-    if not self.allowSelfReceive[prefix] and (sender == whoami) then
+    if not self.allowSelfReceive[prefix] and (sender == UTILS.whoami()) then
         return false
     end
     -- Validate prefix

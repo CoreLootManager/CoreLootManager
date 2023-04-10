@@ -11,8 +11,6 @@ local colorRedTransparent = {r = 0.93, g = 0.276, b = 0.27, a = 0.3}
 local colorBlueTransparent = {r = 0.27, g = 0.276, b = 0.93, a = 0.3}
 local colorGreen = {r = 0.27, g = 0.93, b = 0.27, a = 1.0}
 
-local whoami = UTILS.whoami()
-
 local function ST_GetName(row)
     return row.cols[2].value
 end
@@ -523,7 +521,7 @@ local function tableDataFeeder()
             local highlight
             if profile:IsLocked() then
                 highlight = highlightLocked
-            elseif profile:Name() == whoami then
+            elseif profile:Name() == UTILS.whoami() then
                 highlight = highlightPlayer
             end
             local classColor = UTILS.GetClassColor(profile:ClassInternal())

@@ -8,7 +8,6 @@ local UTILS     = CLM.UTILS
 
 local typeof = UTILS.typeof
 
-local whoami = UTILS.whoami()
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
 -- luacheck: ignore CHAT_MESSAGE_CHANNEL
@@ -176,7 +175,7 @@ end
 
 local function HandleLootMessage(addon, event, message, _, _, _, playerName, ...)
     local self = AuctionManager
-    if playerName ~= whoami then return end
+    if playerName ~= UTILS.whoami() then return end
     if not message then return end
     if not CLM.MODULES.RaidManager:IsInActiveRaid() then return end
     if not self:IsAuctioneer() then return end
@@ -259,7 +258,7 @@ local function PostLootToRaidChat()
     if not IsInRaid() then return end
     if not CLM.GlobalConfigs:GetAnnounceLootToRaid() then return end
     if CLM.GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
-        if not CLM.MODULES.RaidManager:IsRaidOwner(whoami) then return end
+        if not CLM.MODULES.RaidManager:IsRaidOwner(UTILS.whoami()) then return end
     end
     local targetGuid = UnitGUID("target")
     if targetGuid then
@@ -1168,7 +1167,7 @@ end
 
 function AuctionManager:IsAuctioneer(name, relaxed)
     LOG:Trace("AuctionManager:IsAuctioneer()")
-    name = name or whoami
+    name = name or UTILS.whoami()
     return CLM.MODULES.RaidManager:IsAllowedToAuction(name, relaxed)
 end
 
