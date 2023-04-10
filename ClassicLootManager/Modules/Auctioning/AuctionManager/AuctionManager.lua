@@ -435,7 +435,7 @@ local function CreateConfigurationOptions(self)
         },
         auction_disenchant_autoremoved = {
             name = CLM.L["Disenchant removed items"],
-            desc = CLM.L["Automatically mark auto-removed items as disencahnted"],
+            desc = CLM.L["Automatically mark auto-removed items as disenchanted"],
             type = "toggle",
             set = function(i, v) SetDisenchantAutoRemoved(self, v) end,
             get = function(i) return GetDisenchantAutoRemoved(self) end,
