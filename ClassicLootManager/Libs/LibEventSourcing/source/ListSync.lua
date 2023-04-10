@@ -262,7 +262,7 @@ end
 
 
 local function handleMessage(listSync, message, distribution, sender)
-    if sender == listSync.playerName then
+    if sender == listSync.playerName then --TODO this wont work unless we add disambiguation
         return
     end
 
@@ -328,7 +328,7 @@ function ListSync:new(stateManager, sendMessage, registerReceiveHandler, authori
         state = stateManager:getSortedList():state(),
         entries = {}
     }
-    o.playerName = UnitName("player") -- TODO disambiguate
+    o.playerName = UnitName("player")
     registerReceiveHandler(function(message, distribution, sender)
         handleMessage(o, message, distribution, sender)
     end)

@@ -24,14 +24,14 @@ jobs:
         imageName: ghcr.io/wowless/wowless-devcontainer
         push: never
         runCmd: |
-        git pull
-        git submodule update --init --depth 1
-        lua tools/mkninja.lua
-        git clone git@github.com:ClassicLootManager/ClassicLootManager.git /clm
-        cd /clm
-        git checkout retail
-        ./scripts/release.sh -S
-        cd -
-        bin/run.sh wow --addondir /clm
-        bin/run.sh wow_classic --addondir /clm
+        git pull && \
+        git submodule update --init --depth 1 && \
+        lua tools/mkninja.lua && \
+        git clone git@github.com:ClassicLootManager/ClassicLootManager.git /clm && \
+        cd /clm && \
+        git checkout retail && \
+        ./scripts/release.sh -S && \
+        cd - && \
+        bin/run.sh wow --addondir /clm && \
+        bin/run.sh wow_classic --addondir /clm && \
         bin/run.sh wow_t --addondir /clm

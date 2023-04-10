@@ -166,6 +166,7 @@ globals = {
 	"IsInInstance",
 	"ReloadUI",
 	"GetBuildInfo",
+	"UnitFullName",
 	-- Retail only
 	"EJ_GetEncounterInfo",
 	"GetSpecialization",

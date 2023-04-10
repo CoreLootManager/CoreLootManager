@@ -326,7 +326,7 @@ function UTILS.RemoveServer(name)
     return name
 end
 local playerGUID = UnitGUID("player")
-local playerName, playerRealm = UnitFullName("player")
+local _, playerRealm = UnitFullName("player")
 local getIntegerGuid, myRealmId
 if CLM.WoW10 then -- only support cross-server for Retail for now
     function UTILS.getIntegerGuid(GUID)
