@@ -561,7 +561,7 @@ CLM.L["Data"] = "数据"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:271
 CLM.L["Date"] = "日期"
 -- .:indirectly
---CLM.L["Death Knight"] = ""
+CLM.L["Death Knight"] = "Death Knight"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:148
 CLM.L["Deathbringer Saurfang"] = "死亡使者萨鲁法尔"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:261
@@ -588,7 +588,7 @@ CLM.L["Default Boss Kill Bonus value"] = "默认BOSS击杀奖励分值"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1115
 CLM.L["Default slot values"] = "默认槽位分值"
 -- .:indirectly
---CLM.L["Demon Hunter"] = ""
+CLM.L["Demon Hunter"] = "Demon Hunter"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:657
 CLM.L["Description"] = "描述"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:291
@@ -700,7 +700,7 @@ CLM.L["Eredar Twins"] = "艾瑞达双子"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:846
 CLM.L["Europe"] = "欧洲"
 -- .:indirectly
---CLM.L["Evoker"] = ""
+CLM.L["Evoker"] = "Evoker"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:286
 CLM.L["Execute decay for players based on context."] = "根据所选范围为角色执行衰减。"
 -- ClassicLootManager_Integrations/Migration.lua:431
@@ -867,7 +867,7 @@ CLM.L["Heigan the Unclean"] = "肮脏的希尔盖"
 CLM.L["Held In Off-hand"] = "副手物品"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:31
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:640
---CLM.L["Heroic"] = ""
+CLM.L["Heroic"] = "Heroic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:109
 CLM.L["Hex Lord Malacrass"] = "妖术领主玛拉卡斯"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:203
@@ -1240,7 +1240,7 @@ CLM.L["Multiplier used by the equations"] = "公式使用的系数"
 CLM.L["Multiplier"] = "系数"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:32
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:641
---CLM.L["Mythic"] = ""
+CLM.L["Mythic"] = "Mythic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:106
 CLM.L["Nalorakk"] = "纳洛拉克"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:754
@@ -1303,7 +1303,7 @@ CLM.L["None"] = "无"
 CLM.L["Normal Mode"] = "正常模式"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:30
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:639
---CLM.L["Normal"] = ""
+CLM.L["Normal"] = "Normal"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:145
 CLM.L["Northrend Beasts"] = "诺森德猛兽"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1277

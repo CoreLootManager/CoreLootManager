@@ -561,7 +561,7 @@ CLM.L["Data"] = "Данные"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:271
 CLM.L["Date"] = "Дата"
 -- .:indirectly
---CLM.L["Death Knight"] = ""
+CLM.L["Death Knight"] = "Death Knight"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:148
 CLM.L["Deathbringer Saurfang"] = "Саурфанг Смертоносный"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:261
@@ -588,7 +588,7 @@ CLM.L["Default Boss Kill Bonus value"] = "Значение по умолчани
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1115
 CLM.L["Default slot values"] = "Значения слотов по умолчанию"
 -- .:indirectly
---CLM.L["Demon Hunter"] = ""
+CLM.L["Demon Hunter"] = "Demon Hunter"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:657
 CLM.L["Description"] = "Описание"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:291
@@ -700,7 +700,7 @@ CLM.L["Eredar Twins"] = "Эредарские близнецы"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:846
 CLM.L["Europe"] = "Европа"
 -- .:indirectly
---CLM.L["Evoker"] = ""
+CLM.L["Evoker"] = "Evoker"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:286
 CLM.L["Execute decay for players based on context."] = "Выполнить сгорание для игроков на основе контекста."
 -- ClassicLootManager_Integrations/Migration.lua:431
@@ -867,7 +867,7 @@ CLM.L["Heigan the Unclean"] = "Хейган Нечистивый"
 CLM.L["Held In Off-hand"] = "Держится в левой руке"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:31
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:640
---CLM.L["Heroic"] = ""
+CLM.L["Heroic"] = "Heroic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:109
 CLM.L["Hex Lord Malacrass"] = "Повелитель проклятий Малакрасс"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:203
@@ -1240,7 +1240,7 @@ CLM.L["Multiplier used by the equations"] = "Мультипликатор исп
 CLM.L["Multiplier"] = "Мультипликатор"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:32
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:641
---CLM.L["Mythic"] = ""
+CLM.L["Mythic"] = "Mythic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:106
 CLM.L["Nalorakk"] = "Налоракк"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:754
@@ -1303,7 +1303,7 @@ CLM.L["None"] = "Никто"
 CLM.L["Normal Mode"] = "Нормальный режим"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:30
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:639
---CLM.L["Normal"] = ""
+CLM.L["Normal"] = "Normal"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:145
 CLM.L["Northrend Beasts"] = "Нортрендские Чудовища"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1277

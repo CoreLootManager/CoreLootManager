@@ -233,8 +233,6 @@ def rewrite_missing(missing, storage:L10nStorage, locale, total_missing, total_d
                 storage.translate(locale, sentence, translation, False)
                 total_done += 1
                 percent = math.floor(100*(total_done/total_missing))
-                if percent > last_percent:
-                    _print("Rewrite progress: {0}% [{1}]".format(percent, locale))
                 last_percent = percent
     return total_missing, total_done, last_percent
 

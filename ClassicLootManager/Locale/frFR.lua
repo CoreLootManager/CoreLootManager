@@ -561,7 +561,7 @@ CLM.L["Data"] = "Donnés"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:271
 CLM.L["Date"] = "Date"
 -- .:indirectly
---CLM.L["Death Knight"] = ""
+CLM.L["Death Knight"] = "Death Knight"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:148
 CLM.L["Deathbringer Saurfang"] = "Porte-mort Saurcroc"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:261
@@ -588,7 +588,7 @@ CLM.L["Default Boss Kill Bonus value"] = "Valeur par défaut du bonus de Boss tu
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1115
 CLM.L["Default slot values"] = "Valeurs d'emplacement par défaut"
 -- .:indirectly
---CLM.L["Demon Hunter"] = ""
+CLM.L["Demon Hunter"] = "Demon Hunter"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:657
 CLM.L["Description"] = "Description"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:291
@@ -700,7 +700,7 @@ CLM.L["Eredar Twins"] = "Jumelles érédars"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:846
 CLM.L["Europe"] = "Europe"
 -- .:indirectly
---CLM.L["Evoker"] = ""
+CLM.L["Evoker"] = "Evoker"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:286
 CLM.L["Execute decay for players based on context."] = "Appliquer la réduction aux joueurs en fonction du contexte"
 -- ClassicLootManager_Integrations/Migration.lua:431
@@ -867,7 +867,7 @@ CLM.L["Heigan the Unclean"] = "Heigan l'Impur"
 CLM.L["Held In Off-hand"] = "Tenu en main gauche"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:31
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:640
---CLM.L["Heroic"] = ""
+CLM.L["Heroic"] = "Heroic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:109
 CLM.L["Hex Lord Malacrass"] = "Seigneur des maléfices Malacrass"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:203
@@ -1240,7 +1240,7 @@ CLM.L["Multiplier used by the equations"] = "Multiplicateur utilisé par l'équa
 CLM.L["Multiplier"] = "Mutiplicateur"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:32
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:641
---CLM.L["Mythic"] = ""
+CLM.L["Mythic"] = "Mythic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:106
 CLM.L["Nalorakk"] = "Nalorakk"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:754
@@ -1303,7 +1303,7 @@ CLM.L["None"] = "Aucun"
 CLM.L["Normal Mode"] = "Mode normal"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:30
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:639
---CLM.L["Normal"] = ""
+CLM.L["Normal"] = "Normal"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:145
 CLM.L["Northrend Beasts"] = "Les bêtes du Norfendre"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1277
