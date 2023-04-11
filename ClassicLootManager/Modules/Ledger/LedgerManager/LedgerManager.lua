@@ -34,14 +34,14 @@ local function createLedger(self, database)
     local ledger = LedgerLib.createLedger(
         database,
         (function(data, distribution, target, callbackFn, callbackArg)
-            return CLM.MODULES.Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
+            return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.SYNC, data, distribution, target, "BULK")
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
         (function(entry, sender)
             return CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
-            return CLM.MODULES.Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
+            return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.DATA, data, distribution, target, "BULK")
         end), -- sendLargeMessage
         0, 100, LOG)
 
@@ -109,8 +109,8 @@ end
 -- This is not reversable until reload
 function LedgerManager:Cutoff()
     self.activeLedger.disableSending()
-    CLM.MODULES.Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
-    CLM.MODULES.Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
+    CLM.MODULES.Comms:Suspend(CLM.COMM_CHANNEL.LEDGER.SYNC)
+    CLM.MODULES.Comms:Suspend(CLM.COMM_CHANNEL.LEDGER.DATA)
 end
 
 function LedgerManager:DisableAdvertising()
