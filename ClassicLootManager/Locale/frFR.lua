@@ -2015,10 +2015,8 @@ CLM.L["Wipes all events from memory. This will trigger resyncing from other user
 CLM.L["Wipes the log history"] = "Efface l'historique du journal"
 -- ClassicLootManager_Integrations/Integrations.lua:356
 CLM.L["WoW DKP Bot Integration"] = "Intégration WoW DKP Bot"
--- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:648
-CLM.L["WotLK - 10"] = "WotLK - 10"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:653
-CLM.L["WotLK - 25"] = "WotLK - 25"
+CLM.L["WotLK"] = "WotLK"
 -- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:188
 CLM.L["Wowpedia"] = "Wowpedia"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:779

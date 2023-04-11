@@ -2016,9 +2016,7 @@ CLM.L["Wipes the log history"] = "删除日志历史记录"
 -- ClassicLootManager_Integrations/Integrations.lua:356
 CLM.L["WoW DKP Bot Integration"] = "WoW DKP Bot集成"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:648
-CLM.L["WotLK - 10"] = "WLK - 10人"
--- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:653
-CLM.L["WotLK - 25"] = "WLK - 25人"
+CLM.L["WotLK"] = "WLK"
 -- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:188
 CLM.L["Wowpedia"] = "Wowpedia"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:779
