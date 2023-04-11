@@ -159,7 +159,7 @@ end
 
 local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
     local itemId = UTILS.GetItemIdFromLink(itemLink)
-    local itemString = "item:" .. tonumber(itemId)
+    local itemString = "item:" .. tostring(itemId)
     tooltip:SetHyperlink(itemString)
     if loot then
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
@@ -206,7 +206,7 @@ local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
                     else
                         upgradeTooltip:SetOwner(tooltip, "ANCHOR_RIGHT")
                     end
-                    upgradeTooltip:SetHyperlink("item:" .. tonumber(it))
+                    upgradeTooltip:SetHyperlink("item:" .. tostring(it))
                     upgradeTooltip:Show()
                     previousUpgradeTooltip = upgradeTooltip
                 end

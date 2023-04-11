@@ -244,7 +244,7 @@ local function CreateLootList(self)
             local rowData = table:GetRow(realrow)
             if not rowData or not rowData.cols then return status end
             GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink("item:" .. (tonumber(rowData.cols[column].value) or 0))
+            GameTooltip:SetHyperlink("item:" .. (tostring(rowData.cols[column].value) or 0))
             GameTooltip:Show()
             return status
         end),
