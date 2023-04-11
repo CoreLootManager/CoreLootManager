@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local PROFILEINFO_COMM_PREFIX = "Version001" -- Keep it for version sync with older ones
-
 local function stringifyVersion(version)
     return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
 end
@@ -41,7 +39,7 @@ local function AnnounceVersion()
     local message = CLM.MODELS.ProfileInfoCommStructure:New(
         CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION,
         CLM.MODELS.ProfileInfoCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
-    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 local function OutOfDate(self, version, disable)
@@ -122,7 +120,7 @@ end
 --     local message = CLM.MODELS.ProfileInfoCommStructure:New(
 --         CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC,
 --         CLM.MODELS.ProfileInfoCommAnnounceSpec:New(one, two, three))
---     CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+--     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 -- end
 
 -- local function SetProfileSpec(name, spec)
@@ -166,7 +164,7 @@ local function AnnounceRole()
     local message = CLM.MODELS.ProfileInfoCommStructure:New(
         CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE,
         CLM.MODELS.ProfileInfoCommAnnounceRole:New(UTILS.GetMyRole()))
-    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 local function SetProfileRole(name, role)
@@ -249,7 +247,7 @@ function ProfileInfoManager:Initialize()
         [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE]      = HandleRequestRole
     }
 
-    CLM.MODULES.Comms:Register(PROFILEINFO_COMM_PREFIX, (function(rawMessage, distribution, sender)
+    CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.GLOBAL, (function(rawMessage, distribution, sender)
         local message = CLM.MODELS.ProfileInfoCommStructure:New(rawMessage)
         if CONSTANTS.PROFILE_INFO_COMM.TYPES[message:Type()] == nil then return end
         HandleIncomingMessage(self, message, distribution, sender)
@@ -286,19 +284,19 @@ end
 function ProfileInfoManager:RequestVersion()
     LOG:Trace("ProfileInfoManager:RequestVersion()")
     local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION, {})
-    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 function ProfileInfoManager:RequestSpec()
     LOG:Trace("ProfileInfoManager:RequestSpec()")
     local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC, {})
-    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 function ProfileInfoManager:RequestRole()
     LOG:Trace("ProfileInfoManager:RequestRole()")
     local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE, {})
-    CLM.MODULES.Comms:Send(PROFILEINFO_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 CONSTANTS.PROFILE_INFO_COMM = {

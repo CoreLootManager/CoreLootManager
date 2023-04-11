@@ -13,21 +13,14 @@ local STATUS_OUT_OF_SYNC = "out_of_sync"
 -- local STATUS_UNKNOWN = "unknown"
 local STATUS_UNKNOWN_TYPE = "unknown_type"
 
-
-local LEDGER_SYNC_COMM_PREFIX = "LedgerS2"
-local LEDGER_DATA_COMM_PREFIX = "LedgerD2"
-
 local previousCallback = nil
 local function registerReceiveCallback(callback)
     if not previousCallback then
         previousCallback = callback
     end
 
-    -- Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
-    --     return length < 4096
-    -- end)
-    CLM.MODULES.Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-    CLM.MODULES.Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
+    CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.LEDGER.SYNC, callback, CONSTANTS.ACL.LEVEL.PLEBS)
+    CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.LEDGER.DATA, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
 end
 
 local function restoreReceiveCallback()
