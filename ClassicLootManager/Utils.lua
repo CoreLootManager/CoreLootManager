@@ -775,23 +775,19 @@ function UTILS.LibStSingleSelectClickHandler(st, dropdownMenu, rowFrame, cellFra
 end
 
 function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-    local itemId = data[realrow].cols[column].value
-    local iconColor = data[realrow].cols[column].iconColor
+    local itemInfo = data[realrow].cols[column].value
+    local iconColor = data[realrow].cols[column].iconColor or {}
     local note = data[realrow].cols[column].note
-    local _, _, _, _, icon = GetItemInfoInstant(itemId or 0)
+    local _, _, _, _, icon = GetItemInfoInstant(itemInfo or 0)
     if icon then
         frame:SetNormalTexture(icon)
         frame:SetHighlightTexture(136580, "ADD")
         frame:GetHighlightTexture():SetTexCoord(0, 1, 0.23, 0.77)
-        if iconColor then
-            frame:GetNormalTexture():SetVertexColor(iconColor.r, iconColor.g, iconColor.b, iconColor.a or 1)
-        else
-            frame:GetNormalTexture():SetVertexColor(1,1,1,1)
-        end
+        frame:GetNormalTexture():SetVertexColor(iconColor.r or 1, iconColor.g or 1, iconColor.b or 1, iconColor.a or 1)
         frame:Show()
         frame:SetScript("OnEnter", function()
             GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink("item:" .. tostring(itemId))
+            GameTooltip:SetHyperlink("item:" .. itemInfo)
             if note then
                 GameTooltip:AddLine("\n")
                 GameTooltip:AddLine(note)
