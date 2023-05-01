@@ -11,7 +11,7 @@ local function Award(args)
     local values = {strsplit("/", args)}
     -- Item --
     local itemLink = values[1]
-    local itemId = UTILS.GetItemIdFromLink(itemLink)
+    local itemId, extra = UTILS.GetItemIdFromLink(itemLink)
     if not itemId or itemId == 0 then
         LOG:Message(CLM.L["Invalid item link"])
         return
@@ -60,7 +60,8 @@ local function Award(args)
         return
     end
     -- Award --
-    local awarded = CLM.MODULES.LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, value)
+
+    local awarded = CLM.MODULES.LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, extra, value)
     if awarded and not CLM.MODULES.AutoAssign:IsIgnored(itemId) then
         if CLM.MODULES.AuctionManager:GetAutoTrade() then
             CLM.MODULES.AutoAssign:Track(itemId, name)

@@ -139,7 +139,7 @@ function LootManager:Initialize()
 
 end
 
-function LootManager:AwardItem(raidOrRoster, name, itemLink, value, forceInstant)
+function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, value, forceInstant)
     LOG:Trace("LootManager:AwardItem()")
     local isRaid = true
     if not UTILS.typeof(raidOrRoster, CLM.MODELS.Raid) then
@@ -166,13 +166,20 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, value, forceInstant
         LOG:Error("LootManager:AwardItem(): Invalid Value")
         return false
     end
+    if type(extra) == "string" then
+        extra = string.gsub(extra, "[^%d:]+", "")
+    elseif extra ~= nil then
+        LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
+        return false
+    end
+
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     if roster:IsProfileInRoster(profile:GUID()) then
         local entry
         if isRaid then
-            entry = CLM.MODELS.LEDGER.LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value)
+            entry = CLM.MODELS.LEDGER.LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value, extra)
         else
-            entry = CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, itemId, value)
+            entry = CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, itemId, value, extra)
         end
         local pointTypeSuffix = ((roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP) and CLM.L["DKP"] or CLM.L["GP"])
         CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
