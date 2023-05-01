@@ -1,4 +1,5 @@
-# Classic Loot Manager
+# Core Loot Manager
+formerly Classic Loot Manager
 
 [![Lint](https://github.com/ClassicLootManager/ClassicLootManager/actions/workflows/lint.yml/badge.svg)](https://github.com/ClassicLootManager/ClassicLootManager)
 [![Release](https://img.shields.io/github/v/release/ClassicLootManager/classiclootmanager.svg?color=important)](https://github.com/ClassicLootManager/ClassicLootManager/releases)
@@ -7,14 +8,14 @@
 [![Patreon](https://img.shields.io/badge/Support%20CLM-Patreon-red)](https://www.patreon.com/classiclootmanager)
 
 # About
-Classic Loot Manager is a robust Loot Tracking and awarding tool for guilds.
-It's designed to superseed old WoW Classic DKP and EPGP AddOns and it's derivatives and solves it's biggest painpoints by focusing on optimial communication and storage. CLM implements Event Sourcing and MVC programming models to achieve those targets. All data is synchronised automatically.
+Core Loot Manager is a robust Loot Tracking and awarding tool for guilds.
+It's designed to superseed old DKP and EPGP AddOns and it's derivatives and solves it's biggest painpoints by focusing on optimial communication and storage. CLM implements Event Sourcing and MVC programming models to achieve those targets. All data is synchronised automatically.
 
 ## Wiki
 Be sure to check our [Wiki](https://github.com/ClassicLootManager/ClassicLootManager/wiki) for lots of information.
 
 ## Point Systems
-Classic Loot Manager currently supports **DKP** and **EPGP**. There are also mechanisms for utilizing DKP as **SK** which you can run at the same time!
+Core Loot Manager currently supports **DKP** and **EPGP**. There are also mechanisms for utilizing DKP as **SK** which you can run at the same time!
 
 # Implemented features
 ## Auto-magical synchronisation

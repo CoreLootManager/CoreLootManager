@@ -1,6 +1,28 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.0.0",
+        data = {
+            {
+                name = "Retail support is live!",
+                data = {
+                    { header = "Rebranding", body = "Classic Loot Manager is now Core Loot Manager. This rebranding marks our move towards Retail support." },
+                    { header = "First release", body = "This is a First release for Retail users so there might be some baby-age issues still. Be sure to report them on our discord https://tiny.one/clm-discord." },
+                },
+            },
+            {
+                name = "Retail Support Limitations",
+                data = {
+                    { header = "Tooltips", body = "Item values are not displayed on tooltips at this point of time." },
+                    { header = "Eligibility", body = "Item eligibility check is not yet supported." },
+                    { header = "Value calculation", body = "Due to amount of items in Retail it was not possible to throughtly test all item lvl / slot value combinations. Please be sure to check those against your loot systems!" },
+                    { header = "Item link display", body = "Item link display might still be off in some places." },
+                    { header = "Cross-guild sync", body = "Same as for Classic - cross-guild sync is not supported however cross-guild bidding should be possible." },
+                },
+            },
+        },
+    },
+    {
         version = "v3.3.5",
         data = {
             {
