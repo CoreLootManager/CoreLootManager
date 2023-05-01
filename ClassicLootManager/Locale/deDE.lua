@@ -33,7 +33,7 @@ CLM.L["%s %% %s decay"] = "%s %% %s Zerfall"
 -- ClassicLootManager_Alerts/Alerts.lua:12
 CLM.L["%s %s"] = "%s %s"
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:180
-CLM.L["%s awarded to %s for %s %s"] = "%s für %s %s an %s verliehen"
+CLM.L["%s awarded to %s for %s %s"] = "%s an %s für %s %s verliehen"
 -- ClassicLootManager/MinimapIcon.lua:37
 CLM.L["%s events (%s pending)"] = "%s Events (%s ausstehend)"
 -- ClassicLootManager/MinimapIcon.lua:39
