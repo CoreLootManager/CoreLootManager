@@ -28,6 +28,7 @@ globals = {
 	"CLM2_DB",
 	"CLM2_Logs",
 	"CLM2_MinimapIcon",
+	"CLM_UnifiedGUI_Toggle",
 	-- Bindings
 	"CLM_Undo",
 	"CLM_Redo",

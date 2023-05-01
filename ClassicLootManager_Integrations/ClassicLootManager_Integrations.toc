@@ -2,9 +2,10 @@
 ## Interface-Wrath: 30401
 ## X-Min-Interface: 100007
 ## X-Min-Interface-Wrath: 30401
-## Title: |cffdcb749Core Loot Manager|r |cff44ee44Integrations|r
-## Notes: External Integration System for |cffdcb749Core Loot Manager|r
+## Title: CLM |cff44ee44Integrations|r
+## Notes: External Integration System for |cffdcb749Core Loot Manager|r covering Migration, Import and Export.
 ## Author: Lantis
+## IconTexture: Interface/AddOns/ClassicLootManager/Media/Icons/clm-dark-128.tga
 ## Version: @project-version@
 ## RequiredDeps: ClassicLootManager
 ## OptionalDeps: LibStub

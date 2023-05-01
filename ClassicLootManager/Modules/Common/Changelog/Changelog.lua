@@ -6,7 +6,7 @@ CLM.ChangelogData = {
             {
                 name = "Retail support is live!",
                 data = {
-                    { header = "Rebranding", body = "Classic Loot Manager is now Core Loot Manager. This rebranding marks our move towards Retail support." },
+                    { header = "Rebranding", body = "Classic Loot Manager is now |cff44ee44Core Loot Manager|r. This rebranding marks our move towards Retail support." },
                     { header = "First release", body = "This is a First release for Retail users so there might be some baby-age issues still. Be sure to report them on our discord https://tiny.one/clm-discord." },
                 },
             },

@@ -6,7 +6,7 @@ import requests
 import time
 import sys
 
-GIT_ENDPOINT = "https://api.github.com/repos/lantisnt/classiclootmanager/releases"
+GIT_ENDPOINT = "https://api.github.com/repos/corelootmanager/corelootmanager/releases"
 
 def get_latest_release() -> list:
     num_calls = 0
@@ -74,7 +74,7 @@ def build_release_embed(releases:list, o = 0) -> dict:
     url = releases[o]["html_url"]# 2F3136 dcb749
 
 
-    author_field = "Classic Loot Manager has been updated!"
+    author_field = "Core Loot Manager has been updated!"
     version_title = "**Version**"
     # more_info_field = "For more information check out the full [release notes](" + url + ")."
     support_us_field = "Become a [patron](https://patreon.com/classiclootmanager) or check out how to <#904660817889337404> if you enjoy using <:clm:892642400525242428>"
@@ -111,7 +111,7 @@ def build_release_embed(releases:list, o = 0) -> dict:
 
     embed["fields"].append({"name": "\u200b", "value": support_us_field, "inline": False})
 
-    content = "<@&852049281959591947>" # @Announcements
+    content = "<@&852049281959591947> <@&1077961406613299311>" # @Announcements @Retail
 
     return content, embed
 
