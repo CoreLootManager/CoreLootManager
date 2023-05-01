@@ -25,7 +25,8 @@ local function SerializeItems(items)
     for id, auctionItem in pairs(items) do
         serialized[id] = {
             values = auctionItem:GetValues(),
-            note = auctionItem:GetNote()
+            note = auctionItem:GetNote(),
+            extra = auctionItem:GetExtraPayload()
         }
     end
     return serialized

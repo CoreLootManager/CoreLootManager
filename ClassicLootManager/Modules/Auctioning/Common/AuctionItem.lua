@@ -1,7 +1,7 @@
 -- ------------------------------- --
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
+local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
@@ -163,6 +163,15 @@ function AuctionItem:SetValues(values)
     end
 end
 
+function AuctionItem:SpoofLinkPayload(extra)
+    if type(extra) ~= 'string' then return end
+    if type(self.item.itemLink) ~= 'string' then
+        LOG:Warning("ItemLink for %s not found while updating payload.", self:GetItemID())
+        return
+    end
+    self.item.itemLink = UTILS.SpoofLink(self.item.itemLink, extra)
+end
+
 function AuctionItem:GetValues()
     return self.values
 end
@@ -181,6 +190,13 @@ end
 
 function AuctionItem:GetItemLink()
     return self.item:GetItemLink()
+end
+
+function AuctionItem:GetExtraPayload()
+    if not self.extraPayload then
+        _, self.extraPayload = UTILS.GetItemIdFromLink(self.item:GetItemLink())
+    end
+    return self.extraPayload
 end
 
 function AuctionItem:GetCanUse()

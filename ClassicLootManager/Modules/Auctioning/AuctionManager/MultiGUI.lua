@@ -104,11 +104,11 @@ local function GenerateItemOptions(self)
             set = (function(i,v)
                 if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
                     local itemID = GetItemInfoInstant(v)
-                    -- if tostring(itemID) == v then
+                    if tostring(itemID) == v then
                         CLM.MODULES.AuctionManager:AddItemById(itemID, function(ai) self:SetVisibleAuctionItem(ai) end)
-                    -- else
-                        -- CLM.MODULES.AuctionManager:AddItemByLink(v, function(ai) self:SetVisibleAuctionItem(ai) end)
-                    -- end
+                    else
+                        CLM.MODULES.AuctionManager:AddItemByLink(v, function(ai) self:SetVisibleAuctionItem(ai) end)
+                    end
                 end
             end),
             disabled = disableInProgress,

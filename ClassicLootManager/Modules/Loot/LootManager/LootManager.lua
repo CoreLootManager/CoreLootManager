@@ -139,7 +139,7 @@ function LootManager:Initialize()
 
 end
 
-function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forceInstant)
+function LootManager:AwardItem(raidOrRoster, name, itemLink, value, forceInstant)
     LOG:Trace("LootManager:AwardItem()")
     local isRaid = true
     if not UTILS.typeof(raidOrRoster, CLM.MODELS.Raid) then
@@ -190,7 +190,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
     return false
 end
 
-function LootManager:DisenchantItem(raidOrRoster, itemLink, itemId, forceInstant)
+function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
     LOG:Trace("LootManager:DisenchantItem()")
     local isRaid = true
     if not UTILS.typeof(raidOrRoster, CLM.MODELS.Raid) then
@@ -201,11 +201,11 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, itemId, forceInstant
         end
     end
     if type(itemId) ~= "number" then
-        LOG:Error("LootManager:AwardItem(): Invalid ItemId")
+        LOG:Error("LootManager:DisenchantItem(): Invalid ItemId")
         return false
     end
     if not GetItemInfoInstant(itemId) then
-        LOG:Error("LootManager:AwardItem(): Item does not exist")
+        LOG:Error("LootManager:DisenchantItem(): Item does not exist")
         return false
     end
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
@@ -235,26 +235,5 @@ function LootManager:RevokeItem(loot, forceInstant)
     CLM.MODULES.LedgerManager:Remove(loot:Entry(), forceInstant)
 end
 
-function LootManager:TransferItem(roster, profile, loot, forceInstant)
-    LOG:Trace("LootManager:TransferItem()")
-    if not UTILS.typeof(roster, CLM.MODELS.Roster) then
-        LOG:Error("LootManager:TransferItem(): Missing valid roster")
-        return
-    end
-    if not UTILS.typeof(profile, CLM.MODELS.Profile) then
-        LOG:Error("LootManager:TransferItem(): Missing valid target profile")
-        return
-    end
-    if not UTILS.typeof(loot, CLM.MODELS.Loot) then
-        LOG:Error("LootManager:TransferItem(): Missing valid loot")
-        return
-    end
-    if roster:IsProfileInRoster(profile:GUID()) then
-        CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, loot:Id(), loot:Value()), forceInstant)
-        CLM.MODULES.LedgerManager:Remove(loot:Entry(), forceInstant)
-    else
-        LOG:Error("LootManager:TransferItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
-    end
-end
 
 CLM.MODULES.LootManager = LootManager
