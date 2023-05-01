@@ -27,7 +27,7 @@ jobs:
 #      - name: verify required files recursively
 #        run: scripts/verify-dependencies.sh ClassicLootManager.toc
       - name: Bigwigs packager
-        uses: BigWigsMods/packager@7v2.0.3
+        uses: BigWigsMods/packager@v2.0.3
         env:
           CF_API_KEY: ${{ secrets.CF_TOKEN }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_TOKEN }}
