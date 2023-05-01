@@ -248,7 +248,8 @@ local function CreateLootList(self)
             local rowData = table:GetRow(realrow)
             if not rowData or not rowData.cols then return status end
             GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink("item:" .. (tostring(rowData.cols[column].value) or 0))
+            -- GameTooltip:SetHyperlink("item:" .. (tostring(rowData.cols[column].value) or 0))
+            GameTooltip:SetHyperlink(rowData.cols[column].value or "item:0")
             GameTooltip:Show()
             return status
         end),
@@ -837,7 +838,7 @@ function AuctionManagerGUI:Refresh()
             iconColor = colorGold
             note = CLM.L["No bids"]
         end
-        itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor, note = note }, {value = auctionItem} }}
+        itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), iconColor = iconColor, note = note }, {value = auctionItem} }}
     end
     self.ItemList:SetData(itemList)
 

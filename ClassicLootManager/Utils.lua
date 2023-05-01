@@ -794,7 +794,7 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
         frame:Show()
         frame:SetScript("OnEnter", function()
             GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink("item:" .. itemInfo)
+            GameTooltip:SetHyperlink(itemInfo or "item:0")
             if note then
                 GameTooltip:AddLine("\n")
                 GameTooltip:AddLine(note)
