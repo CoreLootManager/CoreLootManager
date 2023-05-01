@@ -8,9 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: pipx install gitman
-      - run: gitman install --force
-      - run: find ClassicLootManager/Libs -type d -name ".git" -execdir rm -rf {} \; -prune
       - name: Bigwigs packager
         uses: BigWigsMods/packager@7cd7fe5fede4ca80f63742e6bc1d777914814380
         with:
