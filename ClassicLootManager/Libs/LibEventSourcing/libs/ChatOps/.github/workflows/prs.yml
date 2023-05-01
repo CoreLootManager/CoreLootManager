@@ -1,0 +1,20 @@
+name: Lint Commit Messages
+on: [pull_request]
+
+jobs:
+  lint:
+    name: Run luacheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: luacheck
+        uses: nebularg/actions-luacheck@v1.1.0
+        with:
+          files: source
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v4
