@@ -40,7 +40,7 @@ eventDispatcher.addEventListener(CLM.CONSTANTS.EVENTS.USER_RECEIVED_POINTS, func
 end)
 
 eventDispatcher.addEventListener(CLM.CONSTANTS.EVENTS.USER_RECEIVED_ITEM, function(event, data)
-    LootAlertSystem:AddAlert("item: " .. data.id, 1)
+    LootAlertSystem:AddAlert(data.link or "item:0", 1)
 end)
 
 eventDispatcher.addEventListener(CLM.CONSTANTS.EVENTS.USER_BID_ACCEPTED, function(event, data)

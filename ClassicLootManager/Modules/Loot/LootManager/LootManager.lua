@@ -45,7 +45,7 @@ local function mutateLootAward(entry, roster)
 
         -- Force caching loot from server
         GetItemInfo(loot:Id())
-        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_ITEM, { id = loot:Id() }, entry:time(), GUID)
+        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_ITEM, { link = loot:String() }, entry:time(), GUID)
         -- Handle Zero-Sum Bank mode
         local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
         if not raid then
