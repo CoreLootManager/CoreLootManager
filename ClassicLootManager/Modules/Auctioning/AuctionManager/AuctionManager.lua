@@ -1155,7 +1155,7 @@ end
 
 function AuctionManager:Disenchant(item)
     LOG:Trace("AuctionManager:Disenchant()")
-    local success, uuid = CLM.MODULES.LootManager:DisenchantItem(self.currentAuction:GetRaid(), item:GetItemLink(), item:GetItemID(), true)
+    local success, uuid = CLM.MODULES.LootManager:DisenchantItem(self.currentAuction:GetRaid(), item:GetItemLink(), true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         local disenchanter = CLM.MODULES.RaidManager:GetDisenchanter()

@@ -211,6 +211,7 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
             return false
         end
     end
+    local itemId, extra = UTILS.GetItemIdFromLink(itemLink)
     if type(itemId) ~= "number" then
         LOG:Error("LootManager:DisenchantItem(): Invalid ItemId")
         return false
@@ -219,12 +220,22 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
         LOG:Error("LootManager:DisenchantItem(): Item does not exist")
         return false
     end
+    if CLM.WoW10 then
+        if type(extra) == "string" then
+            extra = string.gsub(extra, "[^%d:]+", "")
+        elseif extra ~= nil then
+            LOG:Error("LootManager:DisenchantItem(): Invalid extra payload data")
+            return false
+        end
+    else
+        extra = nil
+    end
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     local entry
     if isRaid then
-        entry = CLM.MODELS.LEDGER.LOOT.RaidDisenchant:new(raidOrRoster:UID(), itemId)
+        entry = CLM.MODELS.LEDGER.LOOT.RaidDisenchant:new(raidOrRoster:UID(), itemId, extra)
     else
-        entry = CLM.MODELS.LEDGER.LOOT.Disenchant:new(roster:UID(), itemId)
+        entry = CLM.MODELS.LEDGER.LOOT.Disenchant:new(roster:UID(), itemId, extra)
     end
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
     if CLM.GlobalConfigs:GetLootWarning() then

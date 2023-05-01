@@ -22,7 +22,7 @@ function Award:new(rosterUid, profile, itemId, value, extra)
     o.p = GetGUIDFromEntry(profile) or 0
     o.i = tonumber(itemId) or 0
     o.v = tonumber(value) or 0
-    o.e = tostring(extra or "")
+    o.e = extra and tostring(extra) or extra
     return o
 end
 
@@ -90,7 +90,7 @@ function Disenchant:new(rosterUid, itemId, extra)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.i = tonumber(itemId) or 0
-    o.e = tostring(extra or "")
+    o.e = extra and tostring(extra) or extra
     return o
 end
 
@@ -115,7 +115,7 @@ function RaidDisenchant:new(raidUid, itemId, extra)
     local o = LogEntry.new(self);
     o.r = raidUid or ""
     o.i = tonumber(itemId) or 0
-    o.e = tostring(extra or "")
+    o.e = extra and tostring(extra) or extra
     return o
 end
 
