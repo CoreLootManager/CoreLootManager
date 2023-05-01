@@ -18,19 +18,5 @@ jobs:
         run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
         with:
-          name: CLMPackage
+          name: CLM Package
           path: .release/${{ env.artifact }}.zip
-
-  discord_announce:
-    needs:
-      - packager_release
-    name: Post a Discord Announcement
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: install disnake
-        run: pip3 install disnake
-      - name: announce
-        run: python3 scripts/post_release.py $WEBHOOK_URL
-        env:
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
