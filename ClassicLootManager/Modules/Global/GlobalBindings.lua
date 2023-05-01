@@ -8,7 +8,7 @@ local CONSTANTS = CLM.CONSTANTS
 
 local EVENT_FILL_AUCTION_WINDOW = "CLM_AUCTION_WINDOW_FILL" -- TODO event
 
-BINDING_HEADER_CLM = "Classic Loot Manager"
+BINDING_HEADER_CLM = "Core Loot Manager"
 
 function CLM_Binding_StartAuction() -- luacheck: ignore
     LOG:Trace("CLM_Binding_StartAuction")

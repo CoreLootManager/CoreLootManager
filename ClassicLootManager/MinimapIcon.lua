@@ -1,6 +1,6 @@
 local _, CLM = ...
 
-local addonName = "Classic Loot Manager" -- same as the UI name for config
+local addonName = "Core Loot Manager" -- same as the UI name for config
 
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1", true)
 if not ldb then return end

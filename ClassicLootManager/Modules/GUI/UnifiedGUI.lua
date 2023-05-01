@@ -264,7 +264,7 @@ function UnifiedGUI:CreateAceGUIStructure()
     LOG:Trace("UnifiedGUI:CreateAceGUIStructure()")
     -- Main Frame
     local f = AceGUI:Create("Window")
-    f:SetTitle(CLM.L["Classic Loot Manager"])
+    f:SetTitle(CLM.L["Core Loot Manager"])
     f:SetLayout("Fill")
     f:EnableResize(false)
     f:SetWidth(700)

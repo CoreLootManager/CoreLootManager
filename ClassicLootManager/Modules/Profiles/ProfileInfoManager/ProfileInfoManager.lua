@@ -47,14 +47,14 @@ local function OutOfDate(self, version, disable)
     local currentTime = GetServerTime()
     if disable then
         if currentTime - self._lastDisplayedMessageD > 300 then
-            LOG:Message(CLM.L["|cffcc0000Your Classic Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
+            LOG:Message(CLM.L["|cffcc0000Your Core Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessageD = currentTime
         end
         CLM.MODULES.LedgerManager:Cutoff()
         CLM.MODULES.Comms:Disable()
     else
         if currentTime - self._lastDisplayedMessage > 300 then
-            LOG:Message(CLM.L["New version %s of Classic Loot Manager is available. For best experience please update the AddOn."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
+            LOG:Message(CLM.L["New version %s of Core Loot Manager is available. For best experience please update the AddOn."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessage = currentTime
         end
     end
@@ -256,7 +256,7 @@ function ProfileInfoManager:Initialize()
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
-            LOG:Message(CLM.L["Classic Loot Manager %s initialization complete. %s"], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"), "Created by |cffe6cc80Lantis|r Annalina-Mirage Raceway")
+            LOG:Message(CLM.L["Core Loot Manager %s initialization complete. %s"], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"), "Created by |cffe6cc80Lantis|r Annalina-Mirage Raceway")
             if CLM.AF then LOG:Message("Happy |cff44ee44April Fools'|r raid week!") end
             C_Timer.After(1, function()
                 RestoreVersions(self)

@@ -131,17 +131,17 @@ CLM.MODULES.ConfigManager = ConfigManager
 
 CONSTANTS.CONFIGS = {
     GROUPS = UTILS.Set({
-        "Classic Loot Manager",
+        "Core Loot Manager",
         CLM.L["Rosters"],
         -- CLM.L["Integrations"]
     }),
     ORDERED_GROUPS = {
-        "Classic Loot Manager",
+        "Core Loot Manager",
         CLM.L["Rosters"],
         -- CLM.L["Integrations"]
     },
     GROUP = {
-        GLOBAL = "Classic Loot Manager",
+        GLOBAL = "Core Loot Manager",
         ROSTER = CLM.L["Rosters"],
         -- INTEGRATIONS = CLM.L["Integrations"]
     },

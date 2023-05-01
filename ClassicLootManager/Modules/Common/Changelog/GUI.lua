@@ -10,7 +10,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local windowName = CLM.L["Classic Loot Manager"] .. " " .. CLM.L["Changelog"]
+local windowName = CLM.L["Core Loot Manager"] .. " " .. CLM.L["Changelog"]
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('changelog', {
