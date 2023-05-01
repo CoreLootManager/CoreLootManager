@@ -166,11 +166,15 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
         LOG:Error("LootManager:AwardItem(): Invalid Value")
         return false
     end
-    if type(extra) == "string" then
-        extra = string.gsub(extra, "[^%d:]+", "")
-    elseif extra ~= nil then
-        LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
-        return false
+    if CLM.WoW10 then
+        if type(extra) == "string" then
+            extra = string.gsub(extra, "[^%d:]+", "")
+        elseif extra ~= nil then
+            LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
+            return false
+        end
+    else
+        extra = nil
     end
 
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster

@@ -57,7 +57,7 @@ function RaidAward:new(raidUid, profile, itemId, value, extra)
     o.p = GetGUIDFromEntry(profile) or 0
     o.i = tonumber(itemId) or 0
     o.v = tonumber(value) or 0
-    o.e = tostring(extra or "")
+    o.e = extra and tostring(extra) or extra
     return o
 end
 
