@@ -4,12 +4,13 @@ on:
 
 jobs:
   packager:
-    name: Package via BigWigs packager for DF and WotLK
+    name: Package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: recursive
+      - run: pipx install gitman
+      - run: gitman install --force
+      - run: find ClassicLootManager/Libs -type d -name ".git" -execdir rm -rf {} \; -prune
       - name: Bigwigs packager
         uses: BigWigsMods/packager@7cd7fe5fede4ca80f63742e6bc1d777914814380
         with:
@@ -18,5 +19,5 @@ jobs:
         run: echo "artifact=`readlink -f .release/*.zip`" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
         with:
-          name: CLM Package
+          name: CoreLootManager
           path: ${{ env.artifact }}

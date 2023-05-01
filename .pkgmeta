@@ -33,6 +33,7 @@ externals:
 ignore:
   - scripts
   - assets
+  - gitman.yml
 
 move-folders:
   ClassicLootManager/ClassicLootManager: ClassicLootManager

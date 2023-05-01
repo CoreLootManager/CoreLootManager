@@ -1,0 +1,6 @@
+location: ClassicLootManager/Libs
+sources:
+  - repo: https://github.com/SamMousa/lua-eventsourcing
+    name: LibEventSourcing
+    rev: efdb3ffee1dcecf572ab5e610bdbd036d321be8e
+    type: git

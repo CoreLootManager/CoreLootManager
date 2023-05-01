@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - 'v*'
+
 jobs:
   create_github_release:
     name: Create a release object in Github
@@ -19,10 +20,12 @@ jobs:
   packager_release:
     needs:
       - create_github_release
-    name: Build via BigWigs packager for DF and WotLK
+    name: Package via BigWigs packager for DF and WotLK
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 #      - name: verify required files recursively
 #        run: scripts/verify-dependencies.sh ClassicLootManager.toc
       - name: Bigwigs packager
@@ -30,6 +33,7 @@ jobs:
         env:
           CF_API_KEY: ${{ secrets.CF_TOKEN }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_TOKEN }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: "-o -u -m .pkgmeta -S"
       - name: Get name of zip file
