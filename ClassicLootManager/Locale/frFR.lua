@@ -1273,7 +1273,7 @@ CLM.L["New roster: %s"] = "Nouveau roster: %s"
 -- ClassicLootManager_Integrations/Migration.lua:111
 CLM.L["New roster: [%s]"] = "Nouveau roster : [%s]"
 -- ClassicLootManager/Modules/Profiles/ProfileInfoManager/ProfileInfoManager.lua:59
-CLM.L["New version %s of Core Loot Manager available. For best experience please update the AddOn."] = "La nouvelle version %s de Core Loot Manager est disponible. Pour une meilleure expérience, veuillez mettre à jour l'Addon."
+CLM.L["New version %s of Core Loot Manager is available. For best experience please update the AddOn."] = "La nouvelle version %s de Core Loot Manager est disponible. Pour une meilleure expérience, veuillez mettre à jour l'Addon."
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:77
 CLM.L["Nightbane"] = "Plaie-de-nuit"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1284
