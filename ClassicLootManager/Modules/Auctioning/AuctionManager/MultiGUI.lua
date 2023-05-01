@@ -832,7 +832,7 @@ function AuctionManagerGUI:Refresh()
     end
 
     local itemList = {}
-    for id, auctionItem in pairs(auction:GetItems()) do
+    for _, auctionItem in pairs(auction:GetItems()) do
         local iconColor, note
         if not auctionItem:HasValidBids() and auction:IsComplete() then
             iconColor = colorGold

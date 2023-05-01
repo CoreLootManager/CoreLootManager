@@ -852,7 +852,7 @@ function BiddingManagerGUI:RefreshItemList()
     if auction then
         local itemList = {}
         local current = self.auctionItem
-        for id, auctionItem in pairs(auction:GetItems()) do
+        for _, auctionItem in pairs(auction:GetItems()) do
             local iconColor, note
             if not auctionItem:GetCanUse() then
                 iconColor = colorRed
