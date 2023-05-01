@@ -8,7 +8,6 @@ local UTILS     = CLM.UTILS
 
 local typeof = UTILS.typeof
 
-local whoami = UTILS.whoami()
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
 -- luacheck: ignore CHAT_MESSAGE_CHANNEL
@@ -176,7 +175,7 @@ end
 
 local function HandleLootMessage(addon, event, message, _, _, _, playerName, ...)
     local self = AuctionManager
-    if playerName ~= whoami then return end
+    if playerName ~= UTILS.whoami() then return end
     if not message then return end
     if not CLM.MODULES.RaidManager:IsInActiveRaid() then return end
     if not self:IsAuctioneer() then return end
@@ -259,7 +258,7 @@ local function PostLootToRaidChat()
     if not IsInRaid() then return end
     if not CLM.GlobalConfigs:GetAnnounceLootToRaid() then return end
     if CLM.GlobalConfigs:GetAnnounceLootToRaidOwnerOnly() then
-        if not CLM.MODULES.RaidManager:IsRaidOwner(whoami) then return end
+        if not CLM.MODULES.RaidManager:IsRaidOwner(UTILS.whoami()) then return end
     end
     local targetGuid = UnitGUID("target")
     if targetGuid then
@@ -821,7 +820,7 @@ local function handleIncomingRoll(_, _, message, ...)
         return
     end
 
-    local rollerProfile = CLM.MODULES.ProfileManager:GetProfileByName(who)
+    local rollerProfile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.Ambiguate(who))
     if not rollerProfile then
         LOG:Debug("No profile for %s", who)
         return
@@ -1146,7 +1145,7 @@ end
 
 function AuctionManager:Award(item, name, price)
     LOG:Trace("AuctionManager:Award()")
-    local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
+    local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), item:GetExtraPayload(), price, true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         CLM.MODULES.AutoAssign:Handle(item:GetItemID(), name)
@@ -1156,7 +1155,7 @@ end
 
 function AuctionManager:Disenchant(item)
     LOG:Trace("AuctionManager:Disenchant()")
-    local success, uuid = CLM.MODULES.LootManager:DisenchantItem(self.currentAuction:GetRaid(), item:GetItemLink(), item:GetItemID(), true)
+    local success, uuid = CLM.MODULES.LootManager:DisenchantItem(self.currentAuction:GetRaid(), item:GetItemLink(), true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         local disenchanter = CLM.MODULES.RaidManager:GetDisenchanter()
@@ -1168,7 +1167,7 @@ end
 
 function AuctionManager:IsAuctioneer(name, relaxed)
     LOG:Trace("AuctionManager:IsAuctioneer()")
-    name = name or whoami
+    name = name or UTILS.whoami()
     return CLM.MODULES.RaidManager:IsAllowedToAuction(name, relaxed)
 end
 

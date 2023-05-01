@@ -631,39 +631,37 @@ local function generateBossKillAwardValueInputField(self, roster, info, instance
     }
 end
 
+local bossKillBonusTabMap = {
+    classic = { name = CLM.L["Classic"],                        offset = 0},
+    tbc     = { name = CLM.L["TBC"],                            offset = 1000},
+    wotlk10 = { name = CLM.L["WotLK"] .. " - " .. "10",         offset = 2000},
+    wotlk25 = { name = CLM.L["WotLK"] .. " - " .. "25",         offset = 3000},
+    dfn     = { name = CLM.L["DF"] .. " - " .. CLM.L["Normal"], offset = 4000},
+    dfh     = { name = CLM.L["DF"] .. " - " .. CLM.L["Heroic"], offset = 5000},
+    dfm     = { name = CLM.L["DF"] .. " - " .. CLM.L["Mythic"], offset = 6000},
+}
+
 local function boss_kill_award_values(self, roster, name)
-    local args = {
-        classic = {
-            type = "group",
-            name = CLM.L["Classic"],
-            args = {}
-        },
-        tbc = {
-            type = "group",
-            name = CLM.L["TBC"],
-            args = {}
-        },
-        wotlk10 = {
-            type = "group",
-            name = CLM.L["WotLK - 10"],
-            args = {}
-        },
-        wotlk25 = {
-            type = "group",
-            name = CLM.L["WotLK - 25"],
-            args = {}
-        }
-    }
+    local args = {}
     -- Common
-    local order = 1
+    local order
     for expansion,expansionEncounterData in pairs(CLM.EncounterIDs) do
-        expansion = string.lower( expansion )
+        expansion = string.lower(expansion)
+        order = bossKillBonusTabMap[expansion].offset
+        if not args[expansion] then
+            args[expansion] = {
+                type = "group",
+                name = bossKillBonusTabMap[expansion].name,
+                args = {},
+                order = order
+            }
+        end
         for _, instanceData in ipairs(expansionEncounterData) do
             for _,difficultyId in ipairs(instanceData.difficulty) do
                 order = order + 1
                 local instanceName = instanceData.name .. " - " .. CLM.DifficultyIDsMap[difficultyId]
                 args[expansion].args["encounter_header_" .. instanceData.name .. difficultyId] = {
-                    name = instanceName,
+                    name = instanceName or "???",
                     type = "header",
                     order = order,
                     width = "full"

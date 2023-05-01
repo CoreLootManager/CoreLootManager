@@ -83,7 +83,7 @@ class L10nStorage:
         return self.translations[locale][string]
 
 def add_indirectly_used_strings(storage:L10nStorage):
-    for s in ["Hunter", "Warrior", "Druid", "Priest", "Mage", "Paladin", "Rogue", "Warlock", "Shaman"]:
+    for s in ["Hunter", "Warrior", "Druid", "Priest", "Mage", "Paladin", "Rogue", "Warlock", "Shaman", "Death Knight", "Demon Hunter", "Evoker"]:
         storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
     # tabs
@@ -211,7 +211,6 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
             sanitized_sentence = sanitize_sentence_regex.findall(sentence)[0]
             if dry_run:
                 _print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_google[locale]))
-                
             else:
                 translation = ts.google(sanitized_sentence, from_language='en', to_language=locale_to_google[locale])
                 storage.translate(locale, sentence, translation, False)
@@ -219,6 +218,21 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
                 percent = math.floor(100*(total_done/total_missing))
                 if percent > last_percent:
                     _print("Translation progress: {0}% [{1}]".format(percent, locale))
+                last_percent = percent
+    return total_missing, total_done, last_percent
+
+
+def rewrite_missing(missing, storage:L10nStorage, locale, total_missing, total_done, last_percent, dry_run):
+    if len(missing) > 0:
+        for sentence in missing:
+            sanitized_sentence = sanitize_sentence_regex.findall(sentence)[0]
+            if dry_run:
+                _print("rewriting [{0}]".format(sanitized_sentence))
+            else:
+                translation = sanitized_sentence
+                storage.translate(locale, sentence, translation, False)
+                total_done += 1
+                percent = math.floor(100*(total_done/total_missing))
                 last_percent = percent
     return total_missing, total_done, last_percent
 
@@ -272,6 +286,9 @@ def main(args):
     for locale in locales:
         if args.translate:
             total_missing, total_done, last_percent = translate_missing(missing_translations[locale], storage, locale, total_missing, total_done, last_percent, args.dry_run)
+        elif args.rewrite:
+            total_missing, total_done, last_percent = rewrite_missing(missing_translations[locale], storage, locale, total_missing, total_done, last_percent, args.dry_run)
+
         if args.regenerate:
             output_to_file('ClassicLootManager/Locale/{0}.lua'.format(locale), storage, locale)
 
@@ -283,5 +300,6 @@ if __name__ == '__main__':
     parser.add_argument('--parser', dest='parser', action='store_true')
     parser.add_argument('--markdown', dest='markdown', action='store_true')
     parser.add_argument('--translate', dest='translate', action='store_true')
+    parser.add_argument('--rewrite', dest='rewrite', action='store_true')
     parser.add_argument('--dry', dest='dry_run', action='store_true')
     main(parser.parse_known_args(sys.argv)[0])

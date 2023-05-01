@@ -227,8 +227,10 @@ end
 
 local function StoreLocation(self)
     self.db.location = { self.top:GetPoint() }
+    self.db.location[2] = nil
     if self.bar then
         self.db.barLocation = { self.bar:GetPoint() }
+        self.db.barLocation[2] = nil
     end
     self.db.scale = self.top.frame:GetScale()
 end
@@ -674,7 +676,8 @@ local function CreateItemList(self)
             local rowData = table:GetRow(realrow)
             if not rowData or not rowData.cols then return status end
             GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink("item:" .. (tonumber(rowData.cols[column].value) or 0))
+            -- GameTooltip:SetHyperlink("item:" .. (tonumber(rowData.cols[column].value) or 0))
+            GameTooltip:SetHyperlink(rowData.cols[column].value or "item:0")
             GameTooltip:Show()
             return status
         end),
@@ -849,7 +852,7 @@ function BiddingManagerGUI:RefreshItemList()
     if auction then
         local itemList = {}
         local current = self.auctionItem
-        for id, auctionItem in pairs(auction:GetItems()) do
+        for _, auctionItem in pairs(auction:GetItems()) do
             local iconColor, note
             if not auctionItem:GetCanUse() then
                 iconColor = colorRed
@@ -869,7 +872,7 @@ function BiddingManagerGUI:RefreshItemList()
             if current and current:GetItemID() == auctionItem:GetItemID() then
                 iconColor = colorTurquoise
             end
-            itemList[#itemList+1] = { cols = { {value = id, item = auctionItem, iconColor = iconColor, note = note}}}
+            itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note}}}
         end
         self.ItemList:SetData(itemList)
     end

@@ -45,7 +45,7 @@ local function mutateLootAward(entry, roster)
 
         -- Force caching loot from server
         GetItemInfo(loot:Id())
-        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_ITEM, { id = loot:Id() }, entry:time(), GUID)
+        CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_ITEM, { link = loot:String() }, entry:time(), GUID)
         -- Handle Zero-Sum Bank mode
         local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
         if not raid then
@@ -63,7 +63,7 @@ local function mutateLootAward(entry, roster)
             if num_players > 0 then
                 local value = (loot:Value()/num_players) + roster:GetConfiguration("zeroSumBankInflation")
                 value = UTILS.round(value, raid:Configuration():Get("roundDecimals"))
-                CLM.MODULES.PointManager:UpdatePointsDirectly(roster, players, value, CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD, false, loot:Timestamp(), entry:creator())
+                CLM.MODULES.PointManager:UpdatePointsDirectly(roster, players, value, CONSTANTS.POINT_CHANGE_REASON.ZERO_SUM_AWARD, false, loot:Timestamp(), entry:creatorFull())
             else
                 LOG:Debug("mutateLootAward(): Empty player list in raid.")
                 return
@@ -139,7 +139,7 @@ function LootManager:Initialize()
 
 end
 
-function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forceInstant)
+function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, value, forceInstant)
     LOG:Trace("LootManager:AwardItem()")
     local isRaid = true
     if not UTILS.typeof(raidOrRoster, CLM.MODELS.Raid) then
@@ -166,13 +166,24 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
         LOG:Error("LootManager:AwardItem(): Invalid Value")
         return false
     end
+    if CLM.WoW10 then
+        if type(extra) == "string" then
+            extra = string.gsub(extra, "[^%d:]+", "")
+        elseif extra ~= nil then
+            LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
+            return false
+        end
+    else
+        extra = nil
+    end
+
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     if roster:IsProfileInRoster(profile:GUID()) then
         local entry
         if isRaid then
-            entry = CLM.MODELS.LEDGER.LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value)
+            entry = CLM.MODELS.LEDGER.LOOT.RaidAward:new(raidOrRoster:UID(), profile, itemId, value, extra)
         else
-            entry = CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, itemId, value)
+            entry = CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, itemId, value, extra)
         end
         local pointTypeSuffix = ((roster:GetPointType() == CONSTANTS.POINT_TYPE.DKP) and CLM.L["DKP"] or CLM.L["GP"])
         CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
@@ -190,7 +201,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forc
     return false
 end
 
-function LootManager:DisenchantItem(raidOrRoster, itemLink, itemId, forceInstant)
+function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
     LOG:Trace("LootManager:DisenchantItem()")
     local isRaid = true
     if not UTILS.typeof(raidOrRoster, CLM.MODELS.Raid) then
@@ -200,20 +211,31 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, itemId, forceInstant
             return false
         end
     end
+    local itemId, extra = UTILS.GetItemIdFromLink(itemLink)
     if type(itemId) ~= "number" then
-        LOG:Error("LootManager:AwardItem(): Invalid ItemId")
+        LOG:Error("LootManager:DisenchantItem(): Invalid ItemId")
         return false
     end
     if not GetItemInfoInstant(itemId) then
-        LOG:Error("LootManager:AwardItem(): Item does not exist")
+        LOG:Error("LootManager:DisenchantItem(): Item does not exist")
         return false
+    end
+    if CLM.WoW10 then
+        if type(extra) == "string" then
+            extra = string.gsub(extra, "[^%d:]+", "")
+        elseif extra ~= nil then
+            LOG:Error("LootManager:DisenchantItem(): Invalid extra payload data")
+            return false
+        end
+    else
+        extra = nil
     end
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     local entry
     if isRaid then
-        entry = CLM.MODELS.LEDGER.LOOT.RaidDisenchant:new(raidOrRoster:UID(), itemId)
+        entry = CLM.MODELS.LEDGER.LOOT.RaidDisenchant:new(raidOrRoster:UID(), itemId, extra)
     else
-        entry = CLM.MODELS.LEDGER.LOOT.Disenchant:new(roster:UID(), itemId)
+        entry = CLM.MODELS.LEDGER.LOOT.Disenchant:new(roster:UID(), itemId, extra)
     end
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
     if CLM.GlobalConfigs:GetLootWarning() then
@@ -235,26 +257,5 @@ function LootManager:RevokeItem(loot, forceInstant)
     CLM.MODULES.LedgerManager:Remove(loot:Entry(), forceInstant)
 end
 
-function LootManager:TransferItem(roster, profile, loot, forceInstant)
-    LOG:Trace("LootManager:TransferItem()")
-    if not UTILS.typeof(roster, CLM.MODELS.Roster) then
-        LOG:Error("LootManager:TransferItem(): Missing valid roster")
-        return
-    end
-    if not UTILS.typeof(profile, CLM.MODELS.Profile) then
-        LOG:Error("LootManager:TransferItem(): Missing valid target profile")
-        return
-    end
-    if not UTILS.typeof(loot, CLM.MODELS.Loot) then
-        LOG:Error("LootManager:TransferItem(): Missing valid loot")
-        return
-    end
-    if roster:IsProfileInRoster(profile:GUID()) then
-        CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.LOOT.Award:new(roster:UID(), profile, loot:Id(), loot:Value()), forceInstant)
-        CLM.MODULES.LedgerManager:Remove(loot:Entry(), forceInstant)
-    else
-        LOG:Error("LootManager:TransferItem(): Unknown profile guid [%s] in roster [%s]", profile:GUID(), roster:UID())
-    end
-end
 
 CLM.MODULES.LootManager = LootManager

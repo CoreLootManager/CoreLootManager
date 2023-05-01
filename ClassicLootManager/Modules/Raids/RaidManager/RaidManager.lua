@@ -12,7 +12,6 @@ local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 CHAT_MESSAGE_CHANNEL = "GUILD"
 --@end-debug@
 
-local whoami = UTILS.whoami()
 local whoamiGUID = UTILS.whoamiGUID()
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
@@ -53,7 +52,7 @@ function RaidManager:Initialize()
                 return
             end
             -- Handle existing raid gracefully
-            local creator = getGuidFromInteger(entry:creator())
+            local creator = getGuidFromInteger(entry:creatorFull())
             local raid = CLM.MODELS.Raid:New(raidUid, name, roster, config, creator, entry)
             LOG:Debug("RaidManager mutator(): New raid %s(%s) from %s", name, raidUid, creator)
             self.cache.raids[raidUid] = raid
@@ -349,7 +348,7 @@ function RaidManager:StartRaid(raid)
     for i=1,MAX_RAID_MEMBERS do
         local name = GetRaidRosterInfo(i)
         if name then
-            local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.RemoveServer(name))
+            local profile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.Disambiguate(name))
             if profile then
                 tinsert(players, profile)
                 joining_players_guids[profile:GUID()] = true
@@ -649,7 +648,7 @@ function RaidManager:UpdateGameRaidInformation()
     if lootmethod == "master" and masterlooterRaidID then
         local name = GetRaidRosterInfo(masterlooterRaidID)
         if name then
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             self.IsMasterLootSystem = true
             self.MasterLooter = name
             self.RaidAssistants[name] = true -- we add it in case ML is not an assistant
@@ -662,7 +661,7 @@ function RaidManager:UpdateGameRaidInformation()
     for i=1,MAX_RAID_MEMBERS do
         local name, rank = GetRaidRosterInfo(i)
         if name then
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             if rank >= 1 then
                 self.RaidAssistants[name] = true
             end
@@ -693,7 +692,7 @@ function RaidManager:UpdateRaiderList()
     for i=1,MAX_RAID_MEMBERS do
         local name = GetRaidRosterInfo(i)
         if name then
-            name = UTILS.RemoveServer(name)
+            name = UTILS.Disambiguate(name)
             current[name] = true
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
             if profile then
@@ -719,7 +718,7 @@ end
 
 function RaidManager:IsRaidOwner(name)
     LOG:Trace("RaidManager:IsRaidOwner()")
-    name = name or whoami
+    name = name or UTILS.whoami()
     local isOwner
     if IsPlayerInPvP() then
         LOG:Debug("Player in PvP")
@@ -749,7 +748,7 @@ end
 
 
 function RaidManager:IsMasterLooter(name)
-    return self.IsMasterLootSystem and (self.MasterLooter == (name or whoami)) or false
+    return self.IsMasterLootSystem and (self.MasterLooter == (name or UTILS.whoami())) or false
 end
 
 function RaidManager:IsAllowedToAuction(name, relaxed)
@@ -758,7 +757,7 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
     --@end-debug@
     --[===[@non-debug@
     LOG:Trace("RaidManager:IsAllowedToAuction()")
-    name = name or whoami
+    name = name or UTILS.whoami()
 
     if not relaxed then -- Relaxed requirements: doesn't need to be assitant (for out of guild checks)
         if not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) then

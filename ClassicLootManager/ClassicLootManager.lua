@@ -7,6 +7,8 @@ if LIB_CLM then
     LIB_CLM.CLM = CLM
 end
 
+CLM.WoW10 = (select(4, GetBuildInfo()) >= 100000)
+
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
 CLM.MODULES = {}
@@ -15,6 +17,12 @@ CLM.CONSTANTS = {}
 CLM.COMM_CHANNEL = {
     AUCTION = "Auction2",
     BIDDING = "Bidding2",
+    LEDGER = {
+        SYNC = "LedgerS2",
+        DATA = "LedgerD2"
+    },
+    STANDBY = "Standby001",
+    GLOBAL = "Version001"
 }
 CLM.UTILS = {}
 CLM.GUI = {}

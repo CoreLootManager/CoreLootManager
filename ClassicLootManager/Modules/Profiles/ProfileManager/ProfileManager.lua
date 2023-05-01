@@ -29,14 +29,14 @@ function ProfileManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileUpdate)")
             local iGUID = entry:GUID()
-            if type(iGUID) ~= "number" then return end
+            if not UTILS.ValidateIntegerGUID(iGUID) then return end
             local GUID = UTILS.getGuidFromInteger(iGUID)
             local name = entry:name()
             if UTILS.empty(name) then return end
 
             local class = UTILS.NumberToClass(entry:ingameClass()) or ""
             local main = entry:main()
-            main = (type(main) == "number" and main ~= 0) and UTILS.getGuidFromInteger(main) or ""
+            main = UTILS.ValidateIntegerGUID(main) and UTILS.getGuidFromInteger(main) or ""
             -- Check if it's an update
             local profileInternal = self.cache.profiles[GUID]
             if profileInternal then
@@ -81,7 +81,7 @@ function ProfileManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileRemove)")
             local GUID = entry:GUID()
-            if type(GUID) ~= "number" then return end
+            if not UTILS.ValidateIntegerGUID(GUID) then return end
             GUID = UTILS.getGuidFromInteger(GUID)
             local profile = self.cache.profiles[GUID]
             if profile then
@@ -116,10 +116,10 @@ function ProfileManager:Initialize()
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLink)")
             local altGUID = entry:GUID()
-            if type(altGUID) ~= "number" then return end
+            if not UTILS.ValidateIntegerGUID(altGUID) then return end
             altGUID = UTILS.getGuidFromInteger(altGUID)
             local mainGUID = entry:main()
-            if type(mainGUID) ~= "number" then return end
+            if not UTILS.ValidateIntegerGUID(mainGUID) then return end
             if altGUID == mainGUID then return end
             mainGUID = UTILS.getGuidFromInteger(mainGUID)
             local altProfile = self:GetProfileByGUID(altGUID)
@@ -177,8 +177,8 @@ function ProfileManager:Initialize()
                         -- 6) History entry
                         local targets = UTILS.keys(mainProfile:Alts())
                         table.insert(targets, 1, mainGUID)
-                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator())
-                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, spentSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creator(), nil, true)
+                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creatorFull())
+                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, spentSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creatorFull(), nil, true)
 
                     end
                 end
@@ -388,9 +388,8 @@ function ProfileManager:FillFromGuild(selectedRank, minLevel)
 
     for i=1,GetNumGuildMembers() do
         local name, _, rankIndex, level, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
-        name, _ = strsplit("-", name)
         if rankFilterFn(rankIndex) and minLevelFn(level, minLevel) then
-            self:NewProfile(GUID, name, class)
+            self:NewProfile(GUID, UTILS.Disambiguate(name), class)
         end
     end
 end
@@ -401,9 +400,8 @@ function ProfileManager:FillFromRaid()
     for i=1,MAX_RAID_MEMBERS do
         local name, _, _, _, _, class = GetRaidRosterInfo(i)
         if name ~= nil then
-            name, _ = strsplit("-", name)
             local GUID = UnitGUID("raid" .. tostring(i))
-            self:NewProfile(GUID, name, class)
+            self:NewProfile(GUID, UTILS.Disambiguate(name), class)
         end
     end
 end

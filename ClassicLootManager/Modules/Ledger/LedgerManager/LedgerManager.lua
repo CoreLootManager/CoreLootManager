@@ -13,21 +13,14 @@ local STATUS_OUT_OF_SYNC = "out_of_sync"
 -- local STATUS_UNKNOWN = "unknown"
 local STATUS_UNKNOWN_TYPE = "unknown_type"
 
-
-local LEDGER_SYNC_COMM_PREFIX = "LedgerS2"
-local LEDGER_DATA_COMM_PREFIX = "LedgerD2"
-
 local previousCallback = nil
 local function registerReceiveCallback(callback)
     if not previousCallback then
         previousCallback = callback
     end
 
-    -- Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, function(name, length)
-    --     return length < 4096
-    -- end)
-    CLM.MODULES.Comms:Register(LEDGER_SYNC_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.PLEBS)
-    CLM.MODULES.Comms:Register(LEDGER_DATA_COMM_PREFIX, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
+    CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.LEDGER.SYNC, callback, CONSTANTS.ACL.LEVEL.PLEBS)
+    CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.LEDGER.DATA, callback, CONSTANTS.ACL.LEVEL.ASSISTANT)
 end
 
 local function restoreReceiveCallback()
@@ -41,14 +34,14 @@ local function createLedger(self, database)
     local ledger = LedgerLib.createLedger(
         database,
         (function(data, distribution, target, callbackFn, callbackArg)
-            return CLM.MODULES.Comms:Send(LEDGER_SYNC_COMM_PREFIX, data, distribution, target, "BULK")
+            return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.SYNC, data, distribution, target, "BULK")
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
         (function(entry, sender)
             return CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, sender)
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
-            return CLM.MODULES.Comms:Send(LEDGER_DATA_COMM_PREFIX, data, distribution, target, "BULK")
+            return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.DATA, data, distribution, target, "BULK")
         end), -- sendLargeMessage
         0, 100, LOG)
 
@@ -116,8 +109,8 @@ end
 -- This is not reversable until reload
 function LedgerManager:Cutoff()
     self.activeLedger.disableSending()
-    CLM.MODULES.Comms:Suspend(LEDGER_SYNC_COMM_PREFIX)
-    CLM.MODULES.Comms:Suspend(LEDGER_DATA_COMM_PREFIX)
+    CLM.MODULES.Comms:Suspend(CLM.COMM_CHANNEL.LEDGER.SYNC)
+    CLM.MODULES.Comms:Suspend(CLM.COMM_CHANNEL.LEDGER.DATA)
 end
 
 function LedgerManager:DisableAdvertising()
@@ -288,7 +281,7 @@ function LedgerManager:Submit(entry, catchup)
     LOG:Trace("LedgerManager:Submit()")
     if not entry then return end
     self.lastEntry = entry
-    self.activeLedger.submitEntry(entry)
+    self.activeLedger.submitEntry(entry, UTILS.whoami())
     if catchup then
         self.activeLedger.catchup()
     end

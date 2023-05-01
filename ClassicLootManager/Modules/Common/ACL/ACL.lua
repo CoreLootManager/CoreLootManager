@@ -5,8 +5,6 @@ local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
-local whoami = UTILS.whoami()
-
 local ACL = {}
 function ACL:Initialize()
     LOG:Trace("ACL:Initialize()")
@@ -27,7 +25,7 @@ function ACL:CheckLevel(level, name)
         if self.guildMaster then
             return true
         end
-        name = whoami
+        name = UTILS.whoami()
     end
     local isGuildMaster = (info.guildMaster == name) or false
     local isManager = info.managers[name] or false

@@ -12,7 +12,7 @@ function GlboalChatMessageHandlers:Initialize()
     if not CLM.GlobalConfigs:GetAllowChatCommands() then return end
     CLM.MODULES.EventManager:RegisterWoWEvent({"CHAT_MSG_WHISPER", "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER"},
     (function(addon, event, text, playerName, ...)
-        playerName = UTILS.RemoveServer(playerName)
+        playerName = UTILS.Disambiguate(playerName)
         local params = { strsplit(" ", text) }
         local command = params[1]
         if command then

@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 local _, CLM = ...
 
 local LOG = CLM.LOG
@@ -25,12 +26,17 @@ local numberToClass = {
     [7]  = "Shaman",
     [8]  = "Mage",
     [9]  = "Warlock",
-    -- [10] = "Monk",
+    [10] = "Monk",
     [11] = "Druid",
-    -- [12] = "Demon Hunter"
+    [12] = "Demon Hunter",
+    [13] = "Evoker"
 }
-
-local classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+local classOrdered
+if CLM.WoW10 then
+    classOrdered = { "Death Knight", "Demon Hunter", "Druid", "Evoker", "Hunter", "Mage", "Monk", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+else
+    classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+end
 local classToNumber = {}
 for k, v in pairs(numberToClass) do
     classToNumber[v] = k
@@ -54,9 +60,10 @@ local classToCanonical = {
     ["Shaman"] = "SHAMAN",
     ["Mage"] = "MAGE",
     ["Warlock"] = "WARLOCK",
-    -- ["Monk"] = "MONK",
+    ["Monk"] = "MONK",
     ["Druid"] = "DRUID",
-    -- ["Demon Hunter"] = "DEMONHUNTER"
+    ["Demon Hunter"] = "DEMONHUNTER",
+    ["Evoker"] = "EVOKER",
 }
 
 function UTILS.CanonicalClass(class)
@@ -73,9 +80,10 @@ local canonicalToNumber = {
     ["SHAMAN"] = 7,
     ["MAGE"] = 8,
     ["WARLOCK"] = 9,
-    -- ["MONK"] = 10,
+    ["MONK"] = 10,
     ["DRUID"] = 11,
-    -- ["DEMONHUNTER"] = 12
+    ["DEMONHUNTER"] = 12,
+    ["EVOKER"] = 13,
 }
 
 function UTILS.CanonicalClassToNumber(class)
@@ -92,7 +100,10 @@ local classColors = {
     ["Paladin"]         = { a = 1, r = 0.96, g = 0.55, b = 0.73, hex = "F58CBA" },
     ["Warlock"]         = { a = 1, r = 0.53, g = 0.53, b = 0.93, hex = "8787ED" },
     ["Warrior"]         = { a = 1, r = 0.78, g = 0.61, b = 0.43, hex = "C79C6E" },
-    ["Death Knight"]    = { a = 1, r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" }
+    ["Death Knight"]    = { a = 1, r = 0.77, g = 0.12, b = 0.23, hex = "C41E3A" },
+    ["Demon Hunter"]    = { a = 1, r = 0.64, g = 0.19, b = 0.79, hex = "A330C9" },
+    ["Monk"]            = { a = 1, r = 0,    g = 1.00, b = 0.60, hex = "00FF98" },
+    ["Evoker"]          = { a = 1, r = 0.20, g = 0.58, b = 0.50, hex = "33937F" },
 }
 
 function UTILS.GetClassColor(className)
@@ -192,8 +203,16 @@ end
 function UTILS.GetItemIdFromLink(itemLink)
     -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
     itemLink = itemLink or ""
-    local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
-    return tonumber(itemId) or 0
+    -- local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
+    local _, _, itemId, extra = string.find(itemLink, "item:(%d+)([%d:]*)|h")
+    return tonumber(itemId) or 0, extra or ""
+end
+
+function UTILS.SpoofLink(itemLink, extra)
+    if not extra then return itemLink end
+    local _, _, pre, post = string.find(itemLink, "(.*item:%d+)[%d:]+(|h.*)")
+    if not pre or not post then return itemLink end
+    return pre .. extra .. post
 end
 
 function UTILS.UniversalCliMethodExecutor(name, object, cli)
@@ -300,17 +319,6 @@ function UTILS.DeepCopy(orig, copies)
     return copy
 end
 
-function UTILS.RemoveServer(name)
-    name, _ = strsplit("-", name or "")
-    return name
-end
-
-function UTILS.GetUnitName(unit)
-    local name = GetUnitName(unit)
-    name = name or ""
-    return UTILS.RemoveServer(name)
-end
-
 function UTILS.typeof(object, objectType)
     if not object or not objectType then
         return false
@@ -332,39 +340,97 @@ function UTILS.empty(object)
     end
     return false
 end
-
-function UTILS.getIntegerGuid(GUID)
-    return tonumber(string.sub(GUID, -8), 16)
+function UTILS.RemoveServer(name)
+    name, _ = strsplit("-", name or "")
+    return name
 end
-local getIntegerGuid = UTILS.getIntegerGuid
-
-local playerGUID = UnitGUID("player") or ""
-local GUIDPrefix = string.sub(playerGUID, 1, -9)
-function UTILS.getGuidFromInteger(int)
-    return GUIDPrefix .. string.format("%08X", tonumber(int) or 0)
-end
-
-local playerName = UTILS.GetUnitName("player")
-function UTILS.whoami()
-    return playerName
-end
-
-function UTILS.whoamiGUID()
-    return playerGUID
-end
-
-function UTILS.GetGUIDFromEntry(e)
-    if typeof(e, CLM.MODELS.Profile) then
-        return getIntegerGuid(e:GUID())
-    elseif type(e) == "number" then
-        return e
-    elseif type(e) == "string" then
-        return getIntegerGuid(e)
-    else
-        return nil
+local playerGUID = UnitGUID("player")
+local getIntegerGuid, myRealmId
+if CLM.WoW10 then -- only support cross-server for Retail for now
+    function UTILS.getIntegerGuid(GUID)
+        local _, realm, int = strsplit("-", GUID)
+        return {tonumber(realm, 10), tonumber(int, 16)}
+    end
+    getIntegerGuid = UTILS.getIntegerGuid
+    myRealmId = unpack(getIntegerGuid(playerGUID), 1)
+    function UTILS.getGuidFromInteger(iGUID)
+        return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
+    end
+    function UTILS.ValidateIntegerGUID(iGUID)
+        if type(iGUID) ~= "table" then return false end
+        for i=1,2 do if type(iGUID[i]) ~= "number" then return false end end
+        return true
+    end
+    function UTILS.Disambiguate(name)
+        if string.find(name, "-") == nil then
+            name = name .. "-" .. GetNormalizedRealmName()
+        end
+        return name
+    end
+    function UTILS.GetGUIDFromEntry(e)
+        if typeof(e, CLM.MODELS.Profile) then
+            return getIntegerGuid(e:GUID())
+        elseif type(e) == "string" then
+            return getIntegerGuid(e)
+        elseif type(e) == "number" then
+            return {myRealmId, e}
+        else
+            return nil
+        end
+    end
+else -- non-WoW10 and not cross-server
+    function UTILS.getIntegerGuid(GUID)
+        local _, _, int = strsplit("-", GUID)
+        return tonumber(int, 16)
+    end
+    getIntegerGuid = UTILS.getIntegerGuid
+    _, myRealmId = strsplit("-", playerGUID)
+    do
+        local guidConversionFormat = "Player-"..tostring(myRealmId).."-%08X"
+        function UTILS.getGuidFromInteger(iGUID)
+            return string.format(guidConversionFormat, iGUID)
+        end
+    end
+    function UTILS.ValidateIntegerGUID(iGUID)
+        if type(iGUID) ~= "number" then return false end
+        if iGUID == 0 then return false end
+        return true
+    end
+    function UTILS.Disambiguate(name)
+        return UTILS.RemoveServer(name)
+    end
+    function UTILS.GetGUIDFromEntry(e)
+        if typeof(e, CLM.MODELS.Profile) then
+            return getIntegerGuid(e:GUID())
+        elseif type(e) == "string" then
+            return getIntegerGuid(e)
+        elseif type(e) == "number" then
+            return e
+        else
+            return nil
+        end
     end
 end
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
+
+local Disambiguate = UTILS.Disambiguate
+function UTILS.GetUnitName(unit)
+    local name = GetUnitName(unit, true)
+    return Disambiguate(name or "")
+end
+
+do
+    local playerFullName
+    function UTILS.whoami()
+        if not playerFullName then
+            playerFullName = UTILS.GetUnitName("player")
+        end
+        return playerFullName
+    end
+end
+function UTILS.whoamiGUID()
+    return playerGUID
+end
 
 function UTILS.CreateGUIDList(playerList)
     local playerGUIDList = {}
@@ -586,16 +652,19 @@ function UTILS.round(number, decimals)
     return math.floor(number * factor + 0.5) / factor
 end
 
--- function UTILS.GetMyTalents()
---     local one, two, three
---     _, _, one   = GetTalentTabInfo(1)
---     _, _, two   = GetTalentTabInfo(2)
---     _, _, three = GetTalentTabInfo(3)
---     return one, two, three
--- end
-
-function UTILS.GetMyRole()
-    return GetTalentGroupRole(GetActiveTalentGroup())
+if CLM.WoW10 then
+    function UTILS.GetMyRole()
+        local currentSpec = GetSpecialization()
+        local role = "NONE"
+        if currentSpec then
+            _, _, _, _, role = GetSpecializationInfo(currentSpec)
+        end
+        return role
+    end
+else
+    function UTILS.GetMyRole()
+        return GetTalentGroupRole(GetActiveTalentGroup())
+    end
 end
 
 function UTILS.IsTooltipTextRed(text)
@@ -714,23 +783,19 @@ function UTILS.LibStSingleSelectClickHandler(st, dropdownMenu, rowFrame, cellFra
 end
 
 function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-    local itemId = data[realrow].cols[column].value
-    local iconColor = data[realrow].cols[column].iconColor
+    local itemInfo = data[realrow].cols[column].value
+    local iconColor = data[realrow].cols[column].iconColor or {}
     local note = data[realrow].cols[column].note
-    local _, _, _, _, icon = GetItemInfoInstant(itemId or 0)
+    local _, _, _, _, icon = GetItemInfoInstant(itemInfo or 0)
     if icon then
         frame:SetNormalTexture(icon)
         frame:SetHighlightTexture(136580, "ADD")
         frame:GetHighlightTexture():SetTexCoord(0, 1, 0.23, 0.77)
-        if iconColor then
-            frame:GetNormalTexture():SetVertexColor(iconColor.r, iconColor.g, iconColor.b, iconColor.a or 1)
-        else
-            frame:GetNormalTexture():SetVertexColor(1,1,1,1)
-        end
+        frame:GetNormalTexture():SetVertexColor(iconColor.r or 1, iconColor.g or 1, iconColor.b or 1, iconColor.a or 1)
         frame:Show()
         frame:SetScript("OnEnter", function()
             GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink("item:" .. tostring(itemId))
+            GameTooltip:SetHyperlink(itemInfo or "item:0")
             if note then
                 GameTooltip:AddLine("\n")
                 GameTooltip:AddLine(note)

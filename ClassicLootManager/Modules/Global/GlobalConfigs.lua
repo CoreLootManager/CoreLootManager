@@ -62,7 +62,7 @@ function GlobalConfigs:Initialize()
             type = "description",
             name = [=[
 Thank you patrons, especially:
-|cffff8000Allcoast|r, |cffff8000BigSpoon|r, |cffff8000Sahkage|r, |cffff8000naimious|r
+|cffff8000BigSpoon|r, |cffff8000naimious|r
 ]=],
             fontSize = "medium",
             descStyle = "inline",

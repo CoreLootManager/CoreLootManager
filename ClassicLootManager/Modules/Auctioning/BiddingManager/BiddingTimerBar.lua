@@ -52,7 +52,7 @@ local function Create(self, item, auction, options)
         RecolorBar(self)
     end)
 
-    self.parent = CreateFrame("Frame")
+    self.parent = CreateFrame("Frame", nil, UIParent)
     -- local tint = self.parent:CreateTexture(nil, "BACKGROUND")
     -- tint:SetAllPoints()
     -- tint:SetColorTexture(math.random(0.5,1), math.random(0.5,1), math.random(0.5,1), 0.7)

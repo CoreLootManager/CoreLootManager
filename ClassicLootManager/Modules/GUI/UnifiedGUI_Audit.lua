@@ -590,7 +590,7 @@ local function getEntryInfo(entry)
     local name = nameEntry(entry)
     local time = date(CLM.L["%d/%m/%Y %H:%M:%S"], entry:time())
     local type = entry:class()
-    local guid = UTILS.getGuidFromInteger(entry:creator())
+    local guid = UTILS.getGuidFromInteger(entry:creatorFull())
     local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(guid)
     local author = profile and profile:Name() or guid
     local description = describeEntry(entry)

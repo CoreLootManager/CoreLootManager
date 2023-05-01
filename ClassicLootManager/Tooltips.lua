@@ -5,6 +5,7 @@ local  _, CLM = ...
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
+if CLM.WoW10 then return end
 
 local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga"
 

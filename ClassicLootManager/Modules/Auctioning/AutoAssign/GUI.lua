@@ -20,6 +20,7 @@ end
 
 local function StoreLocation(self)
     self.db.location = { self.top:GetPoint() }
+    self.db.location[2] = nil
 end
 
 local function RestoreLocation(self)
@@ -136,7 +137,7 @@ local function CreateTradeDisplay(self)
         local tooltip = self.tooltip
         if not tooltip then return end
         local itemId = ST_GetItemId(rowData)
-        local itemString = "item:" .. tonumber(itemId)
+        local itemString = "item:" .. tostring(itemId)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
         tooltip:Show()

@@ -59,7 +59,7 @@ local function ParseImportData(self)
             -- class   Warlock
             -- spec    0/43/18
             -- dkp     13.445
-            local guid = self.guidCache[player.name]
+            local guid = self.guidCache[player.name] or player.guid
             if guid then
                 if not profileMap[guid] then
                     numProfiles = numProfiles + 1
@@ -161,7 +161,7 @@ local function CacheNewGuidData(self)
     for num=1, GetNumGuildMembers() do
         local name,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,guid = GetGuildRosterInfo(num)
         if name and guid then
-            name = CLM.UTILS.RemoveServer(name)
+            name = CLM.UTILS.Disambiguate(name)
             self.guidCache[name] = guid
         end
     end
