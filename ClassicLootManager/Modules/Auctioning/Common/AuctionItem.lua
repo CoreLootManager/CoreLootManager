@@ -164,6 +164,7 @@ function AuctionItem:SetValues(values)
 end
 
 function AuctionItem:SpoofLinkPayload(extra)
+    if not CLM.WoW10 then return end
     if type(extra) ~= 'string' then return end
     local link = self.item:GetItemLink()
     if type(link) ~= 'string' then
@@ -172,8 +173,7 @@ function AuctionItem:SpoofLinkPayload(extra)
     end
     local original = link
     self.item.itemLink = UTILS.SpoofLink(link, extra)
-    -- TODO Spoof Spec!
-    LOG:Message("Spoofed %s into %s", original, link)
+    LOG:Debug("Spoofed %s into %s", original, link)
 end
 
 function AuctionItem:GetValues()

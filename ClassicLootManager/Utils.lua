@@ -209,6 +209,7 @@ function UTILS.GetItemIdFromLink(itemLink)
 end
 
 function UTILS.SpoofLink(itemLink, extra)
+    if not extra then return itemLink end
     local _, _, pre, post = string.find(itemLink, "(.*item:%d+)[%d:]+(|h.*)")
     if not pre or not post then return itemLink end
     return pre .. extra .. post
