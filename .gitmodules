@@ -1,3 +1,0 @@
-[submodule "ClassicLootManager/Libs/LibEventSourcing"]
-	path = ClassicLootManager/Libs/LibEventSourcing
-	url = git@github.com:SamMousa/lua-eventsourcing.git
