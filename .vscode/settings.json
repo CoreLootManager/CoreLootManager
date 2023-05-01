@@ -43,6 +43,7 @@
         "DISABLE",
         "IGNORE_DIALOG",
         "ReloadUI",
+        "GameFontHighlightSmallOutline"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

@@ -203,8 +203,16 @@ end
 function UTILS.GetItemIdFromLink(itemLink)
     -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
     itemLink = itemLink or ""
-    local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
-    return tonumber(itemId) or 0
+    -- local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
+    local _, _, itemId, extra = string.find(itemLink, "item:(%d+)([%d:]*)|h")
+    return tonumber(itemId) or 0, extra or ""
+end
+
+function UTILS.SpoofLink(itemLink, extra)
+    if not extra then return itemLink end
+    local _, _, pre, post = string.find(itemLink, "(.*item:%d+)[%d:]+(|h.*)")
+    if not pre or not post then return itemLink end
+    return pre .. extra .. post
 end
 
 function UTILS.UniversalCliMethodExecutor(name, object, cli)
@@ -775,23 +783,19 @@ function UTILS.LibStSingleSelectClickHandler(st, dropdownMenu, rowFrame, cellFra
 end
 
 function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-    local itemId = data[realrow].cols[column].value
-    local iconColor = data[realrow].cols[column].iconColor
+    local itemInfo = data[realrow].cols[column].value
+    local iconColor = data[realrow].cols[column].iconColor or {}
     local note = data[realrow].cols[column].note
-    local _, _, _, _, icon = GetItemInfoInstant(itemId or 0)
+    local _, _, _, _, icon = GetItemInfoInstant(itemInfo or 0)
     if icon then
         frame:SetNormalTexture(icon)
         frame:SetHighlightTexture(136580, "ADD")
         frame:GetHighlightTexture():SetTexCoord(0, 1, 0.23, 0.77)
-        if iconColor then
-            frame:GetNormalTexture():SetVertexColor(iconColor.r, iconColor.g, iconColor.b, iconColor.a or 1)
-        else
-            frame:GetNormalTexture():SetVertexColor(1,1,1,1)
-        end
+        frame:GetNormalTexture():SetVertexColor(iconColor.r or 1, iconColor.g or 1, iconColor.b or 1, iconColor.a or 1)
         frame:Show()
         frame:SetScript("OnEnter", function()
             GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink("item:" .. tostring(itemId))
+            GameTooltip:SetHyperlink(itemInfo or "item:0")
             if note then
                 GameTooltip:AddLine("\n")
                 GameTooltip:AddLine(note)

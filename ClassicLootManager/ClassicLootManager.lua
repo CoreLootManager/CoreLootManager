@@ -17,6 +17,12 @@ CLM.CONSTANTS = {}
 CLM.COMM_CHANNEL = {
     AUCTION = "Auction2",
     BIDDING = "Bidding2",
+    LEDGER = {
+        SYNC = "LedgerS2",
+        DATA = "LedgerD2"
+    },
+    STANDBY = "Standby001",
+    GLOBAL = "Version001"
 }
 CLM.UTILS = {}
 CLM.GUI = {}

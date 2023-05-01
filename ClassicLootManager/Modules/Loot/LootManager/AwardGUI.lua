@@ -42,9 +42,11 @@ local override = false
 local function UpdateOptions(self)
     local icon = "Interface\\Icons\\INV_Misc_QuestionMark"
     self.itemId = 0
+    self.extra = nil
     if self.itemLink then
 ---@diagnostic disable-next-line: cast-local-type
-        self.itemId, _, _, _, icon = GetItemInfoInstant(self.itemLink)
+        _, _, _, _, icon = GetItemInfoInstant(self.itemLink)
+        self.itemId, self.extra = UTILS.GetItemIdFromLink(self.itemLink)
     end
 
     if CLM.MODULES.RaidManager:IsInRaid() and not override then
@@ -73,7 +75,7 @@ local function UpdateOptions(self)
         end
     end
 
-    local itemLink = "item:" .. tostring(self.itemId)
+    local itemLink = "item:" .. tostring(self.itemId) .. (self.extra or "")
     options.args = {
         icon = {
             name = "",
@@ -151,7 +153,7 @@ local function UpdateOptions(self)
                         awardTarget = raid
                     end
                 end
-                local success, _ = CLM.MODULES.LootManager:AwardItem(awardTarget, self.awardPlayer, self.itemLink, self.itemId, self.awardValue)
+                local success, _ = CLM.MODULES.LootManager:AwardItem(awardTarget, self.awardPlayer, self.itemLink, self.itemId, self.extra, self.awardValue)
                 if success then
                     CLM.MODULES.AutoAssign:Handle(self.itemId, self.awardPlayer)
                 end

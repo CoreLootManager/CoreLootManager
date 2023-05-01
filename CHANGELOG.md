@@ -1,3 +1,19 @@
+# Core Loot Manager v4.0.0
+Classic Loot Manager is now Core Loot Manager. This rebranding marks our move towards Retail support.
+## First release
+This is a First release for Retail users so there might be some baby-age issues still. Be sure to report them on our discord https://tiny.one/clm-discord
+## Retail Support Limitations
+### Tooltips
+Item values are not displayed on tooltips at this point of time.
+### Eligibility
+Item eligibility check is not yet supported.
+### Value calculation
+Due to amount of items in Retail it was not possible to throughtly test all item lvl / slot value combinations. Please be sure to check those against your loot systems!
+### Item link display
+Item link display might still be off in some places.
+### Cross-guild sync
+Same as for Classic - cross-guild sync is not supported however cross-guild bidding should be possible.
+
 # Classic Loot Manager v3.3.5
 ## Changes
 ### Award UI

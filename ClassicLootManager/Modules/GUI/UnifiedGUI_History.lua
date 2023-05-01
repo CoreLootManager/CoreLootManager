@@ -158,9 +158,9 @@ local function horizontalOptionsFeeder()
 end
 
 local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
-    local itemId = UTILS.GetItemIdFromLink(itemLink)
-    local itemString = "item:" .. tonumber(itemId)
-    tooltip:SetHyperlink(itemString)
+    -- local itemId = UTILS.GetItemIdFromLink(itemLink)
+    -- local itemString = "item:" .. tostring(itemId)
+    tooltip:SetHyperlink(itemLink)
     if loot then
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
         local name
@@ -206,7 +206,7 @@ local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
                     else
                         upgradeTooltip:SetOwner(tooltip, "ANCHOR_RIGHT")
                     end
-                    upgradeTooltip:SetHyperlink("item:" .. tonumber(it))
+                    upgradeTooltip:SetHyperlink("item:" .. tostring(it))
                     upgradeTooltip:Show()
                     previousUpgradeTooltip = upgradeTooltip
                 end
@@ -335,7 +335,7 @@ local function fillLootList(displayedLoot, loot)
             UnifiedGUI_History.pendingLoot = true
         elseif not UnifiedGUI_History.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
             local owner = loot:Owner()
-            displayedLoot[#displayedLoot+1] = {loot, itemLink, owner:Name(), UTILS.GetClassColor(owner:Class())}
+            displayedLoot[#displayedLoot+1] = {loot, UTILS.SpoofLink(itemLink, loot:Extra()), owner:Name(), UTILS.GetClassColor(owner:Class())}
         end
     end
 end

@@ -29,6 +29,14 @@ function Loot:Id()
     return self.entry:item()
 end
 
+function Loot:String()
+    return "item:" .. tostring(self.entry:item()) .. self.entry:extra()
+end
+
+function Loot:Extra()
+    return self.entry:extra()
+end
+
 function Loot:Value()
     return self.entry:value()
 end

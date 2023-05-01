@@ -6,8 +6,6 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local STANDBY_STAGING_COMM_PREFIX = "Standby001"
-
 local function HandleIncomingMessage(self, message, distribution, sender)
     LOG:Trace("StandbyStagingManager:HandleIncomingMessage()")
     local mtype = message:Type() or 0
@@ -87,7 +85,7 @@ function StandbyStagingManager:Initialize()
         [CONSTANTS.STANDBY_STAGING_COMM.TYPE.REVOKE]    = HandleRevoke,
     }
 
-    CLM.MODULES.Comms:Register(STANDBY_STAGING_COMM_PREFIX, (function(rawMessage, distribution, sender)
+    CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.STANDBY, (function(rawMessage, distribution, sender)
         local message = CLM.MODELS.StandbyStagingCommStructure:New(rawMessage)
         if CONSTANTS.STANDBY_STAGING_COMM.TYPES[message:Type()] == nil then return end
         HandleIncomingMessage(self, message, distribution, sender)
@@ -134,7 +132,7 @@ function StandbyStagingManager:SignupToStandby(raidUid)
     local message = CLM.MODELS.StandbyStagingCommStructure:New(
         CONSTANTS.STANDBY_STAGING_COMM.TYPE.SUBSCRIBE,
         CLM.MODELS.StandbyStagingCommSubscribe:New(raidUid))
-    CLM.MODULES.Comms:Send(STANDBY_STAGING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.STANDBY, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
     LOG:Message(CLM.L["Standby %s has been sent"],
                 UTILS.ColorCodeText(CLM.L["request"], "44cc44"))
 end
@@ -144,7 +142,7 @@ function StandbyStagingManager:RevokeStandby(raidUid)
     local message = CLM.MODELS.StandbyStagingCommStructure:New(
         CONSTANTS.STANDBY_STAGING_COMM.TYPE.REVOKE,
         CLM.MODELS.StandbyStagingCommRevoke:New(raidUid))
-    CLM.MODULES.Comms:Send(STANDBY_STAGING_COMM_PREFIX, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.STANDBY, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
     LOG:Message(CLM.L["Standby %s has been sent"],
     UTILS.ColorCodeText(CLM.L["revoke"], "cc4444"))
 end

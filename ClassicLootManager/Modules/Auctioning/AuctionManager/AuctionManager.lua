@@ -820,7 +820,7 @@ local function handleIncomingRoll(_, _, message, ...)
         return
     end
 
-    local rollerProfile = CLM.MODULES.ProfileManager:GetProfileByName(who)
+    local rollerProfile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.Ambiguate(who))
     if not rollerProfile then
         LOG:Debug("No profile for %s", who)
         return
@@ -1145,7 +1145,7 @@ end
 
 function AuctionManager:Award(item, name, price)
     LOG:Trace("AuctionManager:Award()")
-    local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), price, true)
+    local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), item:GetExtraPayload(), price, true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         CLM.MODULES.AutoAssign:Handle(item:GetItemID(), name)
@@ -1155,7 +1155,7 @@ end
 
 function AuctionManager:Disenchant(item)
     LOG:Trace("AuctionManager:Disenchant()")
-    local success, uuid = CLM.MODULES.LootManager:DisenchantItem(self.currentAuction:GetRaid(), item:GetItemLink(), item:GetItemID(), true)
+    local success, uuid = CLM.MODULES.LootManager:DisenchantItem(self.currentAuction:GetRaid(), item:GetItemLink(), true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         local disenchanter = CLM.MODULES.RaidManager:GetDisenchanter()

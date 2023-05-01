@@ -1,7 +1,7 @@
 -- ------------------------------- --
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
+local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
@@ -163,6 +163,19 @@ function AuctionItem:SetValues(values)
     end
 end
 
+function AuctionItem:SpoofLinkPayload(extra)
+    if not CLM.WoW10 then return end
+    if type(extra) ~= 'string' then return end
+    local link = self.item:GetItemLink()
+    if type(link) ~= 'string' then
+        LOG:Warning("ItemLink for %s not found while updating payload.", self.item:GetItemID())
+        return
+    end
+    local original = link
+    self.item.itemLink = UTILS.SpoofLink(link, extra)
+    LOG:Debug("Spoofed %s into %s", original, link)
+end
+
 function AuctionItem:GetValues()
     return self.values
 end
@@ -181,6 +194,13 @@ end
 
 function AuctionItem:GetItemLink()
     return self.item:GetItemLink()
+end
+
+function AuctionItem:GetExtraPayload()
+    if not self.extraPayload then
+        _, self.extraPayload = UTILS.GetItemIdFromLink(self.item:GetItemLink())
+    end
+    return self.extraPayload
 end
 
 function AuctionItem:GetCanUse()

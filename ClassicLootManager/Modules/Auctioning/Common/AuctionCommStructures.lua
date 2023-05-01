@@ -20,12 +20,20 @@ function AuctionCommStartAuction:New(object)
     return o
 end
 
+local getExtraPayload
+if CLM.WoW10 then
+    getExtraPayload = function(auctionItem) return auctionItem:GetExtraPayload() end
+else
+    getExtraPayload = function() return nil end
+end
+
 local function SerializeItems(items)
     local serialized = {}
     for id, auctionItem in pairs(items) do
         serialized[id] = {
             values = auctionItem:GetValues(),
-            note = auctionItem:GetNote()
+            note = auctionItem:GetNote(),
+            extra = getExtraPayload(auctionItem)
         }
     end
     return serialized

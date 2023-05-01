@@ -409,7 +409,7 @@ local function getAwardValueFromAction(roster, itemId, action)
     return values[tier] or 0
 end
 
--- LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, value, forceInstant)
+-- LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, value, forceInstant)
 local function ExternalAwardEventHandler(_, data)
     if not Integration:GetGargulIntegration() then return end
     if not validateEventStructure(data, "Gargul") then
@@ -417,6 +417,7 @@ local function ExternalAwardEventHandler(_, data)
         return
     end
     local player, itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved = parseEventStructure(data)
+    local _, extra = UTILS.GetItemIdFromLink(itemLink)
     local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
     if action == PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
@@ -430,7 +431,7 @@ local function ExternalAwardEventHandler(_, data)
         return
     end
     local value = getAwardValueFromAction(raid:Roster(), itemId, action)
-    CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, value)
+    CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, extra, value)
 end
 
 local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
@@ -443,7 +444,7 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
         return
     end
 
-    local itemId = UTILS.GetItemIdFromLink(link)
+    local itemId, extra = UTILS.GetItemIdFromLink(link)
     if not GetItemInfoInstant(itemId) then
         LOG:Debug("RCLCAwardMessageHandler() Unknown Item ID for %s", link)
         return
@@ -467,7 +468,7 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
         return
     end
     local value = getAwardValueFromAction(raid:Roster(), itemId, action)
-    CLM.MODULES.LootManager:AwardItem(raid, winner, link, itemId, value)
+    CLM.MODULES.LootManager:AwardItem(raid, winner, link, itemId, extra, value)
 end
 
 local function RCLC_PR(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)

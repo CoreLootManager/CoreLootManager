@@ -104,7 +104,11 @@ local function GenerateItemOptions(self)
             set = (function(i,v)
                 if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
                     local itemID = GetItemInfoInstant(v)
-                    CLM.MODULES.AuctionManager:AddItemById(itemID, function(ai) self:SetVisibleAuctionItem(ai) end)
+                    if tostring(itemID) == v then
+                        CLM.MODULES.AuctionManager:AddItemById(itemID, function(ai) self:SetVisibleAuctionItem(ai) end)
+                    else
+                        CLM.MODULES.AuctionManager:AddItemByLink(v, function(ai) self:SetVisibleAuctionItem(ai) end)
+                    end
                 end
             end),
             disabled = disableInProgress,
@@ -244,7 +248,8 @@ local function CreateLootList(self)
             local rowData = table:GetRow(realrow)
             if not rowData or not rowData.cols then return status end
             GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink("item:" .. (tonumber(rowData.cols[column].value) or 0))
+            -- GameTooltip:SetHyperlink("item:" .. (tostring(rowData.cols[column].value) or 0))
+            GameTooltip:SetHyperlink(rowData.cols[column].value or "item:0")
             GameTooltip:Show()
             return status
         end),
@@ -827,13 +832,13 @@ function AuctionManagerGUI:Refresh()
     end
 
     local itemList = {}
-    for id, auctionItem in pairs(auction:GetItems()) do
+    for _, auctionItem in pairs(auction:GetItems()) do
         local iconColor, note
         if not auctionItem:HasValidBids() and auction:IsComplete() then
             iconColor = colorGold
             note = CLM.L["No bids"]
         end
-        itemList[#itemList+1] = { cols = { {value = id, iconColor = iconColor, note = note }, {value = auctionItem} }}
+        itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), iconColor = iconColor, note = note }, {value = auctionItem} }}
     end
     self.ItemList:SetData(itemList)
 

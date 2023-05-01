@@ -153,7 +153,7 @@ local function CreateAuctionDisplay(self)
         local tooltip = self.tooltip
         if not tooltip then return end
         local itemId = ST_GetItemId(rowData)
-        local itemString = "item:" .. tonumber(itemId)
+        local itemString = "item:" .. tostring(itemId)
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
         tooltip:AddLine(ST_GetAuctionTime(rowData))

@@ -165,23 +165,24 @@ local function DefaultCallback(_)
     CLM.GUI.BiddingManager:RefreshItemList()
 end
 
-local function AddItemInternal(auctionInfo, item, note, values, callbackFn)
+local function AddItemInternal(auctionInfo, item, note, values, extra, callbackFn)
     callbackFn = callbackFn or DefaultCallback
 
     local auctionItem = auctionInfo:AddItem(item)
     if auctionItem then
         auctionItem:SetNote(note)
         auctionItem:SetValues(values)
+        auctionItem:SpoofLinkPayload(extra)
     end
     callbackFn(auctionItem)
 end
 
-local function AddItemToAuction(auctionInfo, item, note, values, callbackFn)
+local function AddItemToAuction(auctionInfo, item, note, values, extra, callbackFn)
     if not item:IsItemEmpty() then
         if item:IsItemDataCached() then
-            AddItemInternal(auctionInfo, item, note, values, callbackFn)
+            AddItemInternal(auctionInfo, item, note, values, extra, callbackFn)
         else
-            item:ContinueOnItemLoad(function() AddItemInternal(auctionInfo, item, note, values, callbackFn) end)
+            item:ContinueOnItemLoad(function() AddItemInternal(auctionInfo, item, note, values, extra, callbackFn) end)
         end
     end
 end
@@ -210,7 +211,7 @@ local function StartAuction(self, data)
     end
 
     for id, info in pairs(data:Items()) do
-        AddItemToAuction(auction, Item:CreateFromItemID(id), info.note, info.values)
+        AddItemToAuction(auction, Item:CreateFromItemID(id), info.note, info.values, info.extra)
     end
 
     auction:SetPassiveMode()
