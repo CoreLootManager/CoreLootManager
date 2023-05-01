@@ -165,11 +165,14 @@ end
 
 function AuctionItem:SpoofLinkPayload(extra)
     if type(extra) ~= 'string' then return end
-    if type(self.item.itemLink) ~= 'string' then
-        LOG:Warning("ItemLink for %s not found while updating payload.", self:GetItemID())
+    local link = self.item:GetItemLink()
+    if type(link) ~= 'string' then
+        LOG:Warning("ItemLink for %s not found while updating payload.", self.item:GetItemID())
         return
     end
-    self.item.itemLink = UTILS.SpoofLink(self.item.itemLink, extra)
+    local original = link
+    self.item.itemLink = UTILS.SpoofLink(link, extra)
+    LOG:Message("Spoofed %s into %s", original, link)
 end
 
 function AuctionItem:GetValues()
