@@ -1,6 +1,19 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.0.1",
+        data = {
+            {
+                name = "Bugfixes",
+                data = {
+                    { header = "Upgrades", body = "Upgraded items tooltip will no longer error out." },
+                    { header = "Auto-trade", body = "Auto-trade will now properly remove items from the list." },
+                    { header = "Sync", body = "Instant sync and entry removal should now work properly in Retail." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.0.0",
         data = {
             {

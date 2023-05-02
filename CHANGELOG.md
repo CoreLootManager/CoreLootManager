@@ -1,3 +1,11 @@
+# Core Loot Manager v4.0.1
+## Bugfixes
+### Upgrades
+Upgraded items tooltip will no longer error out.
+### Auto-trade
+Auto-trade will now properly remove items from the list.
+### Sync
+Instant sync and entry removal should now work properly in Retail.
 # Core Loot Manager v4.0.0
 Classic Loot Manager is now Core Loot Manager. This rebranding marks our move towards Retail support.
 ## First release
