@@ -165,7 +165,8 @@ local function HandleTradeAcceptUpdate(self)
     for tradeSlot = 1, 6 do
         local itemLink = GetTradePlayerItemLink(tradeSlot)
         if itemLink then
-            tinsert(self.lastTradedItems, UTILS.GetItemIdFromLink(itemLink))
+            local itemId = UTILS.GetItemIdFromLink(itemLink)
+            tinsert(self.lastTradedItems, itemId)
         end
     end
 end
@@ -190,7 +191,7 @@ function AutoAssign:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"TRADE_SHOW"}, (function()
         Clear(self)
         pcall(function()
-            self.lastTradeTarget = _G.TradeFrameRecipientNameText:GetText()
+            self.lastTradeTarget = UTILS.Disambiguate(_G.TradeFrameRecipientNameText:GetText())
         end)
         if not self.lastTradeTarget then
              -- NPC Because that's how the engine holds the trade peer
@@ -250,6 +251,7 @@ end
 
 function AutoAssign:Track(itemId, player)
     if self:IsIgnored(itemId) then return end
+    player = UTILS.Disambiguate(player)
     -- Lazy start tracking player
     if not self.tracking[player] then
         self.tracking[player] = {}
