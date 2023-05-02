@@ -795,7 +795,14 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
         frame:Show()
         frame:SetScript("OnEnter", function()
             GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-            GameTooltip:SetHyperlink(itemInfo or "item:0")
+            local itemInfoType = type(itemInfo)
+            if itemInfoType == 'number' then
+                GameTooltip:SetHyperlink("item:" .. itemInfo)
+            elseif itemInfoType == 'string' then
+                GameTooltip:SetHyperlink(itemInfo)
+            else
+                return
+            end
             if note then
                 GameTooltip:AddLine("\n")
                 GameTooltip:AddLine(note)
