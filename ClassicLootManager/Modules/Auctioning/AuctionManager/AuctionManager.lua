@@ -820,7 +820,7 @@ local function handleIncomingRoll(_, _, message, ...)
         return
     end
 
-    local rollerProfile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.Ambiguate(who))
+    local rollerProfile = CLM.MODULES.ProfileManager:GetProfileByName(UTILS.Disambiguate(who))
     if not rollerProfile then
         LOG:Debug("No profile for %s", who)
         return
