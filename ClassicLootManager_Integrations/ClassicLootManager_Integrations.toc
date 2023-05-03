@@ -1,7 +1,9 @@
 ## Interface: 100100
 ## Interface-Wrath: 30401
+## Interface-Classic: 11403
 ## X-Min-Interface: 100100
 ## X-Min-Interface-Wrath: 30401
+## X-Min-Interface-Classic: 11403
 ## Title: CLM |cff44ee44Integrations|r
 ## Notes: External Integration System for |cffdcb749Core Loot Manager|r covering Migration, Import and Export.
 ## Author: Lantis

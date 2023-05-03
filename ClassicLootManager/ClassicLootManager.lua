@@ -7,7 +7,8 @@ if LIB_CLM then
     LIB_CLM.CLM = CLM
 end
 
-CLM.WoW10 = (select(4, GetBuildInfo()) >= 100000)
+CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
+CLM.WoWEra = select(4, GetBuildInfo()) <   30000
 
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
