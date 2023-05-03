@@ -393,7 +393,6 @@ else -- non-WoW10 and not cross-server
     end
     function UTILS.ValidateIntegerGUID(iGUID)
         if type(iGUID) ~= "number" then return false end
-        if iGUID == 0 then return false end
         return true
     end
     function UTILS.Disambiguate(name)
