@@ -663,7 +663,9 @@ if CLM.WoW10 then
         return role
     end
 elseif CLM.WoWEra then
-    return "NONE" -- Not supported as it requires Role decoding based on spec
+    function UTILS.GetMyRole()
+        return "NONE" -- Not supported as it requires Role decoding based on spec
+    end
 else
     function UTILS.GetMyRole()
         return GetTalentGroupRole(GetActiveTalentGroup())
