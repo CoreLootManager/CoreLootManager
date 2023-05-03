@@ -1,3 +1,9 @@
+# Core Loot Manager v4.0.2
+## Bugfixes
+### Unlinking
+Fixed Critical unlinking handling error leading to erroneous DKP/EPGP standings display.
+### ToC bump
+Bumped Retail ToC version
 # Core Loot Manager v4.0.1
 ## Bugfixes
 ### Upgrades

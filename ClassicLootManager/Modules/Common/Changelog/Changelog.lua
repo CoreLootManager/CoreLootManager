@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.0.2",
+        data = {
+            {
+                name = "Bugfixes",
+                data = {
+                    { header = "Unlinking", body = "Fixed Critical unlinking handling error leading to erroneous DKP/EPGP standings display." },
+                    { header = "ToC bump", body = "Bumped Retail ToC version" },
+                },
+            },
+        },
+    },
+    {
         version = "v4.0.1",
         data = {
             {
