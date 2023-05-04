@@ -3,7 +3,7 @@ if GetLocale() == "zhCN" then
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:323
 -- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:336
 CLM.L[" alt of: "] = " 的主号是: "
--- ClassicLootManager/Utils.lua:565
+-- ClassicLootManager/Utils.lua:564
 CLM.L[" more"] = " 更多"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:173
 CLM.L[" over "] = " over "
@@ -480,7 +480,7 @@ CLM.L["Clear"] = "清除"
 CLM.L["Close on bid"] = "竞拍后关闭"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:211
 CLM.L["Comma-separated (CSV) list of disenchanter names. Case insensitive."] = "逗号分隔（CSV）删除名称列表。 不区分大小写。"
--- ClassicLootManager/Utils.lua:986
+-- ClassicLootManager/Utils.lua:992
 CLM.L["Common"] = "常见"
 -- ClassicLootManager/MinimapIcon.lua:138
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:309
@@ -691,7 +691,7 @@ CLM.L["Enables raid-warning countdown for auctions."] = "启用团队通知拍�
 CLM.L["End Timetravel"] = "结束时间旅行模式"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:398
 CLM.L["End selected raid"] = "结束选中的团本活动"
--- ClassicLootManager/Utils.lua:989
+-- ClassicLootManager/Utils.lua:995
 CLM.L["Epic"] = "史诗"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:460
 CLM.L["Equation"] = "方程"
@@ -1064,7 +1064,7 @@ CLM.L["Last year"] = "去年"
 CLM.L["Latest loot"] = "最新战利品"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:445
 CLM.L["Latest points"] = "最新分数"
--- ClassicLootManager/Utils.lua:990
+-- ClassicLootManager/Utils.lua:996
 CLM.L["Legendary"] = "传奇"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:782
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:815
@@ -1289,7 +1289,7 @@ CLM.L["No loot received"] = "没有收到战利品"
 CLM.L["No players selected"] = "未选择角色"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:468
 CLM.L["No points received"] = "未获得分数"
--- ClassicLootManager/Utils.lua:574
+-- ClassicLootManager/Utils.lua:573
 CLM.L["No"] = "否"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
@@ -1431,7 +1431,7 @@ CLM.L["Point type"] = "分数类型"
 CLM.L["Point"] = "分数"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:172
 CLM.L["Points value that will be awarded."] = "将被分配的分值。"
--- ClassicLootManager/Utils.lua:985
+-- ClassicLootManager/Utils.lua:991
 CLM.L["Poor"] = "较差的"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:67
 CLM.L["Post bids"] = "通告竞拍"
@@ -1525,7 +1525,7 @@ CLM.L["Ranged (wands)"] = "远程（魔杖）"
 CLM.L["Ranged"] = "远程"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:75
 CLM.L["Ranks"] = "会阶"
--- ClassicLootManager/Utils.lua:988
+-- ClassicLootManager/Utils.lua:994
 CLM.L["Rare"] = "稀有的"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:18
 CLM.L["Razorgore the Untamed"] = "狂野的拉佐格尔"
@@ -1947,7 +1947,7 @@ CLM.L["Ulduar"] = "奥杜尔"
 CLM.L["Unable to execute migration. Entries already exist."] = "无法执行迁移。条目已经存在。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:160
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "无法从服务器获取物品信息。请重新尝试拍卖"
--- ClassicLootManager/Utils.lua:987
+-- ClassicLootManager/Utils.lua:993
 CLM.L["Uncommon"] = "罕见"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:434
 CLM.L["Unexcused absence"] = "无故缺席"
@@ -2044,7 +2044,7 @@ CLM.L["Wowpedia"] = "Wowpedia"
 CLM.L["Wrist"] = "手腕"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:140
 CLM.L["XT-002 Deconstructor"] = "XT-002拆解者"
--- ClassicLootManager/Utils.lua:569
+-- ClassicLootManager/Utils.lua:568
 CLM.L["Yes"] = "是的"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:141
 CLM.L["Yogg-Saron"] = "尤格萨隆"

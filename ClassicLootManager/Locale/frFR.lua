@@ -3,7 +3,7 @@ if GetLocale() == "frFR" then
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:323
 -- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:336
 CLM.L[" alt of: "] = " reroll de "
--- ClassicLootManager/Utils.lua:565
+-- ClassicLootManager/Utils.lua:564
 CLM.L[" more"] = " suite "
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:173
 CLM.L[" over "] = " plus de "
@@ -480,7 +480,7 @@ CLM.L["Clear"] = "Effacer"
 CLM.L["Close on bid"] = "Fermer après l'offre"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:211
 CLM.L["Comma-separated (CSV) list of disenchanter names. Case insensitive."] = "Liste CSV de désenchanteurs. Sensible à la casse"
--- ClassicLootManager/Utils.lua:986
+-- ClassicLootManager/Utils.lua:992
 CLM.L["Common"] = "Commun"
 -- ClassicLootManager/MinimapIcon.lua:138
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:309
@@ -691,7 +691,7 @@ CLM.L["Enables raid-warning countdown for auctions."] = "Active le compte à reb
 CLM.L["End Timetravel"] = "Mettre fin au Timetravel"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:398
 CLM.L["End selected raid"] = "Mettre fin au raid sélectionné"
--- ClassicLootManager/Utils.lua:989
+-- ClassicLootManager/Utils.lua:995
 CLM.L["Epic"] = "Épique"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:460
 CLM.L["Equation"] = "Equation"
@@ -1064,7 +1064,7 @@ CLM.L["Last year"] = "L'année dernière"
 CLM.L["Latest loot"] = "Dernier butin"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:445
 CLM.L["Latest points"] = "Derniers points"
--- ClassicLootManager/Utils.lua:990
+-- ClassicLootManager/Utils.lua:996
 CLM.L["Legendary"] = "Légendaire"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:782
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:815
@@ -1289,7 +1289,7 @@ CLM.L["No loot received"] = "Aucun butin reçu"
 CLM.L["No players selected"] = "Aucun joueur sélectionné."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:468
 CLM.L["No points received"] = "Aucun point reçu"
--- ClassicLootManager/Utils.lua:574
+-- ClassicLootManager/Utils.lua:573
 CLM.L["No"] = "Non"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
@@ -1431,7 +1431,7 @@ CLM.L["Point type"] = "Type de point"
 CLM.L["Point"] = "Point"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:172
 CLM.L["Points value that will be awarded."] = "Valeur des points qui seront attribués"
--- ClassicLootManager/Utils.lua:985
+-- ClassicLootManager/Utils.lua:991
 CLM.L["Poor"] = "Médiocre"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:67
 CLM.L["Post bids"] = "Annoncer les offres"
@@ -1525,7 +1525,7 @@ CLM.L["Ranged (wands)"] = "À distance (baguettes)"
 CLM.L["Ranged"] = "À distance"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:75
 CLM.L["Ranks"] = "Rangs"
--- ClassicLootManager/Utils.lua:988
+-- ClassicLootManager/Utils.lua:994
 CLM.L["Rare"] = "Rare"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:18
 CLM.L["Razorgore the Untamed"] = "Tranchetripe l'Indompté"
@@ -1947,7 +1947,7 @@ CLM.L["Ulduar"] = "Ulduar"
 CLM.L["Unable to execute migration. Entries already exist."] = "Impossible d'exécuter la migration. Les entrées existent déjà."
 -- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:160
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "Impossible de récupérer les infos de l'objet depuis le serveur. Essayez de relancer l'enchère"
--- ClassicLootManager/Utils.lua:987
+-- ClassicLootManager/Utils.lua:993
 CLM.L["Uncommon"] = "Commun"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:434
 CLM.L["Unexcused absence"] = "Absence injustifiée"
@@ -2044,7 +2044,7 @@ CLM.L["Wowpedia"] = "Wowpedia"
 CLM.L["Wrist"] = "Poignets"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:140
 CLM.L["XT-002 Deconstructor"] = "Déconstructeur XT-002"
--- ClassicLootManager/Utils.lua:569
+-- ClassicLootManager/Utils.lua:568
 CLM.L["Yes"] = "Oui"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:141
 CLM.L["Yogg-Saron"] = "Yogg-Saron"
