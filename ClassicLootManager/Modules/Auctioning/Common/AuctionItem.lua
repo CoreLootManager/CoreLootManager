@@ -14,24 +14,33 @@ AuctionItem.__index = AuctionItem
 local emptyItem = CreateFromMixins(ItemMixin)
 
 local scanTooltip = CreateFrame("GameTooltip", "CLMAuctionItemScanTooltip", UIParent, "GameTooltipTemplate")
+local scanItem
+
+local function usabilityScanner(tooltip)
+    if tooltip ~= scanTooltip then return end
+    if not scanItem then return end
+    local tooltipName = tooltip:GetName()
+    for i = 1, tooltip:NumLines() do
+        local l = _G[tooltipName..'TextLeft'..i]
+        local r = _G[tooltipName..'TextRight'..i]
+        if UTILS.IsTooltipTextRed(l) or UTILS.IsTooltipTextRed(r) then
+            scanItem.canUse = false
+            break
+        end
+    end
+    tooltip:Hide()
+    scanItem = nil
+end
+
+if CLM.WoW10 then
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, usabilityScanner)
+else
+    scanTooltip:SetScript('OnTooltipSetItem', usabilityScanner)
+end
 
 local function CheckUsability(self)
-    if CLM.WoW10 then return end
-    scanTooltip:SetScript('OnTooltipSetItem', (function(s)
-        local tooltipName = s:GetName()
-        for i = 1, s:NumLines() do
-            local l = _G[tooltipName..'TextLeft'..i]
-            local r = _G[tooltipName..'TextRight'..i]
-            if UTILS.IsTooltipTextRed(l) or UTILS.IsTooltipTextRed(r) then
-                self.canUse = false
-                break
-            end
-        end
-        s:Hide()
-        s:SetScript('OnTooltipSetItem', (function() end))
-    end))
-
     if not self.item:IsItemEmpty() then
+        scanItem = self
         scanTooltip:SetHyperlink(self.item:GetItemLink())
     end
 end

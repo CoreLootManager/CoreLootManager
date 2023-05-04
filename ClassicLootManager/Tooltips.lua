@@ -5,7 +5,6 @@ local  _, CLM = ...
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
-if CLM.WoW10 then return end
 
 local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga"
 
@@ -69,8 +68,13 @@ local isEquipable = UTILS.Set({
 
 local function addItemPriceToTooltip(tooltip)
     -- Sanity Check
+    local itemLink
     if not tooltip then return end
-    local _, itemLink = tooltip:GetItem()
+    if tooltip.GetItem then
+        _, itemLink = tooltip:GetItem()
+    else
+        _,itemLink = TooltipUtil.GetDisplayedItem(tooltip)
+    end
     if not itemLink then return end
     local itemId = UTILS.GetItemIdFromLink(itemLink)
     if itemId == 0 then return end
@@ -100,6 +104,10 @@ local function addItemPriceToTooltip(tooltip)
     end
 end
 
-LibStub("AceConfigDialog-3.0").tooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)
-GameTooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)
-ItemRefTooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)
+if CLM.WoW10 then
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemPriceToTooltip)
+else
+    LibStub("AceConfigDialog-3.0").tooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)
+    GameTooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)
+    ItemRefTooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)
+end

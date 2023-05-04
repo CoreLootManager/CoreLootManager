@@ -81,7 +81,9 @@
         "GRAY_FONT_COLOR",
         "GameTooltip_Hide",
         "RED_FONT_COLOR",
-        "GameTooltip_AddErrorLine"
+        "GameTooltip_AddErrorLine",
+        "TooltipDataProcessor",
+        "TooltipUtil"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
