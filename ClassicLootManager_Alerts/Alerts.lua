@@ -1,5 +1,6 @@
 local CLM = LibStub("ClassicLootManager").CLM
 if not CLM then return end
+if CLM.WoWEra then return end
 
 local eventDispatcher = LibStub("EventDispatcher")
 if not eventDispatcher then return end
