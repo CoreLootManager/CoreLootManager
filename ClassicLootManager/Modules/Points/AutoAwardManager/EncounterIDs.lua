@@ -293,6 +293,8 @@ CLM.EncounterIDs.Classic = {
     },
 }
 
+if CLM.WoWEra then return end
+
 CLM.EncounterIDs.TBC = {
     {
         name = CLM.L["Karazhan"],

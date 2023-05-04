@@ -1,7 +1,8 @@
-local WoW10 = select(4, GetBuildInfo()) >= 100000
-if WoW10 then return end
+local WoW10  = select(4, GetBuildInfo()) >= 100000
+local WoWEra = select(4, GetBuildInfo()) <   30000
+if WoW10 or WoWEra then return end
 
-local LogEntry, _ = LibStub:NewLibrary("EventSourcing/LogEntry", 1)
+local LogEntry, _ = LibStub:NewLibrary("EventSourcing/LogEntry", 3)
 if not LogEntry then
     return
 end

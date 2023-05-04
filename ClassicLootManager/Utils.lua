@@ -34,6 +34,8 @@ local numberToClass = {
 local classOrdered
 if CLM.WoW10 then
     classOrdered = { "Death Knight", "Demon Hunter", "Druid", "Evoker", "Hunter", "Mage", "Monk", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+elseif CLM.WoWEra then
+    classOrdered = { "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
 else
     classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
 end
@@ -346,7 +348,7 @@ function UTILS.RemoveServer(name)
 end
 local playerGUID = UnitGUID("player")
 local getIntegerGuid, myRealmId
-if CLM.WoW10 then -- only support cross-server for Retail for now
+if CLM.WoW10 or CLM.WoWEra then -- support cross-server for Retail and Classic Era
     function UTILS.getIntegerGuid(GUID)
         local _, realm, int = strsplit("-", GUID)
         return {tonumber(realm, 10), tonumber(int, 16)}
@@ -378,7 +380,7 @@ if CLM.WoW10 then -- only support cross-server for Retail for now
             return nil
         end
     end
-else -- non-WoW10 and not cross-server
+else -- not cross-server
     function UTILS.getIntegerGuid(GUID)
         local _, _, int = strsplit("-", GUID)
         return tonumber(int, 16)
@@ -659,6 +661,10 @@ if CLM.WoW10 then
             _, _, _, _, role = GetSpecializationInfo(currentSpec)
         end
         return role
+    end
+elseif CLM.WoWEra then
+    function UTILS.GetMyRole()
+        return "NONE" -- Not supported as it requires Role decoding based on spec
     end
 else
     function UTILS.GetMyRole()
