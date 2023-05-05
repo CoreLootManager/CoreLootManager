@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<CLM_ContainedAlertFrame name="PointReceivedAlertFrameTemplate" parent="UIParent" hidden="true" frameStrata="DIALOG" virtual="true" inherits="AlertFrameTemplate">
+	<ContainedAlertFrame name="PointReceivedAlertFrameTemplate" parent="UIParent" hidden="true" frameStrata="DIALOG" virtual="true" inherits="AlertFrameTemplate">
 		<Size x="249" y="71"/>
 		<Animations>
 			<AnimationGroup parentKey="animIn">
@@ -53,9 +53,9 @@
 				</FontString>
 			</Layer>
 		</Layers>
-	</CLM_ContainedAlertFrame>
+	</ContainedAlertFrame>
 
-	<CLM_ContainedAlertFrame name="BidAcceptedAlertFrameTemplate" parent="UIParent" hidden="true" frameStrata="DIALOG" virtual="true" inherits="AlertFrameTemplate">
+	<ContainedAlertFrame name="BidAcceptedAlertFrameTemplate" parent="UIParent" hidden="true" frameStrata="DIALOG" virtual="true" inherits="AlertFrameTemplate">
 		<Size x="249" y="71"/>
 		<Animations>
 			<AnimationGroup parentKey="animIn">
@@ -106,9 +106,9 @@
 				</FontString>
 			</Layer>
 		</Layers>
-	</CLM_ContainedAlertFrame>
+	</ContainedAlertFrame>
 
-	<CLM_ContainedAlertFrame name="BidDeniedAlertFrameTemplate" parent="UIParent" hidden="true" frameStrata="DIALOG" virtual="true" inherits="AlertFrameTemplate">
+	<ContainedAlertFrame name="BidDeniedAlertFrameTemplate" parent="UIParent" hidden="true" frameStrata="DIALOG" virtual="true" inherits="AlertFrameTemplate">
 		<Size x="249" y="71"/>
 		<Animations>
 			<AnimationGroup parentKey="animIn">
@@ -161,5 +161,5 @@
 				</FontString>
 			</Layer>
 		</Layers>
-	</CLM_ContainedAlertFrame>
+	</ContainedAlertFrame>
 </Ui>
