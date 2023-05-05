@@ -539,17 +539,22 @@ set_info_git() {
 	_si_tag=$( git -C "$si_repo_dir" describe --tags --always --abbrev=7 2>/dev/null )
 	si_tag=$( git -C "$si_repo_dir" describe --tags --always --abbrev=0 2>/dev/null )
 	# Set $si_project_version to the version number of HEAD. May be empty if there are no commits.
-	si_project_version=$si_tag
+	si_project_version="$si_tag"
 	# The HEAD is not tagged if the HEAD is several commits past the most recent tag.
 	if [ "$si_tag" = "$si_project_hash" ]; then
 		# --abbrev=0 expands out the full sha if there was no previous tag
-		si_project_version=$_si_tag
+		si_project_version="$_si_tag"
 		si_previous_tag=
 		si_tag=
 	elif [ "$_si_tag" != "$si_tag" ]; then
 		# not on a tag
 		si_project_version=$( git -C "$si_repo_dir" describe --tags --abbrev=7 --exclude="*[Aa][Ll][Pp][Hh][Aa]*" 2>/dev/null )
-		si_previous_tag=$( git -C "$si_repo_dir" describe --tags --abbrev=0 --exclude="*[Aa][Ll][Pp][Hh][Aa]*" 2>/dev/null )
+		if [[ -n $si_project_version ]]; then
+			si_previous_tag=$( git -C "$si_repo_dir" describe --tags --abbrev=0 --exclude="*[Aa][Ll][Pp][Hh][Aa]*" 2>/dev/null )
+		else # no previous non-alpha tag
+			si_project_version="$_si_tag"
+			si_previous_tag=
+		fi
 		si_tag=
 	else # we're on a tag, just jump back one commit
 		if [[ ${si_tag,,} != *"beta"* && ${si_tag,,} != *"alpha"* ]]; then
@@ -1668,9 +1673,9 @@ copy_directory_tree() {
 				fi
 				# Check for marked hard embedded libraries
 				_cdt_external_slug=
-				if [[ $_cdt_source_file == *".lua" ]] && _cdt_external_slug=$( grep -Po "(?i)(?<=@)curseforge-project-slug[[:space:]]*:[[:space:]]*[^@]+(?=@)" "$_cdt_source_file"); then
+				if [[ $_cdt_source_file == *".lua" ]] && _cdt_external_slug=$( grep -io "@curseforge-project-slug[[:blank:]]*:[[:blank:]]*[^@]\+@" "$_cdt_source_file"); then
+					_cdt_external_slug="${_cdt_external_slug//[[:blank:]@]/}"
 					_cdt_external_slug="${_cdt_external_slug##*:}"
-					_cdt_external_slug="${_cdt_external_slug//[[:space:]]/}"
 					if [[ -n $_cdt_external_slug ]]; then
 						relations["${_cdt_external_slug,,}"]="embeddedLibrary"
 					fi
@@ -2796,7 +2801,7 @@ upload_wago() {
 	EOF
 	)
 
-	echo "Uploading $archive_name ($_wago_game_version $file_type) to Wago"
+	echo "Uploading $archive_name ($_wago_game_version $file_type) to https://addons.wago.io/addons/$wagoid"
 	resultfile="$releasedir/wago_result.json"
 	if result=$( echo "$_wago_payload" | curl -sS --retry 3 --retry-delay 10 \
 			-w "%{http_code}" -o "$resultfile" \
