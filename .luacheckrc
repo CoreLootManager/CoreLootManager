@@ -172,5 +172,7 @@ globals = {
 	"EJ_GetEncounterInfo",
 	"GetSpecialization",
 	"GetSpecializationInfo",
-	"EJ_GetInstanceInfo"
+	"EJ_GetInstanceInfo",
+	"TooltipDataProcessor",
+	"TooltipUtil"
 }
