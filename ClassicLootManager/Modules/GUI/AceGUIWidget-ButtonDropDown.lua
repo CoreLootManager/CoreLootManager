@@ -45,7 +45,7 @@ do
 
 	local function Arrow_SetOpen(self)
 		self.arrow:ClearAllPoints()
-		self.arrow:SetPoint("CENTER", self.frame, "CENTER", 0, 0)
+		self.arrow:SetPoint("CENTER", self.frame, "CENTER", 0, 2)
 		self.arrow:SetTexture("Interface\\Buttons\\Arrow-Up-Up")
 	end
 
@@ -71,7 +71,8 @@ do
 			self.open = true
 			self.pullout:SetWidth(self.pulloutWidth or self.frame:GetWidth())
 			-- self.pullout:Open("TOPLEFT", self.frame, "BOTTOMLEFT", 0, self.label:IsShown() and -2 or 0)
-			self.pullout:Open("TOPLEFT", self.frame, "BOTTOMLEFT", 0, 0)
+			-- self.pullout:Open("TOPLEFT", self.frame, "BOTTOMLEFT", 0, 0)
+			self.pullout:Open("TOPRIGHT", self.frame, "BOTTOMRIGHT", 0, 0)
 			AceGUI:SetFocus(self)
 			Arrow_SetOpen(self)
 		end
@@ -115,9 +116,22 @@ do
 			-- self.label:SetText("")
 			-- self.label:Hide()
 			-- self.dropdown:SetPoint("TOPLEFT",self.frame,"TOPLEFT",-15,0)
-			self:SetHeight(26)
-			self.alignoffset = 12
+			-- self:SetHeight(26)
+			-- self:SetHeight(24)
+			-- self.alignoffset = 12
 	-- 	end
+	end
+
+	local minWidth = 50
+
+	local function OnWidthSet(self, width)
+		local max = 0
+		for _, item in pairs(self.pullout.items or {}) do
+			if item and item.text then
+				max = math.max(max, item.text:GetStringWidth())
+			end
+		end
+		self:SetPulloutWidth(max + minWidth)
 	end
 
 	--[[ Constructor ]]--
@@ -143,6 +157,9 @@ do
 				OnHide(...)
 				Arrow_SetClosed(self)
 			end)
+			
+			self:SetPulloutWidth(minWidth)
+			self:SetHeight(24)
 		end
 
 		self.ClearFocus  = function(self)
@@ -161,10 +178,11 @@ do
 		self.SetItemValue 		= SetItemValue
 		self.SetItemDisabled	= SetItemDisabled
 		self.SetPulloutWidth 	= SetPulloutWidth
+		self.OnWidthSet         = OnWidthSet
 
-		self.alignoffset = 26
+		-- self.alignoffset = 26
 
-		frame:SetScript("OnHide",Dropdown_OnHide)
+		frame:SetScript("OnHide", Dropdown_OnHide)
 
 		-- dropdown:ClearAllPoints()
 		-- dropdown:SetPoint("TOPLEFT",frame,"TOPLEFT",-15,0)

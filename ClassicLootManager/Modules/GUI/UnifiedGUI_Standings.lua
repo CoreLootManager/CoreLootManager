@@ -164,7 +164,6 @@ local function GenerateAssistantOptions(self)
             values = CONSTANTS.POINT_CHANGE_REASONS.GENERAL,
             set = function(i, v) self.awardReason = v end,
             get = function(i) return self.awardReason end,
-            control = "CLMButtonDropDown",
             order = 11,
             width = "full"
         },
@@ -174,7 +173,7 @@ local function GenerateAssistantOptions(self)
             type = "input",
             set = function(i, v) self.awardValue = v end,
             get = function(i) return self.awardValue end,
-            width = 0.575,
+            width = 0.5,
             pattern = CONSTANTS.REGEXP_FLOAT,
             order = 13
         },
@@ -237,6 +236,20 @@ local function GenerateAssistantOptions(self)
             end),
             order = 14
         },
+        award_type_dropodown = {
+            name = CLM.L["Type"],
+            type = "select",
+            values = {
+                -- [0] = "EP/GP",
+                [1] = "EP",
+                [2] = "GP"
+            },
+            set = function(i, v) self.awardTypeDD = v end,
+            get = function(i) return self.awardTypeDD end,
+            control = "CLMButtonDropDown",
+            order = 14.5,
+            width = 0.2
+        },
         award_type = {
             name = CLM.L["Gear Points"],
             type = "toggle",
@@ -264,9 +277,23 @@ local function GenerateManagerOptions(self)
             type = "input",
             set = function(i, v) self.decayValue = v end,
             get = function(i) return self.decayValue end,
-            width = 0.575,
+            width = 0.5,
             pattern = CONSTANTS.REGEXP_FLOAT,
             order = 21
+        },
+        decay_type_dropodown = {
+            name = CLM.L["Type"],
+            type = "select",
+            values = {
+                [0] = "EP/GP",
+                [1] = "EP",
+                [2] = "GP"
+            },
+            set = function(i, v) self.decayTypeDD = v end,
+            get = function(i) return self.decayTypeDD end,
+            control = "CLMButtonDropDown",
+            order = 22.5,
+            width = 0.2
         },
         decay_negative = {
             name = CLM.L["Decay Negatives"],
