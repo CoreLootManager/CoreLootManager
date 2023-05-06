@@ -84,7 +84,9 @@
         "GameTooltip_AddErrorLine",
         "TooltipDataProcessor",
         "TooltipUtil",
-        "ContainedAlertFrameMixin"
+        "ContainedAlertFrameMixin",
+        "CLOSE",
+        "ClearFocus"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

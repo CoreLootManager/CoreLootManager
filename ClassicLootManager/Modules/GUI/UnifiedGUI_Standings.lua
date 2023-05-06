@@ -164,6 +164,7 @@ local function GenerateAssistantOptions(self)
             values = CONSTANTS.POINT_CHANGE_REASONS.GENERAL,
             set = function(i, v) self.awardReason = v end,
             get = function(i) return self.awardReason end,
+            control = "CLMButtonDropDown",
             order = 11,
             width = "full"
         },
