@@ -242,18 +242,9 @@ local function GenerateAssistantOptions(self)
             name = CLM.L["Type"],
             type = "select",
             values = CONSTANTS.EPGP_POINT_AWARD_TYPES_GUI,
-            -- sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
             set = function(i, v) self.awardTypeDD = v end,
             get = function(i) return self.awardTypeDD end,
             control = "CLMButtonDropDown",
-            order = 14.5,
-            width = 0.2
-        },
-        award_type = {
-            name = CLM.L["Gear Points"],
-            type = "toggle",
-            set = function(i, v) self.awardGearPoints = v and true or false end,
-            get = function(i) return self.awardGearPoints end,
             hidden = (function()
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
                 if roster then
@@ -263,8 +254,24 @@ local function GenerateAssistantOptions(self)
                 return true
             end),
             order = 15,
-            width = "full"
+            width = 0.2
         },
+        -- award_type = {
+        --     name = CLM.L["Gear Points"],
+        --     type = "toggle",
+        --     set = function(i, v) self.awardGearPoints = v and true or false end,
+        --     get = function(i) return self.awardGearPoints end,
+        --     hidden = (function()
+        --         local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+        --         if roster then
+        --             return (roster:GetPointType() ~= CONSTANTS.POINT_TYPE.EPGP)
+        --         end
+
+        --         return true
+        --     end),
+        --     order = 15,
+        --     width = "full"
+        -- },
     }
 end
 
@@ -287,7 +294,15 @@ local function GenerateManagerOptions(self)
             set = function(i, v) self.decayTypeDD = v end,
             get = function(i) return self.decayTypeDD end,
             control = "CLMButtonDropDown",
-            order = 22.5,
+            hidden = (function()
+                local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+                if roster then
+                    return (roster:GetPointType() ~= CONSTANTS.POINT_TYPE.EPGP)
+                end
+
+                return true
+            end),
+            order = 23,
             width = 0.2
         },
         decay_negative = {
@@ -302,7 +317,7 @@ local function GenerateManagerOptions(self)
                 return (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
             end,
             width = "full",
-            order = 23
+            order = 24
         },
         decay_dkp = {
             name = CLM.L["Decay"],
