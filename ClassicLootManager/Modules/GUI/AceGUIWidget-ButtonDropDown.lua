@@ -143,6 +143,7 @@ do
 		local self = {}
 		self.type = widgetType
 		self.frame = frame
+		self.dropdown = frame
 		self.arrow = arrow
 		self.count = count
 		frame.obj = self

@@ -6,6 +6,8 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+
 local colorRed = {r = 0.93, g = 0.276, b = 0.27, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.276, b = 0.27, a = 0.3}
 local colorBlueTransparent = {r = 0.27, g = 0.276, b = 0.93, a = 0.3}
@@ -181,7 +183,7 @@ local function GenerateAssistantOptions(self)
             name = CLM.L["Award"],
             desc = CLM.L["Award points to players based on context."],
             type = "execute",
-            width = 0.575,
+            width = isElvUI and 0.5 or 0.575,
             func = (function(i)
                 -- Award Value
                 local awardValue = tonumber(self.awardValue)
@@ -236,14 +238,11 @@ local function GenerateAssistantOptions(self)
             end),
             order = 14
         },
-        award_type_dropodown = {
+        award_type_dropdown = {
             name = CLM.L["Type"],
             type = "select",
-            values = {
-                -- [0] = "EP/GP",
-                [1] = "EP",
-                [2] = "GP"
-            },
+            values = CONSTANTS.EPGP_POINT_AWARD_TYPES_GUI,
+            -- sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
             set = function(i, v) self.awardTypeDD = v end,
             get = function(i) return self.awardTypeDD end,
             control = "CLMButtonDropDown",
@@ -284,11 +283,7 @@ local function GenerateManagerOptions(self)
         decay_type_dropodown = {
             name = CLM.L["Type"],
             type = "select",
-            values = {
-                [0] = "EP/GP",
-                [1] = "EP",
-                [2] = "GP"
-            },
+            values = CONSTANTS.EPGP_POINT_DECAY_TYPES_GUI,
             set = function(i, v) self.decayTypeDD = v end,
             get = function(i) return self.decayTypeDD end,
             control = "CLMButtonDropDown",
@@ -313,7 +308,7 @@ local function GenerateManagerOptions(self)
             name = CLM.L["Decay"],
             desc = CLM.L["Execute decay for players based on context."],
             type = "execute",
-            width = 0.575,
+            width = isElvUI and 0.5 or 0.575,
             func = (function(i)
                 -- Decay Value
                 local decayValue = tonumber(self.decayValue)
