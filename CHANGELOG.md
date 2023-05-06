@@ -1,3 +1,10 @@
+# Core Loot Manager v4.1.0
+## Classic Era
+### Classic Era support
+CLM Now supports Classic Era with the exception of Alerts which are disabled by default due to performance concerns.
+## Retail
+### Missing functionalities restored
+Tooltip value display and tooltip scanning for eligibility is now available in Retail.
 # Core Loot Manager v4.0.2
 ## Bugfixes
 ### Unlinking
