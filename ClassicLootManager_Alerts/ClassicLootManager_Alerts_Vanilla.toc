@@ -11,7 +11,7 @@
 ## X-License: Apache2
 ## X-Curse-Project-ID: 481373
 ## X-Wago-ID: vEGPw4K1
+## DefaultState: disabled
 
-Alerts_Era.lua
-Alerts_Era.xml
+Alerts.xml
 Alerts.lua
