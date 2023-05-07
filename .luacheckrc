@@ -43,6 +43,8 @@ globals = {
 	-- VDT 
 	"ViragDevTool",
 	"ViragDevTool_AddData",
+	-- ElvUI
+	"ElvUI",
 	-- WoW
 	"CreateFromMixins",
 	"ItemMixin",

@@ -6,6 +6,8 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+
 local colorRed = {r = 0.93, g = 0.276, b = 0.27, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.276, b = 0.27, a = 0.3}
 local colorBlueTransparent = {r = 0.27, g = 0.276, b = 0.93, a = 0.3}
@@ -173,7 +175,7 @@ local function GenerateAssistantOptions(self)
             type = "input",
             set = function(i, v) self.awardValue = v end,
             get = function(i) return self.awardValue end,
-            width = 0.575,
+            width = 0.5,
             pattern = CONSTANTS.REGEXP_FLOAT,
             order = 13
         },
@@ -181,7 +183,7 @@ local function GenerateAssistantOptions(self)
             name = CLM.L["Award"],
             desc = CLM.L["Award points to players based on context."],
             type = "execute",
-            width = 0.575,
+            width = isElvUI and 0.5 or 0.575,
             func = (function(i)
                 -- Award Value
                 local awardValue = tonumber(self.awardValue)
@@ -236,11 +238,13 @@ local function GenerateAssistantOptions(self)
             end),
             order = 14
         },
-        award_type = {
-            name = CLM.L["Gear Points"],
-            type = "toggle",
-            set = function(i, v) self.awardGearPoints = v and true or false end,
-            get = function(i) return self.awardGearPoints end,
+        award_type_dropdown = {
+            name = CLM.L["Type"],
+            type = "select",
+            values = CONSTANTS.EPGP_POINT_AWARD_TYPES_GUI,
+            set = function(i, v) self.awardTypeDD = v end,
+            get = function(i) return self.awardTypeDD end,
+            control = "CLMButtonDropDown",
             hidden = (function()
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
                 if roster then
@@ -250,8 +254,24 @@ local function GenerateAssistantOptions(self)
                 return true
             end),
             order = 15,
-            width = "full"
+            width = 0.2
         },
+        -- award_type = {
+        --     name = CLM.L["Gear Points"],
+        --     type = "toggle",
+        --     set = function(i, v) self.awardGearPoints = v and true or false end,
+        --     get = function(i) return self.awardGearPoints end,
+        --     hidden = (function()
+        --         local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+        --         if roster then
+        --             return (roster:GetPointType() ~= CONSTANTS.POINT_TYPE.EPGP)
+        --         end
+
+        --         return true
+        --     end),
+        --     order = 15,
+        --     width = "full"
+        -- },
     }
 end
 
@@ -263,9 +283,27 @@ local function GenerateManagerOptions(self)
             type = "input",
             set = function(i, v) self.decayValue = v end,
             get = function(i) return self.decayValue end,
-            width = 0.575,
+            width = 0.5,
             pattern = CONSTANTS.REGEXP_FLOAT,
             order = 21
+        },
+        decay_type_dropodown = {
+            name = CLM.L["Type"],
+            type = "select",
+            values = CONSTANTS.EPGP_POINT_DECAY_TYPES_GUI,
+            set = function(i, v) self.decayTypeDD = v end,
+            get = function(i) return self.decayTypeDD end,
+            control = "CLMButtonDropDown",
+            hidden = (function()
+                local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+                if roster then
+                    return (roster:GetPointType() ~= CONSTANTS.POINT_TYPE.EPGP)
+                end
+
+                return true
+            end),
+            order = 23,
+            width = 0.2
         },
         decay_negative = {
             name = CLM.L["Decay Negatives"],
@@ -279,13 +317,13 @@ local function GenerateManagerOptions(self)
                 return (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
             end,
             width = "full",
-            order = 23
+            order = 24
         },
         decay_dkp = {
             name = CLM.L["Decay"],
             desc = CLM.L["Execute decay for players based on context."],
             type = "execute",
-            width = 0.575,
+            width = isElvUI and 0.5 or 0.575,
             func = (function(i)
                 -- Decay Value
                 local decayValue = tonumber(self.decayValue)
