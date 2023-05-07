@@ -2,7 +2,6 @@
 	..\FrameXML\UI.xsd">
 	<Script file="AceGUIWidget-LibScrollingTable.lua"/>
 	<Script file="AceGUIWidget-ButtonDropDown.lua"/>
-	<Script file="AceGUI-Widget-ButtonDropDown-ElvUISkinning.lua"/>
 	<Script file="AceGUIWidget-IconNoLabel.lua"/>
 	<Script file="UIFade.lua"/>
 	<Script file="Filters.lua"/>

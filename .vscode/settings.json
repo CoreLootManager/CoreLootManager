@@ -86,7 +86,8 @@
         "TooltipUtil",
         "ContainedAlertFrameMixin",
         "CLOSE",
-        "ClearFocus"
+        "ClearFocus",
+        "ElvUI"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

@@ -105,7 +105,7 @@ do
 	-- end
 
 	-- -- exported
-	local function SetLabel(self, text)
+	-- local function SetLabel(self, text)
 	-- 	if text and text ~= "" then
 	-- 		self.label:SetText(text)
 	-- 		self.label:Show()
@@ -120,7 +120,7 @@ do
 			-- self:SetHeight(24)
 			-- self.alignoffset = 12
 	-- 	end
-	end
+	-- end
 
 	local minWidth = 50
 
@@ -134,6 +134,19 @@ do
 		self:SetPulloutWidth(max + minWidth)
 	end
 
+	local function OnAcquireInternal(self)
+		OnAcquire(self)
+		local OnHide = self.pullout.frame:GetScript("OnHide") or NOP
+		self.pullout.frame:SetScript("OnHide", function(...)
+---@diagnostic disable-next-line: redundant-parameter
+			OnHide(...)
+			Arrow_SetClosed(self)
+		end)
+
+		self:SetPulloutWidth(minWidth)
+		self:SetHeight(24)
+	end
+
 	--[[ Constructor ]]--
 
 	local function Constructor()
@@ -143,35 +156,21 @@ do
 		local self = {}
 		self.type = widgetType
 		self.frame = frame
-		self.dropdown = frame
+		self.dropdown = frame -- hack for ElvUI reskin of the dropdown
 		self.arrow = arrow
 		self.count = count
 		frame.obj = self
 
 		Arrow_SetClosed(self)
 
-		self.OnRelease   = OnRelease
-		self.OnAcquire   = function(self)
-			OnAcquire(self)
-			local OnHide = self.pullout.frame:GetScript("OnHide") or NOP
-			self.pullout.frame:SetScript("OnHide", function(...)
-				OnHide(...)
-				Arrow_SetClosed(self)
-			end)
-			
-			self:SetPulloutWidth(minWidth)
-			self:SetHeight(24)
-		end
-
-		self.ClearFocus  = function(self)
-			ClearFocus(self)
-		end
-
+		self.OnRelease   		= OnRelease
+		self.OnAcquire   		= OnAcquireInternal
+		self.ClearFocus  		= ClearFocus
 		self.SetText 	 		= NOP
 		self.SetValue    		= SetValue
 		self.GetValue    		= GetValue
 		self.SetList     		= SetList
-		self.SetLabel    		= SetLabel
+		self.SetLabel    		= NOP
 		self.SetDisabled 		= SetDisabled
 		self.AddItem     		= AddItem
 		self.SetMultiselect 	= SetMultiselect
@@ -211,3 +210,15 @@ do
 
 	AceGUI:RegisterWidgetType(widgetType, Constructor, widgetVersion)
 end
+
+-- ElvUI reskin of the button
+if not ElvUI then return end
+
+local E = unpack(ElvUI)
+local S = E:GetModule('Skins')
+
+hooksecurefunc(S, "Ace3_RegisterAsWidget", function(_, widget)
+    if widget.type == "CLMButtonDropDown" then
+        S:HandleButton(widget.frame)
+    end
+end)
