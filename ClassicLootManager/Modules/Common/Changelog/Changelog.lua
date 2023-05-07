@@ -1,6 +1,23 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.1.0",
+        data = {
+            {
+                name = "Classic Era",
+                data = {
+                    { header = "Classic Era support", body = "CLM Now supports Classic Era with the exception of Alerts which are disabled by default due to performance concerns." },
+                },
+            },
+            {
+                name = "Retail",
+                data = {
+                    { header = "Missing functionalities restored", body = "Tooltip value display and tooltip scanning for eligibility is now available in Retail." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.0.2",
         data = {
             {
