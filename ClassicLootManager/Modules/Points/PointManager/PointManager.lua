@@ -168,6 +168,40 @@ local function mutate_decay_standings(roster, GUID, value, timestamp)
     roster:DecayStandings(GUID, value)
 end
 
+local function verify_award_point_change_type(roster, pointChangeType, functionName)
+    local success = false
+    if (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) then
+        if CONSTANTS.POINT_AWARD_TYPES[pointChangeType] then
+            success = true
+        end
+    else
+        if pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+            success = true
+        end
+    end
+    if not success then
+        LOG:Error("%s: Invalid point award type (%s)", functionName, pointChangeType)
+    end
+    return success
+end
+
+local function verify_decay_point_change_type(roster, pointChangeType, functionName)
+    local success = false
+    if (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) then
+        if CONSTANTS.POINT_DECAY_TYPES[pointChangeType] then
+            success = true
+        end
+    else
+        if pointChangeType == CONSTANTS.POINT_AWARD_TYPES.POINTS then
+            success = true
+        end
+    end
+    if not success then
+        LOG:Error("%s: Invalid point decay type (%s)", functionName, pointChangeType)
+    end
+    return success
+end
+
 local PointManager = {}
 function PointManager:Initialize()
     LOG:Trace("PointManager:Initialize()")
@@ -234,7 +268,7 @@ function PointManager:Initialize()
 
 end
 
-function PointManager:UpdatePoints(roster, targets, value, reason, action, note, isSpent, forceInstant)
+function PointManager:UpdatePoints(roster, targets, value, reason, action, note, pointChangeType, forceInstant)
     LOG:Trace("PointManager:UpdatePoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdatePoints(): Unknown action")
@@ -250,6 +284,15 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     end
     if not typeof(roster, CLM.MODELS.Roster) then
         LOG:Error("PointManager:UpdatePoints(): Missing valid roster")
+        return
+    end
+
+    -- Ok what happened here is that originaly there was a boolean parameter isSpent
+    -- which was denoting if point change was for current or spent Points
+    -- With move to Enum we now need to translate the enum to boolean
+    -- As still the change can only be between Points / Spent
+    -- This will be true for all isSpent changes
+    if not verify_award_point_change_type(roster, pointChangeType, "PointManager:UpdatePoints()") then
         return
     end
 
@@ -398,8 +441,7 @@ function PointManager:AddFakePointHistory(roster, targets, value, reason, timest
     end
 end
 
-CONSTANTS.POINT_MANAGER_ACTION =
-{
+CONSTANTS.POINT_MANAGER_ACTION = {
     MODIFY = 0,
     SET = 1,
     DECAY = 2
@@ -446,26 +488,25 @@ CONSTANTS.POINT_CHANGE_REASONS = {
 
 CONSTANTS.POINT_CHANGE_REASONS.ALL = UTILS.mergeDicts(CONSTANTS.POINT_CHANGE_REASONS.GENERAL, CONSTANTS.POINT_CHANGE_REASONS.INTERNAL)
 
-CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE = {
-    EPGP = 0,
-    EP = 1,
-    GP = 2
+CONSTANTS.POINT_CHANGE_TYPE = {
+    TOTAL   = 0,
+    POINTS  = 1,
+    SPENT   = 2
 }
 
-CONSTANTS.EPGP_POINT_AWARD_TYPES = UTILS.Set({ 1, 2 })
-CONSTANTS.EPGP_POINT_DECAY_TYPES = UTILS.Set({ 0, 1, 2 })
+CONSTANTS.POINT_AWARD_TYPES = UTILS.Set({    1, 2 })
+CONSTANTS.POINT_DECAY_TYPES = UTILS.Set({ 0, 1, 2 })
 
 CONSTANTS.EPGP_POINT_AWARD_TYPES_GUI = {
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.EP]   = CLM.L["EP"],
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.GP]   = CLM.L["GP"]
+    [CONSTANTS.POINT_CHANGE_TYPE.POINTS]   = CLM.L["EP"],
+    [CONSTANTS.POINT_CHANGE_TYPE.SPENT]    = CLM.L["GP"]
 }
 
 
 CONSTANTS.EPGP_POINT_DECAY_TYPES_GUI = {
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.EPGP] = CLM.L["EP/GP"],
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.EP]   = CLM.L["EP"],
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.GP]   = CLM.L["GP"]
+    [CONSTANTS.POINT_CHANGE_TYPE.TOTAL]    = CLM.L["EP/GP"],
+    [CONSTANTS.POINT_CHANGE_TYPE.POINTS]   = CLM.L["EP"],
+    [CONSTANTS.POINT_CHANGE_TYPE.SPENT]    = CLM.L["GP"]
 }
-
 
 CLM.MODULES.PointManager = PointManager

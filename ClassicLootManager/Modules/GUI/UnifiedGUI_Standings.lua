@@ -118,7 +118,8 @@ local function GenerateUntrustedOptions(self)
         set = function(i, v)
             self.roster = v
             self.context = CONSTANTS.ACTION_CONTEXT.ROSTER
-            self.awardGearPoints = false
+            self.awardType = CONSTANTS.POINT_CHANGE_TYPE.POINTS
+            self.decayType = CONSTANTS.POINT_CHANGE_TYPE.TOTAL
             refreshFn()
         end,
         get = function(i) return self.roster end,
@@ -199,13 +200,13 @@ local function GenerateAssistantOptions(self)
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     if CLM.MODULES.RaidManager:IsInRaid() then
-                        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardGearPoints)
+                        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardType)
                     else
                         LOG:Warning("You are not in raid.")
                     end
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
                     if roster then
-                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note, self.awardGearPoints)
+                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note, self.awardTypefdeca)
                     else
                         LOG:Warning("Missing valid roster.")
                     end
@@ -217,7 +218,7 @@ local function GenerateAssistantOptions(self)
                         return
                     end
                     if roster then
-                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardGearPoints)
+                        CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardType)
                     else
                         LOG:Warning("Missing valid roster.")
                     end
@@ -242,8 +243,8 @@ local function GenerateAssistantOptions(self)
             name = CLM.L["Type"],
             type = "select",
             values = CONSTANTS.EPGP_POINT_AWARD_TYPES_GUI,
-            set = function(i, v) self.awardTypeDD = v end,
-            get = function(i) return self.awardTypeDD end,
+            set = function(i, v) self.awardType = v end,
+            get = function(i) return self.awardType end,
             control = "CLMButtonDropDown",
             hidden = (function()
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
@@ -256,22 +257,6 @@ local function GenerateAssistantOptions(self)
             order = 15,
             width = 0.2
         },
-        -- award_type = {
-        --     name = CLM.L["Gear Points"],
-        --     type = "toggle",
-        --     set = function(i, v) self.awardGearPoints = v and true or false end,
-        --     get = function(i) return self.awardGearPoints end,
-        --     hidden = (function()
-        --         local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
-        --         if roster then
-        --             return (roster:GetPointType() ~= CONSTANTS.POINT_TYPE.EPGP)
-        --         end
-
-        --         return true
-        --     end),
-        --     order = 15,
-        --     width = "full"
-        -- },
     }
 end
 
@@ -291,8 +276,8 @@ local function GenerateManagerOptions(self)
             name = CLM.L["Type"],
             type = "select",
             values = CONSTANTS.EPGP_POINT_DECAY_TYPES_GUI,
-            set = function(i, v) self.decayTypeDD = v end,
-            get = function(i) return self.decayTypeDD end,
+            set = function(i, v) self.decayType = v end,
+            get = function(i) return self.decayType end,
             control = "CLMButtonDropDown",
             hidden = (function()
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
@@ -335,7 +320,7 @@ local function GenerateManagerOptions(self)
                     return
                 end
                 if self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    CLM.MODULES.PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative)
+                    CLM.MODULES.PointManager:UpdateRosterPoints(roster, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, not self.includeNegative, nil, self.decayType)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles or #profiles == 0 then
@@ -343,7 +328,7 @@ local function GenerateManagerOptions(self)
                         LOG:Debug("UnifiedGUI_Standings(Decay): profiles == 0")
                         return
                     end
-                    CLM.MODULES.PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY)
+                    CLM.MODULES.PointManager:UpdatePoints(roster, profiles, decayValue, CONSTANTS.POINT_CHANGE_REASON.DECAY, CONSTANTS.POINT_MANAGER_ACTION.DECAY, nil, self.decayType)
                 else
                     LOG:Warning("Invalid context. You should not decay raid only.")
                 end
