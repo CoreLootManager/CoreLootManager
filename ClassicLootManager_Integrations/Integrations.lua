@@ -11,7 +11,10 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 local EXTERNAL_AWARD_EVENT = "CLM_EXTERNAL_EVENT_ITEM_AWARDED"
 local RCLC_AWARD_EVENT = "RCMLAwardSuccess"
 
-local _, _, _, isRCLC = GetAddOnInfo("RCLootCouncil_Classic")
+local _, _, _, isRCLC_Retail = GetAddOnInfo("RCLootCouncil")
+local _, _, _, isRCLC_Classic = GetAddOnInfo("RCLootCouncil_Classic")
+
+local isRCLC = isRCLC_Retail or isRCLC_Classic
 
 PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
     NONE = 1,
@@ -20,7 +23,7 @@ PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
     AWARD_FOR_SMALL = 4,
     AWARD_FOR_MEDIUM = 5,
     AWARD_FOR_LARGE = 6,
-    AWARD_FOR_MAX = 7
+    AWARD_FOR_MAX = 7,
 }
 
 local function InitializeDB(key)
@@ -662,3 +665,4 @@ PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLERS = UTILS.Set(PRIV.CONSTANTS.EX
 PRIV.CONSTANTS.TIMEFRAME_SCALE_VALUES = UTILS.Set(PRIV.CONSTANTS.TIMEFRAME_SCALE_VALUE)
 
 PRIV.MODULES.Integration = Integration
+
