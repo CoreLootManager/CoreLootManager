@@ -87,7 +87,10 @@
         "ContainedAlertFrameMixin",
         "CLOSE",
         "ClearFocus",
-        "ElvUI"
+        "ElvUI",
+        "GetContainerItemInfo",
+        "GetContainerNumSlots",
+        "UseContainerItem"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

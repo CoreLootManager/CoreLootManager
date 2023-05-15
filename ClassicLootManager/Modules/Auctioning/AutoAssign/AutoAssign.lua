@@ -11,6 +11,10 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+local GetContainerItemInfo = GetContainerItemInfo or C_Container.GetContainerItemInfo
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+local UseContainerItem     = UseContainerItem or C_Container.UseContainerItem
+
 local function ScanTooltip(self)
     local query = string.gsub(BIND_TRADE_TIME_REMAINING, "%%s", ".*")
     local lineWithTimer
@@ -53,7 +57,7 @@ function BagItemChecker:Clear()
 end
 
 local function BagItemCheck(self)
-    local info = C_Container.GetContainerItemInfo(self.bag, self.slot)
+    local info = GetContainerItemInfo(self.bag, self.slot)
     if not info then return end
     self.itemInfo.locked = info.isLocked or false
     self.itemInfo.id = info.itemID or -1
@@ -101,7 +105,7 @@ end
 local function ScanBagsForItem(itemId, tradeableOnly)
     local found = {}
     for bag = 0, 4 do
-        for slot = 1, C_Container.GetContainerNumSlots(bag) do
+        for slot = 1, GetContainerNumSlots(bag) do
             BagItemChecker:Set(bag, slot)
             if not BagItemChecker:IsLocked() and (BagItemChecker:GetItemId() == itemId) then
                 local isTradeable = true
@@ -149,7 +153,7 @@ local function HandleTradeShow(self)
             if foundItems[itemId] and #foundItems[itemId] > 0 then
                 local loc = tremove(foundItems[itemId])
                 C_Timer.After(0.5*totalQueued, function()
-                    C_Container.UseContainerItem(loc.bag, loc.slot)
+                    UseContainerItem(loc.bag, loc.slot)
                 end)
                 totalQueued = totalQueued + 1
                 if totalQueued == 6 then

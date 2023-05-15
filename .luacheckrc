@@ -176,5 +176,9 @@ globals = {
 	"GetSpecializationInfo",
 	"EJ_GetInstanceInfo",
 	"TooltipDataProcessor",
-	"TooltipUtil"
+	"TooltipUtil",
+	-- Classic Era only
+	"GetContainerItemInfo",
+	"GetContainerNumSlots",
+	"UseContainerItem"
 }
