@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.1.1",
+        data = {
+            {
+                name = "Bugfixes",
+                data = {
+                    { header = "Classic Era trade", body = "Fix Classic Era trade fatal error" },
+                    { header = "Retail RCLC integration", body = "Fix RCLC Integration in Retail" },
+                },
+            },
+        },
+    },
+    {
         version = "v4.1.0",
         data = {
             {

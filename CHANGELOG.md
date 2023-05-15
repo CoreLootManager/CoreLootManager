@@ -1,3 +1,9 @@
+# Core Loot Manager v4.1.1
+## Bugfixes
+### Classic Era trade
+Fix Classic Era trade fatal error
+### Retail RCLC integration
+Fix RCLC Integration in Retail
 # Core Loot Manager v4.1.0
 ## Classic Era
 ### Classic Era support
