@@ -92,6 +92,7 @@ local function HandleRosterChange(rosterUid)
     if roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
         UnifiedGUI_Standings.decayType = CONSTANTS.POINT_CHANGE_TYPE.TOTAL
     end
+    print(debugstack())
 end
 
 function UnifiedGUI_Standings:GetSelection()
@@ -487,7 +488,8 @@ local tableStructure = {
 
                     if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                         value = value .. "%"
-                    elseif isEPGP then
+                    end
+                    if isEPGP then
                         if point:Type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
                             value = value .. " " .. CLM.L["GP"]
                         elseif point:Type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then

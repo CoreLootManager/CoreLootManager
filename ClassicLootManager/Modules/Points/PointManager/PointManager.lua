@@ -284,7 +284,13 @@ function PointManager:Initialize()
         CLM.MODELS.LEDGER.POINTS.DecayRoster,
         (function(entry)
             LOG:TraceAndCount("mutator(PointsDecayRoster)")
-            apply_roster_mutator(entry, mutate_decay_standings)
+            if entry:type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+                apply_roster_mutator(entry, mutate_decay_standings)
+            elseif entry:type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
+                apply_roster_mutator(entry, mutate_decay_spent)
+            else
+                apply_roster_mutator(entry, mutate_decay_total)
+            end
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(

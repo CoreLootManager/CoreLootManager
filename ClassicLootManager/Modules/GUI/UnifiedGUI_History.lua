@@ -432,15 +432,15 @@ local function tableDataFeeder()
             if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                 value = value .. "%"
             end
-
-            local suffix = ""
             if isEPGP then
                 if history:Type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
-                    suffix = CLM.L["GP"]
+                    value = value .. " " .. CLM.L["GP"]
+                elseif history:Type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+                    value = value .. " " .. CLM.L["EP"]
+                else
+                    value = value .. " " .. CLM.L["EP/GP"]
                 end
             end
-
-            value = value .. " " .. suffix
 
             local color
             local profiles = history:Profiles()
