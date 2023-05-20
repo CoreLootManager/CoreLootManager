@@ -200,7 +200,7 @@ local function verify_set_point_change_type(roster, pointChangeType, functionNam
         success = true
     end
     if not success then
-        LOG:Error("%s: Invalid point award type (%s)", functionName, pointChangeType)
+        LOG:Error("%s: Invalid point set type (%s)", functionName, pointChangeType)
     end
     return success
 end
@@ -212,7 +212,7 @@ local function verify_decay_point_change_type(roster, pointChangeType, functionN
             success = true
         end
     else
-        if pointChangeType == CONSTANTS.POINT_AWARD_TYPES.POINTS then
+        if pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
             success = true
         end
     end
@@ -313,6 +313,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
         return
     end
     if not verify_point_change_type[action](roster, pointChangeType, "PointManager:UpdatePoints()") then
+        LOG:Error("123")
         return
     end
 

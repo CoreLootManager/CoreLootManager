@@ -84,6 +84,16 @@ local UnifiedGUI_Standings = {
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIStandingsDialogTooltip", UIParent, "GameTooltipTemplate"),
 }
 
+local function HandleRosterChange(rosterUid)
+    UnifiedGUI_Standings.roster = rosterUid
+    UnifiedGUI_Standings.awardType = CONSTANTS.POINT_CHANGE_TYPE.POINTS
+    UnifiedGUI_Standings.decayType = CONSTANTS.POINT_CHANGE_TYPE.POINTS
+    local roster = CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster)
+    if roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+        UnifiedGUI_Standings.decayType = CONSTANTS.POINT_CHANGE_TYPE.TOTAL
+    end
+end
+
 function UnifiedGUI_Standings:GetSelection()
     LOG:Trace("UnifiedGUI_Standings:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()
@@ -116,10 +126,9 @@ local function GenerateUntrustedOptions(self)
         type = "select",
         values = CLM.MODULES.RosterManager:GetRostersUidMap(),
         set = function(i, v)
-            self.roster = v
+            -- self.roster = v
+            HandleRosterChange(v)
             self.context = CONSTANTS.ACTION_CONTEXT.ROSTER
-            self.awardType = CONSTANTS.POINT_CHANGE_TYPE.POINTS
-            self.decayType = CONSTANTS.POINT_CHANGE_TYPE.TOTAL
             refreshFn()
         end,
         get = function(i) return self.roster end,
@@ -721,7 +730,7 @@ local function beforeShowHandler()
     LOG:Trace("UnifiedGUI_Standings beforeShowHandler()")
     UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.ROSTER
     if CLM.MODULES.RaidManager:IsInRaid() then
-        UnifiedGUI_Standings.roster = CLM.MODULES.RaidManager:GetRaid():Roster():UID()
+        HandleRosterChange(CLM.MODULES.RaidManager:GetRaid():Roster():UID())
         UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
         UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
     end
@@ -738,7 +747,7 @@ end
 local function restoreHandler()
     LOG:Trace("UnifiedGUI_Standings restoreHandler()")
     local storage = CLM.GUI.Unified:GetStorage(UnifiedGUI_Standings.name)
-    UnifiedGUI_Standings.roster = storage.roster
+    HandleRosterChange(storage.roster)
 end
 
 local function dataReadyHandler()
@@ -746,8 +755,10 @@ local function dataReadyHandler()
     if not CLM.MODULES.RosterManager:GetRosterByUid(UnifiedGUI_Standings.roster) then
         local _, roster = next(CLM.MODULES.RosterManager:GetRosters())
         if roster then
-            UnifiedGUI_Standings.roster = roster:UID()
+            HandleRosterChange(roster:UID())
         end
+    else
+        HandleRosterChange(UnifiedGUI_Standings.roster) -- force update of data relying on roster
     end
 end
 

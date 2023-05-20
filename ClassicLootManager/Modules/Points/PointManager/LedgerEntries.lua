@@ -229,7 +229,7 @@ function Decay:fields()
     return decayFields
 end
 
-function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note)
+function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note, pointType)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     value = tonumber(value) or 0
@@ -240,6 +240,7 @@ function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note)
     o.n = ignoreNegatives and true or false
     note = note or ""
     o.t = tostring(note)
+    o.i = tonumber(pointType) or 0
     return o
 end
 
