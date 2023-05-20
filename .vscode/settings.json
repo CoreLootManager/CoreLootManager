@@ -87,7 +87,14 @@
         "ContainedAlertFrameMixin",
         "CLOSE",
         "ClearFocus",
-        "ElvUI"
+        "ElvUI",
+        "GetContainerItemInfo",
+        "GetContainerNumSlots",
+        "UseContainerItem",
+        "SlashCmdList",
+        "hash_SlashCmdList",
+        "DEFAULT_CHAT_FRAME",
+        "TOTAL"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

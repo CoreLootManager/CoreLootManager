@@ -488,10 +488,12 @@ local tableStructure = {
                     if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                         value = value .. "%"
                     elseif isEPGP then
-                        if point:Spent() then
+                        if point:Type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
                             value = value .. " " .. CLM.L["GP"]
-                        else
+                        elseif point:Type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
                             value = value .. " " .. CLM.L["EP"]
+                        else
+                            value = value .. " " .. CLM.L["EP/GP"]
                         end
                     end
                     tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)

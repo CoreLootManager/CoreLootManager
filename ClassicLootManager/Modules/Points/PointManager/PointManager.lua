@@ -22,7 +22,7 @@ local function strsub32(s)
     return strsub(tostring(s or ""), 1, 32)
 end
 
-local function update_profile_standings(mutate, roster, targets, value, reason, isSpent, timestamp, pointHistoryEntry, isGUID, alreadyApplied)
+local function update_profile_standings(mutate, roster, targets, value, reason, changeType, timestamp, pointHistoryEntry, isGUID, alreadyApplied)
     alreadyApplied = alreadyApplied or {}
     local getGUID
     if isGUID then
@@ -50,20 +50,13 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
                     mainProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(targetProfile:Main())
                 end
                 -- Check if we should schedule it for alert
-                local pointType = "DKP"
-                if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
-                    if isSpent then
-                        pointType = "GP"
-                    else
-                        pointType = "EP"
-                    end
-                end
                 CLM.MODULES.EventManager:DispatchEvent(
                     CONSTANTS.EVENTS.USER_RECEIVED_POINTS,
                     {
                         value = value,
                         reason = reason,
-                        pointType = pointType
+                        changeType = changeType,
+                        rosterType = roster:GetPointType()
                     }, timestamp, GUID)
                 -- If we have a linked case then we alter the GUID to mains guid
                 if mainProfile then
@@ -97,7 +90,7 @@ local function apply_mutator(entry, mutate)
     local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    update_profile_standings(mutate, roster, entry:targets(), entry:value(), entry:reason(), entry:spent(), entry:time(), pointHistoryEntry)
+    update_profile_standings(mutate, roster, entry:targets(), entry:value(), entry:reason(), entry:type(), entry:time(), pointHistoryEntry)
 end
 
 local function apply_roster_mutator(entry, mutate)
@@ -122,7 +115,7 @@ local function apply_roster_mutator(entry, mutate)
     local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, profiles)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    update_profile_standings(mutate, roster, profiles, entry:value(), entry:reason(), entry:spent(), entry:time(), pointHistoryEntry, true)
+    update_profile_standings(mutate, roster, profiles, entry:value(), entry:reason(), entry:type(), entry:time(), pointHistoryEntry, true)
 end
 
 local function apply_raid_mutator(self, entry, mutate)
@@ -144,16 +137,16 @@ local function apply_raid_mutator(self, entry, mutate)
     if entry:standby() and (#playersOnStandby > 0) then
         local alreadyApplied = {}
         -- Regular players
-        update_profile_standings(mutate, roster, players, entry:value(), entry:reason(), entry:spent(), entry:time(), nil, true, alreadyApplied)
+        update_profile_standings(mutate, roster, players, entry:value(), entry:reason(), entry:type(), entry:time(), nil, true, alreadyApplied)
         -- Standby players
         local config = raid:Configuration()
         local newValue = UTILS.round(config:Get("benchMultiplier") * entry:value(), config:Get("roundDecimals"))
         pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, playersOnStandby, nil, newValue, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
         pointHistoryEntry.note = CONSTANTS.POINT_CHANGE_REASONS.ALL[entry:reason()] or ""
         self:AddPointHistory(roster, playersOnStandby, pointHistoryEntry)
-        update_profile_standings(mutate, roster, playersOnStandby, newValue, entry:reason(), entry:spent(), entry:time(), nil, true, alreadyApplied)
+        update_profile_standings(mutate, roster, playersOnStandby, newValue, entry:reason(), entry:type(), entry:time(), nil, true, alreadyApplied)
     else
-        update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:spent(), entry:time(), nil, true)
+        update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:type(), entry:time(), nil, true)
     end
 end
 
@@ -173,8 +166,16 @@ local function mutate_set_spent(roster, GUID, value, timestamp)
     roster:SetSpent(GUID, value)
 end
 
+local function mutate_decay_total(roster, GUID, value, timestamp)
+    roster:DecayTotal(GUID, value)
+end
+
 local function mutate_decay_standings(roster, GUID, value, timestamp)
     roster:DecayStandings(GUID, value)
+end
+
+local function mutate_decay_spent(roster, GUID, value, timestamp)
+    roster:DecaySpent(GUID, value)
 end
 
 local function verify_modify_point_change_type(roster, pointChangeType, functionName)
@@ -258,7 +259,13 @@ function PointManager:Initialize()
         CLM.MODELS.LEDGER.POINTS.Decay,
         (function(entry)
             LOG:TraceAndCount("mutator(PointsDecay)")
-            apply_mutator(entry, mutate_decay_standings)
+            if entry:type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+                apply_mutator(entry, mutate_decay_standings)
+            elseif entry:type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
+                apply_mutator(entry, mutate_decay_spent)
+            else
+                apply_mutator(entry, mutate_decay_total)
+            end
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(

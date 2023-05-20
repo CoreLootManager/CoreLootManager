@@ -435,13 +435,9 @@ local function tableDataFeeder()
 
             local suffix = ""
             if isEPGP then
-                if history:Spent() then
+                if history:Type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
                     suffix = CLM.L["GP"]
-                -- else
-                    -- suffix = CLM.L["EP"]
                 end
-            -- else
-                -- suffix = CLM.L["DKP"]
             end
 
             value = value .. " " .. suffix
@@ -461,7 +457,7 @@ local function tableDataFeeder()
                 {value = ""},
                 {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
                 {value = value,
-                    color = ((isEPGP and history:Spent()) and colorTurquoise)
+                    color = ((isEPGP and (history:Type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT)) and colorTurquoise)
                 },
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
                 {value = player, color = color},

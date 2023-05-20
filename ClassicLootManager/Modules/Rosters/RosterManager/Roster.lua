@@ -267,13 +267,24 @@ function Roster:DecayStandings(GUID, value)
     local new = UTILS.round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
     self.pointInfo[GUID]:AddDecayed(self.standings[GUID] - new)
     self.standings[GUID] = new
+end
 
+function Roster:DecaySpent(GUID, value)
+    -- Not decayed in DKP - that's an artificial limitation coming from events
+    -- Originally Decay events didnt discern if its total, spent or current points
+    -- for DKP it would mean current for EPGP total
+    -- If DKP would ever need to decay spent then a look into mutators would be needed
+    -- currently lack of the old field is treated as decay total
     -- Spent in EPGP = GP -> thus needs to be decayed also
     if self:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
-        new = UTILS.round(((self.pointInfo[GUID].spent * (100 - value)) / 100), self.configuration._.roundDecimals)
+        local new = UTILS.round(((self.pointInfo[GUID].spent * (100 - value)) / 100), self.configuration._.roundDecimals)
         self.pointInfo[GUID].spent = math.max(new, self.configuration._.minGP)
     end
+end
 
+function Roster:DecayTotal(GUID, value)
+    self:DecayStandings(GUID, value)
+    self:DecaySpent(GUID, value)
 end
 
 --[[
