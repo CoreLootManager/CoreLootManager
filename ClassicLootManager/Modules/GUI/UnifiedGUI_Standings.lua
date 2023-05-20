@@ -206,7 +206,7 @@ local function GenerateAssistantOptions(self)
                     end
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
                     if roster then
-                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note, self.awardTypefdeca)
+                        CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note, self.awardType)
                     else
                         LOG:Warning("Missing valid roster.")
                     end

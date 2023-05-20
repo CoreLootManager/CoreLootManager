@@ -181,7 +181,7 @@ function Set:fields()
     return setFields
 end
 
-function Decay:new(rosterUid, playerList, value, reason, note)
+function Decay:new(rosterUid, playerList, value, reason, note, pointType)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
@@ -192,6 +192,7 @@ function Decay:new(rosterUid, playerList, value, reason, note)
     o.e = tonumber(reason) or 0
     note = note or ""
     o.t = tostring(note)
+    o.i = tonumber(pointType) or 0
     return o
 end
 
@@ -219,7 +220,11 @@ function Decay:spent()
     return false
 end
 
-local decayFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t"})
+function Decay:type()
+    return self.i or 0
+end
+
+local decayFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t", "i"})
 function Decay:fields()
     return decayFields
 end
@@ -262,7 +267,11 @@ function DecayRoster:spent()
     return false
 end
 
-local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "n", "t"})
+function DecayRoster:type()
+    return self.i or 0
+end
+
+local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "n", "t", "i"})
 function DecayRoster:fields()
     return decayRosterFields
 end
