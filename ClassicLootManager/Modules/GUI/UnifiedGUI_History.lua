@@ -432,16 +432,8 @@ local function tableDataFeeder()
             if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                 value = value .. "%"
             end
-            if isEPGP then
-                if history:Type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
-                    value = value .. " " .. CLM.L["GP"]
-                elseif history:Type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
-                    value = value .. " " .. CLM.L["EP"]
-                else
-                    value = value .. " " .. CLM.L["EP/GP"]
-                end
-            end
-
+            local suffix = UTILS.DecodePointTypeChangeName(roster:GetPointType(), history:Type())
+            value = value .. " " .. suffix
             local color
             local profiles = history:Profiles()
             if #profiles == 1 then

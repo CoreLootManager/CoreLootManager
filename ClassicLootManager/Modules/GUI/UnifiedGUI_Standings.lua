@@ -41,7 +41,7 @@ local function ST_GetProfilePoints(row)
     return row.cols[11].value
 end
 
-local function ST_GetIsEPGP(row)
+local function ST_GetPointType(row)
     return row.cols[12].value
 end
 
@@ -237,14 +237,16 @@ local function GenerateAssistantOptions(self)
             confirm = (function()
                 local awardValue = tonumber(self.awardValue)
                 if not awardValue then return CLM.L["Missing award value"] end
+                local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+                local points = UTILS.DecodePointTypeChangeName(roster:GetPointType(), self.awardType)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
-                    return string.format(CLM.L["Award %s points to everyone in raid."], awardValue)
+                    return string.format(CLM.L["Award %s %s to everyone in raid."], awardValue, points)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    return string.format(CLM.L["Award %s points to everyone in roster."], awardValue)
+                    return string.format(CLM.L["Award %s %s to everyone in roster."], awardValue, points)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles then profiles = {} end
-                    return string.format(CLM.L["Award %s points to %s selected players."], awardValue, #profiles)
+                    return string.format(CLM.L["Award %s %s to %s selected players."], awardValue, points, #profiles)
                 end
             end),
             order = 14
@@ -430,7 +432,7 @@ local tableStructure = {
                 gains = gains .. " / " .. weeklyCap
             end
 
-            local isEPGP = ST_GetIsEPGP(rowData)
+            local isEPGP = (ST_GetPointType(rowData) == CONSTANTS.POINT_TYPE.EPGP)
             if isEPGP then
                 tooltip:AddDoubleLine(CLM.L["Information"], lockedString)
                 tooltip:AddDoubleLine(
@@ -489,15 +491,8 @@ local tableStructure = {
                     if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                         value = value .. "%"
                     end
-                    if isEPGP then
-                        if point:Type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
-                            value = value .. " " .. CLM.L["GP"]
-                        elseif point:Type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
-                            value = value .. " " .. CLM.L["EP"]
-                        else
-                            value = value .. " " .. CLM.L["EP/GP"]
-                        end
-                    end
+                    local suffix = UTILS.DecodePointTypeChangeName(ST_GetPointType(rowData), point:Type())
+                    value = value .. " " .. suffix
                     tooltip:AddDoubleLine(CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or "", value)
                 end
             else
@@ -574,7 +569,7 @@ local function tableDataFeeder()
         --[[9]]  {value = pointInfo},
         --[[10]] {value = roster:GetProfileLootByGUID(GUID)},
         --[[11]] {value = roster:GetProfilePointHistoryByGUID(GUID)},
-        --[[12]] {value = isEPGP},
+        --[[12]] {value = roster:GetPointType()},
         --[[13]] {value = profile:IsLocked()},
         --[[14]] {value = highlight},
         --[[15]] {value = profile:Class()}
