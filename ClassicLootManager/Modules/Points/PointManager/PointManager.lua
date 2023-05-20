@@ -377,11 +377,16 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNe
     note = strsub32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
+        local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
         entry = CLM.MODELS.LEDGER.POINTS.ModifyRoster:new(uid, value, reason, note, isSpent)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
     --     entry = LEDGER.POINTS.Set:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = CLM.MODELS.LEDGER.POINTS.DecayRoster:new(uid, value, reason, ignoreNegatives, note)
+        if CONSTANTS.POINT_DECAY_TYPES[pointChangeType] == nil then
+            LOG:Error("PointManager:UpdateRosterPoints(): Unknown point change type")
+            return
+        end
+        entry = CLM.MODELS.LEDGER.POINTS.DecayRoster:new(uid, value, reason, ignoreNegatives, note, pointChangeType)
     end
 
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
@@ -410,6 +415,7 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, pointC
     local includeBench = raid:Configuration():Get("autoAwardIncludeBench") and true or false
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
+        local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
         entry = CLM.MODELS.LEDGER.POINTS.ModifyRaid:new(uid, value, reason, note, includeBench, isSpent)
     end
 
@@ -436,6 +442,7 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, point
     local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
+    local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, isSpent, timestamp, pointHistoryEntry, true)
 end
 
@@ -464,6 +471,7 @@ function PointManager:AddFakePointHistory(roster, targets, value, reason, timest
         return
     end
 
+    local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
     local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note, isSpent)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
