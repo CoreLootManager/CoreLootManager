@@ -433,7 +433,12 @@ local function ExternalAwardEventHandler(_, data)
         LOG:Debug("Gargul item awarded outside of raid")
         return
     end
-    local value = getAwardValueFromAction(raid:Roster(), itemId, action)
+    local roster = raid:Roster()
+    local value = UTILS.round(
+            (getAwardValueFromAction(roster, itemId, action)
+            * roster:GetClassItemMultiplierValue(profile:ClassInternal(), itemId))
+            + (roster:GetConfiguration("tax") or 0),
+        roster:GetConfiguration("roundDecimals"))
     CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, extra, value)
 end
 
@@ -470,7 +475,14 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
         LOG:Debug("RCLCAwardMessageHandler() item awarded outside of raid")
         return
     end
-    local value = getAwardValueFromAction(raid:Roster(), itemId, action)
+
+    local roster = raid:Roster()
+    local value = UTILS.round(
+            (getAwardValueFromAction(roster, itemId, action)
+            * roster:GetClassItemMultiplierValue(profile:ClassInternal(), itemId))
+            + (roster:GetConfiguration("tax") or 0),
+        roster:GetConfiguration("roundDecimals"))
+
     CLM.MODULES.LootManager:AwardItem(raid, winner, link, itemId, extra, value)
 end
 
