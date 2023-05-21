@@ -1,3 +1,12 @@
+# Core Loot Manager v4.2.0
+## Features
+### EP/GP customizable Decay
+You can now customize decay in EP/GP to be either EP/GP, EP or GP. It is still recommended to keep EP/GP decay as default.
+## Bugfixes
+### Classic Era trade
+Fix another round of API issues for Classic Era auto-trade.
+### Integrations
+Gargul and RCLC Integrations should now support award multipliers properly.
 # Core Loot Manager v4.1.1
 ## Bugfixes
 ### Classic Era trade
