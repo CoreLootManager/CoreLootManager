@@ -58,7 +58,7 @@ end
 local _GetContainerItemInfo
 if not C_Container.GetContainerItemInfo then
     _GetContainerItemInfo = function(bag, slot)
-        local icon, itemCount, locked, quality, readable, 
+        local icon, itemCount, locked, quality, readable,
         lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag, slot)
         return {
             iconFileID = icon,
