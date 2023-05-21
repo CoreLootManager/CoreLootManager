@@ -92,7 +92,6 @@ local function HandleRosterChange(rosterUid)
     if roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
         UnifiedGUI_Standings.decayType = CONSTANTS.POINT_CHANGE_TYPE.TOTAL
     end
-    print(debugstack())
 end
 
 function UnifiedGUI_Standings:GetSelection()
@@ -238,7 +237,7 @@ local function GenerateAssistantOptions(self)
                 local awardValue = tonumber(self.awardValue)
                 if not awardValue then return CLM.L["Missing award value"] end
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
-                local points = UTILS.DecodePointTypeChangeName(roster:GetPointType(), self.awardType)
+                local points = UTILS.DecodePointTypeChangeName(roster:GetPointType(), self.awardType, true)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     return string.format(CLM.L["Award %s %s to everyone in raid."], awardValue, points)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
@@ -348,14 +347,16 @@ local function GenerateManagerOptions(self)
             confirm = (function()
                 local decayValue = tonumber(self.decayValue)
                 if not decayValue then return CLM.L["Missing decay value"] end
+                local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
+                local points = UTILS.DecodePointTypeChangeName(roster:GetPointType(), self.decayType, true)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     return CLM.L["Invalid context. You should not decay raid only."]
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.ROSTER then
-                    return string.format(CLM.L["Decay %s%% points to everyone in roster."], decayValue)
+                    return string.format(CLM.L["Decay %s%% %s to everyone in roster."], decayValue, points)
                 elseif self.context == CONSTANTS.ACTION_CONTEXT.SELECTED then
                     local profiles = UnifiedGUI_Standings:GetSelection()
                     if not profiles then profiles = {} end
-                    return string.format(CLM.L["Decay %s%% points to %s selected players."], decayValue, #profiles)
+                    return string.format(CLM.L["Decay %s%% %s to %s selected players."], decayValue, points, #profiles)
                 end
             end),
             order = 22
