@@ -281,11 +281,11 @@ CLM.L["Automatically mark auto-removed items as disenchanted"] = "自动将自�
 -- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:404
 CLM.L["Average weeks"] = "平均周数"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:234
-CLM.L["Award %s points to %s selected players."] = "分配 %s 分数给 %s 选中的角色。"
+CLM.L["Award %s %s to %s selected players."] = "分配 %s %s 分数给 %s 选中的角色。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:228
-CLM.L["Award %s points to everyone in raid."] = "分配 %s 分数给团队中的所有人。"
+CLM.L["Award %s %s to everyone in raid."] = "分配 %s %s 分数给团队中的所有人。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:230
-CLM.L["Award %s points to everyone in roster."] = "分配 %s 分数给名册中的所有人。"
+CLM.L["Award %s %s to everyone in roster."] = "分配 %s %s 分数给名册中的所有人。"
 -- ClassicLootManager_Integrations/Integrations.lua:646
 CLM.L["Award for Base"] = "分配 for Base"
 -- ClassicLootManager_Integrations/Integrations.lua:645

@@ -281,11 +281,11 @@ CLM.L["Automatically mark auto-removed items as disenchanted"] = "Markieren Sie 
 -- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:404
 CLM.L["Average weeks"] = "Durchschnittliche Wochen"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:234
-CLM.L["Award %s points to %s selected players."] = "Vergebe %s Punkte an %s ausgewählte Spieler."
+CLM.L["Award %s %s to %s selected players."] = "Vergebe %s %s an %s ausgewählte Spieler."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:228
-CLM.L["Award %s points to everyone in raid."] = "Vergebe %s Punkte an alle im Raid."
+CLM.L["Award %s %s to everyone in raid."] = "Vergebe %s %s an alle im Raid."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:230
-CLM.L["Award %s points to everyone in roster."] = "Vergebe %s Punkte an alle im Roster."
+CLM.L["Award %s %s to everyone in roster."] = "Vergebe %s %s an alle im Roster."
 -- ClassicLootManager_Integrations/Integrations.lua:646
 CLM.L["Award for Base"] = "Vergebe für die Basispunktzahl"
 -- ClassicLootManager_Integrations/Integrations.lua:645
