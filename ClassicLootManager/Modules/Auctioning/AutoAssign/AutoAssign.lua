@@ -11,7 +11,6 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local GetContainerItemInfo = GetContainerItemInfo or C_Container.GetContainerItemInfo
 local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
 local UseContainerItem     = UseContainerItem or C_Container.UseContainerItem
 
@@ -56,8 +55,32 @@ function BagItemChecker:Clear()
     }
 end
 
+local _GetContainerItemInfo
+if not C_Container.GetContainerItemInfo then
+    _GetContainerItemInfo = function(bag, slot)
+        local icon, itemCount, locked, quality, readable,
+        lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag, slot)
+        return {
+            iconFileID = icon,
+            stackCount = itemCount,
+            isLocked = locked,
+            quality = quality,
+            isReadable = readable,
+            hasLoot = lootable,
+            hyperlink = itemLink,
+            isFiltered = isFiltered,
+            hasNoValue = noValue,
+            itemID = itemID,
+            isBound = isBound
+        }
+    end
+else
+    _GetContainerItemInfo = C_Container.GetContainerItemInfo
+end
+
 local function BagItemCheck(self)
-    local info = GetContainerItemInfo(self.bag, self.slot)
+    local info = _GetContainerItemInfo(self.bag, self.slot)
+    -- This is a damn fucking n-returns in classic still
     if not info then return end
     self.itemInfo.locked = info.isLocked or false
     self.itemInfo.id = info.itemID or -1
