@@ -54,6 +54,10 @@ function Modify:spent()
     return self.n
 end
 
+function Modify:type()
+    return self.n and CLM.CONSTANTS.POINT_CHANGE_TYPE.SPENT or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
+end
+
 local modifyFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t", "n"})
 function Modify:fields()
     return modifyFields
@@ -93,6 +97,10 @@ end
 
 function ModifyRaid:spent()
     return self.n
+end
+
+function ModifyRaid:type()
+    return self.n and CLM.CONSTANTS.POINT_CHANGE_TYPE.SPENT or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
 end
 
 local modifyRaidFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t", "s", "n"})
@@ -136,6 +144,10 @@ function ModifyRoster:ignoreNegatives()
     return false
 end
 
+function ModifyRoster:type()
+    return self.n and CLM.CONSTANTS.POINT_CHANGE_TYPE.SPENT or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
+end
+
 local modifyRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "t", "n"})
 function ModifyRoster:fields()
     return modifyRosterFields
@@ -176,12 +188,16 @@ function Set:spent()
     return self.n
 end
 
+function Set:type()
+    return self.n and CLM.CONSTANTS.POINT_CHANGE_TYPE.SPENT or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
+end
+
 local setFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t", "n"})
 function Set:fields()
     return setFields
 end
 
-function Decay:new(rosterUid, playerList, value, reason, note)
+function Decay:new(rosterUid, playerList, value, reason, note, pointType)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     o.p = CreateGUIDList(playerList)
@@ -192,6 +208,7 @@ function Decay:new(rosterUid, playerList, value, reason, note)
     o.e = tonumber(reason) or 0
     note = note or ""
     o.t = tostring(note)
+    o.i = tonumber(pointType) or CLM.CONSTANTS.POINT_CHANGE_TYPE.TOTAL
     return o
 end
 
@@ -219,12 +236,16 @@ function Decay:spent()
     return false
 end
 
-local decayFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t"})
+function Decay:type()
+    return self.i or CLM.CONSTANTS.POINT_CHANGE_TYPE.TOTAL
+end
+
+local decayFields = mergeLists(LogEntry:fields(), {"r", "p", "v", "e", "t", "i"})
 function Decay:fields()
     return decayFields
 end
 
-function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note)
+function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note, pointType)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     value = tonumber(value) or 0
@@ -235,6 +256,7 @@ function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note)
     o.n = ignoreNegatives and true or false
     note = note or ""
     o.t = tostring(note)
+    o.i = tonumber(pointType) or CLM.CONSTANTS.POINT_CHANGE_TYPE.TOTAL
     return o
 end
 
@@ -262,7 +284,11 @@ function DecayRoster:spent()
     return false
 end
 
-local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "n", "t"})
+function DecayRoster:type()
+    return self.i or CLM.CONSTANTS.POINT_CHANGE_TYPE.TOTAL
+end
+
+local decayRosterFields = mergeLists(LogEntry:fields(), {"r", "v", "e", "n", "t", "i"})
 function DecayRoster:fields()
     return decayRosterFields
 end

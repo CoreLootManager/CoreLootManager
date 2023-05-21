@@ -9,11 +9,20 @@ local UTILS     = CLM.UTILS
 local typeof = UTILS.typeof
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
+
+CONSTANTS.POINT_MANAGER_ACTION = {
+    MODIFY = 0,
+    SET = 1,
+    DECAY = 2
+}
+
+CONSTANTS.POINT_MANAGER_ACTIONS = UTILS.Set({ 0, 1, 2 })
+
 local function strsub32(s)
     return strsub(tostring(s or ""), 1, 32)
 end
 
-local function update_profile_standings(mutate, roster, targets, value, reason, isSpent, timestamp, pointHistoryEntry, isGUID, alreadyApplied)
+local function update_profile_standings(mutate, roster, targets, value, reason, changeType, timestamp, pointHistoryEntry, isGUID, alreadyApplied)
     alreadyApplied = alreadyApplied or {}
     local getGUID
     if isGUID then
@@ -41,20 +50,13 @@ local function update_profile_standings(mutate, roster, targets, value, reason, 
                     mainProfile = CLM.MODULES.ProfileManager:GetProfileByGUID(targetProfile:Main())
                 end
                 -- Check if we should schedule it for alert
-                local pointType = "DKP"
-                if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
-                    if isSpent then
-                        pointType = "GP"
-                    else
-                        pointType = "EP"
-                    end
-                end
                 CLM.MODULES.EventManager:DispatchEvent(
                     CONSTANTS.EVENTS.USER_RECEIVED_POINTS,
                     {
                         value = value,
                         reason = reason,
-                        pointType = pointType
+                        changeType = changeType,
+                        rosterType = roster:GetPointType()
                     }, timestamp, GUID)
                 -- If we have a linked case then we alter the GUID to mains guid
                 if mainProfile then
@@ -88,7 +90,7 @@ local function apply_mutator(entry, mutate)
     local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    update_profile_standings(mutate, roster, entry:targets(), entry:value(), entry:reason(), entry:spent(), entry:time(), pointHistoryEntry)
+    update_profile_standings(mutate, roster, entry:targets(), entry:value(), entry:reason(), entry:type(), entry:time(), pointHistoryEntry)
 end
 
 local function apply_roster_mutator(entry, mutate)
@@ -113,7 +115,7 @@ local function apply_roster_mutator(entry, mutate)
     local pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, profiles)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    update_profile_standings(mutate, roster, profiles, entry:value(), entry:reason(), entry:spent(), entry:time(), pointHistoryEntry, true)
+    update_profile_standings(mutate, roster, profiles, entry:value(), entry:reason(), entry:type(), entry:time(), pointHistoryEntry, true)
 end
 
 local function apply_raid_mutator(self, entry, mutate)
@@ -135,16 +137,16 @@ local function apply_raid_mutator(self, entry, mutate)
     if entry:standby() and (#playersOnStandby > 0) then
         local alreadyApplied = {}
         -- Regular players
-        update_profile_standings(mutate, roster, players, entry:value(), entry:reason(), entry:spent(), entry:time(), nil, true, alreadyApplied)
+        update_profile_standings(mutate, roster, players, entry:value(), entry:reason(), entry:type(), entry:time(), nil, true, alreadyApplied)
         -- Standby players
         local config = raid:Configuration()
         local newValue = UTILS.round(config:Get("benchMultiplier") * entry:value(), config:Get("roundDecimals"))
         pointHistoryEntry = CLM.MODELS.PointHistory:New(entry, playersOnStandby, nil, newValue, CONSTANTS.POINT_CHANGE_REASON.STANDBY_BONUS)
         pointHistoryEntry.note = CONSTANTS.POINT_CHANGE_REASONS.ALL[entry:reason()] or ""
         self:AddPointHistory(roster, playersOnStandby, pointHistoryEntry)
-        update_profile_standings(mutate, roster, playersOnStandby, newValue, entry:reason(), entry:spent(), entry:time(), nil, true, alreadyApplied)
+        update_profile_standings(mutate, roster, playersOnStandby, newValue, entry:reason(), entry:type(), entry:time(), nil, true, alreadyApplied)
     else
-        update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:spent(), entry:time(), nil, true)
+        update_profile_standings(mutate, roster, raid:Players(), entry:value(), entry:reason(), entry:type(), entry:time(), nil, true)
     end
 end
 
@@ -164,9 +166,68 @@ local function mutate_set_spent(roster, GUID, value, timestamp)
     roster:SetSpent(GUID, value)
 end
 
+local function mutate_decay_total(roster, GUID, value, timestamp)
+    roster:DecayTotal(GUID, value)
+end
+
 local function mutate_decay_standings(roster, GUID, value, timestamp)
     roster:DecayStandings(GUID, value)
 end
+
+local function mutate_decay_spent(roster, GUID, value, timestamp)
+    roster:DecaySpent(GUID, value)
+end
+
+local function verify_modify_point_change_type(roster, pointChangeType, functionName)
+    local success = false
+    if (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) then
+        if CONSTANTS.POINT_AWARD_TYPES[pointChangeType] then
+            success = true
+        end
+    else
+        if pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+            success = true
+        end
+    end
+    if not success then
+        LOG:Error("%s: Invalid point award type (%s)", functionName, pointChangeType)
+    end
+    return success
+end
+
+local function verify_set_point_change_type(roster, pointChangeType, functionName)
+    local success = false
+    if CONSTANTS.POINT_AWARD_TYPES[pointChangeType] then
+        success = true
+    end
+    if not success then
+        LOG:Error("%s: Invalid point set type (%s)", functionName, pointChangeType)
+    end
+    return success
+end
+
+local function verify_decay_point_change_type(roster, pointChangeType, functionName)
+    local success = false
+    if (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) then
+        if CONSTANTS.POINT_DECAY_TYPES[pointChangeType] then
+            success = true
+        end
+    else
+        if pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+            success = true
+        end
+    end
+    if not success then
+        LOG:Error("%s: Invalid point decay type (%s)", functionName, pointChangeType)
+    end
+    return success
+end
+
+local verify_point_change_type = {
+    [CONSTANTS.POINT_MANAGER_ACTION.MODIFY ] = verify_modify_point_change_type,
+    [CONSTANTS.POINT_MANAGER_ACTION.SET ] = verify_set_point_change_type,
+    [CONSTANTS.POINT_MANAGER_ACTION.DECAY ] = verify_decay_point_change_type,
+}
 
 local PointManager = {}
 function PointManager:Initialize()
@@ -198,7 +259,13 @@ function PointManager:Initialize()
         CLM.MODELS.LEDGER.POINTS.Decay,
         (function(entry)
             LOG:TraceAndCount("mutator(PointsDecay)")
-            apply_mutator(entry, mutate_decay_standings)
+            if entry:type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+                apply_mutator(entry, mutate_decay_standings)
+            elseif entry:type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
+                apply_mutator(entry, mutate_decay_spent)
+            else
+                apply_mutator(entry, mutate_decay_total)
+            end
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
@@ -217,7 +284,13 @@ function PointManager:Initialize()
         CLM.MODELS.LEDGER.POINTS.DecayRoster,
         (function(entry)
             LOG:TraceAndCount("mutator(PointsDecayRoster)")
-            apply_roster_mutator(entry, mutate_decay_standings)
+            if entry:type() == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+                apply_roster_mutator(entry, mutate_decay_standings)
+            elseif entry:type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
+                apply_roster_mutator(entry, mutate_decay_spent)
+            else
+                apply_roster_mutator(entry, mutate_decay_total)
+            end
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
@@ -234,7 +307,7 @@ function PointManager:Initialize()
 
 end
 
-function PointManager:UpdatePoints(roster, targets, value, reason, action, note, isSpent, forceInstant)
+function PointManager:UpdatePoints(roster, targets, value, reason, action, note, pointChangeType, forceInstant)
     LOG:Trace("PointManager:UpdatePoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdatePoints(): Unknown action")
@@ -252,7 +325,17 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
         LOG:Error("PointManager:UpdatePoints(): Missing valid roster")
         return
     end
+    if not verify_point_change_type[action](roster, pointChangeType, "PointManager:UpdatePoints()") then
+        LOG:Error("123")
+        return
+    end
 
+    -- Ok what happened here is that originaly there was a boolean parameter isSpent
+    -- which was denoting if point change was for current or spent Points
+    -- With move to Enum we now need to translate the enum to boolean
+    -- As still the change can only be between Points / Spent
+    -- This will be true for all isSpent changes
+    local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
     local uid = roster:UID()
 
     -- Always a list, even for single entry
@@ -270,7 +353,11 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
         entry = CLM.MODELS.LEDGER.POINTS.Set:new(uid, targets, value, reason, note, isSpent)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = CLM.MODELS.LEDGER.POINTS.Decay:new(uid, targets, value, reason, note)
+        if CONSTANTS.POINT_DECAY_TYPES[pointChangeType] == nil then
+            LOG:Error("PointManager:UpdatePoints(): Unknown point change type")
+            return
+        end
+        entry = CLM.MODELS.LEDGER.POINTS.Decay:new(uid, targets, value, reason, note, pointChangeType)
     end
 
     local t = entry:targets()
@@ -282,7 +369,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
-function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, note, isSpent, forceInstant)
+function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, note, pointChangeType, forceInstant)
     LOG:Trace("PointManager:UpdateRosterPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdateRosterPoints(): Unknown action")
@@ -296,23 +383,30 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNe
         LOG:Error("PointManager:UpdateRosterPoints(): Missing valid roster")
         return
     end
-
+    if not verify_point_change_type[action](roster, pointChangeType, "PointManager:UpdatePoints()") then
+        return
+    end
     local uid = roster:UID()
 
     note = strsub32(note)
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
+        local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
         entry = CLM.MODELS.LEDGER.POINTS.ModifyRoster:new(uid, value, reason, note, isSpent)
     -- elseif action == CONSTANTS.POINT_MANAGER_ACTION.SET then
     --     entry = LEDGER.POINTS.Set:new(uid, targets, value, reason)
     elseif action == CONSTANTS.POINT_MANAGER_ACTION.DECAY then
-        entry = CLM.MODELS.LEDGER.POINTS.DecayRoster:new(uid, value, reason, ignoreNegatives, note)
+        if CONSTANTS.POINT_DECAY_TYPES[pointChangeType] == nil then
+            LOG:Error("PointManager:UpdateRosterPoints(): Unknown point change type")
+            return
+        end
+        entry = CLM.MODELS.LEDGER.POINTS.DecayRoster:new(uid, value, reason, ignoreNegatives, note, pointChangeType)
     end
 
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
-function PointManager:UpdateRaidPoints(raid, value, reason, action, note, isSpent, forceInstant)
+function PointManager:UpdateRaidPoints(raid, value, reason, action, note, pointChangeType, forceInstant)
     LOG:Trace("PointManager:UpdateRaidPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
         LOG:Error("PointManager:UpdateRaidPoints(): Unknown action")
@@ -326,12 +420,16 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, isSpen
         LOG:Error("PointManager:UpdateRaidPoints(): Missing valid raid")
         return
     end
+    if not verify_point_change_type[action](raid:Roster(), pointChangeType, "PointManager:UpdatePoints()") then
+        return
+    end
 
     note = strsub32(note)
     local uid = raid:UID()
     local includeBench = raid:Configuration():Get("autoAwardIncludeBench") and true or false
     local entry
     if action == CONSTANTS.POINT_MANAGER_ACTION.MODIFY then
+        local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
         entry = CLM.MODELS.LEDGER.POINTS.ModifyRaid:new(uid, value, reason, note, includeBench, isSpent)
     end
 
@@ -348,7 +446,7 @@ function PointManager:RemovePointChange(pointHistory, forceInstant)
     CLM.MODULES.LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 
-function PointManager:UpdatePointsDirectly(roster, targets, value, reason, isSpent, timestamp, creator)
+function PointManager:UpdatePointsDirectly(roster, targets, value, reason, pointChangeType, timestamp, creator)
     LOG:Trace("PointManager:UpdatePointsDirectly()")
     if not roster then
         LOG:Debug("PointManager:UpdatePointsDirectly(): Missing roster")
@@ -358,6 +456,7 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, isSpe
     local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
+    local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, isSpent, timestamp, pointHistoryEntry, true)
 end
 
@@ -379,13 +478,14 @@ function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     end
 end
 
-function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note, isSpent)
+function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note, pointChangeType)
     LOG:Trace("PointManager:AddFakePointHistory()")
     if not roster then
         LOG:Debug("PointManager:AddFakePointHistory(): Missing roster")
         return
     end
 
+    local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
     local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note, isSpent)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
@@ -397,15 +497,6 @@ function PointManager:AddFakePointHistory(roster, targets, value, reason, timest
         end
     end
 end
-
-CONSTANTS.POINT_MANAGER_ACTION =
-{
-    MODIFY = 0,
-    SET = 1,
-    DECAY = 2
-}
-
-CONSTANTS.POINT_MANAGER_ACTIONS = UTILS.Set({ 0, 1, 2 })
 
 -- DO NOT CHANGE THE ID VALUE MAPPING
 CONSTANTS.POINT_CHANGE_REASON = {
@@ -446,26 +537,25 @@ CONSTANTS.POINT_CHANGE_REASONS = {
 
 CONSTANTS.POINT_CHANGE_REASONS.ALL = UTILS.mergeDicts(CONSTANTS.POINT_CHANGE_REASONS.GENERAL, CONSTANTS.POINT_CHANGE_REASONS.INTERNAL)
 
-CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE = {
-    EPGP = 0,
-    EP = 1,
-    GP = 2
+CONSTANTS.POINT_CHANGE_TYPE = {
+    TOTAL   = 0,
+    POINTS  = 1,
+    SPENT   = 2
 }
 
-CONSTANTS.EPGP_POINT_AWARD_TYPES = UTILS.Set({ 1, 2 })
-CONSTANTS.EPGP_POINT_DECAY_TYPES = UTILS.Set({ 0, 1, 2 })
+CONSTANTS.POINT_AWARD_TYPES = UTILS.Set({    1, 2 })
+CONSTANTS.POINT_DECAY_TYPES = UTILS.Set({ 0, 1, 2 })
 
 CONSTANTS.EPGP_POINT_AWARD_TYPES_GUI = {
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.EP]   = CLM.L["EP"],
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.GP]   = CLM.L["GP"]
+    [CONSTANTS.POINT_CHANGE_TYPE.POINTS]   = CLM.L["EP"],
+    [CONSTANTS.POINT_CHANGE_TYPE.SPENT]    = CLM.L["GP"]
 }
 
 
 CONSTANTS.EPGP_POINT_DECAY_TYPES_GUI = {
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.EPGP] = CLM.L["EP/GP"],
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.EP]   = CLM.L["EP"],
-    [CONSTANTS.EPGP_POINT_MANAGEMENT_TYPE.GP]   = CLM.L["GP"]
+    [CONSTANTS.POINT_CHANGE_TYPE.TOTAL]    = CLM.L["EP/GP"],
+    [CONSTANTS.POINT_CHANGE_TYPE.POINTS]   = CLM.L["EP"],
+    [CONSTANTS.POINT_CHANGE_TYPE.SPENT]    = CLM.L["GP"]
 }
-
 
 CLM.MODULES.PointManager = PointManager

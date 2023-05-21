@@ -432,20 +432,8 @@ local function tableDataFeeder()
             if reason == CONSTANTS.POINT_CHANGE_REASON.DECAY then
                 value = value .. "%"
             end
-
-            local suffix = ""
-            if isEPGP then
-                if history:Spent() then
-                    suffix = CLM.L["GP"]
-                -- else
-                    -- suffix = CLM.L["EP"]
-                end
-            -- else
-                -- suffix = CLM.L["DKP"]
-            end
-
+            local suffix = UTILS.DecodePointTypeChangeName(roster:GetPointType(), history:Type())
             value = value .. " " .. suffix
-
             local color
             local profiles = history:Profiles()
             if #profiles == 1 then
@@ -461,7 +449,7 @@ local function tableDataFeeder()
                 {value = ""},
                 {value = CONSTANTS.POINT_CHANGE_REASONS.ALL[reason] or ""},
                 {value = value,
-                    color = ((isEPGP and history:Spent()) and colorTurquoise)
+                    color = ((isEPGP and (history:Type() == CONSTANTS.POINT_CHANGE_TYPE.SPENT)) and colorTurquoise)
                 },
                 {value = date(CLM.L["%Y/%m/%d %H:%M:%S (%A)"], history:Timestamp())},
                 {value = player, color = color},

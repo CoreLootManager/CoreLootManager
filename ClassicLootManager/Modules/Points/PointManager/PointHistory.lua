@@ -12,7 +12,7 @@ local ValidateIntegerGUID = CLM.UTILS.ValidateIntegerGUID
 local PointHistory = {}
 local FakePointHistory = {}
 
-function PointHistory:New(entry, targets, timestamp, value, reason, creator, note, spent)
+function PointHistory:New(entry, targets, timestamp, value, reason, creator, note, type)
     local o = {}
 
     setmetatable(o, self)
@@ -25,12 +25,7 @@ function PointHistory:New(entry, targets, timestamp, value, reason, creator, not
     o.reason = tonumber(reason) or entry:reason()
     o.creator = creator or entry:creatorFull()
     o.note = note or entry:note()
-    if entry.spent then -- Not All entries have spent field
-        o.spent = spent or entry:spent()
-    else
-        o.spent = spent or false
-    end
-
+    o.type = type or entry:type()
     return o
 end
 
@@ -84,11 +79,11 @@ function PointHistory:Entry()
     return self.entry
 end
 
-function PointHistory:Spent()
-    return self.spent
+function PointHistory:Type()
+    return self.type
 end
 
-function FakePointHistory:New(targets, timestamp, value, reason, creator, note, spent)
+function FakePointHistory:New(targets, timestamp, value, reason, creator, note, type)
     local o = {}
 
     setmetatable(o, self)
@@ -100,7 +95,7 @@ function FakePointHistory:New(targets, timestamp, value, reason, creator, note, 
     o.reason = reason
     o.creator = creator or ""
     o.note = note or ""
-    o.spent = spent or false
+    o.spent = type or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
 
     return o
 end
@@ -158,8 +153,8 @@ function FakePointHistory:Entry()
     return nil
 end
 
-function FakePointHistory:Spent()
-    return self.spent
+function FakePointHistory:Type()
+    return self.type
 end
 
 CLM.MODELS.PointHistory = PointHistory

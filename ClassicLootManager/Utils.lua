@@ -993,6 +993,21 @@ function UTILS.GetRosterConditionalFieldName(key, roster, prefix, suffix)
     return name
 end
 
+-- TODO this doesnt look good in history, we dont want DKP displayed there really
+function UTILS.DecodePointTypeChangeName(pointType, changeType, displayDKP)
+    local points = displayDKP and CLM.L["DKP"] or "" -- not test_cameraDynamicPitch
+    if pointType == CONSTANTS.POINT_TYPE.EPGP then
+        if changeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT then
+            points = CLM.L["GP"]
+        elseif changeType == CONSTANTS.POINT_CHANGE_TYPE.POINTS then
+            points = CLM.L["EP"]
+        else
+            points = CLM.L["EP/GP"]
+        end
+    end
+    return points
+end
+
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),
     [1] = ColorCodeText(CLM.L["Common"], "ffffff"),
