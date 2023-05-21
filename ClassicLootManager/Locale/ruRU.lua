@@ -567,9 +567,9 @@ CLM.L["Deathbringer Saurfang"] = "Саурфанг Смертоносный"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:261
 CLM.L["Decay %"] = "Сгорание %"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:323
-CLM.L["Decay %s%% points to %s selected players."] = "Сжечь %s%% очков %s выбранных игроков"
+CLM.L["Decay %s%% %s to %s selected players."] = "Сжечь %s%% %s %s выбранных игроков"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:319
-CLM.L["Decay %s%% points to everyone in roster."] = "Сжечь %s%% очков всем в составе"
+CLM.L["Decay %s%% %s to everyone in roster."] = "Сжечь %s%% %s всем в составе"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:271
 CLM.L["Decay Negatives"] = "Сжигать отрицательное"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:441

@@ -567,9 +567,9 @@ CLM.L["Deathbringer Saurfang"] = "死亡使者萨鲁法尔"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:261
 CLM.L["Decay %"] = "衰减 %"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:323
-CLM.L["Decay %s%% points to %s selected players."] = "衰减 %s%% 分数对 %s 选中的角色。"
+CLM.L["Decay %s%% %s to %s selected players."] = "衰减 %s%% %s 分数对 %s 选中的角色。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:319
-CLM.L["Decay %s%% points to everyone in roster."] = "衰减 %s%% 分数对名册中的所有人。"
+CLM.L["Decay %s%% %s to everyone in roster."] = "衰减 %s%% %s 分数对名册中的所有人。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:271
 CLM.L["Decay Negatives"] = "衰减负数"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:441

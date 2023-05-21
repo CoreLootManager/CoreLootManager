@@ -567,9 +567,9 @@ CLM.L["Deathbringer Saurfang"] = "Deathbringer Saurfang"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:261
 CLM.L["Decay %"] = "Verfall %"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:323
-CLM.L["Decay %s%% points to %s selected players."] = "Verfall von %s%% für %s ausgewählte Spieler."
+CLM.L["Decay %s%% %s to %s selected players."] = "Verfall von %s%% %s für %s ausgewählte Spieler."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:319
-CLM.L["Decay %s%% points to everyone in roster."] = "Verfall von %s%% für alle im Kader."
+CLM.L["Decay %s%% %s to everyone in roster."] = "Verfall von %s%% %s für alle im Kader."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:271
 CLM.L["Decay Negatives"] = "Verfall von Negativen Werten"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:441

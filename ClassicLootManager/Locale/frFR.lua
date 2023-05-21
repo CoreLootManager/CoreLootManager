@@ -567,9 +567,9 @@ CLM.L["Deathbringer Saurfang"] = "Porte-mort Saurcroc"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:261
 CLM.L["Decay %"] = "Réduction %"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:323
-CLM.L["Decay %s%% points to %s selected players."] = "Réduction de %s%% points aux %s joueurs sélectionnés."
+CLM.L["Decay %s%% %s to %s selected players."] = "Réduction de %s%% %s aux %s joueurs sélectionnés."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:319
-CLM.L["Decay %s%% points to everyone in roster."] = "Réduction de %s%%  points à tout le roster."
+CLM.L["Decay %s%% %s to everyone in roster."] = "Réduction de %s%% %s à tout le roster."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:271
 CLM.L["Decay Negatives"] = "La réduction impacte les points négatifs"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:441
