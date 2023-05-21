@@ -11,7 +11,6 @@ local LOG       = CLM.LOG
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- local GetContainerItemInfo = GetContainerItemInfo or C_Container.GetContainerItemInfo
 local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
 local UseContainerItem     = UseContainerItem or C_Container.UseContainerItem
 
@@ -57,7 +56,7 @@ function BagItemChecker:Clear()
 end
 
 local _GetContainerItemInfo
-if CLM.WoWEra then
+if not C_Container.GetContainerItemInfo then
     _GetContainerItemInfo = function(bag, slot)
         local icon, itemCount, locked, quality, readable, 
         lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag, slot)
