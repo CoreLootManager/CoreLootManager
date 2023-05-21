@@ -1,6 +1,24 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.2.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "EP/GP customizable Decay", body = "You can now customize decay in EP/GP to be either EP/GP, EP or GP. It is still recommended to keep EP/GP decay as default." },
+                },
+            },
+            {
+                name = "Bugfixes",
+                data = {
+                    { header = "Classic Era trade", body = "Fix another round of API issues for Classic Era auto-trade." },
+                    { header = "Integrations", body = "Gargul and RCLC Integrations should now support award multipliers properly." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.1.1",
         data = {
             {
