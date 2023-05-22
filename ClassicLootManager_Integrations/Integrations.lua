@@ -435,10 +435,11 @@ local function ExternalAwardEventHandler(_, data)
     end
     local roster = raid:Roster()
     local value = UTILS.round(
-            (getAwardValueFromAction(roster, itemId, action)
+        (getAwardValueFromAction(roster, itemId, action)
             * roster:GetClassItemMultiplierValue(profile:ClassInternal(), itemId))
-            + (roster:GetConfiguration("tax") or 0),
+        + (roster:GetConfiguration("tax") or 0),
         roster:GetConfiguration("roundDecimals"))
+
     CLM.MODULES.LootManager:AwardItem(raid, player, itemLink, itemId, extra, value)
 end
 
@@ -478,9 +479,9 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
 
     local roster = raid:Roster()
     local value = UTILS.round(
-            (getAwardValueFromAction(roster, itemId, action)
+        (getAwardValueFromAction(roster, itemId, action)
             * roster:GetClassItemMultiplierValue(profile:ClassInternal(), itemId))
-            + (roster:GetConfiguration("tax") or 0),
+        + (roster:GetConfiguration("tax") or 0),
         roster:GetConfiguration("roundDecimals"))
 
     CLM.MODULES.LootManager:AwardItem(raid, winner, link, itemId, extra, value)
