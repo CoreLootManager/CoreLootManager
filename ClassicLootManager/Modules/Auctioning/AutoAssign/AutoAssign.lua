@@ -56,7 +56,7 @@ function BagItemChecker:Clear()
 end
 
 local _GetContainerItemInfo
-if not C_Container.GetContainerItemInfo then
+if CLM.WoWEra then
     _GetContainerItemInfo = function(bag, slot)
         local icon, itemCount, locked, quality, readable,
         lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag, slot)
