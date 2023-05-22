@@ -7,6 +7,7 @@ CLM.ChangelogData = {
                 name = "Features",
                 data = {
                     { header = "EP/GP customizable Decay", body = "You can now customize decay in EP/GP to be either EP/GP, EP or GP. It is still recommended to keep EP/GP decay as default." },
+                    { header = "Integrations", body = "Gargul and RCLC Integrations now support Disenchanting as award option." },
                 },
             },
             {

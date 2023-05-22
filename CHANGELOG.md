@@ -2,6 +2,8 @@
 ## Features
 ### EP/GP customizable Decay
 You can now customize decay in EP/GP to be either EP/GP, EP or GP. It is still recommended to keep EP/GP decay as default.
+### Integrations
+Gargul and RCLC Integrations now support Disenchanting as award option.
 ## Bugfixes
 ### Classic Era trade
 Fix another round of API issues for Classic Era auto-trade.
