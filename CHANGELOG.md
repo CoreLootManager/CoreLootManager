@@ -1,3 +1,7 @@
+# Core Loot Manager v4.2.1
+## Hotfix
+### Classic Era
+Hotfix namespace check
 # Core Loot Manager v4.2.0
 ## Features
 ### EP/GP customizable Decay
