@@ -15,6 +15,7 @@ CLM.ChangelogData = {
                 data = {
                     { header = "Classic Era trade", body = "Fix another round of API issues for Classic Era auto-trade." },
                     { header = "Integrations", body = "Gargul and RCLC Integrations should now support award multipliers properly." },
+                    { header = "Settings copy", body = "Hard Mode boss kill bonuses, multipliers and field names will now get copied also." },
                 },
             },
         },

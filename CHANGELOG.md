@@ -9,6 +9,8 @@ Gargul and RCLC Integrations now support Disenchanting as award option.
 Fix another round of API issues for Classic Era auto-trade.
 ### Integrations
 Gargul and RCLC Integrations should now support award multipliers properly.
+### Settings copy
+Hard Mode boss kill bonuses, multipliers and field names will now get copied also.
 # Core Loot Manager v4.1.1
 ## Bugfixes
 ### Classic Era trade
