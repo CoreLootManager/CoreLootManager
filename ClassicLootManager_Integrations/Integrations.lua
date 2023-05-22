@@ -24,6 +24,7 @@ PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
     AWARD_FOR_MEDIUM = 5,
     AWARD_FOR_LARGE = 6,
     AWARD_FOR_MAX = 7,
+    DISENCHANT = 8
 }
 
 local function InitializeDB(key)
@@ -423,6 +424,7 @@ local function ExternalAwardEventHandler(_, data)
     local _, extra = UTILS.GetItemIdFromLink(itemLink)
     local action = Integration:GetGargulAwardAction(getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved))
     if action == PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE then return end
+    player = UTILS.Disambiguate(player)
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(player)
     if not profile then
         LOG:Debug("Gargul item awarded to player without profile")
@@ -431,6 +433,10 @@ local function ExternalAwardEventHandler(_, data)
     local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
     if not raid then
         LOG:Debug("Gargul item awarded outside of raid")
+        return
+    end
+    if action == PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.DISENCHANT then
+        CLM.MODULES.LootManager:DisenchantItem(raid, itemLink, true)
         return
     end
     local roster = raid:Roster()
@@ -474,6 +480,11 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
     local raid = CLM.MODULES.RaidManager:GetProfileRaid(profile:GUID())
     if not raid then
         LOG:Debug("RCLCAwardMessageHandler() item awarded outside of raid")
+        return
+    end
+
+    if action == PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.DISENCHANT then
+        CLM.MODULES.LootManager:DisenchantItem(raid, link, true)
         return
     end
 
@@ -654,16 +665,19 @@ PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_ORDERED = {
     PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM,
     PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE,
     PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX,
+    PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.DISENCHANT
+
 }
 
 PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS_GUI = {
-    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE]             = CLM.L["None"],
-    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_FREE]   = CLM.L["Award for Free"],
-    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE]   = CLM.L["Award for Base"],
-    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL]  = CLM.L["Award for Small"],
-    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM] = CLM.L["Award for Medium"],
-    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE]  = CLM.L["Award for Large"],
-    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]    = CLM.L["Award for Max"],
+    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE]                = CLM.L["None"],
+    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_FREE]      = CLM.L["Award for Free"],
+    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_BASE]      = CLM.L["Award for Base"],
+    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_SMALL]     = CLM.L["Award for Small"],
+    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MEDIUM]    = CLM.L["Award for Medium"],
+    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_LARGE]     = CLM.L["Award for Large"],
+    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]       = CLM.L["Award for Max"],
+    [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.DISENCHANT]          = CLM.L["Disenchant"]
 }
 
 PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER = {
