@@ -638,6 +638,9 @@ end
 function Roster:CopyConfiguration(s)
     self.configuration = CLM.MODELS.RosterConfiguration:New(UTILS.DeepCopy(s.configuration))
     self.bossKillBonusValues = UTILS.DeepCopy(s.bossKillBonusValues)
+    self.hardModeBossKillBonusValues = UTILS.DeepCopy(s.hardModeBossKillBonusValues)
+    self.classMultipliers = UTILS.DeepCopy(s.classMultipliers)
+    self.fieldNames = UTILS.DeepCopy(s.fieldNames)
     -- TODO: calculator coefficients copy?
 end
 
