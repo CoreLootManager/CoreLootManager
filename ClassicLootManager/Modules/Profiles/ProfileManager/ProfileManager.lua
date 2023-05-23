@@ -8,6 +8,17 @@ local UTILS     = CLM.UTILS
 
 local whoamiGUID = UTILS.whoamiGUID()
 
+local notEmptyiGUID
+if CLM.WoW10 or CLM.WoWEra then
+    notEmptyiGUID = function(iGUID)
+        return iGUID[2] ~= 0
+    end
+else
+    notEmptyiGUID = function(iGUID)
+        return iGUID ~= 0
+    end
+end
+
 local ProfileManager = {}
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")
@@ -30,13 +41,14 @@ function ProfileManager:Initialize()
             LOG:TraceAndCount("mutator(ProfileUpdate)")
             local iGUID = entry:GUID()
             if not UTILS.ValidateIntegerGUID(iGUID) then return end
+            if not notEmptyiGUID(iGUID) then return end
             local GUID = UTILS.getGuidFromInteger(iGUID)
             local name = entry:name()
             if UTILS.empty(name) then return end
 
             local class = UTILS.NumberToClass(entry:ingameClass()) or ""
             local main = entry:main()
-            main = (UTILS.ValidateIntegerGUID(main) and main ~= 0) and UTILS.getGuidFromInteger(main) or ""
+            main = (UTILS.ValidateIntegerGUID(main) and notEmptyiGUID(main)) and UTILS.getGuidFromInteger(main) or ""
             -- Check if it's an update
             local profileInternal = self.cache.profiles[GUID]
             if profileInternal then
@@ -388,6 +400,7 @@ function ProfileManager:FillFromGuild(selectedRank, minLevel)
 
     for i=1,GetNumGuildMembers() do
         local name, _, rankIndex, level, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
+        print(name, class, GUID)
         if rankFilterFn(rankIndex) and minLevelFn(level, minLevel) then
             self:NewProfile(GUID, UTILS.Disambiguate(name), class)
         end

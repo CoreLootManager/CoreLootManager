@@ -1,3 +1,9 @@
+# Core Loot Manager v4.2.2
+## Fix
+### Auto-awards
+Fix auto-awards regression after v4.2.0 release
+### Profile overridding
+Fixed critical issue with profile overriding happening on Classic Era and Retail. If you have previously noticed points zeroing and then fixed it manually `this fix will retroactively correct it`. Be sure to verify standings before and after installing this version.
 # Core Loot Manager v4.2.1
 ## Hotfix
 ### Classic Era

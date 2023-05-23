@@ -1,6 +1,29 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.2.2",
+        data = {
+            {
+                name = "Fix",
+                data = {
+                    { header = "Auto-awards", body = "Fix auto-awards regression after v4.2.0 release" },
+                    { header = "Profile overridding", body = "Fixed critical issue with profile overriding happening on Classic Era and Retail. If you have previously noticed points zeroing and then fixed it manually `this fix will retroactively correct it`. Be sure to verify standings before and after installing this version." },
+                },
+            },
+        },
+    },
+    {
+        version = "v4.2.1",
+        data = {
+            {
+                name = "Hotfix",
+                data = {
+                    { header = "Hotfix", body = "Hotfix for Fatal error on Classic Era" },
+                },
+            },
+        },
+    },
+    {
         version = "v4.2.0",
         data = {
             {
