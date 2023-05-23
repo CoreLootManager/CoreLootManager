@@ -60,7 +60,7 @@ end
 
 local function awardBonusValue(id, value)
     if value ~= 0 then
-        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id))
+        CLM.MODULES.PointManager:UpdateRaidPoints(CLM.MODULES.RaidManager:GetRaid(), value, CONSTANTS.POINT_CHANGE_REASON.BOSS_KILL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, tostring(id), CONSTANTS.POINT_CHANGE_TYPE.POINTS)
     end
 end
 
@@ -209,7 +209,7 @@ local function handleIntervalBonus(self)
         end
     end
     if award then
-        CLM.MODULES.PointManager:UpdateRaidPoints(raid, value, CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+        CLM.MODULES.PointManager:UpdateRaidPoints(raid, value, CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, nil, CONSTANTS.POINT_CHANGE_TYPE.POINTS)
     end
 end
 

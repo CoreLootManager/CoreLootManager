@@ -382,7 +382,7 @@ function RaidManager:StartRaid(raid)
         end
         local onTimeBonusValue = config:Get("onTimeBonusValue")
         if config:Get("onTimeBonus") and onTimeBonusValue > 0 then
-            CLM.MODULES.PointManager:UpdateRaidPoints(raid, onTimeBonusValue, CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+            CLM.MODULES.PointManager:UpdateRaidPoints(raid, onTimeBonusValue, CONSTANTS.POINT_CHANGE_REASON.ON_TIME_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, nil, CONSTANTS.POINT_CHANGE_TYPE.POINTS)
         end
     end
 end
@@ -415,7 +415,7 @@ function RaidManager:EndRaid(raid)
         end
         local raidCompletionBonusValue = config:Get("raidCompletionBonusValue")
         if config:Get("raidCompletionBonus") and raidCompletionBonusValue > 0 then
-            CLM.MODULES.PointManager:UpdateRaidPoints(raid, raidCompletionBonusValue, CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY)
+            CLM.MODULES.PointManager:UpdateRaidPoints(raid, raidCompletionBonusValue, CONSTANTS.POINT_CHANGE_REASON.RAID_COMPLETION_BONUS, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, nil, CONSTANTS.POINT_CHANGE_TYPE.POINTS)
         end
     end
     -- End raid
