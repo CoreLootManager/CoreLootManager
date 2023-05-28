@@ -352,7 +352,7 @@ local getIntegerGuid, myRealmId
 local normalizedRealmName
 local function _GetNormalizedRealmName()
     normalizedRealmName = normalizedRealmName or GetNormalizedRealmName()
-    return normalizedRealmName
+    return normalizedRealmName or ""
 end
 
 if CLM.WoW10 or CLM.WoWEra then -- support cross-server for Retail and Classic Era
