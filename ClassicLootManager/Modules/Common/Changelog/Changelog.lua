@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.2.3",
+        data = {
+            {
+                name = "Fix",
+                data = {
+                    { header = "Raid handling", body = "Preemptively try fixing raid update handling timing issue." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.2.2",
         data = {
             {

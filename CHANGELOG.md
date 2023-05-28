@@ -1,3 +1,7 @@
+# Core Loot Manager v4.2.3
+## Fix
+### Raid handling
+Preemptively try fixing raid update handling timing issue.
 # Core Loot Manager v4.2.2
 ## Fix
 ### Auto-awards
