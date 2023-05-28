@@ -348,6 +348,13 @@ function UTILS.RemoveServer(name)
 end
 local playerGUID = UnitGUID("player")
 local getIntegerGuid, myRealmId
+
+local normalizedRealmName
+local function _GetNormalizedRealmName()
+    normalizedRealmName = normalizedRealmName or GetNormalizedRealmName()
+    return normalizedRealmName
+end
+
 if CLM.WoW10 or CLM.WoWEra then -- support cross-server for Retail and Classic Era
     function UTILS.getIntegerGuid(GUID)
         local _, realm, int = strsplit("-", GUID)
@@ -365,7 +372,7 @@ if CLM.WoW10 or CLM.WoWEra then -- support cross-server for Retail and Classic E
     end
     function UTILS.Disambiguate(name)
         if string.find(name, "-") == nil then
-            name = name .. "-" .. GetNormalizedRealmName()
+            name = name .. "-" .. _GetNormalizedRealmName()
         end
         return name
     end
