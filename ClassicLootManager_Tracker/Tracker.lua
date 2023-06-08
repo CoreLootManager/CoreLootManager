@@ -59,5 +59,5 @@ local function invalidateTrack(roster, loot, profile)
 end
 hooksecurefunc(CLM.MODULES.RosterManager, "AddLootToRoster", function(r, l, p) pcall(invalidateTrack, r, l, p) end)
 
-
+CLM_Tracker = Tracker
 PRIV.MODULES.Tracker = Tracker

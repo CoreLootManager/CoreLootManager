@@ -139,7 +139,7 @@ local function RegisterUniversal(object, moduleName, entryPoint)
         error(string.format("Registrar %s entry point is missing Initialize method.", moduleName))
     end
 
-    object[name] = entryPoint
+    object[moduleName] = entryPoint
 end
 
 function CLM.RegisterModule(moduleName, entryPoint)

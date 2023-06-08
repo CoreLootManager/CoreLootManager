@@ -79,6 +79,7 @@ local function InitializeConfigs(self)
 end
 
 function Core:Initialize()
+    print("Core:Initialize()")
     self.db = InitializeDB()
     InitializeConfigs(self)
     for _,module in pairs(PRIV.MODULES) do
@@ -87,7 +88,7 @@ function Core:Initialize()
 end
 
 PRIV.CONSTANTS.TRACKER = CLM.L["Tracker"]
-PRIV.MODULES.Core = Core
+PRIV.Core = Core
 
 CLM.MODULES.ConfigManager:AddGroup(PRIV.CONSTANTS.TRACKER, true)
 

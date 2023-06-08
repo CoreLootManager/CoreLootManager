@@ -12,17 +12,17 @@ local dataColumn = {
 }
 
 local function dataCallback(auction, item, name, response)
-    local count = PRIV.MODULES.Tracker:GetCount(auction:GetRoster(), item:GetItemID(), name)
+    local count = PRIV.MODULES.Tracker:GetCount(auction:GetRoster(), name, item:GetItemID())
     return {value = count or 0}
 end
 
 local function RegisterColumn()
-    -- CLM.GUI.AuctionManager:RegisterExternalColumn(dataColumn, dataCallback)
+    CLM.GUI.AuctionManager:RegisterExternalColumn(dataColumn, dataCallback)
 end
 
 local Auction = {}
 function Auction:Initialize()
-    if PRIV.MODULES.Core:GetEnableAuctionColumn() then
+    if PRIV.Core:GetEnableAuctionColumn() then
         RegisterColumn()
     end
 end
