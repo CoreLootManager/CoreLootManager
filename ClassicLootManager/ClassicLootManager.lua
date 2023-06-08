@@ -142,12 +142,12 @@ local function RegisterUniversal(object, moduleName, entryPoint)
     object[name] = entryPoint
 end
 
-function CLM:RegisterModule(moduleName, entryPoint)
-    RegisterUniversal(self.MODULE, moduleName, entryPoint)
+function CLM.RegisterModule(moduleName, entryPoint)
+    RegisterUniversal(CLM.MODULE, moduleName, entryPoint)
 end
 
-function CLM:RegisterExternal(moduleName, entryPoint)
-    RegisterUniversal(self.EXTERNAL, moduleName, entryPoint)
+function CLM.RegisterExternal(moduleName, entryPoint)
+    RegisterUniversal(CLM.EXTERNAL, moduleName, entryPoint)
 end
 
 function CORE:_InitializeCore()
@@ -228,9 +228,9 @@ local stages = {
     "_InitializeBackend",
     "_InitializeMinimap",
     "_InitializeFeatures",
-    "_InitializeExternal",
     "_InitializeOptions",
-    "_InitializeGUI"
+    "_InitializeGUI",
+    "_InitializeExternal",
 }
 
 local finalStage = "_Enable"

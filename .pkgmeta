@@ -39,6 +39,7 @@ move-folders:
   ClassicLootManager/ClassicLootManager: ClassicLootManager
   ClassicLootManager/ClassicLootManager_Alerts: ClassicLootManager_Alerts
   ClassicLootManager/ClassicLootManager_Integrations: ClassicLootManager_Integrations
+  ClassicLootManager/ClassicLootManager_Tracker: ClassicLootManager_Tracker
 
 manual-changelog:
   filename: CHANGELOG.md

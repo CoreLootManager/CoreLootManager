@@ -88,5 +88,7 @@ end
 
 PRIV.CONSTANTS.TRACKER = CLM.L["Tracker"]
 PRIV.MODULES.Core = Core
+
 CLM.MODULES.ConfigManager:AddGroup(PRIV.CONSTANTS.TRACKER, true)
-CLM:RegisterExternal("Tracker", Core)
+
+CLM.RegisterExternal("Tracker", Core)

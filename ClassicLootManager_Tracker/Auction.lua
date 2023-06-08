@@ -17,7 +17,7 @@ local function dataCallback(auction, item, name, response)
 end
 
 local function RegisterColumn()
-    CLM.GUI.AuctioManager:RegisterExternalColumn(dataColumn, dataCallback)
+    -- CLM.GUI.AuctionManager:RegisterExternalColumn(dataColumn, dataCallback)
 end
 
 local Auction = {}

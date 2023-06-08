@@ -55,11 +55,9 @@ function Tracker:GetCount(roster, player, itemId)
 end
 
 local function invalidateTrack(roster, loot, profile)
-    pcall(function()
-        track[roster:UID()][profile:Name()][loot:Id()] = nil
-    end)
+    track[roster:UID()][profile:Name()][loot:Id()] = nil
 end
-hooksecurefunc(CLM.MODULES.RosterManager, "AddLootToRoster", invalidateTrack)
+hooksecurefunc(CLM.MODULES.RosterManager, "AddLootToRoster", function(r, l, p) pcall(invalidateTrack, r, l, p) end)
 
 
 PRIV.MODULES.Tracker = Tracker
