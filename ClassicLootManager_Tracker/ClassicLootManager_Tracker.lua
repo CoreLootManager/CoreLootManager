@@ -65,7 +65,7 @@ local function InitializeConfigs(self)
         },
         tracker_enable_auction = {
             name = CLM.L["Auction column"],
-            desc = CLM.L["Extend auction bid list with received item count information."],
+            desc = CLM.L["Extend auction bid list with received item count information. Requires reload."],
             type = "toggle",
             set = function(i, v) SetEnableAuctionColumn(self, v) end,
             get = function(i) return self:GetEnableAuctionColumn() end,

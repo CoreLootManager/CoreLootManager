@@ -713,14 +713,14 @@ function AuctionManagerGUI:Initialize()
     if not CLM.MODULES.ACL:IsTrusted() then return end
     -- Database
     InitializeDB(self)
+    -- External 
+    self.externalColumns = {}
     -- Create GUIs
     Create(self)
     -- Events
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
     -- Slash
     RegisterSlash(self)
-    -- External 
-    self.externalColumns = {}
     -- Done
     self._initialized = true
 end
