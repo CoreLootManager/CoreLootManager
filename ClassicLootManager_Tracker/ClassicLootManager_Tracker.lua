@@ -68,7 +68,7 @@ local function InitializeConfigs(self)
             type = "toggle",
             set = function(i, v) SetEnableTooltipExtended(self, v) end,
             get = function(i) return self:GetEnableTooltipExtended() end,
-            disable = true,
+            disabled = true,
             order = 2
         },
         tracker_enable_always = {
