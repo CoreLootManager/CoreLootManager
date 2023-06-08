@@ -8,6 +8,7 @@ local CLM = LibStub("ClassicLootManager").CLM
 
 local dataColumn = {
     name = CLM.L["Count"],
+    align = "CENTER",
     width = 36
 }
 
