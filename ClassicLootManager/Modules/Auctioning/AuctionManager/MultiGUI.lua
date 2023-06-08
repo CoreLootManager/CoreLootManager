@@ -713,7 +713,7 @@ function AuctionManagerGUI:Initialize()
     if not CLM.MODULES.ACL:IsTrusted() then return end
     -- Database
     InitializeDB(self)
-    -- External 
+    -- External
     self.externalColumns = {}
     -- Create GUIs
     Create(self)

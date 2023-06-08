@@ -2,8 +2,8 @@
 local _, PRIV = ...
 local CLM = LibStub("ClassicLootManager").CLM
 -- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local UTILS     = CLM.UTILS
+-- local LOG       = CLM.LOG
+-- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local dataColumn = {
