@@ -12,7 +12,7 @@ local dataColumn = {
 }
 
 local function dataCallback(auction, item, name, response)
-    local count = PRIV.MODULES.Tracker:GetCount(auction:GetRoster(), name, item:GetItemID())
+    local count = PRIV.MODULES.Tracker:GetCount(auction:GetRoster(), item:GetItemID(), name)
     return {value = count or 0}
 end
 

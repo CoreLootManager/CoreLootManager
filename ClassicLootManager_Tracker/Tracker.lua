@@ -9,16 +9,16 @@ local UTILS     = CLM.UTILS
 
 local track = {}
 
-local function BuildItemTrack(roster, player, itemId)
+local function BuildPlayerItemTrack(roster, itemId, player)
     local UID = roster:UID()
     if not track[UID] then
         track[UID] = {}
     end
-    if not track[UID][player] then
-        track[UID][player] = {}
+    if not track[UID][itemId] then
+        track[UID][itemId] = {}
     end
-    if not track[UID][player][itemId] then
-        track[UID][player][itemId] = {
+    if not track[UID][itemId][player] then
+        track[UID][itemId][player] = {
             count = 0,
             list = {}
         }
@@ -28,15 +28,15 @@ local function BuildItemTrack(roster, player, itemId)
     if profile then
         for _, loot in ipairs(roster:GetProfileLootByGUID(profile:GUID())) do
             if loot:Id() == itemId then
-                track[UID][player][itemId].count = track[UID][player][itemId].count + 1
-                track[UID][player][itemId].list[#track[UID][player][itemId].list+1] = loot:Timestamp()
+                track[UID][itemId][player].count = track[UID][itemId][player].count + 1
+                track[UID][itemId][player].list[#track[UID][itemId][player].list+1] = loot:Timestamp()
             end
         end
     end
 end
 
-local function GetCount(roster, player, itemId)
-    return track[roster:UID()][player][itemId].count
+local function GetCount(roster, itemId, player)
+    return track[roster:UID()][itemId][player].count
 end
 
 local Tracker = {}
@@ -44,18 +44,18 @@ function Tracker:Initialize()
     self.track = track
 end
 
-function Tracker:GetCount(roster, player, itemId)
-    local success, count = pcall(GetCount, roster, player, itemId)
+function Tracker:GetCount(roster, itemId, player)
+    local success, count = pcall(GetCount, roster, itemId, player)
     if not success then
-        BuildItemTrack(roster, player, itemId)
-        count = GetCount(roster, player, itemId)
+        BuildPlayerItemTrack(roster, itemId, player)
+        count = GetCount(roster, itemId, player)
     end
 
-    return count
+    return count, success
 end
 
 local function invalidateTrack(roster, loot, profile)
-    track[roster:UID()][profile:Name()][loot:Id()] = nil
+    track[roster:UID()][loot:Id()][profile:Name()] = nil
 end
 hooksecurefunc(CLM.MODULES.RosterManager, "AddLootToRoster", function(r, l, p) pcall(invalidateTrack, r, l, p) end)
 

@@ -19,5 +19,5 @@
 
 ClassicLootManager_Tracker.lua
 Tracker.lua
-#Tooltips.lua
+Tooltips.lua
 Auction.lua

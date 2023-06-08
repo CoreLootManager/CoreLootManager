@@ -13,7 +13,8 @@ local function InitializeDB()
         db.tracker = {
             tooltip = true,
             tooltipExtended = false,
-            auction = true
+            alwaysEnable = false,
+            auction = true,
         }
     end
     return db.tracker
@@ -43,6 +44,14 @@ function Core:GetEnableAuctionColumn()
     return self.db.auction
 end
 
+local function SetAlwaysEnable(self, value)
+    self.db.alwaysEnable = value and true or false
+end
+
+function Core:GetAlwaysEnable()
+    return self.db.alwaysEnable
+end
+
 local function InitializeConfigs(self)
     local options = {
         tracker_enable_tooltip = {
@@ -51,7 +60,6 @@ local function InitializeConfigs(self)
             type = "toggle",
             set = function(i, v) SetEnableTooltip(self, v) end,
             get = function(i) return self:GetEnableTooltip() end,
-            width = "full",
             order = 1
         },
         tracker_extended_tooltip = {
@@ -60,8 +68,16 @@ local function InitializeConfigs(self)
             type = "toggle",
             set = function(i, v) SetEnableTooltipExtended(self, v) end,
             get = function(i) return self:GetEnableTooltipExtended() end,
-            width = "full",
+            disable = true,
             order = 2
+        },
+        tracker_enable_always = {
+            name = CLM.L["Always show"],
+            desc = CLM.L["Show tooltip info even outside of CLM raid."],
+            type = "toggle",
+            set = function(i, v) SetAlwaysEnable(self, v) end,
+            get = function(i) return self:GetAlwaysEnable() end,
+            order = 3
         },
         tracker_enable_auction = {
             name = CLM.L["Auction column"],
@@ -70,8 +86,7 @@ local function InitializeConfigs(self)
             set = function(i, v) SetEnableAuctionColumn(self, v) end,
             get = function(i) return self:GetEnableAuctionColumn() end,
             width = "full",
-            order = 3
-
+            order = 4
         },
     }
 
@@ -79,7 +94,6 @@ local function InitializeConfigs(self)
 end
 
 function Core:Initialize()
-    print("Core:Initialize()")
     self.db = InitializeDB()
     InitializeConfigs(self)
     for _,module in pairs(PRIV.MODULES) do
