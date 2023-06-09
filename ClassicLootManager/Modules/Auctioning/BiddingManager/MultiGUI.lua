@@ -329,8 +329,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            -- width = useOS and rowMultiplierBy6 or rowMultiplierBy3,
-            width = (useOS and 1.5 or 3)*rowMultiplierBy6,
+            width = (useOS and (isElvUI and 1.45 or 1.5) or (isElvUI and 2.95 or 3))*rowMultiplierBy6,
             order = 4
         },
         cancel = {
@@ -342,8 +341,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            -- width = rowMultiplierBy3,
-            width = rowMultiplierBy6,
+            width = isElvUI and (rowMultiplierBy6 - 0.05) or  rowMultiplierBy6,
             order = 6
         }
     }
@@ -357,7 +355,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            width = 1.5*rowMultiplierBy6,
+            width = (isElvUI and 1.45 or 1.5)*rowMultiplierBy6,
             order = 5
         }
     end
