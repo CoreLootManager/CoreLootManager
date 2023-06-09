@@ -25,6 +25,15 @@ locale_to_google = {
     'zhTW': 'zh-TW',
 }
 
+locale_to_baidu = {
+    'deDE': 'de',
+    'frFR': 'fra',
+    'ruRU': 'ru',
+    'esES': 'spa',
+    'zhCN': 'zh',
+    'zhTW': 'zh',
+}
+
 class L10nStorage:
     def __init__(self, base, parser, markdown):
         self.data = {}
@@ -210,9 +219,9 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
         for sentence in missing:
             sanitized_sentence = sanitize_sentence_regex.findall(sentence)[0]
             if dry_run:
-                _print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_google[locale]))
+                _print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_baidu[locale]))
             else:
-                translation = ts.google(sanitized_sentence, from_language='en', to_language=locale_to_google[locale])
+                translation = ts.baidu(sanitized_sentence, from_language='en', to_language=locale_to_baidu[locale])
                 storage.translate(locale, sentence, translation, False)
                 total_done += 1
                 percent = math.floor(100*(total_done/total_missing))

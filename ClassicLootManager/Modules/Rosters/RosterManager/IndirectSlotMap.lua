@@ -1,6 +1,9 @@
 local _, CLM = ...
 local IndirectMap = {
     slot = {
+        -- -- --
+        -- P1 --
+        -- -- --
         -- Heroic Key to the Focusing Iris
         [44577] = "INVTYPE_NECK",
 
@@ -70,6 +73,9 @@ local IndirectMap = {
         -- Mantle of the Lost Protector
         [40638] = "INVTYPE_SHOULDER",
 
+        -- -- --
+        -- P2 --
+        -- -- --
         -- Chestguard of the Wayward Vanquisher
         [45637] = "INVTYPE_CHEST",
         -- Helm of the Wayward Vanquisher
@@ -135,8 +141,23 @@ local IndirectMap = {
         [45654] = "INVTYPE_LEGS",
         -- Mantle of the Wayward Protector
         [45657] = "INVTYPE_SHOULDER",
+
+        -- -- --
+        -- P3 --
+        -- -- --
+        -- Trophy of the Crusade
+        [47242] = "INVTYPE_NON_EQUIP",
+        -- Regalia of the Grand Conqueror
+        [47557] = "INVTYPE_NON_EQUIP",
+        -- Regalia of the Grand Protector
+        [47558] = "INVTYPE_NON_EQUIP",
+        -- Regalia of the Grand Vanquisher
+        [47559] = "INVTYPE_NON_EQUIP",
     },
     ilvl = {
+        -- -- --
+        -- P1 --
+        -- -- --
         -- Heroic Key to the Focusing Iris
         [44577] = 226,
 
@@ -206,6 +227,9 @@ local IndirectMap = {
         -- Mantle of the Lost Protector
         [40638] = 213,
 
+        -- -- --
+        -- P2 --
+        -- -- --
         -- Chestguard of the Wayward Vanquisher
         [45637] = 225,
         -- Helm of the Wayward Vanquisher
@@ -271,6 +295,18 @@ local IndirectMap = {
         [45654] = 232,
         -- Mantle of the Wayward Protector
         [45657] = 232,
+
+        -- -- --
+        -- P3 --
+        -- -- --
+        -- Trophy of the Crusade
+        [47242] = 245,
+        -- Regalia of the Grand Conqueror
+        [47557] = 258,
+        -- Regalia of the Grand Protector
+        [47558] = 258,
+        -- Regalia of the Grand Vanquisher
+        [47559] = 258,
     }
 }
 CLM.IndirectMap = IndirectMap
