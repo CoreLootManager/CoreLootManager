@@ -158,7 +158,7 @@ CLM.L["Always allow Base bids"] = "Toujours autoriser les offres à valeur de ba
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1063
 CLM.L["Always allow cancel/pass"] = "Toujours autoriser à passer ou annuler"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:75
---CLM.L["Always show"] = ""
+CLM.L["Always show"] = "Toujours afficher"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:861
 CLM.L["Americas"] = "Amériques"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:810
@@ -226,7 +226,7 @@ CLM.L["Auction Time"] = "Temps de l'enchère"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:55
 CLM.L["Auction Type"] = "Type d'enchère"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:83
---CLM.L["Auction column"] = ""
+CLM.L["Auction column"] = "Colonne d'enchère"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:658
 CLM.L["Auction complete"] = "Enchère terminée"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:270
@@ -508,7 +508,7 @@ CLM.L["Core Loot Manager"] = "Core Loot Manager"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:526
 CLM.L["Correcting error"] = "Correction d'erreur"
 -- ClassicLootManager_Tracker/Auction.lua:10
---CLM.L["Count"] = ""
+CLM.L["Count"] = "Comptage"
 -- ClassicLootManager_Integrations/GenericImport.lua:178
 CLM.L["Create Profiles"] = "Créer des profils"
 -- ClassicLootManager_Integrations/GenericImport.lua:172
@@ -666,7 +666,7 @@ CLM.L["Enable auto-update bid values"] = "Activer la mise à jour automatique de
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:461
 CLM.L["Enable chat commands"] = "Activer les commandes de chat"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:59
---CLM.L["Enable item tracking information in tooltip display."] = ""
+CLM.L["Enable item tracking information in tooltip display."] = "Activer le suivi d'objets dans le tooltip"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:350
 CLM.L["Enable loot auto-assign (Master Looter UI) from corpse when item is awarded"] = "Active l'assignation automatique du butin (Interface du maitre du butin) depuis le cadavre lorsque l'item est attribué"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1221
@@ -680,7 +680,7 @@ CLM.L["Enable to always allow All-In bids. Affects Open-Ascending Auction."] = "
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1064
 CLM.L["Enable to always allow cancelling or passing bids. Affects Open-Ascending Auction."] = "Activer pour toujours autoriser à passer/annuler. Affecte els enchères ouvertes ascendantes"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:58
---CLM.L["Enable tooltip display"] = ""
+CLM.L["Enable tooltip display"] = "Activer l'affichage du tooltip"
 -- ClassicLootManager/MinimapIcon.lua:78
 CLM.L["Enables / disables minimap Icon"] = "Active/désactive l'icône de minimap"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:32
@@ -730,11 +730,11 @@ CLM.L["Exponential scaling value used by the equations (Base for EPGPWeb, or Exp
 -- ClassicLootManager_Integrations/GUI.lua:485
 CLM.L["Export"] = "Exporter"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:84
---CLM.L["Extend auction bid list with received item count information. Requires reload."] = ""
+CLM.L["Extend auction bid list with received item count information. Requires reload."] = "Etendre la liste d'enchères avec les informations de comptage d'objets reçues. Requiert un rechargement"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:67
---CLM.L["Extend tooltip with more specific loot information."] = ""
+CLM.L["Extend tooltip with more specific loot information."] = "Etendre le tooltip avec plus d'informations spécifiques au butin"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:66
---CLM.L["Extended tooltip"] = ""
+CLM.L["Extended tooltip"] = "Tooltip étendu"
 -- ClassicLootManager/Modules/GUI/Filters.lua:79
 CLM.L["External"] = "Externe"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:143
@@ -1748,7 +1748,7 @@ CLM.L["Shoulder"] = "Épaule"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:223
 CLM.L["Show Award window"] = "Fenêtre de récompense de spectacles"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:76
---CLM.L["Show tooltip info even outside of CLM raid."] = ""
+CLM.L["Show tooltip info even outside of CLM raid."] = "Montrer le tooltip d'information d'évènement en dehors du raid CLM"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:27
 CLM.L["Silithid Royalty"] = "Bug Trio"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:157
@@ -1938,7 +1938,7 @@ CLM.L["Total received"] = "Total reçu"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:449
 CLM.L["Total spent"] = "Total dépensé"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:104
---CLM.L["Tracker"] = ""
+CLM.L["Tracker"] = "Tracker"
 -- ClassicLootManager/MinimapIcon.lua:114
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:193
 CLM.L["Trade List"] = "Liste d'échange"
