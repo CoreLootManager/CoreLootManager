@@ -758,6 +758,9 @@ function AuctionManagerGUI:BuildColumns()
     -- Items
     columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
     columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
     -- Done
 
     local currentWidth = 0
@@ -812,13 +815,12 @@ local function BuildBidRow(name, response, roster, namedButtonMode, externalData
     if response:Type() == CONSTANTS.BID_TYPE.OFF_SPEC then
         bidColor = colorTurquoise
     end
-    local items = response:Items()
-    local primaryItem = items[1]
-    local secondaryItem = items[2]
-    if (not primaryItem) and secondaryItem then
-        primaryItem = secondaryItem
-        secondaryItem = nil
-    end
+    -- local primaryItem = items[1]
+    -- local secondaryItem = items[2]
+    -- if (not primaryItem) and secondaryItem then
+    --     primaryItem = secondaryItem
+    --     secondaryItem = nil
+    -- end
 
     local highlight, invalidReason
     if response:IsInvalid() then
@@ -839,8 +841,14 @@ local function BuildBidRow(name, response, roster, namedButtonMode, externalData
         data[#data+1] = dataRow
     end
     -- Items
-    data[#data+1] = {value = primaryItem}
-    data[#data+1] = {value = secondaryItem}
+    local items = response:Items()
+    local emptyItems = 5-#items
+    for _=1,emptyItems do
+        data[#data+1] = {}
+    end
+    for _, item in ipairs(items) do
+        data[#data+1] = {value = item}
+    end
     -- Done
 
     return {cols = data,

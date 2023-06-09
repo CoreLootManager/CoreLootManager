@@ -22,22 +22,22 @@ local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
--- local rowMultiplier = 2.05
-local rowMultiplier = 2.4
-
+local rowMultiplier = 2.7
+local rowMultiplierBy2 = rowMultiplier/2
+local rowMultiplierBy3 = rowMultiplier/3
+local rowMultiplierBy4 = rowMultiplier/4
+local rowMultiplierBy6 = rowMultiplier/6
+local rowMultiplierBy9 = rowMultiplier/9
 local ROW_HEIGHT = 25
 local BASE_HEIGHT = 115
 local BID_ROWS = 7
 local BID_ROW_HEIGHT = 18
 local BIDS_HEIGHT = ((BID_ROWS + 1) * BID_ROW_HEIGHT) + 5
 
-local BASE_ACE_WIDTH = 170
+local BASE_ROW_WIDTH = 170 -- Ace Row Width
 
-local DATA_GROUP_WIDTH = BASE_ACE_WIDTH*(rowMultiplier + 0.15) + (isElvUI and 15 or 0)
-local BID_INPUT_WIDTH  = BASE_ACE_WIDTH*rowMultiplier*0.4
-local BID_BUTTON_WIDTH = BASE_ACE_WIDTH*rowMultiplier*0.3
-
-local BID_BUTTON_PADDING = (isElvUI and 12 or 2)
+local DATA_GROUP_WIDTH = BASE_ROW_WIDTH*(rowMultiplier + 0.15) + (isElvUI and 15 or 0)
+local BID_INPUT_WIDTH  = BASE_ROW_WIDTH*rowMultiplierBy3
 
 local ITEM_REGISTRY     = "clm_bm_gui_opt_item"
 local BID_REGISTRY      = "clm_bm_gui_opt_bid"
@@ -329,9 +329,23 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            width = (useOS and 1 or 2)*rowMultiplier*(isElvUI and 0.29 or 0.3),
+            -- width = useOS and rowMultiplierBy6 or rowMultiplierBy3,
+            width = (useOS and 1.5 or 3)*rowMultiplierBy6,
             order = 4
         },
+        cancel = {
+            name = CLM.L["Cancel"],
+            desc = CLM.L["Cancel your bid."],
+            type = "execute",
+            func = (function()
+                CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
+                if GetAdvanceOnBid(self) then self:Advance() end
+                if GetCloseOnBid(self) then self:Toggle() end
+            end),
+            -- width = rowMultiplierBy3,
+            width = rowMultiplierBy6,
+            order = 6
+        }
     }
     if useOS then
         generateBidOptions.os = {
@@ -343,48 +357,11 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
-            width = rowMultiplier*(isElvUI and 0.29 or 0.3),
+            width = 1.5*rowMultiplierBy6,
             order = 5
         }
     end
     local generateButtonOptions = {
-        pass = {
-            name = CLM.L["Pass"],
-            desc = CLM.L["Notify that you are passing on the item."],
-            type = "execute",
-            func = (function()
-                CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
-                if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
-            end),
-            -- disabled = (function()
-            --         return (
-            --             CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and
-            --             (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and
-            --             (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
-            --         )
-            -- end),
-            width = rowMultiplier/2,
-            order = 20
-        },
-        cancel = {
-            name = CLM.L["Cancel"],
-            desc = CLM.L["Cancel your bid."],
-            type = "execute",
-            func = (function()
-                CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
-                if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
-            end),
-            -- disabled = (function()
-            --     return (
-            --         CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and
-            --         (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING)
-            --     )
-            -- end),
-            width = rowMultiplier/2,
-            order = 21
-        }
     }
     local offset = 8
     local usedTiers
@@ -426,10 +403,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             end
         end
 
-        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING)
-            -- and not generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.MAX]
-            and not doDisplayValue(values[CONSTANTS.SLOT_VALUE_TIER.MAX]) then
-            local width = generateButtonOptions[CONSTANTS.SLOT_VALUE_TIER.BASE] and (rowMultiplier/2) or rowMultiplier
+        if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) then
             generateButtonOptions["all_in"] = {
                 name = CLM.L["All In"],
                 desc = string.format(CLM.L["Bid your current DKP (%s)."], ""),
@@ -439,7 +413,6 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                     if GetAdvanceOnBid(self) then self:Advance() end
                     if GetCloseOnBid(self) then self:Toggle() end
                 end),
-                width = width,
                 order = offset
             }
             numButtons = numButtons + 1
@@ -448,10 +421,8 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
         if numButtons > 0 then
             numRows = numRows + 1
             local row_width = rowMultiplier/numButtons
-            for _,tier in ipairs(usedTiers) do
-                if generateButtonOptions[tier] then
-                    generateButtonOptions[tier].width = row_width
-                end
+            for _, buttonEntry in pairs(generateButtonOptions) do
+                buttonEntry.width = row_width
             end
         end
     end
@@ -465,7 +436,7 @@ end
 local function GenerateNamedButtonsAuctionOptions(self, auction)
     local options = {}
     local offset = 3
-    local row_width = rowMultiplier/2
+    local row_width = rowMultiplierBy2
     local numButtons = 0
     local usedTiers
 
@@ -509,9 +480,9 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
         end
     end
     local isEven = true
-    local cancelPassWidth = rowMultiplier/2
+    local cancelPassWidth = rowMultiplierBy2
     if (numButtons %2 ~= 0) then
-        cancelPassWidth = rowMultiplier/4
+        cancelPassWidth = rowMultiplierBy4
         isEven = false
     end
 
@@ -575,7 +546,7 @@ local function GenerateAuctionOptions(self)
             image = icon,
             func = (function() end),
             tooltipHyperlink = itemLink,
-            width = 0.25,
+            width = rowMultiplierBy9,
             order = 1
         },
         item = {
@@ -583,15 +554,38 @@ local function GenerateAuctionOptions(self)
             type = "input",
             get = (function(i) return itemLink or "" end),
             set = (function(i,v) end), -- Intentionally: do not override
-            width = rowMultiplier - 0.25,
+            width = 5*rowMultiplierBy9,
             order = 2,
             tooltipHyperlink = itemLink,
+        },
+        next = {
+            name = CLM.L["Next"],
+            desc = CLM.L["Next item"],
+            type = "execute",
+            func = (function()
+                self:Advance()
+                if GetCloseOnBid(self) then self:Toggle() end
+            end),
+            width = (namedButtonsMode and 3 or 1.5)*rowMultiplierBy9,
+            order = 4
         },
     }
 
     if namedButtonsMode then
         GenerateNamedButtonsAuctionOptions(self, auction)
     else
+        itemOptions.args.pass = {
+            name = CLM.L["Pass"],
+            desc = CLM.L["Notify that you are passing on the item."],
+            type = "execute",
+            func = (function()
+                CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
+                if GetAdvanceOnBid(self) then self:Advance() end
+                if GetCloseOnBid(self) then self:Toggle() end
+            end),
+            width = 1.5*rowMultiplierBy9,
+            order = 3
+        }
         GenerateValueButtonsAuctionOptions(self, auction)
     end
 end
@@ -610,7 +604,8 @@ local function CreateOptions(self)
     -- Bid Display
     local BiddingGroup = AceGUI:Create("SimpleGroup")
     BiddingGroup:SetLayout("Flow")
-    BiddingGroup:SetWidth(2*BID_BUTTON_WIDTH + BID_BUTTON_PADDING)
+    -- BiddingGroup:SetWidth((7/3)*BID_BUTTON_WIDTH + BID_BUTTON_PADDING)
+    BiddingGroup:SetWidth(2*BID_INPUT_WIDTH)
     self.BiddingGroup = BiddingGroup
     -- Button Display
     local ButtonGroup = AceGUI:Create("SimpleGroup")
@@ -718,6 +713,9 @@ local function CreateBidList(self)
             sortnext = 2,
             align = "CENTER"
         },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
+        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
         {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
         {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
     }
@@ -1017,24 +1015,32 @@ local function BuildBidRow(name, response, roster, namedButtonMode, auction)
     if response:Type() == CONSTANTS.BID_TYPE.OFF_SPEC then
         bidColor = colorTurquoise
     end
+    -- local items = response:Items()
+    -- local primaryItem = items[1]
+    -- local secondaryItem = items[2]
+    -- if (not primaryItem) and secondaryItem then
+    --     primaryItem = secondaryItem
+    --     secondaryItem = nil
+    -- end
+
+    local data = {
+        {value = class},
+        {value = name, color = classColor},
+        {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = bidColor},
+        {value = current},
+        {value = response:Roll()},
+    }
+
     local items = response:Items()
-    local primaryItem = items[1]
-    local secondaryItem = items[2]
-    if (not primaryItem) and secondaryItem then
-        primaryItem = secondaryItem
-        secondaryItem = nil
+    local emptyItems = 5-#items
+    for _=1,emptyItems do
+        data[#data+1] = {}
+    end
+    for _, item in ipairs(items) do
+        data[#data+1] = {value = item}
     end
 
-    return {cols = {
-            {value = class},
-            {value = name, color = classColor},
-            {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = bidColor},
-            {value = current},
-            {value = response:Roll()},
-            {value = primaryItem},
-            {value = secondaryItem},
-        },
-    }
+        return {cols = data}
 end
 
 function BiddingManagerGUI:RefreshBidList()

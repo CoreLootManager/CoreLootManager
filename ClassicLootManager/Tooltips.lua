@@ -66,6 +66,14 @@ local isEquipable = UTILS.Set({
     "INVTYPE_RELIC",
 })
 
+local isSpecial = UTILS.Set({
+    -- ToGC tokens have no equiploc
+    -- We are faking them as Non-equippable INVTYPE
+    -- and we want to display data for them
+    -- TODO probably same thing will happen for ICC tokens
+    47242, 47557, 47558, 47559
+})
+
 local function addItemPriceToTooltip(tooltip)
     -- Sanity Check
     local itemLink
@@ -78,8 +86,12 @@ local function addItemPriceToTooltip(tooltip)
     if not itemLink then return end
     local itemId = UTILS.GetItemIdFromLink(itemLink)
     if itemId == 0 then return end
-    local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
-    if not isEquipable[CLM.IndirectMap.slot[itemId] or itemEquipLoc] then return end
+    if not isSpecial[itemId] then
+        local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+        if not isEquipable[CLM.IndirectMap.slot[itemId] or itemEquipLoc] then
+            return
+        end
+    end
     local raid = CLM.MODULES.RaidManager:GetRaid()
     local rosters = raid and {
         [CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())] = raid:Roster()

@@ -32,6 +32,7 @@ local INVTYPE_to_INVSLOT_map = {
     ["INVTYPE_THROWN"]          = {INVSLOT_RANGED},
     ["INVTYPE_RANGEDRIGHT"]     = {INVSLOT_RANGED},
     ["INVTYPE_RELIC"]           = {INVSLOT_RANGED},
+    ["INVTYPE_NON_EQUIP"]       = {INVSLOT_HEAD, INVSLOT_SHOULDER, INVSLOT_CHEST, INVSLOT_HAND, INVSLOT_LEGS, },
 }
 
 local function GetUpgradedItems(itemId)
