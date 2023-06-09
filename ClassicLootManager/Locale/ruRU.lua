@@ -1,9 +1,9 @@
 local _, CLM = ...
 if GetLocale() == "ruRU" then
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:323
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:336
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:348
 CLM.L[" alt of: "] = " альт игрока: "
--- ClassicLootManager/Utils.lua:566
+-- ClassicLootManager/Utils.lua:573
 CLM.L[" more"] = " подробнее "
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:173
 CLM.L[" over "] = " над "
@@ -84,9 +84,9 @@ CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> Ваша ставка (%s) бы�
 CLM.L["Accepting rolls on %s for %s %s"] = "Принятие рулонов на %s для %s %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:150
 CLM.L["Action context"] = "Контекст действия"
--- ClassicLootManager_Integrations/Integrations.lua:159
+-- ClassicLootManager_Integrations/Integrations.lua:160
 CLM.L["Action to take upon Gargul loot award event happening during raid."] = "Действие, в случае вручения добычи через Gargul loot, во время рейда."
--- ClassicLootManager_Integrations/Integrations.lua:264
+-- ClassicLootManager_Integrations/Integrations.lua:265
 CLM.L["Action to take upon RCLC loot award event happening during raid. Trigger is based on RCLC award reason or player response if reason is not used. On Integration Enable the buttons will be prefilled with existing ones."] = "Действие, которое будет сделано в случае выдачи предмета в RCLC во время рейда. Триггер основан на событии выдачи вещи RCLC или на ответе игроков, если применяется опрос. В случае применения интеграции внопки будут предзаполнены требуемыми значениями."
 -- ClassicLootManager_Integrations/GenericImport.lua:181
 CLM.L["Add Profiles to Rosters"] = "Добавить профили в составы"
@@ -157,10 +157,12 @@ CLM.L["Always allow All-In bids"] = "Всегда разрешать All-In ст
 CLM.L["Always allow Base bids"] = "Всегда разрешать базовую ставку"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1063
 CLM.L["Always allow cancel/pass"] = "Всегда разрешать отмена/пасс"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:858
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:75
+--CLM.L["Always show"] = ""
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:861
 CLM.L["Americas"] = "Америка"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:807
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:840
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:810
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:843
 CLM.L["Ammo"] = "Патроны"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:101
 CLM.L["Anetheron"] = "Анетерон"
@@ -172,7 +174,7 @@ CLM.L["Announce loot from corpse to Raid"] = "Аннонсировать доб�
 CLM.L["Announce loot"] = "Объявить добычу"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:195
 CLM.L["Announcement loot rarity"] = "Аннонсировать редкость добычи"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:708
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:711
 CLM.L["Anonymous Open"] = "Анонимный Открытый"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1095
 CLM.L["Anti-snipe time"] = "Время анти-снайпера"
@@ -180,7 +182,7 @@ CLM.L["Anti-snipe time"] = "Время анти-снайпера"
 CLM.L["Anti-snipe time: %s."] = "Анти-снайпер: %s."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:235
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:70
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:529
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:492
 CLM.L["Anti-snipe"] = "Анти-снайпер"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:35
 CLM.L["Anub'Rekhan"] = "Ануб'Рекан"
@@ -196,11 +198,11 @@ CLM.L["Archavon the Stone Watcher"] = "Аркавон Страж Камня"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:104
 CLM.L["Archimonde"] = "Архимонд"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:168
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:325
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:324
 CLM.L["Are you sure, you want to award %s to %s for %s %s?"] = "Вы уверены, что хотите отдать %s %s за %s %s?"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:350
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:349
 CLM.L["Are you sure, you want to disenchant %s?"] = "Вы действительно хотите распылить %s?"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:735
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:738
 CLM.L["Ascending"] = "По возрастанию"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:224
 CLM.L["Assistant"] = "Помощник"
@@ -223,6 +225,8 @@ CLM.L["Auction Start/End"] = "Старт/стоп аукциона"
 CLM.L["Auction Time"] = "Осталось: "
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:55
 CLM.L["Auction Type"] = "Тип аукциона"
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:83
+--CLM.L["Auction column"] = ""
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:658
 CLM.L["Auction complete"] = "Аукцион завершен"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:270
@@ -230,7 +234,7 @@ CLM.L["Auction finished"] = "Аукцион завершен"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1087
 CLM.L["Auction length in seconds."] = "Длительность аукциона в секундах."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1086
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:519
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:482
 CLM.L["Auction length"] = "Время аукциона"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:250
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:754
@@ -239,7 +243,7 @@ CLM.L["Auction of %s items."] = "Аукцион %s вещей."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:756
 CLM.L["Auction of %s"] = "Аукцион %s"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1029
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:506
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:469
 CLM.L["Auction settings"] = "Настройки аукциона"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:649
 CLM.L["Auction stopped by Master Looter"] = "Аукцион остановлен Распределяющим добычу"
@@ -259,7 +263,7 @@ CLM.L["Auctioning - List Filling"] = "Аукцион - заполнение сп
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:612
 CLM.L["Auctioning requires active raid or roster mode."] = "Аукцион требует активного рейда или включенного режима аукциона по составу."
 -- ClassicLootManager/MinimapIcon.lua:104
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:695
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:658
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:336
 CLM.L["Auctioning"] = "Аукцион"
 -- ClassicLootManager_Integrations/GUI.lua:142
@@ -286,17 +290,17 @@ CLM.L["Award %s %s to %s selected players."] = "Выдать %s %s %s выбра
 CLM.L["Award %s %s to everyone in raid."] = "Выдать %s %s всем в рейде."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:244
 CLM.L["Award %s %s to everyone in roster."] = "Выдать %s %s всем в составе."
--- ClassicLootManager_Integrations/Integrations.lua:649
+-- ClassicLootManager_Integrations/Integrations.lua:675
 CLM.L["Award for Base"] = "Выдать за мин ставку"
--- ClassicLootManager_Integrations/Integrations.lua:648
+-- ClassicLootManager_Integrations/Integrations.lua:674
 CLM.L["Award for Free"] = "Выдать бесплатно"
--- ClassicLootManager_Integrations/Integrations.lua:652
+-- ClassicLootManager_Integrations/Integrations.lua:678
 CLM.L["Award for Large"] = "Выдать за большую ставку"
--- ClassicLootManager_Integrations/Integrations.lua:653
+-- ClassicLootManager_Integrations/Integrations.lua:679
 CLM.L["Award for Max"] = "Выдать за макс ставку"
--- ClassicLootManager_Integrations/Integrations.lua:651
+-- ClassicLootManager_Integrations/Integrations.lua:677
 CLM.L["Award for Medium"] = "Выдать за среднюю ставку"
--- ClassicLootManager_Integrations/Integrations.lua:650
+-- ClassicLootManager_Integrations/Integrations.lua:676
 CLM.L["Award for Small"] = "Награда за малую ставку"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:195
 CLM.L["Award item"] = "Отдать за: "
@@ -315,7 +319,7 @@ CLM.L["Award value"] = "Стоимость"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:235
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1121
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:193
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:310
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:309
 CLM.L["Award"] = "Начисление"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:453
 CLM.L["Awarded %s points for %s to all players in raid %s"] = "Начислено %s точки за %s всем игрокам в рейде %s"
@@ -330,11 +334,11 @@ CLM.L["Awarded by"] = "Выдал"
 CLM.L["Ayamiss the Hunter"] = "Аямисса Охотница"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:103
 CLM.L["Azgalor"] = "Азгалор"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:786
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:819
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:789
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:822
 CLM.L["Back"] = "Спина"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:806
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:839
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:809
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:842
 CLM.L["Bag"] = "Сумка"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:159
 CLM.L["Baltharus the Warborn"] = "Балтарус, Рожденный в битве"
@@ -342,7 +346,7 @@ CLM.L["Baltharus the Warborn"] = "Балтарус, Рожденный в бит
 CLM.L["Baron Geddon"] = "Барон Геддон"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:356
 CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Базовое значение для статического ценового аукциона. \nМинимальное значение для восходящего и многоуровневого аукциона. \n\nУстановлено то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:888
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:891
 CLM.L["Base"] = "Мин"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:28
 CLM.L["Battleguard Sartura"] = "Боевой страж Сартура"
@@ -384,7 +388,7 @@ CLM.L["Bid too low"] = "Ставка слишком низкая"
 CLM.L["Bid your current DKP (%s)."] = "Поставьте свое текущее ДКП (%s)."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:324
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:704
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:432
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:735
 CLM.L["Bid"] = "Ставка"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1279
 CLM.L["Bidding over current standings not allowed"] = "Ставки выше текущей позиции невозможны"
@@ -397,7 +401,7 @@ CLM.L["Bidding while below minimum standings not allowed"] = "Ставки пр�
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:812
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1087
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1180
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:577
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:540
 CLM.L["Bidding"] = "Ставки"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:264
 CLM.L["Bids"] = "Ставки"
@@ -460,11 +464,11 @@ CLM.L["Chat Commands"] = "Чат команды"
 CLM.L["Chat bidding is currently disabled."] = "Ставки в чате отключены."
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:75
 CLM.L["Chess Event"] = "Шахматный турнир"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:788
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:821
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:791
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:824
 CLM.L["Chest (robes)"] = "Нагрудник (роба)"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:787
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:820
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:790
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:823
 CLM.L["Chest"] = "Нагрудник"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:24
 CLM.L["Chromaggus"] = "Хромаггус"
@@ -474,13 +478,13 @@ CLM.L["Classic"] = "Классика"
 CLM.L["Clear all classes."] = "Убирает все классы."
 -- ClassicLootManager_Integrations/GUI.lua:474
 CLM.L["Clear output"] = "Очистить"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:271
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:270
 CLM.L["Clear"] = "Очистить"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:154
 CLM.L["Close on bid"] = "Закрыть ставку"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:211
 CLM.L["Comma-separated (CSV) list of disenchanter names. Case insensitive."] = "Список имен в формате CSV. Учитывает регистр букв."
--- ClassicLootManager/Utils.lua:1013
+-- ClassicLootManager/Utils.lua:1020
 CLM.L["Common"] = "Обычное"
 -- ClassicLootManager/MinimapIcon.lua:138
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:309
@@ -503,6 +507,8 @@ CLM.L["Core Loot Manager %s initialization complete. %s"] = "Core Loot Manager %
 CLM.L["Core Loot Manager"] = "Core Loot Manager"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:526
 CLM.L["Correcting error"] = "Исправление ошибки"
+-- ClassicLootManager_Tracker/Auction.lua:10
+--CLM.L["Count"] = ""
 -- ClassicLootManager_Integrations/GenericImport.lua:178
 CLM.L["Create Profiles"] = "Создать Профили"
 -- ClassicLootManager_Integrations/GenericImport.lua:172
@@ -514,14 +520,14 @@ CLM.L["Create raid %s %s in <%s>"] = "Создать рейд %s %s в <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:193
 CLM.L["Create raid"] = "Создать рейд"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1275
--- ClassicLootManager_Integrations/Integrations.lua:250
+-- ClassicLootManager_Integrations/Integrations.lua:251
 CLM.L["Create"] = "Создать"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:807
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:261
 CLM.L["Created"] = "Создан"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1276
 CLM.L["Creates new roster with default configuration"] = "Создает новый состав с настройками по умолчанию"
--- ClassicLootManager_Integrations/Integrations.lua:251
+-- ClassicLootManager_Integrations/Integrations.lua:252
 CLM.L["Creates new trigger to be used during RCLC award."] = "Создает новый триггер для использования во время вручения вещей в RCLC."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:500
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
@@ -529,7 +535,7 @@ CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
 CLM.L["Ctrl"] = "Ctrl"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:713
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1087
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:441
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:744
 CLM.L["Current"] = "Текущий"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:639
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:640
@@ -538,7 +544,7 @@ CLM.L["DF"] = "DF"
 -- ClassicLootManager/Tooltips.lua:100
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:172
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:188
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:684
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:687
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:385
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:448
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:458
@@ -546,10 +552,10 @@ CLM.L["DF"] = "DF"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:387
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:296
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1083
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:329
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:328
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1104
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:186
--- ClassicLootManager/Utils.lua:998
+-- ClassicLootManager/Utils.lua:1005
 CLM.L["DKP"] = "ДКП"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:157
 CLM.L["DPS"] = "Дпс"
@@ -600,10 +606,11 @@ CLM.L["Disable"] = "Отключить"
 CLM.L["Disables display of the changelog for any new version."] = "Отключает отображение истории изменений для любой новой версии."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:436
 CLM.L["Disenchant removed items"] = "Распылить удаленные предметы"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:337
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:336
+-- ClassicLootManager_Integrations/Integrations.lua:680
 CLM.L["Disenchant"] = "Распылить"
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:242
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:15
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:26
 CLM.L["Disenchanted"] = "Распылено"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:205
 CLM.L["Disenchanters"] = "Кто может распылить"
@@ -621,14 +628,14 @@ CLM.L["Dynamic Item values"] = "Динамические цены вещей"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:397
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:440
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:442
--- ClassicLootManager/Utils.lua:1003
+-- ClassicLootManager/Utils.lua:1010
 CLM.L["EP"] = "EP"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:556
--- ClassicLootManager/Utils.lua:1005
+-- ClassicLootManager/Utils.lua:1012
 CLM.L["EP/GP"] = "EP/GP"
 -- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:187
 CLM.L["EPGP WEB"] = "EPGP WEB"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:685
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:688
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1001
 CLM.L["EPGP"] = "EPGP"
 -- ClassicLootManager_Integrations/ImportCSV.lua:153
@@ -642,13 +649,13 @@ CLM.L["Edge of Madness"] = "Грань безумия"
 CLM.L["Emalon the Storm Watcher"] = "Эмалон Страж Бури"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:462
 CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."] = "Включить !dkp и !bid в личных сообщениях / рейде. Изменения требуют перезагрузки интерфейса."
--- ClassicLootManager_Integrations/Integrations.lua:122
+-- ClassicLootManager_Integrations/Integrations.lua:123
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "Включить интеграцию Gargul. Это позволит Gargul взять под контроль некоторые аспекты CLM (начинать аукцион из Gargul и вручать вещи)."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1056
 CLM.L["Enable OS bids"] = "Включить ставки ОС"
--- ClassicLootManager_Integrations/Integrations.lua:237
+-- ClassicLootManager_Integrations/Integrations.lua:238
 CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award. Requires /reload."] = "Включает интеграцию с RCLC. Это позволит вручать DKP/GP очки в списках вручения вещей RCLC. Изменения требуют /reload."
--- ClassicLootManager_Integrations/Integrations.lua:360
+-- ClassicLootManager_Integrations/Integrations.lua:361
 CLM.L["Enable WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "Включить интеграцию с WoW DKP Bot. Это приведет к сохранению дополнительных данных при выходе из игры."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:233
 CLM.L["Enable announcing auction start and end."] = "Включает оповещения о старте и стопе аукциона"
@@ -658,6 +665,8 @@ CLM.L["Enable auto-update bid values when current highest bid changes (open auct
 CLM.L["Enable auto-update bid values"] = "Включить авто обновление ставок"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:461
 CLM.L["Enable chat commands"] = "Включить команды чата"
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:59
+--CLM.L["Enable item tracking information in tooltip display."] = ""
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:350
 CLM.L["Enable loot auto-assign (Master Looter UI) from corpse when item is awarded"] = "Включить авто-вручение (UI ответственного за добычу) из трупа, когда вещь разыграна"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1221
@@ -670,6 +679,8 @@ CLM.L["Enable to allow equal bids. Affects Open-Ascending Auction."] = "Разр
 CLM.L["Enable to always allow All-In bids. Affects Open-Ascending Auction."] = "Включить разрешение All-in ставок. Применимо в открытом аукционе с повышением ставок."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1064
 CLM.L["Enable to always allow cancelling or passing bids. Affects Open-Ascending Auction."] = "Включить возможность всегда отменять ставки или пасовать. Влияет только на открытый аукцион."
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:58
+--CLM.L["Enable tooltip display"] = ""
 -- ClassicLootManager/MinimapIcon.lua:78
 CLM.L["Enables / disables minimap Icon"] = "Включает / отключает значок у миникарты"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:32
@@ -692,13 +703,13 @@ CLM.L["Enables raid-warning countdown for auctions."] = "Включает опо
 CLM.L["End Timetravel"] = "Завершить путешествие во времени"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:398
 CLM.L["End selected raid"] = "Завершить выбранный рейд"
--- ClassicLootManager/Utils.lua:1016
+-- ClassicLootManager/Utils.lua:1023
 CLM.L["Epic"] = "Эпическое"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:460
 CLM.L["Equation"] = "Уравнение"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:114
 CLM.L["Eredar Twins"] = "Эредарские близнецы"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:857
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:860
 CLM.L["Europe"] = "Европа"
 -- .:indirectly
 CLM.L["Evoker"] = "Пробудитель"
@@ -718,6 +729,12 @@ CLM.L["Exponential scaling value used by the equations (Base for EPGPWeb, or Exp
 -- ClassicLootManager_Integrations/GUI.lua:484
 -- ClassicLootManager_Integrations/GUI.lua:485
 CLM.L["Export"] = "Экспорт"
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:84
+--CLM.L["Extend auction bid list with received item count information. Requires reload."] = ""
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:67
+--CLM.L["Extend tooltip with more specific loot information."] = ""
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:66
+--CLM.L["Extended tooltip"] = ""
 -- ClassicLootManager/Modules/GUI/Filters.lua:79
 CLM.L["External"] = "Внешние"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:143
@@ -730,8 +747,8 @@ CLM.L["Fankriss the Unyielding"] = "Фанкрисс Непреклонный"
 CLM.L["Fathom-Lord Karathress"] = "Повелитель глубин Каратресс"
 -- ClassicLootManager_Integrations/GUI.lua:136
 CLM.L["February"] = "Февраль"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:797
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:830
 CLM.L["Feet"] = "Ступни"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:113
 CLM.L["Felmyst"] = "Пророк Скверны"
@@ -759,8 +776,8 @@ CLM.L["Fill profile list with players in current raid roster."] = "Заполн�
 CLM.L["Fill profile list with players with the minimum level and ranks."] = "Заполнить профили игроками с минимальным уровнем и рангом."
 -- ClassicLootManager/Modules/GUI/Filters.lua:163
 CLM.L["Filter"] = "Фильтр"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:795
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:828
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:798
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:831
 CLM.L["Finger"] = "Палец"
 -- ClassicLootManager_Integrations/GUI.lua:282
 CLM.L["Finish Day"] = "Конечный день"
@@ -796,15 +813,15 @@ CLM.L["GM"] = "ГМ"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:469
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:385
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:296
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:329
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:328
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1104
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:186
--- ClassicLootManager/Utils.lua:1001
+-- ClassicLootManager/Utils.lua:1008
 CLM.L["GP"] = "GP"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:60
 CLM.L["Gahz'ranka"] = "Газ'ранка"
--- ClassicLootManager_Integrations/Integrations.lua:115
--- ClassicLootManager_Integrations/Integrations.lua:121
+-- ClassicLootManager_Integrations/Integrations.lua:116
+-- ClassicLootManager_Integrations/Integrations.lua:122
 CLM.L["Gargul Integration"] = "Интеграция Gargul"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:11
 CLM.L["Garr"] = "Гарр"
@@ -818,8 +835,8 @@ CLM.L["General Vezax"] = "Генерал Везакс"
 CLM.L["General Zarithrian"] = "Генерал Заритриан"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:749
 CLM.L["General settings"] = "Общие настройки"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:781
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:814
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:784
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:817
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:96
 CLM.L["Global"] = "Общие"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:40
@@ -846,8 +863,8 @@ CLM.L["Hakkar"] = "Хаккар"
 CLM.L["Halazzi"] = "Халаззи"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:162
 CLM.L["Halion"] = "Халион"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:791
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:824
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
 CLM.L["Hands"] = "Кисти рук"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:72
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:616
@@ -855,15 +872,15 @@ CLM.L["Hard Mode"] = "Высокая сложность"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:955
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:106
 CLM.L["Hard cap"] = "Жесткий лимит"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:782
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:815
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:785
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:818
 CLM.L["Head"] = "Голова"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:156
 CLM.L["Healer"] = "Лекарь"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:43
 CLM.L["Heigan the Unclean"] = "Хейган Нечистивый"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:800
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:833
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:803
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:836
 CLM.L["Held In Off-hand"] = "Держится в левой руке"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:31
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:640
@@ -1012,7 +1029,7 @@ CLM.L["Item value must be positive"] = "Стоимость вещи должна
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1128
 CLM.L["Item value overrides"] = "Переназначение стоимости"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:90
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:101
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:100
 CLM.L["Item"] = "Предмет"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:107
 CLM.L["Jan'alai"] = "Джан'алай"
@@ -1052,7 +1069,7 @@ CLM.L["Lady Deathwhisper"] = "Леди Смертный Шепот"
 CLM.L["Lady Vashj"] = "Леди Вайш"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:368
 CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Большое значение для многоуровневого аукциона. \n\nУстановлено на то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:891
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:894
 CLM.L["Large"] = "Большая"
 -- ClassicLootManager_Integrations/GUI.lua:322
 CLM.L["Last month"] = "Прошлый месяц"
@@ -1064,10 +1081,10 @@ CLM.L["Last year"] = "Прошлый год"
 CLM.L["Latest loot"] = "Последняя добыча"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:481
 CLM.L["Latest points"] = "Последние очки"
--- ClassicLootManager/Utils.lua:1017
+-- ClassicLootManager/Utils.lua:1024
 CLM.L["Legendary"] = "Легендарное"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:793
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:826
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:796
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:829
 CLM.L["Legs"] = "Ноги"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:83
 CLM.L["Leotheras the Blind"] = "Леотерас Слепец"
@@ -1107,8 +1124,8 @@ CLM.L["Lucifron"] = "Люцифрон"
 CLM.L["M'uru"] = "М'уру"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:418
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:324
--- ClassicLootManager_Integrations/Integrations.lua:135
--- ClassicLootManager_Integrations/Integrations.lua:140
+-- ClassicLootManager_Integrations/Integrations.lua:136
+-- ClassicLootManager_Integrations/Integrations.lua:141
 CLM.L["MS"] = "МС"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:37
 CLM.L["Maexxna"] = "Мексна"
@@ -1121,8 +1138,8 @@ CLM.L["Magmadar"] = "Магмадар"
 CLM.L["Magtheridon"] = "Магтеридон"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:69
 CLM.L["Maiden of Virtue"] = "Благочестивая дева"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:798
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:831
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:801
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:834
 CLM.L["Main Hand"] = "Правая рука"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:173
 CLM.L["Main"] = "Мейн"
@@ -1143,7 +1160,7 @@ CLM.L["Manual adjustment"] = "Ручное начисление"
 CLM.L["March"] = "Март"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:381
 CLM.L["Master Loot Only"] = "Только если ответственный за добычу"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:892
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:895
 CLM.L["Max"] = "Макс"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:947
 CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."] = "Кап очков, которые игрок может набрать за рейдовую неделю. Поставьте 0 для отключения."
@@ -1155,7 +1172,7 @@ CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as o
 CLM.L["May"] = "Май"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:364
 CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Среднее значение для многоуровневого аукциона. \n\nУстановлено то же значение, что и другой уровень или отрицательный, чтобы игнорировать."
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:890
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:893
 CLM.L["Medium"] = "Средняя"
 -- ClassicLootManager/MinimapIcon.lua:100
 CLM.L["Menu"] = "Меню"
@@ -1226,7 +1243,7 @@ CLM.L["Moroes"] = "Мороуз"
 CLM.L["Morogrim Tidewalker"] = "Морогрим Волноступ"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:97
 CLM.L["Mother Shahraz"] = "Матушка Шахраз"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:233
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:232
 CLM.L["Moving %s from current queue to pending queue."] = "Перемещение %s от текущей очереди в ожидание очереди."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:444
 CLM.L["Multiple"] = "Несколько"
@@ -1236,7 +1253,7 @@ CLM.L["Multiplier for tier %s (if used by the auction type)."] = "Мультип
 CLM.L["Multiplier used by the equations"] = "Мультипликатор используемый в уравнении"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:476
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1121
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:292
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:291
 CLM.L["Multiplier"] = "Мультипликатор"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:32
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:641
@@ -1249,7 +1266,7 @@ CLM.L["Nalorakk"] = "Налоракк"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:259
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:172
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:701
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:429
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:732
 CLM.L["Name"] = "Имя"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:145
 CLM.L["Named Buttons"] = "Названные кнопки"
@@ -1257,8 +1274,8 @@ CLM.L["Named Buttons"] = "Названные кнопки"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:407
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:524
 CLM.L["Naxxramas"] = "Наксрамас"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:783
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:816
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:786
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:819
 CLM.L["Neck"] = "Шея"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:25
 CLM.L["Nefarian"] = "Нефариан"
@@ -1278,7 +1295,7 @@ CLM.L["New version %s of Core Loot Manager is available. For best experience ple
 CLM.L["Nightbane"] = "Ночная Погибель"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1284
 CLM.L["No auction in progress"] = "Нет аукционов в процессе"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:839
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:876
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:193
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:179
 CLM.L["No bids"] = "Нет ставок"
@@ -1289,15 +1306,15 @@ CLM.L["No loot received"] = "Добыча не получена"
 CLM.L["No players selected"] = "Никто не выбран"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:500
 CLM.L["No points received"] = "Очки не получены"
--- ClassicLootManager/Utils.lua:575
+-- ClassicLootManager/Utils.lua:582
 CLM.L["No"] = "Нет"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:805
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:838
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:808
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:841
 CLM.L["Non-equippable"] = "Неодеваемое"
 -- ClassicLootManager/Modules/GUI/Filters.lua:191
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:300
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:223
--- ClassicLootManager_Integrations/Integrations.lua:647
+-- ClassicLootManager_Integrations/Integrations.lua:673
 CLM.L["None"] = "Никто"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:71
 CLM.L["Normal Mode"] = "Нормальный режим"
@@ -1310,14 +1327,14 @@ CLM.L["Northrend Beasts"] = "Нортрендские Чудовища"
 CLM.L["Not in a roster"] = "Не в составе"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:595
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:640
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:586
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:549
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:278
 CLM.L["Not in raid"] = "Не в рейде"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:161
 CLM.L["Note to be added to award. Max 25 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."] = "Примечание будет добавлено в награду. Макс 25 символов. Рекомендуется не включать дату и не выбранную причину здесь. Если вы введете идентификатор боя, он будет преобразован в имя босса."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:159
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:233
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:120
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:119
 CLM.L["Note"] = "Заметка"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:42
 CLM.L["Noth the Plaguebringer"] = "Нот Чумной"
@@ -1331,13 +1348,13 @@ CLM.L["Num"] = "Значение"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1055
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:419
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:338
--- ClassicLootManager_Integrations/Integrations.lua:145
--- ClassicLootManager_Integrations/Integrations.lua:150
+-- ClassicLootManager_Integrations/Integrations.lua:146
+-- ClassicLootManager_Integrations/Integrations.lua:151
 CLM.L["OS"] = "ОС"
 -- ClassicLootManager_Integrations/GUI.lua:144
 CLM.L["October"] = "Октябрь"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:799
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:832
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:802
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:835
 CLM.L["Off Hand"] = "Левая рука"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1287
 CLM.L["Off-spec bidding not allowed"] = "Занятия не разрешены."
@@ -1353,8 +1370,8 @@ CLM.L["On Time Bonus value"] = "Значение бонуса за приход 
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:238
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:85
 CLM.L["On Time Bonus"] = "Приход вовремя"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:797
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:830
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:800
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:833
 CLM.L["One-Hand"] = "Одноручное"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:913
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:127
@@ -1373,8 +1390,8 @@ CLM.L["Onyxia's Lair"] = "Логово Ониксии"
 CLM.L["Open Key Bindings UI for AddOns"] = "Открыть интерфейс назначения клавиш для аддонов"
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:55
 CLM.L["Open trade"] = "Открыть трейд"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:705
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:712
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:708
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:715
 CLM.L["Open"] = "Открытый"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:70
 CLM.L["Opera Hall"] = "Опера"
@@ -1431,7 +1448,7 @@ CLM.L["Point type"] = "Тип очков"
 CLM.L["Point"] = "Очки"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:184
 CLM.L["Points value that will be awarded."] = "Значение очков, которое будет вручено."
--- ClassicLootManager/Utils.lua:1012
+-- ClassicLootManager/Utils.lua:1019
 CLM.L["Poor"] = "Низкое"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:67
 CLM.L["Post bids"] = "Публиковать ставки"
@@ -1445,12 +1462,12 @@ CLM.L["Priest"] = "Жрец"
 CLM.L["Prince Malchezaar"] = "Принц Малчезар"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:31
 CLM.L["Princess Huhuran"] = "Принцесса Хухуран"
--- ClassicLootManager_Integrations/Integrations.lua:140
--- ClassicLootManager_Integrations/Integrations.lua:150
+-- ClassicLootManager_Integrations/Integrations.lua:141
+-- ClassicLootManager_Integrations/Integrations.lua:151
 CLM.L["Prioritized"] = "Приоритет"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:154
 CLM.L["Professor Putricide"] = "Профессор Мерзоцид"
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:261
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:273
 CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "Профиль %s уже существует и используется различными GUID %s ( %s)."
 -- .:indirectly
 CLM.L["Profiles"] = "Профили"
@@ -1467,13 +1484,13 @@ CLM.L["Prune profiles"] = "Удалить профили"
 CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."] = "Добавить игроков, которые вышли из рейда на замену, вместо того, чтобы удалять их совсем. Для того, чтобы удалить совсем - необходимо вручную удалить из замены"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:155
 CLM.L["Queen Lana'thel"] = "Королева Лана'Тель"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:809
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:842
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:812
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:845
 CLM.L["Quiver"] = "Колчан"
--- ClassicLootManager_Integrations/Integrations.lua:230
--- ClassicLootManager_Integrations/Integrations.lua:236
+-- ClassicLootManager_Integrations/Integrations.lua:231
+-- ClassicLootManager_Integrations/Integrations.lua:237
 CLM.L["RCLC Integration"] = "Интеграция с RCLC"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:686
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:689
 CLM.L["ROLL"] = "РОЛЛ"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:100
 CLM.L["Rage Winterchill"] = "Лютый Хлад"
@@ -1517,15 +1534,15 @@ CLM.L["Raid: %s Roster: %s"] = "Рейд: %s Состав: %s"
 CLM.L["Raids needed in reset"] = "Рейдов за неделю"
 -- ClassicLootManager_Integrations/GUI.lua:22
 CLM.L["Raids"] = "Рейды"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:804
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:837
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:807
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:840
 CLM.L["Ranged (wands)"] = "Жезлы"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:803
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:836
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:806
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:839
 CLM.L["Ranged"] = "Дальний бой"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:75
 CLM.L["Ranks"] = "Ранги"
--- ClassicLootManager/Utils.lua:1015
+-- ClassicLootManager/Utils.lua:1022
 CLM.L["Rare"] = "Редкое"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:18
 CLM.L["Razorgore the Untamed"] = "Бритвосмерт Неукротимый"
@@ -1535,15 +1552,15 @@ CLM.L["Razorscale"] = "Острокрылая"
 CLM.L["Reason"] = "Причина"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:387
 CLM.L["Received"] = "Получено"
--- ClassicLootManager_Integrations/Integrations.lua:135
--- ClassicLootManager_Integrations/Integrations.lua:145
+-- ClassicLootManager_Integrations/Integrations.lua:136
+-- ClassicLootManager_Integrations/Integrations.lua:146
 CLM.L["Regular"] = "Обычный"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:810
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:843
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:813
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:846
 CLM.L["Relic"] = "Реликвия"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:96
 CLM.L["Reliquary of Souls"] = "Реликварий Потерянных"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:272
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:271
 CLM.L["Remove all items from auction list. Populates new one if there are any pending."] = "Удалить все вещи из списка аукциона. Добавит новые если они есть в очереди ожидания."
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:104
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:81
@@ -1554,7 +1571,7 @@ CLM.L["Remove auction"] = "Удалить аукцион"
 CLM.L["Remove from roster"] = "Удалить из состава"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:637
 CLM.L["Remove from standby"] = "Удалить с замены"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:283
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:282
 CLM.L["Remove item from auction list after it's awarded."] = "Удалить вещь из списка аукциона после ее вручения."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:428
 CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."] = "Удалить предметы без ставок из списка аукциона. Это сделает невозможным маркировку предметов как распыленных."
@@ -1562,7 +1579,7 @@ CLM.L["Remove items without bids from auction list. This will make marking items
 CLM.L["Remove items without bids"] = "Удалить предметы без ставок"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:93
 CLM.L["Remove old"] = "Удалить старое"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:281
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:280
 CLM.L["Remove on award"] = "Удалить при вручении"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:602
 CLM.L["Remove override"] = "Убрать переопределение"
@@ -1576,14 +1593,14 @@ CLM.L["Remove selected raid"] = "Удалить выбранный рейд"
 CLM.L["Remove selected"] = "Удалить выбранное"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:821
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:396
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:282
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:281
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:68
 CLM.L["Remove"] = "Удалить"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:822
 CLM.L["Removes current roster."] = "Удалить текущий состав."
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:229
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:228
 CLM.L["Removing %s from current queue."] = "Удаление %s из текущей очереди."
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:226
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:225
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:620
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:699
 CLM.L["Removing items not allowed during auction."] = "Удаление вещей запрещено во время аукциона."
@@ -1602,8 +1619,8 @@ CLM.L["Role"] = "Роль"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1104
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1105
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:717
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:446
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:557
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:520
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:749
 CLM.L["Roll"] = "Ролл"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:893
 CLM.L["Rolling complete"] = "Прокатится"
@@ -1634,7 +1651,7 @@ CLM.L["Round to"] = "Округлить до"
 CLM.L["Rounding"] = "Округление"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:283
 CLM.L["Ruins of Ahn'Qiraj"] = "Руины Ан'Кираж"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:687
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:690
 CLM.L["SK"] = "SK"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:922
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:130
@@ -1647,8 +1664,8 @@ CLM.L["Sapphiron"] = "Сапфирон"
 CLM.L["Sartharion"] = "Сартарион"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:161
 CLM.L["Saviana Ragefire"] = "Савиана Огненная Пропасть"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:706
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:713
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:709
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:716
 CLM.L["Sealed"] = "Закрытый"
 -- ClassicLootManager/Modules/GUI/Filters.lua:208
 CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."] = "Поиск имен игроков. Разделите нескольких игроков запятой "
@@ -1711,8 +1728,8 @@ CLM.L["Shadron"] = "Шадрон"
 CLM.L["Shaman"] = "Шаман"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:13
 CLM.L["Shazzrah"] = "Шаззрах"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:802
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:835
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:805
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:838
 CLM.L["Shield"] = "Щит"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:499
 CLM.L["Shift + Alt"] = "Shift + Alt"
@@ -1722,20 +1739,22 @@ CLM.L["Shift + Ctrl + Alt"] = "Shift + Ctrl + Alt"
 CLM.L["Shift + Ctrl"] = "Shift + Ctrl"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:496
 CLM.L["Shift"] = "Сдвиг"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:785
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:818
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:788
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:821
 CLM.L["Shirt"] = "Рубашка"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:784
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:817
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:787
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:820
 CLM.L["Shoulder"] = "Плечи"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:223
 CLM.L["Show Award window"] = "Показать окно награды"
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:76
+--CLM.L["Show tooltip info even outside of CLM raid."] = ""
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:27
 CLM.L["Silithid Royalty"] = "Трио Жуков"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:157
 CLM.L["Sindragosa"] = "Синдрагоса"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:734
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:740
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:737
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:743
 CLM.L["Single-Priced"] = "Фиксированная"
 -- ClassicLootManager_Integrations/Migration.lua:179
 CLM.L["Skipping %s"] = "Пропускаю %s"
@@ -1745,7 +1764,7 @@ CLM.L["Skipping CommunityDKP"] = "Пропускаю CommunityDKP"
 CLM.L["Slot multipliers"] = "Мультипликаторы для слота"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:360
 CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Маленькое значение для тир-аукциона. \n\nУстановите на то же значение, что и другой уровень или отрицательное значение, чтобы игнорировать."
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:889
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:892
 CLM.L["Small"] = "Маленькая"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:144
 CLM.L["Spec guild request"] = "Запрос специализаций гильдии"
@@ -1765,8 +1784,8 @@ CLM.L["Standby"] = "Замена"
 CLM.L["Standings"] = "Составы"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:384
 CLM.L["Start selected raid"] = "Начать выбранный рейд"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:539
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:557
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:502
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:520
 CLM.L["Start"] = "Начать"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:508
 CLM.L["Started raid %s"] = "Начат рейд %s"
@@ -1774,8 +1793,8 @@ CLM.L["Started raid %s"] = "Начат рейд %s"
 CLM.L["Statistics"] = "Статистика"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:260
 CLM.L["Status"] = "Статус"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:539
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:557
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:502
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:520
 CLM.L["Stop"] = "Стоп"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:59
 CLM.L["Store bids"] = "Хранить ставки"
@@ -1800,8 +1819,8 @@ CLM.L["Supremus"] = "Супремус"
 CLM.L["Sync ongoing"] = "Идет синхронизация"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:636
 CLM.L["TBC"] = "БК"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:789
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:822
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:792
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:825
 CLM.L["Tabard"] = "Гербовая накидка"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:155
 CLM.L["Tank"] = "Танк"
@@ -1845,13 +1864,13 @@ CLM.L["The Prophet Skeram"] = "Пророк Скерам"
 CLM.L["The Ruby Sanctum"] = "Рубиновое святилище"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:139
 CLM.L["Thorim"] = "Торим"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:808
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:841
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:811
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:844
 CLM.L["Thrown"] = "Метательное"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:536
 CLM.L["Tier multipliers"] = "Мультипликаторы для тира"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:736
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:741
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:739
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:744
 CLM.L["Tiered"] = "Многоуровневый"
 -- ClassicLootManager/MinimapIcon.lua:60
 CLM.L["Time Traveling"] = "Путешествую во времени"
@@ -1866,7 +1885,7 @@ CLM.L["Time"] = "Время"
 CLM.L["Timetravel"] = "Путешествие"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:309
 CLM.L["Toggle Auction History window display"] = "Включить отображение окна истории торгов"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:739
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:702
 CLM.L["Toggle Auctioning window display"] = "Включить отображения окна ставок"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:145
 CLM.L["Toggle Bidding auto-open"] = "Включить авто-открытие ставок"
@@ -1918,23 +1937,25 @@ CLM.L["Total decayed"] = "Всего сгорело"
 CLM.L["Total received"] = "Всего получено"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:449
 CLM.L["Total spent"] = "Всего потрачено"
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:104
+--CLM.L["Tracker"] = ""
 -- ClassicLootManager/MinimapIcon.lua:114
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:193
 CLM.L["Trade List"] = "Список для передачи"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:475
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:592
 CLM.L["Trial of the Crusader"] = "Испытание крестоносца"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:796
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:829
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:799
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:832
 CLM.L["Trinket"] = "Аксессуар"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:37
 CLM.L["True"] = "Верно"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:32
 CLM.L["Twin Emperors"] = "Императоры-близнецы"
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:251
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:263
 CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."] = "Существуют два разных профиля для целевого GUID %s (%s:%s) и имя%s (%s:%s). Проверьте и очистите профили перед обновлением."
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:801
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:834
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:804
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:837
 CLM.L["Two-Hand"] = "Двуручное"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:254
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:287
@@ -1949,7 +1970,7 @@ CLM.L["Ulduar"] = "Ульдуар"
 CLM.L["Unable to execute migration. Entries already exist."] = "Невозможно выполнить миграцию. Записи уже существуют."
 -- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:160
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "Не могу получить информацию о вещи от сервера. Попробуйте начать аукцион заново"
--- ClassicLootManager/Utils.lua:1014
+-- ClassicLootManager/Utils.lua:1021
 CLM.L["Uncommon"] = "Необычное"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:525
 CLM.L["Unexcused absence"] = "Отсутствие"
@@ -1964,9 +1985,9 @@ CLM.L["Unknown sync state"] = "Статус синхронизации неиз�
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:172
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:34
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:336
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:470
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:433
 CLM.L["Unknown"] = "Неизвестно"
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:308
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:320
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:88
 CLM.L["Unlink Alt"] = "Отвязать альта"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:273
@@ -1984,7 +2005,7 @@ CLM.L["Val'kyr Twins"] = "Валь'киры Близнецы"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:150
 CLM.L["Valithria Dreamwalker"] = "Валитрия Сновидица"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:262
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:301
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:300
 CLM.L["Value"] = "Значение"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:445
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:562
@@ -1997,14 +2018,14 @@ CLM.L["Version check in guild"] = "Проверка версии в гильди
 CLM.L["Version"] = "Версия"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:122
 CLM.L["Vesperon"] = "Весперон"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:707
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:710
 CLM.L["Vickrey"] = "Аукцион Викри"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:30
 CLM.L["Viscidus"] = "Нечистотон"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:88
 CLM.L["Void Reaver"] = "Страж Бездны"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:792
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:825
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:795
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:828
 CLM.L["Waist"] = "Пояс"
 -- .:indirectly
 CLM.L["Warlock"] = "Чернокнижник"
@@ -2034,19 +2055,19 @@ CLM.L["Wipe"] = "Стереть"
 CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "Стереть все события. Это вызовет пересинхронизацию от других игроков."
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:40
 CLM.L["Wipes the log history"] = "Стирает историю логов"
--- ClassicLootManager_Integrations/Integrations.lua:359
+-- ClassicLootManager_Integrations/Integrations.lua:360
 CLM.L["WoW DKP Bot Integration"] = "Интеграция с WoW DKP Bot"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:637
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:638
 CLM.L["WotLK"] = "WotLK"
 -- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:188
 CLM.L["Wowpedia"] = "Wowpedia"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:790
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:823
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:793
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:826
 CLM.L["Wrist"] = "Запястья"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:140
 CLM.L["XT-002 Deconstructor"] = "Разрушитель XT-002"
--- ClassicLootManager/Utils.lua:570
+-- ClassicLootManager/Utils.lua:577
 CLM.L["Yes"] = "Да"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:141
 CLM.L["Yogg-Saron"] = "Йогг-Сарон"
@@ -2192,11 +2213,11 @@ CLM.L["cancel"] = "отмена"
 CLM.L["created"] = "создан"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:53
 CLM.L["denied"] = "отказ"
--- ClassicLootManager_Integrations/Integrations.lua:341
+-- ClassicLootManager_Integrations/Integrations.lua:342
 CLM.L["else"] = "иначе"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:462
 CLM.L["excluding negatives "] = "исключая отрицательные "
--- ClassicLootManager_Integrations/Integrations.lua:276
+-- ClassicLootManager_Integrations/Integrations.lua:277
 CLM.L["if reason/response contains"] = "Если причина/ответ содержит"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:117
 CLM.L["level"] = "уровень"
@@ -2224,7 +2245,7 @@ CLM.L["roster"] = "состав"
 CLM.L["rosters"] = "составы"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:860
 CLM.L["seconds"] = "секунды"
--- ClassicLootManager_Integrations/Integrations.lua:286
+-- ClassicLootManager_Integrations/Integrations.lua:287
 CLM.L["then"] = "то"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:124
 CLM.L["unguilded"] = "без гильдии"
