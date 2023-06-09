@@ -13,7 +13,7 @@ local function InitializeDB()
         db.tracker = {
             tooltip = true,
             tooltipExtended = false,
-            alwaysEnable = false,
+            alwaysEnable = true,
             auction = true,
         }
     end
