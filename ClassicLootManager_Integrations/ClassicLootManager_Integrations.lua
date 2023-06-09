@@ -19,4 +19,4 @@ function Integrations:Initialize()
 end
 PRIV.CONSTANTS.INTEGRATIONS = CLM.L["Integrations"]
 CLM.MODULES.ConfigManager:AddGroup(PRIV.CONSTANTS.INTEGRATIONS, true)
-CLM:RegisterExternal("Integrations", Integrations)
+CLM.RegisterExternal("Integrations", Integrations)

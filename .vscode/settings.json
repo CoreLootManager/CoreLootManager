@@ -94,7 +94,8 @@
         "SlashCmdList",
         "hash_SlashCmdList",
         "DEFAULT_CHAT_FRAME",
-        "TOTAL"
-        // "param-type-mismatch"
+        "TOTAL",
+        "GetUnitName",
+        "UIParent"
     ]
 }

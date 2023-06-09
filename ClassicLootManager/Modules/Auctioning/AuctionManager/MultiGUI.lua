@@ -61,7 +61,6 @@ local function SetInputAwardValue(self, value)
     UpdateAwardPrice(self)
 end
 
-
 local function SetInputAwardMultiplier(self, value)
     self.awardMultiplier = tonumber(value) or 1
     UpdateAwardPrice(self)
@@ -418,49 +417,13 @@ local function UpdateBids(self, cutoff, type)
     end
 end
 
-local function CreateBidList(self, width)
+local function CreateBidList(self)
     local BidList = AceGUI:Create("CLMLibScrollingTable")
     self.BidList = BidList
     BidList:SetDisplayRows(12, 18)
 
-    local totalWidth = width - 37
-    local columns = {
-        { name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
-        {name = CLM.L["Name"],  width = 100,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
-        },
-        {name = CLM.L["Bid"],   width = 100, color = colorGreen,
-            sort = ScrollingTable.SORT_DSC,
-            sortnext = 4,
-            align = "CENTER",
-            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-                frame.text:SetText(data[realrow].cols[column].text or data[realrow].cols[column].value)
-            end)
-        },
-        {name = CLM.L["Current"],  width = 80, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
-            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
-            sortnext = 5,
-            align = "CENTER"
-        },
-        {name = CLM.L["Roll"],  width = 40, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
-            sortnext = 2,
-            align = "CENTER"
-        },
-        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
-        {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate },
-    }
-    local currentWidth = 0
-    for _, c in ipairs(columns) do
-        currentWidth = currentWidth + c.width
-    end
-    local expand = UTILS.round(((totalWidth-currentWidth)/(#columns-3)))
-    for i, _ in ipairs(columns) do
-        if columns[i].name ~= "" then
-            columns[i].width = columns[i].width + expand
-        end
-    end
-    BidList:SetDisplayCols(columns)
+    self:BuildColumns()
+
     BidList:RegisterEvents({
         -- OnEnter handler -> on hover
         OnEnter = (function (rowFrame, cellFrame, data, cols, row, realrow, column, table, ...)
@@ -710,15 +673,15 @@ local function Create(self)
 
     local ItemList = CreateLootList(self)
     local listWidth = ItemList:GetWidth()
-    local dataWidth = BASE_WIDTH - listWidth - 20
-    f:SetUserData("table", { columns = {listWidth, dataWidth}, alignV =  "top" })
+    self.dataWidth = BASE_WIDTH - listWidth - 20
+    f:SetUserData("table", { columns = {listWidth, self.dataWidth}, alignV =  "top" })
     local DataGroup = AceGUI:Create("SimpleGroup")
     DataGroup:SetLayout("Flow")
-    DataGroup:SetWidth(dataWidth)
-    DataGroup:AddChild(CreateItemOptions(self, dataWidth))
-    DataGroup:AddChild(CreateAuctionOptions(self, dataWidth))
-    DataGroup:AddChild(CreateBidList(self, dataWidth))
-    DataGroup:AddChild(CreateAwardOptions(self, dataWidth))
+    DataGroup:SetWidth(self.dataWidth)
+    DataGroup:AddChild(CreateItemOptions(self, self.dataWidth))
+    DataGroup:AddChild(CreateAuctionOptions(self, self.dataWidth))
+    DataGroup:AddChild(CreateBidList(self, self.dataWidth))
+    DataGroup:AddChild(CreateAwardOptions(self, self.dataWidth))
 
     f:AddChild(ItemList)
     f:AddChild(DataGroup)
@@ -750,6 +713,8 @@ function AuctionManagerGUI:Initialize()
     if not CLM.MODULES.ACL:IsTrusted() then return end
     -- Database
     InitializeDB(self)
+    -- External
+    self.externalColumns = {}
     -- Create GUIs
     Create(self)
     -- Events
@@ -758,6 +723,61 @@ function AuctionManagerGUI:Initialize()
     RegisterSlash(self)
     -- Done
     self._initialized = true
+end
+
+function AuctionManagerGUI:BuildColumns()
+    local totalWidth = self.dataWidth - 37
+    local columns = {
+        { name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
+        {name = CLM.L["Name"],  width = 100,
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+        },
+        {name = CLM.L["Bid"],   width = 100, color = colorGreen,
+            sort = ScrollingTable.SORT_DSC,
+            sortnext = 4,
+            align = "CENTER",
+            DoCellUpdate = (function(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+                frame.text:SetText(data[realrow].cols[column].text or data[realrow].cols[column].value)
+            end)
+        },
+        {name = CLM.L["Current"],  width = 80, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
+            -- sort = ScrollingTable.SORT_DSC, -- This Sort disables nexsort of others relying on this column
+            sortnext = 5,
+            align = "CENTER"
+        },
+        {name = CLM.L["Roll"],  width = 40, color = {r = 0.93, g = 0.70, b = 0.13, a = 1.0},
+            sortnext = 2,
+            align = "CENTER"
+        },
+    }
+    -- Add external columns
+    for _, externalColumn in ipairs(self.externalColumns) do
+        columns[#columns+1] = externalColumn.column
+    end
+    -- Items
+    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
+    -- Done
+
+    local currentWidth = 0
+    for _, c in ipairs(columns) do
+        currentWidth = currentWidth + c.width
+    end
+    local expand = UTILS.round(((totalWidth-currentWidth)/(#columns-3)))
+    for i, _ in ipairs(columns) do
+        if columns[i].name ~= "" then
+            columns[i].width = columns[i].width + expand
+        end
+    end
+
+    self.BidList:SetDisplayCols(columns)
+end
+
+
+function AuctionManagerGUI:RegisterExternalColumn(column, callback)
+    self.externalColumns[#self.externalColumns+1] = {column = column, callback = callback}
+    self:BuildColumns()
 end
 
 function AuctionManagerGUI:SetVisibleAuctionItem(auctionItem)
@@ -771,7 +791,7 @@ local function UpdateOptions(self)
     UpdateAwardOptions(self)
 end
 
-local function BuildBidRow(name, response, roster, namedButtonMode)
+local function BuildBidRow(name, response, roster, namedButtonMode, externalData)
     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
     local class, classColor, current = "", nil, 0
     if profile then
@@ -806,19 +826,36 @@ local function BuildBidRow(name, response, roster, namedButtonMode)
         invalidReason = response:GetInvalidReason()
     end
 
-    return {cols = {
-            {value = class},
-            {value = name, color = classColor},
-            {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = bidColor},
-            {value = current},
-            {value = response:Roll()},
-            {value = primaryItem},
-            {value = secondaryItem},
-        },
+    -- Basic data
+    local data = {
+        {value = class},
+        {value = name, color = classColor},
+        {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = bidColor},
+        {value = current},
+        {value = response:Roll()},
+    }
+    -- External Data
+    for _, dataRow in ipairs(externalData) do
+        data[#data+1] = dataRow
+    end
+    -- Items
+    data[#data+1] = {value = primaryItem}
+    data[#data+1] = {value = secondaryItem}
+    -- Done
+
+    return {cols = data,
         invalidReason = invalidReason,
         highlightFn = highlight,
         DoCellUpdate = highlight
     }
+end
+
+local function GetExternalColumnData(self, auction, item, name, response)
+    local data = {}
+    for _,externalColumn in pairs(self.externalColumns) do
+        data[#data+1] = externalColumn.callback(auction, item, name, response)
+    end
+    return data
 end
 
 function AuctionManagerGUI:Refresh()
@@ -849,7 +886,8 @@ function AuctionManagerGUI:Refresh()
         local roster = auction:GetRoster()
         for name, response in pairs(item:GetAllResponses()) do
             if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then -- TODO configurable?
-                bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode)
+                local externalData = GetExternalColumnData(self, auction, item, name, response)
+                bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode, externalData)
             end
         end
     end

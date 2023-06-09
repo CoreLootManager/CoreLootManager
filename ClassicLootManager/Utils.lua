@@ -110,7 +110,7 @@ local classColors = {
 
 function UTILS.GetClassColor(className)
     local color = classColors[className]
-    return (color or { r = 0.627, g = 0.627, b = 0.627, hex = "A0A0A0" })
+    return (color or { r = 0.627, g = 0.627, b = 0.627, hex = "9d9d9d" })
 end
 local GetClassColor = UTILS.GetClassColor
 

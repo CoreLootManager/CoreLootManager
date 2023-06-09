@@ -1,0 +1,23 @@
+## Interface: 100100
+## Interface-Wrath: 30401
+## Interface-Classic: 11403
+## X-Min-Interface: 100100
+## X-Min-Interface-Wrath: 30401
+## X-Min-Interface-Classic: 11403
+## Title: CLM |cff44ee44Tracker|r
+## Notes: Visual Item received tracker System for |cffdcb749Core Loot Manager|r.
+## Author: Lantis
+## IconTexture: Interface/AddOns/ClassicLootManager/Media/Icons/clm-dark-128.tga
+## Version: @project-version@
+## RequiredDeps: ClassicLootManager
+## OptionalDeps: LibStub
+## X-Donate: https://www.patreon.com/classiclootmanager
+## X-License: Apache2
+## X-Curse-Project-ID: 481373
+## X-Wago-ID: vEGPw4K1
+## DefaultState: enabled
+
+ClassicLootManager_Tracker.lua
+Tracker.lua
+Tooltips.lua
+Auction.lua
