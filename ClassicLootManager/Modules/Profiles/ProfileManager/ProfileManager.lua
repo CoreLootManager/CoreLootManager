@@ -400,7 +400,6 @@ function ProfileManager:FillFromGuild(selectedRank, minLevel)
 
     for i=1,GetNumGuildMembers() do
         local name, _, rankIndex, level, _, _, _, _, _, _, class, _, _, _, _, _, GUID = GetGuildRosterInfo(i)
-        print(name, class, GUID)
         if rankFilterFn(rankIndex) and minLevelFn(level, minLevel) then
             self:NewProfile(GUID, UTILS.Disambiguate(name), class)
         end
