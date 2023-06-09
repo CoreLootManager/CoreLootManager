@@ -38,7 +38,7 @@ local bossKillEncounterWorkaround = {
     [776] = 1128,
     [885] = 1129,
     -- Ulduar
-    [757] = 1130, -- Might require workaround
+    [757] = 1130,
     [750] = 1131,
     [744] = 1132,
     [753] = 1133,
@@ -48,10 +48,16 @@ local bossKillEncounterWorkaround = {
     [749] = 1137,
     [754] = 1138,
     [746] = 1139,
-    [748] = 1140, -- Might require workaround
+    [748] = 1140,
     [752] = 1141,
     [747] = 1142,
-    [756] = 1143
+    [756] = 1143,
+    -- Trial of the Grand Crusader
+    [629] = 1088,
+    [633] = 1087,
+    [637] = 1086,
+    [641] = 1089,
+    [645] = 1085,
 }
 
 local function normalizeDifficultyId(difficultyId)
