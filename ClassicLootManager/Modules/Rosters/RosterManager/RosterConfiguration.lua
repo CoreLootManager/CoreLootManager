@@ -94,6 +94,8 @@ function RosterConfiguration:New(i)
     o._.roundPR = 10
     -- Time for rolling
     o._.rollTime = 20
+    -- Multiply auction time lineary
+    o._.multiplyTime = false
 
     -- Additional settings
     o.hasHardCap = false
@@ -145,7 +147,8 @@ function RosterConfiguration:fields()
         "allInAlways",
         "allowEqualMax",
         "allowCancelPass",
-        "rollTime"
+        "rollTime",
+        "multiplyTime"
     }
 end
 
@@ -196,6 +199,7 @@ local TRANSFORMS = {
     allowCancelPass = transform_boolean,
     roundPR = transform_number,
     rollTime = transform_number,
+    multiplyTime = transform_boolean
 }
 
 function RosterConfiguration:inflate(data)
@@ -296,5 +300,7 @@ function RosterConfiguration._validate_allowEqualMax(value) return IsBoolean(val
 function RosterConfiguration._validate_allowCancelPass(value) return IsBoolean(value) end
 function RosterConfiguration._validate_roundPR(value) return CONSTANTS.ALLOWED_ROUNDINGS[value] ~= nil end
 function RosterConfiguration._validate_rollTime(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_multiplyTime(value) return IsBoolean(value) end
+
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration

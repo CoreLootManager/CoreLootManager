@@ -283,6 +283,12 @@ function RosterManagerOptions:Initialize()
         auction_antisnipe_time_set = (function(name, value)
             SetRosterOption(name, "antiSnipe", value)
         end),
+        auction_linear_time_multiply_get = (function(name)
+            return GetRosterOption(name, "multiplyTime")
+        end),
+        auction_linear_time_multiply_set = (function(name, value)
+            SetRosterOption(name, "multiplyTime", value)
+        end),
         auction_roll_time_get = (function(name)
             return tostring(GetRosterOption(name, "rollTime"))
         end),
@@ -1099,6 +1105,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1,
                         order = 15
+                    },
+                    linear_time_multiply = {
+                        name = CLM.L["Multiply time"],
+                        desc = CLM.L["Multiply auction time by the number of items to increase auction time lineary."],
+                        type = "toggle",
+                        disabled = disableManage,
+                        width = 1,
+                        order = 16
                     },
                     roll_time = {
                         name = CLM.L["Roll"] .. " " .. CLM.L["Time"],
