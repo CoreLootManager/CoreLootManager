@@ -522,7 +522,7 @@ CLM.L["Create raid"] = "创建团本活动"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1275
 -- ClassicLootManager_Integrations/Integrations.lua:251
 CLM.L["Create"] = "新建"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:807
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:811
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:261
 CLM.L["Created"] = "已创建"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1276
@@ -541,7 +541,7 @@ CLM.L["Current"] = "当前的"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:640
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:641
 CLM.L["DF"] = "DF"
--- ClassicLootManager/Tooltips.lua:112
+-- ClassicLootManager/Tooltips.lua:113
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:172
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:188
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:687
@@ -787,7 +787,7 @@ CLM.L["Finish Month"] = "完成月份"
 CLM.L["Finish Year"] = "完成年份"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:524
 CLM.L["Finished raid %s"] = "已完成的团本活动 %s"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:809
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:813
 CLM.L["Finished"] = "已完成"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:21
 CLM.L["Firemaw"] = "费尔默"
@@ -803,7 +803,7 @@ CLM.L["Found %s in guild."] = "已找到 %s 在公会中。"
 CLM.L["Freya"] = "弗蕾亚"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:220
 CLM.L["GM"] = "Guild Master"
--- ClassicLootManager/Tooltips.lua:112
+-- ClassicLootManager/Tooltips.lua:113
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:551
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:558
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:172
@@ -866,7 +866,7 @@ CLM.L["Halion"] = "海里昂"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
 CLM.L["Hands"] = "手"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:72
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:78
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:616
 CLM.L["Hard Mode"] = "困難模式"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:955
@@ -954,7 +954,7 @@ CLM.L["Importing %s entries from DKPTable"] = "正在导入 %s 条目从 DKPTabl
 CLM.L["Importing profiles from DKPTable"] = "从 DKPTable 导入角色信息"
 -- ClassicLootManager/Modules/GUI/Filters.lua:78
 CLM.L["In Guild"] = "在公会"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:808
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:812
 CLM.L["In Progress"] = "进行中"
 -- ClassicLootManager/Modules/GUI/Filters.lua:75
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:289
@@ -1224,11 +1224,11 @@ CLM.L["Missing profile %s"] = "缺失角色信息 %s"
 CLM.L["Missing roster name and you are not in raid"] = "缺少名册名称并且您不在团队中"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:37
 CLM.L["Missing roster name. Using Raid Info"] = "缺少名册名称。使用团本活动信息"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:321
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:393
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:432
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:461
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:495
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:325
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:397
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:436
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:465
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:499
 CLM.L["Missing valid raid"] = "缺少有效的团队/团本活动"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:63
 CLM.L["Moam"] = "莫阿姆"
@@ -1320,7 +1320,7 @@ CLM.L["Non-equippable"] = "不可装备"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:223
 -- ClassicLootManager_Integrations/Integrations.lua:673
 CLM.L["None"] = "无"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:71
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:77
 CLM.L["Normal Mode"] = "正常模式"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:30
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:639
@@ -1519,16 +1519,16 @@ CLM.L["Raid Name"] = "团本活动名称"
 CLM.L["Raid Start/End"] = "团本活动开始/结束"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:219
 CLM.L["Raid Warnings"] = "团队通告"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:425
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:429
 CLM.L["Raid [%s] ended"] = "团本活动 [%s] 已结束"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:373
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:377
 CLM.L["Raid [%s] started"] = "团本活动 [%s] 已开始"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:311
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:333
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:405
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:448
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:473
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:507
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:315
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:337
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:409
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:452
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:477
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:511
 CLM.L["Raid management is disabled during time traveling."] = "在时间旅行模式中禁用团本活动管理。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:774
 CLM.L["Raid"] = "团队"
@@ -1706,7 +1706,7 @@ CLM.L["Select roster to create raid for."] = "选择要为其创建团本活动�
 CLM.L["Select roster"] = "选择名册"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:938
 CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "选择每周重置时区。EU：周三 07:00 GMT 或 US：周二 15:00 GMT"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:70
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:76
 CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = "選擇| cffeee00%s | r的獎金價值獎（%s）遇到困難。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:772
 CLM.L["Selected"] = "已选中"
@@ -1774,7 +1774,7 @@ CLM.L["Small"] = "Small"
 CLM.L["Spec guild request"] = "查看公会请求"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:386
 CLM.L["Spent"] = "支出"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:810
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:814
 CLM.L["Stale"] = "Stale"
 -- ClassicLootManager/Modules/Raids/StandbyStagingManager/StandbyStagingManager.lua:136
 -- ClassicLootManager/Modules/Raids/StandbyStagingManager/StandbyStagingManager.lua:146
@@ -1941,7 +1941,7 @@ CLM.L["Total decayed"] = "共被衰减"
 CLM.L["Total received"] = "共获得"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:449
 CLM.L["Total spent"] = "总花费"
--- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:104
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:110
 CLM.L["Tracker"] = "Tracker"
 -- ClassicLootManager/MinimapIcon.lua:114
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:193
@@ -2075,22 +2075,22 @@ CLM.L["XT-002 Deconstructor"] = "XT-002拆解者"
 CLM.L["Yes"] = "是的"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:141
 CLM.L["Yogg-Saron"] = "尤格萨隆"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:307
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:311
 CLM.L["You are already in an active raid. Leave or finish it before creating new one."] = "你已经在一个正在进行的团本活动中。在创建新的之前离开或完成它。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:729
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:846
 CLM.L["You are not allowed to auction items"] = "您没有权限拍卖物品"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:465
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:499
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:469
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:503
 CLM.L["You are not allowed to control raid."] = "您没有权限控制团本活动。"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:303
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:307
 CLM.L["You are not allowed to create raids."] = "您没有权限创建团本活动。"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:436
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:440
 CLM.L["You are not allowed to join raid."] = "您没有权限加入团本活动。"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:325
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:397
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:329
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:401
 CLM.L["You are not allowed to start raid."] = "您没有权限开始团本活动。"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:338
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:342
 CLM.L["You are not in the raid."] = "你不在团队/团本活动中。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:657
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:666
@@ -2098,20 +2098,20 @@ CLM.L["You can %s max %d players from standby at the same time to a %s raid."] =
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:612
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:621
 CLM.L["You can %s max %d players to standby at the same time to a %s raid."] = "您最多可以同时%s %d 名角色到替补名单在 %s 团本活动。"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:469
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:503
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:473
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:507
 CLM.L["You can only add players to standby of a progressing raid."] = "您只能将角色添加到正在进行的团本活动的替补名单。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:603
 CLM.L["You can only bench players from same roster as the raid (%s)."] = "你只能从团队活动（%s）的同一个名册中添加替补角色。"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:401
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:405
 CLM.L["You can only end an active raid."] = "您只能结束正在进行的团本活动。"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:440
-CLM.L["You can only join an active raid."] = "你只能加入一个正在进行的团本活动。"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:444
+CLM.L["You can only join an active raid."] = "你只能加入一个正在进行的团本活动。"
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:448
 CLM.L["You can only join different raid than your current one."] = "您只能加入与当前团本活动不同的团本活动。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:648
 CLM.L["You can only remove from bench players from same roster as the raid (%s)."] = "你只能从团队活动（%s）的同一个名册中移除替补角色。"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:329
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:333
 CLM.L["You can only start a freshly created raid."] = "您只能开始新创建的团本活动。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:700
 CLM.L["You can remove max %d players from roster at the same time."] = "您最多可以从名册中同时移除 %d 名角色。"

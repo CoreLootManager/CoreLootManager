@@ -522,7 +522,7 @@ CLM.L["Create raid"] = "Crear raid"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1275
 -- ClassicLootManager_Integrations/Integrations.lua:251
 CLM.L["Create"] = "Crear"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:807
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:811
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:261
 CLM.L["Created"] = "Creada"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1276
@@ -541,7 +541,7 @@ CLM.L["Current"] = "Actual"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:640
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:641
 CLM.L["DF"] = "DF"
--- ClassicLootManager/Tooltips.lua:112
+-- ClassicLootManager/Tooltips.lua:113
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:172
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:188
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:687
@@ -787,7 +787,7 @@ CLM.L["Finish Month"] = "Mes de finalización"
 CLM.L["Finish Year"] = "Año de finalización"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:524
 CLM.L["Finished raid %s"] = "Raid terminada %s"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:809
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:813
 CLM.L["Finished"] = "Finalizado"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:21
 CLM.L["Firemaw"] = "Faucefogo"
@@ -803,7 +803,7 @@ CLM.L["Found %s in guild."] = "Encontrado %s en la Hermandad."
 CLM.L["Freya"] = "Freya"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:220
 CLM.L["GM"] = "GM"
--- ClassicLootManager/Tooltips.lua:112
+-- ClassicLootManager/Tooltips.lua:113
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:551
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:558
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:172
@@ -866,7 +866,7 @@ CLM.L["Halion"] = "Halion"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
 CLM.L["Hands"] = "Manos"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:72
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:78
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:616
 CLM.L["Hard Mode"] = "Modo difícil"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:955
@@ -954,7 +954,7 @@ CLM.L["Importing %s entries from DKPTable"] = "Importación de entradas %s de la
 CLM.L["Importing profiles from DKPTable"] = "Importación de perfiles desde la tabla DKP"
 -- ClassicLootManager/Modules/GUI/Filters.lua:78
 CLM.L["In Guild"] = "En la Hermandad"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:808
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:812
 CLM.L["In Progress"] = "En curso"
 -- ClassicLootManager/Modules/GUI/Filters.lua:75
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:289
@@ -1224,11 +1224,11 @@ CLM.L["Missing profile %s"] = "Perfil faltante %s"
 CLM.L["Missing roster name and you are not in raid"] = "Falta el nombre del roster y no estás en raid"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:37
 CLM.L["Missing roster name. Using Raid Info"] = "Falta el nombre del roster. Uso de información de la raid"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:321
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:393
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:432
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:461
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:495
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:325
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:397
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:436
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:465
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:499
 CLM.L["Missing valid raid"] = "Falta una raid válida"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:63
 CLM.L["Moam"] = "Moam"
@@ -1320,7 +1320,7 @@ CLM.L["Non-equippable"] = "No equipable"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:223
 -- ClassicLootManager_Integrations/Integrations.lua:673
 CLM.L["None"] = "Ninguno"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:71
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:77
 CLM.L["Normal Mode"] = "Modo normal"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:30
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:639
@@ -1519,16 +1519,16 @@ CLM.L["Raid Name"] = "Nombre de la raid"
 CLM.L["Raid Start/End"] = "Inicio/fin de raid"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:219
 CLM.L["Raid Warnings"] = "Advertencias de raid"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:425
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:429
 CLM.L["Raid [%s] ended"] = "Raid [%s] finalizada"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:373
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:377
 CLM.L["Raid [%s] started"] = "Raid [%s] iniciada"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:311
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:333
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:405
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:448
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:473
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:507
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:315
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:337
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:409
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:452
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:477
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:511
 CLM.L["Raid management is disabled during time traveling."] = "La gestion de las raids está desactivada durante el Time-traveling"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:774
 CLM.L["Raid"] = "Redada"
@@ -1706,7 +1706,7 @@ CLM.L["Select roster to create raid for."] = "Seleccione el roster para crear la
 CLM.L["Select roster"] = "Seleccionar el roster"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:938
 CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "Seleccione la zona horaria de restablecimiento semanal. UE: miércoles 07:00 GMT o EE. UU.: martes 15:00 GMT"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:70
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:76
 CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = "Seleccione | Cffeeee00%s | r encuentro dificultad para el premio de valor de bonificación (%s)."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:772
 CLM.L["Selected"] = "Seleccionada Seleccionado"
@@ -1774,7 +1774,7 @@ CLM.L["Small"] = "Pequeña Pequeño"
 CLM.L["Spec guild request"] = "Solicitud de especificaciones de la Hermandad"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:386
 CLM.L["Spent"] = "Gastado"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:810
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:814
 CLM.L["Stale"] = "Caducado"
 -- ClassicLootManager/Modules/Raids/StandbyStagingManager/StandbyStagingManager.lua:136
 -- ClassicLootManager/Modules/Raids/StandbyStagingManager/StandbyStagingManager.lua:146
@@ -1941,7 +1941,7 @@ CLM.L["Total decayed"] = "Total decaído"
 CLM.L["Total received"] = "Total recibido"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:449
 CLM.L["Total spent"] = "Total gastado"
--- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:104
+-- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:110
 CLM.L["Tracker"] = "Tracker"
 -- ClassicLootManager/MinimapIcon.lua:114
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:193
@@ -2075,22 +2075,22 @@ CLM.L["XT-002 Deconstructor"] = "Deconstructor XT-002"
 CLM.L["Yes"] = "Sí"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:141
 CLM.L["Yogg-Saron"] = "Yogug-saron"
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:307
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:311
 CLM.L["You are already in an active raid. Leave or finish it before creating new one."] = "Ya estás en una raid activa. Déjala o termínala antes de crear una nueva. "
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:729
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:846
 CLM.L["You are not allowed to auction items"] = "No tienes permitido subastar artículos."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:465
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:499
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:469
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:503
 CLM.L["You are not allowed to control raid."] = "No tienes permitido controlar la raid."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:303
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:307
 CLM.L["You are not allowed to create raids."] = "No tienes permitido crear raids."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:436
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:440
 CLM.L["You are not allowed to join raid."] = "No tienes permitido unirte a la raid."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:325
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:397
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:329
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:401
 CLM.L["You are not allowed to start raid."] = "No se le permite iniciar la raid."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:338
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:342
 CLM.L["You are not in the raid."] = "No estás en la raid."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:657
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:666
@@ -2098,20 +2098,20 @@ CLM.L["You can %s max %d players from standby at the same time to a %s raid."] =
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:612
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:621
 CLM.L["You can %s max %d players to standby at the same time to a %s raid."] = "Puede %s como máximo %d jugadores para estar en espera al mismo tiempo en una raid de %s."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:469
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:503
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:473
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:507
 CLM.L["You can only add players to standby of a progressing raid."] = "Solo puedes agregar jugadores al modo de espera de una raid en progreso."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:603
 CLM.L["You can only bench players from same roster as the raid (%s)."] = "Solo puedes enviar al banquillo a jugadores del mismo roster que la raid (%s)."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:401
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:405
 CLM.L["You can only end an active raid."] = "Solo puedes finalizar una raid activa."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:440
-CLM.L["You can only join an active raid."] = "Solo puedes unirte a una raid activa."
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:444
+CLM.L["You can only join an active raid."] = "Solo puedes unirte a una raid activa."
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:448
 CLM.L["You can only join different raid than your current one."] = "Solo puedes unirte a una raid diferente a la actual."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:648
 CLM.L["You can only remove from bench players from same roster as the raid (%s)."] = "Solo puedes eliminar del banquillo a jugadores del mismo roster que el raid (%s)."
--- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:329
+-- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:333
 CLM.L["You can only start a freshly created raid."] = "Solo puedes iniciar una raid recién creada."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:700
 CLM.L["You can remove max %d players from roster at the same time."] = "Puede eliminar un máximo de %d jugadores del la roster al mismo tiempo."
