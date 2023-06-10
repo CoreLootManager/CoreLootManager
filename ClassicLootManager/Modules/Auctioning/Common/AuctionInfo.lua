@@ -228,6 +228,7 @@ end
 local function AddAuctionItemToList(self, auctionItem)
     self.items[auctionItem:GetItemID()] = auctionItem
     self.itemCount = self.itemCount + 1
+    UpdateAuctionTime(self)
 end
 
 local function AddItemInternal(self, item)
@@ -264,6 +265,7 @@ function AuctionInfo:RemoveItem(id)
     if self.items[id] then
         self.items[id] = nil
         self.itemCount = self.itemCount - 1
+        UpdateAuctionTime(self)
     end
 end
 
