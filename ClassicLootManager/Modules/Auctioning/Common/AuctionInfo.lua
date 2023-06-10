@@ -96,6 +96,17 @@ local function _GetIncrement(s)
     return s.increment
 end
 
+local function UpdateAuctionTime(self)
+    if self.configuration then
+        local auctionTime = self.configuration:Get("auctionTime")
+        local multiplier = 1
+        if self.configuration:Get("multiplyTime") then
+            multiplier = self.itemCount
+        end
+        self.auctionTime = auctionTime * multiplier
+    end
+end
+
 function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, fieldNames)
     local o = {}
     setmetatable(o, self)
@@ -156,17 +167,8 @@ function AuctionInfo:CopySettings(object)
             item:LoadValues(self.roster)
         end
     end
-end
 
-local function UpdateAuctionTime(self)
-    if self.configuration then
-        local auctionTime = self.configuration:Get("auctionTime")
-        local multiplier = 1
-        if self.configuration:Get("multiplyTime") then
-            multiplier = self.itemCount
-        end
-        self.auctionTime = auctionTime * multiplier
-    end
+    UpdateAuctionTime(self)
 end
 
 local function UpdateConfigurableData(self)
