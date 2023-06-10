@@ -9,14 +9,17 @@
             "command": "/usr/local/bin/luacheck . | tee report.log",
             "problemMatcher": {
                 "owner": "lua",
-                "fileLocation": ["relative", "${workspaceFolder}"],
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
                 "pattern": {
                     "regexp": "^\\s*(.*):(\\d+):(\\d+):\\s*(.*)\\s*$",
                     "file": 1,
                     "line": 2,
                     "column": 3,
                     "message": 4
-              }
+                }
             }
         },
         {
@@ -24,15 +27,95 @@
             "type": "shell",
             "command": "python3 ./scripts/l10n_strings.py --parser",
             "problemMatcher": {
-                // "owner": "lua",
-                "fileLocation": ["relative", "${workspaceFolder}"],
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
                 "pattern": {
                     "regexp": "^(Info|Warning):(.*\\.lua):(.*)$",
-                    "severity":1,
+                    "severity": 1,
                     "file": 2,
                     "message": 3
-              }
+                }
             }
+        },
+        {
+            "label": "release",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_release",
+            "problemMatcher": []
+        },
+        {
+            "label": "debug deploy wotlk",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_ddeploy $WOTLK",
+            "problemMatcher": []
+        },
+        {
+            "label": "debug deploy wotlk ptr",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_ddeploy $WOTLK_PTR",
+            "problemMatcher": []
+        },
+        {
+            "label": "debug deploy classic era",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_ddeploy $CLASSIC_ERA",
+            "problemMatcher": []
+        },
+        {
+            "label": "debug deploy retail",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_ddeploy $RETAIL",
+            "problemMatcher": []
+        },
+        {
+            "label": "debug deploy retail ptr",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_ddeploy $RETAIL_PTR",
+            "problemMatcher": [] 
+        },
+        {
+            "label": "debug deploy retail ptr next",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_ddeploy $RETAIL_PTR_NEXT",
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy wotlk",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_deploy $WOTLK",
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy wotlk ptr",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_deploy $WOTLK_PTR",
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy classic era",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_deploy $CLASSIC_ERA",
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy retail",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_deploy $RETAIL",
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy retail ptr",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_deploy $RETAIL_PTR",
+            "problemMatcher": [] 
+        },
+        {
+            "label": "deploy retail ptr next",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_deploy $RETAIL_PTR_NEXT",
+            "problemMatcher": []
         }
     ]
 }

@@ -98,5 +98,8 @@
         "GetUnitName",
         "UIParent",
         "SELECTED_CHAT_FRAME"
+    ],
+    "Lua.diagnostics.disable": [
+        "deprecated"
     ]
 }
