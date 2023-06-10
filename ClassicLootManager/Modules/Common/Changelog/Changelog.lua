@@ -8,8 +8,8 @@ CLM.ChangelogData = {
                 data = {
                     { header = "Item Tracker", body = "New sub-addon has been added (and enabled by default). This adds new auctioning column and tooltip information to each item, about who and how many has already. You can disable that in configuration or disable the addon at all." },
                     { header = "Auction time increasing", body = "You can now enable automatic auction time increasing which will lineary multiply provided auction time by the number of items." },
-                    { header = "Trial of the Grand Crusader", body = "CLM is now ready for ToGC. Trophy and Regalia will now be classified as `Non-equippable` for default and dynamic item value classification. Their ilvl is now adjusted internally (245/258). ToGC bosses have now their respective encounter ids mapped since old ones are used same as for Ulduar." },
-                    { header = "Auction and Bidding UI slight refresh", body = "With trophies and regalia feeting  5 slots, up to 5 upgraded items will now be displayed when bidding on item. This required slight UI rework and resulted in `Pass` being moved and `Next` button added (to skip bidding on the current item without sending information to auctioneer)." },
+                    { header = "Trial of the Grand Crusader", body = "CLM is now ready for ToGC. Trophy and Regalia will now be classified as Non-equippable for default and dynamic item value classification. Their ilvl is now adjusted internally (245/258). ToGC bosses have now their respective encounter ids mapped since old ones are used same as for Ulduar." },
+                    { header = "Auction and Bidding UI slight refresh", body = "With trophies and regalia feeting  5 slots, up to 5 upgraded items will now be displayed when bidding on item. This required slight UI rework and resulted in Pass being moved and Next button added (to skip bidding on the current item without sending information to auctioneer)." },
                 },
             },
             {
@@ -38,7 +38,7 @@ CLM.ChangelogData = {
                 name = "Fix",
                 data = {
                     { header = "Auto-awards", body = "Fix auto-awards regression after v4.2.0 release" },
-                    { header = "Profile overridding", body = "Fixed critical issue with profile overriding happening on Classic Era and Retail. If you have previously noticed points zeroing and then fixed it manually `this fix will retroactively correct it`. Be sure to verify standings before and after installing this version." },
+                    { header = "Profile overridding", body = "Fixed critical issue with profile overriding happening on Classic Era and Retail. If you have previously noticed points zeroing and then fixed it manually this fix will retroactively correct it. Be sure to verify standings before and after installing this version." },
                 },
             },
         },
@@ -207,7 +207,7 @@ CLM.ChangelogData = {
             {
                 name = "Features",
                 data = {
-                    { header = "Rolling", body = "You can now allow players in your raid to `/roll` for an item as a separte or additional step in your auctioning process. This is a very simple mechanism to enhance the existing built-in rolling." },
+                    { header = "Rolling", body = "You can now allow players in your raid to /roll for an item as a separte or additional step in your auctioning process. This is a very simple mechanism to enhance the existing built-in rolling." },
                 },
             },
             {

@@ -96,6 +96,7 @@
         "DEFAULT_CHAT_FRAME",
         "TOTAL",
         "GetUnitName",
-        "UIParent"
+        "UIParent",
+        "SELECTED_CHAT_FRAME"
     ]
 }
