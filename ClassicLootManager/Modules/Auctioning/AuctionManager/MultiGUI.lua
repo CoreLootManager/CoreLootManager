@@ -756,11 +756,11 @@ function AuctionManagerGUI:BuildColumns()
         columns[#columns+1] = externalColumn.column
     end
     -- Items
-    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
-    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
-    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
-    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
-    columns[#columns+1] = {name = "", width = 18, DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, align = "CENTER", DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, align = "CENTER", DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, align = "CENTER", DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, align = "CENTER", DoCellUpdate = UTILS.LibStItemCellUpdate }
+    columns[#columns+1] = {name = "", width = 18, align = "CENTER", DoCellUpdate = UTILS.LibStItemCellUpdate }
     -- Done
 
     local currentWidth = 0
