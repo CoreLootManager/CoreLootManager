@@ -159,16 +159,17 @@ function AuctionInfo:CopySettings(object)
 end
 
 local function UpdateAuctionTime(self)
-    local auctionTime = self.configuration:Get("auctionTime")
-    local multiplier = 1
-    if self.configuration:Get("multiplyTime") then
-        multiplier = self.itemCount
+    if self.configuration then
+        local auctionTime = self.configuration:Get("auctionTime")
+        local multiplier = 1
+        if self.configuration:Get("multiplyTime") then
+            multiplier = self.itemCount
+        end
+        self.auctionTime = auctionTime * multiplier
     end
-    self.auctionTime = auctionTime * multiplier
 end
 
 local function UpdateConfigurableData(self)
-    --self.auctionTime = self.roster:GetConfiguration("auctionTime")
     UpdateAuctionTime(self)
     self.antiSnipe = self.configuration:Get("antiSnipe")
 end
