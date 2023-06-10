@@ -1,7 +1,7 @@
-## Interface: 100100
-## Interface-Wrath: 30401
-## X-Min-Interface: 100100
-## X-Min-Interface-Wrath: 30401
+## Interface: 100105
+## Interface-Wrath: 30402
+## X-Min-Interface: 100105
+## X-Min-Interface-Wrath: 30402
 ## Title: CLM |cff44ee44Alerts|r
 ## Notes: Alert System for |cffdcb749Core Loot Manager|r utilizing WoW built-in alerts.
 ## Author: Lantis
