@@ -92,6 +92,7 @@ local function addItemPriceToTooltip(tooltip)
             return
         end
     end
+    if not CLM.MODULES.RaidManager:IsInitialized() then return end
     local raid = CLM.MODULES.RaidManager:GetRaid()
     local rosters = raid and {
         [CLM.MODULES.RosterManager:GetRosterNameByUid(raid:Roster():UID())] = raid:Roster()

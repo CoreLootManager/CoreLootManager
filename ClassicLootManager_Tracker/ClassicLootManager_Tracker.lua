@@ -99,6 +99,12 @@ function Core:Initialize()
     for _,module in pairs(PRIV.MODULES) do
         module:Initialize()
     end
+
+    self._initialized = true
+end
+
+function Core:IsInitialized()
+    return self._initialized
 end
 
 PRIV.CONSTANTS.TRACKER = CLM.L["Tracker"]

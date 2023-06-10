@@ -218,6 +218,10 @@ function RaidManager:ParseStatus()
     end
 end
 
+function RaidManager:IsInitialized()
+    return self._initialized
+end
+
 function RaidManager:ListRaids()
     return self.cache.raids
 end

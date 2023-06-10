@@ -41,6 +41,7 @@ local function addItemReceiversToTooltip(tooltip)
     -- Sanity Check
     local itemLink
     if not tooltip then return end
+    if not PRIV.Core:IsInitialized() then return end
     if not PRIV.Core:GetEnableTooltip() then return end
     if tooltip.GetItem then
         _, itemLink = tooltip:GetItem()
