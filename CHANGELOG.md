@@ -1,3 +1,7 @@
+# Core Loot Manager v4.3.1
+## Hotfix
+### Skinning issues
+Fix skinning issues when using certain UI scales.
 # Core Loot Manager v4.3.0
 ## Features
 ### Item Tracker
