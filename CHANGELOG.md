@@ -7,7 +7,7 @@ You can now enable automatic auction time increasing which will lineary multiply
 ### Trial of the Grand Crusader
 CLM is now ready for ToGC. Trophy and Regalia will now be classified as `Non-equippable` for default and dynamic item value classification. Their ilvl is now adjusted internally (245/258). ToGC bosses have now their respective encounter ids mapped since old ones are used same as for Ulduar.
 ### Auction and Bidding UI slight refresh
-With trophies and regalia feeting  5 slots, up to 5 upgraded items will now be displayed when bidding on item. This required slight UI rework and resulted in `Pass` being moved and `Next` button added (to skip bidding on the current item without sending information to auctioneer).
+With trophies and regalia fitting  5 slots, up to 5 upgraded items will now be displayed when bidding on item. This required slight UI rework and resulted in `Pass` being moved and `Next` button added (to skip bidding on the current item without sending information to auctioneer).
 ## Fix
 ### Tooltip
 Fixed timing issues with tooltip requests happening before CLM was ready.
