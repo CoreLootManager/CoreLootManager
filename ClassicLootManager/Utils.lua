@@ -222,6 +222,21 @@ local function GetSpecializationID()
     return ""
 end
 
+function UTILS.SpoofExtraAmbiguate(extra)
+    local extra_split = { strsplit(":", extra) }
+    -- Remove: enchantID : gemID1 : gemID2 : gemID3 : gemID4 : _ : uniqueID : _ : specializationID
+    -- keep suffixID linkLevel and all the modificators after
+    for _, offset in ipairs({2, 3, 4, 5, 6, 9, 10}) do
+        if extra_split[offset] then
+            extra_split[offset] = ""
+        else
+            -- If X is not present then X + n is not also
+            break
+        end
+    end
+    return strjoin(":", unpack(extra_split))
+end
+
 function UTILS.SpoofExtraWithSpec(extra)
     local extra_split = { strsplit(":", extra) }
     if extra_split[10] then -- SpecializationID field of Extra
