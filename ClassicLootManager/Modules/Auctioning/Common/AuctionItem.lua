@@ -181,7 +181,7 @@ function AuctionItem:SpoofLinkPayload(extra)
         return
     end
     local original = link
-    self.item.itemLink = UTILS.SpoofLink(link, extra)
+    self.item.itemLink = UTILS.SpoofLink(link, UTILS.SpoofExtraWithSpec(extra))
     LOG:Debug("Spoofed %s into %s", original, link)
 end
 

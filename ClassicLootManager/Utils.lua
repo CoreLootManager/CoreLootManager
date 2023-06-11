@@ -1,6 +1,10 @@
 ---@diagnostic disable: param-type-mismatch
 local _, CLM = ...
 
+local emptyFn = (function() end)
+local GetSpecialization = GetSpecialization or emptyFn
+local GetSpecializationInfo = GetSpecializationInfo or emptyFn
+
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
@@ -203,11 +207,27 @@ function UTILS.GetColorFromLink(itemLink, format)
 end
 
 function UTILS.GetItemIdFromLink(itemLink)
-    -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
     itemLink = itemLink or ""
-    -- local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
     local _, _, itemId, extra = string.find(itemLink, "item:(%d+)([%d:]*)|h")
     return tonumber(itemId) or 0, extra or ""
+end
+
+
+local function GetSpecializationID()
+    local specNum = GetSpecialization()
+    if specNum then
+        local specID = GetSpecializationInfo(specNum)
+        return specID or ""
+    end
+    return ""
+end
+
+function UTILS.SpoofExtraWithSpec(extra)
+    local extra_split = { strsplit(":", extra) }
+    if extra_split[10] then -- SpecializationID field of Extra
+        extra_split[10] = GetSpecializationID()
+    end
+    return strjoin(":", unpack(extra_split))
 end
 
 function UTILS.SpoofLink(itemLink, extra)

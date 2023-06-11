@@ -335,7 +335,7 @@ local function fillLootList(displayedLoot, loot)
             UnifiedGUI_History.pendingLoot = true
         elseif not UnifiedGUI_History.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm
             local owner = loot:Owner()
-            displayedLoot[#displayedLoot+1] = {loot, UTILS.SpoofLink(itemLink, loot:Extra()), owner:Name(), UTILS.GetClassColor(owner:Class())}
+            displayedLoot[#displayedLoot+1] = {loot, UTILS.SpoofLink(itemLink, UTILS.SpoofExtraWithSpec(loot:Extra())), owner:Name(), UTILS.GetClassColor(owner:Class())}
         end
     end
 end
