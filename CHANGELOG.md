@@ -1,3 +1,7 @@
+# Core Loot Manager v4.3.2
+## Hotfix
+### Untrusted players
+Fix lua error happening on load for untrusted players.
 # Core Loot Manager v4.3.1
 ## Hotfix
 ### Skinning issues
