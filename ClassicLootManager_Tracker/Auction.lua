@@ -23,6 +23,7 @@ end
 
 local Auction = {}
 function Auction:Initialize()
+    if not CLM.MODULES.ACL:IsTrusted() then return end
     if PRIV.Core:GetEnableAuctionColumn() then
         RegisterColumn()
     end
