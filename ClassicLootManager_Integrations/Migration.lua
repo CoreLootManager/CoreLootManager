@@ -63,6 +63,7 @@ function Migration:Migrate()
     self:MigrateCommunityDKP()
     self:MigrateBastion()
     self:MigrateCEPGP()
+    self:MigrateEPGPClassic()
     LOG:Message(CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."],
         ColorCodeText("/reload", "00cc00"),
         ColorCodeText(CLM.L["Minimap Icon -> Configuration -> Wipe events"], "6699ff"))
@@ -96,6 +97,11 @@ end
 function Migration:MigrateCEPGP()
     LOG:Trace("Migration:MigrateCEPGP()")
     self:_MigrateOfficerNoteEPGP("CEPGP", "(%d+),(%d+)")
+end
+
+function Migration:MigrateEPGPClassic()
+    LOG:Trace("Migration:MigrateEPGPClassic()")
+    self:_MigrateOfficerNoteEPGP("EPGP-Classic", "(%d+),%s*(%d+)")
 end
 
 local function NewRoster(name, epgp)
