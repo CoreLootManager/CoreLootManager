@@ -734,6 +734,10 @@ function AuctionManager:StartAuction()
         LOG:Warning("AuctionManager:StartAuction(): Invalid raid object")
         return false
     end
+    if not CLM.MODULES.RaidManager:IsInProgressingRaid() then
+        LOG:Warning("AuctionManager:StartAuction(): Raid not in Progress")
+        return false
+    end
     if auction:IsEmpty() then
         LOG:Warning("AuctionManager:StartAuction(): Empty auction item list")
         return false
