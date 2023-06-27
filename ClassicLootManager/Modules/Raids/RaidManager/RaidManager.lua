@@ -199,7 +199,7 @@ function RaidManager:ParseStatus()
     LOG:Trace("RaidManager:ParseStatus()")
     if not self._initialized then
         -- Mark raids as stale
-        for raid in ipairs(self.cache.raids) do
+        for _, raid in pairs(self.cache.raids) do
             if raid:IsActive() then
                 local referenceTime = raid:StartTime()
                 if referenceTime == 0 then
@@ -311,11 +311,12 @@ function RaidManager:CreateRaid(roster, name, config)
         LOG:Message(CLM.L["You are already in an active raid. Leave or finish it before creating new one."])
         return
     end
+    --[===[@non-debug@
     if CLM.MODULES.LedgerManager:IsTimeTraveling() then
         LOG:Message(CLM.L["Raid management is disabled during time traveling."])
         return
     end
-
+    --@end-non-debug@]===]
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Create:new(roster:UID(), name, config))
 end
 

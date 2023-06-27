@@ -11,6 +11,7 @@ local RedNo = UTILS.RedNo()
 
 local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorYellow = {r = 0.93, g = 0.93, b = 0.2, a = 1.0}
+local colorRed = {r = 0.93, g = 0.2, b = 0.2, a = 1.0}
 
 local function ST_GetRaid(row)
     return row.cols[4].value
@@ -334,6 +335,8 @@ local function tableDataFeeder()
             color = colorGreen
         elseif CONSTANTS.RAID_STATUS.CREATED == raid:Status() then
             color = colorYellow
+        elseif CONSTANTS.RAID_STATUS.STALE == raid:Status() then
+            color = colorRed
         end
         local row = {cols = {
             { value = raid:Name() },
