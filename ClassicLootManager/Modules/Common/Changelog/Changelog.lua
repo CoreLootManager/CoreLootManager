@@ -1,6 +1,41 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.3.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Auctioning", body = "Auction can no longer be started if Raid is not In Progress." },
+                    { header = "Raid Management", body = "Raids will now be properly marked as Stale after 24 hours, disabling all automatic functionalities." },
+                    { header = "Migration", body = "You can now also migrate from EPGP-Classic properly." },
+                },
+            },
+        },
+    },
+    {
+        version = "v4.3.2",
+        data = {
+            {
+                name = "Hotfix",
+                data = {
+                    { header = "Hotfix", body = "Fix lua error happening on load for untrusted players." },
+                },
+            },
+        },
+    },
+    {
+        version = "v4.3.1",
+        data = {
+            {
+                name = "Hotfix",
+                data = {
+                    { header = "Hotfix", body = "Fix skinning issues when using certain UI scales." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.3.0",
         data = {
             {

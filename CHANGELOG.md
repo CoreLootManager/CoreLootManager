@@ -1,3 +1,11 @@
+# Core Loot Manager v4.3.3
+## Fixes
+### Auctioning
+Auction can no longer be started if Raid is not In Progress.
+### Raid Management
+Raids will now be properly marked as Stale after 24 hours, disabling all automatic functionalities.
+### Migration
+You can now also migrate from EPGP-Classic properly.
 # Core Loot Manager v4.3.2
 ## Hotfix
 ### Untrusted players
