@@ -150,12 +150,18 @@ function CLM.RegisterExternal(moduleName, entryPoint)
     RegisterUniversal(CLM.EXTERNAL, moduleName, entryPoint)
 end
 
+function CORE:_InitializeDatabase()
+    LOG:Trace("CORE:_InitializeDatabase()")
+    return MODULES.Database:Initialize()
+end
+
 function CORE:_InitializeCore()
     LOG:Trace("CORE:_InitializeCore()")
-    MODULES.Database:Initialize()
     MODULES.ConfigManager:Initialize()
     MODULES.ACL:Initialize()
     MODULES.Hooks:Initialize()
+
+    return true
 end
 
 function CORE:_InitializeBackend()
@@ -165,6 +171,8 @@ function CORE:_InitializeBackend()
     MODULES.EventManager:Initialize()
     MODULES.GuildInfoListener:Initialize()
     MODULES.LedgerManager:Initialize()
+
+    return true
 end
 
 function CORE:_InitializeFeatures()
@@ -187,6 +195,8 @@ function CORE:_InitializeFeatures()
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
     CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
     CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
+
+    return true
 end
 
 function CORE:_InitializeExternal()
@@ -194,12 +204,16 @@ function CORE:_InitializeExternal()
     for _,external in pairs(CLM.EXTERNAL) do
         external:Initialize()
     end
+
+    return true
 end
 
 function CORE:_InitializeMinimap()
     LOG:Trace("CORE:_InitializeMinimap()")
     -- Initialize Minmap
     MODULES.Minimap:Initialize()
+
+    return true
 end
 
 function CORE:_InitializeOptions()
@@ -208,6 +222,8 @@ function CORE:_InitializeOptions()
     for _, module in pairs(CLM.OPTIONS) do
         module:Initialize()
     end
+
+    return true
 end
 
 function CORE:_InitializeGUI()
@@ -215,41 +231,53 @@ function CORE:_InitializeGUI()
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
+
+    return true
 end
 
 function CORE:_Enable()
     LOG:Trace("CORE:_Enable()")
     MODULES.Comms:Enable()
     MODULES.LedgerManager:Enable()
+
+    return true
 end
 
 local stages = {
-    "_InitializeCore",
-    "_InitializeBackend",
-    "_InitializeMinimap",
-    "_InitializeFeatures",
-    "_InitializeOptions",
-    "_InitializeGUI",
-    "_InitializeExternal",
+    { name = "_InitializeDatabase", retry = true },
+    { name = "_InitializeCore",     retry = false},
+    { name = "_InitializeBackend",  retry = false},
+    { name = "_InitializeMinimap",  retry = false},
+    { name = "_InitializeFeatures", retry = false},
+    { name = "_InitializeOptions",  retry = false},
+    { name = "_InitializeGUI",      retry = false},
+    { name = "_InitializeExternal", retry = false},
 }
 
 local finalStage = "_Enable"
 
 local function getStage(stage)
-    return stages[stage] or finalStage
+    return stages[stage.name] or finalStage, stage.retry
 end
 
 function CORE:_SequentialInitialize(stageNum)
     LOG:Trace("CORE:_SequentialInitialize()")
-    local stage = getStage(stageNum)
+    local stage, retry = getStage(stageNum)
     LOG:Info("Initialization stage [%s]", stage)
-    self[stage]()
+    local success = self[stage]()
 
-    if stage == finalStage then
-        LOG:Info(CLM.L["Boot complete"])
-        return
+    if success then
+        if stage == finalStage then
+            LOG:Info(CLM.L["Boot complete"])
+            return
+        end
+        stageNum = stageNum + 1
+    else
+        if not retry then
+            error(string.format("Error Loading CLM on stage [%s]", stage))
+        end
     end
-    C_Timer.After(0.1, function() CORE:_SequentialInitialize(stageNum + 1) end)
+    C_Timer.After(0.1, function() CORE:_SequentialInitialize(stageNum) end)
 end
 
 function CORE:_ExecuteInitialize()
