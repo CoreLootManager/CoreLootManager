@@ -1,3 +1,7 @@
+# Core Loot Manager v4.3.4
+## Fixes
+### Database loading
+Fixed potential datbase timing and loading issue which could lead to unwanted database mixing if user on the same machine is logging in to trusted characters in more than 1 guild.
 # Core Loot Manager v4.3.3
 ## Fixes
 ### Auctioning
