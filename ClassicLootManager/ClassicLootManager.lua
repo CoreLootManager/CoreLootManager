@@ -253,11 +253,10 @@ local stages = {
     { name = "_InitializeGUI",      retry = false},
     { name = "_InitializeExternal", retry = false},
 }
-
-local finalStage = "_Enable"
+local finalStage = { name = "_Enable", retry = false }
 
 local function getStage(stage)
-    return stages[stage.name] or finalStage, stage.retry
+    return (stages[stage] or finalStage).name, (stages[stage] or finalStage).retry
 end
 
 function CORE:_SequentialInitialize(stageNum)
@@ -267,7 +266,7 @@ function CORE:_SequentialInitialize(stageNum)
     local success = self[stage]()
 
     if success then
-        if stage == finalStage then
+        if stage == finalStage.name then
             LOG:Info(CLM.L["Boot complete"])
             return
         end
