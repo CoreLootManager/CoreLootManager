@@ -22,11 +22,7 @@ local DB_NAME_LOGGER = 'logger'
 local DB_NAME_GLOBAL = 'global'
 -- ^^^^^
 
-local function UpdateGuild()
-    DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. (GetGuildInfo("player") or "unguilded"))
-    LOG:Debug("Using database: %s", DB.server_faction_guild)
-end
-
+local retry_count = 50
 local function UpdateSchema(table, schema)
     if type(schema) == "table" then
         for key, value in pairs(schema) do
@@ -42,7 +38,18 @@ end
 function DB:Initialize()
     LOG:Trace("DB:Initialize()")
     -- Below API requires delay after loading to work after variables loaded event
-    UpdateGuild()
+    local guildName = GetGuildInfo("player")
+    if guildName == nil or guildName == "" then
+        if retry_count <= 0 then
+            guildName = "unguilded"
+        else
+            retry_count = retry_count - 1
+            LOG:Debug("DB do retry: %d", 50 - retry_count)
+            return false
+        end
+    end
+    DB.server_faction_guild = string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. guildName)
+    LOG:Debug("Using database: %s", DB.server_faction_guild)
 
     if type(CLM2_DB[self.server_faction_guild]) ~= "table" then
         CLM2_DB[self.server_faction_guild] = {}
@@ -62,6 +69,8 @@ function DB:Initialize()
     if type(CLM2_DB[self.server_faction_guild][DB_NAME_LEDGER]) ~= "table" then
         CLM2_DB[self.server_faction_guild][DB_NAME_LEDGER] = {}
     end
+
+    return true
 end
 
 function DB:Global()

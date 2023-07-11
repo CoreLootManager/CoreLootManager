@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.3.4",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Database loading", body = "Fixed potential datbase timing and loading issue which could lead to unwanted database mixing if user on the same machine is logging in to trusted characters in more than 1 guild." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.3.3",
         data = {
             {
