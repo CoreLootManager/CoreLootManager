@@ -803,7 +803,7 @@ local function handleIncomingRoll(_, _, message, ...)
     local auction = CLM.MODULES.AuctionManager:GetCurrentAuctionInfo()
     if not auction:IsAcceptingRolls() then return end
 
-    local who, roll, min, max = string.match(message, "^(%w+).-(%d+).-(%d+)-(%d+)")
+    local who, roll, min, max = string.match(message, "^(.+)%s.*%s.-(%d+).-(%d+)-(%d+)")
     roll, min, max = tonumber(roll), tonumber(min), tonumber(max)
 
     if not who then
