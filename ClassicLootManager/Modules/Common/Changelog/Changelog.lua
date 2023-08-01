@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.3.5",
+        data = {
+            {
+                name = "GUI",
+                data = {
+                    { header = "Tooltips handling", body = "Streamlined and fixed tooltip handling in various places after recent patches." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.3.4",
         data = {
             {

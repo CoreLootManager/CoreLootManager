@@ -1,3 +1,7 @@
+# Core Loot Manager v4.3.5
+## GUI
+### Tooltips handling
+Streamlined and fixed tooltip handling in various places after recent patches.
 # Core Loot Manager v4.3.4
 ## Fixes
 ### Database loading
