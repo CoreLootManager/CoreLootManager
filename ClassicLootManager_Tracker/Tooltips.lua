@@ -21,7 +21,8 @@ local function generateTooltipLines(roster, itemId, perRosterData, requiresRebui
         local lines = {}
         for _, data in ipairs(perRosterData) do
             if data.count > 0 then
-                local newLine = "  " .. ColorCodeText(data.profile:Name(), GetClassColor(data.profile:Class()).hex)
+                --local newLine = "  " .. ColorCodeText(data.profile:Name(), GetClassColor(data.profile:Class()).hex)
+                local newLine = ColorCodeText(data.profile:Name(), GetClassColor(data.profile:Class()).hex)
                 if data.count > 1 then
                     newLine = newLine .. ColorCodeText(" (" .. data.count .. ")", "9d9d9d")
                 end
@@ -71,9 +72,7 @@ local function addItemReceiversToTooltip(tooltip)
         if #lines > 0 then
             tooltip:AddLine(rosterName)
             tooltip:AddTexture(CLM_ICON_DARK)
-            for _, line in ipairs(lines) do
-                tooltip:AddLine(line)
-            end
+            UTILS.putListInTooltip(lines, tooltip, 100, 100, nil, true)
         end
     end
 end

@@ -539,39 +539,53 @@ function UTILS.GetCutoffTimestamp()
     return 1566684000
 end
 
-function UTILS.buildPlayerListForTooltip(profiles, tooltip, inLine, maxProfiles)
+local function defaultDataProvider(param)
+    return param
+end
+
+function UTILS.putListInTooltip(data, tooltip, inLine, max, dataProvider, autoWrap)
+    dataProvider = dataProvider or defaultDataProvider
     inLine = inLine or 5
-    maxProfiles = maxProfiles or 25
-    local profilesInLine = 0
+    max = max or 25
+    local entriesInLine = 0
     local line = ""
     local separator = ", "
-    local numProfiles = #profiles
-    local profilesLeft
-    local notIncludedProfiles = 0
-    if numProfiles > maxProfiles then
-        notIncludedProfiles = numProfiles - maxProfiles
-        numProfiles = maxProfiles
+    local numEntries = #data
+    local entriesLeft
+    local notIncludedEntries = 0
+    if numEntries > max then
+        notIncludedEntries = numEntries - max
+        numEntries = max
     end
-    profilesLeft = numProfiles
+    entriesLeft = numEntries
 
-    while (profilesLeft > 0) do
-        local currentProfile = profiles[numProfiles - profilesLeft + 1]
-        profilesLeft = profilesLeft - 1
-        if profilesLeft == 0 then
+    while (entriesLeft > 0) do
+        local currentEntry = data[numEntries - entriesLeft + 1]
+        entriesLeft = entriesLeft - 1
+        if entriesLeft == 0 then
             separator = ""
         end
-        line = line .. ColorCodeText(currentProfile:Name(), GetClassColor(currentProfile:Class()).hex) .. separator
-        profilesInLine = profilesInLine + 1
-        if profilesInLine >= inLine or profilesLeft == 0 then
-            tooltip:AddLine(line)
+        line = line .. dataProvider(currentEntry).. separator
+        entriesInLine = entriesInLine + 1
+        if entriesInLine >= inLine or entriesLeft == 0 then
+            tooltip:AddLine(line, nil, nil, nil, autoWrap and true or false)
             line = ""
-            profilesInLine = 0
+            entriesInLine = 0
         end
     end
 
-    if notIncludedProfiles > 0 then
-        tooltip:AddLine(notIncludedProfiles .. CLM.L[" more"])
+    if notIncludedEntries > 0 then
+        tooltip:AddLine(notIncludedEntries .. CLM.L[" more"], nil, nil, nil, autoWrap and true or false)
     end
+end
+
+local function profileListTooltipDataProvider(profile)
+    return ColorCodeText(profile:Name(), GetClassColor(profile:Class()).hex)
+end
+
+local putListInTooltip = UTILS.putListInTooltip
+function UTILS.buildPlayerListForTooltip(profiles, tooltip)
+    return putListInTooltip(profiles, tooltip, 5, 25, profileListTooltipDataProvider, false)
 end
 
 local greenYes = ColorCodeText(CLM.L["Yes"], "00cc00")
