@@ -78,7 +78,7 @@ local function createLedgerAndRegisterCallbacks(self, database)
     return ledger
 end
 
-local LedgerManager = { _initialized = false}
+local LedgerManager = { _initialized = false }
 function LedgerManager:Initialize()
     self.activeDatabase = CLM.MODULES.Database:Ledger()
     self.activeLedger = createLedger(self, self.activeDatabase)
@@ -86,8 +86,6 @@ function LedgerManager:Initialize()
     self.onUpdateCallbacks = {}
     self.onRestartCallbacks = {}
     self._initialized = true
-
-
 end
 
 function LedgerManager:IsInitialized()
