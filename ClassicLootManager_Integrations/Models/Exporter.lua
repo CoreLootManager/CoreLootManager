@@ -179,6 +179,7 @@ local DATA_BUILDERS = {
                         if profile and self:TimestampInRange(loot:Timestamp()) then
                             local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
                             local itemName, _, itemQuality = GetItemInfo(loot:Id())
+                            local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
                             tinsert(roster_data.lootHistory.item, {
                                 id = loot:Id(),
                                 name = itemName or "",
@@ -186,7 +187,8 @@ local DATA_BUILDERS = {
                                 player = profile:Name(),
                                 awardedBy = awardedBy and awardedBy:Name() or "",
                                 points = loot:Value(),
-                                timestamp = loot:Timestamp()
+                                timestamp = loot:Timestamp(),
+                                auctionInfo = auction or {}
                             })
                         end
                     end
@@ -210,6 +212,7 @@ local DATA_BUILDERS = {
                     if profile and self:TimestampInRange(loot:Timestamp()) then
                         local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
                         local itemName, _, itemQuality = GetItemInfo(loot:Id())
+                        local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
                         tinsert(roster_data.lootHistory.item, {
                             id = loot:Id(),
                             name = itemName or "",
@@ -217,7 +220,8 @@ local DATA_BUILDERS = {
                             player = profile:Name(),
                             awardedBy = awardedBy and awardedBy:Name() or "",
                             points = loot:Value(),
-                            timestamp = loot:Timestamp()
+                            timestamp = loot:Timestamp(),
+                            auctionInfo = auction or {}
                         })
                     end
                 end
