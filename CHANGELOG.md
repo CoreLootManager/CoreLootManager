@@ -1,3 +1,7 @@
+# Core Loot Manager v4.3.6
+## Integrations
+### Auction Info Export
+Added accumulated auction info to loot history export.
 # Core Loot Manager v4.3.5
 ## GUI
 ### Tooltips handling

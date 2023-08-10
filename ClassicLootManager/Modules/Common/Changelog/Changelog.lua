@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.3.6",
+        data = {
+            {
+                name = "Integrations",
+                data = {
+                    { header = "Auction Info Export", body = "Added accumulated auction info to loot history export." },
+                },
+            },
+        },
+    },    
+    {
         version = "v4.3.5",
         data = {
             {
