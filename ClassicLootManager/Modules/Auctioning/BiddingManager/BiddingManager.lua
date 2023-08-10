@@ -93,7 +93,7 @@ function BiddingManager:GetLastBidValue()
     return self.lastBid
 end
 
-function BiddingManager:Bid(itemId, value, type)
+function BiddingManager:Bid(itemId, value, type, note)
     LOG:Trace("BiddingManager:Bid()")
     if not self:IsAuctionInProgress() then
         LOG:Debug("BiddingManager:Bid(): No auction in progress")
@@ -101,6 +101,7 @@ function BiddingManager:Bid(itemId, value, type)
     end
 
     value = tonumber(value) or 0
+    note = note and tostring(note) or ""
     type = CONSTANTS.BID_TYPES[type] and type or CONSTANTS.BID_TYPE.MAIN_SPEC
     local item = self.auction:GetItem(itemId)
     if not item then
@@ -108,11 +109,11 @@ function BiddingManager:Bid(itemId, value, type)
         return
     end
 
-    item:SetBid(CLM.MODELS.UserResponse:New(value, type, {}))
+    item:SetBid(CLM.MODELS.UserResponse:New(value, type, {}, note))
 
     local message = CLM.MODELS.BiddingCommStructure:New(
         CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
-        CLM.MODELS.BiddingCommSubmitBid:New(value, type, itemId, GetUpgradedItems(itemId))
+        CLM.MODELS.BiddingCommSubmitBid:New(value, type, itemId, GetUpgradedItems(itemId), note)
     )
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end

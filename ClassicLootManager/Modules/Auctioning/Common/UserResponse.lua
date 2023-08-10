@@ -10,7 +10,7 @@ local assertType = UTILS.assertType
 local UserResponse = {} -- UserResponse
 UserResponse.__index = UserResponse
 
-function UserResponse:New(valueOrObject, responseType, upgradedItems)
+function UserResponse:New(valueOrObject, responseType, upgradedItems, note)
 
     local isCopyConstructor = (type(valueOrObject) == "table")
 
@@ -24,6 +24,7 @@ function UserResponse:New(valueOrObject, responseType, upgradedItems)
     o.type = CONSTANTS.BID_TYPES[responseType] and responseType or CONSTANTS.BID_TYPE.MAIN_SPEC
     o.roll = 0
     o.upgradedItems = {}
+    o.note = note or ""
     o:SetUpgradedItems(upgradedItems or {})
 
     return o
@@ -55,6 +56,10 @@ end
 
 function UserResponse:Roll()
     return self.roll
+end
+
+function UserResponse:Note()
+    return self.note
 end
 
 function UserResponse:Items()

@@ -552,9 +552,17 @@ local function GenerateAuctionOptions(self)
             type = "input",
             get = (function(i) return itemLink or "" end),
             set = (function(i,v) end), -- Intentionally: do not override
-            width = 5*rowMultiplierBy9,
+            width = 4*rowMultiplierBy9,
             order = 2,
             tooltipHyperlink = itemLink,
+        },
+        note = {
+            name = "",
+            type = "execute",
+            image = icon,
+            func = (function() end),
+            width = rowMultiplierBy9,
+            order = 2.5
         },
         next = {
             name = CLM.L["Next"],

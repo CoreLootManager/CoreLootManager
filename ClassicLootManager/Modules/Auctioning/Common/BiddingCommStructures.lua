@@ -7,7 +7,7 @@ local CONSTANTS = CLM.CONSTANTS
 -- ------------------------------- --
 
 local BiddingCommSubmitBid = {}
-function BiddingCommSubmitBid:New(valueOrObject, bidType, itemId, items)
+function BiddingCommSubmitBid:New(valueOrObject, bidType, itemId, items, note)
     local isCopyConstructor = (type(valueOrObject) == "table")
     local o = isCopyConstructor and valueOrObject or {}
 
@@ -20,6 +20,7 @@ function BiddingCommSubmitBid:New(valueOrObject, bidType, itemId, items)
     o.b = CONSTANTS.BID_TYPES[bidType] and bidType or CONSTANTS.BID_TYPE.MAIN_SPEC
     o.i = itemId
     o.t = items
+    o.n = note and tostring(note) or nil
 
     return o
 end
@@ -38,6 +39,10 @@ end
 
 function BiddingCommSubmitBid:Items()
     return self.t or {}
+end
+
+function BiddingCommSubmitBid:Note()
+    return self.n or ""
 end
 
 local BiddingCommStructure = {}

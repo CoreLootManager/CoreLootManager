@@ -930,7 +930,7 @@ function AuctionManager:HandleSubmitBid(data, sender)
         LOG:Debug("Received submit bid from %s while no auctions are in progress", sender)
         return
     end
-    local response = CLM.MODELS.UserResponse:New(data:Value(), data:Type(), data:Items())
+    local response = CLM.MODELS.UserResponse:New(data:Value(), data:Type(), data:Items(), data:Note())
     self:UpdateBid(sender, data:ItemId(), response)
 end
 
