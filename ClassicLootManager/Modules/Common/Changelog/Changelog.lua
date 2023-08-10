@@ -10,7 +10,7 @@ CLM.ChangelogData = {
                 },
             },
         },
-    },    
+    },
     {
         version = "v4.3.5",
         data = {
