@@ -148,7 +148,7 @@ function Filters:GetAceOptions()
     end
 
     if self.rank and self.inGuild then
-        for index, info in pairs(CLM.MODULES.GuildInfoListener:GetRanks()) do
+        for index, info in pairs(CLM.MODULES.TrustInfoProvider:GetRanks()) do
             local internalRankIndex = 1000 + index
             filters[internalRankIndex] = info.name
             self.filters[internalRankIndex] = true
@@ -284,7 +284,7 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
             status = status and (profile:Main() == "")
         end
     end
-    local guildies = CLM.MODULES.GuildInfoListener:GetGuildies()
+    local guildies = CLM.MODULES.TrustInfoProvider:GetGuildies()
     local inGuild = (guildies[playerName] ~= nil)
     if self.rank and self.inGuild then
         if inGuild then

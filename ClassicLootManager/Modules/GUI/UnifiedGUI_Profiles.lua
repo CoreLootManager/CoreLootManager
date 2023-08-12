@@ -60,7 +60,7 @@ end
 
 local function GenerateAssistantOptions(self)
     local rankOptions = {}
-    local ranks = CLM.MODULES.GuildInfoListener:GetRanks()
+    local ranks = CLM.MODULES.TrustInfoProvider:GetRanks()
     for i,o in pairs(ranks) do
         rankOptions[i] = o.name
     end

@@ -46,6 +46,8 @@ globals = {
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"ERR_CHAT_PLAYER_NOT_FOUND_S",
+	"Ambiguate",
 	"CreateFromMixins",
 	"ItemMixin",
 	"_G",
