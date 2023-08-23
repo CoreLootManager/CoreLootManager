@@ -42,11 +42,18 @@ local function GetPlayerGuid(self, name)
 end
 
 local timestampCounter = {}
+local alreadyWarned
 function Migration:Migrate()
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
     if LedgerManager:Length() > 0 then
-        LOG:Message(CLM.L["Unable to execute migration. Entries already exist."])
-        return
+        if alreadyWarned then
+            LOG:Message(CLM.L["Executing migration even though ledger is not empty."])
+        else
+            LOG:Message(CLM.L["Unable to execute migration. Entries already exist."])
+            LOG:Message(CLM.L["Execute migration again if you are sure this is correct."])
+            alreadyWarned = true
+            return
+        end
     end
     Comms:Disable()
     LOG:Message(CLM.L["Executing Addon Migration with comms disabled."])
