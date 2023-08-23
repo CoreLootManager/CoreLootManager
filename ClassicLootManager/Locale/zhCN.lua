@@ -1919,7 +1919,7 @@ CLM.L["Toggle changelog"] = "开关更新日志"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:155
 CLM.L["Toggle closing bidding UI after submitting bid for all items."] = "开关提交所有物品出价后关闭竞拍界面。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:455
---CLM.L["Toggle default behavior of remove on award field in auctioning ui"] = ""
+CLM.L["Toggle default behavior of remove on award field in auctioning ui"] = "在拍卖UI中，在奖励字段中删除删除的默认行为"
 -- ClassicLootManager_Integrations/GUI.lua:513
 CLM.L["Toggle export window display"] = "开关导出窗口显示"
 -- ClassicLootManager_Integrations/GenericImport.lua:281

@@ -219,9 +219,9 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
         for sentence in missing:
             sanitized_sentence = sanitize_sentence_regex.findall(sentence)[0]
             if dry_run:
-                _print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_baidu[locale]))
+                _print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_google[locale]))
             else:
-                translation = ts.baidu(sanitized_sentence, from_language='en', to_language=locale_to_baidu[locale])
+                translation = ts.translate_text(query_text=sanitized_sentence, translator='google', from_language='en', to_language=locale_to_google[locale])
                 storage.translate(locale, sentence, translation, False)
                 total_done += 1
                 percent = math.floor(100*(total_done/total_missing))

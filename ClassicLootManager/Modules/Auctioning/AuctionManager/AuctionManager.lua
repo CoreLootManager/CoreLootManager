@@ -32,6 +32,7 @@ local function InitializeDB(self)
         fillFromLootGLOnly = true,
         lootThreshold = 4,
         removeOnNoBids = false,
+        defaultRemoveOnAward = true,
         notes = {},
         ignoredClasses = {
             false, false, false, false,
@@ -108,6 +109,14 @@ end
 
 local function GetDisenchantAutoRemoved(self)
     return self.db.disenchantAutoRemoved
+end
+
+function AuctionManager:SetDefaultRemoveOnAward(value)
+    self.db.disenchantAutoRemoved = value and true or false
+end
+
+function AuctionManager:GetDefaultRemoveOnAward()
+    return self.db.defaultRemoveOnAward
 end
 
 -- Filling
@@ -440,6 +449,15 @@ local function CreateConfigurationOptions(self)
             get = function(i) return GetDisenchantAutoRemoved(self) end,
             width = 1,
             order = 41,
+        },
+        auction_default_remove_on_award = {
+            name = CLM.L["Remove on award"],
+            desc = CLM.L["Toggle default behavior of remove on award field in auctioning ui"],
+            type = "toggle",
+            set = function(i, v) self:SetDefaultRemoveOnAward(v) end,
+            get = function(i) return self:GetDefaultRemoveOnAward() end,
+            width = 1,
+            order = 42,
         },
         loot_queue_ignore_classes = {
             name = CLM.L["Ignore"],

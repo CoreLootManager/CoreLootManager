@@ -1919,7 +1919,7 @@ CLM.L["Toggle changelog"] = "Zeigt das Änderungsprotokoll"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:155
 CLM.L["Toggle closing bidding UI after submitting bid for all items."] = "Gebotsfenster schließen, nachdem das Gebot auf alle Gegenstände abgegeben wurde."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:455
---CLM.L["Toggle default behavior of remove on award field in auctioning ui"] = ""
+CLM.L["Toggle default behavior of remove on award field in auctioning ui"] = "Default -Verhalten von Entfernen auf dem Preis in der Auktions -Benutzeroberfläche umschalten"
 -- ClassicLootManager_Integrations/GUI.lua:513
 CLM.L["Toggle export window display"] = "Exportfensters Anzeige ein / ausschalten"
 -- ClassicLootManager_Integrations/GenericImport.lua:281

@@ -669,7 +669,7 @@ local function Create(self)
     self.awardValue = 0
     self.awardMultiplier = 1
     self.awardPrice = 0
-    self.removeOnAward = true
+    self.removeOnAward = CLM.MODULES.AuctionManager:GetDefaultRemoveOnAward()
 
     local ItemList = CreateLootList(self)
     local listWidth = ItemList:GetWidth()
