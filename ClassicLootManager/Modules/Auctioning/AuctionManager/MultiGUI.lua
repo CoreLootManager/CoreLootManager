@@ -669,7 +669,7 @@ local function Create(self)
     self.awardValue = 0
     self.awardMultiplier = 1
     self.awardPrice = 0
-    self.removeOnAward = true
+    self.removeOnAward = CLM.MODULES.AuctionManager:GetDefaultRemoveOnAward()
 
     local ItemList = CreateLootList(self)
     local listWidth = ItemList:GetWidth()
@@ -924,6 +924,7 @@ function AuctionManagerGUI:Show()
     LOG:Trace("AuctionManagerGUI:Show()")
     if not self._initialized then return end
     self.BidList:ClearSelection()
+    self.removeOnAward = CLM.MODULES.AuctionManager:GetDefaultRemoveOnAward()
     self:Refresh()
     self.top:Show()
 end
