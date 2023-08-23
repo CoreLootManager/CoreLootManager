@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.3.7",
+        data = {
+            {
+                name = "Auctioning",
+                data = {
+                    { header = "Remove on award", body = "Remove on award checkbox behavior is now configurable and it's state will be now restored to default when toggling the window." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.3.6",
         data = {
             {

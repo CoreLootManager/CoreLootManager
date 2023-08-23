@@ -1,3 +1,7 @@
+# Core Loot Manager v4.3.7
+## Auctioning
+### Remove on award
+Remove on award checkbox behavior is now configurable and it's state will be now restored to default when toggling the window.
 # Core Loot Manager v4.3.6
 ## Integrations
 ### Auction Info Export
