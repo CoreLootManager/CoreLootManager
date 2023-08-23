@@ -112,7 +112,7 @@ local function GetDisenchantAutoRemoved(self)
 end
 
 function AuctionManager:SetDefaultRemoveOnAward(value)
-    self.db.disenchantAutoRemoved = value and true or false
+    self.db.defaultRemoveOnAward = value and true or false
 end
 
 function AuctionManager:GetDefaultRemoveOnAward()
@@ -354,6 +354,15 @@ local function CreateConfigurationOptions(self)
             width = "double",
             order = 31
         },
+        auction_default_remove_on_award = {
+            name = CLM.L["Remove on award"],
+            desc = CLM.L["Toggle default behavior of remove on award field in auctioning ui"],
+            type = "toggle",
+            set = function(i, v) self:SetDefaultRemoveOnAward(v) end,
+            get = function(i) return self:GetDefaultRemoveOnAward() end,
+            width = 1,
+            order = 31.5,
+        },
         auctioning_enable_auto_award_from_corpse = {
             name = CLM.L["Auto-assign from corpse"],
             desc = CLM.L["Enable loot auto-assign (Master Looter UI) from corpse when item is awarded"],
@@ -449,15 +458,6 @@ local function CreateConfigurationOptions(self)
             get = function(i) return GetDisenchantAutoRemoved(self) end,
             width = 1,
             order = 41,
-        },
-        auction_default_remove_on_award = {
-            name = CLM.L["Remove on award"],
-            desc = CLM.L["Toggle default behavior of remove on award field in auctioning ui"],
-            type = "toggle",
-            set = function(i, v) self:SetDefaultRemoveOnAward(v) end,
-            get = function(i) return self:GetDefaultRemoveOnAward() end,
-            width = 1,
-            order = 42,
         },
         loot_queue_ignore_classes = {
             name = CLM.L["Ignore"],

@@ -924,6 +924,7 @@ function AuctionManagerGUI:Show()
     LOG:Trace("AuctionManagerGUI:Show()")
     if not self._initialized then return end
     self.BidList:ClearSelection()
+    self.removeOnAward = CLM.MODULES.AuctionManager:GetDefaultRemoveOnAward()
     self:Refresh()
     self.top:Show()
 end
