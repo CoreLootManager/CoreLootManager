@@ -13,6 +13,21 @@ function RosterManager:GenerateName()
     return UTILS.capitalize(prefix).. " " .. UTILS.capitalize(suffix)
 end
 
+local function initializePoints(entry, roster, GUID)
+    local basePoints = roster:GetConfiguration("basePoints")
+    if basePoints > 0 then
+        roster:SetStandings(GUID, basePoints)
+        CLM.MODULES.PointManager:AddFakePointHistory(roster, { GUID }, basePoints, CONSTANTS.POINT_CHANGE_REASON.ROSTER_JOIN, entry:time(), entry:creatorFull(), nil, CONSTANTS.POINT_CHANGE_TYPE.POINTS)
+    end
+    if roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP then
+        local baseSpent = roster:GetConfiguration("baseSpent")
+        if baseSpent > 0 then
+            roster:UpdateSpent(GUID, baseSpent)
+            CLM.MODULES.PointManager:AddFakePointHistory(roster, { GUID }, baseSpent, CONSTANTS.POINT_CHANGE_REASON.ROSTER_JOIN, entry:time(), entry:creatorFull(), nil, CONSTANTS.POINT_CHANGE_TYPE.SPENT)
+        end
+    end
+end
+
 -- Controller Roster Manger
 function RosterManager:Initialize()
     LOG:Trace("RosterManager:Initialize()")
@@ -232,16 +247,22 @@ function RosterManager:Initialize()
             else
                 for _, iGUID in ipairs(profiles) do
                     local GUID = UTILS.getGuidFromInteger(iGUID)
+                    if roster:IsProfileInRoster(GUID) then return end -- TODO in case we start getting weird reports this might be the culprit as it will return early
                     roster:AddProfileByGUID(GUID)
                     local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
                     if profile then
                         -- If it is an alt of a linked main - set its standings and gains from main
                         if profile:Main() ~= "" then
                             -- add main in case it isnt there
-                            roster:AddProfileByGUID(profile:Main())
+                            if not roster:IsProfileInRoster(profile:Main()) then
+                                roster:AddProfileByGUID(profile:Main())
+                                initializePoints(entry, roster, profile:Main())
+                            end
                             roster:MirrorStandings(profile:Main(), { GUID })
                             roster:MirrorWeeklyGains(profile:Main(), { GUID })
                             CLM.MODULES.PointManager:AddFakePointHistory(roster, { GUID }, roster:Standings(profile:Main()), CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creatorFull())
+                        else
+                            initializePoints(entry, roster, GUID)
                         end
                     end
                 end

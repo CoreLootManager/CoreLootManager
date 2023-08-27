@@ -453,11 +453,10 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, point
         return
     end
 
-    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator)
+    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, pointChangeType)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
-    local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
-    update_profile_standings(mutate_update_standings, roster, targets, value, reason, isSpent, timestamp, pointHistoryEntry, true)
+    update_profile_standings(mutate_update_standings, roster, targets, value, reason, pointChangeType, timestamp, pointHistoryEntry, true)
 end
 
 function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
@@ -485,8 +484,8 @@ function PointManager:AddFakePointHistory(roster, targets, value, reason, timest
         return
     end
 
-    local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
-    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note, isSpent)
+    -- local isSpent = (pointChangeType == CONSTANTS.POINT_CHANGE_TYPE.SPENT)
+    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, note, pointChangeType)
     roster:AddRosterPointHistory(pointHistoryEntry)
     for _,target in ipairs(targets) do
         if roster:IsProfileInRoster(target) then
@@ -512,7 +511,8 @@ CONSTANTS.POINT_CHANGE_REASON = {
     IMPORT = 100,
     DECAY = 101,
     INTERVAL_BONUS = 102,
-    LINKING_OVERRIDE = 103
+    LINKING_OVERRIDE = 103,
+    ROSTER_JOIN = 104
 }
 
 CONSTANTS.POINT_CHANGE_REASONS = {
@@ -532,6 +532,7 @@ CONSTANTS.POINT_CHANGE_REASONS = {
         [CONSTANTS.POINT_CHANGE_REASON.DECAY] = CLM.L["Decay"],
         [CONSTANTS.POINT_CHANGE_REASON.INTERVAL_BONUS] = CLM.L["Interval Bonus"],
         [CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE] = CLM.L["Linking override"],
+        [CONSTANTS.POINT_CHANGE_REASON.ROSTER_JOIN] = CLM.L["Joining roster"],
     }
 }
 

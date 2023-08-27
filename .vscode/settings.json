@@ -97,7 +97,20 @@
         "TOTAL",
         "GetUnitName",
         "UIParent",
-        "SELECTED_CHAT_FRAME"
+        "SELECTED_CHAT_FRAME",
+        "HideUIPanel",
+        "ShowUIPanel",
+        "setmetatable",
+        "table",
+        "type",
+        "GameFontNormal",
+        "GameFontHighlight",
+        "ACCEPT",
+        "CANCEL",
+        "Settings",
+        "InterfaceOptions_AddCategory",
+        "GameFontHighlightLarge",
+        "GameFontHighlightSmall"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

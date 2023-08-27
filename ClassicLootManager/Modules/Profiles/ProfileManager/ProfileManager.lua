@@ -190,7 +190,7 @@ function ProfileManager:Initialize()
                         local targets = UTILS.keys(mainProfile:Alts())
                         table.insert(targets, 1, mainGUID)
                         CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, pointSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creatorFull())
-                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, spentSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creatorFull(), nil, true)
+                        CLM.MODULES.PointManager:AddFakePointHistory(roster, targets, spentSum, CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creatorFull(), nil, CONSTANTS.POINT_CHANGE_TYPE.SPENT)
 
                     end
                 end

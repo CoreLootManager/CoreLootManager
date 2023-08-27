@@ -96,7 +96,7 @@ end
 function Roster:AddProfileByGUID(GUID)
     LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     if self:IsProfileInRoster(GUID) then return end
-    self.standings[GUID] = 0
+    self.standings[GUID] = 0 -- TODO
     self.weeklyGains[GUID] = {}
     self.profileLoot[GUID] = {}
     self.profilePointHistory[GUID] = {}
@@ -131,6 +131,7 @@ function Roster:IsConditionallyRemoved(GUID)
 end
 
 function Roster:IsProfileInRoster(GUID)
+    print(GUID, self.inRoster[GUID])
     return (self.inRoster[GUID] ~= nil)
 end
 
