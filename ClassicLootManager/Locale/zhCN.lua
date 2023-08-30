@@ -52,7 +52,7 @@ CLM.L["%s profile missing. Adding."] = "%s 角色信息缺失，正在添加。"
 CLM.L["%s to %s for %s in <%s>"] = "%s to %s for %s in <%s>"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:989
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:997
---CLM.L["%s to be awarded to player when joining roster."] = ""
+CLM.L["%s to be awarded to player when joining roster."] = "%s 将奖励给加入名单时的玩家。"
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:172
 CLM.L["%s trade me for %s"] = "%s 交易我为 %s"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:174
@@ -1055,7 +1055,7 @@ CLM.L["Join our discord for more info: "] = "加入我们的Discord以获取更�
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:415
 CLM.L["Join selected raid"] = "加入选中的团本活动"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:535
---CLM.L["Joining roster"] = ""
+CLM.L["Joining roster"] = "加入名册"
 -- ClassicLootManager_Integrations/GUI.lua:141
 CLM.L["July"] = "七月"
 -- ClassicLootManager_Integrations/GUI.lua:140
@@ -1815,9 +1815,9 @@ CLM.L["Start"] = "开始"
 CLM.L["Started raid %s"] = "已开始团本活动 %s"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:988
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:996
---CLM.L["Starting %s"] = ""
+CLM.L["Starting %s"] = "开始 %s"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:982
---CLM.L["Starting points"] = ""
+CLM.L["Starting points"] = "起点"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:448
 CLM.L["Statistics"] = "统计数据"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:261

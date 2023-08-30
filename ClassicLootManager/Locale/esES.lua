@@ -52,7 +52,7 @@ CLM.L["%s profile missing. Adding."] = "%s falta el perfil. Agregando."
 CLM.L["%s to %s for %s in <%s>"] = "%s a %s para %s en <%s>"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:989
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:997
---CLM.L["%s to be awarded to player when joining roster."] = ""
+CLM.L["%s to be awarded to player when joining roster."] = "%s que se otorgará a la jugadora al unirse a la lista."
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:172
 CLM.L["%s trade me for %s"] = "%s comercia por %s"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:174
@@ -1055,7 +1055,7 @@ CLM.L["Join our discord for more info: "] = "Únete a nuestro discord para más 
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:415
 CLM.L["Join selected raid"] = "Unirse a la raid seleccionada"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:535
---CLM.L["Joining roster"] = ""
+CLM.L["Joining roster"] = "Unirse a la lista"
 -- ClassicLootManager_Integrations/GUI.lua:141
 CLM.L["July"] = "Julio"
 -- ClassicLootManager_Integrations/GUI.lua:140
@@ -1815,9 +1815,9 @@ CLM.L["Start"] = "Comienzo"
 CLM.L["Started raid %s"] = "Raid iniciada %s"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:988
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:996
---CLM.L["Starting %s"] = ""
+CLM.L["Starting %s"] = "%s iniciales"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:982
---CLM.L["Starting points"] = ""
+CLM.L["Starting points"] = "Puntos de partida"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:448
 CLM.L["Statistics"] = "Estadísticas"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:261
