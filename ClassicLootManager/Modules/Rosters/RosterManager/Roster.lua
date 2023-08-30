@@ -131,6 +131,7 @@ function Roster:IsConditionallyRemoved(GUID)
 end
 
 function Roster:IsProfileInRoster(GUID)
+    print(GUID, self.inRoster[GUID])
     return (self.inRoster[GUID] ~= nil)
 end
 

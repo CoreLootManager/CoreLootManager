@@ -300,7 +300,19 @@ function RosterManagerOptions:Initialize()
         end),
         auction_minimum_points_set = (function(name, value)
             SetRosterOption(name, "minimumPoints", value)
-        end)
+        end),
+        general_starting_points_get = (function(name)
+            return tostring(GetRosterOption(name, "basePoints"))
+        end),
+        general_starting_points_set = (function(name, value)
+            SetRosterOption(name, "basePoints", value)
+        end),
+        general_starting_spent_get = (function(name)
+            return tostring(GetRosterOption(name, "baseSpent"))
+        end),
+        general_starting_spent_set = (function(name, value)
+            SetRosterOption(name, "baseSpent", value)
+        end),
     }
 
     self:UpdateOptions()
@@ -966,17 +978,40 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         -- width = 0.6
                     },
+                    starting_points_header = {
+                        name = CLM.L["Starting points"],
+                        type = "header",
+                        order = 21,
+                        width = "full"
+                    },
+                    starting_points = {
+                        name = function() return string.format(CLM.L["Starting %s"], isEPGP and CLM.L["EP"] or CLM.L["DKP"]) end,
+                        desc = function() return string.format(CLM.L["%s to be awarded to player when joining roster."], isEPGP and CLM.L["EP"] or CLM.L["DKP"]) end,
+                        type = "input",
+                        disabled = disableManage,
+                        order = 22,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                    },
+                    starting_spent = {
+                        name = function() return string.format(CLM.L["Starting %s"], CLM.L["GP"]) end,
+                        desc = function() return string.format(CLM.L["%s to be awarded to player when joining roster."], CLM.L["GP"]) end,
+                        type = "input",
+                        disabled = disableManage,
+                        order = 23,
+                        hidden = not isEPGP,
+                        pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
+                    },
                     bench_header = {
                         name = CLM.L["Bench"],
                         type = "header",
-                        order = 21,
+                        order = 24,
                         width = "full"
                     },
                     allow_self_bench_subscribe =  {
                         name = CLM.L["Allow subscription"],
                         desc = CLM.L["Allow players to subscribe to the bench through Raids menu"],
                         type = "toggle",
-                        order = 22,
+                        order = 25,
                         disabled = disableManage,
                         width = 1
                     },
@@ -984,7 +1019,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         name = CLM.L["Auto bench leavers"],
                         desc = CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."],
                         type = "toggle",
-                        order = 23,
+                        order = 26,
                         disabled = disableManage,
                         width = 1
                     },
@@ -992,7 +1027,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         name = CLM.L["Bench multiplier"],
                         desc = CLM.L["Point award multiplier for players on bench."],
                         type = "input",
-                        order = 23.5,
+                        order = 27,
                         disabled = disableManage,
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
                         width = 1
@@ -1000,13 +1035,13 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                     named_buttons_header = {
                         name = CLM.L["Button Names"],
                         type = "header",
-                        order = 24,
+                        order = 28,
                         width = "full"
                     },
                     epgp_header = {
                         name = CLM.L["EPGP"],
                         type = "header",
-                        order = 32,
+                        order = 36,
                         width = "full",
                         hidden = not isEPGP,
                     },
@@ -1016,7 +1051,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "input",
                         disabled = disableManage,
                         pattern = CONSTANTS.REGEXP_FLOAT_POSITIVE,
-                        order = 33,
+                        order = 37,
                         hidden = not isEPGP,
                     },
                     round_pr = {
@@ -1025,7 +1060,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "select",
                         width = 1,
                         disabled = disableManage,
-                        order = 34,
+                        order = 38,
                         hidden = not isEPGP,
                         values = CONSTANTS.ALLOWED_ROUNDINGS_GUI
                     },
@@ -1057,6 +1092,15 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         order = 10,
                         width = "full"
                     },
+                    minimum_points = {
+                        name = CLM.L["Minimum standing"],
+                        desc = CLM.L["Minimum standing required to be allowed to bid."],
+                        type = "input",
+                        disabled = disableManage,
+                        pattern = CONSTANTS.REGEXP_FLOAT,
+                        width = 1,
+                        order = 11
+                    },
                     use_os = {
                         name = CLM.L["OS"],
                         desc = CLM.L["Enable OS bids"],
@@ -1071,16 +1115,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                         type = "toggle",
                         disabled = disableManage,
                         width = 2,
-                        order = 12.4
-                    },
-                    minimum_points = {
-                        name = CLM.L["Minimum standing"],
-                        desc = CLM.L["Minimum standing required to be allowed to bid."],
-                        type = "input",
-                        disabled = disableManage,
-                        pattern = CONSTANTS.REGEXP_FLOAT,
-                        width = 1,
-                        order = 11
+                        order = 12.1
                     },
                     time_header = {
                         name = CLM.L["Time"],
@@ -1172,11 +1207,11 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         name = CLM.L["Use named buttons"],
         desc = CLM.L["Will display names of the buttons instead of values in bidding UI"],
         type = "toggle",
-        order = 25,
+        order = 29,
         disabled = disableManage,
         width = 1
     }
-    local order = 26
+    local order = 30
     for _, tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
         options.args.general.args["named_button_tier_" .. tostring(tier)] = {
             -- name = CONSTANTS.SLOT_VALUE_TIERS_GUI[tier],

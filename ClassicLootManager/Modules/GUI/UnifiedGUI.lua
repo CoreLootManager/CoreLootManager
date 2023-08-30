@@ -57,6 +57,7 @@ local function UpdateScrollingTableData(self)
     currentSt:SetData(dataProvider(currentSt:GetScrollingTable()))
 end
 
+local UpdateTabInternal
 local function UpdateTab(self)
     -- Update Tab sizes
     local totalWidth = self.aceObjects.tabularContent.frame.width
@@ -72,10 +73,13 @@ local function UpdateTab(self)
         },
         alignV = "top"
     })
-    -- Update options
-    self:RefreshOptionsPane()
-    -- Redraw
-    self.aceObjects.tabularContent:DoLayout()
+    UpdateTabInternal = UpdateTabInternal or (function()
+        -- Update options
+        self:RefreshOptionsPane()
+        -- Redraw
+        self.aceObjects.tabularContent:DoLayout()
+    end)
+    C_Timer.After(0, UpdateTabInternal)
 end
 
 local function CreateTabsWidget(self, content)
@@ -371,6 +375,7 @@ end
 function UnifiedGUI:GetScrollingTable()
     return self.aceObjects.scrollingTables[self.selectedTab]:GetScrollingTable()
 end
+
 
 -- Refresh the data
 function UnifiedGUI:Refresh(visible)

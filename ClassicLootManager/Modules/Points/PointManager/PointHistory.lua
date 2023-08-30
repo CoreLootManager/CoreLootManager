@@ -95,7 +95,7 @@ function FakePointHistory:New(targets, timestamp, value, reason, creator, note, 
     o.reason = reason
     o.creator = creator or ""
     o.note = note or ""
-    o.spent = type or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
+    o.type = type or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
 
     return o
 end
