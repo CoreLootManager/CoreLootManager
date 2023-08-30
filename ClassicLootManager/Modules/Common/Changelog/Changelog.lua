@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.4.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Fixes", body = "Fix multiple unintended bugs." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.4.0",
         data = {
             {

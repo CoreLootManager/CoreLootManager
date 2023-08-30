@@ -1,3 +1,7 @@
+# Core Loot Manager v4.4.1
+## Fixes
+### Fixes
+Fix multiple unintended bugs.
 # Core Loot Manager v4.4.0
 ## Features
 ### Starting points
