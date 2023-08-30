@@ -1,7 +1,7 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
-        version = "",
+        version = "v4.4.0",
         data = {
             {
                 name = "Features",
