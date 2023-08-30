@@ -1,6 +1,24 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Starting points", body = "You can now configure non-zero starting DKP/EP/GP. Those points will be awarded when player is joining roster by normal means (not related to alt-main linking)." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Refresh", body = "Fixed issues that might have lead to lua error when refreshing standings tab." },
+                    { header = "Point history", body = "Fixed wrong history display for some cases of GP awards." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.3.7",
         data = {
             {

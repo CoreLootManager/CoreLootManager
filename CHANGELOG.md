@@ -1,3 +1,12 @@
+# Core Loot Manager v4.4.0
+## Features
+### Starting points
+You can now configure non-zero starting DKP/EP/GP. Those points will be awarded when player is joining roster by normal means (not related to alt-main linking).
+## Fixes
+### Refresh
+Fixed issues that might have lead to lua error when refreshing standings tab.
+### Point history
+Fixed wrong history display for some cases of GP awards.
 # Core Loot Manager v4.3.7
 ## Auctioning
 ### Remove on award
