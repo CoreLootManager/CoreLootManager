@@ -246,9 +246,12 @@ function RosterManager:Initialize()
                 end
             else
                 for _, iGUID in ipairs(profiles) do
+                    local initialize = false
                     local GUID = UTILS.getGuidFromInteger(iGUID)
-                    if roster:IsProfileInRoster(GUID) then return end -- TODO in case we start getting weird reports this might be the culprit as it will return early
-                    roster:AddProfileByGUID(GUID)
+                    if not roster:IsProfileInRoster(GUID) then
+                        initialize = true
+                        roster:AddProfileByGUID(GUID)
+                    end
                     local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
                     if profile then
                         -- If it is an alt of a linked main - set its standings and gains from main
@@ -262,7 +265,9 @@ function RosterManager:Initialize()
                             roster:MirrorWeeklyGains(profile:Main(), { GUID })
                             CLM.MODULES.PointManager:AddFakePointHistory(roster, { GUID }, roster:Standings(profile:Main()), CONSTANTS.POINT_CHANGE_REASON.LINKING_OVERRIDE, entry:time(), entry:creatorFull())
                         else
-                            initializePoints(entry, roster, GUID)
+                            if initialize then
+                                initializePoints(entry, roster, GUID)
+                            end
                         end
                     end
                 end
