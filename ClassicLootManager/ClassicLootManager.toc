@@ -1,9 +1,9 @@
 ## Interface: 100105
-## Interface-Wrath: 30402
-## Interface-Classic: 11403
+## Interface-Wrath: 30403
+## Interface-Classic: 11404
 ## X-Min-Interface: 100105
-## X-Min-Interface-Wrath: 30402
-## X-Min-Interface-Classic: 11403
+## X-Min-Interface-Wrath: 30403
+## X-Min-Interface-Classic: 11404
 ## Title: |cffdcb749Core Loot Manager|r
 ## Notes: Robust, DKP and EPGP based Loot Manager system. Formerly |cffdcb749Classic Loot Manager|r.
 ## Author: Lantis
