@@ -879,10 +879,19 @@ function AuctionManagerGUI:Refresh()
     local itemList = {}
     for _, auctionItem in pairs(auction:GetItems()) do
         local iconColor, note
-        if not auctionItem:HasValidBids() and auction:IsComplete() then
-            iconColor = colorGold
-            note = CLM.L["No bids"]
+
+        if auction:IsComplete() then
+            if not auctionItem:HasValidBids() then
+                iconColor = colorGold
+                note = CLM.L["No bids"]
+            end
+    
+            if auctionitem:IsAwarded() then
+                iconColor = colorGreen
+                note = CLM.L["Awarded"]
+            end
         end
+
         itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), iconColor = iconColor, note = note }, {value = auctionItem} }}
     end
     self.ItemList:SetData(itemList)

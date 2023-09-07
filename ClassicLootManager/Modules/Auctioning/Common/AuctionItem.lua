@@ -247,4 +247,8 @@ function AuctionItem:BidDenied()
     return (self.bidStatus == false)
 end
 
+function AuctionItem:IsAwarded()
+    return (self.awardEntryId ~= nil)
+end
+
 CLM.MODELS.AuctionItem = AuctionItem
