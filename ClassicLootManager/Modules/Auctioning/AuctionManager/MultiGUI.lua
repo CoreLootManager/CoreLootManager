@@ -886,7 +886,7 @@ function AuctionManagerGUI:Refresh()
                 note = CLM.L["No bids"]
             end
     
-            if auctionitem:IsAwarded() then
+            if auctionItem:IsAwarded() then
                 iconColor = colorGreen
                 note = CLM.L["Awarded"]
             end
