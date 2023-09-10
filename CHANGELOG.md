@@ -1,3 +1,9 @@
+# Core Loot Manager v4.4.2
+## Changes
+### ToC update
+Updated ToC for ICC (3.4.3), Fury Incarnate (10.1.7) and Hardcore (1.14.4)
+### Fixes
+Fix auction item removal clearing.
 # Core Loot Manager v4.4.1
 ## Fixes
 ### Fixes
