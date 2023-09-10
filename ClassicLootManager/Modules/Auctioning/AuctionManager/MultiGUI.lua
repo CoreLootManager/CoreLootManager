@@ -866,6 +866,24 @@ local function GetExternalColumnData(self, auction, item, name, response)
     return data
 end
 
+local function iterateSortByBid(auctionItems)
+    -- collect the keys
+    local keys = {}
+    for k in pairs(auctionItems) do keys[#keys+1] = k end
+
+    -- sort by bids
+    table.sort(keys, function(a,b) return auctionItems[a]:GetHighestBid() > auctionItems[b]:GetHighestBid() end)
+
+    -- return the iterator function
+    local i = 0
+    return function()
+        i = i + 1
+        if keys[i] then
+            return keys[i], auctionItems[keys[i]]
+        end
+    end
+end
+
 function AuctionManagerGUI:Refresh()
     LOG:Trace("AuctionManagerGUI:Refresh()")
     if not self._initialized then return end
@@ -877,7 +895,7 @@ function AuctionManagerGUI:Refresh()
     end
 
     local itemList = {}
-    for _, auctionItem in pairs(auction:GetItems()) do
+    for _, auctionItem in iterateSortByBid(auction:GetItems()) do
         local iconColor, note
         if not auctionItem:HasValidBids() and auction:IsComplete() then
             iconColor = colorGold
