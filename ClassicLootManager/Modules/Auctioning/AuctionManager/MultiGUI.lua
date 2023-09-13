@@ -265,6 +265,14 @@ local function CreateLootList(self)
 end
 
 local function GenerateAwardOptions(self)
+    local btnAwardText = CLM.L["Award"]
+    if self.auctionItem then
+        btnAwardText = string.format(
+            CLM.L["Award (%d/%d)"],
+            self.auctionItem:GetAmountToAward() - self.auctionItem:GetAmountAwarded(),
+            self.auctionItem:GetAmountToAward()
+        )
+    end
     local options = {
         clear = {
             name = CLM.L["Clear"],
@@ -306,7 +314,7 @@ local function GenerateAwardOptions(self)
             order = 4
         },
         award = {
-            name = string.format(CLM.L["Award (%d/%d)"], self.auctionItem:GetAmountToAward() - self.auctionItem:GetAmountAwarded(), self.auctionItem:GetAmountToAward()),
+            name = btnAwardText,
             type = "execute",
             func = (function()
                 CLM.MODULES.AuctionManager:Award(self.auctionItem, self.awardPlayer, self.awardPrice)
