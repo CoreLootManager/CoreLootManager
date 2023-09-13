@@ -236,8 +236,10 @@ end
 
 local function AddItemInternal(self, item)
     if self.items[item:GetItemID()] then
-        LOG:Message("%s already in auction list.", item:GetItemLink())
-        return
+        --LOG:Message("%s already in auction list.", item:GetItemLink())
+        local auctionItem = self.items[item:GetItemId()]
+        auctionItem:IncrementAmountToAward()
+        return auctionItem
     end
     local auctionItem = AuctionItem:New(item)
     AddAuctionItemToList(self, auctionItem)

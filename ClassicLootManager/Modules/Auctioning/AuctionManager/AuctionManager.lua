@@ -1171,7 +1171,7 @@ function AuctionManager:Award(item, name, price)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         CLM.MODULES.AutoAssign:Handle(item:GetItemID(), name)
-        item.SetAwardId(uuid)
+        item:IncrementAmountAwarded()
         RevalidateBids(self)
     end
 end
