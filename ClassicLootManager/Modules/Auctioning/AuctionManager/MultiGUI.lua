@@ -306,7 +306,7 @@ local function GenerateAwardOptions(self)
             order = 4
         },
         award = {
-            name = string.format(CLM.L["Award (%d/%d)"], self.auctionItem:amountAwarded(), self.auctionItem:amountToAward()),
+            name = string.format(CLM.L["Award (%d/%d)"], self.auctionItem:GetAmountToAward() - self.auctionItem:GetAmountAwarded(), self.auctionItem:GetAmountToAward()),
             type = "execute",
             func = (function()
                 CLM.MODULES.AuctionManager:Award(self.auctionItem, self.awardPlayer, self.awardPrice)
@@ -879,11 +879,10 @@ function AuctionManagerGUI:Refresh()
     local itemList = {}
     for _, auctionItem in pairs(auction:GetItems()) do
         local iconColor, note
-        if auctionItem:HasValidBids() and auction:IsComplete() then
+        if not auctionItem:HasValidBids() and auction:IsComplete() then
             iconColor = colorGold
             note = CLM.L["No bids"]
         end
-
         itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), iconColor = iconColor, note = note }, {value = auctionItem} }}
     end
     self.ItemList:SetData(itemList)
