@@ -227,7 +227,7 @@ local function CreateLootList(self)
                         if IsControlKeyDown() then
                             LOG:Message(CLM.L["Removing %s from current queue."], item:GetItemLink())
                             CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(item)
-                            self.auctionitem = nil
+                            self.auctionItem = nil
                         else
                             LOG:Message(CLM.L["Moving %s from current queue to pending queue."], item:GetItemLink())
                             CLM.MODULES.AuctionManager:MoveItemToPendingList(item)
