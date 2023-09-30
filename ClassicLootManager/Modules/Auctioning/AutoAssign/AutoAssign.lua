@@ -228,6 +228,8 @@ local autoAssignIgnores = UTILS.Set({
     29434, -- Badge of Justice
     23572, -- Primal Nether
     45038, -- Fragment of Val'anyr
+    49908, -- Primordial Saronite
+    50274, -- Shadowfrost Shard
 })
 function AutoAssign:IsIgnored(itemId)
     return autoAssignIgnores[itemId]
