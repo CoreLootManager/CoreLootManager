@@ -346,14 +346,20 @@ function UTILS.RemoveServer(name)
     name, _ = strsplit("-", name or "")
     return name
 end
+function UTILS.GetServer(name)
+    local _, server = strsplit("-", name or "")
+    return (server or "")
+end
 local playerGUID = UnitGUID("player")
 local getIntegerGuid, myRealmId
 
 local normalizedRealmName
-local function _GetNormalizedRealmName()
+function UTILS.GetNormalizedRealmName()
     normalizedRealmName = normalizedRealmName or GetNormalizedRealmName()
     return normalizedRealmName or ""
 end
+
+local _GetNormalizedRealmName = UTILS.GetNormalizedRealmName
 
 if CLM.WoW10 or CLM.WoWEra then -- support cross-server for Retail and Classic Era
     function UTILS.getIntegerGuid(GUID)
