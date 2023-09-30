@@ -1,3 +1,9 @@
+# Core Loot Manager v4.4.3
+## Fixes
+### ICC Items
+Add missing ICC items.
+### Classic Era award from bag
+Fix award from bag error on Classic Era version.
 # Core Loot Manager v4.4.2
 ## Changes
 ### ToC update
