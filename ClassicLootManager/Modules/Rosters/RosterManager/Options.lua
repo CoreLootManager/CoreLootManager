@@ -589,7 +589,7 @@ local function item_value_overrides(self, roster)
                     name = "",
                     image = icon,
                     order = order,
-                    width = 0.3,
+                    width = 0.35,
                     type = "execute",
                     func = (function() end),
                     tooltipHyperlink = shortItemLink,
@@ -620,7 +620,7 @@ local function item_value_overrides(self, roster)
                 desc = CLM.L["Remove override"],
                 -- image = icon,
                 order = order,
-                width = 0.25,
+                width = 0.30,
                 type = "execute",
                 func = (function() CLM.MODULES.RosterManager:RemoveRosterItemOverride(roster, id) end)
             }
