@@ -245,7 +245,7 @@ function AutoAssign:GiveMasterLooterItem(itemId, player)
             if slotItemId == itemId then
                 for playerIndex = 1, GetNumGroupMembers() do
 ---@diagnostic disable-next-line: redundant-parameter
-                    if (GetMasterLootCandidate(itemIndex, playerIndex) == player) then
+                    if (UTILS.Disambiguate(GetMasterLootCandidate(itemIndex, playerIndex) or "") == player) then
                         GiveMasterLoot(itemIndex, playerIndex)
                         return
                     end
