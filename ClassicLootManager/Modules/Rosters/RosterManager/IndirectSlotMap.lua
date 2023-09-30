@@ -153,6 +153,22 @@ local IndirectMap = {
         [47558] = "INVTYPE_NON_EQUIP",
         -- Regalia of the Grand Vanquisher
         [47559] = "INVTYPE_NON_EQUIP",
+
+        -- -- --
+        -- P3 --
+        -- -- --
+        -- Vanquisher's Mark of Sanctification
+        [52025] = "INVTYPE_NON_EQUIP",
+        -- Protector's Mark of Sanctification
+        [52026] = "INVTYPE_NON_EQUIP",
+        -- Conqueror's Mark of Sanctification
+        [52027] = "INVTYPE_NON_EQUIP",
+        -- Vanquisher's Mark of Sanctification (Heroic)
+        [52028] = "INVTYPE_NON_EQUIP",
+        -- Protector's Mark of Sanctification (Heroic)
+        [52029] = "INVTYPE_NON_EQUIP",
+        -- Conqueror's Mark of Sanctification (Heroic)
+        [52030] = "INVTYPE_NON_EQUIP",
     },
     ilvl = {
         -- -- --
@@ -307,6 +323,22 @@ local IndirectMap = {
         [47558] = 258,
         -- Regalia of the Grand Vanquisher
         [47559] = 258,
+
+        -- -- --
+        -- P4 --
+        -- -- --
+        -- Vanquisher's Mark of Sanctification
+        [52025] = 264,
+        -- Protector's Mark of Sanctification
+        [52026] = 264,
+        -- Conqueror's Mark of Sanctification
+        [52027] = 264,
+        -- Vanquisher's Mark of Sanctification (Heroic)
+        [52028] = 277,
+        -- Protector's Mark of Sanctification (Heroic)
+        [52029] = 277,
+        -- Conqueror's Mark of Sanctification (Heroic)
+        [52030] = 277,
     }
 }
 CLM.IndirectMap = IndirectMap
