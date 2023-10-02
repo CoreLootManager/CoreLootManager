@@ -247,6 +247,10 @@ function AuctionItem:IncrementTotal()
     self.total = self.total + 1
 end
 
+function AuctionItem:DecrementTotal()
+    self.total = self.total - 1
+end
+
 function AuctionItem:GetTotal()
     return self.total
 end

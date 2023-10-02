@@ -268,7 +268,7 @@ local function GenerateAwardOptions(self)
     local btnAwardText = CLM.L["Award"]
     if self.auctionItem then
         btnAwardText = string.format(
-            CLM.L["Award"] .. "(%d)",
+            CLM.L["Award"] .. " (%d)",
             self.auctionItem:GetTotal()
         )
     end
@@ -318,7 +318,7 @@ local function GenerateAwardOptions(self)
             func = (function()
                 CLM.MODULES.AuctionManager:Award(self.auctionItem, self.awardPlayer, self.awardPrice)
                 self.BidList:ClearSelection()
-                if self.removeOnAward and not self.auctionItem:HasItemsToAward() then
+                if self.removeOnAward and (self.auctionItem:GetTotal() == 0) then
                     CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
                     self.auctionItem = nil
                 end
