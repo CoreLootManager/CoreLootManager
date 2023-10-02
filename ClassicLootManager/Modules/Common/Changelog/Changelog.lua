@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.4.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "ICC Items", body = "Add missing ICC items." },
+                    { header = "Classic Era award from bag", body = "Fix award from bag error on Classic Era version." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.4.2",
         data = {
             {

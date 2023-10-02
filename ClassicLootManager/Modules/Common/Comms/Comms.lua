@@ -125,6 +125,17 @@ function Comms:Send(prefix, message, distribution, target, priority)
         priority = CONSTANTS.COMMS.PRIORITY.NORMAL
     end
     -- Serialize
+    if distribution == CONSTANTS.COMMS.DISTRIBUTION.WHISPER then
+        -- cross-faction whisper workaround
+        if UnitFactionGroup(target) ~= UnitFactionGroup("player") then
+            distribution = CONSTANTS.COMMS.DISTRIBUTION.RAID
+            message = {
+                _isXfaction = true,
+                _message = message,
+                _target = target
+            }
+        end
+    end
     local tmp = serdes:SerializeEx(SERIALIZATION_OPTIONS, message)
     if tmp == nil then
         LOG:Error("Comms:Send() unable to serialize message: %s", message)
@@ -197,8 +208,15 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         LOG:Debug("Comms:OnReceive() unable to deserialize message [%s] from [%s]", prefix, sender)
         return
     end
-    -- Execute callback
-    self.callbacks[prefix](tmp, distribution, sender)
+    -- Cross-Faction workaround check
+    if tmp._isXfaction then
+        if tmp._target == UTILS.whoami() then
+            self.callbacks[prefix](tmp._message, distribution, sender)
+        end
+    else
+        -- Execute callback
+        self.callbacks[prefix](tmp, distribution, sender)
+    end
 end
 
 -- Publish API
