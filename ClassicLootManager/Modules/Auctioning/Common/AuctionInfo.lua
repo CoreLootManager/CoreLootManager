@@ -47,7 +47,7 @@ end
 
 local function Clear(self)
     for _, item in pairs(self.items) do
-        --item:Clear()
+        item:Clear()
     end
 
     self.anonymousMap = {}
@@ -236,8 +236,9 @@ end
 
 local function AddItemInternal(self, item)
     if self.items[item:GetItemID()] then
+        LOG:Message("%s already in auction list. Increasing the amount to award", item:GetItemLink())
         local auctionItem = self.items[item:GetItemID()]
-        auctionItem:IncrementAmountToAward()
+        auctionItem:IncrementTotal()
         return auctionItem
     end
     local auctionItem = AuctionItem:New(item)

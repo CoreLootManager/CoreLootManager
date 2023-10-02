@@ -268,9 +268,8 @@ local function GenerateAwardOptions(self)
     local btnAwardText = CLM.L["Award"]
     if self.auctionItem then
         btnAwardText = string.format(
-            CLM.L["Award (%d/%d)"],
-            self.auctionItem:GetAmountToAward() - self.auctionItem:GetAmountAwarded(),
-            self.auctionItem:GetAmountToAward()
+            CLM.L["Award"] .. "(%d)",
+            self.auctionItem:GetTotal()
         )
     end
     local options = {

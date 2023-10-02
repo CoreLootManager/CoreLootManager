@@ -151,8 +151,7 @@ function AuctionItem:Clear()
     self.bid = nil
     -- self.canUse = true
     self.highestBid = -math.huge
-    self.amountToAward = 1
-    self.amountAwarded = 0
+    self.total = 1
 end
 
 function AuctionItem:LoadValues(roster)
@@ -244,24 +243,12 @@ function AuctionItem:BidDenied()
     return (self.bidStatus == false)
 end
 
-function AuctionItem:GetAmountAwarded()
-    return self.amountAwarded
+function AuctionItem:IncrementTotal()
+    self.total = self.total + 1
 end
 
-function AuctionItem:IncrementAmountAwarded()
-    self.amountAwarded = self.amountAwarded + 1
-end
-
-function AuctionItem:GetAmountToAward()
-    return self.amountToAward
-end
-
-function AuctionItem:IncrementAmountToAward()
-    self.amountToAward = self.amountToAward + 1
-end
-
-function AuctionItem:HasItemsToAward()
-    return self.amountToAward ~= self.amountAwarded
+function AuctionItem:GetTotal()
+    return self.total
 end
 
 CLM.MODELS.AuctionItem = AuctionItem
