@@ -52,6 +52,7 @@ function AuctionItem:New(item)
     o.item = item or emptyItem
     o.canUse = true
     o.values = {}
+    o.total = 1
     o:Clear()
 
     CheckUsability(o)
@@ -151,7 +152,6 @@ function AuctionItem:Clear()
     self.bid = nil
     -- self.canUse = true
     self.highestBid = -math.huge
-    self.total = 1
 end
 
 function AuctionItem:LoadValues(roster)

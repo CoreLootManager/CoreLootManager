@@ -887,7 +887,7 @@ function AuctionManagerGUI:Refresh()
             iconColor = colorGold
             note = CLM.L["No bids"]
         end
-        itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), iconColor = iconColor, note = note }, {value = auctionItem} }}
+        itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), iconColor = iconColor, note = note, overlay = { text = auctionItem:GetTotal() } }, {value = auctionItem} }}
     end
     self.ItemList:SetData(itemList)
 

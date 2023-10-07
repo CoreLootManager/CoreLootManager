@@ -47,14 +47,7 @@ end
 
 local function Clear(self)
     for _, item in pairs(self.items) do
-        -- temporarily store the total before clearing
-        local currentTotal = item:GetTotal()
-
         item:Clear()
-
-        for _ = 1, currentTotal - 1 do
-            item:IncrementTotal()
-        end
     end
 
     self.anonymousMap = {}

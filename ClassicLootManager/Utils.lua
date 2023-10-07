@@ -818,13 +818,46 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
     local itemInfo = data[realrow].cols[column].value
     local iconColor = data[realrow].cols[column].iconColor or {}
     local note = data[realrow].cols[column].note
+    local overlay = data[realrow].cols[column].overlay or {}
     local _, _, _, _, icon = GetItemInfoInstant(itemInfo or 0)
+
+    -- Reparent and rework text FontString
+    if frame.text:GetParent() ~= frame then
+        frame.text:SetParent(frame)
+        local font, _, fontFlags = frame.text:GetFont()
+        frame.text:SetFont(font, 18, fontFlags)
+        frame.text:SetTextColor(1.0, 1.0, 1.0, 1.0)
+        frame.text:SetShadowColor(0.0, 0.0, 0.0, 1.0)
+        frame.text:SetJustifyH("LEFT")
+        frame.text:SetJustifyV("BOTTOM")
+    end
+
+
     if icon then
         frame:SetNormalTexture(icon)
         frame:SetHighlightTexture(136580, "ADD")
         frame:GetHighlightTexture():SetTexCoord(0, 1, 0.23, 0.77)
         frame:GetNormalTexture():SetVertexColor(iconColor.r or 1, iconColor.g or 1, iconColor.b or 1, iconColor.a or 1)
         frame:Show()
+
+        if overlay.text then
+            frame.text:SetText(tostring(overlay.text))
+            local textColor = overlay.color or {}
+            frame.text:SetTextColor(
+                textColor.r or 1.0,
+                textColor.g or 1.0,
+                textColor.b or 1.0,
+                textColor.a or 1.0
+            )
+            local shadowColor = overlay.shadow or {}
+            frame.text:SetShadowColor(
+                shadowColor.r or 0.0,
+                shadowColor.g or 0.0,
+                shadowColor.b or 0.0,
+                shadowColor.a or 1.0
+            )
+        end
+
         frame:SetScript("OnEnter", function()
             GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
             local itemInfoType = type(itemInfo)
