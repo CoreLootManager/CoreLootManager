@@ -148,14 +148,10 @@ function AuctionItem:Clear()
     self.userResponses = {}
     self.userRolls = {}
     self.rollValues = {}
-    self.awardEntryId = nil
     self.bid = nil
     -- self.canUse = true
     self.highestBid = -math.huge
-end
-
-function AuctionItem:SetAwardId(entryId)
-    self.awardEntryId = entryId
+    self.total = 1
 end
 
 function AuctionItem:LoadValues(roster)
@@ -245,6 +241,18 @@ end
 
 function AuctionItem:BidDenied()
     return (self.bidStatus == false)
+end
+
+function AuctionItem:IncrementTotal()
+    self.total = self.total + 1
+end
+
+function AuctionItem:DecrementTotal()
+    self.total = self.total - 1
+end
+
+function AuctionItem:GetTotal()
+    return self.total
 end
 
 CLM.MODELS.AuctionItem = AuctionItem
