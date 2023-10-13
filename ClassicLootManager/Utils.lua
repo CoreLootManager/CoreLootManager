@@ -832,7 +832,6 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
         frame.text:SetJustifyV("BOTTOM")
     end
 
-
     if icon then
         frame:SetNormalTexture(icon)
         frame:SetHighlightTexture(136580, "ADD")
@@ -843,19 +842,9 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
         if overlay.text then
             frame.text:SetText(tostring(overlay.text))
             local textColor = overlay.color or {}
-            frame.text:SetTextColor(
-                textColor.r or 1.0,
-                textColor.g or 1.0,
-                textColor.b or 1.0,
-                textColor.a or 1.0
-            )
+            frame.text:SetTextColor(textColor.r or 1.0, textColor.g or 1.0, textColor.b or 1.0, textColor.a or 1.0)
             local shadowColor = overlay.shadow or {}
-            frame.text:SetShadowColor(
-                shadowColor.r or 0.0,
-                shadowColor.g or 0.0,
-                shadowColor.b or 0.0,
-                shadowColor.a or 1.0
-            )
+            frame.text:SetShadowColor(shadowColor.r or 0.0, shadowColor.g or 0.0, shadowColor.b or 0.0, shadowColor.a or 1.0)
         end
 
         frame:SetScript("OnEnter", function()
