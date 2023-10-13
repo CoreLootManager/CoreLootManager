@@ -70,8 +70,9 @@ local isSpecial = UTILS.Set({
     -- ToGC tokens have no equiploc
     -- We are faking them as Non-equippable INVTYPE
     -- and we want to display data for them
-    -- TODO probably same thing will happen for ICC tokens
-    47242, 47557, 47558, 47559
+    47242, 47557, 47558, 47559,
+    -- ICC items
+    52025, 52026, 52027, 52028, 52029, 52030
 })
 
 local function addItemPriceToTooltip(tooltip)
