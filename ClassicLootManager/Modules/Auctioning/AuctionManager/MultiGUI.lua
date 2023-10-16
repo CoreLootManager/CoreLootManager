@@ -265,6 +265,10 @@ local function CreateLootList(self)
 end
 
 local function GenerateAwardOptions(self)
+    local btnAwardText = CLM.L["Award"]
+    if self.auctionItem and self.auctionItem:GetTotal() > 1 then
+        btnAwardText = btnAwardText .. string.format(" (%d)", self.auctionItem:GetTotal())
+    end
     local options = {
         clear = {
             name = CLM.L["Clear"],
@@ -293,7 +297,7 @@ local function GenerateAwardOptions(self)
             set = (function(i,v) SetInputAwardMultiplier(self, v) end),
             get = (function(i) return tostring(self.awardMultiplier) end),
             disabled = genericDisable,
-            width = 0.5,
+            width = 0.4,
             order = 3
         },
         award_value = {
@@ -302,18 +306,21 @@ local function GenerateAwardOptions(self)
             set = (function(i,v) SetInputAwardValue(self, v) end),
             get = (function(i) return tostring(self.awardValue) end),
             disabled = genericDisable,
-            width = 0.5,
+            width = 0.4,
             order = 4
         },
         award = {
-            name = CLM.L["Award"],
+            name = btnAwardText,
             type = "execute",
             func = (function()
                 CLM.MODULES.AuctionManager:Award(self.auctionItem, self.awardPlayer, self.awardPrice)
                 self.BidList:ClearSelection()
                 if self.removeOnAward then
-                    CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
-                    self.auctionItem = nil
+                    self.auctionItem:DecrementTotal()
+                    if self.auctionItem:GetTotal() == 0 then
+                        CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
+                        self.auctionItem = nil
+                    end
                 end
                 self.awardPlayer = nil
                 self:Refresh()
@@ -328,7 +335,7 @@ local function GenerateAwardOptions(self)
                     (roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and CLM.L["GP"] or CLM.L["DKP"]
                 )
             end),
-            width = 0.5,
+            width = 0.5+0.2,
             order = 5,
             disabled = (function() return genericDisable() or not self.awardPlayer end),
         },
@@ -339,8 +346,11 @@ local function GenerateAwardOptions(self)
                 CLM.MODULES.AuctionManager:Disenchant(self.auctionItem)
                 self.BidList:ClearSelection()
                 if self.removeOnAward then
-                    CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
-                    self.auctionItem = nil
+                    self.auctionItem:DecrementTotal()
+                    if self.auctionItem:GetTotal() == 0 then
+                        CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
+                        self.auctionItem = nil
+                    end
                 end
                 self.awardPlayer = nil
                 self:Refresh()
@@ -883,7 +893,14 @@ function AuctionManagerGUI:Refresh()
             iconColor = colorGold
             note = CLM.L["No bids"]
         end
-        itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), iconColor = iconColor, note = note }, {value = auctionItem} }}
+        local total = auctionItem:GetTotal()
+        local textColor
+        if total > 1 then
+            textColor = { r = 0.2, g = 0.8, b = 0.2, a = 1.0 }
+        else
+            textColor = { r = 1.0, g = 1.0, b = 1.0, a = 1.0 }
+        end
+        itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), iconColor = iconColor, note = note, overlay = { text = total, color = textColor } }, {value = auctionItem} }}
     end
     self.ItemList:SetData(itemList)
 

@@ -113,6 +113,7 @@ function ProfileManager:Initialize()
                 end
                 -- Remove
                 self.cache.profiles[GUID] = nil
+                self.cache.profilesGuidMap[strlower(profile:Name())] = nil
                 -- Conditonally remove for backwards compatibility
                 local rosters = CLM.MODULES.RosterManager:GetRosters()
                 for _, roster in pairs(rosters) do

@@ -868,7 +868,14 @@ function BiddingManagerGUI:RefreshItemList()
             if current and current:GetItemID() == auctionItem:GetItemID() then
                 iconColor = colorTurquoise
             end
-            itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note}}}
+            local total = auctionItem:GetTotal()
+            local textColor
+            if total > 1 then
+                textColor = { r = 0.2, g = 0.8, b = 0.2, a = 1.0 }
+            else
+                textColor = { r = 1.0, g = 1.0, b = 1.0, a = 1.0 }
+            end
+            itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note, overlay = { text = total, color = textColor } }}}
         end
         self.ItemList:SetData(itemList)
     end

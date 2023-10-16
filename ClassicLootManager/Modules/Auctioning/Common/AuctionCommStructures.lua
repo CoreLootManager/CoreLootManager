@@ -33,7 +33,8 @@ local function SerializeItems(items)
         serialized[id] = {
             values = auctionItem:GetValues(),
             note = auctionItem:GetNote(),
-            extra = getExtraPayload(auctionItem)
+            extra = getExtraPayload(auctionItem),
+            total = auctionItem:GetTotal()
         }
     end
     return serialized

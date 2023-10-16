@@ -37,8 +37,8 @@ local function InitializeDB(self)
         ignoredClasses = {
             false, false, false, false,
             false, false, false, true,
-            false, true, false, false,
-            false, true, false, false,
+            false, true,  false, false,
+            false, true,  false, false,
             false, false, false, false
         },
         ignoredItems = UTILS.Set({
@@ -638,9 +638,8 @@ function AuctionManager:MoveItemToPendingList(item)
         LOG:Warning(CLM.L["Removing items not allowed during auction."])
         return
     end
-    self:RemoveItemFromCurrentAuction(item)
     self.pendingAuction:AddExistingAuctionItem(item)
-
+    self:RemoveItemFromCurrentAuction(item)
 end
 
 local function EndAuction(self)

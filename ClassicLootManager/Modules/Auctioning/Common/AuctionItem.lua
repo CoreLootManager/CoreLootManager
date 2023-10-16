@@ -52,6 +52,7 @@ function AuctionItem:New(item)
     o.item = item or emptyItem
     o.canUse = true
     o.values = {}
+    o.total = 1
     o:Clear()
 
     CheckUsability(o)
@@ -148,14 +149,9 @@ function AuctionItem:Clear()
     self.userResponses = {}
     self.userRolls = {}
     self.rollValues = {}
-    self.awardEntryId = nil
     self.bid = nil
     -- self.canUse = true
     self.highestBid = -math.huge
-end
-
-function AuctionItem:SetAwardId(entryId)
-    self.awardEntryId = entryId
 end
 
 function AuctionItem:LoadValues(roster)
@@ -183,6 +179,11 @@ function AuctionItem:SpoofLinkPayload(extra)
     local original = link
     self.item.itemLink = UTILS.SpoofLink(link, extra)
     LOG:Debug("Spoofed %s into %s", original, link)
+end
+
+function AuctionItem:SetTotal(total)
+    total = tonumber(total) or 1
+    self.total = total
 end
 
 function AuctionItem:GetValues()
@@ -245,6 +246,21 @@ end
 
 function AuctionItem:BidDenied()
     return (self.bidStatus == false)
+end
+
+function AuctionItem:IncrementTotal()
+    self.total = self.total + 1
+end
+
+function AuctionItem:DecrementTotal()
+    self.total = self.total - 1
+    if self.total < 0 then
+        self.total = 0
+    end
+end
+
+function AuctionItem:GetTotal()
+    return self.total
 end
 
 CLM.MODELS.AuctionItem = AuctionItem
