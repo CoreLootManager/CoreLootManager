@@ -297,7 +297,7 @@ local function GenerateAwardOptions(self)
             set = (function(i,v) SetInputAwardMultiplier(self, v) end),
             get = (function(i) return tostring(self.awardMultiplier) end),
             disabled = genericDisable,
-            width = 0.5,
+            width = 0.4,
             order = 3
         },
         award_value = {
@@ -306,7 +306,7 @@ local function GenerateAwardOptions(self)
             set = (function(i,v) SetInputAwardValue(self, v) end),
             get = (function(i) return tostring(self.awardValue) end),
             disabled = genericDisable,
-            width = 0.5,
+            width = 0.4,
             order = 4
         },
         award = {
@@ -315,9 +315,12 @@ local function GenerateAwardOptions(self)
             func = (function()
                 CLM.MODULES.AuctionManager:Award(self.auctionItem, self.awardPlayer, self.awardPrice)
                 self.BidList:ClearSelection()
-                if self.removeOnAward and (self.auctionItem:GetTotal() == 0) then
-                    CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
-                    self.auctionItem = nil
+                if self.removeOnAward then
+                    self.auctionItem:DecrementTotal()
+                    if self.auctionItem:GetTotal() == 0 then
+                        CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
+                        self.auctionItem = nil
+                    end
                 end
                 self.awardPlayer = nil
                 self:Refresh()
@@ -332,7 +335,7 @@ local function GenerateAwardOptions(self)
                     (roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and CLM.L["GP"] or CLM.L["DKP"]
                 )
             end),
-            width = 0.5,
+            width = 0.5+0.2,
             order = 5,
             disabled = (function() return genericDisable() or not self.awardPlayer end),
         },
@@ -343,8 +346,11 @@ local function GenerateAwardOptions(self)
                 CLM.MODULES.AuctionManager:Disenchant(self.auctionItem)
                 self.BidList:ClearSelection()
                 if self.removeOnAward then
-                    CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
-                    self.auctionItem = nil
+                    self.auctionItem:DecrementTotal()
+                    if self.auctionItem:GetTotal() == 0 then
+                        CLM.MODULES.AuctionManager:RemoveItemFromCurrentAuction(self.auctionItem)
+                        self.auctionItem = nil
+                    end
                 end
                 self.awardPlayer = nil
                 self:Refresh()

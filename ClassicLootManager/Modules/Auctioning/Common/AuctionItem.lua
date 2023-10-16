@@ -249,6 +249,9 @@ end
 
 function AuctionItem:DecrementTotal()
     self.total = self.total - 1
+    if self.total < 0 then
+        self.total = 0
+    end
 end
 
 function AuctionItem:GetTotal()
