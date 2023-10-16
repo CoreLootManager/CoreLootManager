@@ -1,6 +1,24 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.5.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Multiple item copies tracking", body = "CLM will now track the amount of copies of an item that was staged to be auctioned. This is done only for informational purposes. Thank you @dukeofphilberg for contribution." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Renames", body = "Character renames to previously used name should now be handled properly." },
+                    { header = "Tooltips", body = "Tooltips should now display properly for ICC tier marks." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.4.4",
         data = {
             {

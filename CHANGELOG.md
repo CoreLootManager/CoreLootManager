@@ -1,3 +1,12 @@
+# Core Loot Manager v4.5.0
+## Features
+### Multiple item copies tracking
+CLM will now track the amount of copies of an item that was staged to be auctioned. This is done only for informational purposes. Thank you @dukeofphilberg for contribution.
+## Fixes
+### Renames
+Character renames to previously used name should now be handled properly.
+### Tooltips
+Tooltips should now display properly for ICC tier marks.
 # Core Loot Manager v4.4.4
 ## Fixes
 ### ICC Boss Kill Bonus
