@@ -1,3 +1,13 @@
+# Core Loot Manager v4.4.4
+## Fixes
+### ICC Boss Kill Bonus
+Fixed Boss Kill Bonus IDs for ICC.
+### Cross-realm ML award
+ML Awards on cross-realm servers should now be fixed.
+### Cross-faction sync
+Cross-faction sync should now be workarounded using `RAID` channel for retail.
+### GUI
+Item value override GUI should now be properly aligned again.
 # Core Loot Manager v4.4.3
 ## Fixes
 ### ICC Items

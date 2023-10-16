@@ -1,6 +1,20 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.4.4",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "ICC Boss Kill Bonus", body = "Fixed Boss Kill Bonus IDs for ICC." },
+                    { header = "Cross-realm ML award", body = "ML Awards on cross-realm servers should now be fixed." },
+                    { header = "Cross-faction sync", body = "Cross-faction sync should now be workarounded using `RAID` channel for retail." },
+                    { header = "GUI", body = "Item value override GUI should now be properly aligned again." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.4.3",
         data = {
             {
