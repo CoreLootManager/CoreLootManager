@@ -184,7 +184,7 @@ end
 function AuctionItem:SetTotal(total)
     total = tonumber(total) or 1
     self.total = total
-end 
+end
 
 function AuctionItem:GetValues()
     return self.values
