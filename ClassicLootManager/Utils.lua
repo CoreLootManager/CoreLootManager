@@ -825,9 +825,10 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
     if frame.text:GetParent() ~= frame then
         frame.text:SetParent(frame)
         local font, _, fontFlags = frame.text:GetFont()
-        frame.text:SetFont(font, 18, fontFlags)
+        frame.text:SetFont(font, 18, "OUTLINE")
         frame.text:SetTextColor(1.0, 1.0, 1.0, 1.0)
         frame.text:SetShadowColor(0.0, 0.0, 0.0, 1.0)
+        -- frame.text:SetShadowOffset(3,-3)
         frame.text:SetJustifyH("LEFT")
         frame.text:SetJustifyV("BOTTOM")
     end

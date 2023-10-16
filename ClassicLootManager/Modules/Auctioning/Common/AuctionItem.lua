@@ -181,6 +181,11 @@ function AuctionItem:SpoofLinkPayload(extra)
     LOG:Debug("Spoofed %s into %s", original, link)
 end
 
+function AuctionItem:SetTotal(total)
+    total = tonumber(total) or 1
+    self.total = total
+end 
+
 function AuctionItem:GetValues()
     return self.values
 end
