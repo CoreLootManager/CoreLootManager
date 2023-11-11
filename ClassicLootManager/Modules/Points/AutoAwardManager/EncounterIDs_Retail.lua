@@ -22,6 +22,16 @@ local EncounterIDsMap = {
     [2683] = EJ_GetEncounterInfo(2527) or "Magmorax", -- Magmorax
     [2684] = EJ_GetEncounterInfo(2523) or "Neltharion", -- Neltharion
     [2685] = EJ_GetEncounterInfo(2520) or "Scalecommander Sarkareth", -- Scalecommander Sarkareth
+    -- Amirdrassil
+    [2820] = EJ_GetEncounterInfo(2564) or "Gnarlroot", -- Gnarlroot
+    [2709] = EJ_GetEncounterInfo(2554) or "Igira the Cruel", -- Igira the Cruel
+    [2737] = EJ_GetEncounterInfo(2557) or "Volcoross", -- Volcoross
+    [2728] = EJ_GetEncounterInfo(2555) or "Council of Dreams", -- Council of Dreams
+    [2731] = EJ_GetEncounterInfo(2553) or "Larodar, Keeper of the Flame", -- Larodar, Keeper of the Flame
+    [2708] = EJ_GetEncounterInfo(2556) or "Nymue, Weaver of the Cycle", -- Nymue, Weaver of the Cycle
+    [2824] = EJ_GetEncounterInfo(2563) or "Smolderon", -- Smolderon
+    [2786] = EJ_GetEncounterInfo(2565) or "Tindral Sageswift, Seer of the Flame", -- Tindral Sageswift, Seer of the Flame
+    [2677] = EJ_GetEncounterInfo(2519) or "Fyrakk the Blazing", -- Fyrakk the Blazing
 }
 
 local DifficultyIDsMap = {
@@ -45,9 +55,9 @@ local diffMapGenerator = {
     { name = "m", difficulty = 16},
 }
 
-local instanceMapGenerator = {
+local instanceMapGenerator = { -- EJ_GetInstanceInfo(1207) EJ_GetInstanceInfo(1208)
     {
-        name = EJ_GetInstanceInfo(1200),
+        name = EJ_GetInstanceInfo(1200) or "Vault of the Incarnates",
         data = {
             { id = 2587, name = EncounterIDsMap[2587] },
             { id = 2639, name = EncounterIDsMap[2639] },
@@ -60,8 +70,7 @@ local instanceMapGenerator = {
         }
     },
     {
-        name = "Aberrus",
-        -- name = EJ_GetInstanceInfo(1200), -- TODO Aberrus instance name
+        name = EJ_GetInstanceInfo(1208) or "Aberrus, the Shadowed Crucible",
         data = {
             { id = 2688, name = EncounterIDsMap[2688] },
             { id = 2687, name = EncounterIDsMap[2687] },
@@ -72,6 +81,20 @@ local instanceMapGenerator = {
             { id = 2683, name = EncounterIDsMap[2683] },
             { id = 2684, name = EncounterIDsMap[2684] },
             { id = 2685, name = EncounterIDsMap[2685] },
+        }
+    },
+    {
+        name = EJ_GetInstanceInfo(1207) or "Amirdrassil, the Dream's Hope",
+        data = {
+            { id = 2820, name = EncounterIDsMap[2820] },
+            { id = 2709, name = EncounterIDsMap[2709] },
+            { id = 2737, name = EncounterIDsMap[2737] },
+            { id = 2728, name = EncounterIDsMap[2728] },
+            { id = 2731, name = EncounterIDsMap[2731] },
+            { id = 2708, name = EncounterIDsMap[2708] },
+            { id = 2824, name = EncounterIDsMap[2824] },
+            { id = 2786, name = EncounterIDsMap[2786] },
+            { id = 2677, name = EncounterIDsMap[2677] },
         }
     },
 }
