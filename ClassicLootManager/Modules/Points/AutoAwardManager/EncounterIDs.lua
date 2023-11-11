@@ -293,7 +293,7 @@ CLM.EncounterIDs.Classic = {
     },
 }
 
-if CLM.WoWEra then return end
+if CLM.WoWSeasonal then return end
 
 CLM.EncounterIDs.TBC = {
     {
