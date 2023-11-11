@@ -787,8 +787,16 @@ function AuctionManager:StartAuction()
             SendChatMessage("Whisper me '!bid <amount>' to bid. Whisper '!dkp' to check your dkp.", CHAT_MESSAGE_CHANNEL)
         end
     end
-    for id, auctionItem in pairs(auction:GetItems()) do
-        CLM.MODULES.RosterManager:SetRosterItemValues(auction.roster, id, auctionItem:GetValues())
+    -- For now only WoW Classic (with different IDs for items) support auto item value mode settings when dynamic item value mode is enabled
+    local autoItemValueOverride = true
+    if not CLM.WoWClassic then
+        autoItemValueOverride = not auction.roster:GetConfiguration("dynamicValue")
+    end
+
+    if autoItemValueOverride then
+        for id, auctionItem in pairs(auction:GetItems()) do
+            CLM.MODULES.RosterManager:SetRosterItemValues(auction.roster, id, auctionItem:GetValues())
+        end
     end
 
     auction:Start()
