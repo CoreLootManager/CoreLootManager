@@ -55,7 +55,7 @@ local diffMapGenerator = {
     { name = "m", difficulty = 16},
 }
 
-local instanceMapGenerator = { -- EJ_GetInstanceInfo(1207) EJ_GetInstanceInfo(1208)
+local instanceMapGenerator = {
     {
         name = EJ_GetInstanceInfo(1200) or "Vault of the Incarnates",
         data = {
