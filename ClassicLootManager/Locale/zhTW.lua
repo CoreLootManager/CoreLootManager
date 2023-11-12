@@ -623,7 +623,7 @@ CLM.L["Disenchanters"] = "脫衣機"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:283
 CLM.L["Display price"] = "显示物品分值"
 -- ClassicLootManager/Utils.lua:1071
---CLM.L["Do Nothing"] = ""
+CLM.L["Do Nothing"] = "沒做什麼"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:78
 CLM.L["Do not show again"] = "不再显示"
 -- .:indirectly
@@ -864,7 +864,7 @@ CLM.L["Gothik the Harvester"] = "收割者戈提克"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:36
 CLM.L["Grand Widow Faerlina"] = "黑女巫法琳娜"
 -- ClassicLootManager/Utils.lua:1074
---CLM.L["Greed"] = ""
+CLM.L["Greed"] = "貪婪"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:39
 CLM.L["Grobbulus"] = "格罗布鲁斯"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:417
@@ -991,7 +991,7 @@ CLM.L["Include players with negative standings in decay."] = "包括在衰退中
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:311
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:319
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:327
---CLM.L["Include"] = ""
+CLM.L["Include"] = "包括"
 -- ClassicLootManager/MinimapIcon.lua:46
 CLM.L["Incoherent state"] = "Incoherent state"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:261
@@ -1136,7 +1136,7 @@ CLM.L["Loot Awards"] = "战利品奖励"
 -- ClassicLootManager_Integrations/GUI.lua:21
 CLM.L["Loot History"] = "战利品历史记录"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:292
---CLM.L["Loot Rolling"] = ""
+CLM.L["Loot Rolling"] = "戰利品滾動"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:426
 CLM.L["Loot rarity"] = "战利品稀有度"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:21
@@ -1309,7 +1309,7 @@ CLM.L["Naxxramas"] = "纳克萨玛斯"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:829
 CLM.L["Neck"] = "颈部"
 -- ClassicLootManager/Utils.lua:1073
---CLM.L["Need"] = ""
+CLM.L["Need"] = "需要"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:25
 CLM.L["Nefarian"] = "奈法利安"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:74
@@ -1463,7 +1463,7 @@ CLM.L["Passing after bidding not allowed"] = "不允许出价后跳过"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:38
 CLM.L["Patchwerk"] = "帕奇维克"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:327
---CLM.L["Patterns"] = ""
+CLM.L["Patterns"] = "模式"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:124
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:272
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:121
@@ -1658,7 +1658,7 @@ CLM.L["Rogue"] = "潜行者"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:174
 CLM.L["Role"] = "角色"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:296
---CLM.L["Roll on Loot"] = ""
+CLM.L["Roll on Loot"] = "在戰利品上滾動"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:530
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:759
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:710
@@ -1725,7 +1725,7 @@ CLM.L["Select Rosters to export"] = "选择要导出的名册"
 -- ClassicLootManager/Modules/GUI/Filters.lua:179
 CLM.L["Select all classes."] = "选择所有职业。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:297
---CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = ""
+CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = "每當打開“組戰利滾動”窗口時，請選擇默認行為。 這僅在CLM RAID期間和在突襲實例中處於活動狀態。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:524
 CLM.L["Select equation"] = "选择公式"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:23
@@ -1816,7 +1816,7 @@ CLM.L["Spec guild request"] = "查看公会请求"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:386
 CLM.L["Spent"] = "支出"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:319
---CLM.L["Stacking"] = ""
+CLM.L["Stacking"] = "堆疊"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:815
 CLM.L["Stale"] = "Stale"
 -- ClassicLootManager/Modules/Raids/StandbyStagingManager/StandbyStagingManager.lua:136
@@ -1975,11 +1975,11 @@ CLM.L["Toggle test bar"] = "切換測試欄"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:152
 CLM.L["Toggles addon sounds."] = "开关插件声音。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:312
---CLM.L["Toggles auto-rolling on legendary items."] = ""
+CLM.L["Toggles auto-rolling on legendary items."] = "在傳奇項目上切換自動滾動。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:328
---CLM.L["Toggles auto-rolling on patterns."] = ""
+CLM.L["Toggles auto-rolling on patterns."] = "在圖案上切換自動滾動。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:320
---CLM.L["Toggles auto-rolling on stacking items."] = ""
+CLM.L["Toggles auto-rolling on stacking items."] = "在堆疊項目上切換自動滾動。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:184
 CLM.L["Toggles loot announcement to raid"] = "开关战利品通告到团队频道"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:350

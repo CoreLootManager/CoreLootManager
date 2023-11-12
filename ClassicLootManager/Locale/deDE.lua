@@ -623,7 +623,7 @@ CLM.L["Disenchanters"] = "Entzauberer"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:283
 CLM.L["Display price"] = "Preis anzeigen"
 -- ClassicLootManager/Utils.lua:1071
---CLM.L["Do Nothing"] = ""
+CLM.L["Do Nothing"] = "Nichts tun"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:78
 CLM.L["Do not show again"] = "Nicht mehr anzeigen"
 -- .:indirectly
@@ -864,7 +864,7 @@ CLM.L["Gothik the Harvester"] = "Gothik der Seelenjäger"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:36
 CLM.L["Grand Widow Faerlina"] = "Großwitwe Faerlina"
 -- ClassicLootManager/Utils.lua:1074
---CLM.L["Greed"] = ""
+CLM.L["Greed"] = "Gier"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:39
 CLM.L["Grobbulus"] = "Grobbulus"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:417
@@ -991,7 +991,7 @@ CLM.L["Include players with negative standings in decay."] = "Beziehe Spieler mi
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:311
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:319
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:327
---CLM.L["Include"] = ""
+CLM.L["Include"] = "Enthalten"
 -- ClassicLootManager/MinimapIcon.lua:46
 CLM.L["Incoherent state"] = "Zumsammenhangsloser Zustand"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:261
@@ -1136,7 +1136,7 @@ CLM.L["Loot Awards"] = "Loot Gewinne"
 -- ClassicLootManager_Integrations/GUI.lua:21
 CLM.L["Loot History"] = "Loot Verlauf"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:292
---CLM.L["Loot Rolling"] = ""
+CLM.L["Loot Rolling"] = "Beute rollen"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:426
 CLM.L["Loot rarity"] = "Plünderrarität"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:21
@@ -1309,7 +1309,7 @@ CLM.L["Naxxramas"] = "Naxxramas"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:829
 CLM.L["Neck"] = "Hals"
 -- ClassicLootManager/Utils.lua:1073
---CLM.L["Need"] = ""
+CLM.L["Need"] = "Brauchen"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:25
 CLM.L["Nefarian"] = "Nefarian"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:74
@@ -1463,7 +1463,7 @@ CLM.L["Passing after bidding not allowed"] = "Passen ist nach dem Bieten nicht e
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:38
 CLM.L["Patchwerk"] = "Flickwerk"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:327
---CLM.L["Patterns"] = ""
+CLM.L["Patterns"] = "Muster"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:124
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:272
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:121
@@ -1658,7 +1658,7 @@ CLM.L["Rogue"] = "Schurke"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:174
 CLM.L["Role"] = "Rolle"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:296
---CLM.L["Roll on Loot"] = ""
+CLM.L["Roll on Loot"] = "Beute aufrollen"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:530
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:759
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:710
@@ -1725,7 +1725,7 @@ CLM.L["Select Rosters to export"] = "Wählen Sie Roster zum Exportieren"
 -- ClassicLootManager/Modules/GUI/Filters.lua:179
 CLM.L["Select all classes."] = "Alle Klassen auswählen."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:297
---CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = ""
+CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = "Wählen Sie das Standardverhalten, wenn das Fenster "Gruppengebäude" geöffnet wird. Dies wird nur während des CLM -Überfalls und während der RAID -Instanz aktiv sein."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:524
 CLM.L["Select equation"] = "Gleichung auswählen"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:23
@@ -1816,7 +1816,7 @@ CLM.L["Spec guild request"] = "Spzialisierungen von der Gilde anfordern"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:386
 CLM.L["Spent"] = "Ausgaben"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:319
---CLM.L["Stacking"] = ""
+CLM.L["Stacking"] = "Stapelung"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:815
 CLM.L["Stale"] = "Abgestanden"
 -- ClassicLootManager/Modules/Raids/StandbyStagingManager/StandbyStagingManager.lua:136
@@ -1975,11 +1975,11 @@ CLM.L["Toggle test bar"] = "Schaltertestleiste"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:152
 CLM.L["Toggles addon sounds."] = "Addon Geräusche ein / ausschalten."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:312
---CLM.L["Toggles auto-rolling on legendary items."] = ""
+CLM.L["Toggles auto-rolling on legendary items."] = "Schaltet automatisch auf legendären Gegenständen um."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:328
---CLM.L["Toggles auto-rolling on patterns."] = ""
+CLM.L["Toggles auto-rolling on patterns."] = "Schaltet die automatische Rollen von Mustern um."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:320
---CLM.L["Toggles auto-rolling on stacking items."] = ""
+CLM.L["Toggles auto-rolling on stacking items."] = "Schaltet automatisch auf Stapelartikel um."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:184
 CLM.L["Toggles loot announcement to raid"] = "Loot Vergabe im Schlachtzug Kanal ankündigen ein / ausschalten"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:350

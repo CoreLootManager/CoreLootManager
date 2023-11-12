@@ -221,7 +221,7 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
             if dry_run:
                 _print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_google[locale]))
             else:
-                translation = ts.translate_text(query_text=sanitized_sentence, translator='google', from_language='en', to_language=locale_to_google[locale])
+                translation = ts.translate_text(query_text=sanitized_sentence, translator='google', from_language='en-US', to_language=locale_to_google[locale])
                 storage.translate(locale, sentence, translation, False)
                 total_done += 1
                 percent = math.floor(100*(total_done/total_missing))
