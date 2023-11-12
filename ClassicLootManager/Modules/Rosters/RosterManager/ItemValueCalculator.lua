@@ -24,9 +24,9 @@ local equationIDtoParam = {
 }
 
 local qualityModifier = {
-    [2] = (function(ilvl) return ((ilvl - 4) / 2) end),
-    [3] = (function(ilvl) return ((ilvl - 1.84) / 1.6) end),
-    [4] = (function(ilvl) return ((ilvl - 1.3) / 1.3) end),
+    [2] = (function(ilvl) return (math.abs(ilvl - 4) / 2) end),
+    [3] = (function(ilvl) return (math.abs(ilvl - 1.84) / 1.6) end),
+    [4] = (function(ilvl) return (math.abs(ilvl - 1.3) / 1.3) end),
 }
 
 local defaultQualityModifier = (function(ilvl) return ilvl end)
@@ -171,7 +171,6 @@ local function CalculateProxy(self, itemInfoInput, itemId, rounding)
     end
 
     local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
-
     return self:Calculate(CLM.IndirectMap.ilvl[itemId] or itemLevel, itemQuality, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc), rounding)
 end
 

@@ -433,12 +433,15 @@ end
 local function GetItemValuesProxy(self, itemInfoInput, itemId, calculateCallback)
     local itemValues = self.itemValues[itemId]
     if itemValues == nil then
+        if self.configuration._.dynamicValue then
+            local dynamicValues = self.calculator[calculateCallback](self.calculator, itemInfoInput, self.configuration._.roundDecimals)
+            if dynamicValues then
+                return dynamicValues
+            end
+        end
+
         local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemInfoInput)
         local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
-        if self.configuration._.dynamicValue then
-            local dynamicValues = self.calculator[calculateCallback](itemInfoInput, self.configuration._.roundDecimals)
-            if dynamicValues then return dynamicValues end
-        end
         return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or equipLoc)
     end
     return itemValues
