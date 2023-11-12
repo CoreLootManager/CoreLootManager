@@ -3,13 +3,29 @@ local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
+local UTILS     = CLM.UTILS
 -- ------------------------------- --
+
+local ignoredItems = UTILS.Set({
+    50226, -- Festergut's Acidic Blood
+    50231, -- Rotface's Acidic Blood
+    52019, -- Precious's Ribbon
+    22726, -- Splinter of Atiesh
+    30183, -- Nether Vortex
+    23572, -- Primal Nether
+    12662, -- Demonic Rune
+})
 
 local handledLootRolls = {}
 
 local function Handler(_, _, rollID, rollTime, lootHandle)
     handledLootRolls[rollID] = nil
+
+    -- Ignore handling in case of master looter being out of range
+    if GetLootMethod() == "master" then
+        return
+    end
+
     -- CLM Raid status check
     if not CLM.MODULES.RaidManager:IsInProgressingRaid() then
         return
@@ -31,8 +47,15 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     if not itemLink then
         return
     end
-    local _, _, itemQuality, _, _, _, _, itemStackCount, _, _, _, classID, _, _ = GetItemInfo(itemLink)
 
+    -- Do not handle ignored items
+    local itemId = UTILS.GetItemIdFromLink(itemLink)
+    if ignoredItems[itemId] then
+        return
+    end
+
+    -- Get specific checks info
+    local _, _, itemQuality, _, _, _, _, itemStackCount, _, _, _, classID, _, _ = GetItemInfo(itemLink)
     local isLegendary = ((itemQuality or 0) >= 5)
     local isStacking  = ((itemStackCount or 0) > 1)
     local isPattern   = (classID == LE_ITEM_CLASS_RECIPE)
