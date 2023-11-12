@@ -195,6 +195,7 @@ function CORE:_InitializeFeatures()
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
     CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
     CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
+    CLM.GlobalUIHandlers:Initialize() -- Initialize various global misc UI handlers
 
     return true
 end
