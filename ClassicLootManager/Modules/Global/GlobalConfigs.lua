@@ -302,14 +302,19 @@ Thank you patrons, especially:
             width = "double",
             order = 1201
         },
+        loot_roll_padding = {
+            name = "",
+            type = "description",
+            order = 1202,
+            width = 2
+        },
         loot_roll_include_legendary = {
             name = CLM.L["Include"] .. " " .. UTILS.ColorCodeText(CLM.L["Legendary"], "ff8000"),
             desc = CLM.L["Toggles auto-rolling on legendary items."],
             type = "toggle",
             set = function(i, v) self:SetLootRollIncludeLegendary(v) end,
             get = function(i) return self:GetLootRollIncludeLegendary() end,
-            -- width = "double",
-            order = 1202
+            order = 1203
         },
         loot_roll_include_stacking = {
             name = CLM.L["Include"] .. " " .. CLM.L["Stacking"],
@@ -317,8 +322,7 @@ Thank you patrons, especially:
             type = "toggle",
             set = function(i, v) self:SetLootRollIncludeStacking(v) end,
             get = function(i) return self:GetLootRollIncludeStacking() end,
-            -- width = "double",
-            order = 1203
+            order = 1204
         },
         loot_roll_include_patterns = {
             name = CLM.L["Include"] .. " " .. CLM.L["Patterns"],
@@ -326,8 +330,7 @@ Thank you patrons, especially:
             type = "toggle",
             set = function(i, v) self:SetLootRollIncludePatterns(v) end,
             get = function(i) return self:GetLootRollIncludePatterns() end,
-            -- width = "double",
-            order = 1204
+            order = 1205
         },
         danger_zone_header = {
             type = "header",
@@ -346,17 +349,7 @@ Thank you patrons, especially:
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
--- CONSTANTS.ROLL_TYPE = {
---     [LOOT_ROLL_TYPE_PASS]       = ColorCodeText(CLM.L["Pass"], "ffffff"),
---     [LOOT_ROLL_TYPE_NEED]       = ColorCodeText(CLM.L["Need"], "ff8000"),
---     [LOOT_ROLL_TYPE_GREED]      = ColorCodeText(CLM.L["Greed"], "0070dd"),
---     [LOOT_ROLL_TYPE_DISENCHANT] = ColorCodeText(CLM.L["Disenchant"], "9d9d9d"),
--- loot_roll = {
---     rollOnLoot = LOOT_ROLL_TYPE_PASS,
---     includeLegendary = false,
---     includeStacking = false,
---     includePatterns = false
--- }
+
 function GlobalConfigs:SetRollType(value)
     self.db.loot_roll.rollOnLoot = CONSTANTS.ROLL_TYPE[value] and value or CONSTANTS.LOOT_ROLL_IGNORE
 end
