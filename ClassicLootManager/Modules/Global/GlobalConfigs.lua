@@ -299,7 +299,6 @@ Thank you patrons, especially:
             values = CONSTANTS.ROLL_TYPE,
             set = function(i, v) self:SetRollType(v) end,
             get = function(i) return self:GetRollType() end,
-            width = "double",
             order = 1201
         },
         loot_roll_padding = {
