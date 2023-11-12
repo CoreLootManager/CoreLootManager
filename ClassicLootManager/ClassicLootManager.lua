@@ -8,7 +8,7 @@ if LIB_CLM then
 end
 
 CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
-CLM.WoWEra = select(4, GetBuildInfo()) <   30000
+CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
 
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
@@ -195,6 +195,7 @@ function CORE:_InitializeFeatures()
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
     CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
     CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
+    CLM.GlobalUIHandlers:Initialize() -- Initialize various global misc UI handlers
 
     return true
 end

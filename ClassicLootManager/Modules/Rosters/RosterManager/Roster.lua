@@ -430,19 +430,29 @@ function Roster:ClearItemValues(itemId)
     self.itemValues[itemId] = nil
 end
 
-
-function Roster:GetItemValues(itemId)
+local function GetItemValuesProxy(self, itemInfoInput, itemId, calculateCallback)
     local itemValues = self.itemValues[itemId]
     if itemValues == nil then
-        local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemId)
-        local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
         if self.configuration._.dynamicValue then
-            local dynamicValues = self.calculator:Calculate(itemId, self.configuration._.roundDecimals)
-            if dynamicValues then return dynamicValues end
+            local dynamicValues = self.calculator[calculateCallback](self.calculator, itemInfoInput, self.configuration._.roundDecimals)
+            if dynamicValues then
+                return dynamicValues
+            end
         end
+
+        local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemInfoInput)
+        local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
         return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or equipLoc)
     end
     return itemValues
+end
+
+function Roster:GetItemValues(itemId)
+    return GetItemValuesProxy(self, itemId, itemId, "CalculateFromId")
+end
+
+function Roster:GetItemValuesFromItemLink(itemLink)
+    return GetItemValuesProxy(self, itemLink, UTILS.GetItemIdFromLink(itemLink), "CalculateFromLink")
 end
 
 function Roster:GetSlotClassMultiplierValue(class, slot)

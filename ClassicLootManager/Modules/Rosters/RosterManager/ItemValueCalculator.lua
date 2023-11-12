@@ -23,25 +23,25 @@ local equationIDtoParam = {
     [CONSTANTS.ITEM_VALUE_EQUATION.WOWPEDIA] = "wowpedia",
 }
 
-local rarityModifier = {
-    [2] = (function(ilvl) return ((ilvl - 4) / 2) end),
-    [3] = (function(ilvl) return ((ilvl - 1.84) / 1.6) end),
-    [4] = (function(ilvl) return ((ilvl - 1.3) / 1.3) end),
+local qualityModifier = {
+    [2] = (function(ilvl) return (math.abs(ilvl - 4) / 2) end),
+    [3] = (function(ilvl) return (math.abs(ilvl - 1.84) / 1.6) end),
+    [4] = (function(ilvl) return (math.abs(ilvl - 1.3) / 1.3) end),
 }
 
-local defaultRarityModifier = (function(ilvl) return ilvl end)
+local defaultQualityModifier = (function(ilvl) return ilvl end)
 
-local function getItemValue(rarity, ilvl)
-    local modifier = rarityModifier[rarity] or defaultRarityModifier
+local function getItemValue(quality, ilvl)
+    local modifier = qualityModifier[quality] or defaultQualityModifier
     return modifier(ilvl)
 end
 
 local calculators = {
-    [CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB] = (function(ilvl, rarity, multiplier, expvar, slot_multiplier)
-        return multiplier * math.pow(expvar, (ilvl/26) + (rarity - 4)) * slot_multiplier
+    [CONSTANTS.ITEM_VALUE_EQUATION.EPGPWEB] = (function(ilvl, quality, multiplier, expvar, slot_multiplier)
+        return multiplier * math.pow(expvar, (ilvl/26) + (quality - 4)) * slot_multiplier
     end),
-    [CONSTANTS.ITEM_VALUE_EQUATION.WOWPEDIA] = (function(ilvl, rarity, multiplier, expvar, slot_multiplier)
-        return math.pow(getItemValue(rarity, ilvl), expvar) * multiplier * slot_multiplier
+    [CONSTANTS.ITEM_VALUE_EQUATION.WOWPEDIA] = (function(ilvl, quality, multiplier, expvar, slot_multiplier)
+        return math.pow(getItemValue(quality, ilvl), expvar) * multiplier * slot_multiplier
     end),
 }
 
@@ -152,25 +152,34 @@ function ItemValueCalculator:SetTierMultiplier(tier, multiplier)
     self.tierMultipliers[tier] = tonumber(multiplier) or 1.0
 end
 
-function ItemValueCalculator:Calculate(itemId, rounding)
+function ItemValueCalculator:Calculate(ilvl, quality, slot_multiplier, rounding)
     local values = {}
+    local baseValue = self.calculator(ilvl, quality, self.multiplier, self.expvar, slot_multiplier)
 
-    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID = GetItemInfo(itemId)
+    for tier, tierMultiplier in pairs(self.tierMultipliers) do
+        values[tier] = UTILS.round(baseValue * tierMultiplier, rounding)
+    end
+
+    return values
+end
+
+local function CalculateProxy(self, itemInfoInput, itemId, rounding)
+    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID = GetItemInfo(itemInfoInput)
     if not itemQuality or not itemLevel or not itemEquipLoc then
         LOG:Warning(CLM.L["Unable to get item info from server. Please try auctioning again"])
         return nil
     end
 
     local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
+    return self:Calculate(CLM.IndirectMap.ilvl[itemId] or itemLevel, itemQuality, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc), rounding)
+end
 
-    local baseValue = self.calculator(
-        CLM.IndirectMap.ilvl[itemId] or itemLevel, itemQuality,
-        self.multiplier, self.expvar, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc))
-    for tier, tierMultiplier in pairs(self.tierMultipliers) do
-        values[tier] = UTILS.round(baseValue * tierMultiplier, rounding)
-    end
+function ItemValueCalculator:CalculateFromId(itemId, rounding)
+    return CalculateProxy(self, itemId, itemId, rounding)
+end
 
-    return values
+function ItemValueCalculator:CalculateFromLink(itemLink, rounding)
+    return CalculateProxy(self, itemLink, UTILS.GetItemIdFromLink(itemLink), rounding)
 end
 
 CONSTANTS.ITEM_VALUE_EQUATIONS = UTILS.Set({

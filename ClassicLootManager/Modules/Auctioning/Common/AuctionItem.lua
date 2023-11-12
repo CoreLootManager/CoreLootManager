@@ -155,7 +155,7 @@ function AuctionItem:Clear()
 end
 
 function AuctionItem:LoadValues(roster)
-    self.values = UTILS.ShallowCopy(roster:GetItemValues(self.item:GetItemID()))
+    self.values = UTILS.ShallowCopy(roster:GetItemValuesFromItemLink(self.item:GetItemLink()))
 end
 
 function AuctionItem:SetValues(values)

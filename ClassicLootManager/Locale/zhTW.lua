@@ -1,9 +1,9 @@
 local _, CLM = ...
 if GetLocale() == "zhTW" then
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:323
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:348
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:349
 CLM.L[" alt of: "] = " 的主号是: "
--- ClassicLootManager/Utils.lua:578
+-- ClassicLootManager/Utils.lua:584
 CLM.L[" more"] = " 更多"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:173
 CLM.L[" over "] = " over "
@@ -28,9 +28,9 @@ CLM.L["%Y/%m/%d %H:%M:%S (%A)"] = "%Y/%m/%d %H:%M:%S (%A)"
 CLM.L["%Y/%m/%d %a %H:%M:%S"] = "%Y/%m/%d %a %H:%M:%S"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:591
 CLM.L["%d/%m/%Y %H:%M:%S"] = "%d/%m/%Y %H:%M:%S"
--- ClassicLootManager_Alerts/Alerts.lua:24
+-- ClassicLootManager_Alerts/Alerts.lua:23
 CLM.L["%s %% %s decay"] = "%s %% %s 衰减"
--- ClassicLootManager_Alerts/Alerts.lua:22
+-- ClassicLootManager_Alerts/Alerts.lua:21
 CLM.L["%s %s"] = "%s %s"
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:191
 CLM.L["%s awarded to %s for %s %s"] = "%s 分配给 %s for %s %s"
@@ -83,7 +83,7 @@ CLM.L["<CLM> %s: %d DKP (%d this week)."] = "<CLM> %s: %d DKP (%d 本周)."
 CLM.L["<CLM> Missing profile for player %s."] = "<CLM> 角色信息缺失 %s."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:51
 CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> 您的竞拍 (%s) 是 %s%s."
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:882
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:889
 CLM.L["Accepting rolls on %s for %s %s"] = "接受 %s 以 %s %s 接受卷"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:150
 CLM.L["Action context"] = "动作选定范围"
@@ -108,13 +108,13 @@ CLM.L["Adding %s loot entries for team to %s"] = "添加 %s 战利品给团队�
 -- ClassicLootManager_Integrations/Migration.lua:240
 -- ClassicLootManager_Integrations/Migration.lua:359
 CLM.L["Adding %s profiles to %s"] = "添加 %s 角色信息到 %s"
--- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:1004
+-- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:1009
 CLM.L["Adding missing %s players to current roster"] = "添加缺少的 %s 角色到当前名册"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1310
 CLM.L["Additional cost (tax) to add to the award value."] = "在物品分值上增加额外的数值（税）。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1278
 CLM.L["Additional points to be given to players atop of the split value."] = "Additional points to be given to players atop of the split value."
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:145
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:151
 CLM.L["Addon sounds"] = "插件声音"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:143
 CLM.L["Adds selected players to the selected roster (from dropdown)."] = "将选中的角色添加到选中的名册中。"
@@ -152,7 +152,7 @@ CLM.L["Allow players to subscribe to the bench through Raids menu"] = "允许玩
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:133
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1011
 CLM.L["Allow subscription"] = "允许订阅"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:498
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:581
 CLM.L["Alt"] = "Alt"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1239
 CLM.L["Always allow All-In bids"] = "始终允许All-In"
@@ -162,30 +162,30 @@ CLM.L["Always allow Base bids"] = "始终允许基础价格"
 CLM.L["Always allow cancel/pass"] = "始终允许取消/跳过"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:75
 CLM.L["Always show"] = "Always show"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:862
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:871
 CLM.L["Americas"] = "美洲"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:811
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:844
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:820
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:853
 CLM.L["Ammo"] = "弹药"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:101
 CLM.L["Anetheron"] = "安纳塞隆"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:349
 CLM.L["Announce award to Guild"] = "通告分配到公会频道"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:177
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:183
 CLM.L["Announce loot from corpse to Raid"] = "从BOSS尸体上通告战利品到团队频道"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:173
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:179
 CLM.L["Announce loot"] = "通告战利品"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:195
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:201
 CLM.L["Announcement loot rarity"] = "通告战利品稀有度"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:712
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:721
 CLM.L["Anonymous Open"] = "Anonymous Open"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1136
 CLM.L["Anti-snipe time"] = "延长时间"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:784
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:783
 CLM.L["Anti-snipe time: %s."] = "延长时间: %s."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:236
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:70
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:492
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:502
 CLM.L["Anti-snipe"] = "延长"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:35
 CLM.L["Anub'Rekhan"] = "阿努布雷坎"
@@ -201,27 +201,27 @@ CLM.L["Archavon the Stone Watcher"] = "岩石看守者阿尔卡冯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:104
 CLM.L["Archimonde"] = "阿克蒙德"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:168
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:324
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:331
 CLM.L["Are you sure, you want to award %s to %s for %s %s?"] = "你确定，你想要分配 %s 给 %s for %s %s?"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:349
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:359
 CLM.L["Are you sure, you want to disenchant %s?"] = "您確定，您想貶低%s嗎？"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:739
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:748
 CLM.L["Ascending"] = "Ascending"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:224
 CLM.L["Assistant"] = "Assistant"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:388
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:399
 CLM.L["Att. [%]"] = "出勤 [%]"
--- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:403
+-- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:408
 CLM.L["Attendance"] = "出勤"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:67
 CLM.L["Attumen the Huntsman"] = "猎手阿图门"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:248
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:254
 CLM.L["Auction End Countdown"] = "拍卖结束倒计时"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:222
 -- ClassicLootManager/MinimapIcon.lua:109
 CLM.L["Auction History"] = "拍卖历史记录"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:232
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:238
 CLM.L["Auction Start/End"] = "拍卖开始/结束"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:235
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:67
@@ -230,27 +230,27 @@ CLM.L["Auction Time"] = "拍卖时间"
 CLM.L["Auction Type"] = "拍卖类型"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:83
 CLM.L["Auction column"] = "Auction column"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:676
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:675
 CLM.L["Auction complete"] = "拍卖完成"
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:271
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:272
 CLM.L["Auction finished"] = "拍卖结束"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1128
 CLM.L["Auction length in seconds."] = "拍卖时长（以秒为单位）。"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:482
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:492
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1127
 CLM.L["Auction length"] = "拍卖时长"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:776
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:251
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:775
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:252
 CLM.L["Auction of %s items."] = "拍卖 %s 物品。"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:778
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:255
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:777
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:256
 CLM.L["Auction of %s"] = "拍卖 %s"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:469
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:479
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1070
 CLM.L["Auction settings"] = "拍卖设置"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:667
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:666
 CLM.L["Auction stopped by Master Looter"] = "被Master Looter停止拍卖"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:782
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:781
 CLM.L["Auction time: %s."] = "拍卖时间: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:171
 CLM.L["Auction timer bar width"] = "拍賣定時器條寬度"
@@ -265,7 +265,7 @@ CLM.L["Auctioning - List Filling"] = "拍卖 - 清单填充"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:622
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:630
 CLM.L["Auctioning requires active raid or roster mode."] = "拍卖需要团本活动正在进行或名册模式。"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:658
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:668
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:345
 -- ClassicLootManager/MinimapIcon.lua:104
 CLM.L["Auctioning"] = "拍卖"
@@ -285,7 +285,7 @@ CLM.L["Auto-assign from corpse"] = "从尸体上自动分配"
 CLM.L["Auto-trade after award"] = "分配后自动交易"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:455
 CLM.L["Automatically mark auto-removed items as disenchanted"] = "自動將自動驅動的物品標記為污點"
--- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:425
+-- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:430
 CLM.L["Average weeks"] = "平均周数"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:248
 CLM.L["Award %s %s to %s selected players."] = "分配 %s %s 分数给 %s 选中的角色。"
@@ -320,7 +320,7 @@ CLM.L["Award value"] = "分值"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:145
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:198
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:235
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:309
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:268
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1170
 -- ClassicLootManager/MinimapIcon.lua:123
 CLM.L["Award"] = "分配"
@@ -337,11 +337,11 @@ CLM.L["Awarded by"] = "执行者"
 CLM.L["Ayamiss the Hunter"] = "狩猎者阿亚米斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:103
 CLM.L["Azgalor"] = "阿兹加洛"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:790
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:823
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:799
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:832
 CLM.L["Back"] = "背部"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:810
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:843
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:819
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:852
 CLM.L["Bag"] = "背包"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:159
 CLM.L["Baltharus the Warborn"] = "战争之子巴尔萨鲁斯"
@@ -349,7 +349,7 @@ CLM.L["Baltharus the Warborn"] = "战争之子巴尔萨鲁斯"
 CLM.L["Baron Geddon"] = "迦顿男爵"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:374
 CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "静态定价拍卖的基值。\n升序和分层拍卖的最小值。\n\n设置为与其他层相同的值或负值忽略。"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:892
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:901
 CLM.L["Base"] = "Base"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:28
 CLM.L["Battleguard Sartura"] = "沙尔图拉"
@@ -367,48 +367,48 @@ CLM.L["Begin Year"] = "开始年份"
 CLM.L["Bench multiplier"] = "替补系数"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1005
 CLM.L["Bench"] = "替补名单"
--- ClassicLootManager_Alerts/Alerts.lua:34
+-- ClassicLootManager_Alerts/Alerts.lua:33
 CLM.L["Bid %s accepted!"] = "竞拍 %s 被接受！"
--- ClassicLootManager_Alerts/Alerts.lua:42
+-- ClassicLootManager_Alerts/Alerts.lua:41
 CLM.L["Bid %s denied!"] = "竞拍 %s 被拒绝！"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:862
 CLM.L["Bid accepted!"] = "竞拍 被接受！"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1307
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1314
 CLM.L["Bid cancelling not allowed"] = "不允许取消竞拍"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:866
 CLM.L["Bid denied!"] = "竞拍 被拒绝！"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1305
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1312
 CLM.L["Bid increment too low"] = "竞拍增量过低"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:325
 CLM.L["Bid input values as Main spec bid."] = "竞拍输入值作为主天赋。"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:351
 CLM.L["Bid input values as Off spec bid."] = "竞拍输入值作为副天赋。"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1303
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1310
 CLM.L["Bid too high"] = "出价过高"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1302
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1309
 CLM.L["Bid too low"] = "出价过低"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:407
 CLM.L["Bid your current DKP (%s)."] = "Bid your current DKP (%s)."
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:735
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:745
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:324
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:697
 CLM.L["Bid"] = "竞拍"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1301
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1308
 CLM.L["Bidding over current standings not allowed"] = "竞拍不允许高于当前积分"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1300
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1307
 CLM.L["Bidding while below minimum standings not allowed"] = "竞拍不得低于最低积分"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:540
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:550
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:132
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:219
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:808
--- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1091
--- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1184
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1098
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1191
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1090
 -- ClassicLootManager/MinimapIcon.lua:119
 CLM.L["Bidding"] = "竞拍"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:264
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:270
 CLM.L["Bids"] = "竞拍"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:121
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:127
 CLM.L["Bindings"] = "按键绑定"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:354
 CLM.L["Black Temple"] = "黑暗神殿"
@@ -420,7 +420,7 @@ CLM.L["Blood Council"] = "鲜血王子议会"
 CLM.L["Bloodlord Mandokir"] = "血领主曼多基尔"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:848
 CLM.L["Bonuses"] = "奖励"
--- ClassicLootManager/ClassicLootManager.lua:270
+-- ClassicLootManager/ClassicLootManager.lua:271
 CLM.L["Boot complete"] = "启动完成"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:79
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:237
@@ -445,8 +445,8 @@ CLM.L["Can't use"] = "無法使用"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:337
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:504
 CLM.L["Cancel your bid."] = "取消您的出价。"
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:294
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:422
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:295
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:423
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:336
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:503
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:859
@@ -457,21 +457,21 @@ CLM.L["Change roster name."] = "更改名册名称。"
 CLM.L["Changelog"] = "更新日志"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:172
 CLM.L["Changes auction timer bar width."] = "更改拍賣定時器條寬度。"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1311
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1318
 CLM.L["Changing bid from Main-spec to Off-Spec not allowed"] = "不允许将出价从主天赋改为副天赋"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:68
 CLM.L["Channel for posting bids."] = "通告竞拍的频道。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:240
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:246
 CLM.L["Chat Commands"] = "聊天频道指令"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:56
 CLM.L["Chat bidding is currently disabled."] = "聊天指令竞标目前被禁用。"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:75
 CLM.L["Chess Event"] = "国际象棋赛事"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:792
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:825
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:801
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:834
 CLM.L["Chest (robes)"] = "胸部（长袍）"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:791
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:824
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:800
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:833
 CLM.L["Chest"] = "胸部"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:24
 CLM.L["Chromaggus"] = "克洛玛古斯"
@@ -481,13 +481,13 @@ CLM.L["Classic"] = "Classic"
 CLM.L["Clear all classes."] = "清除所有职业。"
 -- ClassicLootManager_Integrations/GUI.lua:474
 CLM.L["Clear output"] = "清除输出"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:270
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:274
 CLM.L["Clear"] = "清除"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:154
 CLM.L["Close on bid"] = "竞拍后关闭"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:211
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:217
 CLM.L["Comma-separated (CSV) list of disenchanter names. Case insensitive."] = "逗號分隔（CSV）刪除名稱列表。 不區分大小寫。"
--- ClassicLootManager/Utils.lua:1034
+-- ClassicLootManager/Utils.lua:1063
 CLM.L["Common"] = "常见"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:310
 -- ClassicLootManager/MinimapIcon.lua:138
@@ -532,19 +532,19 @@ CLM.L["Created"] = "已创建"
 CLM.L["Creates new roster with default configuration"] = "使用默认配置创建新名册"
 -- ClassicLootManager_Integrations/Integrations.lua:252
 CLM.L["Creates new trigger to be used during RCLC award."] = "创建要在 RCLC 奖励期间使用的新触发器。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:500
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:583
 CLM.L["Ctrl + Alt"] = "Ctrl + Alt"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:497
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:580
 CLM.L["Ctrl"] = "Ctrl"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:744
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:754
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:706
--- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1091
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1098
 CLM.L["Current"] = "当前的"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:657
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:658
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:659
 CLM.L["DF"] = "DF"
--- ClassicLootManager/Tooltips.lua:113
+-- ClassicLootManager/Tooltips.lua:114
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:385
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:448
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:458
@@ -553,18 +553,18 @@ CLM.L["DF"] = "DF"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:172
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:188
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:186
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:328
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1126
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:297
--- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1087
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:688
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:335
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1133
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:298
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1094
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:697
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:988
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:989
--- ClassicLootManager/Utils.lua:1019
+-- ClassicLootManager/Utils.lua:1048
 CLM.L["DKP"] = "DKP"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:157
 CLM.L["DPS"] = "DPS"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:273
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:336
 CLM.L["Danger Zone - Use at own risk"] = "危险区 - 使用风险自负"
 -- ClassicLootManager_Integrations/GUI.lua:222
 CLM.L["Data"] = "数据"
@@ -601,26 +601,29 @@ CLM.L["Default slot values"] = "默认槽位分值"
 CLM.L["Demon Hunter"] = "Demon Hunter"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:657
 CLM.L["Description"] = "描述"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:291
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:341
 CLM.L["Disable data synchronisation"] = "禁用数据同步"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:292
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:342
 CLM.L["Disable data synchronisation. This might lead to unexpected consequences. Use this at your own risk. Requires /reload to apply."] = "禁用数据同步。这可能会导致意想不到的后果。使用它需要您自担风险。需要 /reload 才能应用。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:495
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:578
 CLM.L["Disable"] = "禁用"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:37
 CLM.L["Disables display of the changelog for any new version."] = "禁止显示任何新版本的更新日志。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:454
 CLM.L["Disenchant removed items"] = "刪除的物品"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:336
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:343
+-- ClassicLootManager/Utils.lua:1075
 -- ClassicLootManager_Integrations/Integrations.lua:680
 CLM.L["Disenchant"] = "脫心"
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:242
 -- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:26
 CLM.L["Disenchanted"] = "被迷住了"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:205
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:211
 CLM.L["Disenchanters"] = "脫衣機"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:282
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:283
 CLM.L["Display price"] = "显示物品分值"
+-- ClassicLootManager/Utils.lua:1071
+CLM.L["Do Nothing"] = "沒做什麼"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:78
 CLM.L["Do not show again"] = "不再显示"
 -- .:indirectly
@@ -635,14 +638,14 @@ CLM.L["Dynamic Item values"] = "动态物品分值"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:558
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:988
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:989
--- ClassicLootManager/Utils.lua:1024
+-- ClassicLootManager/Utils.lua:1053
 CLM.L["EP"] = "EP"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:557
--- ClassicLootManager/Utils.lua:1026
+-- ClassicLootManager/Utils.lua:1055
 CLM.L["EP/GP"] = "EP/GP"
--- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:187
+-- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:196
 CLM.L["EPGP WEB"] = "EPGP WEB"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:689
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:698
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1042
 CLM.L["EPGP"] = "EPGP"
 -- ClassicLootManager_Integrations/GenericImport.lua:246
@@ -664,7 +667,7 @@ CLM.L["Enable OS bids"] = "启用副天赋出价"
 CLM.L["Enable RCLC integration. This will allow awarding DKP/GP points on RCLC item award. Requires /reload."] = "启用 RCLC 集成。这将允许通过 RCLC 物品分配获得DKP/GP分数。更改请重新加载界面。"
 -- ClassicLootManager_Integrations/Integrations.lua:361
 CLM.L["Enable WoW DKP Bot Integration. This will result in additional data stored upon logout."] = "启用 WoW DKP 机器人集成。这会在注销时存储额外的数据。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:233
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:239
 CLM.L["Enable announcing auction start and end."] = "启用通告宣布拍卖开始和结束。"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:137
 CLM.L["Enable auto-update bid values when current highest bid changes (open auction only)."] = "启用当前最高出价发生变化时自动更新价格（仅限公开拍卖）。"
@@ -692,31 +695,31 @@ CLM.L["Enable tooltip display"] = "Enable tooltip display"
 CLM.L["Enables / disables minimap Icon"] = "启用/禁用小地图图标"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:32
 CLM.L["Enables / disables verbose data printing during logging"] = "启用/禁用在记录期间print详细数据"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:241
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:247
 CLM.L["Enables announcing chat commands at auction start."] = "启用在拍卖开始时通告聊天频道指令。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:257
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:263
 CLM.L["Enables announcing loot awards."] = "启用通告战利品。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:265
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:271
 CLM.L["Enables announcing new highest bid (when applicable)."] = "启用通告新的最高出价（如果适用）。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:224
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:230
 CLM.L["Enables announcing raid start and end."] = "启用通告团本活动开始和结束。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:377
 CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "启用背包拍卖后自动交易战利品"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:283
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:284
 CLM.L["Enables displaying item price on tooltip."] = "启用在Tooltip上显示物品分值。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:249
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:255
 CLM.L["Enables raid-warning countdown for auctions."] = "启用团队通知拍卖倒计时。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:744
 CLM.L["End Timetravel"] = "结束时间旅行模式"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:401
 CLM.L["End selected raid"] = "结束选中的团本活动"
--- ClassicLootManager/Utils.lua:1037
+-- ClassicLootManager/Utils.lua:1066
 CLM.L["Epic"] = "史诗"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:478
 CLM.L["Equation"] = "方程"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:114
 CLM.L["Eredar Twins"] = "艾瑞达双子"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:861
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:870
 CLM.L["Europe"] = "欧洲"
 -- .:indirectly
 CLM.L["Evoker"] = "Evoker"
@@ -758,8 +761,8 @@ CLM.L["Fankriss the Unyielding"] = "顽强的范克瑞斯"
 CLM.L["Fathom-Lord Karathress"] = "深水领主卡拉瑟雷斯"
 -- ClassicLootManager_Integrations/GUI.lua:136
 CLM.L["February"] = "二月"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:798
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:831
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:807
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:840
 CLM.L["Feet"] = "脚"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:113
 CLM.L["Felmyst"] = "菲米丝"
@@ -787,8 +790,8 @@ CLM.L["Fill profile list with players in current raid roster."] = "从团队导�
 CLM.L["Fill profile list with players with the minimum level and ranks."] = "根据选择的最低等级和会阶导入角色信息。"
 -- ClassicLootManager/Modules/GUI/Filters.lua:163
 CLM.L["Filter"] = "过滤器"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:799
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:832
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:808
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:841
 CLM.L["Finger"] = "手指"
 -- ClassicLootManager_Integrations/GUI.lua:282
 CLM.L["Finish Day"] = "完成日"
@@ -814,7 +817,7 @@ CLM.L["Found %s in guild."] = "已找到 %s 在公会中。"
 CLM.L["Freya"] = "弗蕾亚"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:220
 CLM.L["GM"] = "Guild Master"
--- ClassicLootManager/Tooltips.lua:113
+-- ClassicLootManager/Tooltips.lua:114
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:398
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:441
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:469
@@ -824,12 +827,12 @@ CLM.L["GM"] = "Guild Master"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:172
 -- ClassicLootManager/Modules/Loot/LootManager/LootManager.lua:188
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:186
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:328
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1126
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:297
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:335
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1133
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:298
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:996
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:997
--- ClassicLootManager/Utils.lua:1022
+-- ClassicLootManager/Utils.lua:1051
 CLM.L["GP"] = "GP"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:60
 CLM.L["Gahz'ranka"] = "加兹兰卡"
@@ -848,9 +851,9 @@ CLM.L["General Vezax"] = "维扎克斯将军"
 CLM.L["General Zarithrian"] = "萨瑞瑟里安将军"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:767
 CLM.L["General settings"] = "通用设置"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:96
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:785
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:818
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:102
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
 CLM.L["Global"] = "通用"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:40
 CLM.L["Gluth"] = "格拉斯"
@@ -860,6 +863,8 @@ CLM.L["Golemagg the Incinerator"] = "焚化者古雷曼格"
 CLM.L["Gothik the Harvester"] = "收割者戈提克"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:36
 CLM.L["Grand Widow Faerlina"] = "黑女巫法琳娜"
+-- ClassicLootManager/Utils.lua:1074
+CLM.L["Greed"] = "貪婪"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:39
 CLM.L["Grobbulus"] = "格罗布鲁斯"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:417
@@ -876,26 +881,26 @@ CLM.L["Hakkar"] = "哈卡"
 CLM.L["Halazzi"] = "哈尔拉兹"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:162
 CLM.L["Halion"] = "海里昂"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:795
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:828
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:804
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:837
 CLM.L["Hands"] = "手"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:78
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:91
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:634
 CLM.L["Hard Mode"] = "困難模式"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:106
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:973
 CLM.L["Hard cap"] = "最大上限"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:786
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:819
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:795
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:828
 CLM.L["Head"] = "头部"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:156
 CLM.L["Healer"] = "治疗者"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:43
 CLM.L["Heigan the Unclean"] = "肮脏的希尔盖"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:804
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:837
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:813
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:846
 CLM.L["Held In Off-hand"] = "副手物品"
--- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:31
+-- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:41
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:658
 CLM.L["Heroic"] = "Heroic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:109
@@ -983,6 +988,10 @@ CLM.L["Include bench"] = "包括替补"
 CLM.L["Include benched players in all auto-awards"] = "在所有自动奖励中包括替补角色"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:306
 CLM.L["Include players with negative standings in decay."] = "包括在衰退中分数是负数的角色。"
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:311
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:319
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:327
+CLM.L["Include"] = "包括"
 -- ClassicLootManager/MinimapIcon.lua:46
 CLM.L["Incoherent state"] = "Incoherent state"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:261
@@ -1022,13 +1031,13 @@ CLM.L["Interval Time"] = "间隔时间"
 CLM.L["Interval Value"] = "时长奖励分值"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:907
 CLM.L["Interval in [minutes] to award bonus points"] = "奖励分数的间隔 [分钟]"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1304
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1311
 CLM.L["Invalid bid value"] = "无效的竞拍数值"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:353
 CLM.L["Invalid context. You should not decay raid only."] = "无效的范围。你不应该只衰减团队。"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:16
 CLM.L["Invalid item link"] = "无效的物品链接"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1310
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1317
 CLM.L["Invalid item"] = "无效的物品"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:50
 CLM.L["Invalid value provided"] = "提供的值无效"
@@ -1050,7 +1059,7 @@ CLM.L["Jan'alai"] = "加亚莱"
 CLM.L["January"] = "一月"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:57
 CLM.L["Jin'do the Hexxer"] = "妖术师金度"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:81
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:87
 CLM.L["Join our discord for more info: "] = "加入我们的Discord以获取更多信息："
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:415
 CLM.L["Join selected raid"] = "加入选中的团本活动"
@@ -1084,7 +1093,7 @@ CLM.L["Lady Deathwhisper"] = "亡语者女士"
 CLM.L["Lady Vashj"] = "瓦丝琪"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:386
 CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "分级拍卖的大值。\n\n设置为与其他层相同的值或忽略忽略。"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:895
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:904
 CLM.L["Large"] = "Large"
 -- ClassicLootManager_Integrations/GUI.lua:322
 CLM.L["Last month"] = "上个月"
@@ -1096,10 +1105,11 @@ CLM.L["Last year"] = "去年"
 CLM.L["Latest loot"] = "最新战利品"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:481
 CLM.L["Latest points"] = "最新分数"
--- ClassicLootManager/Utils.lua:1038
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:311
+-- ClassicLootManager/Utils.lua:1067
 CLM.L["Legendary"] = "传奇"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:797
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:830
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:806
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:839
 CLM.L["Legs"] = "腿部"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:83
 CLM.L["Leotheras the Blind"] = "盲眼者莱欧瑟拉斯"
@@ -1121,10 +1131,12 @@ CLM.L["Locked"] = "锁定"
 CLM.L["Logging level"] = "日志记录级别"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:18
 CLM.L["Logging"] = "日志记录"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:256
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:262
 CLM.L["Loot Awards"] = "战利品奖励"
 -- ClassicLootManager_Integrations/GUI.lua:21
 CLM.L["Loot History"] = "战利品历史记录"
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:292
+CLM.L["Loot Rolling"] = "戰利品滾動"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:426
 CLM.L["Loot rarity"] = "战利品稀有度"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:21
@@ -1137,7 +1149,7 @@ CLM.L["Lord Marrowgar"] = "玛洛加尔领主"
 CLM.L["Lucifron"] = "鲁西弗隆"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:115
 CLM.L["M'uru"] = "穆鲁"
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:419
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:420
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:324
 -- ClassicLootManager_Integrations/Integrations.lua:136
 -- ClassicLootManager_Integrations/Integrations.lua:141
@@ -1153,8 +1165,8 @@ CLM.L["Magmadar"] = "玛格曼达"
 CLM.L["Magtheridon"] = "玛瑟里顿"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:69
 CLM.L["Maiden of Virtue"] = "贞节圣女"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:802
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:835
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:811
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:844
 CLM.L["Main Hand"] = "主手"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:173
 CLM.L["Main"] = "主号"
@@ -1175,7 +1187,7 @@ CLM.L["Manual adjustment"] = "手动调整"
 CLM.L["March"] = "三月"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:399
 CLM.L["Master Loot Only"] = "仅Master Loot"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:896
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:905
 CLM.L["Max"] = "Max"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:965
 CLM.L["Maximum point cap player can receive per raid week. Set to 0 to disable."] = "每周角色可以获得的最大分数上限。设置为 0 以禁用。"
@@ -1187,7 +1199,7 @@ CLM.L["Maximum value for Ascending and Tiered auction.\n\nSet to same value as o
 CLM.L["May"] = "五月"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:382
 CLM.L["Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Medium value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:894
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:903
 CLM.L["Medium"] = "Medium"
 -- ClassicLootManager/MinimapIcon.lua:100
 CLM.L["Menu"] = "菜单"
@@ -1266,7 +1278,7 @@ CLM.L["Multiple"] = "多个"
 CLM.L["Multiplier for tier %s (if used by the auction type)."] = "系数 for tier %s （如果采用 Tiered 模式）。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:486
 CLM.L["Multiplier used by the equations"] = "公式使用的系数"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:291
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:295
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:494
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1170
 CLM.L["Multiplier"] = "系数"
@@ -1274,7 +1286,7 @@ CLM.L["Multiplier"] = "系数"
 CLM.L["Multiply auction time by the number of items to increase auction time lineary."] = "將拍賣時間乘以物品數量以線性增加拍賣時間。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1145
 CLM.L["Multiply time"] = "倍增時間"
--- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:32
+-- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:42
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:659
 CLM.L["Mythic"] = "Mythic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:106
@@ -1283,7 +1295,7 @@ CLM.L["Nalorakk"] = "纳洛拉克"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:260
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:384
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:395
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:732
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:742
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:694
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:772
 CLM.L["Name"] = "名字"
@@ -1293,16 +1305,18 @@ CLM.L["Named Buttons"] = "命名按钮"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:407
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:524
 CLM.L["Naxxramas"] = "纳克萨玛斯"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:787
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:820
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:796
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:829
 CLM.L["Neck"] = "颈部"
+-- ClassicLootManager/Utils.lua:1073
+CLM.L["Need"] = "需要"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:25
 CLM.L["Nefarian"] = "奈法利安"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:74
 CLM.L["Netherspite"] = "虚空幽龙"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:36
 CLM.L["Never show changelog"] = "不再显示更新日志"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1123
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1130
 CLM.L["New highest bid on %s: %s %s %s"] = "给 %s 的新最高出价：%s %s %s"
 -- ClassicLootManager_Integrations/GenericImport.lua:105
 CLM.L["New roster: %s"] = "新名册: %s"
@@ -1316,11 +1330,11 @@ CLM.L["Next item"] = "下一項"
 CLM.L["Next"] = "下一個"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:77
 CLM.L["Nightbane"] = "夜之魇"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1306
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1313
 CLM.L["No auction in progress"] = "没有进行中的拍卖"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:179
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:193
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:884
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:894
 CLM.L["No bids"] = "没有出价"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:475
 CLM.L["No loot received"] = "没有收到战利品"
@@ -1329,29 +1343,29 @@ CLM.L["No loot received"] = "没有收到战利品"
 CLM.L["No players selected"] = "未选择角色"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:500
 CLM.L["No points received"] = "未获得分数"
--- ClassicLootManager/Utils.lua:596
+-- ClassicLootManager/Utils.lua:602
 CLM.L["No"] = "否"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:809
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:842
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:818
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:851
 CLM.L["Non-equippable"] = "不可装备"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:301
 -- ClassicLootManager/Modules/GUI/Filters.lua:191
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:223
 -- ClassicLootManager_Integrations/Integrations.lua:673
 CLM.L["None"] = "无"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:77
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:90
 CLM.L["Normal Mode"] = "正常模式"
--- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:30
+-- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_Retail.lua:40
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:657
 CLM.L["Normal"] = "Normal"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:145
 CLM.L["Northrend Beasts"] = "诺森德猛兽"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1299
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1306
 CLM.L["Not in a roster"] = "不在名册中"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:595
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:640
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:278
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:549
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:279
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:559
 CLM.L["Not in raid"] = "不在团队/团本活动中"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:161
 CLM.L["Note to be added to award. Max 25 characters. It is recommended to not include date nor selected reason here. If you will input encounter ID it will be transformed into boss name."] = "最多 25 个字符。建议不要在此处包含日期或选择的原因。如果您输入BOSS战ID，它将被转换为BOSS名称。"
@@ -1368,7 +1382,7 @@ CLM.L["Notify that you are passing on the item."] = "通知您正在跳过该物
 CLM.L["November"] = "十一月"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:654
 CLM.L["Num"] = "#"
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:420
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:421
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:350
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1105
 -- ClassicLootManager_Integrations/Integrations.lua:146
@@ -1376,10 +1390,10 @@ CLM.L["Num"] = "#"
 CLM.L["OS"] = "副天赋"
 -- ClassicLootManager_Integrations/GUI.lua:144
 CLM.L["October"] = "十月"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:803
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:836
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:812
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:845
 CLM.L["Off Hand"] = "副手"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1309
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1316
 CLM.L["Off-spec bidding not allowed"] = "不允许副天赋出价"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:93
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:241
@@ -1393,15 +1407,15 @@ CLM.L["On Time Bonus value"] = "集合奖励分值"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:520
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:869
 CLM.L["On Time Bonus"] = "集合奖励"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:801
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:834
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:810
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:843
 CLM.L["One-Hand"] = "单手"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:127
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:931
 CLM.L["Online only"] = "仅限在线"
 -- ClassicLootManager/Modules/GUI/Filters.lua:76
 CLM.L["Online"] = "在线的"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:186
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:192
 CLM.L["Only when ML/RL"] = "仅当 ML/RL"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:7
 CLM.L["Onyxia"] = "奥妮克希亚"
@@ -1409,12 +1423,12 @@ CLM.L["Onyxia"] = "奥妮克希亚"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:504
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:621
 CLM.L["Onyxia's Lair"] = "奥妮克希亚的巢穴"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:122
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:128
 CLM.L["Open Key Bindings UI for AddOns"] = "为插件打开按键绑定界面"
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:55
 CLM.L["Open trade"] = "公開貿易"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:709
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:716
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:718
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:725
 CLM.L["Open"] = "公开"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:70
 CLM.L["Opera Hall"] = "歌剧院"
@@ -1426,27 +1440,30 @@ CLM.L["Other"] = "其他"
 CLM.L["Ouro"] = "奥罗"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:75
 CLM.L["Overrides"] = "覆盖"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1251
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1258
 CLM.L["PASS"] = "跳过"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1058
 CLM.L["PR Rounding"] = "PR 四舍五入"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:396
--- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1089
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1096
 CLM.L["PR"] = "PR"
 -- .:indirectly
 CLM.L["Paladin"] = "圣骑士"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:288
 CLM.L["Participated"] = "参与"
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:294
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:421
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:295
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:422
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:488
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:576
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:859
+-- ClassicLootManager/Utils.lua:1072
 CLM.L["Pass"] = "跳过"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1308
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1315
 CLM.L["Passing after bidding not allowed"] = "不允许出价后跳过"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:38
 CLM.L["Patchwerk"] = "帕奇维克"
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:327
+CLM.L["Patterns"] = "模式"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:124
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:272
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:121
@@ -1471,13 +1488,13 @@ CLM.L["Point type"] = "分数类型"
 CLM.L["Point"] = "分数"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:184
 CLM.L["Points value that will be awarded."] = "将被分配的分值。"
--- ClassicLootManager/Utils.lua:1033
+-- ClassicLootManager/Utils.lua:1062
 CLM.L["Poor"] = "较差的"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:67
 CLM.L["Post bids"] = "通告竞拍"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:67
 CLM.L["Post channel"] = "发布频道"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:278
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:279
 CLM.L["Price Tooltips"] = "价格Tooltip"
 -- .:indirectly
 CLM.L["Priest"] = "牧师"
@@ -1490,15 +1507,15 @@ CLM.L["Princess Huhuran"] = "哈霍兰公主"
 CLM.L["Prioritized"] = "优先"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:154
 CLM.L["Professor Putricide"] = "普崔塞德教授"
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:273
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:274
 CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "角色信息 %s 已存在，被不同的GUID占用 %s (%s)。 "
 -- .:indirectly
 CLM.L["Profiles"] = "角色信息"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:523
 CLM.L["Progression Bonus"] = "进度奖励"
--- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:408
+-- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:413
 CLM.L["Provide number of raids needed for 100% attendance in a weekly reset. Between 1 - 50 raids. Defaults to 2. Requires /reload."] = "请提供每周所需参与的团本活动数量以达成 100% 出勤。选择 1 - 50 ，默认值为 2。需要重新加载界面。"
--- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:426
+-- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:431
 CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 - 1000 weeks. Defaults to 10. Requires /reload."] = "提供将计入出勤的周数。 1 - 1000 周之间。默认为 10。需要 /reload。"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:112
 CLM.L["Prune profiles"] = "Prune profiles"
@@ -1507,13 +1524,13 @@ CLM.L["Prune profiles"] = "Prune profiles"
 CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."] = "让离开团队的角色加入替补名单。要完全移除他们，需要手动将他们从替补名单中移除。"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:155
 CLM.L["Queen Lana'thel"] = "鲜血女王兰娜瑟尔"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:813
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:846
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:822
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:855
 CLM.L["Quiver"] = "箭袋"
 -- ClassicLootManager_Integrations/Integrations.lua:231
 -- ClassicLootManager_Integrations/Integrations.lua:237
 CLM.L["RCLC Integration"] = "RCLC 集成"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:690
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:699
 CLM.L["ROLL"] = "Roll"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:100
 CLM.L["Rage Winterchill"] = "雷基·冬寒"
@@ -1534,9 +1551,9 @@ CLM.L["Raid Completion Bonus"] = "解散奖励"
 CLM.L["Raid Completion Value"] = "解散奖励分值"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:184
 CLM.L["Raid Name"] = "团本活动名称"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:223
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:229
 CLM.L["Raid Start/End"] = "团本活动开始/结束"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:219
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:225
 CLM.L["Raid Warnings"] = "团队通告"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:430
 CLM.L["Raid [%s] ended"] = "团本活动 [%s] 已结束"
@@ -1553,19 +1570,19 @@ CLM.L["Raid management is disabled during time traveling."] = "在时间旅行�
 CLM.L["Raid"] = "团队"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:39
 CLM.L["Raid: %s Roster: %s"] = "Raid: %s Roster: %s"
--- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:407
+-- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:412
 CLM.L["Raids needed in reset"] = "Raids needed in reset"
 -- ClassicLootManager_Integrations/GUI.lua:22
 CLM.L["Raids"] = "团本活动"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:808
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:841
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:817
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:850
 CLM.L["Ranged (wands)"] = "远程（魔杖）"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:807
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:840
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:816
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:849
 CLM.L["Ranged"] = "远程"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:75
 CLM.L["Ranks"] = "会阶"
--- ClassicLootManager/Utils.lua:1036
+-- ClassicLootManager/Utils.lua:1065
 CLM.L["Rare"] = "稀有的"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:18
 CLM.L["Razorgore the Untamed"] = "狂野的拉佐格尔"
@@ -1578,12 +1595,12 @@ CLM.L["Received"] = "收入"
 -- ClassicLootManager_Integrations/Integrations.lua:136
 -- ClassicLootManager_Integrations/Integrations.lua:146
 CLM.L["Regular"] = "常规"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:814
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:847
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:823
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:856
 CLM.L["Relic"] = "Relic"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:96
 CLM.L["Reliquary of Souls"] = "灵魂之匣"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:271
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:275
 CLM.L["Remove all items from auction list. Populates new one if there are any pending."] = "从拍卖列表中删除所有项目。如果有任何待处理，将添加到列表。"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:104
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:81
@@ -1594,7 +1611,7 @@ CLM.L["Remove auction"] = "移除拍卖"
 CLM.L["Remove from roster"] = "从名册中删除"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:637
 CLM.L["Remove from standby"] = "从替补名单中移除"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:282
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:286
 CLM.L["Remove item from auction list after it's awarded."] = "分配后，从拍卖列表中移除物品。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:446
 CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."] = "從拍賣列表中刪除沒有投標的項目。 這將使標記物品變得不可能。"
@@ -1602,7 +1619,7 @@ CLM.L["Remove items without bids from auction list. This will make marking items
 CLM.L["Remove items without bids"] = "刪除沒有投標的項目"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:93
 CLM.L["Remove old"] = "移除旧的"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:280
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:284
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:358
 CLM.L["Remove on award"] = "分配后移除"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:620
@@ -1617,7 +1634,7 @@ CLM.L["Remove selected raid"] = "移除选中的团本活动"
 CLM.L["Remove selected"] = "移除选中的"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:396
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:68
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:281
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:285
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:839
 CLM.L["Remove"] = "移除"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:840
@@ -1626,11 +1643,11 @@ CLM.L["Removes current roster."] = "移除当前名册。"
 CLM.L["Removing %s from current queue."] = "從當前隊列中刪除 %s。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:225
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:638
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:717
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:716
 CLM.L["Removing items not allowed during auction."] = "在拍卖过程中移除不允许的物品。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:357
 CLM.L["Request standby"] = "请求替补"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:101
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:107
 CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel. Some windows may require closing and reopening."] = "重新调整 CLM UI，竞拍窗口除外。您可以使用 Ctrl + 鼠标滚轮独立重新调整竞拍窗口。某些窗口可能需要关闭和重新打开。"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:182
 CLM.L["Reset gui positions"] = "重置 gui 位置"
@@ -1640,13 +1657,15 @@ CLM.L["Revoke standby"] = "撤销替补"
 CLM.L["Rogue"] = "潜行者"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:174
 CLM.L["Role"] = "角色"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:520
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:749
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:296
+CLM.L["Roll on Loot"] = "在戰利品上滾動"
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:530
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:759
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:710
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1153
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1154
 CLM.L["Roll"] = "卷"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:915
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:922
 CLM.L["Rolling complete"] = "滾動完成"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1333
 CLM.L["Roster Name"] = "名册名称"
@@ -1675,7 +1694,7 @@ CLM.L["Round to"] = "四舍五入到"
 CLM.L["Rounding"] = "四舍五入"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:283
 CLM.L["Ruins of Ahn'Qiraj"] = "安其拉废墟"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:691
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:700
 CLM.L["SK"] = "SK"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:130
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:940
@@ -1688,8 +1707,8 @@ CLM.L["Sapphiron"] = "萨菲隆"
 CLM.L["Sartharion"] = "萨塔里奥"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:161
 CLM.L["Saviana Ragefire"] = "塞维娅娜·怒火"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:710
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:717
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:719
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:726
 CLM.L["Sealed"] = "封闭"
 -- ClassicLootManager/Modules/GUI/Filters.lua:208
 CLM.L["Search for player names. Separate multiple with a comma ','. Minimum 3 characters. Overrides filtering."] = "搜索，用英文逗号','分隔多个。至少3个字母。覆盖过滤器。"
@@ -1699,17 +1718,19 @@ CLM.L["Search"] = "搜索"
 CLM.L["Select DKP or EPGP point system."] = "选择 DKP 或 EPGP 分数系统。"
 -- ClassicLootManager_Integrations/GUI.lua:375
 CLM.L["Select Profiles to export"] = "选择要导出的角色信息"
--- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:443
+-- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:448
 CLM.L["Select Rosters to display"] = "选择要显示的名册"
 -- ClassicLootManager_Integrations/GUI.lua:344
 CLM.L["Select Rosters to export"] = "选择要导出的名册"
 -- ClassicLootManager/Modules/GUI/Filters.lua:179
 CLM.L["Select all classes."] = "选择所有职业。"
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:297
+CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = "每當打開“組戰利滾動”窗口時，請選擇默認行為。 這僅在CLM RAID期間和在突襲實例中處於活動狀態。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:524
 CLM.L["Select equation"] = "选择公式"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:23
 CLM.L["Select logging level for troubleshooting"] = "选择日志记录级别以进行故障排除"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:196
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:202
 CLM.L["Select loot rarity for the annoucement to raid."] = "选择在团队通告的战利品稀有度。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:427
 CLM.L["Select loot rarity threshold to used to fill the auction list."] = "选择将会被添加到拍卖列表的战利品稀有度阈值。"
@@ -1726,7 +1747,7 @@ CLM.L["Select roster to create raid for."] = "选择要为其创建团本活动�
 CLM.L["Select roster"] = "选择名册"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:956
 CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "选择每周重置时区。EU：周三 07:00 GMT 或 US：周二 15:00 GMT"
--- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:76
+-- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:89
 CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = "選擇| cffeee00%s | r的獎金價值獎（%s）遇到困難。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:772
 CLM.L["Selected"] = "已选中"
@@ -1752,22 +1773,22 @@ CLM.L["Shadron"] = "沙德隆"
 CLM.L["Shaman"] = "萨满"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:13
 CLM.L["Shazzrah"] = "沙斯拉尔"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:806
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:839
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:815
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:848
 CLM.L["Shield"] = "盾牌"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:499
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:582
 CLM.L["Shift + Alt"] = "Shift+Alt"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:502
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:585
 CLM.L["Shift + Ctrl + Alt"] = "Shift + Ctrl + Alt"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:501
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:584
 CLM.L["Shift + Ctrl"] = "Shift + Ctrl"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:496
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:579
 CLM.L["Shift"] = "Shift"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:789
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:822
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:798
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:831
 CLM.L["Shirt"] = "衬衣"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:788
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:821
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:797
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:830
 CLM.L["Shoulder"] = "肩部"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:223
 CLM.L["Show Award window"] = "展示奖励窗口"
@@ -1777,8 +1798,8 @@ CLM.L["Show tooltip info even outside of CLM raid."] = "Show tooltip info even o
 CLM.L["Silithid Royalty"] = "吉祥三宝"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:157
 CLM.L["Sindragosa"] = "辛达苟萨"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:738
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:744
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:747
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:753
 CLM.L["Single-Priced"] = "Single-Priced"
 -- ClassicLootManager_Integrations/Migration.lua:192
 CLM.L["Skipping %s"] = "跳过 %s"
@@ -1788,12 +1809,14 @@ CLM.L["Skipping CommunityDKP"] = "跳过 CommunityDKP"
 CLM.L["Slot multipliers"] = "槽位系数"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:378
 CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:893
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:902
 CLM.L["Small"] = "Small"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:144
 CLM.L["Spec guild request"] = "查看公会请求"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:386
 CLM.L["Spent"] = "支出"
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:319
+CLM.L["Stacking"] = "堆疊"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:815
 CLM.L["Stale"] = "Stale"
 -- ClassicLootManager/Modules/Raids/StandbyStagingManager/StandbyStagingManager.lua:136
@@ -1808,8 +1831,8 @@ CLM.L["Standby"] = "替补"
 CLM.L["Standings"] = "积分榜"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:387
 CLM.L["Start selected raid"] = "开始选中的团本活动"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:502
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:520
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:512
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:530
 CLM.L["Start"] = "开始"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:508
 CLM.L["Started raid %s"] = "已开始团本活动 %s"
@@ -1822,8 +1845,8 @@ CLM.L["Starting points"] = "起點"
 CLM.L["Statistics"] = "统计数据"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:261
 CLM.L["Status"] = "状态"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:502
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:520
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:512
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:530
 CLM.L["Stop"] = "停止"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:59
 CLM.L["Store bids"] = "保存竞拍记录"
@@ -1848,8 +1871,8 @@ CLM.L["Supremus"] = "苏普雷姆斯"
 CLM.L["Sync ongoing"] = "同步进行中"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:654
 CLM.L["TBC"] = "TBC"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:793
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:826
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:802
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:835
 CLM.L["Tabard"] = "战袍"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:155
 CLM.L["Tank"] = "坦克"
@@ -1893,13 +1916,13 @@ CLM.L["The Prophet Skeram"] = "预言者斯克拉姆"
 CLM.L["The Ruby Sanctum"] = "红玉圣殿"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:139
 CLM.L["Thorim"] = "托里姆"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:812
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:845
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:821
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:854
 CLM.L["Thrown"] = "投掷"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:554
 CLM.L["Tier multipliers"] = "Tier 系数"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:740
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:745
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:749
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:754
 CLM.L["Tiered"] = "Tiered"
 -- ClassicLootManager/MinimapIcon.lua:60
 CLM.L["Time Traveling"] = "时间旅行模式启用中"
@@ -1914,12 +1937,12 @@ CLM.L["Time"] = "时间"
 CLM.L["Timetravel"] = "开启时间旅行模式"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:309
 CLM.L["Toggle Auction History window display"] = "开关拍卖历史窗口显示"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:702
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:712
 CLM.L["Toggle Auctioning window display"] = "开关拍卖窗口显示"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:145
 CLM.L["Toggle Bidding auto-open"] = "开关自动开启竞拍"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:220
--- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1185
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1192
 CLM.L["Toggle Bidding window display"] = "开关竞拍窗口显示"
 -- ClassicLootManager_Integrations/ImportCSV.lua:216
 CLM.L["Toggle CSV import window display"] = "开关 CSV 导入窗口显示"
@@ -1949,9 +1972,15 @@ CLM.L["Toggle standings window display"] = "开关积分榜窗口显示"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:203
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:194
 CLM.L["Toggle test bar"] = "切換測試欄"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:146
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:152
 CLM.L["Toggles addon sounds."] = "开关插件声音。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:178
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:312
+CLM.L["Toggles auto-rolling on legendary items."] = "在傳奇項目上切換自動滾動。"
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:328
+CLM.L["Toggles auto-rolling on patterns."] = "在圖案上切換自動滾動。"
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:320
+CLM.L["Toggles auto-rolling on stacking items."] = "在堆疊項目上切換自動滾動。"
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:184
 CLM.L["Toggles loot announcement to raid"] = "开关战利品通告到团队频道"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:350
 CLM.L["Toggles loot award announcement to guild"] = "开关战利品分配通告到公会频道"
@@ -1976,32 +2005,32 @@ CLM.L["Trade List"] = "貿易清單"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:475
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:592
 CLM.L["Trial of the Crusader"] = "十字军的试炼"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:800
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:833
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:809
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:842
 CLM.L["Trinket"] = "饰品"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:37
 CLM.L["True"] = "开启"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:32
 CLM.L["Twin Emperors"] = "双子皇帝"
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:263
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:264
 CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."] = "两个不同的角色信息存在对目标 GUID %s (%s:%s) 和名字 %s (%s:%s).。请在更新之前验证并清理角色信息。"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:805
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:838
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:814
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:847
 CLM.L["Two-Hand"] = "双手"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:254
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:287
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:656
 CLM.L["Type"] = "类型"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:100
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:106
 CLM.L["UI Scale"] = "用户界面缩放"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:455
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:572
 CLM.L["Ulduar"] = "奥杜尔"
 -- ClassicLootManager_Integrations/Migration.lua:52
 CLM.L["Unable to execute migration. Entries already exist."] = "无法执行迁移。条目已经存在。"
--- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:160
+-- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:169
 CLM.L["Unable to get item info from server. Please try auctioning again"] = "无法从服务器获取物品信息。请重新尝试拍卖"
--- ClassicLootManager/Utils.lua:1035
+-- ClassicLootManager/Utils.lua:1064
 CLM.L["Uncommon"] = "罕见"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:525
 CLM.L["Unexcused absence"] = "无故缺席"
@@ -2014,12 +2043,12 @@ CLM.L["Unknown sync state"] = "无需同步"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:172
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:170
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:240
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:433
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:337
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:443
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:338
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:34
 CLM.L["Unknown"] = "未知"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:88
--- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:320
+-- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:321
 CLM.L["Unlink Alt"] = "取消链接小号"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:273
 CLM.L["Unlock selected"] = "解锁选中的"
@@ -2036,7 +2065,7 @@ CLM.L["Val'kyr Twins"] = "瓦格里双子"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:150
 CLM.L["Valithria Dreamwalker"] = "踏梦者瓦莉瑟瑞娅"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:262
--- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:300
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:304
 CLM.L["Value"] = "分值"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:445
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:562
@@ -2049,14 +2078,14 @@ CLM.L["Version check in guild"] = "在公会中进行版本检查"
 CLM.L["Version"] = "版本"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:122
 CLM.L["Vesperon"] = "维斯匹隆"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:711
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:720
 CLM.L["Vickrey"] = "Vickrey"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:30
 CLM.L["Viscidus"] = "维希度斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:88
 CLM.L["Void Reaver"] = "空灵机甲"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:796
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:829
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:805
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:838
 CLM.L["Waist"] = "腰部"
 -- .:indirectly
 CLM.L["Warlock"] = "术士"
@@ -2072,17 +2101,17 @@ CLM.L["Weekly gains"] = "本周收益"
 CLM.L["Weekly reset timezone"] = "每周重置时区"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:112
 CLM.L["Weekly reset"] = "每周重置"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:187
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:193
 CLM.L["When enabled, this will make loot announcement display only if you're Master Looter or Raid Leader (if there is no Master Looter)."] = "启用后，只有当您是 Master Looter 或 Raid Leader（如果没有 Master Looter）时，才会显示战利品通告。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1208
 CLM.L["Will display names of the buttons instead of values in bidding UI"] = "将在竞拍界面中显示按钮的名称而不是数值"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:204
 CLM.L["Will hide bidding window if you enter combat and show it again when you exit. Will also delay auto opening if needed."] = "如果您輸入戰鬥並在退出時再次顯示出來，將隱藏出價窗口。 如果需要，還將延遲自動打開。"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:154
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:160
 CLM.L["Wipe events"] = "删除所有事件"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:39
 CLM.L["Wipe"] = "删除"
--- ClassicLootManager/Modules/Global/GlobalConfigs.lua:155
+-- ClassicLootManager/Modules/Global/GlobalConfigs.lua:161
 CLM.L["Wipes all events from memory. This will trigger resyncing from other users."] = "从内存中清除所有事件。这将触发来自其他用户的重新同步。"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:40
 CLM.L["Wipes the log history"] = "删除日志历史记录"
@@ -2091,21 +2120,21 @@ CLM.L["WoW DKP Bot Integration"] = "WoW DKP Bot集成"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:655
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:656
 CLM.L["WotLK"] = "WLK"
--- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:188
+-- ClassicLootManager/Modules/Rosters/RosterManager/ItemValueCalculator.lua:197
 CLM.L["Wowpedia"] = "Wowpedia"
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
--- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:803
+-- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:836
 CLM.L["Wrist"] = "手腕"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:140
 CLM.L["XT-002 Deconstructor"] = "XT-002拆解者"
--- ClassicLootManager/Utils.lua:591
+-- ClassicLootManager/Utils.lua:597
 CLM.L["Yes"] = "是的"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:141
 CLM.L["Yogg-Saron"] = "尤格萨隆"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:311
 CLM.L["You are already in an active raid. Leave or finish it before creating new one."] = "你已经在一个正在进行的团本活动中。在创建新的之前离开或完成它。"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:747
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:868
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:746
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:875
 CLM.L["You are not allowed to auction items"] = "您没有权限拍卖物品"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:470
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:504
@@ -2142,9 +2171,9 @@ CLM.L["You can only remove from bench players from same roster as the raid (%s).
 CLM.L["You can only start a freshly created raid."] = "您只能开始新创建的团本活动。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:700
 CLM.L["You can remove max %d players from roster at the same time."] = "您最多可以从名册中同时移除 %d 名角色。"
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:338
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:339
 CLM.L["Your bid (%s) was denied: |cffcc0000%s|r"] = "你的竞拍 (%s) 被拒绝: |cffcc0000%s|r"
--- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:320
+-- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:321
 CLM.L["Your bid (%s) was |cff00cc00accepted|r"] = "你的竞拍 (%s) |cff00cc00成功|r"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:64
 CLM.L["Zero-Sum Bank Inflation"] = "Zero-Sum Bank Inflation"
@@ -2274,7 +2303,7 @@ CLM.L["revoked"] = "已撤销"
 CLM.L["roster"] = "名册"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:92
 CLM.L["rosters"] = "名册"
--- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:882
+-- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:889
 CLM.L["seconds"] = "秒"
 -- ClassicLootManager_Integrations/Integrations.lua:287
 CLM.L["then"] = "然后"

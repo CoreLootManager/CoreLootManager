@@ -4,4 +4,5 @@
 	<Script file="GlobalSlashCommands.lua"/>
 	<Script file="GlobalChatMessageHandlers.lua"/>
 	<Script file="GlobalConfigs.lua"/>
+	<Script file="GlobalUIHandlers.lua"/>
 </Ui>

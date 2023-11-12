@@ -103,7 +103,7 @@ local function addItemPriceToTooltip(tooltip)
         -- Gather
         local display = raid and true or CLM.MODULES.RosterManager:GetDisplayTooltip(roster:UID())
         if display then
-            local values = roster:GetItemValues(itemId)
+            local values = roster:GetItemValuesFromItemLink(itemLink)
             local isEPGP = roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP
             local itemValueMode = roster:GetConfiguration("itemValueMode")
             -- Format

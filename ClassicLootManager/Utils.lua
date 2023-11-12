@@ -34,7 +34,7 @@ local numberToClass = {
 local classOrdered
 if CLM.WoW10 then
     classOrdered = { "Death Knight", "Demon Hunter", "Druid", "Evoker", "Hunter", "Mage", "Monk", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
-elseif CLM.WoWEra then
+elseif CLM.WoWSeasonal then
     classOrdered = { "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
 else
     classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
@@ -361,7 +361,7 @@ end
 
 local _GetNormalizedRealmName = UTILS.GetNormalizedRealmName
 
-if CLM.WoW10 or CLM.WoWEra then -- support cross-server for Retail and Classic Era
+if CLM.WoW10 or CLM.WoWSeasonal then -- support cross-server for Retail and Classic Era
     function UTILS.getIntegerGuid(GUID)
         local _, realm, int = strsplit("-", GUID)
         return {tonumber(realm, 10), tonumber(int, 16)}
@@ -689,7 +689,7 @@ if CLM.WoW10 then
         end
         return role
     end
-elseif CLM.WoWEra then
+elseif CLM.WoWSeasonal then
     function UTILS.GetMyRole()
         return "NONE" -- Not supported as it requires Role decoding based on spec
     end
@@ -1065,6 +1065,14 @@ CONSTANTS.ITEM_QUALITY = {
     [3] = ColorCodeText(CLM.L["Rare"], "0070dd"),
     [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
     [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
+}
+CONSTANTS.LOOT_ROLL_TYPE_IGNORE = -1
+CONSTANTS.ROLL_TYPE = {
+    [CONSTANTS.LOOT_ROLL_TYPE_IGNORE]   = ColorCodeText(CLM.L["Do Nothing"], "9d9d9d"),
+    [LOOT_ROLL_TYPE_PASS]               = CLM.L["Pass"],
+    [LOOT_ROLL_TYPE_NEED]               = ColorCodeText(CLM.L["Need"], "1eff00"),
+    [LOOT_ROLL_TYPE_GREED]              = ColorCodeText(CLM.L["Greed"], "ffd100"),
+    [LOOT_ROLL_TYPE_DISENCHANT]         = ColorCodeText(CLM.L["Disenchant"], "a335ee"),
 }
 CONSTANTS.REGEXP_FLOAT = "^-?%d+%.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+%.?%d*$"
