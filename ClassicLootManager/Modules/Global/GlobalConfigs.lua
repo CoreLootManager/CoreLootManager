@@ -34,7 +34,7 @@ function GlobalConfigs:Initialize()
         },
         disenchanters = "",
         loot_roll = {
-            rollOnLoot = LOOT_ROLL_TYPE_PASS,
+            rollOnLoot = CONSTANTS.LOOT_ROLL_TYPE_IGNORE,
             includeLegendary = false,
             includeStacking = false,
             includePatterns = false
@@ -351,7 +351,7 @@ Thank you patrons, especially:
 end
 
 function GlobalConfigs:SetRollType(value)
-    self.db.loot_roll.rollOnLoot = CONSTANTS.ROLL_TYPE[value] and value or CONSTANTS.LOOT_ROLL_IGNORE
+    self.db.loot_roll.rollOnLoot = CONSTANTS.ROLL_TYPE[value] and value or CONSTANTS.LOOT_ROLL_TYPE_IGNORE
 end
 
 function GlobalConfigs:GetRollType()

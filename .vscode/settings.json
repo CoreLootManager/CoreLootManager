@@ -138,7 +138,8 @@
         "GetNumGuildMembers",
         "assert",
         "pcall",
-        "debugstack"
+        "debugstack",
+        "StaticPopup_Hide"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

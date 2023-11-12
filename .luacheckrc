@@ -46,6 +46,16 @@ globals = {
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"LE_ITEM_CLASS_RECIPE",
+    "LE_ITEM_CLASS_QUESTITEM",
+	"LOOT_ROLL_TYPE_PASS",
+    "LOOT_ROLL_TYPE_NEED",
+    "LOOT_ROLL_TYPE_GREED",
+    "LOOT_ROLL_TYPE_DISENCHANT",
+	"GetLootRollItemLink",
+	"RollOnLoot",
+	"ConfirmLootRoll",
+	"StaticPopup_Hide",
 	"CreateFromMixins",
 	"ItemMixin",
 	"_G",

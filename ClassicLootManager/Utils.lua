@@ -1066,9 +1066,9 @@ CONSTANTS.ITEM_QUALITY = {
     [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
     [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
 }
-CONSTANTS.LOOT_ROLL_IGNORE = -1
+CONSTANTS.LOOT_ROLL_TYPE_IGNORE = -1
 CONSTANTS.ROLL_TYPE = {
-    [CONSTANTS.LOOT_ROLL_IGNORE]    = ColorCodeText(CLM.L["Ignore"], "9d9d9d"),
+    [CONSTANTS.LOOT_ROLL_TYPE_IGNORE]    = ColorCodeText(CLM.L["Ignore"], "9d9d9d"),
     [LOOT_ROLL_TYPE_PASS]           = CLM.L["Pass"],
     [LOOT_ROLL_TYPE_NEED]           = ColorCodeText(CLM.L["Need"], "1eff00"),
     [LOOT_ROLL_TYPE_GREED]          = CLM.L["Greed"],

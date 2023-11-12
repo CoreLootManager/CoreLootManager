@@ -1,12 +1,15 @@
 -- ------------------------------- --
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
+-- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
+-- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+local handledLootRolls = {}
+
 local function Handler(_, _, rollID, rollTime, lootHandle)
+    handledLootRolls[rollID] = nil
     -- CLM Raid status check
     if not CLM.MODULES.RaidManager:IsInProgressingRaid() then
         return
@@ -19,7 +22,7 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     end
 
     -- Early exit on ignore
-    if CLM.GlobalConfigs:GetRollType() == CONSTANTS.LOOT_ROLL_IGNORE then
+    if CLM.GlobalConfigs:GetRollType() == CONSTANTS.LOOT_ROLL_TYPE_IGNORE then
         return
     end
 
@@ -55,11 +58,19 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
 
     -- Roll
     RollOnLoot(rollID, CLM.GlobalConfigs:GetRollType())
+    handledLootRolls[rollID] = true
+end
+
+local function AutoConfirm(_, _, rollID, roll)
+    -- AutoConfirm only auto handled rolls
+    if not handledLootRolls[rollID] then return end
+    ConfirmLootRoll(rollID, roll)
+    StaticPopup_Hide("CONFIRM_LOOT_ROLL")
 end
 
 local GlobalUIHandlers = {}
 function GlobalUIHandlers:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"START_LOOT_ROLL"}, Handler)
+    CLM.MODULES.EventManager:RegisterWoWEvent({"CONFIRM_LOOT_ROLL"}, AutoConfirm)
 end
-
 CLM.GlobalUIHandlers = GlobalUIHandlers
