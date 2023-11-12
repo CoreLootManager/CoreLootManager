@@ -1,3 +1,12 @@
+# Core Loot Manager v4.6.0
+## Features
+### Auto-rolling
+CLM now supports auto-rolling on items while in CLM raid. You can choose the appropriate action in your local settings. Special items (like Precious' Ribbon) are not handled this way.
+### Amirdrassil
+Retail 10.2 Amirdrassil, the Dream's Hope bosses have been added to Boss Kill Bonus support.
+## Fixes
+### Dynamic item value calculation
+Dynamic item value calculation based on item level will now work properly. This will however disable automatic Item Value Override creation when using dynamic value calculations.
 # Core Loot Manager v4.5.0
 ## Features
 ### Multiple item copies tracking

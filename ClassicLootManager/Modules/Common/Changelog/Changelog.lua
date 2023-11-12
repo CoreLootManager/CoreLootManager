@@ -1,6 +1,24 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Auto-rolling", body = "CLM now supports auto-rolling on items while in CLM raid. You can choose the appropriate action in your local settings. Special items (like Precious' Ribbon) are not handled this way." },
+                    { header = "Amirdrassil", body = "Retail 10.2 Amirdrassil, the Dream's Hope bosses have been added to Boss Kill Bonus support." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Dynamic item value calculation", body = "Dynamic item value calculation based on item level will now work properly. This will however disable automatic Item Value Override creation when using dynamic value calculations." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.5.0",
         data = {
             {
