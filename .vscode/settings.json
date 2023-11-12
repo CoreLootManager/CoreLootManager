@@ -139,7 +139,8 @@
         "assert",
         "pcall",
         "debugstack",
-        "StaticPopup_Hide"
+        "StaticPopup_Hide",
+        "RAID"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

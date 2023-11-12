@@ -1725,7 +1725,7 @@ CLM.L["Select Rosters to export"] = "Wählen Sie Roster zum Exportieren"
 -- ClassicLootManager/Modules/GUI/Filters.lua:179
 CLM.L["Select all classes."] = "Alle Klassen auswählen."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:297
-CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = "Wählen Sie das Standardverhalten, wenn das Fenster "Gruppengebäude" geöffnet wird. Dies wird nur während des CLM -Überfalls und während der RAID -Instanz aktiv sein."
+CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = "Wählen Sie das Standardverhalten, wenn das Fenster Gruppengebäude geöffnet wird. Dies wird nur während des CLM-Überfalls und während der RAID-Instanz aktiv sein."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:524
 CLM.L["Select equation"] = "Gleichung auswählen"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:23
