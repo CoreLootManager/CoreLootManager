@@ -1066,13 +1066,20 @@ CONSTANTS.ITEM_QUALITY = {
     [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
     [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
 }
+CONSTANTS.LOOT_ROLL_TYPE_ANY = -2
 CONSTANTS.LOOT_ROLL_TYPE_IGNORE = -1
+CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG = 4
 CONSTANTS.ROLL_TYPE = {
+    [CONSTANTS.LOOT_ROLL_TYPE_ANY]      = ColorCodeText(CLM.L["Any"], "ff8000"),
     [CONSTANTS.LOOT_ROLL_TYPE_IGNORE]   = ColorCodeText(CLM.L["Do Nothing"], "9d9d9d"),
-    [LOOT_ROLL_TYPE_PASS]               = CLM.L["Pass"],
-    [LOOT_ROLL_TYPE_NEED]               = ColorCodeText(CLM.L["Need"], "1eff00"),
-    [LOOT_ROLL_TYPE_GREED]              = ColorCodeText(CLM.L["Greed"], "ffd100"),
-    [LOOT_ROLL_TYPE_DISENCHANT]         = ColorCodeText(CLM.L["Disenchant"], "a335ee"),
+    [LOOT_ROLL_TYPE_PASS]               = PASS,
+    [LOOT_ROLL_TYPE_NEED]               = ColorCodeText(NEED, "1eff00"),
+    [LOOT_ROLL_TYPE_GREED]              = ColorCodeText(GREED , "ffd100"),
 }
+if CLM.WoW10 then
+    CONSTANTS.ROLL_TYPE[LOOT_ROLL_TYPE_DISENCHANT]         = ColorCodeText(ROLL_DISENCHANT, "0070dd")
+    CONSTANTS.ROLL_TYPE[CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG] = ColorCodeText(TRANSMOGRIFICATION, "a335ee")
+end
+
 CONSTANTS.REGEXP_FLOAT = "^-?%d+%.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+%.?%d*$"

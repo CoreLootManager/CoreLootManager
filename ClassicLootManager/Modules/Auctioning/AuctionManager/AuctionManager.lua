@@ -6,6 +6,9 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+-- I'm absolutely horrified about using this one
+local deformat = LibStub("LibDeformat-3.0")
+
 local typeof = UTILS.typeof
 
 local AuctionInfo = CLM.MODELS.AuctionInfo
@@ -188,12 +191,16 @@ local function HandleLootMessage(addon, event, message, _, _, _, playerName, ...
     if not message then return end
     if not CLM.MODULES.RaidManager:IsInActiveRaid() then return end
     if not self:IsAuctioneer() then return end
-    local itemId = string.match(message, 'Hitem:(%d*):')
     if GetFillAuctionListFromLootGLOnly(self) then
         if not CLM.MODULES.RaidManager:IsGroupLoot() then return end
     end
     if not GetFillAuctionListFromLoot(self) then return end
-    AutoAddItemProxy(self, Item:CreateFromItemID(tonumber(itemId) or 0))
+    local itemLink = deformat(message, LOOT_ITEM_SELF_MULTIPLE)
+    if not itemLink then
+        itemLink = deformat(message, LOOT_ITEM_SELF)
+    end
+    if not itemLink then return end
+    AutoAddItemProxy(self, Item:CreateFromItemLink(itemLink))
 end
 
 local function HookAuctionFilling(self)
@@ -236,6 +243,7 @@ local function Joke()
         SendChatMessage(L2, "RAID")
     end)
 end
+
 local function AprilFools()
     if CLM.AF then
         local _, instanceType = IsInInstance()

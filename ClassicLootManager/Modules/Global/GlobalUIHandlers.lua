@@ -14,6 +14,7 @@ local ignoredItems = UTILS.Set({
     30183, -- Nether Vortex
     23572, -- Primal Nether
     12662, -- Demonic Rune
+    209035, -- Hearthstone of the Flame
 })
 
 local handledLootRolls = {}
@@ -79,8 +80,35 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
         return
     end
 
-    -- Roll
-    RollOnLoot(rollID, CLM.GlobalConfigs:GetRollType())
+    -- Handle ordered Any case
+    if CLM.GlobalConfigs:GetRollType() == CONSTANTS.LOOT_ROLL_TYPE_ANY then
+        local _, _, _, _, _, canNeed, canGreed, canDisenchant, _, _, _, _, canTransmog = GetLootRollItemInfo(rollID)
+        local rollValue
+        if CLM.WoW10 then
+            if canNeed then
+                rollValue = LOOT_ROLL_TYPE_NEED
+            elseif canTransmog then
+                rollValue = CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG
+            elseif canGreed then
+                rollValue = LOOT_ROLL_TYPE_GREED
+            elseif canDisenchant then
+                rollValue = LOOT_ROLL_TYPE_DISENCHANT
+            else
+                rollValue = LOOT_ROLL_TYPE_PASS
+            end
+        else
+            if canNeed then
+                rollValue = LOOT_ROLL_TYPE_NEED
+            elseif canGreed then
+                rollValue = LOOT_ROLL_TYPE_GREED
+            else
+                rollValue = LOOT_ROLL_TYPE_PASS
+            end
+        end
+        RollOnLoot(rollID, rollValue)
+    else -- Just roll what is selected
+        RollOnLoot(rollID, CLM.GlobalConfigs:GetRollType())
+    end
     handledLootRolls[rollID] = true
 end
 
