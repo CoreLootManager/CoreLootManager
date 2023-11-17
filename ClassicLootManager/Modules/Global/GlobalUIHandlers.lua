@@ -83,7 +83,7 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     -- Handle ordered Any case
     if CLM.GlobalConfigs:GetRollType() == CONSTANTS.LOOT_ROLL_TYPE_ANY then
         local _, _, _, _, _, canNeed, canGreed, canDisenchant, _, _, _, _, canTransmog = GetLootRollItemInfo(rollID)
-        local rollValue = LOOT_ROLL_TYPE_PASS
+        local rollValue
         if CLM.WoW10 then
             if canNeed then
                 rollValue = LOOT_ROLL_TYPE_NEED
@@ -93,7 +93,7 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
                 rollValue = LOOT_ROLL_TYPE_GREED
             elseif canDisenchant then
                 rollValue = LOOT_ROLL_TYPE_DISENCHANT
-            else 
+            else
                 rollValue = LOOT_ROLL_TYPE_PASS
             end
         else
@@ -101,7 +101,7 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
                 rollValue = LOOT_ROLL_TYPE_NEED
             elseif canGreed then
                 rollValue = LOOT_ROLL_TYPE_GREED
-            else 
+            else
                 rollValue = LOOT_ROLL_TYPE_PASS
             end
         end
