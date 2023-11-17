@@ -19,9 +19,6 @@ local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 CHAT_MESSAGE_CHANNEL = "GUILD"
 --@end-debug@
 
-
-
-
 -- Singleton
 
 local AuctionManager = {}
