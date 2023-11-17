@@ -1,3 +1,11 @@
+# Core Loot Manager v4.6.1
+## Fixes
+### Toys
+Hearthstone of the Flame is now ignored by the auto-roll.
+### Adding item from received loot
+Items automatically added to the auction through received loot will now have proper item level.
+### Locale
+Updated locales. Thanks to all translators.
 # Core Loot Manager v4.6.0
 ## Features
 ### Auto-rolling

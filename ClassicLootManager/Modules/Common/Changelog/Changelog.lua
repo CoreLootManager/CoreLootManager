@@ -1,7 +1,20 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
-        version = "",
+        version = "v4.6.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Toys", body = "Hearthstone of the Flame is now ignored by the auto-roll." },
+                    { header = "Adding item from received loot", body = "Items automatically added to the auction through received loot will now have proper item level." },
+                    { header = "Locale", body = "Updated locales. Thanks to all translators." },
+                },
+            },
+        },
+    },
+    {
+        version = "v4.6.0",
         data = {
             {
                 name = "Features",
