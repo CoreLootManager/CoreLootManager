@@ -183,6 +183,7 @@ function RaidManager:Initialize()
 
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
+        self:RegisterEventHandling()
         self:ParseStatus()
     end)
 
@@ -190,8 +191,10 @@ function RaidManager:Initialize()
         self:WipeAll()
     end)
 
-    self:RegisterEventHandling()
-    C_Timer.After(20, function() self:ParseStatus() end) -- backup in case of 0 entries
+    C_Timer.After(20, function()
+        self:RegisterEventHandling()
+        self:ParseStatus()
+    end) -- backup in case of 0 entries
 
 end
 
