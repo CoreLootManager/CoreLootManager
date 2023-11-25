@@ -11,4 +11,5 @@
 	<Script file="UnifiedGUI_Profiles.lua"/>
 	<Script file="UnifiedGUI_History.lua"/>
 	<Script file="UnifiedGUI_Audit.lua"/>
+	<Include file="CLMSpinnerTemplate.xml"/>
 </Ui>
