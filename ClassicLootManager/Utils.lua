@@ -876,9 +876,14 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
 
         if showSpinner then
             frame.spinner:Show()
+        else
+            frame.spinner:Hide()
         end
+
     else
-        frame.spinner:Hide()
+        if frame.spinner then
+            frame.spinner:Hide()
+        end
         frame:Hide()
     end
 end

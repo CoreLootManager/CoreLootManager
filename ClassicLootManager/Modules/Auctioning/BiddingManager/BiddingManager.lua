@@ -316,9 +316,9 @@ function BiddingManager:HandleAcceptBid(itemId, sender)
         return
     end
     local item = self.auction:GetItem(itemId)
-    if not item then return end
+    if not item then print("[[[A NO ITEM]]]", itemId, ">>"); return end
     local bid = item:GetBid()
-    if not bid then return end
+    if not bid then print("[[[A NO BID]]]"); return end
     item:SetBidStatus(true)
     CLM.MODULES.BiddingHandler:SetBidReceived(itemId)
     CLM.GUI.BiddingManager:Refresh()
@@ -334,9 +334,9 @@ function BiddingManager:HandleDenyBid(data, sender)
         return
     end
     local item = self.auction:GetItem(data:ItemId())
-    if not item then return end
+    if not item then print("[[[D NO ITEM]]]", data:ItemId(), ">>"); return end
     local bid = item:GetBid()
-    if not bid then return end
+    if not bid then print("[[[D NO BID]]]"); return end
     item:SetBidStatus(false)
     CLM.MODULES.BiddingHandler:SetBidReceived(data:ItemId())
     CLM.GUI.BiddingManager:Refresh()

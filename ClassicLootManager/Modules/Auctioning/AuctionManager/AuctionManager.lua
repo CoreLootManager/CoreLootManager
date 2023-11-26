@@ -536,25 +536,26 @@ local function SendAntiSnipe()
     local message = CLM.MODELS.AuctionCommStructure:New(CONSTANTS.AUCTION_COMM.TYPE.ANTISNIPE, {})
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
-
+BID_DELAY = 5
 local function SendBidAccepted(itemId, name)
+    print("SEND BID ACCEPTED", itemId, name)
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID, itemId)
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
+    C_Timer.After(BID_DELAY, function() CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT) end)
 end
 
 local function SendBidDenied(itemId, name, reason)
+    print("SEND BID DENIED")
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DENY_BID,
         CLM.MODELS.AuctionCommDenyBid:New(itemId, reason)
     )
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
+    C_Timer.After(BID_DELAY, function() CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT) end)
 end
 
 local function SendBidInfoInternal(auctionDistributeBidData)
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID, auctionDistributeBidData
-        -- CLM.MODELS.AuctionCommDistributeBid:New(data)
     )
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
@@ -964,6 +965,7 @@ function AuctionManager:HandleSubmitBid(data, sender)
         return
     end
     local response = CLM.MODELS.UserResponse:New(data:Value(), data:Type(), data:Items())
+    print("BID INCOMING", sender, data:Value(), data:Type())
     self:UpdateBid(sender, data:ItemId(), response)
 end
 
@@ -1334,8 +1336,8 @@ function AuctionManager:FakeBids()
     local _SendBidDenied   = SendBidDenied
     -- SendBidAccepted = (function(...) print("SendBidAccepted", ...) end)
     -- SendBidDenied = (function(...) print("SendBidDenied", ...) end)
-    SendBidAccepted = (function(...) end)
-    SendBidDenied = (function(...) end)
+    -- SendBidAccepted = (function(...) end)
+    -- SendBidDenied = (function(...) end)
     if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then
         local roster = CLM.MODULES.RaidManager:GetRaid():Roster()
         local profiles = roster:Profiles()
