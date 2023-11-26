@@ -108,13 +108,15 @@ function BiddingManager:Bid(itemId, value, type)
         return
     end
 
-    item:SetBid(CLM.MODELS.UserResponse:New(value, type, {}))
+    CLM.MODULES.BiddingHandler:Bid(item, value, type, GetUpgradedItems(itemId))
 
-    local message = CLM.MODELS.BiddingCommStructure:New(
-        CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
-        CLM.MODELS.BiddingCommSubmitBid:New(value, type, itemId, GetUpgradedItems(itemId))
-    )
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+    -- item:SetBid(CLM.MODELS.UserResponse:New(value, type, {}))
+
+    -- local message = CLM.MODELS.BiddingCommStructure:New(
+    --     CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
+    --     CLM.MODELS.BiddingCommSubmitBid:New(value, type, itemId, GetUpgradedItems(itemId))
+    -- )
+    -- CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
 function BiddingManager:CancelBid(itemId)
@@ -243,6 +245,7 @@ function BiddingManager:HandleStartAuction(data, sender)
     self.auctioneer = sender
     local success = StartAuction(self, CLM.MODELS.AuctionCommStartAuction:New(data))
     if not success then return end
+    CLM.MODULES.BiddingHandler:StartAuction(self.auctioneer)
     PlayStartSound()
 
     CLM.GUI.BiddingManager:StartAuction()
@@ -267,6 +270,7 @@ function BiddingManager:HandleStopAuction(_, sender)
     end
     EndAuction(self)
     PlayEndSound()
+    CLM.MODULES.BiddingHandler:EndAuction()
     CLM.GUI.BiddingManager:EndAuction()
     CLM.GUI.BiddingManager:Hide()
     LOG:Message(CLM.L["Auction finished"])
@@ -316,6 +320,7 @@ function BiddingManager:HandleAcceptBid(itemId, sender)
     local bid = item:GetBid()
     if not bid then return end
     item:SetBidStatus(true)
+    CLM.MODULES.BiddingHandler:SetBidReceived(itemId)
     CLM.GUI.BiddingManager:Refresh()
     local text, short = stringifyBidInfo(self.auction, item, bid)
     LOG:Message(CLM.L["Your bid (%s) was |cff00cc00accepted|r"], text)
@@ -333,6 +338,7 @@ function BiddingManager:HandleDenyBid(data, sender)
     local bid = item:GetBid()
     if not bid then return end
     item:SetBidStatus(false)
+    CLM.MODULES.BiddingHandler:SetBidReceived(data:ItemId())
     CLM.GUI.BiddingManager:Refresh()
     local text, short = stringifyBidInfo(self.auction, item, bid)
     local reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or CLM.L["Unknown"]

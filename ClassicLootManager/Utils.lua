@@ -870,15 +870,15 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
 
         if not frame.spinner then
             frame.spinner = CreateFrame("Frame", nil, frame, "CLMSpinnerTemplate")
-            frame.spinner:SetPoint("CENTER")
+            frame.spinner:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 8)
             frame.spinner:Hide()
-            print("create spinner wooooo")
         end
 
-        -- if showSpinner then
+        if showSpinner then
             frame.spinner:Show()
-        -- end
+        end
     else
+        frame.spinner:Hide()
         frame:Hide()
     end
 end

@@ -1,15 +1,24 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI_shared.xsd">
 		<Frame name="CLMSpinnerTemplate" mixin="LoadingSpinnerMixin" virtual="true">
-			<Size x="60" y="60"/>
+			<Size x="16" y="8"/>
 			<Layers>
 				<Layer level="OVERLAY">
-					<Texture parentKey="Spinner" setAllPoints="true" file="Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\commonloadingspinnercircle.blp" />
+					<!-- <Texture parentKey="Spinner" setAllPoints="true" file="Interface\AddOns\ClassicLootManager\Media\Icons\commonloadingspinnercircle">
+						<TexCoords left="0.001953125" right="0.568359375" top="0.001953125" bottom="0.568359375"/>
+					</Texture> -->
+					<Texture parentKey="Spinner" setAllPoints="true" file="Interface\SelectionCircle\Selection_SelectionA">
+						<TexCoords left="0" right="1.0" top="0" bottom="0.5"/>
+					</Texture>
 				</Layer>
 			</Layers>
 			<Animations>
 				<AnimationGroup parentKey="Anim" looping="REPEAT">
-					<Rotation childKey="Spinner" order="1" duration="1" degrees="-360"/>
+					<Rotation childKey="Spinner" order="1" duration="1" degrees="-360">
+					<Origin point="BOTTOM">
+						<Offset x="0" y="16" />
+					</Origin>
+					</Rotation>
 				</AnimationGroup>
 			</Animations>
 			<Scripts>

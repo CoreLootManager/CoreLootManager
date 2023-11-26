@@ -533,8 +533,6 @@ local function GenerateAuctionOptions(self)
     end
 
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
-
-    -- local shortItemLink = "item:" .. tostring(itemId)
     local namedButtonsMode = auction and auction:GetNamedButtonsMode() or false
 
     itemOptions.args = {
@@ -875,7 +873,8 @@ function BiddingManagerGUI:RefreshItemList()
             else
                 textColor = { r = 1.0, g = 1.0, b = 1.0, a = 1.0 }
             end
-            itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note, overlay = { text = total, color = textColor } }}}
+            local showSpinner = CLM.MODULES.BiddingHandler:IsPending(auctionItem:GetItemID())
+            itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note, overlay = { text = total, color = textColor }, showSpinner = showSpinner }}}
         end
         self.ItemList:SetData(itemList)
     end

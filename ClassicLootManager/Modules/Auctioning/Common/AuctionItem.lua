@@ -146,6 +146,7 @@ function AuctionItem:GetResponse(username)
 end
 
 function AuctionItem:Clear()
+    self.bidPending = nil
     self.userResponses = {}
     self.userRolls = {}
     self.rollValues = {}
