@@ -1073,11 +1073,11 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 args = {
                     item_value_mode = {
                         name = CLM.L["Item value mode"],
-                        desc = CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."],
+                        desc = CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r"],
                         type = "select",
                         disabled = disableManage,
                         order = 5,
-                        values = CONSTANTS.ITEM_VALUE_MODES_GUI
+                        values = CONSTANTS.ITEM_VALUE_MODES_EPGP_GUI 
                     },
                     dynamic_item_values = {
                         name = CLM.L["Dynamic Item values"],
@@ -1253,7 +1253,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         }
         options.args.auction.args.item_value_mode = {
             name = CLM.L["Item value mode"],
-            desc = CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."],
+            desc = CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r\n\n|cff00ee44Percentage:|r Fixed percentage mode. Only allows bidding the value in |cff44ee00<base>|r as a fixed percentage of DKP."],
             type = "select",
             disabled = disableManage,
             order = 5,

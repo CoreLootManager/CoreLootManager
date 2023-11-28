@@ -1074,6 +1074,10 @@ local function ValidateBid(auction, item, name, userResponse)
         end
     elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
         if not item:IsValueAccepted(value) then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
+    elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.PERCENTAGE then
+        -- Get valid bid based on current standing and base percentage
+        local valid = UTILS.round(current * values[CONSTANTS.SLOT_VALUE_TIER.BASE], 2)
+        if valid ~= value then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end
     else
         -- single-priced
         if values[CONSTANTS.SLOT_VALUE_TIER.BASE] ~= value then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.BID_VALUE_INVALID end

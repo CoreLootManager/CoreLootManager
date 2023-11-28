@@ -447,7 +447,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
             CONSTANTS.SLOT_VALUE_TIER.BASE,
             CONSTANTS.SLOT_VALUE_TIER.MAX
         }
-    elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED then
+    elseif itemValueMode == CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED or itemValueMode == CONSTANTS.ITEM_VALUE_MODE.PERCENTAGE then
         usedTiers = {
             CONSTANTS.SLOT_VALUE_TIER.BASE
         }
@@ -987,11 +987,23 @@ function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     if not auctionItem then return end
     local values = self.auctionItem:GetValues()
     local bid = self.auctionItem:GetBid()
+    local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+    local itemValueMode = auction and auction:GetMode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
     local value
-    if bid then
-        value = bid:Value()
+    if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.PERCENTAGE then
+        -- Set the bid value to the correct percentage of bidder's DKP
+        value = 0
+        local roster = CLM.MODULES.BiddingManager:GetAuctionInfo():GetRoster()
+        if roster and roster:IsProfileInRoster(whoamiGUID) then
+            local standings = roster:Standings(whoamiGUID)
+            value = UTILS.round(standings * values[CONSTANTS.SLOT_VALUE_TIER.BASE], 2)
+        end
     else
-        value = values[CONSTANTS.SLOT_VALUE_TIER.BASE]
+        if bid then
+            value = bid:Value()
+        else
+            value = values[CONSTANTS.SLOT_VALUE_TIER.BASE]
+        end
     end
 
     SetInputValue(self, value)
