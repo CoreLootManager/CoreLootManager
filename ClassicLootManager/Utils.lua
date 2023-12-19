@@ -393,6 +393,9 @@ if CLM.WoW10 or CLM.WoWSeasonal then -- support cross-server for Retail and Clas
             return nil
         end
     end
+    function UTILS.ArePlayersCrossRealm(playerA, playerB)
+        return UTILS.GetServer(playerA) ~= UTILS.GetServer(playerB)
+    end
 else -- not cross-server
     function UTILS.getIntegerGuid(GUID)
         local _, _, int = strsplit("-", GUID)
@@ -423,6 +426,9 @@ else -- not cross-server
         else
             return nil
         end
+    end
+    function UTILS.ArePlayersCrossRealm(playerA, playerB)
+        return false
     end
 end
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
