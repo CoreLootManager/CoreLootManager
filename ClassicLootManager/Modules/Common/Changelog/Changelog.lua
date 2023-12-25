@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.7.0",
+        data = {
+            {
+                name = "Communication changes",
+                data = {
+                    { header = "Cross-realm comms", body = "Cross-realm comms for unconnected realms should now behave properly if both users have version v4.7.0 or above." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.6.1",
         data = {
             {

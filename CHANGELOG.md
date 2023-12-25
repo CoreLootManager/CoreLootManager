@@ -1,3 +1,7 @@
+# Core Loot Manager v4.7.0
+## Communication changes
+### Cross-realm comms
+Cross-realm comms for unconnected realms should now behave properly if both users have version v4.7.0 or above.
 # Core Loot Manager v4.6.1
 ## Fixes
 ### Toys
