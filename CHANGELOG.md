@@ -1,3 +1,7 @@
+# Core Loot Manager v4.7.1
+## Hotfix
+### Communication
+Remove leftover debug code leading to comms happening only within party.
 # Core Loot Manager v4.7.0
 ## Communication changes
 ### Cross-realm comms
