@@ -825,6 +825,7 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
     local iconColor = data[realrow].cols[column].iconColor or {}
     local note = data[realrow].cols[column].note
     local overlay = data[realrow].cols[column].overlay or {}
+    local showSpinner = data[realrow].cols[column].showSpinner and true or false
     local _, _, _, _, icon = GetItemInfoInstant(itemInfo or 0)
 
     -- Reparent and rework text FontString
@@ -872,7 +873,23 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
             GameTooltip:Show()
         end)
         frame:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+        if not frame.spinner then
+            frame.spinner = CreateFrame("Frame", nil, frame, "CLMSpinnerTemplate")
+            frame.spinner:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 8)
+            frame.spinner:Hide()
+        end
+
+        if showSpinner then
+            frame.spinner:Show()
+        else
+            frame.spinner:Hide()
+        end
+
     else
+        if frame.spinner then
+            frame.spinner:Hide()
+        end
         frame:Hide()
     end
 end

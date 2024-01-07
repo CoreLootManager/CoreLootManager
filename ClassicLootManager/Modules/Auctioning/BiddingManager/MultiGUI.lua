@@ -311,6 +311,19 @@ do
     end
 end
 
+local function OnBidUIHandler(self)
+    if GetAdvanceOnBid(self) then
+        self:Advance()
+    end
+
+    if GetCloseOnBid(self) then
+        self:Toggle()
+        return
+    end
+
+    self:Refresh()
+end
+
 local numRows
 local function GenerateValueButtonsAuctionOptions(self, auction)
     local itemValueMode = auction and auction:GetMode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
@@ -326,8 +339,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             type = "execute",
             func = (function()
                 BidInputValue(self, CONSTANTS.BID_TYPE.MAIN_SPEC)
-                if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
+                OnBidUIHandler(self)
             end),
             width = (useOS and (isElvUI and 1.45 or 1.49) or (isElvUI and 2.95 or 2.99))*rowMultiplierBy6,
             order = 4
@@ -338,8 +350,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             type = "execute",
             func = (function()
                 CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
-                if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
+                OnBidUIHandler(self)
             end),
             width = isElvUI and (rowMultiplierBy6 - 0.05) or  rowMultiplierBy6,
             order = 6
@@ -352,8 +363,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             type = "execute",
             func = (function()
                 BidInputValue(self, CONSTANTS.BID_TYPE.OFF_SPEC)
-                if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
+                OnBidUIHandler(self)
             end),
             width = (isElvUI and 1.45 or 1.49)*rowMultiplierBy6,
             order = 5
@@ -391,8 +401,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                     func = (function()
                         SetInputValue(self, value)
                         BidInputValue(self, tier)
-                        if GetAdvanceOnBid(self) then self:Advance() end
-                        if GetCloseOnBid(self) then self:Toggle() end
+                        OnBidUIHandler(self)
                     end),
                     order = offset
                 }
@@ -408,8 +417,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 type = "execute",
                 func = (function()
                     BidAllIn(self)
-                    if GetAdvanceOnBid(self) then self:Advance() end
-                    if GetCloseOnBid(self) then self:Toggle() end
+                    OnBidUIHandler(self)
                 end),
                 order = offset
             }
@@ -466,8 +474,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
                     func = (function()
                         SetInputValue(self, value)
                         BidInputValue(self, tier)
-                        if GetAdvanceOnBid(self) then self:Advance() end
-                        if GetCloseOnBid(self) then self:Toggle() end
+                        OnBidUIHandler(self)
                     end),
                     width = row_width,
                     order = offset
@@ -490,8 +497,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
         type = "execute",
         func = (function()
             CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
-            if GetAdvanceOnBid(self) then self:Advance() end
-            if GetCloseOnBid(self) then self:Toggle() end
+            OnBidUIHandler(self)
         end),
         -- disabled = (function()
         --         return CONSTANTS.AUCTION_TYPES_OPEN[auction:GetType()] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
@@ -505,8 +511,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
         type = "execute",
         func = (function()
             CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
-            if GetAdvanceOnBid(self) then self:Advance() end
-            if GetCloseOnBid(self) then self:Toggle() end
+            OnBidUIHandler(self)
         end),
         -- disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
         width = cancelPassWidth,
@@ -533,8 +538,6 @@ local function GenerateAuctionOptions(self)
     end
 
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
-
-    -- local shortItemLink = "item:" .. tostring(itemId)
     local namedButtonsMode = auction and auction:GetNamedButtonsMode() or false
 
     itemOptions.args = {
@@ -578,8 +581,7 @@ local function GenerateAuctionOptions(self)
             type = "execute",
             func = (function()
                 CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
-                if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
+                OnBidUIHandler(self)
             end),
             width = 1.5*rowMultiplierBy9,
             order = 3
@@ -875,7 +877,8 @@ function BiddingManagerGUI:RefreshItemList()
             else
                 textColor = { r = 1.0, g = 1.0, b = 1.0, a = 1.0 }
             end
-            itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note, overlay = { text = total, color = textColor } }}}
+            local showSpinner = CLM.MODULES.BiddingHandler:IsPending(auctionItem:GetItemID())
+            itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note, overlay = { text = total, color = textColor }, showSpinner = showSpinner }}}
         end
         self.ItemList:SetData(itemList)
     end
