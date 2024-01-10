@@ -84,7 +84,7 @@ CLM.L["<CLM> Missing profile for player %s."] = "<CLM> 角色信息缺失 %s."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:51
 CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> 您的竞拍 (%s) 是 %s%s."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:897
-CLM.L["Accepting rolls on %s for %s %s"] = "接受 %s 以 %s %s 接受卷"
+CLM.L["Accepting rolls on %s for %s %s"] = "接受 %s 以 %s %s 接受擲骰"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:150
 CLM.L["Action context"] = "动作选定范围"
 -- ClassicLootManager_Integrations/Integrations.lua:160
@@ -1134,7 +1134,7 @@ CLM.L["Loot Awards"] = "战利品奖励"
 -- ClassicLootManager_Integrations/GUI.lua:21
 CLM.L["Loot History"] = "战利品历史记录"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:292
-CLM.L["Loot Rolling"] = "戰利品滾動"
+CLM.L["Loot Rolling"] = "戰利品擲骰"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:434
 CLM.L["Loot rarity"] = "战利品稀有度"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:21
@@ -1653,15 +1653,15 @@ CLM.L["Rogue"] = "潜行者"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:174
 CLM.L["Role"] = "角色"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:296
-CLM.L["Roll on Loot"] = "在戰利品上滾動"
+CLM.L["Roll on Loot"] = "在戰利品上擲骰"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1153
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1154
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:710
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:530
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:759
-CLM.L["Roll"] = "卷"
+CLM.L["Roll"] = "擲骰"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:930
-CLM.L["Rolling complete"] = "滾動完成"
+CLM.L["Rolling complete"] = "擲骰完成"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1333
 CLM.L["Roster Name"] = "名册名称"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1332
@@ -1720,7 +1720,7 @@ CLM.L["Select Rosters to export"] = "选择要导出的名册"
 -- ClassicLootManager/Modules/GUI/Filters.lua:179
 CLM.L["Select all classes."] = "选择所有职业。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:297
-CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = "每當打開“組戰利滾動”窗口時，請選擇默認行為。 這僅在CLM RAID期間和在突襲實例中處於活動狀態。"
+CLM.L["Select default behavior whenever group loot rolling window gets opened. This will be active only during CLM Raid and while in Raid instance."] = "每當打開“組戰利擲骰”窗口時，請選擇默認行為。 這僅在CLM RAID期間和在突襲實例中處於活動狀態。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:524
 CLM.L["Select equation"] = "选择公式"
 -- ClassicLootManager/Modules/Common/Logger/Logger.lua:23
@@ -1970,11 +1970,11 @@ CLM.L["Toggle test bar"] = "切換測試欄"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:152
 CLM.L["Toggles addon sounds."] = "开关插件声音。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:312
-CLM.L["Toggles auto-rolling on legendary items."] = "在傳奇項目上切換自動滾動。"
+CLM.L["Toggles auto-rolling on legendary items."] = "在傳奇項目上切換自動擲骰。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:328
-CLM.L["Toggles auto-rolling on patterns."] = "在圖案上切換自動滾動。"
+CLM.L["Toggles auto-rolling on patterns."] = "在配方上切換自動擲骰。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:320
-CLM.L["Toggles auto-rolling on stacking items."] = "在堆疊項目上切換自動滾動。"
+CLM.L["Toggles auto-rolling on stacking items."] = "在可堆疊項目上切換自動擲骰。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:184
 CLM.L["Toggles loot announcement to raid"] = "开关战利品通告到团队频道"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:358
