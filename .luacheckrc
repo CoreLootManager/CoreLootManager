@@ -46,6 +46,7 @@ globals = {
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"C_Seasons.GetActiveSeason",
 	"LOOT_ITEM_SELF_MULTIPLE",
 	"LOOT_ITEM_SELF",
 	"LE_ITEM_CLASS_RECIPE",

@@ -2,5 +2,6 @@
 	..\FrameXML\UI.xsd">
 	<Script file="EncounterIDs.lua"/>
 	<Script file="EncounterIDs_Retail.lua"/>
+	<Script file="EncounterIDs_SoD.lua"/>
 	<Script file="AutoAwardManager.lua"/>
 </Ui>
