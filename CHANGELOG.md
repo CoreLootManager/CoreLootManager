@@ -1,3 +1,10 @@
+# Core Loot Manager v4.8.0
+## Features
+### Season of Discovery
+CLM Now properly supports Season of Discovery Boss Kill Bonus awards
+## Translations
+### Chinese Translations
+Chinese Translation fixes contributed by @Gateswong
 # Core Loot Manager v4.7.1
 ## Hotfix
 ### Communication

@@ -67,8 +67,7 @@ function GlobalConfigs:Initialize()
         patron_kudos = {
             type = "description",
             name = [=[
-Thank you patrons, especially:
-|cffff8000BigSpoon|r, |cffff8000Epsi|r
+Thank you patrons!
 ]=],
             fontSize = "medium",
             descStyle = "inline",

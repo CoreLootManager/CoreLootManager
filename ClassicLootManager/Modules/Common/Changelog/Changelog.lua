@@ -1,6 +1,23 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.8.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Season of Discovery", body = "CLM Now properly supports Season of Discovery Boss Kill Bonus awards" },
+                },
+            },
+            {
+                name = "Translations",
+                data = {
+                    { header = "Chinese Translations", body = "Chinese Translation fixes contributed by @Gateswong" },
+                },
+            },
+        },
+    },
+    {
         version = "v4.7.0",
         data = {
             {
