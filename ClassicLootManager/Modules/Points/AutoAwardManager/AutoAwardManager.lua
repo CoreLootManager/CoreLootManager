@@ -74,7 +74,12 @@ local bossKillEncounterWorkaround = {
     [853] = 1103,
     [850] = 1104,
     [855] = 1105,
-    [856] = 1106
+    [856] = 1106,
+    -- Ruby Sanctum
+    [890] = 1147,
+    [893] = 1148,
+    [891] = 1149,
+    [887] = 1150,
 }
 
 local function normalizeDifficultyId(difficultyId)
