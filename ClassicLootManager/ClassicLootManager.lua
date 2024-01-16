@@ -9,6 +9,7 @@ end
 
 CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
 CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
+CLM.WoWSoD = C_Seasons.GetActiveSeason() == Enum.SeasonID.Placeholder
 
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
