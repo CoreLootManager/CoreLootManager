@@ -16,13 +16,13 @@ CLM.EncounterIDs.SoD = {
         name = CLM.L["Blackfathom Deeps"],
         difficulty = {3},
         data = {
-            { id = 2694, name = EncounterIDsMap[2694] },
-            { id = 2697, name = EncounterIDsMap[2697] },
-            { id = 2699, name = EncounterIDsMap[2699] },
-            { id = 2704, name = EncounterIDsMap[2704] },
-            { id = 2710, name = EncounterIDsMap[2710] },
-            { id = 2825, name = EncounterIDsMap[2825] },
-            { id = 2891, name = EncounterIDsMap[2891] },
+            { id = 2694, name = CLM.EncounterIDsMap[2694] },
+            { id = 2697, name = CLM.EncounterIDsMap[2697] },
+            { id = 2699, name = CLM.EncounterIDsMap[2699] },
+            { id = 2704, name = CLM.EncounterIDsMap[2704] },
+            { id = 2710, name = CLM.EncounterIDsMap[2710] },
+            { id = 2825, name = CLM.EncounterIDsMap[2825] },
+            { id = 2891, name = CLM.EncounterIDsMap[2891] },
         }
     },
 }
