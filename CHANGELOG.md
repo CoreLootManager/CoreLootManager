@@ -1,3 +1,7 @@
+# Core Loot Manager v4.8.2
+## Features
+### Season of Discovery
+CLM Now properly supports Season of Discovery Phase 2 (Gnomeregan) Boss Kill Bonus awards
 # Core Loot Manager v4.8.1
 ## Hotfix
 ### Retail

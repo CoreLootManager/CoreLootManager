@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.8.2",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Season of Discovery", body = "CLM Now properly supports Season of Discovery Phase 2 (Gnomeregan) Boss Kill Bonus awards" },
+                },
+            },
+        },
+    },
+    {
         version = "v4.8.0",
         data = {
             {
