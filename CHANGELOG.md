@@ -1,3 +1,7 @@
+# Core Loot Manager v4.8.1
+## Hotfix
+### Retail
+Fix invalid check on retail API
 # Core Loot Manager v4.8.0
 ## Features
 ### Season of Discovery
