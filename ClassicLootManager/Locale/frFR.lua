@@ -74,15 +74,15 @@ CLM.L["25 Player"] = "25 joueurs"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:172
 CLM.L["40 Player"] = "40 joueurs"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:90
-CLM.L["<CLM> %s not present in any roster."] = "<CLM> %s n'est présent dans aucun roster."
+CLM.L["%s not present in any roster."] = "%s n'est présent dans aucun roster."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:92
-CLM.L["<CLM> %s standings in %d %s:"] = "<CLM> %s Classé dans %d %s:"
+CLM.L["%s standings in %d %s:"] = "%s Classé dans %d %s:"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:101
-CLM.L["<CLM> %s: %d DKP (%d this week)."] = "<CLM> %s: %d DKP (%d cette semaine)."
+CLM.L["%s: %d DKP (%d this week)."] = "%s: %d DKP (%d cette semaine)."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:71
-CLM.L["<CLM> Missing profile for player %s."] = "<CLM> Profil manquant pour le joueur %s."
+CLM.L["Missing profile for player %s."] = "Profil manquant pour le joueur %s."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:51
-CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> Ton enchère (%s) est %s%s."
+CLM.L["Your bid (%s) was %s%s."] = "Ton enchère (%s) est %s%s."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:897
 CLM.L["Accepting rolls on %s for %s %s"] = "Prise de rolls sur %s pour %s %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:150

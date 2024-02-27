@@ -5,7 +5,7 @@ local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS = CLM.UTILS
 
-local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga"
+local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png"
 
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
@@ -1062,6 +1062,10 @@ function UTILS.DecodePointTypeChangeName(pointType, changeType, displayDKP)
         end
     end
     return points
+end
+
+function UTILS.SendChatMessage(message, channel, target)
+    SendChatMessage("[CLM] " .. tostring(message), channel, nil, target)
 end
 
 CONSTANTS.ITEM_QUALITY = {

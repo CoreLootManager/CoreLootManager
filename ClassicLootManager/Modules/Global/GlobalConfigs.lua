@@ -45,7 +45,7 @@ function GlobalConfigs:Initialize()
         clm_logo = {
             name = "",
             type = "description",
-            image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga",
+            image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-64.tga",
             width = 0.25,
             order = 0
         },

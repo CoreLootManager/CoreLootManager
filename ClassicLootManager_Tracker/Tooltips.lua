@@ -9,7 +9,7 @@ local UTILS     = CLM.UTILS
 local ColorCodeText = UTILS.ColorCodeText
 local GetClassColor = UTILS.GetClassColor
 
-local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga"
+local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png"
 
 local cache = {}
 

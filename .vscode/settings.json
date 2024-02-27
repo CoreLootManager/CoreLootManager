@@ -140,7 +140,18 @@
         "pcall",
         "debugstack",
         "StaticPopup_Hide",
-        "RAID"
+        "RAID",
+        "PASS",
+        "NEED",
+        "GREED",
+        "ROLL_DISENCHANT",
+        "TRANSMOGRIFICATION",
+        "UnitInBattleground",
+        "IsActiveBattlefieldArena",
+        "GetLootMethod",
+        "GetRaidRosterInfo",
+        "LOOT_ITEM_SELF_MULTIPLE",
+        "LOOT_ITEM_SELF"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

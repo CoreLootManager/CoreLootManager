@@ -74,15 +74,15 @@ CLM.L["25 Player"] = "25 человек"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:172
 CLM.L["40 Player"] = "40 человек"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:90
-CLM.L["<CLM> %s not present in any roster."] = "<CLM> %s не состоит в составе."
+CLM.L["%s not present in any roster."] = "%s не состоит в составе."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:92
-CLM.L["<CLM> %s standings in %d %s:"] = "<CLM> %s рейтинг в %d %s:"
+CLM.L["%s standings in %d %s:"] = "%s рейтинг в %d %s:"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:101
-CLM.L["<CLM> %s: %d DKP (%d this week)."] = "<CLM> %s: %d ДКП (%d эта неделя)."
+CLM.L["%s: %d DKP (%d this week)."] = "%s: %d ДКП (%d эта неделя)."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:71
-CLM.L["<CLM> Missing profile for player %s."] = "<CLM> Нет профиля для %s."
+CLM.L["Missing profile for player %s."] = "Нет профиля для %s."
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:51
-CLM.L["<CLM> Your bid (%s) was %s%s."] = "<CLM> Ваша ставка (%s) была %s%s."
+CLM.L["Your bid (%s) was %s%s."] = "Ваша ставка (%s) была %s%s."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:897
 CLM.L["Accepting rolls on %s for %s %s"] = "Принятие рулонов на %s для %s %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:150
