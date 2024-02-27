@@ -16,7 +16,7 @@ local AuctionInfo = CLM.MODELS.AuctionInfo
 -- luacheck: ignore CHAT_MESSAGE_CHANNEL
 local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 --@debug@
-CHAT_MESSAGE_CHANNEL = "GUILD"
+-- CHAT_MESSAGE_CHANNEL = "GUILD"
 --@end-debug@
 
 -- Singleton

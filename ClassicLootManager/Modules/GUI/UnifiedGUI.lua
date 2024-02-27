@@ -151,7 +151,7 @@ local function UpdateLoadingBanner(self)
                 name = "|cffdcb749CLM is processing|r",
                 type = "description",
                 fontSize = "large",
-                image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-64.tga",
+                image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-64.png",
                 order = 1
             },
             middle = {
