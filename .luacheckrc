@@ -46,6 +46,8 @@ globals = {
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"RaidWarningFrame",
+	"RaidWarningFrame_OnEvent",
 	"C_Seasons.GetActiveSeason",
 	"LOOT_ITEM_SELF_MULTIPLE",
 	"LOOT_ITEM_SELF",

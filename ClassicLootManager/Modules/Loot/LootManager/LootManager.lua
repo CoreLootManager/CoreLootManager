@@ -189,9 +189,9 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
         CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
         if CLM.GlobalConfigs:GetLootWarning() then
             local message = string.format(CLM.L["%s awarded to %s for %s %s"], itemLink, name, value, pointTypeSuffix)
-            SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
+            UTILS.SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
             if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
-                SendChatMessage(message, "GUILD")
+                UTILS.SendChatMessage(message, "GUILD")
             end
         end
         return true, entry:uuid()
@@ -240,9 +240,9 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
     if CLM.GlobalConfigs:GetLootWarning() then
         local message = CLM.L["Disenchanted"] .. " " .. itemLink
-        SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
         if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
-            SendChatMessage(message, "GUILD")
+            UTILS.SendChatMessage(message, "GUILD")
         end
     end
     return true, entry:uuid()

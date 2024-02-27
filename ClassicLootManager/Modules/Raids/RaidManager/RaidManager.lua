@@ -378,7 +378,7 @@ function RaidManager:StartRaid(raid)
     -- Start Raid
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Start:new(raid:UID(), players, standby), true)
     if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
-        SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(string.format(CLM.L["Raid [%s] started"], raid:Name()) , CHAT_MESSAGE_CHANNEL)
     end
     self:HandleRosterUpdateEvent()
     -- On Time Bonus
@@ -430,7 +430,7 @@ function RaidManager:EndRaid(raid)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.End:new(raid:UID()), true)
 
     if CLM.GlobalConfigs:GetRaidWarning() and IsInRaid() then
-        SendChatMessage(string.format(CLM.L["Raid [%s] ended"], raid:Name()) , CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(string.format(CLM.L["Raid [%s] ended"], raid:Name()) , CHAT_MESSAGE_CHANNEL)
     end
 end
 

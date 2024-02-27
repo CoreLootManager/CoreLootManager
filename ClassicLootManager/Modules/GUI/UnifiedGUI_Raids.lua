@@ -494,5 +494,6 @@ CLM.GUI.Unified:RegisterTab(
         store = storeHandler,
         restore = restoreHandler,
         dataReady = dataReadyHandler
-    }
+    },
+    nil, "Interface\\Timer\\Countdown.blp:16:16:0:0:1024:512:256:512:0:256:255:209:00"
 )

@@ -154,7 +154,7 @@ function AuctionHistoryManager:PostById(id)
     local data = self.db.stack[id]
     if data then
         local channel = CHANNELS[GetPostBidsChannel(self)] or "OFFICER"
-        SendChatMessage(data.link, channel)
+        UTILS.SendChatMessage(data.link, channel)
         local noBids = true
         for bidder,bid in pairs(data.bids) do
             noBids = false
@@ -180,7 +180,7 @@ function AuctionHistoryManager:PostById(id)
             if data.rolls and data.rolls[bidder] then
                 rolls  = rolls .. "/" .. tostring(data.rolls[bidder])
             end
-            SendChatMessage(
+            UTILS.SendChatMessage(
                 bidder .. ": " ..
                 tostring(bid) .. " " ..
                 (data.isEPGP and CLM.L["GP"] or CLM.L["DKP"]) ..
@@ -190,7 +190,7 @@ function AuctionHistoryManager:PostById(id)
             channel)
         end
         if noBids then
-            SendChatMessage(CLM.L["No bids"], channel)
+            UTILS.SendChatMessage(CLM.L["No bids"], channel)
         end
     end
 end

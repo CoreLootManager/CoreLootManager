@@ -27,7 +27,8 @@ local function CreateMinimapDBI(self, dropdown)
 
     CLM.MinimapDBI.OnTooltipShow = function(tooltip)
         local info
-        tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
+        -- tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
+        tooltip:AddLine(addonName .. " " .. CLM.CORE:GetVersionString())
 
         if CLM.MODULES.LedgerManager:IsInitialized() then
             local lag = CLM.MODULES.LedgerManager:Lag()
@@ -43,14 +44,19 @@ local function CreateMinimapDBI(self, dropdown)
         end
 
         if CLM.MODULES.LedgerManager:IsInIncoherentState() then
-            tooltip:AddDoubleLine(CLM.L["Incoherent state"], info, 0.6, 0.0, 0.0) -- RED
+            -- tooltip:AddDoubleLine(CLM.L["Incoherent state"], info, 0.6, 0.0, 0.0) -- RED
+            tooltip:AddLine(CLM.L["Incoherent state"], 0.6, 0.0, 0.0) -- RED
         elseif CLM.MODULES.LedgerManager:IsInSync() then
-            tooltip:AddDoubleLine(CLM.L["In-Sync"], info, 0.0, 0.8, 0.0) -- GREEN
+            -- tooltip:AddDoubleLine(CLM.L["In-Sync"], info, 0.0, 0.8, 0.0) -- GREEN
+            tooltip:AddLine(CLM.L["In-Sync"], 0.0, 0.8, 0.0) -- GREEN
         elseif CLM.MODULES.LedgerManager:IsSyncOngoing() then
-            tooltip:AddDoubleLine(CLM.L["Sync ongoing"], info, 0.75, 0.75, 0.0) -- YELLOW
+            -- tooltip:AddDoubleLine(CLM.L["Sync ongoing"], info, 0.75, 0.75, 0.0) -- YELLOW
+            tooltip:AddLine(CLM.L["Sync ongoing"], 0.75, 0.75, 0.0) -- YELLOW
         else -- Unknown state
-            tooltip:AddDoubleLine(CLM.L["Unknown sync state"], info, 0.4, 0.6, 1) -- BLUE
+            -- tooltip:AddDoubleLine(CLM.L["Unknown sync state"], info, 0.4, 0.6, 1) -- BLUE
+            tooltip:AddLine(CLM.L["Unknown sync state"], 0.4, 0.6, 1) -- BLUE
         end
+        tooltip:AddLine(info)
 
         if CLM.MODULES.SandboxManager:IsSandbox() then
             tooltip:AddLine(CLM.L["Sandbox mode"], 1, 1, 1)
@@ -136,7 +142,7 @@ function Minimap:Initialize()
         -- },
         {
             title = CLM.L["Configuration"],
-            icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-green-32.tga",
+            icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png",
             func = (function()
                 InterfaceOptionsFrame_OpenToCategory(addonName)
                 InterfaceOptionsFrame_OpenToCategory(addonName)

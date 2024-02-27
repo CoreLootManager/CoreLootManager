@@ -793,5 +793,6 @@ CLM.GUI.Unified:RegisterTab(
         store = storeHandler,
         restore = restoreHandler,
         dataReady = dataReadyHandler
-    }
+    },
+    "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png"
 )

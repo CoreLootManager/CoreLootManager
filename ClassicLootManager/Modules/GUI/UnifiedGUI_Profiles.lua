@@ -316,5 +316,6 @@ CLM.GUI.Unified:RegisterTab(
     {
         initialize = initializeHandler,
         beforeShow = beforeShowHandler
-    }
+    },
+    "Interface\\PvPRankBadges\\PvPRank13.blp"
 )

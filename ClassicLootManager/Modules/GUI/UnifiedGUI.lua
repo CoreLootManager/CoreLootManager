@@ -87,9 +87,15 @@ local function CreateTabsWidget(self, content)
 
     local tabs = {}
     for name, tab in pairs(self.tabs) do
+        local tabIcon = ""
+        if tab.icon then
+            tabIcon = string.format("|T%s:0|t ", tab.icon or "")
+        elseif tab.iconExtended then
+            tabIcon = string.format("|T%s|t ", tab.iconExtended or "")
+        end
         tabs[#tabs + 1] = {
             value = name,
-            text = CLM.L[UTILS.capitalize(name)],
+            text = tabIcon .. CLM.L[UTILS.capitalize(name)],
             order = tab.order
         }
     end
@@ -151,7 +157,7 @@ local function UpdateLoadingBanner(self)
                 name = "|cffdcb749CLM is processing|r",
                 type = "description",
                 fontSize = "large",
-                image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-128.tga",
+                image = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-64.png",
                 order = 1
             },
             middle = {
@@ -316,7 +322,7 @@ local publicHandlers = {
 function UnifiedGUI:RegisterTab(
     name, order, tableStructure, tableDataFeeder,
     horizontalOptionsFeeder, verticalOptionsFeeder,
-    handlers
+    handlers, icon, iconExtended
 )
 
     local supportedTableStructureTypes = {["table"] = true}
@@ -346,7 +352,9 @@ function UnifiedGUI:RegisterTab(
             horizontalOptions = horizontalOptionsFeeder or { type = "group", args = {} },
             verticalOptions = verticalOptionsFeeder or { type = "group", args = {} }
         },
-        handlers = {}
+        handlers = {},
+        icon = icon,
+        iconExtended = iconExtended
     }
 
     for _, handlerName in ipairs(publicHandlers) do

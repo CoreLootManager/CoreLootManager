@@ -16,7 +16,7 @@ local AuctionInfo = CLM.MODELS.AuctionInfo
 -- luacheck: ignore CHAT_MESSAGE_CHANNEL
 local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 --@debug@
-CHAT_MESSAGE_CHANNEL = "GUILD"
+-- CHAT_MESSAGE_CHANNEL = "GUILD"
 --@end-debug@
 
 -- Singleton
@@ -239,8 +239,8 @@ local function Joke()
     end
 
     C_Timer.After(1, function()
-        SendChatMessage(L1, "RAID")
-        SendChatMessage(L2, "RAID")
+        UTILS.SendChatMessage(L1, "RAID")
+        UTILS.SendChatMessage(L2, "RAID")
     end)
 end
 
@@ -264,7 +264,7 @@ local function AprilFools()
                 D = 0
                 Joke()
             end
-            if D > 0 then C_Timer.After(D, function() SendChatMessage(L, C) end) end
+            if D > 0 then C_Timer.After(D, function() UTILS.SendChatMessage(L, C) end) end
             C_Timer.After(2, function() LOG:Message("Happy |cff44ee44April Fools'|r raid week!") end)
         end
     end
@@ -290,7 +290,7 @@ local function PostLootToRaidChat()
         local itemLink = GetLootSlotLink(lootIndex)
         if itemLink then
             if (tonumber(rarity) or 0) >= CLM.GlobalConfigs:GetAnnounceLootToRaidLevel() then
-                SendChatMessage("[CLM] " .. num .. ") " .. itemLink, "RAID")
+                UTILS.SendChatMessage(num .. ") " .. itemLink, "RAID")
                 num = num + 1
             end
         end
@@ -671,7 +671,7 @@ function AuctionManager:StopAuctionManual()
     LOG:Trace("AuctionManager:StopAuctionManual()")
     self.intervalTicker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
-        SendChatMessage(CLM.L["Auction stopped by Master Looter"], CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(CLM.L["Auction stopped by Master Looter"], CHAT_MESSAGE_CHANNEL)
     end
     EndAuction(self)
 end
@@ -680,7 +680,7 @@ local function StopAuctionTimed(self)
     LOG:Trace("AuctionManager:StopAuctionTimed()")
     self.intervalTicker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
-        SendChatMessage(CLM.L["Auction complete"], CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(CLM.L["Auction complete"], CHAT_MESSAGE_CHANNEL)
     end
     EndAuction(self)
     self:RefreshGUI()
@@ -708,7 +708,7 @@ local function NewIntervalHandlers(self, countdown, endTimeValue, callbacks)
         self.auctionTimeLeft = self.auctionTickerEndTime - GetServerTime()
         callbacks.ticker(TICKER_INTERVAL)
         if self.auctionTickerLastCountdownValue > 0 and self.auctionTimeLeft <= self.auctionTickerLastCountdownValue then
-            SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), CHAT_MESSAGE_CHANNEL)
+            UTILS.SendChatMessage(tostring(math.ceil(self.auctionTimeLeft)), CHAT_MESSAGE_CHANNEL)
             self.auctionTickerLastCountdownValue = self.auctionTickerLastCountdownValue - 1
         end
         --[[ Final ]]
@@ -784,15 +784,15 @@ function AuctionManager:StartAuction()
         else
             auctionMessage = string.format(CLM.L["Auction of %s"], auctionItem:GetItemLink())
         end
-        SendChatMessage(auctionMessage , CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(auctionMessage , CHAT_MESSAGE_CHANNEL)
         auctionMessage = ""
         auctionMessage = auctionMessage .. string.format(CLM.L["Auction time: %s."] .. " ", auction:GetTime())
         if auction:GetAntiSnipe() > 0 then
             auctionMessage = auctionMessage .. string.format(CLM.L["Anti-snipe time: %s."], auction:GetAntiSnipe())
         end
-        SendChatMessage(auctionMessage , CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(auctionMessage , CHAT_MESSAGE_CHANNEL)
         if CLM.GlobalConfigs:GetCommandsWarning() and CLM.GlobalConfigs:GetAllowChatCommands() then
-            SendChatMessage("Whisper me '!bid <amount>' to bid. Whisper '!dkp' to check your dkp.", CHAT_MESSAGE_CHANNEL)
+            UTILS.SendChatMessage("Whisper me '!bid <amount>' to bid. Whisper '!dkp' to check your dkp.", CHAT_MESSAGE_CHANNEL)
         end
     end
     -- For now only WoW Classic (with different IDs for items) support auto item value mode settings when dynamic item value mode is enabled
@@ -895,7 +895,7 @@ function AuctionManager:StartRoll(itemId)
     end
     local rollTime = auction:GetRollTime()
     local message = string.format(CLM.L["Accepting rolls on %s for %s %s"], auctionItem:GetItemLink(), rollTime, CLM.L["seconds"])
-    SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
+    UTILS.SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
 
     auction:Roll(auctionItem)
 
@@ -927,7 +927,7 @@ function AuctionManager:StopRoll()
 
     auction:EndRoll()
 
-    SendChatMessage(CLM.L["Rolling complete"], CHAT_MESSAGE_CHANNEL)
+    UTILS.SendChatMessage(CLM.L["Rolling complete"], CHAT_MESSAGE_CHANNEL)
 end
 
 local function AntiSnipe(self, auction)
@@ -1140,7 +1140,7 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
                         userResponse:Value(),
                         auction:GetRoster():GetPointType() == CONSTANTS.POINT_TYPE.DKP and CLM.L["DKP"] or CLM.L["GP"],
                         nameModdified)
-    SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
+    UTILS.SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
 end
 
 function AuctionManager:UpdateBid(name, itemId, userResponse)

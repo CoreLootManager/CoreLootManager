@@ -7,7 +7,7 @@
 ## Title: CLM |cff44ee44Integrations|r
 ## Notes: External Integration System for |cffdcb749Core Loot Manager|r covering Migration, Import and Export.
 ## Author: Lantis
-## IconTexture: Interface/AddOns/ClassicLootManager/Media/Icons/clm-dark-128.tga
+## IconTexture: Interface/AddOns/ClassicLootManager/Media/Icons/clm-dark-32.png
 ## Version: @project-version@
 ## RequiredDeps: ClassicLootManager
 ## OptionalDeps: LibStub
