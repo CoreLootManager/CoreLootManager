@@ -1,3 +1,7 @@
+# Core Loot Manager v4.9.0
+## Features
+### Branding
+CLM Icon branding will now display instead of CLM prefix in multiple places. New cool icons were added to the UI. More to come!
 # Core Loot Manager v4.8.2
 ## Features
 ### Season of Discovery

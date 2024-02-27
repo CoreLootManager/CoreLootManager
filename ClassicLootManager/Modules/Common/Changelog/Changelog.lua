@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.9.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Branding", body = "CLM Icon branding will now display instead of CLM prefix in multiple places. New cool icons were added to the UI. More to come!" },
+                },
+            },
+        },
+    },
+    {
         version = "v4.8.2",
         data = {
             {
