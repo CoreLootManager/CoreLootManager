@@ -161,7 +161,11 @@
         "RaidWarningFrame",
         "RaidNotice_AddMessage",
         "ChatTypeInfo",
-        "RaidWarningFrame_OnEvent"
+        "RaidWarningFrame_OnEvent",
+        "GameFontDisableSmall",
+        "GameFontNormalSmall",
+        "MAINASSIST",
+        "SetDesaturation"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

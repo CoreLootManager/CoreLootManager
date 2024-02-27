@@ -780,5 +780,6 @@ CLM.GUI.Unified:RegisterTab(
         -- store = storeHandler,
         -- restore = restoreHandler,
         -- dataReady = dataReadyHandler
-    }
+    },
+    "Interface\\BUTTONS\\UI-OptionsButton.blp"
 )
