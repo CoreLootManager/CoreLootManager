@@ -216,24 +216,21 @@ end
 
 GetItemInfo(19019)
 local function Joke()
-    local L1, L2, R = "", "", math.random(1,6)
+    local L1, L2, R = "", "", math.random(1,5)
 
     if R == 1 then
         L1 = "What do you call a druid who melees in tree form?"
         L2 = "A combat log."
     elseif R == 2 then
-        L1 = "Why do mages and warlocks get invited to all parties?"
-        L2 = "Because mages bring the food and warlocks get you stoned."
-    elseif R == 3 then
         L1 = "What's a rogue's favourite drink?"
         L2 = "Subtle tea."
-    elseif R == 4 then
+    elseif R == 3 then
         L1 = "How does Naxxramas fly?"
         L2 = "With its four wings."
-    elseif R == 5 then
+    elseif R == 4 then
         L1 = "How many Blizzard developers does it take to get an expansion right?"
         L2 = "Nobody knows because it hasn't been done yet."
-    elseif R == 6 then
+    elseif R == 5 then
         L1 = "What do you call a gnome priest?"
         L2 = "A compact disc."
     end
