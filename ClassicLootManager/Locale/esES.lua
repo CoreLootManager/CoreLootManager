@@ -611,9 +611,9 @@ CLM.L["Disable data synchronisation"] = "Deshabilitar la sincronización de dato
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:341
 CLM.L["Disable data synchronisation. This might lead to unexpected consequences. Use this at your own risk. Requires /reload to apply."] = "Desactiva la sincronización de datos. Esto podría conducir a consecuencias inesperadas. Usa esto bajo tu propio riesgo. Requiere /recargar para aplicar."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:577
-CLM.L["Disable"] = "Deshabilitar"
+CLM.L["Disable"] = "Desactivar"
 -- ClassicLootManager/MinimapIcon.lua:53
-CLM.L["Disabled"] = "Desactivada Desactivado"
+CLM.L["Disabled"] = "Desactivada"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:37
 CLM.L["Disables display of the changelog for any new version."] = "Deshabilita la visualización del registro de cambios para cualquier versión nueva."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:459
