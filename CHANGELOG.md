@@ -1,3 +1,7 @@
+# Core Loot Manager v4.9.1
+## Fixes
+### Guild Change
+CLM will now handle guild change gracefully but will require /reload every time you join or leave a guild.
 # Core Loot Manager v4.9.0
 ## Features
 ### Branding

@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.9.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Guild Change", body = "CLM will now handle guild change gracefully but will require /reload every time you join or leave a guild." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.9.0",
         data = {
             {
