@@ -111,6 +111,7 @@ function LedgerManager:Cutoff()
     self.activeLedger.disableSending()
     CLM.MODULES.Comms:Suspend(CLM.COMM_CHANNEL.LEDGER.SYNC)
     CLM.MODULES.Comms:Suspend(CLM.COMM_CHANNEL.LEDGER.DATA)
+    self.disabled = true
 end
 
 function LedgerManager:DisableAdvertising()
@@ -255,6 +256,10 @@ end
 
 function LedgerManager:IsSyncOngoing()
     return self.syncOngoing
+end
+
+function LedgerManager:IsDisabled()
+    return self.disabled
 end
 
 function LedgerManager:Lag()
