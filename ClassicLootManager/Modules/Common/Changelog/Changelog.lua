@@ -1,23 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
-        version = "v4.9.1",
-        data = {
-            {
-                name = "Fixes",
-                data = {
-                    { header = "Guild Change", body = "CLM will now handle guild change gracefully but will require /reload every time you join or leave a guild." },
-                },
-            },
-        },
-    },
-    {
         version = "v4.9.0",
         data = {
             {
                 name = "Features",
                 data = {
                     { header = "Branding", body = "CLM Icon branding will now display instead of CLM prefix in multiple places. New cool icons were added to the UI. More to come!" },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Guild Change", body = "CLM will now handle guild change gracefully but will require /reload every time you join or leave a guild." },
                 },
             },
         },
