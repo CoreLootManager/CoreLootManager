@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.9.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Guild Change", body = "Guild change for player will now be detected properly. Third time's the charm." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.9.1",
         data = {
             {

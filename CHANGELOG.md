@@ -1,3 +1,7 @@
+# Core Loot Manager v4.9.2
+## Fixes
+### Guild Change
+Guild change for player will now be detected properly. Third time's the charm.
 # Core Loot Manager v4.9.1
 ## Fixes
 ### Guild Change
