@@ -23,8 +23,8 @@ CLM.COMM_CHANNEL = {
     AUCTION = "Auction2",
     BIDDING = "Bidding2",
     LEDGER = {
-        SYNC = "LedgerS2",
-        DATA = "LedgerD2"
+        SYNC = "LedgerS3",
+        DATA = "LedgerD3"
     },
     STANDBY = "Standby001",
     GLOBAL = "Version001"
@@ -47,7 +47,7 @@ local UTILS = CLM.UTILS
 function UTILS.ParseVersionString(versionString)
     local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")
     return {
-        major = tonumber(major) or 4,
+        major = tonumber(major) or 5,
         minor = tonumber(minor) or 0,
         patch = tonumber(patch) or 0,
         changeset = changeset or ""
