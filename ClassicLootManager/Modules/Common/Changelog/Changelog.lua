@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.9.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Fatal errors", body = "Fix fatal errors when parsing chat." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.9.2",
         data = {
             {

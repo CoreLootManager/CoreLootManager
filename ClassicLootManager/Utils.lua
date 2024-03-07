@@ -1064,7 +1064,7 @@ function UTILS.DecodePointTypeChangeName(pointType, changeType, displayDKP)
     return points
 end
 
-function UTILS.SendChatMessage(message, channel, target)
+function UTILS.SendChatMessage(message, channel, _, target)
     SendChatMessage("[CLM] " .. tostring(message), channel, nil, target)
 end
 

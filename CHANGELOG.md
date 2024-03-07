@@ -1,3 +1,7 @@
+# Core Loot Manager v4.9.3
+## Fixes
+### Fatal errors
+Fix fatal errors when parsing chat.
 # Core Loot Manager v4.9.2
 ## Fixes
 ### Guild Change
