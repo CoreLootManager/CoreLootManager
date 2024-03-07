@@ -217,7 +217,6 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         LOG:Debug("Comms:OnReceive() received outdated comms message [%s] from [%s]", tostring(tmp._version), sender)
         return
     end
-    message = tmp._message
     -- Cross-Faction workaround check
     if tmp._isX then
         if tmp._target == UTILS.whoami() then
