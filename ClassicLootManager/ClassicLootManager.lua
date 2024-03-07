@@ -8,6 +8,7 @@ if LIB_CLM then
 end
 
 CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
+CLM.WoWCata = select(4, GetBuildInfo()) >= 40400
 CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
 if CLM.WoWSeasonal then
     CLM.WoWSoD = C_Seasons.GetActiveSeason() == Enum.SeasonID.Placeholder

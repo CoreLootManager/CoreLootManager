@@ -124,17 +124,19 @@ function Comms:Send(prefix, message, distribution, target, priority)
     if not CONSTANTS.COMMS.PRIORITIES[priority] then
         priority = CONSTANTS.COMMS.PRIORITY.NORMAL
     end
+    -- Version comms
+    message = {
+        _version = CLM.CORE:GetVersion().major,
+        _message = message,
+    }
     -- X-realm
     if distribution == CONSTANTS.COMMS.DISTRIBUTION.WHISPER then
         -- cross-faction whisper workaround
         -- utilize cross-faction workaround for cross realm also
         if UTILS.ArePlayersCrossRealm(target, UTILS.whoami()) or (UnitFactionGroup(target) ~= UnitFactionGroup("player")) then
             distribution = CONSTANTS.COMMS.DISTRIBUTION.RAID
-            message = {
-                _isX = true,
-                _message = message,
-                _target = target
-            }
+            message._isX = true
+            message._target = target
         end
     end
     -- Serialize
@@ -210,6 +212,12 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         LOG:Debug("Comms:OnReceive() unable to deserialize message [%s] from [%s]", prefix, sender)
         return
     end
+    -- Version check
+    if tmp._version ~= CLM.CORE:GetVersion().major then
+        LOG:Debug("Comms:OnReceive() received outdated comms message [%s] from [%s]", tostring(tmp._version), sender)
+        return
+    end
+    message = tmp._message
     -- Cross-Faction workaround check
     if tmp._isX then
         if tmp._target == UTILS.whoami() then
@@ -217,7 +225,7 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         end
     else
         -- Execute callback
-        self.callbacks[prefix](tmp, distribution, sender)
+        self.callbacks[prefix](tmp._message, distribution, sender)
     end
 end
 
