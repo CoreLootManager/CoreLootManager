@@ -193,6 +193,10 @@ CLM.L["Anub'arak"] = "阿努巴拉克"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:67
 -- ClassicLootManager/Utils.lua:1083
 CLM.L["Any"] = "任何"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:654
+CLM.L["Applies all changes and exits sandbox mode"] = "應用所有更改並退出沙盒模式"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:653
+CLM.L["Apply changes"] = "應用更改"
 -- ClassicLootManager_Integrations/GUI.lua:138
 CLM.L["April"] = "四月"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:124
@@ -272,7 +276,7 @@ CLM.L["Auctioning"] = "拍卖"
 CLM.L["August"] = "八月"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:129
 CLM.L["Auriaya"] = "欧尔莉亚"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:658
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:708
 CLM.L["Author"] = "执行者"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1020
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:147
@@ -604,7 +608,7 @@ CLM.L["Default Boss Kill Bonus value"] = "默认BOSS击杀奖励分值"
 CLM.L["Default slot values"] = "默认槽位分值"
 -- .:indirectly
 CLM.L["Demon Hunter"] = "Demon Hunter"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:657
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:707
 CLM.L["Description"] = "描述"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:340
 CLM.L["Disable data synchronisation"] = "禁用数据同步"
@@ -616,6 +620,10 @@ CLM.L["Disable"] = "禁用"
 CLM.L["Disabled"] = "禁用"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:37
 CLM.L["Disables display of the changelog for any new version."] = "禁止显示任何新版本的更新日志。"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:663
+CLM.L["Discard changes"] = "放棄更改"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:664
+CLM.L["Discards all changes and exits sandbox mode"] = "丟棄所有更改並退出沙盒模式"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:459
 CLM.L["Disenchant removed items"] = "刪除的物品"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:343
@@ -717,10 +725,12 @@ CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "启用背�
 CLM.L["Enables displaying item price on tooltip."] = "启用在Tooltip上显示物品分值。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:254
 CLM.L["Enables raid-warning countdown for auctions."] = "启用团队通知拍卖倒计时。"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:744
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:794
 CLM.L["End Timetravel"] = "结束时间旅行模式"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:401
 CLM.L["End selected raid"] = "结束选中的团本活动"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:644
+CLM.L["Enter sandbox"] = "輸入沙箱"
 -- ClassicLootManager/Utils.lua:1076
 CLM.L["Epic"] = "史诗"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:478
@@ -887,7 +897,7 @@ CLM.L["Grubbis"] = "Grubbis"
 CLM.L["Gruul the Dragonkiller"] = "屠龙者格鲁尔"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:317
 CLM.L["Gruul's Lair"] = "格鲁尔的巢穴"
--- ClassicLootManager/Modules/Global/GlobalGuildChangeHandler.lua:12
+-- ClassicLootManager/Modules/Global/GlobalGuildChangeHandler.lua:18
 CLM.L["Guild change detected. Disabling synchronisation until UI reload."] = "檢測到公會變更。 禁用同步直到UI重新加載。"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:95
 CLM.L["Gurtogg Bloodboil"] = "古尔图格·血沸"
@@ -993,6 +1003,8 @@ CLM.L["In Progress"] = "进行中"
 -- ClassicLootManager/Modules/GUI/Filters.lua:75
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:290
 CLM.L["In Raid"] = "在团队"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:645
+CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "在沙盒模式下，所有通信都是禁用的，並且更改為本地，直到應用為止。 單擊“應用更改”以存儲更改和退出沙盒模式。 單擊丟棄以撤消更改和退出沙盒模式。 /重新加載將丟棄更改。 輸入沙盒模式將取消時間旅行。"
 -- ClassicLootManager/MinimapIcon.lua:49
 CLM.L["In-Sync"] = "同步中"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:924
@@ -1404,7 +1416,7 @@ CLM.L["Noth the Plaguebringer"] = "瘟疫使者诺斯"
 CLM.L["Notify that you are passing on the item."] = "通知您正在跳过该物品。"
 -- ClassicLootManager_Integrations/GUI.lua:145
 CLM.L["November"] = "十一月"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:654
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:704
 CLM.L["Num"] = "#"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1106
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:421
@@ -1653,7 +1665,7 @@ CLM.L["Remove roster"] = "移除名册"
 CLM.L["Remove selected raid"] = "移除选中的团本活动"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:286
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:470
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:754
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:804
 CLM.L["Remove selected"] = "移除选中的"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:840
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:396
@@ -1724,6 +1736,8 @@ CLM.L["SK"] = "SK"
 CLM.L["Same zone only"] = "仅限同一区域"
 -- ClassicLootManager/MinimapIcon.lua:60
 CLM.L["Sandbox mode"] = "沙盒模式"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:676
+CLM.L["Sandbox"] = "沙箱"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:48
 CLM.L["Sapphiron"] = "萨菲隆"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:119
@@ -1950,15 +1964,16 @@ CLM.L["Tier multipliers"] = "Tier 系数"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:754
 CLM.L["Tiered"] = "Tiered"
 -- ClassicLootManager/MinimapIcon.lua:64
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:678
 CLM.L["Time Traveling"] = "时间旅行模式启用中"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1138
 CLM.L["Time in seconds by which auction will be extended if bid is received during last 10 seconds."] = "如果在最后 10 秒内收到出价，拍卖将延长的时间（以秒为单位）。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1122
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1154
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1155
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:655
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:705
 CLM.L["Time"] = "时间"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:733
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:783
 CLM.L["Timetravel"] = "开启时间旅行模式"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:309
 CLM.L["Toggle Auction History window display"] = "开关拍卖历史窗口显示"
@@ -2046,7 +2061,7 @@ CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%
 CLM.L["Two-Hand"] = "双手"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:254
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:287
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:656
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:706
 CLM.L["Type"] = "类型"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:105
 CLM.L["UI Scale"] = "用户界面缩放"

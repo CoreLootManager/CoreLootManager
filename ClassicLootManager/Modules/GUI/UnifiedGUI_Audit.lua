@@ -670,28 +670,20 @@ local function GenerateOfficerOptions(self)
             hidden  = (function() return not CLM.MODULES.SandboxManager:IsSandbox() end)
         },
         sandbox_info = {
-            name = UTILS.ColorCodeText(CLM.L["Sandbox"], "ff8000"),
+            name = (function()
+                local info = ""
+                if CLM.MODULES.SandboxManager:IsSandbox() then
+                    info = UTILS.ColorCodeText(CLM.L["Sandbox"], "ff8000")
+                elseif CLM.MODULES.LedgerManager:IsTimeTraveling() then
+                    info = UTILS.ColorCodeText(CLM.L["Time Traveling"], "eeee00")
+                end
+                return info
+            end),
             fontSize = "medium",
             width = 0.75,
             order = 14,
-            type = "description",
-            hidden  = (function() return not CLM.MODULES.SandboxManager:IsSandbox() end)
+            type = "description"
         },
-        -- timetravel_info = {
-        --     name = (function()
-        --         local info = ""
-        --         if self.timeTravelInProgress then
-        --             info = UTILS.ColorCodeText(CLM.L["Loading..."], "eeee00")
-        --         elseif CLM.MODULES.LedgerManager:IsTimeTraveling() then
-        --             info = UTILS.ColorCodeText(CLM.L["Time Travel"], "eeee00")
-        --         end
-        --         return info
-        --     end),
-        --     fontSize = "large",
-        --     width = 0.75,
-        --     order = 5,
-        --     type = "description"
-        -- }
     }
 end
 

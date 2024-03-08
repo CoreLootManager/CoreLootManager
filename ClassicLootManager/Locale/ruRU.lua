@@ -193,6 +193,10 @@ CLM.L["Anub'arak"] = "Ануб'Арак"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:67
 -- ClassicLootManager/Utils.lua:1083
 CLM.L["Any"] = "Любой"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:654
+CLM.L["Applies all changes and exits sandbox mode"] = "Принять все правки и выйти из песочницы"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:653
+CLM.L["Apply changes"] = "Принять правки"
 -- ClassicLootManager_Integrations/GUI.lua:138
 CLM.L["April"] = "Апрель"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:124
@@ -272,7 +276,7 @@ CLM.L["Auctioning"] = "Аукцион"
 CLM.L["August"] = "Август"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:129
 CLM.L["Auriaya"] = "Ауриайя"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:658
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:708
 CLM.L["Author"] = "Автор"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1020
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:147
@@ -604,7 +608,7 @@ CLM.L["Default Boss Kill Bonus value"] = "Значение по умолчани
 CLM.L["Default slot values"] = "Значения слотов по умолчанию"
 -- .:indirectly
 CLM.L["Demon Hunter"] = "Охотник на демонов"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:657
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:707
 CLM.L["Description"] = "Описание"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:340
 CLM.L["Disable data synchronisation"] = "Отключить синхронизацию данных"
@@ -616,6 +620,10 @@ CLM.L["Disable"] = "Отключить"
 CLM.L["Disabled"] = "Неполноценный"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:37
 CLM.L["Disables display of the changelog for any new version."] = "Отключает отображение истории изменений для любой новой версии."
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:663
+CLM.L["Discard changes"] = "Отменить изменения"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:664
+CLM.L["Discards all changes and exits sandbox mode"] = "Отменить все изменения и выйти из режима песочницы"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:459
 CLM.L["Disenchant removed items"] = "Распылить удаленные предметы"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:343
@@ -717,10 +725,12 @@ CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Включ
 CLM.L["Enables displaying item price on tooltip."] = "Включает отображение цены вещи в подсказке."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:254
 CLM.L["Enables raid-warning countdown for auctions."] = "Включает оповещения отсчета конца аукциона"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:744
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:794
 CLM.L["End Timetravel"] = "Завершить путешествие во времени"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:401
 CLM.L["End selected raid"] = "Завершить выбранный рейд"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:644
+CLM.L["Enter sandbox"] = "Включить песочницу"
 -- ClassicLootManager/Utils.lua:1076
 CLM.L["Epic"] = "Эпическое"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:478
@@ -887,7 +897,7 @@ CLM.L["Grubbis"] = "Grubbis"
 CLM.L["Gruul the Dragonkiller"] = "Груул Драконобой"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:317
 CLM.L["Gruul's Lair"] = "Логово Груула"
--- ClassicLootManager/Modules/Global/GlobalGuildChangeHandler.lua:12
+-- ClassicLootManager/Modules/Global/GlobalGuildChangeHandler.lua:18
 CLM.L["Guild change detected. Disabling synchronisation until UI reload."] = "Обнаружено изменение гильдии. Отключение синхронизации до перезагрузки пользовательского интерфейса."
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:95
 CLM.L["Gurtogg Bloodboil"] = "Гуртогг Кипящая Кровь"
@@ -993,6 +1003,8 @@ CLM.L["In Progress"] = "В процессе"
 -- ClassicLootManager/Modules/GUI/Filters.lua:75
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:290
 CLM.L["In Raid"] = "В рейде"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:645
+CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "В режиме песочницы все изменения отключены и изменения локальны до их применения. Нажмите принять изменения чтобы сохранить их и выйти из режима песочницы. Нажмите отменить, чтобы отменить все изменения и выйти из песочницы. /reload отменит все изменения. Вход в песочницы отменит путешествие во времени."
 -- ClassicLootManager/MinimapIcon.lua:49
 CLM.L["In-Sync"] = "Синхронизирован"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:924
@@ -1404,7 +1416,7 @@ CLM.L["Noth the Plaguebringer"] = "Нот Чумной"
 CLM.L["Notify that you are passing on the item."] = "Уведомьте, что вы пасуете на предмет."
 -- ClassicLootManager_Integrations/GUI.lua:145
 CLM.L["November"] = "Ноябрь"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:654
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:704
 CLM.L["Num"] = "Значение"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1106
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:421
@@ -1653,7 +1665,7 @@ CLM.L["Remove roster"] = "Удалить состав"
 CLM.L["Remove selected raid"] = "Удалить выбранный рейд"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:286
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:470
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:754
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:804
 CLM.L["Remove selected"] = "Удалить выбранное"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:840
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:396
@@ -1724,6 +1736,8 @@ CLM.L["SK"] = "SK"
 CLM.L["Same zone only"] = "В той же локации"
 -- ClassicLootManager/MinimapIcon.lua:60
 CLM.L["Sandbox mode"] = "Режим песочницы"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:676
+CLM.L["Sandbox"] = "Песочница"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:48
 CLM.L["Sapphiron"] = "Сапфирон"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:119
@@ -1950,15 +1964,16 @@ CLM.L["Tier multipliers"] = "Мультипликаторы для тира"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:754
 CLM.L["Tiered"] = "Многоуровневый"
 -- ClassicLootManager/MinimapIcon.lua:64
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:678
 CLM.L["Time Traveling"] = "Путешествую во времени"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1138
 CLM.L["Time in seconds by which auction will be extended if bid is received during last 10 seconds."] = "Время в секундах на которое будет продлен аукцион, если ставка будет сделана в последние 10 секунд."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1122
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1154
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1155
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:655
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:705
 CLM.L["Time"] = "Время"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:733
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:783
 CLM.L["Timetravel"] = "Путешествие"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:309
 CLM.L["Toggle Auction History window display"] = "Включить отображение окна истории торгов"
@@ -2046,7 +2061,7 @@ CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%
 CLM.L["Two-Hand"] = "Двуручное"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:254
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:287
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:656
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:706
 CLM.L["Type"] = "Тип"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:105
 CLM.L["UI Scale"] = "Масштаб пользовательского интерфейса"
