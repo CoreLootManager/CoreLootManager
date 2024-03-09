@@ -37,6 +37,8 @@ local function InitializeDB(self)
         removeOnNoBids = false,
         defaultRemoveOnAward = true,
         notes = {},
+        includePasses = true,
+        includeCancels = false,
         ignoredClasses = {
             false, false, false, false,
             false, false, false, true,
@@ -120,6 +122,22 @@ end
 
 function AuctionManager:GetDefaultRemoveOnAward()
     return self.db.defaultRemoveOnAward
+end
+
+function AuctionManager:SetIncludePasses(value)
+    self.db.includePasses = value and true or false
+end
+
+function AuctionManager:GetIncludePasses()
+    return self.db.includePasses
+end
+
+function AuctionManager:SetIncludeCancels(value)
+    self.db.includeCancels = value and true or false
+end
+
+function AuctionManager:GetIncludeCancels()
+    return self.db.includeCancels
 end
 
 -- Filling
@@ -385,6 +403,24 @@ local function CreateConfigurationOptions(self)
             get = function(i) return self:GetAutoTrade() end,
             -- width = "double",
             order = 33
+        },
+        auctioning_include_passes = {
+            name = CLM.L["Include passes"],
+            desc = CLM.L["Include passes in bid list in open auction mode."],
+            type = "toggle",
+            set = function(i, v) self:SetIncludePasses(v) end,
+            get = function(i) return self:GetIncludePasses() end,
+            width = "double",
+            order = 33.1
+        },
+        auctioning_include_cancels = {
+            name = CLM.L["Include cancels"],
+            desc = CLM.L["Include cancels in bid list in open auction mode."],
+            type = "toggle",
+            set = function(i, v) self:SetIncludeCancels(v) end,
+            get = function(i) return self:GetIncludeCancels() end,
+            width = 1,
+            order = 33.2
         },
         auctioning_list_header = {
             type = "header",
