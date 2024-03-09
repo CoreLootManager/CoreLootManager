@@ -19,6 +19,7 @@ local colorGold = {r = 0.93, g = 0.70, b = 0.13, a = 1.0}
 local colorRed = {r = 0.93, g = 0.27, b = 0.2, a = 1.0}
 local colorBlue = {r = 0.2, g = 0.2, b = 0.93, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
+local colorGrey = {r = 0.62, g = 0.62, b = 0.62, a = 1}
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
@@ -54,7 +55,9 @@ local function InitializeDB(self)
         advanceOnBid = true,
         hideInCombat = true,
         autoOpen = true,
-        autoUpdateBidValue = false
+        autoUpdateBidValue = false,
+        includePasses = true,
+        includeCancels = false
     })
 end
 
@@ -125,6 +128,22 @@ local function GetAutoUpdateBidValue(self)
     return self.db.autoUpdateBidValue
 end
 
+local function SetIncludePasses(self, value)
+    self.db.includePasses = value and true or false
+end
+
+local function GetIncludePasses(self)
+    return self.db.includePasses
+end
+
+local function SetIncludeCancels(self, value)
+    self.db.includeCancels = value and true or false
+end
+
+local function GetIncludeCancels(self)
+    return self.db.includeCancels
+end
+
 local function CreateConfig(self)
     local options = {
         bidding_header = {
@@ -138,7 +157,7 @@ local function CreateConfig(self)
             type = "toggle",
             set = function(i, v) SetAutoUpdateBidValue(self, v) end,
             get = function(i) return GetAutoUpdateBidValue(self) end,
-            width = "full",
+            width = "double",
             order = 72
         },
         bidding_auto_open = {
@@ -147,7 +166,7 @@ local function CreateConfig(self)
             type = "toggle",
             set = function(i, v) SetAutoOpen(self, v) end,
             get = function(i) return GetAutoOpen(self) end,
-            width = "full",
+            width = "double",
             order = 71
         },
         bidding_gui_close_on_bid = {
@@ -207,6 +226,24 @@ local function CreateConfig(self)
             get = function(i) return GetHideInCombat(self) end,
             width = 1,
             order = 79
+        },
+        bidding_gui_include_passes = {
+            name = CLM.L["Include passes"],
+            desc = CLM.L["Include passes in bid list in open auction mode."],
+            type = "toggle",
+            set = function(i, v) SetIncludePasses(self, v) end,
+            get = function(i) return GetIncludePasses(self) end,
+            width = 1,
+            order = 71.1
+        },
+        bidding_gui_include_cancels = {
+            name = CLM.L["Include cancels"],
+            desc = CLM.L["Include cancels in bid list in open auction mode."],
+            type = "toggle",
+            set = function(i, v) SetIncludeCancels(self, v) end,
+            get = function(i) return GetIncludeCancels(self) end,
+            width = 1,
+            order = 72.1
         },
     }
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
@@ -1020,20 +1057,18 @@ local function BuildBidRow(name, response, roster, namedButtonMode, auction)
     if response:Type() == CONSTANTS.BID_TYPE.OFF_SPEC then
         bidColor = colorTurquoise
     end
-    -- local items = response:Items()
-    -- local primaryItem = items[1]
-    -- local secondaryItem = items[2]
-    -- if (not primaryItem) and secondaryItem then
-    --     primaryItem = secondaryItem
-    --     secondaryItem = nil
-    -- end
-
+    local color, desaturate
+    if CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
+        color = colorGrey
+        desaturate = true
+        bidTypeString = response:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
+    end
     local data = {
-        {value = class},
-        {value = name, color = classColor},
-        {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = bidColor},
-        {value = current},
-        {value = response:Roll()},
+        {value = class, color = color, desaturate = desaturate},
+        {value = name, color = color or classColor},
+        {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = color or bidColor},
+        {value = current, color = color},
+        {value = response:Roll(), color = color},
     }
 
     local items = response:Items()
@@ -1042,10 +1077,10 @@ local function BuildBidRow(name, response, roster, namedButtonMode, auction)
         data[#data+1] = {}
     end
     for _, item in ipairs(items) do
-        data[#data+1] = {value = item}
+        data[#data+1] = {value = item, desaturate = desaturate}
     end
 
-        return {cols = data}
+    return {cols = data}
 end
 
 function BiddingManagerGUI:RefreshBidList()
@@ -1056,7 +1091,12 @@ function BiddingManagerGUI:RefreshBidList()
         local namedButtonsMode = auction:GetNamedButtonsMode()
         local roster = auction:GetRoster()
         for name, response in pairs(item:GetAllResponses()) do
-            if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then -- TODO CONFIGURABLE
+            local include = true
+            if (response:Type() == CONSTANTS.BID_TYPE.CANCEL and not GetIncludeCancels(self)) or
+               (response:Type() == CONSTANTS.BID_TYPE.PASS and not GetIncludePasses(self)) then
+                include = false
+            end
+            if include then
                 bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode, auction)
             end
         end

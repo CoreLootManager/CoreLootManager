@@ -26,6 +26,7 @@ local colorGreen = {r = 0.2, g = 0.93, b = 0.2, a = 1.0}
 local colorGold = {r = 0.93, g = 0.70, b = 0.13, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.27, b = 0.2, a = 0.3}
+local colorGrey = {r = 0.62, g = 0.62, b = 0.62, a = 1}
 -- local colorGreenTransparent = {r = 0.2, g = 0.93, b = 0.2, a = 0.3}
 -- local colorBlueTransparent = {r = 0.2, g = 0.27, b = 0.93, a = 0.3}
 
@@ -839,13 +840,20 @@ local function BuildBidRow(name, response, roster, namedButtonMode, externalData
     end
 
     -- Basic data
+    local color, desaturate
+    if CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
+        color = colorGrey
+        desaturate = true
+        bidTypeString = response:Type() == CONSTANTS.BID_TYPE.CANCEL and CLM.L["Cancel"] or CLM.L["Pass"]
+    end
     local data = {
-        {value = class},
-        {value = name, color = classColor},
-        {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = bidColor},
-        {value = current},
-        {value = response:Roll()},
+        {value = class, color = color, desaturate = desaturate},
+        {value = name, color = color or classColor},
+        {value = response:Value(), text = bidTypeString, bidType = response:Type(), color = color or bidColor},
+        {value = current, color = color},
+        {value = response:Roll(), color = color},
     }
+
     -- External Data
     for _, dataRow in ipairs(externalData) do
         data[#data+1] = dataRow
@@ -857,7 +865,7 @@ local function BuildBidRow(name, response, roster, namedButtonMode, externalData
         data[#data+1] = {}
     end
     for _, item in ipairs(items) do
-        data[#data+1] = {value = item}
+        data[#data+1] = {value = item, desaturate = desaturate}
     end
     -- Done
 
@@ -910,8 +918,13 @@ function AuctionManagerGUI:Refresh()
         local namedButtonsMode = auction:GetNamedButtonsMode()
         local roster = auction:GetRoster()
         for name, response in pairs(item:GetAllResponses()) do
-            if not CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then -- TODO configurable?
-                local externalData = GetExternalColumnData(self, auction, item, name, response)
+            local externalData = GetExternalColumnData(self, auction, item, name, response)
+            local include = true
+            if (response:Type() == CONSTANTS.BID_TYPE.CANCEL and not CLM.MODULES.AuctionManager:GetIncludeCancels()) or
+               (response:Type() == CONSTANTS.BID_TYPE.PASS and not CLM.MODULES.AuctionManager:GetIncludePasses()) then
+                include = false
+            end
+            if include then
                 bidList[#bidList+1] = BuildBidRow(name, response, roster, namedButtonsMode, externalData)
             end
         end

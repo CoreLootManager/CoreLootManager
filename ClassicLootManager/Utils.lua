@@ -825,6 +825,7 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
     local iconColor = data[realrow].cols[column].iconColor or {}
     local note = data[realrow].cols[column].note
     local overlay = data[realrow].cols[column].overlay or {}
+    local desaturate = data[realrow].cols[column].desaturate and true or false
     local _, _, _, _, icon = GetItemInfoInstant(itemInfo or 0)
 
     -- Reparent and rework text FontString
@@ -844,6 +845,7 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
         frame:SetHighlightTexture(136580, "ADD")
         frame:GetHighlightTexture():SetTexCoord(0, 1, 0.23, 0.77)
         frame:GetNormalTexture():SetVertexColor(iconColor.r or 1, iconColor.g or 1, iconColor.b or 1, iconColor.a or 1)
+        frame:GetNormalTexture():SetDesaturated(desaturate)
         frame:Show()
 
         if overlay.text then
@@ -880,10 +882,12 @@ end
 local CanonicalClass = UTILS.CanonicalClass
 function UTILS.LibStClassCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local class = data[realrow].cols[column].value
+    local desaturate = data[realrow].cols[column].desaturate and true or false
     if class and class ~= "" then
         frame:SetNormalTexture("Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES") -- this is the image containing all class icons
         local coords = CLASS_ICON_TCOORDS[CanonicalClass(class)]
         frame:GetNormalTexture():SetTexCoord(unpack(coords))
+        frame:GetNormalTexture():SetDesaturated(desaturate)
         frame:Show()
     else
         frame:Hide()
