@@ -193,6 +193,10 @@ CLM.L["Anub'arak"] = "Anub'arak"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:67
 -- ClassicLootManager/Utils.lua:1083
 CLM.L["Any"] = "Alle"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:654
+CLM.L["Applies all changes and exits sandbox mode"] = "Alle Änderungen anwenden und Sandbox verlassen"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:653
+CLM.L["Apply changes"] = "Änderungen anwenden"
 -- ClassicLootManager_Integrations/GUI.lua:138
 CLM.L["April"] = "April"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:124
@@ -272,7 +276,7 @@ CLM.L["Auctioning"] = "Versteigern"
 CLM.L["August"] = "August"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:129
 CLM.L["Auriaya"] = "Auriaya"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:658
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:708
 CLM.L["Author"] = "Autor"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1020
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:147
@@ -604,7 +608,7 @@ CLM.L["Default Boss Kill Bonus value"] = "Standard Boss Kill Bonus"
 CLM.L["Default slot values"] = "Standard Slot Wert"
 -- .:indirectly
 CLM.L["Demon Hunter"] = "Demon Hunter"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:657
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:707
 CLM.L["Description"] = "Beschreibung"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:340
 CLM.L["Disable data synchronisation"] = "Datensynchronisation deaktivieren"
@@ -616,6 +620,10 @@ CLM.L["Disable"] = "Deaktivieren"
 CLM.L["Disabled"] = "Deaktiviert"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:37
 CLM.L["Disables display of the changelog for any new version."] = "Deaktiviert die Anzeige des Änderungsprotokolls für neue Versionen."
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:663
+CLM.L["Discard changes"] = "Änderungen löschen"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:664
+CLM.L["Discards all changes and exits sandbox mode"] = "Wirft alle Änderungen weg und verlässt den Sandbox Modus"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:459
 CLM.L["Disenchant removed items"] = "Enttäuschende Gegenstände"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:343
@@ -717,10 +725,12 @@ CLM.L["Enables auto-trade awarded loot after auctioning from bag"] = "Aktiviert 
 CLM.L["Enables displaying item price on tooltip."] = "Aktiviert die Anzeige von Itempreisen im Tooltip"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:254
 CLM.L["Enables raid-warning countdown for auctions."] = "Aktiviert Countdown der Auktionen per Raidwarnung."
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:744
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:794
 CLM.L["End Timetravel"] = "Beendet Zeitreise"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:401
 CLM.L["End selected raid"] = "Beendet ausgewählten Raid"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:644
+CLM.L["Enter sandbox"] = "Aktiviert Sandbox"
 -- ClassicLootManager/Utils.lua:1076
 CLM.L["Epic"] = "Episch"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:478
@@ -887,7 +897,7 @@ CLM.L["Grubbis"] = "Grubbis"
 CLM.L["Gruul the Dragonkiller"] = "Gruul der Drachenschlächter"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:317
 CLM.L["Gruul's Lair"] = "Gruuls Unterschlupf"
--- ClassicLootManager/Modules/Global/GlobalGuildChangeHandler.lua:12
+-- ClassicLootManager/Modules/Global/GlobalGuildChangeHandler.lua:18
 CLM.L["Guild change detected. Disabling synchronisation until UI reload."] = "Gildenwechsel erkannt. Deaktivieren der Synchronisation bis zum Nachladen von UI."
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:95
 CLM.L["Gurtogg Bloodboil"] = "Gurtogg Siedeblut"
@@ -993,6 +1003,8 @@ CLM.L["In Progress"] = "Im Gange"
 -- ClassicLootManager/Modules/GUI/Filters.lua:75
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:290
 CLM.L["In Raid"] = "Im Raid"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:645
+CLM.L["In sandbox mode all communication is disabled and changes are local until applied. Click Apply changes to store changes and exit sandbox mode. Click Discard to undo changes and exit sandbox mode. /reload will discard changes. Entering sandbox mode will cancel time travel."] = "Im Sandbox Modus wird jegliche Kommunikation ausgeschaltet und Änderungen sind lokal bis sie angewandt werden. Klicke auf Änderungen anwenden um sie zu speichern und verlasse den Sandbox Modus. Klicke verwerfen um die Änderungen wieder rückgängig zu machen und den Sandbox Modus zu verlassen. /reload verwirft die Änderungen. Geht man in den Sandbox Modus verlässt man den Zeitreise Modus."
 -- ClassicLootManager/MinimapIcon.lua:49
 CLM.L["In-Sync"] = "Synchronisiert"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:924
@@ -1404,7 +1416,7 @@ CLM.L["Noth the Plaguebringer"] = "Noth der Seuchenfürst"
 CLM.L["Notify that you are passing on the item."] = "Melden das man auf einen Gegenstand passt."
 -- ClassicLootManager_Integrations/GUI.lua:145
 CLM.L["November"] = "November"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:654
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:704
 CLM.L["Num"] = "Nummer"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1106
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:421
@@ -1653,7 +1665,7 @@ CLM.L["Remove roster"] = "Roster entfernen"
 CLM.L["Remove selected raid"] = "Ausgewählten Raid entfernen"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:286
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:470
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:754
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:804
 CLM.L["Remove selected"] = "Ausgewählte entfernen"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:840
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:396
@@ -1724,6 +1736,8 @@ CLM.L["SK"] = "SK"
 CLM.L["Same zone only"] = "Nur in selber Zone"
 -- ClassicLootManager/MinimapIcon.lua:60
 CLM.L["Sandbox mode"] = "Sandbox Modus"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:676
+CLM.L["Sandbox"] = "Sandbox"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:48
 CLM.L["Sapphiron"] = "Saphiron"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:119
@@ -1950,15 +1964,16 @@ CLM.L["Tier multipliers"] = "Stufen Multiplikatoren"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:754
 CLM.L["Tiered"] = "Stufenbasiert"
 -- ClassicLootManager/MinimapIcon.lua:64
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:678
 CLM.L["Time Traveling"] = "Zeitreisen"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1138
 CLM.L["Time in seconds by which auction will be extended if bid is received during last 10 seconds."] = "Zeit in Sekunden wie lange die Auktion verlängert wird, wenn ein Gebot in den letzten 10 Sekunden eingeht."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1122
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1154
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1155
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:655
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:705
 CLM.L["Time"] = "Zeit"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:733
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:783
 CLM.L["Timetravel"] = "Zeitreise"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:309
 CLM.L["Toggle Auction History window display"] = "Auktionsverlauf Anzeige ein / ausschalten"
@@ -2046,7 +2061,7 @@ CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%
 CLM.L["Two-Hand"] = "Zweihand"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:254
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:287
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:656
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:706
 CLM.L["Type"] = "Typ"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:105
 CLM.L["UI Scale"] = "UI Skalierung"
