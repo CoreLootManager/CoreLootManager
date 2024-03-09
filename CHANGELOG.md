@@ -1,3 +1,12 @@
+# Core Loot Manager v4.10.0
+## Features
+### Pass and cancel info
+You can now configure if you want to see user pass and bid cancel info in auction window and bid list window (open auction only). They are separately configurable, and pass is shown by default, and cancels are hidden.
+### Sandbox mode
+Deja vu? Sandbox mode is back! Well... it was never gone, but the enable button was stuck in /dev/null.
+## Fixes
+### Chat throttling
+Addon should now behave better in terms of in-raid communications throttling.
 # Core Loot Manager v4.9.3
 ## Fixes
 ### Fatal errors

@@ -1,6 +1,24 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v4.10.0",
+        data = {
+            {
+                name = "Features",
+                data = {
+                    { header = "Pass and cancel info", body = "You can now configure if you want to see user pass and bid cancel info in auction window and bid list window (open auction only). They are separately configurable, and pass is shown by default, and cancels are hidden." },
+                    { header = "Sandbox mode", body = "Deja vu? Sandbox mode is back! Well... it was never gone, but the enable button was stuck in /dev/null." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Chat throttling", body = "Addon should now behave better in terms of in-raid communications throttling." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.9.3",
         data = {
             {
