@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -42,7 +42,8 @@ local function ST_GetTradeTarget(row)
     return row.cols[2].value
 end
 
-local TradeListGUI = {}
+---@class TradeListGUI
+local TradeListGUI =  {}
 function TradeListGUI:Initialize()
     LOG:Trace("TradeListGUI:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end

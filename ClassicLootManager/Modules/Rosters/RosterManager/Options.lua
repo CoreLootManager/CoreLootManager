@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -13,7 +13,8 @@ local CBTYPE = {
     HIDER    = "hide"
 }
 
-local RosterManagerOptions = { externalOptions = {} }
+---@class RosterManagerOptions
+local RosterManagerOptions =  { externalOptions = {} }
 
 local function GetRosterOption(name, option)
     local roster = CLM.MODULES.RosterManager:GetRosterByName(name)

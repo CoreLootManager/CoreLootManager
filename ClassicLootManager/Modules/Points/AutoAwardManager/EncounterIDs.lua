@@ -1,4 +1,4 @@
-local _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 
 if CLM.WoW10 then return end
 

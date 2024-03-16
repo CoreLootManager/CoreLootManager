@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -17,7 +17,8 @@ local nickMap = {
     "Mrgl-Mrgl "
 }
 
-local AuctionInfo = {} -- AuctionInfo
+---@class AuctionInfo
+local AuctionInfo =  {} -- AuctionInfo
 AuctionInfo.__index = AuctionInfo
 
 local function assertNotInProgress(self)

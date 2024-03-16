@@ -4,7 +4,7 @@
 ]]--
 
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -35,7 +35,8 @@ local function ScanTooltip(self)
     end
 end
 
-local BagItemChecker = {}
+---@class BagItemChecker
+local BagItemChecker =  {}
 function BagItemChecker:Initialize()
     self.fakeTooltip = CreateFrame("GameTooltip", "CLMAutoAssignBagItemCheckerFakeTooltip", UIParent, "GameTooltipTemplate")
     self.fakeTooltip:SetOwner(UIParent, "ANCHOR_NONE");
@@ -184,7 +185,8 @@ end
 
 local lootWindowIsOpen = false
 
-local AutoAssign = {}
+---@class AutoAssign
+local AutoAssign =  {}
 function AutoAssign:Initialize()
     LOG:Trace("AutoAssign:Initialize()")
     self.tracking = {}

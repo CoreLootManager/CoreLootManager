@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -24,7 +24,8 @@ local function ST_GetHighlight(row)
     return row.cols[8].value
 end
 
-local UnifiedGUI_Profiles = {
+---@class UnifiedGUI_Profiles
+local UnifiedGUI_Profiles =  {
     name = "profiles",
     filter = CLM.MODELS.Filters:New(
     (function() CLM.GUI.Unified:FilterScrollingTable() end),

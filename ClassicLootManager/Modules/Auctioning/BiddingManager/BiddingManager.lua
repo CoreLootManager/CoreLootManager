@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -60,7 +60,8 @@ end
 --     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 -- end
 
-local BiddingManager = {}
+---@class BiddingManager
+local BiddingManager =  {}
 function BiddingManager:Initialize()
     LOG:Trace("BiddingManager:Initialize()")
 

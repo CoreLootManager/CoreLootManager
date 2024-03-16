@@ -3,7 +3,7 @@
     https://github.com/seblindfors/ConsolePort/blob/master/ConsolePort/Utils/UIFade.lua
 ]]
 
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 
 local FADE = CreateFrame('Frame')
 

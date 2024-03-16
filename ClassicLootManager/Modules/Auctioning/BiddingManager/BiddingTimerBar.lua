@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -10,7 +10,8 @@ local LibCandyBar = LibStub("LibCandyBar-3.0")
 
 local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
 
-local BiddingTimerBar = {} -- BiddingTimerBar
+---@class BiddingTimerBar
+local BiddingTimerBar =  {} -- BiddingTimerBar
 BiddingTimerBar.__index = BiddingTimerBar
 
 local function RecolorBar(self)

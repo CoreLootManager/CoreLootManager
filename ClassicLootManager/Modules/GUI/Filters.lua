@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -30,7 +30,8 @@ local supportedOptions = {
     "horizontal"
 }
 
-local Filters = {}
+---@class Filters
+local Filters =  {}
 function Filters:New(refreshFn, usedFilters, usedOptions, prefix, filterOrderStartOffset)
 
     local o = {}

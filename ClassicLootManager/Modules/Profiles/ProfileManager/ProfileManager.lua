@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -19,7 +19,8 @@ else
     end
 end
 
-local ProfileManager = {}
+---@class ProfileManager
+local ProfileManager =  {}
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")
 
@@ -30,6 +31,8 @@ function ProfileManager:Initialize()
         profiles = {}
     }
 
+    ---@class dbprofileManager
+    ---@field pruneLog table
     self.db = CLM.MODULES.Database:Personal('profileManager', {
         pruneLog = {}
     })
@@ -37,6 +40,7 @@ function ProfileManager:Initialize()
     -- Register mutators
     CLM.MODULES.LedgerManager:RegisterEntryType(
         CLM.MODELS.LEDGER.PROFILE.Update,
+        ---@param entry ProfileUpdate
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileUpdate)")
             local iGUID = entry:GUID()
@@ -47,8 +51,7 @@ function ProfileManager:Initialize()
             if UTILS.empty(name) then return end
 
             local class = UTILS.NumberToClass(entry:ingameClass()) or ""
-            local main = entry:main()
-            main = (UTILS.ValidateIntegerGUID(main) and notEmptyiGUID(main)) and UTILS.getGuidFromInteger(main) or ""
+            local main = (UTILS.ValidateIntegerGUID(entry:main()) and notEmptyiGUID(entry:main())) and UTILS.getGuidFromInteger(entry:main()) or ""
             -- Check if it's an update
             local profileInternal = self.cache.profiles[GUID]
             if profileInternal then
@@ -90,11 +93,12 @@ function ProfileManager:Initialize()
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
         CLM.MODELS.LEDGER.PROFILE.Remove,
+        ---@param entry ProfileRemove
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileRemove)")
-            local GUID = entry:GUID()
-            if not UTILS.ValidateIntegerGUID(GUID) then return end
-            GUID = UTILS.getGuidFromInteger(GUID)
+            local iGUID = entry:GUID()
+            if not UTILS.ValidateIntegerGUID(iGUID) then return end
+            local GUID = UTILS.getGuidFromInteger(iGUID)
             local profile = self.cache.profiles[GUID]
             if profile then
                 -- Check alt-main linking before removing
@@ -126,15 +130,16 @@ function ProfileManager:Initialize()
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
         CLM.MODELS.LEDGER.PROFILE.Link,
+        ---@param entry ProfileLink
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLink)")
-            local altGUID = entry:GUID()
-            if not UTILS.ValidateIntegerGUID(altGUID) then return end
-            altGUID = UTILS.getGuidFromInteger(altGUID)
-            local mainGUID = entry:main()
-            if not UTILS.ValidateIntegerGUID(mainGUID) then return end
-            if altGUID == mainGUID then return end
-            mainGUID = UTILS.getGuidFromInteger(mainGUID)
+            local ialtGUID = entry:GUID()
+            if not UTILS.ValidateIntegerGUID(ialtGUID) then return end
+            local altGUID = UTILS.getGuidFromInteger(ialtGUID)
+            local imainGUID = entry:main()
+            if not UTILS.ValidateIntegerGUID(imainGUID) then return end
+            if ialtGUID == imainGUID then return end
+            local mainGUID = UTILS.getGuidFromInteger(imainGUID)
             local altProfile = self:GetProfileByGUID(altGUID)
             if not UTILS.typeof(altProfile, CLM.MODELS.Profile) then return end
             local mainProfile = self:GetProfileByGUID(mainGUID)
@@ -200,6 +205,7 @@ function ProfileManager:Initialize()
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
         CLM.MODELS.LEDGER.PROFILE.Lock,
+        ---@param entry ProfileLock
         (function(entry)
             LOG:TraceAndCount("mutator(ProfileLock)")
             local action
@@ -238,7 +244,10 @@ function ProfileManager:Initialize()
 
 
 end
-
+---comment
+---@param GUID playerGuid
+---@param name string
+---@param class canonicalClass
 function ProfileManager:NewProfile(GUID, name, class)
     LOG:Trace("ProfileManager:NewProfile()")
     if type(GUID) ~= "string" or GUID == "" then
@@ -287,6 +296,7 @@ function ProfileManager:NewProfile(GUID, name, class)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Update:new(GUID, name, class), true)
 end
 
+---@param GUID playerGuid
 function ProfileManager:RemoveProfile(GUID)
     LOG:Trace("ProfileManager:RemoveProfile()")
     if type(GUID) ~= "string" or GUID == "" then
@@ -297,6 +307,9 @@ function ProfileManager:RemoveProfile(GUID)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Remove:new(GUID), true)
 end
 
+---@param self ProfileManager
+---@param GUID playerGuid
+---@param log PruneLog
 local function PruneProfile(self, GUID, log)
     local profile = self.cache.profiles[GUID]
     if not profile then return end
@@ -306,6 +319,8 @@ local function PruneProfile(self, GUID, log)
     CLM.MODULES.LedgerManager:Remove(entry)
 end
 
+---@param alt string
+---@param main string
 function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local altProfile = self:GetProfileByName(alt)
@@ -352,6 +367,8 @@ function ProfileManager:MarkAsAltByNames(alt, main)
     end
 end
 
+---@param profiles possibleGuidSource[]
+---@param lock boolean
 function ProfileManager:SetProfilesLock(profiles, lock)
     LOG:Trace("ProfileManager:SetProfilesLock()")
 
@@ -368,6 +385,8 @@ end
 
 -- Functionalities
 
+---@param selectedRank integer?
+---@param minLevel integer?
 function ProfileManager:FillFromGuild(selectedRank, minLevel)
     LOG:Trace("ProfileManager:FillFromGuild()")
     if LOG.SEVERITY.DEBUG >= LOG:GetSeverity() then
@@ -414,7 +433,9 @@ function ProfileManager:FillFromRaid()
         local name, _, _, _, _, class = GetRaidRosterInfo(i)
         if name ~= nil then
             local GUID = UnitGUID("raid" .. tostring(i))
-            self:NewProfile(GUID, UTILS.Disambiguate(name), class)
+            if GUID then
+                self:NewProfile(GUID, UTILS.Disambiguate(name), class)
+            end
         end
     end
 end
@@ -425,11 +446,12 @@ function ProfileManager:AddTarget()
         local GUID = UnitGUID("target")
         local name = UTILS.GetUnitName("target")
         local _, class, _ = UnitClass("target");
-
-        self:NewProfile(GUID, name, class)
-    else
-        LOG:Warning("Your target must be a player.")
+        if GUID then
+            self:NewProfile(GUID, name, class)
+            return
+        end
     end
+    LOG:Warning("Your target must be a player.")
 end
 
 function ProfileManager:PruneBelowLevel(minLevel, nop)

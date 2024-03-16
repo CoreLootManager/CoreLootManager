@@ -1,12 +1,13 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local BiddingCommSubmitBid = {}
+---@class BiddingCommSubmitBid
+local BiddingCommSubmitBid =  {}
 function BiddingCommSubmitBid:New(valueOrObject, bidType, itemId, items)
     local isCopyConstructor = (type(valueOrObject) == "table")
     local o = isCopyConstructor and valueOrObject or {}
@@ -40,7 +41,8 @@ function BiddingCommSubmitBid:Items()
     return self.t or {}
 end
 
-local BiddingCommStructure = {}
+---@class BiddingCommStructure
+local BiddingCommStructure =  {}
 function BiddingCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
 

@@ -1,12 +1,12 @@
--- ------------------------------- --
-local  _, CLM = ...
--- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
--- ------------------------------- --
+local CLM = select(2, ...) ---@class CLM
 
-local ProfileInfoCommAnnounceVersion = {}
+
+---@class ProfileInfoCommAnnounceVersion
+---@field m integer
+---@field i integer
+---@field p integer
+---@field c string
+local ProfileInfoCommAnnounceVersion =  {}
 function ProfileInfoCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)
     local isCopyConstructor = (type(majorOrObject) == "table")
     local o = isCopyConstructor and majorOrObject or {}
@@ -33,32 +33,8 @@ function ProfileInfoCommAnnounceVersion:Version()
     }
 end
 
-local ProfileInfoCommAnnounceSpec = {}
-function ProfileInfoCommAnnounceSpec:New(oneOrObject, two, three)
-    local isCopyConstructor = (type(oneOrObject) == "table")
-    local o = isCopyConstructor and oneOrObject or {}
-
-    setmetatable(o, self)
-    self.__index = self
-
-    if isCopyConstructor then return o end
-
-    o.o = oneOrObject
-    o.w = two
-    o.h = three
-
-    return o
-end
-
-function ProfileInfoCommAnnounceSpec:Spec()
-    return {
-        one = tonumber(self.o) or 0,
-        two = tonumber(self.w) or 0,
-        three = tonumber(self.h) or 0,
-    }
-end
-
-local ProfileInfoCommAnnounceRole = {}
+---@class ProfileInfoCommAnnounceRole
+local ProfileInfoCommAnnounceRole =  {}
 function ProfileInfoCommAnnounceRole:New(roleOrObject)
     local isCopyConstructor = (type(roleOrObject) == "table")
     local o = isCopyConstructor and roleOrObject or {}
@@ -77,7 +53,8 @@ function ProfileInfoCommAnnounceRole:Role()
     return self.r
 end
 
-local ProfileInfoCommStructure = {}
+---@class ProfileInfoCommStructure
+local ProfileInfoCommStructure =  {}
 function ProfileInfoCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
 
@@ -87,11 +64,9 @@ function ProfileInfoCommStructure:New(typeOrObject, data)
     self.__index = self
 
     if isCopyConstructor then
-        if o.t == CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION then
+        if o.t == CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION then
             o.d = ProfileInfoCommAnnounceVersion:New(o.d)
-        elseif o.t == CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC then
-            o.d = ProfileInfoCommAnnounceSpec:New(o.d)
-        elseif o.t == CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE then
+        elseif o.t == CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE then
             o.d = ProfileInfoCommAnnounceRole:New(o.d)
         end
         return o
@@ -113,5 +88,4 @@ end
 
 CLM.MODELS.ProfileInfoCommStructure = ProfileInfoCommStructure
 CLM.MODELS.ProfileInfoCommAnnounceVersion = ProfileInfoCommAnnounceVersion
-CLM.MODELS.ProfileInfoCommAnnounceSpec = ProfileInfoCommAnnounceSpec
 CLM.MODELS.ProfileInfoCommAnnounceRole = ProfileInfoCommAnnounceRole

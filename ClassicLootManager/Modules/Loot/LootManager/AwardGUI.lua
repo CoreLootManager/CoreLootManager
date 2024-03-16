@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -264,7 +264,8 @@ local function HookAwardFilling(self)
     end)
 end
 
-local AwardGUI = {}
+---@class AwardGUI
+local AwardGUI =  {}
 function AwardGUI:Initialize()
     LOG:Trace("AwardGUI:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end

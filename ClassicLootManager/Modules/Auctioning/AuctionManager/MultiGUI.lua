@@ -1,6 +1,6 @@
 ---@diagnostic disable: param-type-mismatch
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -718,7 +718,8 @@ local function RegisterSlash(self)
     CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
-local AuctionManagerGUI = {}
+---@class AuctionManagerGUI
+local AuctionManagerGUI =  {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end

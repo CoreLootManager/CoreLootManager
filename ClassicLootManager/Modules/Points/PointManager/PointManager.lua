@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -229,7 +229,8 @@ local verify_point_change_type = {
     [CONSTANTS.POINT_MANAGER_ACTION.DECAY ] = verify_decay_point_change_type,
 }
 
-local PointManager = {}
+---@class PointManager
+local PointManager =  {}
 function PointManager:Initialize()
     LOG:Trace("PointManager:Initialize()")
 
@@ -538,6 +539,7 @@ CONSTANTS.POINT_CHANGE_REASONS = {
 
 CONSTANTS.POINT_CHANGE_REASONS.ALL = UTILS.mergeDicts(CONSTANTS.POINT_CHANGE_REASONS.GENERAL, CONSTANTS.POINT_CHANGE_REASONS.INTERNAL)
 
+---@enum POINT_CHANGE_TYPE
 CONSTANTS.POINT_CHANGE_TYPE = {
     TOTAL   = 0,
     POINTS  = 1,

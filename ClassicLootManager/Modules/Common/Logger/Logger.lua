@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -7,7 +7,8 @@ local LOG       = CLM.LOG
 -- ------------------------------- --
 
 -- Module part
-local Logger = {}
+---@class Logger
+local Logger =  {}
 function Logger:Initialize()
     LOG:Trace("Logger:Initialize()")
     self.db = CLM.MODULES.Database:Logger()

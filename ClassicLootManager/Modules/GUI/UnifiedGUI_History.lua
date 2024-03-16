@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -59,7 +59,8 @@ local tooltipPool = CreateObjectPool(function(pool)
     return CreateFrame("GameTooltip", "CLMHistoryTT" .. tostring(pool.nextId), UIParent, "GameTooltipTemplate")
 end, function(_, frame) frame:Hide() end)
 
-local UnifiedGUI_History = {
+---@class UnifiedGUI_History
+local UnifiedGUI_History =  {
     name = "history",
     filter = CLM.MODELS.Filters:New(
     refreshFn,

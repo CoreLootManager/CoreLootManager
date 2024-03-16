@@ -1,4 +1,4 @@
-local _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 
 local addonName = "Core Loot Manager" -- same as the UI name for config
 

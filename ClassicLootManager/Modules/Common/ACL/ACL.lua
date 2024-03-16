@@ -1,11 +1,12 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
-local ACL = {}
+---@class ACL
+local ACL =  {}
 function ACL:Initialize()
     LOG:Trace("ACL:Initialize()")
     self.guildMaster = IsGuildLeader()

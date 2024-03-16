@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -9,7 +9,8 @@ local CONSTANTS = CLM.CONSTANTS
 -------------------------------
 --- AuctionCommStartAuction ---
 -------------------------------
-local AuctionCommStartAuction = {}
+---@class AuctionCommStartAuction
+local AuctionCommStartAuction =  {}
 AuctionCommStartAuction.__index = AuctionCommStartAuction
 
 -- Empty or Copy constructor
@@ -123,7 +124,8 @@ end
 --------------------------
 --- AuctionCommDenyBid ---
 --------------------------
-local AuctionCommDenyBid = {}
+---@class AuctionCommDenyBid
+local AuctionCommDenyBid =  {}
 function AuctionCommDenyBid:New(itemIdOrObject, reason)
     local isCopyConstructor = (type(itemIdOrObject) == "table")
     local o = isCopyConstructor and itemIdOrObject or {}
@@ -150,7 +152,8 @@ end
 --------------------------------
 --- AuctionCommDistributeBid ---
 --------------------------------
-local AuctionCommDistributeBid = {}
+---@class AuctionCommDistributeBid
+local AuctionCommDistributeBid =  {}
 function AuctionCommDistributeBid:New(object)
     local isCopyConstructor = (type(object) == "table")
 
@@ -179,7 +182,8 @@ function AuctionCommDistributeBid:Data()
     return self.d or {}
 end
 
-local AuctionCommStructure = {}
+---@class AuctionCommStructure
+local AuctionCommStructure =  {}
 function AuctionCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
 

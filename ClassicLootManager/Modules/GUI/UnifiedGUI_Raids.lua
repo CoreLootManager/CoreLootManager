@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -21,7 +21,8 @@ local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
 end
 
-local UnifiedGUI_Raids = {
+---@class UnifiedGUI_Raids
+local UnifiedGUI_Raids =  {
     name = "raids",
     -- filter = CLM.MODELS.Filters:New(
     -- (function() CLM.GUI.Unified:FilterScrollingTable() end),

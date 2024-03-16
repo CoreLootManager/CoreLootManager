@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -33,10 +33,6 @@ end
 
 ---@class Roster
 local Roster = {}
----@param uid integer
----@param pointType any
----@param raidsForFullAttendance integer
----@param attendanceWeeksWindow integer
 function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
     local o = {}
 
@@ -679,6 +675,7 @@ end
 CLM.MODELS.Roster = Roster
 
 -- Constants
+---@enum POINT_TYPE
 CONSTANTS.POINT_TYPE = {
     DKP = 0,
     EPGP = 1,
@@ -686,6 +683,7 @@ CONSTANTS.POINT_TYPE = {
     -- SK = 3
 }
 
+---@enum POINT_TYPES
 CONSTANTS.POINT_TYPES = UTILS.Set({
     CONSTANTS.POINT_TYPE.DKP, -- DKP
     CONSTANTS.POINT_TYPE.EPGP, -- EPGP
@@ -700,6 +698,7 @@ CONSTANTS.POINT_TYPES_GUI = {
     -- [CONSTANTS.POINT_TYPE.SK] = CLM.L["SK"]
 }
 
+---@enum AUCTION_TYPE
 CONSTANTS.AUCTION_TYPE = {
     OPEN = 0,
     SEALED = 1,
@@ -731,6 +730,7 @@ CONSTANTS.AUCTION_TYPES_OPEN = UTILS.Set({
     CONSTANTS.AUCTION_TYPE.ANONYMOUS_OPEN
 })
 
+---@enum ITEM_VALUE_MODE
 CONSTANTS.ITEM_VALUE_MODE = {
     SINGLE_PRICED = 0,
     ASCENDING = 1,
@@ -755,6 +755,7 @@ CONSTANTS.ITEM_VALUE_MODES_EPGP_GUI = {
 }
 
 
+---@enum INVENTORY_TYPES
 CONSTANTS.INVENTORY_TYPES = {
     GLOBAL_FAKE_INVENTORY_SLOT,
     "INVTYPE_NON_EQUIP",
@@ -856,6 +857,7 @@ CONSTANTS.INVENTORY_TYPES_GUI = {
     ["INVTYPE_RELIC"] = CLM.L["Relic"]
 }
 
+---@enum WEEKLY_RESET
 CONSTANTS.WEEKLY_RESET = {
     EU = 0,
     US = 1
@@ -881,6 +883,7 @@ CONSTANTS.ALLOWED_ROUNDINGS_GUI = {
     [2] = "0.01",
 }
 
+---@enum SLOT_VALUE_TIER
 CONSTANTS.SLOT_VALUE_TIER = {
     BASE   = "b",
     SMALL  = "s",

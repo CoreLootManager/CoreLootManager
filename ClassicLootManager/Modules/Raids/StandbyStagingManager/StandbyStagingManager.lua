@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -75,7 +75,8 @@ local function HandleRevoke(self, data, sender)
     CLM.GUI.Unified:Refresh(true)
 end
 
-local StandbyStagingManager = {}
+---@class StandbyStagingManager
+local StandbyStagingManager =  {}
 function StandbyStagingManager:Initialize()
     LOG:Trace("StandbyStagingManager:Initialize()")
     self:Clear()

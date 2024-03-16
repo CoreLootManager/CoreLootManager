@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -9,8 +9,10 @@ local  _, CLM = ...
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 local ValidateIntegerGUID = CLM.UTILS.ValidateIntegerGUID
 
-local PointHistory = {}
-local FakePointHistory = {}
+---@class PointHistory
+local PointHistory =  {}
+---@class FakePointHistory
+local FakePointHistory =  {}
 
 function PointHistory:New(entry, targets, timestamp, value, reason, creator, note, type)
     local o = {}
