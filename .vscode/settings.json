@@ -170,6 +170,6 @@
         "C_Seasons"
     ],
     "Lua.diagnostics.disable": [
-        "deprecated"
+        // "deprecated",
     ]
 }

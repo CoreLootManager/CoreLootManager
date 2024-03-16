@@ -31,7 +31,6 @@ CLM.COMM_CHANNEL = {
     STANDBY = "Standby001",
     GLOBAL = "Version001"
 }
-CLM.UTILS = {}
 CLM.GUI = {}
 CLM.OPTIONS = {}
 CLM.ALERTS = {}
@@ -45,9 +44,10 @@ CLM.LOG = LibStub("LibLogger"):New()
 local CORE = CLM.CORE
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES
-local UTILS = CLM.UTILS
 
-function UTILS.ParseVersionString(versionString)
+---@param versionString string
+---@return VersionTable
+function CORE.ParseVersionString(versionString)
     local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")
     return {
         major = tonumber(major) or 4,

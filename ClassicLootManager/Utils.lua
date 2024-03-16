@@ -3,7 +3,9 @@ local CLM = select(2, ...) ---@class CLM
 
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
-local UTILS = CLM.UTILS
+
+---@class UTILS
+local UTILS = {}
 
 local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png"
 
@@ -11,11 +13,14 @@ local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 UTILS.LibDD = LibDD
 local DumpTable = LibStub("EventSourcing/Util").DumpTable
 
+---@param string string?
+---@return string
 local function capitalize(string)
     string = string or ""
     return string.upper(string.sub(string, 1,1)) .. string.lower(string.sub(string, 2))
 end
 
+---@type table<integer, string>
 local numberToClass = {
     [1]  = "Warrior",
     [2]  = "Paladin",
@@ -44,14 +49,19 @@ for k, v in pairs(numberToClass) do
     classToNumber[v] = k
 end
 
+---@param class string
+---@return integer
 function UTILS.ClassToNumber(class)
     return classToNumber[class] or 0
 end
 
+---@param number integer
+---@return string
 function UTILS.NumberToClass(number)
     return numberToClass[number] or ""
 end
 
+---@type table<string, canonicalClass>
 local classToCanonical = {
     ["Warrior"] = "WARRIOR",
     ["Paladin"] = "PALADIN",
@@ -68,10 +78,14 @@ local classToCanonical = {
     ["Evoker"] = "EVOKER",
 }
 
+---comment
+---@param class string
+---@return canonicalClass?
 function UTILS.CanonicalClass(class)
     return classToCanonical[class]
 end
 
+---@type table<canonicalClass, integer>
 local canonicalToNumber = {
     ["WARRIOR"] = 1,
     ["PALADIN"] = 2,
@@ -88,10 +102,13 @@ local canonicalToNumber = {
     ["EVOKER"] = 13,
 }
 
+---@param class canonicalClass
+---@return integer
 function UTILS.CanonicalClassToNumber(class)
     return canonicalToNumber[class]
 end
 
+---@type table<string, ColorDefinition>
 local classColors = {
     ["Druid"]           = { a = 1, r = 1,    g = 0.49, b = 0.04, hex = "FF7D0A" },
     ["Hunter"]          = { a = 1, r = 0.67, g = 0.83, b = 0.45, hex = "ABD473" },
@@ -108,17 +125,24 @@ local classColors = {
     ["Evoker"]          = { a = 1, r = 0.20, g = 0.58, b = 0.50, hex = "33937F" },
 }
 
+---@param className string
+---@return ColorDefinition
 function UTILS.GetClassColor(className)
     local color = classColors[className]
     return (color or { r = 0.627, g = 0.627, b = 0.627, hex = "9d9d9d" })
 end
 local GetClassColor = UTILS.GetClassColor
 
+---@param text string
+---@param color string
+---@return string
 function UTILS.ColorCodeText(text, color)
     return string.format("|cff%s%s|r", color, text);
 end
 local ColorCodeText = UTILS.ColorCodeText
 
+---@param className string
+---@return string
 function UTILS.ColorCodeAndLocalizeClass(className)
     return ColorCodeText(CLM.L[className], GetClassColor(className).hex);
 end
@@ -129,6 +153,7 @@ do
         tinsert(colorCodedClassList, UTILS.ColorCodeAndLocalizeClass(class))
     end
 end
+
 function UTILS.GetColorCodedClassList()
     return colorCodedClassList
 end
@@ -137,6 +162,8 @@ function UTILS.GetClassList()
     return classOrdered
 end
 
+---@param percentage number
+---@return string
 function UTILS.ColorCodeByPercentage(percentage)
     percentage = tonumber(percentage) or 0
     if percentage < 0 then percentage = 0 end
@@ -151,6 +178,7 @@ function UTILS.ColorCodeByPercentage(percentage)
     return string.format("|cff%s%s|r", string.format("%02x%02x%02x", red, green, blue), percentage)
 end
 
+---@param percentage number
 function UTILS.GetColorByPercentage(percentage)
     percentage = tonumber(percentage) or 0
     if percentage < 0 then percentage = 0 end
@@ -165,6 +193,7 @@ function UTILS.GetColorByPercentage(percentage)
     return red, green, blue, 1.0
 end
 
+---@param s string?
 function UTILS.RemoveColorCode(s)
     return string.sub(s or "", 11, -3)
 end
@@ -176,6 +205,11 @@ local RemoveColorCode = UTILS.RemoveColorCode
 -- a: string array  = {a = "AA", r = "RR", g = "GG", b = "BB"}
 -- i: integer array = {a = AA, r = RR, g = GG, b = BB } from 0 to 255
 -- f: float array   = {a = AA, r = RR, g = GG, b = BB } from 0 to 1
+
+---comment
+---@param itemLink itemLink
+---@param format "s"?
+---@return ColorDefinition | string
 function UTILS.GetColorFromLink(itemLink, format)
     local _, _, a, r, g, b = string.find(itemLink, "|c(%x%x)(%x%x)(%x%x)(%x%x)|.*")
     local color = {
@@ -202,6 +236,9 @@ function UTILS.GetColorFromLink(itemLink, format)
     end
 end
 
+---@param itemLink itemLink
+---@return number
+---@return string
 function UTILS.GetItemIdFromLink(itemLink)
     -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
     itemLink = itemLink or ""
@@ -210,6 +247,9 @@ function UTILS.GetItemIdFromLink(itemLink)
     return tonumber(itemId) or 0, extra or ""
 end
 
+---@param itemLink itemLink
+---@param extra string?
+---@return itemLink
 function UTILS.SpoofLink(itemLink, extra)
     if not extra then return itemLink end
     local _, _, pre, post = string.find(itemLink, "(.*item:%d+)[%d:]+(|h.*)")
@@ -217,6 +257,9 @@ function UTILS.SpoofLink(itemLink, extra)
     return pre .. extra .. post
 end
 
+---@param name string
+---@param object table
+---@param cli string
 function UTILS.UniversalCliMethodExecutor(name, object, cli)
     local values = {strsplit(" ", cli)}
     local method, args, parameters = values[1], {}, ""
@@ -244,40 +287,14 @@ function UTILS.UniversalCliMethodExecutor(name, object, cli)
     end
 end
 
-local StorageQualifiedObject = {}
-function StorageQualifiedObject:New(storage)
-    local o = {}
-
-    setmetatable(o, self)
-    self.__index = self
-
-    -- Virtual profile that is not stored
-    -- It's not a bug. It's a feature.
-    if storage == nil then
-        LOG:Warning("Virtual storage qualified object. Is this intended?")
-        local s = {}
-        o.persistent = s
-    else
-        o.persistent = storage
-    end
-
-    o.volatile = {}
-
-    return o
-end
-
-function UTILS.NewStorageQualifiedObject(storage, o)
-    local sqo = StorageQualifiedObject:New(storage)
-    o = o or {}
-    setmetatable(sqo, o)
-    o.__index = o
-    return sqo
-end
-
+---@param itemId integer
+---@return string
 function UTILS.GenerateItemLink(itemId)
     return string.format("item:%d:0:0:0:0:0:0:0:0:0:0:0:0", itemId)
 end
 
+---@param t table
+---@return table
 function UTILS.Set(t)
     local s = {}
     for _,v in pairs(t) do s[v] = true end
@@ -342,18 +359,24 @@ function UTILS.empty(object)
     end
     return false
 end
+---@param name string?
+---@return string
 function UTILS.RemoveServer(name)
     name, _ = strsplit("-", name or "")
     return name
 end
+---@param name string?
+---@return string
 function UTILS.GetServer(name)
     local _, server = strsplit("-", name or "")
     return (server or "")
 end
-local playerGUID = UnitGUID("player")
+
+local playerGUID = UnitGUID("player") --[[@as playerGuid]]
 local getIntegerGuid, myRealmId
 
 local normalizedRealmName
+---@return string
 function UTILS.GetNormalizedRealmName()
     normalizedRealmName = normalizedRealmName or GetNormalizedRealmName()
     return normalizedRealmName or ""
@@ -361,68 +384,91 @@ end
 
 local _GetNormalizedRealmName = UTILS.GetNormalizedRealmName
 
-if CLM.WoW10 or CLM.WoWSeasonal then -- support cross-server for Retail and Classic Era
+if CLM.WoW10 or CLM.WoWSeasonal or CLM.WoWCata then -- support cross-server for anything that is not WotLK
+    ---@param GUID playerGuid
+    ---@return shortGuid
     function UTILS.getIntegerGuid(GUID)
         local _, realm, int = strsplit("-", GUID)
         return {tonumber(realm, 10), tonumber(int, 16)}
     end
     getIntegerGuid = UTILS.getIntegerGuid
     myRealmId = unpack(getIntegerGuid(playerGUID), 1)
+    ---@param iGUID shortGuid
+    ---@return playerGuid
     function UTILS.getGuidFromInteger(iGUID)
-        return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
+        return string.format("Player-%d-%08X", iGUID[1], iGUID[2]) ---@diagnostic disable-line: return-type-mismatch
     end
+    ---@param iGUID shortGuid
+    ---@return boolean
     function UTILS.ValidateIntegerGUID(iGUID)
         if type(iGUID) ~= "table" then return false end
         for i=1,2 do if type(iGUID[i]) ~= "number" then return false end end
         return true
     end
+    ---@param name string
+    ---@return string
     function UTILS.Disambiguate(name)
         if string.find(name, "-") == nil then
             name = name .. "-" .. _GetNormalizedRealmName()
         end
         return name
     end
+    ---@param e possibleGuidSource
+    ---@return shortGuid?
     function UTILS.GetGUIDFromEntry(e)
         if typeof(e, CLM.MODELS.Profile) then
             return getIntegerGuid(e:GUID())
         elseif type(e) == "string" then
             return getIntegerGuid(e)
         elseif type(e) == "number" then
-            return {myRealmId, e}
+            return {myRealmId, e} --[[@as shortGuid]]
         else
             return nil
         end
     end
+    ---@param playerA string
+    ---@param playerB string
+    ---@return boolean
     function UTILS.ArePlayersCrossRealm(playerA, playerB)
         return UTILS.GetServer(playerA) ~= UTILS.GetServer(playerB)
     end
 else -- not cross-server
+    ---@param GUID playerGuid
+    ---@return shortGuid
     function UTILS.getIntegerGuid(GUID)
         local _, _, int = strsplit("-", GUID)
-        return tonumber(int, 16)
+        return tonumber(int, 16) --[[@as shortGuid]]
     end
     getIntegerGuid = UTILS.getIntegerGuid
     _, myRealmId = strsplit("-", playerGUID)
     do
         local guidConversionFormat = "Player-"..tostring(myRealmId).."-%08X"
+        ---@param iGUID shortGuid 
+        ---@return playerGuid
         function UTILS.getGuidFromInteger(iGUID)
-            return string.format(guidConversionFormat, iGUID)
+            return string.format(guidConversionFormat, iGUID) ---@diagnostic disable-line: return-type-mismatch
         end
     end
+    ---@param iGUID shortGuid
+    ---@return boolean
     function UTILS.ValidateIntegerGUID(iGUID)
         if type(iGUID) ~= "number" then return false end
         return true
     end
+    ---@param name string
+    ---@return string
     function UTILS.Disambiguate(name)
         return UTILS.RemoveServer(name)
     end
+    ---@param e possibleGuidSource
+    ---@return shortGuid?
     function UTILS.GetGUIDFromEntry(e)
         if typeof(e, CLM.MODELS.Profile) then
             return getIntegerGuid(e:GUID())
         elseif type(e) == "string" then
             return getIntegerGuid(e)
         elseif type(e) == "number" then
-            return e
+            return e --[[@as shortGuid]]
         else
             return nil
         end
@@ -434,6 +480,8 @@ end
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 
 local Disambiguate = UTILS.Disambiguate
+---@param unit string
+---@return string
 function UTILS.GetUnitName(unit)
     local name = GetUnitName(unit, true)
     return Disambiguate(name or "")
@@ -441,6 +489,7 @@ end
 
 do
     local playerFullName
+    ---@return string
     function UTILS.whoami()
         if not playerFullName then
             playerFullName = UTILS.GetUnitName("player")
@@ -448,10 +497,13 @@ do
         return playerFullName
     end
 end
+
 function UTILS.whoamiGUID()
     return playerGUID
 end
 
+---@param playerList LogEntry[]
+---@return playerGuid[]
 function UTILS.CreateGUIDList(playerList)
     local playerGUIDList = {}
     local GUID
@@ -466,16 +518,22 @@ function UTILS.CreateGUIDList(playerList)
     return playerGUIDList
 end
 
+---@param t table
 function UTILS.DumpTable(t)
     return DumpTable(t)
 end
 
+---@param object LogEntry
+---@param data table
 function UTILS.inflate(object, data)
     for i, key in ipairs(object:fields(data.v)) do
         object[key] = data[i]
     end
 end
 
+---@param object LogEntry
+---@param version integer?
+---@return table
 function UTILS.deflate(object, version)
     local result = {}
     for _, key in ipairs(object:fields(version)) do
@@ -485,6 +543,8 @@ function UTILS.deflate(object, version)
     return result
 end
 
+---@param object table
+---@return table
 function UTILS.keys(object)
     local keyList = {}
     local n = 0
@@ -496,10 +556,18 @@ function UTILS.keys(object)
     return keyList
 end
 
+---@param handler table
+---@param method any
+---@return function
 function UTILS.method2function(handler, method)
     return (function(...) handler[method](handler, ...) end)
 end
 
+---comment
+---@param t1 table
+---@param t2 table
+---@param t table?
+---@return table
 function UTILS.mergeLists(t1, t2, t)
     t = t or {}
     local n = 0
@@ -508,6 +576,10 @@ function UTILS.mergeLists(t1, t2, t)
     return t
 end
 
+---@param t1 table
+---@param t2 table
+---@param t table?
+---@return table
 function UTILS.mergeDicts(t1, t2, t)
     t = t or {}
     for k,v in pairs(t1) do t[k] = v end
@@ -515,14 +587,20 @@ function UTILS.mergeDicts(t1, t2, t)
     return t
 end
 
+---@param t table
+---@param s table
 function UTILS.mergeDictsInline(t, s)
     for k,v in pairs(s) do t[k] = v end
 end
 
+---@param string string
+---@return string
 function UTILS.capitalize(string)
     return capitalize(string)
 end
 
+---@param list table?
+---@return string
 function UTILS.stringifyList(list)
     if not list then return "" end
     local string = ""
@@ -532,6 +610,8 @@ function UTILS.stringifyList(list)
     return string:sub(1, -3)
 end
 
+---@param list table?
+---@return string
 function UTILS.stringifyDict(dict)
     if not dict then return "" end
     local string = ""
@@ -541,6 +621,8 @@ function UTILS.stringifyDict(dict)
     return string:sub(1, -3)
 end
 
+---@param frame Frame
+---@param name string
 function UTILS.MakeFrameCloseOnEsc(frame, name)
     _G[name] = frame
     tinsert(UISpecialFrames, name)
@@ -555,6 +637,13 @@ local function defaultDataProvider(param)
     return param
 end
 
+---comment
+---@param data table
+---@param tooltip GameTooltip
+---@param inLine integer?
+---@param max integer?
+---@param dataProvider function?
+---@param autoWrap boolean?
 function UTILS.putListInTooltip(data, tooltip, inLine, max, dataProvider, autoWrap)
     dataProvider = dataProvider or defaultDataProvider
     inLine = inLine or 5
@@ -591,13 +680,17 @@ function UTILS.putListInTooltip(data, tooltip, inLine, max, dataProvider, autoWr
     end
 end
 
+---@param profile Profile
+---@return string
 local function profileListTooltipDataProvider(profile)
     return ColorCodeText(profile:Name(), GetClassColor(profile:Class()).hex)
 end
 
 local putListInTooltip = UTILS.putListInTooltip
+---@param profiles Profile
+---@param tooltip GameTooltip
 function UTILS.buildPlayerListForTooltip(profiles, tooltip)
-    return putListInTooltip(profiles, tooltip, 5, 25, profileListTooltipDataProvider, false)
+    putListInTooltip(profiles, tooltip, 5, 25, profileListTooltipDataProvider, false)
 end
 
 local greenYes = ColorCodeText(CLM.L["Yes"], "00cc00")
@@ -611,6 +704,11 @@ function UTILS.RedNo()
 end
 
 local menuCounter = 0
+---@param structure any
+---@param isAssistant boolean
+---@param isManager boolean
+---@param frame Frame|UIDropdownMenuTemplate
+---@return Frame
 function UTILS.GenerateDropDownMenu(structure, isAssistant, isManager, frame)
     frame = frame or CreateFrame("Frame", "CLM_Generic_Menu_DropDown" .. tostring(menuCounter), UIParent, "UIDropDownMenuTemplate")
     menuCounter = menuCounter + 1
@@ -662,6 +760,9 @@ function UTILS.GenerateDropDownMenu(structure, isAssistant, isManager, frame)
     return frame
 end
 
+---@param unixtimestamp integer
+---@param offset integer?
+---@return integer
 function UTILS.WeekNumber(unixtimestamp, offset)
     offset = offset or 0
     local week = 1 + math.floor((unixtimestamp - offset) / 604800)
@@ -669,6 +770,9 @@ function UTILS.WeekNumber(unixtimestamp, offset)
     return week
 end
 
+---@param week integer
+---@param offset integer?
+---@return integer
 function UTILS.WeekStart(week, offset)
     return ((week * 604800) + (offset or 0))
 end
@@ -681,12 +785,16 @@ function UTILS.GetWeekOffsetUS()
     return 486000
 end
 
+---@param number number
+---@param decimals number
+---@return number
 function UTILS.round(number, decimals)
     local factor = 10 ^ (decimals or 0)
     return math.floor(number * factor + 0.5) / factor
 end
 
 if CLM.WoW10 then
+    ---@return playerRole
     function UTILS.GetMyRole()
         local currentSpec = GetSpecialization()
         local role = "NONE"
@@ -696,15 +804,19 @@ if CLM.WoW10 then
         return role
     end
 elseif CLM.WoWSeasonal then
+    ---@return playerRole
     function UTILS.GetMyRole()
         return "NONE" -- Not supported as it requires Role decoding based on spec
     end
 else
+    ---@return playerRole
     function UTILS.GetMyRole()
         return GetTalentGroupRole(GetActiveTalentGroup())
     end
 end
 
+---@param text FontString
+---@return boolean
 function UTILS.IsTooltipTextRed(text)
     if text and text:GetText() then
         local r,g,b = text:GetTextColor()
@@ -713,11 +825,15 @@ function UTILS.IsTooltipTextRed(text)
     return false
 end
 
+---@param text string?
+---@return string
 function UTILS.Trim(text)
     text = text or ""
     return (string.gsub(text, "^[%s,]*(.-)[%s,]*$", "%1"))
 end
 
+---@param modifierFn function
+---@return function
 function UTILS.LibStCompareSortWrapper(modifierFn)
     return (function(s, rowa, rowb, sortbycol)
         -- Get data
@@ -743,8 +859,10 @@ function UTILS.LibStModifierFnNumber(a1, b1)
 end
 
 -- Convert version string to number for comparision (e.g., "v2.5.4" to "20504")
+---@param s string
+---@return integer
 function UTILS.VersionStringToNumber(s)
-    local version = UTILS.ParseVersionString(s)
+    local version = CLM.CORE.ParseVersionString(s)
     return version.major*10000 + version.minor*100 + version.patch
 end
 
@@ -752,6 +870,18 @@ function UTILS.LibStModifierFnVersion(a1, b1)
     return UTILS.VersionStringToNumber(a1), UTILS.VersionStringToNumber(b1)
 end
 
+---@param st ScrollingTable
+---@param dropdownMenu DropdownMenu
+---@param rowFrame Frame
+---@param cellFrame Frame
+---@param data any
+---@param cols any
+---@param row integer
+---@param realrow integer
+---@param column integer
+---@param table any
+---@param button mouseButton
+---@param ... unknown
 function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
     local leftClick = (button == "LeftButton")
     local rightClick = (button == "RightButton")
@@ -808,6 +938,18 @@ function UTILS.LibStClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, co
     end
 end
 
+---@param st ScrollingTable
+---@param dropdownMenu DropdownMenu
+---@param rowFrame Frame
+---@param cellFrame Frame
+---@param data any
+---@param cols any
+---@param row integer
+---@param realrow integer
+---@param column integer
+---@param table any
+---@param button mouseButton
+---@param ... unknown
 function UTILS.LibStSingleSelectClickHandler(st, dropdownMenu, rowFrame, cellFrame, data, cols, row, realrow, column, table, button, ...)
     local rightClick = (button == "RightButton")
 
@@ -880,6 +1022,16 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
 end
 
 local CanonicalClass = UTILS.CanonicalClass
+---@param rowFrame Frame
+---@param frame Button
+---@param data any
+---@param cols any
+---@param row integer
+---@param realrow integer
+---@param column integer
+---@param fShow any
+---@param table any
+---@param ... unknown
 function UTILS.LibStClassCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local class = data[realrow].cols[column].value
     local desaturate = data[realrow].cols[column].desaturate and true or false
@@ -894,6 +1046,9 @@ function UTILS.LibStClassCellUpdate(rowFrame, frame, data, cols, row, realrow, c
     end
 end
 
+---@param highlightColor ColorDefinition
+---@param multiselect boolean
+---@return function
 function UTILS.getHighlightMethod(highlightColor, multiselect)
     return (function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
         table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
@@ -913,6 +1068,9 @@ function UTILS.getHighlightMethod(highlightColor, multiselect)
     end)
 end
 
+---@param t table
+---@param fnKeep function?
+---@return table
 function UTILS.OnePassRemove(t, fnKeep)
     local j, n = 1, #t;
     fnKeep = fnKeep or (function(tab, idx)
@@ -935,6 +1093,10 @@ function UTILS.OnePassRemove(t, fnKeep)
 end
 
 -- https://stackoverflow.com/a/32660766
+---@param o1 any
+---@param o2 any
+---@param check_mt boolean
+---@return boolean
 function UTILS.TableCompare(o1, o2, check_mt)
     if o1 == o2 then return true end
     local o1Type = type(o1)
@@ -966,10 +1128,16 @@ function UTILS.TableCompare(o1, o2, check_mt)
     return true
 end
 
+---@param dict table
+---@return boolean
 function UTILS.DictNotEmpty(dict)
     return not rawequal(next(dict), nil)
 end
 
+---@param frame Frame
+---@param up boolean
+---@param scale number
+---@return number
 function UTILS.ResizeFrame(frame, up, scale)
     if up then
         scale = scale + 0.1
@@ -989,9 +1157,12 @@ local invtypeWorkaround = {
     }
 }
 
+---@param class integer
+---@param subclass integer
+---@return equipLoc?
 function UTILS.WorkaroundEquipLoc(class, subclass)
     local classTable = invtypeWorkaround[class] or {}
-    return classTable[subclass]
+    return classTable[subclass] --[[@as equipLoc]]
 end
 
 
@@ -1007,6 +1178,10 @@ function UTILS.assertType(object, objectType)
     end
 end
 
+---@param value number
+---@param low number
+---@param high number
+---@return number
 function UTILS.Saturate(value, low, high)
     if value <= low then return low end
     if value >= high then return high end
@@ -1014,6 +1189,9 @@ function UTILS.Saturate(value, low, high)
 end
 
 local defaultCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 -_=[];:<>,.?"
+---@param length number
+---@param customCharset string?
+---@return string
 function UTILS.randomString(length, customCharset)
     local charset = customCharset or defaultCharset
     local charsetLength = #charset
@@ -1025,6 +1203,11 @@ function UTILS.randomString(length, customCharset)
     return result
 end
 
+---@param key SLOT_VALUE_TIER
+---@param auction AuctionInfo
+---@param prefix string?
+---@param suffix string?
+---@return string
 function UTILS.GetAuctionConditionalFieldName(key, auction, prefix, suffix)
     local name
     prefix = prefix or "["
@@ -1039,6 +1222,11 @@ function UTILS.GetAuctionConditionalFieldName(key, auction, prefix, suffix)
     return name
 end
 
+---@param key SLOT_VALUE_TIER
+---@param roster Roster
+---@param prefix string?
+---@param suffix string?
+---@return string
 function UTILS.GetRosterConditionalFieldName(key, roster, prefix, suffix)
     local name
     prefix = prefix or "["
@@ -1054,6 +1242,11 @@ function UTILS.GetRosterConditionalFieldName(key, roster, prefix, suffix)
 end
 
 -- TODO this doesnt look good in history, we dont want DKP displayed there really
+
+---@param pointType POINT_TYPE
+---@param changeType POINT_CHANGE_TYPE
+---@param displayDKP any
+---@return string
 function UTILS.DecodePointTypeChangeName(pointType, changeType, displayDKP)
     local points = displayDKP and CLM.L["DKP"] or "" -- not test_cameraDynamicPitch
     if pointType == CONSTANTS.POINT_TYPE.EPGP then
@@ -1068,6 +1261,10 @@ function UTILS.DecodePointTypeChangeName(pointType, changeType, displayDKP)
     return points
 end
 
+---@param message string
+---@param channel? ChatType
+---@param _? any
+---@param target? string
 function UTILS.SendChatMessage(message, channel, _, target)
     SendChatMessage("[CLM] " .. tostring(message), channel, nil, target)
 end
@@ -1080,6 +1277,7 @@ CONSTANTS.ITEM_QUALITY = {
     [4] = ColorCodeText(CLM.L["Epic"], "a335ee"),
     [5] = ColorCodeText(CLM.L["Legendary"], "ff8000"),
 }
+
 CONSTANTS.LOOT_ROLL_TYPE_ANY = -2
 CONSTANTS.LOOT_ROLL_TYPE_IGNORE = -1
 CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG = 4
@@ -1097,3 +1295,5 @@ end
 
 CONSTANTS.REGEXP_FLOAT = "^-?%d+%.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+%.?%d*$"
+
+CLM.UTILS = UTILS
