@@ -31,6 +31,8 @@ function ProfileManager:Initialize()
         profiles = {}
     }
 
+    ---@class dbprofileManager
+    ---@field pruneLog table
     self.db = CLM.MODULES.Database:Personal('profileManager', {
         pruneLog = {}
     })
@@ -431,7 +433,9 @@ function ProfileManager:FillFromRaid()
         local name, _, _, _, _, class = GetRaidRosterInfo(i)
         if name ~= nil then
             local GUID = UnitGUID("raid" .. tostring(i))
-            self:NewProfile(GUID, UTILS.Disambiguate(name), class)
+            if GUID then
+                self:NewProfile(GUID, UTILS.Disambiguate(name), class)
+            end
         end
     end
 end

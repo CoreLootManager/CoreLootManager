@@ -72,6 +72,7 @@ function DB:ForceFallback()
     _initialize()
 end
 
+---@return boolean
 function DB:Initialize()
     LOG:Trace("DB:Initialize()")
     -- Below API requires delay after loading to work after variables loaded event
@@ -93,18 +94,22 @@ function DB:Initialize()
     return true
 end
 
+---@return table
 function DB:Global()
     return CLM2_DB[DB_NAME_GLOBAL]
 end
 
+---@return table
 function DB:Logger()
     return CLM2_DB[DB_NAME_GLOBAL][DB_NAME_LOGGER]
 end
 
+---@return table
 function DB:Server()
     return CLM2_DB[self.database_name]
 end
 
+---@return table
 function DB:Personal(table, schema)
     assertType(table, 'string')
 
@@ -117,6 +122,7 @@ function DB:Personal(table, schema)
     return CLM2_DB[self.database_name][DB_NAME_PERSONAL][table]
 end
 
+---@return table
 function DB:GUI(table, schema)
     assertType(table, 'string')
 
@@ -129,10 +135,12 @@ function DB:GUI(table, schema)
     return CLM2_DB[self.database_name][DB_NAME_PERSONAL][DB_NAME_GUI][table]
 end
 
+---@return table
 function DB:Ledger()
     return CLM2_DB[self.database_name][DB_NAME_LEDGER]
 end
 
+---@param ledger table
 function DB:UpdateLedger(ledger)
     CLM2_DB[self.database_name][DB_NAME_LEDGER] = ledger
 end
