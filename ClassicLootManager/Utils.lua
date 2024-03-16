@@ -707,7 +707,7 @@ local menuCounter = 0
 ---@param structure any
 ---@param isAssistant boolean
 ---@param isManager boolean
----@param frame Frame|UIDropdownMenuTemplate
+---@param frame Frame|UIDropdownMenuTemplate|nil
 ---@return Frame
 function UTILS.GenerateDropDownMenu(structure, isAssistant, isManager, frame)
     frame = frame or CreateFrame("Frame", "CLM_Generic_Menu_DropDown" .. tostring(menuCounter), UIParent, "UIDropDownMenuTemplate")

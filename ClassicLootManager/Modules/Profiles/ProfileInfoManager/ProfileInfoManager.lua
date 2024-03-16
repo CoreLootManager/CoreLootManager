@@ -1,10 +1,4 @@
--- ------------------------------- --
 local CLM = select(2, ...) ---@class CLM
--- ------ CLM common cache ------- --
-local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
--- ------------------------------- --
 
 local function stringifyVersion(version)
     return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
@@ -34,27 +28,27 @@ end
     --- VERSION ---
 ]]
 local function AnnounceVersion()
-    LOG:Trace("ProfileInfoManager:AnnounceVersion()")
+    CLM.LOG:Trace("ProfileInfoManager:AnnounceVersion()")
     local version = CLM.CORE:GetVersion()
     local message = CLM.MODELS.ProfileInfoCommStructure:New(
-        CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION,
+        CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION,
         CLM.MODELS.ProfileInfoCommAnnounceVersion:New(version.major, version.minor, version.patch, version.changeset))
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CLM.CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 local function OutOfDate(self, version, disable)
-    LOG:Trace("ProfileInfoManager:OutOfDate()")
+    CLM.LOG:Trace("ProfileInfoManager:OutOfDate()")
     local currentTime = GetServerTime()
     if disable then
         if currentTime - self._lastDisplayedMessageD > 300 then
-            LOG:Message(CLM.L["|cffcc0000Your Core Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
+            CLM.LOG:Message(CLM.L["|cffcc0000Your Core Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessageD = currentTime
         end
         CLM.MODULES.LedgerManager:Cutoff()
         CLM.MODULES.Comms:Disable()
     else
         if currentTime - self._lastDisplayedMessage > 300 then
-            LOG:Message(CLM.L["New version %s of Core Loot Manager is available. For best experience please update the AddOn."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
+            CLM.LOG:Message(CLM.L["New version %s of Core Loot Manager is available. For best experience please update the AddOn."], UTILS.ColorCodeText(stringifyVersion(version), "00cc00"))
             self._lastDisplayedMessage = currentTime
         end
     end
@@ -78,7 +72,7 @@ local function RestoreVersions(self)
 end
 
 local function HandleAnnounceVersion(self, data, sender)
-    LOG:Trace("ProfileInfoManager:HandleAnnounceVersion()")
+    CLM.LOG:Trace("ProfileInfoManager:HandleAnnounceVersion()")
     local currentVersion = CLM.CORE:GetVersion()
     local receivedVersion = data:Version()
 
@@ -93,7 +87,7 @@ local function HandleAnnounceVersion(self, data, sender)
             if receivedVersion.changeset == "" then -- changeset = unofficial or beta. We don't care about that
                 OutOfDate(self, receivedVersion, false)
             else
-                LOG:Debug("Received version %s-%s", stringifyVersion(receivedVersion), receivedVersion.changeset)
+                CLM.LOG:Debug("Received version %s-%s", stringifyVersion(receivedVersion), receivedVersion.changeset)
             end
         end
     end
@@ -103,7 +97,7 @@ local function HandleAnnounceVersion(self, data, sender)
 end
 
 local function HandleRequestVersion(self, data, sender)
-    LOG:Trace("ProfileInfoManager:HandleRequestVersion()")
+    CLM.LOG:Trace("ProfileInfoManager:HandleRequestVersion()")
     local currentTime = GetServerTime()
     if (currentTime - self._lastRequestResponse.version) > 30  then
         AnnounceVersion()
@@ -115,11 +109,11 @@ end
     --- ROLE ---
 ]]
 local function AnnounceRole()
-    LOG:Trace("ProfileInfoManager:AnnounceRole()")
+    CLM.LOG:Trace("ProfileInfoManager:AnnounceRole()")
     local message = CLM.MODELS.ProfileInfoCommStructure:New(
-        CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE,
+        CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE,
         CLM.MODELS.ProfileInfoCommAnnounceRole:New(UTILS.GetMyRole()))
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CLM.CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 local function SetProfileRole(name, role)
@@ -140,14 +134,14 @@ local function RestoreRoles(self)
 end
 
 local function HandleAnnounceRole(self, data, sender)
-    LOG:Trace("ProfileInfoManager:HandleAnnounceRole()")
+    CLM.LOG:Trace("ProfileInfoManager:HandleAnnounceRole()")
     local receivedRole = data:Role()
     SetProfileRole(sender, receivedRole)
     StoreProfileRole(self, sender, receivedRole)
 end
 
 local function HandleRequestRole(self, data, sender)
-    LOG:Trace("ProfileInfoManager:HandleRequestRole()")
+    CLM.LOG:Trace("ProfileInfoManager:HandleRequestRole()")
     local currentTime = GetServerTime()
     if (currentTime - self._lastRequestResponse.role) > 30  then
         AnnounceRole()
@@ -160,7 +154,7 @@ end
 ]]
 
 local function HandleIncomingMessage(self, message, distribution, sender)
-    LOG:Trace("ProfileInfoManager:HandleIncomingMessage()")
+    CLM.LOG:Trace("ProfileInfoManager:HandleIncomingMessage()")
     local mtype = message:Type() or 0
     if self.handlers[mtype] then
         self.handlers[mtype](self, message:Data(), sender)
@@ -174,7 +168,7 @@ end
 ---@class ProfileInfoManager
 local ProfileInfoManager =  {}
 function ProfileInfoManager:Initialize()
-    LOG:Trace("ProfileInfoManager:Initialize()")
+    CLM.LOG:Trace("ProfileInfoManager:Initialize()")
     self._initialized = false
 
     self._lastRequestResponse = { version = 0, spec = 0 , role = 0}
@@ -195,25 +189,25 @@ function ProfileInfoManager:Initialize()
     end))
 
     self.handlers = {
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
-        -- [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC]     = HandleAnnounceSpec,
-        -- [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec,
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE]     = HandleAnnounceRole,
-        [CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE]      = HandleRequestRole
+        [CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_VERSION]  = HandleAnnounceVersion,
+        [CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION]   = HandleRequestVersion,
+        -- [CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC]     = HandleAnnounceSpec,
+        -- [CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC]      = HandleRequestSpec,
+        [CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_ROLE]     = HandleAnnounceRole,
+        [CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE]      = HandleRequestRole
     }
 
     CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.GLOBAL, (function(rawMessage, distribution, sender)
         local message = CLM.MODELS.ProfileInfoCommStructure:New(rawMessage)
-        if CONSTANTS.PROFILE_INFO_COMM.TYPES[message:Type()] == nil then return end
+        if CLM.CONSTANTS.PROFILE_INFO_COMM.TYPES[message:Type()] == nil then return end
         HandleIncomingMessage(self, message, distribution, sender)
-    end), CONSTANTS.ACL.LEVEL.PLEBS, true)
+    end), CLM.CONSTANTS.ACL.LEVEL.PLEBS, true)
 
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
         if not self._initialized then
-            LOG:Message(CLM.L["Core Loot Manager %s initialization complete. %s"], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"), "Created by |cffe6cc80Lantis|r Annalina-Mirage Raceway")
-            if CLM.AF then LOG:Message("Happy |cff44ee44April Fools'|r raid week!") end
+            CLM.LOG:Message(CLM.L["Core Loot Manager %s initialization complete. %s"], UTILS.ColorCodeText(CLM.CORE:GetVersionString(), "00cc00"), "Created by |cffe6cc80Lantis|r Annalina-Mirage Raceway")
+            if CLM.AF then CLM.LOG:Message("Happy |cff44ee44April Fools'|r raid week!") end
             C_Timer.After(1, function()
                 RestoreVersions(self)
                 -- RestoreSpecs(self)
@@ -238,24 +232,25 @@ function ProfileInfoManager:Initialize()
 end
 
 function ProfileInfoManager:RequestVersion()
-    LOG:Trace("ProfileInfoManager:RequestVersion()")
-    local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION, {})
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.LOG:Trace("ProfileInfoManager:RequestVersion()")
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION, {})
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CLM.CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 function ProfileInfoManager:RequestSpec()
-    LOG:Trace("ProfileInfoManager:RequestSpec()")
-    local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC, {})
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.LOG:Trace("ProfileInfoManager:RequestSpec()")
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_SPEC, {})
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CLM.CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
 function ProfileInfoManager:RequestRole()
-    LOG:Trace("ProfileInfoManager:RequestRole()")
-    local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE, {})
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
+    CLM.LOG:Trace("ProfileInfoManager:RequestRole()")
+    local message = CLM.MODELS.ProfileInfoCommStructure:New(CLM.CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_ROLE, {})
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CLM.CONSTANTS.COMMS.DISTRIBUTION.GUILD)
 end
 
-CONSTANTS.PROFILE_INFO_COMM = {
+---@class CLM.CONSTANTS.PROFILE_INFO_COMM
+CLM.CONSTANTS.PROFILE_INFO_COMM = {
     TYPE = {
         ANNOUNCE_VERSION    = 1,
         REQUEST_VERSION     = 2,
@@ -264,7 +259,12 @@ CONSTANTS.PROFILE_INFO_COMM = {
         ANNOUNCE_ROLE       = 5,
         REQUEST_ROLE        = 6,
     },
-    TYPES = UTILS.Set({ 1, 2, 3, 4, 5, 6 })
+    TYPES = CLM.UTILS.Set({ 1, 2, 3, 4, 5, 6 })
 }
+---@class CLM.CONSTANTS
+---@field PROFILE_INFO_COMM CLM.CONSTANTS.PROFILE_INFO_COMM
 
 CLM.MODULES.ProfileInfoManager = ProfileInfoManager
+
+---@class CLM.MODULES
+---@field ProfileInfoManager ProfileInfoManager

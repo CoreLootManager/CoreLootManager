@@ -17,10 +17,15 @@ if CLM.WoWSeasonal then
 end
 
 CLM.Ace3 = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
+---@class CLM.CORE
 CLM.CORE = {}
+---@class CLM.MODULES
 CLM.MODULES = {}
+---@class CLM.MODELS
 CLM.MODELS = { LEDGER = {} }
+---@class CLM.CONSTANTS
 CLM.CONSTANTS = {}
+---@class CLM.COMM_CHANNEL
 CLM.COMM_CHANNEL = {
     AUCTION = "Auction2",
     BIDDING = "Bidding2",
@@ -31,9 +36,13 @@ CLM.COMM_CHANNEL = {
     STANDBY = "Standby001",
     GLOBAL = "Version001"
 }
+---@class CLM.GUI
 CLM.GUI = {}
+---@class CLM.OPTIONS
 CLM.OPTIONS = {}
+---@class CLM.ALERTS
 CLM.ALERTS = {}
+---@class CLM.EXTERNAL
 CLM.EXTERNAL = {}
 
 CLM.AUTOVERSION = "@project-version@"
@@ -41,13 +50,9 @@ CLM.AUTOVERSION = "@project-version@"
 ---@diagnostic disable-next-line: undefined-field
 CLM.LOG = LibStub("LibLogger"):New()
 
-local CORE = CLM.CORE
-local LOG = CLM.LOG
-local MODULES = CLM.MODULES
-
 ---@param versionString string
 ---@return VersionTable
-function CORE.ParseVersionString(versionString)
+function CLM.CORE.ParseVersionString(versionString)
     local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")
     return {
         major = tonumber(major) or 4,
@@ -94,10 +99,10 @@ local function Initialize_SavedVariables()
 end
 
 local function Initialize_Logger()
-    LOG:SetSeverity(CLM2_DB.global.logger.severity)
-    LOG:SetVerbosity(CLM2_DB.global.logger.verbosity)
-    LOG:SetPrefix("CLM")
-    LOG:SetDatabase(CLM2_Logs)
+    CLM.LOG:SetSeverity(CLM2_DB.global.logger.severity)
+    CLM.LOG:SetVerbosity(CLM2_DB.global.logger.verbosity)
+    CLM.LOG:SetPrefix("CLM")
+    CLM.LOG:SetDatabase(CLM2_Logs)
 end
 
 local function Initialize_Versioning()
@@ -113,7 +118,7 @@ local function Initialize_Versioning()
     else
         changeset = ""
     end
-    CORE.versionString = string.format(
+    CLM.CORE.versionString = string.format(
         "v%s.%s.%s%s",
         new.major or 0,
         new.minor or 0,
@@ -123,11 +128,11 @@ local function Initialize_Versioning()
     return old, new
 end
 
-function CORE:GetVersion()
+function CLM.CORE:GetVersion()
     return CLM2_DB.global.version
 end
 
-function CORE:GetVersionString()
+function CLM.CORE:GetVersionString()
     return self.versionString or ""
 end
 
@@ -153,47 +158,47 @@ function CLM.RegisterExternal(moduleName, entryPoint)
     RegisterUniversal(CLM.EXTERNAL, moduleName, entryPoint)
 end
 
-function CORE:_InitializeDatabase()
-    LOG:Trace("CORE:_InitializeDatabase()")
-    return MODULES.Database:Initialize()
+function CLM.CORE:_InitializeDatabase()
+    CLM.LOG:Trace("CORE:_InitializeDatabase()")
+    return CLM.MODULES.Database:Initialize()
 end
 
-function CORE:_InitializeCore()
-    LOG:Trace("CORE:_InitializeCore()")
-    MODULES.ConfigManager:Initialize()
-    MODULES.ACL:Initialize()
-    MODULES.Hooks:Initialize()
+function CLM.CORE:_InitializeCore()
+    CLM.LOG:Trace("CORE:_InitializeCore()")
+    CLM.MODULES.ConfigManager:Initialize()
+    CLM.MODULES.ACL:Initialize()
+    CLM.MODULES.Hooks:Initialize()
 
     return true
 end
 
-function CORE:_InitializeBackend()
-    LOG:Trace("CORE:_InitializeBackend()")
-    MODULES.Logger:Initialize()
-    MODULES.Comms:Initialize()
-    MODULES.EventManager:Initialize()
-    MODULES.GuildInfoListener:Initialize()
-    MODULES.LedgerManager:Initialize()
+function CLM.CORE:_InitializeBackend()
+    CLM.LOG:Trace("CORE:_InitializeBackend()")
+    CLM.MODULES.Logger:Initialize()
+    CLM.MODULES.Comms:Initialize()
+    CLM.MODULES.EventManager:Initialize()
+    CLM.MODULES.GuildInfoListener:Initialize()
+    CLM.MODULES.LedgerManager:Initialize()
 
     return true
 end
 
-function CORE:_InitializeFeatures()
-    LOG:Trace("CORE:_InitializeFeatures()")
+function CLM.CORE:_InitializeFeatures()
+    CLM.LOG:Trace("CORE:_InitializeFeatures()")
     -- We keep the order
-    MODULES.ProfileManager:Initialize()
-    MODULES.RosterManager:Initialize()
-    MODULES.PointManager:Initialize()
-    MODULES.LootManager:Initialize()
-    MODULES.RaidManager:Initialize()
-    MODULES.StandbyStagingManager:Initialize()
-    MODULES.AuctionManager:Initialize()
-    MODULES.AutoAssign:Initialize()
-    MODULES.BiddingManager:Initialize()
-    MODULES.ProfileInfoManager:Initialize()
-    MODULES.AutoAwardManager:Initialize()
-    MODULES.AuctionHistoryManager:Initialize()
-    MODULES.SandboxManager:Initialize()
+    CLM.MODULES.ProfileManager:Initialize()
+    CLM.MODULES.RosterManager:Initialize()
+    CLM.MODULES.PointManager:Initialize()
+    CLM.MODULES.LootManager:Initialize()
+    CLM.MODULES.RaidManager:Initialize()
+    CLM.MODULES.StandbyStagingManager:Initialize()
+    CLM.MODULES.AuctionManager:Initialize()
+    CLM.MODULES.AutoAssign:Initialize()
+    CLM.MODULES.BiddingManager:Initialize()
+    CLM.MODULES.ProfileInfoManager:Initialize()
+    CLM.MODULES.AutoAwardManager:Initialize()
+    CLM.MODULES.AuctionHistoryManager:Initialize()
+    CLM.MODULES.SandboxManager:Initialize()
     -- Globals
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
     CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
@@ -204,8 +209,8 @@ function CORE:_InitializeFeatures()
     return true
 end
 
-function CORE:_InitializeExternal()
-    LOG:Trace("CORE:_InitializeExternal()")
+function CLM.CORE:_InitializeExternal()
+    CLM.LOG:Trace("CORE:_InitializeExternal()")
     for _,external in pairs(CLM.EXTERNAL) do
         external:Initialize()
     end
@@ -213,16 +218,16 @@ function CORE:_InitializeExternal()
     return true
 end
 
-function CORE:_InitializeMinimap()
-    LOG:Trace("CORE:_InitializeMinimap()")
+function CLM.CORE:_InitializeMinimap()
+    CLM.LOG:Trace("CORE:_InitializeMinimap()")
     -- Initialize Minmap
-    MODULES.Minimap:Initialize()
+    CLM.MODULES.Minimap:Initialize()
 
     return true
 end
 
-function CORE:_InitializeOptions()
-    LOG:Trace("CORE:_InitializeOptions()")
+function CLM.CORE:_InitializeOptions()
+    CLM.LOG:Trace("CORE:_InitializeOptions()")
     -- No GUI / OPTIONS should be dependent on each other ever, only on the managers
     for _, module in pairs(CLM.OPTIONS) do
         module:Initialize()
@@ -231,8 +236,8 @@ function CORE:_InitializeOptions()
     return true
 end
 
-function CORE:_InitializeGUI()
-    LOG:Trace("CORE:_InitializeGUI()")
+function CLM.CORE:_InitializeGUI()
+    CLM.LOG:Trace("CORE:_InitializeGUI()")
     for _, module in pairs(CLM.GUI) do
         module:Initialize()
     end
@@ -240,10 +245,10 @@ function CORE:_InitializeGUI()
     return true
 end
 
-function CORE:_Enable()
-    LOG:Trace("CORE:_Enable()")
-    MODULES.Comms:Enable()
-    MODULES.LedgerManager:Enable()
+function CLM.CORE:_Enable()
+    CLM.LOG:Trace("CORE:_Enable()")
+    CLM.MODULES.Comms:Enable()
+    CLM.MODULES.LedgerManager:Enable()
 
     return true
 end
@@ -264,15 +269,15 @@ local function getStage(stage)
     return (stages[stage] or finalStage).name, (stages[stage] or finalStage).retry
 end
 
-function CORE:_SequentialInitialize(stageNum)
-    LOG:Trace("CORE:_SequentialInitialize()")
+function CLM.CORE:_SequentialInitialize(stageNum)
+    CLM.LOG:Trace("CORE:_SequentialInitialize()")
     local stage, retry = getStage(stageNum)
-    LOG:Info("Initialization stage [%s]", stage)
+    CLM.LOG:Info("Initialization stage [%s]", stage)
     local success = self[stage]()
 
     if success then
         if stage == finalStage.name then
-            LOG:Info(CLM.L["Boot complete"])
+            CLM.LOG:Info(CLM.L["Boot complete"])
             return
         end
         stageNum = stageNum + 1
@@ -281,17 +286,17 @@ function CORE:_SequentialInitialize(stageNum)
             error(string.format("Error Loading CLM on stage [%s]", stage))
         end
     end
-    C_Timer.After(0.1, function() CORE:_SequentialInitialize(stageNum) end)
+    C_Timer.After(0.1, function() CLM.CORE:_SequentialInitialize(stageNum) end)
 end
 
-function CORE:_ExecuteInitialize()
+function CLM.CORE:_ExecuteInitialize()
     if self._initialize_fired then return end
     self._initialize_fired = true
-    C_Timer.After(1, function() CORE:_SequentialInitialize(1) end)
+    C_Timer.After(1, function() CLM.CORE:_SequentialInitialize(1) end)
 end
 
-function CORE:_Initialize()
-    LOG:Trace("CORE:_Initialize()")
+function CLM.CORE:_Initialize()
+    CLM.LOG:Trace("CORE:_Initialize()")
     -- Block direct lib timetravel
     --[===[@non-debug@
     if SLASH_LibEventSourcing_TimeTravel1 then
@@ -299,12 +304,12 @@ function CORE:_Initialize()
     end
     --@end-non-debug@]===]
     if not self._initialize_fired then
-        CORE:_ExecuteInitialize()
-        self:UnregisterEvent("GUILD_ROSTER_UPDATE")
+        CLM.CORE:_ExecuteInitialize()
+        CLM.Ace3:UnregisterEvent("GUILD_ROSTER_UPDATE")
     end
 end
 
-function CORE:OnInitialize()
+function CLM.Ace3:OnInitialize() ---@diagnostic disable-line: duplicate-set-field
     -- Fix ML UI issue - https://bit.ly/3tc8nvw
     hooksecurefunc(MasterLooterFrame, 'Hide', function(s) s:ClearAllPoints() end);
     -- Initialize SavedVariables
@@ -314,31 +319,31 @@ function CORE:OnInitialize()
     -- Initialize Versioning
     Initialize_Versioning()
     -- Initialize AddOn
-    LOG:Trace("OnInitialize")
+    CLM.LOG:Trace("OnInitialize")
     self._initialize_fired = false
-    CORE:RegisterEvent("GUILD_ROSTER_UPDATE")
+    CLM.Ace3:RegisterEvent("GUILD_ROSTER_UPDATE")
     SetGuildRosterShowOffline(true)
     GuildRoster()
     -- We schedule this in case GUILD_ROSTER_UPDATE won't come early enough
     C_Timer.After(20, function()
-        CORE:_ExecuteInitialize()
+        CLM.CORE:_ExecuteInitialize()
     end)
 end
 
-function CORE:OnEnable()
+function CLM.Ace3:OnEnable() ---@diagnostic disable-line: duplicate-set-field
       -- Called when the addon is enabled
 end
 
-function CORE:OnDisable()
+function CLM.Ace3:OnDisable() ---@diagnostic disable-line: duplicate-set-field
       -- Called when the addon is disabled
 end
 
-function CORE:GUILD_ROSTER_UPDATE(...)
-    LOG:Trace("GUILD_ROSTER_UPDATE")
+function CLM.Ace3:GUILD_ROSTER_UPDATE(...) ---@diagnostic disable-line: inject-field
+    CLM.LOG:Trace("GUILD_ROSTER_UPDATE")
     local inGuild = IsInGuild()
     local numTotal = GetNumGuildMembers()
     if inGuild and numTotal ~= 0 then
-        self:_Initialize()
+        CLM.CORE:_Initialize()
     end
 end
 
