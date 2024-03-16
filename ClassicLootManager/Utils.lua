@@ -1,5 +1,5 @@
 ---@diagnostic disable: param-type-mismatch
-local _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS

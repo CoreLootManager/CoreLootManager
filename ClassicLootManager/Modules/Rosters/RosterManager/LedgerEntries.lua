@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -14,27 +14,46 @@ local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 local deflate = UTILS.deflate
 
-local RosterCreate                  = LogEntry:extend("R0")
-local RosterDelete                  = LogEntry:extend("R1")
-local RosterRename                  = LogEntry:extend("R2")
-local RosterUpdateConfig            = LogEntry:extend("R3")
-local RosterUpdateConfigSingle      = LogEntry:extend("R4")
+---@class RosterCreate
+local RosterCreate =  LogEntry:extend("R0")
+---@class RosterDelete
+local RosterDelete =  LogEntry:extend("R1")
+---@class RosterRename
+local RosterRename =  LogEntry:extend("R2")
+---@class RosterUpdateConfig
+local RosterUpdateConfig =  LogEntry:extend("R3")
+---@class RosterUpdateConfigSingle
+local RosterUpdateConfigSingle =  LogEntry:extend("R4")
 -- local RosterUpdateDefault           = LogEntry:extend("R5")
-local RosterUpdateDefaultSingle     = LogEntry:extend("R6")
-local RosterUpdateOverrides         = LogEntry:extend("R7")
-local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
-local RosterRemoveOverrides         = LogEntry:extend("RR")
-local RosterUpdateProfiles          = LogEntry:extend("R9")
-local RosterCopyData                = LogEntry:extend("RC")
-local RosterBossKillBonus           = LogEntry:extend("RB")
-local RosterFieldRename             = LogEntry:extend("RF")
-local RosterAwardMultiplier         = LogEntry:extend("RM")
+---@class RosterUpdateDefaultSingle
+local RosterUpdateDefaultSingle =  LogEntry:extend("R6")
+---@class RosterUpdateOverrides
+local RosterUpdateOverrides =  LogEntry:extend("R7")
+---@class RosterUpdateOverridesSingle
+local RosterUpdateOverridesSingle =  LogEntry:extend("R8")
+---@class RosterRemoveOverrides
+local RosterRemoveOverrides =  LogEntry:extend("RR")
+---@class RosterUpdateProfiles
+local RosterUpdateProfiles =  LogEntry:extend("R9")
+---@class RosterCopyData
+local RosterCopyData =  LogEntry:extend("RC")
+---@class RosterBossKillBonus
+local RosterBossKillBonus =  LogEntry:extend("RB")
+---@class RosterFieldRename
+local RosterFieldRename =  LogEntry:extend("RF")
+---@class RosterAwardMultiplier
+local RosterAwardMultiplier =  LogEntry:extend("RM")
 
-local RosterDynamicItemValueEquation       = LogEntry:extend("VE")
-local RosterDynamicItemValueExpvar         = LogEntry:extend("VX")
-local RosterDynamicItemValueMultiplier     = LogEntry:extend("VM")
-local RosterDynamicItemValueSlotMultiplier = LogEntry:extend("VS")
-local RosterDynamicItemValueTierMultiplier = LogEntry:extend("VT")
+---@class RosterDynamicItemValueEquation
+local RosterDynamicItemValueEquation =  LogEntry:extend("VE")
+---@class RosterDynamicItemValueExpvar
+local RosterDynamicItemValueExpvar =  LogEntry:extend("VX")
+---@class RosterDynamicItemValueMultiplier
+local RosterDynamicItemValueMultiplier =  LogEntry:extend("VM")
+---@class RosterDynamicItemValueSlotMultiplier
+local RosterDynamicItemValueSlotMultiplier =  LogEntry:extend("VS")
+---@class RosterDynamicItemValueTierMultiplier
+local RosterDynamicItemValueTierMultiplier =  LogEntry:extend("VT")
 
 -- ------------ --
 -- RosterCreate --

@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -8,7 +8,8 @@ local  _, CLM = ...
 
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
-local Loot = {}
+---@class Loot
+local Loot =  {}
 function Loot:New(entry, owner)
     local o = {}
 

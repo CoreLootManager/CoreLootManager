@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -53,7 +53,8 @@ local function CreateConfigs(self)
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
-local ChangelogGUI = {}
+---@class ChangelogGUI
+local ChangelogGUI =  {}
 function ChangelogGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
     InitializeDB(self)

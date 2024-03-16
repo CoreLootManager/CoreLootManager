@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -11,12 +11,18 @@ local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
-local Modify        = LogEntry:extend("DM")
-local ModifyRaid    = LogEntry:extend("DR")
-local ModifyRoster  = LogEntry:extend("DO")
-local Set           = LogEntry:extend("DS")
-local Decay         = LogEntry:extend("DD")
-local DecayRoster   = LogEntry:extend("DT")
+---@class Modify
+local Modify =  LogEntry:extend("DM")
+---@class ModifyRaid
+local ModifyRaid =  LogEntry:extend("DR")
+---@class ModifyRoster
+local ModifyRoster =  LogEntry:extend("DO")
+---@class Set
+local Set =  LogEntry:extend("DS")
+---@class Decay
+local Decay =  LogEntry:extend("DD")
+---@class DecayRoster
+local DecayRoster =  LogEntry:extend("DT")
 
 function Modify:new(rosterUid, playerList, value, reason, note, spent)
     local o = LogEntry.new(self);

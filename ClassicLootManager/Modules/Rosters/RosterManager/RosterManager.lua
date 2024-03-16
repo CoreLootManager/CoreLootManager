@@ -1,12 +1,13 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local RosterManager = {}
+---@class RosterManager
+local RosterManager =  {}
 function RosterManager:GenerateName()
     local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX)]
     local suffix = CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX)]

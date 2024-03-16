@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -20,7 +20,8 @@ end
 local CHAT_MESSAGE_CHANNELS = {"CHAT_MSG_GUILD", "CHAT_MSG_OFFICER", "CHAT_MSG_PARTY", "CHAT_MSG_PARTY_LEADER", "CHAT_MSG_PARTY_GUIDE", "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER", "CHAT_MSG_RAID_WARNING",
 "CHAT_MSG_SAY", "CHAT_MSG_YELL", "CHAT_MSG_WHISPER", "CHAT_MSG_WHISPER_INFORM", "CHAT_MSG_CHANNEL", "CHAT_MSG_BN_WHISPER", "CHAT_MSG_BN_WHISPER_INFORM", "CHAT_MSG_BN_CONVERSATION", "CHAT_MSG_INSTANCE_CHAT", "CHAT_MSG_INSTANCE_CHAT_LEADER"}
 
-local GlboalChatMessageHandlers = {}
+---@class GlboalChatMessageHandlers
+local GlboalChatMessageHandlers =  {}
 function GlboalChatMessageHandlers:Initialize()
     -- Substitute [CLM] with an icon
     for _, channel in ipairs(CHAT_MESSAGE_CHANNELS) do

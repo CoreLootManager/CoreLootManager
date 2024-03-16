@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -11,10 +11,14 @@ local mergeLists = UTILS.mergeLists
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
-local Create    = LogEntry:extend("AC")
-local Start     = LogEntry:extend("AS")
-local End       = LogEntry:extend("AE")
-local Update    = LogEntry:extend("AU")
+---@class Create
+local Create =  LogEntry:extend("AC")
+---@class Start
+local Start =  LogEntry:extend("AS")
+---@class End
+local End =  LogEntry:extend("AE")
+---@class Update
+local Update =  LogEntry:extend("AU")
 
 CLM.MODELS.LEDGER.RAID = {
     Create = Create,

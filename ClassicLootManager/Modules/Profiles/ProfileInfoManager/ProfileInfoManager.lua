@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -112,51 +112,6 @@ local function HandleRequestVersion(self, data, sender)
 end
 
 --[[
-    --- SPEC ---
-]]
--- local function AnnounceSpec()
---     LOG:Trace("ProfileInfoManager:AnnounceSpec()")
---     local one, two, three = UTILS.GetMyTalents()
---     local message = CLM.MODELS.ProfileInfoCommStructure:New(
---         CONSTANTS.PROFILE_INFO_COMM.TYPE.ANNOUNCE_SPEC,
---         CLM.MODELS.ProfileInfoCommAnnounceSpec:New(one, two, three))
---     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.GLOBAL, message, CONSTANTS.COMMS.DISTRIBUTION.GUILD)
--- end
-
--- local function SetProfileSpec(name, spec)
---     local profile = CLM.MODULES.ProfileManager:GetProfileByName(name)
---     if profile then
---         profile:SetSpec(spec.one, spec.two, spec.three)
---     end
--- end
-
--- local function StoreProfileSpec(self, name, spec)
---     GetProfileDb(self, name).spec = spec
--- end
-
--- local function RestoreSpecs(self)
---     for name, info in pairs(self.db) do
---         SetProfileSpec(name, info.spec)
---     end
--- end
-
--- local function HandleAnnounceSpec(self, data, sender)
---     LOG:Trace("ProfileInfoManager:HandleAnnounceSpec()")
---     local receivedSpec = data:Spec()
---     SetProfileSpec(sender, receivedSpec)
---     StoreProfileSpec(self, sender, receivedSpec)
--- end
-
--- local function HandleRequestSpec(self, data, sender)
---     LOG:Trace("ProfileInfoManager:HandleRequestSpec()")
---     local currentTime = GetServerTime()
---     if (currentTime - self._lastRequestResponse.spec) > 30  then
---         AnnounceSpec()
---         self._lastRequestResponse.spec = currentTime
---     end
--- end
-
---[[
     --- ROLE ---
 ]]
 local function AnnounceRole()
@@ -216,7 +171,8 @@ end
     --- PUBLIC ---
 ]]
 
-local ProfileInfoManager = {}
+---@class ProfileInfoManager
+local ProfileInfoManager =  {}
 function ProfileInfoManager:Initialize()
     LOG:Trace("ProfileInfoManager:Initialize()")
     self._initialized = false

@@ -165,7 +165,9 @@
         "GameFontDisableSmall",
         "GameFontNormalSmall",
         "MAINASSIST",
-        "SetDesaturation"
+        "SetDesaturation",
+        "GetBuildInfo",
+        "C_Seasons"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

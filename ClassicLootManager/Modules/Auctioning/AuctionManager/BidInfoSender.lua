@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -8,7 +8,8 @@ local UTILS     = CLM.UTILS
 
 local assertType = UTILS.assertType
 
-local BidInfoSender = {} -- BidInfoSender
+---@class BidInfoSender
+local BidInfoSender =  {} -- BidInfoSender
 BidInfoSender.__index = BidInfoSender
 
 function BidInfoSender:New(interval, commsCallback)

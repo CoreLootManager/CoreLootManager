@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -13,13 +13,28 @@ local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
-local ProfileUpdate     = LogEntry:extend("P0")
-local ProfileRemove     = LogEntry:extend("P1")
-local ProfileLink       = LogEntry:extend("P2")
-local ProfileLock       = LogEntry:extend("P3")
+---@class ProfileUpdate : LogEntry
+---@field g shortGuid
+---@field n string
+---@field c canonicalClass
+---@field s string
+---@field m shortGuid
+local ProfileUpdate =  LogEntry:extend("P0")
+---@class ProfileRemove : LogEntry
+local ProfileRemove =  LogEntry:extend("P1")
+---@class ProfileLink : LogEntry
+local ProfileLink =  LogEntry:extend("P2")
+---@class ProfileLock : LogEntry
+local ProfileLock =  LogEntry:extend("P3")
 -- ------------- --
 -- ProfileUpdate --
 -- ------------- --
+---@param GUID LogEntry | string | integer | table | nil
+---@param name string
+---@param class canonicalClass
+---@param spec any?
+---@param main playerGuid?
+---@return ProfileUpdate
 function ProfileUpdate:new(GUID, name, class, spec, main)
     local o = LogEntry.new(self);
     o.g = GetGUIDFromEntry(GUID or 0)

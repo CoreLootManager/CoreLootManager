@@ -1,12 +1,13 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local ProfileInfoCommAnnounceVersion = {}
+---@class ProfileInfoCommAnnounceVersion
+local ProfileInfoCommAnnounceVersion =  {}
 function ProfileInfoCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)
     local isCopyConstructor = (type(majorOrObject) == "table")
     local o = isCopyConstructor and majorOrObject or {}
@@ -33,7 +34,8 @@ function ProfileInfoCommAnnounceVersion:Version()
     }
 end
 
-local ProfileInfoCommAnnounceSpec = {}
+---@class ProfileInfoCommAnnounceSpec
+local ProfileInfoCommAnnounceSpec =  {}
 function ProfileInfoCommAnnounceSpec:New(oneOrObject, two, three)
     local isCopyConstructor = (type(oneOrObject) == "table")
     local o = isCopyConstructor and oneOrObject or {}
@@ -58,7 +60,8 @@ function ProfileInfoCommAnnounceSpec:Spec()
     }
 end
 
-local ProfileInfoCommAnnounceRole = {}
+---@class ProfileInfoCommAnnounceRole
+local ProfileInfoCommAnnounceRole =  {}
 function ProfileInfoCommAnnounceRole:New(roleOrObject)
     local isCopyConstructor = (type(roleOrObject) == "table")
     local o = isCopyConstructor and roleOrObject or {}
@@ -77,7 +80,8 @@ function ProfileInfoCommAnnounceRole:Role()
     return self.r
 end
 
-local ProfileInfoCommStructure = {}
+---@class ProfileInfoCommStructure
+local ProfileInfoCommStructure =  {}
 function ProfileInfoCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
 

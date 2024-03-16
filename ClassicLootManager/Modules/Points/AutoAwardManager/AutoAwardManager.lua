@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -255,7 +255,8 @@ local function registerWorkaroundHandler(self)
     isWorkaroundRegistered = true
 end
 
-local AutoAwardManager = {}
+---@class AutoAwardManager
+local AutoAwardManager =  {}
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")
     if not CLM.MODULES.ACL:IsTrusted() then return end

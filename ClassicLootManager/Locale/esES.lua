@@ -1,4 +1,4 @@
-local _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 if GetLocale() == "esES" then
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:323
 -- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:349
@@ -427,7 +427,7 @@ CLM.L["Blood Council"] = "Consejo de sangre"
 CLM.L["Bloodlord Mandokir"] = "Señor sangriento Mandokir"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:849
 CLM.L["Bonuses"] = "Bonus"
--- ClassicLootManager/ClassicLootManager.lua:275
+-- ClassicLootManager/ClassicLootManager.lua:273
 CLM.L["Boot complete"] = "Arranque completo"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:521
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:855

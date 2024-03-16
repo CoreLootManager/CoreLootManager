@@ -1,12 +1,13 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local Raid = {} -- Raid information
+---@class Raid
+local Raid =  {} -- Raid information
 
 Raid.__index = Raid
 function Raid:New(uid, name, roster, config, creator, entry)

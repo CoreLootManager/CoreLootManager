@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -119,7 +119,8 @@ local function AutoConfirm(_, _, rollID, roll)
     StaticPopup_Hide("CONFIRM_LOOT_ROLL")
 end
 
-local GlobalUIHandlers = {}
+---@class GlobalUIHandlers
+local GlobalUIHandlers =  {}
 function GlobalUIHandlers:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"START_LOOT_ROLL"}, Handler)
     CLM.MODULES.EventManager:RegisterWoWEvent({"CONFIRM_LOOT_ROLL"}, AutoConfirm)

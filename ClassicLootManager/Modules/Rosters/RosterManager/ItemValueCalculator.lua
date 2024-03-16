@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -80,7 +80,8 @@ local function SetCalculator(self)
     self.calculator = calculators[self.equation]
 end
 
-local ItemValueCalculator = {}
+---@class ItemValueCalculator
+local ItemValueCalculator =  {}
 function ItemValueCalculator:New()
     local o = {}
 

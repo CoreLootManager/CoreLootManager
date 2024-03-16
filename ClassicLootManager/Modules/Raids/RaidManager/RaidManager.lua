@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -22,7 +22,8 @@ local function IsPlayerInPvP()
 	return arena or (bg ~= nil)
 end
 
-local RaidManager = {}
+---@class RaidManager
+local RaidManager =  {}
 function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
 

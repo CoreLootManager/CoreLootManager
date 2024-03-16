@@ -163,7 +163,7 @@ def scan_file_for_l10n_translation(file:Path, query, storage:L10nStorage, locale
 def output_to_file(filename, storage, locale):
     orderedData = dict(sorted(storage.data.items()))
     with open(filename, 'w') as f:
-        f.write("local _, CLM = ...\n")
+        f.write("local CLM = select(2, ...) ---@class CLM\n")
         f.write("if GetLocale() == \"{}\" then\n".format(locale))
         for string, dataDict in orderedData.items():
             for useTuple in dataDict:

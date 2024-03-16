@@ -1,20 +1,23 @@
-local name, CLM = ...
+local name = ...
+local CLM = select(2, ...) ---@class CLM
 
 local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
-local LIB_CLM, _ = LibStub:NewLibrary("ClassicLootManager", 1)
-if LIB_CLM then
-    LIB_CLM.CLM = CLM
+---@class ClassicLootManager
+local ClassicLootManager, _ = LibStub:NewLibrary("ClassicLootManager", 1)
+if ClassicLootManager then
+    ClassicLootManager.CLM = CLM
 end
 
 CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
+CLM.WoWCata = select(4, GetBuildInfo()) > 40000 and not CLM.WoW10
 CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
 if CLM.WoWSeasonal then
     CLM.WoWSoD = C_Seasons.GetActiveSeason() == Enum.SeasonID.Placeholder
 end
 
-CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
-
+CLM.Ace3 = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
+CLM.CORE = {}
 CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
@@ -36,6 +39,7 @@ CLM.EXTERNAL = {}
 
 CLM.AUTOVERSION = "@project-version@"
 
+---@diagnostic disable-next-line: undefined-field
 CLM.LOG = LibStub("LibLogger"):New()
 
 local CORE = CLM.CORE
@@ -143,10 +147,6 @@ local function RegisterUniversal(object, moduleName, entryPoint)
     end
 
     object[moduleName] = entryPoint
-end
-
-function CLM.RegisterModule(moduleName, entryPoint)
-    RegisterUniversal(CLM.MODULE, moduleName, entryPoint)
 end
 
 function CLM.RegisterExternal(moduleName, entryPoint)

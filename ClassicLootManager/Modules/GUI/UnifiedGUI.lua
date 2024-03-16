@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -209,7 +209,8 @@ local function CreateLoadingBanner(self)
     -- lb:Show()
 end
 
-local UnifiedGUI = { tabs = {} }
+---@class UnifiedGUI
+local UnifiedGUI =  { tabs = {} }
 function UnifiedGUI:Initialize()
     InitializeDB(self)
 

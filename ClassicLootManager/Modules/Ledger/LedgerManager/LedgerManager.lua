@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -78,7 +78,8 @@ local function createLedgerAndRegisterCallbacks(self, database)
     return ledger
 end
 
-local LedgerManager = { _initialized = false}
+---@class LedgerManager
+local LedgerManager =  { _initialized = false}
 function LedgerManager:Initialize()
     self.activeDatabase = CLM.MODULES.Database:Ledger()
     self.activeLedger = createLedger(self, self.activeDatabase)

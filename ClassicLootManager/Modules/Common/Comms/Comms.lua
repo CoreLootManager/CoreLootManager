@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -16,7 +16,7 @@ local codec = LibStub("LibDeflate")
 
 local CommsPrefix = "CLM"
 
-local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
+local Comms = CLM.Ace3:NewModule("Comms", {}, "AceComm-3.0")
 
 local defaultCTL = {
     BURST = _G.ChatThrottleLib.BURST or 4000,

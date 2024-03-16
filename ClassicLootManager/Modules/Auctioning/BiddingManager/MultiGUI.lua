@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -44,7 +44,8 @@ local ITEM_REGISTRY     = "clm_bm_gui_opt_item"
 local BID_REGISTRY      = "clm_bm_gui_opt_bid"
 local BUTTON_REGISTRY   = "clm_bm_gui_opt_button"
 
-local BiddingManagerGUI = {}
+---@class BiddingManagerGUI
+local BiddingManagerGUI =  {}
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {

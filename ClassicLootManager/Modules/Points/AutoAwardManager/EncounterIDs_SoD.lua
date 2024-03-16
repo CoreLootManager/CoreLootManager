@@ -1,4 +1,4 @@
-local _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 
 if not CLM.WoWSoD then return end
 -- Append to existing ones

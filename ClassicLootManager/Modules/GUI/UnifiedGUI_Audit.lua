@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -614,6 +614,7 @@ local function buildEntryRow(entry, id)
     return row
 end
 
+---@class UnifiedGUI_Audit
 local UnifiedGUI_Audit = {
     name = "audit",
     filter = CLM.MODELS.Filters:New(

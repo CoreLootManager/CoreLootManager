@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -85,7 +85,8 @@ local function mutateLootDisenchant(entry, roster)
     GetItemInfo(loot:Id())
 end
 
-local LootManager = {}
+---@class LootManager
+local LootManager =  {}
 function LootManager:Initialize()
     LOG:Trace("LootManager:Initialize()")
 

@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -19,7 +19,8 @@ else
     end
 end
 
-local ProfileManager = {}
+---@class ProfileManager
+local ProfileManager =  {}
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")
 
@@ -238,7 +239,10 @@ function ProfileManager:Initialize()
 
 
 end
-
+---comment
+---@param GUID playerGuid
+---@param name string
+---@param class canonicalClass
 function ProfileManager:NewProfile(GUID, name, class)
     LOG:Trace("ProfileManager:NewProfile()")
     if type(GUID) ~= "string" or GUID == "" then

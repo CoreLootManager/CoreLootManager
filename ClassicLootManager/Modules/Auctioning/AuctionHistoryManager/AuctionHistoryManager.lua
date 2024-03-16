@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -37,6 +37,7 @@ local function GetPostBidsChannel(self)
     return self.db.post_bids_channel
 end
 
+---@class AuctionHistoryManager
 local AuctionHistoryManager = {}
 function AuctionHistoryManager:Initialize()
     LOG:Trace("AuctionHistoryManager:Initialize()")

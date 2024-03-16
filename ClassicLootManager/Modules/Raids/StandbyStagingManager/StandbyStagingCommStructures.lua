@@ -1,12 +1,13 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local StandbyStagingCommSubscribe = {}
+---@class StandbyStagingCommSubscribe
+local StandbyStagingCommSubscribe =  {}
 function StandbyStagingCommSubscribe:New(raidUidOrObject)
     local isCopyConstructor = (type(raidUidOrObject) == "table")
     local o = isCopyConstructor and raidUidOrObject or {}
@@ -25,7 +26,8 @@ function StandbyStagingCommSubscribe:RaidUid()
     return self.r
 end
 
-local StandbyStagingCommRevoke = {}
+---@class StandbyStagingCommRevoke
+local StandbyStagingCommRevoke =  {}
 function StandbyStagingCommRevoke:New(raidUidOrObject)
     local isCopyConstructor = (type(raidUidOrObject) == "table")
     local o = isCopyConstructor and raidUidOrObject or {}
@@ -44,7 +46,8 @@ function StandbyStagingCommRevoke:RaidUid()
     return self.r
 end
 
-local StandbyStagingCommResponse = {}
+---@class StandbyStagingCommResponse
+local StandbyStagingCommResponse =  {}
 function StandbyStagingCommResponse:New(boolOrObject)
     local isCopyConstructor = (type(boolOrObject) == "table")
     local o = isCopyConstructor and boolOrObject or {}
@@ -63,7 +66,8 @@ function StandbyStagingCommResponse:Response()
     return self.r
 end
 
-local StandbyStagingCommStructure = {}
+---@class StandbyStagingCommStructure
+local StandbyStagingCommStructure =  {}
 function StandbyStagingCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
 

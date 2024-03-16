@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -21,7 +21,8 @@ local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 
 -- Singleton
 
-local AuctionManager = {}
+---@class AuctionManager
+local AuctionManager =  {}
 
 -- Database
 

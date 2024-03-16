@@ -1,4 +1,4 @@
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 CLM.ChangelogData = {
     {
         version = "v4.10.0",

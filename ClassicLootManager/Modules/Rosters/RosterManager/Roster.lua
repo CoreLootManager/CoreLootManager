@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -33,10 +33,6 @@ end
 
 ---@class Roster
 local Roster = {}
----@param uid integer
----@param pointType any
----@param raidsForFullAttendance integer
----@param attendanceWeeksWindow integer
 function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
     local o = {}
 

@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -12,7 +12,8 @@ local myGUID = UTILS.whoamiGUID()
 
 local CLM_HISTORICAL_TTL = 5
 
-local EventManager = {}
+---@class EventManager
+local EventManager =  {}
 function EventManager:Initialize()
     LOG:Trace("EventManager:Initialize()")
     -- WoW
@@ -30,7 +31,7 @@ local function unregisterWoWEvent(self, events)
     end
     if type(events) == "string" then events = { events } end
     for _,event in ipairs(events) do
-        CLM.CORE:UnregisterEvent(event)
+        CLM.Ace3:UnregisterEvent(event)
         self.callbacks[event] = nil
     end
 end
@@ -75,7 +76,7 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
     for _,event in ipairs(events) do
         if not self.callbacks[event] then-- lazy load event handlers
             self.callbacks[event] = {}
-            CLM.CORE[event] = (function(...)
+            CLM.Ace3[event] = (function(...)
                 LOG:Debug("Handling [" .. event .. "]")
                 for _,cb in pairs(self.callbacks[event]) do
                     local status, error = pcall(cb, ...) -- if there are multiple handlers for an event we don't one to error out all of them
@@ -84,7 +85,7 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
                     end
                 end
             end)
-            CLM.CORE:RegisterEvent(event)
+            CLM.Ace3:RegisterEvent(event)
         end
 
         unregistrars[event] = addCallbackInternal(self, event, callback)
@@ -116,7 +117,7 @@ function EventManager:RegisterMessage(messages, functionOrObject, methodName)
     for _,message in ipairs(messages) do
         if not self.messageCallbacks[message] then-- lazy load event handlers
             self.messageCallbacks[message] = {}
-            CLM.CORE:RegisterMessage(message, (function(...)
+            CLM.Ace3:RegisterMessage(message, (function(...)
                 LOG:Debug("Handling [" .. message .. "]")
                 for _,cb in pairs(self.messageCallbacks[message]) do
                     local status, error = pcall(cb, ...) -- if there are multiple handlers for an message we don't one to error out all of them
@@ -139,7 +140,7 @@ function EventManager:UnregisterMessage(messages)
     end
     if type(messages) == "string" then messages = { messages } end
     for _,message in ipairs(messages) do
-        CLM.CORE:UnregisterMessage(message)
+        CLM.Ace3:UnregisterMessage(message)
         self.messageCallbacks[message] = nil
     end
 end
@@ -159,7 +160,7 @@ function EventManager:RegisterWoWBucketEvent(events, interval, functionOrObject,
         if not self.bucketCallbacks[event] then-- lazy load event handlers
             self.bucketCallbacks[event] = {}
             local handlerName = event .. "_bucket"
-            CLM.CORE[handlerName] = (function(...)
+            CLM.Ace3[handlerName] = (function(...)
                 LOG:Debug("Bucket handling [" .. event .. "]")
                 for _,cb in pairs(self.bucketCallbacks[event]) do
                     local status, error = pcall(cb, ...) -- if there are multiple handlers for an event we don't one to error out all of them
@@ -168,7 +169,7 @@ function EventManager:RegisterWoWBucketEvent(events, interval, functionOrObject,
                     end
                 end
             end)
-            CLM.CORE:RegisterBucketEvent(event, interval or 1, handlerName)
+            CLM.Ace3:RegisterBucketEvent(event, interval or 1, handlerName)
         end
         tinsert(self.bucketCallbacks[event], callback)
     end

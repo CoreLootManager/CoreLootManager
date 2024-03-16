@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -11,10 +11,14 @@ local mergeLists = UTILS.mergeLists
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
-local Award          = LogEntry:extend("IA")
-local RaidAward      = LogEntry:extend("II")
-local Disenchant     = LogEntry:extend("ID")
-local RaidDisenchant = LogEntry:extend("IE")
+---@class Award
+local Award =  LogEntry:extend("IA")
+---@class RaidAward
+local RaidAward =  LogEntry:extend("II")
+---@class Disenchant
+local Disenchant =  LogEntry:extend("ID")
+---@class RaidDisenchant
+local RaidDisenchant =  LogEntry:extend("IE")
 
 function Award:new(rosterUid, profile, itemId, value, extra)
     local o = LogEntry.new(self);

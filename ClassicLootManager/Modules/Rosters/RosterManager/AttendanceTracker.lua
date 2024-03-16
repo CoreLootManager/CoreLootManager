@@ -1,5 +1,5 @@
 -- ------------------------------- --
-local  _, CLM = ...
+local CLM = select(2, ...) ---@class CLM
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -10,7 +10,8 @@ local WeekNumber = UTILS.WeekNumber
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
 
-local AttendanceTracker = {}
+---@class AttendanceTracker
+local AttendanceTracker =  {}
 
 function AttendanceTracker:New(raidsPerWeekForFullAttendance, averageWindowWeeks, weeklyReset)
     local o = {}
