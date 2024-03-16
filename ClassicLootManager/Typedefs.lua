@@ -6,20 +6,23 @@
 ---@field patch integer
 ---@field changeset string
 
----@class playerGuid User GUID
+---@alias playerGuid string User GUID
 
 ---@class shortGuid integer | table
----@alias possibleGuidSource integer | string | LogEntry | shortGuid
+---@alias possibleGuidSource integer | playerGuid | LogEntry | shortGuid
 
 ---@alias playerSet table<playerGuid, boolean>
 
 ---@alias playerRole "NONE" | "DAMAGER" | "TANK" | "HEALER"
 
 ---@class LogEntry
+---@field new function
+---@field extend function
+---@field fields string[]
+---@field time function
+---@field creatorFull function
 
 ---@alias canonicalClass "WARRIOR" | "PALADIN" | "HUNTER" | "ROGUE" | "PRIEST" | "DEATHKNIGHT" | "SHAMAN" | "MAGE" | "WARLOCK" | "MONK" | "DRUID" | "DEMONHUNTER" | "EVOKER"
-
----@alias mouseButton "LeftButton" | "RightButton" | "MiddleButton" | "Button4" | "Button5"
 
 ---@class ColorDefinition
 ---@field r number

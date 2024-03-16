@@ -10,7 +10,7 @@ local mergeLists = UTILS.mergeLists
 local typeof = UTILS.typeof
 local CreateGUIDList = UTILS.CreateGUIDList
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
+local LogEntry  = LibStub("EventSourcing/LogEntry") --[[@as LogEntry]]
 
 local deflate = UTILS.deflate
 

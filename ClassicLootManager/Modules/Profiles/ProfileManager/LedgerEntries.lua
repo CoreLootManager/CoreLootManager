@@ -11,25 +11,34 @@ local CanonicalClassToNumber = UTILS.CanonicalClassToNumber
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local CreateGUIDList = UTILS.CreateGUIDList
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
+local LogEntry  = LibStub("EventSourcing/LogEntry") --[[@as LogEntry]]
 
 ---@class ProfileUpdate : LogEntry
 ---@field g shortGuid
 ---@field n string
----@field c canonicalClass
+---@field c integer
 ---@field s string
 ---@field m shortGuid
 local ProfileUpdate =  LogEntry:extend("P0")
+
 ---@class ProfileRemove : LogEntry
+---@field g shortGuid
 local ProfileRemove =  LogEntry:extend("P1")
+
 ---@class ProfileLink : LogEntry
+---@field g shortGuid
+---@field m shortGuid
 local ProfileLink =  LogEntry:extend("P2")
+
 ---@class ProfileLock : LogEntry
+---@field p shortGuid[]
+---@field l boolean
 local ProfileLock =  LogEntry:extend("P3")
+
 -- ------------- --
 -- ProfileUpdate --
 -- ------------- --
----@param GUID LogEntry | string | integer | table | nil
+---@param GUID possibleGuidSource
 ---@param name string
 ---@param class canonicalClass
 ---@param spec any?
@@ -73,6 +82,8 @@ end
 -- ------------- --
 -- ProfileRemove --
 -- ------------- --
+---@param GUID possibleGuidSource
+---@return ProfileRemove
 function ProfileRemove:new(GUID)
     local o = LogEntry.new(self);
     o.g = GetGUIDFromEntry(GUID or 0)
@@ -91,6 +102,9 @@ end
 -- ------------- --
 -- ProfileLink --
 -- ------------- --
+---@param GUID possibleGuidSource
+---@param main possibleGuidSource?
+---@return ProfileLink
 function ProfileLink:new(GUID, main)
     local o = LogEntry.new(self);
     o.g = GetGUIDFromEntry(GUID or 0)
@@ -114,6 +128,9 @@ end
 -- ------------- --
 -- ProfileLink --
 -- ------------- --
+---@param playerList possibleGuidSource[]
+---@param lock boolean
+---@return ProfileLock
 function ProfileLock:new(playerList, lock)
     local o = LogEntry.new(self);
     o.p = CreateGUIDList(playerList)

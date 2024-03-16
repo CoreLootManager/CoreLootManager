@@ -167,9 +167,19 @@
         "MAINASSIST",
         "SetDesaturation",
         "GetBuildInfo",
-        "C_Seasons"
+        "LOOT_ROLL_TYPE_PASS",
+        "LOOT_ROLL_TYPE_NEED",
+        "LOOT_ROLL_TYPE_GREED",
+        "LOOT_ROLL_TYPE_DISENCHANT",
+        "UnitIsPlayer",
+        "GetGuildRosterInfo",
+        "strlower",
+        "UnitClass"
     ],
     "Lua.diagnostics.disable": [
         // "deprecated",
+    ],
+    "Lua.workspace.ignoreDir": [
+        "ClassicLootManager/Libs/*"
     ]
 }

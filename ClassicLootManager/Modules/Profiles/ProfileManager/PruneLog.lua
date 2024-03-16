@@ -7,7 +7,15 @@ local CLM = select(2, ...) ---@class CLM
 -- ------------------------------- --
 
 ---@class PruneLog
+---@field type any
+---@field timestamp number
+---@field log any[]
+---@field nop boolean
 local PruneLog =  {}
+
+---@param type any
+---@param nop boolean
+---@return table
 function PruneLog:New(type, nop)
     local o = {}
 

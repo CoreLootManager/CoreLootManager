@@ -17,10 +17,10 @@ local UTILS     = CLM.UTILS
 local Profile = {}
 
 ---comment
----@param entry ProfileUpdate
+---@param entry ProfileUpdate?
 ---@param name string
----@param class canonicalClass
----@param main playerGuid
+---@param class canonicalClass?
+---@param main playerGuid?
 ---@return Profile
 function Profile:New(entry, name, class, main)
     local o = {}

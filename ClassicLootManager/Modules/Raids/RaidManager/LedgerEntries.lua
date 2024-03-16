@@ -9,7 +9,7 @@ local UTILS     = CLM.UTILS
 local CreateGUIDList = UTILS.CreateGUIDList
 local mergeLists = UTILS.mergeLists
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
+local LogEntry  = LibStub("EventSourcing/LogEntry") --[[@as LogEntry]]
 
 ---@class Create
 local Create =  LogEntry:extend("AC")

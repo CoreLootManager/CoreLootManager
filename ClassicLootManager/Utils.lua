@@ -502,7 +502,7 @@ function UTILS.whoamiGUID()
     return playerGUID
 end
 
----@param playerList LogEntry[]
+---@param playerList possibleGuidSource[]
 ---@return playerGuid[]
 function UTILS.CreateGUIDList(playerList)
     local playerGUIDList = {}

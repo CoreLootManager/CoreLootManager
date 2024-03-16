@@ -9,7 +9,7 @@ local UTILS     = CLM.UTILS
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 local mergeLists = UTILS.mergeLists
 
-local LogEntry  = LibStub("EventSourcing/LogEntry")
+local LogEntry  = LibStub("EventSourcing/LogEntry") --[[@as LogEntry]]
 
 ---@class Award
 local Award =  LogEntry:extend("IA")
