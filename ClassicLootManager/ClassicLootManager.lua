@@ -8,7 +8,6 @@ if LIB_CLM then
 end
 
 CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
-CLM.WoWCata = select(4, GetBuildInfo()) >= 40400
 CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
 CLM.WoWCata = select(4, GetBuildInfo()) > 40000
 if CLM.WoWSeasonal then
@@ -21,14 +20,14 @@ CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
 CLM.COMM_CHANNEL = {
-    AUCTION = "Auction2",
-    BIDDING = "Bidding2",
+    AUCTION = "Auction3",
+    BIDDING = "Bidding3",
     LEDGER = {
         SYNC = "LedgerS3",
         DATA = "LedgerD3"
     },
-    STANDBY = "Standby001",
-    GLOBAL = "Version001"
+    STANDBY = "Standby2",
+    GLOBAL = "Version2"
 }
 CLM.UTILS = {}
 CLM.GUI = {}
