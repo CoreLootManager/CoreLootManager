@@ -741,7 +741,7 @@ function AuctionManagerGUI:BuildColumns()
     local columns = {
         { name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
         {name = CLM.L["Name"],  width = 100,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn), DoCellUpdate = UTILS.LibStNameCellUpdate
         },
         {name = CLM.L["Bid"],   width = 100, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,

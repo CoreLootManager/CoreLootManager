@@ -592,7 +592,7 @@ function UTILS.putListInTooltip(data, tooltip, inLine, max, dataProvider, autoWr
 end
 
 local function profileListTooltipDataProvider(profile)
-    return ColorCodeText(profile:Name(), GetClassColor(profile:Class()).hex)
+    return ColorCodeText(profile:ShortName(), GetClassColor(profile:Class()).hex)
 end
 
 local putListInTooltip = UTILS.putListInTooltip
@@ -894,9 +894,19 @@ function UTILS.LibStClassCellUpdate(rowFrame, frame, data, cols, row, realrow, c
     end
 end
 
+function UTILS.LibStNameCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+    local name = data[realrow].cols[column].value
+    table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+    local ambiguated_name = Ambiguate(name, "none")
+    if name == ambiguated_name then
+        print("Not ambiguous: ", ambiguated_name)
+    end
+    frame.text:SetText(Ambiguate(ambiguated_name, "none"))
+end
+
 function UTILS.getHighlightMethod(highlightColor, multiselect)
     return (function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
-        table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+        -- table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
         local color
         local selected
         if multiselect then
@@ -1092,6 +1102,7 @@ CONSTANTS.ROLL_TYPE = {
 }
 if CLM.WoW10 or CLM.WoWCata then
     CONSTANTS.ROLL_TYPE[LOOT_ROLL_TYPE_DISENCHANT]         = ColorCodeText(ROLL_DISENCHANT, "0070dd")
+    local TRANSMOGRIFICATION = TRANSMOGRIFICATION or "Transmogrification"
     CONSTANTS.ROLL_TYPE[CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG] = ColorCodeText(TRANSMOGRIFICATION, "a335ee")
 end
 

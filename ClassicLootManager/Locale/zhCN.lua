@@ -252,7 +252,7 @@ CLM.L["Auction of %s"] = "拍卖 %s"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:480
 CLM.L["Auction settings"] = "拍卖设置"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:707
-CLM.L["Auction stopped by Master Looter"] = "被Master Looter停止拍卖"
+CLM.L["Auction stopped by the Master Looter"] = "被Master Looter停止拍卖"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:822
 CLM.L["Auction time: %s."] = "拍卖时间: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:190

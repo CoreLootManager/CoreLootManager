@@ -252,7 +252,7 @@ CLM.L["Auction of %s"] = "Enchère de %s"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:480
 CLM.L["Auction settings"] = "Configuration des enchères"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:707
-CLM.L["Auction stopped by Master Looter"] = "Enchères arrêtées par le maître du butin"
+CLM.L["Auction stopped by the Master Looter"] = "Enchères arrêtées par le maître du butin"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:822
 CLM.L["Auction time: %s."] = "Temps de l'enchère: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:190

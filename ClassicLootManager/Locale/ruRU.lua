@@ -252,7 +252,7 @@ CLM.L["Auction of %s"] = "Аукцион %s"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:480
 CLM.L["Auction settings"] = "Настройки аукциона"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:707
-CLM.L["Auction stopped by Master Looter"] = "Аукцион остановлен Распределяющим добычу"
+CLM.L["Auction stopped by the Master Looter"] = "Аукцион остановлен Распределяющим добычу"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:822
 CLM.L["Auction time: %s."] = "Время аукциона: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:190

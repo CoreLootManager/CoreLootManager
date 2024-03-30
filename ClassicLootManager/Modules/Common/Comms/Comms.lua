@@ -18,6 +18,8 @@ local CommsPrefix = "CLM"
 
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 
+local COMMS_VERSION = 1
+
 local defaultCTL = {
     BURST = _G.ChatThrottleLib.BURST or 4000,
     MAX_CPS = _G.ChatThrottleLib.MAX_CPS or 800
@@ -145,7 +147,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
     end
     -- Version comms
     message = {
-        _version = CLM.CORE:GetVersion().major,
+        _version = COMMS_VERSION,
         _message = message,
     }
     -- X-realm
@@ -235,8 +237,8 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return
     end
     -- Version check
-    if tmp._version ~= CLM.CORE:GetVersion().major then
-        LOG:Debug("Comms:OnReceive() received outdated comms message [%s] from [%s]", tostring(tmp._version), sender)
+    if tmp._version ~= COMMS_VERSION then
+        LOG:Debug("Comms:OnReceive() received invalid comms message [%s] from [%s]", tostring(tmp._version), sender)
         return
     end
     -- Cross-Faction workaround check

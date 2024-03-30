@@ -17,7 +17,7 @@
 ## X-License: Apache2
 ## X-Curse-Project-ID: 481373
 ## X-Wago-ID: vEGPw4K1
-## DefaultState: disabled
+## DefaultState: enabled
 
 Libs\LibJsonLua\LibJsonLua.lua
 Libs\LibLuaXML\LibLuaXML.lua

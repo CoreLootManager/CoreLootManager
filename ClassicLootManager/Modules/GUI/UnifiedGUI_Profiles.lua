@@ -169,7 +169,7 @@ local tableStructure = {
     -- columns - structure of the ScrollingTable
     columns = {
         {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate},
-        {name = CLM.L["Name"],  width = 115, sort = LibStub("ScrollingTable").SORT_ASC},
+        {name = CLM.L["Name"],  width = 115, DoCellUpdate = UTILS.LibStNameCellUpdate, sort = LibStub("ScrollingTable").SORT_ASC},
         {name = CLM.L["Main"],  width = 115 },
         {name = CLM.L["Role"],  width = 60},
         {name = CLM.L["Version"],  width = 70,

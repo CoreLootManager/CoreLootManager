@@ -14,10 +14,10 @@ local typeof = UTILS.typeof
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
 -- luacheck: ignore CHAT_MESSAGE_CHANNEL
-local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
---@debug@
--- CHAT_MESSAGE_CHANNEL = "GUILD"
---@end-debug@
+CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
+-- @debug@
+CHAT_MESSAGE_CHANNEL = "GUILD"
+-- @end-debug@
 
 -- Singleton
 
@@ -704,7 +704,7 @@ function AuctionManager:StopAuctionManual()
     LOG:Trace("AuctionManager:StopAuctionManual()")
     self.intervalTicker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
-        UTILS.SendChatMessage(CLM.L["Auction stopped by Master Looter"], CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(CLM.L["Auction stopped by the Master Looter"], CHAT_MESSAGE_CHANNEL)
     end
     EndAuction(self)
 end
