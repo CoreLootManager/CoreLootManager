@@ -21,7 +21,7 @@ function AuctionCommStartAuction:New(object)
 end
 
 local getExtraPayload
-if CLM.WoW10 then
+if CLM.WoW10 or CLM.WoWCata then
     getExtraPayload = function(auctionItem) return auctionItem:GetExtraPayload() end
 else
     getExtraPayload = function() return nil end

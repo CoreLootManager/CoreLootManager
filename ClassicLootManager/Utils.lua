@@ -361,7 +361,7 @@ end
 
 local _GetNormalizedRealmName = UTILS.GetNormalizedRealmName
 
-if CLM.WoW10 or CLM.WoWSeasonal then -- support cross-server for Retail and Classic Era
+if CLM.WoW10 or CLM.WoWSeasonal or CLM.WoWCata then -- support cross-server for Retail and Classic Era
     function UTILS.getIntegerGuid(GUID)
         local _, realm, int = strsplit("-", GUID)
         return {tonumber(realm, 10), tonumber(int, 16)}
@@ -1090,7 +1090,7 @@ CONSTANTS.ROLL_TYPE = {
     [LOOT_ROLL_TYPE_NEED]               = ColorCodeText(NEED, "1eff00"),
     [LOOT_ROLL_TYPE_GREED]              = ColorCodeText(GREED , "ffd100"),
 }
-if CLM.WoW10 then
+if CLM.WoW10 or CLM.WoWCata then
     CONSTANTS.ROLL_TYPE[LOOT_ROLL_TYPE_DISENCHANT]         = ColorCodeText(ROLL_DISENCHANT, "0070dd")
     CONSTANTS.ROLL_TYPE[CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG] = ColorCodeText(TRANSMOGRIFICATION, "a335ee")
 end

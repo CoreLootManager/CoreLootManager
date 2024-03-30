@@ -830,7 +830,7 @@ function AuctionManager:StartAuction()
     end
     -- For now only WoW Classic (with different IDs for items) support auto item value mode settings when dynamic item value mode is enabled
     local autoItemValueOverride = true
-    if CLM.WoW10 then
+    if CLM.WoW10 or CLM.WoWCata then
         autoItemValueOverride = not auction.roster:GetConfiguration("dynamicValue")
     end
 

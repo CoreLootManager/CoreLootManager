@@ -280,3 +280,7 @@ CONSTANTS.COMMS = {
         --YELL = "YELL"
     }
 }
+
+--@do-not-package@
+CONSTANTS.COMMS.DISTRIBUTION.RAID = CONSTANTS.COMMS.DISTRIBUTION.GUILD
+--@end-do-not-package@
