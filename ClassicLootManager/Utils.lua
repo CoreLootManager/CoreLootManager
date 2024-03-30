@@ -897,16 +897,11 @@ end
 function UTILS.LibStNameCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local name = data[realrow].cols[column].value
     table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-    local ambiguated_name = Ambiguate(name, "none")
-    if name == ambiguated_name then
-        print("Not ambiguous: ", ambiguated_name)
-    end
-    frame.text:SetText(Ambiguate(ambiguated_name, "none"))
+    frame.text:SetText(Ambiguate(name, "none"))
 end
 
 function UTILS.getHighlightMethod(highlightColor, multiselect)
     return (function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
-        -- table.DoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
         local color
         local selected
         if multiselect then

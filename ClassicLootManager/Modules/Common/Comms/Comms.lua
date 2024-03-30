@@ -147,8 +147,8 @@ function Comms:Send(prefix, message, distribution, target, priority)
     end
     -- Version comms
     message = {
-        _version = COMMS_VERSION,
-        _message = message,
+        _v = COMMS_VERSION,
+        _m = message,
     }
     -- X-realm
     if distribution == CONSTANTS.COMMS.DISTRIBUTION.WHISPER then
@@ -237,18 +237,18 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         return
     end
     -- Version check
-    if tmp._version ~= COMMS_VERSION then
-        LOG:Debug("Comms:OnReceive() received invalid comms message [%s] from [%s]", tostring(tmp._version), sender)
+    if tmp._v ~= COMMS_VERSION then
+        LOG:Debug("Comms:OnReceive() received invalid comms message [%s] from [%s]", tostring(tmp._v), sender)
         return
     end
     -- Cross-Faction workaround check
     if tmp._isX then
         if tmp._target == UTILS.whoami() then
-            self.callbacks[prefix](tmp._message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, sender)
+            self.callbacks[prefix](tmp._m, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, sender)
         end
     else
         -- Execute callback
-        self.callbacks[prefix](tmp._message, distribution, sender)
+        self.callbacks[prefix](tmp._m, distribution, sender)
     end
 end
 

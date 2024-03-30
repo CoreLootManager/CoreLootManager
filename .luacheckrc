@@ -46,6 +46,7 @@ globals = {
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"Ambiguate",
 	"RaidWarningFrame",
 	"RaidWarningFrame_OnEvent",
 	"C_Seasons.GetActiveSeason",

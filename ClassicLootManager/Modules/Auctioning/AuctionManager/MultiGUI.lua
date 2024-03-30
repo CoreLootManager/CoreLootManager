@@ -691,7 +691,7 @@ local function Create(self)
     DataGroup:SetWidth(self.dataWidth)
     DataGroup:AddChild(CreateItemOptions(self, self.dataWidth))
     DataGroup:AddChild(CreateAuctionOptions(self, self.dataWidth))
-    DataGroup:AddChild(CreateBidList(self, self.dataWidth))
+    DataGroup:AddChild(CreateBidList(self))
     DataGroup:AddChild(CreateAwardOptions(self, self.dataWidth))
 
     f:AddChild(ItemList)
