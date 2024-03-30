@@ -897,7 +897,7 @@ end
 function UTILS.LibStNameCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
     local name = data[realrow].cols[column].value
     table.DoCellUpdate(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
-    frame.text:SetText(Ambiguate(name, "none"))
+    frame.text:SetText(Ambiguate(name or "", "none"))
 end
 
 function UTILS.getHighlightMethod(highlightColor, multiselect)

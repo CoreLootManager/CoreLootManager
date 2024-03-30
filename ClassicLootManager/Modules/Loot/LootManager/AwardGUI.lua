@@ -67,7 +67,7 @@ local function UpdateOptions(self)
             for _, GUID in ipairs(profiles) do
                 local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
                 if profile then
-                    profileNameMap[profile:Name()] = profile:Name()
+                    profileNameMap[profile:Name()] = profile:ShortName()
                     profileList[#profileList + 1] = profile:Name()
                 end
             end
