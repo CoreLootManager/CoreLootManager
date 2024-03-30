@@ -1090,10 +1090,8 @@ CONSTANTS.ROLL_TYPE = {
     [LOOT_ROLL_TYPE_NEED]               = ColorCodeText(NEED, "1eff00"),
     [LOOT_ROLL_TYPE_GREED]              = ColorCodeText(GREED , "ffd100"),
 }
-
 if CLM.WoW10 or CLM.WoWCata then
     CONSTANTS.ROLL_TYPE[LOOT_ROLL_TYPE_DISENCHANT]         = ColorCodeText(ROLL_DISENCHANT, "0070dd")
-    local TRANSMOGRIFICATION = TRANSMOGRIFICATION or "Transmogrification" -- Fix for missing TRANSMOGRIFICATION in Cata Beta
     CONSTANTS.ROLL_TYPE[CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG] = ColorCodeText(TRANSMOGRIFICATION, "a335ee")
 end
 
