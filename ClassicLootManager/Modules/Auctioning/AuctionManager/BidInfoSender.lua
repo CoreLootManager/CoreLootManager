@@ -44,7 +44,7 @@ function BidInfoSender:Tick(value)
     value = tonumber(value) or 0
     self.current = self.current - value
     if self.current <= 0 then
-        Send(self)
+        self:Flush()
     end
 end
 

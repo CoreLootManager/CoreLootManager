@@ -28,13 +28,15 @@ local defaultCTL = {
 local function restoreThrottle()
     _G.ChatThrottleLib.BURST = defaultCTL.BURST
     _G.ChatThrottleLib.MAX_CPS = defaultCTL.MAX_CPS
+    print("restore throttle", _G.ChatThrottleLib.BURST, defaultCTL.BURST, _G.ChatThrottleLib.MAX_CPS, defaultCTL.MAX_CPS)
 end
 
 local throttleTimer = LibStub("LibExpiringTimer").New(5, restoreThrottle)
 
 local function throttle()
     _G.ChatThrottleLib.BURST = 2550
-    _G.ChatThrottleLib.MAX_CPS = 250
+    _G.ChatThrottleLib.MAX_CPS = 255
+    print("throttle")
     throttleTimer()
 end
 
@@ -184,6 +186,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         return false
     end
     if distribution == CONSTANTS.COMMS.DISTRIBUTION.RAID then
+        print(prefix)
         throttle()
     end
     LOG:Debug("Message on channel %s with size %s [B] ", prefix, tmp:len())
@@ -294,5 +297,5 @@ CONSTANTS.COMMS = {
 }
 
 --@do-not-package@
--- CONSTANTS.COMMS.DISTRIBUTION.RAID = CONSTANTS.COMMS.DISTRIBUTION.GUILD
+CONSTANTS.COMMS.DISTRIBUTION.RAID = CONSTANTS.COMMS.DISTRIBUTION.GUILD
 --@end-do-not-package@

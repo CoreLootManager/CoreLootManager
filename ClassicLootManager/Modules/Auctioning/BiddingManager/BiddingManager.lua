@@ -48,25 +48,10 @@ local function GetUpgradedItems(itemId)
     return items
 end
 
--- local function InitializeDB(self)
---     self.db = CLM.MODULES.Database:Personal('bidding', {
-
---     })
--- end
-
-
--- local function CreateOptions(self)
---     local options = {}
---     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
--- end
 
 local BiddingManager = {}
 function BiddingManager:Initialize()
     LOG:Trace("BiddingManager:Initialize()")
-
-    -- InitializeDB(self)
-
-    -- CreateOptions(self)
 
     CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.AUCTION,
     (function(rawMessage, distribution, sender)
@@ -79,7 +64,7 @@ function BiddingManager:Initialize()
     end),
     true)
 
-    for i=1,CLM.CONSTANTS.AUCTION_COMM.NUM_ANNOUNCE_CHANNELS-1 do
+    for i=0,CLM.CONSTANTS.AUCTION_COMM.NUM_ANNOUNCE_CHANNELS-1 do
         CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.BIDANNOUNCE .. tostring(i), (function(rawMessage, distribution, sender)
             local message = CLM.MODELS.AuctionCommStructure:New(rawMessage)
             if message:Type() ~= CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID then return end

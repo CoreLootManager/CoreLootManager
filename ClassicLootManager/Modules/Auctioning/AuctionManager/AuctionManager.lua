@@ -589,7 +589,7 @@ local function SendBidInfoInternal(auctionDistributeBidData)
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID, auctionDistributeBidData
     )
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDANNOUNCE .. tostring(currentAnnounceChannel), message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDANNOUNCE .. tostring(currentAnnounceChannel), message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.NORMAL)
     currentAnnounceChannel = currentAnnounceChannel + 1
     if currentAnnounceChannel == CLM.CONSTANTS.AUCTION_COMM.NUM_ANNOUNCE_CHANNELS - 1 then
         currentAnnounceChannel = 0
@@ -777,7 +777,7 @@ function AuctionManager:ClearItemList()
     self:RefreshGUI()
 end
 
-local SENDING_INTERVAL = 2
+local SENDING_INTERVAL = 1
 function AuctionManager:StartAuction()
     LOG:Trace("AuctionManager:StartAuction()")
     local auction = self.currentAuction
