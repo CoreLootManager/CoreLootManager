@@ -143,7 +143,7 @@ function CORE:_InitializeBackend()
     MODULES.Logger:Initialize()
     MODULES.Comms:Initialize()
     MODULES.EventManager:Initialize()
-    MODULES.GuildInfoListener:Initialize()
+    MODULES.TrustInfoProvider:Initialize()
     MODULES.LedgerManager:Initialize()
 
     return true

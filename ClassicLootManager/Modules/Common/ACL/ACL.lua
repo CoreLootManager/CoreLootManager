@@ -17,7 +17,7 @@ end
 
 function ACL:CheckLevel(level, name)
     LOG:Trace("ACL:CheckLevel()")
-    local info = CLM.MODULES.GuildInfoListener:GetInfo()
+    local info = CLM.MODULES.TrustInfoProvider:GetInfo()
     -- By default block everything except for GM if level not provided
     level = level or CONSTANTS.ACL.LEVEL.GUILD_MASTER
     -- Request is for self
