@@ -41,8 +41,8 @@ globals = {
 	-- RCLC
 	"RCLootCouncil",
 	-- VDT 
-	"ViragDevTool",
-	"ViragDevTool_AddData",
+	"DevTool",
+	"DevTool_AddData",
 	-- ElvUI
 	"ElvUI",
 	-- WoW

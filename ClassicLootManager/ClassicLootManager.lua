@@ -97,37 +97,6 @@ local function Initialize_Logger()
     LOG:SetDatabase(CLM2_Logs)
 end
 
-local function Initialize_Versioning()
-    -- Parse autoversion
-    local new = UTILS.ParseVersionString(CLM.AUTOVERSION)
-    local old = CLM2_DB.global.version
-    -- set new version
-    CLM2_DB.global.version = new
-    -- update string
-    local changeset = new.changeset
-    if changeset and changeset ~= "" then
-        changeset = "-" .. changeset
-    else
-        changeset = ""
-    end
-    CORE.versionString = string.format(
-        "v%s.%s.%s%s",
-        new.major or 0,
-        new.minor or 0,
-        new.patch or 0,
-        changeset)
-    -- return both for update purposes
-    return old, new
-end
-
-function CORE:GetVersion()
-    return CLM2_DB.global.version
-end
-
-function CORE:GetVersionString()
-    return self.versionString or ""
-end
-
 
 local function RegisterUniversal(object, moduleName, entryPoint)
     if type(moduleName) ~= "string" then
@@ -313,7 +282,7 @@ function CORE:OnInitialize()
     --  Early Initialize logger
     Initialize_Logger()
     -- Initialize Versioning
-    Initialize_Versioning()
+    CLM.MODULES.Version:Initialize()
     -- Initialize AddOn
     LOG:Trace("OnInitialize")
     self._initialize_fired = false
@@ -344,7 +313,7 @@ function CORE:GUILD_ROSTER_UPDATE(...)
 end
 
 --@do-not-package@
-if ViragDevTool then
-    ViragDevTool_AddData(CLM, "CLM")
+if DevTool then
+    DevTool_AddData(CLM, "CLM")
 end
 --@end-do-not-package@

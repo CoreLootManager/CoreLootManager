@@ -132,7 +132,7 @@ function ChangelogGUI:Create()
     self.top = f
 
     -- Display based on config
-    local version = CLM.CORE:GetVersion()
+    local version = CLM.MODULES.Version:Get()
     local sameVersion = (self.db.lastVersion.major == version.major) and (self.db.lastVersion.minor == version.minor) and (self.db.lastVersion.patch == version.patch)
     if self.db.never_show or (sameVersion and self.db.do_not_show) then
         f:Hide()

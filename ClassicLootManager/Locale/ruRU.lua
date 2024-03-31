@@ -1373,7 +1373,7 @@ CLM.L["New roster: %s"] = "Новый состав: %s"
 -- ClassicLootManager_Integrations/Migration.lua:124
 CLM.L["New roster: [%s]"] = "Новый состав: [%s]"
 -- ClassicLootManager/Modules/Profiles/ProfileInfoManager/ProfileInfoManager.lua:57
-CLM.L["New version %s of Core Loot Manager is available. For best experience please update the AddOn."] = "Новая версия %s Core Loot Manager доступна. Для лучшего опыта использования, пожалуйста, обновите аддон."
+CLM.L["New version of Core Loot Manager is available. For best experience please update the AddOn."] = "Новая версия Core Loot Manager доступна. Для лучшего опыта использования, пожалуйста, обновите аддон."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:598
 CLM.L["Next item"] = "Следующий проект"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:597
@@ -2377,5 +2377,5 @@ CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highe
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1257
 CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|cff00ee44Статичная цена:|r Режим статичной цены. Только ставка фиксированного значения разрешена.\n\n|cff00ee44На повышение:|r Разрешен диапазон ставок. Разрешается поставить любое значение в диапазоне |cff44ee00<base, max>|r.\n\n|cff00ee44Тир-аукцион:|r Разрешен диапазон ставок. Разрешается ставить только конкретные значения. До 5 тиров можно настроить в диапазоне |cff44ee00<base, small, medium, large, max>|r."
 -- ClassicLootManager/Modules/Profiles/ProfileInfoManager/ProfileInfoManager.lua:50
-CLM.L["|cffcc0000Your Core Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Ваш Core Loot Manager сильно устарел.|r Коммуникации аддона отключены. Версия %s уже доступна. Пожалуйста, обновитесь как можно скорее."
+CLM.L["|cffcc0000Your Core Loot Manager is significantly out of date.|r AddOn communication has been disabled. Please update as soon as possible."] = "|cffcc0000Ваш Core Loot Manager сильно устарел.|r Коммуникации аддона отключены. Пожалуйста, обновитесь как можно скорее."
 end

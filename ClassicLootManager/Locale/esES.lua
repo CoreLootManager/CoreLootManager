@@ -1373,7 +1373,7 @@ CLM.L["New roster: %s"] = "Nueva lista: %s"
 -- ClassicLootManager_Integrations/Migration.lua:124
 CLM.L["New roster: [%s]"] = "Nuevo roster: [%s]"
 -- ClassicLootManager/Modules/Profiles/ProfileInfoManager/ProfileInfoManager.lua:57
-CLM.L["New version %s of Core Loot Manager is available. For best experience please update the AddOn."] = "La nueva versión %s de Core Loot Manager está disponible. Para obtener la mejor experiencia, actualice el AddOn."
+CLM.L["New version of Core Loot Manager is available. For best experience please update the AddOn."] = "La nueva versión de Core Loot Manager está disponible. Para obtener la mejor experiencia, actualice el AddOn."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:598
 CLM.L["Next item"] = "Siguiente proyecto"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:597
@@ -2377,5 +2377,5 @@ CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highe
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1257
 CLM.L["|cff00ee44Single-Priced:|r Static value mode. Only bidding Base value is supported.\n\n|cff00ee44Ascending:|r Ranged value mode. Allows bidding any value in |cff44ee00<base, max>|r.\n\n|cff00ee44Tiered:|r Ranged value mode. Allows bidding only specific values. Up to 5 tiers are configurable in |cff44ee00<base, small, medium, large, max>|r."] = "|cff00ee44Precio: |r Modo de valor estático. Solo se admite el valor base de oferta. Permite ofertar cualquier valor en |cff44ee00 <base, max> |r. \n\n|cff00ee44tiered: |r ranged valor modo. Permite ofertar solo valores específicos. Hasta 5 niveles son configurables en |cff44ee00 <base, pequeña, mediana, grande, max> |r."
 -- ClassicLootManager/Modules/Profiles/ProfileInfoManager/ProfileInfoManager.lua:50
-CLM.L["|cffcc0000Your Core Loot Manager is significantly out of date.|r AddOn communication has been disabled. Version %s is available. Please update as soon as possible."] = "|cffcc0000Tu Core Loot Manager está significativamente desactualizado.|r La comunicación AddOn ha sido deshabilitada. La versión %s está disponible. Actualice lo antes posible. "
+CLM.L["|cffcc0000Your Core Loot Manager is significantly out of date.|r AddOn communication has been disabled. Please update as soon as possible."] = "|cffcc0000Tu Core Loot Manager está significativamente desactualizado.|r La comunicación AddOn ha sido deshabilitada. Actualice lo antes posible. "
 end

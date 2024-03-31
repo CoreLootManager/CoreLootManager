@@ -239,6 +239,9 @@ function Comms:OnReceive(prefix, message, distribution, sender)
     -- Version check
     if tmp._v ~= COMMS_VERSION then
         LOG:Debug("Comms:OnReceive() received invalid comms message [%s] from [%s]", tostring(tmp._v), sender)
+        if (tonumber(tmp._v) or 0) > COMMS_VERSION then
+            CLM.MODULES.Version:OutOfDate(true)
+        end
         return
     end
     -- Cross-Faction workaround check
