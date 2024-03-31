@@ -165,10 +165,11 @@ function CORE:_InitializeFeatures()
     MODULES.AutoAwardManager:Initialize()
     MODULES.AuctionHistoryManager:Initialize()
     MODULES.SandboxManager:Initialize()
+    MODULES.CrossGuildSyncManager:Initialize()
     -- Globals
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
     CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
-    CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
+    CLM.GlobalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
     CLM.GlobalUIHandlers:Initialize() -- Initialize various global misc UI handlers
     CLM.GlobalGuildChangeHandler:Initialize() -- Initialize guild change handler
 

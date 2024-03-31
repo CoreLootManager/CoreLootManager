@@ -48,19 +48,19 @@ local function FilterOutWhisperErrorMessages(self)
     end))
 end
 
-local XSYNC_MODE = {
+local XSYNC_TYPE = {
     SOURCE = 1,
     TARGET = 2,
     PEER_TO_PEER = 3
 }
 
-local XSYNC_MODE_GUI = {
+local XSYNC_TYPE_GUI = {
     CLM.L["Source"],
     CLM.L["Target"],
     CLM.L["Peer to Peer"]
 }
 
-local function GetConfigurationOptions(self)
+local function RegisterConfigurationOptions(self)
     local options = {
         xguild_desc = {
             name = CLM.L["Cross-guild synchronisation allows connecting two guild data through proxy mechanism called tunneling. Three types of connection are available: Source, Target and Peer to Peer. Use this functionality only if you are absolutely sure you know what you are doing."],
@@ -68,25 +68,29 @@ local function GetConfigurationOptions(self)
             width = "full",
             fontSize = "medium",
             order = 1
-        },
+        }
     }
     for i=1,3 do
         options["xguild_player_name" .. tostring(i)] = {
             name = CLM.L["Player"],
             type = "input",
             width = "double",
+            set = function() end,
+            get = function() end,
             order = 2 + 2*(i-1)
         }
-        options["xguild_player_name" .. tostring(i)] = {
-            name = CLM.L["Player"],
+        options["xguild_sync_type" .. tostring(i)] = {
+            name = CLM.L["Type"],
             type = "select",
             style = "radio",
             width = 1,
+            set = function() end,
+            get = function() end,
             order = 3 + 2*(i-1),
-            values = XSYNC_MODE_GUI
+            values = XSYNC_TYPE_GUI
         }
     end
-    return options
+    CLM.MODULES.ConfigManager:Register(XGUILD, options)
 end
 
 local CrossGuildSyncManager = { _initialized = false }
@@ -102,7 +106,7 @@ function CrossGuildSyncManager:Initialize()
     FilterOutWhisperErrorMessages(self)
 
     -- Register Configuration tables
-    CLM.MODULES.ConfigManager:Register(XGUILD, GetConfigurationOptions(self), true)
+    RegisterConfigurationOptions(self)
 
     self._initialized = true
 end
