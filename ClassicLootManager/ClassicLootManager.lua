@@ -22,6 +22,7 @@ CLM.CONSTANTS = {}
 CLM.COMM_CHANNEL = {
     AUCTION = "Auction3",
     BIDDING = "Bidding3",
+    BIDANNOUNCE = "Bids",
     LEDGER = {
         SYNC = "LedgerS3",
         DATA = "LedgerD3"

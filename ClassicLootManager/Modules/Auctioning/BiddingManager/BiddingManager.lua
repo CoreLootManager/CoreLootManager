@@ -79,6 +79,18 @@ function BiddingManager:Initialize()
     end),
     true)
 
+    for i=1,CLM.CONSTANTS.AUCTION_COMM.NUM_ANNOUNCE_CHANNELS-1 do
+        CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.BIDANNOUNCE .. tostring(i), (function(rawMessage, distribution, sender)
+            local message = CLM.MODELS.AuctionCommStructure:New(rawMessage)
+            if message:Type() ~= CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID then return end
+            self:HandleIncomingMessage(message, distribution, sender)
+        end),
+        (function(name)
+            return CLM.MODULES.AuctionManager:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
+        end),
+        true)
+    end
+
     self.handlers = {
         [CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION]     = "HandleStartAuction",
         [CONSTANTS.AUCTION_COMM.TYPE.STOP_AUCTION]      = "HandleStopAuction",

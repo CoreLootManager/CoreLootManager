@@ -584,12 +584,16 @@ local function SendBidDenied(itemId, name, reason)
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
+local currentAnnounceChannel = 0
 local function SendBidInfoInternal(auctionDistributeBidData)
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID, auctionDistributeBidData
-        -- CLM.MODELS.AuctionCommDistributeBid:New(data)
     )
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDANNOUNCE .. tostring(currentAnnounceChannel), message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
+    currentAnnounceChannel = currentAnnounceChannel + 1
+    if currentAnnounceChannel == CLM.CONSTANTS.AUCTION_COMM.NUM_ANNOUNCE_CHANNELS - 1 then
+        currentAnnounceChannel = 0
+    end
 end
 
 local function SendBidInfo(self, itemId, name, userResponse)
@@ -609,6 +613,8 @@ local function SetRaidConnection(self)
         UpdateAuctionInfo(self, CLM.MODULES.RaidManager:GetRaid())
     end
 end
+
+
 
 function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
@@ -1297,6 +1303,7 @@ end
 
 CONSTANTS.AUCTION_COMM = {
     BID_PASS  = CLM.L["PASS"],
+    NUM_ANNOUNCE_CHANNELS = 10,
     TYPE = {
         START_AUCTION = 1,
         STOP_AUCTION = 2,
