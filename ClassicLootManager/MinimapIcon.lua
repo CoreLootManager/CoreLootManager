@@ -27,8 +27,7 @@ local function CreateMinimapDBI(self, dropdown)
 
     CLM.MinimapDBI.OnTooltipShow = function(tooltip)
         local info
-        -- tooltip:AddDoubleLine(addonName, CLM.CORE:GetVersionString())
-        tooltip:AddLine(addonName .. " " .. CLM.CORE:GetVersionString())
+        tooltip:AddLine(addonName .. " " .. CLM.MODULES.Version:GetString())
 
         if CLM.MODULES.LedgerManager:IsInitialized() then
             local lag = CLM.MODULES.LedgerManager:Lag()

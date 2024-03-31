@@ -84,7 +84,7 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     if CLM.GlobalConfigs:GetRollType() == CONSTANTS.LOOT_ROLL_TYPE_ANY then
         local _, _, _, _, _, canNeed, canGreed, canDisenchant, _, _, _, _, canTransmog = GetLootRollItemInfo(rollID)
         local rollValue
-        if CLM.WoW10 then
+        if CLM.WoW10 or CLM.WoWCata then
             if canNeed then
                 rollValue = LOOT_ROLL_TYPE_NEED
             elseif canTransmog then

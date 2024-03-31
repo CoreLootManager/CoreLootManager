@@ -103,7 +103,7 @@ local function GenerateUntrustedOptions(self)
     for _, GUID in ipairs(profiles) do
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
         if profile then
-            profileNameMap[profile:Name()] = profile:Name()
+            profileNameMap[profile:Name()] = profile:ShortName()
             profileList[#profileList + 1] = profile:Name()
         end
     end
@@ -165,7 +165,7 @@ local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
         local name
         if profile then
-            name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+            name = UTILS.ColorCodeText(profile:ShortName(), UTILS.GetClassColor(profile:Class()).hex)
         else
             name = CLM.L["Unknown"]
         end
@@ -235,7 +235,7 @@ local function buildPointTooltip(tooltip, history)
     local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(history:Creator()))
     local name
     if profile then
-        name = UTILS.ColorCodeText(profile:Name(), UTILS.GetClassColor(profile:Class()).hex)
+        name = UTILS.ColorCodeText(profile:ShortName(), UTILS.GetClassColor(profile:Class()).hex)
     else
         name = CLM.L["Unknown"]
     end
@@ -270,7 +270,7 @@ local tableStructure = {
         },
         {name = CLM.L["Date"],  width = 205, sort = LibStub("ScrollingTable").SORT_DSC},
         {name = CLM.L["Player"],width = 95,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn), DoCellUpdate = UTILS.LibStNameCellUpdate
         }
     },
     -- Function to filter ScrollingTable

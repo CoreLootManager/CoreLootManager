@@ -169,7 +169,7 @@ function AuctionItem:SetValues(values)
 end
 
 function AuctionItem:SpoofLinkPayload(extra)
-    if not CLM.WoW10 then return end
+    if not (CLM.WoW10 or CLM.WoWCata) then return end
     if type(extra) ~= 'string' then return end
     local link = self.item:GetItemLink()
     if type(link) ~= 'string' then

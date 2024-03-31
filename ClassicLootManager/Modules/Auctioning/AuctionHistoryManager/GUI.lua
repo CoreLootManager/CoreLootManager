@@ -171,7 +171,7 @@ local function CreateAuctionDisplay(self)
             end
             local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
             if bidderProfile then
-                bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
+                bidder = UTILS.ColorCodeText(Ambiguate(bidder, "none"), UTILS.GetClassColor(bidderProfile:Class()).hex)
             end
             tooltip:AddDoubleLine(bidder, bid)
         end

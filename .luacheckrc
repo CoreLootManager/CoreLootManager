@@ -41,11 +41,12 @@ globals = {
 	-- RCLC
 	"RCLootCouncil",
 	-- VDT 
-	"ViragDevTool",
-	"ViragDevTool_AddData",
+	"DevTool",
+	"DevTool_AddData",
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"Ambiguate",
 	"RaidWarningFrame",
 	"RaidWarningFrame_OnEvent",
 	"C_Seasons.GetActiveSeason",

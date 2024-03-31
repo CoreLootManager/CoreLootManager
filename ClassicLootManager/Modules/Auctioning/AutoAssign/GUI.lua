@@ -113,7 +113,7 @@ local function CreateTradeDisplay(self)
     local columns = {
         {name = "", width = 200},
         {name = "", width = 95,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn), DoCellUpdate = UTILS.LibStNameCellUpdate
         }
     }
     local TradeHistoryGroup = AceGUI:Create("SimpleGroup")

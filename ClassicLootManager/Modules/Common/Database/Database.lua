@@ -61,8 +61,12 @@ local function _initialize()
 
 end
 
+local prefix = ""
+if CLM.WoWCata then
+    prefix = "cata" .. " "
+end
 local function _get_database_name(guildName)
-    return string.lower(UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. guildName)
+    return string.lower(prefix ..UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. guildName)
 end
 
 function DB:ForceFallback()

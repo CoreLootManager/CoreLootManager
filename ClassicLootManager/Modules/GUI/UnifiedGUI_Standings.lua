@@ -381,7 +381,7 @@ end
 
 local columnsDKP = {
     {   name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
-    {   name = CLM.L["Name"],   width = 107 },
+    {   name = CLM.L["Name"],   width = 107, DoCellUpdate = UTILS.LibStNameCellUpdate },
     {   name = CLM.L["DKP"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = colorGreen },
     {   name = CLM.L["Spent"], width = 65 },
     {   name = CLM.L["Received"], width = 65 },
@@ -392,7 +392,7 @@ local columnsDKP = {
 
 local columnsEPGP = {
     {   name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
-    {   name = CLM.L["Name"], width = 107 },
+    {   name = CLM.L["Name"], width = 107, DoCellUpdate = UTILS.LibStNameCellUpdate },
     {   name = CLM.L["PR"], width = 65, sort = LibStub("ScrollingTable").SORT_DSC, color = colorGreen },
     {   name = CLM.L["EP"], width = 65 },
     {   name = CLM.L["GP"], width = 65 },

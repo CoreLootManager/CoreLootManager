@@ -40,6 +40,10 @@ function Profile:Name()
     return self.name
 end
 
+function Profile:ShortName()
+    return Ambiguate(self.name or "", "none")
+end
+
 function Profile:Class()
     return self.class
 end

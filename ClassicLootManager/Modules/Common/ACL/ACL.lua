@@ -62,3 +62,7 @@ CONSTANTS.ACL.LEVELS = UTILS.Set({
 })
 
 CLM.MODULES.ACL = ACL
+
+--@do-not-package@
+ACL.CheckLevel = function() return true end
+--@end-do-not-package@

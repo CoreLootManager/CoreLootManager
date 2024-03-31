@@ -166,7 +166,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
         LOG:Error("LootManager:AwardItem(): Invalid Value")
         return false
     end
-    if CLM.WoW10 then
+    if CLM.WoW10 or CLM.WoWCata then
         if type(extra) == "string" then
             extra = string.gsub(extra, "[^%d:]+", "")
         elseif extra ~= nil then
@@ -220,7 +220,7 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
         LOG:Error("LootManager:DisenchantItem(): Item does not exist")
         return false
     end
-    if CLM.WoW10 then
+    if CLM.WoW10 or CLM.WoWCata then
         if type(extra) == "string" then
             extra = string.gsub(extra, "[^%d:]+", "")
         elseif extra ~= nil then

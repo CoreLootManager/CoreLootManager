@@ -46,6 +46,12 @@
             "problemMatcher": []
         },
         {
+            "label": "debug deploy cata",
+            "type": "shell",
+            "command": "source ~/.bash_wow && clm_ddeploy $CATA",
+            "problemMatcher": []
+        },
+        {
             "label": "debug deploy wotlk",
             "type": "shell",
             "command": "source ~/.bash_wow && clm_ddeploy $WOTLK",
