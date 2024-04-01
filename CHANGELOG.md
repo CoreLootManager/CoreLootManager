@@ -1,3 +1,17 @@
+# Core Loot Manager v5.0.0
+## Notice
+### Major update
+This is a major update which means communication is not backwards compatible.
+## Features
+### Cross-Guild synchronisation
+Finally, cross-guild synchronisation comes to CLM. It took only three years. You can now configure who you want to sync to and from. Becautious when using this feature as it will merge the guilds databases.
+### Core upgrades
+A lot of boring communication upgrades are present in this release. Additionally AddOn now handles the database on per-expansion base. This should smoothen the transition.
+### Alt-main linkin
+A GUI. Finally.
+## Fixes
+### Filtering
+Filtering raid members is now based on CLM state.
 # Core Loot Manager v4.10.0
 ## Features
 ### Pass and cancel info
