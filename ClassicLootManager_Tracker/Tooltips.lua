@@ -22,7 +22,7 @@ local function generateTooltipLines(roster, itemId, perRosterData, requiresRebui
         for _, data in ipairs(perRosterData) do
             if data.count > 0 then
                 --local newLine = "  " .. ColorCodeText(data.profile:Name(), GetClassColor(data.profile:Class()).hex)
-                local newLine = ColorCodeText(data.profile:Name(), GetClassColor(data.profile:Class()).hex)
+                local newLine = ColorCodeText(data.profile:ShortName(), GetClassColor(data.profile:Class()).hex)
                 if data.count > 1 then
                     newLine = newLine .. ColorCodeText(" (" .. data.count .. ")", "9d9d9d")
                 end

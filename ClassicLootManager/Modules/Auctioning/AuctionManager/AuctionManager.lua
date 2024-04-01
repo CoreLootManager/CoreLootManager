@@ -14,10 +14,10 @@ local typeof = UTILS.typeof
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
 -- luacheck: ignore CHAT_MESSAGE_CHANNEL
-local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
---@debug@
--- CHAT_MESSAGE_CHANNEL = "GUILD"
---@end-debug@
+CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
+-- @debug@
+CHAT_MESSAGE_CHANNEL = "GUILD"
+-- @end-debug@
 
 -- Singleton
 
@@ -584,12 +584,16 @@ local function SendBidDenied(itemId, name, reason)
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
+local currentAnnounceChannel = 0
 local function SendBidInfoInternal(auctionDistributeBidData)
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID, auctionDistributeBidData
-        -- CLM.MODELS.AuctionCommDistributeBid:New(data)
     )
-    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.ALERT)
+    CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDANNOUNCE .. tostring(currentAnnounceChannel), message, CONSTANTS.COMMS.DISTRIBUTION.RAID, nil, CONSTANTS.COMMS.PRIORITY.NORMAL)
+    currentAnnounceChannel = currentAnnounceChannel + 1
+    if currentAnnounceChannel == CLM.CONSTANTS.AUCTION_COMM.NUM_ANNOUNCE_CHANNELS - 1 then
+        currentAnnounceChannel = 0
+    end
 end
 
 local function SendBidInfo(self, itemId, name, userResponse)
@@ -609,6 +613,8 @@ local function SetRaidConnection(self)
         UpdateAuctionInfo(self, CLM.MODULES.RaidManager:GetRaid())
     end
 end
+
+
 
 function AuctionManager:Initialize()
     LOG:Trace("AuctionManager:Initialize()")
@@ -704,7 +710,7 @@ function AuctionManager:StopAuctionManual()
     LOG:Trace("AuctionManager:StopAuctionManual()")
     self.intervalTicker:Cancel()
     if CLM.GlobalConfigs:GetAuctionWarning() then
-        UTILS.SendChatMessage(CLM.L["Auction stopped by Master Looter"], CHAT_MESSAGE_CHANNEL)
+        UTILS.SendChatMessage(CLM.L["Auction stopped by the Master Looter"], CHAT_MESSAGE_CHANNEL)
     end
     EndAuction(self)
 end
@@ -771,7 +777,7 @@ function AuctionManager:ClearItemList()
     self:RefreshGUI()
 end
 
-local SENDING_INTERVAL = 2
+local SENDING_INTERVAL = 1
 function AuctionManager:StartAuction()
     LOG:Trace("AuctionManager:StartAuction()")
     local auction = self.currentAuction
@@ -830,7 +836,7 @@ function AuctionManager:StartAuction()
     end
     -- For now only WoW Classic (with different IDs for items) support auto item value mode settings when dynamic item value mode is enabled
     local autoItemValueOverride = true
-    if CLM.WoW10 then
+    if CLM.WoW10 or CLM.WoWCata then
         autoItemValueOverride = not auction.roster:GetConfiguration("dynamicValue")
     end
 
@@ -1297,6 +1303,7 @@ end
 
 CONSTANTS.AUCTION_COMM = {
     BID_PASS  = CLM.L["PASS"],
+    NUM_ANNOUNCE_CHANNELS = 10,
     TYPE = {
         START_AUCTION = 1,
         STOP_AUCTION = 2,

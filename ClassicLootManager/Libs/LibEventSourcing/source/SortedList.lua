@@ -2,7 +2,7 @@
     Sorted lists with an insert API
 ]]--
 
-local SortedList, _ = LibStub:NewLibrary("EventSourcing/SortedList", 1)
+local SortedList, _ = LibStub:NewLibrary("EventSourcing/SortedList", 2)
 if not SortedList then
     return end
 
@@ -66,8 +66,8 @@ end
   @returns bool indicating whether a new element was inserted
 ]]--
 function SortedList:uniqueInsert(element)
-    self._state = self._state + 1
     if (#self._entries == 0 or self._compare(self._entries[#self._entries], element) == -1) then
+        self._state = self._state + 1
         table.insert(self._entries, element)
         return true
     end
@@ -80,6 +80,7 @@ function SortedList:uniqueInsert(element)
     else
         return false
     end
+    self._state = self._state + 1
     return true
 end
 
@@ -89,6 +90,7 @@ function SortedList:head()
     end
     return self._entries[1]
 end
+
 function SortedList:wipe()
     for i, _ in ipairs(self._entries) do
         self._entries[i] = nil

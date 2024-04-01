@@ -8,4 +8,5 @@
 	<Include file="ConfigManager\_filelist.xml"/>
 	<Include file="Logger\_filelist.xml"/>
 	<Include file="Hooks\_filelist.xml"/>
+	<Include file="Version\_filelist.xml"/>
 </Ui>

@@ -7,10 +7,11 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
-local GuildInfoListener = {}
-function GuildInfoListener:Initialize()
-    LOG:Trace("GuildInfoListener:Initialize()")
+local TrustInfoProvider = {}
+function TrustInfoProvider:Initialize()
+    LOG:Trace("TrustInfoProvider:Initialize()")
     self:WipeAll()
+    self.trustedExternal = {}
     self:BuildCache()
     self.cacheUpdateRequired = true
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_GUILD_UPDATE", "GUILD_ROSTER_UPDATE"}, (function(...)
@@ -22,18 +23,39 @@ function GuildInfoListener:Initialize()
     end))
 end
 
-function GuildInfoListener:BuildCache()
-    -- LOG:Trace("GuildInfoListener:BuildCache()")
+function TrustInfoProvider:AddExternalTrusted(name)
+    self.trustedExternal[name] = true
+    self.cacheUpdateRequired = true
+end
+
+function TrustInfoProvider:RemoveExternalTrusted(name)
+    self.trustedExternal[name] = nil
+    self.cacheUpdateRequired = true
+end
+
+function TrustInfoProvider:ClearExternalTrusted()
+    self.trustedExternal = {}
+    self.cacheUpdateRequired = true
+end
+
+local function ExtendCacheByExternal(self)
+    for name,_ in pairs(self.trustedExternal) do
+        self.cache.managers[name] = true
+    end
+end
+
+function TrustInfoProvider:BuildCache()
     if self.cacheUpdateRequired then
         self:WipeAll()
         self:BuildRankCache()
         self:BuildGuildCache()
+        ExtendCacheByExternal(self)
         self.cacheUpdateRequired = false
     end
 end
 
-function GuildInfoListener:BuildRankCache()
-    LOG:Trace("GuildInfoListener:BuildRankCache()")
+function TrustInfoProvider:BuildRankCache()
+    LOG:Trace("TrustInfoProvider:BuildRankCache()")
     for i=1,GuildControlGetNumRanks() do
         local rankInfo = C_GuildInfo.GuildControlGetRankFlags(i)
         self.cache.ranks[i] = {}
@@ -46,8 +68,8 @@ function GuildInfoListener:BuildRankCache()
     -- self.cache.ranks[0] = { isManager = true, isAssistant = true}
 end
 
-function GuildInfoListener:BuildGuildCache()
-    LOG:Trace("GuildInfoListener:BuildGuildCache()")
+function TrustInfoProvider:BuildGuildCache()
+    LOG:Trace("TrustInfoProvider:BuildGuildCache()")
     for i=1,GetNumGuildMembers() do
         local name, rankName, rankIndex = GetGuildRosterInfo(i)
         if name then
@@ -74,25 +96,25 @@ function GuildInfoListener:BuildGuildCache()
     end
 end
 
-function GuildInfoListener:GetInfo()
+function TrustInfoProvider:GetInfo()
     self:BuildCache()
     return self.cache
 end
 
-function GuildInfoListener:GetRanks()
+function TrustInfoProvider:GetRanks()
     self:BuildCache()
     return self.cache.ranks
 end
 
-function GuildInfoListener:GetGuildies()
+function TrustInfoProvider:GetGuildies()
     self:BuildCache()
     return self.cache.guildies
 end
 
-function GuildInfoListener:WipeAll()
-    LOG:Trace("GuildInfoListener:WipeAll()")
+function TrustInfoProvider:WipeAll()
+    LOG:Trace("TrustInfoProvider:WipeAll()")
     self.cache = { guildMaster = "", managers = {}, assistants = {}, ranks = {}, guildies = {} }
 end
 
 
-CLM.MODULES.GuildInfoListener = GuildInfoListener
+CLM.MODULES.TrustInfoProvider = TrustInfoProvider

@@ -34,14 +34,16 @@ local function createLedger(self, database)
     local ledger = LedgerLib.createLedger(
         database,
         (function(data, distribution, target, callbackFn, callbackArg)
-            return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.SYNC, data, distribution, target, "BULK")
+            return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.SYNC, data, distribution, target, "NORMAL")
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
         (function(entry, sender)
+            print("authorizationHandler", sender, CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, UTILS.Disambiguate(sender)))
             return CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, UTILS.Disambiguate(sender))
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
-            return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.DATA, data, distribution, target, "BULK")
+            print("sendLargeMessage", #data, distribution, target)
+            return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.DATA, data, distribution, target, "NORMAL")
         end), -- sendLargeMessage
         0, 100, LOG)
 
@@ -106,7 +108,23 @@ function LedgerManager:Enable()
     end
 end
 
--- This is not reversable until reload
+function LedgerManager:AddP2PTarget(playerName)
+    self.activeLedger.getListSync():addP2PSyncTarget(playerName)
+end
+
+function LedgerManager:ClearP2PTargets()
+    self.activeLedger.getListSync():clearP2PSyncTargets()
+end
+
+function LedgerManager:AddP2PSource(playerName)
+    self.activeLedger.getListSync():addP2PSyncSource(playerName)
+end
+
+function LedgerManager:ClearP2PSources()
+    self.activeLedger.getListSync():clearP2PSyncSources()
+end
+
+-- This is not reversible until reload
 function LedgerManager:Cutoff()
     self.activeLedger.disableSending()
     CLM.MODULES.Comms:Suspend(CLM.COMM_CHANNEL.LEDGER.SYNC)

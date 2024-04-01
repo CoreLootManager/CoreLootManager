@@ -28,6 +28,18 @@ function BidInfoSender:New(interval, commsCallback)
     return o
 end
 
+local function BuildCommData(data)
+    return CLM.MODELS.AuctionCommDistributeBid:NewFromAggregatedData(data)
+end
+
+local function Send(self)
+    local _, hasData = next(self.data)
+    if hasData then
+        self.commsCallback(BuildCommData(self.data))
+    end
+    self.current = self.interval
+end
+
 function BidInfoSender:Tick(value)
     value = tonumber(value) or 0
     self.current = self.current - value
@@ -36,17 +48,9 @@ function BidInfoSender:Tick(value)
     end
 end
 
-local function BuildCommData(data)
-    return CLM.MODELS.AuctionCommDistributeBid:NewFromAggregatedData(data)
-end
-
 function BidInfoSender:Flush()
-    local _, hasData = next(self.data)
-    if hasData then
-        self.commsCallback(BuildCommData(self.data))
-    end
+    Send(self)
     self.data = {}
-    self.current = self.interval
 end
 
 function BidInfoSender:Send(itemId, name, userResponse)

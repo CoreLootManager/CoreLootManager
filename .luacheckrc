@@ -41,14 +41,16 @@ globals = {
 	-- RCLC
 	"RCLootCouncil",
 	-- VDT 
-	"ViragDevTool",
-	"ViragDevTool_AddData",
+	"DevTool",
+	"DevTool_AddData",
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"Ambiguate",
 	"RaidWarningFrame",
 	"RaidWarningFrame_OnEvent",
 	"C_Seasons.GetActiveSeason",
+	"ERR_CHAT_PLAYER_NOT_FOUND_S",
 	"LOOT_ITEM_SELF_MULTIPLE",
 	"LOOT_ITEM_SELF",
 	"LE_ITEM_CLASS_RECIPE",

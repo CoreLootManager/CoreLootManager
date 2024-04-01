@@ -1,9 +1,11 @@
-## Interface: 100205
-## Interface-Wrath: 30403
+## Interface: 100206
 ## Interface-Classic: 11501
-## X-Min-Interface: 100205
-## X-Min-Interface-Wrath: 30403
+## Interface-Wrath: 30403
+## Interface-Cata: 40400
+## X-Min-Interface: 100206
 ## X-Min-Interface-Classic: 11501
+## X-Min-Interface-Wrath: 30403
+## X-Min-Interface-Cata: 40400
 ## Title: CLM |cff44ee44Integrations|r
 ## Notes: External Integration System for |cffdcb749Core Loot Manager|r covering Migration, Import and Export.
 ## Author: Lantis
@@ -15,7 +17,7 @@
 ## X-License: Apache2
 ## X-Curse-Project-ID: 481373
 ## X-Wago-ID: vEGPw4K1
-## DefaultState: disabled
+## DefaultState: enabled
 
 Libs\LibJsonLua\LibJsonLua.lua
 Libs\LibLuaXML\LibLuaXML.lua

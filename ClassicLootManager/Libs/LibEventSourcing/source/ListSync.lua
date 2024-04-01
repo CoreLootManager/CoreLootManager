@@ -153,6 +153,12 @@ local function handleAdvertiseMessage(message, sender, distribution, stateManage
     local projectedEntries = stateManager:getSortedList():length()
     local now = Util.time()
     local currentWeek = Util.WeekNumber(now)
+    -- Drop whisper advertistements if we do not accept the data from sender
+    if distribution == CHANNEL_WHISPER then
+        if not listSync.p2pSync.sources[sender] then
+            return
+        end
+    end
     -- First we check every week's hash
     for _, whc in ipairs(message.hashes) do
         local week, hash, count = unpack(whc)
@@ -177,7 +183,7 @@ local function handleAdvertiseMessage(message, sender, distribution, stateManage
             if requestWeekInhibitorCheck(listSync, week) then
                 listSync.logger:Info("Requesting data for week %s", week)
                 requestWeekInhibitorSet(listSync, week)
-                send(listSync, RequestWeekMessage.create(week), CHANNEL_GUILD)
+                send(listSync, RequestWeekMessage.create(week), distribution, sender)
             end
         end
     end
@@ -186,43 +192,37 @@ local function handleAdvertiseMessage(message, sender, distribution, stateManage
     if (message.stateHash == stateManager:stateHash()) then
         setSyncState(listSync, STATUS_SYNCED)
     end
-    -- Then we check data set properties to decide if we might be far behind.
-    if projectedEntries < message.totalEntryCount then
-        -- We have fewer entries than the sender
-    end
-
-
 end
 
-
-
-
 local function handleWeekDataMessage(message, sender, distribution, stateManager, listSync)
+    if not listSync.authorizationHandler(nil, sender) then
+        listSync.logger:Warning("Dropping week data message from unauthorized sender %s", sender)
+        return
+    end
+
+    if (message.hash == weekHash(listSync, message.week)) then
+        listSync.logger:Warning("Dropping week data message from sender %s, we have the same hash", sender)
+        return
+    end
     local count = 0
     for _, v in ipairs(message.entries) do
         local entry = stateManager:createLogEntryFromList(v)
-        -- Authorize each event
-        if listSync.authorizationHandler(entry, sender) then
-            stateManager:queueRemoteEvent(entry)
-            count = count + 1
-        else
-            listSync.logger:Warning("Dropping event from unauthorized sender %s", sender)
-        end
+        stateManager:queueRemoteEvent(entry)
+        count = count + 1
     end
     listSync.logger:Info("Enqueued %d events for week %s from remote received from %s via %s", count, message.week, sender, distribution)
 end
 
 local function handleBulkDataMessage(message, sender, distribution, stateManager, listSync)
     local count = 0
+    if not listSync.authorizationHandler(nil, sender) then
+        listSync.logger:Warning("Dropping bulk data message from unauthorized sender %s", sender)
+        return
+    end
     for _, v in ipairs(message.entries) do
         local entry = stateManager:createLogEntryFromList(v)
-        -- Authorize each event
-        if listSync.authorizationHandler(entry, sender) then
-            stateManager:queueRemoteEvent(entry)
-            count = count + 1
-        else
-            listSync.logger:Warning("Dropping event from unauthorized sender %s", sender)
-        end
+        stateManager:queueRemoteEvent(entry)
+        count = count + 1
     end
     listSync.logger:Info("Enqueued %d events from remote received from %s via %s", count, sender, distribution)
 end
@@ -247,7 +247,11 @@ local function handleRequestWeekMessage(message, sender, distribution, stateMana
             listSync.logger:Info("Ignoring request for week %d from %s, we did not advertise or lost prio on", message.week, sender)
         end
     elseif distribution == CHANNEL_WHISPER then
-        listSync:weekSyncViaWhisper(sender, message.week)
+        -- Respond only to known targets
+        listSync.logger:Info("Received request for week %d from %s. Will %s.", message.week, sender, (listSync.p2pSync.targets[sender] and "send" or "not send"))
+        if listSync.p2pSync.targets[sender] then
+            listSync:weekSyncViaWhisper(sender, message.week)
+        end
     end
 
 end
@@ -287,11 +291,11 @@ local function advertiseWeekHashInhibitorCheckOrSet(listSync, week)
     return false
 end
 
-local function transmitEntry(listSync, entry, authEntry, channel)
+local function transmitEntry(listSync, entry, authEntry, channel, target)
     if listSync.authorizationHandler(authEntry or entry, UnitName("player")) then
         local message = BulkDataMessage.create()
         message:addEntry(listSync._stateManager:createListFromEntry(entry))
-        send(listSync, message, channel)
+        send(listSync, message, channel, target)
         return true
     end
     return false
@@ -317,6 +321,10 @@ function ListSync:new(stateManager, sendMessage, registerReceiveHandler, authori
     o.sendLargeMessage = sendLargeMessage or sendMessage
     o.authorizationHandler = authorizationHandler
     o.logger = logger
+    o.p2pSync = {
+        targets = {},
+        sources = {}
+    }
 
     o._stateManager = stateManager
     o._weekHashCache = {
@@ -384,6 +392,15 @@ function ListSync:transmitViaRaid(entry, authEntry)
     return transmitEntry(self, entry, authEntry, CHANNEL_RAID)
 end
 
+function ListSync:transmitViaWhisper(entry, authEntry, target)
+    return transmitEntry(self, entry, authEntry, CHANNEL_WHISPER, target)
+end
+
+function ListSync:transmitViaWhisperToAllTargets(entry, authEntry)
+    for target, _ in pairs(self.p2pSync.targets) do
+        self:transmitViaWhisper(entry, authEntry, target)
+    end
+end
 
 function ListSync:getPeerStatus()
     return self.peerStatus
@@ -391,7 +408,7 @@ end
 
 function ListSync:addSyncStateChangedListener(callback)
     Util.assertFunction(callback, 'callback')
-    addEventListener(self, EVENT.SYNC_STATE_CHANGED, callback);
+    addEventListener(self, EVENT.SYNC_STATE_CHANGED, callback)
 end
 
 function ListSync:weekSyncViaWhisper(target, week)
@@ -399,7 +416,7 @@ function ListSync:weekSyncViaWhisper(target, week)
     for entry in weekEntryIterator(self, week) do
         message:addEntry(self._stateManager:createListFromEntry(entry))
     end
-    send(self, message, CHANNEL_WHISPER, target)
+    self.sendLargeMessage(message, CHANNEL_WHISPER, target)
 end
 
 function ListSync:weekSyncViaGuild(week)
@@ -416,7 +433,7 @@ function ListSync:fullSyncViaWhisper(target)
         message:addEntry(self._stateManager:createListFromEntry(v))
     end
 
-    send(self, message, CHANNEL_WHISPER, target);
+    self.sendLargeMessage(message, CHANNEL_WHISPER, target)
 end
 
 function ListSync:isSendingEnabled()
@@ -481,6 +498,10 @@ function ListSync:enableSending()
         if (message:hashCount() > 0) then
             self.logger:Debug("Sending hashes for %d weeks", message:hashCount())
             send(self, message, CHANNEL_GUILD)
+            for target, _ in pairs(self.p2pSync.targets) do
+                self.logger:Debug("Sending hashes for %d weeks to %s", message:hashCount(), target)
+                send(self, message, CHANNEL_WHISPER, target)
+            end
         else
             self.logger:Debug("Skipping send since all weeks are inhibited")
         end
@@ -500,4 +521,32 @@ function ListSync:disableSending()
         self.advertiseTicker:Cancel()
         self.advertiseTicker = nil
     end
+end
+
+function ListSync:addP2PSyncTarget(target)
+    Util.assertString(target)
+    self.p2pSync.targets[target] = true
+end
+
+function ListSync:removeP2PSyncTarget(target)
+    Util.assertString(target)
+    self.p2pSync.targets[target] = nil
+end
+
+function ListSync:clearP2PSyncTargets()
+    self.p2pSync.targets = {}
+end
+
+function ListSync:addP2PSyncSource(source)
+    Util.assertString(source)
+    self.p2pSync.sources[source] = true
+end
+
+function ListSync:removeP2PSyncSource(source)
+    Util.assertString(source)
+    self.p2pSync.sources[source] = nil
+end
+
+function ListSync:clearP2PSyncSources()
+    self.p2pSync.sources = {}
 end

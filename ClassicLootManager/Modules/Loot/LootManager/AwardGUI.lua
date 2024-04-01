@@ -67,7 +67,7 @@ local function UpdateOptions(self)
             for _, GUID in ipairs(profiles) do
                 local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
                 if profile then
-                    profileNameMap[profile:Name()] = profile:Name()
+                    profileNameMap[profile:Name()] = profile:ShortName()
                     profileList[#profileList + 1] = profile:Name()
                 end
             end
@@ -167,7 +167,7 @@ local function UpdateOptions(self)
                 return string.format(
                     CLM.L["Are you sure, you want to award %s to %s for %s %s?"],
                     self.itemLink,
-                    UTILS.ColorCodeText(self.awardPlayer, "FFD100"),
+                    UTILS.ColorCodeText(Ambiguate(self.awardPlayer, "none"), "FFD100"),
                     tostring(self.awardValue),
                     (self.roster and self.roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and CLM.L["GP"] or CLM.L["DKP"]
                 )

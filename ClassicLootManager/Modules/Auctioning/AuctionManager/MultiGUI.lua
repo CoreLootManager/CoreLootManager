@@ -691,7 +691,7 @@ local function Create(self)
     DataGroup:SetWidth(self.dataWidth)
     DataGroup:AddChild(CreateItemOptions(self, self.dataWidth))
     DataGroup:AddChild(CreateAuctionOptions(self, self.dataWidth))
-    DataGroup:AddChild(CreateBidList(self, self.dataWidth))
+    DataGroup:AddChild(CreateBidList(self))
     DataGroup:AddChild(CreateAwardOptions(self, self.dataWidth))
 
     f:AddChild(ItemList)
@@ -741,7 +741,7 @@ function AuctionManagerGUI:BuildColumns()
     local columns = {
         { name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate },
         {name = CLM.L["Name"],  width = 100,
-            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn)
+            comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFn), DoCellUpdate = UTILS.LibStNameCellUpdate
         },
         {name = CLM.L["Bid"],   width = 100, color = colorGreen,
             sort = ScrollingTable.SORT_DSC,

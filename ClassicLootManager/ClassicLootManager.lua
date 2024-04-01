@@ -9,6 +9,7 @@ end
 
 CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
 CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
+CLM.WoWCata = select(4, GetBuildInfo()) > 40000
 if CLM.WoWSeasonal then
     CLM.WoWSoD = C_Seasons.GetActiveSeason() == Enum.SeasonID.Placeholder
 end
@@ -19,14 +20,15 @@ CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
 CLM.COMM_CHANNEL = {
-    AUCTION = "Auction2",
-    BIDDING = "Bidding2",
+    AUCTION = "Auction3",
+    BIDDING = "Bidding3",
+    BIDANNOUNCE = "Bids",
     LEDGER = {
-        SYNC = "LedgerS2",
-        DATA = "LedgerD2"
+        SYNC = "LedgerS3",
+        DATA = "LedgerD3"
     },
-    STANDBY = "Standby001",
-    GLOBAL = "Version001"
+    STANDBY = "Standby2",
+    GLOBAL = "Version2"
 }
 CLM.UTILS = {}
 CLM.GUI = {}
@@ -46,7 +48,7 @@ local UTILS = CLM.UTILS
 function UTILS.ParseVersionString(versionString)
     local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")
     return {
-        major = tonumber(major) or 4,
+        major = tonumber(major) or 5,
         minor = tonumber(minor) or 0,
         patch = tonumber(patch) or 0,
         changeset = changeset or ""
@@ -96,37 +98,6 @@ local function Initialize_Logger()
     LOG:SetDatabase(CLM2_Logs)
 end
 
-local function Initialize_Versioning()
-    -- Parse autoversion
-    local new = UTILS.ParseVersionString(CLM.AUTOVERSION)
-    local old = CLM2_DB.global.version
-    -- set new version
-    CLM2_DB.global.version = new
-    -- update string
-    local changeset = new.changeset
-    if changeset and changeset ~= "" then
-        changeset = "-" .. changeset
-    else
-        changeset = ""
-    end
-    CORE.versionString = string.format(
-        "v%s.%s.%s%s",
-        new.major or 0,
-        new.minor or 0,
-        new.patch or 0,
-        changeset)
-    -- return both for update purposes
-    return old, new
-end
-
-function CORE:GetVersion()
-    return CLM2_DB.global.version
-end
-
-function CORE:GetVersionString()
-    return self.versionString or ""
-end
-
 
 local function RegisterUniversal(object, moduleName, entryPoint)
     if type(moduleName) ~= "string" then
@@ -172,7 +143,7 @@ function CORE:_InitializeBackend()
     MODULES.Logger:Initialize()
     MODULES.Comms:Initialize()
     MODULES.EventManager:Initialize()
-    MODULES.GuildInfoListener:Initialize()
+    MODULES.TrustInfoProvider:Initialize()
     MODULES.LedgerManager:Initialize()
 
     return true
@@ -194,10 +165,11 @@ function CORE:_InitializeFeatures()
     MODULES.AutoAwardManager:Initialize()
     MODULES.AuctionHistoryManager:Initialize()
     MODULES.SandboxManager:Initialize()
+    MODULES.CrossGuildSyncManager:Initialize()
     -- Globals
     CLM.GlobalConfigs:Initialize() -- Initialize global configs
     CLM.GlobalSlashCommands:Initialize() -- Initialize global slash handlers
-    CLM.GlboalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
+    CLM.GlobalChatMessageHandlers:Initialize() -- Initialize global chat message handlers
     CLM.GlobalUIHandlers:Initialize() -- Initialize various global misc UI handlers
     CLM.GlobalGuildChangeHandler:Initialize() -- Initialize guild change handler
 
@@ -312,7 +284,7 @@ function CORE:OnInitialize()
     --  Early Initialize logger
     Initialize_Logger()
     -- Initialize Versioning
-    Initialize_Versioning()
+    CLM.MODULES.Version:Initialize()
     -- Initialize AddOn
     LOG:Trace("OnInitialize")
     self._initialize_fired = false
@@ -343,7 +315,7 @@ function CORE:GUILD_ROSTER_UPDATE(...)
 end
 
 --@do-not-package@
-if ViragDevTool then
-    ViragDevTool_AddData(CLM, "CLM")
+if DevTool then
+    DevTool_AddData(CLM, "CLM")
 end
 --@end-do-not-package@

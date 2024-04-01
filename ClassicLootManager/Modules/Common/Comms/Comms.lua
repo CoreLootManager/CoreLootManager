@@ -18,6 +18,8 @@ local CommsPrefix = "CLM"
 
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 
+local COMMS_VERSION = 1
+
 local defaultCTL = {
     BURST = _G.ChatThrottleLib.BURST or 4000,
     MAX_CPS = _G.ChatThrottleLib.MAX_CPS or 800
@@ -32,7 +34,7 @@ local throttleTimer = LibStub("LibExpiringTimer").New(5, restoreThrottle)
 
 local function throttle()
     _G.ChatThrottleLib.BURST = 2550
-    _G.ChatThrottleLib.MAX_CPS = 250
+    _G.ChatThrottleLib.MAX_CPS = 255
     throttleTimer()
 end
 
@@ -143,17 +145,19 @@ function Comms:Send(prefix, message, distribution, target, priority)
     if not CONSTANTS.COMMS.PRIORITIES[priority] then
         priority = CONSTANTS.COMMS.PRIORITY.NORMAL
     end
+    -- Version comms
+    message = {
+        _v = COMMS_VERSION,
+        _m = message,
+    }
     -- X-realm
     if distribution == CONSTANTS.COMMS.DISTRIBUTION.WHISPER then
         -- cross-faction whisper workaround
         -- utilize cross-faction workaround for cross realm also
         if UTILS.ArePlayersCrossRealm(target, UTILS.whoami()) or (UnitFactionGroup(target) ~= UnitFactionGroup("player")) then
             distribution = CONSTANTS.COMMS.DISTRIBUTION.RAID
-            message = {
-                _isX = true,
-                _message = message,
-                _target = target
-            }
+            message._isX = true
+            message._target = target
         end
     end
     -- Serialize
@@ -188,7 +192,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
 end
 
 function Comms:OnReceive(prefix, message, distribution, sender)
-    -- LOG:Trace("Comms:OnReceive() %s", prefix) --  SPAM
+    LOG:Debug("Comms:OnReceive() %s", prefix) --  SPAM
     if not self.enabled then
         LOG:Debug("Comms:OnReceive(): Disabled")
         return false
@@ -232,14 +236,22 @@ function Comms:OnReceive(prefix, message, distribution, sender)
         LOG:Debug("Comms:OnReceive() unable to deserialize message [%s] from [%s]", prefix, sender)
         return
     end
+    -- Version check
+    if tmp._v ~= COMMS_VERSION then
+        LOG:Debug("Comms:OnReceive() received invalid comms message [%s] from [%s]", tostring(tmp._v), sender)
+        if (tonumber(tmp._v) or 0) > COMMS_VERSION then
+            CLM.MODULES.Version:OutOfDate(true)
+        end
+        return
+    end
     -- Cross-Faction workaround check
     if tmp._isX then
         if tmp._target == UTILS.whoami() then
-            self.callbacks[prefix](tmp._message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, sender)
+            self.callbacks[prefix](tmp._m, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, sender)
         end
     else
         -- Execute callback
-        self.callbacks[prefix](tmp, distribution, sender)
+        self.callbacks[prefix](tmp._m, distribution, sender)
     end
 end
 
@@ -280,3 +292,7 @@ CONSTANTS.COMMS = {
         --YELL = "YELL"
     }
 }
+
+--@do-not-package@
+-- CONSTANTS.COMMS.DISTRIBUTION.RAID = CONSTANTS.COMMS.DISTRIBUTION.GUILD
+--@end-do-not-package@

@@ -9,7 +9,7 @@ local UTILS     = CLM.UTILS
 local whoamiGUID = UTILS.whoamiGUID()
 
 local notEmptyiGUID
-if CLM.WoW10 or CLM.WoWSeasonal then
+if CLM.WoW10 or CLM.WoWSeasonal or CLM.WoWCata then
     notEmptyiGUID = function(iGUID)
         return iGUID[2] ~= 0
     end

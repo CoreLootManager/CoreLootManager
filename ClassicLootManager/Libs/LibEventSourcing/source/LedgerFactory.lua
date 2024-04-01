@@ -81,12 +81,15 @@ LedgerFactory.createLedger = function(table, send, registerReceiveHandler, autho
 
             stateManager:addEvent(entry)
             listSync:transmitViaGuild(entry)
+            listSync:transmitViaWhisperToAllTargets(entry)
         end,
         ignoreEntry = function(entry)
             local ignoreEntry = stateManager:createIgnoreEntry(entry)
             if listSync:transmitViaGuild(ignoreEntry, entry) then
                 -- only commit locally if we are authorized to send
                 sortedList:uniqueInsert(ignoreEntry)
+                -- Send to all whisper targets afterwards
+                listSync:transmitViaWhisperToAllTargets(ignoreEntry)
             else
                 error("Attempted to submit entries for which you are not authorized")
             end
@@ -133,8 +136,5 @@ LedgerFactory.createLedger = function(table, send, registerReceiveHandler, autho
         requestPeerStatusFromGuild = function()
             listSync:requestPeerStatusFromGuild()
         end
-
-
-
     }
 end

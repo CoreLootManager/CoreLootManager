@@ -133,16 +133,13 @@ CONSTANTS.CONFIGS = {
     GROUPS = UTILS.Set({
         "Core Loot Manager",
         CLM.L["Rosters"],
-        -- CLM.L["Integrations"]
     }),
     ORDERED_GROUPS = {
         "Core Loot Manager",
         CLM.L["Rosters"],
-        -- CLM.L["Integrations"]
     },
     GROUP = {
         GLOBAL = "Core Loot Manager",
         ROSTER = CLM.L["Rosters"],
-        -- INTEGRATIONS = CLM.L["Integrations"]
     },
 }
