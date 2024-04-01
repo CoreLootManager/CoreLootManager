@@ -33,6 +33,11 @@ function TrustInfoProvider:RemoveExternalTrusted(name)
     self.cacheUpdateRequired = true
 end
 
+function TrustInfoProvider:ClearExternalTrusted()
+    self.trustedExternal = {}
+    self.cacheUpdateRequired = true
+end
+
 local function ExtendCacheByExternal(self)
     for name,_ in pairs(self.trustedExternal) do
         self.cache.managers[name] = true

@@ -2,27 +2,27 @@
 local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
-local CONSTANTS = CLM.CONSTANTS
--- local UTILS     = CLM.UTILS
+-- local CONSTANTS = CLM.CONSTANTS
+local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local XGUILD = CLM.L["Cross-Guild sync"]
+local XGUILD = CLM.L["Cross-guild sync"]
 local MAX_ENTRIES = 4
 local XSYNC_TYPE = {
     SOURCE = 1,
     TARGET = 2,
-    PEER_TO_PEER = 3
+    BOTH = 3
 }
 
 
 local XSYNC_TYPE_GUI = {
-    CLM.L["Source"],
-    CLM.L["Target"],
-    CLM.L["Peer to Peer"]
+    CLM.L["Send to"],
+    CLM.L["Accept from"],
+    CLM.L["Both"]
 }
 
-local TARGETS = {XSYNC_TYPE.TARGET, XSYNC_TYPE.PEER_TO_PEER}
-local SOURCES = {XSYNC_TYPE.SOURCE, XSYNC_TYPE.PEER_TO_PEER}
+local TARGETS = UTILS.Set({XSYNC_TYPE.TARGET, XSYNC_TYPE.BOTH})
+local SOURCES = UTILS.Set({XSYNC_TYPE.SOURCE, XSYNC_TYPE.BOTH})
 
 local function InitializeDB(key)
     local db = CLM.MODULES.Database:Server()
@@ -45,10 +45,19 @@ local function LazyAmbiguate(name)
 end
 
 
-local function Update(self)
+local function UpdateSync(self)
+    CLM.MODULES.LedgerManager:ClearP2PSources()
+    CLM.MODULES.LedgerManager:ClearP2PTargets()
+    CLM.MODULES.TrustInfoProvider:ClearExternalTrusted()
     for i=1,MAX_ENTRIES do
         local id = tostring(i)
-
+        if TARGETS[self.types[id]] then
+            CLM.MODULES.LedgerManager:AddP2PTarget(self.players[id])
+        end
+        if SOURCES[self.types[id]] then
+            CLM.MODULES.LedgerManager:AddP2PSource(self.players[id])
+            CLM.MODULES.TrustInfoProvider:AddExternalTrusted(self.players[id])
+        end
     end
 end
 
@@ -78,7 +87,7 @@ local function UpdateTarget(self, id, target)
     else
         self.players[id] = target
     end
-    Update(self)
+    UpdateSync(self)
 end
 
 local function GetTarget(self, id)
@@ -100,7 +109,7 @@ local function UpdateType(self, id, type)
     else
         self.types[id] = SanitizeType(type)
     end
-    Update(self)
+    UpdateSync(self)
 end
 
 local function GetType(self, id)
@@ -110,7 +119,7 @@ end
 local function RegisterConfigurationOptions(self)
     local options = {
         xguild_desc = {
-            name = CLM.L["Cross-guild synchronisation allows connecting two guild data through proxy mechanism called tunneling. Three types of connection are available: Source, Target and Peer to Peer. Use this functionality only if you are absolutely sure you know what you are doing."],
+            name = CLM.L["Cross-guild synchronisation allows connecting two guild data through proxy mechanism called tunneling. Three types of connection are available: Send to, Accept from or Both. |cff00cc00Accepting data from another player will merge the two guilds databases.|r Use this functionality only if you are absolutely sure you know what you are doing."],
             type = "description",
             width = "full",
             fontSize = "medium",
@@ -121,6 +130,7 @@ local function RegisterConfigurationOptions(self)
         local id = tostring(i)
         options["xguild_player_name" .. id] = {
             name = CLM.L["Player"],
+            desc = CLM.L["Case-sensitive Player name in the format: Player-RealmName"],
             type = "input",
             width = "double",
             set = function(_, v) UpdateTarget(self, id, v) end,
@@ -129,6 +139,7 @@ local function RegisterConfigurationOptions(self)
         }
         options["xguild_sync_type" .. id] = {
             name = CLM.L["Type"],
+            desc = CLM.L["|cff00cc00Send to:|r If you are trusted in your guild, you will also send whisper syncs to the player.\n|cff00cc00Accept from:|r You will be accepting syncs from the player.\n|cff00cc00Both:|r Both of the above."],
             type = "select",
             style = "radio",
             width = 1,
@@ -166,7 +177,7 @@ function CrossGuildSyncManager:Initialize()
     FilterOutWhisperErrorMessages(self)
     -- Incoming sync -> trust that sources are trusted (one-time)
     -- Tell library to announce to targets
-    Update(self)
+    UpdateSync(self)
     self._initialized = true
 end
 

@@ -192,7 +192,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
 end
 
 function Comms:OnReceive(prefix, message, distribution, sender)
-    -- LOG:Trace("Comms:OnReceive() %s", prefix) --  SPAM
+    LOG:Debug("Comms:OnReceive() %s", prefix) --  SPAM
     if not self.enabled then
         LOG:Debug("Comms:OnReceive(): Disabled")
         return false
@@ -294,5 +294,5 @@ CONSTANTS.COMMS = {
 }
 
 --@do-not-package@
-CONSTANTS.COMMS.DISTRIBUTION.RAID = CONSTANTS.COMMS.DISTRIBUTION.GUILD
+-- CONSTANTS.COMMS.DISTRIBUTION.RAID = CONSTANTS.COMMS.DISTRIBUTION.GUILD
 --@end-do-not-package@
