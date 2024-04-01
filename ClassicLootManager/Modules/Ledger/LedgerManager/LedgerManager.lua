@@ -38,11 +38,9 @@ local function createLedger(self, database)
         end), -- send
         registerReceiveCallback, -- registerReceiveHandler
         (function(entry, sender)
-            print("authorizationHandler", sender, CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, UTILS.Disambiguate(sender)))
             return CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, UTILS.Disambiguate(sender))
         end), -- authorizationHandler
         (function(data, distribution, target, progressCallback)
-            print("sendLargeMessage", #data, distribution, target)
             return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.DATA, data, distribution, target, "NORMAL")
         end), -- sendLargeMessage
         0, 100, LOG)

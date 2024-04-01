@@ -902,6 +902,13 @@ end
 
 function UTILS.getHighlightMethod(highlightColor, multiselect)
     return (function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
+        local fnDoCellUpdate
+        if data[realrow].cols[column].DoCellUpdate then
+            fnDoCellUpdate = data[realrow].cols[column].DoCellUpdate
+        else
+            fnDoCellUpdate = table.DoCellUpdate
+        end
+        fnDoCellUpdate(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, table, ...)
         local color
         local selected
         if multiselect then
