@@ -80,7 +80,7 @@ CLM.L["25 Player"] = "25 joueurs"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:172
 CLM.L["40 Player"] = "40 joueurs"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:20
---CLM.L["Accept from"] = ""
+CLM.L["Accept from"] = "Accepter de"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:936
 CLM.L["Accepting rolls on %s for %s %s"] = "Prise de rolls sur %s pour %s %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:150
@@ -440,7 +440,7 @@ CLM.L["Boss Kill Bonus"] = "Bonus par boss tué"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1190
 CLM.L["Boss kill award values"] = "Valeurs de récompense par boss tué"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:21
---CLM.L["Both"] = ""
+CLM.L["Both"] = "Les deux"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:20
 CLM.L["Broodlord Lashlayer"] = "Seigneur des couvées Lanistaire"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:112
@@ -465,7 +465,7 @@ CLM.L["Cancel your bid."] = "Annulez votre offre."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:847
 CLM.L["Cancel"] = "Annuler"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:133
---CLM.L["Case-sensitive Player name in the format: Player-RealmName"] = ""
+CLM.L["Case-sensitive Player name in the format: Player-RealmName"] = "Nom du joueur sensible à la casse dans le format: Joueur-REALMNAME"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:774
 CLM.L["Change roster name."] = "Changer le nom du Roster."
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:13
@@ -548,9 +548,9 @@ CLM.L["Creates new roster with default configuration"] = "Crée un nouveau roste
 -- ClassicLootManager_Integrations/Integrations.lua:252
 CLM.L["Creates new trigger to be used during RCLC award."] = "Crée un nouveau déclencheur utilisé lors de l'attribution RCLC."
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:9
---CLM.L["Cross-guild sync"] = ""
+CLM.L["Cross-guild sync"] = "Synchronisation du guild"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:122
---CLM.L["Cross-guild synchronisation allows connecting two guild data through proxy mechanism called tunneling. Three types of connection are available: Send to, Accept from or Both. |cff00cc00Accepting data from another player will merge the two guilds databases.|r Use this functionality only if you are absolutely sure you know what you are doing."] = ""
+CLM.L["Cross-guild synchronisation allows connecting two guild data through proxy mechanism called tunneling. Three types of connection are available: Send to, Accept from or Both. |cff00cc00Accepting data from another player will merge the two guilds databases.|r Use this functionality only if you are absolutely sure you know what you are doing."] = "La synchronisation entre le Guild permet de connecter deux données de guilde via un mécanisme de proxy appelé tunneling. Trois types de connexions sont disponibles: envoyer à, accepter à partir de ou les deux. | CFF00CC00ACCEPTIPT Les données d'un autre joueur fusionnent les deux bases de données de guildes."
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_SoD.lua:16
 CLM.L["Crowd Pummeler 9-60"] = "Crowd Pummeler 9-60"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:582
@@ -1813,7 +1813,7 @@ CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] 
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:772
 CLM.L["Selected"] = "Sélectionné"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:19
---CLM.L["Send to"] = ""
+CLM.L["Send to"] = "Envoyer à"
 -- ClassicLootManager_Integrations/GUI.lua:143
 CLM.L["September"] = "Septembre"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs.lua:332
@@ -2383,7 +2383,7 @@ CLM.L["then"] = "alors"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:124
 CLM.L["unguilded"] = "sans guilde"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:142
---CLM.L["|cff00cc00Send to:|r If you are trusted in your guild, you will also send whisper syncs to the player.\n|cff00cc00Accept from:|r You will be accepting syncs from the player.\n|cff00cc00Both:|r Both of the above."] = ""
+CLM.L["|cff00cc00Send to:|r If you are trusted in your guild, you will also send whisper syncs to the player.\n|cff00cc00Accept from:|r You will be accepting syncs from the player.\n|cff00cc00Both:|r Both of the above."] = "| CFF00cc00Send à: | r Si vous vous faites confiance dans votre guilde, vous enverrez également des synchronisés Whisper au joueur. \ N | CFF00CC00ACcept de: | r Vous accepterez les synchronisation du joueur. \ N | CFF00CC00BOTH: | R tous les deux de ci-dessus."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1200
 CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = "|cff00ee44Ouverte:|r Enchère avec annonce de la plus haute offre. Le joueur avec la plus grosse offre remporte l’enchère. Deux joueurs ne peuvent pas proposer la même valeur d’offre.\n\n|cff00ee44Anonyme Ouverte:|r Pareil qu’Ouverte mais le nom du plus haut enchérisseur n’est pas révélé.\n\n|cff00ee44Fermée:|r Offresnon annoncées. L’offre la plus haute l’emporte.\n\n|cff00ee44Vickrey:|r Pareil que fermée mais le vainqueur paie avec la 2e offre la plus élevée."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1077
