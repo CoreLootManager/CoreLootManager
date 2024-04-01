@@ -50,6 +50,7 @@ globals = {
 	"RaidWarningFrame",
 	"RaidWarningFrame_OnEvent",
 	"C_Seasons.GetActiveSeason",
+	"ERR_CHAT_PLAYER_NOT_FOUND_S",
 	"LOOT_ITEM_SELF_MULTIPLE",
 	"LOOT_ITEM_SELF",
 	"LE_ITEM_CLASS_RECIPE",

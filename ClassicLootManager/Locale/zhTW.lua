@@ -550,7 +550,7 @@ CLM.L["Creates new trigger to be used during RCLC award."] = "创建要在 RCLC 
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:9
 CLM.L["Cross-guild sync"] = "交叉恆定同步"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:122
-CLM.L["Cross-guild synchronisation allows connecting two guild data through proxy mechanism called tunneling. Three types of connection are available: Send to, Accept from or Both. |cff00cc00Accepting data from another player will merge the two guilds databases.|r Use this functionality only if you are absolutely sure you know what you are doing."] = "跨晶體同步允許通過稱為隧道的代理機制連接兩個公會數據。 可以使用三種類型的連接：發送到，接受或兩者。 | cff00cc00accept來自另一個玩家的數據將合併兩個公會數據庫。| r僅在您絕對確定自己知道自己在做什麼時才使用此功能。"
+CLM.L["Cross-guild synchronisation allows connecting two guild data through proxy mechanism called tunneling. Three types of connection are available: Send to, Accept from or Both. |cff00cc00Accepting data from another player will merge the two guilds databases.|r Use this functionality only if you are absolutely sure you know what you are doing."] = "跨晶體同步允許通過稱為隧道的代理機制連接兩個公會數據。 可以使用三種類型的連接：發送到，接受或兩者。 |cff00cc00accept來自另一個玩家的數據將合併兩個公會數據庫。|r僅在您絕對確定自己知道自己在做什麼時才使用此功能。"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_SoD.lua:16
 CLM.L["Crowd Pummeler 9-60"] = "Crowd Pummeler 9-60"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:582
@@ -1809,7 +1809,7 @@ CLM.L["Select roster"] = "选择名册"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:957
 CLM.L["Select weekly reset timezone. EU: Wed 07:00 GMT or US: Tue 15:00 GMT"] = "选择每周重置时区。EU：周三 07:00 GMT 或 US：周二 15:00 GMT"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/AutoAwardManager.lua:98
-CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = "選擇| cffeee00%s | r的獎金價值獎（%s）遇到困難。"
+CLM.L["Select |cffeeee00%s|r encounter difficulty for bonus value award (%s)."] = "選擇|cffeee00%s |r的獎金價值獎（%s）遇到困難。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:772
 CLM.L["Selected"] = "已选中"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:19
@@ -2383,7 +2383,7 @@ CLM.L["then"] = "然后"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:124
 CLM.L["unguilded"] = "不在公会的"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:142
-CLM.L["|cff00cc00Send to:|r If you are trusted in your guild, you will also send whisper syncs to the player.\n|cff00cc00Accept from:|r You will be accepting syncs from the player.\n|cff00cc00Both:|r Both of the above."] = "| cff00cc00send to：| r如果您對公會受到信任，您還將向播放器發送竊竊私語。以上。"
+CLM.L["|cff00cc00Send to:|r If you are trusted in your guild, you will also send whisper syncs to the player.\n|cff00cc00Accept from:|r You will be accepting syncs from the player.\n|cff00cc00Both:|r Both of the above."] = "|cff00cc00send to：|r如果您對公會受到信任，您還將向播放器發送竊竊私語。以上。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1200
 CLM.L["|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."] = "|cff00ee44Open:|r English Auction with highest bidder announcement. Highest bidder wins. Two players can not bid same value. Additionally always allows bidding base to accomodate for Swedish Auction flavor.\n\n|cff00ee44Anonymous Open:|r Same as Open but highest bidder name is not disclosed.\n\n|cff00ee44Sealed:|r Bids are not announced. Highest bidder wins.\n\n|cff00ee44Vickrey:|r Same as sealed but winner pays with second-highest bid."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1077
