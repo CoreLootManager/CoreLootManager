@@ -301,9 +301,15 @@ end
 
 local function beforeShowHandler()
     LOG:Trace("UnifiedGUI_Profiles beforeShowHandler()")
+    if not UnifiedGUI_Profiles.alreadyDisplayed then
+        verticalOptionsFeeder()
+        UnifiedGUI_Profiles.alreadyDisplayed = true
+    end
     if CLM.MODULES.RaidManager:IsInRaid() then
         UnifiedGUI_Profiles.roster = CLM.MODULES.RaidManager:GetRaid():UID()
         UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
+    else
+        UnifiedGUI_Profiles.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, false)
     end
 end
 

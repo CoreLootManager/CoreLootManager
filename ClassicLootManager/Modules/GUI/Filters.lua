@@ -232,7 +232,6 @@ function Filters:SetFilterValue(filterId, valueToSet)
 end
 
 function Filters:Filter(playerName, playerClass, searchFieldsList)
-
     -- Check Search first, discard others
     if self.searchFunction then
         for _, field in ipairs(searchFieldsList) do
@@ -253,15 +252,14 @@ function Filters:Filter(playerName, playerClass, searchFieldsList)
     end
 
     if self.inRaid and self.filters[CONSTANTS.FILTER.IN_RAID] then
-        local isInRaid = {}
-        for i=1,MAX_RAID_MEMBERS do
-            local name = GetRaidRosterInfo(i)
-            if name then
-                name = UTILS.Disambiguate(name)
-                isInRaid[name] = true
+        if CLM.MODULES.RaidManager:IsInActiveRaid() then
+            local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
+            if profile then
+                status = status and CLM.MODULES.RaidManager:GetRaid():IsPlayerInRaid(profile:GUID())
             end
+        else
+            status = false
         end
-        status = status and isInRaid[playerName]
     elseif self.inStandby and self.filters[CONSTANTS.FILTER.STANDBY] then
         if CLM.MODULES.RaidManager:IsInProgressingRaid() then
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
