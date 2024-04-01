@@ -244,7 +244,10 @@
         "CALENDAR_STATUS_NOT_SIGNEDUP",
         "CALENDAR_STATUS_TENTATIVE",
         "ERR_CHAT_PLAYER_NOT_FOUND_S",
-        "Add"
+        "Add",
+        "NONE",
+        "SOURCE",
+        "TARGET"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

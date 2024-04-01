@@ -153,6 +153,12 @@ local function handleAdvertiseMessage(message, sender, distribution, stateManage
     local projectedEntries = stateManager:getSortedList():length()
     local now = Util.time()
     local currentWeek = Util.WeekNumber(now)
+    -- Drop whisper advertistements if we do not accept the data from sender
+    if distribution == CHANNEL_WHISPER then
+        if not listSync.p2pSync.sources[sender] then
+            return
+        end
+    end
     -- First we check every week's hash
     for _, whc in ipairs(message.hashes) do
         local week, hash, count = unpack(whc)
@@ -186,12 +192,6 @@ local function handleAdvertiseMessage(message, sender, distribution, stateManage
     if (message.stateHash == stateManager:stateHash()) then
         setSyncState(listSync, STATUS_SYNCED)
     end
-    -- Then we check data set properties to decide if we might be far behind.
-    if projectedEntries < message.totalEntryCount then
-        -- We have fewer entries than the sender
-    end
-
-
 end
 
 local function handleWeekDataMessage(message, sender, distribution, stateManager, listSync)
@@ -249,7 +249,8 @@ local function handleRequestWeekMessage(message, sender, distribution, stateMana
             listSync.logger:Info("Ignoring request for week %d from %s, we did not advertise or lost prio on", message.week, sender)
         end
     elseif distribution == CHANNEL_WHISPER then
-        if listSync.p2pSyncPeers[sender] then
+        -- Respond only to known targets
+        if listSync.p2pSync.targets[sender] then
             listSync:weekSyncViaWhisper(sender, message.week)
         end
     end
@@ -291,11 +292,11 @@ local function advertiseWeekHashInhibitorCheckOrSet(listSync, week)
     return false
 end
 
-local function transmitEntry(listSync, entry, authEntry, channel)
+local function transmitEntry(listSync, entry, authEntry, channel, target)
     if listSync.authorizationHandler(authEntry or entry, UnitName("player")) then
         local message = BulkDataMessage.create()
         message:addEntry(listSync._stateManager:createListFromEntry(entry))
-        send(listSync, message, channel)
+        send(listSync, message, channel, target)
         return true
     end
     return false
@@ -321,7 +322,10 @@ function ListSync:new(stateManager, sendMessage, registerReceiveHandler, authori
     o.sendLargeMessage = sendLargeMessage or sendMessage
     o.authorizationHandler = authorizationHandler
     o.logger = logger
-    o.p2pSyncPeers = {}
+    o.p2pSync = {
+        targets = {},
+        sources = {}
+    }
 
     o._stateManager = stateManager
     o._weekHashCache = {
@@ -389,6 +393,15 @@ function ListSync:transmitViaRaid(entry, authEntry)
     return transmitEntry(self, entry, authEntry, CHANNEL_RAID)
 end
 
+function ListSync:transmitViaWhisper(entry, authEntry, target)
+    return transmitEntry(self, entry, authEntry, CHANNEL_WHISPER, target)
+end
+
+function ListSync:transmitViaWhisperToAllTargets(entry, authEntry)
+    for target, _ in pairs(self.p2pSync.targets) do
+        self:transmitViaWhisper(entry, authEntry, target)
+    end
+end
 
 function ListSync:getPeerStatus()
     return self.peerStatus
@@ -486,7 +499,7 @@ function ListSync:enableSending()
         if (message:hashCount() > 0) then
             self.logger:Debug("Sending hashes for %d weeks", message:hashCount())
             send(self, message, CHANNEL_GUILD)
-            for target, _ in pairs(self.p2pSyncPeers) do
+            for target, _ in pairs(self.p2pSync.targets) do
                 self.logger:Debug("Sending hashes for %d weeks to %s", message:hashCount(), target)
                 send(self, message, CHANNEL_WHISPER, target)
             end
@@ -511,12 +524,30 @@ function ListSync:disableSending()
     end
 end
 
-function ListSync:addP2PSyncPeer(peer)
-    Util.assertString(peer)
-    self.p2pSyncPeers[peer] = true
+function ListSync:addP2PSyncTarget(target)
+    Util.assertString(target)
+    self.p2pSync.targets[target] = true
 end
 
-function ListSync:removeP2PSyncPeer(peer)
-    Util.assertString(peer)
-    self.p2pSyncPeers[peer] = nil
+function ListSync:removeP2PSyncTarget(target)
+    Util.assertString(target)
+    self.p2pSync.targets[target] = nil
+end
+
+function ListSync:clearP2PSyncTargets()
+    self.p2pSync.targets = {}
+end
+
+function ListSync:addP2PSyncSource(source)
+    Util.assertString(source)
+    self.p2pSync.sources[source] = true
+end
+
+function ListSync:removeP2PSyncSource(source)
+    Util.assertString(source)
+    self.p2pSync.sources[source] = nil
+end
+
+function ListSync:clearP2PSyncSources()
+    self.p2pSync.sources = {}
 end
