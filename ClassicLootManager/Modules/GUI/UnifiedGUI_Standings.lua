@@ -733,6 +733,8 @@ local function beforeShowHandler()
         HandleRosterChange(CLM.MODULES.RaidManager:GetRaid():Roster():UID())
         UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, true)
         UnifiedGUI_Standings.context = CONSTANTS.ACTION_CONTEXT.RAID
+    else
+        UnifiedGUI_Standings.filter:SetFilterValue(CONSTANTS.FILTER.IN_RAID, false)
     end
 
     refreshHandler() -- this is actually here only for the structure update
