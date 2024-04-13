@@ -71,6 +71,13 @@ local function GenerateAssistantOptions(self)
             name = CLM.L["Management"],
             order = 20
         },
+        alt_main_linking = {
+            type = "execute",
+            width = "full",
+            name = CLM.L["Link Alt to Main"],
+            func = function() CLM.GUI.AltMainLinking:Show() end,
+            order = 20.5
+        },
         fill_from_guild_ranks = {
             name = CLM.L["Ranks"],
             type = "select",

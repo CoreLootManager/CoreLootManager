@@ -41,20 +41,11 @@ local options = {
 local function UpdateOptions(self)
     local profileNameMap = {}
     local profileList = {}
-    for name, roster in pairs(CLM.MODULES.RosterManager:GetRosters()) do
-        if roster:UID() == self.rosterId then
-            self.roster = roster
-            local profiles = roster:Profiles()
-            for _, GUID in ipairs(profiles) do
-                local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(GUID)
-                if profile then
-                    profileNameMap[profile:Name()] = profile:ShortName()
-                    profileList[#profileList + 1] = profile:Name()
-                end
-            end
-            table.sort(profileList)
-        end
+    for _, profile in pairs(CLM.MODULES.ProfileManager:GetProfiles()) do
+        profileNameMap[profile:Name()] = UTILS.ColorCodeText(profile:ShortName(), UTILS.GetClassColor(profile:ClassInternal()).hex)
+        profileList[#profileList + 1] = profile:Name()
     end
+    table.sort(profileList)
 
     options.args = {
         alt = {
@@ -76,25 +67,10 @@ local function UpdateOptions(self)
             order = 2,
         },
         link = {
-            name = CLM.L["Link"],
+            name = CLM.L["Link Alt to Main"],
             type = "execute",
             func = (function()
-                -- local awardTarget = self.roster
-                -- if CLM.MODULES.RaidManager:IsInRaid() then
-                --     local raid = CLM.MODULES.RaidManager:GetRaid()
-                --     local roster = raid:Roster()
-                --     if self.roster == roster then
-                --         awardTarget = raid
-                --     end
-                -- end
-                -- local success, _ = CLM.MODULES.LootManager:AwardItem(awardTarget, self.awardPlayer, self.itemLink, self.itemId, self.extra, self.awardValue)
-                -- if success then
-                --     CLM.MODULES.AutoAssign:Handle(self.itemId, self.awardPlayer)
-                -- end
-                -- self.itemLink = nil
-                -- self.itemId = 0
-                -- self.awardValue = 0
-                -- self.awardPlayer = ""
+                CLM.MODULES.ProfileManager:MarkAsAltByNames(self.alt, self.main)
                 self:Refresh()
             end),
             confirm = (function()
@@ -104,30 +80,14 @@ local function UpdateOptions(self)
                     UTILS.ColorCodeText(Ambiguate(self.main, "none"), "FFD100")
                 )
             end),
-            width = 0.55,
             order = 3,
             disabled = (function() return (not self.alt or not self.main) end)
         },
         unlink = {
-            name = CLM.L["Unlink"],
+            name = CLM.L["Unlink Alt"],
             type = "execute",
             func = (function()
-                -- local awardTarget = self.roster
-                -- if CLM.MODULES.RaidManager:IsInRaid() then
-                --     local raid = CLM.MODULES.RaidManager:GetRaid()
-                --     local roster = raid:Roster()
-                --     if self.roster == roster then
-                --         awardTarget = raid
-                --     end
-                -- end
-                -- local success, _ = CLM.MODULES.LootManager:AwardItem(awardTarget, self.awardPlayer, self.itemLink, self.itemId, self.extra, self.awardValue)
-                -- if success then
-                --     CLM.MODULES.AutoAssign:Handle(self.itemId, self.awardPlayer)
-                -- end
-                -- self.itemLink = nil
-                -- self.itemId = 0
-                -- self.awardValue = 0
-                -- self.awardPlayer = ""
+                CLM.MODULES.ProfileManager:MarkAsAltByNames(self.alt, "")
                 self:Refresh()
             end),
             confirm = (function()
@@ -136,7 +96,6 @@ local function UpdateOptions(self)
                     UTILS.ColorCodeText(Ambiguate(self.alt, "none"), "FFD100")
                 )
             end),
-            width = 0.55,
             order = 4,
             disabled = (function() return (not self.alt) end)
         },
@@ -164,7 +123,7 @@ local function Create(self)
     f:SetLayout("Flow")
     f:EnableResize(false)
     f:SetWidth(BASE_WIDTH)
-    f:SetHeight(205)
+    f:SetHeight(125)
     self.top = f
 
     self.itemId = 0
@@ -226,7 +185,7 @@ function AltMainLinkingGUI:Toggle()
     end
 end
 
-function AltMainLinkingGUI:Show(_, args)
+function AltMainLinkingGUI:Show()
     LOG:Trace("AltMainLinkingGUI:Show()")
     if not self._initialized then return end
     self:Refresh()
