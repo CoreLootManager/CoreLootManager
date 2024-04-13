@@ -125,6 +125,7 @@ function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, 
     o.UpdateRoster = nil
     o.GetAlwaysAllowBaseBids = nil
     o.GetAlwaysAllowAllInBids = nil
+    o.GetAlwaysAllowAll0 = nil
     o.GetAllowEqualBids = nil
     o.GetAllowCancelPass = nil
     o.GetTax = nil
@@ -439,6 +440,10 @@ end
 
 function AuctionInfo:GetAlwaysAllowAllInBids()
     return self.configuration:Get("allInAlways")
+end
+
+function AuctionInfo:GetAlwaysAllowAll0()
+    return self.configuration:Get("always0")
 end
 
 function AuctionInfo:GetAllowEqualBids()

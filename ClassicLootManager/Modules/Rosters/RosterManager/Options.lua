@@ -223,6 +223,12 @@ function RosterManagerOptions:Initialize()
         auction_allin_always_set = (function(name, value)
             SetRosterOption(name, "allInAlways", value)
         end),
+        auction_always0_get = (function(name)
+            return GetRosterOption(name, "always0")
+        end),
+        auction_always0_set = (function(name, value)
+            SetRosterOption(name, "always0", value)
+        end),
         auction_equalbids_get = (function(name)
             return GetRosterOption(name, "allowEqualMax")
         end),
@@ -1251,6 +1257,14 @@ function RosterManagerOptions:GenerateRosterOptions(name)
             disabled = disableManage,
             width = 1,
             order = 12.3
+        }
+        options.args.auction.args.always0 = {
+            name = CLM.L["Always allow 0 bids"],
+            desc = CLM.L["Enable to always allow 0 bids. Affects Open-Ascending Auction."],
+            type = "toggle",
+            disabled = disableManage,
+            width = 1,
+            order = 12.4
         }
         options.args.auction.args.item_value_mode = {
             name = CLM.L["Item value mode"],

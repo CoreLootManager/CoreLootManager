@@ -100,6 +100,8 @@ function RosterConfiguration:New(i)
     o._.basePoints = 0
     -- Base GP
     o._.baseSpent = 0
+    -- Always allow bidding 0
+    o._.always0 = false
     -- Additional settings
     o.hasHardCap = false
     o.hasWeeklyCap = false
@@ -153,7 +155,8 @@ function RosterConfiguration:fields()
         "rollTime",
         "multiplyTime",
         "basePoints",
-        "baseSpent"
+        "baseSpent",
+        "always0"
     }
 end
 
@@ -207,6 +210,7 @@ local TRANSFORMS = {
     multiplyTime = transform_boolean,
     basePoints = transform_number,
     baseSpent = transform_number,
+    always0 = transform_boolean,
 }
 
 function RosterConfiguration:inflate(data)
@@ -310,6 +314,7 @@ function RosterConfiguration._validate_rollTime(value) value = tonumber(value); 
 function RosterConfiguration._validate_multiplyTime(value) return IsBoolean(value) end
 function RosterConfiguration._validate_basePoints(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
 function RosterConfiguration._validate_baseSpent(value) value = tonumber(value); return IsNumeric(value) and IsPositive(value) end
+function RosterConfiguration._validate_always0(value) return IsBoolean(value) end
 
 
 CLM.MODELS.RosterConfiguration = RosterConfiguration

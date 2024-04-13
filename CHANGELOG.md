@@ -7,8 +7,12 @@ This is a major update which means communication is not backwards compatible.
 Finally, cross-guild synchronisation comes to CLM. It took only three years. You can now configure who you want to sync to and from. Becautious when using this feature as it will merge the guilds databases.
 ### Core upgrades
 A lot of boring communication upgrades are present in this release. Additionally AddOn now handles the database on per-expansion base. This should smoothen the transition.
-### Alt-main linkin
+### Alt-main linking
 A GUI. Finally.
+### SoD Sunken Temple
+Support for Sunken Temple Boss Kill Bonus awards.
+### Bidding 0
+You can now allow people to always allow bid 0 points. Useful for free / roll item handling while Base value is higher than 0.
 ## Fixes
 ### Filtering
 Filtering raid members is now based on CLM state.
