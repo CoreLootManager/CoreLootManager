@@ -74,23 +74,23 @@ function GlobalSlashCommands:Initialize()
     local options = {}
 
     if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER) then
-        options.link = {
-            type = "input",
-            name = CLM.L["Link Alt to Main"],
-            set = (function(i, input)
-                local alt, main = strsplit(" ", input)
-                CLM.MODULES.ProfileManager:MarkAsAltByNames(alt, main)
-            end),
-            confirm = true
-        }
-        options.unlink = {
-            type = "input",
-            name = CLM.L["Unlink Alt"],
-            set = (function(i, input)
-                CLM.MODULES.ProfileManager:MarkAsAltByNames(input, "")
-            end),
-            confirm = true
-        }
+        -- options.link = {
+        --     type = "input",
+        --     name = CLM.L["Link Alt to Main"],
+        --     set = (function(i, input)
+        --         local alt, main = strsplit(" ", input)
+        --         CLM.MODULES.ProfileManager:MarkAsAltByNames(alt, main)
+        --     end),
+        --     confirm = true
+        -- }
+        -- options.unlink = {
+        --     type = "input",
+        --     name = CLM.L["Unlink Alt"],
+        --     set = (function(i, input)
+        --         CLM.MODULES.ProfileManager:MarkAsAltByNames(input, "")
+        --     end),
+        --     confirm = true
+        -- }
     end
     if CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then
         options.ignore = {
