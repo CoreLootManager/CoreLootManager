@@ -442,7 +442,7 @@ function AuctionInfo:GetAlwaysAllowAllInBids()
     return self.configuration:Get("allInAlways")
 end
 
-function AuctionInfo:GetAlwaysAllowAll0()
+function AuctionInfo:GetAlwaysAllow0()
     return self.configuration:Get("always0")
 end
 
