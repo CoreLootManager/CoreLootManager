@@ -19,6 +19,7 @@ ignore = {
 }
 globals = {
 	-- Design
+	"CLM",
 	"LibStub",
 	-- Saved Variable
 	"CLM_DB",
