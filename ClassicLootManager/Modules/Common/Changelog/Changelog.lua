@@ -1,6 +1,33 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.0.0",
+        data = {
+            {
+                name = "Notice",
+                data = {
+                    { header = "Major update", body = "This is a major update which means communication is not backwards compatible. Everyone will need to move to version `v5.x.x`." },
+                },
+            },
+            {
+                name = "Features",
+                data = {
+                    { header = "Cross-Guild synchronisation", body = "Finally, cross-guild synchronisation comes to CLM. It took only three years. You can now configure who you want to sync to and from. Becautious when using this feature as it will merge the guilds databases." },
+                    { header = "Core upgrades", body = "A lot of boring communication upgrades are present in this release. Additionally AddOn now handles the database on per-expansion base. This should smoothen the transition." },
+                    { header = "Alt-main linking", body = "A GUI. Finally." },
+                    { header = "SoD Sunken Temple", body = "Support for Sunken Temple Boss Kill Bonus awards." },
+                    { header = "Bidding 0", body = "You can now allow people to always allow bid 0 points. Useful for free / roll item handling while Base value is higher than 0." },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Filtering", body = "Filtering raid members is now based on CLM state." },
+                },
+            },
+        },
+    },
+    {
         version = "v4.10.0",
         data = {
             {

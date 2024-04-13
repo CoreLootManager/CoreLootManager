@@ -6,18 +6,14 @@ formerly Classic Loot Manager
 [![Issues](https://img.shields.io/github/issues/ClassicLootManager/classiclootmanager?color=blue)](https://github.com/ClassicLootManager/ClassicLootManager/issues)
 [![Discord](https://img.shields.io/discord/813686248841019392?label=discord)](https://discord.gg/Qjn8KdD8yt)
 [![Patreon](https://img.shields.io/badge/Support%20CLM-Patreon-red)](https://www.patreon.com/classiclootmanager)
-
 # About
 Core Loot Manager is a robust Loot Tracking and awarding tool for guilds.
 It's designed to superseed old DKP and EPGP AddOns and it's derivatives and solves it's biggest painpoints by focusing on optimial communication and storage. CLM implements Event Sourcing and MVC programming models to achieve those targets. All data is synchronised automatically.
-
 ## Wiki
 Be sure to check our [Wiki](https://github.com/ClassicLootManager/ClassicLootManager/wiki) for lots of information.
-
 ## Point Systems
 Core Loot Manager currently supports **DKP** and **EPGP**. There are also mechanisms for utilizing DKP as **SK** which you can run at the same time!
-
-## Auto-magical synchronisation
+## Auto synchronisation within Guild
 ## Cross-guild synchronisation
 ## Multiple roster (teams) support
 With CLM unconquered scalability, you can run multiple DKP, EPGP and SK systems in your guild, even at the same time!
@@ -28,8 +24,7 @@ CLM allows to auction virtually any amount of items during single auction.
 If you want to block some players from receiving points or being charged for items just lock their profile!
 ## Mulit-level Access Control
 * Managers can control every aspect of the AddOn.
-* Assistants can award loot and DKP but can't control roster 
-settings.
+* Assistants can award loot and DKP but can't control roster settings.
 ## DKP point system
 * Fine-grained configurable awarding and decaying
 * Configurable weekly and hard point caps
@@ -61,6 +56,7 @@ settings.
 * Award item without auction through slash command
 * Optional bid storing and posting to configured channel
 * Item Upgrade information during auction
+* Configurable exceptions to bidding systems
 ### Bidding
 * Value increments (open bid mode only)
 * Alerts and notifications
@@ -80,7 +76,7 @@ settings.
 * Built-in migration from MonolithDKP, EssentialDKP, **CommunityDKP**, BastionLoot and **CEPGP**
 * Loot tracking queue for fast auctioning
 * Auto-posting loot to raid channel
-* Player spec and role tracking
+* Player role tracking
 * DKP and GP price information on tooltip
 ## External integrations
 * [WoW DKP Discord Bot integration](http://tiny.one/wowdkpbot-discord)

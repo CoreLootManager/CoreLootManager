@@ -1,7 +1,7 @@
 # Core Loot Manager v5.0.0
 ## Notice
 ### Major update
-This is a major update which means communication is not backwards compatible.
+This is a major update which means communication is not backwards compatible. Everyone will need to move to version `v5.x.x`.
 ## Features
 ### Cross-Guild synchronisation
 Finally, cross-guild synchronisation comes to CLM. It took only three years. You can now configure who you want to sync to and from. Becautious when using this feature as it will merge the guilds databases.
