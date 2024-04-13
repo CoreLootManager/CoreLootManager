@@ -1,6 +1,5 @@
 -- ------------------------------- --
 local _, PRIV = ...
-local CLM = LibStub("ClassicLootManager").CLM
 -- ------ CLM common cache ------- --
 local CONSTANTS = CLM.CONSTANTS
 local LOG       = CLM.LOG

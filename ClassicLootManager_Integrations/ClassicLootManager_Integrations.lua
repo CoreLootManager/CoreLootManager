@@ -5,8 +5,6 @@ PRIV.MODELS = {}
 PRIV.GUI = {}
 PRIV.CONSTANTS = {}
 
-local CLM = LibStub("ClassicLootManager").CLM
-
 local Integrations = {}
 
 function Integrations:Initialize()

@@ -1,5 +1,4 @@
 local _, PRIV = ...
-local CLM = LibStub("ClassicLootManager").CLM
 
 local LOG = CLM.LOG
 local MODULES = CLM.MODULES

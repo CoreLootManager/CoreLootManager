@@ -3,8 +3,6 @@ local _, PRIV = ...
 PRIV.MODULES = {}
 PRIV.CONSTANTS = {}
 
-local CLM = LibStub("ClassicLootManager").CLM
-
 local Core = {}
 
 local function InitializeDB()

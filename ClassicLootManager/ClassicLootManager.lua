@@ -2,10 +2,7 @@ local name, CLM = ...
 
 local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
-local LIB_CLM, _ = LibStub:NewLibrary("ClassicLootManager", 1)
-if LIB_CLM then
-    LIB_CLM.CLM = CLM
-end
+_G["CLM"] = CLM -- Expose CLM globally
 
 CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
 CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
@@ -316,6 +313,6 @@ end
 
 --@do-not-package@
 if DevTool then
-    DevTool_AddData(CLM, "CLM")
+    DevTool:AddData(CLM, "CLM")
 end
 --@end-do-not-package@
