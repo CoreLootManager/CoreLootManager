@@ -14,10 +14,10 @@ local typeof = UTILS.typeof
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
 -- luacheck: ignore CHAT_MESSAGE_CHANNEL
-CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
--- @debug@
+local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
+--@debug@
 CHAT_MESSAGE_CHANNEL = "GUILD"
--- @end-debug@
+--@end-debug@
 
 -- Singleton
 
