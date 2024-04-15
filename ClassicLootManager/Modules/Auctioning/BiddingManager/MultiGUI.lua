@@ -1144,11 +1144,8 @@ function BiddingManagerGUI:Refresh()
     if not self._initialized then return end
 
     UpdateOptions(self)
-    AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
     AceConfigDialog:Open(ITEM_REGISTRY, self.ItemGroup) -- Refresh the config gui panel
-    AceConfigRegistry:NotifyChange(BID_REGISTRY)
     AceConfigDialog:Open(BID_REGISTRY, self.BiddingGroup) -- Refresh the config gui panel
-    AceConfigRegistry:NotifyChange(BUTTON_REGISTRY)
     AceConfigDialog:Open(BUTTON_REGISTRY, self.ButtonGroup) -- Refresh the config gui panel
     UpdateUIStructure(self)
     self:RefreshItemList()

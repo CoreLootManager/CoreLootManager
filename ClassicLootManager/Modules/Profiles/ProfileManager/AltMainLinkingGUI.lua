@@ -161,17 +161,17 @@ function AltMainLinkingGUI:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
-        self:Refresh()
+        self:Refresh(true)
     end)
 
     self._initialized = true
 end
 
-function AltMainLinkingGUI:Refresh()
+function AltMainLinkingGUI:Refresh(visible)
     LOG:Trace("AltMainLinkingGUI:Refresh()")
+    if visible and not self.top:IsVisible() then return end
 
     UpdateOptions(self)
-    AceConfigRegistry:NotifyChange(REGISTRY)
     AceConfigDialog:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
 end
 

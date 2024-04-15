@@ -932,11 +932,8 @@ function AuctionManagerGUI:Refresh()
     self.BidList:SetData(bidList)
 
     UpdateOptions(self)
-    AceConfigRegistry:NotifyChange(ITEM_REGISTRY)
     AceConfigDialog:Open(ITEM_REGISTRY, self.ItemOptionsGroup)
-    AceConfigRegistry:NotifyChange(AUCTION_REGISTRY)
     AceConfigDialog:Open(AUCTION_REGISTRY, self.AuctionOptionsGroup)
-    AceConfigRegistry:NotifyChange(AWARD_REGISTRY)
     AceConfigDialog:Open(AWARD_REGISTRY, self.AwardOptionsGroup)
 end
 

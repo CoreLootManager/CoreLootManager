@@ -560,3 +560,23 @@ CONSTANTS.EPGP_POINT_DECAY_TYPES_GUI = {
 }
 
 CLM.MODULES.PointManager = PointManager
+--@do-not-package@
+function PointManager:DebugAddPoints()
+    local rosters = CLM.MODULES.RosterManager:GetRosters()
+    for _=1,math.random(20,150) do
+        for _, roster in pairs(rosters) do
+            local rosterContext = (math.random(1,2) == 1)
+            if rosterContext then
+                PointManager:UpdateRosterPoints(roster, math.random(1, 1000), math.random(1,9), CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, UTILS.randomString(math.random(1,10)), CONSTANTS.POINT_CHANGE_TYPE.POINTS, false)
+            else
+                local all_profiles = roster:Profiles()
+                local profiles = {}
+                for _=1,math.random(1,50) do
+                    profiles[#profiles+1] = all_profiles[math.random(1, #all_profiles)]
+                end
+                PointManager:UpdatePoints(roster, profiles, math.random(1, 1000), math.random(1,9), CONSTANTS.POINT_MANAGER_ACTION.MODIFY, UTILS.randomString(math.random(1,10)), CONSTANTS.POINT_CHANGE_TYPE.POINTS, false)
+            end
+        end
+    end
+end
+--@end-do-not-package@

@@ -32,6 +32,7 @@ CLM.GUI = {}
 CLM.OPTIONS = {}
 CLM.ALERTS = {}
 CLM.EXTERNAL = {}
+CLM.PROFILER = {}
 
 CLM.AUTOVERSION = "@project-version@"
 

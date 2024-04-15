@@ -156,12 +156,13 @@ local function UpdateOptions(self)
                 local success, _ = CLM.MODULES.LootManager:AwardItem(awardTarget, self.awardPlayer, self.itemLink, self.itemId, self.extra, self.awardValue)
                 if success then
                     CLM.MODULES.AutoAssign:Handle(self.itemId, self.awardPlayer)
+                else
+                    self:Refresh()
                 end
                 self.itemLink = nil
                 self.itemId = 0
                 self.awardValue = 0
                 self.awardPlayer = ""
-                self:Refresh()
             end),
             confirm = (function()
                 return string.format(
@@ -277,17 +278,17 @@ function AwardGUI:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"PLAYER_LOGOUT"}, (function() StoreLocation(self) end))
     CLM.MODULES.LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag ~= 0 or uncommitted ~= 0 then return end
-        self:Refresh()
+        self:Refresh(true)
     end)
 
     self._initialized = true
 end
 
-function AwardGUI:Refresh()
+function AwardGUI:Refresh(visible)
     LOG:Trace("AwardGUI:Refresh()")
+    if visible and not self.top:IsVisible() then return end
 
     UpdateOptions(self)
-    AceConfigRegistry:NotifyChange(REGISTRY)
     AceConfigDialog:Open(REGISTRY, self.OptionsGroup) -- Refresh the config gui panel
 end
 

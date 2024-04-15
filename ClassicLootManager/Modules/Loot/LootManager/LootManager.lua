@@ -259,3 +259,16 @@ end
 
 
 CLM.MODULES.LootManager = LootManager
+--@do-not-package@
+function LootManager:DebugAddLoot()
+    local rosters = CLM.MODULES.RosterManager:GetRosters()
+    for _=1,math.random(20,150) do
+        for _, roster in pairs(rosters) do
+            local all_profiles = roster:Profiles()
+            for _=1,math.random(1,50) do
+                LootManager:AwardItem(roster, all_profiles[math.random(1,#all_profiles)]:Name(), itemLink, itemId, extra, value, forceInstant)
+            end
+        end
+    end
+end
+--@end-do-not-package@

@@ -75,7 +75,6 @@ function ConfigManager:Register(group, options, clean)
     for option, definition in pairs(options) do
         self.options[group].args[option] = definition
     end
-
     return true
 end
 
