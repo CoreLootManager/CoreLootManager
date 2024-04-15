@@ -24,6 +24,7 @@ local multiWoWDifficultyIDs = {
     [186] = 9, -- 40 man
     [197] = 3, -- 10 man SoD
     [198] = 3, -- 10 man SoD
+    [215] = 148,
     [14] = 14,
     [15] = 15,
     [16] = 16,

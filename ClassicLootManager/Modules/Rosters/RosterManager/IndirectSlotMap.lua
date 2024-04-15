@@ -169,6 +169,14 @@ local IndirectMap = {
         [52029] = "INVTYPE_NON_EQUIP",
         -- Conqueror's Mark of Sanctification (Heroic)
         [52030] = "INVTYPE_NON_EQUIP",
+
+        -----------
+        --- SOD ---
+        -----------
+        -- Atal'ai Blood Icon
+        [220636] = "INVTYPE_NON_EQUIP",
+        -- Atal'ai Ritual Token
+        [220637] = "INVTYPE_NON_EQUIP",
     },
     ilvl = {
         -- -- --
@@ -339,6 +347,14 @@ local IndirectMap = {
         [52029] = 277,
         -- Conqueror's Mark of Sanctification (Heroic)
         [52030] = 277,
+
+        -----------
+        --- SOD ---
+        -----------
+        -- Atal'ai Blood Icon
+        [220636] = 55,
+        -- Atal'ai Ritual Token
+        [220637] = 55,
     }
 }
 CLM.IndirectMap = IndirectMap

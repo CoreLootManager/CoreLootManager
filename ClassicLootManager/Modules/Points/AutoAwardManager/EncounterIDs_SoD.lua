@@ -53,7 +53,7 @@ CLM.EncounterIDs.SoD = {
     },
     {
         name = CLM.L["Sunken Temple"],
-        difficulty = {3},
+        difficulty = {148},
         data = {
             { id = 2952, name = CLM.EncounterIDsMap[2952] },
             { id = 2953, name = CLM.EncounterIDsMap[2953] },
