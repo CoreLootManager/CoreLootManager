@@ -1,3 +1,13 @@
+# Core Loot Manager v5.0.2
+## Fixes
+### SoD Phase 3
+Tokens and Boss kill bonuses should be now properly detected by CLM in Sunken Temple.
+### Performance issues
+Performance issues for large guilds should now be resolved.
+# Core Loot Manager v5.0.1
+## Hotfix
+### Chat messages
+Chat messages will now properly be sent to `RAID_WARNING` instead of `GUILD` channel.
 # Core Loot Manager v5.0.0
 ## Notice
 ### Major update

@@ -1,6 +1,29 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.0.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "SoD Phase 3", body = "Tokens and Boss kill bonuses should be now properly detected by CLM in Sunken Temple." },
+                    { header = "Performance issues", body = "Performance issues for large guilds should now be resolved." },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.0.1",
+        data = {
+            {
+                name = "Hotfix",
+                data = {
+                    { header = "Chat messages", body = "Chat messages will now properly be sent to `RAID_WARNING` instead of `GUILD` channel." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.0.0",
         data = {
             {
