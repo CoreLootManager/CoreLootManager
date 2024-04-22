@@ -494,6 +494,21 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
     local epgpweb = "EPGPWeb: |c43eeee00[Multiplier] * [Base]^(ilvl/26 + (rarity - 4)) * [slot multiplier]|r\n\n"
     local custom = "Custom: |c43eeee00" .. CLM.L["Your custom defined expression"] .. "|r\n\n"
     local equationNote = "|c43ee4444Changing this will reset slot multipliers to default values.|r"
+    args["equation_select"] = {
+        type = "select",
+        style = "dropdown",
+        desc = epgpweb .. wowpedia .. custom .. equationNote,
+        order = order,
+        values = CONSTANTS.ITEM_VALUE_EQUATIONS_GUI,
+        sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
+        set = (function(i, v)
+            if self.readOnly then return end
+            equationSet(tonumber(v))
+        end),
+        get = (function(i) return equationGet() end),
+        name = CLM.L["Select equation"]
+    }
+    order = order + 1
     args["equation_multiplier"] = {
         type = "input",
         desc = CLM.L["Multiplier used by the equations"] .. "\n\n"
@@ -507,6 +522,9 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
         end),
         name = CLM.L["Multiplier"],
         pattern = CONSTANTS.REGEXP_FLOAT,
+        hidden = function()
+            return equationGet() == CONSTANTS.ITEM_VALUE_EQUATION.CUSTOM
+        end
     }
     order = order + 1
     args["equation_expvar"] = {
@@ -522,21 +540,9 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
         end),
         name = CLM.L["Exponent / Base"],
         pattern = CONSTANTS.REGEXP_FLOAT,
-    }
-    order = order + 1
-    args["equation_select"] = {
-        type = "select",
-        style = "dropdown",
-        desc = epgpweb .. wowpedia .. custom .. equationNote,
-        order = order,
-        values = CONSTANTS.ITEM_VALUE_EQUATIONS_GUI,
-        sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
-        set = (function(i, v)
-            if self.readOnly then return end
-            equationSet(tonumber(v))
-        end),
-        get = (function(i) return equationGet() end),
-        name = CLM.L["Select equation"]
+        hidden = function()
+            return equationGet() == CONSTANTS.ITEM_VALUE_EQUATION.CUSTOM
+        end
     }
     order = order + 1
     local variableNames = {}
@@ -568,7 +574,10 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
                 return false
             end
             return true
-        end)
+        end),
+        hidden = function()
+            return equationGet() ~= CONSTANTS.ITEM_VALUE_EQUATION.CUSTOM
+        end
     }
     order = order + 1
     args["slot_multipliers_header"] = {
