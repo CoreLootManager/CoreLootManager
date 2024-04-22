@@ -348,6 +348,20 @@ function RosterManager:Initialize()
         end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
+            CLM.MODELS.LEDGER.ROSTER.DynamicItemValueCustomExpression,
+            (function(entry)
+                LOG:TraceAndCount("mutator(DynamicItemValueCustomExpression)")
+                local rosterUid = entry:rosterUid()
+
+                local roster = self:GetRosterByUid(rosterUid)
+                if not roster then
+                    LOG:Debug("Updating non-existent roster [%s]", rosterUid)
+                    return
+                end
+                roster:GetCalculator():SetCustomExpression(entry:customExpression())
+            end))
+
+    CLM.MODULES.LedgerManager:RegisterEntryType(
         CLM.MODELS.LEDGER.ROSTER.DynamicItemValueMultiplier,
         (function(entry)
             LOG:TraceAndCount("mutator(DynamicItemValueMultiplier)")
@@ -694,6 +708,30 @@ function RosterManager:SetRosterDynamicItemValueExpvar(nameOrRoster, expvar)
     end
 
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueExpvar:new(roster:UID(), expvar), true)
+end
+
+function RosterManager:SetRosterDynamicItemValueCustomExpression(nameOrRoster, custom_expression)
+    LOG:Trace("RosterManager:SetRosterDynamicItemValueCustomExpression()")
+    local roster
+    if UTILS.typeof(nameOrRoster, CLM.MODELS.Roster) then
+        roster = nameOrRoster
+    else
+        roster = self:GetRosterByName(nameOrRoster)
+    end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueCustomExpression(): Invalid roster object or name")
+        return nil
+    end
+    if not custom_expression then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueCustomExpression(): Missing custom_expression")
+        return
+    end
+    if roster:GetCalculator():GetCustomExpression() == custom_expression then
+        LOG:Debug("RosterManager:SetRosterDynamicItemValueCustomExpression(): No change to value. Skipping.")
+        return
+    end
+
+    CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueCustomExpression:new(roster:UID(), custom_expression), true)
 end
 
 function RosterManager:SetRosterDynamicItemValueMultiplier(nameOrRoster, multiplier)

@@ -428,7 +428,13 @@ local function generateDynamicItemValuesHandlers(roster)
     local tierSet = (function(tier, value)
         CLM.MODULES.RosterManager:SetRosterDynamicItemValueTierMultiplier(roster, tier, value)
     end)
-    return equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet
+    local customExpressionGet = (function()
+        return roster:GetCalculator():GetCustomExpression()
+    end)
+    local customExpressionSet = (function(value)
+        CLM.MODULES.RosterManager:SetRosterDynamicItemValueCustomExpression(roster, value)
+    end)
+    return equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet, customExpressionGet, customExpressionSet
 end
 
 local function default_slot_values(self, roster)
@@ -474,7 +480,7 @@ local function default_slot_values(self, roster)
     return args
 end
 
-local function dynamic_item_values(self, roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+local function dynamic_item_values(self, roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet, customExpressionGet, customExpressionSet)
     local args = {}
     local order = 0
     local prefix
@@ -486,10 +492,12 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
     order = order + 1
     local wowpedia = "WoWpedia: |c43eeee00[Multiplier] * [item value]^[Exponent] * [slot multiplier]|r\n\n"
     local epgpweb = "EPGPWeb: |c43eeee00[Multiplier] * [Base]^(ilvl/26 + (rarity - 4)) * [slot multiplier]|r\n\n"
+    local custom = "Custom: |c43eeee00" .. CLM.L["Your custom defined expression"] .. "|r\n\n"
     local equationNote = "|c43ee4444Changing this will reset slot multipliers to default values.|r"
     args["equation_multiplier"] = {
         type = "input",
-        desc = CLM.L["Multiplier used by the equations"],
+        desc = CLM.L["Multiplier used by the equations"] .. "\n\n"
+                .. "|c43ee4444" .. CLM.L["Ignored when equation is set to Custom."] .. "|r",
         order = order,
         width = 0.5,
         get = (function(i) return tostring(multiplierGet()) end),
@@ -503,7 +511,8 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
     order = order + 1
     args["equation_expvar"] = {
         type = "input",
-        desc = CLM.L["Exponential scaling value used by the equations (Base for EPGPWeb, or Exponent for WoWpedia)"],
+        desc = CLM.L["Exponential scaling value used by the equations (Base for EPGPWeb, or Exponent for WoWpedia)"] .. "\n\n"
+                .. "|c43ee4444" .. CLM.L["Ignored when equation is set to Custom."] .. "|r",
         order = order,
         width = 0.5,
         get = (function(i) return tostring(expvarGet()) end),
@@ -518,7 +527,7 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
     args["equation_select"] = {
         type = "select",
         style = "dropdown",
-        desc = epgpweb .. wowpedia .. equationNote,
+        desc = epgpweb .. wowpedia .. custom .. equationNote,
         order = order,
         values = CONSTANTS.ITEM_VALUE_EQUATIONS_GUI,
         sorting = CONSTANTS.ITEM_VALUE_EQUATIONS_ORDERED,
@@ -528,6 +537,38 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
         end),
         get = (function(i) return equationGet() end),
         name = CLM.L["Select equation"]
+    }
+    order = order + 1
+    local variableNames = {}
+    for _, v in pairs(CONSTANTS.CUSTOM_EQUATION_VARIABLES) do
+        table.insert(variableNames, v)
+    end
+    local customExpressionDesc = CLM.L["A custom expression to calculate item values."] .. "\n\n"
+            .. CLM.L["Available variables"] .. ":\n\n"
+            .. "|c43eeee00" .. table.concat(variableNames, "\n\n") .. "|r\n\n"
+            .. "|c43ee4444" ..CLM.L["Only used when equation is set to Custom."] .. "|r"
+    args["equation_customExpression"] = {
+        type = "input",
+        desc = customExpressionDesc,
+        order = order,
+        width = "full",
+        get = (function() return tostring(customExpressionGet()) end),
+        set = (function(_, v)
+            if self.readOnly then return end
+            customExpressionSet(tostring(v))
+        end),
+        name = CLM.L["Custom Expression"],
+        validate = (function(_, expression)
+            local success, errors = ExpressionParser:IsValidExpression(expression, CONSTANTS.CUSTOM_EQUATION_VARIABLES)
+            if not success then
+                print("|cff00cc00CLM |c43ee4444" .. CLM.L["Custom expression has the following issue(s)"] .. ":|r")
+                for _, error in ipairs(errors) do
+                    print("|c43ee4444||||====>|r " .. error)
+                end
+                return false
+            end
+            return true
+        end)
     }
     order = order + 1
     args["slot_multipliers_header"] = {
@@ -757,7 +798,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
     local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)
     local disableManage = (function() return not isManager end)
 
-    local equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet = generateDynamicItemValuesHandlers(roster)
+    local equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet, customExpressionGet, customExpressionSet = generateDynamicItemValuesHandlers(roster)
 
     local options = {
         type = "group",
@@ -1190,7 +1231,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = CLM.L["Dynamic Item values"],
                 type = "group",
                 order = 6,
-                args = dynamic_item_values(self, roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet)
+                args = dynamic_item_values(self, roster, equationGet, equationSet, expvarGet, expvarSet, multiplierGet, multiplierSet, slotGet, slotSet, tierGet, tierSet, customExpressionGet, customExpressionSet)
             },
             boss_kill_award_values = {
                 name = CLM.L["Boss kill award values"],

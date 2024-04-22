@@ -4,6 +4,7 @@
 	<Script file="Roster.lua"/>
 	<Script file="LedgerEntries.lua"/>
 	<Script file="IndirectSlotMap.lua"/>
+	<Script file="ExpressionParser.lua"/>
 	<Script file="ItemValueCalculator.lua"/>
 	<Script file="RosterManager.lua"/>
 	<Script file="Options.lua"/>
