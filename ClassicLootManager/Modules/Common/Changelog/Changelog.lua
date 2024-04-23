@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.0.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Dreamscythe and Weaver", body = "Dreamscythe and Weaver added to Boss Kill Bonus." },
+                    { header = "tail Database", body = "Properly restored retail databases which were wrongly marked as Cataclysm. If you created your roster in version 5.0.x < 5.0.3 you might ask for instructions how to restore the data on CLM discord." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.0.2",
         data = {
             {
