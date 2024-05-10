@@ -19,6 +19,7 @@ CLM.EncounterIDsMap[2940] = CLM.L["Mekgineer Thermaplugg"]
 -- Sunken Temple
 CLM.EncounterIDsMap[2952] = CLM.L["Atal'alarion"]
 CLM.EncounterIDsMap[2953] = CLM.L["Festering Rotslime"]
+CLM.EncounterIDsMap[2955] = CLM.L["Dreamscythe and Weaver"]
 CLM.EncounterIDsMap[2954] = CLM.L["Atal'ai Defenders"]
 CLM.EncounterIDsMap[2957] = CLM.L["Jammal'an and Ogom"]
 CLM.EncounterIDsMap[2958] = CLM.L["Morphaz and Hazzas"]
@@ -57,6 +58,7 @@ CLM.EncounterIDs.SoD = {
         data = {
             { id = 2952, name = CLM.EncounterIDsMap[2952] },
             { id = 2953, name = CLM.EncounterIDsMap[2953] },
+            { id = 2955, name = CLM.EncounterIDsMap[2955] },
             { id = 2954, name = CLM.EncounterIDsMap[2954] },
             { id = 2957, name = CLM.EncounterIDsMap[2957] },
             { id = 2958, name = CLM.EncounterIDsMap[2958] },
