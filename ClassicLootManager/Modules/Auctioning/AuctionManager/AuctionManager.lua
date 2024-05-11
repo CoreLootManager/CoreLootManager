@@ -725,7 +725,7 @@ local function StopAuctionTimed(self)
     self:RefreshGUI()
 end
 
-local TICKER_INTERVAL = 0.2
+local TICKER_INTERVAL = 0.1
 
 local defaultHandlersTypes = {"init", "ticker", "final"}
 local function GenerateIntervalHandlerCallbacks(input)
@@ -777,7 +777,7 @@ function AuctionManager:ClearItemList()
     self:RefreshGUI()
 end
 
-local SENDING_INTERVAL = 1
+local SENDING_INTERVAL = 0.5
 function AuctionManager:StartAuction()
     LOG:Trace("AuctionManager:StartAuction()")
     local auction = self.currentAuction
@@ -1311,7 +1311,7 @@ end
 
 CONSTANTS.AUCTION_COMM = {
     BID_PASS  = CLM.L["PASS"],
-    NUM_ANNOUNCE_CHANNELS = 10,
+    NUM_ANNOUNCE_CHANNELS = 4,
     TYPE = {
         START_AUCTION = 1,
         STOP_AUCTION = 2,
