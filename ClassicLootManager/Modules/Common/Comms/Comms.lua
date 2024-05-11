@@ -20,24 +20,6 @@ local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 
 local COMMS_VERSION = 1
 
-local defaultCTL = {
-    BURST = _G.ChatThrottleLib.BURST or 4000,
-    MAX_CPS = _G.ChatThrottleLib.MAX_CPS or 800
-}
-
-local function restoreThrottle()
-    _G.ChatThrottleLib.BURST = defaultCTL.BURST
-    _G.ChatThrottleLib.MAX_CPS = defaultCTL.MAX_CPS
-end
-
-local throttleTimer = LibStub("LibExpiringTimer").New(5, restoreThrottle)
-
-local function throttle()
-    _G.ChatThrottleLib.BURST = 2550
-    _G.ChatThrottleLib.MAX_CPS = 255
-    throttleTimer()
-end
-
 function Comms:Initialize()
     LOG:Trace("Comms:Initialize()")
     self.callbacks = {}
@@ -183,9 +165,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
         LOG:Error("Comms:Send() unable to encode message: %s", message)
         return false
     end
-    if distribution == CONSTANTS.COMMS.DISTRIBUTION.RAID then
-        throttle()
-    end
+
     LOG:Debug("Message on channel %s with size %s [B] ", prefix, tmp:len())
     self:SendCommMessage(prefix, tmp, distribution, target, priority)
     return true
