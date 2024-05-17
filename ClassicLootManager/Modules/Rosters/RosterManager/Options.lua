@@ -710,10 +710,12 @@ local bossKillBonusTabMap = {
     sod     = { name = CLM.L["SoD"],                            offset = 1000},
     tbc     = { name = CLM.L["TBC"],                            offset = 2000},
     wotlk10 = { name = CLM.L["WotLK"] .. " - " .. "10",         offset = 3000},
-    wotlk25 = { name = CLM.L["WotLK"] .. " - " .. "25",         offset = 4000},
-    dfn     = { name = CLM.L["DF"] .. " - " .. CLM.L["Normal"], offset = 5000},
-    dfh     = { name = CLM.L["DF"] .. " - " .. CLM.L["Heroic"], offset = 6000},
-    dfm     = { name = CLM.L["DF"] .. " - " .. CLM.L["Mythic"], offset = 7000},
+    wotlk25 = { name = CLM.L["WotLK"] .. " - " .. "25",         offset = 3500},
+    cata10  = { name = CLM.L["Cataclysm"] .. " - " .. "10",     offset = 4000},
+    cata25  = { name = CLM.L["Cataclysm"] .. " - " .. "25",     offset = 4500},
+    dfn     = { name = CLM.L["DF"] .. " - " .. CLM.L["Normal"], offset = 10100},
+    dfh     = { name = CLM.L["DF"] .. " - " .. CLM.L["Heroic"], offset = 10200},
+    dfm     = { name = CLM.L["DF"] .. " - " .. CLM.L["Mythic"], offset = 10400},
 }
 
 local function boss_kill_award_values(self, roster, name)

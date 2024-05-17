@@ -1,3 +1,9 @@
+# Core Loot Manager v5.0.4
+## Changes
+### Comms
+Using new CTL for comms and removing throttling should positively affect auction and bid info distribution.
+### Cataclysm Boss Kill Bonus values
+Added Boss kill bonus values support for Cataclysm raids.
 # Core Loot Manager v5.0.3
 ## Fixes
 ### Dreamscythe and Weaver

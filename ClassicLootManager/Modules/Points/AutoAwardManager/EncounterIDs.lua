@@ -160,6 +160,44 @@ local EncounterIDsMap = {
     [1148] = CLM.L["General Zarithrian"],
     [1149] = CLM.L["Saviana Ragefire"],
     [1150] = CLM.L["Halion"],
+    -- Cataclysm
+    -- Baradin Hold
+    [1033] = CLM.L["Argaloth"],
+    [1250] = CLM.L["Occu'thar"],
+    [1332] = CLM.L["Alizabal"],
+    -- Blackwing Descent
+    [1024] = CLM.L["Magmaw"],
+    [1027] = CLM.L["Omnotron Defense System"],
+    [1025] = CLM.L["Maloriak"],
+    [1022] = CLM.L["Atramedes"],
+    [1023] = CLM.L["Chimaeron"],
+    [1026] = CLM.L["Nefarian's End"],
+    -- The Bastion of Twilight
+    [1030] = CLM.L["Halfus Wyrmbreaker"],
+    [1032] = CLM.L["Theralion and Valiona"],
+    [1028] = CLM.L["Ascendant Council"],
+    [1029] = CLM.L["Cho'gall"],
+    [1082] = CLM.L["Sinestra"],
+    -- Throne of the Four Winds
+    [1035] = CLM.L["Conclave of Wind"],
+    [1034] = CLM.L["Al'Akir"],
+    -- Firelands
+    [1205] = CLM.L["Shannox"],
+    [1204] = CLM.L["Lord Rhyolith"],
+    [1197] = CLM.L["Beth'tilac"],
+    [1206] = CLM.L["Alysrazor"],
+    [1200] = CLM.L["Baleroc"],
+    [1185] = CLM.L["Majordomo Staghelm"],
+    [1203] = CLM.L["Ragnaros"],
+    -- Dragon Soul
+    [1292] = CLM.L["Morchok"],
+    [1294] = CLM.L["Warlord Zon'ozz"],
+    [1295] = CLM.L["Yor'sahj the Unsleeping"],
+    [1296] = CLM.L["Hagara the Stormbinder"],
+    [1297] = CLM.L["Ultraxion"],
+    [1298] = CLM.L["Warmaster Blackhorn"],
+    [1291] = CLM.L["Spine of Deathwing"],
+    [1299] = CLM.L["Madness of Deathwing"],
 }
 
 local DifficultyIDsMap = {
@@ -632,6 +670,146 @@ CLM.EncounterIDs.WOTLK25 = {
             { id = 1148, name = EncounterIDsMap[1148] },
             { id = 1149, name = EncounterIDsMap[1149] },
             { id = 1150, name = EncounterIDsMap[1150] },
+        },
+    },
+}
+
+CLM.EncounterIDs.Cata10 = {
+    {
+        name = CLM.L["Baradin Hold"],
+        difficulty = {3,5},
+        data = {
+            { id = 1033, name = EncounterIDsMap[1033] },
+            { id = 1250, name = EncounterIDsMap[1250] },
+            { id = 1332, name = EncounterIDsMap[1332] },
+        },
+    },
+    {
+        name = CLM.L["Blackwing Descent"],
+        difficulty = {3,5},
+        data = {
+            { id = 1024, name = EncounterIDsMap[1024] },
+            { id = 1027, name = EncounterIDsMap[1027] },
+            { id = 1025, name = EncounterIDsMap[1025] },
+            { id = 1022, name = EncounterIDsMap[1022] },
+            { id = 1023, name = EncounterIDsMap[1023] },
+            { id = 1026, name = EncounterIDsMap[1026] },
+        },
+    },
+    {
+        name = CLM.L["The Bastion of Twilight"],
+        difficulty = {3,5},
+        data = {
+            { id = 1030, name = EncounterIDsMap[1030] },
+            { id = 1032, name = EncounterIDsMap[1032] },
+            { id = 1028, name = EncounterIDsMap[1028] },
+            { id = 1029, name = EncounterIDsMap[1029] },
+            { id = 1082, name = EncounterIDsMap[1082] },
+        },
+    },
+    {
+        name = CLM.L["Throne of the Four Winds"],
+        difficulty = {3,5},
+        data = {
+            { id = 1035, name = EncounterIDsMap[1035] },
+            { id = 1034, name = EncounterIDsMap[1034] },
+        },
+    },
+    {
+        name = CLM.L["Firelands"],
+        difficulty = {3,5},
+        data = {
+            { id = 1205, name = EncounterIDsMap[1205] },
+            { id = 1204, name = EncounterIDsMap[1204] },
+            { id = 1197, name = EncounterIDsMap[1197] },
+            { id = 1206, name = EncounterIDsMap[1206] },
+            { id = 1200, name = EncounterIDsMap[1200] },
+            { id = 1185, name = EncounterIDsMap[1185] },
+            { id = 1203, name = EncounterIDsMap[1203] },
+        },
+    },
+    {
+        name = CLM.L["Dragon Soul"],
+        difficulty = {3,5},
+        data = {
+            { id = 1292, name = EncounterIDsMap[1292] },
+            { id = 1294, name = EncounterIDsMap[1294] },
+            { id = 1295, name = EncounterIDsMap[1295] },
+            { id = 1296, name = EncounterIDsMap[1296] },
+            { id = 1297, name = EncounterIDsMap[1297] },
+            { id = 1298, name = EncounterIDsMap[1298] },
+            { id = 1291, name = EncounterIDsMap[1291] },
+            { id = 1299, name = EncounterIDsMap[1299] },
+        },
+    },
+}
+
+CLM.EncounterIDs.Cata25 = {
+    {
+        name = CLM.L["Baradin Hold"],
+        difficulty = {4,6},
+        data = {
+            { id = 1033, name = EncounterIDsMap[1033] },
+            { id = 1250, name = EncounterIDsMap[1250] },
+            { id = 1332, name = EncounterIDsMap[1332] },
+        },
+    },
+    {
+        name = CLM.L["Blackwing Descent"],
+        difficulty = {4,6},
+        data = {
+            { id = 1024, name = EncounterIDsMap[1024] },
+            { id = 1027, name = EncounterIDsMap[1027] },
+            { id = 1025, name = EncounterIDsMap[1025] },
+            { id = 1022, name = EncounterIDsMap[1022] },
+            { id = 1023, name = EncounterIDsMap[1023] },
+            { id = 1026, name = EncounterIDsMap[1026] },
+        },
+    },
+    {
+        name = CLM.L["The Bastion of Twilight"],
+        difficulty = {4,6},
+        data = {
+            { id = 1030, name = EncounterIDsMap[1030] },
+            { id = 1032, name = EncounterIDsMap[1032] },
+            { id = 1028, name = EncounterIDsMap[1028] },
+            { id = 1029, name = EncounterIDsMap[1029] },
+            { id = 1082, name = EncounterIDsMap[1082] },
+        },
+    },
+    {
+        name = CLM.L["Throne of the Four Winds"],
+        difficulty = {4,6},
+        data = {
+            { id = 1035, name = EncounterIDsMap[1035] },
+            { id = 1034, name = EncounterIDsMap[1034] },
+        },
+    },
+    {
+        name = CLM.L["Firelands"],
+        difficulty = {4,6},
+        data = {
+            { id = 1205, name = EncounterIDsMap[1205] },
+            { id = 1204, name = EncounterIDsMap[1204] },
+            { id = 1197, name = EncounterIDsMap[1197] },
+            { id = 1206, name = EncounterIDsMap[1206] },
+            { id = 1200, name = EncounterIDsMap[1200] },
+            { id = 1185, name = EncounterIDsMap[1185] },
+            { id = 1203, name = EncounterIDsMap[1203] },
+        },
+    },
+    {
+        name = CLM.L["Dragon Soul"],
+        difficulty = {4,6},
+        data = {
+            { id = 1292, name = EncounterIDsMap[1292] },
+            { id = 1294, name = EncounterIDsMap[1294] },
+            { id = 1295, name = EncounterIDsMap[1295] },
+            { id = 1296, name = EncounterIDsMap[1296] },
+            { id = 1297, name = EncounterIDsMap[1297] },
+            { id = 1298, name = EncounterIDsMap[1298] },
+            { id = 1291, name = EncounterIDsMap[1291] },
+            { id = 1299, name = EncounterIDsMap[1299] },
         },
     },
 }
