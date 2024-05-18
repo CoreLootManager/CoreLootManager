@@ -28,6 +28,10 @@ end
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
     self.rosterName = CLM.MODULES.RosterManager:GenerateName()
+    self.variableNames = {}
+    for _, v in pairs(CONSTANTS.CUSTOM_EQUATION_VARIABLES) do
+        table.insert(self.variableNames, v)
+    end
     self.readOnly = not CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
     self.handlers = {
         general_name_get = (function(name)
@@ -511,8 +515,7 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
     order = order + 1
     args["equation_multiplier"] = {
         type = "input",
-        desc = CLM.L["Multiplier used by the equations"] .. "\n\n"
-                .. "|c43ee4444" .. CLM.L["Ignored when equation is set to Custom."] .. "|r",
+        desc = CLM.L["Multiplier used by the equations"],
         order = order,
         width = 0.5,
         get = (function(i) return tostring(multiplierGet()) end),
@@ -522,15 +525,11 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
         end),
         name = CLM.L["Multiplier"],
         pattern = CONSTANTS.REGEXP_FLOAT,
-        hidden = function()
-            return equationGet() == CONSTANTS.ITEM_VALUE_EQUATION.CUSTOM
-        end
     }
     order = order + 1
     args["equation_expvar"] = {
         type = "input",
-        desc = CLM.L["Exponential scaling value used by the equations (Base for EPGPWeb, or Exponent for WoWpedia)"] .. "\n\n"
-                .. "|c43ee4444" .. CLM.L["Ignored when equation is set to Custom."] .. "|r",
+        desc = CLM.L["Exponential scaling value used by the equations (Base for EPGPWeb, or Exponent for WoWpedia)"],
         order = order,
         width = 0.5,
         get = (function(i) return tostring(expvarGet()) end),
@@ -540,18 +539,11 @@ local function dynamic_item_values(self, roster, equationGet, equationSet, expva
         end),
         name = CLM.L["Exponent / Base"],
         pattern = CONSTANTS.REGEXP_FLOAT,
-        hidden = function()
-            return equationGet() == CONSTANTS.ITEM_VALUE_EQUATION.CUSTOM
-        end
     }
     order = order + 1
-    local variableNames = {}
-    for _, v in pairs(CONSTANTS.CUSTOM_EQUATION_VARIABLES) do
-        table.insert(variableNames, v)
-    end
     local customExpressionDesc = CLM.L["A custom expression to calculate item values."] .. "\n\n"
             .. CLM.L["Available variables"] .. ":\n\n"
-            .. "|c43eeee00" .. table.concat(variableNames, "\n\n") .. "|r\n\n"
+            .. "|c43eeee00" .. table.concat(self.variableNames, "\n\n") .. "|r\n\n"
             .. "|c43ee4444" ..CLM.L["Only used when equation is set to Custom."] .. "|r"
     args["equation_customExpression"] = {
         type = "input",

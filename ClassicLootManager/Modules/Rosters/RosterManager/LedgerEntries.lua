@@ -518,7 +518,8 @@ end
 function RosterDynamicItemValueCustomExpression:new(rosterUid, custom_expression)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
-    o.m = custom_expression or "0"
+    local lengthRestricted = string.sub(tostring(custom_expression or "0"), 1, ExpressionParser.MAX_EXPRESSION_LENGTH)
+    o.m = string.lower(lengthRestricted:gsub("%s+", ""))
     return o
 end
 

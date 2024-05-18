@@ -358,7 +358,13 @@ function RosterManager:Initialize()
                     LOG:Debug("Updating non-existent roster [%s]", rosterUid)
                     return
                 end
-                roster:GetCalculator():SetCustomExpression(entry:customExpression())
+                local customExpression = entry:customExpression()
+                if not ExpressionParser:IsValidExpression(customExpression, CONSTANTS.CUSTOM_EQUATION_VARIABLES) then
+                    LOG:Error("Attempting to set invalid custom expression! [%s]", customExpression)
+                    return
+                else
+                    roster:GetCalculator():SetCustomExpression(customExpression)
+                end
             end))
 
     CLM.MODULES.LedgerManager:RegisterEntryType(
@@ -728,6 +734,10 @@ function RosterManager:SetRosterDynamicItemValueCustomExpression(nameOrRoster, c
     end
     if roster:GetCalculator():GetCustomExpression() == custom_expression then
         LOG:Debug("RosterManager:SetRosterDynamicItemValueCustomExpression(): No change to value. Skipping.")
+        return
+    end
+    if not ExpressionParser:IsValidExpression(custom_expression, CONSTANTS.CUSTOM_EQUATION_VARIABLES) then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueCustomExpression(): Invalid custom_expression [%s]", custom_expression)
         return
     end
 

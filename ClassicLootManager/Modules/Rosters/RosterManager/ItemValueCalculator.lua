@@ -12,7 +12,7 @@ local DEFAULT_MULTIPLIER = {
     custom = 1.0
 }
 
-local DEFAULT_CUSTOM_EXPRESSION = "ilvl / 10 * slot_multiplier"
+local DEFAULT_CUSTOM_EXPRESSION = "(ilvl / 10) * slot_multiplier"
 
 local DEFAULT_EXPVAR = 2.0
 
@@ -24,7 +24,9 @@ CONSTANTS.ITEM_VALUE_EQUATION = {
 
 CONSTANTS.CUSTOM_EQUATION_VARIABLES = {
     ILVL = "ilvl",
+    EXPVAR = "expvar",
     QUALITY = "quality",
+    MULTIPLIER = "multiplier",
     SLOT_MULTIPLIER = "slot_multiplier"
 }
 
@@ -54,11 +56,13 @@ local calculators = {
     [CONSTANTS.ITEM_VALUE_EQUATION.WOWPEDIA] = (function(ilvl, quality, multiplier, expvar, slot_multiplier)
         return math.pow(getItemValue(quality, ilvl), expvar) * multiplier * slot_multiplier
     end),
-    [CONSTANTS.ITEM_VALUE_EQUATION.CUSTOM] = (function(ilvl, quality, _, _, slot_multiplier, custom_expression)
+    [CONSTANTS.ITEM_VALUE_EQUATION.CUSTOM] = (function(ilvl, quality, multiplier, expvar, slot_multiplier, custom_expression)
         return ExpressionParser:Evaluate(custom_expression, {
-            [CONSTANTS.CUSTOM_EQUATION_VARIABLES.ILVL] = ilvl,
+            [CONSTANTS.CUSTOM_EQUATION_VARIABLES.SLOT_MULTIPLIER] = slot_multiplier,
+            [CONSTANTS.CUSTOM_EQUATION_VARIABLES.MULTIPLIER] = multiplier,
             [CONSTANTS.CUSTOM_EQUATION_VARIABLES.QUALITY] = quality,
-            [CONSTANTS.CUSTOM_EQUATION_VARIABLES.SLOT_MULTIPLIER] = slot_multiplier
+            [CONSTANTS.CUSTOM_EQUATION_VARIABLES.EXPVAR] = expvar,
+            [CONSTANTS.CUSTOM_EQUATION_VARIABLES.ILVL] = ilvl
         })
     end)
 }
@@ -141,7 +145,6 @@ function ItemValueCalculator:SetEquation(equation)
     if self.equation == equation then return end
     self.equation = equation
     SetDefaultMultiplier(self)
-    SetDefaultCustomExpression(self)
     SetDefaultSlotMultipliers(self)
     SetCalculator(self)
 end
@@ -159,7 +162,8 @@ function ItemValueCalculator:GetCustomExpression()
 end
 
 function ItemValueCalculator:SetCustomExpression(custom_expression)
-    self.custom_expression = custom_expression or GetDefaultCustomExpression()
+    local expression = custom_expression or GetDefaultCustomExpression()
+    self.custom_expression = string.lower(expression:gsub("%s+", ""))
 end
 
 function ItemValueCalculator:GetExpvar()
@@ -238,34 +242,34 @@ CONSTANTS.ITEM_VALUE_EQUATIONS_GUI = {
 
 CONSTANTS.ITEM_SLOT_MULTIPLIERS = {
     ["INVTYPE_HEAD"] = {            epgpweb = 1.0,  wowpedia = 1.0,     custom = 1.0},
-    ["INVTYPE_NECK"] = {            epgpweb = 0.5,  wowpedia = 0.55,    custom = 0.5},
-    ["INVTYPE_SHOULDER"] = {        epgpweb = 0.75, wowpedia = 0.777,   custom = 0.75},
-    ["INVTYPE_BODY"] = {            epgpweb = 0.0,  wowpedia = 0.0,     custom = 0.0},
-    ["INVTYPE_CLOAK"] = {           epgpweb = 0.5,  wowpedia = 0.55,    custom = 0.5},
+    ["INVTYPE_NECK"] = {            epgpweb = 0.5,  wowpedia = 0.55,    custom = 1.0},
+    ["INVTYPE_SHOULDER"] = {        epgpweb = 0.75, wowpedia = 0.777,   custom = 1.0},
+    ["INVTYPE_BODY"] = {            epgpweb = 0.0,  wowpedia = 0.0,     custom = 1.0},
+    ["INVTYPE_CLOAK"] = {           epgpweb = 0.5,  wowpedia = 0.55,    custom = 1.0},
     ["INVTYPE_CHEST"] = {           epgpweb = 1.0,  wowpedia = 1.0,     custom = 1.0},
     ["INVTYPE_ROBE"] = {            epgpweb = 1.0,  wowpedia = 1.0,     custom = 1.0},
-    ["INVTYPE_TABARD"] = {          epgpweb = 0.0,  wowpedia = 0.0,     custom = 0.0},
-    ["INVTYPE_WRIST"] = {           epgpweb = 0.75, wowpedia = 0.55,    custom = 0.75},
-    ["INVTYPE_HAND"] = {            epgpweb = 0.75, wowpedia = 0.777,   custom = 0.75},
+    ["INVTYPE_TABARD"] = {          epgpweb = 0.0,  wowpedia = 0.0,     custom = 1.0},
+    ["INVTYPE_WRIST"] = {           epgpweb = 0.75, wowpedia = 0.55,    custom = 1.0},
+    ["INVTYPE_HAND"] = {            epgpweb = 0.75, wowpedia = 0.777,   custom = 1.0},
     ["INVTYPE_WAIST"] = {           epgpweb = 1.0,  wowpedia = 0.777,   custom = 1.0},
     ["INVTYPE_LEGS"] = {            epgpweb = 1.0,  wowpedia = 1.0,     custom = 1.0},
-    ["INVTYPE_FEET"] = {            epgpweb = 0.75, wowpedia = 0.777,   custom = 0.75},
-    ["INVTYPE_FINGER"] = {          epgpweb = 0.5,  wowpedia = 0.55,    custom = 0.5},
-    ["INVTYPE_TRINKET"] = {         epgpweb = 0.75, wowpedia = 0.7,     custom = 0.75},
+    ["INVTYPE_FEET"] = {            epgpweb = 0.75, wowpedia = 0.777,   custom = 1.0},
+    ["INVTYPE_FINGER"] = {          epgpweb = 0.5,  wowpedia = 0.55,    custom = 1.0},
+    ["INVTYPE_TRINKET"] = {         epgpweb = 0.75, wowpedia = 0.7,     custom = 1.0},
     ["INVTYPE_WEAPON"] = {          epgpweb = 1.0,  wowpedia = 1.0,     custom = 1.0},
-    ["INVTYPE_WEAPONMAINHAND"] = {  epgpweb = 1.5,  wowpedia = 0.42,    custom = 1.5},
-    ["INVTYPE_WEAPONOFFHAND"] = {   epgpweb = 1.5,  wowpedia = 0.42,    custom = 1.5},
-    ["INVTYPE_HOLDABLE"] = {        epgpweb = 0.5,  wowpedia = 0.55,    custom = 0.5},
-    ["INVTYPE_2HWEAPON"] = {        epgpweb = 2.0,  wowpedia = 1.0,     custom = 2.0},
-    ["INVTYPE_SHIELD"] = {          epgpweb = 0.5,  wowpedia = 0.55,    custom = 0.5},
-    ["INVTYPE_RANGED"] = {          epgpweb = 0.5,  wowpedia = 0.42,    custom = 0.5},
-    ["INVTYPE_RANGEDRIGHT"] = {     epgpweb = 0.5,  wowpedia = 0.42,    custom = 0.5},
-    ["INVTYPE_NON_EQUIP"] = {       epgpweb = 0.0,  wowpedia = 0.0,     custom = 0.0},
-    ["INVTYPE_BAG"] = {             epgpweb = 0.0,  wowpedia = 0.0,     custom = 0.0},
-    ["INVTYPE_AMMO"] = {            epgpweb = 0.0,  wowpedia = 0.0,     custom = 0.0},
-    ["INVTYPE_THROWN"] = {          epgpweb = 0.5,  wowpedia = 0.42,    custom = 0.5},
-    ["INVTYPE_QUIVER"] = {          epgpweb = 0.5,  wowpedia = 0.42,    custom = 0.5},
-    ["INVTYPE_RELIC"] = {           epgpweb = 0.5,  wowpedia = 0.42,    custom = 0.5},
+    ["INVTYPE_WEAPONMAINHAND"] = {  epgpweb = 1.5,  wowpedia = 0.42,    custom = 1.0},
+    ["INVTYPE_WEAPONOFFHAND"] = {   epgpweb = 1.5,  wowpedia = 0.42,    custom = 1.0},
+    ["INVTYPE_HOLDABLE"] = {        epgpweb = 0.5,  wowpedia = 0.55,    custom = 1.0},
+    ["INVTYPE_2HWEAPON"] = {        epgpweb = 2.0,  wowpedia = 1.0,     custom = 1.0},
+    ["INVTYPE_SHIELD"] = {          epgpweb = 0.5,  wowpedia = 0.55,    custom = 1.0},
+    ["INVTYPE_RANGED"] = {          epgpweb = 0.5,  wowpedia = 0.42,    custom = 1.0},
+    ["INVTYPE_RANGEDRIGHT"] = {     epgpweb = 0.5,  wowpedia = 0.42,    custom = 1.0},
+    ["INVTYPE_NON_EQUIP"] = {       epgpweb = 0.0,  wowpedia = 0.0,     custom = 1.0},
+    ["INVTYPE_BAG"] = {             epgpweb = 0.0,  wowpedia = 0.0,     custom = 1.0},
+    ["INVTYPE_AMMO"] = {            epgpweb = 0.0,  wowpedia = 0.0,     custom = 1.0},
+    ["INVTYPE_THROWN"] = {          epgpweb = 0.5,  wowpedia = 0.42,    custom = 1.0},
+    ["INVTYPE_QUIVER"] = {          epgpweb = 0.5,  wowpedia = 0.42,    custom = 1.0},
+    ["INVTYPE_RELIC"] = {           epgpweb = 0.5,  wowpedia = 0.42,    custom = 1.0},
 }
 
 CLM.MODELS.ItemValueCalculator = ItemValueCalculator
