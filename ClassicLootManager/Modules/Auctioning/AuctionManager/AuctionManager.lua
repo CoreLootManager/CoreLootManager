@@ -763,7 +763,7 @@ function AuctionManager:RemoveItemFromCurrentAuction(item)
         LOG:Warning(CLM.L["Removing items not allowed during auction."])
         return
     end
-    self.currentAuction:RemoveItem(item:GetItemID())
+    self.currentAuction:RemoveItem(item)
     if self.currentAuction:IsEmpty() then
         self:ClearItemList()
     end
@@ -1310,6 +1310,7 @@ function AuctionManager:RefreshGUI()
 end
 
 CONSTANTS.AUCTION_COMM = {
+    CURRENT_VERSION = 3,
     BID_PASS  = CLM.L["PASS"],
     NUM_ANNOUNCE_CHANNELS = 4,
     TYPE = {

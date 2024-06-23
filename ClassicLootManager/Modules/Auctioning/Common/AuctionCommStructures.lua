@@ -29,8 +29,9 @@ end
 
 local function SerializeItems(items)
     local serialized = {}
-    for id, auctionItem in pairs(items) do
-        serialized[id] = {
+    for UID, auctionItem in pairs(items) do
+        serialized[UID] = {
+            id = auctionItem:GetItemID(),
             values = auctionItem:GetValues(),
             note = auctionItem:GetNote(),
             extra = getExtraPayload(auctionItem),
@@ -65,6 +66,7 @@ function AuctionCommStartAuction:NewFromAuctionInfo(auction)
     o.e = auction:GetTime()
     o.d = auction:GetEndTime()
     o.s = auction:GetAntiSnipe()
+    o.v = CONSTANTS.AUCTION_COMM.CURRENT_VERSION
     o.c = GetConfig(auction)
 
     o.i = SerializeItems(auction:GetItems())
@@ -117,7 +119,7 @@ function AuctionCommStartAuction:GetFieldNames()
 end
 
 function AuctionCommStartAuction:Version()
-    return (self.c ~= nil) and 2 or 1
+    return self.v or ((self.c ~= nil) and 2 or 1)
 end
 
 --------------------------

@@ -66,6 +66,8 @@ function AuctionInfo:New(object)
     o.raid = object.raid
 
     o.items = {}
+    o.itemUIDMap = {}
+    o.nextItemUID = 1
     o.itemCount = 0
 
     o.auctionTime = object.auctionTime or 0
@@ -113,6 +115,8 @@ function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, 
 
     o.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
     o.items = {}
+    o.itemUIDMap = {}
+    o.nextItemUID = 1
     o.itemCount = 0
 
     o.auctionTime = 0
@@ -229,53 +233,72 @@ function AuctionInfo:UpdateRaid(raid)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
 end
 
-local function AddAuctionItemToList(self, auctionItem)
-    self.items[auctionItem:GetItemID()] = auctionItem
+local function GetItemInAuctionByLink(self, item)
+    return self.items[self.itemUIDMap[item:GetItemLink()]]
+end
+
+local function AddAuctionItemToList(self, auctionItem, uid)
+    if self.passiveMode then
+        if type(uid) == "number" then
+            self.nextItemUID = uid
+        else
+            LOG:Fatal("Invalid UID provided %s", string(uid))
+        end
+    else
+        if uid then LOG:Warning("Ignoring Auction Item UID in active mode") end
+    end
+
+    self.items[self.nextItemUID] = auctionItem
+    self.itemUIDMap[auctionItem:GetItemLink()] = self.nextItemUID
+    self.nextItemUID = self.nextItemUID + 1
     self.itemCount = self.itemCount + 1
     UpdateAuctionTime(self)
 end
 
-local function AddItemInternal(self, item)
-    if self.items[item:GetItemID()] then
+local function AddItemInternal(self, item, uid)
+    local auctionItem = GetItemInAuctionByLink(self, item)
+    if auctionItem then
         LOG:Message("%s already in auction list. Increasing the amount to award", item:GetItemLink())
-        local auctionItem = self.items[item:GetItemID()]
         auctionItem:IncrementTotal()
         return auctionItem
     end
-    local auctionItem = AuctionItem:New(item)
-    AddAuctionItemToList(self, auctionItem)
+    auctionItem = AuctionItem:New(item)
+    AddAuctionItemToList(self, auctionItem, uid)
     return auctionItem
 end
 
-function AuctionInfo:AddExistingAuctionItem(auctionItem)
+function AuctionInfo:AddExistingAuctionItem(auctionItem, uid)
     assertCantAddItems(self)
-    if self.items[auctionItem:GetItemID()] then
+    if GetItemInAuctionByLink(self, auctionItem) then
         LOG:Message("%s already in auction list.", auctionItem:GetItemLink())
         return
     end
-    AddAuctionItemToList(self, auctionItem)
+    AddAuctionItemToList(self, auctionItem, uid)
     return auctionItem
 end
 
-function AuctionInfo:AddItem(item)
+function AuctionInfo:AddItem(item, uid)
     assertCantAddItems(self)
-    local auctionItem = AddItemInternal(self, item)
+    local auctionItem = AddItemInternal(self, item, uid)
     if auctionItem and self.roster then
         auctionItem:LoadValues(self.roster)
     end
     return auctionItem
 end
 
-function AuctionInfo:RemoveItem(id)
+
+
+function AuctionInfo:RemoveItem(item)
     assertNotInProgress(self)
-    if self.items[id] then
-        self.items[id] = nil
+    local UID = self.itemUIDMap[item:GetItemLink()]
+    if self.items[UID] then
+        self.items[UID] = nil
         self.itemCount = self.itemCount - 1
         UpdateAuctionTime(self)
     end
 end
 
-function AuctionInfo:GetItem(id)
+function AuctionInfo:GetItem(id) -- TODO SOON
     return self.items[id]
 end
 
@@ -283,7 +306,7 @@ function AuctionInfo:GetItems()
     return self.items
 end
 
-function AuctionInfo:SetResponse(id, username, response)
+function AuctionInfo:SetResponse(id, username, response)  -- TODO SOON
     assertInProgress(self)
     local auctionItem = self.items[id]
     if not auctionItem then
