@@ -441,7 +441,7 @@ local function GetItemValuesProxy(self, itemInfoInput, itemId, calculateCallback
         end
 
         local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemInfoInput)
-        local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
+        local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID, itemEquipLoc)
         return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or equipLoc)
     end
     return itemValues
@@ -473,7 +473,7 @@ end
 
 function Roster:GetClassItemMultiplierValue(class, itemId)
     local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemId)
-    local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
+    local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID, itemEquipLoc)
     return self:GetSlotClassMultiplierValue(class, CLM.IndirectMap.slot[itemId] or equipLoc)
 end
 --[[

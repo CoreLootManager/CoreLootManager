@@ -36,7 +36,8 @@ local INVTYPE_to_INVSLOT_map = {
 }
 
 local function GetUpgradedItems(itemId)
-    local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+    local _, _, _, itemEquipLoc, _, class, subclass = GetItemInfoInstant(itemId)
+    itemEquipLoc = UTILS.WorkaroundEquipLoc(class, subclass, itemEquipLoc)
     local invslots = INVTYPE_to_INVSLOT_map[CLM.IndirectMap.slot[itemId] or itemEquipLoc] or {}
     local items =  {}
     for _, invslot in ipairs(invslots) do
@@ -175,6 +176,11 @@ local function AddItemInternal(auctionInfo, item, uid, note, values, extra, tota
         auctionItem:SetValues(values)
         auctionItem:SetTotal(total)
         auctionItem:SpoofLinkPayload(extra)
+        -- Rewrite itemLink after spoofing
+        local _, link = GetItemInfo(auctionItem:GetItemLink())
+        if link then
+            auctionItem.item:SetItemLink(link)
+        end
     end
     callbackFn(auctionItem)
 end

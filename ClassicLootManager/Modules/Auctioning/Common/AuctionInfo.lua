@@ -309,7 +309,6 @@ function AuctionInfo:GetAuctionItemUID(auctionItem)
             end
         end
     end
-    print(itemLink, self.itemUIDMap[itemLink])
     return self.itemUIDMap[itemLink]
 end
 

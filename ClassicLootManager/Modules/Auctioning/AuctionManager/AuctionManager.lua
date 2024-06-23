@@ -1374,8 +1374,6 @@ CLM.MODULES.AuctionManager = AuctionManager
 function AuctionManager:FakeBids()
     local _SendBidAccepted = SendBidAccepted
     local _SendBidDenied   = SendBidDenied
-    -- SendBidAccepted = (function(...) print("SendBidAccepted", ...) end)
-    -- SendBidDenied = (function(...) print("SendBidDenied", ...) end)
     SendBidAccepted = (function(...) end)
     SendBidDenied = (function(...) end)
     if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then

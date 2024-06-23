@@ -462,7 +462,7 @@ local tableStructure = {
                 end
                 for i=#lootList, limit, -1 do
                     local loot = lootList[i]
-                    local _, itemLink = GetItemInfo(loot:Id())
+                    local _, itemLink = GetItemInfo(loot:String())
                     if itemLink then
                         local value = loot:Value()
                         if isEPGP then

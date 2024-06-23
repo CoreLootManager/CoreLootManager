@@ -164,7 +164,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
     end
     if CLM.WoW10 or CLM.WoWCata then
         if type(extra) == "string" then
-            extra = string.gsub(extra, "[^%d:]+", "")
+            extra = string.gsub(extra, "[^-?%d:]+", "")
         elseif extra ~= nil then
             LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
             return false

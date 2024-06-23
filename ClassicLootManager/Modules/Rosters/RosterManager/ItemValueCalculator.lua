@@ -170,7 +170,7 @@ local function CalculateProxy(self, itemInfoInput, itemId, rounding)
         return nil
     end
 
-    local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
+    local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID, itemEquipLoc)
     return self:Calculate(CLM.IndirectMap.ilvl[itemId] or itemLevel, itemQuality, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc), rounding)
 end
 

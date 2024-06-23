@@ -154,6 +154,7 @@ globals = {
 	"INVSLOT_BACK",
 	"INVSLOT_TABARD",
 	"INVSLOT_CHEST",
+	"GetInventoryItemLink",
 	"GetInventoryItemID",
 	"InCombatLockdown",
 	"IsGuildLeader",

@@ -90,7 +90,8 @@ local function addItemPriceToTooltip(tooltip)
     local itemId = UTILS.GetItemIdFromLink(itemLink)
     if itemId == 0 then return end
     if not isSpecial[itemId] then
-        local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+        local _, _, _, itemEquipLoc, _, class, subclass = GetItemInfoInstant(itemId)
+        itemEquipLoc = UTILS.WorkaroundEquipLoc(class, subclass, itemEquipLoc)
         if not isEquipable[CLM.IndirectMap.slot[itemId] or itemEquipLoc] then
             return
         end
