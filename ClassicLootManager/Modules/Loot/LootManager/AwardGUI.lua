@@ -93,12 +93,19 @@ local function UpdateOptions(self)
                 return self.itemLink or ""
             end),
             set = (function(i,v)
-                if v and GetItemInfoInstant(v) then
-                    self.itemLink = v
-                else
-                    self.itemLink = nil
+                if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
+                    local itemID = GetItemInfoInstant(v)
+                    local item
+                    if tostring(itemID) == v then
+                        item = Item:CreateFromItemID(tonumber(v))
+                    else
+                        item = Item:CreateFromItemLink(v)
+                    end
+                    item:ContinueOnItemLoad(function()
+                        self.itemLink = item:GetItemLink()
+                        self:Refresh()
+                    end)
                 end
-                self:Refresh()
             end),
             width = 1.4,
             order = 2,
