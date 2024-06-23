@@ -296,8 +296,7 @@ end
 local function BidInputValue(self, bidType)
     local bid = GetInputValue(self)
     SetInputValue(self, bid)
-    local itemId = self.auctionItem and self.auctionItem:GetItemID() or 0
-    CLM.MODULES.BiddingManager:Bid(itemId, bid, bidType)
+    CLM.MODULES.BiddingManager:Bid(self.auctionItem, bid, bidType)
 end
 
 local whoamiGUID = UTILS.whoamiGUID()
@@ -311,7 +310,6 @@ local function BidAllIn(self)
 end
 
 local function OverrideNextItem(self, auctionItem)
-    -- if (self.nextItem > #self.auctionOrder) then self.nextItem = 1 end
     local id = auctionItem:GetItemID()
     for i,itemId in ipairs(self.auctionOrder) do
         if itemId == id then
@@ -374,7 +372,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             desc = CLM.L["Cancel your bid."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
+                CLM.MODULES.BiddingManager:CancelBid(self.auctionItem)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
@@ -526,13 +524,10 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
         desc = CLM.L["Notify that you are passing on the item."],
         type = "execute",
         func = (function()
-            CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
+            CLM.MODULES.BiddingManager:Pass(self.auctionItem)
             if GetAdvanceOnBid(self) then self:Advance() end
             if GetCloseOnBid(self) then self:Toggle() end
         end),
-        -- disabled = (function()
-        --         return CONSTANTS.AUCTION_TYPES_OPEN[auction:GetType()] and (CLM.MODULES.BiddingManager:GetLastBidValue() ~= nil)
-        -- end),
         width = cancelPassWidth,
         order = offset
     }
@@ -541,7 +536,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
         desc = CLM.L["Cancel your bid."],
         type = "execute",
         func = (function()
-            CLM.MODULES.BiddingManager:CancelBid(self.auctionItem and self.auctionItem:GetItemID() or 0)
+            CLM.MODULES.BiddingManager:CancelBid(self.auctionItem)
             if GetAdvanceOnBid(self) then self:Advance() end
             if GetCloseOnBid(self) then self:Toggle() end
         end),
@@ -614,7 +609,7 @@ local function GenerateAuctionOptions(self)
             desc = CLM.L["Notify that you are passing on the item."],
             type = "execute",
             func = (function()
-                CLM.MODULES.BiddingManager:Pass(self.auctionItem and self.auctionItem:GetItemID() or 0)
+                CLM.MODULES.BiddingManager:Pass(self.auctionItem)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 if GetCloseOnBid(self) then self:Toggle() end
             end),
@@ -706,7 +701,6 @@ local function CreateItemList(self)
             local rowData = table:GetRow(realrow)
             if not rowData or not rowData.cols then return status end
             GameTooltip:SetOwner(rowFrame, "ANCHOR_LEFT")
-            -- GameTooltip:SetHyperlink("item:" .. (tonumber(rowData.cols[column].value) or 0))
             GameTooltip:SetHyperlink(rowData.cols[column].value or "item:0")
             GameTooltip:Show()
             return status
@@ -902,7 +896,7 @@ function BiddingManagerGUI:RefreshItemList()
                 iconColor = colorGold
                 note = CLM.L["Bid denied!"]
             end
-            if current and current:GetItemID() == auctionItem:GetItemID() then
+            if current and current:GetItemLink() == auctionItem:GetItemLink() then
                 iconColor = colorTurquoise
             end
             local total = auctionItem:GetTotal()
@@ -956,7 +950,7 @@ end
 function BiddingManagerGUI:Advance()
     if (self.nextItem > #self.auctionOrder) then self.nextItem = 1 end
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
-    self:SetVisibleAuctionItem(auction:GetItem(self.auctionOrder[self.nextItem]))
+    self:SetVisibleAuctionItem(auction:GetItemByUID(self.auctionOrder[self.nextItem]))
     self.nextItem = self.nextItem + 1
     self:Refresh()
 end
@@ -968,8 +962,8 @@ function BiddingManagerGUI:BuildBidOrder()
     self.nextItem = 1
     if not auction then return end
 
-    for id in pairs(auction:GetItems()) do
-        self.auctionOrder[#self.auctionOrder+1] = id
+    for uid in pairs(auction:GetItems()) do
+        self.auctionOrder[#self.auctionOrder+1] = uid
     end
 
     self:Advance()

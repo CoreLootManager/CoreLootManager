@@ -40,14 +40,17 @@ local function GetUpgradedItems(itemId)
     local invslots = INVTYPE_to_INVSLOT_map[CLM.IndirectMap.slot[itemId] or itemEquipLoc] or {}
     local items =  {}
     for _, invslot in ipairs(invslots) do
-        local inventoryItemId = GetInventoryItemID("player", invslot)
-        if inventoryItemId and inventoryItemId > 0 then
-            items[#items+1] = inventoryItemId
+        local inventoryItemLink = GetInventoryItemLink("player", invslot)
+        if inventoryItemLink then
+            local id, extra = UTILS.GetItemIdFromLink(inventoryItemLink)
+            items[#items+1] = {
+                id = id,
+                ex = extra
+            }
         end
     end
     return items
 end
-
 
 local BiddingManager = {}
 function BiddingManager:Initialize()
@@ -90,7 +93,7 @@ function BiddingManager:GetLastBidValue()
     return self.lastBid
 end
 
-function BiddingManager:Bid(itemId, value, type)
+function BiddingManager:Bid(auctionItem, value, type)
     LOG:Trace("BiddingManager:Bid()")
     if not self:IsAuctionInProgress() then
         LOG:Debug("BiddingManager:Bid(): No auction in progress")
@@ -99,29 +102,29 @@ function BiddingManager:Bid(itemId, value, type)
 
     value = tonumber(value) or 0
     type = CONSTANTS.BID_TYPES[type] and type or CONSTANTS.BID_TYPE.MAIN_SPEC
-    local item = self.auction:GetItem(itemId)
-    if not item then
+
+    if not self.auction:IsItemInAuction(auctionItem) then
         LOG:Debug("BiddingManager:Bid(): Invalid item")
         return
     end
 
-    item:SetBid(CLM.MODELS.UserResponse:New(value, type, {}))
+    auctionItem:SetBid(CLM.MODELS.UserResponse:New(value, type, {}))
 
     local message = CLM.MODELS.BiddingCommStructure:New(
         CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
-        CLM.MODELS.BiddingCommSubmitBid:New(value, type, itemId, GetUpgradedItems(itemId))
+        CLM.MODELS.BiddingCommSubmitBid:New(value, type, self.auction:GetAuctionItemUID(auctionItem), GetUpgradedItems(auctionItem:GetItemID()))
     )
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
-function BiddingManager:CancelBid(itemId)
+function BiddingManager:CancelBid(auctionItem)
     LOG:Trace("BiddingManager:CancelBid()")
-    self:Bid(itemId, 0, CONSTANTS.BID_TYPE.CANCEL)
+    self:Bid(auctionItem, 0, CONSTANTS.BID_TYPE.CANCEL)
 end
 
-function BiddingManager:Pass(itemId)
+function BiddingManager:Pass(auctionItem)
     LOG:Trace("BiddingManager:NotifyPass()")
-    self:Bid(itemId, 0, CONSTANTS.BID_TYPE.PASS)
+    self:Bid(auctionItem, 0, CONSTANTS.BID_TYPE.PASS)
 end
 
 function BiddingManager:HandleIncomingMessage(message, _, sender)
@@ -302,13 +305,13 @@ local function stringifyBidInfo(auction, item, response)
     return string.format("%s %s%s%s%s%s", item:GetItemLink(), responseTypeName, spacer, value, spacer, points), short
 end
 
-function BiddingManager:HandleAcceptBid(itemId, sender)
+function BiddingManager:HandleAcceptBid(uid, sender)
     LOG:Trace("BiddingManager:HandleAcceptBid()")
     if not self:IsAuctionInProgress() then
         LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
         return
     end
-    local item = self.auction:GetItem(itemId)
+    local item = self.auction:GetItemByUID(uid)
     if not item then return end
     local bid = item:GetBid()
     if not bid then return end
@@ -325,7 +328,7 @@ function BiddingManager:HandleDenyBid(data, sender)
         LOG:Debug("Received deny bid from %s while no auctions are in progress", sender)
         return
     end
-    local item = self.auction:GetItem(data:ItemId())
+    local item = self.auction:GetItemByUID(data:UID())
     if not item then return end
     local bid = item:GetBid()
     if not bid then return end
@@ -344,15 +347,15 @@ function BiddingManager:HandleDistributeBid(data, sender)
         return
     end
     local bids = data:Data()
-    for itemId, playerData in pairs(bids) do
-        local item = self.auction:GetItem(itemId)
-        if item then
-            for playerName, response in pairs(playerData) do
-                local userResponse = CLM.MODELS.UserResponse:New(response)
-                item:SetResponse(playerName, userResponse, true) -- to block rolling internally
-            end
-        end
-    end
+    -- for itemId, playerData in pairs(bids) do -- TODO
+    --     local item = self.auction:GetItem(itemId)
+    --     if item then
+    --         for playerName, response in pairs(playerData) do
+    --             local userResponse = CLM.MODELS.UserResponse:New(response)
+    --             item:SetResponse(playerName, userResponse, true) -- to block rolling internally
+    --         end
+    --     end
+    -- end
     CLM.GUI.BiddingManager:Refresh()
 end
 

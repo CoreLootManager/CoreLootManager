@@ -126,22 +126,22 @@ end
 --- AuctionCommDenyBid ---
 --------------------------
 local AuctionCommDenyBid = {}
-function AuctionCommDenyBid:New(itemIdOrObject, reason)
-    local isCopyConstructor = (type(itemIdOrObject) == "table")
-    local o = isCopyConstructor and itemIdOrObject or {}
+function AuctionCommDenyBid:New(uidOrObject, reason)
+    local isCopyConstructor = (type(uidOrObject) == "table")
+    local o = isCopyConstructor and uidOrObject or {}
 
     setmetatable(o, self)
     self.__index = self
 
     if isCopyConstructor then return o end
 
-    o.i = itemIdOrObject
+    o.i = uidOrObject
     o.r = reason
 
     return o
 end
 
-function AuctionCommDenyBid:ItemId()
+function AuctionCommDenyBid:UID()
     return self.i or 0
 end
 

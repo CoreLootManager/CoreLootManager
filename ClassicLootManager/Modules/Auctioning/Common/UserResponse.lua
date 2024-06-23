@@ -32,11 +32,13 @@ end
 function UserResponse:SetUpgradedItems(upgradedItems)
     assertType(upgradedItems, "table")
     self.upgradedItems = {}
-    for _,id in ipairs(upgradedItems) do
-        id = tonumber(id) or 0
-        if GetItemInfoInstant(id) then
-            self.upgradedItems[#self.upgradedItems+1] = id
-            GetItemInfo(id) -- cache force
+    for _, item in ipairs(upgradedItems) do
+        item.id = tonumber(item.id) or 0
+        item.ex = item.ex or ""
+        if GetItemInfoInstant(item.id) then
+            local itemLink = "item:" .. tostring(item.id) .. item.ex
+            self.upgradedItems[#self.upgradedItems+1] = itemLink
+            GetItemInfo(itemLink) -- force cache
         end
     end
 end

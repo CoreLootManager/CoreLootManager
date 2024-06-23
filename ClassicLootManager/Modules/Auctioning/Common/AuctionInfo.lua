@@ -233,8 +233,8 @@ function AuctionInfo:UpdateRaid(raid)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
 end
 
-local function GetItemInAuctionByLink(self, item)
-    return self.items[self.itemUIDMap[item:GetItemLink()]]
+local function GetItemInAuctionByLink(self, auctionItem)
+    return self.items[self:GetAuctionItemUID(auctionItem)]
 end
 
 local function AddAuctionItemToList(self, auctionItem, uid)
@@ -249,7 +249,6 @@ local function AddAuctionItemToList(self, auctionItem, uid)
     end
 
     self.items[self.nextItemUID] = auctionItem
-    self.itemUIDMap[auctionItem:GetItemLink()] = self.nextItemUID
     self.nextItemUID = self.nextItemUID + 1
     self.itemCount = self.itemCount + 1
     UpdateAuctionTime(self)
@@ -286,11 +285,9 @@ function AuctionInfo:AddItem(item, uid)
     return auctionItem
 end
 
-
-
 function AuctionInfo:RemoveItem(item)
     assertNotInProgress(self)
-    local UID = self.itemUIDMap[item:GetItemLink()]
+    local UID = self:GetAuctionItemUID(item)
     if self.items[UID] then
         self.items[UID] = nil
         self.itemCount = self.itemCount - 1
@@ -298,8 +295,26 @@ function AuctionInfo:RemoveItem(item)
     end
 end
 
-function AuctionInfo:GetItem(id) -- TODO SOON
-    return self.items[id]
+function AuctionInfo:IsItemInAuction(auctionItem)
+    return self:GetAuctionItemUID(auctionItem) ~= nil
+end
+
+function AuctionInfo:GetAuctionItemUID(auctionItem)
+    local itemLink = auctionItem:GetItemLink()
+    if not self.itemUIDMap[itemLink] then
+        for uid, item in pairs(self.items) do
+            if item:GetItemLink() == itemLink then
+                self.itemUIDMap[itemLink] = uid
+                break
+            end
+        end
+    end
+    print(itemLink, self.itemUIDMap[itemLink])
+    return self.itemUIDMap[itemLink]
+end
+
+function AuctionInfo:GetItemByUID(uid)
+    return self.items[uid]
 end
 
 function AuctionInfo:GetItems()
