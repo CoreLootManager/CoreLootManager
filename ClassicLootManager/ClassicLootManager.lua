@@ -314,6 +314,6 @@ end
 
 --@do-not-package@
 if DevTool then
-    DevTool:AddData(CLM, "CLM")
+    DevTool:AddData(_G["CLM"], "CLM")
 end
 --@end-do-not-package@

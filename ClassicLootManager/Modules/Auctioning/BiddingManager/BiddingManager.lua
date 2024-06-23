@@ -347,15 +347,15 @@ function BiddingManager:HandleDistributeBid(data, sender)
         return
     end
     local bids = data:Data()
-    -- for itemId, playerData in pairs(bids) do -- TODO
-    --     local item = self.auction:GetItem(itemId)
-    --     if item then
-    --         for playerName, response in pairs(playerData) do
-    --             local userResponse = CLM.MODELS.UserResponse:New(response)
-    --             item:SetResponse(playerName, userResponse, true) -- to block rolling internally
-    --         end
-    --     end
-    -- end
+    for uid, playerData in pairs(bids) do
+        local item = self.auction:GetItemByUID(uid)
+        if item then
+            for playerName, response in pairs(playerData) do
+                local userResponse = CLM.MODELS.UserResponse:New(response)
+                item:SetResponse(playerName, userResponse, true) -- to block rolling internally
+            end
+        end
+    end
     CLM.GUI.BiddingManager:Refresh()
 end
 

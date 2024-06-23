@@ -13,17 +13,9 @@ local typeof = UTILS.typeof
 
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
--- luacheck: ignore CHAT_MESSAGE_CHANNEL
 local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
---@debug@
-CHAT_MESSAGE_CHANNEL = "GUILD"
---@end-debug@
-
--- Singleton
 
 local AuctionManager = {}
-
--- Database
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:Personal('auction', {
@@ -596,8 +588,8 @@ local function SendBidInfoInternal(auctionDistributeBidData)
     end
 end
 
-local function SendBidInfo(self, itemId, name, userResponse)
-    self.bidInfoSender:Send(itemId, name, userResponse)
+local function SendBidInfo(self, UID, name, userResponse)
+    self.bidInfoSender:Send(UID, name, userResponse)
 end
 
 -- Private
@@ -777,7 +769,7 @@ function AuctionManager:ClearItemList()
     self:RefreshGUI()
 end
 
-local SENDING_INTERVAL = 0.5
+local SENDING_INTERVAL = 1
 function AuctionManager:StartAuction()
     LOG:Trace("AuctionManager:StartAuction()")
     local auction = self.currentAuction
@@ -1160,9 +1152,10 @@ local function ValidateBidLimited(auction, item, name, userResponse)
     return true
 end
 
-local function AnnounceBid(auction, item, name, userResponse, newHighBid)
+local function AnnounceBid(auction, uid, name, userResponse, newHighBid)
     local auctionType = auction:GetType()
     if not CONSTANTS.AUCTION_TYPES_OPEN[auctionType] then return end
+    if not auction:GetItemByUID(uid) then return end
 
     local message
     local nameModdified
@@ -1171,10 +1164,10 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
         local anonomizedName = auction:GetAnonymousName(name)
         local modifiedResponse = UTILS.DeepCopy(userResponse)
         modifiedResponse:SetUpgradedItems({}) -- Clear Upgraded items info
-        SendBidInfo(AuctionManager, item:GetItemID(), anonomizedName, modifiedResponse)
+        SendBidInfo(AuctionManager, uid, anonomizedName, modifiedResponse)
     else
         nameModdified = "(" .. name .. ")"
-        SendBidInfo(AuctionManager, item:GetItemID(),name, userResponse)
+        SendBidInfo(AuctionManager, uid, name, userResponse)
     end
 
     -- -- Raid warning highest bidder
@@ -1183,7 +1176,7 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
     if not CLM.GlobalConfigs:GetBidsWarning() then return end
     if userResponse:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC then return end
     message = string.format(CLM.L["New highest bid on %s: %s %s %s"],
-                        item:GetItemLink(),
+                        auction:GetItemByUID(uid):GetItemLink(),
                         userResponse:Value(),
                         auction:GetRoster():GetPointType() == CONSTANTS.POINT_TYPE.DKP and CLM.L["DKP"] or CLM.L["GP"],
                         nameModdified)
@@ -1199,7 +1192,7 @@ function AuctionManager:UpdateBid(name, uid, userResponse)
     local accept, reason = ValidateBid(auction, item, name, userResponse)
     if accept then
         local newHighBid = item:SetResponse(name, userResponse)
-        AnnounceBid(auction, item, name, userResponse, newHighBid)
+        AnnounceBid(auction, uid, name, userResponse, newHighBid)
         if not CONSTANTS.BID_TYPE_HIDDEN[userResponse:Type()] then
             AntiSnipe(self, auction)
             SendBidAccepted(uid, name)
@@ -1312,7 +1305,7 @@ end
 CONSTANTS.AUCTION_COMM = {
     CURRENT_VERSION = 3,
     BID_PASS  = CLM.L["PASS"],
-    NUM_ANNOUNCE_CHANNELS = 4,
+    NUM_ANNOUNCE_CHANNELS = 2,
     TYPE = {
         START_AUCTION = 1,
         STOP_AUCTION = 2,
