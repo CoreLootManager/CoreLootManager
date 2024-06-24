@@ -74,7 +74,9 @@ local isSpecial = UTILS.Set({
     -- ICC items
     52025, 52026, 52027, 52028, 52029, 52030,
     -- SoD
-    220636, 220637
+    220636, 220637,
+    -- Cata
+    66998,
 })
 
 local function addItemPriceToTooltip(tooltip)
