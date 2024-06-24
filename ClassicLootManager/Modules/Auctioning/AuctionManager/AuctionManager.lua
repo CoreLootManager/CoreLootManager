@@ -1225,7 +1225,7 @@ function AuctionManager:Award(item, name, price)
     local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), item:GetExtraPayload(), price, true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
-        CLM.MODULES.AutoAssign:Handle(item:GetItemID(), name)
+        CLM.MODULES.AutoAssign:Handle(item:GetItemLink(), name)
         RevalidateBids(self)
     end
 end
@@ -1237,7 +1237,7 @@ function AuctionManager:Disenchant(item)
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         local disenchanter = CLM.MODULES.RaidManager:GetDisenchanter()
         if disenchanter then
-            CLM.MODULES.AutoAssign:Handle(item:GetItemID(), disenchanter)
+            CLM.MODULES.AutoAssign:Handle(item:GetItemLink(), disenchanter)
         end
     end
 end

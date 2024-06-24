@@ -102,12 +102,12 @@ function BagItemChecker:IsTradeable()
     return not self:TradeTimerExpired() or not self:IsSoulbound()
 end
 
-local function ScanBagsForItem(itemId, tradeableOnly)
+local function ScanBagsForItem(itemLink, tradeableOnly)
     local found = {}
     for bag = 0, 4 do
         for slot = 1, GetContainerNumSlots(bag) do
             BagItemChecker:Set(bag, slot)
-            if not BagItemChecker:IsLocked() and (BagItemChecker:GetItemId() == itemId) then
+            if not BagItemChecker:IsLocked() and (BagItemChecker:GetItemLink() == itemLink) then
                 local isTradeable = true
                 if tradeableOnly then
                     isTradeable = BagItemChecker:IsTradeable()
@@ -123,11 +123,11 @@ end
 
 local function FindLastTradeTargetItems(self)
     local foundItems = {}
-    for _, itemId in ipairs(self.tracking[self.lastTradeTarget]) do
-        if not foundItems[itemId] then
-            local found = ScanBagsForItem(itemId, true)
+    for _, itemLink in ipairs(self.tracking[self.lastTradeTarget]) do
+        if not foundItems[itemLink] then
+            local found = ScanBagsForItem(itemLink, true)
             if #found > 0 then
-                foundItems[itemId] = found
+                foundItems[itemLink] = found
             end
         end
     end
@@ -149,9 +149,9 @@ local function HandleTradeShow(self)
         local foundItems = FindLastTradeTargetItems(self)
         -- Add up to 6 to the trade window
         local totalQueued = 0
-        for _, itemId in ipairs(self.tracking[self.lastTradeTarget]) do
-            if foundItems[itemId] and #foundItems[itemId] > 0 then
-                local loc = tremove(foundItems[itemId])
+        for _, itemLink in ipairs(self.tracking[self.lastTradeTarget]) do
+            if foundItems[itemLink] and #foundItems[itemLink] > 0 then
+                local loc = tremove(foundItems[itemLink])
                 C_Timer.After(0.5*totalQueued, function()
                     UseContainerItem(loc.bag, loc.slot)
                 end)
@@ -169,15 +169,14 @@ local function HandleTradeAcceptUpdate(self)
     for tradeSlot = 1, 6 do
         local itemLink = GetTradePlayerItemLink(tradeSlot)
         if itemLink then
-            local itemId = UTILS.GetItemIdFromLink(itemLink)
-            tinsert(self.lastTradedItems, itemId)
+            tinsert(self.lastTradedItems, itemLink)
         end
     end
 end
 
 local function HandleTradeSuccess(self)
-    for _,itemId in ipairs(self.lastTradedItems) do
-        self:Remove(itemId, self.lastTradeTarget)
+    for _, itemLink in ipairs(self.lastTradedItems) do
+        self:Remove(itemLink, self.lastTradeTarget)
     end
 end
 
@@ -231,18 +230,17 @@ local autoAssignIgnores = UTILS.Set({
     49908, -- Primordial Saronite
     50274, -- Shadowfrost Shard
 })
-function AutoAssign:IsIgnored(itemId)
-    return autoAssignIgnores[itemId]
+function AutoAssign:IsIgnored(itemLink)
+    return autoAssignIgnores[UTILS.GetItemIdFromLink(itemLink)]
 end
 
-function AutoAssign:GiveMasterLooterItem(itemId, player)
+function AutoAssign:GiveMasterLooterItem(itemLink, player)
     LOG:Trace("AutoAssign:GiveMasterLooterItem()")
-    if self:IsIgnored(itemId) then return end
+    if self:IsIgnored(itemLink) then return end
     for itemIndex = 1, GetNumLootItems() do
         local _, _, _, _, _, locked = GetLootSlotInfo(itemIndex)
         if not locked then
-            local slotItemId = GetItemInfoInstant(GetLootSlotLink(itemIndex))
-            if slotItemId == itemId then
+            if GetLootSlotLink(itemIndex) == itemLink then
                 for playerIndex = 1, GetNumGroupMembers() do
 ---@diagnostic disable-next-line: redundant-parameter
                     if (UTILS.Disambiguate(GetMasterLootCandidate(itemIndex, playerIndex) or "") == player) then
@@ -255,28 +253,28 @@ function AutoAssign:GiveMasterLooterItem(itemId, player)
     end
 end
 
-function AutoAssign:Track(itemId, player)
-    if self:IsIgnored(itemId) then return end
+function AutoAssign:Track(itemLink, player)
+    if self:IsIgnored(itemLink) then return end
     player = UTILS.Disambiguate(player)
     -- Lazy start tracking player
     if not self.tracking[player] then
         self.tracking[player] = {}
     end
     -- Update
-    tinsert(self.tracking[player], itemId)
+    tinsert(self.tracking[player], itemLink)
     --
     CLM.GUI.TradeList:Refresh(true)
 end
 
-function AutoAssign:Remove(itemId, player)
-    if self:IsIgnored(itemId) then return end
+function AutoAssign:Remove(itemLink, player)
+    if self:IsIgnored(itemLink) then return end
     -- Sanity check: If we don't track player then return
     if not self.tracking[player] then
         return
     end
     -- Update
-    for id, _itemId in ipairs(self.tracking[player]) do
-        if itemId == _itemId then
+    for id, _itemLink in ipairs(self.tracking[player]) do
+        if itemLink == _itemLink then
             tremove(self.tracking[player], id)
             break
         end
@@ -288,12 +286,12 @@ function AutoAssign:GetTracked()
     return self.tracking
 end
 
-function AutoAssign:Handle(itemId, target)
-    if not self:IsIgnored(itemId) then
+function AutoAssign:Handle(itemLink, target)
+    if not self:IsIgnored(itemLink) then
         if CLM.MODULES.AuctionManager:GetAutoAssign() and lootWindowIsOpen then
-            self:GiveMasterLooterItem(itemId, target)
+            self:GiveMasterLooterItem(itemLink, target)
         elseif CLM.MODULES.AuctionManager:GetAutoTrade() then
-            self:Track(itemId, target)
+            self:Track(itemLink, target)
         end
     end
 end
