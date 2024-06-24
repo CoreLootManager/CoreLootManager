@@ -62,9 +62,9 @@ local function Award(args)
     -- Award --
 
     local awarded = CLM.MODULES.LootManager:AwardItem(isRaid and raid or roster, name, itemLink, itemId, extra, value)
-    if awarded and not CLM.MODULES.AutoAssign:IsIgnored(itemId) then
+    if awarded and not CLM.MODULES.AutoAssign:IsIgnored(itemLink) then
         if CLM.MODULES.AuctionManager:GetAutoTrade() then
-            CLM.MODULES.AutoAssign:Track(itemId, name)
+            CLM.MODULES.AutoAssign:Track(itemLink, name)
         end
     end
 end

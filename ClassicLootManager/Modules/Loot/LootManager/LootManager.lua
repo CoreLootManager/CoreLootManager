@@ -6,11 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- luacheck: ignore CHAT_MESSAGE_CHANNEL
 local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
---@debug@
-CHAT_MESSAGE_CHANNEL = "GUILD"
---@end-debug@
 
 local function mutateLootAward(entry, roster)
     local GUID = UTILS.getGuidFromInteger(entry:profile())
@@ -168,7 +164,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
     end
     if CLM.WoW10 or CLM.WoWCata then
         if type(extra) == "string" then
-            extra = string.gsub(extra, "[^%d:]+", "")
+            extra = string.gsub(extra, "[^-?%d:]+", "")
         elseif extra ~= nil then
             LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
             return false

@@ -206,13 +206,13 @@ function UTILS.GetItemIdFromLink(itemLink)
     -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
     itemLink = itemLink or ""
     -- local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
-    local _, _, itemId, extra = string.find(itemLink, "item:(%d+)([%d:]*)|h")
+    local _, _, itemId, extra = string.find(itemLink, "item:(%d+)([-?%d:]*)|h")
     return tonumber(itemId) or 0, extra or ""
 end
 
 function UTILS.SpoofLink(itemLink, extra)
     if not extra then return itemLink end
-    local _, _, pre, post = string.find(itemLink, "(.*item:%d+)[%d:]+(|h.*)")
+    local _, _, pre, post = string.find(itemLink, "(.*item:%d+)[-?%d:]+(|h.*)")
     if not pre or not post then return itemLink end
     return pre .. extra .. post
 end
@@ -994,16 +994,22 @@ function UTILS.ResizeFrame(frame, up, scale)
     return scale
 end
 
-local invtypeWorkaround = {
+local invtypeClassWorkaround = {
     [2] = {
         [3] = "INVTYPE_RANGED", -- Weapon Guns
         [18] = "INVTYPE_RANGED",-- Weapon Crossbow
-    }
+    },
 }
 
-function UTILS.WorkaroundEquipLoc(class, subclass)
-    local classTable = invtypeWorkaround[class] or {}
-    return classTable[subclass]
+local invtypeEquipLocWorkaround = {
+    ["INVTYPE_NON_EQUIP_IGNORE"] = "INVTYPE_NON_EQUIP"
+}
+
+
+function UTILS.WorkaroundEquipLoc(class, subclass, equipLoc)
+    local classTable = invtypeClassWorkaround[class] or {}
+    local tempEquipLoc = classTable[subclass] or equipLoc
+    return invtypeEquipLocWorkaround[tempEquipLoc] or equipLoc
 end
 
 

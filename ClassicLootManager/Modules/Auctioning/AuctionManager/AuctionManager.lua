@@ -13,17 +13,9 @@ local typeof = UTILS.typeof
 
 local AuctionInfo = CLM.MODELS.AuctionInfo
 
--- luacheck: ignore CHAT_MESSAGE_CHANNEL
 local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
---@debug@
-CHAT_MESSAGE_CHANNEL = "GUILD"
---@end-debug@
-
--- Singleton
 
 local AuctionManager = {}
-
--- Database
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:Personal('auction', {
@@ -570,16 +562,16 @@ local function SendAntiSnipe()
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
 end
 
-local function SendBidAccepted(itemId, name)
+local function SendBidAccepted(UID, name)
     local message = CLM.MODELS.AuctionCommStructure:New(
-        CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID, itemId)
+        CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID, UID)
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
-local function SendBidDenied(itemId, name, reason)
+local function SendBidDenied(UID, name, reason)
     local message = CLM.MODELS.AuctionCommStructure:New(
         CONSTANTS.AUCTION_COMM.TYPE.DENY_BID,
-        CLM.MODELS.AuctionCommDenyBid:New(itemId, reason)
+        CLM.MODELS.AuctionCommDenyBid:New(UID, reason)
     )
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, name, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
@@ -596,8 +588,8 @@ local function SendBidInfoInternal(auctionDistributeBidData)
     end
 end
 
-local function SendBidInfo(self, itemId, name, userResponse)
-    self.bidInfoSender:Send(itemId, name, userResponse)
+local function SendBidInfo(self, UID, name, userResponse)
+    self.bidInfoSender:Send(UID, name, userResponse)
 end
 
 -- Private
@@ -763,7 +755,7 @@ function AuctionManager:RemoveItemFromCurrentAuction(item)
         LOG:Warning(CLM.L["Removing items not allowed during auction."])
         return
     end
-    self.currentAuction:RemoveItem(item:GetItemID())
+    self.currentAuction:RemoveItem(item)
     if self.currentAuction:IsEmpty() then
         self:ClearItemList()
     end
@@ -777,7 +769,7 @@ function AuctionManager:ClearItemList()
     self:RefreshGUI()
 end
 
-local SENDING_INTERVAL = 0.5
+local SENDING_INTERVAL = 1
 function AuctionManager:StartAuction()
     LOG:Trace("AuctionManager:StartAuction()")
     local auction = self.currentAuction
@@ -1003,7 +995,7 @@ function AuctionManager:HandleSubmitBid(data, sender)
         return
     end
     local response = CLM.MODELS.UserResponse:New(data:Value(), data:Type(), data:Items())
-    self:UpdateBid(sender, data:ItemId(), response)
+    self:UpdateBid(sender, data:AuctionUID(), response)
 end
 
 function AuctionManager:HandleNotifyCantUse(data, sender)
@@ -1160,9 +1152,10 @@ local function ValidateBidLimited(auction, item, name, userResponse)
     return true
 end
 
-local function AnnounceBid(auction, item, name, userResponse, newHighBid)
+local function AnnounceBid(auction, uid, name, userResponse, newHighBid)
     local auctionType = auction:GetType()
     if not CONSTANTS.AUCTION_TYPES_OPEN[auctionType] then return end
+    if not auction:GetItemByUID(uid) then return end
 
     local message
     local nameModdified
@@ -1171,10 +1164,10 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
         local anonomizedName = auction:GetAnonymousName(name)
         local modifiedResponse = UTILS.DeepCopy(userResponse)
         modifiedResponse:SetUpgradedItems({}) -- Clear Upgraded items info
-        SendBidInfo(AuctionManager, item:GetItemID(), anonomizedName, modifiedResponse)
+        SendBidInfo(AuctionManager, uid, anonomizedName, modifiedResponse)
     else
         nameModdified = "(" .. name .. ")"
-        SendBidInfo(AuctionManager, item:GetItemID(),name, userResponse)
+        SendBidInfo(AuctionManager, uid, name, userResponse)
     end
 
     -- -- Raid warning highest bidder
@@ -1183,29 +1176,29 @@ local function AnnounceBid(auction, item, name, userResponse, newHighBid)
     if not CLM.GlobalConfigs:GetBidsWarning() then return end
     if userResponse:Type() ~= CONSTANTS.BID_TYPE.MAIN_SPEC then return end
     message = string.format(CLM.L["New highest bid on %s: %s %s %s"],
-                        item:GetItemLink(),
+                        auction:GetItemByUID(uid):GetItemLink(),
                         userResponse:Value(),
                         auction:GetRoster():GetPointType() == CONSTANTS.POINT_TYPE.DKP and CLM.L["DKP"] or CLM.L["GP"],
                         nameModdified)
     UTILS.SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
 end
 
-function AuctionManager:UpdateBid(name, itemId, userResponse)
+function AuctionManager:UpdateBid(name, uid, userResponse)
     LOG:Trace("AuctionManager:UpdateBid()")
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
     local auction = self.currentAuction
-    local item = auction:GetItem(itemId)
+    local item = auction:GetItemByUID(uid)
 
     local accept, reason = ValidateBid(auction, item, name, userResponse)
     if accept then
+        local newHighBid = item:SetResponse(name, userResponse)
+        AnnounceBid(auction, uid, name, userResponse, newHighBid)
         if not CONSTANTS.BID_TYPE_HIDDEN[userResponse:Type()] then
             AntiSnipe(self, auction)
+            SendBidAccepted(uid, name)
         end
-        local newHighBid = item:SetResponse(name, userResponse)
-        AnnounceBid(auction, item, name, userResponse, newHighBid)
-        SendBidAccepted(item:GetItemID(), name)
     else
-        SendBidDenied(itemId, name, reason)
+        SendBidDenied(uid, name, reason)
     end
 
     -- TODO update Bids only
@@ -1232,7 +1225,7 @@ function AuctionManager:Award(item, name, price)
     local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), item:GetExtraPayload(), price, true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
-        CLM.MODULES.AutoAssign:Handle(item:GetItemID(), name)
+        CLM.MODULES.AutoAssign:Handle(item:GetItemLink(), name)
         RevalidateBids(self)
     end
 end
@@ -1244,7 +1237,7 @@ function AuctionManager:Disenchant(item)
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
         local disenchanter = CLM.MODULES.RaidManager:GetDisenchanter()
         if disenchanter then
-            CLM.MODULES.AutoAssign:Handle(item:GetItemID(), disenchanter)
+            CLM.MODULES.AutoAssign:Handle(item:GetItemLink(), disenchanter)
         end
     end
 end
@@ -1310,8 +1303,9 @@ function AuctionManager:RefreshGUI()
 end
 
 CONSTANTS.AUCTION_COMM = {
+    CURRENT_VERSION = 3,
     BID_PASS  = CLM.L["PASS"],
-    NUM_ANNOUNCE_CHANNELS = 4,
+    NUM_ANNOUNCE_CHANNELS = 2,
     TYPE = {
         START_AUCTION = 1,
         STOP_AUCTION = 2,
@@ -1380,8 +1374,6 @@ CLM.MODULES.AuctionManager = AuctionManager
 function AuctionManager:FakeBids()
     local _SendBidAccepted = SendBidAccepted
     local _SendBidDenied   = SendBidDenied
-    -- SendBidAccepted = (function(...) print("SendBidAccepted", ...) end)
-    -- SendBidDenied = (function(...) print("SendBidDenied", ...) end)
     SendBidAccepted = (function(...) end)
     SendBidDenied = (function(...) end)
     if CLM.MODULES.RaidManager:IsInRaid() and self:IsAuctionInProgress() then
