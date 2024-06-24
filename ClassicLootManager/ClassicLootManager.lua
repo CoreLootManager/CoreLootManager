@@ -17,9 +17,9 @@ CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
 CLM.COMM_CHANNEL = {
-    AUCTION = "Auction3",
-    BIDDING = "Bidding3",
-    BIDANNOUNCE = "Bids",
+    AUCTION = "Auction4",
+    BIDDING = "Bidding4",
+    BIDANNOUNCE = "Bids1",
     LEDGER = {
         SYNC = "LedgerS3",
         DATA = "LedgerD3"

@@ -1,3 +1,20 @@
+# Core Loot Manager v5.1.0
+## Auctioning Changes
+### Overhaul
+Big auctioning changes were introduced to properly support Cataclysm items. This change should be future-proof but requires everyone to update their AddOn to at minimum v5.1.0
+### Cancel/Pass Responses
+ML will no longer respond with acceptance of Cancel/Pass to limit some of the communication issues. Denies still should be sent.
+### Auctioned and upgraded items
+Auctioned and upgraded items will now properly show random suffixes, enchants, gems etc.
+### Tokens
+Cataclysm tokens should now be handled properly for upgraded items lists, dynamic value calculation and default slot value (categorized as non-equippable).
+## UI Changes
+### Auto Trade
+Auto Trade should now work properly. Alt-clicking on name should now once again initiate trade with the player properly.
+### Award UI
+Manually awarding items with random suffix through UI should work now as expected.
+### History UI
+Items with random suffixes should now show up properly in the History UI.
 # Core Loot Manager v5.0.4
 ## Changes
 ### Comms

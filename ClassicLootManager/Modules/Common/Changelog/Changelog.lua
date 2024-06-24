@@ -1,6 +1,28 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.1.0",
+        data = {
+            {
+                name = "Auctioning Changes",
+                data = {
+                    { header = "Overhaul", body = "Big auctioning changes were introduced to properly support Cataclysm items. This change should be future-proof but requires everyone to update their AddOn to at minimum v5.1.0" },
+                    { header = "Cancel/Pass Responses", body = "ML will no longer respond with acceptance of Cancel/Pass to limit some of the communication issues. Denies still should be sent." },
+                    { header = "Auctioned and upgraded items", body = "Auctioned and upgraded items will now properly show random suffixes, enchants, gems etc." },
+                    { header = "Tokens", body = "Cataclysm tokens should now be handled properly for upgraded items lists, dynamic value calculation and default slot value (categorized as non-equippable)." },
+                },
+            },
+            {
+                name = "UI Changes",
+                data = {
+                    { header = "Auto Trade", body = "Auto Trade should now work properly. Alt-clicking on name should now once again initiate trade with the player properly." },
+                    { header = "Award UI", body = "Manually awarding items with random suffix through UI should work now as expected." },
+                    { header = "History UI", body = "Items with random suffixes should now show up properly in the History UI." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.0.4",
         data = {
             {
