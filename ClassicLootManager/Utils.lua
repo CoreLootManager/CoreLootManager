@@ -921,6 +921,8 @@ function UTILS.getHighlightMethod(highlightColor, multiselect)
         local fnDoCellUpdate
         if data[realrow].cols[column].DoCellUpdate then
             fnDoCellUpdate = data[realrow].cols[column].DoCellUpdate
+        elseif cols[column].DoCellUpdate then
+            fnDoCellUpdate = cols[column].DoCellUpdate;
         else
             fnDoCellUpdate = table.DoCellUpdate
         end
