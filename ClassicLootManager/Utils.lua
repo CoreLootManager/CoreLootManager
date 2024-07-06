@@ -452,6 +452,22 @@ function UTILS.whoamiGUID()
     return playerGUID
 end
 
+do
+    local playerFaction
+    function UTILS.MyFaction()
+        if not playerFaction then
+            playerFaction = UnitFactionGroup("player")
+        end
+        return playerFaction
+    end
+end
+
+function UTILS.IsTargetCrossFaction(target)
+    local targetFaction = UnitFactionGroup(target)
+    if targetFaction == "" or not targetFaction then return false end -- We do not want false positives
+    return UnitFactionGroup(target) ~= UTILS.MyFaction()
+end
+
 function UTILS.CreateGUIDList(playerList)
     local playerGUIDList = {}
     local GUID

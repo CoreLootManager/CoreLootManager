@@ -136,7 +136,7 @@ function Comms:Send(prefix, message, distribution, target, priority)
     if distribution == CONSTANTS.COMMS.DISTRIBUTION.WHISPER then
         -- cross-faction whisper workaround
         -- utilize cross-faction workaround for cross realm also
-        if UTILS.ArePlayersCrossRealm(target, UTILS.whoami()) or (UnitFactionGroup(target) ~= UnitFactionGroup("player")) then
+        if UTILS.ArePlayersCrossRealm(target, UTILS.whoami()) or UTILS.IsTargetCrossFaction(target) then
             distribution = CONSTANTS.COMMS.DISTRIBUTION.RAID
             message._isX = true
             message._target = target
