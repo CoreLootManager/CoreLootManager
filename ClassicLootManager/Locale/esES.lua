@@ -763,7 +763,7 @@ CLM.L["Enable to allow base bids even if higher bids are present if player didn'
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1257
 CLM.L["Enable to allow equal bids. Affects Open-Ascending Auction."] = "Habilitar para permitir ofertas iguales. Afecta a una subasta abierta-ascendente."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1265
-CLM.L["Enable to always allow 0 bids. Affects Open-Ascending Auction."] = "Habilitar siempre permitir ofertas 0. Afecta a una subasta abierta-ascendente."
+CLM.L["Enable to always allow 0 bids. Affects ascending item value mode."] = "Habilitar siempre permitir ofertas 0. Afecta a una subasta ascendente."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1249
 CLM.L["Enable to always allow All-In bids. Affects Open-Ascending Auction."] = "Habilitar siempre permitir ofertas de todas las personas. Afecta a una subasta abierta-ascendente."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1123
@@ -1150,10 +1150,9 @@ CLM.L["Invalid item link"] = "Enlace de artículo no válido"
 CLM.L["Invalid item"] = "Artículo no válido"
 -- ClassicLootManager/Modules/Global/GlobalChatMessageHandlers.lua:75
 CLM.L["Invalid value provided"] = "Valor proporcionado no válido"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:58
-CLM.L["Item Value Mode"] = "Modo de valor del artículo"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1084
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1272
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:58
 CLM.L["Item value mode"] = "Modo de valor del artículo"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:22
 CLM.L["Item value must be positive"] = "El valor del artículo debe ser positivo"

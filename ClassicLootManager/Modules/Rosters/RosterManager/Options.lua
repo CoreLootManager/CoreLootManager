@@ -1262,7 +1262,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         }
         options.args.auction.args.always0 = {
             name = CLM.L["Always allow 0 bids"],
-            desc = CLM.L["Enable to always allow 0 bids. Affects Open-Ascending Auction."],
+            desc = CLM.L["Enable to always allow 0 bids. Affects ascending item value mode."],
             type = "toggle",
             disabled = disableManage,
             width = 1,

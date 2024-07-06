@@ -1009,7 +1009,7 @@ end
 
 -- BIDS
 
-local function ValidateBid(auction, item, name, userResponse)
+local function ValidateBid(auction, uid, item, name, userResponse)
     if not item then
         LOG:Warning("Received bid for not auctioned item from [%s]", name)
         return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.INVALID_ITEM
@@ -1035,7 +1035,7 @@ local function ValidateBid(auction, item, name, userResponse)
         -- only allow passing if no bids have been placed in open auctions
         if (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) and
             CONSTANTS.AUCTION_TYPES_OPEN[auctionType] and
-            auction:HasBids(item:GetItemID(), name) then
+            auction:HasBids(uid, name) then
             return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.PASSING_NOT_ALLOWED
         else
             return true
@@ -1063,7 +1063,7 @@ local function ValidateBid(auction, item, name, userResponse)
     if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING then
         -- ascending
         -- always allow bidding base in ascending mode but ONLY if player haven't bid yet
-        if not auction:HasBids(item:GetItemID(), name) then
+        if not auction:HasBids(uid, name) then
             if (value == 0) and auction:GetAlwaysAllow0() then
                 return true
             end
@@ -1092,7 +1092,7 @@ local function ValidateBid(auction, item, name, userResponse)
                 return true
             end
             -- always allow bidding base in ascending mode but ONLY if player haven't bid yet
-            if not auction:HasBids(item:GetItemID(), name) then
+            if not auction:HasBids(uid, name) then
                 if value == values[CONSTANTS.SLOT_VALUE_TIER.BASE] and auction:GetAlwaysAllowBaseBids() then
                     return true
                 end
@@ -1189,7 +1189,7 @@ function AuctionManager:UpdateBid(name, uid, userResponse)
     local auction = self.currentAuction
     local item = auction:GetItemByUID(uid)
 
-    local accept, reason = ValidateBid(auction, item, name, userResponse)
+    local accept, reason = ValidateBid(auction, uid, item, name, userResponse)
     if accept then
         local newHighBid = item:SetResponse(name, userResponse)
         AnnounceBid(auction, uid, name, userResponse, newHighBid)
