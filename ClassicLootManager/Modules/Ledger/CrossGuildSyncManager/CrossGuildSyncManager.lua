@@ -16,8 +16,8 @@ local XSYNC_TYPE = {
 
 
 local XSYNC_TYPE_GUI = {
-    CLM.L["Send to"],
     CLM.L["Accept from"],
+    CLM.L["Send to"],
     CLM.L["Both"]
 }
 

@@ -55,7 +55,7 @@ local configDecodeFunctions = {
         return CLM.L["Auction Type"], CONSTANTS.AUCTION_TYPES_GUI[value] or ""
     end),
     itemValueMode = (function(value)
-        return CLM.L["Item Value Mode"], CONSTANTS.ITEM_VALUE_MODES_GUI[value] or ""
+        return CLM.L["Item value mode"], CONSTANTS.ITEM_VALUE_MODES_GUI[value] or ""
     end),
     zeroSumBank = (function(value)
         return CLM.L["Zero-Sum Bank"], boolToString(value)

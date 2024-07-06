@@ -320,9 +320,9 @@ function AuctionInfo:GetItems()
     return self.items
 end
 
-function AuctionInfo:SetResponse(id, username, response)  -- TODO SOON
+function AuctionInfo:SetResponse(uid, username, response)
     assertInProgress(self)
-    local auctionItem = self.items[id]
+    local auctionItem = self.items[uid]
     if not auctionItem then
         LOG:Warning("Received response to non existent item.")
         return
@@ -535,8 +535,8 @@ function AuctionInfo:GetRaid()
     return self.raid
 end
 
-function AuctionInfo:HasBids(itemId, username)
-    local item = self.items[itemId]
+function AuctionInfo:HasBids(uid, username)
+    local item = self.items[uid]
     if item then
         return (item:GetResponse(username) ~= nil)
     end

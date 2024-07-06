@@ -213,7 +213,7 @@ def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean, ma
             _print("Ignored {} locale translations".format(ignored_translations_count))
     return 0, []
 
-sanitize_sentence_regex = re.compile("CLM\.L\[[\"\'](.*?)[\'\"]]")
+sanitize_sentence_regex = re.compile(r"CLM\.L\[[\"\'](.*?)[\'\"]]")
 def translate_missing(missing, storage:L10nStorage, locale, total_missing, total_done, last_percent, dry_run):
     if len(missing) > 0:
         for sentence in missing:
@@ -250,7 +250,7 @@ def rewrite_missing(missing, storage:L10nStorage, locale, total_missing, total_d
 def main(args):
     # Generate filelist
     baseDir, paths, excludeDirs = get_paths()
-    query = re.compile("\.lua$", re.I)
+    query = re.compile(r"\.lua$", re.I)
     _files = find_files(baseDir, query, False)
     for path in paths:
         _files.extend(find_files(path, query, True))
@@ -271,8 +271,8 @@ def main(args):
 
     # Prepare
     locales = ["frFR", "esES", "ruRU", "deDE", "zhCN", "zhTW"]
-    l10n_query = re.compile('(CLM\.L\[["\'].*?["\']\])')
-    l10n_translation_query = re.compile('(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
+    l10n_query = re.compile(r'(CLM\.L\[["\'].*?["\']\])')
+    l10n_translation_query = re.compile(r'(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
     storage = L10nStorage(baseDir, args.parser, args.markdown)
     # Indirectly used strings, e.g. classes
     add_indirectly_used_strings(storage)
