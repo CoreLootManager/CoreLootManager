@@ -375,6 +375,24 @@ function BiddingManagerGUI:Advance() -- skipping unusable + handling toggling du
 end
 
 
+local function CloseOnBid(self)
+    if GetCloseOnBid(self) then
+        local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+        local ok = true
+        for _, item in pairs(auction:GetItems()) do
+            if GetIgnoreUnusable(self) and item:GetCanUse() or not GetIgnoreUnusable(self) then
+                if not item:GetBid() then
+                    ok = false
+                    break
+                end
+            end
+        end
+        if ok then
+            self:Toggle()
+        end
+    end
+end
+
 ------------------------
 --- Options Creation ---
 ------------------------
@@ -416,7 +434,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             func = (function()
                 BidInputValue(self, CONSTANTS.BID_TYPE.MAIN_SPEC)
                 if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
+                CloseOnBid(self)
             end),
             width = (useOS and (isElvUI and 1.45 or 1.49) or (isElvUI and 2.95 or 2.99))*rowMultiplierBy6,
             order = 4
@@ -428,7 +446,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             func = (function()
                 CLM.MODULES.BiddingManager:CancelBid(self.auctionItem)
                 if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
+                CloseOnBid(self)
             end),
             width = isElvUI and (rowMultiplierBy6 - 0.05) or  rowMultiplierBy6,
             order = 6
@@ -442,7 +460,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
             func = (function()
                 BidInputValue(self, CONSTANTS.BID_TYPE.OFF_SPEC)
                 if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
+                CloseOnBid(self)
             end),
             width = (isElvUI and 1.45 or 1.49)*rowMultiplierBy6,
             order = 5
@@ -481,7 +499,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                         SetInputValue(self, value)
                         BidInputValue(self, tier)
                         if GetAdvanceOnBid(self) then self:Advance() end
-                        if GetCloseOnBid(self) then self:Toggle() end
+                        CloseOnBid(self)
                     end),
                     order = offset
                 }
@@ -498,7 +516,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 func = (function()
                     BidAllIn(self)
                     if GetAdvanceOnBid(self) then self:Advance() end
-                    if GetCloseOnBid(self) then self:Toggle() end
+                    CloseOnBid(self)
                 end),
                 order = offset
             }
@@ -556,7 +574,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
                         SetInputValue(self, value)
                         BidInputValue(self, tier)
                         if GetAdvanceOnBid(self) then self:Advance() end
-                        if GetCloseOnBid(self) then self:Toggle() end
+                        CloseOnBid(self)
                     end),
                     width = row_width,
                     order = offset
@@ -580,7 +598,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
         func = (function()
             CLM.MODULES.BiddingManager:Pass(self.auctionItem)
             if GetAdvanceOnBid(self) then self:Advance() end
-            if GetCloseOnBid(self) then self:Toggle() end
+            CloseOnBid(self)
         end),
         width = cancelPassWidth,
         order = offset
@@ -592,7 +610,7 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
         func = (function()
             CLM.MODULES.BiddingManager:CancelBid(self.auctionItem)
             if GetAdvanceOnBid(self) then self:Advance() end
-            if GetCloseOnBid(self) then self:Toggle() end
+            CloseOnBid(self)
         end),
         -- disabled = (function() return CONSTANTS.AUCTION_TYPES_OPEN[self.auctionType] and (itemValueMode == CONSTANTS.ITEM_VALUE_MODE.ASCENDING) end),
         width = cancelPassWidth,
@@ -648,7 +666,7 @@ local function GenerateAuctionOptions(self)
             type = "execute",
             func = (function()
                 self:Advance()
-                if GetCloseOnBid(self) then self:Toggle() end
+                CloseOnBid(self)
             end),
             width = (namedButtonsMode and 3 or 1.5)*rowMultiplierBy9,
             order = 4
@@ -665,7 +683,7 @@ local function GenerateAuctionOptions(self)
             func = (function()
                 CLM.MODULES.BiddingManager:Pass(self.auctionItem)
                 if GetAdvanceOnBid(self) then self:Advance() end
-                if GetCloseOnBid(self) then self:Toggle() end
+                CloseOnBid(self)
             end),
             width = 1.5*rowMultiplierBy9,
             order = 3
