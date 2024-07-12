@@ -300,8 +300,7 @@ function AuctionInfo:IsItemInAuction(auctionItem)
     return self:GetAuctionItemUID(auctionItem) ~= nil
 end
 
-function AuctionInfo:GetAuctionItemUID(auctionItem)
-    local itemLink = auctionItem:GetItemLink()
+function AuctionInfo:FindItemByLink(itemLink)
     if not self.itemUIDMap[itemLink] then
         for uid, item in pairs(self.items) do
             if item:GetItemLink() == itemLink then
@@ -311,6 +310,10 @@ function AuctionInfo:GetAuctionItemUID(auctionItem)
         end
     end
     return self.itemUIDMap[itemLink]
+end
+
+function AuctionInfo:GetAuctionItemUID(auctionItem)
+    return self:FindItemByLink(auctionItem:GetItemLink())
 end
 
 function AuctionInfo:GetItemByUID(uid)
