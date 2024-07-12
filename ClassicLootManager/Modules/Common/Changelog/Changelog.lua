@@ -1,6 +1,22 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.1.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Cross-guild synchronisation", body = "Cross-guild synchronisation now works as expected." },
+                    { header = "Player display", body = "Realm name will no longer randomly show up in the UI lists." },
+                    { header = "Close on Bid", body = "Close on bid now properly functions with multi-item auction and takes into account items you did bid on or unusable items." },
+                    { header = "Hide unusable items", body = "You can now hide unusable items in the bidding list. They will not be displayed nor accounted for closing on bid conditions. Unusuable items will however be still displayed in case there are no usable items detected." },
+                    { header = "Profile max level value", body = "Slider now properly limits its value to 85." },
+                    { header = "Descriptions", body = "Fixed various descriptions." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.1.0",
         data = {
             {

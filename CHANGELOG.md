@@ -1,3 +1,17 @@
+# Core Loot Manager v5.1.1
+## Fixes
+### Cross-guild synchronisation
+Cross-guild synchronisation now works as expected.
+### Player display
+Realm name will no longer randomly show up in the UI lists.
+### Close on Bid
+Close on bid now properly functions with multi-item auction and takes into account items you did bid on or unusable items.
+### Hide unusable items
+You can now hide unusable items in the bidding list. They will not be displayed nor accounted for closing on bid conditions. Unusuable items will however be still displayed in case there are no usable items detected.
+### Profile max level value
+Slider now properly limits its value to 85.
+### Descriptions
+Fixed various descriptions.
 # Core Loot Manager v5.1.0
 ## Auctioning Changes
 ### Overhaul
