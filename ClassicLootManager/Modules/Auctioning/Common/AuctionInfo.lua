@@ -251,6 +251,7 @@ local function AddAuctionItemToList(self, auctionItem, uid)
     self.items[self.nextItemUID] = auctionItem
     self.nextItemUID = self.nextItemUID + 1
     self.itemCount = self.itemCount + 1
+    self.hasUsableItems = nil
     UpdateAuctionTime(self)
 end
 
@@ -541,6 +542,19 @@ function AuctionInfo:HasBids(uid, username)
         return (item:GetResponse(username) ~= nil)
     end
     return false
+end
+
+function AuctionInfo:HasUsableItems()
+    self.hasUsableItems = false
+    if self.hasUsableItems == nil then
+        for _, item in pairs(self.items) do
+            if item:GetCanUse() then
+                self.hasUsableItems = true
+                break
+            end
+        end
+    end
+    return self.hasUsableItems
 end
 
 function AuctionInfo:GetAnonymousName(name)
