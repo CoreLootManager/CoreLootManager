@@ -332,9 +332,10 @@ local function GetNextAuctionItem(self, startFrom)
     if GetIgnoreUnusable(self) then
         local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
         while nextItem ~= self.nextItem do
-            if (nextItem > #self.auctionOrder) then nextItem = 1 end
-            if auction:GetItemByUID(self.auctionOrder[nextItem]):GetCanUse() then break end
+            local nextAuctionItem = auction:GetItemByUID(self.auctionOrder[nextItem])
+            if nextAuctionItem and nextAuctionItem:GetCanUse() then break end
             nextItem = nextItem + 1
+            if (nextItem > #self.auctionOrder) then nextItem = 1 end
         end
     end
     if (nextItem > #self.auctionOrder) then nextItem = 1 end
@@ -952,7 +953,7 @@ function BiddingManagerGUI:RefreshItemList()
         local itemList = {}
         local current = self.auctionItem
         for _, auctionItem in pairs(auction:GetItems()) do
-            if GetIgnoreUnusable(self) and auctionItem:GetCanUse() or not GetIgnoreUnusable(self) then
+            if GetIgnoreUnusable(self) and auctionItem:GetCanUse() or not GetIgnoreUnusable(self) or not auction:HasUsableItems() then
                 local iconColor, note
                 if not auctionItem:GetCanUse() then
                     iconColor = colorRed
@@ -1033,7 +1034,9 @@ function BiddingManagerGUI:BuildBidOrder()
         self.auctionOrder[#self.auctionOrder+1] = uid
     end
 
-    self:Advance()
+    if #self.auctionOrder > 0 then
+        self:Advance()
+    end
 end
 
 local toggleCb = (function() BiddingManagerGUI:Toggle() end)
