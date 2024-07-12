@@ -899,7 +899,7 @@ local function handleIncomingRoll(_, _, message, ...)
     AuctionManager:RefreshGUI()
 end
 
-function AuctionManager:StartRoll(itemId)
+function AuctionManager:StartRoll(auctionItem)
     LOG:Trace("AuctionManager:StartRoll()")
     local auction = self.currentAuction
     if auction:IsInProgress() then
@@ -919,8 +919,7 @@ function AuctionManager:StartRoll(itemId)
         LOG:Warning("AuctionManager:StartRoll(): Invalid raid object")
         return false
     end
-    local auctionItem = auction:GetItem(itemId)
-    if not auctionItem then
+    if not auction:IsItemInAuction(auctionItem) then
         LOG:Error("AuctionManager:StartRoll(): Item not in auction list")
         return false
     end

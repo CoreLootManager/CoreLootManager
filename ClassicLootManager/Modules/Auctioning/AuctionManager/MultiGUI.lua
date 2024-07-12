@@ -534,7 +534,7 @@ local function GenerateAuctionOptions(self)
                 if CLM.MODULES.AuctionManager:IsAcceptingRolls() then
                     CLM.MODULES.AuctionManager:StopRoll()
                 else
-                    CLM.MODULES.AuctionManager:StartRoll(self.auctionItem:GetItemID())
+                    CLM.MODULES.AuctionManager:StartRoll(self.auctionItem)
                 end
             end),
             control = "CLMIconNoLabel",
