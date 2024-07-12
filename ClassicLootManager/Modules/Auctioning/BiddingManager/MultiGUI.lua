@@ -1034,7 +1034,9 @@ function BiddingManagerGUI:BuildBidOrder()
         self.auctionOrder[#self.auctionOrder+1] = uid
     end
 
-    if #self.auctionOrder > 0 then
+    self:Advance()
+    -- If after advance item is unusable, we advance it one more time if there are usable items to get first usable item
+    if auction:HasUsableItems() and not self.auctionItem:GetCanUse() then
         self:Advance()
     end
 end

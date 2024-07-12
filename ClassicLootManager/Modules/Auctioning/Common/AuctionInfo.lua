@@ -548,8 +548,8 @@ function AuctionInfo:HasBids(uid, username)
 end
 
 function AuctionInfo:HasUsableItems()
-    self.hasUsableItems = false
     if self.hasUsableItems == nil then
+        self.hasUsableItems = false
         for _, item in pairs(self.items) do
             if item:GetCanUse() then
                 self.hasUsableItems = true
