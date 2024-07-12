@@ -57,7 +57,8 @@ local function InitializeDB(self)
         autoOpen = true,
         autoUpdateBidValue = false,
         includePasses = true,
-        includeCancels = false
+        includeCancels = false,
+        ignoreUnusable = false
     })
 end
 
@@ -110,6 +111,14 @@ end
 
 local function GetAdvanceOnBid(self)
     return self.db.advanceOnBid
+end
+
+local function SetIgnoreUnusable(self, value)
+    self.db.ignoreUnusable = value and true or false
+end
+
+local function GetIgnoreUnusable(self)
+    return self.db.ignoreUnusable
 end
 
 local function SetHideInCombat(self, value)
@@ -175,7 +184,16 @@ local function CreateConfig(self)
             type = "toggle",
             set = function(i, v) SetCloseOnBid(self, v) end,
             get = function(i) return GetCloseOnBid(self) end,
+            width = "double",
             order = 75
+        },
+        bidding_gui_ignore_unusable_items = {
+            name = CLM.L["Ignore unusable items"],
+            desc = CLM.L["Ignores unusable items. They will not be added to bidding window."],
+            type = "toggle",
+            set = function(i, v) SetIgnoreUnusable(self, v) end,
+            get = function(i) return GetIgnoreUnusable(self) end,
+            order = 76
         },
         bidding_gui_advance_on_bid = {
             name = CLM.L["Advance to next item after bid"],
@@ -183,8 +201,8 @@ local function CreateConfig(self)
             type = "toggle",
             set = function(i, v) SetAdvanceOnBid(self, v) end,
             get = function(i) return GetAdvanceOnBid(self) end,
-            width = 2,
-            order = 76
+            width = 3,
+            order = 76.5
         },
         bidding_gui_bar_width = {
             name = CLM.L["Auction timer bar width"],
@@ -309,15 +327,51 @@ local function BidAllIn(self)
     end
 end
 
+local function GetNextAuctionItem(self, startFrom)
+    local nextItem = (startFrom or self.nextItem) + 1
+    if GetIgnoreUnusable(self) then
+        local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
+        while nextItem ~= self.nextItem do
+            if (nextItem > #self.auctionOrder) then nextItem = 1 end
+            if auction:GetItemByUID(self.auctionOrder[nextItem]):GetCanUse() then break end
+            nextItem = nextItem + 1
+        end
+    end
+    if (nextItem > #self.auctionOrder) then nextItem = 1 end
+    return nextItem
+end
+
+local function SetNextVisibleAuctionItem(self)
+    self:SetVisibleAuctionItem(CLM.MODULES.BiddingManager:GetAuctionInfo():GetItemByUID(self.auctionOrder[self.nextItem]))
+end
+
 local function OverrideNextItem(self, auctionItem)
-    local id = auctionItem:GetItemID()
-    for i,itemId in ipairs(self.auctionOrder) do
-        if itemId == id then
-            self.nextItem = i + 1
+    local uid
+    for _uid, item in pairs(CLM.MODULES.BiddingManager:GetAuctionInfo():GetItems()) do
+        if item == auctionItem then
+            uid = _uid
+        end
+    end
+
+    local startFrom
+    for i, _uid in ipairs(self.auctionOrder) do
+        if _uid == uid then
+            startFrom = i
             break
         end
     end
+    self.nextItem = GetNextAuctionItem(self, startFrom)
+end
+
+function BiddingManagerGUI:Advance() -- skipping unusable + handling toggling during auction when on unusable (or ignore the latter?)
+    -- Saturate just in case set
     if (self.nextItem > #self.auctionOrder) then self.nextItem = 1 end
+    -- Set the item
+    SetNextVisibleAuctionItem(self)
+    -- Update Next Auction Item
+    self.nextItem = GetNextAuctionItem(self)
+    -- Refresh display
+    self:Refresh()
 end
 
 
@@ -880,33 +934,35 @@ function BiddingManagerGUI:RefreshItemList()
         local itemList = {}
         local current = self.auctionItem
         for _, auctionItem in pairs(auction:GetItems()) do
-            local iconColor, note
-            if not auctionItem:GetCanUse() then
-                iconColor = colorRed
-                note = CLM.L["Can't use"]
-            elseif auctionItem:BidAccepted() then
-                if CONSTANTS.BID_TYPE_REMOVING_BIDS[auctionItem:GetBid():Type()] then
-                    iconColor = colorBlue
-                    note = CLM.L["Pass"] .. " / " .. CLM.L["Cancel"]
-                else
-                    iconColor = colorGreen
-                    note = CLM.L["Bid accepted!"]
+            if GetIgnoreUnusable(self) and auctionItem:GetCanUse() or not GetIgnoreUnusable(self) then
+                local iconColor, note
+                if not auctionItem:GetCanUse() then
+                    iconColor = colorRed
+                    note = CLM.L["Can't use"]
+                elseif auctionItem:BidAccepted() then
+                    if CONSTANTS.BID_TYPE_REMOVING_BIDS[auctionItem:GetBid():Type()] then
+                        iconColor = colorBlue
+                        note = CLM.L["Pass"] .. " / " .. CLM.L["Cancel"]
+                    else
+                        iconColor = colorGreen
+                        note = CLM.L["Bid accepted!"]
+                    end
+                elseif auctionItem:BidDenied() then
+                    iconColor = colorGold
+                    note = CLM.L["Bid denied!"]
                 end
-            elseif auctionItem:BidDenied() then
-                iconColor = colorGold
-                note = CLM.L["Bid denied!"]
+                if current and current:GetItemLink() == auctionItem:GetItemLink() then
+                    iconColor = colorTurquoise
+                end
+                local total = auctionItem:GetTotal()
+                local textColor
+                if total > 1 then
+                    textColor = { r = 0.2, g = 0.8, b = 0.2, a = 1.0 }
+                else
+                    textColor = { r = 1.0, g = 1.0, b = 1.0, a = 1.0 }
+                end
+                itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note, overlay = { text = total, color = textColor } }}}
             end
-            if current and current:GetItemLink() == auctionItem:GetItemLink() then
-                iconColor = colorTurquoise
-            end
-            local total = auctionItem:GetTotal()
-            local textColor
-            if total > 1 then
-                textColor = { r = 0.2, g = 0.8, b = 0.2, a = 1.0 }
-            else
-                textColor = { r = 1.0, g = 1.0, b = 1.0, a = 1.0 }
-            end
-            itemList[#itemList+1] = { cols = { {value = auctionItem:GetItemLink(), item = auctionItem, iconColor = iconColor, note = note, overlay = { text = total, color = textColor } }}}
         end
         self.ItemList:SetData(itemList)
     end
@@ -947,19 +1003,12 @@ function BiddingManagerGUI:Initialize()
     self._initialized = true
 end
 
-function BiddingManagerGUI:Advance()
-    if (self.nextItem > #self.auctionOrder) then self.nextItem = 1 end
-    local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
-    self:SetVisibleAuctionItem(auction:GetItemByUID(self.auctionOrder[self.nextItem]))
-    self.nextItem = self.nextItem + 1
-    self:Refresh()
-end
-
 function BiddingManagerGUI:BuildBidOrder()
     local auction = CLM.MODULES.BiddingManager:GetAuctionInfo()
 
     self.auctionOrder = {}
     self.nextItem = 1
+
     if not auction then return end
 
     for uid in pairs(auction:GetItems()) do
@@ -989,15 +1038,10 @@ function BiddingManagerGUI:StartAuction()
     if GetAutoOpen(self) then
         if GetHideInCombat(self) and InCombatLockdown() then
             self.showAfterCombat = true
-
         else
             self:Show()
         end
     end
-    -- if self.top:IsVisible() then
-    --     self.showAfterCombat = true
-    --     self:Show()
-    -- end
 end
 
 function BiddingManagerGUI:EndAuction()
