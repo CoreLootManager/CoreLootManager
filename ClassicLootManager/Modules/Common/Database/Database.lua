@@ -62,7 +62,9 @@ local function _initialize()
 end
 
 local prefix = ""
-if CLM.WoWCata then
+if CLM.WoWTWW then
+    prefix = "tww" .. " "
+elseif CLM.WoWCata then
     prefix = "cata" .. " "
 end
 local function _get_database_name(guildName)

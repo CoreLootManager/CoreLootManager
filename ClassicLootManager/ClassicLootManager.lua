@@ -4,6 +4,7 @@ local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
 _G["CLM"] = CLM -- Expose CLM globally
 
+CLM.WoWTWW  = select(4, GetBuildInfo()) >= 110000
 CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
 CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
 CLM.WoWCata = (select(4, GetBuildInfo()) > 40000) and not CLM.WoW10
