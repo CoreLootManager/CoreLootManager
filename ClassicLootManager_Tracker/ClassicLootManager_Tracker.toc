@@ -1,7 +1,4 @@
-## Interface: 100207
-## Interface-Classic: 11503
-## Interface-Wrath: 30403
-## Interface-Cata: 40400
+## Interface: 102007, 110000, 11503, 40400
 ## Title: CLM |cff44ee44Tracker|r
 ## Notes: Visual Item received tracker System for |cffdcb749Core Loot Manager|r.
 ## Author: Lantis

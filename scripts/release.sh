@@ -77,12 +77,13 @@ fi
 # Game versions for uploading
 declare -A game_flavor=( ["retail"]="retail" ["classic"]="classic" ["bcc"]="bcc" ["mainline"]="retail" ["tbc"]="bcc" ["vanilla"]="classic" ["wrath"]="wrath" ["wotlkc"]="wrath" ["cata"]="cata" )
 
-declare -A game_type_version=()           # type -> version
-declare -A game_type_interface=()         # type -> toc
-declare -A si_game_type_interface_all=()  # type -> toc (last file)
-declare -A si_game_type_interface=()      # type -> game type toc (last file)
-declare -A toc_interfaces=()              # path -> all toc interface values (: delim)
-declare -A toc_root_interface=()          # path -> base interface value
+declare -A game_type_version=()           # type -> version (: delim)
+declare -A game_type_interface=()         # type -> toc (: delim)
+declare -A si_game_type_interface_all=()  # type -> interface value (last file)  (values from ## Interface*:)
+declare -A si_game_type_interface=()      # type -> game type interface value (last file)  (values from ## Interface-Type:)
+declare    si_game_root_interface         # base interface value (last file)
+declare -A toc_interfaces=()              # path -> si_game_type_interface_all (: delim)
+declare -A toc_root_interface=()          # path -> base interface value  (values from ## Interface:)
 declare -A toc_root_paths=()              # path -> directory name
 declare -a toc_paths=()                   # toc path in order of processing
 
@@ -93,15 +94,16 @@ retry() {
 	local result=0
 	local count=1
 	local max=10
-	while [[ "$count" -le "$max" ]]; do
-		[[ "$result" -ne 0 ]] && {
+	while [[ $count -le "$max" ]]; do
+		[[ $result -ne 0 ]] && {
 			echo -e "\033[01;31mRetrying (${count}/${max})\033[0m" >&2
 		}
 		"$@" && { result=0 && break; } || result="$?"
 		count="$((count + 1))"
 		sleep 3
 	done
-	return "$result"
+	# shellcheck disable=SC2086
+	return $result
 }
 
 # Escape a string for use in sed substitutions.
@@ -176,6 +178,18 @@ toc_to_type() {
 		*) game_type="retail"
 	esac
 	# return game_type
+}
+
+is_toc_multiple_types() {
+	local toc_version="$1"
+	local toc_game_type toc_version_game_type
+	IFS=':,' read -ra V <<< "$toc_version"
+	toc_to_type "${V[0]}" "toc_game_type"
+	for i in "${V[@]}"; do
+		toc_to_type "$i" "toc_version_game_type"
+		[[ $toc_game_type != "$toc_version_game_type" ]] && return 0
+	done
+	return 1
 }
 
 
@@ -258,14 +272,13 @@ while getopts ":celLzusSop:dw:a:r:t:g:m:n:" opt; do
 						else
 							game_type="retail"
 						fi
-						# Only one version per game type is allowed
-						if [ -n "${game_type_version[$game_type]}" ]; then
-							echo "Invalid argument for option \"-g\" (${game_type_version[$game_type]}, $i) - Only one version per game type is supported." >&2
-							usage
-							exit 1
+						if [[ -n ${game_type_version[$game_type]} ]]; then
+							game_type_version[$game_type]="${game_type_version[$game_type]}:$i"
+							game_type_interface[$game_type]="${game_type_interface[$game_type]}:$( printf "%d%02d%02d" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" )"
+						else
+							game_type_version[$game_type]="$i"
+							game_type_interface[$game_type]=$( printf "%d%02d%02d" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" )
 						fi
-						game_type_version[$game_type]="$i"
-						game_type_interface[$game_type]=$( printf "%d%02d%02d" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" )
 					done
 					if [[ ${#game_type_version[@]} -gt 1 ]]; then
 						game_type=
@@ -541,7 +554,7 @@ set_info_git() {
 	si_previous_tag=
 	si_previous_revision=
 	# git describe should use the latest tag if there are multiple, but it doesn't always work that way.
-	check_tag=()
+	local _si_tag check_tag=()
 	while IFS='' read -r tag; do check_tag+=( "$tag" ); done < <( git -C "$si_repo_dir" tag --points-at HEAD --sort=-committerdate --sort=-v:refname --sort=-taggerdate )
 	if [[ ${#check_tag[@]} -gt 0 ]]; then
 		# Use the most recent tag
@@ -552,7 +565,7 @@ set_info_git() {
 			# Git doesn't agree with GitHub Actions, check if there is another local tag that matches
 			for tag in "${check_tag[@]}"; do
 				if [[ $tag == "$GITHUB_REF_NAME" ]]; then
-					si_tag="$GITHUB_REF_NAME"
+					si_tag="$tag"
 					_si_tag="$si_tag"
 					break
 				fi
@@ -741,11 +754,13 @@ set_info_file() {
 }
 
 # Set some version info about the project
+echo -ne "Reading project repository..."
 case $repository_type in
 	git) set_info_git "$topdir" ;;
 	svn) set_info_svn "$topdir" ;;
 	hg)  set_info_hg  "$topdir" ;;
 esac
+echo -e "done\n"
 
 tag=$si_tag
 project_version=$si_project_version
@@ -1090,93 +1105,148 @@ parse_ignore "$pkgmeta_file"
 ### Process TOC file
 ###
 
-do_toc() {
-	local toc_file toc_version toc_game_type root_toc_version
+set_info_toc_interface() {
 	local toc_path="$1"
 	local package_name="$2"
 
+	si_game_type_interface=()
+	si_game_type_interface_all=()
+	si_game_root_interface=
 	[[ -z $package_name ]] && return 0
 
 	local toc_name=${toc_path##*/}
 
+	local toc_file toc_version toc_game_type
 	toc_file=$(
-		# remove BOM and CR and apply some non-version related TOC filters
-		[ "$file_type" != "alpha" ] && _tf_alpha="true"
+		# Remove BOM and CR and apply some non-version related TOC filters
+		[[ $file_type != "alpha" ]] && _tf_alpha="true"
 		sed -e $'1s/^\xEF\xBB\xBF//' -e $'s/\r//g' "$toc_path" | toc_filter alpha ${_tf_alpha:+true} | toc_filter debug true
 	)
 
-	toc_version=$( awk -F: '/^## Interface:/ { gsub(/[[:blank:]]/, "", $2); print $2; exit }' <<< "$toc_file" )
-	if [[ -z $toc_version ]]; then
-		toc_game_type=
-	else
-		toc_to_type "$toc_version" "toc_game_type"
-	fi
-	si_game_type_interface=()
-	si_game_type_interface_all=()
-	[[ -n "$toc_game_type" ]] && si_game_type_interface_all["$toc_game_type"]="$toc_version"
+	toc_version=$( awk -F: '/^## Interface:/ { gsub(/[ \t]/, "", $2); print $2; exit }' <<< "$toc_file" )
+	if [[ -n $toc_version ]]; then
+		local toc_version_game_type
+		IFS=',' read -ra V <<< "$toc_version"
+		toc_to_type "${V[0]}" "toc_game_type"
+		for i in "${V[@]}"; do
+			toc_to_type "$i" "toc_version_game_type"
 
-	root_toc_version="$toc_version"
+			if [[ -n ${si_game_type_interface_all[$toc_version_game_type]} ]]; then
+				si_game_type_interface_all[$toc_version_game_type]="${si_game_type_interface_all[$toc_version_game_type]}:$i"
+			else
+				si_game_type_interface_all[$toc_version_game_type]="$i"
+			fi
+
+			# Are the interface values all for one game type?
+			if [[ -n $toc_game_type && $toc_game_type != "$toc_version_game_type" ]]; then
+				toc_game_type=
+			fi
+		done
+
+		# Splitting needs the fallback toc to be game typed, so make sure we're not mixing strategies
+		# if [[ -n $split && -z $toc_game_type ]]; then
+		# 	echo "$toc_name has multiple game type interface versions as the fallback ($toc_version) but creating TOC files is enabled." >&2
+		# 	echo "Add additional \"## Interface-[Type]:\" lines for each game type TOC file to create." >&2
+		# 	exit 1
+		# fi
+
+		toc_version=$( IFS=':' ; echo "${V[*]}" ) # swap delimiter
+		si_game_root_interface="$toc_version"
+	fi
 
 	if [[ ${toc_name} =~ "$package_name"[-_](Mainline|Classic|Vanilla|BCC|TBC|Wrath|WOTLKC|Cata)\.toc$ ]]; then
-		# Flavored
-		if [[ -z "$toc_version" ]]; then
+		# Flavored, just validate the version
+		if [[ -z $toc_version ]]; then
 			echo "$toc_name is missing an interface version." >&2
 			exit 1
 		fi
 		local toc_file_game_type="${game_flavor[${BASH_REMATCH[1],,}]}"
-		if [[ "$toc_file_game_type" != "$toc_game_type" ]]; then
-			echo "$toc_name has an interface version ($toc_version) that is not compatible with \"$toc_file_game_type\"." >&2
-			exit 1
+		if [[ $toc_file_game_type != "$toc_game_type" ]]; then
+			if [[ $toc_file_game_type == "classic" && -z $toc_game_type ]]; then
+				# New loading logic for _Classic
+				IFS=':' read -ra V <<< "$toc_version"
+				for i in "${V[@]}"; do
+					toc_to_type "$i" "toc_file_game_type"
+					if [[ $toc_file_game_type == "retail" ]]; then
+						echo "$toc_name has an interface version ($i) that is not compatible with the game version \"classic\"." >&2
+						exit 1
+					fi
+				done
+			else
+				echo "$toc_name has an interface version ($toc_version) that is not compatible with the game version \"${toc_file_game_type}\"." >&2
+				exit 1
+			fi
 		fi
 	else
 		# Fallback
-		local game_type_toc_version
+		local game_type_toc_version toc_file_game_type
+
 		# Save the game type interface values
 		for type in "${!game_flavor[@]}"; do
-			game_type_toc_version=$( awk 'tolower($0) ~ /^## interface-'"$type"':/ { print $NF; exit }' <<< "$toc_file" )
-			if [[ -n "$game_type_toc_version" ]]; then
+			game_type_toc_version=$( awk -F: 'tolower($0) ~ /^## interface-'"$type"':/ { gsub(/[ \t]/, "", $2); print $2; exit }' <<< "$toc_file" )
+			if [[ -n $game_type_toc_version ]]; then
 				type="${game_flavor[$type]}"
+				IFS=',' read -ra V <<< "$game_type_toc_version"
+				for i in "${V[@]}"; do
+					toc_to_type "$i" "toc_file_game_type"
+					if [[ $toc_file_game_type != "$type" ]]; then
+						echo "$toc_name has an interface version ($i) that is not compatible with \"Interface-${type^}\"." >&2
+						exit 1
+					fi
+				done
+				game_type_toc_version=$( IFS=':' ; echo "${V[*]}" ) # swap delimiter
 				si_game_type_interface[$type]="$game_type_toc_version"
 				si_game_type_interface_all[$type]="$game_type_toc_version"
 			fi
 		done
+
 		# Use the game type if set, otherwise default to retail
 		game_type_toc_version="${si_game_type_interface_all[${game_type:-retail}]}"
-
-		if [[ -z "$toc_version" ]] || [[ -n "$game_type" && -n "$game_type_toc_version" && "$game_type_toc_version" != "$toc_version" ]]; then
+		# No "Interface:" value or game type doesn't match, try to use the "Interface-Type:" value
+		if [[ -z $toc_version ]] || [[ -n $game_type && -n $game_type_toc_version && $game_type_toc_version != "$toc_version" ]]; then
 			toc_version="$game_type_toc_version"
-			toc_to_type "$toc_version" "toc_game_type"
+			toc_game_type="${game_type:-retail}"
 		fi
 
-		# Check @non-@ blocks for other interface lines
-		if [[ -z "$toc_version" ]] || [[ -n "$game_type" && "$toc_game_type" != "$game_type" ]]; then
+		# Check @non-@ blocks for an interface matching the game type (DEPRECATED, remove this in v3)
+		if [[ -z $toc_version ]] || [[ -n $game_type && $toc_game_type != "$game_type" ]]; then
 			toc_game_type="$game_type"
+			local game_type_toc_prefix
 			case $toc_game_type in
-				classic) toc_version=$( sed -n '/@non-[-a-z]*@/,/@end-non-[-a-z]*@/{//b;p}' <<< "$toc_file" | awk '/#[[:blank:]]*## Interface:[[:blank:]]*(11)/ { print $NF; exit }' ) ;;
-				bcc) toc_version=$( sed -n '/@non-[-a-z]*@/,/@end-non-[-a-z]*@/{//b;p}' <<< "$toc_file" | awk '/#[[:blank:]]*## Interface:[[:blank:]]*(20)/ { print $NF; exit }' ) ;;
-				wrath) toc_version=$( sed -n '/@non-[-a-z]*@/,/@end-non-[-a-z]*@/{//b;p}' <<< "$toc_file" | awk '/#[[:blank:]]*## Interface:[[:blank:]]*(30)/ { print $NF; exit }' ) ;;
-				cata) toc_version=$( sed -n '/@non-[-a-z]*@/,/@end-non-[-a-z]*@/{//b;p}' <<< "$toc_file" | awk '/#[[:blank:]]*## Interface:[[:blank:]]*(40)/ { print $NF; exit }' ) ;;
+				classic) game_type_toc_prefix="11[345]" ;;
+				bcc) game_type_toc_prefix="20" ;;
+				wrath) game_type_toc_prefix="30" ;;
+				cata) game_type_toc_prefix="40" ;;
+				*) game_type_toc_prefix=
 			esac
-			# This becomes the actual interface version after replacements
-			root_toc_version="$toc_version"
+			if [[ -n $game_type_toc_prefix ]]; then
+				toc_version=$( sed -n '/@non-[-a-z]*@/,/@end-non-[-a-z]*@/{//b;p}' <<< "$toc_file" | awk -F: '/#[ \t]*## Interface:[ \t]*('"$game_type_toc_prefix"')/ { gsub(/[ \t]/, "", $2); print $2; exit }' )
+				IFS=',' read -ra V <<< "$toc_version"
+				for i in "${V[@]}"; do
+					toc_to_type "$i" "toc_file_game_type"
+					if [[ $toc_file_game_type != "$toc_game_type" ]]; then
+						echo "$toc_name has an interface version ($i) that is not compatible with the game version \"${game_flavor[$toc_game_type]}\"." >&2
+						exit 1
+					fi
+				done
+				toc_version=$( IFS=':' ; echo "${V[*]}" ) # swap delimiter
+
+				# This becomes the actual interface version after replacements
+				si_game_root_interface="$toc_version"
+				si_game_type_interface_all[$toc_game_type]="$toc_version"
+			fi
 		fi
 
-		if [[ -z "$toc_version" ]]; then
-			if [[ -z "$toc_game_type" ]]; then
+		# End of the line
+		if [[ -z $toc_version ]]; then
+			if [[ -z $toc_game_type ]]; then
 				echo "$toc_name is missing an interface version." >&2
 			else
 				echo "$toc_name has an interface version that is not compatible with the game version \"$toc_game_type\" or was not found." >&2
 			fi
 			exit 1
 		fi
-
-		# Don't overwrite a specific version
-		if [[ -z "${si_game_type_interface_all[$toc_game_type]}" ]]; then
-			si_game_type_interface_all[$toc_game_type]="$toc_version"
-		fi
 	fi
-	toc_root_interface[$toc_path]="$root_toc_version"
-	toc_interfaces[$toc_path]=$( IFS=':' ; echo "${si_game_type_interface_all[*]}" )
 }
 
 set_toc_project_info() {
@@ -1187,52 +1257,59 @@ set_toc_project_info() {
 	fi
 	# Get project IDs for uploading
 	if [ -z "$slug" ]; then
-		slug=$( sed -e $'1s/^\xEF\xBB\xBF//' -e $'s/\r//g' "$toc_path" | awk -F: '/^## X-Curse-Project-ID:/ { gsub(/[[:blank:]]/, "", $2); print $2; exit }' )
+		slug=$( sed -e $'1s/^\xEF\xBB\xBF//' -e $'s/\r//g' "$toc_path" | awk -F: '/^## X-Curse-Project-ID:/ { gsub(/[ \t]/, "", $2); print $2; exit }' )
 	fi
 	if [ -z "$addonid" ]; then
-		addonid=$( sed -e $'1s/^\xEF\xBB\xBF//' -e $'s/\r//g' "$toc_path" | awk -F: '/^## X-WoWI-ID:/ { gsub(/[[:blank:]]/, "", $2); print $2; exit }' )
+		addonid=$( sed -e $'1s/^\xEF\xBB\xBF//' -e $'s/\r//g' "$toc_path" | awk -F: '/^## X-WoWI-ID:/ { gsub(/[ \t]/, "", $2); print $2; exit }' )
 	fi
 	if [ -z "$wagoid" ]; then
-		wagoid=$( sed -e $'1s/^\xEF\xBB\xBF//' -e $'s/\r//g' "$toc_path" | awk -F: '/^## X-Wago-ID:/ { gsub(/[[:blank:]]/, "", $2); print $2; exit }' )
+		wagoid=$( sed -e $'1s/^\xEF\xBB\xBF//' -e $'s/\r//g' "$toc_path" | awk -F: '/^## X-Wago-ID:/ { gsub(/[ \t]/, "", $2); print $2; exit }' )
 	fi
 }
 
 set_build_version() {
-	local toc_game_type version
-
-	if [[ -z "$game_version" ]]; then
+	if [[ -z $game_version ]]; then
+		local toc_version toc_game_type path_interface path_version
 		for path in "${toc_paths[@]}"; do
 			if [[ -z "$split" && -z "$game_type" ]]; then
 				# no split and no game type means we should use the root interface value
-				# (blows up if one isn't set? should)
-				version="${toc_root_interface[$path]}"
+				toc_version="${toc_root_interface[$path]}"
 			else
-				version="${toc_interfaces[$path]}"
+				toc_version="${toc_interfaces[$path]}"
 			fi
-			local -a versions
-			IFS=':' read -ra versions <<< "$version"
-			for toc_version in "${versions[@]}"; do
-				toc_to_type "$toc_version" "toc_game_type"
-				# root addon interfaces take priority
-				if [[ -z $game_type || $game_type == "$toc_game_type" ]] && [[ -z ${game_type_interface[$toc_game_type]} || ${toc_root_paths[${path%/*}]} == "$package" ]]; then
-					game_type_interface[$toc_game_type]="$toc_version"
-					game_type_version[$toc_game_type]=$( printf "%d.%d.%d" "${toc_version:0: -4}" "${toc_version: -4:2}" "${toc_version: -2:2}" )
+			IFS=':' read -ra V <<< "$toc_version"
+			for i in "${V[@]}"; do
+				toc_to_type "$i" "toc_game_type"
+				# add the version for every root addon
+				if [[ -z $game_type || $game_type == "$toc_game_type" ]]; then
+					path_interface="$i"
+					path_version=$( printf "%d.%d.%d" $(( 10#${i:0: -4} )) $(( 10#${i: -4:2} )) $(( 10#${i: -2:2} )) )
+					if [[ -n ${game_type_interface[$toc_game_type]} ]]; then
+						if [[ ":${game_type_interface[$toc_game_type]}:" != *":$path_interface:"* ]]; then
+							game_type_interface[$toc_game_type]="${game_type_interface[$toc_game_type]}:$path_interface"
+							game_type_version[$toc_game_type]="${game_type_version[$toc_game_type]}:$path_version"
+						fi
+					else
+						game_type_interface[$toc_game_type]="$path_interface"
+						game_type_version[$toc_game_type]="$path_version"
+					fi
 				fi
 			done
 		done
-
-		if [[ -n "$game_type" ]]; then
-			game_version="${game_type_version[$game_type]}"
-		else
-			game_version=$(
-				readarray -t sorted < <(printf '%s\n' "${game_type_version[@]}" | sort -r)
-				IFS=',' ; echo "${sorted[*]}"
-			)
-		fi
 	fi
 
+	# Set the game versions shown in the summary
+	game_version=$(
+		if [[ -n $game_type ]]; then
+			readarray -t sorted < <( printf '%s\n' "${game_type_version[$game_type]//:/$'\n'}" | sort -Vr )
+		else
+			readarray -t sorted < <( printf '%s\n' "${game_type_version[@]//:/$'\n'}" | sort -Vr )
+		fi
+		IFS=',' ; echo "${sorted[*]}"
+	)
+
 	# Set the game type when we only have one game version
-	if [[ -z "$game_type" && ${#game_type_version[@]} -eq 1 ]]; then
+	if [[ -z $game_type && ${#game_type_version[@]} -eq 1 ]]; then
 		game_type="${!game_type_version[*]}"
 	fi
 }
@@ -1260,10 +1337,14 @@ for toc_path in "$topdir/$package"{,-Mainline,_Mainline,-Classic,_Classic,-Vanil
 		toc_root_paths["$topdir"]="$package"
 	fi
 done
-# Also check other project root directories for the root TOC file
+# Try parsing the project addon in move-folders for info next
 for path in "${!toc_root_paths[@]}"; do
-	if [[ -f "$path/$package.toc" ]]; then
-		set_toc_project_info "$path/$package.toc"
+	if [[ ${toc_root_paths[$path]} == "$package" && $path != "$topdir" ]]; then
+		for toc_path in "$path/$package"{,-Mainline,_Mainline,-Classic,_Classic,-Vanilla,_Vanilla,-BCC,_BCC,-TBC,_TBC,-Wrath,_Wrath,-WOTLKC,_WOTLKC,-Cata,_Cata}.toc; do
+			if [[ -f "$toc_path" ]]; then
+				set_toc_project_info "$toc_path"
+			fi
+		done
 	fi
 done
 
@@ -1272,7 +1353,9 @@ for path in "${!toc_root_paths[@]}"; do
 	for toc_path in "$path/${toc_root_paths[$path]}"{,-Mainline,_Mainline,-Classic,_Classic,-Vanilla,_Vanilla,-BCC,_BCC,-TBC,_TBC,-Wrath,_Wrath,-WOTLKC,_WOTLKC,-Cata,_Cata}.toc; do
 		if [[ -f "$toc_path" ]]; then
 			set_toc_project_info "$toc_path"
-			do_toc "$toc_path" "${toc_root_paths[$path]}"
+			set_info_toc_interface "$toc_path" "${toc_root_paths[$path]}"
+			toc_root_interface[$toc_path]="$si_game_root_interface"
+			toc_interfaces[$toc_path]=$( IFS=':' ; echo "${si_game_type_interface_all[*]}" )
 			if [[ " ${toc_paths[*]} " != *" $toc_path "* ]]; then
 				toc_paths+=("$toc_path")
 			fi
@@ -1307,7 +1390,6 @@ fi
 [ "$addonid" = "0" ] && addonid=
 [ "$wagoid" = "0" ] && wagoid=
 
-echo
 echo "Packaging $package"
 if [ -n "$project_version" ]; then
 	echo "Current version: $project_version"
@@ -1316,8 +1398,8 @@ if [ -n "$previous_version" ]; then
 	echo "Previous version: $previous_version"
 fi
 (
-	if [[ -n "$game_type" ]]; then
-		[[ "$game_type" = "retail" ]] && version="retail " || version="non-retail version-${game_type} "
+	if [[ -n $game_type ]]; then
+		[[ $game_type == "retail" ]] && version="retail " || version="non-retail version-${game_type} "
 	elif [[ ${#game_type_version[@]} -gt 1 ]]; then
 		version="multi-version "
 	fi
@@ -1569,8 +1651,8 @@ lua_filter() {
 }
 
 toc_interface_filter() {
-	local toc_version="$1"
-	local current_toc_version="$2"
+	local toc_version="${1//:/, }"
+	local current_toc_version="${2//:/, }"
 	# TOC version isn't what is set in the TOC file
 	if [[ -n "$toc_version" && "$current_toc_version" != "$toc_version" ]]; then
 		# Always remove BOM so ^ works
@@ -1733,47 +1815,58 @@ copy_directory_tree() {
 					_cdt_filters="vcs_filter"
 					case $file in
 						*.lua)
-							[ -n "$_cdt_do_not_package" ] && _cdt_filters+="|do_not_package_filter lua"
-							[ -n "$_cdt_debug" ] && _cdt_filters+="|lua_filter debug"
-							[ -n "$_cdt_alpha" ] && _cdt_filters+="|lua_filter alpha"
-							[ "$_cdt_file_gametype" != "retail" ] && _cdt_filters+="|lua_filter version-retail|lua_filter retail"
-							[ "$_cdt_file_gametype" != "classic" ] && _cdt_filters+="|lua_filter version-classic"
-							[ "$_cdt_file_gametype" != "bcc" ] && _cdt_filters+="|lua_filter version-bcc"
-							[ "$_cdt_file_gametype" != "wrath" ] && _cdt_filters+="|lua_filter version-wrath"
-							[ "$_cdt_file_gametype" != "cata" ] && _cdt_filters+="|lua_filter version-cata"
-							[ -n "$_cdt_localization" ] && grep -q "@localization" "$_cdt_source_file" && _cdt_filters+="|localization_filter"
+							[[ -n $_cdt_do_not_package ]] && _cdt_filters+="|do_not_package_filter lua"
+							[[ -n $_cdt_debug ]] && _cdt_filters+="|lua_filter debug"
+							[[ -n $_cdt_alpha ]] && _cdt_filters+="|lua_filter alpha"
+							if [[ -n $_cdt_file_gametype ]]; then
+								[[ $_cdt_file_gametype != "retail" ]] && _cdt_filters+="|lua_filter version-retail|lua_filter retail"
+								[[ $_cdt_file_gametype != "classic" ]] && _cdt_filters+="|lua_filter version-classic|lua_filter version-vanilla"
+								[[ $_cdt_file_gametype != "bcc" ]] && _cdt_filters+="|lua_filter version-bcc"
+								[[ $_cdt_file_gametype != "wrath" ]] && _cdt_filters+="|lua_filter version-wrath"
+								[[ $_cdt_file_gametype != "cata" ]] && _cdt_filters+="|lua_filter version-cata"
+							fi
+							[[ -n $_cdt_localization ]] && grep -q "@localization" "$_cdt_source_file" && _cdt_filters+="|localization_filter"
 							;;
 						*.xml)
-							[ -n "$_cdt_do_not_package" ] && _cdt_filters+="|do_not_package_filter xml"
-							[ -n "$_cdt_nolib" ] && _cdt_filters+="|xml_filter no-lib-strip"
-							[ -n "$_cdt_debug" ] && _cdt_filters+="|xml_filter debug"
-							[ -n "$_cdt_alpha" ] && _cdt_filters+="|xml_filter alpha"
-							[ "$_cdt_file_gametype" != "retail" ] && _cdt_filters+="|xml_filter version-retail|xml_filter retail"
-							[ "$_cdt_file_gametype" != "classic" ] && _cdt_filters+="|xml_filter version-classic"
-							[ "$_cdt_file_gametype" != "bcc" ] && _cdt_filters+="|xml_filter version-bcc"
-							[ "$_cdt_file_gametype" != "wrath" ] && _cdt_filters+="|xml_filter version-wrath"
-							[ "$_cdt_file_gametype" != "cata" ] && _cdt_filters+="|xml_filter version-cata"
+							[[ -n $_cdt_do_not_package ]] && _cdt_filters+="|do_not_package_filter xml"
+							[[ -n $_cdt_nolib ]] && _cdt_filters+="|xml_filter no-lib-strip"
+							[[ -n $_cdt_debug ]] && _cdt_filters+="|xml_filter debug"
+							[[ -n $_cdt_alpha ]] && _cdt_filters+="|xml_filter alpha"
+							if [[ -n $_cdt_file_gametype ]]; then
+								[[ $_cdt_file_gametype != "retail" ]] && _cdt_filters+="|xml_filter version-retail|xml_filter retail"
+								[[ $_cdt_file_gametype != "classic" ]] && _cdt_filters+="|xml_filter version-classic|xml_filter version-vanilla"
+								[[ $_cdt_file_gametype != "bcc" ]] && _cdt_filters+="|xml_filter version-bcc"
+								[[ $_cdt_file_gametype != "wrath" ]] && _cdt_filters+="|xml_filter version-wrath"
+								[[ $_cdt_file_gametype != "cata" ]] && _cdt_filters+="|xml_filter version-cata"
+							fi
 							;;
 						*.toc)
 							# We only care about processing project TOC files
-							if [[ -n ${toc_root_interface["$_cdt_source_file"]} ]]; then
+							if [[ -n ${toc_interfaces["$_cdt_source_file"]} ]]; then
+								# Set the interface values
 								_cdt_toc_dir="${_cdt_source_file%/*}"
-								do_toc "$_cdt_source_file" "${toc_root_paths["$_cdt_toc_dir"]}"
-								# Process the fallback TOC file according to it's base interface version
-								if [[ -z $_cdt_file_gametype && -n $_cdt_split ]]; then
-									toc_to_type "${toc_root_interface["$_cdt_source_file"]}" "_cdt_file_gametype"
-								fi
+								set_info_toc_interface "$_cdt_source_file" "${toc_root_paths["$_cdt_toc_dir"]}"
+								# Add build type filters
 								_cdt_filters+="|do_not_package_filter toc"
 								[ -n "$_cdt_nolib" ] && _cdt_filters+="|toc_filter no-lib-strip true" # leave the tokens in the file normally
 								_cdt_filters+="|toc_filter debug ${_cdt_debug}"
 								_cdt_filters+="|toc_filter alpha ${_cdt_alpha}"
-								_cdt_filters+="|toc_filter retail $([[ "$_cdt_file_gametype" != "retail" ]] && echo "true")"
-								_cdt_filters+="|toc_filter version-retail $([[ "$_cdt_file_gametype" != "retail" ]] && echo "true")"
-								_cdt_filters+="|toc_filter version-classic $([[ "$_cdt_file_gametype" != "classic" ]] && echo "true")"
-								_cdt_filters+="|toc_filter version-bcc $([[ "$_cdt_file_gametype" != "bcc" ]] && echo "true")"
-								_cdt_filters+="|toc_filter version-wrath $([[ "$_cdt_file_gametype" != "wrath" ]] && echo "true")"
-								_cdt_filters+="|toc_filter version-cata $([[ "$_cdt_file_gametype" != "cata" ]] && echo "true")"
+								# Add game type filters, skipping if multi-version
+								if [[ -z $_cdt_file_gametype && -n $_cdt_split && -n $si_game_root_interface ]] && ! is_toc_multiple_types "$si_game_root_interface" ; then
+									toc_to_type "$si_game_root_interface" "_cdt_file_gametype"
+								fi
+								if [[ -n "$_cdt_file_gametype" ]]; then
+									_cdt_filters+="|toc_filter retail $([[ "$_cdt_file_gametype" != "retail" ]] && echo "true")"
+									_cdt_filters+="|toc_filter version-retail $([[ "$_cdt_file_gametype" != "retail" ]] && echo "true")"
+									_cdt_filters+="|toc_filter version-classic $([[ "$_cdt_file_gametype" != "classic" ]] && echo "true")"
+									_cdt_filters+="|toc_filter version-vanilla $([[ "$_cdt_file_gametype" != "classic" ]] && echo "true")"
+									_cdt_filters+="|toc_filter version-bcc $([[ "$_cdt_file_gametype" != "bcc" ]] && echo "true")"
+									_cdt_filters+="|toc_filter version-wrath $([[ "$_cdt_file_gametype" != "wrath" ]] && echo "true")"
+									_cdt_filters+="|toc_filter version-cata $([[ "$_cdt_file_gametype" != "cata" ]] && echo "true")"
+								fi
+								# Rewrite the interface line if necessary
 								_cdt_filters+="|toc_interface_filter '${si_game_type_interface_all[${_cdt_file_gametype:- }]}' '${toc_root_interface["$_cdt_source_file"]}'"
+								# Do localized key replacements (this is really inefficient and should probably be deprecated)
 								[ -n "$_cdt_localization" ] && grep -q "@localization" "$_cdt_source_file" && _cdt_filters+="|localization_filter"
 							fi
 							;;
@@ -1788,10 +1881,10 @@ copy_directory_tree() {
 					echo "  Copying: $file${_cdt_external_slug:+ (embedded: "$_cdt_external_slug")}"
 
 					# Make sure we're not causing any surprises
-					if [[ -z $_cdt_file_gametype && ( $file == *".lua" || $file == *".xml" || ( -z $_cdt_external && $file == *".toc" ) ) ]] && grep -q '@\(non-\)\?version-\(retail\|classic\|bcc\|wrath\|cata\)@' "$_cdt_source_file"; then
+					if [[ -z $_cdt_file_gametype && ( $file == *".lua" || $file == *".xml" || ( -z $_cdt_external && $file == *".toc" ) ) ]] && grep -q '@\(non-\)\?version-\(retail\|classic\|vanilla\|bcc\|wrath\|cata\)@' "$_cdt_source_file"; then
 						echo "    Error! Build type version keywords are not allowed in a multi-version build." >&2
 						echo "           These should be replaced with lua conditional statements:" >&2
-						grep -n '@\(non-\)\?version-\(retail\|classic\|bcc\|wrath\|cata\)@' "$_cdt_source_file" | sed 's/^/             /' >&2
+						grep -n '@\(non-\)\?version-\(retail\|classic\|vanilla\|bcc\|wrath\|cata\)@' "$_cdt_source_file" | sed 's/^/             /' >&2
 						echo "           See https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID" >&2
 						exit 1
 					fi
@@ -1800,9 +1893,9 @@ copy_directory_tree() {
 					eval < "$_cdt_source_file" "$_cdt_filters" 3>&1 > "$_cdt_destdir/$file" || exit 1
 
 					# Create game type specific TOCs
-					if [[ -n $_cdt_split && -n ${toc_root_interface["$_cdt_source_file"]} ]]; then
+					if [[ -n $_cdt_split && -n ${toc_interfaces["$_cdt_source_file"]} ]]; then
 						local toc_version new_file
-						local root_toc_version="${toc_root_interface["$_cdt_source_file"]}"
+						local root_toc_version="$si_game_root_interface"
 						for type in "${!si_game_type_interface[@]}"; do
 							toc_version="${si_game_type_interface[$type]}"
 							new_file="${file%.toc}"
@@ -1814,7 +1907,7 @@ copy_directory_tree() {
 								cata) new_file+="_Cata.toc" ;;
 							esac
 
-							echo "    Creating $new_file [$toc_version]"
+							echo "    Creating $new_file [${toc_version//:/, }]"
 
 							_cdt_filters="vcs_filter"
 							_cdt_filters+="|do_not_package_filter toc"
@@ -1824,6 +1917,7 @@ copy_directory_tree() {
 							_cdt_filters+="|toc_filter retail $([[ "$type" != "retail" ]] && echo "true")"
 							_cdt_filters+="|toc_filter version-retail $([[ "$type" != "retail" ]] && echo "true")"
 							_cdt_filters+="|toc_filter version-classic $([[ "$type" != "classic" ]] && echo "true")"
+							_cdt_filters+="|toc_filter version-vanilla $([[ "$type" != "classic" ]] && echo "true")"
 							_cdt_filters+="|toc_filter version-bcc $([[ "$type" != "bcc" ]] && echo "true")"
 							_cdt_filters+="|toc_filter version-wrath $([[ "$type" != "wrath" ]] && echo "true")"
 							_cdt_filters+="|toc_filter version-cata $([[ "$type" != "cata" ]] && echo "true")"
@@ -1832,6 +1926,11 @@ copy_directory_tree() {
 
 							eval < "$_cdt_source_file" "$_cdt_filters" 3>&1 > "$_cdt_destdir/$new_file"
 						done
+
+						if [[ -z $root_toc_version ]]; then
+							echo "    Removing $file (no base interface)"
+							rm -f "$_cdt_destdir/$file"
+						fi
 					fi
 				fi
 			fi
@@ -2617,10 +2716,8 @@ upload_curseforge() {
 	if [[ -n $_cf_versions && $_cf_versions != *"errorMessage"* ]]; then
 		_cf_game_version_id=
 		_cf_game_version=
-		local version_name version_id game_id
-		for type in "classic" "bcc" "wrath" "cata" "retail"; do  # sort order (last id is show as the version on the project's files page apparently)
-			version_name="${game_type_version[$type]}"
-			[[ -z $version_name ]] && continue
+		local version_id game_id invalid_version
+		for type in "${!game_type_version[@]}"; do
 			case $type in
 				classic) game_id=67408 ;;
 				bcc) game_id=73246 ;;
@@ -2628,25 +2725,34 @@ upload_curseforge() {
 				cata) game_id=77522 ;;
 				*) game_id=517
 			esac
-
-			# check the version
-			if ! jq -e --arg v "$version_name" --argjson t "$game_id" 'map(select(.gameVersionTypeID == $t and .name == $v)) | length > 0' <<< "$_cf_versions" &>/dev/null; then
-				# no match, so grab the next highest version (try to avoid testing versions)
-				version_name=$( echo "$_cf_versions" | jq -r --arg v "$version_name" --argjson t "$game_id" 'map(select(.gameVersionTypeID == $t and .name < $v)) | max_by(.id) | .name // empty' )
-				if [[ -z $version_name ]]; then
-					# no? just grab the highest version
-					version_name=$( echo "$_cf_versions" | jq -r --argjson t "$game_id" 'map(select(.gameVersionTypeID == $t)) | max_by(.id) | .name' )
+			IFS=':' read -ra V <<< "${game_type_version[$type]}"
+			for version in "${V[@]}"; do
+				# check the version
+				if ! jq -e --arg v "$version" --argjson t "$game_id" 'map(select(.gameVersionTypeID == $t and .name == $v)) | length > 0' <<< "$_cf_versions" &>/dev/null; then
+					invalid_version="$version"
+					# no match, so grab the next highest version (try to avoid testing versions)
+					version=$( echo "$_cf_versions" | jq -r --arg v "$invalid_version" --argjson t "$game_id" 'map(select(.gameVersionTypeID == $t and .name < $v)) | max_by(.id) | .name // empty' )
+					if [[ -z $version ]]; then
+						# no? just grab the highest version
+						version=$( echo "$_cf_versions" | jq -r --argjson t "$game_id" 'map(select(.gameVersionTypeID == $t)) | max_by(.id) | .name // empty' )
+					fi
+					if [[ -z $version ]]; then
+						echo "WARNING: No CurseForge game version match for \"$invalid_version\", ignoring" >&2
+					else
+						echo "WARNING: No CurseForge game version match for \"$invalid_version\", using \"$version\"" >&2
+					fi
 				fi
-				echo "WARNING: No CurseForge game version match for \"${game_type_version[$type]}\", using \"$version_name\"" >&2
-			fi
-			_cf_game_version+=",${version_name}"
-
-			# get the id
-			version_id=$( echo "$_cf_versions" | jq -r --arg v "$version_name" --argjson t "$game_id" '.[] | select(.gameVersionTypeID == $t and .name == $v) | .id' )
-			_cf_game_version_id+=",${version_id}"
+				if [[ -n $version && "$_cf_game_version," != *",$version," ]]; then
+					_cf_game_version+=",${version}"
+					# get the id
+					version_id=$( echo "$_cf_versions" | jq -r --arg v "$version" --argjson t "$game_id" '.[] | select(.gameVersionTypeID == $t and .name == $v) | .id // empty' )
+					_cf_game_version_id+=",${version_id}"
+				fi
+			done
 		done
 		_cf_game_version_id="[${_cf_game_version_id#,}]"
-		_cf_game_version="${_cf_game_version#,}"
+		_cf_game_version=$( echo "${_cf_game_version#,}" | tr ',' '\n' | sort -Vr | tr '\n' ',' )
+		_cf_game_version=${_cf_game_version%,}
 	fi
 	if [ -z "$_cf_game_version" ]; then
 		echo "Error fetching game version info from $project_site/api/game/versions"
@@ -2715,7 +2821,7 @@ upload_curseforge() {
 
 	rm -f "$resultfile" 2>/dev/null
 
-	# shellcheck disable=SC2086  # why does this one instance raise an error? /shrug
+	# shellcheck disable=SC2086
 	return $return_code
 }
 
@@ -2728,9 +2834,8 @@ upload_wowinterface() {
 	local _wowi_versions _wowi_game_version
 	_wowi_versions=$( curl -s https://api.wowinterface.com/addons/compatible.json )
 	if [ -n "$_wowi_versions" ]; then
-		local version wowi_type
+		local wowi_type invalid_version
 		for type in "${!game_type_version[@]}"; do
-			version="${game_type_version[$type]}"
 			case $type in
 				classic) wowi_type="Classic" ;;
 				bcc) wowi_type="TBC-Classic" ;;
@@ -2738,25 +2843,30 @@ upload_wowinterface() {
 				cata) wowi_type="Cata-Classic" ;;
 				*) wowi_type="Retail"
 			esac
-			# check the version
-			if ! jq -e --arg v "$version" 'map(select(.id == $v)) | length > 0' <<< "$_wowi_versions" &>/dev/null; then
-				# use the next highest version (try to avoid testing versions)
-				version=$( echo "$_wowi_versions" | jq -r --arg v "$version" --arg t "$wowi_type" 'map(select(.game == $t and .id < $v)) | max_by(.id) | .id // empty' )
-				if [[ -z $version ]]; then
-					# just grab the highest version
-					version=$( echo "$_wowi_versions" | jq -r --arg t "$wowi_type" 'map(select(.game == $t)) | max_by(.id) | .id // empty' )
+			IFS=':' read -ra V <<< "${game_type_version[$type]}"
+			for version in "${V[@]}"; do
+				# check the version
+				if ! jq -e --arg v "$version" 'map(select(.id == $v)) | length > 0' <<< "$_wowi_versions" &>/dev/null; then
+					invalid_version="$version"
+					# use the next highest version (try to avoid testing versions)
+					version=$( echo "$_wowi_versions" | jq -r --arg v "$invalid_version" --arg t "$wowi_type" 'map(select(.game == $t and .id < $v)) | max_by(.id) | .id // empty' )
+					if [[ -z $version ]]; then
+						# just grab the highest version
+						version=$( echo "$_wowi_versions" | jq -r --arg t "$wowi_type" 'map(select(.game == $t)) | max_by(.id) | .id // empty' )
+					fi
+					if [[ -z $version ]]; then
+						echo "WARNING: No WoWInterface game version match for \"$invalid_version\", \"$wowi_type\" is not supported" >&2
+					else
+						echo "WARNING: No WoWInterface game version match for \"$invalid_version\", using \"$version\"" >&2
+					fi
 				fi
-				if [[ -z $version ]]; then
-					echo "WARNING: No WoWInterface game version match for \"${game_type_version[$type]}\", \"$wowi_type\" is not supported" >&2
-				else
-					echo "WARNING: No WoWInterface game version match for \"${game_type_version[$type]}\", using \"$version\"" >&2
+				if [[ -n $version && "$_wowi_game_version," != *",$version," ]]; then
+					_wowi_game_version+=",${version}"
 				fi
-			fi
-			if [[ -n $version ]]; then
-				_wowi_game_version+=",${version}"
-			fi
+			done
 		done
-		_wowi_game_version="${_wowi_game_version#,}"
+		_wowi_game_version=$( echo "${_wowi_game_version#,}" | tr ',' '\n' | sort -Vr | tr '\n' ',' )
+		_wowi_game_version=${_wowi_game_version%,}
 	fi
 	if [ -z "$_wowi_game_version" ]; then
 		echo "Error fetching game version info from https://api.wowinterface.com/addons/compatible.json"
@@ -2822,6 +2932,7 @@ upload_wowinterface() {
 
 	rm -f "$resultfile" 2>/dev/null
 
+	# shellcheck disable=SC2086
 	return $return_code
 }
 
@@ -2835,28 +2946,42 @@ upload_wago() {
 	_wago_versions=$( curl -s https://addons.wago.io/api/data/game | jq -c '.patches' 2>/dev/null )
 	if [ -n "$_wago_versions" ]; then
 		_wago_support_property=
-		local version wago_type
+		local wago_type wago_game_type_version invalid_version
 		for type in "${!game_type_version[@]}"; do
-			version="${game_type_version[$type]}"
 			case $type in
 				bcc) wago_type="bc" ;;
 				wrath) wago_type="wotlk" ;;
 				*) wago_type="$type"
 			esac
-			# check the version
-			if ! jq -e --arg t "$wago_type" --arg v "$version" '.[$t] | index($v)' <<< "$_wago_versions" &>/dev/null; then
-				# no match, so grab the next highest version (try to avoid testing versions)
-				version=$( echo "$_wago_versions" | jq -r --arg t "$wago_type" --arg v "$version" '.[$t] | map(select(. < $v)) | max // empty' )
-				if [[ -z $version ]]; then
-					# just grab the highest version
-					version=$( echo "$_wago_versions" | jq -r --arg t "$wago_type" '.[$t] | max' )
+			wago_game_type_version=
+			IFS=':' read -ra V <<< "${game_type_version[$type]}"
+			for version in "${V[@]}"; do
+				# check the version
+				if ! jq -e --arg t "$wago_type" --arg v "$version" '.[$t] | index($v)' <<< "$_wago_versions" &>/dev/null; then
+					invalid_version="$version"
+					# no match, so grab the next highest version (try to avoid testing versions)
+					version=$( echo "$_wago_versions" | jq -r --arg t "$wago_type" --arg v "$invalid_version" '.[$t] | map(select(. < $v)) | max // empty' )
+					if [[ -z $version ]]; then
+						# just grab the highest version
+						version=$( echo "$_wago_versions" | jq -r --arg t "$wago_type" '.[$t] | max // empty' )
+					fi
+					if [[ -z $version ]]; then
+						echo "WARNING: No Wago game version match for \"$invalid_version\", ignoring" >&2
+					else
+						echo "WARNING: No Wago game version match for \"$invalid_version\", using \"$version\"" >&2
+					fi
 				fi
-				echo "WARNING: No Wago game version match for \"${game_type_version[$type]}\", using \"$version\"" >&2
+				if [[ -n $version && "$_wago_game_version," != *",$version," ]]; then
+					wago_game_type_version+=",\"${version}\""
+					_wago_game_version+=",${version}"
+				fi
+			done
+			if [[ -n $wago_game_type_version ]]; then
+				_wago_support_property+="\"supported_${wago_type}_patches\": [${wago_game_type_version#,}], "
 			fi
-			_wago_support_property+="\"supported_${wago_type}_patch\": \"${version}\", "
-			_wago_game_version+=",${version}"
 		done
-		_wago_game_version="${_wago_game_version#,}"
+		_wago_game_version=$( echo "${_wago_game_version#,}" | tr ',' '\n' | sort -Vr | tr '\n' ',' )
+		_wago_game_version=${_wago_game_version%,}
 	fi
 	if [ -z "$_wago_support_property" ]; then
 		echo "Error fetching game version info from https://addons.wago.io/api/data/game"
@@ -2922,6 +3047,7 @@ upload_wago() {
 
 	rm -f "$resultfile" 2>/dev/null
 
+	# shellcheck disable=SC2086
 	return $return_code
 }
 
@@ -2973,6 +3099,7 @@ upload_github_asset() {
 
 	rm -f "$_ghf_resultfile" 2>/dev/null
 
+	# shellcheck disable=SC2086
 	return $return_code
 }
 
@@ -2987,19 +3114,25 @@ upload_github() {
 
 	title=$( echo "$project" | jq --raw-input '.' )
 	_gh_metadata='{ "name": '"$title"', "version": "'"$project_version"'", "filename": "'"$archive_name"'", "nolib": false, "metadata": ['
-	for type in "${!game_type_version[@]}"; do
+	for type in "${!game_type_interface[@]}"; do
 		flavor="${game_flavor[$type]}"
 		[[ $flavor == "retail" ]] && flavor="mainline"
-		_gh_metadata+='{ "flavor": "'"${flavor}"'", "interface": '"${game_type_interface[$type]}"' },'
+		IFS=':' read -ra V <<< "${game_type_interface[$type]}"
+		for interface in "${V[@]}"; do
+			_gh_metadata+='{ "flavor": "'"${flavor}"'", "interface": '"${interface}"' },'
+		done
 	done
 	_gh_metadata=${_gh_metadata%,}
 	_gh_metadata+='] }'
 	if [ -f "$nolib_archive" ]; then
 		_gh_metadata+=',{ "name": '"$title"', "version": "'"$project_version"'", "filename": "'"$nolib_archive_name"'", "nolib": true, "metadata": ['
-		for type in "${!game_type_version[@]}"; do
+		for type in "${!game_type_interface[@]}"; do
 			flavor="${game_flavor[$type]}"
 			[[ $flavor == "retail" ]] && flavor="mainline"
-			_gh_metadata+='{ "flavor": "'"${flavor}"'", "interface": '"${game_type_interface[$type]}"' },'
+			IFS=':' read -ra V <<< "${game_type_interface[$type]}"
+			for interface in "${V[@]}"; do
+				_gh_metadata+='{ "flavor": "'"${flavor}"'", "interface": '"${interface}"' },'
+			done
 		done
 		_gh_metadata=${_gh_metadata%,}
 		_gh_metadata+='] }'
@@ -3089,6 +3222,7 @@ upload_github() {
 	rm -f "$resultfile" 2>/dev/null
 	[ -z "$CI" ] && rm -f "$versionfile" 2>/dev/null
 
+	# shellcheck disable=SC2086
 	return $return_code
 }
 
@@ -3112,4 +3246,5 @@ echo
 echo "Packaging complete."
 echo
 
+# shellcheck disable=SC2086
 exit $exit_code

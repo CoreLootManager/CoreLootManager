@@ -2,6 +2,8 @@ local _, CLM = ...
 
 local addonName = "Core Loot Manager" -- same as the UI name for config
 
+local OpenToCategory = InterfaceOptionsFrame_OpenToCategory or Settings.OpenToCategory
+
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1", true)
 if not ldb then return end
 
@@ -157,8 +159,8 @@ function Minimap:Initialize()
             title = CLM.L["Configuration"],
             icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png",
             func = (function()
-                InterfaceOptionsFrame_OpenToCategory(addonName)
-                InterfaceOptionsFrame_OpenToCategory(addonName)
+                OpenToCategory(addonName)
+                OpenToCategory(addonName)
             end)
         },
 
