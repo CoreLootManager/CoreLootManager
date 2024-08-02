@@ -65,10 +65,10 @@ local IndirectMap = {
         [45639] = "INVTYPE_HEAD",       -- Crown of the Wayward Protector
         [45654] = "INVTYPE_LEGS",       -- Legplates of the Wayward Protector
         [45657] = "INVTYPE_SHOULDER",   -- Mantle of the Wayward Protector
-        --- SOD P3 --- 
+        --- SOD P3 ---
         [220636] = "INVTYPE_NON_EQUIP", -- Atal'ai Blood Icon
         [220637] = "INVTYPE_NON_EQUIP", -- Atal'ai Ritual Token
-        --- SOD P4 --- 
+        --- SOD P4 ---
         [227532] = "INVTYPE_HEAD",      -- Incandescent Hood
         [227537] = "INVTYPE_SHOULDER",  -- Incandescent Shoulderpads
         [227535] = "INVTYPE_CHEST",     -- Incandescent Robe
@@ -199,7 +199,7 @@ local IndirectMap = {
         --- SOD P3 ---
         [220636] = 55,  -- Atal'ai Blood Icon
         [220637] = 55,  -- Atal'ai Ritual Token
-        --- SOD P4 --- 
+        --- SOD P4 ---
         [227532] = 66,  -- Incandescent Hood
         [227537] = 66,  -- Incandescent Shoulderpads
         [227535] = 66,  -- Incandescent Robe
