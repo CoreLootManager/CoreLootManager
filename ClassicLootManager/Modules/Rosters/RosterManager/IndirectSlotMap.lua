@@ -65,34 +65,36 @@ local IndirectMap = {
         [45639] = "INVTYPE_HEAD",       -- Crown of the Wayward Protector
         [45654] = "INVTYPE_LEGS",       -- Legplates of the Wayward Protector
         [45657] = "INVTYPE_SHOULDER",   -- Mantle of the Wayward Protector
-        --- SOD P3 ---
+        --- SOD P3 --- 
         [220636] = "INVTYPE_NON_EQUIP", -- Atal'ai Blood Icon
         [220637] = "INVTYPE_NON_EQUIP", -- Atal'ai Ritual Token
-        --- SOD P4 ---
-        [227532] = "INVTYPE_HEAD",  -- Incandescent Hood
+        --- SOD P4 --- 
+        [227532] = "INVTYPE_HEAD",      -- Incandescent Hood
         [227537] = "INVTYPE_SHOULDER",  -- Incandescent Shoulderpads
-        [227535] = "INVTYPE_CHEST",  -- Incandescent Robe
-        [227534] = "INVTYPE_LEGS",  -- Incandescent Leggings
-        [227531] = "INVTYPE_WRIST",  -- Incandescent Bindings
-        [227536] = "INVTYPE_FEET",  -- Incandescent Boots
-        [227530] = "INVTYPE_WAIST",  -- Incandescent Belt
-        [227533] = "INVTYPE_HAND",  -- Incandescent Gloves
-        [227764] = "INVTYPE_HEAD",  -- Scorched Core Helm
+        [227535] = "INVTYPE_CHEST",     -- Incandescent Robe
+        [227534] = "INVTYPE_LEGS",      -- Incandescent Leggings
+        [227531] = "INVTYPE_WRIST",     -- Incandescent Bindings
+        [227536] = "INVTYPE_FEET",      -- Incandescent Boots
+        [227530] = "INVTYPE_WAIST",     -- Incandescent Belt
+        [227533] = "INVTYPE_HAND",      -- Incandescent Gloves
+        [227764] = "INVTYPE_HEAD",      -- Scorched Core Helm
         [227762] = "INVTYPE_SHOULDER",  -- Scorched Core Shoulderpads
-        [227766] = "INVTYPE_CHEST",  -- Scorched Core Chest
-        [227763] = "INVTYPE_LEGS",  -- Scorched Core Leggings
-        [227760] = "INVTYPE_WRIST",  -- Scorched Core Bindings
-        [227765] = "INVTYPE_FEET",  -- Scorched Core Boots
-        [227761] = "INVTYPE_WAIST",  -- Scorched Core Belt
-        [227759] = "INVTYPE_HAND",  -- Scorched Core Gloves
-        [227755] = "INVTYPE_HEAD",  -- Molten Scaled Helm
+        [227766] = "INVTYPE_CHEST",     -- Scorched Core Chest
+        [227763] = "INVTYPE_LEGS",      -- Scorched Core Leggings
+        [227760] = "INVTYPE_WRIST",     -- Scorched Core Bindings
+        [227765] = "INVTYPE_FEET",      -- Scorched Core Boots
+        [227761] = "INVTYPE_WAIST",     -- Scorched Core Belt
+        [227759] = "INVTYPE_HAND",      -- Scorched Core Gloves
+        [227755] = "INVTYPE_HEAD",      -- Molten Scaled Helm
         [227752] = "INVTYPE_SHOULDER",  -- Molten Scaled Shoulderpads
-        [227758] = "INVTYPE_CHEST",  -- Molten Scaled Chest
-        [227754] = "INVTYPE_LEGS",  -- Molten Scaled Leggings
-        [227750] = "INVTYPE_WRIST",  -- Molten Scaled Bindings
-        [227757] = "INVTYPE_FEET",  -- Molten Scaled Boots
-        [227751] = "INVTYPE_WAIST",  -- Molten Scaled Belt
-        [227756] = "INVTYPE_HAND",  -- Molten Scaled Gloves
+        [227758] = "INVTYPE_CHEST",     -- Molten Scaled Chest
+        [227754] = "INVTYPE_LEGS",      -- Molten Scaled Leggings
+        [227750] = "INVTYPE_WRIST",     -- Molten Scaled Bindings
+        [227757] = "INVTYPE_FEET",      -- Molten Scaled Boots
+        [227751] = "INVTYPE_WAIST",     -- Molten Scaled Belt
+        [227756] = "INVTYPE_HAND",      -- Molten Scaled Gloves
+        [18703] = "INVTYPE_RANGED",     -- Ancient Petrified Leaf
+        [228129] = "INVTYPE_WEAPON",    -- Shadowflame Skull
         --- Cataclysm P1 Normal ---
         [63682] = "INVTYPE_HEAD",       -- Helm of the Forlorn Vanquisher
         [63684] = "INVTYPE_HEAD",       -- Helm of the Forlorn Protector
@@ -197,7 +199,7 @@ local IndirectMap = {
         --- SOD P3 ---
         [220636] = 55,  -- Atal'ai Blood Icon
         [220637] = 55,  -- Atal'ai Ritual Token
-        -- SOD P4 -- 
+        --- SOD P4 --- 
         [227532] = 66,  -- Incandescent Hood
         [227537] = 66,  -- Incandescent Shoulderpads
         [227535] = 66,  -- Incandescent Robe
@@ -222,6 +224,8 @@ local IndirectMap = {
         [227757] = 66,  -- Molten Scaled Boots
         [227751] = 66,  -- Molten Scaled Belt
         [227756] = 66,  -- Molten Scaled Gloves
+        [18703] = 75,   -- Ancient Petrified Leaf
+        [228129] = 71,  -- Shadowflame Skull
         --- Cataclysm P1 Normal ---
         [63682] = 359, -- Helm of the Forlorn Vanquisher
         [63684] = 359, -- Helm of the Forlorn Protector
