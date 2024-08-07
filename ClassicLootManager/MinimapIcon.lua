@@ -157,8 +157,8 @@ function Minimap:Initialize()
             title = CLM.L["Configuration"],
             icon = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png",
             func = (function()
-                InterfaceOptionsFrame_OpenToCategory(addonName)
-                InterfaceOptionsFrame_OpenToCategory(addonName)
+                Settings.OpenToCategory(addonName)
+                Settings.OpenToCategory(addonName)
             end)
         },
 
