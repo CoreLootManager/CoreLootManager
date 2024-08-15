@@ -25,7 +25,9 @@ CLM.EncounterIDsMap[2957] = CLM.L["Jammal'an and Ogom"]
 CLM.EncounterIDsMap[2958] = CLM.L["Morphaz and Hazzas"]
 CLM.EncounterIDsMap[2959] = CLM.L["Shade of Eranikus"]
 CLM.EncounterIDsMap[2956] = CLM.L["Avatar of Hakkar"]
-
+-- World Bosses
+CLM.EncounterIDsMap[3027] = CLM.L["Azuregos"]
+CLM.EncounterIDsMap[3026] = CLM.L["Lord Kazzak"]
 CLM.EncounterIDs.SoD = {
     {
         name = CLM.L["Blackfathom Deeps"],
@@ -64,6 +66,14 @@ CLM.EncounterIDs.SoD = {
             { id = 2958, name = CLM.EncounterIDsMap[2958] },
             { id = 2959, name = CLM.EncounterIDsMap[2959] },
             { id = 2956, name = CLM.EncounterIDsMap[2956] },
+        }
+    },
+    {
+        name = CLM.L["World Bosses"],
+        difficulty = {0},
+        data = {
+            { id = 3027, name = CLM.EncounterIDsMap[3027] },
+            { id = 3026, name = CLM.EncounterIDsMap[3026] },
         }
     }
 }
