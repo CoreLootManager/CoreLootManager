@@ -1,6 +1,28 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.2.0",
+        data = {
+            {
+                name = "Retail Support",
+                data = {
+                    { header = "TWW", body = "TWW support added." },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.1.2",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "SoD", body = "SoD P4 support added. Thanks @JacobLindelof" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.1.1",
         data = {
             {

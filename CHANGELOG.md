@@ -1,3 +1,11 @@
+# Core Loot Manager v5.2.0
+## Retail Support
+### TWW
+TWW support added.
+# Core Loot Manager v5.1.2
+## Changes
+### SoD
+SoD P4 support added. Thanks @JacobLindelof
 # Core Loot Manager v5.1.1
 ## Fixes
 ### Cross-guild synchronisation
