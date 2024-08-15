@@ -38,7 +38,7 @@ local function boolToString(value)
 end
 
 local function safeItemIdToLink(itemId)
-    local _, itemLink = GetItemInfo(itemId)
+    local _, itemLink = UTILS.GetItemInfo(itemId)
     return itemLink or safeToString(itemId)
 end
 

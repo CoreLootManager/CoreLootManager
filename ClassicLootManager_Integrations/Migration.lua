@@ -169,7 +169,7 @@ local function AwardItem(uid, GUID, itemId, value, timestamp)
 end
 
 local function ValidateAddon(addonName)
-	local _, _, _, enabled, reason = GetAddOnInfo(addonName)
+	local _, _, _, enabled, reason = UTILS.GetAddOnInfo(addonName)
 	if reason == "MISSING" or reason == "DISABLED" or not enabled then
 		return false -- Missing or globally disabled
 	end

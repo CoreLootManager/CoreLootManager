@@ -12,7 +12,8 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local REGISTRY = "clm_reg_awardgui_opt"
 
-local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+local _, _, _, isElvUI = UTILS.GetAddOnInfo("ElvUI")
+
 local BASE_WIDTH  = 375 + (isElvUI and 15 or 0)
 
 local function InitializeDB(self)
@@ -45,7 +46,7 @@ local function UpdateOptions(self)
     self.extra = nil
     if self.itemLink then
 ---@diagnostic disable-next-line: cast-local-type
-        _, _, _, _, icon = GetItemInfoInstant(self.itemLink)
+        _, _, _, _, icon = UTILS.GetItemInfoInstant(self.itemLink)
         self.itemId, self.extra = UTILS.GetItemIdFromLink(self.itemLink)
     end
 
@@ -93,8 +94,8 @@ local function UpdateOptions(self)
                 return self.itemLink or ""
             end),
             set = (function(i,v)
-                if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
-                    local itemID = GetItemInfoInstant(v)
+                if v and UTILS.GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
+                    local itemID = UTILS.GetItemInfoInstant(v)
                     local item
                     if tostring(itemID) == v then
                         item = Item:CreateFromItemID(tonumber(v))
@@ -259,7 +260,7 @@ end
 
 local function SetItemLink(self, args)
     local itemId = UTILS.GetItemIdFromLink(args)
-    if GetItemInfoInstant(itemId) then
+    if UTILS.GetItemInfoInstant(itemId) then
         self.itemLink = args
     end
 end

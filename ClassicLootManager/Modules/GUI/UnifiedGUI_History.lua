@@ -251,7 +251,7 @@ local tableStructure = {
                 local itemData = data[realrow].cols[column].value
                 local isLoot = ST_GetIsLoot(data[realrow])
                 if isLoot and itemData then
-                    local _, _, _, _, icon = GetItemInfoInstant(itemData)
+                    local _, _, _, _, icon = UTILS.GetItemInfoInstant(itemData)
                     frame:SetNormalTexture(icon)
                 else
                     frame:SetNormalTexture("Interface\\Icons\\INV_Misc_Head_Dragon_Bronze")
@@ -329,8 +329,8 @@ local tableStructure = {
 }
 
 local function fillLootList(displayedLoot, loot)
-    if GetItemInfoInstant(loot:Id()) then
-        local _, itemLink = GetItemInfo(loot:String())
+    if UTILS.GetItemInfoInstant(loot:Id()) then
+        local _, itemLink = UTILS.GetItemInfo(loot:String())
         if not itemLink then
             UnifiedGUI_History.pendingLoot = true
         elseif not UnifiedGUI_History.pendingLoot then -- dont populate if we will be skipping it anyway - not displaying partially atm

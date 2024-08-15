@@ -166,8 +166,8 @@ function AuctionHistoryManager:PostById(id)
             local items = ""
 
             if data.upgraded and data.upgraded[bidder] then
-                local _, item1 = GetItemInfo(data.upgraded[bidder][1] or 0)
-                local _, item2 = GetItemInfo(data.upgraded[bidder][2] or 0)
+                local _, item1 = UTILS.GetItemInfo(data.upgraded[bidder][1] or 0)
+                local _, item2 = UTILS.GetItemInfo(data.upgraded[bidder][2] or 0)
 
                 if item1 or item2 then
                     items = CLM.L[" over "]

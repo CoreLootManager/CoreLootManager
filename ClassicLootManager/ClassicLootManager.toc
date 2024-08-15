@@ -1,7 +1,4 @@
-## Interface: 100207
-## Interface-Classic: 11503
-## Interface-Wrath: 30403
-## Interface-Cata: 40400
+## Interface: 100207, 110002, 11503, 40400
 ## Title: |cffdcb749Core Loot Manager|r
 ## Notes: Robust, DKP and EPGP based Loot Manager system. Formerly |cffdcb749Classic Loot Manager|r.
 ## Author: Lantis
