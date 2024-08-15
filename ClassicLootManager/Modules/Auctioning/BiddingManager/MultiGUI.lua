@@ -21,7 +21,7 @@ local colorBlue = {r = 0.2, g = 0.2, b = 0.93, a = 1.0}
 local colorTurquoise = {r = 0.2, g = 0.93, b = 0.93, a = 1.0}
 local colorGrey = {r = 0.62, g = 0.62, b = 0.62, a = 1}
 
-local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+local _, _, _, isElvUI = UTILS.GetAddOnInfo("ElvUI")
 
 local rowMultiplier = 2.7
 local rowMultiplierBy2 = rowMultiplier/2
@@ -633,7 +633,7 @@ local function GenerateAuctionOptions(self)
     self.note = ""
     local auctionItem = self.auctionItem
     if auctionItem and not auctionItem.item:IsItemEmpty() then
-        _, _, _, _, icon = GetItemInfoInstant(auctionItem:GetItemID())
+        _, _, _, _, icon = UTILS.GetItemInfoInstant(auctionItem:GetItemID())
         itemLink = auctionItem:GetItemLink()
     end
 

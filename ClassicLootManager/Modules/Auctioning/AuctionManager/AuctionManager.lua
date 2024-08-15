@@ -175,7 +175,7 @@ local function AddItemToAuctionList(self, item, callbackFn)
 end
 
 local function AutoAddItemInternal(self, item)
-    local _, _, _, _, _, _, _, _, _, _, _, classId = GetItemInfo(item:GetItemID())
+    local _, _, _, _, _, _, _, _, _, _, _, classId = UTILS.GetItemInfo(item:GetItemID())
     if (item:GetItemQuality() >= GetFilledLootRarity(self))
     and not (self.db.ignoredClasses[classId])
     and not (self.db.ignoredItems[item:GetItemID()]) then
@@ -224,7 +224,7 @@ local function HookAuctionFilling(self)
     end)
 end
 
-GetItemInfo(19019)
+UTILS.GetItemInfo(19019)
 local function Joke()
     local L1, L2, R = "", "", math.random(1,5)
 
@@ -259,7 +259,7 @@ local function AprilFools()
             local L, C, D = nil, nil, 0
             local R = math.random(1,4)
             if R == 1 then
-                local _, itemLink= GetItemInfo(19019)
+                local _, itemLink= UTILS.GetItemInfo(19019)
                 if itemLink then
                     L, C, D = ("Did someone say " .. itemLink .. "?"), "RAID", 2
                 end

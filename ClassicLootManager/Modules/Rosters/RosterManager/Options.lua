@@ -586,7 +586,7 @@ local function item_value_overrides(self, roster)
     local args = {}
     local order = 1
     for id,_ in pairs(items) do
-        local _, _, _, _, icon = GetItemInfoInstant(id)
+        local _, _, _, _, icon = UTILS.GetItemInfoInstant(id)
         local shortItemLink = "item:" .. tostring(id)
         if icon then
             local sid = tostring(id)

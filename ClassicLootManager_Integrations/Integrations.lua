@@ -10,8 +10,8 @@ local getGuidFromInteger = UTILS.getGuidFromInteger
 local EXTERNAL_AWARD_EVENT = "CLM_EXTERNAL_EVENT_ITEM_AWARDED"
 local RCLC_AWARD_EVENT = "RCMLAwardSuccess"
 
-local _, _, _, isRCLC_Retail = GetAddOnInfo("RCLootCouncil")
-local _, _, _, isRCLC_Classic = GetAddOnInfo("RCLootCouncil_Classic")
+local _, _, _, isRCLC_Retail = UTILS.GetAddOnInfo("RCLootCouncil")
+local _, _, _, isRCLC_Classic = UTILS.GetAddOnInfo("RCLootCouncil_Classic")
 
 local isRCLC = isRCLC_Retail or isRCLC_Classic
 
@@ -78,7 +78,7 @@ local function StoreWoWDKPBotData(self)
                     time = lootEntry:Timestamp(),
                     value = lootEntry:Value()
                 }
-                local lootName = GetItemInfo(lootEntry:Id())
+                local lootName = UTILS.GetItemInfo(lootEntry:Id())
                 loot.name = lootName or "???"
                 tinsert(data.loot, loot)
             end
@@ -459,7 +459,7 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
     end
 
     local itemId, extra = UTILS.GetItemIdFromLink(link)
-    if not GetItemInfoInstant(itemId) then
+    if not UTILS.GetItemInfoInstant(itemId) then
         LOG:Debug("RCLCAwardMessageHandler() Unknown Item ID for %s", link)
         return
     end

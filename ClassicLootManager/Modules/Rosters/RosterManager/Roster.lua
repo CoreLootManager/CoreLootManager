@@ -408,7 +408,7 @@ function Roster:SetItemValues(itemId, values)
     LOG:Debug("Set Item Tier Values: [%s]: for roster [%s]", itemId, self:UID())
     lazyCreateItem(self, itemId)
 
-    local _, _, _, itemEquipLoc = GetItemInfoInstant(itemId)
+    local _, _, _, itemEquipLoc = UTILS.GetItemInfoInstant(itemId)
 
     local allSame = true
     for key,value in pairs(self:GetDefaultSlotValues(itemEquipLoc)) do
@@ -440,7 +440,7 @@ local function GetItemValuesProxy(self, itemInfoInput, itemId, calculateCallback
             end
         end
 
-        local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemInfoInput)
+        local _, _, _, itemEquipLoc, _, classID, subclassID = UTILS.GetItemInfoInstant(itemInfoInput)
         local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID, itemEquipLoc)
         return self:GetDefaultSlotValues(CLM.IndirectMap.slot[itemId] or equipLoc)
     end
@@ -472,7 +472,7 @@ function Roster:SetSlotClassMultiplierValue(class, slot, value)
 end
 
 function Roster:GetClassItemMultiplierValue(class, itemId)
-    local _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemId)
+    local _, _, _, itemEquipLoc, _, classID, subclassID = UTILS.GetItemInfoInstant(itemId)
     local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID, itemEquipLoc)
     return self:GetSlotClassMultiplierValue(class, CLM.IndirectMap.slot[itemId] or equipLoc)
 end

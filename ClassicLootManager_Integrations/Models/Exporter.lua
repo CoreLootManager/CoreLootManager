@@ -177,7 +177,7 @@ local DATA_BUILDERS = {
                         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
                         if profile and self:TimestampInRange(loot:Timestamp()) then
                             local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
-                            local itemName, _, itemQuality = GetItemInfo(loot:Id())
+                            local itemName, _, itemQuality = UTILS.GetItemInfo(loot:Id())
                             local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
                             tinsert(roster_data.lootHistory.item, {
                                 id = loot:Id(),
@@ -210,7 +210,7 @@ local DATA_BUILDERS = {
                     local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(loot:OwnerGUID())
                     if profile and self:TimestampInRange(loot:Timestamp()) then
                         local awardedBy = CLM.MODULES.ProfileManager:GetProfileByGUID(getGuidFromInteger(loot:Creator()))
-                        local itemName, _, itemQuality = GetItemInfo(loot:Id())
+                        local itemName, _, itemQuality = UTILS.GetItemInfo(loot:Id())
                         local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
                         tinsert(roster_data.lootHistory.item, {
                             id = loot:Id(),

@@ -35,10 +35,10 @@ function UserResponse:SetUpgradedItems(upgradedItems)
     for _, item in ipairs(upgradedItems) do
         item.id = tonumber(item.id) or 0
         item.ex = item.ex or ""
-        if GetItemInfoInstant(item.id) then
+        if UTILS.GetItemInfoInstant(item.id) then
             local itemLink = "item:" .. tostring(item.id) .. item.ex
             self.upgradedItems[#self.upgradedItems+1] = itemLink
-            GetItemInfo(itemLink) -- force cache
+            UTILS.GetItemInfo(itemLink) -- force cache
         end
     end
 end

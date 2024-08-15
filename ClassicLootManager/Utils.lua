@@ -807,7 +807,7 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
     local note = data[realrow].cols[column].note
     local overlay = data[realrow].cols[column].overlay or {}
     local desaturate = data[realrow].cols[column].desaturate and true or false
-    local _, _, _, _, icon = GetItemInfoInstant(itemInfo or 0)
+    local _, _, _, _, icon = UTILS.GetItemInfoInstant(itemInfo or 0)
 
     -- Reparent and rework text FontString
     if frame.text:GetParent() ~= frame then
@@ -1072,6 +1072,38 @@ end
 function UTILS.SendChatMessage(message, channel, _, target)
     SendChatMessage("[CLM] " .. tostring(message), channel, nil, target)
 end
+
+---------------------------------
+--- Cross-flavor DEPRECATIONS ---
+---------------------------------
+local GetItemInfo = GetItemInfo or C_Item.GetItemInfo
+function UTILS.GetItemInfo(...)
+    return GetItemInfo(...)
+end
+
+local GetItemInfoInstant = GetItemInfoInstant or C_Item.GetItemInfoInstant
+function UTILS.GetItemInfoInstant(...)
+    return GetItemInfoInstant(...)
+end
+
+local GetAddOnInfo = GetAddOnInfo or C_AddOns.GetAddOnInfo
+function UTILS.GetAddOnInfo(...)
+    return GetAddOnInfo(...)
+end
+
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+function UTILS.GetContainerNumSlots(...)
+    return GetContainerNumSlots(...)
+end
+
+local UseContainerItem = UseContainerItem or C_Container.UseContainerItem
+function UTILS.UseContainerItem(...)
+    return UseContainerItem(...)
+end
+
+-----------------
+--- CONSTANTS ---
+-----------------
 
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),

@@ -12,7 +12,8 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local REGISTRY = "clm_reg_altmainlinkinggui_opt"
 
-local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+local _, _, _, isElvUI = UTILS.GetAddOnInfo("ElvUI")
+
 local BASE_WIDTH  = 375 + (isElvUI and 15 or 0)
 
 local function InitializeDB(self)

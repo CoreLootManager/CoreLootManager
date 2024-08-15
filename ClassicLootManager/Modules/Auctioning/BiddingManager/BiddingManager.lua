@@ -36,7 +36,7 @@ local INVTYPE_to_INVSLOT_map = {
 }
 
 local function GetUpgradedItems(itemId)
-    local _, _, _, itemEquipLoc, _, class, subclass = GetItemInfoInstant(itemId)
+    local _, _, _, itemEquipLoc, _, class, subclass = UTILS.GetItemInfoInstant(itemId)
     itemEquipLoc = UTILS.WorkaroundEquipLoc(class, subclass, itemEquipLoc)
     local invslots = INVTYPE_to_INVSLOT_map[CLM.IndirectMap.slot[itemId] or itemEquipLoc] or {}
     local items =  {}
@@ -177,7 +177,7 @@ local function AddItemInternal(auctionInfo, item, uid, note, values, extra, tota
         auctionItem:SetTotal(total)
         auctionItem:SpoofLinkPayload(extra)
         -- Rewrite itemLink after spoofing
-        local _, link = GetItemInfo(auctionItem:GetItemLink())
+        local _, link = UTILS.GetItemInfo(auctionItem:GetItemLink())
         if link then
             auctionItem.item:SetItemLink(link)
         end
@@ -485,7 +485,7 @@ function BiddingManager:FakeAuction()
             local doBreak = false
             repeat
                 id = math.random(10000,58000)
-                if items[id] == nil and GetItemInfoInstant(id) then
+                if items[id] == nil and UTILS.GetItemInfoInstant(id) then
                     doBreak = true
                     items[id] = {
                         values = {

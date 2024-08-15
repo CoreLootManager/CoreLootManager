@@ -13,7 +13,7 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local VERTICAL_REGISTRY   = "clm_unifiedgui_gui_options_vertical"
 local HORIZONTAL_REGISTRY = "clm_unifiedgui_gui_options_horizontal"
 
-local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+local _, _, _, isElvUI = UTILS.GetAddOnInfo("ElvUI")
 
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('unifiedgui', {
