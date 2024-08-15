@@ -1,6 +1,66 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.2.0",
+        data = {
+            {
+                name = "Retail Support",
+                data = {
+                    { header = "TWW", body = "TWW support added." },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.1.2",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "SoD", body = "SoD P4 support added. Thanks @JacobLindelof" },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.1.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Cross-guild synchronisation", body = "Cross-guild synchronisation now works as expected." },
+                    { header = "Player display", body = "Realm name will no longer randomly show up in the UI lists." },
+                    { header = "Close on Bid", body = "Close on bid now properly functions with multi-item auction and takes into account items you did bid on or unusable items." },
+                    { header = "Hide unusable items", body = "You can now hide unusable items in the bidding list. They will not be displayed nor accounted for closing on bid conditions. Unusuable items will however be still displayed in case there are no usable items detected." },
+                    { header = "Profile max level value", body = "Slider now properly limits its value to 85." },
+                    { header = "Descriptions", body = "Fixed various descriptions." },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.1.0",
+        data = {
+            {
+                name = "Auctioning Changes",
+                data = {
+                    { header = "Overhaul", body = "Big auctioning changes were introduced to properly support Cataclysm items. This change should be future-proof but requires everyone to update their AddOn to at minimum v5.1.0" },
+                    { header = "Cancel/Pass Responses", body = "ML will no longer respond with acceptance of Cancel/Pass to limit some of the communication issues. Denies still should be sent." },
+                    { header = "Auctioned and upgraded items", body = "Auctioned and upgraded items will now properly show random suffixes, enchants, gems etc." },
+                    { header = "Tokens", body = "Cataclysm tokens should now be handled properly for upgraded items lists, dynamic value calculation and default slot value (categorized as non-equippable)." },
+                },
+            },
+            {
+                name = "UI Changes",
+                data = {
+                    { header = "Auto Trade", body = "Auto Trade should now work properly. Alt-clicking on name should now once again initiate trade with the player properly." },
+                    { header = "Award UI", body = "Manually awarding items with random suffix through UI should work now as expected." },
+                    { header = "History UI", body = "Items with random suffixes should now show up properly in the History UI." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.0.4",
         data = {
             {

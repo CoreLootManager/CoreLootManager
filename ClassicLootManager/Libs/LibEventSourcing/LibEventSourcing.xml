@@ -7,7 +7,6 @@
     <Script file="source\SlashCommands.lua"/>
     <Script file="source\SortedList.lua"/>
     <Script file="source\LogEntry.lua"/>
-    <Script file="source\LogEntryCrossRealm.lua"/>
     <Script file="source\IgnoreEntry.lua"/>
     <Script file="source\StateManager.lua"/>
     <Script file="source\Message.lua"/>

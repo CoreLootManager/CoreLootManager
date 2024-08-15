@@ -53,11 +53,11 @@ function BidInfoSender:Flush()
     self.data = {}
 end
 
-function BidInfoSender:Send(itemId, name, userResponse)
-    if not self.data[itemId] then
-        self.data[itemId] = {}
+function BidInfoSender:Send(UID, name, userResponse)
+    if not self.data[UID] then
+        self.data[UID] = {}
     end
-    self.data[itemId][name] = userResponse
+    self.data[UID][name] = userResponse
 end
 
 CLM.MODELS.BidInfoSender = BidInfoSender

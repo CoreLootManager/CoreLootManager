@@ -12,6 +12,7 @@ local HYDROSS_NPC_ID = 21216
 local RAID_AWARD_LEDGER_CLASS = "DR"
 
 local multiWoWDifficultyIDs = {
+    [0] = 0, -- World Bosses
     [3] = 3, -- 10 man
     [4] = 4, -- 25 man
     [5] = 5, -- 10 man HC

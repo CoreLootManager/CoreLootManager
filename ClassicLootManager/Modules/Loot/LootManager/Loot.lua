@@ -30,7 +30,7 @@ function Loot:Id()
 end
 
 function Loot:String()
-    return "item:" .. tostring(self.entry:item()) .. self.entry:extra()
+    return "item:" .. tostring(self.entry:item()) .. (self.entry:extra() or "")
 end
 
 function Loot:Extra()

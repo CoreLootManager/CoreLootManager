@@ -16,7 +16,7 @@ local ITEM_REGISTRY = "clm_am_item_options"
 local AUCTION_REGISTRY = "clm_am_auction_options"
 local AWARD_REGISTRY = "clm_am_award_options"
 
-local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+local _, _, _, isElvUI = UTILS.GetAddOnInfo("ElvUI")
 
 -- 3.5 columns + 20
 local BASE_WIDTH  = 605 + (isElvUI and 15 or 0)
@@ -83,7 +83,7 @@ local function GenerateItemOptions(self)
     local auctionItem = self.auctionItem
     if auctionItem and not auctionItem.item:IsItemEmpty() then
 ---@diagnostic disable-next-line: cast-local-type
-        _, _, _, _, icon = GetItemInfoInstant(auctionItem:GetItemID())
+        _, _, _, _, icon = UTILS.GetItemInfoInstant(auctionItem:GetItemID())
         itemLink = auctionItem:GetItemLink()
     end
 
@@ -102,8 +102,8 @@ local function GenerateItemOptions(self)
             type = "input",
             get = (function(i) return auctionItem and auctionItem:GetItemLink() or "" end),
             set = (function(i,v)
-                if v and GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
-                    local itemID = GetItemInfoInstant(v)
+                if v and UTILS.GetItemInfoInstant(v) then -- validate if it is an itemLink or itemString or itemId
+                    local itemID = UTILS.GetItemInfoInstant(v)
                     if tostring(itemID) == v then
                         CLM.MODULES.AuctionManager:AddItemById(itemID, function(ai) self:SetVisibleAuctionItem(ai) end)
                     else
@@ -534,7 +534,7 @@ local function GenerateAuctionOptions(self)
                 if CLM.MODULES.AuctionManager:IsAcceptingRolls() then
                     CLM.MODULES.AuctionManager:StopRoll()
                 else
-                    CLM.MODULES.AuctionManager:StartRoll(self.auctionItem:GetItemID())
+                    CLM.MODULES.AuctionManager:StartRoll(self.auctionItem)
                 end
             end),
             control = "CLMIconNoLabel",

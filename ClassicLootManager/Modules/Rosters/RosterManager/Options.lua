@@ -628,7 +628,7 @@ local function item_value_overrides(self, roster)
     local args = {}
     local order = 1
     for id,_ in pairs(items) do
-        local _, _, _, _, icon = GetItemInfoInstant(id)
+        local _, _, _, _, icon = UTILS.GetItemInfoInstant(id)
         local shortItemLink = "item:" .. tostring(id)
         if icon then
             local sid = tostring(id)
@@ -1304,7 +1304,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         }
         options.args.auction.args.always0 = {
             name = CLM.L["Always allow 0 bids"],
-            desc = CLM.L["Enable to always allow 0 bids. Affects Open-Ascending Auction."],
+            desc = CLM.L["Enable to always allow 0 bids. Affects ascending item value mode."],
             type = "toggle",
             disabled = disableManage,
             width = 1,

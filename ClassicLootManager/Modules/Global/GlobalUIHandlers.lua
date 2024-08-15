@@ -56,7 +56,7 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     end
 
     -- Get specific checks info
-    local _, _, itemQuality, _, _, _, _, itemStackCount, _, _, _, classID, _, _ = GetItemInfo(itemLink)
+    local _, _, itemQuality, _, _, _, _, itemStackCount, _, _, _, classID, _, _ = UTILS.GetItemInfo(itemLink)
     local isLegendary = ((itemQuality or 0) >= 5)
     local isStacking  = ((itemStackCount or 0) > 1)
     local isPattern   = (classID == LE_ITEM_CLASS_RECIPE)

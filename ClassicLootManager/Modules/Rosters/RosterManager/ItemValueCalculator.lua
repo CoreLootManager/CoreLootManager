@@ -204,13 +204,13 @@ function ItemValueCalculator:Calculate(ilvl, quality, slot_multiplier, rounding)
 end
 
 local function CalculateProxy(self, itemInfoInput, itemId, rounding)
-    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID = GetItemInfo(itemInfoInput)
+    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID = UTILS.GetItemInfo(itemInfoInput)
     if not itemQuality or not itemLevel or not itemEquipLoc then
         LOG:Warning(CLM.L["Unable to get item info from server. Please try auctioning again"])
         return nil
     end
 
-    local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID) or itemEquipLoc
+    local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID, itemEquipLoc)
     return self:Calculate(CLM.IndirectMap.ilvl[itemId] or itemLevel, itemQuality, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc), rounding)
 end
 

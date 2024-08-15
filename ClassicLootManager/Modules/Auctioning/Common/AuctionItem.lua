@@ -176,9 +176,8 @@ function AuctionItem:SpoofLinkPayload(extra)
         LOG:Warning("ItemLink for %s not found while updating payload.", self.item:GetItemID())
         return
     end
-    local original = link
     self.item.itemLink = UTILS.SpoofLink(link, extra)
-    LOG:Debug("Spoofed %s into %s", original, link)
+    LOG:Debug("Spoofed %s into %s", link, self.item.itemLink)
 end
 
 function AuctionItem:SetTotal(total)

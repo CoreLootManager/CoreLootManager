@@ -92,7 +92,7 @@ local function GenerateAssistantOptions(self)
             desc = CLM.L["Minimum level of players to fill from guild."],
             type = "range",
             min  = 0,
-            max  = 80,
+            max  = 85,
             step = 1,
             bigStep = 1,
             set = function(i, v) self.minimumLevel = v end,

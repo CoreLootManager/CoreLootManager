@@ -6,7 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
-local _, _, _, isElvUI = GetAddOnInfo("ElvUI")
+local _, _, _, isElvUI = UTILS.GetAddOnInfo("ElvUI")
 
 local colorRed = {r = 0.93, g = 0.276, b = 0.27, a = 1.0}
 local colorRedTransparent = {r = 0.93, g = 0.276, b = 0.27, a = 0.3}
@@ -462,7 +462,7 @@ local tableStructure = {
                 end
                 for i=#lootList, limit, -1 do
                     local loot = lootList[i]
-                    local _, itemLink = GetItemInfo(loot:Id())
+                    local _, itemLink = UTILS.GetItemInfo(loot:String())
                     if itemLink then
                         local value = loot:Value()
                         if isEPGP then

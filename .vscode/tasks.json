@@ -46,82 +46,36 @@
             "problemMatcher": []
         },
         {
-            "label": "debug deploy cata",
+            "label": "clean",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_ddeploy $CATA",
+            "command": "source ~/.bash_wow && clm_clean ${input:WOW_TARGET}",
             "problemMatcher": []
         },
         {
-            "label": "debug deploy wotlk",
+            "label": "debug deploy",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_ddeploy $WOTLK",
+            "command": "source ~/.bash_wow && clm_debug_deploy ${input:WOW_TARGET}",
             "problemMatcher": []
         },
         {
-            "label": "debug deploy wotlk ptr",
+            "label": "copy file",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_ddeploy $WOTLK_PTR",
+            "command": "source ~/.bash_wow && cp ${relativeFile} $WOW/${input:WOW_TARGET}/Interface/AddOns/${relativeFile}",
             "problemMatcher": []
         },
+        //${file}
+    ],
+    "inputs": [
         {
-            "label": "debug deploy classic era",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_ddeploy $CLASSIC_ERA",
-            "problemMatcher": []
-        },
-        {
-            "label": "debug deploy retail",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_ddeploy $RETAIL",
-            "problemMatcher": []
-        },
-        {
-            "label": "debug deploy retail ptr",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_ddeploy $RETAIL_PTR",
-            "problemMatcher": [] 
-        },
-        {
-            "label": "debug deploy retail ptr next",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_ddeploy $RETAIL_PTR_NEXT",
-            "problemMatcher": []
-        },
-        {
-            "label": "deploy wotlk",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_deploy $WOTLK",
-            "problemMatcher": []
-        },
-        {
-            "label": "deploy wotlk ptr",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_deploy $WOTLK_PTR",
-            "problemMatcher": []
-        },
-        {
-            "label": "deploy classic era",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_deploy $CLASSIC_ERA",
-            "problemMatcher": []
-        },
-        {
-            "label": "deploy retail",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_deploy $RETAIL",
-            "problemMatcher": []
-        },
-        {
-            "label": "deploy retail ptr",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_deploy $RETAIL_PTR",
-            "problemMatcher": [] 
-        },
-        {
-            "label": "deploy retail ptr next",
-            "type": "shell",
-            "command": "source ~/.bash_wow && clm_deploy $RETAIL_PTR_NEXT",
-            "problemMatcher": []
+            "id": "WOW_TARGET",
+            "description": "WoW target",
+            "default": "$CATA",
+            "type": "pickString",
+            "options": [
+                "$CATA",
+                "$DF",
+                "$TWW"
+            ]
         }
     ]
 }

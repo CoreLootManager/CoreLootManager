@@ -69,7 +69,7 @@ function TradeListGUI:Initialize()
                 func = (function()
                     local rowData = self.st:GetRow(self.st:GetSelection())
                     if not rowData or not rowData.cols then return end
-                    CLM.MODULES.AutoAssign:Remove(ST_GetItemId(rowData), ST_GetTradeTarget(rowData))
+                    CLM.MODULES.AutoAssign:Remove(ST_GetItemLink(rowData), ST_GetTradeTarget(rowData))
                 end),
                 color = "cc0000"
             },
@@ -137,7 +137,7 @@ local function CreateTradeDisplay(self)
         local tooltip = self.tooltip
         if not tooltip then return end
         local itemId = ST_GetItemId(rowData)
-        local itemString = "item:" .. tostring(itemId)
+        local itemString = ST_GetItemLink(rowData) or ("item:" .. tostring(itemId))
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
         tooltip:Show()
@@ -243,8 +243,8 @@ function TradeListGUI:Refresh(visible)
     local tracked = CLM.MODULES.AutoAssign:GetTracked()
     -- Data
     for playerName, trackedList in pairs(tracked) do
-        for _, itemId in ipairs(trackedList) do
-            local _, itemLink = GetItemInfo(itemId)
+        for _, itemLink in ipairs(trackedList) do
+            local itemId = UTILS.GetItemIdFromLink(itemLink)
             local color
             local profile = CLM.MODULES.ProfileManager:GetProfileByName(playerName)
             if profile then
@@ -252,7 +252,7 @@ function TradeListGUI:Refresh(visible)
             end
             local row = {
                 cols = {
-                    { value = itemLink or itemId, id = itemId},
+                    { value = itemLink or itemId, id = itemId },
                     { value = playerName, color = color },
                 }
             }

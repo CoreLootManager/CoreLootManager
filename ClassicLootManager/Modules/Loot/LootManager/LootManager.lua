@@ -6,11 +6,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
--- luacheck: ignore CHAT_MESSAGE_CHANNEL
 local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
---@debug@
-CHAT_MESSAGE_CHANNEL = "GUILD"
---@end-debug@
 
 local function mutateLootAward(entry, roster)
     local GUID = UTILS.getGuidFromInteger(entry:profile())
@@ -44,7 +40,7 @@ local function mutateLootAward(entry, roster)
         end
 
         -- Force caching loot from server
-        GetItemInfo(loot:Id())
+        UTILS.GetItemInfo(loot:Id())
         CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_RECEIVED_ITEM, { link = loot:String() }, entry:time(), GUID)
         -- Handle Zero-Sum Bank mode
         local raid = CLM.MODULES.RaidManager:GetRaidByUid(loot:RaidUid())
@@ -82,7 +78,7 @@ local function mutateLootDisenchant(entry, roster)
     end
     local loot = CLM.MODELS.Loot:New(entry, CLM.MODULES.ProfileManager:GetDisenchanterProfile())
     CLM.MODULES.RosterManager:AddDisenchantedToRoster(roster, loot)
-    GetItemInfo(loot:Id())
+    UTILS.GetItemInfo(loot:Id())
 end
 
 local LootManager = {}
@@ -158,7 +154,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
         LOG:Error("LootManager:AwardItem(): Invalid ItemId")
         return false
     end
-    if not GetItemInfoInstant(itemId) then
+    if not UTILS.GetItemInfoInstant(itemId) then
         LOG:Error("LootManager:AwardItem(): Item does not exist")
         return false
     end
@@ -168,7 +164,7 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
     end
     if CLM.WoW10 or CLM.WoWCata then
         if type(extra) == "string" then
-            extra = string.gsub(extra, "[^%d:]+", "")
+            extra = string.gsub(extra, "[^-?%d:]+", "")
         elseif extra ~= nil then
             LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
             return false
@@ -216,7 +212,7 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
         LOG:Error("LootManager:DisenchantItem(): Invalid ItemId")
         return false
     end
-    if not GetItemInfoInstant(itemId) then
+    if not UTILS.GetItemInfoInstant(itemId) then
         LOG:Error("LootManager:DisenchantItem(): Item does not exist")
         return false
     end

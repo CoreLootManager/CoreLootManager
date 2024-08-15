@@ -206,13 +206,13 @@ function UTILS.GetItemIdFromLink(itemLink)
     -- local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
     itemLink = itemLink or ""
     -- local _, _, _, _, itemId = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+).*")
-    local _, _, itemId, extra = string.find(itemLink, "item:(%d+)([%d:]*)|h")
+    local _, _, itemId, extra = string.find(itemLink, "item:(%d+)([-?%d:]*)|h")
     return tonumber(itemId) or 0, extra or ""
 end
 
 function UTILS.SpoofLink(itemLink, extra)
     if not extra then return itemLink end
-    local _, _, pre, post = string.find(itemLink, "(.*item:%d+)[%d:]+(|h.*)")
+    local _, _, pre, post = string.find(itemLink, "(.*item:%d+)[-?%d:]+(|h.*)")
     if not pre or not post then return itemLink end
     return pre .. extra .. post
 end
@@ -361,76 +361,41 @@ end
 
 local _GetNormalizedRealmName = UTILS.GetNormalizedRealmName
 
-if CLM.WoW10 or CLM.WoWSeasonal or CLM.WoWCata then -- support cross-server for Retail and Classic Era
-    function UTILS.getIntegerGuid(GUID)
-        local _, realm, int = strsplit("-", GUID)
-        return {tonumber(realm, 10), tonumber(int, 16)}
+function UTILS.getIntegerGuid(GUID)
+    local _, realm, int = strsplit("-", GUID)
+    return {tonumber(realm, 10), tonumber(int, 16)}
+end
+getIntegerGuid = UTILS.getIntegerGuid
+myRealmId = unpack(getIntegerGuid(playerGUID), 1)
+function UTILS.getGuidFromInteger(iGUID)
+    return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
+end
+function UTILS.ValidateIntegerGUID(iGUID)
+    if type(iGUID) ~= "table" then return false end
+    for i=1,2 do if type(iGUID[i]) ~= "number" then return false end end
+    return true
+end
+function UTILS.Disambiguate(name)
+    if string.find(name, "-") == nil then
+        name = name .. "-" .. _GetNormalizedRealmName()
     end
-    getIntegerGuid = UTILS.getIntegerGuid
-    myRealmId = unpack(getIntegerGuid(playerGUID), 1)
-    function UTILS.getGuidFromInteger(iGUID)
-        return string.format("Player-%d-%08X", iGUID[1], iGUID[2])
-    end
-    function UTILS.ValidateIntegerGUID(iGUID)
-        if type(iGUID) ~= "table" then return false end
-        for i=1,2 do if type(iGUID[i]) ~= "number" then return false end end
-        return true
-    end
-    function UTILS.Disambiguate(name)
-        if string.find(name, "-") == nil then
-            name = name .. "-" .. _GetNormalizedRealmName()
-        end
-        return name
-    end
-    function UTILS.GetGUIDFromEntry(e)
-        if typeof(e, CLM.MODELS.Profile) then
-            return getIntegerGuid(e:GUID())
-        elseif type(e) == "string" then
-            return getIntegerGuid(e)
-        elseif type(e) == "number" then
-            return {myRealmId, e}
-        else
-            return nil
-        end
-    end
-    function UTILS.ArePlayersCrossRealm(playerA, playerB)
-        return UTILS.GetServer(playerA) ~= UTILS.GetServer(playerB)
-    end
-else -- not cross-server
-    function UTILS.getIntegerGuid(GUID)
-        local _, _, int = strsplit("-", GUID)
-        return tonumber(int, 16)
-    end
-    getIntegerGuid = UTILS.getIntegerGuid
-    _, myRealmId = strsplit("-", playerGUID)
-    do
-        local guidConversionFormat = "Player-"..tostring(myRealmId).."-%08X"
-        function UTILS.getGuidFromInteger(iGUID)
-            return string.format(guidConversionFormat, iGUID)
-        end
-    end
-    function UTILS.ValidateIntegerGUID(iGUID)
-        if type(iGUID) ~= "number" then return false end
-        return true
-    end
-    function UTILS.Disambiguate(name)
-        return UTILS.RemoveServer(name)
-    end
-    function UTILS.GetGUIDFromEntry(e)
-        if typeof(e, CLM.MODELS.Profile) then
-            return getIntegerGuid(e:GUID())
-        elseif type(e) == "string" then
-            return getIntegerGuid(e)
-        elseif type(e) == "number" then
-            return e
-        else
-            return nil
-        end
-    end
-    function UTILS.ArePlayersCrossRealm(playerA, playerB)
-        return false
+    return name
+end
+function UTILS.GetGUIDFromEntry(e)
+    if typeof(e, CLM.MODELS.Profile) then
+        return getIntegerGuid(e:GUID())
+    elseif type(e) == "string" then
+        return getIntegerGuid(e)
+    elseif type(e) == "number" then
+        return {myRealmId, e}
+    else
+        return nil
     end
 end
+function UTILS.ArePlayersCrossRealm(playerA, playerB)
+    return UTILS.GetServer(playerA) ~= UTILS.GetServer(playerB)
+end
+
 local GetGUIDFromEntry = UTILS.GetGUIDFromEntry
 
 local Disambiguate = UTILS.Disambiguate
@@ -450,6 +415,22 @@ do
 end
 function UTILS.whoamiGUID()
     return playerGUID
+end
+
+do
+    local playerFaction
+    function UTILS.MyFaction()
+        if not playerFaction then
+            playerFaction = UnitFactionGroup("player")
+        end
+        return playerFaction
+    end
+end
+
+function UTILS.IsTargetCrossFaction(target)
+    local targetFaction = UnitFactionGroup(target)
+    if targetFaction == "" or not targetFaction then return false end -- We do not want false positives
+    return UnitFactionGroup(target) ~= UTILS.MyFaction()
 end
 
 function UTILS.CreateGUIDList(playerList)
@@ -826,7 +807,7 @@ function UTILS.LibStItemCellUpdate(rowFrame, frame, data, cols, row, realrow, co
     local note = data[realrow].cols[column].note
     local overlay = data[realrow].cols[column].overlay or {}
     local desaturate = data[realrow].cols[column].desaturate and true or false
-    local _, _, _, _, icon = GetItemInfoInstant(itemInfo or 0)
+    local _, _, _, _, icon = UTILS.GetItemInfoInstant(itemInfo or 0)
 
     -- Reparent and rework text FontString
     if frame.text:GetParent() ~= frame then
@@ -905,6 +886,8 @@ function UTILS.getHighlightMethod(highlightColor, multiselect)
         local fnDoCellUpdate
         if data[realrow].cols[column].DoCellUpdate then
             fnDoCellUpdate = data[realrow].cols[column].DoCellUpdate
+        elseif cols[column].DoCellUpdate then
+            fnDoCellUpdate = cols[column].DoCellUpdate;
         else
             fnDoCellUpdate = table.DoCellUpdate
         end
@@ -994,16 +977,22 @@ function UTILS.ResizeFrame(frame, up, scale)
     return scale
 end
 
-local invtypeWorkaround = {
+local invtypeClassWorkaround = {
     [2] = {
         [3] = "INVTYPE_RANGED", -- Weapon Guns
         [18] = "INVTYPE_RANGED",-- Weapon Crossbow
-    }
+    },
 }
 
-function UTILS.WorkaroundEquipLoc(class, subclass)
-    local classTable = invtypeWorkaround[class] or {}
-    return classTable[subclass]
+local invtypeEquipLocWorkaround = {
+    ["INVTYPE_NON_EQUIP_IGNORE"] = "INVTYPE_NON_EQUIP"
+}
+
+
+function UTILS.WorkaroundEquipLoc(class, subclass, equipLoc)
+    local classTable = invtypeClassWorkaround[class] or {}
+    local tempEquipLoc = classTable[subclass] or equipLoc
+    return invtypeEquipLocWorkaround[tempEquipLoc] or equipLoc
 end
 
 
@@ -1083,6 +1072,38 @@ end
 function UTILS.SendChatMessage(message, channel, _, target)
     SendChatMessage("[CLM] " .. tostring(message), channel, nil, target)
 end
+
+---------------------------------
+--- Cross-flavor DEPRECATIONS ---
+---------------------------------
+local GetItemInfo = GetItemInfo or C_Item.GetItemInfo
+function UTILS.GetItemInfo(...)
+    return GetItemInfo(...)
+end
+
+local GetItemInfoInstant = GetItemInfoInstant or C_Item.GetItemInfoInstant
+function UTILS.GetItemInfoInstant(...)
+    return GetItemInfoInstant(...)
+end
+
+local GetAddOnInfo = GetAddOnInfo or C_AddOns.GetAddOnInfo
+function UTILS.GetAddOnInfo(...)
+    return GetAddOnInfo(...)
+end
+
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+function UTILS.GetContainerNumSlots(...)
+    return GetContainerNumSlots(...)
+end
+
+local UseContainerItem = UseContainerItem or C_Container.UseContainerItem
+function UTILS.UseContainerItem(...)
+    return UseContainerItem(...)
+end
+
+-----------------
+--- CONSTANTS ---
+-----------------
 
 CONSTANTS.ITEM_QUALITY = {
     [0] = ColorCodeText(CLM.L["Poor"], "9d9d9d"),

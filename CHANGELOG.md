@@ -1,3 +1,42 @@
+# Core Loot Manager v5.2.0
+## Retail Support
+### TWW
+TWW support added.
+# Core Loot Manager v5.1.2
+## Changes
+### SoD
+SoD P4 support added. Thanks @JacobLindelof
+# Core Loot Manager v5.1.1
+## Fixes
+### Cross-guild synchronisation
+Cross-guild synchronisation now works as expected.
+### Player display
+Realm name will no longer randomly show up in the UI lists.
+### Close on Bid
+Close on bid now properly functions with multi-item auction and takes into account items you did bid on or unusable items.
+### Hide unusable items
+You can now hide unusable items in the bidding list. They will not be displayed nor accounted for closing on bid conditions. Unusuable items will however be still displayed in case there are no usable items detected.
+### Profile max level value
+Slider now properly limits its value to 85.
+### Descriptions
+Fixed various descriptions.
+# Core Loot Manager v5.1.0
+## Auctioning Changes
+### Overhaul
+Big auctioning changes were introduced to properly support Cataclysm items. This change should be future-proof but requires everyone to update their AddOn to at minimum v5.1.0
+### Cancel/Pass Responses
+ML will no longer respond with acceptance of Cancel/Pass to limit some of the communication issues. Denies still should be sent.
+### Auctioned and upgraded items
+Auctioned and upgraded items will now properly show random suffixes, enchants, gems etc.
+### Tokens
+Cataclysm tokens should now be handled properly for upgraded items lists, dynamic value calculation and default slot value (categorized as non-equippable).
+## UI Changes
+### Auto Trade
+Auto Trade should now work properly. Alt-clicking on name should now once again initiate trade with the player properly.
+### Award UI
+Manually awarding items with random suffix through UI should work now as expected.
+### History UI
+Items with random suffixes should now show up properly in the History UI.
 # Core Loot Manager v5.0.4
 ## Changes
 ### Comms
