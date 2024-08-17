@@ -1069,7 +1069,9 @@ function UTILS.DecodePointTypeChangeName(pointType, changeType, displayDKP)
     return points
 end
 
+local raidChannels = UTILS.Set({"RAID", "RAID_WARNING"})
 function UTILS.SendChatMessage(message, channel, _, target)
+    if raidChannels[channel] and not IsInRaid() then return end
     SendChatMessage("[CLM] " .. tostring(message), channel, nil, target)
 end
 
