@@ -1,6 +1,6 @@
 local _, CLM = ...
 
-if not CLM.WoWSoD then return end
+-- if not CLM.WoWSoD then return end
 -- Append to existing ones
 CLM.EncounterIDsMap[2694] = CLM.L["Baron Aquanis"]
 CLM.EncounterIDsMap[2697] = CLM.L["Ghamoo-ra"]
@@ -25,6 +25,8 @@ CLM.EncounterIDsMap[2957] = CLM.L["Jammal'an and Ogom"]
 CLM.EncounterIDsMap[2958] = CLM.L["Morphaz and Hazzas"]
 CLM.EncounterIDsMap[2959] = CLM.L["Shade of Eranikus"]
 CLM.EncounterIDsMap[2956] = CLM.L["Avatar of Hakkar"]
+-- Molten Core
+CLM.EncounterIDsMap[3018] = CLM.L["Molten Core"]
 -- World Bosses
 CLM.EncounterIDsMap[3027] = CLM.L["Azuregos"]
 CLM.EncounterIDsMap[3026] = CLM.L["Lord Kazzak"]
@@ -67,6 +69,39 @@ CLM.EncounterIDs.SoD = {
             { id = 2959, name = CLM.EncounterIDsMap[2959] },
             { id = 2956, name = CLM.EncounterIDsMap[2956] },
         }
+    },
+    {
+        name = CLM.L["Zul'Gurub"],
+        difficulty = {148},
+        data = {
+            { id = 789, name = CLM.EncounterIDsMap[789] },
+            { id = 784, name = CLM.EncounterIDsMap[784] },
+            { id = 791, name = CLM.EncounterIDsMap[791] },
+            { id = 785, name = CLM.EncounterIDsMap[785] },
+            { id = 786, name = CLM.EncounterIDsMap[786] },
+            { id = 787, name = CLM.EncounterIDsMap[787] },
+            { id = 792, name = CLM.EncounterIDsMap[792] },
+            { id = 793, name = CLM.EncounterIDsMap[793] },
+            { id = 788, name = CLM.EncounterIDsMap[788] },
+            { id = 790, name = CLM.EncounterIDsMap[790] },
+        },
+    },
+    {
+        name = CLM.L["Molten Core"],
+        difficulty = {148},
+        data = {
+            { id = 663, name = CLM.EncounterIDsMap[663] },
+            { id = 664, name = CLM.EncounterIDsMap[664] },
+            { id = 665, name = CLM.EncounterIDsMap[665] },
+            { id = 666, name = CLM.EncounterIDsMap[666] },
+            { id = 668, name = CLM.EncounterIDsMap[668] },
+            { id = 667, name = CLM.EncounterIDsMap[667] },
+            { id = 669, name = CLM.EncounterIDsMap[669] },
+            { id = 670, name = CLM.EncounterIDsMap[670] },
+            { id = 671, name = CLM.EncounterIDsMap[671] },
+            { id = 672, name = CLM.EncounterIDsMap[672] },
+            { id = 3018, name = CLM.EncounterIDsMap[3018] },
+        },
     },
     {
         name = CLM.L["World Bosses"],
