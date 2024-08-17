@@ -1,3 +1,7 @@
+# Core Loot Manager v5.2.1
+## Changes
+### SoD
+Added missing encounters and difficulties in SoD P4.
 # Core Loot Manager v5.2.0
 ## Retail Support
 ### TWW

@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.2.1",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "SoD", body = "Added missing encounters and difficulties in SoD P4." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.2.0",
         data = {
             {
