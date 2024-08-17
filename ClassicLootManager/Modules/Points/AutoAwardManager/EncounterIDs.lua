@@ -203,6 +203,7 @@ local EncounterIDsMap = {
 local DifficultyIDsMap = {
     [-1]    = "Fake", -- Trick for handling easily not-supported encounter ids
     -- Classic
+    [0]     = CLM.L["40 Player"], -- Open World
     [3]	    = CLM.L["10 Player"],
     [4]	    = CLM.L["25 Player"],
     [5]	    = CLM.L["10 Player (Heroic)"],
