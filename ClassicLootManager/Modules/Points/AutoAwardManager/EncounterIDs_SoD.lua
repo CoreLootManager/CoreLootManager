@@ -1,6 +1,6 @@
 local _, CLM = ...
 
--- if not CLM.WoWSoD then return end
+if not CLM.WoWSoD then return end
 -- Append to existing ones
 CLM.EncounterIDsMap[2694] = CLM.L["Baron Aquanis"]
 CLM.EncounterIDsMap[2697] = CLM.L["Ghamoo-ra"]
