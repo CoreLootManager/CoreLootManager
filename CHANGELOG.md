@@ -1,3 +1,7 @@
+# Core Loot Manager v5.2.2
+## Retail Support
+### TWW
+TWW raids added.
 # Core Loot Manager v5.2.1
 ## Changes
 ### SoD
