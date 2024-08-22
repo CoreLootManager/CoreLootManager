@@ -32,6 +32,15 @@ local EncounterIDsMap = {
     [2824] = EJ_GetEncounterInfo(2563) or "Smolderon", -- Smolderon
     [2786] = EJ_GetEncounterInfo(2565) or "Tindral Sageswift, Seer of the Flame", -- Tindral Sageswift, Seer of the Flame
     [2677] = EJ_GetEncounterInfo(2519) or "Fyrakk the Blazing", -- Fyrakk the Blazing
+    -- Nerub-ar Palace
+    [2902] = EJ_GetEncounterInfo(2607) or "Ulgrax the Devourer",
+    [2917] = EJ_GetEncounterInfo(2611) or "The Bloodbound Horror",
+    [2898] = EJ_GetEncounterInfo(2599) or "Sikran, Captain of the Sureki",
+    [2918] = EJ_GetEncounterInfo(2609) or "Rasha'nan",
+    [2919] = EJ_GetEncounterInfo(2612) or "Broodtwister Ovi'nax",
+    [2920] = EJ_GetEncounterInfo(2601) or "Nexus-Princess Ky'veza",
+    [2921] = EJ_GetEncounterInfo(2608) or "The Silken Court",
+    [2922] = EJ_GetEncounterInfo(2602) or "Queen Ansurek",
 }
 
 local DifficultyIDsMap = {
@@ -57,56 +66,82 @@ local diffMapGenerator = {
 
 local instanceMapGenerator = {
     {
-        name = EJ_GetInstanceInfo(1200) or "Vault of the Incarnates",
+        prefix = "tww",
         data = {
-            { id = 2587, name = EncounterIDsMap[2587] },
-            { id = 2639, name = EncounterIDsMap[2639] },
-            { id = 2590, name = EncounterIDsMap[2590] },
-            { id = 2592, name = EncounterIDsMap[2592] },
-            { id = 2635, name = EncounterIDsMap[2635] },
-            { id = 2605, name = EncounterIDsMap[2605] },
-            { id = 2614, name = EncounterIDsMap[2614] },
-            { id = 2607, name = EncounterIDsMap[2607] },
-        }
+            {
+                name = EJ_GetInstanceInfo(1273) or "Nerub-ar Palace",
+                data = {
+                    { id = 2587, name = EncounterIDsMap[2587] },
+                    { id = 2639, name = EncounterIDsMap[2639] },
+                    { id = 2590, name = EncounterIDsMap[2590] },
+                    { id = 2592, name = EncounterIDsMap[2592] },
+                    { id = 2635, name = EncounterIDsMap[2635] },
+                    { id = 2605, name = EncounterIDsMap[2605] },
+                    { id = 2614, name = EncounterIDsMap[2614] },
+                    { id = 2607, name = EncounterIDsMap[2607] },
+                }
+            },
+        },
     },
     {
-        name = EJ_GetInstanceInfo(1208) or "Aberrus, the Shadowed Crucible",
+        prefix = "df",
         data = {
-            { id = 2688, name = EncounterIDsMap[2688] },
-            { id = 2687, name = EncounterIDsMap[2687] },
-            { id = 2693, name = EncounterIDsMap[2693] },
-            { id = 2682, name = EncounterIDsMap[2682] },
-            { id = 2680, name = EncounterIDsMap[2680] },
-            { id = 2689, name = EncounterIDsMap[2689] },
-            { id = 2683, name = EncounterIDsMap[2683] },
-            { id = 2684, name = EncounterIDsMap[2684] },
-            { id = 2685, name = EncounterIDsMap[2685] },
-        }
-    },
-    {
-        name = EJ_GetInstanceInfo(1207) or "Amirdrassil, the Dream's Hope",
-        data = {
-            { id = 2820, name = EncounterIDsMap[2820] },
-            { id = 2709, name = EncounterIDsMap[2709] },
-            { id = 2737, name = EncounterIDsMap[2737] },
-            { id = 2728, name = EncounterIDsMap[2728] },
-            { id = 2731, name = EncounterIDsMap[2731] },
-            { id = 2708, name = EncounterIDsMap[2708] },
-            { id = 2824, name = EncounterIDsMap[2824] },
-            { id = 2786, name = EncounterIDsMap[2786] },
-            { id = 2677, name = EncounterIDsMap[2677] },
-        }
+            {
+                name = EJ_GetInstanceInfo(1200) or "Vault of the Incarnates",
+                data = {
+                    { id = 2587, name = EncounterIDsMap[2587] },
+                    { id = 2639, name = EncounterIDsMap[2639] },
+                    { id = 2590, name = EncounterIDsMap[2590] },
+                    { id = 2592, name = EncounterIDsMap[2592] },
+                    { id = 2635, name = EncounterIDsMap[2635] },
+                    { id = 2605, name = EncounterIDsMap[2605] },
+                    { id = 2614, name = EncounterIDsMap[2614] },
+                    { id = 2607, name = EncounterIDsMap[2607] },
+                }
+            },
+            {
+                name = EJ_GetInstanceInfo(1208) or "Aberrus, the Shadowed Crucible",
+                data = {
+                    { id = 2688, name = EncounterIDsMap[2688] },
+                    { id = 2687, name = EncounterIDsMap[2687] },
+                    { id = 2693, name = EncounterIDsMap[2693] },
+                    { id = 2682, name = EncounterIDsMap[2682] },
+                    { id = 2680, name = EncounterIDsMap[2680] },
+                    { id = 2689, name = EncounterIDsMap[2689] },
+                    { id = 2683, name = EncounterIDsMap[2683] },
+                    { id = 2684, name = EncounterIDsMap[2684] },
+                    { id = 2685, name = EncounterIDsMap[2685] },
+                }
+            },
+            {
+                name = EJ_GetInstanceInfo(1207) or "Amirdrassil, the Dream's Hope",
+                data = {
+                    { id = 2820, name = EncounterIDsMap[2820] },
+                    { id = 2709, name = EncounterIDsMap[2709] },
+                    { id = 2737, name = EncounterIDsMap[2737] },
+                    { id = 2728, name = EncounterIDsMap[2728] },
+                    { id = 2731, name = EncounterIDsMap[2731] },
+                    { id = 2708, name = EncounterIDsMap[2708] },
+                    { id = 2824, name = EncounterIDsMap[2824] },
+                    { id = 2786, name = EncounterIDsMap[2786] },
+                    { id = 2677, name = EncounterIDsMap[2677] },
+                }
+            },
+        },
     },
 }
 
+
 for _, difficulty in ipairs(diffMapGenerator) do
-    local expansion = "df" .. difficulty.name
-    CLM.EncounterIDs[expansion] = {}
-    for _, instance in  ipairs(instanceMapGenerator) do
-        CLM.EncounterIDs[expansion][#CLM.EncounterIDs[expansion]+1] = {
-            name = instance.name,
-            difficulty = { difficulty.difficulty },
-            data = instance.data
-        }
+    for _, exp in ipairs(instanceMapGenerator) do
+        local expansion = exp.prefix .. difficulty.name
+        CLM.EncounterIDs[expansion] = {}
+        for _, instance in  ipairs(exp.data) do
+            CLM.EncounterIDs[expansion][#CLM.EncounterIDs[expansion]+1] = {
+                name = instance.name,
+                difficulty = { difficulty.difficulty },
+                data = instance.data
+            }
+        end
     end
 end
