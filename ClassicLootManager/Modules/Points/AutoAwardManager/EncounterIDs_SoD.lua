@@ -33,7 +33,7 @@ CLM.EncounterIDsMap[3026] = CLM.L["Lord Kazzak"]
 CLM.EncounterIDs.SoD = {
     {
         name = CLM.L["Blackfathom Deeps"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 2694, name = CLM.EncounterIDsMap[2694] },
             { id = 2697, name = CLM.EncounterIDsMap[2697] },
@@ -46,7 +46,7 @@ CLM.EncounterIDs.SoD = {
     },
     {
         name = CLM.L["Gnomeregan"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 2925, name = CLM.EncounterIDsMap[2925] },
             { id = 2928, name = CLM.EncounterIDsMap[2928] },
@@ -58,7 +58,7 @@ CLM.EncounterIDs.SoD = {
     },
     {
         name = CLM.L["Sunken Temple"],
-        difficulty = {148},
+        difficulty = {CLM.DifficultyID.P20},
         data = {
             { id = 2952, name = CLM.EncounterIDsMap[2952] },
             { id = 2953, name = CLM.EncounterIDsMap[2953] },
@@ -72,14 +72,14 @@ CLM.EncounterIDs.SoD = {
     },
     {
         name = CLM.L["Onyxia's Lair"],
-        difficulty = {9},
+        difficulty = {CLM.DifficultyID.P40},
         data = {
 	        { id = 1084, order =  1, name = CLM.EncounterIDsMap[1084] },
         },
     },
     {
         name = CLM.L["Molten Core"],
-        difficulty = {148},
+        difficulty = {CLM.DifficultyID.P20},
         data = {
             { id = 663, name = CLM.EncounterIDsMap[663] },
             { id = 664, name = CLM.EncounterIDsMap[664] },
@@ -104,7 +104,7 @@ CLM.EncounterIDs.SoD = {
     },
     -- {
     --     name = CLM.L["Zul'Gurub"],
-    --     difficulty = {148},
+    --     difficulty = {CLM.DifficultyID.P20},
     --     data = {
     --         { id = 789, name = CLM.EncounterIDsMap[789] },
     --         { id = 784, name = CLM.EncounterIDsMap[784] },
@@ -120,7 +120,7 @@ CLM.EncounterIDs.SoD = {
     -- },
     -- {
     --     name = CLM.L["Blackwing Lair"],
-    --     difficulty = {9},
+    --     difficulty = {CLM.DifficultyID.P40},
     --     data = {
     --         { id = 610, name = CLM.EncounterIDsMap[610] },
     --         { id = 611, name = CLM.EncounterIDsMap[611] },

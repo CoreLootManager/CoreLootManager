@@ -200,16 +200,33 @@ local EncounterIDsMap = {
     [1299] = CLM.L["Madness of Deathwing"],
 }
 
+CLM.DifficultyID = {}
+
+CLM.DifficultyID.NONE       = -1
+CLM.DifficultyID.OPEN_WORLD = 0
+CLM.DifficultyID.P10        = 3
+CLM.DifficultyID.P25        = 4
+CLM.DifficultyID.P10HC      = 5
+CLM.DifficultyID.P25HC      = 6
+CLM.DifficultyID.P40        = 9
+CLM.DifficultyID.P20        = 148
+CLM.DifficultyID.NORMAL     = 14
+CLM.DifficultyID.HEROIC     = 15
+CLM.DifficultyID.MYTHIC     = 16
+CLM.DifficultyID.LFR        = 17
+
+
+
 local DifficultyIDsMap = {
-    [-1]    = "Fake", -- Trick for handling easily not-supported encounter ids
+    [CLM.DifficultyID.NONE]         = "Fake", -- Trick for handling easily not-supported encounter ids
     -- Classic
-    [0]     = CLM.L["40 Player"], -- Open World
-    [3]	    = CLM.L["10 Player"],
-    [4]	    = CLM.L["25 Player"],
-    [5]	    = CLM.L["10 Player (Heroic)"],
-    [6]	    = CLM.L["25 Player (Heroic)"],
-    [9]     = CLM.L["40 Player"],
-    [148]   = CLM.L["20 Player"],
+    [CLM.DifficultyID.OPEN_WORLD]   = CLM.L["40 Player"], -- Open World
+    [CLM.DifficultyID.P10]	        = CLM.L["10 Player"],
+    [CLM.DifficultyID.P25]	        = CLM.L["25 Player"],
+    [CLM.DifficultyID.P10HC]	    = CLM.L["10 Player (Heroic)"],
+    [CLM.DifficultyID.P25HC]	    = CLM.L["25 Player (Heroic)"],
+    [CLM.DifficultyID.P40]          = CLM.L["40 Player"],
+    [CLM.DifficultyID.P20]          = CLM.L["20 Player"],
 }
 
 CLM.EncounterIDsMap = EncounterIDsMap
@@ -234,14 +251,14 @@ if not CLM.WoWSoD then return end
 CLM.EncounterIDs.Classic = {
     {
         name = CLM.L["Onyxia's Lair"],
-        difficulty = {9},
+        difficulty = {CLM.DifficultyID.P40},
         data = {
 	        { id = 1084, order =  1, name = EncounterIDsMap[1084] },
         },
     },
     {
         name = CLM.L["Molten Core"],
-        difficulty = {9},
+        difficulty = {CLM.DifficultyID.P40},
         data = {
             { id = 663, name = EncounterIDsMap[663] },
             { id = 664, name = EncounterIDsMap[664] },
@@ -257,7 +274,7 @@ CLM.EncounterIDs.Classic = {
     },
     {
         name = CLM.L["Blackwing Lair"],
-        difficulty = {9},
+        difficulty = {CLM.DifficultyID.P40},
         data = {
             { id = 610, name = EncounterIDsMap[610] },
             { id = 611, name = EncounterIDsMap[611] },
@@ -271,7 +288,7 @@ CLM.EncounterIDs.Classic = {
     },
     {
         name = CLM.L["Temple of Ahn'Qiraj"],
-        difficulty = {9},
+        difficulty = {CLM.DifficultyID.P40},
         data = {
             { id = 709, name = EncounterIDsMap[709] },
             { id = 710, name = EncounterIDsMap[710] },
@@ -286,7 +303,7 @@ CLM.EncounterIDs.Classic = {
     },
     {
         name = CLM.L["Naxxramas"],
-        difficulty = {9},
+        difficulty = {CLM.DifficultyID.P40},
         data = {
             { id = 1107, name = EncounterIDsMap[1107] },
             { id = 1110, name = EncounterIDsMap[1110] },
@@ -307,7 +324,7 @@ CLM.EncounterIDs.Classic = {
     },
     {
         name = CLM.L["Zul'Gurub"],
-        difficulty = {148},
+        difficulty = {CLM.DifficultyID.P20},
         data = {
             { id = 789, name = EncounterIDsMap[789] },
             { id = 784, name = EncounterIDsMap[784] },
@@ -323,7 +340,7 @@ CLM.EncounterIDs.Classic = {
     },
     {
         name = CLM.L["Ruins of Ahn'Qiraj"],
-        difficulty = {148},
+        difficulty = {CLM.DifficultyID.P20},
         data = {
             { id = 718, name = EncounterIDsMap[718] },
             { id = 719, name = EncounterIDsMap[719] },
@@ -340,7 +357,7 @@ if CLM.WoWSeasonal then return end
 CLM.EncounterIDs.TBC = {
     {
         name = CLM.L["Karazhan"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 652, name = EncounterIDsMap[652] },
             { id = 653, name = EncounterIDsMap[653] },
@@ -357,7 +374,7 @@ CLM.EncounterIDs.TBC = {
     },
     {
         name = CLM.L["Gruul's Lair"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 649, name = EncounterIDsMap[649] },
             { id = 650, name = EncounterIDsMap[650] },
@@ -365,14 +382,14 @@ CLM.EncounterIDs.TBC = {
     },
     {
         name = CLM.L["Magtheridon"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 651, name = EncounterIDsMap[651] },
         }
     },
     {
         name = CLM.L["Serpentshrine Cavern"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 623, name = EncounterIDsMap[623] },
             { id = 624, name = EncounterIDsMap[624] },
@@ -384,7 +401,7 @@ CLM.EncounterIDs.TBC = {
     },
     {
         name = CLM.L["Tempest Keep"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 730, name = EncounterIDsMap[730] },
             { id = 731, name = EncounterIDsMap[731] },
@@ -394,7 +411,7 @@ CLM.EncounterIDs.TBC = {
     },
     {
         name = CLM.L["Black Temple"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 601, name = EncounterIDsMap[601] },
             { id = 602, name = EncounterIDsMap[602] },
@@ -409,7 +426,7 @@ CLM.EncounterIDs.TBC = {
     },
     {
         name = CLM.L["Hyjal Summit"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 618, name = EncounterIDsMap[618] },
             { id = 619, name = EncounterIDsMap[619] },
@@ -420,7 +437,7 @@ CLM.EncounterIDs.TBC = {
     },
     {
         name = CLM.L["Zul'Aman"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 1189, name = EncounterIDsMap[1189] },
             { id = 1190, name = EncounterIDsMap[1190] },
@@ -432,7 +449,7 @@ CLM.EncounterIDs.TBC = {
     },
     {
         name = CLM.L["Sunwell Plateau"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 724, name = EncounterIDsMap[724] },
             { id = 725, name = EncounterIDsMap[725] },
@@ -447,7 +464,7 @@ CLM.EncounterIDs.TBC = {
 CLM.EncounterIDs.WOTLK10 = {
     {
         name = CLM.L["Naxxramas"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 1107, name = EncounterIDsMap[1107] },
             { id = 1110, name = EncounterIDsMap[1110] },
@@ -468,7 +485,7 @@ CLM.EncounterIDs.WOTLK10 = {
     },
     {
         name = CLM.L["The Obsidian Sanctum"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 1090, name = EncounterIDsMap[1090] },
             { id = 1091, name = EncounterIDsMap[1091] },
@@ -478,14 +495,14 @@ CLM.EncounterIDs.WOTLK10 = {
     },
     {
         name = CLM.L["The Eye of Eternity"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 1094, name = EncounterIDsMap[1094] },
         },
     },
     {
         name = CLM.L["Vault of Archavon"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 1126, name = EncounterIDsMap[1126] },
             { id = 1127, name = EncounterIDsMap[1127] },
@@ -495,7 +512,7 @@ CLM.EncounterIDs.WOTLK10 = {
     },
     {
         name = CLM.L["Ulduar"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
             { id = 1130, name = EncounterIDsMap[1130] },
             { id = 1131, name = EncounterIDsMap[1131] },
@@ -515,7 +532,7 @@ CLM.EncounterIDs.WOTLK10 = {
     },
     {
         name = CLM.L["Trial of the Crusader"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1085, name = EncounterIDsMap[1085] },
             { id = 1086, name = EncounterIDsMap[1086] },
@@ -526,7 +543,7 @@ CLM.EncounterIDs.WOTLK10 = {
     },
     {
         name = CLM.L["Icecrown Citadel"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1095, name = EncounterIDsMap[1095] },
             { id = 1096, name = EncounterIDsMap[1096] },
@@ -544,14 +561,14 @@ CLM.EncounterIDs.WOTLK10 = {
     },
     {
         name = CLM.L["Onyxia's Lair"],
-        difficulty = {3},
+        difficulty = {CLM.DifficultyID.P10},
         data = {
 	        { id = 1084, order =  1, name = EncounterIDsMap[1084] },
         },
     },
     {
         name = CLM.L["The Ruby Sanctum"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1147, name = EncounterIDsMap[1147] },
             { id = 1148, name = EncounterIDsMap[1148] },
@@ -564,7 +581,7 @@ CLM.EncounterIDs.WOTLK10 = {
 CLM.EncounterIDs.WOTLK25 = {
     {
         name = CLM.L["Naxxramas"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 1107, name = EncounterIDsMap[1107] },
             { id = 1110, name = EncounterIDsMap[1110] },
@@ -585,7 +602,7 @@ CLM.EncounterIDs.WOTLK25 = {
     },
     {
         name = CLM.L["The Obsidian Sanctum"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 1090, name = EncounterIDsMap[1090] },
             { id = 1091, name = EncounterIDsMap[1091] },
@@ -595,14 +612,14 @@ CLM.EncounterIDs.WOTLK25 = {
     },
     {
         name = CLM.L["The Eye of Eternity"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 1094, name = EncounterIDsMap[1094] },
         },
     },
     {
         name = CLM.L["Vault of Archavon"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 1126, name = EncounterIDsMap[1126] },
             { id = 1127, name = EncounterIDsMap[1127] },
@@ -612,7 +629,7 @@ CLM.EncounterIDs.WOTLK25 = {
     },
     {
         name = CLM.L["Ulduar"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
             { id = 1130, name = EncounterIDsMap[1130] },
             { id = 1131, name = EncounterIDsMap[1131] },
@@ -632,7 +649,7 @@ CLM.EncounterIDs.WOTLK25 = {
     },
     {
         name = CLM.L["Trial of the Crusader"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1085, name = EncounterIDsMap[1085] },
             { id = 1086, name = EncounterIDsMap[1086] },
@@ -643,7 +660,7 @@ CLM.EncounterIDs.WOTLK25 = {
     },
     {
         name = CLM.L["Icecrown Citadel"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1095, name = EncounterIDsMap[1095] },
             { id = 1096, name = EncounterIDsMap[1096] },
@@ -661,14 +678,14 @@ CLM.EncounterIDs.WOTLK25 = {
     },
     {
         name = CLM.L["Onyxia's Lair"],
-        difficulty = {4},
+        difficulty = {CLM.DifficultyID.P25},
         data = {
 	        { id = 1084, order =  1, name = EncounterIDsMap[1084] },
         },
     },
     {
         name = CLM.L["The Ruby Sanctum"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1147, name = EncounterIDsMap[1147] },
             { id = 1148, name = EncounterIDsMap[1148] },
@@ -681,7 +698,7 @@ CLM.EncounterIDs.WOTLK25 = {
 CLM.EncounterIDs.Cata10 = {
     {
         name = CLM.L["Baradin Hold"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1033, name = EncounterIDsMap[1033] },
             { id = 1250, name = EncounterIDsMap[1250] },
@@ -690,7 +707,7 @@ CLM.EncounterIDs.Cata10 = {
     },
     {
         name = CLM.L["Blackwing Descent"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1024, name = EncounterIDsMap[1024] },
             { id = 1027, name = EncounterIDsMap[1027] },
@@ -702,7 +719,7 @@ CLM.EncounterIDs.Cata10 = {
     },
     {
         name = CLM.L["The Bastion of Twilight"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1030, name = EncounterIDsMap[1030] },
             { id = 1032, name = EncounterIDsMap[1032] },
@@ -713,7 +730,7 @@ CLM.EncounterIDs.Cata10 = {
     },
     {
         name = CLM.L["Throne of the Four Winds"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1035, name = EncounterIDsMap[1035] },
             { id = 1034, name = EncounterIDsMap[1034] },
@@ -721,7 +738,7 @@ CLM.EncounterIDs.Cata10 = {
     },
     {
         name = CLM.L["Firelands"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1205, name = EncounterIDsMap[1205] },
             { id = 1204, name = EncounterIDsMap[1204] },
@@ -734,7 +751,7 @@ CLM.EncounterIDs.Cata10 = {
     },
     {
         name = CLM.L["Dragon Soul"],
-        difficulty = {3,5},
+        difficulty = {CLM.DifficultyID.P10,CLM.DifficultyID.P10HC},
         data = {
             { id = 1292, name = EncounterIDsMap[1292] },
             { id = 1294, name = EncounterIDsMap[1294] },
@@ -751,7 +768,7 @@ CLM.EncounterIDs.Cata10 = {
 CLM.EncounterIDs.Cata25 = {
     {
         name = CLM.L["Baradin Hold"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1033, name = EncounterIDsMap[1033] },
             { id = 1250, name = EncounterIDsMap[1250] },
@@ -760,7 +777,7 @@ CLM.EncounterIDs.Cata25 = {
     },
     {
         name = CLM.L["Blackwing Descent"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1024, name = EncounterIDsMap[1024] },
             { id = 1027, name = EncounterIDsMap[1027] },
@@ -772,7 +789,7 @@ CLM.EncounterIDs.Cata25 = {
     },
     {
         name = CLM.L["The Bastion of Twilight"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1030, name = EncounterIDsMap[1030] },
             { id = 1032, name = EncounterIDsMap[1032] },
@@ -783,7 +800,7 @@ CLM.EncounterIDs.Cata25 = {
     },
     {
         name = CLM.L["Throne of the Four Winds"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1035, name = EncounterIDsMap[1035] },
             { id = 1034, name = EncounterIDsMap[1034] },
@@ -791,7 +808,7 @@ CLM.EncounterIDs.Cata25 = {
     },
     {
         name = CLM.L["Firelands"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1205, name = EncounterIDsMap[1205] },
             { id = 1204, name = EncounterIDsMap[1204] },
@@ -804,7 +821,7 @@ CLM.EncounterIDs.Cata25 = {
     },
     {
         name = CLM.L["Dragon Soul"],
-        difficulty = {4,6},
+        difficulty = {CLM.DifficultyID.P25,CLM.DifficultyID.P25HC},
         data = {
             { id = 1292, name = EncounterIDsMap[1292] },
             { id = 1294, name = EncounterIDsMap[1294] },

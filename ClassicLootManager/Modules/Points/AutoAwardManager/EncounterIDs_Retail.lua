@@ -59,9 +59,9 @@ CLM.EncounterHasHardMode = CLM.UTILS.Set({})
 CLM.EncounterIDs = {}
 
 local diffMapGenerator = {
-    { name = "n", difficulty = 14},
-    { name = "h", difficulty = 15},
-    { name = "m", difficulty = 16},
+    { name = "n", difficulty = CLM.DifficultyID.NORMAL},
+    { name = "h", difficulty = CLM.DifficultyID.HEROIC},
+    { name = "m", difficulty = CLM.DifficultyID.MYTHIC},
 }
 
 local instanceMapGenerator = {
