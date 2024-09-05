@@ -30,6 +30,7 @@ local multiWoWDifficultyIDs = {
     [15] = 15,
     [16] = 16,
     [17] = 17,
+    [226] = 148  -- 20 man SoD
 }
 
 local bossKillEncounterWorkaround = {

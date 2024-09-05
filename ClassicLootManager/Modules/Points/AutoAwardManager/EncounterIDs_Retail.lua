@@ -71,14 +71,14 @@ local instanceMapGenerator = {
             {
                 name = EJ_GetInstanceInfo(1273) or "Nerub-ar Palace",
                 data = {
-                    { id = 2587, name = EncounterIDsMap[2587] },
-                    { id = 2639, name = EncounterIDsMap[2639] },
-                    { id = 2590, name = EncounterIDsMap[2590] },
-                    { id = 2592, name = EncounterIDsMap[2592] },
-                    { id = 2635, name = EncounterIDsMap[2635] },
-                    { id = 2605, name = EncounterIDsMap[2605] },
-                    { id = 2614, name = EncounterIDsMap[2614] },
-                    { id = 2607, name = EncounterIDsMap[2607] },
+                    { id = 2902, name = EncounterIDsMap[2902] },
+                    { id = 2917, name = EncounterIDsMap[2917] },
+                    { id = 2898, name = EncounterIDsMap[2898] },
+                    { id = 2918, name = EncounterIDsMap[2918] },
+                    { id = 2919, name = EncounterIDsMap[2919] },
+                    { id = 2920, name = EncounterIDsMap[2920] },
+                    { id = 2921, name = EncounterIDsMap[2921] },
+                    { id = 2922, name = EncounterIDsMap[2922] },
                 }
             },
         },

@@ -1,3 +1,9 @@
+# Core Loot Manager v5.2.3
+## Encounter ID fixes
+### TWW
+Nerub-ar Palace fixed
+### SoD
+Molten Core fixed and located in SoD tab properly
 # Core Loot Manager v5.2.2
 ## Retail Support
 ### TWW

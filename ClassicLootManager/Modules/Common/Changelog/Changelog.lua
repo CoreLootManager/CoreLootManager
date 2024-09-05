@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.2.3",
+        data = {
+            {
+                name = "Encounter ID fixes",
+                data = {
+                    { header = "TWW", body = "Nerub-ar Palace fixed" },
+                    { header = "SoD", body = "Molten Core fixed and located in SoD tab properly" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.2.2",
         data = {
             {

@@ -71,24 +71,15 @@ CLM.EncounterIDs.SoD = {
         }
     },
     {
-        name = CLM.L["Zul'Gurub"],
-        difficulty = {148},
+        name = CLM.L["Onyxia's Lair"],
+        difficulty = {9},
         data = {
-            { id = 789, name = CLM.EncounterIDsMap[789] },
-            { id = 784, name = CLM.EncounterIDsMap[784] },
-            { id = 791, name = CLM.EncounterIDsMap[791] },
-            { id = 785, name = CLM.EncounterIDsMap[785] },
-            { id = 786, name = CLM.EncounterIDsMap[786] },
-            { id = 787, name = CLM.EncounterIDsMap[787] },
-            { id = 792, name = CLM.EncounterIDsMap[792] },
-            { id = 793, name = CLM.EncounterIDsMap[793] },
-            { id = 788, name = CLM.EncounterIDsMap[788] },
-            { id = 790, name = CLM.EncounterIDsMap[790] },
+	        { id = 1084, order =  1, name = CLM.EncounterIDsMap[1084] },
         },
     },
     {
         name = CLM.L["Molten Core"],
-        difficulty = {148},
+        difficulty = {226},
         data = {
             { id = 663, name = CLM.EncounterIDsMap[663] },
             { id = 664, name = CLM.EncounterIDsMap[664] },
@@ -110,5 +101,35 @@ CLM.EncounterIDs.SoD = {
             { id = 3027, name = CLM.EncounterIDsMap[3027] },
             { id = 3026, name = CLM.EncounterIDsMap[3026] },
         }
-    }
+    },
+    -- {
+    --     name = CLM.L["Zul'Gurub"],
+    --     difficulty = {148},
+    --     data = {
+    --         { id = 789, name = CLM.EncounterIDsMap[789] },
+    --         { id = 784, name = CLM.EncounterIDsMap[784] },
+    --         { id = 791, name = CLM.EncounterIDsMap[791] },
+    --         { id = 785, name = CLM.EncounterIDsMap[785] },
+    --         { id = 786, name = CLM.EncounterIDsMap[786] },
+    --         { id = 787, name = CLM.EncounterIDsMap[787] },
+    --         { id = 792, name = CLM.EncounterIDsMap[792] },
+    --         { id = 793, name = CLM.EncounterIDsMap[793] },
+    --         { id = 788, name = CLM.EncounterIDsMap[788] },
+    --         { id = 790, name = CLM.EncounterIDsMap[790] },
+    --     },
+    -- },
+    -- {
+    --     name = CLM.L["Blackwing Lair"],
+    --     difficulty = {9},
+    --     data = {
+    --         { id = 610, name = CLM.EncounterIDsMap[610] },
+    --         { id = 611, name = CLM.EncounterIDsMap[611] },
+    --         { id = 612, name = CLM.EncounterIDsMap[612] },
+    --         { id = 613, name = CLM.EncounterIDsMap[613] },
+    --         { id = 614, name = CLM.EncounterIDsMap[614] },
+    --         { id = 615, name = CLM.EncounterIDsMap[615] },
+    --         { id = 616, name = CLM.EncounterIDsMap[616] },
+    --         { id = 617, name = CLM.EncounterIDsMap[617] },
+    --     },
+    -- },
 }
