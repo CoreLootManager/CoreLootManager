@@ -79,7 +79,7 @@ CLM.EncounterIDs.SoD = {
     },
     {
         name = CLM.L["Molten Core"],
-        difficulty = {226},
+        difficulty = {148},
         data = {
             { id = 663, name = CLM.EncounterIDsMap[663] },
             { id = 664, name = CLM.EncounterIDsMap[664] },
