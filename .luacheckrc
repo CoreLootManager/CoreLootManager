@@ -98,6 +98,7 @@ globals = {
 	"Settings.OpenToCategory",
 	"C_Item.GetItemInfo",
 	"C_Item.GetItemInfoInstant",
+	"C_Item.GetItemQualityByID",
 	"C_AddOns.GetAddOnInfo",
 	"C_Timer.After",
 	"C_Timer.NewTicker",
