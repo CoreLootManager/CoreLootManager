@@ -1,5 +1,20 @@
 local _, CLM = ...
 
+CLM.DifficultyID = {}
+
+CLM.DifficultyID.NONE       = -1
+CLM.DifficultyID.OPEN_WORLD = 0
+CLM.DifficultyID.P10        = 3
+CLM.DifficultyID.P25        = 4
+CLM.DifficultyID.P10HC      = 5
+CLM.DifficultyID.P25HC      = 6
+CLM.DifficultyID.P40        = 9
+CLM.DifficultyID.P20        = 148
+CLM.DifficultyID.NORMAL     = 14
+CLM.DifficultyID.HEROIC     = 15
+CLM.DifficultyID.MYTHIC     = 16
+CLM.DifficultyID.LFR        = 17
+
 if CLM.WoW10 then return end
 
 local EncounterIDsMap = {
@@ -199,23 +214,6 @@ local EncounterIDsMap = {
     [1291] = CLM.L["Spine of Deathwing"],
     [1299] = CLM.L["Madness of Deathwing"],
 }
-
-CLM.DifficultyID = {}
-
-CLM.DifficultyID.NONE       = -1
-CLM.DifficultyID.OPEN_WORLD = 0
-CLM.DifficultyID.P10        = 3
-CLM.DifficultyID.P25        = 4
-CLM.DifficultyID.P10HC      = 5
-CLM.DifficultyID.P25HC      = 6
-CLM.DifficultyID.P40        = 9
-CLM.DifficultyID.P20        = 148
-CLM.DifficultyID.NORMAL     = 14
-CLM.DifficultyID.HEROIC     = 15
-CLM.DifficultyID.MYTHIC     = 16
-CLM.DifficultyID.LFR        = 17
-
-
 
 local DifficultyIDsMap = {
     [CLM.DifficultyID.NONE]         = "Fake", -- Trick for handling easily not-supported encounter ids
