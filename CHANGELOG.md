@@ -1,3 +1,11 @@
+# Core Loot Manager v5.2.4
+## Changes
+### Auction bar
+Auction bar can now be fully reskined.
+### TWW Tier Tokens
+Tier token value will now be displayed properly in the tooltip.
+### TWW Trade
+Trade will now work properly for cross-realm raiders.
 # Core Loot Manager v5.2.3
 ## Encounter ID fixes
 ### TWW

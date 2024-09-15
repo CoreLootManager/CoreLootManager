@@ -1,6 +1,19 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.2.4",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Auction bar", body = "Auction bar can now be fully reskined." },
+                    { header = "TWW Tier Tokens", body = "Tier token value will now be displayed properly in the tooltip." },
+                    { header = "TWW Trade", body = "Trade will now work properly for cross-realm raiders." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.2.3",
         data = {
             {
