@@ -1088,6 +1088,11 @@ function UTILS.GetItemInfoInstant(...)
     return GetItemInfoInstant(...)
 end
 
+local GetItemQualityByID = C_Item.GetItemQualityByID or (function() return 0 end)
+function UTILS.GetItemQualityByID(...)
+    return (GetItemQualityByID(...) or 0)
+end
+
 local GetAddOnInfo = GetAddOnInfo or C_AddOns.GetAddOnInfo
 function UTILS.GetAddOnInfo(...)
     return GetAddOnInfo(...)
