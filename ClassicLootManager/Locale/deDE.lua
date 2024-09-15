@@ -321,7 +321,7 @@ CLM.L["Auto-assign from corpse"] = "Automatische Zuweisung aus der Leiche"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:391
 CLM.L["Auto-trade after award"] = "Gewonnenen Loot automatisch handeln"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:488
-CLM.L["Automatically mark auto-removed items as disenchanted"] = "Markieren Sie automatisch automatische Elemente als enttäuscht"
+CLM.L["Automatically mark auto-removed items as disenchanted"] = "Markiere entfernte Gegenstände fürs Entzaubern. Nur möglich wenn Items ohne Gebote automatisch entfernt werden."
 -- ClassicLootManager/Modules/Points/AutoAwardManager/EncounterIDs_SoD.lua:27
 CLM.L["Avatar of Hakkar"] = "Avatar of Hakkar"
 -- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:430
@@ -701,7 +701,7 @@ CLM.L["Discard changes"] = "Änderungen löschen"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:664
 CLM.L["Discards all changes and exits sandbox mode"] = "Wirft alle Änderungen weg und verlässt den Sandbox Modus"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:487
-CLM.L["Disenchant removed items"] = "Enttäuschende Gegenstände"
+CLM.L["Disenchant removed items"] = "Entfernte Itemsfürs Entzaubern markieren"
 -- ClassicLootManager_Integrations/Integrations.lua:679
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:344
 CLM.L["Disenchant"] = "Entzaubern"
@@ -1791,9 +1791,9 @@ CLM.L["Remove from standby"] = "Von Standby entfernen"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:287
 CLM.L["Remove item from auction list after it's awarded."] = "Gegenstand von der Auktionsliste entfernen, nachdem er verliehen wurde."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:479
-CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."] = "Entfernen Sie Elemente ohne Gebote aus der Auktionsliste. Dadurch wird Markierungsgegenstände nicht möglich."
+CLM.L["Remove items without bids from auction list. This will make marking items as disenchanted not possible."] = "Items ohne Gebote automatisch aus der Auktonsliste entfernen. Entfernte Items können nicht mehr manuell fürs Entzaubern markiert werden."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:478
-CLM.L["Remove items without bids"] = "Elemente ohne Gebote entfernen"
+CLM.L["Remove items without bids"] = "Items ohne Gebote entfernen"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:93
 CLM.L["Remove old"] = "Alt entfernen"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:373
