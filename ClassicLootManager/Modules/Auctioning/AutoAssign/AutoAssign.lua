@@ -193,12 +193,12 @@ function AutoAssign:Initialize()
 
     CLM.MODULES.EventManager:RegisterWoWEvent({"TRADE_SHOW"}, (function()
         Clear(self)
-        pcall(function()
-            self.lastTradeTarget = UTILS.Disambiguate(_G.TradeFrameRecipientNameText:GetText())
-        end)
+        -- NPC Because that's how the engine holds the trade peer
+        self.lastTradeTarget = UTILS.GetUnitName("npc")
         if not self.lastTradeTarget then
-             -- NPC Because that's how the engine holds the trade peer
-            self.lastTradeTarget = UTILS.GetUnitName("npc")
+            pcall(function()
+                self.lastTradeTarget = UTILS.Disambiguate(_G.TradeFrameRecipientNameText:GetText())
+            end)
         end
         if not self.lastTradeTarget then return end
         HandleTradeShow(self)
