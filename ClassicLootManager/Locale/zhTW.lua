@@ -282,13 +282,13 @@ CLM.L["Auction stopped by the Master Looter"] = "被Master Looter停止拍卖"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:820
 CLM.L["Auction time: %s."] = "拍卖时间: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:285
---CLM.L["Auction timer bar font size"] = ""
+CLM.L["Auction timer bar font size"] = "拍賣計時器條形字體尺寸"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:268
---CLM.L["Auction timer bar font"] = ""
+CLM.L["Auction timer bar font"] = "拍賣計時器欄字體"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:245
---CLM.L["Auction timer bar height"] = ""
+CLM.L["Auction timer bar height"] = "拍賣計時器條高度"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:308
---CLM.L["Auction timer bar texture"] = ""
+CLM.L["Auction timer bar texture"] = "拍賣計時器條紋理"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:222
 CLM.L["Auction timer bar width"] = "拍賣定時器條寬度"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1210
@@ -521,13 +521,13 @@ CLM.L["Change roster name."] = "更改名册名称。"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:13
 CLM.L["Changelog"] = "更新日志"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:286
---CLM.L["Changes auction timer bar font size."] = ""
+CLM.L["Changes auction timer bar font size."] = "更改拍賣定時器欄字體大小。"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:269
---CLM.L["Changes auction timer bar font."] = ""
+CLM.L["Changes auction timer bar font."] = "更改拍賣定時器欄字體。"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:246
---CLM.L["Changes auction timer bar height."] = ""
+CLM.L["Changes auction timer bar height."] = "更改拍賣定時器條高度。"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:309
---CLM.L["Changes auction timer bar texture."] = ""
+CLM.L["Changes auction timer bar texture."] = "更改拍賣計時器條紋理。"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:223
 CLM.L["Changes auction timer bar width."] = "更改拍賣定時器條寬度。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1367
@@ -1829,7 +1829,7 @@ CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window in
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:162
 CLM.L["Reset gui positions"] = "重置 gui 位置"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:335
---CLM.L["Restore bar defaults"] = ""
+CLM.L["Restore bar defaults"] = "還原條默認值"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:370
 CLM.L["Revoke standby"] = "撤销替补"
 -- .:indirectly

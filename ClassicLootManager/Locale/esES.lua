@@ -282,13 +282,13 @@ CLM.L["Auction stopped by the Master Looter"] = "Subasta detenida por el Master 
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:820
 CLM.L["Auction time: %s."] = "Tiempo de subasta: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:285
---CLM.L["Auction timer bar font size"] = ""
+CLM.L["Auction timer bar font size"] = "Tamaño de fuente de barra de temporizador de subastas"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:268
---CLM.L["Auction timer bar font"] = ""
+CLM.L["Auction timer bar font"] = "Fuente de barra de temporizador de subastas"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:245
---CLM.L["Auction timer bar height"] = ""
+CLM.L["Auction timer bar height"] = "Altura de la barra del temporizador de subastas"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:308
---CLM.L["Auction timer bar texture"] = ""
+CLM.L["Auction timer bar texture"] = "Textura de la barra de temporizador de subastas"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:222
 CLM.L["Auction timer bar width"] = "Ancho de barra de temporizador de subastas"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1210
@@ -521,13 +521,13 @@ CLM.L["Change roster name."] = "Cambiar el nombre del Roster."
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:13
 CLM.L["Changelog"] = "Registro de cambios"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:286
---CLM.L["Changes auction timer bar font size."] = ""
+CLM.L["Changes auction timer bar font size."] = "Cambia el tamaño de la fuente de la barra del temporizador de subastas."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:269
---CLM.L["Changes auction timer bar font."] = ""
+CLM.L["Changes auction timer bar font."] = "Cambia la fuente de la barra del temporizador de subastas."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:246
---CLM.L["Changes auction timer bar height."] = ""
+CLM.L["Changes auction timer bar height."] = "Cambia la altura de la barra del temporizador de subastas."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:309
---CLM.L["Changes auction timer bar texture."] = ""
+CLM.L["Changes auction timer bar texture."] = "Cambia la textura de la barra del temporizador de subastas."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:223
 CLM.L["Changes auction timer bar width."] = "Cambia el ancho de la barra del temporizador de subastas."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1367
@@ -1829,7 +1829,7 @@ CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window in
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:162
 CLM.L["Reset gui positions"] = "Restablecer posiciones de interfaz gráfica de usuario"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:335
---CLM.L["Restore bar defaults"] = ""
+CLM.L["Restore bar defaults"] = "Restaurar los valores predeterminados de la barra"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:370
 CLM.L["Revoke standby"] = "Revocar modo de espera"
 -- .:indirectly

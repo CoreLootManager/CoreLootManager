@@ -282,15 +282,15 @@ CLM.L["Auction stopped by the Master Looter"] = "Auktion wurde vom Lootmeister g
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:820
 CLM.L["Auction time: %s."] = "Auktionszeit: %s."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:285
---CLM.L["Auction timer bar font size"] = ""
+CLM.L["Auction timer bar font size"] = "Auktions Timer Bar Schriftgröße"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:268
---CLM.L["Auction timer bar font"] = ""
+CLM.L["Auction timer bar font"] = "Auktions Timer Bar Schriftart"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:245
---CLM.L["Auction timer bar height"] = ""
+CLM.L["Auction timer bar height"] = "Auktions Timer Barhöhe"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:308
---CLM.L["Auction timer bar texture"] = ""
+CLM.L["Auction timer bar texture"] = "Auktions Timer Bar -Textur"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:222
-CLM.L["Auction timer bar width"] = "Auktions -Timer -Bar Breite"
+CLM.L["Auction timer bar width"] = "Auktions Timer Bar Breite"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1210
 CLM.L["Auction type"] = "Auktionstyp"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:508
@@ -521,13 +521,13 @@ CLM.L["Change roster name."] = "Rostername ändern."
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:13
 CLM.L["Changelog"] = "Änderungsprotokoll"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:286
---CLM.L["Changes auction timer bar font size."] = ""
+CLM.L["Changes auction timer bar font size."] = "Ändert Auktions -Timer -Balken -Schriftgröße."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:269
---CLM.L["Changes auction timer bar font."] = ""
+CLM.L["Changes auction timer bar font."] = "Ändert Auktions -Timer -Bar -Schriftart."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:246
---CLM.L["Changes auction timer bar height."] = ""
+CLM.L["Changes auction timer bar height."] = "Ändert die Höhe der Auktions -Timer."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:309
---CLM.L["Changes auction timer bar texture."] = ""
+CLM.L["Changes auction timer bar texture."] = "Ändert die Auktions -Timer -Balken -Textur."
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:223
 CLM.L["Changes auction timer bar width."] = "Ändert die Auktions -Timer -Balkenbreite."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1367
@@ -1829,7 +1829,7 @@ CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window in
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:162
 CLM.L["Reset gui positions"] = "Position vom GUI zurücksetzen"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:335
---CLM.L["Restore bar defaults"] = ""
+CLM.L["Restore bar defaults"] = "Wiederherstellen Sie die Balkenverwaltungen wieder her"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:370
 CLM.L["Revoke standby"] = "Standby widerrufen"
 -- .:indirectly
