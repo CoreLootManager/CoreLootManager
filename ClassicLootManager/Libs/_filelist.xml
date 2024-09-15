@@ -12,6 +12,7 @@
 	<Script file="LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.lua"/>
 	<Script file="LibDeformat-3.0\LibDeformat-3.0.lua"/>
 	<Script file="LibExpiringTimer\LibExpiringTimer.lua"/>
+	<Include file="LibSharedMedia-3.0\lib.xml"/>
 	<!-- Data Libs -->
 	<Include file="LibDeflate\lib.xml"/>
 	<Include file="LibSerialize\lib.xml"/>
@@ -28,4 +29,5 @@
 	<Include file="Ace3\AceGUI-3.0\AceGUI-3.0.xml"/>
 	<Include file="Ace3\AceConfig-3.0\AceConfig-3.0.xml"/>
 	<Include file="Ace3\AceComm-3.0\AceComm-3.0.xml"/>
+	<Include file="AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
 </Ui>

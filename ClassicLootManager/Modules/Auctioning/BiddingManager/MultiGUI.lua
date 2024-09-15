@@ -10,6 +10,7 @@ local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 local DISPLAY_MODE_VALUES  = 1
 local DISPLAY_MODE_BUTTONS = 2
@@ -37,6 +38,8 @@ local BIDS_HEIGHT = ((BID_ROWS + 1) * BID_ROW_HEIGHT) + 5
 
 local BASE_ROW_WIDTH = 170 -- Ace Row Width
 
+local DEFAULT_TEXTURE_NAME = "CLM Default"
+
 local DATA_GROUP_WIDTH = BASE_ROW_WIDTH*(rowMultiplier + 0.15) + (isElvUI and 15 or 0)
 local BID_INPUT_WIDTH  = BASE_ROW_WIDTH*rowMultiplierBy3
 
@@ -50,7 +53,15 @@ local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('bidding', {
         location = {nil, nil, "CENTER", 0, 0 },
         scale = 1,
+
         barWidth = 340,
+        barHeight = 25,
+        barFontSize = 12,
+
+        barTexture = DEFAULT_TEXTURE_NAME,
+        -- barLocation
+        -- barFontName
+
         closeOnBid = false,
         advanceOnBid = true,
         hideInCombat = true,
@@ -67,7 +78,10 @@ local function ShowTestBar(self)
         {
             anchor = self.db.barLocation,
             width = self.db.barWidth,
-            height = 25,
+            height = self.db.barHeight,
+            texture = self.db.barTexture,
+            fontSize = self.db.barFontSize,
+            fontName = self.db.barFontName,
         }
     )
 end
@@ -201,7 +215,7 @@ local function CreateConfig(self)
             type = "toggle",
             set = function(i, v) SetAdvanceOnBid(self, v) end,
             get = function(i) return GetAdvanceOnBid(self) end,
-            width = 3,
+            width = 2,
             order = 76.5
         },
         bidding_gui_bar_width = {
@@ -218,13 +232,96 @@ local function CreateConfig(self)
                 self.db.barWidth = v
 
                 if self.bar then
-                    self.bar.bar:SetWidth(self.db.barWidth)
+                    self.bar:SetWidth(self.db.barWidth)
                 elseif self.testBar then
-                    self.testBar.bar:SetWidth(self.db.barWidth)
+                    self.testBar:SetWidth(self.db.barWidth)
                 end
             end,
             get = function(i) return self.db.barWidth end,
             order = 77,
+            width = 1
+        },
+        bidding_gui_bar_height = {
+            name = CLM.L["Auction timer bar height"],
+            desc = CLM.L["Changes auction timer bar height."],
+            type = "range",
+            min = 0,
+            max = 100,
+            step = 1,
+            set = function(i, v)
+                v = tonumber(v) or 0
+                if v < 0 then v = 0 end
+                if v > 100 then v = 100 end
+                self.db.barHeight = v
+
+                if self.bar then
+                    self.bar:SetHeight(self.db.barHeight)
+                elseif self.testBar then
+                    self.testBar:SetHeight(self.db.barHeight)
+                end
+            end,
+            get = function(i) return self.db.barHeight end,
+            order = 77.1,
+            width = 1
+        },
+        bidding_gui_bar_font = {
+            name = CLM.L["Auction timer bar font"],
+            desc = CLM.L["Changes auction timer bar font."],
+            type = 'select',
+            dialogControl = 'LSM30_Font',
+            values = SharedMedia:HashTable("font"),
+            set = function(_, key)
+                print("font: ", key)
+                self.db.barFontName = key
+                if self.bar then
+                    self.bar:SetFontName(SharedMedia:Fetch("font", self.db.barFontName))
+                elseif self.testBar then
+                    self.testBar:SetFontName(SharedMedia:Fetch("font", self.db.barFontName))
+                end
+            end,
+            get = function() return self.db.barFontName end,
+            order = 77.3,
+        },
+        bidding_gui_bar_font_size = {
+            name = CLM.L["Auction timer bar font size"],
+            desc = CLM.L["Changes auction timer bar font size."],
+            type = "range",
+            min = 0,
+            max = 64,
+            step = 1,
+            set = function(i, v)
+                v = tonumber(v) or 0
+                if v < 0 then v = 0 end
+                if v > 64 then v = 64 end
+                self.db.barFontSize = v
+
+                if self.bar then
+                    self.bar:SetFontSize(self.db.barFontSize)
+                elseif self.testBar then
+                    self.testBar:SetFontSize(self.db.barFontSize)
+                end
+            end,
+            get = function(i) return self.db.barFontSize end,
+            order = 77.2,
+            width = 1
+        },
+        bidding_gui_bar_statusbar = {
+            name = CLM.L["Auction timer bar statusbar texture"],
+            desc = CLM.L["Changes auction timer bar statusbar texture."],
+            type = 'select',
+            dialogControl = 'LSM30_Statusbar',
+            values = SharedMedia:HashTable("statusbar"),
+            set = function(_, key)
+                print(key)
+                self.db.barTexture = key
+                if self.bar then
+                    self.bar:SetTexture(SharedMedia:Fetch("statusbar", self.db.barTexture))
+                elseif self.testBar then
+                    self.testBar:SetTexture(SharedMedia:Fetch("statusbar", self.db.barTexture))
+                end
+            end,
+            get = function() return self.db.barTexture end,
+            order = 77.4,
             width = 1
         },
         bidding_gui_bar_test_bar = {
@@ -236,6 +333,29 @@ local function CreateConfig(self)
             order = 78,
             width = 1
         },
+        bidding_gui_bar_restore_defaults = {
+            name = CLM.L["Restore bar defaults"],
+            type = "execute",
+            func = function()
+                local barOptions
+                if self.bar then
+                    self.bar:Default()
+                    barOptions = self.bar:GetOptions()
+                elseif self.testBar then
+                    self.testBar:Default()
+                    barOptions = self.testBar:GetOptions()
+                end
+                if barOptions then
+                    self.db.barWidth = barOptions.width
+                    self.db.barHeight = barOptions.height
+                    self.db.barTexture = DEFAULT_TEXTURE_NAME
+                    self.db.barFontName = barOptions.fontName
+                    self.db.barFontSize = barOptions.fontSize
+                end
+            end,
+            order = 78.1,
+            width = 1
+        },
         bidding_gui_hide_in_combat = {
             name = CLM.L["Hide in combat"],
             desc = CLM.L["Will hide bidding window if you enter combat and show it again when you exit. Will also delay auto opening if needed."],
@@ -243,7 +363,7 @@ local function CreateConfig(self)
             set = function(i, v) SetHideInCombat(self, v) end,
             get = function(i) return GetHideInCombat(self) end,
             width = 1,
-            order = 79
+            order = 76.5
         },
         bidding_gui_include_passes = {
             name = CLM.L["Include passes"],
@@ -1053,7 +1173,10 @@ function BiddingManagerGUI:StartAuction()
         {
             anchor = self.db.barLocation,
             width = self.db.barWidth,
-            height = 25,
+            height = self.db.barHeight,
+            texture = self.db.barTexture,
+            fontSize = self.db.barFontSize,
+            fontName = self.db.barFontName,
             callback = toggleCb
         }
     )

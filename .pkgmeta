@@ -29,6 +29,10 @@ externals:
     tag: v1.1.3
   ClassicLootManager/Libs/LibUIDropDownMenu:
     url: https://repos.wowace.com/wow/libuidropdownmenu/trunk
+  ClassicLootManager/Libs/LibSharedMedia-3.0:
+    url: https://repos.curseforge.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
+  ClassicLootManager/Libs/AceGUI-3.0-SharedMediaWidgets:
+    url: https://repos.curseforge.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
 
 ignore:
   - scripts
