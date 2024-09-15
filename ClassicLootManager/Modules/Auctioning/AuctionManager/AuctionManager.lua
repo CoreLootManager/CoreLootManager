@@ -362,7 +362,7 @@ local function CreateConfigurationOptions(self)
         },
         auctioning_guild_award_announcement = {
             name = CLM.L["Announce award to Guild"],
-            desc = CLM.L["Toggles loot award announcement to guild"],
+            desc = CLM.L["Toggles loot and point award announcement to guild"],
             type = "toggle",
             set = function(i, v) CLM.GlobalConfigs:SetAnnounceAwardToGuild(v) end,
             get = function(i) return CLM.GlobalConfigs:GetAnnounceAwardToGuild() end,
