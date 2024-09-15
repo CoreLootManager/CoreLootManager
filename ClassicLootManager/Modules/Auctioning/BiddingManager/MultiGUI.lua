@@ -271,7 +271,6 @@ local function CreateConfig(self)
             dialogControl = 'LSM30_Font',
             values = SharedMedia:HashTable("font"),
             set = function(_, key)
-                print("font: ", key)
                 self.db.barFontName = key
                 if self.bar then
                     self.bar:SetFontName(SharedMedia:Fetch("font", self.db.barFontName))
@@ -306,13 +305,12 @@ local function CreateConfig(self)
             width = 1
         },
         bidding_gui_bar_statusbar = {
-            name = CLM.L["Auction timer bar statusbar texture"],
-            desc = CLM.L["Changes auction timer bar statusbar texture."],
+            name = CLM.L["Auction timer bar texture"],
+            desc = CLM.L["Changes auction timer bar texture."],
             type = 'select',
             dialogControl = 'LSM30_Statusbar',
             values = SharedMedia:HashTable("statusbar"),
             set = function(_, key)
-                print(key)
                 self.db.barTexture = key
                 if self.bar then
                     self.bar:SetTexture(SharedMedia:Fetch("statusbar", self.db.barTexture))
