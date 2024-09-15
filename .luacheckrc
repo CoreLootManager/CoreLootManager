@@ -120,6 +120,7 @@ globals = {
 	"InterfaceOptionsFrame_OpenToCategory",
 	"SendChatMessage",
 	"GameTooltip",
+	"GameFontHighlightSmallOutline",
 	"GetItemClassInfo",
 	"IsInRaid",
 	"UnitGUID",

@@ -7,8 +7,17 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local LibCandyBar = LibStub("LibCandyBar-3.0")
+local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 local _, _, _, isElvUI = UTILS.GetAddOnInfo("ElvUI")
+
+local DEFAULT_WIDTH = 345
+local DEFAULT_HEIGHT = 30
+local DEFAULT_TEXTURE = "Interface\\AddOns\\ClassicLootManager\\Media\\Bars\\Ruben.tga"
+local DEFAULT_TEXTURE_NAME = "CLM Default"
+local DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE = GameFontHighlightSmallOutline:GetFont()
+
+SharedMedia:Register("statusbar", DEFAULT_TEXTURE_NAME, DEFAULT_TEXTURE)
 
 local BiddingTimerBar = {} -- BiddingTimerBar
 BiddingTimerBar.__index = BiddingTimerBar
@@ -17,13 +26,6 @@ local function RecolorBar(self)
     local currentPercentageLeft = (self.bar.remaining / self.duration)
     local percentageChange = self.previousPercentageLeft - currentPercentageLeft
     if percentageChange >= 0.01 or percentageChange < 0 then
-        -- if (currentPercentageLeft >= 0.5) then
-        --     self.bar:SetColor(0, 0.80, 0, 1)        -- green
-        -- elseif (currentPercentageLeft >= 0.2) then
-        --     self.bar:SetColor(0.92, 0.70, 0.20, 1)  -- gold
-        -- else
-        --     self.bar:SetColor(0.8, 0, 0, 1)         -- red
-        -- end
         local r, g, b, a = UTILS.GetColorByPercentage(currentPercentageLeft * 100)
         self.bar:SetColor(r, g, b, a)
         self.previousPercentageLeft = currentPercentageLeft
@@ -31,10 +33,16 @@ local function RecolorBar(self)
 end
 
 local function Create(self, item, auction, options)
-    self.bar = LibCandyBar:New(
-        "Interface\\AddOns\\ClassicLootManager\\Media\\Bars\\Ruben.tga",
-        tonumber(options.width) or 100,
-        tonumber(options.height) or 25)
+    self.options = {
+        texture = SharedMedia:Fetch("statusbar", options.texture) or DEFAULT_TEXTURE,
+        width = tonumber(options.width) or DEFAULT_WIDTH,
+        height = tonumber(options.height) or DEFAULT_HEIGHT,
+        fontName = options.fontName or DEFAULT_FONT_NAME,
+        fontSize = tonumber(options.fontSize) or DEFAULT_FONT_SIZE
+    }
+    self.bar = LibCandyBar:New(self.options.texture, self.options.width, self.options.height)
+
+    self.bar:SetFont(SharedMedia:Fetch("font", self.options.fontName), self.options.fontSize)
 
     local duration = auction:GetEndTime() - GetServerTime()
     self.bar:SetDuration(duration)
@@ -126,6 +134,46 @@ end
 
 function BiddingTimerBar:UpdateTime(time)
     self.bar.exp = (self.bar.exp + time) -- trick to extend bar
+end
+
+function BiddingTimerBar:SetWidth(width)
+    self.options.width = tonumber(width) or DEFAULT_WIDTH
+    self.bar:SetWidth(self.options.width)
+end
+
+function BiddingTimerBar:SetHeight(height)
+    self.options.height = tonumber(height) or DEFAULT_WIDTH
+    self.bar:SetHeight(self.options.height)
+end
+
+function BiddingTimerBar:SetTexture(texture)
+    self.options.texture = texture and tostring(texture) or DEFAULT_TEXTURE
+    self.bar.candyBarBar:SetStatusBarTexture(self.options.texture)
+    self.bar.candyBarBackground:SetTexture(self.options.texture)
+end
+
+function BiddingTimerBar:SetFontName(fontName)
+    self.options.fontName = fontName and tostring(fontName) or DEFAULT_FONT_NAME
+    local _, _fontSize = self.bar.candyBarLabel:GetFont()
+    self.bar:SetFont(self.options.fontName, _fontSize)
+end
+
+function BiddingTimerBar:SetFontSize(fontSize)
+    self.options.fontSize = tonumber(fontSize) or DEFAULT_FONT_SIZE
+    local _fontName, _ = self.bar.candyBarLabel:GetFont()
+    self.bar:SetFont(_fontName, self.options.fontSize)
+end
+
+function BiddingTimerBar:Default()
+    self:SetWidth(DEFAULT_WIDTH)
+    self:SetHeight(DEFAULT_HEIGHT)
+    self:SetTexture(DEFAULT_TEXTURE)
+    self:SetFontName(DEFAULT_FONT_NAME)
+    self:SetFontSize(DEFAULT_FONT_SIZE)
+end
+
+function BiddingTimerBar:GetOptions()
+    return self.options
 end
 
 function BiddingTimerBar:Stop()
