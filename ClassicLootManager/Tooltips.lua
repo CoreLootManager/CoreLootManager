@@ -95,7 +95,9 @@ local function addItemPriceToTooltip(tooltip)
         local _, _, _, itemEquipLoc, _, class, subclass = UTILS.GetItemInfoInstant(itemId)
         itemEquipLoc = UTILS.WorkaroundEquipLoc(class, subclass, itemEquipLoc)
         if not isEquipable[CLM.IndirectMap.slot[itemId] or itemEquipLoc] then
-            return
+            if UTILS.GetItemQualityByID(itemId) < 4 then -- Display on all epic items and above
+                return
+            end
         end
     end
     if not CLM.MODULES.RaidManager:IsInitialized() then return end
