@@ -30,6 +30,8 @@ CLM.EncounterIDsMap[3018] = CLM.L["Molten Core"]
 -- World Bosses
 CLM.EncounterIDsMap[3027] = CLM.L["Azuregos"]
 CLM.EncounterIDsMap[3026] = CLM.L["Lord Kazzak"]
+-- The Crystal Vale
+CLM.EncounterIDsMap[3079] = CLM.L["Prince Thunderaan"]
 CLM.EncounterIDs.SoD = {
     {
         name = CLM.L["Blackfathom Deeps"],
@@ -102,34 +104,41 @@ CLM.EncounterIDs.SoD = {
             { id = 3026, name = CLM.EncounterIDsMap[3026] },
         }
     },
-    -- {
-    --     name = CLM.L["Zul'Gurub"],
-    --     difficulty = {CLM.DifficultyID.P20},
-    --     data = {
-    --         { id = 789, name = CLM.EncounterIDsMap[789] },
-    --         { id = 784, name = CLM.EncounterIDsMap[784] },
-    --         { id = 791, name = CLM.EncounterIDsMap[791] },
-    --         { id = 785, name = CLM.EncounterIDsMap[785] },
-    --         { id = 786, name = CLM.EncounterIDsMap[786] },
-    --         { id = 787, name = CLM.EncounterIDsMap[787] },
-    --         { id = 792, name = CLM.EncounterIDsMap[792] },
-    --         { id = 793, name = CLM.EncounterIDsMap[793] },
-    --         { id = 788, name = CLM.EncounterIDsMap[788] },
-    --         { id = 790, name = CLM.EncounterIDsMap[790] },
-    --     },
-    -- },
-    -- {
-    --     name = CLM.L["Blackwing Lair"],
-    --     difficulty = {CLM.DifficultyID.P40},
-    --     data = {
-    --         { id = 610, name = CLM.EncounterIDsMap[610] },
-    --         { id = 611, name = CLM.EncounterIDsMap[611] },
-    --         { id = 612, name = CLM.EncounterIDsMap[612] },
-    --         { id = 613, name = CLM.EncounterIDsMap[613] },
-    --         { id = 614, name = CLM.EncounterIDsMap[614] },
-    --         { id = 615, name = CLM.EncounterIDsMap[615] },
-    --         { id = 616, name = CLM.EncounterIDsMap[616] },
-    --         { id = 617, name = CLM.EncounterIDsMap[617] },
-    --     },
-    -- },
+    {
+        name = CLM.L["Zul'Gurub"],
+        difficulty = {CLM.DifficultyID.P20},
+        data = {
+            { id = 789, name = CLM.EncounterIDsMap[789] },
+            { id = 784, name = CLM.EncounterIDsMap[784] },
+            { id = 791, name = CLM.EncounterIDsMap[791] },
+            { id = 785, name = CLM.EncounterIDsMap[785] },
+            { id = 786, name = CLM.EncounterIDsMap[786] },
+            { id = 787, name = CLM.EncounterIDsMap[787] },
+            { id = 792, name = CLM.EncounterIDsMap[792] },
+            { id = 793, name = CLM.EncounterIDsMap[793] },
+            { id = 788, name = CLM.EncounterIDsMap[788] },
+            { id = 790, name = CLM.EncounterIDsMap[790] },
+        },
+    },
+    {
+        name = CLM.L["Blackwing Lair"],
+        difficulty = {CLM.DifficultyID.NORMAL},
+        data = {
+            { id = 610, name = CLM.EncounterIDsMap[610] },
+            { id = 611, name = CLM.EncounterIDsMap[611] },
+            { id = 612, name = CLM.EncounterIDsMap[612] },
+            { id = 613, name = CLM.EncounterIDsMap[613] },
+            { id = 614, name = CLM.EncounterIDsMap[614] },
+            { id = 615, name = CLM.EncounterIDsMap[615] },
+            { id = 616, name = CLM.EncounterIDsMap[616] },
+            { id = 617, name = CLM.EncounterIDsMap[617] },
+        },
+    },
+    {
+        name = CLM.L["The Crystal Vale"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 3079, name = CLM.EncounterIDsMap[3079] },
+        },
+    },
 }
