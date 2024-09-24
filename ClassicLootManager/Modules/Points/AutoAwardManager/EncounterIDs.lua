@@ -15,6 +15,21 @@ CLM.DifficultyID.HEROIC     = 15
 CLM.DifficultyID.MYTHIC     = 16
 CLM.DifficultyID.LFR        = 17
 
+CLM.DifficultyIDsMap = {
+    [CLM.DifficultyID.NONE]         = "Fake", -- Trick for handling easily not-supported encounter ids
+    -- Classic
+    [CLM.DifficultyID.OPEN_WORLD]   = CLM.L["40 Player"], -- Open World
+    [CLM.DifficultyID.P10]	        = CLM.L["10 Player"],
+    [CLM.DifficultyID.P25]	        = CLM.L["25 Player"],
+    [CLM.DifficultyID.P10HC]	    = CLM.L["10 Player (Heroic)"],
+    [CLM.DifficultyID.P25HC]	    = CLM.L["25 Player (Heroic)"],
+    [CLM.DifficultyID.P40]          = CLM.L["40 Player"],
+    [CLM.DifficultyID.P20]          = CLM.L["20 Player"],
+    [CLM.DifficultyID.NORMAL]       = CLM.L["Normal"],
+    [CLM.DifficultyID.HEROIC]       = CLM.L["Heroic"],
+    [CLM.DifficultyID.MYTHIC]       = CLM.L["Mythic"],
+}
+
 if CLM.WoW10 then return end
 
 local EncounterIDsMap = {
@@ -215,20 +230,7 @@ local EncounterIDsMap = {
     [1299] = CLM.L["Madness of Deathwing"],
 }
 
-local DifficultyIDsMap = {
-    [CLM.DifficultyID.NONE]         = "Fake", -- Trick for handling easily not-supported encounter ids
-    -- Classic
-    [CLM.DifficultyID.OPEN_WORLD]   = CLM.L["40 Player"], -- Open World
-    [CLM.DifficultyID.P10]	        = CLM.L["10 Player"],
-    [CLM.DifficultyID.P25]	        = CLM.L["25 Player"],
-    [CLM.DifficultyID.P10HC]	    = CLM.L["10 Player (Heroic)"],
-    [CLM.DifficultyID.P25HC]	    = CLM.L["25 Player (Heroic)"],
-    [CLM.DifficultyID.P40]          = CLM.L["40 Player"],
-    [CLM.DifficultyID.P20]          = CLM.L["20 Player"],
-}
-
 CLM.EncounterIDsMap = EncounterIDsMap
-CLM.DifficultyIDsMap = DifficultyIDsMap
 
 CLM.EncounterHasHardMode = CLM.UTILS.Set({
     1132, -- Flame Leviathan

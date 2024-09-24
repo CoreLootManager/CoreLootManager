@@ -30,7 +30,8 @@ local multiWoWDifficultyIDs = {
     [14]  = CLM.DifficultyID.NORMAL,        -- Retail Normal
     [15]  = CLM.DifficultyID.HEROIC,        -- Retail Heroic
     [16]  = CLM.DifficultyID.MYTHIC,        -- Retail Mythic
-    [17]  = CLM.DifficultyID.LFR,           -- Retail LFR
+    [17]  = CLM.DifficultyID.LFR,           -- Retail LFR,
+    [231] = CLM.DifficultyID.NORMAL,        -- SoD Flex
 }
 
 local bossKillEncounterWorkaround = {
