@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.3.0",
+        data = {
+            {
+                name = "SoD",
+                data = {
+                    { header = "P5 Support", body = "Added BWL, ZG and The Crystal Vale support." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.2.4",
         data = {
             {

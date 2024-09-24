@@ -1,3 +1,7 @@
+# Core Loot Manager v5.3.0
+## SoD
+### P5 Support
+Added BWL, ZG and The Crystal Vale support.
 # Core Loot Manager v5.2.4
 ## Changes
 ### Auction bar
