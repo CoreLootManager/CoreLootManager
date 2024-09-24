@@ -30,6 +30,8 @@ CLM.EncounterIDsMap[3018] = CLM.L["Molten Core"]
 -- World Bosses
 CLM.EncounterIDsMap[3027] = CLM.L["Azuregos"]
 CLM.EncounterIDsMap[3026] = CLM.L["Lord Kazzak"]
+-- The Crystal Vale
+CLM.EncounterIDsMap[3079] = CLM.L["Prince Thunderaan"]
 CLM.EncounterIDs.SoD = {
     {
         name = CLM.L["Blackfathom Deeps"],
@@ -130,6 +132,13 @@ CLM.EncounterIDs.SoD = {
             { id = 615, name = CLM.EncounterIDsMap[615] },
             { id = 616, name = CLM.EncounterIDsMap[616] },
             { id = 617, name = CLM.EncounterIDsMap[617] },
+        },
+    },
+    {
+        name = CLM.L["The Crystal Vale"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 3079, name = CLM.EncounterIDsMap[3079] },
         },
     },
 }

@@ -246,7 +246,7 @@ CLM.EncounterHasHardMode = CLM.UTILS.Set({
 
 CLM.EncounterIDs = {}
 
-if not CLM.WoWSoD then return end
+if CLM.WoWSoD then return end
 
 CLM.EncounterIDs.Classic = {
     {
