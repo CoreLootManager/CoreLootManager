@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.3.1",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Roster settings", body = "When changing General or Auction roster settings during active raid, you will now be prompted with information that the change will not be effective until you start new raid." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.3.0",
         data = {
             {

@@ -1,3 +1,7 @@
+# Core Loot Manager v5.3.1
+## Changes
+### Roster settings
+When changing General or Auction roster settings during active raid, you will now be prompted with information that the change will not be effective until you start new raid.
 # Core Loot Manager v5.3.0
 ## SoD
 ### P5 Support
