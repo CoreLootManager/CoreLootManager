@@ -123,8 +123,8 @@ local IndirectMap = {
         [231722] = "INVTYPE_2HWEAPON",  -- Depleted Scythe of Chaos
         [229352] = "INVTYPE_WEAPON",    -- Intelligence Findings
         [230904] = "INVTYPE_2HWEAPON",  -- Scroll: SEENECS FO RIEF
-        [231378] = "INVTYPE_SHIELD",    -- Shimmering Golden Disk -
-        [231882] = "INVTYPE_2HWEAPON",    -- Suppression Device Receipt
+        [231378] = "INVTYPE_SHIELD",    -- Shimmering Golden Disk
+        [231882] = "INVTYPE_2HWEAPON",  -- Suppression Device Receipt
         [231995] = "INVTYPE_SHIELD",    -- Hardened Elementium Slag
         [231814] = "INVTYPE_2HWEAPON",  -- Chromatic Heart
         --- Cataclysm P1 Normal ---
