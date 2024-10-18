@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.3.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "SoD BWL", body = "Fixed SoD BWL difficulty settings. Added P5 tokens by @AttackKrow" },
+                    { header = "P5 Tokens", body = "P5 tokens added by @AttackKrow" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.3.1",
         data = {
             {

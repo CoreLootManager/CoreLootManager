@@ -1,3 +1,9 @@
+# Core Loot Manager v5.3.2
+## Fixes
+### SoD BWL
+Fixed SoD BWL difficulty settings. This might lead to your Boss Kill Bonus settings for it being reset.
+### P5 Tokens
+P5 tokens added by @AttackKrow
 # Core Loot Manager v5.3.1
 ## Changes
 ### Roster settings
