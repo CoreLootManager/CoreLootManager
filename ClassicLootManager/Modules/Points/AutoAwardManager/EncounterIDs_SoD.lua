@@ -122,7 +122,7 @@ CLM.EncounterIDs.SoD = {
     },
     {
         name = CLM.L["Blackwing Lair"],
-        difficulty = {CLM.DifficultyID.NORMAL},
+        difficulty = {CLM.DifficultyID.P40},
         data = {
             { id = 610, name = CLM.EncounterIDsMap[610] },
             { id = 611, name = CLM.EncounterIDsMap[611] },
