@@ -142,7 +142,7 @@ local IndirectMap = {
         [233362] = "INVTYPE_CHEST",     -- Husk of the Old God
         [233363] = "INVTYPE_CHEST",     -- Carapace of the Old God
         [233364] = "INVTYPE_CHEST",     -- Skin of the Old God
-        --[21221] = "INVTYPE_NECK", -- Eye of C'thun  --- Multiple different item types available from item, unsure what to set as
+        [21221] = "INVTYPE_NECK",       -- Eye of C'thun
         --- Cataclysm P1 Normal ---
         [63682] = "INVTYPE_HEAD",       -- Helm of the Forlorn Vanquisher
         [63684] = "INVTYPE_HEAD",       -- Helm of the Forlorn Protector
@@ -321,7 +321,7 @@ local IndirectMap = {
         [233362] = 88,  -- Husk of the Old God
         [233363] = 88,  -- Carapace of the Old God
         [233364] = 88,  -- Skin of the Old God
-        --[21221] = 88, -- Eye of C'thun --- See slot section note
+        [21221] = 88,   -- Eye of C'thun
         --- Cataclysm P1 Normal ---
         [63682] = 359, -- Helm of the Forlorn Vanquisher
         [63684] = 359, -- Helm of the Forlorn Protector
