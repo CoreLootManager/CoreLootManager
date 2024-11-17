@@ -502,39 +502,7 @@ local function CreateConfigurationOptions(self)
             get = function(i, v) return self.db.ignoredClasses[tonumber(v)] end,
             values = ItemClasses,
             order = 51
-        },
-        auctioning_chat_commands_header = {
-            type = "header",
-            name = CLM.L["Auctioning - Chat Commands"],
-            order = 43
-        },
-        auctioning_chat_commands = {
-            name = CLM.L["Enable chat commands"],
-            desc = CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."],
-            type = "toggle",
-            set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
-            get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
-            width = "double",
-            order = 44
-        },
-        auctioning_suppress_incoming = {
-            name = CLM.L["Suppress incoming whispers"],
-            desc = CLM.L["Hides incoming !dkp and !bid whispers. Change requires /reload."],
-            type = "toggle",
-            set = function(i, v) CLM.GlobalConfigs:SetSuppressIncomingChatCommands(v) end,
-            get = function(i) return CLM.GlobalConfigs:GetSuppressIncomingChatCommands() end,
-            width = "double",
-            order = 45
-        },
-        auctioning_suppress_outgoing = {
-            name = CLM.L["Suppress outgoing whispers"],
-            desc = CLM.L["Hides outgoing !dkp and !bid responses. Change requires /reload."],
-            type = "toggle",
-            set = function(i, v) CLM.GlobalConfigs:SetSuppressOutgoingChatCommands(v) end,
-            get = function(i) return CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() end,
-            width = "double",
-            order = 46
-        },
+        }
     }
     return options
 end
