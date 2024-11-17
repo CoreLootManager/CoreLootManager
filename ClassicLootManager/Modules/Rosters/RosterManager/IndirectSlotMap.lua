@@ -131,8 +131,8 @@ local IndirectMap = {
         [233369] = "INVTYPE_FEET",      -- Qiraji Bindings of Dominance
         [233370] = "INVTYPE_FEET",      -- Qiraji Bindings of Command
         [233371] = "INVTYPE_FEET",      -- Qiraji Bindings of Sovereignty
-        [20883] = "INVTYPE_HEAD",       -- Qiraji Glyphed Jewel
-        [20887] = "INVTYPE_HEAD",       -- Qiraji Engraved Jewel
+        [20883]  = "INVTYPE_HEAD",      -- Qiraji Glyphed Jewel
+        [20887]  = "INVTYPE_HEAD",      -- Qiraji Engraved Jewel
         [235045] = "INVTYPE_2HWEAPON",  -- Imperial Qiraji Regalia
         [235046] = "INVTYPE_WEAPON",    -- Imperial Qiraji Armaments
         [233365] = "INVTYPE_LEGS",      -- Intact Viscera
@@ -141,7 +141,7 @@ local IndirectMap = {
         [233362] = "INVTYPE_CHEST",     -- Husk of the Old God
         [233363] = "INVTYPE_CHEST",     -- Carapace of the Old God
         [233364] = "INVTYPE_CHEST",     -- Skin of the Old God
-        [21221] = "INVTYPE_NECK",       -- Eye of C'thun
+        [21221]  = "INVTYPE_NECK",      -- Eye of C'thun
         --- Cataclysm P1 Normal ---
         [63682] = "INVTYPE_HEAD",       -- Helm of the Forlorn Vanquisher
         [63684] = "INVTYPE_HEAD",       -- Helm of the Forlorn Protector
@@ -271,7 +271,7 @@ local IndirectMap = {
         [227757] = 66,  -- Molten Scaled Boots
         [227751] = 66,  -- Molten Scaled Belt
         [227756] = 66,  -- Molten Scaled Gloves
-        [18703] = 75,   -- Ancient Petrified Leaf
+        [18703]  = 75,  -- Ancient Petrified Leaf
         [228129] = 71,  -- Shadowflame Skull
         --- SOD P5 ---
         [231711] = 76, -- Draconic Hood
@@ -306,12 +306,12 @@ local IndirectMap = {
         [231995] = 79, -- Hardened Elementium Slag
         [231814] = 79, -- Chromatic Heart
         --- SOD P6 ---
-        ---AQ40
+        --- AQ40 ---
         [233369] = 78,  -- Qiraji Bindings of Dominance
         [233370] = 78,  -- Qiraji Bindings of Command
         [233371] = 78,  -- Qiraji Bindings of Sovereignty
-        [20883] = 81,   -- Qiraji Glyphed Jewel
-        [20887] = 81,   -- Qiraji Engraved Jewel
+        [20883]  = 81,  -- Qiraji Glyphed Jewel
+        [20887]  = 81,  -- Qiraji Engraved Jewel
         [235045] = 79,  -- Imperial Qiraji Regalia
         [235046] = 79,  -- Imperial Qiraji Armaments
         [233365] = 81,  -- Intact Viscera
@@ -320,7 +320,7 @@ local IndirectMap = {
         [233362] = 88,  -- Husk of the Old God
         [233363] = 88,  -- Carapace of the Old God
         [233364] = 88,  -- Skin of the Old God
-        [21221] = 88,   -- Eye of C'thun
+        [21221]  = 88,  -- Eye of C'thun
         --- Cataclysm P1 Normal ---
         [63682] = 359, -- Helm of the Forlorn Vanquisher
         [63684] = 359, -- Helm of the Forlorn Protector
