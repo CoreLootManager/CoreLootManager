@@ -3,7 +3,7 @@ local  _, CLM = ...
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
-local UTILS     = CLM.UTILS
+-- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png"
