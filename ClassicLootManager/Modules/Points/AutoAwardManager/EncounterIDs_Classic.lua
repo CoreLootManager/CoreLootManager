@@ -1,5 +1,7 @@
 local _, CLM = ...
 
+if true then return end
+
 CLM.DifficultyID = {}
 
 CLM.DifficultyID.NONE       = -1

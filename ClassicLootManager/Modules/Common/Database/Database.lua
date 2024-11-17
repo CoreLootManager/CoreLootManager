@@ -61,14 +61,27 @@ local function _initialize()
 
 end
 
-local prefix = ""
-if CLM.WoWTWW then
-    prefix = "tww" .. " "
-elseif CLM.WoWCata then
-    prefix = "cata" .. " "
+local literalPrefixes = {
+    [LE_EXPANSION_CATACLYSM] = "cata",
+    [LE_EXPANSION_WAR_WITHIN] = "tww"
+
+}
+
+local function _get_prefix()
+    if CLM.IsClassicEra() or CLM.IsSoD() then
+        -- Classic Era and SoD use oldest database prefix: none
+        return ""
+    end
+
+    local expansion, _ = CLM.GetExpansion()
+
+    local prefix = literalPrefixes[expansion] or ("exp" .. tostring(expansion))
+
+    return prefix .. " "
 end
+
 local function _get_database_name(guildName)
-    return string.lower(prefix ..UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. guildName)
+    return string.lower(_get_prefix() .. UnitFactionGroup("player") .. " " .. GetNormalizedRealmName() .. " " .. guildName)
 end
 
 function DB:ForceFallback()
@@ -86,7 +99,7 @@ function DB:Initialize()
             guildName = DATABASE_FALLBACK
         else
             retry_count = retry_count - 1
-            LOG:Debug("DB do retry: %d", 50 - retry_count)
+            LOG:Debug("DB do retry: %d", 5 - retry_count)
             return false
         end
     end

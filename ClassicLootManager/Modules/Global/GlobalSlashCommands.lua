@@ -119,17 +119,6 @@ function GlobalSlashCommands:Initialize()
         }
     end
     if CLM.MODULES.ACL:IsTrusted() then
-        options.spec = {
-            type = "execute",
-            name = CLM.L["Spec guild request"],
-            func = (function()
-                CLM.MODULES.ProfileInfoManager:RequestSpec()
-                CLM.MODULES.ProfileInfoManager:RequestRole()
-            end),
-            confirm = true
-        }
-    end
-    if CLM.MODULES.ACL:IsTrusted() then
         options.addprofile = {
             type = "input",
             name = "Add Profile By Name",

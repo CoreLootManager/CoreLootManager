@@ -20,11 +20,8 @@ function AuctionCommStartAuction:New(object)
     return o
 end
 
-local getExtraPayload
-if CLM.WoW10 or CLM.WoWCata then
-    getExtraPayload = function(auctionItem) return auctionItem:GetExtraPayload() end
-else
-    getExtraPayload = function() return nil end
+local function getExtraPayload(auctionItem)
+    return auctionItem:GetExtraPayload()
 end
 
 local function SerializeItems(items)

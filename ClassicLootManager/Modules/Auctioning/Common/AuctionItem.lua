@@ -32,7 +32,7 @@ local function usabilityScanner(tooltip)
     scanItem = nil
 end
 
-if CLM.WoW10 then
+if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall then
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, usabilityScanner)
 else
     scanTooltip:SetScript('OnTooltipSetItem', usabilityScanner)
@@ -169,7 +169,6 @@ function AuctionItem:SetValues(values)
 end
 
 function AuctionItem:SpoofLinkPayload(extra)
-    if not (CLM.WoW10 or CLM.WoWCata) then return end
     if type(extra) ~= 'string' then return end
     local link = self.item:GetItemLink()
     if type(link) ~= 'string' then

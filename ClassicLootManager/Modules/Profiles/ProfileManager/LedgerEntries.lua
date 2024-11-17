@@ -20,13 +20,13 @@ local ProfileLock       = LogEntry:extend("P3")
 -- ------------- --
 -- ProfileUpdate --
 -- ------------- --
-function ProfileUpdate:new(GUID, name, class, spec, main)
+function ProfileUpdate:new(GUID, name, class)
     local o = LogEntry.new(self);
     o.g = GetGUIDFromEntry(GUID or 0)
     o.n = (name ~= nil) and tostring(name) or ""
     o.c = CanonicalClassToNumber(class)
-    o.s = (spec ~= nil) and tostring(spec) or ""
-    o.m = GetGUIDFromEntry(main or 0)
+    o.s = "" -- Backwards compatibility
+    o.m = GetGUIDFromEntry(0)
     return o
 end
 
@@ -40,10 +40,6 @@ end
 
 function ProfileUpdate:ingameClass()
     return self.c
-end
-
-function ProfileUpdate:spec()
-    return self.s
 end
 
 function ProfileUpdate:main()

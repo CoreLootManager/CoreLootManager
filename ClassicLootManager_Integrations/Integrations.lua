@@ -104,8 +104,6 @@ end
 
 local function RequestWoWDKPBotData(self)
     if not self:GetWoWDKPBotIntegration() then return end
-    CLM.MODULES.ProfileInfoManager:RequestSpec()
-    CLM.MODULES.ProfileInfoManager:RequestRole()
     CLM.MODULES.ProfileInfoManager:RequestVersion()
 end
 
