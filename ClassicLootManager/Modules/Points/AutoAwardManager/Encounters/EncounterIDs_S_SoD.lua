@@ -1,10 +1,6 @@
 local _, CLM = ...
 
-if true then return end
-
-if not CLM.WoWSoD then return end
-
-CLM.EncounterIDs.SoD = {
+CLM.EncounterIDs["SOD"] = {
     {
         name = CLM.L["Blackfathom Deeps"],
         difficulty = {CLM.DifficultyID.P10},
@@ -111,6 +107,21 @@ CLM.EncounterIDs.SoD = {
         difficulty = {CLM.DifficultyID.P40},
         data = {
             { id = 3079, name = CLM.EncounterIDsMap[3079] },
+        },
+    },
+    {
+        name = CLM.L["Temple of Ahn'Qiraj"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 709, name = CLM.EncounterIDsMap[709] },
+            { id = 710, name = CLM.EncounterIDsMap[710] },
+            { id = 711, name = CLM.EncounterIDsMap[711] },
+            { id = 712, name = CLM.EncounterIDsMap[712] },
+            { id = 713, name = CLM.EncounterIDsMap[713] },
+            { id = 714, name = CLM.EncounterIDsMap[714] },
+            { id = 715, name = CLM.EncounterIDsMap[715] },
+            { id = 716, name = CLM.EncounterIDsMap[716] },
+            { id = 717, name = CLM.EncounterIDsMap[717] },
         },
     },
 }

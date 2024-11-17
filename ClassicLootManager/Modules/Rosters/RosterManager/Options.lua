@@ -655,21 +655,19 @@ local function item_value_overrides(self, roster)
 end
 
 local function generateBossKillAwardValueInputField(self, roster, info, instanceName, name, difficultyId, order, isHardMode, rows)
-    local nameModified = info.name .. (isHardMode and (" " .. CLM.UTILS.ColorCodeText(CLM.L["Hard Mode"], "ee4444")) or "")
+    local nameModified = CLM.DifficultyIDsMap[difficultyId] .. (isHardMode and (" " .. CLM.UTILS.ColorCodeText(CLM.L["Hard Mode"], "ee4444")) or "")
     local width
     rows = tonumber(rows)
     if rows == nil or rows <= 1 then
         width = "full"
     else
-        width = 1/rows
+        width = 3/rows
     end
     return {
         name = nameModified,
-        desc = instanceName,
+        desc = instanceName .. " - " .. info.name,
         type = "input",
         width = width,
-        -- width = "full",
-        -- width = (#nameModified > 20) and 2 or 1,
         order = order,
         set = (function(i, v)
             if self.readOnly then return end
@@ -695,6 +693,7 @@ local expansionInfoMap = {
     -- dfn     = { name = CLM.L["DF"] .. " - " .. CLM.L["Normal"],  offset = 11100},
     -- dfh     = { name = CLM.L["DF"] .. " - " .. CLM.L["Heroic"],  offset = 11200},
     -- dfm     = { name = CLM.L["DF"] .. " - " .. CLM.L["Mythic"],  offset = 11400},
+    [LE_EXPANSION_DRAGONFLIGHT] = { name = CLM.L["Dragonflight"], offset = 100000 },
     [LE_EXPANSION_WAR_WITHIN] = { name = CLM.L["The War Within"], offset = 110000 }
 }
 
@@ -703,29 +702,42 @@ local function boss_kill_award_values(self, roster, name)
     -- Common
     local order
     for expansion, encounters in pairs(CLM.EncounterIDs) do
+        local expansion_key = "e" .. tostring(expansion)
         order = expansionInfoMap[expansion].offset
-        if not args[expansion] then
-            args[expansion] = {
+        if not args[expansion_key] then
+            args[expansion_key] = {
                 type = "group",
                 name = expansionInfoMap[expansion].name,
                 args = {},
-                order = order
+                order = order,
+                childGroups = "select",
             }
         end
+        -- For each instance
         for _, instanceData in ipairs(encounters) do
+            order = order + 1
+            args[expansion_key].args[instanceData.name] = {
+                type = "group",
+                name = instanceData.name,
+                args = {},
+                order = order,
+            }
+            -- For each boss
             local numDifficultyLevels = #instanceData.difficulty
-            for _,difficultyId in ipairs(instanceData.difficulty) do
+            for _, info in ipairs(instanceData.data) do
                 order = order + 1
-                local instanceName = instanceData.name .. (CLM.DifficultyIDsMap[difficultyId] or "")
-                args[expansion].args["encounter_header_" .. instanceData.name .. difficultyId] = {
-                    name = instanceName or "???",
+                -- Header
+                local instanceName = instanceData.name
+                args[expansion_key].args[instanceData.name].args["encounter_header_" .. info.name] = {
+                    name = info.name or "???",
                     type = "header",
                     order = order,
                     width = "full"
                 }
-                for _, info in ipairs(instanceData.data) do
+                -- For each difficulty
+                for _,difficultyId in ipairs(instanceData.difficulty) do
                     order = order + 1
-                    args[expansion].args["encounter" .. info.id .. difficultyId] =
+                    args[expansion_key].args[instanceData.name].args["encounter" .. info.id .. difficultyId] =
                         generateBossKillAwardValueInputField(
                             self, roster, info,
                             instanceName, name, difficultyId,
@@ -733,7 +745,7 @@ local function boss_kill_award_values(self, roster, name)
                         )
                     if CLM.EncounterHasHardMode[info.id] then
                         order = order + 1
-                        args[expansion].args["encounter" .. info.id .. difficultyId .. "hm"] =
+                        args[expansion_key].args[instanceData.name].args["encounter" .. info.id .. difficultyId .. "hm"] =
                         generateBossKillAwardValueInputField(
                             self, roster, info,
                             instanceName, name, difficultyId,
