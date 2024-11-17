@@ -426,7 +426,7 @@ local describeFunctions  = {
     ["DM"] = (function(entry)
         local name = CLM.MODULES.RosterManager:GetRosterNameByUid(entry:rosterUid())
         return
-            string.format(CLM.L["Awarded %s points to %s players for %s in <%s>"],
+            string.format(CLM.L["Awarded %s points to %s player(s) for %s in <%s>"],
                 safeToString(entry:value()), safeToString(#entry:targets()),
                 decodeReason(entry:reason()), UTILS.ColorCodeText(name or entry:rosterUid(), "ebb434")
             )

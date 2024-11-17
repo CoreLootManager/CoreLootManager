@@ -366,7 +366,7 @@ CLM.L["Award"] = "分配"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:453
 CLM.L["Awarded %s points for %s to all players in raid %s"] = "已分配 %s 分数 for %s 给在团本活动 %s 中的所有角色"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:429
-CLM.L["Awarded %s points to %s players for %s in <%s>"] = "已分配 %s 分数给 %s 角色 for %s 在 <%s> 中"
+CLM.L["Awarded %s points to %s player(s) for %s in <%s>"] = "已分配 %s 分数给 %s 角色 for %s 在 <%s> 中"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:445
 CLM.L["Awarded %s points to all players for %s in <%s>"] = "已分配 %s 分数给所有角色 for %s 在 <%s> 中"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:176
@@ -2195,7 +2195,7 @@ CLM.L["Toggles auto-rolling on stacking items."] = "在可堆疊項目上切換�
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:183
 CLM.L["Toggles loot announcement to raid"] = "开关战利品通告到团队频道"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:365
-CLM.L["Toggles loot award announcement to guild"] = "开关战利品分配通告到公会频道"
+CLM.L["Toggles loot and point award announcement to guild"] = "开关战利品分配通告到公会频道"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:354
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:367
 CLM.L["Too much data to display"] = "数据过多，无法显示"

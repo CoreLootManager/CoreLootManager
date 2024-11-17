@@ -366,7 +366,7 @@ CLM.L["Award"] = "Начисление"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:453
 CLM.L["Awarded %s points for %s to all players in raid %s"] = "Начислено %s очков за %s всем игрокам в рейде %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:429
-CLM.L["Awarded %s points to %s players for %s in <%s>"] = "Начислено %s очков %s игрокам за %s в <%s>"
+CLM.L["Awarded %s points to %s player(s) for %s in <%s>"] = "Начислено %s очков %s игрокам за %s в <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:445
 CLM.L["Awarded %s points to all players for %s in <%s>"] = "Начислено %s очков всем игрокам за %s в <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:176
@@ -2195,7 +2195,7 @@ CLM.L["Toggles auto-rolling on stacking items."] = "Включить авто-р
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:183
 CLM.L["Toggles loot announcement to raid"] = "Включить оповещение о добыче в рейд"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:365
-CLM.L["Toggles loot award announcement to guild"] = "Включить оповещение о добыче в гильдию"
+CLM.L["Toggles loot and point award announcement to guild"] = "Включить оповещение о добыче в гильдию"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:354
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:367
 CLM.L["Too much data to display"] = "Слишком много данных для отображения "

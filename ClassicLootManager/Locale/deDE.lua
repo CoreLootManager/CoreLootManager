@@ -366,7 +366,7 @@ CLM.L["Award"] = "Vergeben"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:453
 CLM.L["Awarded %s points for %s to all players in raid %s"] = "Vergebe %s punkte für %s an alle Spieler des Raids %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:429
-CLM.L["Awarded %s points to %s players for %s in <%s>"] = "Vergebe %s punkte an %s Spieler für %s in <%s>"
+CLM.L["Awarded %s points to %s player(s) for %s in <%s>"] = "Vergebe %s punkte an %s Spieler für %s in <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:445
 CLM.L["Awarded %s points to all players for %s in <%s>"] = "Vergebe %s punkte an alle Spieler für %s in <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:176
@@ -2195,7 +2195,7 @@ CLM.L["Toggles auto-rolling on stacking items."] = "Umschalten auf automatisches
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:183
 CLM.L["Toggles loot announcement to raid"] = "Loot Vergabe im Schlachtzug Kanal ankündigen ein / ausschalten"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:365
-CLM.L["Toggles loot award announcement to guild"] = "Loot Vergabe im Gilden Kanal ankündigen ein / ausschalten"
+CLM.L["Toggles loot and point award announcement to guild"] = "Loot Vergabe im Gilden Kanal ankündigen ein / ausschalten"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:354
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:367
 CLM.L["Too much data to display"] = "Zu viele Daten zum anzeigen"

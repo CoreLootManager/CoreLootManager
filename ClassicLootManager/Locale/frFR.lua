@@ -366,7 +366,7 @@ CLM.L["Award"] = "Récompense"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:453
 CLM.L["Awarded %s points for %s to all players in raid %s"] = "Attribution de %s points pour %s à tous les joueurs du raid %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:429
-CLM.L["Awarded %s points to %s players for %s in <%s>"] = "Attribution de %s points à %s joueurs pour %s dans <%s>"
+CLM.L["Awarded %s points to %s player(s) for %s in <%s>"] = "Attribution de %s points à %s joueurs pour %s dans <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:445
 CLM.L["Awarded %s points to all players for %s in <%s>"] = "Attribution de %s points à tous les joueurs pour %s dans <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:176
@@ -2195,7 +2195,7 @@ CLM.L["Toggles auto-rolling on stacking items."] = "Activer l'auto-rand sur les 
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:183
 CLM.L["Toggles loot announcement to raid"] = "Activer l'annonce de butin en raid"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:365
-CLM.L["Toggles loot award announcement to guild"] = "Activer l'annonce de récompense de butin à la guilde"
+CLM.L["Toggles loot and point award announcement to guild"] = "Activer l'annonce de récompense de butin à la guilde"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:354
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:367
 CLM.L["Too much data to display"] = "Trop de données à afficher "
