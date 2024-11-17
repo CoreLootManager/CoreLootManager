@@ -366,7 +366,7 @@ CLM.L["Award"] = "Начисление"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:453
 CLM.L["Awarded %s points for %s to all players in raid %s"] = "Начислено %s очков за %s всем игрокам в рейде %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:429
-CLM.L["Awarded %s points to %s players for %s in <%s>"] = "Начислено %s очков %s игрокам за %s в <%s>"
+CLM.L["Awarded %s points to %s player(s) for %s in <%s>"] = "Начислено %s очков %s игрокам за %s в <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:445
 CLM.L["Awarded %s points to all players for %s in <%s>"] = "Начислено %s очков всем игрокам за %s в <%s>"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:176

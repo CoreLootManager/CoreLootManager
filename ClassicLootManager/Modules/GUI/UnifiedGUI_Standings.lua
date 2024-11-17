@@ -206,6 +206,12 @@ local function GenerateAssistantOptions(self)
                     LOG:Debug("UnifiedGUI_Standings(Award): missing reason");
                     awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT
                 end
+
+                local note = ""
+                if self.note and strlen(self.note) > 0 then
+                    note = ": " .. tostring(self.note)
+                end
+
                 local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
                 if self.context == CONSTANTS.ACTION_CONTEXT.RAID then
                     if CLM.MODULES.RaidManager:IsInRaid() then
@@ -213,10 +219,6 @@ local function GenerateAssistantOptions(self)
                         CLM.MODULES.PointManager:UpdateRaidPoints(raid, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardType)
 
                         if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
-                            local note = ""
-                            if self.note and strlen(self.note) > 0 then
-                                note = ": " .. tostring(self.note)
-                            end
                             UTILS.SendChatMessage(
                                 string.format(
                                     CLM.L["Awarded %s points for %s to all players in raid %s"] .. note,
@@ -234,14 +236,11 @@ local function GenerateAssistantOptions(self)
                         CLM.MODULES.PointManager:UpdateRosterPoints(roster, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, false, self.note, self.awardType)
 
                         if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
-                            local note = ""
-                            if self.note and strlen(self.note) > 0 then
-                                note = ": " .. tostring(self.note)
-                            end
                             UTILS.SendChatMessage(
                                 string.format(
-                                    CLM.L["Awarded %s points to %s players for %s in <%s>]" .. note,
-                                    awardValue, CONSTANTS.POINT_CHANGE_REASONS.ALL[awardReason] or "", raid:Name()
+                                    CLM.L["Awarded %s points to %s player(s) for %s in <%s>"] .. note,
+                                    awardValue, string.lower(CLM.L["All"]), CONSTANTS.POINT_CHANGE_REASONS.ALL[awardReason] or "",
+                                    CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID())
                                 ),
                                 "GUILD"
                             )
@@ -259,6 +258,19 @@ local function GenerateAssistantOptions(self)
                     end
                     if roster then
                         CLM.MODULES.PointManager:UpdatePoints(roster, profiles, awardValue, awardReason, CONSTANTS.POINT_MANAGER_ACTION.MODIFY, self.note, self.awardType)
+
+                        if CLM.GlobalConfigs:GetAnnounceAwardToGuild() then
+
+                            UTILS.SendChatMessage(
+                                string.format(
+                                    CLM.L["Awarded %s points to %s player(s) for %s in <%s>"] .. note,
+                                    awardValue, #profiles, CONSTANTS.POINT_CHANGE_REASONS.ALL[awardReason] or "",
+                                    CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID())
+                                ),
+                                "GUILD"
+                            )
+                        end
+
                     else
                         LOG:Warning("Missing valid roster.")
                     end
