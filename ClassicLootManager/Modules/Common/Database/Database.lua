@@ -61,6 +61,7 @@ local function _initialize()
 
 end
 
+-- Cata and TWW use literal prefixes
 local literalPrefixes = {
     [LE_EXPANSION_CATACLYSM] = "cata",
     [LE_EXPANSION_WAR_WITHIN] = "tww"
@@ -75,6 +76,7 @@ local function _get_prefix()
 
     local expansion, _ = CLM.GetExpansion()
 
+    -- Use dynamic prefixes based on expansion
     local prefix = literalPrefixes[expansion] or ("exp" .. tostring(expansion))
 
     return prefix .. " "

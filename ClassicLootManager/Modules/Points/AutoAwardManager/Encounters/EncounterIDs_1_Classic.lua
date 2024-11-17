@@ -1,5 +1,7 @@
 local _, CLM = ...
 
+if CLM.IsSoD() then return end
+
 CLM.EncounterIDs[LE_EXPANSION_CLASSIC] = {
     {
         name = CLM.L["Onyxia's Lair"],

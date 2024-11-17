@@ -22,12 +22,14 @@ CLM.DifficultyIDsMap = {
     [CLM.DifficultyID.OPEN_WORLD]   = CLM.L["40 Player"], -- Open World
     [CLM.DifficultyID.P40]          = CLM.L["40 Player"],
     [CLM.DifficultyID.P10]	        = CLM.L["10 Player"],
+    [CLM.DifficultyID.P20]	        = CLM.L["20 Player"],
     [CLM.DifficultyID.P10HC]	    = CLM.L["10 Player (Heroic)"],
     [CLM.DifficultyID.P25]	        = CLM.L["25 Player"],
     [CLM.DifficultyID.P25HC]	    = CLM.L["25 Player (Heroic)"],
     [CLM.DifficultyID.NORMAL]       = CLM.L["Normal"],
     [CLM.DifficultyID.HEROIC]       = CLM.L["Heroic"],
     [CLM.DifficultyID.MYTHIC]       = CLM.L["Mythic"],
+    [CLM.DifficultyID.LFR]          = CLM.L["LFR"],
 }
 
 CLM.EncounterIDsMap = {
@@ -259,14 +261,14 @@ CLM.EncounterIDsMap = {
     [1299] = CLM.L["Madness of Deathwing"],
     -- DF
     -- VoI
-    [2587] = EJ_GetEncounterInfo(2480),
-    [2592] = EJ_GetEncounterInfo(2482),
-    [2590] = EJ_GetEncounterInfo(2486),
-    [2605] = EJ_GetEncounterInfo(2491),
-    [2614] = EJ_GetEncounterInfo(2493),
-    [2607] = EJ_GetEncounterInfo(2499),
-    [2639] = EJ_GetEncounterInfo(2500),
-    [2635] = EJ_GetEncounterInfo(2502),
+    [2587] = EJ_GetEncounterInfo(2480) or "Eranog",
+    [2592] = EJ_GetEncounterInfo(2482) or "Sennarth, The Cold Breath",
+    [2590] = EJ_GetEncounterInfo(2486) or "The Primal Council",
+    [2605] = EJ_GetEncounterInfo(2491) or "Kurog Grimtotem",
+    [2614] = EJ_GetEncounterInfo(2493) or "Broodkeeper Diurna",
+    [2607] = EJ_GetEncounterInfo(2499) or "Raszageth the Storm-Eater",
+    [2639] = EJ_GetEncounterInfo(2500) or "Terros",
+    [2635] = EJ_GetEncounterInfo(2502) or "Dathea, Ascended",
     -- Aberrus
     [2688] = EJ_GetEncounterInfo(2522) or "Kazzara", -- Kazzara
     [2687] = EJ_GetEncounterInfo(2529) or "Molgoth", -- Molgoth

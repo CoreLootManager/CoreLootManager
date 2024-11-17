@@ -1,5 +1,8 @@
 local _, CLM = ...
 
+if CLM.IsSoD() then return end
+if CLM.IsClassicEra() then return end
+
 local EJ_GetInstanceInfo = EJ_GetInstanceInfo or (function() return nil end)
 
 CLM.EncounterIDs[LE_EXPANSION_DRAGONFLIGHT] = {

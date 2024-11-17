@@ -654,14 +654,14 @@ local function item_value_overrides(self, roster)
     return args
 end
 
-local function generateBossKillAwardValueInputField(self, roster, info, instanceName, name, difficultyId, order, isHardMode, rows)
+local function generateBossKillAwardValueInputField(self, roster, info, instanceName, name, difficultyId, order, isHardMode, fields)
     local nameModified = CLM.DifficultyIDsMap[difficultyId] .. (isHardMode and (" " .. CLM.UTILS.ColorCodeText(CLM.L["Hard Mode"], "ee4444")) or "")
     local width
-    rows = tonumber(rows)
-    if rows == nil or rows <= 1 then
+    fields = tonumber(fields)
+    if fields == nil or fields <= 1 then
         width = "full"
     else
-        width = 3/rows
+        width = 3/fields
     end
     return {
         name = nameModified,
@@ -680,21 +680,13 @@ local function generateBossKillAwardValueInputField(self, roster, info, instance
 end
 
 local expansionInfoMap = {
-    -- classic = { name = CLM.L["Classic"],                         offset = 0},
-    -- sod     = { name = CLM.L["SoD"],                             offset = 1000},
-    -- tbc     = { name = CLM.L["TBC"],                             offset = 2000},
-    -- wotlk10 = { name = CLM.L["WotLK"] .. " - " .. "10",          offset = 3000},
-    -- wotlk25 = { name = CLM.L["WotLK"] .. " - " .. "25",          offset = 3500},
-    -- cata10  = { name = CLM.L["Cataclysm"] .. " - " .. "10",      offset = 4000},
-    -- cata25  = { name = CLM.L["Cataclysm"] .. " - " .. "25",      offset = 4500},
-    -- twwn    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Normal"], offset = 10100},
-    -- twwh    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Heroic"], offset = 10200},
-    -- twwm    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Mythic"], offset = 10400},
-    -- dfn     = { name = CLM.L["DF"] .. " - " .. CLM.L["Normal"],  offset = 11100},
-    -- dfh     = { name = CLM.L["DF"] .. " - " .. CLM.L["Heroic"],  offset = 11200},
-    -- dfm     = { name = CLM.L["DF"] .. " - " .. CLM.L["Mythic"],  offset = 11400},
-    [LE_EXPANSION_DRAGONFLIGHT] = { name = CLM.L["Dragonflight"], offset = 100000 },
-    [LE_EXPANSION_WAR_WITHIN] = { name = CLM.L["The War Within"], offset = 110000 }
+    [LE_EXPANSION_CLASSIC]                  = { name = CLM.L["Classic"],                offset =  10000 },
+    [LE_EXPANSION_BURNING_CRUSADE]          = { name = CLM.L["The Burning Crusade"],    offset =  20000 },
+    [LE_EXPANSION_WRATH_OF_THE_LICH_KING]   = { name = CLM.L["Wrath of the Lich King"], offset =  30000 },
+    [LE_EXPANSION_CATACLYSM]                = { name = CLM.L["Cataclysm"],              offset =  40000 },
+    [LE_EXPANSION_DRAGONFLIGHT]             = { name = CLM.L["Dragonflight"],           offset = 100000 },
+    [LE_EXPANSION_WAR_WITHIN]               = { name = CLM.L["The War Within"],         offset = 110000 },
+    ["SOD"]                                 = { name = CLM.L["Season of Discovery"],    offset = 990000 },
 }
 
 local function boss_kill_award_values(self, roster, name)
@@ -728,6 +720,9 @@ local function boss_kill_award_values(self, roster, name)
                 order = order + 1
                 -- Header
                 local instanceName = instanceData.name
+                if info.name == nil then
+                    print(instanceName, info.id, info.name)
+                end
                 args[expansion_key].args[instanceData.name].args["encounter_header_" .. info.name] = {
                     name = info.name or "???",
                     type = "header",
@@ -736,20 +731,21 @@ local function boss_kill_award_values(self, roster, name)
                 }
                 -- For each difficulty
                 for _,difficultyId in ipairs(instanceData.difficulty) do
+                    local hardmode = CLM.EncounterHasHardMode[info.id] and true or false
                     order = order + 1
                     args[expansion_key].args[instanceData.name].args["encounter" .. info.id .. difficultyId] =
                         generateBossKillAwardValueInputField(
                             self, roster, info,
                             instanceName, name, difficultyId,
-                            order, false, numDifficultyLevels + (CLM.EncounterHasHardMode[info.id] and 1 or 0)
+                            order, false, numDifficultyLevels + (hardmode and numDifficultyLevels or 0)
                         )
-                    if CLM.EncounterHasHardMode[info.id] then
+                    if hardmode then
                         order = order + 1
                         args[expansion_key].args[instanceData.name].args["encounter" .. info.id .. difficultyId .. "hm"] =
                         generateBossKillAwardValueInputField(
                             self, roster, info,
                             instanceName, name, difficultyId,
-                            order, true, numDifficultyLevels + (CLM.EncounterHasHardMode[info.id] and 1 or 0)
+                            order, true, numDifficultyLevels + (hardmode and numDifficultyLevels or 0)
                         )
                     end
                 end

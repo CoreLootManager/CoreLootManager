@@ -1,5 +1,8 @@
 local _, CLM = ...
 
+if CLM.IsSoD() then return end
+if CLM.IsClassicEra() then return end
+
 CLM.EncounterIDs[LE_EXPANSION_WRATH_OF_THE_LICH_KING] = {
     {
         name = CLM.L["Naxxramas"],

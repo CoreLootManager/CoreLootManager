@@ -1,5 +1,8 @@
 local _, CLM = ...
 
+if CLM.IsSoD() then return end
+if CLM.IsClassicEra() then return end
+
 CLM.EncounterIDs[LE_EXPANSION_CATACLYSM] = {
     {
         name = CLM.L["Baradin Hold"],

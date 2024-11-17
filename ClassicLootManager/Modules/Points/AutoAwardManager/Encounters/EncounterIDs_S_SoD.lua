@@ -1,5 +1,7 @@
 local _, CLM = ...
 
+if not CLM.IsSoD() then return end
+
 CLM.EncounterIDs["SOD"] = {
     {
         name = CLM.L["Blackfathom Deeps"],
@@ -66,7 +68,7 @@ CLM.EncounterIDs["SOD"] = {
     },
     {
         name = CLM.L["World Bosses"],
-        difficulty = {0},
+        difficulty = {CLM.DifficultyID.OPEN_WORLD},
         data = {
             { id = 3027, name = CLM.EncounterIDsMap[3027] },
             { id = 3026, name = CLM.EncounterIDsMap[3026] },
