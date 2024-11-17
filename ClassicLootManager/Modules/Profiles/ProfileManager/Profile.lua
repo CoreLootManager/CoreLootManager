@@ -26,8 +26,6 @@ function Profile:New(entry, name, class, main)
         patch = 0,
         changeset = ""
     }
-    o:SetSpec()
-    o:SetRole()
     o.alts = {}
     o.locked = false
 
@@ -50,30 +48,6 @@ end
 
 function Profile:ClassInternal()
     return UTILS.NumberToClass(self.entry:ingameClass())
-end
-
-function Profile:Spec()
-    return self.spec
-end
-
-function Profile:SetRole(role)
-    self.role = role or ""
-end
-
-function Profile:SetSpec(one, two, three)
-    self.spec = {
-        one = one or 0,
-        two = two or 0,
-        three = three or 0
-    }
-end
-
-function Profile:Role()
-    return self.role
-end
-
-function Profile:SpecString()
-    return self.spec.one .. "/" .. self.spec.two .. "/" .. self.spec.three
 end
 
 function Profile:Main()

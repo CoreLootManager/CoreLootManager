@@ -1,0 +1,107 @@
+local _, CLM = ...
+
+if CLM.IsSoD() then return end
+
+CLM.EncounterIDs[LE_EXPANSION_CLASSIC] = {
+    {
+        name = CLM.L["Onyxia's Lair"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+	        { id = 1084, order =  1, name = CLM.EncounterIDsMap[1084] },
+        },
+    },
+    {
+        name = CLM.L["Molten Core"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 663, name = CLM.EncounterIDsMap[663] },
+            { id = 664, name = CLM.EncounterIDsMap[664] },
+            { id = 665, name = CLM.EncounterIDsMap[665] },
+            { id = 666, name = CLM.EncounterIDsMap[666] },
+            { id = 668, name = CLM.EncounterIDsMap[668] },
+            { id = 667, name = CLM.EncounterIDsMap[667] },
+            { id = 669, name = CLM.EncounterIDsMap[669] },
+            { id = 670, name = CLM.EncounterIDsMap[670] },
+            { id = 671, name = CLM.EncounterIDsMap[671] },
+            { id = 672, name = CLM.EncounterIDsMap[672] },
+        },
+    },
+    {
+        name = CLM.L["Blackwing Lair"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 610, name = CLM.EncounterIDsMap[610] },
+            { id = 611, name = CLM.EncounterIDsMap[611] },
+            { id = 612, name = CLM.EncounterIDsMap[612] },
+            { id = 613, name = CLM.EncounterIDsMap[613] },
+            { id = 614, name = CLM.EncounterIDsMap[614] },
+            { id = 615, name = CLM.EncounterIDsMap[615] },
+            { id = 616, name = CLM.EncounterIDsMap[616] },
+            { id = 617, name = CLM.EncounterIDsMap[617] },
+        },
+    },
+    {
+        name = CLM.L["Temple of Ahn'Qiraj"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 709, name = CLM.EncounterIDsMap[709] },
+            { id = 710, name = CLM.EncounterIDsMap[710] },
+            { id = 711, name = CLM.EncounterIDsMap[711] },
+            { id = 712, name = CLM.EncounterIDsMap[712] },
+            { id = 713, name = CLM.EncounterIDsMap[713] },
+            { id = 714, name = CLM.EncounterIDsMap[714] },
+            { id = 715, name = CLM.EncounterIDsMap[715] },
+            { id = 716, name = CLM.EncounterIDsMap[716] },
+            { id = 717, name = CLM.EncounterIDsMap[717] },
+        },
+    },
+    {
+        name = CLM.L["Naxxramas"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 1107, name = CLM.EncounterIDsMap[1107] },
+            { id = 1110, name = CLM.EncounterIDsMap[1110] },
+            { id = 1116, name = CLM.EncounterIDsMap[1116] },
+            { id = 1118, name = CLM.EncounterIDsMap[1118] },
+            { id = 1111, name = CLM.EncounterIDsMap[1111] },
+            { id = 1108, name = CLM.EncounterIDsMap[1108] },
+            { id = 1120, name = CLM.EncounterIDsMap[1120] },
+            { id = 1117, name = CLM.EncounterIDsMap[1117] },
+            { id = 1112, name = CLM.EncounterIDsMap[1112] },
+            { id = 1115, name = CLM.EncounterIDsMap[1115] },
+            { id = 1113, name = CLM.EncounterIDsMap[1113] },
+            { id = 1109, name = CLM.EncounterIDsMap[1109] },
+            { id = 1121, name = CLM.EncounterIDsMap[1121] },
+            { id = 1119, name = CLM.EncounterIDsMap[1119] },
+            { id = 1114, name = CLM.EncounterIDsMap[1114] },
+        },
+    },
+    {
+        name = CLM.L["Zul'Gurub"],
+        difficulty = {CLM.DifficultyID.P20},
+        data = {
+            { id = 789, name = CLM.EncounterIDsMap[789] },
+            { id = 784, name = CLM.EncounterIDsMap[784] },
+            { id = 791, name = CLM.EncounterIDsMap[791] },
+            { id = 785, name = CLM.EncounterIDsMap[785] },
+            { id = 786, name = CLM.EncounterIDsMap[786] },
+            { id = 787, name = CLM.EncounterIDsMap[787] },
+            { id = 792, name = CLM.EncounterIDsMap[792] },
+            { id = 793, name = CLM.EncounterIDsMap[793] },
+            { id = 788, name = CLM.EncounterIDsMap[788] },
+            { id = 790, name = CLM.EncounterIDsMap[790] },
+        },
+    },
+    {
+        name = CLM.L["Ruins of Ahn'Qiraj"],
+        difficulty = {CLM.DifficultyID.P20},
+        data = {
+            { id = 718, name = CLM.EncounterIDsMap[718] },
+            { id = 719, name = CLM.EncounterIDsMap[719] },
+            { id = 720, name = CLM.EncounterIDsMap[720] },
+            { id = 721, name = CLM.EncounterIDsMap[721] },
+            { id = 722, name = CLM.EncounterIDsMap[722] },
+            { id = 723, name = CLM.EncounterIDsMap[723] },
+        },
+    },
+}

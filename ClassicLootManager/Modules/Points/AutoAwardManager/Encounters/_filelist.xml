@@ -1,0 +1,11 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+	..\FrameXML\UI.xsd">
+	<Script file="EncounterIDs___Base.lua"/>
+	<Script file="EncounterIDs_1_Classic.lua"/>
+	<Script file="EncounterIDs_2_TBC.lua"/>
+	<Script file="EncounterIDs_3_WotLK.lua"/>
+	<Script file="EncounterIDs_4_Cata.lua"/>
+	<Script file="EncounterIDs_10_Dragonflight.lua"/>
+	<Script file="EncounterIDs_11_TWW.lua"/>
+	<Script file="EncounterIDs_S_SoD.lua"/>
+</Ui>

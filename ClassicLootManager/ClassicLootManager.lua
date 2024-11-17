@@ -2,14 +2,23 @@ local name, CLM = ...
 
 local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
-_G["CLM"] = CLM -- Expose CLM globally
+local GetActiveSeason = C_Seasons and C_Seasons.GetActiveSeason or (function() return nil end)
 
-CLM.WoWTWW  = select(4, GetBuildInfo()) >= 110000
-CLM.WoW10  = select(4, GetBuildInfo()) >= 100000
-CLM.WoWSeasonal = select(4, GetBuildInfo()) < 30000
-CLM.WoWCata = (select(4, GetBuildInfo()) > 40000) and not CLM.WoW10
-if CLM.WoWSeasonal then
-    CLM.WoWSoD = C_Seasons.GetActiveSeason() == Enum.SeasonID.Placeholder
+_G["CLM"] = CLM
+
+
+function CLM.GetExpansion()
+    return floor(select(4, GetBuildInfo())/10000) - 1, GetActiveSeason()
+end
+
+function CLM.IsClassicEra()
+    local expansion, season = CLM.GetExpansion()
+    return (expansion == LE_EXPANSION_CLASSIC) and ((season == nil) or (season == Enum.SeasonID.NoSeason))
+end
+
+function CLM.IsSoD()
+    local expansion, season = CLM.GetExpansion()
+    return (expansion == LE_EXPANSION_CLASSIC) and (season == Enum.SeasonID.SeasonOfDiscovery)
 end
 
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
@@ -18,9 +27,9 @@ CLM.MODULES = {}
 CLM.MODELS = { LEDGER = {} }
 CLM.CONSTANTS = {}
 CLM.COMM_CHANNEL = {
-    AUCTION = "Auction4",
-    BIDDING = "Bidding4",
-    BIDANNOUNCE = "Bids1",
+    AUCTION = "Auction5",
+    BIDDING = "Bidding5",
+    BIDANNOUNCE = "Bids2",
     LEDGER = {
         SYNC = "LedgerS3",
         DATA = "LedgerD3"
@@ -291,7 +300,7 @@ function CORE:OnInitialize()
     SetGuildRosterShowOffline(true)
     GuildRoster()
     -- We schedule this in case GUILD_ROSTER_UPDATE won't come early enough
-    C_Timer.After(20, function()
+    C_Timer.After(10, function()
         CORE:_ExecuteInitialize()
     end)
 end

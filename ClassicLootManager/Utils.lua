@@ -31,14 +31,24 @@ local numberToClass = {
     [12] = "Demon Hunter",
     [13] = "Evoker"
 }
-local classOrdered
-if CLM.WoW10 then
-    classOrdered = { "Death Knight", "Demon Hunter", "Druid", "Evoker", "Hunter", "Mage", "Monk", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
-elseif CLM.WoWSeasonal then
-    classOrdered = { "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
-else
-    classOrdered = { "Death Knight", "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+local classOrdered = { "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
+if CLM.GetExpansion() >= LE_EXPANSION_WRATH_OF_THE_LICH_KING then
+    table.insert(classOrdered, 1, "Death Knight")
 end
+if CLM.GetExpansion() >= LE_EXPANSION_MISTS_OF_PANDARIA then
+    table.insert(classOrdered, 5, "Monk")
+end
+if CLM.GetExpansion() >= LE_EXPANSION_LEGION then
+    table.insert(classOrdered, 2, "Demon Hunter")
+end
+if CLM.GetExpansion() >= LE_EXPANSION_DRAGONFLIGHT then
+    table.insert(classOrdered, 4, "Evoker")
+end
+
+function UTILS.GetNumClasses()
+    return #classOrdered
+end
+
 local classToNumber = {}
 for k, v in pairs(numberToClass) do
     classToNumber[v] = k
@@ -667,25 +677,6 @@ function UTILS.round(number, decimals)
     return math.floor(number * factor + 0.5) / factor
 end
 
-if CLM.WoW10 then
-    function UTILS.GetMyRole()
-        local currentSpec = GetSpecialization()
-        local role = "NONE"
-        if currentSpec then
-            _, _, _, _, role = GetSpecializationInfo(currentSpec)
-        end
-        return role
-    end
-elseif CLM.WoWSeasonal then
-    function UTILS.GetMyRole()
-        return "NONE" -- Not supported as it requires Role decoding based on spec
-    end
-else
-    function UTILS.GetMyRole()
-        return GetTalentGroupRole(GetActiveTalentGroup())
-    end
-end
-
 function UTILS.IsTooltipTextRed(text)
     if text and text:GetText() then
         local r,g,b = text:GetTextColor()
@@ -1130,8 +1121,8 @@ CONSTANTS.ROLL_TYPE = {
     [LOOT_ROLL_TYPE_NEED]               = ColorCodeText(NEED, "1eff00"),
     [LOOT_ROLL_TYPE_GREED]              = ColorCodeText(GREED , "ffd100"),
 }
-if CLM.WoW10 or CLM.WoWCata then
-    CONSTANTS.ROLL_TYPE[LOOT_ROLL_TYPE_DISENCHANT]         = ColorCodeText(ROLL_DISENCHANT, "0070dd")
+if CLM.GetExpansion() >= LE_EXPANSION_CATACLYSM then
+    CONSTANTS.ROLL_TYPE[LOOT_ROLL_TYPE_DISENCHANT] = ColorCodeText(ROLL_DISENCHANT, "0070dd")
     local TRANSMOGRIFICATION = TRANSMOGRIFICATION or "Transmogrification"
     CONSTANTS.ROLL_TYPE[CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG] = ColorCodeText(TRANSMOGRIFICATION, "a335ee")
 end

@@ -811,11 +811,9 @@ function AuctionManager:StartAuction()
             UTILS.SendChatMessage("Whisper me '!bid <amount>' to bid. Whisper '!dkp' to check your dkp.", CHAT_MESSAGE_CHANNEL)
         end
     end
-    -- For now only WoW Classic (with different IDs for items) support auto item value mode settings when dynamic item value mode is enabled
-    local autoItemValueOverride = true
-    if CLM.WoW10 or CLM.WoWCata then
-        autoItemValueOverride = not auction.roster:GetConfiguration("dynamicValue")
-    end
+
+    -- TODO update this when fixing dynamic value mode
+    local autoItemValueOverride = not auction.roster:GetConfiguration("dynamicValue")
 
     if autoItemValueOverride then
         for id, auctionItem in pairs(auction:GetItems()) do

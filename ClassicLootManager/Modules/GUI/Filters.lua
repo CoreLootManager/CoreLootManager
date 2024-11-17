@@ -93,7 +93,7 @@ local parameterToConstantMap = {
 }
 
 local function SelectClasses(self, isSelect)
-    for i=1,(CLM.WoW10 and 13 or (CLM.WoWSeasonal and 9 or 10)) do
+    for i=1,UTILS.GetNumClasses() do
         self.filters[i] = isSelect and true or false
     end
 end

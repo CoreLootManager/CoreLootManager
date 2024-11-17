@@ -1,38 +1,8 @@
 local _, CLM = ...
 
-if not CLM.WoWSoD then return end
--- Append to existing ones
-CLM.EncounterIDsMap[2694] = CLM.L["Baron Aquanis"]
-CLM.EncounterIDsMap[2697] = CLM.L["Ghamoo-ra"]
-CLM.EncounterIDsMap[2699] = CLM.L["Lady Sarevess"]
-CLM.EncounterIDsMap[2704] = CLM.L["Gelihast"]
-CLM.EncounterIDsMap[2710] = CLM.L["Lorgus Jett"]
-CLM.EncounterIDsMap[2825] = CLM.L["Twilight Lord Kelris"]
-CLM.EncounterIDsMap[2891] = CLM.L["Aku'mai"]
--- Gnomeregan
-CLM.EncounterIDsMap[2925] = CLM.L["Grubbis"]
-CLM.EncounterIDsMap[2928] = CLM.L["Viscous Fallout"]
-CLM.EncounterIDsMap[2927] = CLM.L["Electrocutioner 6000"]
-CLM.EncounterIDsMap[2899] = CLM.L["Crowd Pummeler 9-60"]
-CLM.EncounterIDsMap[2935] = CLM.L["Mechanical Menagerie"]
-CLM.EncounterIDsMap[2940] = CLM.L["Mekgineer Thermaplugg"]
--- Sunken Temple
-CLM.EncounterIDsMap[2952] = CLM.L["Atal'alarion"]
-CLM.EncounterIDsMap[2953] = CLM.L["Festering Rotslime"]
-CLM.EncounterIDsMap[2955] = CLM.L["Dreamscythe and Weaver"]
-CLM.EncounterIDsMap[2954] = CLM.L["Atal'ai Defenders"]
-CLM.EncounterIDsMap[2957] = CLM.L["Jammal'an and Ogom"]
-CLM.EncounterIDsMap[2958] = CLM.L["Morphaz and Hazzas"]
-CLM.EncounterIDsMap[2959] = CLM.L["Shade of Eranikus"]
-CLM.EncounterIDsMap[2956] = CLM.L["Avatar of Hakkar"]
--- Molten Core
-CLM.EncounterIDsMap[3018] = CLM.L["Molten Core"]
--- World Bosses
-CLM.EncounterIDsMap[3027] = CLM.L["Azuregos"]
-CLM.EncounterIDsMap[3026] = CLM.L["Lord Kazzak"]
--- The Crystal Vale
-CLM.EncounterIDsMap[3079] = CLM.L["Prince Thunderaan"]
-CLM.EncounterIDs.SoD = {
+if not CLM.IsSoD() then return end
+
+CLM.EncounterIDs["SOD"] = {
     {
         name = CLM.L["Blackfathom Deeps"],
         difficulty = {CLM.DifficultyID.P10},
@@ -98,7 +68,7 @@ CLM.EncounterIDs.SoD = {
     },
     {
         name = CLM.L["World Bosses"],
-        difficulty = {0},
+        difficulty = {CLM.DifficultyID.OPEN_WORLD},
         data = {
             { id = 3027, name = CLM.EncounterIDsMap[3027] },
             { id = 3026, name = CLM.EncounterIDsMap[3026] },
@@ -139,6 +109,21 @@ CLM.EncounterIDs.SoD = {
         difficulty = {CLM.DifficultyID.P40},
         data = {
             { id = 3079, name = CLM.EncounterIDsMap[3079] },
+        },
+    },
+    {
+        name = CLM.L["Temple of Ahn'Qiraj"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 709, name = CLM.EncounterIDsMap[709] },
+            { id = 710, name = CLM.EncounterIDsMap[710] },
+            { id = 711, name = CLM.EncounterIDsMap[711] },
+            { id = 712, name = CLM.EncounterIDsMap[712] },
+            { id = 713, name = CLM.EncounterIDsMap[713] },
+            { id = 714, name = CLM.EncounterIDsMap[714] },
+            { id = 715, name = CLM.EncounterIDsMap[715] },
+            { id = 716, name = CLM.EncounterIDsMap[716] },
+            { id = 717, name = CLM.EncounterIDsMap[717] },
         },
     },
 }

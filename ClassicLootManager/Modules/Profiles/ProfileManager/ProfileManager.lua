@@ -9,13 +9,15 @@ local UTILS     = CLM.UTILS
 local whoamiGUID = UTILS.whoamiGUID()
 
 local notEmptyiGUID
-if CLM.WoW10 or CLM.WoWSeasonal or CLM.WoWCata then
+
+if CLM.IsClassicEra() then
+    -- Backwards compatibility for Classic Era
     notEmptyiGUID = function(iGUID)
-        return iGUID[2] ~= 0
+        return iGUID ~= 0
     end
 else
     notEmptyiGUID = function(iGUID)
-        return iGUID ~= 0
+        return iGUID[2] ~= 0
     end
 end
 

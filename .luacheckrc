@@ -25,7 +25,7 @@ globals = {
 	"CLM_DB",
 	"CLM_Logs",
 	"CLM_MinimapIcon",
-	-- 
+	--
 	"CLM2_DB",
 	"CLM2_Logs",
 	"CLM2_MinimapIcon",
@@ -41,12 +41,24 @@ globals = {
 	"CommDKP_DB",
 	-- RCLC
 	"RCLootCouncil",
-	-- VDT 
+	-- VDT
 	"DevTool",
 	"DevTool_AddData",
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"floor",
+	"LE_EXPANSION_CLASSIC",
+	"LE_EXPANSION_BURNING_CRUSADE",
+	"LE_EXPANSION_WRATH_OF_THE_LICH_KING",
+	"LE_EXPANSION_CATACLYSM",
+	"LE_EXPANSION_MISTS_OF_PANDARIA",
+	"LE_EXPANSION_WARLORDS_OF_DRAENOR",
+	"LE_EXPANSION_LEGION",
+	"LE_EXPANSION_BATTLE_FOR_AZEROTH",
+	"LE_EXPANSION_SHADOWLANDS",
+	"LE_EXPANSION_DRAGONFLIGHT",
+	"LE_EXPANSION_WAR_WITHIN",
 	"Ambiguate",
 	"RaidWarningFrame",
 	"RaidWarningFrame_OnEvent",

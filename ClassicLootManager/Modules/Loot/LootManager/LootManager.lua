@@ -162,15 +162,11 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
         LOG:Error("LootManager:AwardItem(): Invalid Value")
         return false
     end
-    if CLM.WoW10 or CLM.WoWCata then
-        if type(extra) == "string" then
-            extra = string.gsub(extra, "[^-?%d:]+", "")
-        elseif extra ~= nil then
-            LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
-            return false
-        end
-    else
-        extra = nil
+    if type(extra) == "string" then
+        extra = string.gsub(extra, "[^-?%d:]+", "")
+    elseif extra ~= nil then
+        LOG:Error("LootManager:AwardItem(): Invalid extra payload data")
+        return false
     end
 
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
@@ -216,15 +212,11 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
         LOG:Error("LootManager:DisenchantItem(): Item does not exist")
         return false
     end
-    if CLM.WoW10 or CLM.WoWCata then
-        if type(extra) == "string" then
-            extra = string.gsub(extra, "[^%d:]+", "")
-        elseif extra ~= nil then
-            LOG:Error("LootManager:DisenchantItem(): Invalid extra payload data")
-            return false
-        end
-    else
-        extra = nil
+    if type(extra) == "string" then
+        extra = string.gsub(extra, "[^%d:]+", "")
+    elseif extra ~= nil then
+        LOG:Error("LootManager:DisenchantItem(): Invalid extra payload data")
+        return false
     end
     local roster = isRaid and raidOrRoster:Roster() or raidOrRoster
     local entry
