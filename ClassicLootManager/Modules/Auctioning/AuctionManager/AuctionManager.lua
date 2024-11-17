@@ -28,6 +28,7 @@ local function InitializeDB(self)
         lootThreshold = 4,
         removeOnNoBids = false,
         defaultRemoveOnAward = true,
+        postAllBidsOnAward = false,
         notes = {},
         includePasses = true,
         includeCancels = false,
@@ -106,6 +107,14 @@ end
 
 local function GetDisenchantAutoRemoved(self)
     return self.db.disenchantAutoRemoved
+end
+
+local function SetPostAllBidsOnAward(self, value)
+    self.db.postAllBidsOnAward = value and true or false
+end
+
+local function GetPostAllBidsOnAward(self)
+    return self.db.postAllBidsOnAward
 end
 
 function AuctionManager:SetDefaultRemoveOnAward(value)
@@ -501,7 +510,15 @@ local function CreateConfigurationOptions(self)
             end,
             get = function(i, v) return self.db.ignoredClasses[tonumber(v)] end,
             values = ItemClasses,
-            order = 51
+            order = 50
+        },
+        award_post_bids = {
+            name = CLM.L["Post all bids on award"],
+            desc = CLM.L["Post all bids after awarding item"],
+            type = "toggle",
+            set = function(i, v) SetPostAllBidsOnAward(self, v) end,
+            get = function(i) return GetPostAllBidsOnAward(self) end,
+            order = 53
         }
     }
     return options
@@ -1192,6 +1209,9 @@ function AuctionManager:Award(item, name, price)
     local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), item:GetExtraPayload(), price, true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
+        if GetPostAllBidsOnAward(self) then
+            CLM.MODULES.AuctionHistoryManager:PostByUUID(uuid)
+        end
         CLM.MODULES.AutoAssign:Handle(item:GetItemLink(), name)
         RevalidateBids(self)
     end

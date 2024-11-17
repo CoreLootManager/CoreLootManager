@@ -224,7 +224,7 @@ local function GenerateAssistantOptions(self)
                                     CLM.L["Awarded %s points for %s to all players in raid %s"] .. note,
                                     awardValue, CONSTANTS.POINT_CHANGE_REASONS.ALL[awardReason] or "", raid:Name()
                                 ),
-                                "GUILD"
+                                "PARTY"--"GUILD"
                             )
                         end
 
@@ -242,7 +242,7 @@ local function GenerateAssistantOptions(self)
                                     awardValue, string.lower(CLM.L["All"]), CONSTANTS.POINT_CHANGE_REASONS.ALL[awardReason] or "",
                                     CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID())
                                 ),
-                                "GUILD"
+                                "PARTY"--"GUILD"
                             )
                         end
 
@@ -267,7 +267,7 @@ local function GenerateAssistantOptions(self)
                                     awardValue, #profiles, CONSTANTS.POINT_CHANGE_REASONS.ALL[awardReason] or "",
                                     CLM.MODULES.RosterManager:GetRosterNameByUid(roster:UID())
                                 ),
-                                "GUILD"
+                                "PARTY"--"GUILD"
                             )
                         end
 
