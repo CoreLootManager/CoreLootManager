@@ -127,6 +127,21 @@ local IndirectMap = {
         [231882] = "INVTYPE_2HWEAPON",  -- Suppression Device Receipt
         [231995] = "INVTYPE_SHIELD",    -- Hardened Elementium Slag
         [231814] = "INVTYPE_2HWEAPON",  -- Chromatic Heart
+        --- SOD P6 ---
+        [233369] = "INVTYPE_FEET",      -- Qiraji Bindings of Dominance
+        [233370] = "INVTYPE_FEET",      -- Qiraji Bindings of Command
+        [233371] = "INVTYPE_FEET",      -- Qiraji Bindings of Sovereignty
+        [20883] = "INVTYPE_HEAD",       -- Qiraji Glyphed Jewel
+        [20887] = "INVTYPE_HEAD",       -- Qiraji Engraved Jewel
+        [235045] = "INVTYPE_2HWEAPON",  -- Imperial Qiraji Regalia
+        [235046] = "INVTYPE_WEAPON",    -- Imperial Qiraji Armaments
+        [233365] = "INVTYPE_LEGS",      -- Intact Viscera
+        [233367] = "INVTYPE_LEGS",      -- Imperial Peritoneum
+        [233368] = "INVTYPE_LEGS",      -- Imperial Entrails
+        [233362] = "INVTYPE_CHEST",     -- Husk of the Old God
+        [233363] = "INVTYPE_CHEST",     -- Carapace of the Old God
+        [233364] = "INVTYPE_CHEST",     -- Skin of the Old God
+        [21221] = "INVTYPE_NECK",       -- Eye of C'thun
         --- Cataclysm P1 Normal ---
         [63682] = "INVTYPE_HEAD",       -- Helm of the Forlorn Vanquisher
         [63684] = "INVTYPE_HEAD",       -- Helm of the Forlorn Protector
@@ -290,6 +305,22 @@ local IndirectMap = {
         [231882] = 79, -- Suppression Device Receipt
         [231995] = 79, -- Hardened Elementium Slag
         [231814] = 79, -- Chromatic Heart
+        --- SOD P6 ---
+        ---AQ40
+        [233369] = 78,  -- Qiraji Bindings of Dominance
+        [233370] = 78,  -- Qiraji Bindings of Command
+        [233371] = 78,  -- Qiraji Bindings of Sovereignty
+        [20883] = 81,   -- Qiraji Glyphed Jewel
+        [20887] = 81,   -- Qiraji Engraved Jewel
+        [235045] = 79,  -- Imperial Qiraji Regalia
+        [235046] = 79,  -- Imperial Qiraji Armaments
+        [233365] = 81,  -- Intact Viscera
+        [233367] = 81,  -- Imperial Peritoneum
+        [233368] = 81,  -- Imperial Entrails
+        [233362] = 88,  -- Husk of the Old God
+        [233363] = 88,  -- Carapace of the Old God
+        [233364] = 88,  -- Skin of the Old God
+        [21221] = 88,   -- Eye of C'thun
         --- Cataclysm P1 Normal ---
         [63682] = 359, -- Helm of the Forlorn Vanquisher
         [63684] = 359, -- Helm of the Forlorn Protector
