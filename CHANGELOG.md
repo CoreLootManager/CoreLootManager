@@ -12,6 +12,8 @@ Boss kill award UI has been overhauled as an outcome of internal changes.
 P6 SoD tokens added by @AttackKrow
 ### Chat commands
 All functionality and mentions about chat commands have been removed.
+### Point awards
+Announcing awards to guild is now extended for manual point awards also, atop of loot award.
 # Core Loot Manager v5.3.2
 ## Fixes
 ### SoD BWL

@@ -12,6 +12,7 @@ CLM.ChangelogData = {
                     { header = "Boss kill award UI overhaul", body = "Boss kill award UI has been overhauled as an outcome of internal changes." },
                     { header = "P6 Tokens", body = "P6 SoD tokens added by @AttackKrow" },
                     { header = "Chat commands", body = "All functionality and mentions about chat commands have been removed." },
+                    { header = "Point awards", body = "Announcing awards to guild is now extended for manual point awards also, atop of loot award." },
                 },
             },
         },
