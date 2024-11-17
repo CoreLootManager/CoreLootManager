@@ -1,10 +1,8 @@
 local _, CLM = ...
 
-local EJ_GetInstanceInfo = EJ_GetInstanceInfo or (function() return nil end)
-
 if true then return end
 
-if not CLM.WoW10 then return end
+local EJ_GetInstanceInfo = EJ_GetInstanceInfo or (function() return nil end)
 
 local diffMapGenerator = {
     { name = "n", difficulty = CLM.DifficultyID.NORMAL},

@@ -654,13 +654,21 @@ local function item_value_overrides(self, roster)
     return args
 end
 
-local function generateBossKillAwardValueInputField(self, roster, info, instanceName, name, difficultyId, order, isHardMode)
+local function generateBossKillAwardValueInputField(self, roster, info, instanceName, name, difficultyId, order, isHardMode, rows)
     local nameModified = info.name .. (isHardMode and (" " .. CLM.UTILS.ColorCodeText(CLM.L["Hard Mode"], "ee4444")) or "")
+    local width
+    rows = tonumber(rows)
+    if rows == nil or rows <= 1 then
+        width = "full"
+    else
+        width = 1/rows
+    end
     return {
         name = nameModified,
         desc = instanceName,
         type = "input",
-        width = "full",
+        width = width,
+        -- width = "full",
         -- width = (#nameModified > 20) and 2 or 1,
         order = order,
         set = (function(i, v)
@@ -673,41 +681,42 @@ local function generateBossKillAwardValueInputField(self, roster, info, instance
     }
 end
 
-local bossKillBonusTabMap = {
-    classic = { name = CLM.L["Classic"],                         offset = 0},
-    sod     = { name = CLM.L["SoD"],                             offset = 1000},
-    tbc     = { name = CLM.L["TBC"],                             offset = 2000},
-    wotlk10 = { name = CLM.L["WotLK"] .. " - " .. "10",          offset = 3000},
-    wotlk25 = { name = CLM.L["WotLK"] .. " - " .. "25",          offset = 3500},
-    cata10  = { name = CLM.L["Cataclysm"] .. " - " .. "10",      offset = 4000},
-    cata25  = { name = CLM.L["Cataclysm"] .. " - " .. "25",      offset = 4500},
-    twwn    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Normal"], offset = 10100},
-    twwh    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Heroic"], offset = 10200},
-    twwm    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Mythic"], offset = 10400},
-    dfn     = { name = CLM.L["DF"] .. " - " .. CLM.L["Normal"],  offset = 11100},
-    dfh     = { name = CLM.L["DF"] .. " - " .. CLM.L["Heroic"],  offset = 11200},
-    dfm     = { name = CLM.L["DF"] .. " - " .. CLM.L["Mythic"],  offset = 11400},
+local expansionInfoMap = {
+    -- classic = { name = CLM.L["Classic"],                         offset = 0},
+    -- sod     = { name = CLM.L["SoD"],                             offset = 1000},
+    -- tbc     = { name = CLM.L["TBC"],                             offset = 2000},
+    -- wotlk10 = { name = CLM.L["WotLK"] .. " - " .. "10",          offset = 3000},
+    -- wotlk25 = { name = CLM.L["WotLK"] .. " - " .. "25",          offset = 3500},
+    -- cata10  = { name = CLM.L["Cataclysm"] .. " - " .. "10",      offset = 4000},
+    -- cata25  = { name = CLM.L["Cataclysm"] .. " - " .. "25",      offset = 4500},
+    -- twwn    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Normal"], offset = 10100},
+    -- twwh    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Heroic"], offset = 10200},
+    -- twwm    = { name = CLM.L["TWW"] .. " - " .. CLM.L["Mythic"], offset = 10400},
+    -- dfn     = { name = CLM.L["DF"] .. " - " .. CLM.L["Normal"],  offset = 11100},
+    -- dfh     = { name = CLM.L["DF"] .. " - " .. CLM.L["Heroic"],  offset = 11200},
+    -- dfm     = { name = CLM.L["DF"] .. " - " .. CLM.L["Mythic"],  offset = 11400},
+    [LE_EXPANSION_WAR_WITHIN] = { name = CLM.L["The War Within"], offset = 110000 }
 }
 
 local function boss_kill_award_values(self, roster, name)
     local args = {}
     -- Common
     local order
-    for expansion,expansionEncounterData in pairs(CLM.EncounterIDs) do
-        expansion = string.lower(expansion)
-        order = bossKillBonusTabMap[expansion].offset
+    for expansion, encounters in pairs(CLM.EncounterIDs) do
+        order = expansionInfoMap[expansion].offset
         if not args[expansion] then
             args[expansion] = {
                 type = "group",
-                name = bossKillBonusTabMap[expansion].name,
+                name = expansionInfoMap[expansion].name,
                 args = {},
                 order = order
             }
         end
-        for _, instanceData in ipairs(expansionEncounterData) do
+        for _, instanceData in ipairs(encounters) do
+            local numDifficultyLevels = #instanceData.difficulty
             for _,difficultyId in ipairs(instanceData.difficulty) do
                 order = order + 1
-                local instanceName = instanceData.name .. (CLM.DifficultyIDsMap[difficultyId] and (" - " .. CLM.DifficultyIDsMap[difficultyId]) or "")
+                local instanceName = instanceData.name .. (CLM.DifficultyIDsMap[difficultyId] or "")
                 args[expansion].args["encounter_header_" .. instanceData.name .. difficultyId] = {
                     name = instanceName or "???",
                     type = "header",
@@ -720,15 +729,15 @@ local function boss_kill_award_values(self, roster, name)
                         generateBossKillAwardValueInputField(
                             self, roster, info,
                             instanceName, name, difficultyId,
-                            order, false
+                            order, false, numDifficultyLevels + (CLM.EncounterHasHardMode[info.id] and 1 or 0)
                         )
                     if CLM.EncounterHasHardMode[info.id] then
                         order = order + 1
-                        args[expansion].args["encounter" .. info.id .. difficultyId .. "hardmode"] =
+                        args[expansion].args["encounter" .. info.id .. difficultyId .. "hm"] =
                         generateBossKillAwardValueInputField(
                             self, roster, info,
                             instanceName, name, difficultyId,
-                            order, true
+                            order, true, numDifficultyLevels + (CLM.EncounterHasHardMode[info.id] and 1 or 0)
                         )
                     end
                 end
@@ -1220,7 +1229,8 @@ function RosterManagerOptions:GenerateRosterOptions(name)
                 name = CLM.L["Boss kill award values"],
                 type = "group",
                 order = 7,
-                childGroups = "tab",
+                -- childGroups = "tab",
+                childGroups = "select",
                 args = boss_kill_award_values(self, roster, name)
             }
         }

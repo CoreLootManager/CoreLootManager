@@ -123,6 +123,9 @@ function ProfileInfoManager:Initialize()
             end)
             C_Timer.After(math.random(2, 5), function()
                 AnnounceVersion()
+                if CLM.MODULES.ACL:IsTrusted() then
+                    CLM.MODULES.ProfileInfoManager:RequestVersion()
+                end
             end)
             self._initialized = true
         end

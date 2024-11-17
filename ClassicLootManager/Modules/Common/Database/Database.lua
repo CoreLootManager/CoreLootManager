@@ -24,7 +24,7 @@ local DB_NAME_GLOBAL = 'global'
 
 local DATABASE_FALLBACK = "unguilded"
 
-local retry_count = 50
+local retry_count = 5
 local function UpdateSchema(table, schema)
     if type(schema) == "table" then
         for key, value in pairs(schema) do

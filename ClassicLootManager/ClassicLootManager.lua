@@ -2,11 +2,13 @@ local name, CLM = ...
 
 local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
+local GetActiveSeason = C_Seasons and C_Seasons.GetActiveSeason or (function() return nil end)
+
 _G["CLM"] = CLM
 
 
 function CLM.GetExpansion()
-    return floor(select(4, GetBuildInfo())/10000) - 1, C_Seasons.GetActiveSeason()
+    return floor(select(4, GetBuildInfo())/10000) - 1, GetActiveSeason()
 end
 
 function CLM.IsClassicEra()

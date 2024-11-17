@@ -104,7 +104,6 @@ end
 
 local function RequestWoWDKPBotData(self)
     if not self:GetWoWDKPBotIntegration() then return end
-    CLM.MODULES.ProfileInfoManager:RequestVersion()
 end
 
 local function InitializeGargulIntegration(self)
