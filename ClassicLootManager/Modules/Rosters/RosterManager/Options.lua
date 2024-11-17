@@ -7,10 +7,11 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local CBTYPE = {
-    GETTER   = "get",
-    SETTER   = "set",
-    EXECUTOR = "execute",
-    HIDER    = "hide"
+    GETTER          = "get",
+    SETTER          = "set",
+    EXECUTOR        = "execute",
+    HIDER           = "hide",
+    CONFIRMATION    = "confirm"
 }
 
 local RosterManagerOptions = { externalOptions = {} }
@@ -330,12 +331,14 @@ function RosterManagerOptions:Initialize()
     end)
 end
 
+local CONFIRMATION_GROUPS = UTILS.Set({"general", "auction"})
 function RosterManagerOptions:_Handle(cbtype, info, ...)
     -- Assumes This is the handler of each of the subgroups but not the main group
     local roster_name = info[1]
+    local group = info[2]
     local node_name
     if #info >= 2 then
-        node_name = info[2]
+        node_name = group
         for i=3,#info do
             node_name = node_name .. "_" .. info[i]
         end
@@ -351,6 +354,17 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
     end
 
     if cbtype == CBTYPE.HIDER then
+        return false
+    end
+
+    if cbtype == CBTYPE.CONFIRMATION then
+        if CLM.MODULES.RaidManager:IsInActiveRaid() then
+            local raid = CLM.MODULES.RaidManager:GetRaid()
+            if raid:Roster() == CLM.MODULES.RosterManager:GetRosterByName(roster_name) and CONFIRMATION_GROUPS[group] then
+                return CLM.L["You are changing roster settings during active raid. You can continue without any issues however the settings will not get applied until you start a new one."]
+            end
+        end
+
         return false
     end
 
@@ -372,6 +386,10 @@ end
 
 function RosterManagerOptions:Hider(info, ...)
     self:_Handle(CBTYPE.HIDER, info, ...)
+end
+
+function RosterManagerOptions:Confirmation(info, ...)
+    return self:_Handle(CBTYPE.CONFIRMATION, info, ...)
 end
 
 local valuesWithDesc = {
@@ -770,6 +788,7 @@ function RosterManagerOptions:GenerateRosterOptions(name)
         handler = self,
         set = "Setter",
         get = "Getter",
+        confirm = "Confirmation",
         -- hidden = "Hider",
         func = "Handler",
         childGroups = "select",

@@ -1,3 +1,25 @@
+# Core Loot Manager v5.3.2
+## Fixes
+### SoD BWL
+Fixed SoD BWL difficulty settings. This might lead to your Boss Kill Bonus settings for it being reset.
+### P5 Tokens
+P5 tokens added by @AttackKrow
+# Core Loot Manager v5.3.1
+## Changes
+### Roster settings
+When changing General or Auction roster settings during active raid, you will now be prompted with information that the change will not be effective until you start new raid.
+# Core Loot Manager v5.3.0
+## SoD
+### P5 Support
+Added BWL, ZG and The Crystal Vale support.
+# Core Loot Manager v5.2.4
+## Changes
+### Auction bar
+Auction bar can now be fully reskined.
+### TWW Tier Tokens
+Tier token value will now be displayed properly in the tooltip.
+### TWW Trade
+Trade will now work properly for cross-realm raiders.
 # Core Loot Manager v5.2.3
 ## Encounter ID fixes
 ### TWW
