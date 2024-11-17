@@ -1,6 +1,53 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.3.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "SoD BWL", body = "Fixed SoD BWL difficulty settings. Added P5 tokens by @AttackKrow" },
+                    { header = "P5 Tokens", body = "P5 tokens added by @AttackKrow" },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.3.1",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Roster settings", body = "When changing General or Auction roster settings during active raid, you will now be prompted with information that the change will not be effective until you start new raid." },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.3.0",
+        data = {
+            {
+                name = "SoD",
+                data = {
+                    { header = "P5 Support", body = "Added BWL, ZG and The Crystal Vale support." },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.2.4",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Auction bar", body = "Auction bar can now be fully reskined." },
+                    { header = "TWW Tier Tokens", body = "Tier token value will now be displayed properly in the tooltip." },
+                    { header = "TWW Trade", body = "Trade will now work properly for cross-realm raiders." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.2.3",
         data = {
             {

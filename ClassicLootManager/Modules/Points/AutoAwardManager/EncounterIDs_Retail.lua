@@ -43,16 +43,8 @@ local EncounterIDsMap = {
     [2922] = EJ_GetEncounterInfo(2602) or "Queen Ansurek",
 }
 
-local DifficultyIDsMap = {
-    [-1]    = "Fake", -- Trick for handling easily not-supported encounter ids
-    -- Retail
-    [14]   = CLM.L["Normal"],
-    [15]   = CLM.L["Heroic"],
-    [16]   = CLM.L["Mythic"],
-}
 
 CLM.EncounterIDsMap = EncounterIDsMap
-CLM.DifficultyIDsMap = DifficultyIDsMap
 
 CLM.EncounterHasHardMode = CLM.UTILS.Set({})
 
