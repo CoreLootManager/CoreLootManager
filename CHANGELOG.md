@@ -1,3 +1,17 @@
+# Core Loot Manager v5.4.0
+## Changes
+### Code unification
+Code was hugely unified across multiple versions. This has been done in preparation for Classic Anniversary and MoP release.
+### Auctioning unification
+Auctioning was unified during code unification, which means older versions of **addon comms are not compatible** with current one. Everyone will need to update to at least `v5.4.0`.
+### Database
+Database approach was changed for newer expansions. This change should not affect existing versions.
+### Boss kill award UI overhaul
+Boss kill award UI has been overhauled as an outcome of internal changes.
+### P6 Tokens
+P6 SoD tokens added by @AttackKrow
+### Chat commands
+All functionality and mentions about chat commands have been removed.
 # Core Loot Manager v5.3.2
 ## Fixes
 ### SoD BWL
@@ -715,7 +729,7 @@ Fix Multiple baby-age issues.
 ## Wrath of the Lich King!
 Are you ready for Wrath of the Lich King? Classic Loot Manager is! Read about major overhaul and new features coming in this version!
 ### Wrath of the Lich King support
-New Bosses and difficulties, new API and dual spec is now properly supported!  
+New Bosses and difficulties, new API and dual spec is now properly supported!
 **CLM 2.0 is not backwards compatible and starts with a clean database for your best experience in new expansion!**
 ### Thank you supporters!
 Thank you to all  that support us, either by contributing or donating through patreon: https://www.patreon.com/classiclootmanager.

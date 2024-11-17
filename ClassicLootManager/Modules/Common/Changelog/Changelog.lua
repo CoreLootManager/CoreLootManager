@@ -1,6 +1,22 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.4.0",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Code unification", body = "Code was hugely unified across multiple versions. This has been done in preparation for Classic Anniversary and MoP release." },
+                    { header = "Auctioning unification", body = "Auctioning was unified during code unification, which means older versions of addon comms are not compatible with current one. Everyone will need to update to at least v5.4.0." },
+                    { header = "Database", body = "Database approach was changed for newer expansions. This change should not affect existing versions." },
+                    { header = "Boss kill award UI overhaul", body = "Boss kill award UI has been overhauled as an outcome of internal changes." },
+                    { header = "P6 Tokens", body = "P6 SoD tokens added by @AttackKrow" },
+                    { header = "Chat commands", body = "All functionality and mentions about chat commands have been removed." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.3.2",
         data = {
             {
