@@ -73,7 +73,7 @@
             "type": "pickString",
             "options": [
                 "$CATA",
-                "$DF",
+                "$TWW_11_0_7",
                 "$TWW",
                 "$ERA",
                 "$RETAIL"

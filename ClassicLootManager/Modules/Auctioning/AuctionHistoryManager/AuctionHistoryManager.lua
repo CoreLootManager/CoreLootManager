@@ -71,7 +71,7 @@ function AuctionHistoryManager:Initialize()
             set = function(i, v) SetPostBidsChannel(self, v) end,
             get = function(i) return GetPostBidsChannel(self) end,
             order = 52
-        }
+        },
     }
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
@@ -150,8 +150,7 @@ function AuctionHistoryManager:GetHistory()
     return self.db.stack
 end
 
-function AuctionHistoryManager:PostById(id)
-    local data = self.db.stack[id]
+function AuctionHistoryManager:PostData(data)
     if data then
         local channel = CHANNELS[GetPostBidsChannel(self)] or "OFFICER"
         UTILS.SendChatMessage(data.link, channel)
@@ -193,6 +192,14 @@ function AuctionHistoryManager:PostById(id)
             UTILS.SendChatMessage(CLM.L["No bids"], channel)
         end
     end
+end
+
+function AuctionHistoryManager:PostById(id)
+    self:PostData(self.db.stack[id])
+end
+
+function AuctionHistoryManager:PostByUUID(uuid)
+    self:PostData(self:GetByUUID(uuid))
 end
 
 function AuctionHistoryManager:Remove(id)

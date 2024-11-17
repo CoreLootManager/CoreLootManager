@@ -241,14 +241,6 @@ Thank you patrons!
             get = function(i) return self:GetAuctionWarning() end,
             order = 122
         },
-        rw_commands = {
-            name = CLM.L["Chat Commands"],
-            desc = CLM.L["Enables announcing chat commands at auction start."],
-            type = "toggle",
-            set = function(i, v) self:SetCommandsWarning(v) end,
-            get = function(i) return self:GetCommandsWarning() end,
-            order = 123
-        },
         rw_countdown = {
             name = CLM.L["Auction End Countdown"],
             desc = CLM.L["Enables raid-warning countdown for auctions."],

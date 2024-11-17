@@ -28,6 +28,7 @@ local function InitializeDB(self)
         lootThreshold = 4,
         removeOnNoBids = false,
         defaultRemoveOnAward = true,
+        postAllBidsOnAward = false,
         notes = {},
         includePasses = true,
         includeCancels = false,
@@ -106,6 +107,14 @@ end
 
 local function GetDisenchantAutoRemoved(self)
     return self.db.disenchantAutoRemoved
+end
+
+local function SetPostAllBidsOnAward(self, value)
+    self.db.postAllBidsOnAward = value and true or false
+end
+
+local function GetPostAllBidsOnAward(self)
+    return self.db.postAllBidsOnAward
 end
 
 function AuctionManager:SetDefaultRemoveOnAward(value)
@@ -501,40 +510,16 @@ local function CreateConfigurationOptions(self)
             end,
             get = function(i, v) return self.db.ignoredClasses[tonumber(v)] end,
             values = ItemClasses,
-            order = 51
+            order = 50
         },
-        auctioning_chat_commands_header = {
-            type = "header",
-            name = CLM.L["Auctioning - Chat Commands"],
-            order = 43
-        },
-        auctioning_chat_commands = {
-            name = CLM.L["Enable chat commands"],
-            desc = CLM.L["Enable !dkp and !bid through whisper / raid. Change requires /reload."],
+        award_post_bids = {
+            name = CLM.L["Post all bids on award"],
+            desc = CLM.L["Post all bids after awarding item"],
             type = "toggle",
-            set = function(i, v) CLM.GlobalConfigs:SetAllowChatCommands(v) end,
-            get = function(i) return CLM.GlobalConfigs:GetAllowChatCommands() end,
-            width = "double",
-            order = 44
-        },
-        auctioning_suppress_incoming = {
-            name = CLM.L["Suppress incoming whispers"],
-            desc = CLM.L["Hides incoming !dkp and !bid whispers. Change requires /reload."],
-            type = "toggle",
-            set = function(i, v) CLM.GlobalConfigs:SetSuppressIncomingChatCommands(v) end,
-            get = function(i) return CLM.GlobalConfigs:GetSuppressIncomingChatCommands() end,
-            width = "double",
-            order = 45
-        },
-        auctioning_suppress_outgoing = {
-            name = CLM.L["Suppress outgoing whispers"],
-            desc = CLM.L["Hides outgoing !dkp and !bid responses. Change requires /reload."],
-            type = "toggle",
-            set = function(i, v) CLM.GlobalConfigs:SetSuppressOutgoingChatCommands(v) end,
-            get = function(i) return CLM.GlobalConfigs:GetSuppressOutgoingChatCommands() end,
-            width = "double",
-            order = 46
-        },
+            set = function(i, v) SetPostAllBidsOnAward(self, v) end,
+            get = function(i) return GetPostAllBidsOnAward(self) end,
+            order = 53
+        }
     }
     return options
 end
@@ -1224,6 +1209,9 @@ function AuctionManager:Award(item, name, price)
     local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), item:GetExtraPayload(), price, true)
     if success then
         CLM.MODULES.AuctionHistoryManager:CorrelateWithLoot(item:GetItemLink(), self.currentAuction:GetEndTime(), uuid)
+        if GetPostAllBidsOnAward(self) then
+            CLM.MODULES.AuctionHistoryManager:PostByUUID(uuid)
+        end
         CLM.MODULES.AutoAssign:Handle(item:GetItemLink(), name)
         RevalidateBids(self)
     end
