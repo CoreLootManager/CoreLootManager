@@ -16,8 +16,8 @@ CLM.L["% that will be decayed."] = "% que será descompuesto."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:454
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:344
 CLM.L["%Y/%m/%d %H:%M:%S (%A)"] = "%Y/%m/%d %H:%M:%S (%A)"
--- ClassicLootManager_Integrations/Models/Exporter.lua:330
--- ClassicLootManager_Integrations/Models/Exporter.lua:331
+-- ClassicLootManager_Integrations/Models/Exporter.lua:328
+-- ClassicLootManager_Integrations/Models/Exporter.lua:329
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:253
 CLM.L["%Y/%m/%d %a %H:%M:%S"] = "%Y/%m/%d %a %H:%M:%S"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:591
@@ -981,6 +981,8 @@ CLM.L["Hard Mode"] = "Modo difícil"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1021
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:106
 CLM.L["Hard cap"] = "Límite máximo"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:181
+CLM.L["Hash"] = "Picadillo"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:795
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:828
 CLM.L["Head"] = "Cabeza"
@@ -1798,8 +1800,6 @@ CLM.L["Restore bar defaults"] = "Restaurar los valores predeterminados de la bar
 CLM.L["Revoke standby"] = "Revocar modo de espera"
 -- .:indirectly
 CLM.L["Rogue"] = "Pícaro"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:181
-CLM.L["Role"] = "Role"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:287
 CLM.L["Roll on Loot"] = "Roll en botín"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:932

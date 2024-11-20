@@ -16,8 +16,8 @@ CLM.L["% that will be decayed."] = "% 将要被衰减"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:454
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:344
 CLM.L["%Y/%m/%d %H:%M:%S (%A)"] = "%Y/%m/%d %H:%M:%S (%A)"
--- ClassicLootManager_Integrations/Models/Exporter.lua:330
--- ClassicLootManager_Integrations/Models/Exporter.lua:331
+-- ClassicLootManager_Integrations/Models/Exporter.lua:328
+-- ClassicLootManager_Integrations/Models/Exporter.lua:329
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/GUI.lua:253
 CLM.L["%Y/%m/%d %a %H:%M:%S"] = "%Y/%m/%d %a %H:%M:%S"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:591
@@ -981,6 +981,8 @@ CLM.L["Hard Mode"] = "困难模式"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1021
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:106
 CLM.L["Hard cap"] = "最大上限"
+-- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:181
+CLM.L["Hash"] = "哈希"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:795
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:828
 CLM.L["Head"] = "头部"
@@ -1798,8 +1800,6 @@ CLM.L["Restore bar defaults"] = "还原条默认值"
 CLM.L["Revoke standby"] = "撤销替补"
 -- .:indirectly
 CLM.L["Rogue"] = "潜行者"
--- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:181
-CLM.L["Role"] = "角色"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:287
 CLM.L["Roll on Loot"] = "在战利品上掷骰"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:932
