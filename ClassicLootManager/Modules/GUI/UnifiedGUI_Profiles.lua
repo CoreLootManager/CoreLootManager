@@ -178,7 +178,7 @@ local tableStructure = {
         {name = "", width = 18, DoCellUpdate = UTILS.LibStClassCellUpdate},
         {name = CLM.L["Name"],  width = 115, DoCellUpdate = UTILS.LibStNameCellUpdate, sort = LibStub("ScrollingTable").SORT_ASC},
         {name = CLM.L["Main"],  width = 115 },
-        {name = CLM.L["Role"],  width = 60},
+        {name = CLM.L["Hash"],  width = 60},
         {name = CLM.L["Version"],  width = 70,
             comparesort = UTILS.LibStCompareSortWrapper(UTILS.LibStModifierFnVersion)
         }
@@ -248,7 +248,7 @@ local function tableDataFeeder()
             {value = profile:ClassInternal()},
             {value = profile:Name(), color = classColor},
             {value = main, color = mainColor},
-            {value = CONSTANTS.PROFILE_ROLES_GUI[object:Role()] or ""},
+            {value = ""}, -- Backwards compatibility after removing role
             {value = object:VersionString()},
             -- hidden
             {value = rank},
