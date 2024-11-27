@@ -46,7 +46,6 @@ local function StoreWoWDKPBotData(self)
        db.profiles[GUID] = {
             name = profile:Name(),
             class = profile:Class(),
-            spec = profile:SpecString(),
             main = profile:Main()
         }
     end

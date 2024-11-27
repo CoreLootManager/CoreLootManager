@@ -1,6 +1,30 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.4.2",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Classic Era", body = "Alt-main linking in Classic Era should now be detected properly." },
+                    { header = "Tooltip", body = "Cataclysm tooltips should now be working again." },
+                    { header = "Export", body = "Exporting should now be working again." },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.4.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Profiles UI", body = "Fixed profiles ui script errors" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.4.0",
         data = {
             {
