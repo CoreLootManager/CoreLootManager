@@ -114,7 +114,6 @@ local DATA_BUILDERS = {
                                 name = profile:Name(),
                                 class = profile:Class(),
                                 classInternal = profile:ClassInternal(),
-                                spec = profile:SpecString(),
                                 points = roster:Standings(GUID),
                                 spent = roster:GetPointInfoForPlayer(GUID).spent
                             })
@@ -143,7 +142,6 @@ local DATA_BUILDERS = {
                             guid = GUID,
                             name = profile:Name(),
                             class = profile:Class(),
-                            spec = profile:SpecString(),
                             points = value,
                             spent = roster:GetPointInfoForPlayer(GUID).spent
                         })

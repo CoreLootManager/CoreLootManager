@@ -76,7 +76,7 @@ local function addItemReceiversToTooltip(tooltip)
     end
 end
 
-if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall then
+if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall and C_TooltipInfo then
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemReceiversToTooltip)
 else
     LibStub("AceConfigDialog-3.0").tooltip:HookScript("OnTooltipSetItem", addItemReceiversToTooltip)

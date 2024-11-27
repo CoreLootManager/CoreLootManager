@@ -1,3 +1,9 @@
+# Core Loot Manager v5.4.2
+## Fixes
+### Tooltip
+Cataclysm tooltips should now be working again.
+### Export
+Exporting should now be working again.
 # Core Loot Manager v5.4.0
 ## Changes
 ### Code unification
