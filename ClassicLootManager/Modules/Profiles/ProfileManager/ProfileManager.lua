@@ -10,8 +10,8 @@ local whoamiGUID = UTILS.whoamiGUID()
 
 local notEmptyiGUID
 
-if CLM.IsClassicEra() then
-    -- Backwards compatibility for Classic Era
+if CLM.IsSoD() then
+    -- Backwards compatibility for SoD
     notEmptyiGUID = function(iGUID)
         return iGUID ~= 0
     end

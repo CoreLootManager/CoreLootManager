@@ -1,5 +1,7 @@
 # Core Loot Manager v5.4.2
 ## Fixes
+### Classic Era
+Alt-main linking in Classic Era should now be detected properly.
 ### Tooltip
 Cataclysm tooltips should now be working again.
 ### Export
