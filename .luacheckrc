@@ -47,6 +47,7 @@ globals = {
 	-- ElvUI
 	"ElvUI",
 	-- WoW
+	"C_TooltipInfo",
 	"floor",
 	"LE_EXPANSION_CLASSIC",
 	"LE_EXPANSION_BURNING_CRUSADE",
