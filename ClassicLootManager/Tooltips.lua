@@ -125,7 +125,7 @@ local function addItemPriceToTooltip(tooltip)
     end
 end
 
-if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall then
+if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall and C_TooltipInfo then
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemPriceToTooltip)
 else
     LibStub("AceConfigDialog-3.0").tooltip:HookScript("OnTooltipSetItem", addItemPriceToTooltip)

@@ -1,6 +1,17 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.4.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Tooltip", body = "Cataclysm tooltips should now be working again." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.4.2",
         data = {
             {
