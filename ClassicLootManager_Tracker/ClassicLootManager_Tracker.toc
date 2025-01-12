@@ -1,7 +1,9 @@
-## Interface: 110000, 110002, 11503, 40400, 110005, 11504, 40401, 110007, 11505
+## Interface: 40401, 110007, 11505, 110100
 ## Title: CLM |cff44ee44Tracker|r
 ## Notes: Visual Item received tracker System for |cffdcb749Core Loot Manager|r.
 ## Author: Lantis
+## Category: Loot
+## Group: CLM
 ## IconTexture: Interface/AddOns/ClassicLootManager/Media/Icons/clm-dark-32.png
 ## Version: @project-version@
 ## RequiredDeps: ClassicLootManager

@@ -1,3 +1,7 @@
+# Core Loot Manager v5.4.4
+## Changes
+### ToC Overhaul
+Overhauled ToC in preparation of 11.1 changes
 # Core Loot Manager v5.4.3
 ## Fixes
 ### Tooltip

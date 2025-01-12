@@ -247,7 +247,14 @@
         "Add",
         "NONE",
         "SOURCE",
-        "TARGET"
+        "TARGET",
+        "LE_EXPANSION_CLASSIC",
+        "LE_EXPANSION_CATACLYSM",
+        "LE_EXPANSION_DRAGONFLIGHT",
+        "LE_EXPANSION_BURNING_CRUSADE",
+        "LE_EXPANSION_WRATH_OF_THE_LICH_KING",
+        "LE_EXPANSION_MISTS_OF_PANDARIA",
+        "LE_EXPANSION_LEGION"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"
