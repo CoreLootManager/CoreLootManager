@@ -23,6 +23,8 @@ jobs:
     name: Package and Upload
     runs-on: ubuntu-latest
     steps:
+      - name: Install SVN
+        run: sudo apt install -y subversion
       - uses: actions/checkout@v2
 #      - name: verify required files recursively
 #        run: scripts/verify-dependencies.sh ClassicLootManager.toc
