@@ -168,6 +168,7 @@ local IndirectMap = {
         [236233] = "INVTYPE_HAND",      -- Desecrated Gauntlets
         [236234] = "INVTYPE_FEET",      -- Desecrated Sabatons
         [236243] = "INVTYPE_HAND",      -- Desecrated Gloves
+        [236350] = "INVTYPE_TRINKET",   -- The Phylactery of Kel'Thuzad
         --- Cataclysm P1 Normal ---
         [63682] = "INVTYPE_HEAD",       -- Helm of the Forlorn Vanquisher
         [63684] = "INVTYPE_HEAD",       -- Helm of the Forlorn Protector
@@ -372,6 +373,7 @@ local IndirectMap = {
         [236233] = 88,  -- Desecrated Gauntlets
         [236234] = 86,  -- Desecrated Sabatons
         [236243] = 88,  -- Desecrated Gloves
+        [236350] = 90,  -- The Phylactery of Kel'Thuzad
         --- Cataclysm P1 Normal ---
         [63682] = 359, -- Helm of the Forlorn Vanquisher
         [63684] = 359, -- Helm of the Forlorn Protector
