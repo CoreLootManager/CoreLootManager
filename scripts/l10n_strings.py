@@ -69,7 +69,7 @@ class L10nStorage:
             return
         if self.not_used.get(string):
             del self.not_used[string]
-        
+
         if not self.translations.get(locale):
             self.translations[locale] = {}
         self.translations[locale][string] = translation
@@ -221,7 +221,7 @@ def translate_missing(missing, storage:L10nStorage, locale, total_missing, total
             if dry_run:
                 _print("translate [{1}]: [{0}]".format(sanitized_sentence, locale_to_google[locale]))
             else:
-                translation = ts.translate_text(query_text=sanitized_sentence, translator='google', from_language='en-US', to_language=locale_to_google[locale])
+                translation = ts.translate_text(query_text=sanitized_sentence, translator='google', from_language='en', to_language=locale_to_google[locale])
                 storage.translate(locale, sentence, translation, False)
                 total_done += 1
                 percent = math.floor(100*(total_done/total_missing))
@@ -267,7 +267,7 @@ def main(args):
                 break
         if not isExcluded:
             files.append(file)
-            
+
 
     # Prepare
     locales = ["frFR", "esES", "ruRU", "deDE", "zhCN", "zhTW"]
@@ -283,7 +283,7 @@ def main(args):
     for locale in locales:
         scan_file_for_l10n_translation(baseDir / ("ClassicLootManager/Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
 
-    total_missing, total_done, last_percent = 0, 0, 0    
+    total_missing, total_done, last_percent = 0, 0, 0
     status = 0
     missing_translations = {}
     for locale in locales:

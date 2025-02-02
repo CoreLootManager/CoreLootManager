@@ -208,7 +208,7 @@ CLM.L["Archimonde"] = "Archimonde"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:332
 CLM.L["Are you sure, you want to award %s to %s for %s %s?"] = "Bist du sicher, dass du %s an %s für %s %s verteilen willst?"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:542
---CLM.L["Are you sure, you want to bid on an unusable item %s?"] = ""
+CLM.L["Are you sure, you want to bid on an unusable item %s?"] = "Sind Sie sicher, Sie möchten auf einen unbrauchbaren Artikel %s bieten?"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:360
 CLM.L["Are you sure, you want to disenchant %s?"] = "Bist du sicher, dass du %s entzaubern willst?"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/AltMainLinkingGUI.lua:79
