@@ -1,4 +1,4 @@
-## Interface: 40401, 110007, 11505, 110100
+## Interface: 40401, 110007, 11505, 11506, 110100
 ## Title: CLM |cffdcb749Core Loot Manager|r
 ## Notes: Robust, DKP and EPGP based Loot Manager system. Formerly |cffdcb749Classic Loot Manager|r.
 ## Author: Lantis

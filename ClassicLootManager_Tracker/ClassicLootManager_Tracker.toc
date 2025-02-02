@@ -1,4 +1,4 @@
-## Interface: 40401, 110007, 11505, 110100
+## Interface: 40401, 110007, 11505, 11506, 110100
 ## Title: CLM |cff44ee44Tracker|r
 ## Notes: Visual Item received tracker System for |cffdcb749Core Loot Manager|r.
 ## Author: Lantis
