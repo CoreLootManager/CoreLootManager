@@ -537,6 +537,13 @@ do
     end
 end
 
+local function GetBidConfirmationPrompt(self)
+    if self.auctionItem and not self.auctionItem:GetCanUse() then
+        return string.format(CLM.L["Are you sure, you want to bid on an unusable item %s?"], self.auctionItem:GetItemLink())
+    end
+    return false
+end
+
 local numRows
 local function GenerateValueButtonsAuctionOptions(self, auction)
     local itemValueMode = auction and auction:GetMode() or CONSTANTS.ITEM_VALUE_MODE.SINGLE_PRICED
@@ -555,6 +562,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 CloseOnBid(self)
             end),
+            confirm = (function() return GetBidConfirmationPrompt(self) end),
             width = (useOS and (isElvUI and 1.45 or 1.49) or (isElvUI and 2.95 or 2.99))*rowMultiplierBy6,
             order = 4
         },
@@ -581,6 +589,7 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                 if GetAdvanceOnBid(self) then self:Advance() end
                 CloseOnBid(self)
             end),
+            confirm = (function() return GetBidConfirmationPrompt(self) end),
             width = (isElvUI and 1.45 or 1.49)*rowMultiplierBy6,
             order = 5
         }
@@ -620,7 +629,8 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                         if GetAdvanceOnBid(self) then self:Advance() end
                         CloseOnBid(self)
                     end),
-                    order = offset
+                    order = offset,
+                    confirm = (function() return GetBidConfirmationPrompt(self) end),
                 }
                 offset = offset + 1
                 numButtons = numButtons + 1
@@ -637,7 +647,8 @@ local function GenerateValueButtonsAuctionOptions(self, auction)
                     if GetAdvanceOnBid(self) then self:Advance() end
                     CloseOnBid(self)
                 end),
-                order = offset
+                order = offset,
+                confirm = (function() return GetBidConfirmationPrompt(self) end),
             }
             numButtons = numButtons + 1
         end
@@ -696,7 +707,8 @@ local function GenerateNamedButtonsAuctionOptions(self, auction)
                         CloseOnBid(self)
                     end),
                     width = row_width,
-                    order = offset
+                    order = offset,
+                    confirm = (function() return GetBidConfirmationPrompt(self) end),
                 }
                 offset = offset + 1
                 numButtons = numButtons + 1
