@@ -983,7 +983,7 @@ local invtypeEquipLocWorkaround = {
 function UTILS.WorkaroundEquipLoc(class, subclass, equipLoc)
     local classTable = invtypeClassWorkaround[class] or {}
     local tempEquipLoc = classTable[subclass] or equipLoc
-    return invtypeEquipLocWorkaround[tempEquipLoc] or equipLoc
+    return invtypeEquipLocWorkaround[tempEquipLoc] or tempEquipLoc
 end
 
 
