@@ -122,29 +122,37 @@ local function InitializeGargulIntegration(self)
             width = "full",
             order = 10.1
         },
-        empty_slot1 = { type = "description", name = "", fontSize = "medium", width = 1, order = 13 },
-        empty_slot2 = { type = "description", name = "", fontSize = "medium", width = 1, order = 16 },
     }
 
     local selections = {
         {
-            name = CLM.L["Regular"] .. " " .. CLM.L["MS"],
+            name = CLM.L["Reserved"] .. " " .. CLM.L["MS"],
             order = 11,
+            var = PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.RESERVED_MS,
+        },
+        {
+            name = CLM.L["Regular"] .. " " .. CLM.L["MS"],
+            order = 12,
             var = PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_MS,
         },
         {
             name = CLM.L["Prioritized"] .. " " .. CLM.L["MS"],
-            order = 12,
+            order = 13,
             var = PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_MS,
         },
         {
-            name = CLM.L["Regular"] .. " " .. CLM.L["OS"],
+            name = CLM.L["Reserved"] .. " " .. CLM.L["OS"],
             order = 14,
+            var = PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.RESERVED_OS,
+        },
+        {
+            name = CLM.L["Regular"] .. " " .. CLM.L["OS"],
+            order = 15,
             var = PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_OS,
         },
         {
             name = CLM.L["Prioritized"] .. " " .. CLM.L["OS"],
-            order = 15,
+            order = 16,
             var = PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_OS,
         }
     }
@@ -386,7 +394,11 @@ local function parseEventStructure(data)
     return data.player, data.itemLink, itemId, isOs, isWishlisted, isPrioritized, isReserved
 end
 
+-- First check if item is reserved (using SR)
+-- Else check for item prioritization (using TMB)
 local function getGargulAwardActionName(isOs, isWishlisted, isPrioritized, isReserved)
+    if not isOs and     isReserved    then return PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.RESERVED_MS end
+    if     isOs and     isReserved    then return PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.RESERVED_OS end
     if not isOs and     isPrioritized then return PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_MS end
     if     isOs and     isPrioritized then return PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.PRIORITY_OS end
     if not isOs and not isPrioritized then return PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER.REGULAR_MS  end
@@ -679,7 +691,9 @@ PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER = {
     REGULAR_MS = "rms",
     REGULAR_OS = "ros",
     PRIORITY_MS = "pms",
-    PRIORITY_OS = "pos"
+    PRIORITY_OS = "pos",
+    RESERVED_MS = "sms",
+    RESERVED_OS = "sos",
 }
 
 PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLERS = UTILS.Set(PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLER)
