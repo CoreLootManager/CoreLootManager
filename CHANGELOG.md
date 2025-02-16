@@ -1,3 +1,9 @@
+# Core Loot Manager v5.5.1
+## Changes
+### Gargul Integration
+Added Option to configure Soft Reserved items handling
+### Migration
+QDKP V2 Migration support enabled
 # Core Loot Manager v5.5.0
 ## Features
 ### Bidding on unusable items

@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.5.1",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Gargul Integration", body = "Added Option to configure Soft Reserved items handling" },
+                    { header = "Migration", body = "QDKP V2 Migration support enabled" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.5.0",
         data = {
             {
