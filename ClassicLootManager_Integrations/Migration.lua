@@ -22,6 +22,7 @@ function Migration:Initialize()
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
     self:RegisterSlash()
     self.migrationOngoing = false
+    self.migrateFromOfficerNotes = true
     LedgerManager:RegisterOnUpdate(function(lag, uncommitted)
         if lag == 0 and uncommitted == 0 then
             if self.migrationOngoing then
@@ -38,6 +39,20 @@ end
 
 local function GetPlayerGuid(self, name)
     return self.playerCache[name]
+end
+
+function Migration:ToggleMigrationNotes()
+    self.migrateFromOfficerNotes = not self.migrateFromOfficerNotes
+
+    local message = CLM.L["New migration source for note-based AddOns: %s"]
+    local notes
+    if self.migrateFromOfficerNotes then
+        notes = CLM.L["Officer notes"]
+    else
+        notes = CLM.L["Public notes"]
+    end
+
+    LOG:Message(message, notes)
 end
 
 local timestampCounter = {}
@@ -70,6 +85,7 @@ function Migration:Migrate()
     self:MigrateBastion()
     self:MigrateCEPGP()
     self:MigrateEPGPClassic()
+    self:MigrateQDKPV2()
     LOG:Message(CLM.L["Migration complete. %s to apply and sync with others or go to %s to discard."],
         ColorCodeText("/reload", "00cc00"),
         ColorCodeText(CLM.L["Minimap Icon -> Configuration -> Wipe events"], "6699ff"))
@@ -108,6 +124,11 @@ end
 function Migration:MigrateEPGPClassic()
     LOG:Trace("Migration:MigrateEPGPClassic()")
     self:_MigrateOfficerNoteEPGP("EPGP-Classic", "(%d+),%s*(%d+)")
+end
+
+function Migration:MigrateQDKPV2()
+    LOG:Trace("Migration:MigrateBastion()")
+    self:_MigrateOfficerNoteDKP("QDKP_V2", "[Net]:(%d+)%s.*")
 end
 
 local function NewRoster(name, epgp)
@@ -392,6 +413,48 @@ function Migration:_MigrateCommunity()
     LOG:Message(CLM.L["Import complete"])
 end
 
+function Migration:_MigrateOfficerNoteDKP(addonName, pattern)
+    -- addonName - String - Name of the addon
+    -- pattern - Regex - Should select ep and gp when passed into match / find
+    if not ValidateAddon(addonName) then
+        LOG:Message(CLM.L["Skipping "..addonName])
+        return
+    end
+    LOG:Message(CLM.L["Migrating %s"], addonName)
+    -- Officer-note based records no goodhistory, setting timestamp to now - buffer
+    self.timestamp = GetServerTime() - 86400
+    -- Create Roster
+    local _, rosterUid = NewRoster(addonName, false)
+    local playerProfiles = {}
+    self.playerList = {}
+    -- No loot history to import
+    -- Add profiles and set EPGP
+    for rosterNumber=1, GetNumGuildMembers() do
+        local name,_,_,_,_,_,publicNote,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber)
+        local note
+        if self.migrateFromOfficerNotes then
+            note = officerNote
+        else
+            note = publicNote
+        end
+        -- Only add members with proper note
+        if (string.match(note, pattern)) then
+            name = UTILS.Disambiguate(name)
+            -- Get DKP
+            local dkp = select(3, string.find(note, pattern))
+            if not playerProfiles[name] then
+                NewProfile(guid, name, class)
+                table.insert(self.playerList, guid)
+                playerProfiles[name] = true
+            end
+            UpdatePoints(rosterUid, guid, dkp)
+        end
+    end
+    -- Add Profiles to Roster
+    AddProfilesToRoster(rosterUid, self.playerList)
+    LOG:Message(CLM.L["Import complete"])
+end
+
 function Migration:_MigrateOfficerNoteEPGP(addonName, pattern, gpFirst)
     -- addonName - String - Name of the addon
     -- pattern - Regex - Should select ep and gp when passed into match / find
@@ -410,16 +473,22 @@ function Migration:_MigrateOfficerNoteEPGP(addonName, pattern, gpFirst)
     -- No loot history to import
     -- Add profiles and set EPGP
     for rosterNumber=1, GetNumGuildMembers() do
-        local name,_,_,_,_,_,_,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber)
+        local name,_,_,_,_,_,publicNote,officerNote,_,_,class,_,_,_,_,_,guid = GetGuildRosterInfo(rosterNumber)
+        local note
+        if self.migrateFromOfficerNotes then
+            note = officerNote
+        else
+            note = publicNote
+        end
         -- Only add members with proper note
         if (string.match(officerNote, pattern)) then
             name = UTILS.Disambiguate(name)
             -- Get EP and GP from Officer Note
             local ep, gp
             if gpFirst then
-                gp, ep = select(3, string.find(officerNote, pattern))
+                gp, ep = select(3, string.find(note, pattern))
             else
-                ep, gp = select(3, string.find(officerNote, pattern))
+                ep, gp = select(3, string.find(note, pattern))
             end
             if not playerProfiles[name] then
                 NewProfile(guid, name, class)
@@ -440,9 +509,16 @@ function Migration:RegisterSlash()
         migrate = {
             type = "execute",
             name = "Migrate",
-            desc = CLM.L["Execute migration from MonolithDKP, EssentialDKP, CommunityDKP, BastionLoot or CEPGP"],
+            desc = CLM.L["Execute migration"],
             handler = self,
             func = "Migrate",
+        },
+        migrationNotes = {
+            type = "execute",
+            name = "Migrate",
+            desc = CLM.L["Change migration notes source"],
+            handler = self,
+            func = "ToggleMigrationNotes",
         }
     }
     MODULES.ConfigManager:RegisterSlash(options)
