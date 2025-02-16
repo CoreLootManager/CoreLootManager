@@ -506,7 +506,7 @@ CLM.L["Case-sensitive Player name in the format: Player-RealmName"] = "Nombre de
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:686
 CLM.L["Cataclysm"] = "Cataclysm"
 -- ClassicLootManager_Integrations/Migration.lua:519
---CLM.L["Change migration notes source"] = ""
+CLM.L["Change migration notes source"] = "Cambiar la fuente de notas de migración"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:821
 CLM.L["Change roster name."] = "Cambiar el nombre del Roster."
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:13
@@ -1458,7 +1458,7 @@ CLM.L["Never show changelog"] = "Nunca mostrar el registro de cambios"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1160
 CLM.L["New highest bid on %s: %s %s %s"] = "Nueva oferta más alta en %s: %s %s %s"
 -- ClassicLootManager_Integrations/Migration.lua:47
---CLM.L["New migration source for note-based AddOns: %s"] = ""
+CLM.L["New migration source for note-based AddOns: %s"] = "Nueva fuente de migración para complementos basados ​​en notas: %s"
 -- ClassicLootManager_Integrations/GenericImport.lua:104
 CLM.L["New roster: %s"] = "Nueva lista: %s"
 -- ClassicLootManager_Integrations/Migration.lua:144
@@ -1539,7 +1539,7 @@ CLM.L["Off Hand"] = "Mano izquierda"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1351
 CLM.L["Off-spec bidding not allowed"] = "Pidiendo fuera de especificación no permitida"
 -- ClassicLootManager_Integrations/Migration.lua:50
---CLM.L["Officer notes"] = ""
+CLM.L["Officer notes"] = "Notas de la oficial Notas del oficial"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:231
 CLM.L["Omnotron Defense System"] = "Omnotron Defense System"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:924
@@ -1675,7 +1675,7 @@ CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:92
 CLM.L["Prune profiles"] = "Cortar los perfiles"
 -- ClassicLootManager_Integrations/Migration.lua:52
---CLM.L["Public notes"] = ""
+CLM.L["Public notes"] = "Notas públicas"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1068
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:148
 CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."] = "Poner a los jugadores que salen de raid en el banquillo en lugar de eliminarlos. Para eliminarlos por completo, será necesario retirarlos manualmente del banquillo. "
@@ -1809,7 +1809,7 @@ CLM.L["Request standby"] = "Solicitar espera"
 CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel. Some windows may require closing and reopening."] = "Rescala CLM UI, excepto la ventana de licitación. Puede rescalar una ventana de oferta de forma independiente utilizando la rueda CTRL + mouse. Algunas ventanas pueden requerir cierre y reapertura."
 -- ClassicLootManager_Integrations/Integrations.lua:129
 -- ClassicLootManager_Integrations/Integrations.lua:144
---CLM.L["Reserved"] = ""
+CLM.L["Reserved"] = "Reservada Reservado"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:151
 CLM.L["Reset gui positions"] = "Restablecer posiciones de interfaz gráfica de usuario"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:335

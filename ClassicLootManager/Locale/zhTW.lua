@@ -506,7 +506,7 @@ CLM.L["Case-sensitive Player name in the format: Player-RealmName"] = "案例敏
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:686
 CLM.L["Cataclysm"] = "Cataclysm"
 -- ClassicLootManager_Integrations/Migration.lua:519
---CLM.L["Change migration notes source"] = ""
+CLM.L["Change migration notes source"] = "更改遷移說明來源"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:821
 CLM.L["Change roster name."] = "更改名册名称。"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:13
@@ -1458,7 +1458,7 @@ CLM.L["Never show changelog"] = "不再显示更新日志"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1160
 CLM.L["New highest bid on %s: %s %s %s"] = "给 %s 的新最高出价：%s %s %s"
 -- ClassicLootManager_Integrations/Migration.lua:47
---CLM.L["New migration source for note-based AddOns: %s"] = ""
+CLM.L["New migration source for note-based AddOns: %s"] = "基於註釋的插件的新遷移源：%s"
 -- ClassicLootManager_Integrations/GenericImport.lua:104
 CLM.L["New roster: %s"] = "新名册: %s"
 -- ClassicLootManager_Integrations/Migration.lua:144
@@ -1539,7 +1539,7 @@ CLM.L["Off Hand"] = "副手"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1351
 CLM.L["Off-spec bidding not allowed"] = "不允许副天赋出价"
 -- ClassicLootManager_Integrations/Migration.lua:50
---CLM.L["Officer notes"] = ""
+CLM.L["Officer notes"] = "軍官筆記"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:231
 CLM.L["Omnotron Defense System"] = "Omnotron Defense System"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:924
@@ -1675,7 +1675,7 @@ CLM.L["Provide number of weeks that will be accounted for attendance. Between 1 
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:92
 CLM.L["Prune profiles"] = "Prune profiles"
 -- ClassicLootManager_Integrations/Migration.lua:52
---CLM.L["Public notes"] = ""
+CLM.L["Public notes"] = "公共筆記"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1068
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:148
 CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."] = "让离开团队的角色加入替补名单。要完全移除他们，需要手动将他们从替补名单中移除。"
@@ -1809,7 +1809,7 @@ CLM.L["Request standby"] = "请求替补"
 CLM.L["Rescales CLM UI, except Bidding window. You can rescale Bidding window independently by using Ctrl + Mouse Wheel. Some windows may require closing and reopening."] = "重新调整 CLM UI，竞拍窗口除外。您可以使用 Ctrl + 鼠标滚轮独立重新调整竞拍窗口。某些窗口可能需要关闭和重新打开。"
 -- ClassicLootManager_Integrations/Integrations.lua:129
 -- ClassicLootManager_Integrations/Integrations.lua:144
---CLM.L["Reserved"] = ""
+CLM.L["Reserved"] = "預訂的"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:151
 CLM.L["Reset gui positions"] = "重置 gui 位置"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:335
