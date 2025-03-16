@@ -1413,7 +1413,7 @@ CLM.L["Morphaz and Hazzas"] = "Morphaz and Hazzas"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:158
 CLM.L["Mother Shahraz"] = "Madre Shahraz"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:328
---CLM.L["Mounts"] = ""
+CLM.L["Mounts"] = "Montura"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:233
 CLM.L["Moving %s from current queue to pending queue."] = "Mudando %s de la cola actual a la cola pendiente."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:444
@@ -2161,13 +2161,13 @@ CLM.L["Toggles addon sounds."] = "Alternar los sonidos de complemento."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:305
 CLM.L["Toggles auto-rolling on legendary items."] = "Alternar automáticamente los artículos legendarios."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:329
---CLM.L["Toggles auto-rolling on mounts."] = ""
+CLM.L["Toggles auto-rolling on mounts."] = "Alternar automáticamente en los montajes."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:321
 CLM.L["Toggles auto-rolling on patterns."] = "Alternar automáticamente los patrones."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:313
 CLM.L["Toggles auto-rolling on stacking items."] = "Alternar automáticamente en los elementos de apilamiento."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:337
---CLM.L["Toggles auto-rolling on toys."] = ""
+CLM.L["Toggles auto-rolling on toys."] = "Alternar automáticamente en los juguetes."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:374
 CLM.L["Toggles loot and point award announcement to guild"] = "Cambia el anuncio del premio de botín a la Hermandad"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:185
@@ -2186,7 +2186,7 @@ CLM.L["Total received"] = "Total recibido"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:492
 CLM.L["Total spent"] = "Total gastado"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:336
---CLM.L["Toys"] = ""
+CLM.L["Toys"] = "Juguetes"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:108
 CLM.L["Tracker"] = "Tracker"
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:193

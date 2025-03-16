@@ -1413,7 +1413,7 @@ CLM.L["Morphaz and Hazzas"] = "Morphaz and Hazzas"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:158
 CLM.L["Mother Shahraz"] = "莎赫拉丝主母"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:328
---CLM.L["Mounts"] = ""
+CLM.L["Mounts"] = "坐骑"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:233
 CLM.L["Moving %s from current queue to pending queue."] = "将 %s 从当前队列移动到等待队列。"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:444
@@ -2161,13 +2161,13 @@ CLM.L["Toggles addon sounds."] = "开关插件声音。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:305
 CLM.L["Toggles auto-rolling on legendary items."] = "在传奇项目上切换自动掷骰。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:329
---CLM.L["Toggles auto-rolling on mounts."] = ""
+CLM.L["Toggles auto-rolling on mounts."] = "在安装座上切换自动滚动。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:321
 CLM.L["Toggles auto-rolling on patterns."] = "在配方上切换自动掷骰。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:313
 CLM.L["Toggles auto-rolling on stacking items."] = "在可堆叠物品上切换自动掷骰。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:337
---CLM.L["Toggles auto-rolling on toys."] = ""
+CLM.L["Toggles auto-rolling on toys."] = "切换自动滚动玩具。"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:374
 CLM.L["Toggles loot and point award announcement to guild"] = "开关战利品分配通告到公会频道"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:185
@@ -2186,7 +2186,7 @@ CLM.L["Total received"] = "共获得"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:492
 CLM.L["Total spent"] = "总花费"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:336
---CLM.L["Toys"] = ""
+CLM.L["Toys"] = "玩具"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:108
 CLM.L["Tracker"] = "Tracker"
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:193

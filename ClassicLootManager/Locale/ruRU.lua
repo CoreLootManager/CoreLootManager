@@ -1413,7 +1413,7 @@ CLM.L["Morphaz and Hazzas"] = "Морфаз и Хаззас"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:158
 CLM.L["Mother Shahraz"] = "Матушка Шахраз"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:328
---CLM.L["Mounts"] = ""
+CLM.L["Mounts"] = "Крепления"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:233
 CLM.L["Moving %s from current queue to pending queue."] = "Перемещение %s от текущей очереди в ожидание очереди."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:444
@@ -2161,13 +2161,13 @@ CLM.L["Toggles addon sounds."] = "Включить звуки аддона."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:305
 CLM.L["Toggles auto-rolling on legendary items."] = "Включить авто-ролл на легендарные предметы."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:329
---CLM.L["Toggles auto-rolling on mounts."] = ""
+CLM.L["Toggles auto-rolling on mounts."] = "Включить авто-ролл на креплениях."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:321
 CLM.L["Toggles auto-rolling on patterns."] = "Включить авто-ролл на рецепты."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:313
 CLM.L["Toggles auto-rolling on stacking items."] = "Включить авто-ролл на стакающиеся предметы."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:337
---CLM.L["Toggles auto-rolling on toys."] = ""
+CLM.L["Toggles auto-rolling on toys."] = "Включить авто-ролл на игрушках."
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:374
 CLM.L["Toggles loot and point award announcement to guild"] = "Включить оповещение о добыче в гильдию"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:185
@@ -2186,7 +2186,7 @@ CLM.L["Total received"] = "Всего получено"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:492
 CLM.L["Total spent"] = "Всего потрачено"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:336
---CLM.L["Toys"] = ""
+CLM.L["Toys"] = "Игрушки"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:108
 CLM.L["Tracker"] = "Трекер"
 -- ClassicLootManager/Modules/Auctioning/AutoAssign/GUI.lua:193
