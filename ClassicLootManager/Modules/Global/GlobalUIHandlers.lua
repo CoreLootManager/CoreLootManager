@@ -15,9 +15,18 @@ local ignoredItems = UTILS.Set({
     23572, -- Primal Nether
     12662, -- Demonic Rune
     209035, -- Hearthstone of the Flame
+    236687, -- Explosive Hearthstone
+    236960, -- Prototype A.S.M.R.
 })
 
 local handledLootRolls = {}
+
+local checkToy
+if C_ToyBox and C_ToyBox.GetToyInfo then
+    checkToy = (function(itemId) return (itemId == C_ToyBox.GetToyInfo(itemId)) end)
+else
+    checkToy = (function() return false end)
+end
 
 local function Handler(_, _, rollID, rollTime, lootHandle)
     handledLootRolls[rollID] = nil
@@ -56,12 +65,13 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     end
 
     -- Get specific checks info
-    local _, _, itemQuality, _, _, _, _, itemStackCount, _, _, _, classID, _, _ = UTILS.GetItemInfo(itemLink)
+    local _, _, itemQuality, _, _, _, _, itemStackCount, _, _, _, classID, subclassID, _ = UTILS.GetItemInfo(itemLink)
     local isLegendary = ((itemQuality or 0) >= 5)
     local isStacking  = ((itemStackCount or 0) > 1)
-    local isPattern   = (classID == LE_ITEM_CLASS_RECIPE)
-    local isQuestItem = (classID == LE_ITEM_CLASS_QUESTITEM)
-
+    local isPattern   = (classID == Enum.ItemClass.Recipe)
+    local isQuestItem = (classID == Enum.ItemClass.Questitem)
+    local isMount     = (classID == Enum.ItemClass.Miscellaneous) and (subclassID == Enum.ItemMiscellaneousSubclass.Mount)
+    local isToy       = checkToy(itemId)
     -- Ignore all quest items
     if isQuestItem then
         return
@@ -77,6 +87,14 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     end
 
     if isPattern and not CLM.GlobalConfigs:GetLootRollIncludePatterns() then
+        return
+    end
+
+    if isMount and not CLM.GlobalConfigs:GetLootRollIncludeMounts() then
+        return
+    end
+
+    if isToy and not CLM.GlobalConfigs:GetLootRollIncludeToys() then
         return
     end
 
