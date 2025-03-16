@@ -37,7 +37,9 @@ function GlobalConfigs:Initialize()
             rollOnLoot = CONSTANTS.LOOT_ROLL_TYPE_IGNORE,
             includeLegendary = false,
             includeStacking = false,
-            includePatterns = false
+            includePatterns = false,
+            includeMounts = false,
+            includeToys = false,
         }
     })
 
@@ -322,6 +324,22 @@ Thank you patrons!
             get = function(i) return self:GetLootRollIncludePatterns() end,
             order = 1205
         },
+        loot_roll_include_mounts = {
+            name = CLM.L["Include"] .. " " .. CLM.L["Mounts"],
+            desc = CLM.L["Toggles auto-rolling on mounts."],
+            type = "toggle",
+            set = function(i, v) self:SetLootRollIncludeMounts(v) end,
+            get = function(i) return self:GetLootRollIncludeMounts() end,
+            order = 1206
+        },
+        loot_roll_include_toys = {
+            name = CLM.L["Include"] .. " " .. CLM.L["Toys"],
+            desc = CLM.L["Toggles auto-rolling on toys."],
+            type = "toggle",
+            set = function(i, v) self:SetLootRollIncludeToys(v) end,
+            get = function(i) return self:GetLootRollIncludeToys() end,
+            order = 1207
+        },
         danger_zone_header = {
             type = "header",
             name = CLM.L["Danger Zone - Use at own risk"],
@@ -371,6 +389,22 @@ end
 
 function GlobalConfigs:GetLootRollIncludePatterns()
     return self.db.loot_roll.includePatterns
+end
+
+function GlobalConfigs:SetLootRollIncludeMounts(value)
+    self.db.loot_roll.includeMounts = value and true or false
+end
+
+function GlobalConfigs:GetLootRollIncludeMounts()
+    return self.db.loot_roll.includeMounts
+end
+
+function GlobalConfigs:SetLootRollIncludeToys(value)
+    self.db.loot_roll.includeToys = value and true or false
+end
+
+function GlobalConfigs:GetLootRollIncludeToys()
+    return self.db.loot_roll.includeToys
 end
 
 function GlobalConfigs:SetSounds(value)

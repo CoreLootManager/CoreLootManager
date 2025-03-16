@@ -299,6 +299,15 @@ CLM.EncounterIDsMap = {
     [2920] = EJ_GetEncounterInfo(2601) or "Nexus-Princess Ky'veza",
     [2921] = EJ_GetEncounterInfo(2608) or "The Silken Court",
     [2922] = EJ_GetEncounterInfo(2602) or "Queen Ansurek",
+    -- Liberation of Undermine
+    [3009] = EJ_GetEncounterInfo(2639) or "Vexie and the Geargrinders",
+    [3010] = EJ_GetEncounterInfo(2640) or "Cauldron of Carnage",
+    [3011] = EJ_GetEncounterInfo(2641) or "Rik Reverb",
+    [3012] = EJ_GetEncounterInfo(2642) or "Stix Bunkjunker",
+    [3013] = EJ_GetEncounterInfo(2653) or "Sprocketmonger Lockenstock",
+    [3014] = EJ_GetEncounterInfo(2644) or "The One-Armed Bandit",
+    [3015] = EJ_GetEncounterInfo(2645) or "Mug'Zee, Heads of Security",
+    [3016] = EJ_GetEncounterInfo(2646) or "Chrome King Gallywix",
 }
 
 CLM.EncounterHasHardMode = CLM.UTILS.Set({

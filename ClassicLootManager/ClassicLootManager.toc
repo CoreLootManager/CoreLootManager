@@ -1,9 +1,19 @@
-## Interface: 40401, 40402, 110007, 11505, 11506, 110100
+## Interface: 40401, 40402, 110007, 11505, 11506, 11507, 110100, 110105
 ## Title: CLM |cffdcb749Core Loot Manager|r
 ## Notes: Robust, DKP and EPGP based Loot Manager system. Formerly |cffdcb749Classic Loot Manager|r.
 ## Author: Lantis
-## Category: Loot
-## Group: CLM
+## Category-enUS: Loot
+## Category-deDE: Beute
+## Category-esES: Botín
+## Category-esMX: Botín
+## Category-frFR: Butin
+## Category-itIT: Bottino
+## Category-koKR: 전리품
+## Category-ptBR: Saque
+## Category-ruRU: Добыча
+## Category-zhCN: 战利品
+## Category-zhTW: 戰利品
+## Group: ClassicLootManager
 ## IconTexture: Interface/AddOns/ClassicLootManager/Media/Icons/clm-dark-32.png
 ## AddonCompartmentFunc: CLM_Binding_ToggleGUI_UnifiedGUI
 ## Version: @project-version@
