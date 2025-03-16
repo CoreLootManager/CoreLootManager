@@ -1,3 +1,9 @@
+# Core Loot Manager v5.5.2
+## Changes
+### TWW S2
+Liberation of Undermine support added
+### Auto-Roll
+CLM will now detect toys and mounts and allow enabling auto-roll on them separately.
 # Core Loot Manager v5.5.1
 ## Changes
 ### Gargul Integration

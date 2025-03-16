@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.5.2",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "TWW S2", body = "Liberation of Undermine support added" },
+                    { header = "Auto-Roll", body = "CLM will now detect toys and mounts and allow enabling auto-roll on them separately." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.5.1",
         data = {
             {
