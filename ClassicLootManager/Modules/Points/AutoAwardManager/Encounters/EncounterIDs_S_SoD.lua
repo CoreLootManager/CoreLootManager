@@ -147,4 +147,19 @@ CLM.EncounterIDs["SOD"] = {
             { id = 1114, name = CLM.EncounterIDsMap[1114] },
         },
     },
+    {
+        name = CLM.L["Scarlet Enclave"],
+        difficulty = {CLM.DifficultyID.P40},
+        data = {
+            { id = 3185, name = CLM.EncounterIDsMap[3185] },
+            { id = 3186, name = CLM.EncounterIDsMap[3186] },
+            { id = 3187, name = CLM.EncounterIDsMap[3187] },
+            { id = 3188, name = CLM.EncounterIDsMap[3188] },
+            { id = 3189, name = CLM.EncounterIDsMap[3189] },
+            { id = 3190, name = CLM.EncounterIDsMap[3190] },
+            { id = 3196, name = CLM.EncounterIDsMap[3196] },
+            { id = 3197, name = CLM.EncounterIDsMap[3197] },
+            
+        },
+    },
 }

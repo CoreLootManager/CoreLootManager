@@ -64,6 +64,15 @@ CLM.EncounterIDsMap = {
     [3026] = CLM.L["Lord Kazzak"],
     -- The Crystal Vale
     [3079] = CLM.L["Prince Thunderaan"],
+    -- Scarlet Enclave
+    [3185] = CLM.L["Balnazzar"],
+    [3186] = CLM.L["Solistrasza"],
+    [3187] = CLM.L["Beatrix"],
+    [3188] = CLM.L["Reborn Council"],
+    [3189] = CLM.L["Caldoran"],
+    [3190] = CLM.L["Lillian Voss"],
+    [3196] = CLM.L["Beastmaster"],
+    [3197] = CLM.L["Mason"],
     -- Classic
     [1084] = CLM.L["Onyxia"],
     [663] = CLM.L["Lucifron"],
