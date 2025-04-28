@@ -1,3 +1,9 @@
+# Core Loot Manager v5.5.3
+## Changes
+### SoD S8
+The Scarlet Enclave support added
+### Bid UI
+Pressing Enter key now sends bid to the Auctioneer
 # Core Loot Manager v5.5.2
 ## Changes
 ### TWW S2

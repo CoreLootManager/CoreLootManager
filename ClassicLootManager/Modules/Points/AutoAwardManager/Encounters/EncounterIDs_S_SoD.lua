@@ -159,7 +159,7 @@ CLM.EncounterIDs["SOD"] = {
             { id = 3190, name = CLM.EncounterIDsMap[3190] },
             { id = 3196, name = CLM.EncounterIDsMap[3196] },
             { id = 3197, name = CLM.EncounterIDsMap[3197] },
-            
+
         },
     },
 }

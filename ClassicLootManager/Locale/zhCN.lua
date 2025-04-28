@@ -109,17 +109,17 @@ CLM.L["Adds selected players to the selected roster (from dropdown)."] = "将选
 CLM.L["Advance to next item after bid"] = "出价后前往下一个项目"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:221
 CLM.L["Affected players:"] = "相关角色："
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:166
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:175
 CLM.L["Akil'zon"] = "埃基尔松"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:43
 CLM.L["Aku'mai"] = "Aku'mai"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:244
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:253
 CLM.L["Al'Akir"] = "Al'Akir"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:148
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:157
 CLM.L["Al'ar"] = "奥"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:189
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:198
 CLM.L["Algalon the Observer"] = "观察者奥尔加隆"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:228
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:237
 CLM.L["Alizabal"] = "Alizabal"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:642
 CLM.L["All In"] = "All In"
@@ -159,14 +159,14 @@ CLM.L["Always allow Base bids"] = "始终允许基础价格"
 CLM.L["Always allow cancel/pass"] = "始终允许取消/跳过"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:73
 CLM.L["Always show"] = "Always show"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:249
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:258
 CLM.L["Alysrazor"] = "Alysrazor"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:871
 CLM.L["Americas"] = "美洲"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:820
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:853
 CLM.L["Ammo"] = "弹药"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:162
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:171
 CLM.L["Anetheron"] = "安纳塞隆"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:373
 CLM.L["Announce award to Guild"] = "通告分配到公会频道"
@@ -186,9 +186,9 @@ CLM.L["Anti-snipe time: %s."] = "延长时间: %s."
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:236
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:70
 CLM.L["Anti-snipe"] = "延长"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:96
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:105
 CLM.L["Anub'Rekhan"] = "阿努布雷坎"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:203
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:212
 CLM.L["Anub'arak"] = "阿努巴拉克"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:67
 -- ClassicLootManager/Tooltips.lua:37
@@ -200,9 +200,9 @@ CLM.L["Applies all changes and exits sandbox mode"] = "应用所有更改并退�
 CLM.L["Apply changes"] = "应用更改"
 -- ClassicLootManager_Integrations/GUI.lua:137
 CLM.L["April"] = "四月"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:185
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:194
 CLM.L["Archavon the Stone Watcher"] = "岩石看守者阿尔卡冯"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:165
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:174
 CLM.L["Archimonde"] = "阿克蒙德"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:177
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:332
@@ -215,9 +215,9 @@ CLM.L["Are you sure, you want to disenchant %s?"] = "您确定，您想贬低%s�
 CLM.L["Are you sure, you want to link %s as alt of %s?"] = "您确定，您想将 %s 链接为 %s 吗？"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/AltMainLinkingGUI.lua:96
 CLM.L["Are you sure, you want to unlink %s from its main?"] = "Are you sure, you want to unlink %s from its main?"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:226
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:235
 CLM.L["Argaloth"] = "Argaloth"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:239
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:248
 CLM.L["Ascendant Council"] = "Ascendant Council"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:748
 CLM.L["Ascending"] = "Ascending"
@@ -227,14 +227,14 @@ CLM.L["Assistant"] = "Assistant"
 CLM.L["Atal'ai Defenders"] = "Atal'ai Defenders"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:52
 CLM.L["Atal'alarion"] = "Atal'alarion"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:233
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:242
 CLM.L["Atramedes"] = "Atramedes"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:431
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:442
 CLM.L["Att. [%]"] = "出勤 [%]"
 -- ClassicLootManager/Modules/Rosters/RosterManager/RosterManager.lua:408
 CLM.L["Attendance"] = "出勤"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:128
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:137
 CLM.L["Attumen the Huntsman"] = "猎手阿图门"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:247
 CLM.L["Auction End Countdown"] = "拍卖结束倒计时"
@@ -297,7 +297,7 @@ CLM.L["Auctioning requires active raid or roster mode."] = "拍卖需要团本�
 CLM.L["Auctioning"] = "拍卖"
 -- ClassicLootManager_Integrations/GUI.lua:141
 CLM.L["August"] = "八月"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:190
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:199
 CLM.L["Auriaya"] = "欧尔莉亚"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:708
 CLM.L["Author"] = "执行者"
@@ -364,9 +364,9 @@ CLM.L["Awarded %s points to all players for %s in <%s>"] = "已分配 %s 分数�
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:176
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:242
 CLM.L["Awarded by"] = "执行者"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:126
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:135
 CLM.L["Ayamiss the Hunter"] = "狩猎者阿亚米斯"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:164
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:173
 CLM.L["Azgalor"] = "阿兹加洛"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:63
 CLM.L["Azuregos"] = "Azuregos"
@@ -376,22 +376,28 @@ CLM.L["Back"] = "背部"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:819
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:852
 CLM.L["Bag"] = "背包"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:250
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:259
 CLM.L["Baleroc"] = "Baleroc"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:220
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:68
+CLM.L["Balnazzar"] = "Balnazzar"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:229
 CLM.L["Baltharus the Warborn"] = "战争之子巴尔萨鲁斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_4_Cata.lua:8
 CLM.L["Baradin Hold"] = "Baradin Hold"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:37
 CLM.L["Baron Aquanis"] = "Baron Aquanis"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:73
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:82
 CLM.L["Baron Geddon"] = "迦顿男爵"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:398
 CLM.L["Base value for Static-Priced auction.\nMinimum value for Ascending and Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "静态定价拍卖的基值。\n升序和分层拍卖的最小值。\n\n设置为与其他层相同的值或负值忽略。"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:901
 CLM.L["Base"] = "Base"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:89
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:98
 CLM.L["Battleguard Sartura"] = "沙尔图拉"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:74
+CLM.L["Beastmaster"] = "Beastmaster"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:70
+CLM.L["Beatrix"] = "Beatrix"
 -- ClassicLootManager_Integrations/GUI.lua:315
 -- ClassicLootManager_Integrations/GUI.lua:322
 -- ClassicLootManager_Integrations/GUI.lua:329
@@ -406,7 +412,7 @@ CLM.L["Begin Year"] = "开始年份"
 CLM.L["Bench multiplier"] = "替补系数"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1053
 CLM.L["Bench"] = "替补名单"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:248
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:257
 CLM.L["Beth'tilac"] = "Beth'tilac"
 -- ClassicLootManager_Alerts/Alerts.lua:32
 CLM.L["Bid %s accepted!"] = "竞拍 %s 被接受！"
@@ -460,9 +466,9 @@ CLM.L["Blackwing Descent"] = "Blackwing Descent"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_S_SoD.lua:94
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_1_Classic.lua:30
 CLM.L["Blackwing Lair"] = "黑翼之巢"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:208
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:217
 CLM.L["Blood Council"] = "鲜血王子议会"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:117
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:126
 CLM.L["Bloodlord Mandokir"] = "血领主曼多基尔"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:896
 CLM.L["Bonuses"] = "奖励"
@@ -478,16 +484,18 @@ CLM.L["Boss Kill Bonus"] = "BOSS击杀奖励"
 CLM.L["Boss kill award values"] = "Boss击杀分值"
 -- ClassicLootManager/Modules/Ledger/CrossGuildSyncManager/CrossGuildSyncManager.lua:21
 CLM.L["Both"] = "两个都"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:81
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:90
 CLM.L["Broodlord Lashlayer"] = "勒什雷尔"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:173
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:182
 CLM.L["Brutallus"] = "布鲁塔卢斯"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:125
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:134
 CLM.L["Buru the Gorger"] = "吞咽者布鲁"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1084
 CLM.L["Button Names"] = "按钮名称"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:95
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:104
 CLM.L["C'Thun"] = "克苏恩"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:72
+CLM.L["Caldoran"] = "Caldoran"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:1090
 CLM.L["Can't use"] = "无法使用"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:571
@@ -525,7 +533,7 @@ CLM.L["Changes auction timer bar width."] = "更改拍卖定时器条宽度。"
 CLM.L["Changing bid from Main-spec to Off-Spec not allowed"] = "不允许将出价从主天赋改为副天赋"
 -- ClassicLootManager/Modules/Auctioning/AuctionHistoryManager/AuctionHistoryManager.lua:68
 CLM.L["Channel for posting bids."] = "通告竞拍的频道。"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:136
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:145
 CLM.L["Chess Event"] = "国际象棋赛事"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:801
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:834
@@ -533,11 +541,11 @@ CLM.L["Chest (robes)"] = "胸部（长袍）"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:800
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:833
 CLM.L["Chest"] = "胸部"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:234
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:243
 CLM.L["Chimaeron"] = "Chimaeron"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:240
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:249
 CLM.L["Cho'gall"] = "Cho'gall"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:85
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:94
 CLM.L["Chromaggus"] = "克洛玛古斯"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:683
 CLM.L["Classic"] = "Classic"
@@ -553,7 +561,7 @@ CLM.L["Close on bid"] = "竞拍后关闭"
 CLM.L["Comma-separated (CSV) list of disenchanter names. Case insensitive. Player-RealmName."] = "逗号分隔（CSV）删除名称列表。 不区分大小写。Player-RealmName"
 -- ClassicLootManager/Utils.lua:1108
 CLM.L["Common"] = "常见"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:243
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:252
 CLM.L["Conclave of Wind"] = "Conclave of Wind"
 -- ClassicLootManager_Integrations/GUI.lua:17
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:310
@@ -640,7 +648,7 @@ CLM.L["Data"] = "数据"
 CLM.L["Date"] = "日期"
 -- .:indirectly
 CLM.L["Death Knight"] = "Death Knight"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:209
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:218
 CLM.L["Deathbringer Saurfang"] = "死亡使者萨鲁法尔"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:320
 CLM.L["Decay %"] = "衰减 %"
@@ -730,13 +738,13 @@ CLM.L["EPGP"] = "EPGP"
 -- ClassicLootManager_Integrations/GenericImport.lua:245
 -- ClassicLootManager_Integrations/ImportCSV.lua:152
 CLM.L["ERROR - invalid import data"] = "错误 - 无效的导入数据"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:83
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:92
 CLM.L["Ebonroc"] = "埃博诺克"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:120
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:129
 CLM.L["Edge of Madness"] = "疯狂之缘"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:47
 CLM.L["Electrocutioner 6000"] = "Electrocutioner 6000"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:186
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:195
 CLM.L["Emalon the Storm Watcher"] = "风暴看守者埃玛尔隆"
 -- ClassicLootManager_Integrations/Integrations.lua:118
 CLM.L["Enable Gargul integration. This will allow Gargul to take control over some aspects of CLM (starting auction from Gargul, and awarding)."] = "启用 Gargul 集成。这将允许 Gargul 控制 CLM 的某些方面（从 Gargul 开始拍卖及分配）。"
@@ -796,7 +804,7 @@ CLM.L["Enter sandbox"] = "输入沙箱"
 CLM.L["Epic"] = "史诗"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:502
 CLM.L["Equation"] = "方程"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:175
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:184
 CLM.L["Eredar Twins"] = "艾瑞达双子"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:870
 CLM.L["Europe"] = "欧洲"
@@ -830,22 +838,22 @@ CLM.L["Extend tooltip with more specific loot information."] = "Extend tooltip w
 CLM.L["Extended tooltip"] = "Extended tooltip"
 -- ClassicLootManager/Modules/GUI/Filters.lua:79
 CLM.L["External"] = "公会外"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:204
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:213
 CLM.L["Faction Champions"] = "阵营冠军"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:37
 CLM.L["False"] = "关闭"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:90
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:99
 CLM.L["Fankriss the Unyielding"] = "顽强的范克瑞斯"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:145
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:154
 CLM.L["Fathom-Lord Karathress"] = "深水领主卡拉瑟雷斯"
 -- ClassicLootManager_Integrations/GUI.lua:135
 CLM.L["February"] = "二月"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:807
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:840
 CLM.L["Feet"] = "脚"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:174
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:183
 CLM.L["Felmyst"] = "菲米丝"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:210
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:219
 CLM.L["Festergut"] = "烂肠"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:53
 CLM.L["Festering Rotslime"] = "Festering Rotslime"
@@ -886,17 +894,17 @@ CLM.L["Finished raid %s"] = "已完成的团本活动 %s"
 CLM.L["Finished"] = "已完成"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_4_Cata.lua:48
 CLM.L["Firelands"] = "Firelands"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:82
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:91
 CLM.L["Firemaw"] = "费尔默"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:191
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:200
 CLM.L["Flame Leviathan"] = "烈焰巨兽"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:84
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:93
 CLM.L["Flamegor"] = "弗莱格尔"
 -- ClassicLootManager_Integrations/GUI.lua:232
 CLM.L["Format"] = "格式"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:132
 CLM.L["Found %s in guild."] = "已找到 %s 在公会中。"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:192
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:201
 CLM.L["Freya"] = "弗蕾亚"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:227
 CLM.L["GM"] = "Guild Master"
@@ -917,22 +925,22 @@ CLM.L["GM"] = "Guild Master"
 -- ClassicLootManager/Tooltips.lua:121
 -- ClassicLootManager/Utils.lua:1053
 CLM.L["GP"] = "GP"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:121
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:130
 CLM.L["Gahz'ranka"] = "加兹兰卡"
 -- ClassicLootManager_Integrations/Integrations.lua:111
 -- ClassicLootManager_Integrations/Integrations.lua:117
 CLM.L["Gargul Integration"] = "Gargul集成"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:72
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:81
 CLM.L["Garr"] = "加尔"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:71
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:80
 CLM.L["Gehennas"] = "基赫纳斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:40
 CLM.L["Gelihast"] = "Gelihast"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:123
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:132
 CLM.L["General Rajaxx"] = "拉贾克斯将军"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:193
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:202
 CLM.L["General Vezax"] = "维扎克斯将军"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:221
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:230
 CLM.L["General Zarithrian"] = "萨瑞瑟里安将军"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:815
 CLM.L["General settings"] = "通用设置"
@@ -942,39 +950,39 @@ CLM.L["Ghamoo-ra"] = "Ghamoo-ra"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:794
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:827
 CLM.L["Global"] = "通用"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:101
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:110
 CLM.L["Gluth"] = "格拉斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_S_SoD.lua:20
 CLM.L["Gnomeregan"] = "Gnomeregan"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:76
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:85
 CLM.L["Golemagg the Incinerator"] = "焚化者古雷曼格"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:107
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:116
 CLM.L["Gothik the Harvester"] = "收割者戈提克"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:97
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:106
 CLM.L["Grand Widow Faerlina"] = "黑女巫法琳娜"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:100
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:109
 CLM.L["Grobbulus"] = "格罗布鲁斯"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:459
 CLM.L["Group Loot Only"] = "仅组战利品"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:45
 CLM.L["Grubbis"] = "Grubbis"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:140
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:149
 CLM.L["Gruul the Dragonkiller"] = "屠龙者格鲁尔"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_2_TBC.lua:25
 CLM.L["Gruul's Lair"] = "格鲁尔的巢穴"
 -- ClassicLootManager/Modules/Global/GlobalGuildChangeHandler.lua:18
 CLM.L["Guild change detected. Disabling synchronisation until UI reload."] = "检测到公会变更。 禁用同步直到UI重新加载。"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:156
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:165
 CLM.L["Gurtogg Bloodboil"] = "古尔图格·血沸"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:257
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:266
 CLM.L["Hagara the Stormbinder"] = "Hagara the Stormbinder"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:119
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:128
 CLM.L["Hakkar"] = "哈卡"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:169
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:178
 CLM.L["Halazzi"] = "哈尔拉兹"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:237
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:246
 CLM.L["Halfus Wyrmbreaker"] = "Halfus Wyrmbreaker"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:223
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:232
 CLM.L["Halion"] = "海里昂"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:804
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:837
@@ -992,50 +1000,50 @@ CLM.L["Hash"] = "哈希"
 CLM.L["Head"] = "头部"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/Profile.lua:134
 CLM.L["Healer"] = "治疗者"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:104
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:113
 CLM.L["Heigan the Unclean"] = "肮脏的希尔盖"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:813
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:846
 CLM.L["Held In Off-hand"] = "副手物品"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:30
 CLM.L["Heroic"] = "Heroic"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:170
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:179
 CLM.L["Hex Lord Malacrass"] = "妖术领主玛拉卡斯"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:358
 CLM.L["Hide in combat"] = "隐藏在战斗中"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:150
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:159
 CLM.L["High Astromancer Solarian"] = "大星术师索兰莉安"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:139
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:148
 CLM.L["High King Maulgar"] = "莫加尔大王"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:112
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:121
 CLM.L["High Priest Thekal"] = "高阶祭司塞卡尔"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:113
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:122
 CLM.L["High Priest Venoxis"] = "高阶祭司温诺希斯"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:114
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:123
 CLM.L["High Priestess Arlokk"] = "高阶祭司娅尔罗"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:115
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:124
 CLM.L["High Priestess Jeklik"] = "高阶祭司耶克里克"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:116
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:125
 CLM.L["High Priestess Mar'li"] = "高阶祭司玛尔里"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:152
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:161
 CLM.L["High Warlord Naj'entus"] = "高阶督军纳因图斯"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:136
 CLM.L["History type"] = "历史记录类型"
 -- .:indirectly
 CLM.L["History"] = "历史记录"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:194
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:203
 CLM.L["Hodir"] = "霍迪尔"
 -- .:indirectly
 CLM.L["Hunter"] = "猎人"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:142
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:151
 CLM.L["Hydross the Unstable"] = "不稳定的海度斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_2_TBC.lua:77
 CLM.L["Hyjal Summit"] = "海加尔峰"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_3_WotLK.lua:87
 CLM.L["Icecrown Citadel"] = "冰冠堡垒"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:212
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:221
 CLM.L["Icecrown Gunship Battle"] = "冰冠炮舰战斗"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:195
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:204
 CLM.L["Ignis the Furnace Master"] = "掌炉者伊格尼斯"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:78
 CLM.L["Ignore entry"] = "忽略条目"
@@ -1045,7 +1053,7 @@ CLM.L["Ignore unusable items"] = "忽略无法使用的项目"
 CLM.L["Ignore"] = "忽略"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:206
 CLM.L["Ignores unusable items. They will not be added to bidding window."] = "忽略无法使用的项目。 它们不会添加到竞标窗口中。"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:160
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:169
 CLM.L["Illidan Stormrage"] = "伊利丹·怒风"
 -- ClassicLootManager_Integrations/Migration.lua:279
 -- ClassicLootManager_Integrations/Migration.lua:413
@@ -1117,7 +1125,7 @@ CLM.L["Input CSV Item value override data"] = "输入 CSV 物品分值覆盖数�
 CLM.L["Input JSON exported standings"] = "输入 JSON 导出积分榜"
 -- ClassicLootManager/Modules/Global/GlobalSlashCommands.lua:127
 CLM.L["Input name: %s"] = "输入名字: %s"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:106
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:115
 CLM.L["Instructor Razuvious"] = "教官拉苏维奥斯"
 -- ClassicLootManager_Integrations/ClassicLootManager_Integrations.lua:18
 CLM.L["Integrations"] = "集成"
@@ -1161,11 +1169,11 @@ CLM.L["Item value overrides"] = "物品分数覆盖"
 CLM.L["Item"] = "物品"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:56
 CLM.L["Jammal'an and Ogom"] = "Jammal'an and Ogom"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:168
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:177
 CLM.L["Jan'alai"] = "加亚莱"
 -- ClassicLootManager_Integrations/GUI.lua:134
 CLM.L["January"] = "一月"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:118
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:127
 CLM.L["Jin'do the Hexxer"] = "妖术师金度"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:88
 CLM.L["Join our discord for more info: "] = "加入我们的Discord以获取更多信息："
@@ -1177,31 +1185,31 @@ CLM.L["Joining roster"] = "加入名册"
 CLM.L["July"] = "七月"
 -- ClassicLootManager_Integrations/GUI.lua:139
 CLM.L["June"] = "六月"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:151
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:160
 CLM.L["Kael'thas Sunstrider"] = "凯尔萨斯·逐日者"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:172
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:181
 CLM.L["Kalecgos"] = "卡雷苟斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_2_TBC.lua:8
 CLM.L["Karazhan"] = "卡拉赞"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:163
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:172
 CLM.L["Kaz'rogal"] = "卡兹洛加"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:110
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:119
 CLM.L["Kel'Thuzad"] = "克尔苏加德"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:177
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:186
 CLM.L["Kil'jaeden"] = "基尔加丹"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:196
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:205
 CLM.L["Kologarn"] = "科隆加恩"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:187
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:196
 CLM.L["Koralon the Flame Watcher"] = "火焰看守者科拉隆"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:122
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:131
 CLM.L["Kurinnaxx"] = "库林纳克斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:32
 CLM.L["LFR"] = "LFR"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:213
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:222
 CLM.L["Lady Deathwhisper"] = "亡语者女士"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:39
 CLM.L["Lady Sarevess"] = "Lady Sarevess"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:147
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:156
 CLM.L["Lady Vashj"] = "瓦丝琪"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:410
 CLM.L["Large value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "分级拍卖的大值。\n\n设置为与其他层相同的值或忽略忽略。"
@@ -1223,8 +1231,10 @@ CLM.L["Legendary"] = "传奇"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:806
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:839
 CLM.L["Legs"] = "腿部"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:144
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:153
 CLM.L["Leotheras the Blind"] = "盲眼者莱欧瑟拉斯"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:73
+CLM.L["Lillian Voss"] = "Lillian Voss"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/AltMainLinkingGUI.lua:71
 -- ClassicLootManager/Modules/Profiles/ProfileManager/AltMainLinkingGUI.lua:122
 -- ClassicLootManager/Modules/Profiles/ProfileManager/AltMainLinkingGUI.lua:147
@@ -1235,7 +1245,7 @@ CLM.L["Linking override"] = "链接覆盖"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:378
 -- ClassicLootManager/MinimapIcon.lua:44
 CLM.L["Loading..."] = "正在加载..."
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:105
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:114
 CLM.L["Loatheb"] = "洛欧塞布"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:271
 CLM.L["Lock selected"] = "锁定中的"
@@ -1256,19 +1266,19 @@ CLM.L["Loot Rolling"] = "战利品掷骰中"
 CLM.L["Loot rarity"] = "战利品稀有度"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:21
 CLM.L["Loot"] = "战利品"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:205
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:214
 CLM.L["Lord Jaraxxus"] = "加拉克苏斯大王"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:64
 CLM.L["Lord Kazzak"] = "Lord Kazzak"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:214
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:223
 CLM.L["Lord Marrowgar"] = "玛洛加尔领主"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:247
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:256
 CLM.L["Lord Rhyolith"] = "Lord Rhyolith"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:41
 CLM.L["Lorgus Jett"] = "Lorgus Jett"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:69
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:78
 CLM.L["Lucifron"] = "鲁西弗隆"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:176
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:185
 CLM.L["M'uru"] = "穆鲁"
 -- ClassicLootManager_Integrations/Integrations.lua:129
 -- ClassicLootManager_Integrations/Integrations.lua:134
@@ -1276,20 +1286,20 @@ CLM.L["M'uru"] = "穆鲁"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:557
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:426
 CLM.L["MS"] = "主天赋"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:261
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:270
 CLM.L["Madness of Deathwing"] = "Madness of Deathwing"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:98
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:107
 CLM.L["Maexxna"] = "迈克斯纳"
 -- .:indirectly
 CLM.L["Mage"] = "法师"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:70
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:79
 CLM.L["Magmadar"] = "玛格曼达"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:230
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:239
 CLM.L["Magmaw"] = "Magmaw"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_2_TBC.lua:33
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:141
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:150
 CLM.L["Magtheridon"] = "玛瑟里顿"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:130
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:139
 CLM.L["Maiden of Virtue"] = "贞节圣女"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:811
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:844
@@ -1299,13 +1309,13 @@ CLM.L["Main Hand"] = "主手"
 CLM.L["Main"] = "主号"
 -- ClassicLootManager/Modules/GUI/Filters.lua:80
 CLM.L["Mains"] = "主号"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:77
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:86
 CLM.L["Majordomo Executus"] = "管理者埃克索图斯"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:251
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:260
 CLM.L["Majordomo Staghelm"] = "Majordomo Staghelm"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:232
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:241
 CLM.L["Maloriak"] = "Maloriak"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:184
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:193
 CLM.L["Malygos"] = "玛里苟斯"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:146
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:71
@@ -1316,6 +1326,8 @@ CLM.L["Manager"] = "Manager"
 CLM.L["Manual adjustment"] = "手动调整"
 -- ClassicLootManager_Integrations/GUI.lua:136
 CLM.L["March"] = "三月"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:75
+CLM.L["Mason"] = "Mason"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:441
 CLM.L["Master Loot Only"] = "仅Master Loot"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:905
@@ -1352,7 +1364,7 @@ CLM.L["Migration failure: Detected 0 teams"] = "迁移失败：检测到 0 个�
 CLM.L["Migration failure: Unable to create profiles"] = "迁移失败：无法创建角色信息"
 -- ClassicLootManager_Integrations/Migration.lua:35
 CLM.L["Migration ongoing: %s(%s)"] = "Migration ongoing: %s(%s)"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:197
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:206
 CLM.L["Mimiron"] = "米米尔隆"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:118
 CLM.L["Min bid increment"] = "最小竞拍增量"
@@ -1393,7 +1405,7 @@ CLM.L["Missing roster name. Using Raid Info"] = "缺少名册名称。使用团�
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:465
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:499
 CLM.L["Missing valid raid"] = "缺少有效的团队/团本活动"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:124
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:133
 CLM.L["Moam"] = "莫阿姆"
 -- ClassicLootManager/Modules/Loot/LootManager/AwardGUI.lua:248
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:477
@@ -1402,15 +1414,15 @@ CLM.L["Modifier combination"] = "修饰符组合"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:61
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_1_Classic.lua:14
 CLM.L["Molten Core"] = "熔火之心"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:254
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:263
 CLM.L["Morchok"] = "Morchok"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:129
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:138
 CLM.L["Moroes"] = "莫罗斯"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:146
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:155
 CLM.L["Morogrim Tidewalker"] = "莫洛格里·踏潮者"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:57
 CLM.L["Morphaz and Hazzas"] = "Morphaz and Hazzas"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:158
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:167
 CLM.L["Mother Shahraz"] = "莎赫拉丝主母"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:328
 CLM.L["Mounts"] = "坐骑"
@@ -1432,7 +1444,7 @@ CLM.L["Multiply auction time by the number of items to increase auction time lin
 CLM.L["Multiply time"] = "倍增時間"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:31
 CLM.L["Mythic"] = "Mythic"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:167
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:176
 CLM.L["Nalorakk"] = "纳洛拉克"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:928
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:743
@@ -1451,11 +1463,11 @@ CLM.L["Naxxramas"] = "纳克萨玛斯"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:796
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:829
 CLM.L["Neck"] = "颈部"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:86
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:95
 CLM.L["Nefarian"] = "奈法利安"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:235
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:244
 CLM.L["Nefarian's End"] = "Nefarian's End"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:135
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:144
 CLM.L["Netherspite"] = "虚空幽龙"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:36
 CLM.L["Never show changelog"] = "不再显示更新日志"
@@ -1473,7 +1485,7 @@ CLM.L["New version of Core Loot Manager is available. For best experience please
 CLM.L["Next item"] = "下一項"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:795
 CLM.L["Next"] = "下一個"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:138
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:147
 CLM.L["Nightbane"] = "夜之魇"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1348
 CLM.L["No auction in progress"] = "没有进行中的拍卖"
@@ -1502,7 +1514,7 @@ CLM.L["None"] = "无"
 CLM.L["Normal Mode"] = "正常模式"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:29
 CLM.L["Normal"] = "Normal"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:206
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:215
 CLM.L["Northrend Beasts"] = "诺森德猛兽"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1341
 CLM.L["Not in a roster"] = "不在名册中"
@@ -1517,7 +1529,7 @@ CLM.L["Note to be added to award. Max 25 characters. It is recommended to not in
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:159
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:233
 CLM.L["Note"] = "备注"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:103
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:112
 CLM.L["Noth the Plaguebringer"] = "瘟疫使者诺斯"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:727
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/MultiGUI.lua:812
@@ -1533,7 +1545,7 @@ CLM.L["Num"] = "#"
 -- ClassicLootManager/Modules/Auctioning/BiddingManager/BiddingManager.lua:427
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1153
 CLM.L["OS"] = "副天赋"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:227
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:236
 CLM.L["Occu'thar"] = "Occu'thar"
 -- ClassicLootManager_Integrations/GUI.lua:143
 CLM.L["October"] = "十月"
@@ -1544,7 +1556,7 @@ CLM.L["Off Hand"] = "副手"
 CLM.L["Off-spec bidding not allowed"] = "不允许副天赋出价"
 -- ClassicLootManager_Integrations/Migration.lua:50
 CLM.L["Officer notes"] = "军官笔记"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:231
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:240
 CLM.L["Omnotron Defense System"] = "Omnotron Defense System"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:924
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:93
@@ -1568,7 +1580,7 @@ CLM.L["Online only"] = "仅限在线"
 CLM.L["Online"] = "在线的"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:193
 CLM.L["Only when ML/RL"] = "仅当 ML/RL"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:68
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:77
 CLM.L["Onyxia"] = "奥妮克希亚"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_S_SoD.lua:46
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_1_Classic.lua:7
@@ -1581,13 +1593,13 @@ CLM.L["Open trade"] = "公开贸易"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:718
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:725
 CLM.L["Open"] = "公开"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:131
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:140
 CLM.L["Opera Hall"] = "歌剧院"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:127
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:136
 CLM.L["Ossirian the Unscarred"] = "无疤者奥斯里安"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1351
 CLM.L["Other"] = "其他"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:94
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:103
 CLM.L["Ouro"] = "奥罗"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:75
 CLM.L["Overrides"] = "覆盖"
@@ -1612,7 +1624,7 @@ CLM.L["Participated"] = "参与"
 CLM.L["Pass"] = "跳过"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/AuctionManager.lua:1350
 CLM.L["Passing after bidding not allowed"] = "不允许出价后跳过"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:99
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:108
 CLM.L["Patchwerk"] = "帕奇维克"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:320
 CLM.L["Patterns"] = "模式"
@@ -1655,16 +1667,16 @@ CLM.L["Post channel"] = "发布频道"
 CLM.L["Price Tooltips"] = "价格Tooltip"
 -- .:indirectly
 CLM.L["Priest"] = "牧师"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:137
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:146
 CLM.L["Prince Malchezaar"] = "玛克扎尔王子"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:66
 CLM.L["Prince Thunderaan"] = "Prince Thunderaan"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:92
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:101
 CLM.L["Princess Huhuran"] = "哈霍兰公主"
 -- ClassicLootManager_Integrations/Integrations.lua:139
 -- ClassicLootManager_Integrations/Integrations.lua:154
 CLM.L["Prioritized"] = "优先"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:215
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:224
 CLM.L["Professor Putricide"] = "普崔塞德教授"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:276
 CLM.L["Profile %s already exists and is used by different GUID %s (%s). "] = "角色信息 %s 已存在，被不同的GUID占用 %s (%s)。 "
@@ -1683,7 +1695,7 @@ CLM.L["Public notes"] = "公共笔记"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1068
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:148
 CLM.L["Put players leaving raid on bench instead of removing them. To remove them completely they will need to be removed manually from the bench."] = "让离开团队的角色加入替补名单。要完全移除他们，需要手动将他们从替补名单中移除。"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:216
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:225
 CLM.L["Queen Lana'thel"] = "鲜血女王兰娜瑟尔"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:822
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:855
@@ -1693,10 +1705,10 @@ CLM.L["Quiver"] = "箭袋"
 CLM.L["RCLC Integration"] = "RCLC 集成"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:699
 CLM.L["ROLL"] = "Roll"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:161
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:170
 CLM.L["Rage Winterchill"] = "雷基·冬寒"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:78
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:252
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:87
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:261
 CLM.L["Ragnaros"] = "拉格纳罗斯"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:246
 CLM.L["Raid Completion Bonus Value"] = "解散奖励分值"
@@ -1746,12 +1758,14 @@ CLM.L["Ranged"] = "远程"
 CLM.L["Ranks"] = "会阶"
 -- ClassicLootManager/Utils.lua:1110
 CLM.L["Rare"] = "稀有的"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:79
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:88
 CLM.L["Razorgore the Untamed"] = "狂野的拉佐格尔"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:198
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:207
 CLM.L["Razorscale"] = "锋鳞"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:174
 CLM.L["Reason"] = "原因"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:71
+CLM.L["Reborn Council"] = "Reborn Council"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:430
 CLM.L["Received"] = "收入"
 -- ClassicLootManager_Integrations/Integrations.lua:134
@@ -1760,7 +1774,7 @@ CLM.L["Regular"] = "常规"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:823
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:856
 CLM.L["Relic"] = "Relic"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:157
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:166
 CLM.L["Reliquary of Souls"] = "灵魂之匣"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:276
 CLM.L["Remove all items from auction list. Populates new one if there are any pending."] = "从拍卖列表中删除所有项目。如果有任何待处理，将添加到列表。"
@@ -1847,7 +1861,7 @@ CLM.L["Roster"] = "名册"
 -- ClassicLootManager/Modules/Common/ConfigManager/ConfigManager.lua:138
 -- ClassicLootManager/Modules/Common/ConfigManager/ConfigManager.lua:142
 CLM.L["Rosters"] = "名册"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:217
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:226
 CLM.L["Rotface"] = "腐面"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1107
 CLM.L["Round PR to selected number of decimals"] = "PR 四舍五入到选定的小数位数"
@@ -1868,12 +1882,14 @@ CLM.L["Same zone only"] = "仅限同一区域"
 CLM.L["Sandbox mode"] = "沙盒模式"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:676
 CLM.L["Sandbox"] = "沙箱"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:109
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:118
 CLM.L["Sapphiron"] = "萨菲隆"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:180
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:189
 CLM.L["Sartharion"] = "萨塔里奥"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:222
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:231
 CLM.L["Saviana Ragefire"] = "塞维娅娜·怒火"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_S_SoD.lua:151
+CLM.L["Scarlet Enclave"] = "Scarlet Enclave"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:719
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:726
 CLM.L["Sealed"] = "封闭"
@@ -1934,19 +1950,19 @@ CLM.L["Set Profiles standings in Rosters"] = "在名册中设置角色信息"
 CLM.L["Set points for %s players for team to %s"] = "Set points for %s players for team to %s"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Raids.lua:185
 CLM.L["Set raid name"] = "设置团本活动名称"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:154
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:163
 CLM.L["Shade of Akama"] = "阿卡玛之影"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:134
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:143
 CLM.L["Shade of Aran"] = "埃兰之影"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:58
 CLM.L["Shade of Eranikus"] = "Shade of Eranikus"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:181
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:190
 CLM.L["Shadron"] = "沙德隆"
 -- .:indirectly
 CLM.L["Shaman"] = "萨满"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:246
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:255
 CLM.L["Shannox"] = "Shannox"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:74
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:83
 CLM.L["Shazzrah"] = "沙斯拉尔"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:815
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:848
@@ -1969,11 +1985,11 @@ CLM.L["Shoulder"] = "肩部"
 CLM.L["Show Award window"] = "展示奖励窗口"
 -- ClassicLootManager_Tracker/ClassicLootManager_Tracker.lua:74
 CLM.L["Show tooltip info even outside of CLM raid."] = "Show tooltip info even outside of CLM raid."
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:88
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:97
 CLM.L["Silithid Royalty"] = "吉祥三宝"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:218
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:227
 CLM.L["Sindragosa"] = "辛达苟萨"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:241
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:250
 CLM.L["Sinestra"] = "Sinestra"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:747
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:753
@@ -1988,9 +2004,11 @@ CLM.L["Slot multipliers"] = "槽位系数"
 CLM.L["Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."] = "Small value for Tiered auction.\n\nSet to same value as other tier or negative to ignore."
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:902
 CLM.L["Small"] = "Small"
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:69
+CLM.L["Solistrasza"] = "Solistrasza"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:429
 CLM.L["Spent"] = "支出"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:260
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:269
 CLM.L["Spine of Deathwing"] = "Spine of Deathwing"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:312
 CLM.L["Stacking"] = "堆叠"
@@ -2032,7 +2050,7 @@ CLM.L["Store finished auction bids information."] = "保存完成的拍卖信息
 -- ClassicLootManager_Integrations/GenericImport.lua:237
 -- ClassicLootManager_Integrations/ImportCSV.lua:117
 CLM.L["Success"] = "成功"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:75
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:84
 CLM.L["Sulfuron Harbinger"] = "萨弗隆先驱者"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_S_SoD.lua:32
 CLM.L["Sunken Temple"] = "Sunken Temple"
@@ -2040,7 +2058,7 @@ CLM.L["Sunken Temple"] = "Sunken Temple"
 CLM.L["Sunwell Plateau"] = "太阳井高地"
 -- ClassicLootManager/Modules/Common/Changelog/GUI.lua:79
 CLM.L["Suppresses changelog display until new version is released"] = "禁止显示更新日志，直到发布新版本"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:153
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:162
 CLM.L["Supremus"] = "苏普雷姆斯"
 -- ClassicLootManager/MinimapIcon.lua:52
 CLM.L["Sync ongoing"] = "同步进行中"
@@ -2057,15 +2075,15 @@ CLM.L["Tempest Keep"] = "风暴要塞"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_S_SoD.lua:115
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_1_Classic.lua:44
 CLM.L["Temple of Ahn'Qiraj"] = "安其拉神殿"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:182
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:191
 CLM.L["Tenebron"] = "塔尼布隆"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:133
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:142
 CLM.L["Terestian Illhoof"] = "特雷斯坦·邪蹄"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:155
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:164
 CLM.L["Teron Gorefiend"] = "塔隆·血魔"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:102
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:111
 CLM.L["Thaddius"] = "塔迪乌斯"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:199
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:208
 CLM.L["The Assembly of Iron"] = "钢铁议会"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_4_Cata.lua:29
 CLM.L["The Bastion of Twilight"] = "The Bastion of Twilight"
@@ -2073,29 +2091,29 @@ CLM.L["The Bastion of Twilight"] = "The Bastion of Twilight"
 CLM.L["The Burning Crusade"] = "The Burning Crusade"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_S_SoD.lua:108
 CLM.L["The Crystal Vale"] = "The Crystal Vale"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:132
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:141
 CLM.L["The Curator"] = "馆长"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_3_WotLK.lua:39
 CLM.L["The Eye of Eternity"] = "永恒之眼"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:108
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:117
 CLM.L["The Four Horsemen"] = "天启四骑士"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:159
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:168
 CLM.L["The Illidari Council"] = "伊利达雷议会"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:219
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:228
 CLM.L["The Lich King"] = "巫妖王"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:143
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:152
 CLM.L["The Lurker Below"] = "鱼斯拉"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_3_WotLK.lua:29
 CLM.L["The Obsidian Sanctum"] = "黑曜石圣殿"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:87
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:96
 CLM.L["The Prophet Skeram"] = "预言者斯克拉姆"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_3_WotLK.lua:112
 CLM.L["The Ruby Sanctum"] = "红玉圣殿"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:688
 CLM.L["The War Within"] = "The War Within"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:238
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:247
 CLM.L["Theralion and Valiona"] = "Theralion and Valiona"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:200
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:209
 CLM.L["Thorim"] = "托里姆"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_4_Cata.lua:40
 CLM.L["Throne of the Four Winds"] = "Throne of the Four Winds"
@@ -2175,7 +2193,7 @@ CLM.L["Toggles loot announcement to raid"] = "开关战利品通告到团队频�
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:354
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:367
 CLM.L["Too much data to display"] = "数据过多，无法显示"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:188
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:197
 CLM.L["Toravon the Ice Watcher"] = "寒冰看守者图拉旺"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Standings.lua:494
 CLM.L["Total blocked"] = "共被阻止"
@@ -2201,7 +2219,7 @@ CLM.L["Trinket"] = "饰品"
 CLM.L["True"] = "开启"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:42
 CLM.L["Twilight Lord Kelris"] = "Twilight Lord Kelris"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:93
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:102
 CLM.L["Twin Emperors"] = "双子皇帝"
 -- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:266
 CLM.L["Two different profiles exist for target GUID %s (%s:%s) and name %s (%s:%s). Verify and clean up profiles before updating."] = "两个不同的角色信息存在对目标 GUID %s (%s:%s) 和名字 %s (%s:%s).。请在更新之前验证并清理角色信息。"
@@ -2217,7 +2235,7 @@ CLM.L["Type"] = "类型"
 CLM.L["UI Scale"] = "用户界面缩放"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_3_WotLK.lua:56
 CLM.L["Ulduar"] = "奥杜尔"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:258
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:267
 CLM.L["Ultraxion"] = "Ultraxion"
 -- ClassicLootManager_Integrations/Migration.lua:66
 CLM.L["Unable to execute migration. Entries already exist."] = "无法执行迁移。条目已经存在。"
@@ -2251,11 +2269,11 @@ CLM.L["UpdatePoints(): Empty targets list"] = "UpdatePoints()：空目标列表"
 CLM.L["Updated raid <%s> %s joined, %s left, %s benched, %s removed"] = "已更新团本活动 <%s> %s 已加入, %s 已离开, %s 已替补, %s 已移除"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Options.lua:1256
 CLM.L["Use named buttons"] = "使用命名按钮"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:80
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:89
 CLM.L["Vaelastrasz the Corrupt"] = "堕落的瓦拉斯塔兹"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:207
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:216
 CLM.L["Val'kyr Twins"] = "瓦格里双子"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:211
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:220
 CLM.L["Valithria Dreamwalker"] = "踏梦者瓦莉瑟瑞娅"
 -- ClassicLootManager/Modules/Auctioning/AuctionManager/MultiGUI.lua:305
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_History.lua:262
@@ -2268,24 +2286,24 @@ CLM.L["Verbose"] = "详情显示"
 CLM.L["Version check in guild"] = "在公会中进行版本检查"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Profiles.lua:182
 CLM.L["Version"] = "版本"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:183
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:192
 CLM.L["Vesperon"] = "维斯匹隆"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:720
 CLM.L["Vickrey"] = "Vickrey"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:91
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:100
 CLM.L["Viscidus"] = "维希度斯"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:46
 CLM.L["Viscous Fallout"] = "Viscous Fallout"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:149
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:158
 CLM.L["Void Reaver"] = "空灵机甲"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:805
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:838
 CLM.L["Waist"] = "腰部"
 -- .:indirectly
 CLM.L["Warlock"] = "术士"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:255
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:264
 CLM.L["Warlord Zon'ozz"] = "Warlord Zon'ozz"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:259
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:268
 CLM.L["Warmaster Blackhorn"] = "Warmaster Blackhorn"
 -- .:indirectly
 CLM.L["Warrior"] = "战士"
@@ -2324,13 +2342,13 @@ CLM.L["Wrath of the Lich King"] = "Wrath of the Lich King"
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:803
 -- ClassicLootManager/Modules/Rosters/RosterManager/Roster.lua:836
 CLM.L["Wrist"] = "手腕"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:201
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:210
 CLM.L["XT-002 Deconstructor"] = "XT-002拆解者"
 -- ClassicLootManager/Utils.lua:594
 CLM.L["Yes"] = "是的"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:202
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:211
 CLM.L["Yogg-Saron"] = "尤格萨隆"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:256
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:265
 CLM.L["Yor'sahj the Unsleeping"] = "Yor'sahj the Unsleeping"
 -- ClassicLootManager/Modules/Raids/RaidManager/RaidManager.lua:310
 CLM.L["You are already in an active raid. Leave or finish it before creating new one."] = "你已经在一个正在进行的团本活动中。在创建新的之前离开或完成它。"
@@ -2394,7 +2412,7 @@ CLM.L["Zul'Aman"] = "祖阿曼"
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_S_SoD.lua:78
 -- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs_1_Classic.lua:80
 CLM.L["Zul'Gurub"] = "祖尔格拉布"
--- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:171
+-- ClassicLootManager/Modules/Points/AutoAwardManager/Encounters/EncounterIDs___Base.lua:180
 CLM.L["Zul'jin"] = "祖尔金"
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:218
 CLM.L["[All Roster Configs]: "] = "[所有名册配置]："

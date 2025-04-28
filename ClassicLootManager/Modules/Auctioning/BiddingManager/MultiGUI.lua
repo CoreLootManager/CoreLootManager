@@ -870,6 +870,9 @@ local function CreateBidInputGroup(self)
     self.BidInput = BidInput
     BidInput:DisableButton(true)
     BidInput:SetWidth(BID_INPUT_WIDTH)
+    BidInput:SetCallback("OnEnterPressed", (function()
+        BidInputValue(BiddingManagerGUI, CONSTANTS.BID_TYPE.MAIN_SPEC)
+    end))
     BidInputGroup:AddChild(BidInput)
     BidInputGroup:AddChild(BiddingGroup)
 

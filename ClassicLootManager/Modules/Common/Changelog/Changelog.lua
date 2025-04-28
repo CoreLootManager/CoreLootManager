@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.5.3",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "SoD S8", body = "The Scarlet Enclave support added" },
+                    { header = "Bid UI", body = "Pressing Enter key now sends bid to the Auctioneer" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.5.2",
         data = {
             {

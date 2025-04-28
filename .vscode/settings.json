@@ -254,7 +254,8 @@
         "LE_EXPANSION_BURNING_CRUSADE",
         "LE_EXPANSION_WRATH_OF_THE_LICH_KING",
         "LE_EXPANSION_MISTS_OF_PANDARIA",
-        "LE_EXPANSION_LEGION"
+        "LE_EXPANSION_LEGION",
+        "OKAY"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

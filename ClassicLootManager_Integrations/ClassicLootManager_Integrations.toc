@@ -1,4 +1,4 @@
-## Interface: 40401, 40402, 110007, 11505, 11506, 11507, 110100, 110105
+## Interface: 50500, 40402, 11507, 110105, 110107
 ## Title: CLM |cff44ee44Integrations|r
 ## Notes: External Integration System for |cffdcb749Core Loot Manager|r covering Migration, Import and Export.
 ## Author: Lantis
