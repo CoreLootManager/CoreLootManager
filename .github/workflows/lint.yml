@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: leafo/gh-actions-lua@v9.1.0
+      - uses: leafo/gh-actions-lua@v11.0.0
         with:
           luaVersion: "5.1.4"
       - name: Luacheck Install
