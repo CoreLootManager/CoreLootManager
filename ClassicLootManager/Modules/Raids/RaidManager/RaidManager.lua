@@ -644,12 +644,12 @@ function RaidManager:DisableAutoAwarding()
 end
 
 function RaidManager:UpdateGameRaidInformation()
-    local lootmethod, _, masterlooterRaidID = GetLootMethod()
+    local lootmethod, _, masterlooterRaidID = C_PartyInfo.GetLootMethod()
     LOG:Info("Loot method: %s (id: %s)", lootmethod, masterlooterRaidID)
     self.RaidAssistants = {}
     self.IsMasterLootSystem = false
     self.IsGroupLootSystem = false
-    if lootmethod == "master" and masterlooterRaidID then
+    if lootmethod == "Masterlooter" and masterlooterRaidID then
         local name = GetRaidRosterInfo(masterlooterRaidID)
         if name then
             name = UTILS.Disambiguate(name)
@@ -658,7 +658,7 @@ function RaidManager:UpdateGameRaidInformation()
             self.RaidAssistants[name] = true -- we add it in case ML is not an assistant
             LOG:Info("Master Looter: %s", name)
         end
-    elseif lootmethod == "group" then
+    elseif lootmethod == "Group" then
         self.IsGroupLootSystem = true
     end
 
