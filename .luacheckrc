@@ -200,7 +200,7 @@ globals = {
 	"UnitClass",
 	"UnitInBattleground",
 	"IsActiveBattlefieldArena",
-	"GetLootMethod",
+	"C_PartyInfo.GetLootMethod",
 	"ItemRefTooltip",
 	"GetUnitName",
 	"UISpecialFrames",
