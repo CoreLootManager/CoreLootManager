@@ -148,7 +148,7 @@
         "TRANSMOGRIFICATION",
         "UnitInBattleground",
         "IsActiveBattlefieldArena",
-        "GetLootMethod",
+        "C_PartyInfo.GetLootMethod",
         "GetRaidRosterInfo",
         "LOOT_ITEM_SELF_MULTIPLE",
         "LOOT_ITEM_SELF",
