@@ -317,6 +317,15 @@ CLM.EncounterIDsMap = {
     [3014] = EJ_GetEncounterInfo(2644) or "The One-Armed Bandit",
     [3015] = EJ_GetEncounterInfo(2645) or "Mug'Zee, Heads of Security",
     [3016] = EJ_GetEncounterInfo(2646) or "Chrome King Gallywix",
+    -- Manaforge Omega
+    [3129] = EJ_GetEncounterInfo(2684) or "Plexus Sentinel",
+    [3131] = EJ_GetEncounterInfo(2686) or "Loom'ithar",
+    [3130] = EJ_GetEncounterInfo(2685) or "Soulbinder Naazindhri",
+    [3132] = EJ_GetEncounterInfo(2687) or "Forgeweaver Araz",
+    [3122] = EJ_GetEncounterInfo(2688) or "The Soul Hunters",
+    [3133] = EJ_GetEncounterInfo(2747) or "Fractillus",
+    [3134] = EJ_GetEncounterInfo(2690) or "Nexus-King Salhadaar",
+    [3135] = EJ_GetEncounterInfo(2691) or "Dimensius, the All-Devouring",
 }
 
 CLM.EncounterHasHardMode = CLM.UTILS.Set({
