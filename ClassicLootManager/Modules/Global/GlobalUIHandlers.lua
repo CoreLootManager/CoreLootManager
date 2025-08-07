@@ -32,7 +32,7 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     handledLootRolls[rollID] = nil
 
     -- Ignore handling in case of master looter being out of range
-    if GetLootMethod() == "master" then
+    if C_PartyInfo.GetLootMethod() == "Masterlooter" then
         return
     end
 
