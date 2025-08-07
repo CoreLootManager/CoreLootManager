@@ -34,4 +34,18 @@ CLM.EncounterIDs[LE_EXPANSION_WAR_WITHIN] = {
             { id = 3016, name = CLM.EncounterIDsMap[3016] },
         }
     },
+    {
+        name = EJ_GetInstanceInfo(1302) or "Manaforge Omega",
+        difficulty = { CLM.DifficultyID.NORMAL, CLM.DifficultyID.HEROIC, CLM.DifficultyID.MYTHIC },
+        data = {
+            { id = 3129, name = CLM.EncounterIDsMap[3129] },
+            { id = 3131, name = CLM.EncounterIDsMap[3131] },
+            { id = 3130, name = CLM.EncounterIDsMap[3130] },
+            { id = 3132, name = CLM.EncounterIDsMap[3132] },
+            { id = 3122, name = CLM.EncounterIDsMap[3122] },
+            { id = 3133, name = CLM.EncounterIDsMap[3133] },
+            { id = 3134, name = CLM.EncounterIDsMap[3134] },
+            { id = 3135, name = CLM.EncounterIDsMap[3135] },
+        }
+    },
 }
