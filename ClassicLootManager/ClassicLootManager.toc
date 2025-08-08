@@ -1,4 +1,4 @@
-## Interface: 50500, 40402, 11507, 110105, 110107
+## Interface: 50500, 40402, 11507, 110200
 ## Title: CLM |cffdcb749Core Loot Manager|r
 ## Notes: Robust, DKP and EPGP based Loot Manager system. Formerly |cffdcb749Classic Loot Manager|r.
 ## Author: Lantis
@@ -24,5 +24,6 @@
 ## X-Wago-ID: vEGPw4K1
 ## SavedVariables: CLM2_DB, CLM2_Logs, CLM2_MinimapIcon
 ## LoadOnDemand: 0
+
 
 _filelist.xml
