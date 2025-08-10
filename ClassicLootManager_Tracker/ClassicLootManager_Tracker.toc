@@ -1,4 +1,4 @@
-## Interface: 50500, 40402, 11507, 110105, 110107
+## Interface: 50500, 40402, 11507, 110200
 ## Title: CLM |cff44ee44Tracker|r
 ## Notes: Visual Item received tracker System for |cffdcb749Core Loot Manager|r.
 ## Author: Lantis
@@ -27,4 +27,5 @@
 ClassicLootManager_Tracker.lua
 Tracker.lua
 Tooltips.lua
+
 Auction.lua
