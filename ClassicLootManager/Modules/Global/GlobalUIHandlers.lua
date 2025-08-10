@@ -6,6 +6,8 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+local GetLootMethod = GetLootMethod or C_PartyInfo.GetLootMethod
+
 local ignoredItems = UTILS.Set({
     50226, -- Festergut's Acidic Blood
     50231, -- Rotface's Acidic Blood
@@ -32,7 +34,7 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     handledLootRolls[rollID] = nil
 
     -- Ignore handling in case of master looter being out of range
-    if C_PartyInfo.GetLootMethod() == "Masterlooter" then
+    if (GetLootMethod() == "master" or GetLootMethod() == Enum.LootMethod.Masterlooter) then
         return
     end
 
