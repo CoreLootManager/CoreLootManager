@@ -268,6 +268,26 @@ CLM.EncounterIDsMap = {
     [1298] = CLM.L["Warmaster Blackhorn"],
     [1291] = CLM.L["Spine of Deathwing"],
     [1299] = CLM.L["Madness of Deathwing"],
+    -- MoP
+    -- Mogu'shan Vaults
+    [1395] = CLM.L["The Stone Guard"],
+    [1390] = CLM.L["Feng the Accursed"],
+    [1434] = CLM.L["Gara'jal the Spiritbinder"],
+    [1436] = CLM.L["The Spirit Kings"],
+    [1500] = CLM.L["Elegon"],
+    [1407] = CLM.L["Will of the Emperor"],
+    -- Heart of Fear
+    [1507] = CLM.L["Imperial Vizier Zor'lok"],
+    [1504] = CLM.L["Blade Lord Ta'yak"],
+    [1463] = CLM.L["Garalon"],
+    [1498] = CLM.L["Wind Lord Mel'jarak"],
+    [1499] = CLM.L["Amber-Shaper Un'sok"],
+    [1501] = CLM.L["Grand Empress Shek'zeer"],
+    -- Terrace of Endless Spring
+    [1409] = CLM.L["Protectors of the Endless"],
+    [1505] = CLM.L["Tsulong"],
+    [1506] = CLM.L["Lei Shi"],
+    [1431] = CLM.L["Sha of Fear"],
     -- DF
     -- VoI
     [2587] = EJ_GetEncounterInfo(2480) or "Eranog",
