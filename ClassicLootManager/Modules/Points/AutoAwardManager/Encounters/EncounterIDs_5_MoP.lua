@@ -5,7 +5,7 @@ if CLM.IsClassicEra() then return end
 
 CLM.EncounterIDs[LE_EXPANSION_MISTS_OF_PANDARIA] = {
     {
-        name = EJ_GetInstanceInfo(317) or "Mogu'shan Vaults,
+        name = EJ_GetInstanceInfo(317) or "Mogu'shan Vaults",
         difficulty = {CLM.DifficultyID.P10, CLM.DifficultyID.P10HC, CLM.DifficultyID.P25, CLM.DifficultyID.P25HC},
         data = {
             { id = 1395, name = CLM.EncounterIDsMap[1395] },
