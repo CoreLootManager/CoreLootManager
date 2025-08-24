@@ -608,10 +608,14 @@ function Integration:GetRCLCAwardAction(conditionNum)
     return db[conditionNum].action
 end
 
+local function escape(text)
+    return text:gsub("([%W])", "%%%1")
+end
+
 function Integration:SearchRCLCAwardAction(response)
     response = strlower(tostring(response) or "")
     for _, condition in ipairs(InitializeDB("rclc.handlers")) do
-        if(string.find(response, ".*" .. strlower(condition.trigger) .. ".*")) then
+        if(string.find(response, ".*" .. escape(strlower(condition.trigger)) .. ".*")) then
             return condition.action
         end
     end
