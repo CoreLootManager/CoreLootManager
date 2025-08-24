@@ -585,7 +585,7 @@ CLM.L["Core Loot Manager"] = "Core Loot Manager"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:526
 CLM.L["Correcting error"] = "Corrección de error"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:345
---CLM.L["Cosmetics"] = ""
+CLM.L["Cosmetics"] = "Productos cosméticos"
 -- ClassicLootManager_Tracker/Auction.lua:9
 CLM.L["Count"] = "Count"
 -- ClassicLootManager_Integrations/GenericImport.lua:177
@@ -2182,7 +2182,7 @@ CLM.L["Toggle test bar"] = "Barra de prueba de palanca"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:154
 CLM.L["Toggles addon sounds."] = "Alternar los sonidos de complemento."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:346
---CLM.L["Toggles auto-rolling on cosmetics."] = ""
+CLM.L["Toggles auto-rolling on cosmetics."] = "Alternar automáticamente en cosméticos."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:306
 CLM.L["Toggles auto-rolling on legendary items."] = "Alternar automáticamente los artículos legendarios."
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:330

@@ -585,7 +585,7 @@ CLM.L["Core Loot Manager"] = "Core Loot Manager"
 -- ClassicLootManager/Modules/Points/PointManager/PointManager.lua:526
 CLM.L["Correcting error"] = "纠正错误"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:345
---CLM.L["Cosmetics"] = ""
+CLM.L["Cosmetics"] = "化妆品"
 -- ClassicLootManager_Tracker/Auction.lua:9
 CLM.L["Count"] = "Count"
 -- ClassicLootManager_Integrations/GenericImport.lua:177
@@ -2182,7 +2182,7 @@ CLM.L["Toggle test bar"] = "切换测试栏"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:154
 CLM.L["Toggles addon sounds."] = "开关插件声音。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:346
---CLM.L["Toggles auto-rolling on cosmetics."] = ""
+CLM.L["Toggles auto-rolling on cosmetics."] = "在化妆品上切换自动滚动。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:306
 CLM.L["Toggles auto-rolling on legendary items."] = "在传奇项目上切换自动掷骰。"
 -- ClassicLootManager/Modules/Global/GlobalConfigs.lua:330
