@@ -288,8 +288,8 @@ function UTILS.GenerateItemLink(itemId)
     return string.format("item:%d:0:0:0:0:0:0:0:0:0:0:0:0", itemId)
 end
 
-function UTILS.Set(t)
-    local s = {}
+function UTILS.Set(t, s)
+    s = s or {}
     for _,v in pairs(t) do
         if v then
             s[v] = true end
@@ -1107,12 +1107,18 @@ function UTILS.GetLootMethod()
     return GetLootMethod()
 end
 
-local lootMasterMethods = UTILS.Set({"master", Enum.LootMethod.Masterlooter})
+local lootMasterMethods = UTILS.Set({"master"})
+local groupLootMethods = UTILS.Set({"group"})
+
+if Enum.LootMethod then
+    UTILS.Set({Enum.LootMethod.Masterlooter}, lootMasterMethods)
+    UTILS.Set({Enum.LootMethod.Group}, groupLootMethods)
+end
+
 function UTILS.IsLootMasterLootMethod()
     return lootMasterMethods[UTILS.GetLootMethod()]
 end
 
-local groupLootMethods = UTILS.Set({"group", Enum.LootMethod.Group})
 function UTILS.IsGroupLootMethod()
     return groupLootMethods[UTILS.GetLootMethod()]
 end
