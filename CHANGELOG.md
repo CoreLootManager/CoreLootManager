@@ -1,3 +1,12 @@
+# Core Loot Manager v5.6.0
+## Notes
+### Thank you for contributions!
+Thank you for all the contributions done over last few months, especially to @Liukus @crimsoncoyote elementar_
+## Changes
+### Mists of Pandaria
+Mists of Pandaria support added.
+### Retail Ghosts of K'aresh
+Ghosts of K'aresh support added.
 # Core Loot Manager v5.5.3
 ## Changes
 ### SoD S8

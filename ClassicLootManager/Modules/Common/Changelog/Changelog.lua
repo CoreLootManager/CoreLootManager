@@ -1,6 +1,19 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.6.0",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Thank you for contributions!", body = "Thank you for all the contributions done over last few months, especially to @Liukus @crimsoncoyote elementar_" },
+                    { header = "Mists of Pandaria", body = "Mists of Pandaria support added." },
+                    { header = "Retail Ghosts of K'aresh", body = "Ghosts of K'aresh support added." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.5.3",
         data = {
             {

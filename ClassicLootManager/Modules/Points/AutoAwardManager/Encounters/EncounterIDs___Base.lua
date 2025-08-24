@@ -277,11 +277,11 @@ CLM.EncounterIDsMap = {
     [1500] = EJ_GetEncounterInfo(726) or "Elegon",
     [1407] = EJ_GetEncounterInfo(677) or "Will of the Emperor",
     -- Heart of Fear
-    [1507] = EJ_GetEncounterInfo(745) or "Imperial Vizier Zor'lok",        
-    [1504] = EJ_GetEncounterInfo(744) or "Blade Lord Ta'yak",        
-    [1463] = EJ_GetEncounterInfo(713) or "Garalon",        
-    [1498] = EJ_GetEncounterInfo(741) or "Wind Lord Mel'jarak",        
-    [1499] = EJ_GetEncounterInfo(737) or "Amber-Shaper Un'sok",        
+    [1507] = EJ_GetEncounterInfo(745) or "Imperial Vizier Zor'lok",
+    [1504] = EJ_GetEncounterInfo(744) or "Blade Lord Ta'yak",
+    [1463] = EJ_GetEncounterInfo(713) or "Garalon",
+    [1498] = EJ_GetEncounterInfo(741) or "Wind Lord Mel'jarak",
+    [1499] = EJ_GetEncounterInfo(737) or "Amber-Shaper Un'sok",
     [1501] = EJ_GetEncounterInfo(743) or "Grand Empress Shek'zeer",
     -- Terrace of Endless Spring
     [1409] = EJ_GetEncounterInfo(683) or "Protectors of the Endless",
@@ -307,7 +307,7 @@ CLM.EncounterIDsMap = {
     [1598] = EJ_GetEncounterInfo(849) or "The Fallen Protectors",
     [1624] = EJ_GetEncounterInfo(866) or "Norushen",
     [1604] = EJ_GetEncounterInfo(867) or "Sha of Pride",
-    [1622] = EJ_GetEncounterInfo(868) or "Galakras",
+    -- [1622] = EJ_GetEncounterInfo(868) or "Galakras", -- One for Horde and one for Alliance
     [1622] = EJ_GetEncounterInfo(881) or "Galakras",
     [1600] = EJ_GetEncounterInfo(864) or "Iron Juggernaut",
     [1606] = EJ_GetEncounterInfo(856) or "Kor'kron Dark Shaman",
