@@ -71,7 +71,9 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     local isPattern   = (classID == Enum.ItemClass.Recipe)
     local isQuestItem = (classID == Enum.ItemClass.Questitem)
     local isMount     = (classID == Enum.ItemClass.Miscellaneous) and (subclassID == Enum.ItemMiscellaneousSubclass.Mount)
+    local isCosmetic  = (classID == Enum.ItemClass.Armor) and (subclassID == Enum.ItemArmorSubclass.Cosmetic)
     local isToy       = checkToy(itemId)
+
     -- Ignore all quest items
     if isQuestItem then
         return
@@ -95,6 +97,10 @@ local function Handler(_, _, rollID, rollTime, lootHandle)
     end
 
     if isToy and not CLM.GlobalConfigs:GetLootRollIncludeToys() then
+        return
+    end
+
+    if isCosmetic and not CLM.GlobalConfigs:GetLootRollIncludeCosmetics() then
         return
     end
 

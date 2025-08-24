@@ -40,6 +40,7 @@ function GlobalConfigs:Initialize()
             includePatterns = false,
             includeMounts = false,
             includeToys = false,
+            includeCosmetics = false,
         }
     })
 
@@ -340,6 +341,14 @@ Thank you patrons!
             get = function(i) return self:GetLootRollIncludeToys() end,
             order = 1207
         },
+        loot_roll_include_cosmetics = {
+            name = CLM.L["Include"] .. " " .. CLM.L["Cosmetics"],
+            desc = CLM.L["Toggles auto-rolling on cosmetics."],
+            type = "toggle",
+            set = function(i, v) self:SetLootRollIncludeCosmetics(v) end,
+            get = function(i) return self:GetLootRollIncludeCosmetics() end,
+            order = 1208
+        },
         danger_zone_header = {
             type = "header",
             name = CLM.L["Danger Zone - Use at own risk"],
@@ -405,6 +414,14 @@ end
 
 function GlobalConfigs:GetLootRollIncludeToys()
     return self.db.loot_roll.includeToys
+end
+
+function GlobalConfigs:SetLootRollIncludeCosmetics(value)
+    self.db.loot_roll.includeCosmetics = value and true or false
+end
+
+function GlobalConfigs:GetLootRollIncludeCosmetics()
+    return self.db.loot_roll.includeCosmetics
 end
 
 function GlobalConfigs:SetSounds(value)
