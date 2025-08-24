@@ -6,9 +6,10 @@ CLM.ChangelogData = {
             {
                 name = "Changes",
                 data = {
-                    { header = "Thank you for contributions!", body = "Thank you for all the contributions done over last few months, especially to @Liukus @crimsoncoyote elementar_" },
+                    { header = "Thank you for contributions!", body = "Thank you for all the contributions done over last few months, especially to @Liukus @crimsoncoyote elementar_ @100mll" },
                     { header = "Mists of Pandaria", body = "Mists of Pandaria support added." },
                     { header = "Retail Ghosts of K'aresh", body = "Ghosts of K'aresh support added." },
+                    { header = "Cosmetics", body = "You can now control addon behavior for Cosmetics." },
                 },
             },
         },
