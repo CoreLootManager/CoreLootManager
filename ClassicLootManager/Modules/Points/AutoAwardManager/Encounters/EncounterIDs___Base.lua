@@ -268,6 +268,56 @@ CLM.EncounterIDsMap = {
     [1298] = CLM.L["Warmaster Blackhorn"],
     [1291] = CLM.L["Spine of Deathwing"],
     [1299] = CLM.L["Madness of Deathwing"],
+    -- MoP
+    -- Mogu'shan Vaults
+    [1395] = EJ_GetEncounterInfo(679) or "The Stone Guard",
+    [1390] = EJ_GetEncounterInfo(689) or "Feng the Accursed",
+    [1434] = EJ_GetEncounterInfo(682) or "Gara'jal the Spiritbinder",
+    [1436] = EJ_GetEncounterInfo(687) or "The Spirit Kings",
+    [1500] = EJ_GetEncounterInfo(726) or "Elegon",
+    [1407] = EJ_GetEncounterInfo(677) or "Will of the Emperor",
+    -- Heart of Fear
+    [1507] = EJ_GetEncounterInfo(745) or "Imperial Vizier Zor'lok",        
+    [1504] = EJ_GetEncounterInfo(744) or "Blade Lord Ta'yak",        
+    [1463] = EJ_GetEncounterInfo(713) or "Garalon",        
+    [1498] = EJ_GetEncounterInfo(741) or "Wind Lord Mel'jarak",        
+    [1499] = EJ_GetEncounterInfo(737) or "Amber-Shaper Un'sok",        
+    [1501] = EJ_GetEncounterInfo(743) or "Grand Empress Shek'zeer",
+    -- Terrace of Endless Spring
+    [1409] = EJ_GetEncounterInfo(683) or "Protectors of the Endless",
+    [1505] = EJ_GetEncounterInfo(742) or "Tsulong",
+    [1506] = EJ_GetEncounterInfo(729) or "Lei Shi",
+    [1431] = EJ_GetEncounterInfo(709) or "Sha of Fear",
+    -- Throne of Thunder
+    [1577] = EJ_GetEncounterInfo(827) or "Jin'rokh the Breaker",
+    [1575] = EJ_GetEncounterInfo(819) or "Horridon",
+    [1570] = EJ_GetEncounterInfo(816) or "Council of Elders",
+    [1565] = EJ_GetEncounterInfo(825) or "Tortos",
+    [1578] = EJ_GetEncounterInfo(821) or "Megaera",
+    [1573] = EJ_GetEncounterInfo(828) or "Ji-Kun",
+    [1572] = EJ_GetEncounterInfo(818) or "Durumu the Forgotten",
+    [1574] = EJ_GetEncounterInfo(820) or "Primordius",
+    [1576] = EJ_GetEncounterInfo(824) or "Dark Animus",
+    [1559] = EJ_GetEncounterInfo(817) or "Iron Qon",
+    [1560] = EJ_GetEncounterInfo(829) or "Twin Empyreans",
+    [1579] = EJ_GetEncounterInfo(832) or "Lei Shen",
+    [1580] = EJ_GetEncounterInfo(831) or "Ra-den",
+    -- Siege of Orgrimmar
+    [1602] = EJ_GetEncounterInfo(852) or "Immerseus",
+    [1598] = EJ_GetEncounterInfo(849) or "The Fallen Protectors",
+    [1624] = EJ_GetEncounterInfo(866) or "Norushen",
+    [1604] = EJ_GetEncounterInfo(867) or "Sha of Pride",
+    [1622] = EJ_GetEncounterInfo(868) or "Galakras",
+    [1622] = EJ_GetEncounterInfo(881) or "Galakras",
+    [1600] = EJ_GetEncounterInfo(864) or "Iron Juggernaut",
+    [1606] = EJ_GetEncounterInfo(856) or "Kor'kron Dark Shaman",
+    [1603] = EJ_GetEncounterInfo(850) or "General Nazgrim",
+    [1595] = EJ_GetEncounterInfo(846) or "Malkorok",
+    [1594] = EJ_GetEncounterInfo(870) or "Spoils of Pandaria",
+    [1599] = EJ_GetEncounterInfo(851) or "Thok the Bloodthirsty",
+    [1601] = EJ_GetEncounterInfo(865) or "Siegecrafter Blackfuse",
+    [1593] = EJ_GetEncounterInfo(853) or "Paragons of the Klaxxi",
+    [1623] = EJ_GetEncounterInfo(869) or "Garrosh Hellscream",
     -- DF
     -- VoI
     [2587] = EJ_GetEncounterInfo(2480) or "Eranog",
@@ -317,6 +367,15 @@ CLM.EncounterIDsMap = {
     [3014] = EJ_GetEncounterInfo(2644) or "The One-Armed Bandit",
     [3015] = EJ_GetEncounterInfo(2645) or "Mug'Zee, Heads of Security",
     [3016] = EJ_GetEncounterInfo(2646) or "Chrome King Gallywix",
+    -- Manaforge Omega
+    [3129] = EJ_GetEncounterInfo(2684) or "Plexus Sentinel",
+    [3131] = EJ_GetEncounterInfo(2686) or "Loom'ithar",
+    [3130] = EJ_GetEncounterInfo(2685) or "Soulbinder Naazindhri",
+    [3132] = EJ_GetEncounterInfo(2687) or "Forgeweaver Araz",
+    [3122] = EJ_GetEncounterInfo(2688) or "The Soul Hunters",
+    [3133] = EJ_GetEncounterInfo(2747) or "Fractillus",
+    [3134] = EJ_GetEncounterInfo(2690) or "Nexus-King Salhadaar",
+    [3135] = EJ_GetEncounterInfo(2691) or "Dimensius, the All-Devouring",
 }
 
 CLM.EncounterHasHardMode = CLM.UTILS.Set({
