@@ -12,8 +12,6 @@ local whoamiGUID = UTILS.whoamiGUID()
 
 local getGuidFromInteger = UTILS.getGuidFromInteger
 
-local GetLootMethod = GetLootMethod or C_PartyInfo.GetLootMethod
-
 local function IsPlayerInPvP()
 	local bg = UnitInBattleground("player")
 	local arena = IsActiveBattlefieldArena()
@@ -646,12 +644,12 @@ function RaidManager:DisableAutoAwarding()
 end
 
 function RaidManager:UpdateGameRaidInformation()
-    local lootmethod, _, masterlooterRaidID = GetLootMethod()
+    local lootmethod, _, masterlooterRaidID = UTILS.GetLootMethod()
     LOG:Info("Loot method: %s (id: %s)", lootmethod, masterlooterRaidID)
     self.RaidAssistants = {}
     self.IsMasterLootSystem = false
     self.IsGroupLootSystem = false
-    if (lootmethod == "master" or lootmethod == Enum.LootMethod.Masterlooter) and masterlooterRaidID then
+    if UTILS.IsLootMasterLootMethod() and masterlooterRaidID then
         local name = GetRaidRosterInfo(masterlooterRaidID)
         if name then
             name = UTILS.Disambiguate(name)
@@ -660,7 +658,7 @@ function RaidManager:UpdateGameRaidInformation()
             self.RaidAssistants[name] = true -- we add it in case ML is not an assistant
             LOG:Info("Master Looter: %s", name)
         end
-    elseif (lootmethod == "group" or lootmethod == Enum.LootMehod.Group) then
+    elseif UTILS.IsGroupLootMethod() then
         self.IsGroupLootSystem = true
     end
 

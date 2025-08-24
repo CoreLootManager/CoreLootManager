@@ -290,7 +290,10 @@ end
 
 function UTILS.Set(t)
     local s = {}
-    for _,v in pairs(t) do s[v] = true end
+    for _,v in pairs(t) do
+        if v then
+            s[v] = true end
+        end
     return s
 end
 
@@ -1099,6 +1102,20 @@ function UTILS.UseContainerItem(...)
     return UseContainerItem(...)
 end
 
+local GetLootMethod = GetLootMethod or C_PartyInfo.GetLootMethod
+function UTILS.GetLootMethod()
+    return GetLootMethod()
+end
+
+local lootMasterMethods = UTILS.Set({"master", Enum.LootMethod.Masterlooter})
+function UTILS.IsLootMasterLootMethod()
+    return lootMasterMethods[UTILS.GetLootMethod()]
+end
+
+local groupLootMethods = UTILS.Set({"group", Enum.LootMethod.Group})
+function UTILS.IsGroupLootMethod()
+    return groupLootMethods[UTILS.GetLootMethod()]
+end
 -----------------
 --- CONSTANTS ---
 -----------------
