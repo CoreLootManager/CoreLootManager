@@ -84,14 +84,14 @@ local function Initialize_SavedVariables()
     if type(CLM2_Logs) ~= "table" then
         CLM2_Logs = {}
     end
-    CLM.AF = ((GetServerTime() >= 1711886400) and (GetServerTime() <= 1712577600)) and not CLM2_DB.DisableFun2024
+    CLM.AF = ((GetServerTime() >= 1774915200) and (GetServerTime() <= 1775692800)) and not CLM2_DB.DisableFun2026
 
     StaticPopupDialogs["CLMNoFunAllowedReload"] = {
         text = "Are you sure? Will reload UI.",
         button1 = "No fun allowed :(",
         button2 = "I still want fun!",
         OnAccept = function()
-            CLM2_DB.DisableFun2024 = true
+            CLM2_DB.DisableFun2026 = true
             ReloadUI()
         end,
         timeout = 0,
