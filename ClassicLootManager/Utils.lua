@@ -22,28 +22,12 @@ local numberToClass = {
     [3]  = "Hunter",
     [4]  = "Rogue",
     [5]  = "Priest",
-    [6]  = "Death Knight",
     [7]  = "Shaman",
     [8]  = "Mage",
     [9]  = "Warlock",
-    [10] = "Monk",
     [11] = "Druid",
-    [12] = "Demon Hunter",
-    [13] = "Evoker"
 }
-local classOrdered = { "Druid", "Hunter", "Mage", "Priest", "Rogue", "Shaman", "Paladin", "Warlock", "Warrior" }
-if CLM.GetExpansion() >= LE_EXPANSION_WRATH_OF_THE_LICH_KING then
-    table.insert(classOrdered, 1, "Death Knight")
-end
-if CLM.GetExpansion() >= LE_EXPANSION_MISTS_OF_PANDARIA then
-    table.insert(classOrdered, 5, "Monk")
-end
-if CLM.GetExpansion() >= LE_EXPANSION_LEGION then
-    table.insert(classOrdered, 2, "Demon Hunter")
-end
-if CLM.GetExpansion() >= LE_EXPANSION_DRAGONFLIGHT then
-    table.insert(classOrdered, 4, "Evoker")
-end
+local classOrdered = { "Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" }
 
 function UTILS.GetNumClasses()
     return #classOrdered
@@ -1136,7 +1120,6 @@ CONSTANTS.ITEM_QUALITY = {
 }
 CONSTANTS.LOOT_ROLL_TYPE_ANY = -2
 CONSTANTS.LOOT_ROLL_TYPE_IGNORE = -1
-CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG = 4
 CONSTANTS.ROLL_TYPE = {
     [CONSTANTS.LOOT_ROLL_TYPE_ANY]      = ColorCodeText(CLM.L["Any"], "ff8000"),
     [CONSTANTS.LOOT_ROLL_TYPE_IGNORE]   = ColorCodeText(CLM.L["Do Nothing"], "9d9d9d"),
@@ -1144,11 +1127,6 @@ CONSTANTS.ROLL_TYPE = {
     [LOOT_ROLL_TYPE_NEED]               = ColorCodeText(NEED, "1eff00"),
     [LOOT_ROLL_TYPE_GREED]              = ColorCodeText(GREED , "ffd100"),
 }
-if CLM.GetExpansion() >= LE_EXPANSION_CATACLYSM then
-    CONSTANTS.ROLL_TYPE[LOOT_ROLL_TYPE_DISENCHANT] = ColorCodeText(ROLL_DISENCHANT, "0070dd")
-    local TRANSMOGRIFICATION = TRANSMOGRIFICATION or "Transmogrification"
-    CONSTANTS.ROLL_TYPE[CONSTANTS.LOOT_ROLL_TYPE_TRANSMOG] = ColorCodeText(TRANSMOGRIFICATION, "a335ee")
-end
 
 CONSTANTS.REGEXP_FLOAT = "^-?%d+%.?%d*$"
 CONSTANTS.REGEXP_FLOAT_POSITIVE = "^%d+%.?%d*$"
