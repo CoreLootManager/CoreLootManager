@@ -1,8 +1,5 @@
 local _, CLM = ...
 
-if CLM.IsSoD() then return end
-if CLM.IsClassicEra() then return end
-
 CLM.EncounterIDs[LE_EXPANSION_BURNING_CRUSADE] = {
     {
         name = CLM.L["Karazhan"],
