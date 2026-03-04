@@ -1,24 +1,9 @@
 local name, CLM = ...
 
-local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
-
-local GetActiveSeason = C_Seasons and C_Seasons.GetActiveSeason or (function() return nil end)
-
-_G["CLM"] = CLM
-
+local GuildRoster = GuildRoster or (C_GuildInfo and C_GuildInfo.GuildRoster)
 
 function CLM.GetExpansion()
-    return floor(select(4, GetBuildInfo())/10000) - 1, GetActiveSeason()
-end
-
-function CLM.IsClassicEra()
-    local expansion, season = CLM.GetExpansion()
-    return (expansion == LE_EXPANSION_CLASSIC) and ((season == nil) or (season == Enum.SeasonID.NoSeason))
-end
-
-function CLM.IsSoD()
-    local expansion, season = CLM.GetExpansion()
-    return (expansion == LE_EXPANSION_CLASSIC) and (season == Enum.SeasonID.SeasonOfDiscovery)
+    return LE_EXPANSION_BURNING_CRUSADE, nil
 end
 
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")

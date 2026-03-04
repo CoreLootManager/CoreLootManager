@@ -8,17 +8,8 @@ local UTILS     = CLM.UTILS
 
 local whoamiGUID = UTILS.whoamiGUID()
 
-local notEmptyiGUID
-
-if CLM.IsSoD() then
-    -- Backwards compatibility for SoD
-    notEmptyiGUID = function(iGUID)
-        return iGUID ~= 0
-    end
-else
-    notEmptyiGUID = function(iGUID)
-        return iGUID[2] ~= 0
-    end
+local function notEmptyiGUID(iGUID)
+    return iGUID[2] ~= 0
 end
 
 local ProfileManager = {}
