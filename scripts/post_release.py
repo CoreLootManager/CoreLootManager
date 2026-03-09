@@ -74,10 +74,10 @@ def build_release_embed(releases:list, o = 0) -> dict:
     url = releases[o]["html_url"]# 2F3136 dcb749
 
 
-    author_field = "Core Loot Manager has been updated!"
+    author_field = "Inept Loot Manager has been updated!"
     version_title = "**Version**"
     # more_info_field = "For more information check out the full [release notes](" + url + ")."
-    support_us_field = "Become a [patron](https://patreon.com/classiclootmanager) or check out how to <#904660817889337404> if you enjoy using <:clm:892642400525242428>"
+    support_us_field = "Become a [patron](https://patreon.com/ineptlootmanager) or check out how to <#904660817889337404> if you enjoy using <:ilm:892642400525242428>"
     if author == 'lantisnt':
         author = 'Lantis'
     footer = "Released by " + author

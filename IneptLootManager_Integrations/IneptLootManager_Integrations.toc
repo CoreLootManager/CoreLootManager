@@ -1,0 +1,35 @@
+## Interface: 20505
+## Title: ILM |cff44ee44Integrations|r
+## Notes: External Integration System for |cffdcb749Inept Loot Manager|r covering Export.
+## Author: Lantis
+## Category-enUS: Loot
+## Category-deDE: Beute
+## Category-esES: Botín
+## Category-esMX: Botín
+## Category-frFR: Butin
+## Category-itIT: Bottino
+## Category-koKR: 전리품
+## Category-ptBR: Saque
+## Category-ruRU: Добыча
+## Category-zhCN: 战利品
+## Category-zhTW: 戰利品
+## Group: IneptLootManager
+## IconTexture: Interface/AddOns/IneptLootManager/Media/Icons/ilm-dark-32.png
+## Version: @project-version@
+## RequiredDeps: IneptLootManager
+## OptionalDeps: LibStub
+## X-Donate: https://www.patreon.com/ineptlootmanager
+## X-License: Apache2
+## X-Curse-Project-ID: 481373
+## X-Wago-ID: vEGPw4K1
+## DefaultState: enabled
+
+Libs\LibJsonLua\LibJsonLua.lua
+Libs\LibLuaXML\LibLuaXML.lua
+
+IneptLootManager_Integrations.lua
+Integrations.lua
+GUI.lua
+Models/Exporter.lua
+
+Models/ExportConfiguration.lua

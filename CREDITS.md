@@ -4,7 +4,7 @@ Credits
   - Core AddOn development and initiative leader
     * [Lantis](https://github.com/lantisnt)
 
-  - Event Sourcing library development and CLM co-design
+  - Event Sourcing library development and ILM co-design
     * [Sam Mousa](https://github.com/SamMousa)
 
   - Features co-development

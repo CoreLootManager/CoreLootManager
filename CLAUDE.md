@@ -1,6 +1,6 @@
 # CoreLootManager
 
-WoW TBC Anniversary Classic fork of Core Loot Manager — DKP and EPGP based loot management system.
+WoW TBC Anniversary Classic fork of Inept Loot Manager — DKP and EPGP based loot management system.
 
 <!-- ============================================================
      STANDARD WOW ADDON FRAMEWORK
@@ -309,12 +309,12 @@ When asked to "do a release" or bump version, follow the checklist in `RELEASE.m
      Everything below is specific to THIS addon.
      ============================================================ -->
 
-## CLM Architecture
+## ILM Architecture
 
 CoreLootManager is built on the Ace3 framework with an event sourcing architecture for guild loot management.
 
-- **ClassicLootManager/** — Main addon directory
-  - **ClassicLootManager.lua** — Entry point. Global `CLM` table, module registry, initialization pipeline.
+- **IneptLootManager/** — Main addon directory
+  - **IneptLootManager.lua** — Entry point. Global `ILM` table, module registry, initialization pipeline.
   - **Utils.lua** — Utility functions
   - **MinimapIcon.lua** — DataBroker minimap icon
   - **Tooltips.lua** — Tooltip enhancements for item DKP/GP values
@@ -333,14 +333,14 @@ CoreLootManager is built on the Ace3 framework with an event sourcing architectu
     - **Auctioning/** — AuctionManager, BiddingManager, AutoAssign, AuctionHistoryManager
     - **Ledger/** — LedgerManager, SandboxManager, CrossGuildSyncManager
     - **GUI/** — UnifiedGUI (main window), Filters, custom AceGUI widgets
-- **ClassicLootManager_Alerts/** — Optional addon for alert notifications
-- **ClassicLootManager_Tracker/** — Optional addon for item tracking
-- **ClassicLootManager_Integrations/** — Optional addon for export (import/migration removed)
+- **IneptLootManager_Alerts/** — Optional addon for alert notifications
+- **IneptLootManager_Tracker/** — Optional addon for item tracking
+- **IneptLootManager_Integrations/** — Optional addon for export (import/migration removed)
 
 ### Global Namespace
 
 ```lua
-CLM = {
+ILM = {
     CORE = AceAddon instance,
     MODULES = {},           -- Feature modules
     MODELS = { LEDGER = {} },
@@ -357,7 +357,7 @@ CLM = {
 
 ### Initialization Pipeline (Sequential)
 
-1. `_InitializeDatabase()` — SavedVariables setup (CLM2_DB, CLM2_Logs, CLM2_MinimapIcon)
+1. `_InitializeDatabase()` — SavedVariables setup (ILM2_DB, ILM2_Logs, ILM2_MinimapIcon)
 2. `_InitializeCore()` — ConfigManager, ACL, Hooks
 3. `_InitializeBackend()` — Logger, Comms, EventManager, TrustInfoProvider, LedgerManager
 4. `_InitializeMinimap()` — Minimap icon
@@ -376,7 +376,7 @@ CLM = {
 
 ### Version Detection
 
-This is a TBC-only fork. `CLM.GetExpansion()` always returns `LE_EXPANSION_BURNING_CRUSADE`. Functions `CLM.IsClassicEra()` and `CLM.IsSoD()` have been removed.
+This is a TBC-only fork. `ILM.GetExpansion()` always returns `LE_EXPANSION_BURNING_CRUSADE`. Functions `ILM.IsClassicEra()` and `ILM.IsSoD()` have been removed.
 
 ## TBC Anniversary Port Status
 
@@ -391,10 +391,10 @@ This fork has been stripped to TBC Anniversary only:
 - **Alerts**: Uses built-in AlertFrame system (available on modern client backbone).
 - **APIs**: TBC Anniversary runs on the modern WoW client backbone, so C_Container, C_GuildInfo, Enum.ItemClass, ItemMixin, and Item:CreateFromItemID all work natively.
 
-## CLM Conventions
+## ILM Conventions
 
-- **Module registration**: `CLM.RegisterModule(name, entryPoint)` for core modules, `CLM.RegisterExternal(name, entryPoint)` for external addons.
-- **SavedVariables**: `CLM2_DB` (main database), `CLM2_Logs` (event logs), `CLM2_MinimapIcon` (icon position).
-- **Naming**: Module files use PascalCase. The global table is `CLM`. Local aliases use SCREAMING_CASE (`CORE`, `LOG`, `MODULES`, `UTILS`).
+- **Module registration**: `ILM.RegisterModule(name, entryPoint)` for core modules, `ILM.RegisterExternal(name, entryPoint)` for external addons.
+- **SavedVariables**: `ILM2_DB` (main database), `ILM2_Logs` (event logs), `ILM2_MinimapIcon` (icon position).
+- **Naming**: Module files use PascalCase. The global table is `ILM`. Local aliases use SCREAMING_CASE (`CORE`, `LOG`, `MODULES`, `UTILS`).
 - **GUI**: Built on AceGUI-3.0 with custom widgets. Main window is `UnifiedGUI` with tab-based navigation.
 - **Comms**: Guild channel communication via AceComm with versioned channel names (e.g., `Auction5`, `Bidding5`, `LedgerS3`).

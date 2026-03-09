@@ -93,11 +93,11 @@ class L10nStorage:
 
 def add_indirectly_used_strings(storage:L10nStorage):
     for s in ["Hunter", "Warrior", "Druid", "Priest", "Mage", "Paladin", "Rogue", "Warlock", "Shaman", "Death Knight", "Demon Hunter", "Evoker"]:
-        storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
+        storage.store('ILM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
     # tabs
     for s in ["History", "Profiles"]:
-        storage.store('CLM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
+        storage.store('ILM.L["{0}"]'.format(s), Path(storage.base) / Path(""), "indirectly")
 
 def get_paths():
     excludeDirs = [
@@ -107,10 +107,10 @@ def get_paths():
         ".git",
         "TESTING",
         "scripts",
-        "ClassicLootManager/ExternalLibs",
-        "ClassicLootManager/Libs",
-        "ClassicLootManager/Locale",
-        "ClassicLootManager/Media",]
+        "IneptLootManager/ExternalLibs",
+        "IneptLootManager/Libs",
+        "IneptLootManager/Locale",
+        "IneptLootManager/Media",]
 
     baseDir = Path().resolve()
     excludePaths = []
@@ -163,7 +163,7 @@ def scan_file_for_l10n_translation(file:Path, query, storage:L10nStorage, locale
 def output_to_file(filename, storage, locale):
     orderedData = dict(sorted(storage.data.items()))
     with open(filename, 'w') as f:
-        f.write("local _, CLM = ...\n")
+        f.write("local _, ILM = ...\n")
         f.write("if GetLocale() == \"{}\" then\n".format(locale))
         for string, dataDict in orderedData.items():
             for useTuple in dataDict:
@@ -213,7 +213,7 @@ def verify_locales(storage:L10nStorage, locale:string, parser_format:boolean, ma
             _print("Ignored {} locale translations".format(ignored_translations_count))
     return 0, []
 
-sanitize_sentence_regex = re.compile(r"CLM\.L\[[\"\'](.*?)[\'\"]]")
+sanitize_sentence_regex = re.compile(r"ILM\.L\[[\"\'](.*?)[\'\"]]")
 def translate_missing(missing, storage:L10nStorage, locale, total_missing, total_done, last_percent, dry_run):
     if len(missing) > 0:
         for sentence in missing:
@@ -271,17 +271,17 @@ def main(args):
 
     # Prepare
     locales = ["frFR", "esES", "ruRU", "deDE", "zhCN", "zhTW"]
-    l10n_query = re.compile(r'(CLM\.L\[["\'].*?["\']\])')
-    l10n_translation_query = re.compile(r'(CLM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
+    l10n_query = re.compile(r'(ILM\.L\[["\'].*?["\']\])')
+    l10n_translation_query = re.compile(r'(ILM\.L\[["\'].*?["\']\])\s*=\s*["\'](.*)["\']')
     storage = L10nStorage(baseDir, args.parser, args.markdown)
     # Indirectly used strings, e.g. classes
     add_indirectly_used_strings(storage)
-    # Scan existing CLM.L use
+    # Scan existing ILM.L use
     for file in files:
         scan_file_for_l10n_string(file, l10n_query, storage)
     # Scan for existing translations and create outputs of them with report
     for locale in locales:
-        scan_file_for_l10n_translation(baseDir / ("ClassicLootManager/Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
+        scan_file_for_l10n_translation(baseDir / ("IneptLootManager/Locale/{0}.lua".format(locale)), l10n_translation_query, storage, locale)
 
     total_missing, total_done, last_percent = 0, 0, 0
     status = 0
@@ -299,7 +299,7 @@ def main(args):
             total_missing, total_done, last_percent = rewrite_missing(missing_translations[locale], storage, locale, total_missing, total_done, last_percent, args.dry_run)
 
         if args.regenerate:
-            output_to_file('ClassicLootManager/Locale/{0}.lua'.format(locale), storage, locale)
+            output_to_file('IneptLootManager/Locale/{0}.lua'.format(locale), storage, locale)
 
     exit(status)
 

@@ -8,7 +8,7 @@ def add_line(target, line):
     return target + str(line) +  "\n"
 
 def add_version(version):
-    return "# Classic Loot Manager " + version
+    return "# Inept Loot Manager " + version
 
 def add_section(section):
     return "## " + section

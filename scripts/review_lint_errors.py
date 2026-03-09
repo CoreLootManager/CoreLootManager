@@ -28,7 +28,7 @@ class ErrorReport:
     def __str__(self):
         return "{0}:{1} {2}".format(self.filepath, self.line, self.comment)
 
-GITHUB_REPO = "ClassicLootManager/ClassicLootManager"
+GITHUB_REPO = "IneptLootManager/IneptLootManager"
 
 FILENAME_POS = 0
 LINE_POS = 1

@@ -1,0 +1,42 @@
+<Bindings>
+    <Binding name="Start Auction" header="ILM" category="ADDONS">
+        ILM_Binding_StartAuction()
+    </Binding>
+    <Binding name="Quick Start Auction" category="ADDONS">
+        ILM_Binding_QuickStartAuction()
+    </Binding>
+    <Binding name="Award for Base" category="ADDONS">
+        ILM_Binding_AwardForBase()
+    </Binding>
+    <Binding name="Award for Tier: Small" category="ADDONS">
+        ILM_Binding_AwardForSmall()
+    </Binding>
+    <Binding name="Award for Tier: Medium" category="ADDONS">
+        ILM_Binding_AwardForMedium()
+    </Binding>
+    <Binding name="Award for Tier: Large" category="ADDONS">
+        ILM_Binding_AwardForLarge()
+    </Binding>
+    <Binding name="Award for Max" category="ADDONS">
+        ILM_Binding_AwardForMax()
+    </Binding>
+    <Binding name="Award for Free" category="ADDONS">
+        ILM_Binding_AwardForFree()
+    </Binding>
+    <!--  -->
+    <Binding name="Toggle Auctioning" category="ADDONS">
+        ILM_Binding_ToggleGUI_Auctioning()
+    </Binding>
+    <Binding name="Toggle Auction History" category="ADDONS">
+        ILM_Binding_ToggleGUI_AuctionHistory()
+    </Binding>
+    <Binding name="Toggle Bidding" category="ADDONS">
+        ILM_Binding_ToggleGUI_Bidding()
+    </Binding>
+    <Binding name="Toggle Loot Queue" category="ADDONS">
+        ILM_Binding_ToggleGUI_LootQueue()
+    </Binding>
+    <Binding name="Toggle Main UI" category="ADDONS">
+        ILM_Binding_ToggleGUI_UnifiedGUI()
+    </Binding>
+</Bindings>

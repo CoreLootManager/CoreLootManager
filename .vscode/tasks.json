@@ -42,19 +42,19 @@
         {
             "label": "release",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_release",
+            "command": "source ~/.bash_wow && ilm_release",
             "problemMatcher": []
         },
         {
             "label": "clean",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_clean ${input:WOW_TARGET}",
+            "command": "source ~/.bash_wow && ilm_clean ${input:WOW_TARGET}",
             "problemMatcher": []
         },
         {
             "label": "debug deploy",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_debug_deploy ${input:WOW_TARGET}",
+            "command": "source ~/.bash_wow && ilm_debug_deploy ${input:WOW_TARGET}",
             "problemMatcher": []
         },
         {

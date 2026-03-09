@@ -1,0 +1,18 @@
+location: Libs
+sources:
+  - repo: https://github.com/SamMousa/lua-eventsourcing.git
+    name: LibEventSourcing
+    rev: v1.7.0
+    type: git
+    sparse_paths:
+      -
+    scripts:
+      -
+  - repo: https://github.com/IneptLootManager/EventDispatcher.git
+    name: LibEventDispatcher
+    rev: v1.1.2
+    type: git
+    sparse_paths:
+      -
+    scripts:
+      -

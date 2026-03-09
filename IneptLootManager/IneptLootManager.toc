@@ -1,0 +1,29 @@
+## Interface: 20505
+## Title: ILM |cffdcb749Inept Loot Manager|r
+## Notes: Robust, DKP and EPGP based Loot Manager system. Formerly |cffdcb749Inept Loot Manager|r.
+## Author: Lantis
+## Category-enUS: Loot
+## Category-deDE: Beute
+## Category-esES: Botín
+## Category-esMX: Botín
+## Category-frFR: Butin
+## Category-itIT: Bottino
+## Category-koKR: 전리품
+## Category-ptBR: Saque
+## Category-ruRU: Добыча
+## Category-zhCN: 战利品
+## Category-zhTW: 戰利品
+## Group: IneptLootManager
+## IconTexture: Interface/AddOns/IneptLootManager/Media/Icons/ilm-dark-32.png
+## AddonCompartmentFunc: ILM_Binding_ToggleGUI_UnifiedGUI
+## Version: @project-version@
+## OptionalDeps: LibStub, ElvUI, Gargul, RCLootCouncil_Classic, Ace3, ViragDevTool
+## X-Donate: https://www.patreon.com/ineptlootmanager
+## X-License: Apache2
+## X-Curse-Project-ID: 481373
+## X-Wago-ID: vEGPw4K1
+## SavedVariables: ILM2_DB, ILM2_Logs, ILM2_MinimapIcon
+## LoadOnDemand: 0
+
+
+_filelist.xml

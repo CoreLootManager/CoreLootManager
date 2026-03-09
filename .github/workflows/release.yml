@@ -27,7 +27,7 @@ jobs:
         run: sudo apt install -y subversion
       - uses: actions/checkout@v2
 #      - name: verify required files recursively
-#        run: scripts/verify-dependencies.sh ClassicLootManager.toc
+#        run: scripts/verify-dependencies.sh IneptLootManager.toc
       - name: Bigwigs packager
         uses: BigWigsMods/packager@master
         env:

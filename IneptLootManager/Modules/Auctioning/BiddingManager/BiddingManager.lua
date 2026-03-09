@@ -1,0 +1,514 @@
+-- ------------------------------- --
+local  _, ILM = ...
+-- ------ ILM common cache ------- --
+local LOG       = ILM.LOG
+local CONSTANTS = ILM.CONSTANTS
+local UTILS     = ILM.UTILS
+-- ------------------------------- --
+
+local INVTYPE_to_INVSLOT_map = {
+    ["INVTYPE_HEAD"]            = {INVSLOT_HEAD},
+    ["INVTYPE_NECK"]            = {INVSLOT_NECK},
+    ["INVTYPE_SHOULDER"]        = {INVSLOT_SHOULDER},
+    ["INVTYPE_BODY"]            = {INVSLOT_BODY},
+    ["INVTYPE_CHEST"]           = {INVSLOT_CHEST},
+    ["INVTYPE_WAIST"]           = {INVSLOT_WAIST},
+    ["INVTYPE_LEGS"]            = {INVSLOT_LEGS},
+    ["INVTYPE_FEET"]            = {INVSLOT_FEET},
+    ["INVTYPE_WRIST"]           = {INVSLOT_WRIST},
+    ["INVTYPE_HAND"]            = {INVSLOT_HAND},
+    ["INVTYPE_FINGER"]          = {INVSLOT_FINGER1, INVSLOT_FINGER2},
+    ["INVTYPE_TRINKET"]         = {INVSLOT_TRINKET1, INVSLOT_TRINKET2},
+    ["INVTYPE_WEAPON"]          = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_SHIELD"]          = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_RANGED"]          = {INVSLOT_RANGED},
+    ["INVTYPE_CLOAK"]           = {INVSLOT_BACK},
+    ["INVTYPE_2HWEAPON"]        = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_TABARD"]          = {INVSLOT_TABARD},
+    ["INVTYPE_ROBE"]            = {INVSLOT_CHEST},
+    ["INVTYPE_WEAPONMAINHAND"]  = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_WEAPONOFFHAND"]   = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_HOLDABLE"]        = {INVSLOT_MAINHAND, INVSLOT_OFFHAND},
+    ["INVTYPE_THROWN"]          = {INVSLOT_RANGED},
+    ["INVTYPE_RANGEDRIGHT"]     = {INVSLOT_RANGED},
+    ["INVTYPE_RELIC"]           = {INVSLOT_RANGED},
+    ["INVTYPE_NON_EQUIP"]       = {INVSLOT_HEAD, INVSLOT_SHOULDER, INVSLOT_CHEST, INVSLOT_HAND, INVSLOT_LEGS, },
+}
+
+local function GetUpgradedItems(itemId)
+    local _, _, _, itemEquipLoc, _, class, subclass = UTILS.GetItemInfoInstant(itemId)
+    itemEquipLoc = UTILS.WorkaroundEquipLoc(class, subclass, itemEquipLoc)
+    local invslots = INVTYPE_to_INVSLOT_map[ILM.IndirectMap.slot[itemId] or itemEquipLoc] or {}
+    local items =  {}
+    for _, invslot in ipairs(invslots) do
+        local inventoryItemLink = GetInventoryItemLink("player", invslot)
+        if inventoryItemLink then
+            local id, extra = UTILS.GetItemIdFromLink(inventoryItemLink)
+            items[#items+1] = {
+                id = id,
+                ex = extra
+            }
+        end
+    end
+    return items
+end
+
+local BiddingManager = {}
+function BiddingManager:Initialize()
+    LOG:Trace("BiddingManager:Initialize()")
+
+    ILM.MODULES.Comms:Register(ILM.COMM_CHANNEL.AUCTION,
+    (function(rawMessage, distribution, sender)
+        local message = ILM.MODELS.AuctionCommStructure:New(rawMessage)
+        if ILM.CONSTANTS.AUCTION_COMM.TYPES[message:Type()] == nil then return end
+        self:HandleIncomingMessage(message, distribution, sender)
+    end),
+    (function(name)
+        return ILM.MODULES.AuctionManager:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
+    end),
+    true)
+
+    for i=0,ILM.CONSTANTS.AUCTION_COMM.NUM_ANNOUNCE_CHANNELS-1 do
+        ILM.MODULES.Comms:Register(ILM.COMM_CHANNEL.BIDANNOUNCE .. tostring(i), (function(rawMessage, distribution, sender)
+            local message = ILM.MODELS.AuctionCommStructure:New(rawMessage)
+            if message:Type() ~= CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID then return end
+            self:HandleIncomingMessage(message, distribution, sender)
+        end),
+        (function(name)
+            return ILM.MODULES.AuctionManager:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
+        end),
+        true)
+    end
+
+    self.handlers = {
+        [CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION]     = "HandleStartAuction",
+        [CONSTANTS.AUCTION_COMM.TYPE.STOP_AUCTION]      = "HandleStopAuction",
+        [CONSTANTS.AUCTION_COMM.TYPE.ANTISNIPE]         = "HandleAntiSnipe",
+        [CONSTANTS.AUCTION_COMM.TYPE.ACCEPT_BID]        = "HandleAcceptBid",
+        [CONSTANTS.AUCTION_COMM.TYPE.DENY_BID]          = "HandleDenyBid",
+        [CONSTANTS.AUCTION_COMM.TYPE.DISTRIBUTE_BID]    = "HandleDistributeBid"
+    }
+end
+
+function BiddingManager:GetLastBidValue()
+    return self.lastBid
+end
+
+function BiddingManager:Bid(auctionItem, value, type)
+    LOG:Trace("BiddingManager:Bid()")
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("BiddingManager:Bid(): No auction in progress")
+        return
+    end
+
+    value = tonumber(value) or 0
+    type = CONSTANTS.BID_TYPES[type] and type or CONSTANTS.BID_TYPE.MAIN_SPEC
+
+    if not self.auction:IsItemInAuction(auctionItem) then
+        LOG:Debug("BiddingManager:Bid(): Invalid item")
+        return
+    end
+
+    auctionItem:SetBid(ILM.MODELS.UserResponse:New(value, type, {}))
+
+    local message = ILM.MODELS.BiddingCommStructure:New(
+        CONSTANTS.BIDDING_COMM.TYPE.SUBMIT_BID,
+        ILM.MODELS.BiddingCommSubmitBid:New(value, type, self.auction:GetAuctionItemUID(auctionItem), GetUpgradedItems(auctionItem:GetItemID()))
+    )
+    ILM.MODULES.Comms:Send(ILM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
+end
+
+function BiddingManager:CancelBid(auctionItem)
+    LOG:Trace("BiddingManager:CancelBid()")
+    self:Bid(auctionItem, 0, CONSTANTS.BID_TYPE.CANCEL)
+end
+
+function BiddingManager:Pass(auctionItem)
+    LOG:Trace("BiddingManager:NotifyPass()")
+    self:Bid(auctionItem, 0, CONSTANTS.BID_TYPE.PASS)
+end
+
+function BiddingManager:HandleIncomingMessage(message, _, sender)
+    LOG:Trace("BiddingManager:HandleIncomingMessage()")
+    if not ILM.MODULES.AuctionManager:IsAuctioneer(sender, true) then
+        LOG:Error("Received unauthorised auction command from %s", sender)
+        return
+    end
+
+    local mtype = message:Type() or 0
+    if self.handlers[mtype] then
+        self[self.handlers[mtype]](self, message:Data(), sender)
+    end
+end
+
+
+local PlayStartSound, PlayEndSound
+PlayStartSound = function()
+    if ILM.AF then
+        PlaySoundFile("Interface\\AddOns\\IneptLootManager\\Media\\Audio\\lifestock_auction.ogg", "MASTER")
+    else
+        if not ILM.GlobalConfigs:GetSounds() then return end
+        PlaySound(12889)
+    end
+end
+PlayEndSound = function()
+    if ILM.AF then
+        PlaySoundFile("Interface\\AddOns\\IneptLootManager\\Media\\Audio\\lifestock_auction_sold.ogg", "MASTER")
+    else
+        if not ILM.GlobalConfigs:GetSounds() then return end
+        PlaySound(12867)
+    end
+end
+
+local function DefaultCallback(_)
+    -- Update Bid Order for auto-move
+    ILM.GUI.BiddingManager:BuildBidOrder()
+    -- Refresh view
+    ILM.GUI.BiddingManager:RefreshItemList()
+end
+
+local function AddItemInternal(auctionInfo, item, uid, note, values, extra, total, callbackFn)
+    callbackFn = callbackFn or DefaultCallback
+
+    local auctionItem = auctionInfo:AddItem(item, uid)
+    if auctionItem then
+        auctionItem:SetNote(note)
+        auctionItem:SetValues(values)
+        auctionItem:SetTotal(total)
+        auctionItem:SpoofLinkPayload(extra)
+        -- Rewrite itemLink after spoofing
+        local _, link = UTILS.GetItemInfo(auctionItem:GetItemLink())
+        if link then
+            auctionItem.item:SetItemLink(link)
+        end
+    end
+    callbackFn(auctionItem)
+end
+
+local function AddItemToAuction(auctionInfo, item, uid, note, values, extra, total, callbackFn)
+    if not item:IsItemEmpty() then
+        if item:IsItemDataCached() then
+            AddItemInternal(auctionInfo, item, uid, note, values, extra, total, callbackFn)
+        else
+            item:ContinueOnItemLoad(function() AddItemInternal(auctionInfo, item, uid, note, values, extra, total, callbackFn) end)
+        end
+    end
+end
+
+local function StartAuction(self, data)
+    local auction
+    if data:Version() ~= ILM.CONSTANTS.AUCTION_COMM.CURRENT_VERSION then
+        LOG:Message("Auctioning requires newer version of ILM from Master Looter.")
+        return false
+    else
+        local raid = ILM.MODULES.RaidManager:GetRaid()
+        if raid then -- If we have raid in our cache that we are in, use it
+            auction = ILM.MODELS.AuctionInfo:New()
+            auction:UpdateRaid(raid)
+        else -- Extended configuration came from channel
+            auction = ILM.MODELS.AuctionInfo:NewShim(
+                data:GetType(),
+                data:GetMode(),
+                data:GetUseOS(),
+                data:GetNamedButtonsMode(),
+                data:GetIncrement(),
+                data:GetFieldNames()
+            )
+        end
+    end
+
+    auction:SetPassiveMode()
+    auction:SetTime(data:Time())
+    auction:SetAntiSnipe(data:AntiSnipe())
+
+    for uid, info in pairs(data:Items()) do
+        AddItemToAuction(auction, Item:CreateFromItemID(info.id), uid, info.note, info.values, info.extra, info.total)
+    end
+
+    auction:Start(data:EndTime())
+
+    self.auction = auction
+
+    return true
+end
+
+local function EndAuction(self)
+    self.auction:End()
+end
+
+function BiddingManager:IsAuctionInProgress()
+    return self.auction and self.auction:IsInProgress()
+end
+
+function BiddingManager:HandleStartAuction(data, sender)
+    LOG:Trace("BiddingManager:HandleStartAuction()")
+    if self:IsAuctionInProgress() then
+        LOG:Debug("Received new auction from %s while auction is in progress", sender)
+        return
+    end
+    self.auctioneer = sender
+    local success = StartAuction(self, ILM.MODELS.AuctionCommStartAuction:New(data))
+    if not success then return end
+    PlayStartSound()
+
+    ILM.GUI.BiddingManager:StartAuction()
+    local numItems = self.auction:GetItemCount()
+    local auctionMessage
+    if numItems > 1 then
+        auctionMessage = string.format(ILM.L["Auction of %s items."], numItems)
+    else
+        local _, item = next(self.auction:GetItems())
+        if item then
+            auctionMessage = string.format(ILM.L["Auction of %s"], item:GetItemLink())
+        end
+    end
+    LOG:Message(auctionMessage)
+end
+
+function BiddingManager:HandleStopAuction(_, sender)
+    LOG:Trace("BiddingManager:HandleStopAuction()")
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received auction stop from %s while no auctions are in progress", sender)
+        return
+    end
+    EndAuction(self)
+    PlayEndSound()
+    ILM.GUI.BiddingManager:EndAuction()
+    ILM.GUI.BiddingManager:Hide()
+    LOG:Message(ILM.L["Auction finished"])
+end
+
+function BiddingManager:HandleAntiSnipe(_, sender)
+    LOG:Trace("BiddingManager:HandleAntiSnipe()")
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received antisnipe from %s while no auctions are in progress", sender)
+        return
+    end
+    ILM.GUI.BiddingManager:AntiSnipe()
+end
+
+local function stringifyBidInfo(auction, item, response)
+    local responseTypeName = CONSTANTS.BID_TYPE_NAMES[response:Type()]
+    if auction:GetNamedButtonsMode() then
+        responseTypeName = responseTypeName or auction:GetFieldName(response:Type())
+    else
+        -- If its not named button mode but tier comes, display as MS
+        responseTypeName = responseTypeName or CONSTANTS.BID_TYPE_NAMES[CONSTANTS.BID_TYPE.MAIN_SPEC]
+    end
+    local spacer, value, points = "", "", ""
+    local short
+    if CONSTANTS.BID_TYPE_HIDDEN[response:Type()] then
+        short = response:Type() == CONSTANTS.BID_TYPE.CANCEL and ILM.L["Cancel"] or ILM.L["Pass"]
+    else
+        local roster = auction:GetRoster()
+        points = (roster and roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP) and ILM.L["GP"] or ILM.L["DKP"]
+        value = response:Value()
+        spacer = " "
+
+        short = value
+    end
+
+    return string.format("%s %s%s%s%s%s", item:GetItemLink(), responseTypeName, spacer, value, spacer, points), short
+end
+
+function BiddingManager:HandleAcceptBid(uid, sender)
+    LOG:Trace("BiddingManager:HandleAcceptBid()")
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received accept bid from %s while no auctions are in progress", sender)
+        return
+    end
+    local item = self.auction:GetItemByUID(uid)
+    if not item then return end
+    local bid = item:GetBid()
+    if not bid then return end
+    item:SetBidStatus(true)
+    ILM.GUI.BiddingManager:Refresh()
+    local text, short = stringifyBidInfo(self.auction, item, bid)
+    LOG:Message(ILM.L["Your bid (%s) was |cff00cc00accepted|r"], text)
+    ILM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = short })
+end
+
+function BiddingManager:HandleDenyBid(data, sender)
+    LOG:Trace("BiddingManager:HandleDenyBid()")
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received deny bid from %s while no auctions are in progress", sender)
+        return
+    end
+    local item = self.auction:GetItemByUID(data:UID())
+    if not item then return end
+    local bid = item:GetBid()
+    if not bid then return end
+    item:SetBidStatus(false)
+    ILM.GUI.BiddingManager:Refresh()
+    local text, short = stringifyBidInfo(self.auction, item, bid)
+    local reason = CONSTANTS.AUCTION_COMM.DENY_BID_REASONS_STRING[data:Reason()] or ILM.L["Unknown"]
+    LOG:Message(ILM.L["Your bid (%s) was denied: |cffcc0000%s|r"], text, reason)
+    ILM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = short, reason = reason })
+end
+
+function BiddingManager:HandleDistributeBid(data, sender)
+    LOG:Trace("BiddingManager:HandleDistributeBid()")
+    if not self:IsAuctionInProgress() then
+        LOG:Debug("Received distribute bid from %s while no auctions are in progress", sender)
+        return
+    end
+    local bids = data:Data()
+    for uid, playerData in pairs(bids) do
+        local item = self.auction:GetItemByUID(uid)
+        if item then
+            for playerName, response in pairs(playerData) do
+                local userResponse = ILM.MODELS.UserResponse:New(response)
+                item:SetResponse(playerName, userResponse, true) -- to block rolling internally
+            end
+        end
+    end
+    ILM.GUI.BiddingManager:Refresh()
+end
+
+function BiddingManager:GetAuctionInfo()
+    return self.auction
+end
+
+CONSTANTS.BIDDING_COMM = {
+    TYPE = {
+        SUBMIT_BID  = 1,
+        NOTIFY_CANTUSE = 2
+    },
+    TYPES = UTILS.Set({
+        1, -- SUBMIT BID
+        2  -- NOTIFY_CANTUSE
+    })
+}
+
+CONSTANTS.BID_TYPE = {
+    MAIN_SPEC = 1,
+    OFF_SPEC = 2,
+    PASS = 3,
+    CANCEL = 4,
+    [CONSTANTS.SLOT_VALUE_TIER.BASE]    = CONSTANTS.SLOT_VALUE_TIER.BASE,
+    [CONSTANTS.SLOT_VALUE_TIER.SMALL]   = CONSTANTS.SLOT_VALUE_TIER.SMALL,
+    [CONSTANTS.SLOT_VALUE_TIER.MEDIUM]  = CONSTANTS.SLOT_VALUE_TIER.MEDIUM,
+    [CONSTANTS.SLOT_VALUE_TIER.LARGE]   = CONSTANTS.SLOT_VALUE_TIER.LARGE,
+    [CONSTANTS.SLOT_VALUE_TIER.MAX]     = CONSTANTS.SLOT_VALUE_TIER.MAX
+}
+
+CONSTANTS.BID_TYPE_HIDDEN = UTILS.Set({
+    CONSTANTS.BID_TYPE.PASS,
+    CONSTANTS.BID_TYPE.CANCEL
+})
+
+CONSTANTS.BID_TYPE_REMOVING_BIDS = UTILS.Set({
+    CONSTANTS.BID_TYPE.PASS,
+    CONSTANTS.BID_TYPE.CANCEL
+})
+
+CONSTANTS.BID_TYPE_NOT_AFFECTING_HIGHEST_BID = UTILS.Set({
+    CONSTANTS.BID_TYPE.OFF_SPEC,
+    CONSTANTS.BID_TYPE.PASS,
+    CONSTANTS.BID_TYPE.CANCEL
+})
+
+CONSTANTS.BID_TYPE_ORDER_DSC = {
+    [CONSTANTS.SLOT_VALUE_TIER.MAX]     = 104,
+    [CONSTANTS.SLOT_VALUE_TIER.LARGE]   = 103,
+    [CONSTANTS.SLOT_VALUE_TIER.MEDIUM]  = 102,
+    [CONSTANTS.SLOT_VALUE_TIER.SMALL]   = 101,
+    [CONSTANTS.SLOT_VALUE_TIER.BASE]    = 100,
+    MAIN_SPEC                           = 4,
+    OFF_SPEC                            = 3,
+    PASS                                = 2,
+    CANCEL                              = 1,
+}
+
+CONSTANTS.BID_TYPES = UTILS.Set(CONSTANTS.BID_TYPE)
+
+CONSTANTS.BID_TYPE_NAMES = {
+    [CONSTANTS.BID_TYPE.MAIN_SPEC]    = ILM.L["MS"],
+    [CONSTANTS.BID_TYPE.OFF_SPEC]     = ILM.L["OS"],
+    [CONSTANTS.BID_TYPE.PASS]         = ILM.L["Pass"],
+    [CONSTANTS.BID_TYPE.CANCEL]       = ILM.L["Cancel"]
+}
+
+ILM.MODULES.BiddingManager = BiddingManager
+--@do-not-package@
+
+local ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 -_=[];:<>,.?"
+local isFakeAuctionInProgress
+function BiddingManager:FakeAuction()
+    if  isFakeAuctionInProgress then
+        BiddingManager:HandleStopAuction()
+        isFakeAuctionInProgress = false
+        return
+    end
+    -- Store original send
+    local _Send = ILM.MODULES.Comms.Send
+    -- Fake send
+    ILM.MODULES.Comms.Send = function(_, _, message, _, target, _)
+        C_Timer.After(0, function()
+            BiddingManager:HandleIncomingMessage(ILM.MODELS.AuctionCommStructure:New(message), _, target)
+        end)
+    end
+    -- Build Message
+    local fakeAuctionStart = ILM.MODELS.AuctionCommStartAuction:New()
+
+    fakeAuctionStart.c = {
+        r = 0,
+        t = CONSTANTS.AUCTION_TYPE.SEALED,
+        m = CONSTANTS.ITEM_VALUE_MODE.ASCENDING,
+        o = (math.random(4,5) == 4) and true or false,
+        n = (math.random(1,2) == 2) and true or false,
+        i = 1,
+        f = {
+
+        }
+    }
+    for _, tier in ipairs(CONSTANTS.SLOT_VALUE_TIERS_ORDERED) do
+        local fname = ""
+        local fnameLen = math.random(1,16)
+        for _=1,fnameLen do
+            local char = math.random(1,75)
+            fname = fname .. string.sub( ALPHABET, char, char)
+        end
+        fakeAuctionStart.c.f[tier] = fname
+    end
+
+    fakeAuctionStart.e = 300
+    fakeAuctionStart.d = GetServerTime() + 300
+    fakeAuctionStart.s = 30
+
+    local nItems
+    fakeAuctionStart.i, nItems = (function()
+        local numItems = math.random(3, 7)
+        local items = {}
+        for _=1,numItems do
+            local id
+            local doBreak = false
+            repeat
+                id = math.random(10000,58000)
+                if items[id] == nil and UTILS.GetItemInfoInstant(id) then
+                    doBreak = true
+                    items[id] = {
+                        values = {
+                            [CONSTANTS.SLOT_VALUE_TIER.BASE] = math.random(0, 20),
+                            [CONSTANTS.SLOT_VALUE_TIER.MAX] = math.random(0, 10000)
+                        },
+                        note = "item note for id " .. tostring(id)
+                    }
+                end
+            until (doBreak)
+        end
+        return items, numItems
+    end)()
+    LOG:Message("Auction of " .. tostring(nItems) .. " items [FAKE]")
+    local message = ILM.MODELS.AuctionCommStructure:New(
+        CONSTANTS.AUCTION_COMM.TYPE.START_AUCTION,
+        fakeAuctionStart
+    )
+    -- Send Message
+    ILM.MODULES.Comms:Send(ILM.COMM_CHANNEL.AUCTION, message, CONSTANTS.COMMS.DISTRIBUTION.RAID)
+    -- Restore
+    ILM.MODULES.Comms.Send = _Send
+
+    isFakeAuctionInProgress = true
+end
+--@end-do-not-package@
