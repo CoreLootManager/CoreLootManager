@@ -376,6 +376,19 @@ CLM.EncounterIDsMap = {
     [3133] = EJ_GetEncounterInfo(2747) or "Fractillus",
     [3134] = EJ_GetEncounterInfo(2690) or "Nexus-King Salhadaar",
     [3135] = EJ_GetEncounterInfo(2691) or "Dimensius, the All-Devouring",
+    -- Midnight
+    -- The Voidspire
+    [3176] = EJ_GetEncounterInfo(2733) or "Imperator Averzian",
+    [3177] = EJ_GetEncounterInfo(2734) or "Vorasius",
+    [3179] = EJ_GetEncounterInfo(2736) or "Fallen-King Salhadaar",
+    [3178] = EJ_GetEncounterInfo(2735) or "Vaelgor and Ezzorak",
+    [3180] = EJ_GetEncounterInfo(2737) or "Lightblinded Vanguard",
+    [3181] = EJ_GetEncounterInfo(2738) or "Crown of the Cosmos",
+    -- The Dreamrift
+    [3306] = EJ_GetEncounterInfo(2795) or "Chimaerus, the Undreamt God",
+    -- March on Quel'Danas
+    [3182] = EJ_GetEncounterInfo(2739) or "Belo'ren, Child of Al'ar",
+    [3183] = EJ_GetEncounterInfo(2740) or "Midnight Falls",
 }
 
 CLM.EncounterHasHardMode = CLM.UTILS.Set({
