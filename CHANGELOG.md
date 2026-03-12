@@ -1,3 +1,9 @@
+# Core Loot Manager v5.7.0
+## Changes
+### Anniversary TBC
+Anniversary TBC support added.
+### Retail Midnight
+Midnight P1 support added.
 # Core Loot Manager v5.6.0
 ## Notes
 ### Thank you for contributions!
