@@ -687,6 +687,7 @@ local expansionInfoMap = {
     [LE_EXPANSION_MISTS_OF_PANDARIA]        = { name = CLM.L["Mists of Pandaria"],      offset =  50000 },
     [LE_EXPANSION_DRAGONFLIGHT]             = { name = CLM.L["Dragonflight"],           offset = 100000 },
     [LE_EXPANSION_WAR_WITHIN]               = { name = CLM.L["The War Within"],         offset = 110000 },
+    [LE_EXPANSION_MIDNIGHT]                 = { name = CLM.L["Midnight"],               offset = 120000 },
     ["SOD"]                                 = { name = CLM.L["Season of Discovery"],    offset = 990000 },
 }
 

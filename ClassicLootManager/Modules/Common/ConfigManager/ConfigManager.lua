@@ -38,7 +38,7 @@ function ConfigManager:Initialize()
         end
         self.options[config] = { type = "group", childGroups = "tab", args = {}}
         AceConfigRegistry:RegisterOptionsTable(config, self.generators[config])
-        AceConfigDialog:AddToBlizOptions(config, config, parent)
+        _, CLM.GUI_ID = AceConfigDialog:AddToBlizOptions(config, config, parent)
     end
     self.slash_options = { type = "group", args = {}}
 end

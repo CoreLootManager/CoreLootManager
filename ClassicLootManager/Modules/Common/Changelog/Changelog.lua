@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.7.0",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Anniversary TBC", body = "Anniversary TBC support added." },
+                    { header = "Retail Midnight", body = "Midnight P1 support added." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.6.0",
         data = {
             {

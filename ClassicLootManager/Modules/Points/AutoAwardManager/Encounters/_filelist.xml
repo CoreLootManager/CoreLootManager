@@ -8,5 +8,6 @@
 	<Script file="EncounterIDs_5_MoP.lua"/>
 	<Script file="EncounterIDs_10_Dragonflight.lua"/>
 	<Script file="EncounterIDs_11_TWW.lua"/>
+	<Script file="EncounterIDs_12_Midnight.lua"/>
 	<Script file="EncounterIDs_S_SoD.lua"/>
 </Ui>
