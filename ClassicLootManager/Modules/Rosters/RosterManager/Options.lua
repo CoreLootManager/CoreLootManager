@@ -680,15 +680,15 @@ local function generateBossKillAwardValueInputField(self, roster, info, instance
 end
 
 local expansionInfoMap = {
-    [LE_EXPANSION_CLASSIC]                  = { name = CLM.L["Classic"],                offset =  10000 },
-    [LE_EXPANSION_BURNING_CRUSADE]          = { name = CLM.L["The Burning Crusade"],    offset =  20000 },
-    [LE_EXPANSION_WRATH_OF_THE_LICH_KING]   = { name = CLM.L["Wrath of the Lich King"], offset =  30000 },
-    [LE_EXPANSION_CATACLYSM]                = { name = CLM.L["Cataclysm"],              offset =  40000 },
-    [LE_EXPANSION_MISTS_OF_PANDARIA]        = { name = CLM.L["Mists of Pandaria"],      offset =  50000 },
-    [LE_EXPANSION_DRAGONFLIGHT]             = { name = CLM.L["Dragonflight"],           offset = 100000 },
-    [LE_EXPANSION_WAR_WITHIN]               = { name = CLM.L["The War Within"],         offset = 110000 },
-    [LE_EXPANSION_MIDNIGHT]                 = { name = CLM.L["Midnight"],               offset = 120000 },
-    ["SOD"]                                 = { name = CLM.L["Season of Discovery"],    offset = 990000 },
+    [LE_EXPANSION_CLASSIC or 1]                 = { name = CLM.L["Classic"],                offset =  10000 },
+    [LE_EXPANSION_BURNING_CRUSADE or 2]         = { name = CLM.L["The Burning Crusade"],    offset =  20000 },
+    [LE_EXPANSION_WRATH_OF_THE_LICH_KING or 3]  = { name = CLM.L["Wrath of the Lich King"], offset =  30000 },
+    [LE_EXPANSION_CATACLYSM or 4]               = { name = CLM.L["Cataclysm"],              offset =  40000 },
+    [LE_EXPANSION_MISTS_OF_PANDARIA or 5]       = { name = CLM.L["Mists of Pandaria"],      offset =  50000 },
+    [LE_EXPANSION_DRAGONFLIGHT or 10]           = { name = CLM.L["Dragonflight"],           offset = 100000 },
+    [LE_EXPANSION_WAR_WITHIN or 11]             = { name = CLM.L["The War Within"],         offset = 110000 },
+    [LE_EXPANSION_MIDNIGHT or 12]               = { name = CLM.L["Midnight"],               offset = 120000 },
+    ["SOD"]                                     = { name = CLM.L["Season of Discovery"],    offset = 990000 },
 }
 
 local function boss_kill_award_values(self, roster, name)

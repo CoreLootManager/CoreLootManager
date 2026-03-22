@@ -1,3 +1,9 @@
+# Core Loot Manager v5.7.1
+## Fixes
+### Anniversary TBC
+Fixed a Midnight related bug which sometimes prevented TBC Rosters to be updated.
+### Retail Midnight
+Fixed Midnight boss names and RCLC integration (thanks @mallecks)
 # Core Loot Manager v5.7.0
 ## Changes
 ### Anniversary TBC
