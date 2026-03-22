@@ -413,10 +413,10 @@ local awardToTierMap = {
     [PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.AWARD_FOR_MAX]    = CLM.CONSTANTS.SLOT_VALUE_TIER.MAX
 }
 
-local function getAwardValueFromAction(roster, itemId, action)
+local function getAwardValueFromAction(roster, itemLink, action)
     local tier = awardToTierMap[action]
     if not tier then return 0 end -- covers also for FREE
-    local values = roster:GetItemValues(itemId)
+    local values = roster:GetItemValuesFromItemLink(itemId)
     return values[tier] or 0
 end
 
@@ -448,7 +448,7 @@ local function ExternalAwardEventHandler(_, data)
     end
     local roster = raid:Roster()
     local value = UTILS.round(
-        (getAwardValueFromAction(roster, itemId, action)
+        (getAwardValueFromAction(roster, itemLink, action)
             * roster:GetClassItemMultiplierValue(profile:ClassInternal(), itemId))
         + (roster:GetConfiguration("tax") or 0),
         roster:GetConfiguration("roundDecimals"))
@@ -497,7 +497,7 @@ local function RCLCAwardMessageHandler(eventName, _, winner, _, link, response)
 
     local roster = raid:Roster()
     local value = UTILS.round(
-        (getAwardValueFromAction(roster, itemId, action)
+        (getAwardValueFromAction(roster, link, action)
             * roster:GetClassItemMultiplierValue(profile:ClassInternal(), itemId))
         + (roster:GetConfiguration("tax") or 0),
         roster:GetConfiguration("roundDecimals"))
