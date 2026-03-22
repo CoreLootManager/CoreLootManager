@@ -1,6 +1,18 @@
 local  _, CLM = ...
 CLM.ChangelogData = {
     {
+        version = "v5.7.1",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Anniversary TBC", body = "Fixed a Midnight related bug which sometimes prevented TBC Rosters to be updated." },
+                    { header = "Retail Midnight", body = "Fixed Midnight boss names and RCLC integration (thanks @mallecks)" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.7.0",
         data = {
             {
