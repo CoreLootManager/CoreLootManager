@@ -416,7 +416,7 @@ local awardToTierMap = {
 local function getAwardValueFromAction(roster, itemLink, action)
     local tier = awardToTierMap[action]
     if not tier then return 0 end -- covers also for FREE
-    local values = roster:GetItemValuesFromItemLink(itemId)
+    local values = roster:GetItemValuesFromItemLink(itemLink)
     return values[tier] or 0
 end
 
