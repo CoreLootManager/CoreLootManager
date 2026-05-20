@@ -1,3 +1,9 @@
+# Core Loot Manager v5.7.2
+## Fixes
+### UI errors
+Fixed various UI errors
+### Secrets
+Fixed various Secret errors
 # Core Loot Manager v5.7.1
 ## Fixes
 ### Anniversary TBC

@@ -6,6 +6,30 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+local OpenToCategory = InterfaceOptionsFrame_OpenToCategory or Settings.OpenToCategory
+
+
+local function OpenOldUIKeybinds()
+    local category = "AddOns"
+    category = _G[category] or category
+    KeyBindingFrame_LoadUI()
+    KeyBindingFrame.mode = 1
+    for _,buttons in pairs(KeyBindingFrame.categoryList.buttons) do
+        if buttons.element then
+            if buttons.element.name == category then
+                HideUIPanel(InterfaceOptionsFrame)
+                ShowUIPanel(KeyBindingFrame)
+                KeyBindingFrame.cntCategory = buttons.element.category
+                buttons:Click()
+            end
+        end
+    end
+end
+local function OpenNewUIKeybinds()
+    OpenToCategory(Settings.KEYBINDINGS_CATEGORY_ID)
+end
+
+
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
     self.db = CLM.MODULES.Database:Personal('global', {
@@ -130,20 +154,10 @@ Thank you patrons!
             desc = CLM.L["Open Key Bindings UI for AddOns"],
             type = "execute",
             func = (function()
-                local category = "AddOns"
-                category = _G[category] or category
-                KeyBindingFrame_LoadUI()
-                KeyBindingFrame.mode = 1
-                for _,buttons in pairs(KeyBindingFrame.categoryList.buttons) do
-                    if buttons.element then
-                        if buttons.element.name == category then
-                            HideUIPanel(InterfaceOptionsFrame)
-                            ShowUIPanel(KeyBindingFrame)
-                            KeyBindingFrame.cntCategory = buttons.element.category
-                            buttons:Click()
-                            -- OptionsList_SelectButton(buttons:GetParent(), buttons)
-                        end
-                    end
+                if KeyBindingFrame then
+                    OpenOldUIKeybinds()
+                else
+                    OpenNewUIKeybinds()
                 end
             end),
             width = 1,
