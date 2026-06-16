@@ -80,8 +80,8 @@ function TrustInfoProvider:BuildGuildCache()
             rankIndex = rankIndex + 1
             name = UTILS.Disambiguate(name)
             self.cache.guildies[name] = rankIndex
-            self.cache.ranks[rankIndex].name = rankName
             if self.cache.ranks[rankIndex] then
+                self.cache.ranks[rankIndex].name = rankName
                 if self.cache.ranks[rankIndex].isAssistant then
                     self.cache.assistants[name] = true
                 end
