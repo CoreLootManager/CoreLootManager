@@ -111,7 +111,7 @@ end
 
 function ConfigManager:AddGroup(groupName, append)
     if CONSTANTS.CONFIGS.GROUPS[groupName] then
-        error("Config group %s already exists.", groupName)
+        error(string.format("Config group %s already exists.", groupName))
         return
     end
     -- Never allow changing first group
