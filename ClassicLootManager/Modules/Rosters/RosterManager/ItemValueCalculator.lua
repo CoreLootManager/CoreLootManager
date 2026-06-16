@@ -80,7 +80,9 @@ local function SetCalculator(self)
     self.calculator = calculators[self.equation]
 end
 
+---@class ItemValueCalculator
 local ItemValueCalculator = {}
+---@return ItemValueCalculator
 function ItemValueCalculator:New()
     local o = {}
 
@@ -102,10 +104,12 @@ function ItemValueCalculator:New()
     return o
 end
 
+---@return number
 function ItemValueCalculator:GetEquation()
     return self.equation
 end
 
+---@param equation number
 function ItemValueCalculator:SetEquation(equation)
     if not CONSTANTS.ITEM_VALUE_EQUATIONS[equation] then
         LOG:Fatal("Unknown equation type")
@@ -118,40 +122,57 @@ function ItemValueCalculator:SetEquation(equation)
     SetCalculator(self)
 end
 
+---@return number
 function ItemValueCalculator:GetMultiplier()
     return self.multiplier
 end
 
+---@param multiplier number
 function ItemValueCalculator:SetMultiplier(multiplier)
     self.multiplier = tonumber(multiplier) or GetDefaultMultiplier(self.equation)
 end
 
+---@return number
 function ItemValueCalculator:GetExpvar()
     return self.expvar
 end
 
+---@param expvar number
 function ItemValueCalculator:SetExpvar(expvar)
     self.expvar = tonumber(expvar) or DEFAULT_EXPVAR
 end
 
+---@param slot string
+---@return number
 function ItemValueCalculator:GetSlotMultiplier(slot)
     return self.slotMultipliers[slot] or 1.0
 end
 
+---@param slot string
+---@param multiplier number
 function ItemValueCalculator:SetSlotMultiplier(slot, multiplier)
     if not CONSTANTS.ITEM_SLOT_MULTIPLIERS[slot] then return end
     self.slotMultipliers[slot] = tonumber(multiplier) or GetDefaultSlotMultiplier(self.equation, slot)
 end
 
+---@param tier string
+---@return number
 function ItemValueCalculator:GetTierMultiplier(tier)
     return self.tierMultipliers[tier] or 1.0
 end
 
+---@param tier string
+---@param multiplier number
 function ItemValueCalculator:SetTierMultiplier(tier, multiplier)
     if not CONSTANTS.SLOT_VALUE_TIERS[tier] then return end
     self.tierMultipliers[tier] = tonumber(multiplier) or 1.0
 end
 
+---@param ilvl number
+---@param quality number
+---@param slot_multiplier number
+---@param rounding number
+---@return table
 function ItemValueCalculator:Calculate(ilvl, quality, slot_multiplier, rounding)
     local values = {}
     local baseValue = self.calculator(ilvl, quality, self.multiplier, self.expvar, slot_multiplier)
@@ -174,10 +195,16 @@ local function CalculateProxy(self, itemInfoInput, itemId, rounding)
     return self:Calculate(CLM.IndirectMap.ilvl[itemId] or itemLevel, itemQuality, self:GetSlotMultiplier(CLM.IndirectMap.slot[itemId] or equipLoc), rounding)
 end
 
+---@param itemId number
+---@param rounding number
+---@return table|nil
 function ItemValueCalculator:CalculateFromId(itemId, rounding)
     return CalculateProxy(self, itemId, itemId, rounding)
 end
 
+---@param itemLink string
+---@param rounding number
+---@return table|nil
 function ItemValueCalculator:CalculateFromLink(itemLink, rounding)
     return CalculateProxy(self, itemLink, UTILS.GetItemIdFromLink(itemLink), rounding)
 end

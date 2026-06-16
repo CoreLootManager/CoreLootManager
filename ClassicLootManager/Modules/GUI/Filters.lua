@@ -30,7 +30,34 @@ local supportedOptions = {
     "horizontal"
 }
 
+---@class Filters
+---@field refreshFn function
+---@field prefix string
+---@field filterOrderStartOffset number
+---@field anyFilter boolean
+---@field filters table<number, boolean>
+---@field options table?
+---@field searchString string?
+---@field searchFunction function?
+---@field class boolean
+---@field inRaid boolean
+---@field inStandby boolean
+---@field inGuild boolean
+---@field external boolean
+---@field main boolean
+---@field locked boolean
+---@field online boolean
+---@field rank boolean
+---@field buttons boolean
+---@field search boolean
+---@field horizontal boolean
 local Filters = {}
+---@param refreshFn function
+---@param usedFilters table
+---@param usedOptions table
+---@param prefix string?
+---@param filterOrderStartOffset number?
+---@return Filters
 function Filters:New(refreshFn, usedFilters, usedOptions, prefix, filterOrderStartOffset)
 
     local o = {}
@@ -127,6 +154,7 @@ local function GetSearchFunction(searchList)
     end)
 end
 
+---@return table
 function Filters:GetAceOptions()
     if self.options then return self.options end
     local options = {}
@@ -226,11 +254,17 @@ function Filters:GetAceOptions()
     return options
 end
 
+---@param filterId number
+---@param valueToSet boolean
 function Filters:SetFilterValue(filterId, valueToSet)
     self.filters[tonumber(filterId) or 0] = valueToSet and true or false
     HandleMutualExclusiveOptions(self, filterId, valueToSet)
 end
 
+---@param playerName string
+---@param playerClass string
+---@param searchFieldsList table
+---@return boolean
 function Filters:Filter(playerName, playerClass, searchFieldsList)
     -- Check Search first, discard others
     if self.searchFunction then

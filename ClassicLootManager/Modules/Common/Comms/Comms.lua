@@ -16,6 +16,7 @@ local codec = LibStub("LibDeflate")
 
 local CommsPrefix = "CLM"
 
+---@class Comms
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 
 local COMMS_VERSION = 1
@@ -33,6 +34,7 @@ function Comms:Enable()
     self.enabled = true
 end
 
+---@return boolean
 function Comms:IsEnabled()
     return self.enabled
 end
@@ -41,6 +43,11 @@ local function _prefix(prefix)
     return CommsPrefix .. string.sub(prefix or "", 0, 12)
 end
 
+---@param prefix string
+---@param callback function
+---@param securityCallbackOrLevel function|number
+---@param allowSelfReceive boolean?
+---@return boolean
 function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfReceive)
     LOG:Trace("Comms:Register()")
     if type(callback) ~= "function" then
@@ -76,6 +83,7 @@ function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfRece
     self:RegisterComm(prefix, "OnReceive")
 end
 
+---@param prefix string
 function Comms:Suspend(prefix)
     LOG:Trace("Comms:Suspend()")
     if not self.enabled then return false end
@@ -85,6 +93,7 @@ function Comms:Suspend(prefix)
     self.suspended[prefix] = true
 end
 
+---@param prefix string
 function Comms:RevokeSuspension(prefix)
     prefix = _prefix(prefix)
     self.suspended[prefix] = nil
@@ -96,6 +105,12 @@ function Comms:Disable()
     self.enabled = false
 end
 
+---@param prefix string
+---@param message any
+---@param distribution string
+---@param target string?
+---@param priority string?
+---@return boolean?
 function Comms:Send(prefix, message, distribution, target, priority)
     -- LOG:Trace("Comms:Send()") -- SPAM
     if not self.enabled then
@@ -171,6 +186,10 @@ function Comms:Send(prefix, message, distribution, target, priority)
     return true
 end
 
+---@param prefix string
+---@param message string
+---@param distribution string
+---@param sender string
 function Comms:OnReceive(prefix, message, distribution, sender)
     LOG:Debug("Comms:OnReceive() %s", prefix) --  SPAM
     if not self.enabled then

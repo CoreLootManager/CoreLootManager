@@ -8,7 +8,16 @@ local  _, CLM = ...
 
 local getGuidFromInteger = CLM.UTILS.getGuidFromInteger
 
+---@class Loot
+---@field entry table
+---@field owner Profile
+---@field ownerGuid string
+---@field raidUid number
 local Loot = {}
+
+---@param entry table
+---@param owner Profile
+---@return Loot
 function Loot:New(entry, owner)
     local o = {}
 
@@ -21,30 +30,37 @@ function Loot:New(entry, owner)
     return o
 end
 
+---@return Profile
 function Loot:Owner()
     return self.owner
 end
 
+---@return number
 function Loot:Id()
     return self.entry:item()
 end
 
+---@return string
 function Loot:String()
     return "item:" .. tostring(self.entry:item()) .. (self.entry:extra() or "")
 end
 
+---@return string
 function Loot:Extra()
     return self.entry:extra()
 end
 
+---@return number
 function Loot:Value()
     return self.entry:value()
 end
 
+---@return number
 function Loot:Timestamp()
     return self.entry:time()
 end
 
+---@return string
 function Loot:OwnerGUID()
     if not self.ownerGuid then
         if self.entry.profile then
@@ -56,14 +72,17 @@ function Loot:OwnerGUID()
     return self.ownerGuid
 end
 
+---@return string
 function Loot:Creator()
     return self.entry:creatorFull()
 end
 
+---@return table
 function Loot:Entry()
     return self.entry
 end
 
+---@return number
 function Loot:RaidUid()
     if not self.raidUid then
         if self.entry.raidUid then

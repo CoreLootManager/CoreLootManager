@@ -37,6 +37,9 @@ local function GetPostBidsChannel(self)
     return self.db.post_bids_channel
 end
 
+---@class AuctionHistoryManager
+---@field db table
+---@field uuidCache table
 local AuctionHistoryManager = {}
 function AuctionHistoryManager:Initialize()
     LOG:Trace("AuctionHistoryManager:Initialize()")
@@ -76,6 +79,8 @@ function AuctionHistoryManager:Initialize()
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
+---@param auctionItem AuctionItem
+---@param uuid string?
 function AuctionHistoryManager:AddAuctionItem(auctionItem, uuid)
         if not GetEnabled(self) then return end
         -- Translate new data format to old history format
@@ -120,6 +125,9 @@ function AuctionHistoryManager:AddAuctionItem(auctionItem, uuid)
         CLM.GUI.AuctionHistory:Refresh(true)
 end
 
+---@param link string
+---@param time number
+---@param uuid string
 function AuctionHistoryManager:CorrelateWithLoot(link, time, uuid)
     for _, auction in ipairs(self.db.stack) do
         if auction.link == link and auction.time == time then
@@ -131,6 +139,8 @@ function AuctionHistoryManager:CorrelateWithLoot(link, time, uuid)
     end
 end
 
+---@param uuid string?
+---@return table?
 function AuctionHistoryManager:GetByUUID(uuid)
     if not uuid then return end
     local info = self.uuidCache[uuid]
@@ -146,10 +156,12 @@ function AuctionHistoryManager:GetByUUID(uuid)
     return info
 end
 
+---@return table
 function AuctionHistoryManager:GetHistory()
     return self.db.stack
 end
 
+---@param data table?
 function AuctionHistoryManager:PostData(data)
     if data then
         local channel = CHANNELS[GetPostBidsChannel(self)] or "OFFICER"
@@ -194,14 +206,17 @@ function AuctionHistoryManager:PostData(data)
     end
 end
 
+---@param id number
 function AuctionHistoryManager:PostById(id)
     self:PostData(self.db.stack[id])
 end
 
+---@param uuid string
 function AuctionHistoryManager:PostByUUID(uuid)
     self:PostData(self:GetByUUID(uuid))
 end
 
+---@param id number
 function AuctionHistoryManager:Remove(id)
     id = tonumber(id) or 0
     if (id <= #self.db.stack) and (id >= 1) then
@@ -210,6 +225,7 @@ function AuctionHistoryManager:Remove(id)
     end
 end
 
+---@param time number?
 function AuctionHistoryManager:RemoveOld(time)
     time = tonumber(time) or 2678400 -- 31 days old
     local cutoff = GetServerTime() - time

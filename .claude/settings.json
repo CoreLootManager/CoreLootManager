@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(*)",
+      "Write(*)",
+      "Bash(*)"
+    ],
+    "defaultMode": "acceptEdits"
+  }
+}

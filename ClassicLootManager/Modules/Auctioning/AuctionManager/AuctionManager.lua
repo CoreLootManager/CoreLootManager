@@ -15,6 +15,18 @@ local AuctionInfo = CLM.MODELS.AuctionInfo
 
 local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 
+---@class AuctionManager
+---@field db table
+---@field currentAuction AuctionInfo
+---@field pendingAuction AuctionInfo
+---@field intervalTicker table
+---@field auctionTickerEndTime number
+---@field auctionTickerLastCountdownValue number
+---@field auctionTimeLeft number
+---@field auctionTickerCallbacks table
+---@field bidInfoSender BidInfoSender
+---@field handlers table
+---@field unregisterRolls function?
 local AuctionManager = {}
 
 local function InitializeDB(self)
@@ -117,26 +129,32 @@ local function GetPostAllBidsOnAward(self)
     return self.db.postAllBidsOnAward
 end
 
+---@param value boolean
 function AuctionManager:SetDefaultRemoveOnAward(value)
     self.db.defaultRemoveOnAward = value and true or false
 end
 
+---@return boolean
 function AuctionManager:GetDefaultRemoveOnAward()
     return self.db.defaultRemoveOnAward
 end
 
+---@param value boolean
 function AuctionManager:SetIncludePasses(value)
     self.db.includePasses = value and true or false
 end
 
+---@return boolean
 function AuctionManager:GetIncludePasses()
     return self.db.includePasses
 end
 
+---@param value boolean
 function AuctionManager:SetIncludeCancels(value)
     self.db.includeCancels = value and true or false
 end
 
+---@return boolean
 function AuctionManager:GetIncludeCancels()
     return self.db.includeCancels
 end
@@ -350,6 +368,7 @@ local function SetAutoAssign(self, value)
     self.db.autoAssign = value and true or false
 end
 
+---@return boolean
 function AuctionManager:GetAutoAssign()
     return self.db.autoAssign
 end
@@ -358,6 +377,7 @@ local function SetAutoTrade(self, value)
     self.db.autoTrade = value and true or false
 end
 
+---@return boolean
 function AuctionManager:GetAutoTrade()
     return self.db.autoTrade
 end
@@ -641,6 +661,8 @@ local function AddItemProxy(self, item, callbackFn)
     end
 end
 
+---@param itemId number
+---@param callbackFn function?
 function AuctionManager:AddItemById(itemId, callbackFn)
     if not CLM.MODULES.RaidManager:IsInRaid() then
         LOG:Message(CLM.L["Auctioning requires active raid or roster mode."])
@@ -649,6 +671,8 @@ function AuctionManager:AddItemById(itemId, callbackFn)
     AddItemProxy(self, Item:CreateFromItemID(itemId), callbackFn)
 end
 
+---@param itemLink string
+---@param callbackFn function?
 function AuctionManager:AddItemByLink(itemLink, callbackFn)
     if not CLM.MODULES.RaidManager:IsInRaid() then
         LOG:Message(CLM.L["Auctioning requires active raid or roster mode."])
@@ -657,6 +681,7 @@ function AuctionManager:AddItemByLink(itemLink, callbackFn)
     AddItemProxy(self, Item:CreateFromItemLink(itemLink), callbackFn)
 end
 
+---@param item AuctionItem
 function AuctionManager:MoveItemToPendingList(item)
     if self.currentAuction:IsInProgress() then
         LOG:Warning(CLM.L["Removing items not allowed during auction."])
@@ -735,6 +760,7 @@ local function NewIntervalHandlers(self, countdown, endTimeValue, callbacks)
     end))
 end
 
+---@param item AuctionItem
 function AuctionManager:RemoveItemFromCurrentAuction(item)
     if self.currentAuction:IsInProgress() then
         LOG:Warning(CLM.L["Removing items not allowed during auction."])
@@ -962,6 +988,9 @@ local function AntiSnipe(self, auction)
     end
 end
 
+---@param message table
+---@param distribution string
+---@param sender string
 function AuctionManager:HandleIncomingMessage(message, distribution, sender)
     LOG:Trace("AuctionManager:HandleIncomingMessage()")
     local mtype = message:Type() or 0
@@ -970,6 +999,8 @@ function AuctionManager:HandleIncomingMessage(message, distribution, sender)
     end
 end
 
+---@param data table
+---@param sender string
 function AuctionManager:HandleSubmitBid(data, sender)
     LOG:Trace("AuctionManager:HandleSubmitBid()")
     if not self:IsAuctionInProgress() then
@@ -980,6 +1011,8 @@ function AuctionManager:HandleSubmitBid(data, sender)
     self:UpdateBid(sender, data:AuctionUID(), response)
 end
 
+---@param data table
+---@param sender string
 function AuctionManager:HandleNotifyCantUse(data, sender)
     LOG:Trace("AuctionManager:HandleNotifyCantUse()")
     if not self:IsAuctionInProgress() then
@@ -1165,6 +1198,10 @@ local function AnnounceBid(auction, uid, name, userResponse, newHighBid)
     UTILS.SendChatMessage(message, CHAT_MESSAGE_CHANNEL)
 end
 
+---@param name string
+---@param uid any
+---@param userResponse UserResponse
+---@return boolean, number?
 function AuctionManager:UpdateBid(name, uid, userResponse)
     LOG:Trace("AuctionManager:UpdateBid()")
     if not self:IsAuctionInProgress() then return false, CONSTANTS.AUCTION_COMM.DENY_BID_REASON.NO_AUCTION_IN_PROGRESS end
@@ -1202,6 +1239,9 @@ local function RevalidateBids(self)
     end
 end
 
+---@param item AuctionItem
+---@param name string
+---@param price number
 function AuctionManager:Award(item, name, price)
     LOG:Trace("AuctionManager:Award()")
     local success, uuid = CLM.MODULES.LootManager:AwardItem(self.currentAuction:GetRaid(), name, item:GetItemLink(), item:GetItemID(), item:GetExtraPayload(), price, true)
@@ -1215,6 +1255,7 @@ function AuctionManager:Award(item, name, price)
     end
 end
 
+---@param item AuctionItem
 function AuctionManager:Disenchant(item)
     LOG:Trace("AuctionManager:Disenchant()")
     local success, uuid = CLM.MODULES.LootManager:DisenchantItem(self.currentAuction:GetRaid(), item:GetItemLink(), true)
@@ -1227,6 +1268,9 @@ function AuctionManager:Disenchant(item)
     end
 end
 
+---@param name string?
+---@param relaxed boolean?
+---@return boolean
 function AuctionManager:IsAuctioneer(name, relaxed)
     LOG:Trace("AuctionManager:IsAuctioneer()")
     name = name or UTILS.whoami()
@@ -1235,18 +1279,22 @@ end
 
 -- NEW
 
+---@return boolean
 function AuctionManager:IsAuctionInProgress()
     return self.currentAuction:IsInProgress()
 end
 
+---@return boolean
 function AuctionManager:IsAcceptingRolls()
     return self.currentAuction:IsAcceptingRolls()
 end
 
+---@return AuctionInfo
 function AuctionManager:GetCurrentAuctionInfo()
     return self.currentAuction
 end
 
+---@param time number
 function AuctionManager:SetAuctionTime(time)
     time = tonumber(time) or 0
     if time <= 0 then
@@ -1256,10 +1304,12 @@ function AuctionManager:SetAuctionTime(time)
     self.currentAuction:SetTime(time)
 end
 
+---@return number
 function AuctionManager:GetAuctionTime()
     return self.currentAuction:GetTime()
 end
 
+---@param time number
 function AuctionManager:SetAntiSnipe(time)
     time = tonumber(time) or 0
     if time < 0 then
@@ -1269,10 +1319,13 @@ function AuctionManager:SetAntiSnipe(time)
     self.currentAuction:SetAntiSnipe(time)
 end
 
+---@return number
 function AuctionManager:GetAntiSnipe()
     return self.currentAuction:GetAntiSnipe()
 end
 
+---@param auctionItem AuctionItem
+---@param note string?
 function AuctionManager:SetItemNote(auctionItem, note)
     local itemId = auctionItem:GetItemID()
     if note and note:len() > 0 then

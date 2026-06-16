@@ -14,6 +14,7 @@ local CBTYPE = {
     CONFIRMATION    = "confirm"
 }
 
+---@class RosterManagerOptions
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)
@@ -26,6 +27,7 @@ local function SetRosterOption(name, option, value)
     CLM.MODULES.RosterManager:SetRosterConfiguration(name, option, value)
 end
 
+---@return nil
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
     self.rosterName = CLM.MODULES.RosterManager:GenerateName()
@@ -332,6 +334,9 @@ function RosterManagerOptions:Initialize()
 end
 
 local CONFIRMATION_GROUPS = UTILS.Set({"general", "auction"})
+---@param cbtype string
+---@param info table
+---@return any
 function RosterManagerOptions:_Handle(cbtype, info, ...)
     -- Assumes This is the handler of each of the subgroups but not the main group
     local roster_name = info[1]
@@ -371,23 +376,30 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
     return nil
 end
 
+---@param info table
+---@return any
 function RosterManagerOptions:Getter(info, ...)
    return self:_Handle(CBTYPE.GETTER, info, ...)
 end
 
+---@param info table
 function RosterManagerOptions:Setter(info, ...)
     if self.readOnly then return end
     self:_Handle(CBTYPE.SETTER, info, ...)
 end
 
+---@param info table
 function RosterManagerOptions:Handler(info, ...)
     self:_Handle(CBTYPE.EXECUTOR, info, ...)
 end
 
+---@param info table
 function RosterManagerOptions:Hider(info, ...)
     self:_Handle(CBTYPE.HIDER, info, ...)
 end
 
+---@param info table
+---@return any
 function RosterManagerOptions:Confirmation(info, ...)
     return self:_Handle(CBTYPE.CONFIRMATION, info, ...)
 end

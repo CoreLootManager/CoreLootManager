@@ -10,8 +10,13 @@ local WeekNumber = UTILS.WeekNumber
 local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
 
+---@class AttendanceTracker
 local AttendanceTracker = {}
 
+---@param raidsPerWeekForFullAttendance? number
+---@param averageWindowWeeks? number
+---@param weeklyReset? number
+---@return AttendanceTracker
 function AttendanceTracker:New(raidsPerWeekForFullAttendance, averageWindowWeeks, weeklyReset)
     local o = {}
     setmetatable(o, self)
@@ -29,11 +34,15 @@ function AttendanceTracker:New(raidsPerWeekForFullAttendance, averageWindowWeeks
     return o
 end
 
+---@param weeklyReset? number
 function AttendanceTracker:UpdateWeeklyReset(weeklyReset)
     self.weeklyReset = weeklyReset or CONSTANTS.WEEKLY_RESET.EU
     self.currentWeek = WeekNumber(GetServerTime(), (weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
 end
 
+---@param GUID string
+---@param raidId any
+---@param timestamp? number
 function AttendanceTracker:Update(GUID, raidId, timestamp)
     local week = WeekNumber(timestamp or 0, self.weeklyReset)
     if (self.currentWeek - week) < self.averageWindowWeeks then
@@ -47,6 +56,8 @@ function AttendanceTracker:Update(GUID, raidId, timestamp)
     end
 end
 
+---@param GUID string
+---@return number
 function AttendanceTracker:Get(GUID)
     if not self.weeklyAttendance[GUID] then return 0 end
     if not self.attendancePercentage[GUID] then

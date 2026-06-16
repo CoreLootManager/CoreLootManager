@@ -10,6 +10,7 @@ local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
+---@class ConfigManager
 local ConfigManager = { enabled = false }
 
 local function ConfigGenerator(config)
@@ -48,6 +49,10 @@ function ConfigManager:Enable()
     self.enabled = true
 end
 
+---@param group string
+---@param options table
+---@param clean boolean?
+---@return boolean
 function ConfigManager:Register(group, options, clean)
     LOG:Trace("ConfigManager:Register()")
 
@@ -78,6 +83,8 @@ function ConfigManager:Register(group, options, clean)
     return true
 end
 
+---@param options table
+---@return boolean
 function ConfigManager:RegisterSlash(options)
     LOG:Trace("ConfigManager:RegisterSlash()")
 
@@ -98,6 +105,8 @@ function ConfigManager:RegisterSlash(options)
     return true
 end
 
+---@param group string
+---@param register boolean?
 function ConfigManager:UpdateOptions(group, register)
     if not CONSTANTS.CONFIGS.GROUPS[group] then
         LOG:Warning("ConfigManager:Update(): Group %s is not supported", group)
@@ -109,6 +118,8 @@ function ConfigManager:UpdateOptions(group, register)
     AceConfigRegistry:NotifyChange(group)
 end
 
+---@param groupName string
+---@param append boolean?
 function ConfigManager:AddGroup(groupName, append)
     if CONSTANTS.CONFIGS.GROUPS[groupName] then
         error("Config group %s already exists.", groupName)

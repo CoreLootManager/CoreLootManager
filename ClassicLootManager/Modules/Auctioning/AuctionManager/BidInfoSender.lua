@@ -8,9 +8,13 @@ local UTILS     = CLM.UTILS
 
 local assertType = UTILS.assertType
 
+---@class BidInfoSender
 local BidInfoSender = {} -- BidInfoSender
 BidInfoSender.__index = BidInfoSender
 
+---@param interval number
+---@param commsCallback function
+---@return BidInfoSender
 function BidInfoSender:New(interval, commsCallback)
     assertType(interval, 'number')
     assertType(commsCallback, 'function')
@@ -40,6 +44,7 @@ local function Send(self)
     self.current = self.interval
 end
 
+---@param value number
 function BidInfoSender:Tick(value)
     value = tonumber(value) or 0
     self.current = self.current - value
@@ -53,6 +58,9 @@ function BidInfoSender:Flush()
     self.data = {}
 end
 
+---@param UID any
+---@param name string
+---@param userResponse UserResponse
 function BidInfoSender:Send(UID, name, userResponse)
     if not self.data[UID] then
         self.data[UID] = {}

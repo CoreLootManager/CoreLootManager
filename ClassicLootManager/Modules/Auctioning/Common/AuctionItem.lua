@@ -8,6 +8,21 @@ local UTILS     = CLM.UTILS
 
 local assertTypeof = UTILS.assertTypeof
 
+---@class AuctionItem
+---@field item table
+---@field canUse boolean
+---@field values table
+---@field total number
+---@field userResponses table<string, UserResponse>
+---@field userRolls table<string, number>
+---@field rollValues table<number, boolean>
+---@field bid number?
+---@field highestBid number
+---@field hasValidBids boolean?
+---@field note string?
+---@field extraPayload string?
+---@field acceptedValues table?
+---@field bidStatus boolean?
 local AuctionItem = {} -- AuctionItem
 AuctionItem.__index = AuctionItem
 

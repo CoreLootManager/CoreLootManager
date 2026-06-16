@@ -7,9 +7,19 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 local assertType = UTILS.assertType
 
+---@class UserResponse
+---@field value number
+---@field type number
+---@field roll number
+---@field upgradedItems table<number, string>
+---@field invalid string?
 local UserResponse = {} -- UserResponse
 UserResponse.__index = UserResponse
 
+---@param valueOrObject number|table|nil
+---@param responseType number?
+---@param upgradedItems table?
+---@return UserResponse
 function UserResponse:New(valueOrObject, responseType, upgradedItems)
 
     local isCopyConstructor = (type(valueOrObject) == "table")

@@ -7,6 +7,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
+---@class TrustInfoProvider
 local TrustInfoProvider = {}
 function TrustInfoProvider:Initialize()
     LOG:Trace("TrustInfoProvider:Initialize()")
@@ -23,11 +24,13 @@ function TrustInfoProvider:Initialize()
     end))
 end
 
+---@param name string
 function TrustInfoProvider:AddExternalTrusted(name)
     self.trustedExternal[name] = true
     self.cacheUpdateRequired = true
 end
 
+---@param name string
 function TrustInfoProvider:RemoveExternalTrusted(name)
     self.trustedExternal[name] = nil
     self.cacheUpdateRequired = true
@@ -96,16 +99,19 @@ function TrustInfoProvider:BuildGuildCache()
     end
 end
 
+---@return table
 function TrustInfoProvider:GetInfo()
     self:BuildCache()
     return self.cache
 end
 
+---@return table
 function TrustInfoProvider:GetRanks()
     self:BuildCache()
     return self.cache.ranks
 end
 
+---@return table
 function TrustInfoProvider:GetGuildies()
     self:BuildCache()
     return self.cache.guildies

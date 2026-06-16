@@ -5,16 +5,22 @@ local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
+---@class ACL
 local ACL = {}
 function ACL:Initialize()
     LOG:Trace("ACL:Initialize()")
     self.guildMaster = IsGuildLeader()
 end
 
+---@param name string?
+---@return boolean
 function ACL:IsTrusted(name)
     return self:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) or false
 end
 
+---@param level number?
+---@param name string?
+---@return boolean
 function ACL:CheckLevel(level, name)
     LOG:Trace("ACL:CheckLevel()")
     local info = CLM.MODULES.TrustInfoProvider:GetInfo()
