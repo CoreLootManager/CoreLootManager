@@ -59,7 +59,8 @@ CLM.EncounterIDs[LE_EXPANSION_MISTS_OF_PANDARIA] = {
     },
     {
         name = EJ_GetInstanceInfo(369) or "Siege of Orgrimmar",
-        difficulty = {CLM.DifficultyID.NORMAL, CLM.DifficultyID.HEROIC, CLM.DifficultyID.MYTHIC},
+        -- difficulty = {CLM.DifficultyID.NORMAL, CLM.DifficultyID.HEROIC, CLM.DifficultyID.MYTHIC}, -- This comes in prepatch
+        difficulty = {CLM.DifficultyID.P10, CLM.DifficultyID.P10HC, CLM.DifficultyID.P25, CLM.DifficultyID.P25HC},
         data = {
             { id = 1602, name = CLM.EncounterIDsMap[1602] }, --Immerseus
             { id = 1598, name = CLM.EncounterIDsMap[1598] }, --The Fallen Protectors
