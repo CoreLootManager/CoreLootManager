@@ -685,9 +685,9 @@ local expansionInfoMap = {
     [LE_EXPANSION_WRATH_OF_THE_LICH_KING or 3]  = { name = CLM.L["Wrath of the Lich King"], offset =  30000 },
     [LE_EXPANSION_CATACLYSM or 4]               = { name = CLM.L["Cataclysm"],              offset =  40000 },
     [LE_EXPANSION_MISTS_OF_PANDARIA or 5]       = { name = CLM.L["Mists of Pandaria"],      offset =  50000 },
-    [LE_EXPANSION_DRAGONFLIGHT or 10]           = { name = CLM.L["Dragonflight"],           offset = 100000 },
-    [LE_EXPANSION_WAR_WITHIN or 11]             = { name = CLM.L["The War Within"],         offset = 110000 },
-    [LE_EXPANSION_MIDNIGHT or 12]               = { name = CLM.L["Midnight"],               offset = 120000 },
+    [LE_EXPANSION_DRAGONFLIGHT or 9]           = { name = CLM.L["Dragonflight"],           offset = 100000 },
+    [LE_EXPANSION_WAR_WITHIN or 10]             = { name = CLM.L["The War Within"],         offset = 110000 },
+    [LE_EXPANSION_MIDNIGHT or 11]               = { name = CLM.L["Midnight"],               offset = 120000 },
     ["SOD"]                                     = { name = CLM.L["Season of Discovery"],    offset = 990000 },
 }
 
