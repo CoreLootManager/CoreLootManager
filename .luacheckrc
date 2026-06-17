@@ -7,7 +7,8 @@ exclude_files = {
 	"**/Libs/**",
 	"**/.git/**",
 	"**/.vscode/**",
-	"**/scripts/**"
+	"**/scripts/**",
+	"**/_annotations/**"
 }
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
