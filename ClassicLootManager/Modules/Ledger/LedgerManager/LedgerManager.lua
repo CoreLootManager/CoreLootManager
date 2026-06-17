@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -78,6 +79,22 @@ local function createLedgerAndRegisterCallbacks(self, database)
     return ledger
 end
 
+---@class LedgerManager
+---@field _initialized boolean
+---@field activeDatabase table
+---@field activeLedger table
+---@field disabled boolean
+---@field incoherentState boolean
+---@field inSync boolean
+---@field isSandbox boolean
+---@field lastEntry any
+---@field mutatorCallbacks table
+---@field onRestartCallbacks table
+---@field onUpdateCallbacks table
+---@field _originalDatabase table
+---@field _originalLedger table
+---@field syncOngoing boolean
+---@field timeTravelTarget number
 local LedgerManager = { _initialized = false}
 function LedgerManager:Initialize()
     self.activeDatabase = CLM.MODULES.Database:Ledger()
@@ -90,6 +107,7 @@ function LedgerManager:Initialize()
 
 end
 
+---@return boolean
 function LedgerManager:IsInitialized()
     return self._initialized
 end
@@ -106,6 +124,7 @@ function LedgerManager:Enable()
     end
 end
 
+---@param playerName string
 function LedgerManager:AddP2PTarget(playerName)
     self.activeLedger.getListSync():addP2PSyncTarget(playerName)
 end
@@ -114,6 +133,7 @@ function LedgerManager:ClearP2PTargets()
     self.activeLedger.getListSync():clearP2PSyncTargets()
 end
 
+---@param playerName string
 function LedgerManager:AddP2PSource(playerName)
     self.activeLedger.getListSync():addP2PSyncSource(playerName)
 end
@@ -134,6 +154,7 @@ function LedgerManager:DisableAdvertising()
     self.activeLedger.disableSending()
 end
 
+---@param timestamp number
 function LedgerManager:TimeTravel(timestamp)
     self.timeTravelTarget = timestamp
     self.activeLedger.getStateManager():travelToTime(timestamp)
@@ -145,11 +166,13 @@ function LedgerManager:EndTimeTravel()
     self:UpdateSyncState()
 end
 
+---@return boolean
 function LedgerManager:IsTimeTraveling()
     if not self._initialized then return false end
     return self.activeLedger.getStateManager():isTimeTraveling()
 end
 
+---@return number
 function LedgerManager:TimeTravelProgress()
     local firstEntry = self:GetData()[1]
     if not firstEntry then return 1 end
@@ -165,6 +188,7 @@ function LedgerManager:TimeTravelProgress()
     return UTILS.round(currentTime/endTime, 2)
 end
 
+---@return number
 function LedgerManager:GetTimeTravelTarget()
     return self.timeTravelTarget
 end
@@ -196,6 +220,7 @@ function LedgerManager:EnterSandbox()
     self:UpdateSyncState()
 end
 
+---@param apply boolean
 function LedgerManager:ExitSandbox(apply)
     LOG:Trace("LedgerManager:ExitSandbox()")
     if apply then
@@ -219,6 +244,8 @@ function LedgerManager:ExitSandbox(apply)
     self.activeLedger.getStateManager():restart()
 end
 
+---@param class any
+---@param mutatorFn function
 function LedgerManager:RegisterEntryType(class, mutatorFn)
     if self.mutatorCallbacks[class] then
         LOG:Error("Class %s already exists in Ledger Entries.", class)
@@ -229,16 +256,19 @@ function LedgerManager:RegisterEntryType(class, mutatorFn)
     self.activeLedger.registerMutator(class, mutatorFn)
 end
 
+---@param callback function
 function LedgerManager:RegisterOnRestart(callback)
     tinsert(self.onRestartCallbacks, callback)
     self.activeLedger.addStateRestartListener(callback)
 end
 
+---@param callback function
 function LedgerManager:RegisterOnUpdate(callback)
     tinsert(self.onUpdateCallbacks, callback)
     self.activeLedger.addStateChangedListener(callback)
 end
 
+---@return table
 function LedgerManager:GetPeerStatus()
     return self.activeLedger.getPeerStatus()
 end
@@ -247,6 +277,7 @@ function LedgerManager:RequestPeerStatusFromGuild()
     self.activeLedger.requestPeerStatusFromGuild()
 end
 
+---@param status string?
 function LedgerManager:UpdateSyncState(status)
     self.incoherentState = false
     self.inSync = false
@@ -262,34 +293,42 @@ function LedgerManager:UpdateSyncState(status)
     end
 end
 
+---@return boolean
 function LedgerManager:IsInIncoherentState()
     return self.incoherentState
 end
 
+---@return boolean
 function LedgerManager:IsInSync()
     return self.inSync
 end
 
+---@return boolean
 function LedgerManager:IsSyncOngoing()
     return self.syncOngoing
 end
 
+---@return boolean
 function LedgerManager:IsDisabled()
     return self.disabled
 end
 
+---@return number
 function LedgerManager:Lag()
     return self.activeLedger.getStateManager():lag()
 end
 
+---@return number
 function LedgerManager:Hash()
     return self.activeLedger.getStateManager():stateHash()
 end
 
+---@return number
 function LedgerManager:Length()
     return self.activeLedger.getSortedList():length()
 end
 
+---@return table
 function LedgerManager:GetData()
     return self.activeLedger.getSortedList():entries()
 end
@@ -298,6 +337,8 @@ function LedgerManager:RequestPeerStatusFromRaid()
     self.activeLedger.requestPeerStatusFromRaid()
 end
 
+---@param entry any
+---@param catchup boolean?
 function LedgerManager:Submit(entry, catchup)
     LOG:Trace("LedgerManager:Submit()")
     if not entry then return end
@@ -308,6 +349,8 @@ function LedgerManager:Submit(entry, catchup)
     end
 end
 
+---@param entry any
+---@param catchup boolean?
 function LedgerManager:Remove(entry, catchup)
     LOG:Trace("LedgerManager:Remove()")
     if not entry then return end

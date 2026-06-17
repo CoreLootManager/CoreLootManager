@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -53,6 +54,11 @@ local function GetUpgradedItems(itemId)
     return items
 end
 
+---@class BiddingManager
+---@field auction AuctionInfo
+---@field auctioneer string
+---@field handlers table
+---@field lastBid number?
 local BiddingManager = {}
 function BiddingManager:Initialize()
     LOG:Trace("BiddingManager:Initialize()")
@@ -90,10 +96,14 @@ function BiddingManager:Initialize()
     }
 end
 
+---@return number?
 function BiddingManager:GetLastBidValue()
     return self.lastBid
 end
 
+---@param auctionItem AuctionItem
+---@param value number
+---@param type number
 function BiddingManager:Bid(auctionItem, value, type)
     LOG:Trace("BiddingManager:Bid()")
     if not self:IsAuctionInProgress() then
@@ -118,16 +128,20 @@ function BiddingManager:Bid(auctionItem, value, type)
     CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.BIDDING, message, CONSTANTS.COMMS.DISTRIBUTION.WHISPER, self.auctioneer, CONSTANTS.COMMS.PRIORITY.ALERT)
 end
 
+---@param auctionItem AuctionItem
 function BiddingManager:CancelBid(auctionItem)
     LOG:Trace("BiddingManager:CancelBid()")
     self:Bid(auctionItem, 0, CONSTANTS.BID_TYPE.CANCEL)
 end
 
+---@param auctionItem AuctionItem
 function BiddingManager:Pass(auctionItem)
     LOG:Trace("BiddingManager:NotifyPass()")
     self:Bid(auctionItem, 0, CONSTANTS.BID_TYPE.PASS)
 end
 
+---@param message table
+---@param sender string
 function BiddingManager:HandleIncomingMessage(message, _, sender)
     LOG:Trace("BiddingManager:HandleIncomingMessage()")
     if not CLM.MODULES.AuctionManager:IsAuctioneer(sender, true) then
@@ -236,10 +250,13 @@ local function EndAuction(self)
     self.auction:End()
 end
 
+---@return boolean
 function BiddingManager:IsAuctionInProgress()
     return self.auction and self.auction:IsInProgress()
 end
 
+---@param data table
+---@param sender string
 function BiddingManager:HandleStartAuction(data, sender)
     LOG:Trace("BiddingManager:HandleStartAuction()")
     if self:IsAuctionInProgress() then
@@ -265,6 +282,7 @@ function BiddingManager:HandleStartAuction(data, sender)
     LOG:Message(auctionMessage)
 end
 
+---@param sender string
 function BiddingManager:HandleStopAuction(_, sender)
     LOG:Trace("BiddingManager:HandleStopAuction()")
     if not self:IsAuctionInProgress() then
@@ -278,6 +296,7 @@ function BiddingManager:HandleStopAuction(_, sender)
     LOG:Message(CLM.L["Auction finished"])
 end
 
+---@param sender string
 function BiddingManager:HandleAntiSnipe(_, sender)
     LOG:Trace("BiddingManager:HandleAntiSnipe()")
     if not self:IsAuctionInProgress() then
@@ -311,6 +330,8 @@ local function stringifyBidInfo(auction, item, response)
     return string.format("%s %s%s%s%s%s", item:GetItemLink(), responseTypeName, spacer, value, spacer, points), short
 end
 
+---@param uid any
+---@param sender string
 function BiddingManager:HandleAcceptBid(uid, sender)
     LOG:Trace("BiddingManager:HandleAcceptBid()")
     if not self:IsAuctionInProgress() then
@@ -328,6 +349,8 @@ function BiddingManager:HandleAcceptBid(uid, sender)
     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_ACCEPTED, { value = short })
 end
 
+---@param data table
+---@param sender string
 function BiddingManager:HandleDenyBid(data, sender)
     LOG:Trace("BiddingManager:HandleDenyBid()")
     if not self:IsAuctionInProgress() then
@@ -346,6 +369,8 @@ function BiddingManager:HandleDenyBid(data, sender)
     CLM.MODULES.EventManager:DispatchEvent(CONSTANTS.EVENTS.USER_BID_DENIED, { value = short, reason = reason })
 end
 
+---@param data table
+---@param sender string
 function BiddingManager:HandleDistributeBid(data, sender)
     LOG:Trace("BiddingManager:HandleDistributeBid()")
     if not self:IsAuctionInProgress() then
@@ -365,6 +390,7 @@ function BiddingManager:HandleDistributeBid(data, sender)
     CLM.GUI.BiddingManager:Refresh()
 end
 
+---@return AuctionInfo
 function BiddingManager:GetAuctionInfo()
     return self.auction
 end
@@ -436,6 +462,7 @@ local ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 local isFakeAuctionInProgress
 function BiddingManager:FakeAuction()
     if  isFakeAuctionInProgress then
+---@diagnostic disable-next-line: missing-parameter
         BiddingManager:HandleStopAuction()
         isFakeAuctionInProgress = false
         return

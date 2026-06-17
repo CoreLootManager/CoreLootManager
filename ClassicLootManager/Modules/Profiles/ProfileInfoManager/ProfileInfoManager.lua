@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -84,6 +85,11 @@ end
     --- PUBLIC ---
 ]]
 
+---@class ProfileInfoManager
+---@field _initialized boolean
+---@field _lastRequestResponse table
+---@field db table
+---@field handlers table
 local ProfileInfoManager = {}
 function ProfileInfoManager:Initialize()
     LOG:Trace("ProfileInfoManager:Initialize()")
@@ -138,6 +144,7 @@ function ProfileInfoManager:Initialize()
 
 end
 
+---@return nil
 function ProfileInfoManager:RequestVersion()
     LOG:Trace("ProfileInfoManager:RequestVersion()")
     local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION, {})

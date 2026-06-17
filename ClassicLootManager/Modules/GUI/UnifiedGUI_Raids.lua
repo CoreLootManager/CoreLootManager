@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -21,6 +22,11 @@ local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
 end
 
+---@class UnifiedGUI_Raids
+---@field configuration RosterConfiguration
+---@field roster string?
+---@field raidName string?
+---@field RightClickMenu table
 local UnifiedGUI_Raids = {
     name = "raids",
     -- filter = CLM.MODELS.Filters:New(
@@ -32,6 +38,7 @@ local UnifiedGUI_Raids = {
     configuration = CLM.MODELS.RosterConfiguration:New()
 }
 
+---@return Raid?
 function UnifiedGUI_Raids:GetSelection()
     LOG:Trace("UnifiedGUI_Raids:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()

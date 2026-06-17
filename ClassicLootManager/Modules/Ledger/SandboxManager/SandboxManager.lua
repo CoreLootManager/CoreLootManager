@@ -1,10 +1,13 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
+---@class SandboxManager
+---@field isSandbox boolean
 local SandboxManager = {}
 function SandboxManager:Initialize()
     LOG:Trace("SandboxManager:Initialize()")
@@ -37,6 +40,7 @@ function SandboxManager:DiscardChanges()
     end
 end
 
+---@return boolean
 function SandboxManager:IsSandbox()
     return self.isSandbox and true or false
 end

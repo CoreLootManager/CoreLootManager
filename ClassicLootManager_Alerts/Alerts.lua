@@ -3,9 +3,14 @@ if not CLM then return end
 local eventDispatcher = LibStub("EventDispatcher")
 if not eventDispatcher then return end
 
+---@class CLMAlertFrameTemplate: Frame
+---@field Amount FontString
+
+---@param self CLMAlertFrameTemplate
+---@param data table
 local function PointReceivedAlertFrame_SetUp(self, data)
     local value = tonumber(data.value) or 0
-    value = (value ~= nil) and tostring(value) or tostring(data.value)
+    local valueText = (value ~= nil) and tostring(value) or tostring(data.value)
     local suffix = "DKP"
     if data.rosterType == CLM.CONSTANTS.POINT_TYPE.EPGP then
         if data.changeType == CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS then
@@ -17,27 +22,31 @@ local function PointReceivedAlertFrame_SetUp(self, data)
         end
     end
     if data.reason ~= CLM.CONSTANTS.POINT_CHANGE_REASON.DECAY then
-        self.Amount:SetText(string.format(CLM.L["%s %s"], value, suffix))
+        self.Amount:SetText(string.format(CLM.L["%s %s"], valueText, suffix))
     else
-        self.Amount:SetText(string.format(CLM.L["%s %% %s decay"], value, suffix))
+        self.Amount:SetText(string.format(CLM.L["%s %% %s decay"], valueText, suffix))
     end
     PlaySound(SOUNDKIT.UI_EPICLOOT_TOAST)
 end
 
 local PointReceivedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("PointReceivedAlertFrameTemplate", PointReceivedAlertFrame_SetUp, 6, math.huge)
 
+---@param self CLMAlertFrameTemplate
+---@param data table
 local function BidAcceptedAlertFrame_SetUp(self, data)
     local value = tonumber(data.value)
-    value = (value ~= nil) and tostring(value) or tostring(data.value)
-    self.Amount:SetText(string.format(CLM.L["Bid %s accepted!"], value))
+    local valueText = (value ~= nil) and tostring(value) or tostring(data.value)
+    self.Amount:SetText(string.format(CLM.L["Bid %s accepted!"], valueText))
 end
 
 local BidAcceptedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidAcceptedAlertFrameTemplate", BidAcceptedAlertFrame_SetUp, 6, math.huge)
 
+---@param self CLMAlertFrameTemplate
+---@param data table
 local function BidDeniedAlertFrame_SetUp(self, data)
     local value = tonumber(data.value)
-    value = (value ~= nil) and tostring(value) or tostring(data.value)
-    self.Amount:SetText(string.format(CLM.L["Bid %s denied!"], value))
+    local valueText = (value ~= nil) and tostring(value) or tostring(data.value)
+    self.Amount:SetText(string.format(CLM.L["Bid %s denied!"], valueText))
 end
 
 local BidDeniedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidDeniedAlertFrameTemplate", BidDeniedAlertFrame_SetUp, 6, math.huge)

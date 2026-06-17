@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -11,9 +12,25 @@ local mergeLists = UTILS.mergeLists
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
+---@class Create
+---@field r number rosterUid
+---@field n string name
+---@field c table config deflated
 local Create    = LogEntry:extend("AC")
+---@class Start
+---@field r string raidUid
+---@field p table player GUID list
+---@field s table standby GUID list
 local Start     = LogEntry:extend("AS")
+---@class End
+---@field r string raidUid
 local End       = LogEntry:extend("AE")
+---@class Update
+---@field r string raidUid
+---@field l table leavers GUID list
+---@field j table joiners GUID list
+---@field s table standby GUID list
+---@field e table removed GUID list
 local Update    = LogEntry:extend("AU")
 
 CLM.MODELS.LEDGER.RAID = {
@@ -23,6 +40,10 @@ CLM.MODELS.LEDGER.RAID = {
     Update = Update
 }
 
+---@param rosterUid number
+---@param name string
+---@param config table
+---@return Create
 function Create:new(rosterUid, name, config)
     local o = LogEntry.new(self)
     o.r = tonumber(rosterUid) or 0
@@ -31,14 +52,17 @@ function Create:new(rosterUid, name, config)
     return o
 end
 
+---@return number
 function Create:rosterUid()
     return self.r
 end
 
+---@return string
 function Create:name()
     return self.n
 end
 
+---@return table
 function Create:config()
     return self.c
 end
@@ -48,6 +72,10 @@ function Create:fields()
     return CreateFields
 end
 
+---@param raidUid string
+---@param players table
+---@param standby table
+---@return Start
 function Start:new(raidUid, players, standby)
     local o = LogEntry.new(self)
     o.r = raidUid
@@ -56,14 +84,17 @@ function Start:new(raidUid, players, standby)
     return o
 end
 
+---@return string
 function Start:raid()
     return self.r
 end
 
+---@return table
 function Start:players()
     return self.p
 end
 
+---@return table
 function Start:standby()
     return self.s or {}
 end
@@ -73,12 +104,15 @@ function Start:fields()
     return StartFields
 end
 
+---@param raidUid string
+---@return End
 function End:new(raidUid)
     local o = LogEntry.new(self)
     o.r = raidUid
     return o
 end
 
+---@return string
 function End:raid()
     return self.r
 end
@@ -88,6 +122,12 @@ function End:fields()
     return EndFields
 end
 
+---@param raidUid string
+---@param leavers? table
+---@param joiners? table
+---@param standby? table
+---@param removed? table
+---@return Update
 function Update:new(raidUid, leavers, joiners, standby, removed)
     local o = LogEntry.new(self)
     o.r = raidUid or 0
@@ -101,22 +141,27 @@ function Update:new(raidUid, leavers, joiners, standby, removed)
     return o
 end
 
+---@return string
 function Update:raid()
     return self.r
 end
 
+---@return table
 function Update:leavers()
     return self.l
 end
 
+---@return table
 function Update:joiners()
     return self.j
 end
 
+---@return table
 function Update:standby()
     return self.s or {}
 end
 
+---@return table
 function Update:removed()
     return self.e or {}
 end

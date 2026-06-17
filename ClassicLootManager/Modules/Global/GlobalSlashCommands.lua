@@ -1,11 +1,13 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@param args string?
 local function Award(args)
     args = args or ""
     local values = {strsplit("/", args)}
@@ -69,6 +71,7 @@ local function Award(args)
     end
 end
 
+---@class GlobalSlashCommands
 local GlobalSlashCommands = {}
 function GlobalSlashCommands:Initialize()
     local options = {}
@@ -176,6 +179,11 @@ function GlobalSlashCommands:Initialize()
         confirm = true
     }
     CLM.MODULES.ConfigManager:RegisterSlash(options)
+end
+
+---@param args string?
+function GlobalSlashCommands:Award(args)
+    Award(args)
 end
 
 CLM.GlobalSlashCommands = GlobalSlashCommands

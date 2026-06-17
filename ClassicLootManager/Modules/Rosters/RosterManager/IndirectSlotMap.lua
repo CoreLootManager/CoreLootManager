@@ -1,5 +1,9 @@
 local _, CLM = ...
+---@cast CLM CLMNamespace
 
+---@class IndirectMap
+---@field slot table<number, string> map from itemId to inventory type string
+---@field ilvl table<number, number> map from itemId to item level
 local IndirectMap = {
     slot = {
         --- WOTLK P1 ---

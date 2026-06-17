@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -8,6 +9,7 @@ local UTILS     = CLM.UTILS
 
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local SharedMedia = LibStub("LibSharedMedia-3.0")
@@ -47,6 +49,27 @@ local ITEM_REGISTRY     = "clm_bm_gui_opt_item"
 local BID_REGISTRY      = "clm_bm_gui_opt_bid"
 local BUTTON_REGISTRY   = "clm_bm_gui_opt_button"
 
+---@class BiddingManagerGUI
+---@field top AceGUIFrameWidget
+---@field BiddingGroup AceGUISimpleGroupWidget
+---@field BidInputGroup AceGUISimpleGroupWidget
+---@field ButtonGroup AceGUISimpleGroupWidget
+---@field DataGroup AceGUISimpleGroupWidget
+---@field ItemGroup AceGUISimpleGroupWidget
+---@field BidList LibSTTable
+---@field ItemList LibSTTable
+---@field BidInput AceGUIEditBoxWidget
+---@field bar BiddingTimerBar?
+---@field testBar BiddingTimerBar?
+---@field db table
+---@field _initialized boolean
+---@field auctionItem AuctionItem?
+---@field note string?
+---@field nextItem number
+---@field auctionOrder table
+---@field currentDisplayMode number
+---@field showAfterCombat boolean
+---@field ToggleTestBar function
 local BiddingManagerGUI = {}
 
 local function InitializeDB(self)
@@ -1216,6 +1239,7 @@ function BiddingManagerGUI:AntiSnipe()
     end
 end
 
+---@param auctionItem AuctionItem
 function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     self.auctionItem = auctionItem
     if not auctionItem then return end

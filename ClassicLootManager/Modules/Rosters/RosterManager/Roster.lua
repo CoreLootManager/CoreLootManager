@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -32,11 +33,32 @@ local function lazyCreateItem(self, itemId)
 end
 
 ---@class Roster
+---@field uid integer
+---@field pointType any
+---@field bossKillBonusValues table
+---@field classMultipliers table
+---@field configuration RosterConfiguration
+---@field defaultSlotValues table
+---@field disenchantedLoot table
+---@field fieldNames table
+---@field hardModeBossKillBonusValues table
+---@field inRoster table
+---@field itemValues table
+---@field pointHistory table
+---@field pointInfo table
+---@field profileLoot table
+---@field profilePointHistory table
+---@field raidLoot table
+---@field standings table
+---@field attendanceTracker AttendanceTracker
+---@field weeklyGains table
+---@field calculator ItemValueCalculator
 local Roster = {}
 ---@param uid integer
 ---@param pointType any
 ---@param raidsForFullAttendance integer
 ---@param attendanceWeeksWindow integer
+---@return Roster
 function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindow)
     local o = {}
 
@@ -85,14 +107,17 @@ function Roster:New(uid, pointType, raidsForFullAttendance, attendanceWeeksWindo
     return o
 end
 
+---@return any
 function Roster:GetPointType()
     return self.pointType
 end
 
+---@return table
 function Roster:GetCalculator()
     return self.calculator
 end
 
+---@param GUID string
 function Roster:AddProfileByGUID(GUID)
     LOG:Debug("Add profile [%s] to roster [%s]", GUID, self:UID())
     if self:IsProfileInRoster(GUID) then return end
@@ -107,6 +132,7 @@ function Roster:AddProfileByGUID(GUID)
     end
 end
 
+---@param GUID string
 function Roster:RemoveProfileByGUID(GUID)
     LOG:Debug("Remove profile [%s] from roster [%s]", GUID, self:UID())
     self.standings[GUID] = nil
@@ -116,32 +142,42 @@ function Roster:RemoveProfileByGUID(GUID)
     self.inRoster[GUID] = nil
 end
 
+---@param GUID string
 function Roster:MarkAsConditionallyRemoved(GUID)
     -- Used for backwards compatibility in profiles - marks as removed but doesnt remove any data
     self.inRoster[GUID] = nil
 end
 
+---@param GUID string
 function Roster:RestoreConditionallyRemoved(GUID)
     -- Used for backwards compatibility in profiles - marks as removed but doesnt remove any data
     self.inRoster[GUID] = true
 end
 
+---@param GUID string
+---@return boolean
 function Roster:IsConditionallyRemoved(GUID)
     return self.standings[GUID] and not self.inRoster[GUID]
 end
 
+---@param GUID string
+---@return boolean
 function Roster:IsProfileInRoster(GUID)
     return (self.inRoster[GUID] ~= nil)
 end
 
+---@return number
 function Roster:UID()
     return self.uid
 end
 
+---@return table
 function Roster:Profiles()
     return UTILS.keys(self.inRoster)
 end
 
+---@param GUID? string
+---@return table|number
 function Roster:Standings(GUID)
     if GUID == nil then
         return self.standings or {}
@@ -150,6 +186,8 @@ function Roster:Standings(GUID)
     end
 end
 
+---@param GUID string
+---@return number
 function Roster:GP(GUID)
     local pointInfo = self.pointInfo[GUID]
     if not pointInfo then return -1 end
@@ -157,6 +195,8 @@ function Roster:GP(GUID)
     return pointInfo.spent
 end
 
+---@param GUID? string
+---@return number
 function Roster:Priority(GUID)
     if GUID == nil then
         return 0
@@ -171,24 +211,33 @@ end
  *****************
 ]]--
 
+---@return table
 function Roster:GetAllWeeklyGains()
     return self.weeklyGains or {}
 end
 
-
+---@param GUID string
+---@return table
 function Roster:GetWeeklyGainsForPlayer(GUID)
     return self.weeklyGains[GUID] or {}
 end
 
+---@param GUID string
+---@return number
 function Roster:GetCurrentGainsForPlayer(GUID)
     local week = UTILS.WeekNumber(GetServerTime(), (self.configuration._.weeklyReset == CONSTANTS.WEEKLY_RESET.EU) and weekOffsetEU or weekOffsetUS)
     return self:GetWeeklyGainsForPlayerWeek(GUID, week)
 end
 
+---@param GUID string
+---@return PointInfo
 function Roster:GetPointInfoForPlayer(GUID)
     return self.pointInfo[GUID] or CLM.MODELS.PointInfo:New()
 end
 
+---@param GUID string
+---@param week number
+---@return number
 function Roster:GetWeeklyGainsForPlayerWeek(GUID, week)
     local weeklyGains = self.weeklyGains[GUID]
     if not weeklyGains then
@@ -203,6 +252,9 @@ end
  **************************
 ]]--
 
+---@param GUID string
+---@param value number
+---@param timestamp? number
 function Roster:UpdateStandings(GUID, value, timestamp)
     timestamp = timestamp or 0
     LOG:Debug("Roster:UpdateStandings(%s, %s, %s)", GUID, self.uid, value)
@@ -248,6 +300,8 @@ function Roster:UpdateStandings(GUID, value, timestamp)
     self.pointInfo[GUID]:AddBlocked(originalValue - value)
 end
 
+---@param GUID string
+---@param value number
 function Roster:UpdateSpent(GUID, value)
     LOG:Debug("Roster:UpdateSpent(%s, %s, %s)", GUID, self.uid, value)
     local new = UTILS.round(self.pointInfo[GUID].spent + value, self.configuration._.roundDecimals)
@@ -255,20 +309,28 @@ function Roster:UpdateSpent(GUID, value)
     self.pointInfo[GUID].spent = math.max(new, self.configuration._.minGP)
 end
 
+---@param GUID string
+---@param value number
 function Roster:SetStandings(GUID, value)
     self.standings[GUID] = UTILS.round(value, self.configuration._.roundDecimals)
 end
 
+---@param GUID string
+---@param value number
 function Roster:SetSpent(GUID, value)
     self.pointInfo[GUID].spent = UTILS.round(value, self.configuration._.roundDecimals)
 end
 
+---@param GUID string
+---@param value number
 function Roster:DecayStandings(GUID, value)
     local new = UTILS.round(((self:Standings(GUID) * (100 - value)) / 100), self.configuration._.roundDecimals)
     self.pointInfo[GUID]:AddDecayed(self.standings[GUID] - new)
     self.standings[GUID] = new
 end
 
+---@param GUID string
+---@param value number
 function Roster:DecaySpent(GUID, value)
     -- Not decayed in DKP - that's an artificial limitation coming from events
     -- Originally Decay events didnt discern if its total, spent or current points
@@ -282,6 +344,8 @@ function Roster:DecaySpent(GUID, value)
     end
 end
 
+---@param GUID string
+---@param value number
 function Roster:DecayTotal(GUID, value)
     self:DecayStandings(GUID, value)
     self:DecaySpent(GUID, value)
@@ -300,6 +364,9 @@ local function mirrorStandings(self, source, target)
     self.pointInfo[target].spent = self.pointInfo[source].spent
 end
 
+---@param source string
+---@param targets table
+---@param isArray boolean?
 function Roster:MirrorStandings(source, targets, isArray)
     if isArray then
         for target, _ in pairs(targets) do
@@ -324,6 +391,9 @@ local function mirrorWeeklyGains(self, source, target)
     end
 end
 
+---@param source string
+---@param targets table
+---@param isArray? boolean
 function Roster:MirrorWeeklyGains(source, targets, isArray)
     if isArray then
         for target, _ in pairs(targets) do
@@ -342,6 +412,9 @@ end
  ***************
 ]]--
 
+---@param itemEquipLoc string
+---@param tier string
+---@param value number
 function Roster:SetDefaultSlotTierValue(itemEquipLoc, tier, value)
     LOG:Debug("Set Default Slot Tier Value: [%s]: [%s] [%s] for roster [%s]", itemEquipLoc, tier, value, self:UID())
     if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then return end
@@ -366,6 +439,9 @@ function Roster:SetDefaultSlotTierValue(itemEquipLoc, tier, value)
     self.defaultSlotValues[itemEquipLoc][tier] = tonumber(value) or 0
 end
 
+---@param itemEquipLoc? string
+---@param tier string
+---@return number
 function Roster:GetDefaultSlotTierValue(itemEquipLoc, tier)
     if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then
         itemEquipLoc = GLOBAL_FAKE_INVENTORY_SLOT
@@ -375,6 +451,8 @@ function Roster:GetDefaultSlotTierValue(itemEquipLoc, tier)
     return values[tier]
 end
 
+---@param itemEquipLoc? string
+---@return table
 function Roster:GetDefaultSlotValues(itemEquipLoc)
     if not itemEquipLoc or not CONSTANTS.INVENTORY_TYPES_SET[itemEquipLoc] then
         itemEquipLoc = GLOBAL_FAKE_INVENTORY_SLOT
@@ -382,6 +460,7 @@ function Roster:GetDefaultSlotValues(itemEquipLoc)
     return self.defaultSlotValues[itemEquipLoc] or self.defaultSlotValues[GLOBAL_FAKE_INVENTORY_SLOT]
 end
 
+---@param itemEquipLoc string
 function Roster:ClearDefaultSlotValue(itemEquipLoc)
     LOG:Debug("Clear Default Slot Value: [%s] for roster [%s]", itemEquipLoc, self:UID())
     self.defaultSlotValues[itemEquipLoc] = nil
@@ -393,10 +472,14 @@ end
  ***************
 ]]--
 
+---@return table
 function Roster:GetAllItemValues()
     return self.itemValues or {}
 end
 
+---@param itemId number
+---@param tier string
+---@param value number
 function Roster:SetItemTierValue(itemId, tier, value)
     LOG:Debug("Set Item Tier Value: [%s]: [%s] [%s] for roster [%s]", itemId, tier, value, self:UID())
     lazyCreateItem(self, itemId)
@@ -404,6 +487,8 @@ function Roster:SetItemTierValue(itemId, tier, value)
     self:SetItemValues(itemId, self.itemValues[itemId])
 end
 
+---@param itemId number
+---@param values table
 function Roster:SetItemValues(itemId, values)
     LOG:Debug("Set Item Tier Values: [%s]: for roster [%s]", itemId, self:UID())
     lazyCreateItem(self, itemId)
@@ -425,6 +510,7 @@ function Roster:SetItemValues(itemId, values)
     end
 end
 
+---@param itemId number
 function Roster:ClearItemValues(itemId)
     LOG:Debug("Clear Item Value: [%s] for roster [%s]", itemId, self:UID())
     self.itemValues[itemId] = nil
@@ -447,18 +533,28 @@ local function GetItemValuesProxy(self, itemInfoInput, itemId, calculateCallback
     return itemValues
 end
 
+---@param itemId number
+---@return table
 function Roster:GetItemValues(itemId)
     return GetItemValuesProxy(self, itemId, itemId, "CalculateFromId")
 end
 
+---@param itemLink string
+---@return table
 function Roster:GetItemValuesFromItemLink(itemLink)
     return GetItemValuesProxy(self, itemLink, UTILS.GetItemIdFromLink(itemLink), "CalculateFromLink")
 end
 
+---@param class string
+---@param slot string
+---@return number
 function Roster:GetSlotClassMultiplierValue(class, slot)
     return self.classMultipliers[class][slot] or self.classMultipliers[class][GLOBAL_FAKE_INVENTORY_SLOT] or 1
 end
 
+---@param class string
+---@param slot string
+---@param value number
 function Roster:SetSlotClassMultiplierValue(class, slot, value)
     LOG:Debug("Set Default Class Slot Value: [%s] [%s]: [%s] for roster [%s]", class, slot, value, self:UID())
     if not self.classMultipliers[class] then return end
@@ -471,6 +567,9 @@ function Roster:SetSlotClassMultiplierValue(class, slot, value)
     end
 end
 
+---@param class string
+---@param itemId number
+---@return number
 function Roster:GetClassItemMultiplierValue(class, itemId)
     local _, _, _, itemEquipLoc, _, classID, subclassID = UTILS.GetItemInfoInstant(itemId)
     local equipLoc = UTILS.WorkaroundEquipLoc(classID, subclassID, itemEquipLoc)
@@ -482,6 +581,8 @@ end
  *****************
 ]]--
 
+---@param option? string
+---@return any
 function Roster:GetConfiguration(option)
     return self.configuration:Get(option)
 end
@@ -502,6 +603,8 @@ local configurationCallbacks = {
     end
 }
 
+---@param option string
+---@param value any
 function Roster:SetConfiguration(option, value)
     self.configuration:Set(option, value)
     local configurationCb = configurationCallbacks[option]
@@ -510,6 +613,8 @@ function Roster:SetConfiguration(option, value)
     end
 end
 
+---@param field string
+---@return string
 function Roster:GetFieldName(field)
     if not CONSTANTS.SLOT_VALUE_TIERS[field] then
         LOG:Debug("Roster:GetFieldName(): Unknown field %s", field)
@@ -517,6 +622,8 @@ function Roster:GetFieldName(field)
     return self.fieldNames[field] or ""
 end
 
+---@param field string
+---@param name string
 function Roster:SetFieldName(field, name)
     if not CONSTANTS.SLOT_VALUE_TIERS[field] then
         LOG:Error("Roster:SetFieldName(): Unknown field %s", field)
@@ -561,6 +668,8 @@ end
  ****************************
 ]]--
 
+---@param loot table
+---@param profile Profile
 function Roster:AddLoot(loot, profile)
     -- History store
     local GUID = profile:GUID()
@@ -576,34 +685,45 @@ function Roster:AddLoot(loot, profile)
     end
 end
 
+---@return table
 function Roster:GetRaidLoot()
     return self.raidLoot or {}
 end
 
+---@param GUID string
+---@return table
 function Roster:GetProfileLootByGUID(GUID)
     return self.profileLoot[GUID] or {}
 end
 
+---@param loot table
 function Roster:AddDisenchanted(loot)
     self.disenchantedLoot[#self.disenchantedLoot+1] = loot
 end
 
+---@return table
 function Roster:GetDisenchantedLoot()
     return self.disenchantedLoot or {}
 end
 
+---@param history table
+---@param profile Profile
 function Roster:AddProfilePointHistory(history, profile)
     self.profilePointHistory[profile:GUID()][#self.profilePointHistory[profile:GUID()]+1] = history
 end
 
+---@param history table
 function Roster:AddRosterPointHistory(history)
     self.pointHistory[#self.pointHistory+1] = history
 end
 
+---@return table
 function Roster:GetRaidPointHistory()
     return self.pointHistory or {}
 end
 
+---@param GUID string
+---@return table
 function Roster:GetProfilePointHistoryByGUID(GUID)
     return self.profilePointHistory[GUID] or {}
 end
@@ -614,6 +734,10 @@ end
  *******************
 ]]--
 
+---@param encounterId number
+---@param difficultyId number
+---@param isHardMode boolean
+---@param value number
 function Roster:SetBossKillBonusValue(encounterId, difficultyId, isHardMode, value)
     LOG:Debug("Roster:SetBossKillBonusValue() Trying to set encounterId: %s difficultyId: %s value: %s (HM: %s)", encounterId, difficultyId, value, isHardMode)
     if isHardMode then
@@ -623,6 +747,10 @@ function Roster:SetBossKillBonusValue(encounterId, difficultyId, isHardMode, val
     end
 end
 
+---@param encounterId number
+---@param difficultyId? number
+---@param isHardMode boolean
+---@return number
 function Roster:GetBossKillBonusValue(encounterId, difficultyId, isHardMode)
     if isHardMode then
         return self.hardModeBossKillBonusValues[difficultyId or -1][encounterId] or self.configuration._.bossKillBonusValue
@@ -637,14 +765,17 @@ end
  ***********
 ]]--
 
+---@param s Roster
 function Roster:CopyItemValues(s)
     self.itemValues = UTILS.DeepCopy(s.itemValues)
 end
 
+---@param s Roster
 function Roster:CopyDefaultSlotValues(s)
     self.defaultSlotValues = UTILS.DeepCopy(s.defaultSlotValues)
 end
 
+---@param s Roster
 function Roster:CopyConfiguration(s)
     self.configuration = CLM.MODELS.RosterConfiguration:New(UTILS.DeepCopy(s.configuration))
     self.bossKillBonusValues = UTILS.DeepCopy(s.bossKillBonusValues)
@@ -654,6 +785,7 @@ function Roster:CopyConfiguration(s)
     -- TODO: calculator coefficients copy?
 end
 
+---@param s Roster
 function Roster:CopyProfiles(s)
     for _, GUID in ipairs(s:Profiles()) do
         if not self:IsProfileInRoster(GUID) then
@@ -668,10 +800,15 @@ end
  **************
 ]]--
 
+---@param GUID string
+---@param raidId any
+---@param timestamp? number
 function Roster:UpdateAttendance(GUID, raidId, timestamp)
     self.attendanceTracker:Update(GUID, raidId, timestamp)
 end
 
+---@param GUID string
+---@return number
 function Roster:GetAttendance(GUID)
     return self.attendanceTracker:Get(GUID)
 end

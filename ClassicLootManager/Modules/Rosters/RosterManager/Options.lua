@@ -1,7 +1,8 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
@@ -14,6 +15,13 @@ local CBTYPE = {
     CONFIRMATION    = "confirm"
 }
 
+---@class RosterManagerOptions
+---@field copy_source_name string?
+---@field externalOptions table
+---@field handlers table
+---@field pointType number
+---@field readOnly boolean
+---@field rosterName string
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)
@@ -26,6 +34,7 @@ local function SetRosterOption(name, option, value)
     CLM.MODULES.RosterManager:SetRosterConfiguration(name, option, value)
 end
 
+---@return nil
 function RosterManagerOptions:Initialize()
     self.pointType = CONSTANTS.POINT_TYPE.DKP
     self.rosterName = CLM.MODULES.RosterManager:GenerateName()
@@ -332,6 +341,9 @@ function RosterManagerOptions:Initialize()
 end
 
 local CONFIRMATION_GROUPS = UTILS.Set({"general", "auction"})
+---@param cbtype string
+---@param info table
+---@return any
 function RosterManagerOptions:_Handle(cbtype, info, ...)
     -- Assumes This is the handler of each of the subgroups but not the main group
     local roster_name = info[1]
@@ -360,6 +372,7 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
     if cbtype == CBTYPE.CONFIRMATION then
         if CLM.MODULES.RaidManager:IsInActiveRaid() then
             local raid = CLM.MODULES.RaidManager:GetRaid()
+            if not raid then return false end
             if raid:Roster() == CLM.MODULES.RosterManager:GetRosterByName(roster_name) and CONFIRMATION_GROUPS[group] then
                 return CLM.L["You are changing roster settings during active raid. You can continue without any issues however the settings will not get applied until you start a new one."]
             end
@@ -371,23 +384,30 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
     return nil
 end
 
+---@param info table
+---@return any
 function RosterManagerOptions:Getter(info, ...)
    return self:_Handle(CBTYPE.GETTER, info, ...)
 end
 
+---@param info table
 function RosterManagerOptions:Setter(info, ...)
     if self.readOnly then return end
     self:_Handle(CBTYPE.SETTER, info, ...)
 end
 
+---@param info table
 function RosterManagerOptions:Handler(info, ...)
     self:_Handle(CBTYPE.EXECUTOR, info, ...)
 end
 
+---@param info table
 function RosterManagerOptions:Hider(info, ...)
     self:_Handle(CBTYPE.HIDER, info, ...)
 end
 
+---@param info table
+---@return any
 function RosterManagerOptions:Confirmation(info, ...)
     return self:_Handle(CBTYPE.CONFIRMATION, info, ...)
 end
@@ -794,6 +814,10 @@ end
 
 function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
+    if not roster then
+        LOG:Debug("RosterManagerOptions:GenerateRosterOptions(): Unknown roster %s", tostring(name))
+        return
+    end
     local isManager = CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
 
     local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)

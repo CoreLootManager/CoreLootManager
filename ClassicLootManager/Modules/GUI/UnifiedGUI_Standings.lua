@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -68,6 +69,17 @@ local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
 end
 
+---@class UnifiedGUI_Standings
+---@field context number
+---@field roster string?
+---@field awardReason number
+---@field awardType number?
+---@field awardValue string?
+---@field decayType number?
+---@field decayValue string?
+---@field note string?
+---@field includeNegative boolean?
+---@field RightClickMenu table
 local UnifiedGUI_Standings = {
     name = "standings",
     awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT,
@@ -94,6 +106,7 @@ local function HandleRosterChange(rosterUid)
     end
 end
 
+---@return Profile[]
 function UnifiedGUI_Standings:GetSelection()
     LOG:Trace("UnifiedGUI_Standings:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()

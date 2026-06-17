@@ -30,7 +30,14 @@ local function CLM_TMB_encode(data)
     return output
 end
 
+---@class Exporter
+---@field config ExportConfiguration
+---@field output string
+---@field dataInfo { rosters: table[], profiles: table<string, Profile>, begin: number, finish: number }
 local Exporter = {}
+
+---@param config ExportConfiguration
+---@return Exporter
 function Exporter:New(config)
     local o = {}
 
@@ -51,6 +58,8 @@ function Exporter:New(config)
     return o
 end
 
+---@param timestamp number?
+---@return boolean
 function Exporter:TimestampInRange(timestamp)
     timestamp = timestamp or 0
     return ((timestamp >= self.dataInfo.begin) and (timestamp <= self.dataInfo.finish))
@@ -306,6 +315,8 @@ local DATA_BUILDERS = {
 -- Exporter Run --
 -- ------------ --
 
+---@param completeCallback function
+---@param updateCallback function?
 function Exporter:Run(completeCallback, updateCallback)
     -- Prepare Data Info
     for _, UID in ipairs(self.config.rosters) do

@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -19,6 +20,13 @@ local DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE = GameFontHighlightSmallOutline:GetFo
 
 SharedMedia:Register("statusbar", DEFAULT_TEXTURE_NAME, DEFAULT_TEXTURE)
 
+---@class BiddingTimerBar
+---@field bar table
+---@field parent Frame
+---@field options table
+---@field duration number
+---@field previousPercentageLeft number
+---@field callback function
 local BiddingTimerBar = {} -- BiddingTimerBar
 BiddingTimerBar.__index = BiddingTimerBar
 
@@ -92,6 +100,10 @@ local function Create(self, item, auction, options)
     self.bar:Start(auction:GetTime())
 end
 
+---@param item table
+---@param auction table
+---@param options table
+---@return BiddingTimerBar
 function BiddingTimerBar:New(item, auction, options)
     local o = {}
     setmetatable(o, self)
@@ -102,6 +114,8 @@ function BiddingTimerBar:New(item, auction, options)
     return o
 end
 
+---@param options table
+---@return BiddingTimerBar
 function BiddingTimerBar:Test(options)
     local item = {
         GetItemLink = function() return "|cffa335ee|Hitem:39468::::::::80:::::::::|h[The Stray]|h|r" end,
@@ -119,6 +133,7 @@ function BiddingTimerBar:GetPoint()
     return self.parent:GetPoint()
 end
 
+---@param item table?
 function BiddingTimerBar:UpdateInfo(item)
     if not item then return end
     local note = ""
@@ -132,10 +147,12 @@ function BiddingTimerBar:UpdateInfo(item)
     self.bar:SetIcon(icon)
 end
 
+---@param time number
 function BiddingTimerBar:UpdateTime(time)
     self.bar.exp = (self.bar.exp + time) -- trick to extend bar
 end
 
+---@param width number
 function BiddingTimerBar:SetWidth(width)
     self.options.width = tonumber(width) or DEFAULT_WIDTH
     self.bar:SetWidth(self.options.width)

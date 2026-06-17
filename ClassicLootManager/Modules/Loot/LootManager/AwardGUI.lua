@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -7,6 +8,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -273,6 +275,19 @@ local function HookAwardFilling(self)
     end)
 end
 
+---@class AwardGUI
+---@field top AceGUIFrameWidget
+---@field OptionsGroup AceGUISimpleGroupWidget
+---@field db table
+---@field _initialized boolean
+---@field itemId number
+---@field itemLink string
+---@field roster Roster?
+---@field rosterId string?
+---@field awardPlayer string?
+---@field awardName string?
+---@field awardValue number?
+---@field extra table?
 local AwardGUI = {}
 function AwardGUI:Initialize()
     LOG:Trace("AwardGUI:Initialize()")
@@ -292,6 +307,7 @@ function AwardGUI:Initialize()
     self._initialized = true
 end
 
+---@param visible boolean?
 function AwardGUI:Refresh(visible)
     LOG:Trace("AwardGUI:Refresh()")
     if visible and not self.top:IsVisible() then return end
@@ -310,6 +326,7 @@ function AwardGUI:Toggle()
     end
 end
 
+---@param args string?
 function AwardGUI:Show(_, args)
     LOG:Trace("AwardGUI:Show()")
     if not self._initialized then return end

@@ -1,12 +1,17 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@class RosterManager
+---@field cache table
+---@field db table
 local RosterManager = {}
+---@return string
 function RosterManager:GenerateName()
     local prefix = CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.PREFIX)]
     local suffix = CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX[math.random(1, #CONSTANTS.ROSTER_NAME_GENERATOR.SUFFIX)]
@@ -464,31 +469,43 @@ function RosterManager:Initialize()
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
+---@param rosterUid string|number
+---@return boolean
 function RosterManager:GetDisplayTooltip(rosterUid)
     return self.db.displayTooltipConfig[tonumber(rosterUid) or 0]
 end
 
+---@return table
 function RosterManager:GetRosters()
     return self.cache.rosters
 end
 
+---@return table
 function RosterManager:GetRostersUidMap()
     return self.cache.rostersUidMap
 end
 
+---@param name string
+---@return Roster?
 function RosterManager:GetRosterByName(name)
     return self.cache.rosters[name]
 end
 
+---@param uid string|number
+---@return Roster?
 function RosterManager:GetRosterByUid(uid)
     return self.cache.rosters[self.cache.rostersUidMap[uid]]
 end
 
 
+---@param uid string|number
+---@return string?
 function RosterManager:GetRosterNameByUid(uid)
     return self.cache.rostersUidMap[uid]
 end
 
+---@param pointType number
+---@param name string?
 function RosterManager:NewRoster(pointType, name)
     LOG:Trace("RosterManager:NewRoster()")
 
@@ -509,6 +526,7 @@ function RosterManager:NewRoster(pointType, name)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.Create:new(uid, name, pointType), true)
 end
 
+---@param name string
 function RosterManager:DeleteRosterByName(name)
     LOG:Trace("RosterManager:DeleteRosterByName()")
     local roster = self:GetRosterByName(name)
@@ -519,6 +537,8 @@ function RosterManager:DeleteRosterByName(name)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.Delete:new(roster:UID()), true)
 end
 
+---@param old string
+---@param new string
 function RosterManager:RenameRoster(old, new)
     LOG:Trace("RosterManager:RenameRoster()")
     local o = self:GetRosterByName(old)
@@ -535,6 +555,12 @@ function RosterManager:RenameRoster(old, new)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.Rename:new(o:UID(), new), true)
 end
 
+---@param source string
+---@param target string
+---@param config boolean?
+---@param defaults boolean?
+---@param overrides boolean?
+---@param profiles boolean?
 function RosterManager:Copy(source, target, config, defaults, overrides, profiles)
     LOG:Trace("RosterManager:Copy()")
     local s = self:GetRosterByName(source)
@@ -551,6 +577,9 @@ function RosterManager:Copy(source, target, config, defaults, overrides, profile
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.CopyData:new(s:UID(), t:UID(), config, defaults, overrides, profiles), true)
 end
 
+---@param name string
+---@param option string
+---@param value any
 function RosterManager:SetRosterConfiguration(name, option, value)
     LOG:Trace("RosterManager:SetRosterConfiguration()")
     local roster = self:GetRosterByName(name)
@@ -590,6 +619,10 @@ function RosterManager:SetRosterConfiguration(name, option, value)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateConfigSingle:new(roster:UID(), option, value), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param slot string|number
+---@param tier string|number
+---@param value number
 function RosterManager:SetRosterDefaultSlotTierValue(nameOrRoster, slot, tier, value)
     LOG:Trace("RosterManager:SetRosterDefaultSlotTierValue()")
     local roster
@@ -622,6 +655,10 @@ function RosterManager:SetRosterDefaultSlotTierValue(nameOrRoster, slot, tier, v
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateDefaultSingle:new(roster:UID(), slot, tier, value), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param class string
+---@param slot string|number
+---@param value number
 function RosterManager:SetSlotClassMultiplierValue(nameOrRoster, class, slot, value)
     LOG:Trace("RosterManager:SetSlotClassMultiplierValue()")
     local roster
@@ -651,6 +688,8 @@ function RosterManager:SetSlotClassMultiplierValue(nameOrRoster, class, slot, va
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.AwardMultiplier:new(roster:UID(), class, slot, value), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param equation number
 function RosterManager:SetRosterDynamicItemValueEquation(nameOrRoster, equation)
     LOG:Trace("RosterManager:SetRosterDynamicItemValueEquation()")
     local roster
@@ -663,6 +702,10 @@ function RosterManager:SetRosterDynamicItemValueEquation(nameOrRoster, equation)
         LOG:Error("RosterManager:SetRosterDynamicItemValueEquation(): Missing equation")
         return
     end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueEquation(): Invalid roster object or name")
+        return nil
+    end
     if roster:GetCalculator():GetEquation() == equation then
         LOG:Debug("RosterManager:SetRosterDynamicItemValueEquation(): No change to value. Skipping.")
         return
@@ -671,6 +714,8 @@ function RosterManager:SetRosterDynamicItemValueEquation(nameOrRoster, equation)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueEquation:new(roster:UID(), equation), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param expvar number
 function RosterManager:SetRosterDynamicItemValueExpvar(nameOrRoster, expvar)
     LOG:Trace("RosterManager:SetRosterDynamicItemValueExpvar()")
     expvar = tonumber(expvar)
@@ -696,6 +741,8 @@ function RosterManager:SetRosterDynamicItemValueExpvar(nameOrRoster, expvar)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueExpvar:new(roster:UID(), expvar), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param multiplier number
 function RosterManager:SetRosterDynamicItemValueMultiplier(nameOrRoster, multiplier)
     LOG:Trace("RosterManager:SetRosterDynamicItemValueMultiplier()")
     multiplier = tonumber(multiplier)
@@ -721,6 +768,9 @@ function RosterManager:SetRosterDynamicItemValueMultiplier(nameOrRoster, multipl
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueMultiplier:new(roster:UID(), multiplier), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param slot string|number
+---@param multiplier number
 function RosterManager:SetRosterDynamicItemValueSlotMultiplier(nameOrRoster, slot, multiplier)
     LOG:Trace("RosterManager:SetRosterDynamicItemValueSlotMultiplier()")
     multiplier = tonumber(multiplier)
@@ -750,6 +800,9 @@ function RosterManager:SetRosterDynamicItemValueSlotMultiplier(nameOrRoster, slo
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueSlotMultiplier:new(roster:UID(), slot, multiplier), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param tier string|number
+---@param multiplier number
 function RosterManager:SetRosterDynamicItemValueTierMultiplier(nameOrRoster, tier, multiplier)
     LOG:Trace("RosterManager:SetRosterDynamicItemValueTierMultiplier()")
     multiplier = tonumber(multiplier)
@@ -779,6 +832,9 @@ function RosterManager:SetRosterDynamicItemValueTierMultiplier(nameOrRoster, tie
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.DynamicItemValueTierMultiplier:new(roster:UID(), tier, multiplier), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param field string|number
+---@param name string
 function RosterManager:SetFieldName(nameOrRoster, field, name)
     LOG:Trace("RosterManager:SetFieldName()")
     local roster
@@ -813,6 +869,9 @@ function RosterManager:SetFieldName(nameOrRoster, field, name)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.FieldRename:new(roster:UID(), field, name), true)
 end
 
+---@param current table
+---@param new table
+---@return table?
 function RosterManager:CompareAndSanitizeSlotTierValues(current, new)
     local sanitizedValues = {}
     local allSame = true
@@ -834,6 +893,9 @@ function RosterManager:CompareAndSanitizeSlotTierValues(current, new)
     return sanitizedValues
 end
 
+---@param nameOrRoster string|Roster
+---@param itemId number
+---@param values table
 function RosterManager:SetRosterItemValues(nameOrRoster, itemId, values)
     LOG:Trace("RosterManager:SetRosterItemTierValue()")
     local roster
@@ -856,6 +918,8 @@ function RosterManager:SetRosterItemValues(nameOrRoster, itemId, values)
     end
 end
 
+---@param nameOrRoster string|Roster
+---@param itemId number
 function RosterManager:RemoveRosterItemOverride(nameOrRoster, itemId)
     LOG:Trace("RosterManager:RemoveRosterItemOverride()")
     local roster
@@ -869,6 +933,11 @@ function RosterManager:RemoveRosterItemOverride(nameOrRoster, itemId)
         return
     end
 
+    if not roster then
+        LOG:Error("RosterManager:RemoveRosterItemOverride(): Invalid roster object or name")
+        return nil
+    end
+
     if not roster.itemValues[itemId] then
         LOG:Debug("RosterManager:RemoveRosterItemOverride(): No change to value. Skipping.")
         return
@@ -877,6 +946,10 @@ function RosterManager:RemoveRosterItemOverride(nameOrRoster, itemId)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.RemoveOverrides:new(roster:UID(), itemId), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param itemId number
+---@param tier string|number
+---@param value number
 function RosterManager:SetRosterItemTierValue(nameOrRoster, itemId, tier, value)
     LOG:Trace("RosterManager:SetRosterItemTierValue()")
     local roster
@@ -905,6 +978,11 @@ function RosterManager:SetRosterItemTierValue(nameOrRoster, itemId, tier, value)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.UpdateOverridesSingle:new(roster:UID(), itemId, tier, value), true)
 end
 
+---@param nameOrRoster string|Roster
+---@param encounterId number
+---@param difficultyId number
+---@param isHardMode boolean
+---@param value number
 function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, difficultyId, isHardMode, value)
     LOG:Trace("RosterManager:SetRosterBossKillBonusValue()")
     local roster
@@ -937,6 +1015,8 @@ function RosterManager:SetRosterBossKillBonusValue(nameOrRoster, encounterId, di
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.ROSTER.BossKillBonus:new(roster:UID(), encounterId, difficultyId, isHardMode, value), true)
 end
 
+---@param roster Roster
+---@param profiles table
 function RosterManager:AddProfilesToRoster(roster, profiles)
     LOG:Trace("RosterManager:AddProfilesToRoster()")
     if not UTILS.typeof(roster, CLM.MODELS.Roster) then
@@ -958,6 +1038,8 @@ function RosterManager:AddProfilesToRoster(roster, profiles)
     CLM.MODULES.LedgerManager:Submit(entry, true)
 end
 
+---@param roster Roster
+---@param profiles table
 function RosterManager:RemoveProfilesFromRoster(roster, profiles)
     LOG:Trace("RosterManager:RemoveProfilesFromRoster()")
     if not UTILS.typeof(roster, CLM.MODELS.Roster) then
@@ -980,6 +1062,7 @@ function RosterManager:RemoveProfilesFromRoster(roster, profiles)
     CLM.MODULES.LedgerManager:Submit(entry, true)
 end
 
+---@param roster Roster
 function RosterManager:AddFromRaidToRoster(roster)
     LOG:Trace("RosterManager:AddFromRaidToRoster()")
     if not UTILS.typeof(roster, CLM.MODELS.Roster) then
@@ -1011,6 +1094,9 @@ function RosterManager:AddFromRaidToRoster(roster)
     end
 end
 
+---@param roster Roster
+---@param loot Loot
+---@param profile Profile
 function RosterManager:AddLootToRoster(roster, loot, profile)
     LOG:Trace("RosterManager:AddLootToRoster()")
     if not UTILS.typeof(roster, CLM.MODELS.Roster) then
@@ -1029,6 +1115,8 @@ function RosterManager:AddLootToRoster(roster, loot, profile)
     roster:AddLoot(loot, profile)
 end
 
+---@param roster Roster
+---@param loot Loot
 function RosterManager:AddDisenchantedToRoster(roster, loot)
     LOG:Trace("RosterManager:AddDisenchantedToRoster()")
     if not UTILS.typeof(roster, CLM.MODELS.Roster) then

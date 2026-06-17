@@ -1,4 +1,5 @@
 .release
+.aiscripts
 ExternalLibs
 locales_*
 TESTING

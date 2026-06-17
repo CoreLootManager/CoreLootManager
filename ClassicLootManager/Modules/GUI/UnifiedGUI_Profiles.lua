@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -24,6 +25,12 @@ local function ST_GetHighlight(row)
     return row.cols[8].value
 end
 
+---@class UnifiedGUI_Profiles
+---@field rank number?
+---@field minimumLevel number?
+---@field roster string?
+---@field alreadyDisplayed boolean?
+---@field RightClickMenu table
 local UnifiedGUI_Profiles = {
     name = "profiles",
     filter = CLM.MODELS.Filters:New(
@@ -34,6 +41,7 @@ local UnifiedGUI_Profiles = {
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIProfilesDialogTooltip", UIParent, "GameTooltipTemplate"),
 }
 
+---@return Profile[]
 function UnifiedGUI_Profiles:GetSelection()
     LOG:Trace("UnifiedGUI_Profiles:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()

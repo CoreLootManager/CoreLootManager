@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -81,6 +82,7 @@ local function mutateLootDisenchant(entry, roster)
     UTILS.GetItemInfo(loot:Id())
 end
 
+---@class LootManager
 local LootManager = {}
 function LootManager:Initialize()
     LOG:Trace("LootManager:Initialize()")
@@ -135,6 +137,14 @@ function LootManager:Initialize()
 
 end
 
+---@param raidOrRoster Raid|Roster
+---@param name string
+---@param itemLink string
+---@param itemId number
+---@param extra string?
+---@param value number
+---@param forceInstant boolean?
+---@return boolean, string?
 function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, value, forceInstant)
     LOG:Trace("LootManager:AwardItem()")
     local isRaid = true
@@ -193,6 +203,10 @@ function LootManager:AwardItem(raidOrRoster, name, itemLink, itemId, extra, valu
     return false
 end
 
+---@param raidOrRoster Raid|Roster
+---@param itemLink string
+---@param forceInstant boolean?
+---@return boolean, string?
 function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
     LOG:Trace("LootManager:DisenchantItem()")
     local isRaid = true
@@ -236,6 +250,8 @@ function LootManager:DisenchantItem(raidOrRoster, itemLink, forceInstant)
     return true, entry:uuid()
 end
 
+---@param loot Loot
+---@param forceInstant boolean?
 function LootManager:RevokeItem(loot, forceInstant)
     LOG:Trace("LootManager:RevokeItem()")
     if not UTILS.typeof(loot, CLM.MODELS.Loot) then

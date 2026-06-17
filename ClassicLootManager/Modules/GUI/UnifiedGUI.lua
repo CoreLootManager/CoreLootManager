@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -7,6 +8,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -209,6 +211,13 @@ local function CreateLoadingBanner(self)
     -- lb:Show()
 end
 
+---@class UnifiedGUI
+---@field tabs table
+---@field aceObjects table
+---@field db table
+---@field _initialized boolean
+---@field percentage number?
+---@field selectedTab string
 local UnifiedGUI = { tabs = {} }
 function UnifiedGUI:Initialize()
     InitializeDB(self)
@@ -319,6 +328,15 @@ local publicHandlers = {
     "dataReady"
 }
 
+---@param name string
+---@param order number
+---@param tableStructure table
+---@param tableDataFeeder function
+---@param horizontalOptionsFeeder function|table|nil
+---@param verticalOptionsFeeder function|table|nil
+---@param handlers table
+---@param icon string?
+---@param iconExtended string?
 function UnifiedGUI:RegisterTab(
     name, order, tableStructure, tableDataFeeder,
     horizontalOptionsFeeder, verticalOptionsFeeder,
@@ -370,6 +388,8 @@ function UnifiedGUI:RegisterTab(
     end
 end
 
+---@param name string
+---@return table
 function UnifiedGUI:GetStorage(name)
     if self.tabs[name] then
         if not self.db.storage[name] then
@@ -386,6 +406,7 @@ end
 
 
 -- Refresh the data
+---@param visible boolean?
 function UnifiedGUI:Refresh(visible)
     LOG:Trace("UnifiedGUI:Refresh()")
     if not self._initialized then return end

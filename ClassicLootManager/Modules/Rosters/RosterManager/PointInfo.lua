@@ -1,12 +1,16 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@class PointInfo
+---@field rounding number
 local PointInfo = {}
+---@return PointInfo
 function PointInfo:New()
     local o = {}
 
@@ -27,6 +31,7 @@ function PointInfo:New()
     return o
 end
 
+---@param rounding number
 function PointInfo:SetRounding(rounding)
     self.rounding = rounding
 end
@@ -35,18 +40,22 @@ local function Add(self, param, value)
     self[param] = UTILS.round(self[param] + (value or 0), self.rounding) -- TODO rounding here!
 end
 
+---@param value number
 function PointInfo:AddSpent(value)
     Add(self, "spent", value)
 end
 
+---@param value number
 function PointInfo:AddReceived(value)
     Add(self, "received", value)
 end
 
+---@param value number
 function PointInfo:AddBlocked(value)
     Add(self, "blocked", value)
 end
 
+---@param value number
 function PointInfo:AddDecayed(value)
     Add(self, "decayed", value)
 end

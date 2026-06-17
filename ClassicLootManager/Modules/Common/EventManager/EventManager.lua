@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -12,6 +13,10 @@ local myGUID = UTILS.whoamiGUID()
 
 local CLM_HISTORICAL_TTL = 5
 
+---@class EventManager
+---@field callbacks table
+---@field bucketCallbacks table
+---@field messageCallbacks table
 local EventManager = {}
 function EventManager:Initialize()
     LOG:Trace("EventManager:Initialize()")
@@ -55,6 +60,10 @@ local function addCallbackInternal(self, event, callback)
     end)
 end
 
+---@param events string|table
+---@param functionOrObject function|table
+---@param methodName string?
+---@return function?, table?
 function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
     LOG:Trace("EventManager:RegisterWoWEvent()")
     local callback
@@ -97,6 +106,9 @@ function EventManager:RegisterWoWEvent(events, functionOrObject, methodName)
     end), unregistrars
 end
 
+---@param messages string|table
+---@param functionOrObject function|table
+---@param methodName string?
 function EventManager:RegisterMessage(messages, functionOrObject, methodName)
     LOG:Trace("EventManager:RegisterMessage()")
     local callback
@@ -131,6 +143,7 @@ function EventManager:RegisterMessage(messages, functionOrObject, methodName)
     end
 end
 
+---@param messages string|table
 function EventManager:UnregisterMessage(messages)
     LOG:Trace("EventManager:UnregisterMessage()")
     if not messages then
@@ -144,6 +157,10 @@ function EventManager:UnregisterMessage(messages)
     end
 end
 
+---@param events string|table
+---@param interval number?
+---@param functionOrObject function|table
+---@param methodName string?
 function EventManager:RegisterWoWBucketEvent(events, interval, functionOrObject, methodName)
     LOG:Trace("EventManager:RegisterWoWBucketEvent()")
     if type(events) == "string" then events = { events } end
@@ -174,6 +191,10 @@ function EventManager:RegisterWoWBucketEvent(events, interval, functionOrObject,
     end
 end
 
+---@param event string
+---@param params any
+---@param timestamp number?
+---@param guid string?
 function EventManager:DispatchEvent(event, params, timestamp, guid)
 
     local dispatch = true
@@ -194,6 +215,8 @@ function EventManager:DispatchEvent(event, params, timestamp, guid)
     eventDispatcher.dispatchEventWithTTL(event, params, timestamp)
 end
 
+---@param event string
+---@param callback function
 function EventManager:RegisterEvent(event, callback)
     eventDispatcher.addEventListener(event, callback)
 end

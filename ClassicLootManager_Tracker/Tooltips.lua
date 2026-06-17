@@ -12,6 +12,11 @@ local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-
 
 local cache = {}
 
+---@param roster Roster
+---@param itemId number
+---@param perRosterData table
+---@param requiresRebuild boolean
+---@return table
 local function generateTooltipLines(roster, itemId, perRosterData, requiresRebuild)
     if cache[roster:UID()] == nil then
         cache[roster:UID()] = {}
@@ -37,6 +42,7 @@ local function generateTooltipLines(roster, itemId, perRosterData, requiresRebui
     return cache[roster:UID()][itemId] or {}
 end
 
+---@param tooltip GameTooltip
 local function addItemReceiversToTooltip(tooltip)
     -- Sanity Check
     local itemLink

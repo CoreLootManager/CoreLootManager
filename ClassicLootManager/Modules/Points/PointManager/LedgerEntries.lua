@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -11,13 +12,61 @@ local CreateGUIDList = UTILS.CreateGUIDList
 
 local LogEntry  = LibStub("EventSourcing/LogEntry")
 
+---@class Modify
+---@field r number rosterUid
+---@field p table player GUID list
+---@field v number value
+---@field e number reason
+---@field t string note
+---@field n boolean spent
 local Modify        = LogEntry:extend("DM")
+---@class ModifyRaid
+---@field r string raidUid
+---@field v number value
+---@field e number reason
+---@field t string note
+---@field s boolean includeStandby
+---@field n boolean spent
 local ModifyRaid    = LogEntry:extend("DR")
+---@class ModifyRoster
+---@field r number rosterUid
+---@field v number value
+---@field e number reason
+---@field t string note
+---@field n boolean spent
 local ModifyRoster  = LogEntry:extend("DO")
+---@class Set
+---@field r number rosterUid
+---@field p table player GUID list
+---@field v number value
+---@field e number reason
+---@field t string note
+---@field n boolean spent
 local Set           = LogEntry:extend("DS")
+---@class Decay
+---@field r number rosterUid
+---@field p table player GUID list
+---@field v number value
+---@field e number reason
+---@field t string note
+---@field i number pointType
 local Decay         = LogEntry:extend("DD")
+---@class DecayRoster
+---@field r number rosterUid
+---@field v number value
+---@field e number reason
+---@field n boolean ignoreNegatives
+---@field t string note
+---@field i number pointType
 local DecayRoster   = LogEntry:extend("DT")
 
+---@param rosterUid number
+---@param playerList table
+---@param value number
+---@param reason number
+---@param note? string
+---@param spent? boolean
+---@return Modify
 function Modify:new(rosterUid, playerList, value, reason, note, spent)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -30,30 +79,37 @@ function Modify:new(rosterUid, playerList, value, reason, note, spent)
     return o
 end
 
+---@return number
 function Modify:rosterUid()
     return self.r
 end
 
+---@return table
 function Modify:targets()
     return self.p
 end
 
+---@return number
 function Modify:value()
     return self.v
 end
 
+---@return number
 function Modify:reason()
     return self.e
 end
 
+---@return string
 function Modify:note()
     return self.t or ""
 end
 
+---@return boolean
 function Modify:spent()
     return self.n
 end
 
+---@return number
 function Modify:type()
     return self.n and CLM.CONSTANTS.POINT_CHANGE_TYPE.SPENT or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
 end
@@ -63,6 +119,13 @@ function Modify:fields()
     return modifyFields
 end
 
+---@param raidUid string
+---@param value number
+---@param reason number
+---@param note? string
+---@param includeStandby? boolean
+---@param spent? boolean
+---@return ModifyRaid
 function ModifyRaid:new(raidUid, value, reason, note, includeStandby, spent)
     local o = LogEntry.new(self);
     o.r = raidUid or ""
@@ -75,30 +138,37 @@ function ModifyRaid:new(raidUid, value, reason, note, includeStandby, spent)
     return o
 end
 
+---@return string
 function ModifyRaid:raidUid()
     return self.r
 end
 
+---@return number
 function ModifyRaid:value()
     return self.v
 end
 
+---@return number
 function ModifyRaid:reason()
     return self.e
 end
 
+---@return string
 function ModifyRaid:note()
     return self.t or ""
 end
 
+---@return boolean
 function ModifyRaid:standby()
     return self.s
 end
 
+---@return boolean
 function ModifyRaid:spent()
     return self.n
 end
 
+---@return number
 function ModifyRaid:type()
     return self.n and CLM.CONSTANTS.POINT_CHANGE_TYPE.SPENT or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
 end
@@ -108,6 +178,12 @@ function ModifyRaid:fields()
     return modifyRaidFields
 end
 
+---@param rosterUid number
+---@param value number
+---@param reason number
+---@param note? string
+---@param spent? boolean
+---@return ModifyRoster
 function ModifyRoster:new(rosterUid, value, reason, note, spent)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -119,31 +195,38 @@ function ModifyRoster:new(rosterUid, value, reason, note, spent)
     return o
 end
 
+---@return number
 function ModifyRoster:rosterUid()
     return self.r
 end
 
+---@return number
 function ModifyRoster:value()
     return self.v
 end
 
+---@return number
 function ModifyRoster:reason()
     return self.e
 end
 
+---@return string
 function ModifyRoster:note()
     return self.t or ""
 end
 
+---@return boolean
 function ModifyRoster:spent()
     return self.n
 end
 
 -- Required for proper decay handling in common mutator
+---@return boolean
 function ModifyRoster:ignoreNegatives()
     return false
 end
 
+---@return number
 function ModifyRoster:type()
     return self.n and CLM.CONSTANTS.POINT_CHANGE_TYPE.SPENT or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
 end
@@ -153,6 +236,13 @@ function ModifyRoster:fields()
     return modifyRosterFields
 end
 
+---@param rosterUid number
+---@param playerList table
+---@param value number
+---@param reason number
+---@param note? string
+---@param spent? boolean
+---@return Set
 function Set:new(rosterUid, playerList, value, reason, note, spent)
     local o = LogEntry.new(self)
     o.r = tonumber(rosterUid) or 0
@@ -164,30 +254,37 @@ function Set:new(rosterUid, playerList, value, reason, note, spent)
     return o
 end
 
+---@return number
 function Set:rosterUid()
     return self.r
 end
 
+---@return table
 function Set:targets()
     return self.p
 end
 
+---@return number
 function Set:value()
     return self.v
 end
 
+---@return number
 function Set:reason()
     return self.e
 end
 
+---@return string
 function Set:note()
     return self.t or ""
 end
 
+---@return boolean
 function Set:spent()
     return self.n
 end
 
+---@return number
 function Set:type()
     return self.n and CLM.CONSTANTS.POINT_CHANGE_TYPE.SPENT or CLM.CONSTANTS.POINT_CHANGE_TYPE.POINTS
 end
@@ -197,6 +294,13 @@ function Set:fields()
     return setFields
 end
 
+---@param rosterUid number
+---@param playerList table
+---@param value number
+---@param reason number
+---@param note? string
+---@param pointType? number
+---@return Decay
 function Decay:new(rosterUid, playerList, value, reason, note, pointType)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -212,30 +316,37 @@ function Decay:new(rosterUid, playerList, value, reason, note, pointType)
     return o
 end
 
+---@return number
 function Decay:rosterUid()
     return self.r
 end
 
+---@return table
 function Decay:targets()
     return self.p
 end
 
+---@return number
 function Decay:value()
     return self.v
 end
 
+---@return number
 function Decay:reason()
     return self.e
 end
 
+---@return string
 function Decay:note()
     return self.t or ""
 end
 
+---@return boolean
 function Decay:spent()
     return false
 end
 
+---@return number
 function Decay:type()
     return self.i or CLM.CONSTANTS.POINT_CHANGE_TYPE.TOTAL
 end
@@ -245,6 +356,13 @@ function Decay:fields()
     return decayFields
 end
 
+---@param rosterUid number
+---@param value number
+---@param reason number
+---@param ignoreNegatives? boolean
+---@param note? string
+---@param pointType? number
+---@return DecayRoster
 function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note, pointType)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -260,30 +378,37 @@ function DecayRoster:new(rosterUid, value, reason, ignoreNegatives, note, pointT
     return o
 end
 
+---@return number
 function DecayRoster:rosterUid()
     return self.r
 end
 
+---@return number
 function DecayRoster:value()
     return self.v
 end
 
+---@return number
 function DecayRoster:reason()
     return self.e
 end
 
+---@return boolean
 function DecayRoster:ignoreNegatives()
     return self.n
 end
 
+---@return string
 function DecayRoster:note()
     return self.t or ""
 end
 
+---@return boolean
 function DecayRoster:spent()
     return false
 end
 
+---@return number
 function DecayRoster:type()
     return self.i or CLM.CONSTANTS.POINT_CHANGE_TYPE.TOTAL
 end

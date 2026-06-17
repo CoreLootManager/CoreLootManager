@@ -1,12 +1,23 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@class BiddingCommSubmitBid
+---@field d number bid value
+---@field b number bid type
+---@field i number auction uid
+---@field t table items
 local BiddingCommSubmitBid = {}
+---@param valueOrObject number|table
+---@param bidType? number
+---@param auctionUid? number
+---@param items? table
+---@return BiddingCommSubmitBid
 function BiddingCommSubmitBid:New(valueOrObject, bidType, auctionUid, items)
     local isCopyConstructor = (type(valueOrObject) == "table")
     local o = isCopyConstructor and valueOrObject or {}
@@ -24,23 +35,33 @@ function BiddingCommSubmitBid:New(valueOrObject, bidType, auctionUid, items)
     return o
 end
 
+---@return number
 function BiddingCommSubmitBid:Value()
     return self.d or 0
 end
 
+---@return number
 function BiddingCommSubmitBid:Type()
     return self.b or CONSTANTS.BID_TYPE.MAIN_SPEC
 end
 
+---@return number
 function BiddingCommSubmitBid:AuctionUID()
     return self.i or 0
 end
 
+---@return table
 function BiddingCommSubmitBid:Items()
     return self.t or {}
 end
 
+---@class BiddingCommStructure
+---@field t number type
+---@field d table|BiddingCommSubmitBid data
 local BiddingCommStructure = {}
+---@param typeOrObject number|table
+---@param data? any
+---@return BiddingCommStructure
 function BiddingCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
 
@@ -62,10 +83,12 @@ function BiddingCommStructure:New(typeOrObject, data)
     return o
 end
 
+---@return number
 function BiddingCommStructure:Type()
     return self.t or 0
 end
 
+---@return any
 function BiddingCommStructure:Data()
     return self.d
 end

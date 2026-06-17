@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -164,6 +165,10 @@ local function Initialize(self)
     end
 end
 
+---@class CrossGuildSyncManager
+---@field _initialized boolean
+---@field players table
+---@field types table
 local CrossGuildSyncManager = { _initialized = false }
 function CrossGuildSyncManager:Initialize()
     self.players = InitializeDB('players')

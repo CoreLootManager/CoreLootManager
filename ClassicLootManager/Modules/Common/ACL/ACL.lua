@@ -1,20 +1,28 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
+---@class ACL
+---@field guildMaster boolean
 local ACL = {}
 function ACL:Initialize()
     LOG:Trace("ACL:Initialize()")
     self.guildMaster = IsGuildLeader()
 end
 
+---@param name string?
+---@return boolean
 function ACL:IsTrusted(name)
     return self:CheckLevel(CONSTANTS.ACL.LEVEL.ASSISTANT, name) or false
 end
 
+---@param level number?
+---@param name string?
+---@return boolean
 function ACL:CheckLevel(level, name)
     LOG:Trace("ACL:CheckLevel()")
     local info = CLM.MODULES.TrustInfoProvider:GetInfo()
@@ -46,6 +54,7 @@ function ACL:CheckLevel(level, name)
     return true
 end
 
+---@diagnostic disable-next-line: missing-fields
 CONSTANTS.ACL = {}
 CONSTANTS.ACL.LEVEL = {
     PLEBS = 0,
@@ -64,5 +73,6 @@ CONSTANTS.ACL.LEVELS = UTILS.Set({
 CLM.MODULES.ACL = ACL
 
 --@do-not-package@
+---@diagnostic disable-next-line: duplicate-set-field
 ACL.CheckLevel = function() return true end
 --@end-do-not-package@

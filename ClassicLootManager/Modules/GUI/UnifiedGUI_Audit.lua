@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -614,6 +615,8 @@ local function buildEntryRow(entry, id)
     return row
 end
 
+---@class UnifiedGUI_Audit
+---@field RightClickMenu table
 local UnifiedGUI_Audit = {
     name = "audit",
     filter = CLM.MODELS.Filters:New(
@@ -626,6 +629,7 @@ local UnifiedGUI_Audit = {
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIAuditDialogTooltip", UIParent, "GameTooltipTemplate"),
 }
 
+---@return table
 function UnifiedGUI_Audit:GetSelection()
     LOG:Trace("UnifiedGUI_Audit:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()

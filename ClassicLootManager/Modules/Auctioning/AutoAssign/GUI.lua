@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -9,6 +10,7 @@ local UTILS     = CLM.UTILS
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 
 local RightClickMenu
 
@@ -42,6 +44,14 @@ local function ST_GetTradeTarget(row)
     return row.cols[2].value
 end
 
+---@class TradeListGUI
+---@field st LibSTTable
+---@field top AceGUIWindowWidget
+---@field TradeHistoryGroup AceGUISimpleGroupWidget
+---@field tooltip GameTooltip
+---@field db table
+---@field _initialized boolean
+---@field previousRows number
 local TradeListGUI = {}
 function TradeListGUI:Initialize()
     LOG:Trace("TradeListGUI:Initialize()")
@@ -205,6 +215,7 @@ function TradeListGUI:Create()
     f:Hide()
 end
 
+---@param rows number
 function TradeListGUI:UpdateSize(rows)
     local previousRows = self.previousRows or rows
     local rowDiff = rows - previousRows
@@ -234,6 +245,7 @@ function TradeListGUI:UpdateSize(rows)
     end
 end
 
+---@param visible boolean?
 function TradeListGUI:Refresh(visible)
     LOG:Trace("TradeListGUI:Refresh()")
     if not self._initialized then return end

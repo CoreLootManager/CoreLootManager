@@ -38,9 +38,13 @@ ignore:
   - scripts
   - assets
   - gitman.yml
+<<<<<<< HEAD
+  - ClassicLootManager/_annotations
+=======
   - ClassicLootManager/Libs/LibDeflate/docs
   - ClassicLootManager/Libs/LibDeflate/examples
   - ClassicLootManager/Libs/LibUIDropDownMenu/Docs
+>>>>>>> master
 
 move-folders:
   ClassicLootManager/ClassicLootManager: ClassicLootManager

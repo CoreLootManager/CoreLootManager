@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -9,6 +10,7 @@ local UTILS     = CLM.UTILS
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 
 local RightClickMenu
 
@@ -54,6 +56,14 @@ local function ST_GetRolls(row)
     return row.cols[7].value
 end
 
+---@class AuctionHistoryGUI
+---@field st LibSTTable
+---@field top AceGUIFrameWidget
+---@field AuctionHistoryGroup AceGUISimpleGroupWidget
+---@field tooltip GameTooltip
+---@field db table
+---@field _initialized boolean
+---@field previousRows number
 local AuctionHistoryGUI = {}
 function AuctionHistoryGUI:Initialize()
     LOG:Trace("AuctionHistoryGUI:Initialize()")
@@ -235,6 +245,7 @@ function AuctionHistoryGUI:Create()
 
 end
 
+---@param visible boolean?
 function AuctionHistoryGUI:Refresh(visible)
     LOG:Trace("AuctionHistoryGUI:Refresh()")
     if not self._initialized then return end

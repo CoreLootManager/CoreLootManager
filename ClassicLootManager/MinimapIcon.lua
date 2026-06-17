@@ -1,4 +1,5 @@
 local _, CLM = ...
+---@cast CLM CLMNamespace
 
 local addonName = "Core Loot Manager" -- same as the UI name for config
 
@@ -69,11 +70,15 @@ local function CreateMinimapDBI(self, dropdown)
     icon:Register(addonName, CLM.MinimapDBI, CLM2_MinimapIcon)
 end
 
+---@param ic string
+---@return string
 local function getIcon(ic)
     return "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-" .. ic .. "-32.tga"
 end
 
 local dropdown
+---@class Minimap
+---@field _initialized boolean
 local Minimap = {}
 
 local function CreateConfig(self)
@@ -182,6 +187,7 @@ function Minimap:Initialize()
     self._initialized = true
 end
 
+---@return boolean
 function Minimap:IsInitialized()
     return self._initialized
 end
@@ -202,6 +208,7 @@ function Minimap:Disable()
     icon:Hide(addonName)
 end
 
+---@return boolean
 function Minimap:IsEnabled()
     return not CLM2_MinimapIcon.disable
 end

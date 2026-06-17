@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -18,6 +19,15 @@ local function IsPlayerInPvP()
 	return arena or (bg ~= nil)
 end
 
+---@class RaidManager
+---@field RaidLeader string
+---@field MasterLooter string
+---@field IsMasterLootSystem boolean
+---@field IsGroupLootSystem boolean
+---@field RaidAssistants table
+---@field _initialized boolean
+---@field cache table
+---@field isEventHandlingRegistered boolean
 local RaidManager = {}
 function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")
@@ -217,39 +227,50 @@ function RaidManager:ParseStatus()
     end
 end
 
+---@return boolean
 function RaidManager:IsInitialized()
     return self._initialized
 end
 
+---@return table
 function RaidManager:ListRaids()
     return self.cache.raids
 end
 
+---@param raidUid number|string
+---@return Raid?
 function RaidManager:GetRaidByUid(raidUid)
     return self.cache.raids[raidUid]
 end
 
+---@return boolean
 function RaidManager:IsInRaid()
     return self.cache.profileRaidInfo[whoamiGUID] and true or false
 end
 
+---@return boolean
 function RaidManager:IsOnStandby()
     return self.cache.profileStandbyInfo[whoamiGUID] and true or false
 end
 
+---@return boolean
 function RaidManager:IsInActiveRaid()
     return self:IsInRaid() and self:GetRaid():IsActive() or false
 end
 
+---@return boolean
 function RaidManager:IsInCreatedRaid()
     return self:IsInRaid() and (CONSTANTS.RAID_STATUS.CREATED == self:GetRaid():Status())
 end
 
+---@return boolean
 function RaidManager:IsInProgressingRaid()
     return self:IsInRaid() and (CONSTANTS.RAID_STATUS.IN_PROGRESS == self:GetRaid():Status())
 end
 
 -- handles connection of user with newest ledger raid entity
+---@param GUID string
+---@param raid Raid?
 function RaidManager:UpdateProfileCurentRaid(GUID, raid)
     LOG:Debug("RaidManager:UpdateProfileCurentRaid(%s): %s", GUID, raid and "Add" or "Remove")
     if CLM.MODULES.ProfileManager:GetProfileByGUID(GUID) then
@@ -267,6 +288,8 @@ function RaidManager:UpdateProfileCurentRaid(GUID, raid)
     end
 end
 
+---@param GUID string
+---@param raid Raid?
 function RaidManager:UpdateProfileCurentStandby(GUID, raid)
     LOG:Debug("RaidManager:UpdateProfileCurentStandby(%s)", GUID)
     if CLM.MODULES.ProfileManager:GetProfileByGUID(GUID) then
@@ -284,14 +307,21 @@ function RaidManager:UpdateProfileCurentStandby(GUID, raid)
     end
 end
 
+---@param GUID string
+---@return Raid?
 function RaidManager:GetProfileRaid(GUID)
     return self.cache.profileRaidInfo[GUID]
 end
 
+---@param GUID string
+---@return Raid?
 function RaidManager:GetProfileStandby(GUID)
     return self.cache.profileStandbyInfo[GUID]
 end
 
+---@param roster Roster
+---@param name string
+---@param config table
 function RaidManager:CreateRaid(roster, name, config)
     LOG:Trace("RaidManager:CreateRaid()")
     if not UTILS.typeof(roster, CLM.MODELS.Roster) then
@@ -319,6 +349,7 @@ function RaidManager:CreateRaid(roster, name, config)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Create:new(roster:UID(), name, config))
 end
 
+---@param raid Raid
 function RaidManager:StartRaid(raid)
     LOG:Trace("RaidManager:StartRaid()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
@@ -391,6 +422,7 @@ function RaidManager:StartRaid(raid)
     end
 end
 
+---@param raid Raid
 function RaidManager:EndRaid(raid)
     LOG:Trace("RaidManager:EndRaid()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
@@ -430,6 +462,7 @@ function RaidManager:EndRaid(raid)
     end
 end
 
+---@param raid Raid
 function RaidManager:JoinRaid(raid)
     LOG:Trace("RaidManager:JoinRaid()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
@@ -459,6 +492,8 @@ function RaidManager:JoinRaid(raid)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.RAID.Update:new(raid:UID(), {}, {CLM.MODULES.ProfileManager:GetMyProfile()}), true)
 end
 
+---@param raid Raid
+---@param standby table
 function RaidManager:AddToStandby(raid, standby)
     LOG:Trace("RaidManager:AddToStandby()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
@@ -493,6 +528,8 @@ function RaidManager:AddToStandby(raid, standby)
     CLM.MODULES.LedgerManager:Submit(entry, true)
 end
 
+---@param raid Raid
+---@param removed table
 function RaidManager:RemoveFromStandby(raid, removed)
     LOG:Trace("RaidManager:RemoveFromStandby()")
     if not UTILS.typeof(raid, CLM.MODELS.Raid) then
@@ -527,6 +564,8 @@ function RaidManager:RemoveFromStandby(raid, removed)
     CLM.MODULES.LedgerManager:Submit(entry, true)
 end
 
+---@param raid Raid
+---@return table
 function RaidManager:GetUniquePlayersListInRaid(raid)
     -- Returns number of unique players - Linked alt/mains are counted as one
     local mainsGuidsInRaid = {}
@@ -573,6 +612,7 @@ function RaidManager:GetUniquePlayersListInRaid(raid)
     return UTILS.keys(uniquePlayerDict)
 end
 
+---@return string?
 function RaidManager:GetDisenchanter()
     if not self:IsInActiveRaid() then return end
     local raid = self:GetRaid()
@@ -720,6 +760,8 @@ function RaidManager:UpdateRaiderList()
     end
 end
 
+---@param name string?
+---@return boolean
 function RaidManager:IsRaidOwner(name)
     LOG:Trace("RaidManager:IsRaidOwner()")
     name = name or UTILS.whoami()
@@ -746,15 +788,21 @@ function RaidManager:IsRaidOwner(name)
     return isOwner
 end
 
+---@return boolean
 function RaidManager:IsGroupLoot()
     return self.IsGroupLootSystem
 end
 
 
+---@param name string?
+---@return boolean
 function RaidManager:IsMasterLooter(name)
     return self.IsMasterLootSystem and (self.MasterLooter == (name or UTILS.whoami())) or false
 end
 
+---@param name string?
+---@param relaxed boolean?
+---@return boolean
 function RaidManager:IsAllowedToAuction(name, relaxed)
     --@debug@
     return true
@@ -778,10 +826,12 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
     --@end-non-debug@]===]
 end
 
+---@return Raid?
 function RaidManager:GetRaid()
     return self.cache.profileRaidInfo[whoamiGUID]
 end
 
+---@return Raid?
 function RaidManager:GetStandby()
     return self.cache.profileStandbyInfo[whoamiGUID]
 end

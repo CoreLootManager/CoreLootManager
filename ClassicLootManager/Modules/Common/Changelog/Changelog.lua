@@ -1,4 +1,6 @@
 local  _, CLM = ...
+---@cast CLM CLMNamespace
+---@type table[]
 CLM.ChangelogData = {
     {
         version = "v5.7.3",

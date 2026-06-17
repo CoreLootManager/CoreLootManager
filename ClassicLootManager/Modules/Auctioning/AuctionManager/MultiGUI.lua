@@ -1,6 +1,7 @@
 ---@diagnostic disable: param-type-mismatch
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -9,6 +10,7 @@ local UTILS     = CLM.UTILS
 
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -718,6 +720,25 @@ local function RegisterSlash(self)
     CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
+---@class AuctionManagerGUI
+---@field top AceGUIFrameWidget
+---@field AuctionOptionsGroup AceGUISimpleGroupWidget
+---@field AwardOptionsGroup AceGUISimpleGroupWidget
+---@field ItemOptionsGroup AceGUISimpleGroupWidget
+---@field ItemList LibSTTable
+---@field BidList LibSTTable
+---@field db table
+---@field _initialized boolean
+---@field auctionItem AuctionItem?
+---@field item table?
+---@field awardPlayer string?
+---@field awardPrice number?
+---@field awardValue number?
+---@field awardMultiplier number?
+---@field note string?
+---@field removeOnAward boolean
+---@field dataWidth number
+---@field externalColumns table
 local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
@@ -789,11 +810,14 @@ function AuctionManagerGUI:BuildColumns()
 end
 
 
+---@param column table
+---@param callback function
 function AuctionManagerGUI:RegisterExternalColumn(column, callback)
     self.externalColumns[#self.externalColumns+1] = {column = column, callback = callback}
     self:BuildColumns()
 end
 
+---@param auctionItem AuctionItem
 function AuctionManagerGUI:SetVisibleAuctionItem(auctionItem)
     self.auctionItem = auctionItem
     self:Refresh()

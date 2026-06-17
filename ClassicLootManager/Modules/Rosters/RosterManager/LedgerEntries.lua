@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -14,31 +15,111 @@ local LogEntry  = LibStub("EventSourcing/LogEntry")
 
 local deflate = UTILS.deflate
 
+---@class RosterCreate
+---@field n string name
+---@field r number rosterUid
+---@field p number pointType
 local RosterCreate                  = LogEntry:extend("R0")
+---@class RosterDelete
+---@field r number rosterUid
 local RosterDelete                  = LogEntry:extend("R1")
+---@class RosterRename
+---@field n string name
+---@field r number rosterUid
 local RosterRename                  = LogEntry:extend("R2")
+---@class RosterUpdateConfig
+---@field r number rosterUid
+---@field c table deflated config
 local RosterUpdateConfig            = LogEntry:extend("R3")
+---@class RosterUpdateConfigSingle
+---@field r number rosterUid
+---@field c string config key
+---@field v any value
 local RosterUpdateConfigSingle      = LogEntry:extend("R4")
 -- local RosterUpdateDefault           = LogEntry:extend("R5")
+---@class RosterUpdateDefaultSingle
+---@field r number rosterUid
+---@field d string slot
+---@field i any tier
+---@field a number value
 local RosterUpdateDefaultSingle     = LogEntry:extend("R6")
+---@class RosterUpdateOverrides
+---@field r number rosterUid
+---@field i number itemId
+---@field b table values
 local RosterUpdateOverrides         = LogEntry:extend("R7")
+---@class RosterUpdateOverridesSingle
+---@field r number rosterUid
+---@field o number itemId
+---@field t any tier
+---@field v number value
 local RosterUpdateOverridesSingle   = LogEntry:extend("R8")
+---@class RosterRemoveOverrides
+---@field r number rosterUid
+---@field i number itemId
 local RosterRemoveOverrides         = LogEntry:extend("RR")
+---@class RosterUpdateProfiles
+---@field r number rosterUid
+---@field p table profile GUID list
+---@field e boolean remove
 local RosterUpdateProfiles          = LogEntry:extend("R9")
+---@class RosterCopyData
+---@field r number sourceRosterUid
+---@field a number targetRosterUid
+---@field c boolean copy config
+---@field d boolean copy defaults
+---@field o boolean copy overrides
+---@field p boolean copy profiles
 local RosterCopyData                = LogEntry:extend("RC")
+---@class RosterBossKillBonus
+---@field r number rosterUid
+---@field e number encounterId
+---@field v number value
+---@field d number difficultyId
+---@field h boolean isHardMode
 local RosterBossKillBonus           = LogEntry:extend("RB")
+---@class RosterFieldRename
+---@field r number rosterUid
+---@field i any tier
+---@field a string name
 local RosterFieldRename             = LogEntry:extend("RF")
+---@class RosterAwardMultiplier
+---@field r number rosterUid
+---@field c number class
+---@field s string slot
+---@field v number value
 local RosterAwardMultiplier         = LogEntry:extend("RM")
 
+---@class RosterDynamicItemValueEquation
+---@field r number rosterUid
+---@field e number equation
 local RosterDynamicItemValueEquation       = LogEntry:extend("VE")
+---@class RosterDynamicItemValueExpvar
+---@field r number rosterUid
+---@field m number expvar
 local RosterDynamicItemValueExpvar         = LogEntry:extend("VX")
+---@class RosterDynamicItemValueMultiplier
+---@field r number rosterUid
+---@field m number multiplier
 local RosterDynamicItemValueMultiplier     = LogEntry:extend("VM")
+---@class RosterDynamicItemValueSlotMultiplier
+---@field r number rosterUid
+---@field s any slot
+---@field m number multiplier
 local RosterDynamicItemValueSlotMultiplier = LogEntry:extend("VS")
+---@class RosterDynamicItemValueTierMultiplier
+---@field r number rosterUid
+---@field i any tier
+---@field m number multiplier
 local RosterDynamicItemValueTierMultiplier = LogEntry:extend("VT")
 
 -- ------------ --
 -- RosterCreate --
 -- ------------ --
+---@param rosterUid number
+---@param name string
+---@param pointType number
+---@return RosterCreate
 function RosterCreate:new(rosterUid, name, pointType)
     local o = LogEntry.new(self);
     o.n = tostring(name) or ""
@@ -47,14 +128,17 @@ function RosterCreate:new(rosterUid, name, pointType)
     return o
 end
 
+---@return number
 function RosterCreate:rosterUid()
     return self.r
 end
 
+---@return string
 function RosterCreate:name()
     return self.n
 end
 
+---@return number
 function RosterCreate:pointType()
     return self.p
 end
@@ -67,12 +151,15 @@ end
 -- ------------ --
 -- RosterDelete --
 -- ------------ --
+---@param rosterUid number
+---@return RosterDelete
 function RosterDelete:new(rosterUid)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
     return o
 end
 
+---@return number
 function RosterDelete:rosterUid()
     return self.r
 end
@@ -85,6 +172,9 @@ end
 -- ------------ --
 -- RosterRename --
 -- ------------ --
+---@param rosterUid number
+---@param name string
+---@return RosterRename
 function RosterRename:new(rosterUid, name)
     local o = LogEntry.new(self);
     o.n = tostring(name) or ""
@@ -92,10 +182,12 @@ function RosterRename:new(rosterUid, name)
     return o
 end
 
+---@return number
 function RosterRename:rosterUid()
     return self.r
 end
 
+---@return string
 function RosterRename:name()
     return self.n
 end
@@ -107,6 +199,9 @@ end
 -- ------------------ --
 -- RosterUpdateConfig --
 -- ------------------ --
+---@param rosterUid number
+---@param config table
+---@return RosterUpdateConfig
 function RosterUpdateConfig:new(rosterUid, config)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -117,10 +212,12 @@ function RosterUpdateConfig:new(rosterUid, config)
     return o
 end
 
+---@return number
 function RosterUpdateConfig:rosterUid()
     return self.r
 end
 
+---@return table
 function RosterUpdateConfig:config()
     return self.c
 end
@@ -132,6 +229,10 @@ end
 -- ------------------------ --
 -- RosterUpdateConfigSingle --
 -- ------------------------ --
+---@param rosterUid number
+---@param config string
+---@param value any
+---@return RosterUpdateConfigSingle
 function RosterUpdateConfigSingle:new(rosterUid, config, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -140,14 +241,17 @@ function RosterUpdateConfigSingle:new(rosterUid, config, value)
     return o
 end
 
+---@return number
 function RosterUpdateConfigSingle:rosterUid()
     return self.r
 end
 
+---@return string
 function RosterUpdateConfigSingle:config()
     return self.c
 end
 
+---@return any
 function RosterUpdateConfigSingle:value()
     return self.v
 end
@@ -181,6 +285,11 @@ end
 -- ------------------------- --
 -- RosterUpdateDefaultSingle --
 -- ------------------------- --
+---@param rosterUid number
+---@param slot string
+---@param tier any
+---@param value number
+---@return RosterUpdateDefaultSingle
 function RosterUpdateDefaultSingle:new(rosterUid, slot, tier, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -190,18 +299,22 @@ function RosterUpdateDefaultSingle:new(rosterUid, slot, tier, value)
     return o
 end
 
+---@return number
 function RosterUpdateDefaultSingle:rosterUid()
     return self.r
 end
 
+---@return string
 function RosterUpdateDefaultSingle:slot()
     return self.d
 end
 
+---@return any
 function RosterUpdateDefaultSingle:tier()
     return self.i
 end
 
+---@return number
 function RosterUpdateDefaultSingle:value()
     return self.a
 end
@@ -213,6 +326,10 @@ end
 -- ------------------------ --
 -- RosterUpdateOverrides --
 -- ------------------------ --
+---@param rosterUid number
+---@param itemId number
+---@param values table
+---@return RosterUpdateOverrides
 function RosterUpdateOverrides:new(rosterUid, itemId, values)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -226,14 +343,17 @@ function RosterUpdateOverrides:new(rosterUid, itemId, values)
     return o
 end
 
+---@return number
 function RosterUpdateOverrides:rosterUid()
     return self.r
 end
 
+---@return number
 function RosterUpdateOverrides:itemId()
     return self.i
 end
 
+---@return table
 function RosterUpdateOverrides:values()
     -- return self.b
     return ((type(self.b) == "table") and self.b or {})
@@ -246,6 +366,11 @@ end
 -- --------------------------- --
 -- RosterUpdateOverridesSingle --
 -- --------------------------- --
+---@param rosterUid number
+---@param itemId number
+---@param tier any
+---@param value number
+---@return RosterUpdateOverridesSingle
 function RosterUpdateOverridesSingle:new(rosterUid, itemId, tier, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -255,18 +380,22 @@ function RosterUpdateOverridesSingle:new(rosterUid, itemId, tier, value)
     return o
 end
 
+---@return number
 function RosterUpdateOverridesSingle:rosterUid()
     return self.r
 end
 
+---@return number
 function RosterUpdateOverridesSingle:itemId()
     return self.o
 end
 
+---@return any
 function RosterUpdateOverridesSingle:tier()
     return self.t
 end
 
+---@return number
 function RosterUpdateOverridesSingle:value()
     return self.v
 end
@@ -278,6 +407,9 @@ end
 -- ------------------------ --
 -- RosterRemoveOverrides --
 -- ------------------------ --
+---@param rosterUid number
+---@param itemId number
+---@return RosterRemoveOverrides
 function RosterRemoveOverrides:new(rosterUid, itemId)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -285,10 +417,12 @@ function RosterRemoveOverrides:new(rosterUid, itemId)
     return o
 end
 
+---@return number
 function RosterRemoveOverrides:rosterUid()
     return self.r
 end
 
+---@return number
 function RosterRemoveOverrides:itemId()
     return self.i
 end
@@ -300,6 +434,10 @@ end
 -- -------------------- --
 -- RosterUpdateProfiles --
 -- -------------------- --
+---@param rosterUid number
+---@param profiles table
+---@param remove boolean
+---@return RosterUpdateProfiles
 function RosterUpdateProfiles:new(rosterUid, profiles, remove)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -308,14 +446,17 @@ function RosterUpdateProfiles:new(rosterUid, profiles, remove)
     return o
 end
 
+---@return number
 function RosterUpdateProfiles:rosterUid()
     return self.r
 end
 
+---@return table
 function RosterUpdateProfiles:profiles()
     return self.p
 end
 
+---@return boolean
 function RosterUpdateProfiles:remove()
     return self.e
 end
@@ -328,6 +469,13 @@ end
 -- -------------------- --
 -- RosterCopyData --
 -- -------------------- --
+---@param sourceRosterUid number
+---@param targetRosterUid number
+---@param config boolean
+---@param defaults boolean
+---@param overrides boolean
+---@param profiles boolean
+---@return RosterCopyData
 function RosterCopyData:new(sourceRosterUid, targetRosterUid, config, defaults, overrides, profiles)
     local o = LogEntry.new(self);
     o.r = tonumber(sourceRosterUid) or 0
@@ -339,26 +487,32 @@ function RosterCopyData:new(sourceRosterUid, targetRosterUid, config, defaults, 
     return o
 end
 
+---@return number
 function RosterCopyData:sourceRosterUid()
     return self.r
 end
 
+---@return number
 function RosterCopyData:targetRosterUid()
     return self.a
 end
 
+---@return boolean
 function RosterCopyData:config()
     return self.c
 end
 
+---@return boolean
 function RosterCopyData:defaults()
     return self.d
 end
 
+---@return boolean
 function RosterCopyData:overrides()
     return self.o
 end
 
+---@return boolean
 function RosterCopyData:profiles()
     return self.p
 end
@@ -371,6 +525,12 @@ end
 -- -------------------- --
 -- RosterBossKillBonus --
 -- -------------------- --
+---@param rosterUid number
+---@param encounterId number
+---@param difficultyId number
+---@param isHardMode boolean
+---@param value number
+---@return RosterBossKillBonus
 function RosterBossKillBonus:new(rosterUid, encounterId, difficultyId, isHardMode, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -381,22 +541,27 @@ function RosterBossKillBonus:new(rosterUid, encounterId, difficultyId, isHardMod
     return o
 end
 
+---@return number
 function RosterBossKillBonus:rosterUid()
     return self.r
 end
 
+---@return number
 function RosterBossKillBonus:encounterId()
     return self.e
 end
 
+---@return number
 function RosterBossKillBonus:difficultyId()
     return (self.d or -1)
 end
 
+---@return boolean
 function RosterBossKillBonus:isHardMode()
     return self.h
 end
 
+---@return number
 function RosterBossKillBonus:value()
     return self.v
 end
@@ -409,6 +574,10 @@ end
 -- ------------------------- --
 -- RosterFieldRename --
 -- ------------------------- --
+---@param rosterUid number
+---@param tier any
+---@param name string
+---@return RosterFieldRename
 function RosterFieldRename:new(rosterUid, tier, name)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -417,14 +586,17 @@ function RosterFieldRename:new(rosterUid, tier, name)
     return o
 end
 
+---@return number
 function RosterFieldRename:rosterUid()
     return self.r
 end
 
+---@return any
 function RosterFieldRename:tier()
     return self.i
 end
 
+---@return string
 function RosterFieldRename:name()
     return self.a
 end
@@ -436,6 +608,11 @@ end
 -- ------------------------- --
 -- RosterAwardMultiplier --
 -- ------------------------- --
+---@param rosterUid number
+---@param class number|string
+---@param slot string
+---@param value number
+---@return RosterAwardMultiplier
 function RosterAwardMultiplier:new(rosterUid, class, slot, value)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -445,18 +622,22 @@ function RosterAwardMultiplier:new(rosterUid, class, slot, value)
     return o
 end
 
+---@return number
 function RosterAwardMultiplier:rosterUid()
     return self.r
 end
 
+---@return number
 function RosterAwardMultiplier:ingameClass()
     return self.c
 end
 
+---@return string
 function RosterAwardMultiplier:slot()
     return self.s
 end
 
+---@return number
 function RosterAwardMultiplier:value()
     return self.v
 end
@@ -468,6 +649,9 @@ end
 -- ------------------------------ --
 -- RosterDynamicItemValueEquation --
 -- ------------------------------ --
+---@param rosterUid number
+---@param equation number
+---@return RosterDynamicItemValueEquation
 function RosterDynamicItemValueEquation:new(rosterUid, equation)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -475,10 +659,12 @@ function RosterDynamicItemValueEquation:new(rosterUid, equation)
     return o
 end
 
+---@return number
 function RosterDynamicItemValueEquation:rosterUid()
     return self.r
 end
 
+---@return number
 function RosterDynamicItemValueEquation:equation()
     return self.e
 end
@@ -491,6 +677,9 @@ end
 -- ---------------------------- --
 -- RosterDynamicItemValueExpvar --
 -- ---------------------------- --
+---@param rosterUid number
+---@param expvar number
+---@return RosterDynamicItemValueExpvar
 function RosterDynamicItemValueExpvar:new(rosterUid, expvar)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -498,10 +687,12 @@ function RosterDynamicItemValueExpvar:new(rosterUid, expvar)
     return o
 end
 
+---@return number
 function RosterDynamicItemValueExpvar:rosterUid()
     return self.r
 end
 
+---@return number
 function RosterDynamicItemValueExpvar:expvar()
     return self.m
 end
@@ -514,6 +705,9 @@ end
 -- -------------------------------- --
 -- RosterDynamicItemValueMultiplier --
 -- -------------------------------- --
+---@param rosterUid number
+---@param multiplier number
+---@return RosterDynamicItemValueMultiplier
 function RosterDynamicItemValueMultiplier:new(rosterUid, multiplier)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -521,10 +715,12 @@ function RosterDynamicItemValueMultiplier:new(rosterUid, multiplier)
     return o
 end
 
+---@return number
 function RosterDynamicItemValueMultiplier:rosterUid()
     return self.r
 end
 
+---@return number
 function RosterDynamicItemValueMultiplier:multiplier()
     return self.m
 end
@@ -537,6 +733,10 @@ end
 -- ------------------------------------ --
 -- RosterDynamicItemValueSlotMultiplier --
 -- ------------------------------------ --
+---@param rosterUid number
+---@param slot any
+---@param multiplier number
+---@return RosterDynamicItemValueSlotMultiplier
 function RosterDynamicItemValueSlotMultiplier:new(rosterUid, slot, multiplier)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -545,14 +745,17 @@ function RosterDynamicItemValueSlotMultiplier:new(rosterUid, slot, multiplier)
     return o
 end
 
+---@return number
 function RosterDynamicItemValueSlotMultiplier:rosterUid()
     return self.r
 end
 
+---@return any
 function RosterDynamicItemValueSlotMultiplier:slot()
     return self.s
 end
 
+---@return number
 function RosterDynamicItemValueSlotMultiplier:multiplier()
     return self.m
 end
@@ -565,6 +768,10 @@ end
 -- ------------------------------------ --
 -- RosterDynamicItemValueTierMultiplier --
 -- ------------------------------------ --
+---@param rosterUid number
+---@param tier any
+---@param multiplier number
+---@return RosterDynamicItemValueTierMultiplier
 function RosterDynamicItemValueTierMultiplier:new(rosterUid, tier, multiplier)
     local o = LogEntry.new(self);
     o.r = tonumber(rosterUid) or 0
@@ -573,14 +780,17 @@ function RosterDynamicItemValueTierMultiplier:new(rosterUid, tier, multiplier)
     return o
 end
 
+---@return number
 function RosterDynamicItemValueTierMultiplier:rosterUid()
     return self.r
 end
 
+---@return any
 function RosterDynamicItemValueTierMultiplier:tier()
     return self.i
 end
 
+---@return number
 function RosterDynamicItemValueTierMultiplier:multiplier()
     return self.m
 end

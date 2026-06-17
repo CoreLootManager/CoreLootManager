@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -10,6 +11,11 @@ local function stringifyVersion(version)
     return string.format("v%s.%s.%s", version.major or 0, version.minor or 0, version.patch or 0)
 end
 
+---@class Version
+---@field version table
+---@field versionString string
+---@field _lastDisplayedMessage number
+---@field _lastDisplayedMessageD number
 local Version = {}
 function Version:Initialize()
         -- Parse autoversion
@@ -34,14 +40,17 @@ function Version:Initialize()
         self._lastDisplayedMessageD = 0
 end
 
+---@return table
 function Version:Get()
     return self.version
 end
 
+---@return string
 function Version:GetString()
     return self.versionString or ""
 end
 
+---@param receivedVersion table
 function Version:Check(receivedVersion)
     local currentVersion = self.version
     -- Check if we have older version
@@ -61,6 +70,7 @@ function Version:Check(receivedVersion)
     end
 end
 
+---@param disable boolean
 function Version:OutOfDate(disable)
     LOG:Trace("Version:OutOfDate()")
     local currentTime = GetServerTime()

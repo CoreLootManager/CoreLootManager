@@ -1,17 +1,22 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@class Hooks
+---@field handlers table
 local Hooks = {}
 
 function Hooks:Initialize()
     self.handlers = {}
 end
 
+---@param hookName string
+---@param handler function
 function Hooks:RegisterHandler(hookName, handler)
     if not self.handlers[hookName] then
         self.handlers[hookName] = {}
@@ -32,6 +37,7 @@ local function GetModifierCombination()
     return combination
 end
 
+---@param callback function
 function Hooks:RegisterModifiedItemLinkClickHandler(callback)
     self:RegisterHandler("HandleModifiedItemClick", (function(itemLink)
         callback(GetModifierCombination(), itemLink)

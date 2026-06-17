@@ -1,12 +1,23 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@class ProfileInfoCommAnnounceVersion
+---@field m number major
+---@field i number minor
+---@field p number patch
+---@field c string changeset
 local ProfileInfoCommAnnounceVersion = {}
+---@param majorOrObject number|table
+---@param minor? number
+---@param patch? number
+---@param changeset? string
+---@return ProfileInfoCommAnnounceVersion
 function ProfileInfoCommAnnounceVersion:New(majorOrObject, minor, patch, changeset)
     local isCopyConstructor = (type(majorOrObject) == "table")
     local o = isCopyConstructor and majorOrObject or {}
@@ -24,6 +35,7 @@ function ProfileInfoCommAnnounceVersion:New(majorOrObject, minor, patch, changes
     return o
 end
 
+---@return {major: number, minor: number, patch: number, changeset: string}
 function ProfileInfoCommAnnounceVersion:Version()
     return {
         major = tonumber(self.m) or 0,
@@ -33,7 +45,13 @@ function ProfileInfoCommAnnounceVersion:Version()
     }
 end
 
+---@class ProfileInfoCommStructure
+---@field t number type
+---@field d table|ProfileInfoCommAnnounceVersion data
 local ProfileInfoCommStructure = {}
+---@param typeOrObject number|table
+---@param data? any
+---@return ProfileInfoCommStructure
 function ProfileInfoCommStructure:New(typeOrObject, data)
     local isCopyConstructor = (type(typeOrObject) == "table")
 
@@ -55,10 +73,12 @@ function ProfileInfoCommStructure:New(typeOrObject, data)
     return o
 end
 
+---@return number
 function ProfileInfoCommStructure:Type()
     return self.t or 0
 end
 
+---@return any
 function ProfileInfoCommStructure:Data()
     return self.d
 end

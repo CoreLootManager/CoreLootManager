@@ -1,12 +1,19 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 -- local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@class RosterConfiguration
+---@field _ table
+---@field hasHardCap boolean
+---@field hasWeeklyCap boolean
 local RosterConfiguration = {} -- Roster Configuration
+---@param i? table
+---@return RosterConfiguration
 function RosterConfiguration:New(i)
     local o = i or {}
 
@@ -112,6 +119,7 @@ end
 -- ----------------------- --
 -- ADD NEW ONLY AT THE END --
 -- ----------------------- --
+---@return table
 function RosterConfiguration:fields()
     return {
         "auctionType",
@@ -160,6 +168,7 @@ function RosterConfiguration:fields()
     }
 end
 
+---@return table
 function RosterConfiguration:Storage()
     return self._
 end
@@ -213,12 +222,14 @@ local TRANSFORMS = {
     always0 = transform_boolean,
 }
 
+---@param data table
 function RosterConfiguration:inflate(data)
     for i, key in ipairs(self:fields()) do
         if data[i] ~= nil then self._[key] = data[i] end
     end
 end
 
+---@return table
 function RosterConfiguration:deflate()
     local result = {}
     for _, key in ipairs(self:fields()) do
@@ -228,12 +239,15 @@ function RosterConfiguration:deflate()
     return result
 end
 
+---@param o RosterConfiguration
 function RosterConfiguration:Copy(o)
     for k,v in pairs(o._) do
         self._[k] = v
     end
 end
 
+---@param option? string
+---@return any
 function RosterConfiguration:Get(option)
     if option ~= nil then
         return self._[option]
@@ -241,6 +255,8 @@ function RosterConfiguration:Get(option)
     return nil
 end
 
+---@param option string
+---@param value any
 function RosterConfiguration:Set(option, value)
     if option == nil then return end
     if self._[option] ~= nil then
@@ -251,6 +267,9 @@ function RosterConfiguration:Set(option, value)
     end
 end
 
+---@param option string
+---@param value any
+---@return boolean
 function RosterConfiguration:Validate(option, value)
     local callback = "_validate_" .. option
     if type(self[callback]) == "function" then
@@ -261,6 +280,7 @@ function RosterConfiguration:Validate(option, value)
     return true -- TODO: true or false?
 end
 
+---@param option string
 function RosterConfiguration:PostProcess(option)
     if option == "hardCap" then
         self.hasHardCap = (self._[option] > 0)

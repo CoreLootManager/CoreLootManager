@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -36,6 +37,7 @@ function CLM_Binding_QuickStartAuction() -- luacheck: ignore
     end
 end
 
+---@param tier number
 local function awardForTierValue(tier)
     if GameTooltip then
         local _, itemLink = GameTooltip:GetItem()

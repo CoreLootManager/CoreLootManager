@@ -5,6 +5,7 @@
 
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 -- local CONSTANTS = CLM.CONSTANTS
@@ -35,6 +36,11 @@ local function ScanTooltip(self)
     end
 end
 
+---@class BagItemChecker
+---@field fakeTooltip table
+---@field bag number
+---@field slot number
+---@field itemInfo table
 local BagItemChecker = {}
 function BagItemChecker:Initialize()
     self.fakeTooltip = CreateFrame("GameTooltip", "CLMAutoAssignBagItemCheckerFakeTooltip", UIParent, "GameTooltipTemplate")
@@ -66,6 +72,8 @@ local function BagItemCheck(self)
     ScanTooltip(self)
 end
 
+---@param bag number
+---@param slot number
 function BagItemChecker:Set(bag, slot)
     self:Clear()
 
@@ -78,26 +86,32 @@ function BagItemChecker:Set(bag, slot)
     BagItemCheck(self)
 end
 
+---@return number
 function BagItemChecker:GetItemId()
     return self.itemInfo.id
 end
 
+---@return string
 function BagItemChecker:GetItemLink()
     return self.itemInfo.link
 end
 
+---@return boolean
 function BagItemChecker:IsLocked()
     return self.itemInfo.locked
 end
 
+---@return boolean
 function BagItemChecker:IsSoulbound()
     return self.itemInfo.soulbound
 end
 
+---@return boolean
 function BagItemChecker:TradeTimerExpired()
     return self.itemInfo.tradeTimerExpired
 end
 
+---@return boolean
 function BagItemChecker:IsTradeable()
     return not self:TradeTimerExpired() or not self:IsSoulbound()
 end
@@ -183,6 +197,10 @@ end
 
 local lootWindowIsOpen = false
 
+---@class AutoAssign
+---@field tracking table
+---@field lastTradeTarget string?
+---@field lastTradedItems table?
 local AutoAssign = {}
 function AutoAssign:Initialize()
     LOG:Trace("AutoAssign:Initialize()")
@@ -230,10 +248,14 @@ local autoAssignIgnores = UTILS.Set({
     49908, -- Primordial Saronite
     50274, -- Shadowfrost Shard
 })
+---@param itemLink string
+---@return boolean
 function AutoAssign:IsIgnored(itemLink)
     return autoAssignIgnores[UTILS.GetItemIdFromLink(itemLink)]
 end
 
+---@param itemLink string
+---@param player string
 function AutoAssign:GiveMasterLooterItem(itemLink, player)
     LOG:Trace("AutoAssign:GiveMasterLooterItem()")
     if self:IsIgnored(itemLink) then return end
@@ -253,6 +275,8 @@ function AutoAssign:GiveMasterLooterItem(itemLink, player)
     end
 end
 
+---@param itemLink string|number
+---@param player string
 function AutoAssign:Track(itemLink, player)
     if self:IsIgnored(itemLink) then return end
     player = UTILS.Disambiguate(player)
@@ -266,6 +290,8 @@ function AutoAssign:Track(itemLink, player)
     CLM.GUI.TradeList:Refresh(true)
 end
 
+---@param itemLink string
+---@param player string
 function AutoAssign:Remove(itemLink, player)
     if self:IsIgnored(itemLink) then return end
     -- Sanity check: If we don't track player then return
@@ -282,10 +308,13 @@ function AutoAssign:Remove(itemLink, player)
     CLM.GUI.TradeList:Refresh(true)
 end
 
+---@return table
 function AutoAssign:GetTracked()
     return self.tracking
 end
 
+---@param itemLink string
+---@param target string
 function AutoAssign:Handle(itemLink, target)
     if not self:IsIgnored(itemLink) then
         if CLM.MODULES.AuctionManager:GetAutoAssign() and lootWindowIsOpen then
@@ -296,6 +325,7 @@ function AutoAssign:Handle(itemLink, target)
     end
 end
 
+---@param target string
 function AutoAssign:InitiateTrade(target)
     if lootWindowIsOpen then return end
     if TradeFrame:IsShown() then return end

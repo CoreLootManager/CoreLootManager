@@ -1,5 +1,6 @@
 -- ------------------------------- --
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
 local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
@@ -7,6 +8,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -53,6 +55,10 @@ local function CreateConfigs(self)
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
+---@class ChangelogGUI
+---@field top AceGUIWindowWidget
+---@field db table
+---@field _initialized boolean
 local ChangelogGUI = {}
 function ChangelogGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")

@@ -5,6 +5,7 @@ PRIV.MODELS = {}
 PRIV.GUI = {}
 PRIV.CONSTANTS = {}
 
+---@class Integrations
 local Integrations = {}
 
 function Integrations:Initialize()

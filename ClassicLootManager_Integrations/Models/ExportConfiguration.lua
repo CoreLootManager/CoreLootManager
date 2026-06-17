@@ -1,6 +1,19 @@
 local _, PRIV = ...
 
+---@class ExportConfiguration
+---@field format number
+---@field jobs table
+---@field timerange { begin: number, finish: number }
+---@field rosters table
+---@field profiles table
 local ExportConfiguration = {}
+
+---@param format number
+---@param jobs table
+---@param timerange { begin: number?, finish: number? }
+---@param rosters table
+---@param profiles table
+---@return ExportConfiguration
 function ExportConfiguration:New(format, jobs, timerange, rosters, profiles)
     local o = {}
 

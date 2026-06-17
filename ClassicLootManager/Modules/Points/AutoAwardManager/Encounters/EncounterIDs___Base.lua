@@ -1,4 +1,5 @@
 local _, CLM = ...
+---@cast CLM CLMNamespace
 
 local EJ_GetEncounterInfo = EJ_GetEncounterInfo or (function() return nil end)
 
