@@ -273,6 +273,7 @@ local function HookAwardFilling(self)
     end)
 end
 
+---@class AwardGUI
 local AwardGUI = {}
 function AwardGUI:Initialize()
     LOG:Trace("AwardGUI:Initialize()")
@@ -292,6 +293,7 @@ function AwardGUI:Initialize()
     self._initialized = true
 end
 
+---@param visible boolean?
 function AwardGUI:Refresh(visible)
     LOG:Trace("AwardGUI:Refresh()")
     if visible and not self.top:IsVisible() then return end
@@ -310,6 +312,7 @@ function AwardGUI:Toggle()
     end
 end
 
+---@param args string?
 function AwardGUI:Show(_, args)
     LOG:Trace("AwardGUI:Show()")
     if not self._initialized then return end

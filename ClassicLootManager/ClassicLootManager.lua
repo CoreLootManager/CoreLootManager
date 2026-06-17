@@ -7,15 +7,18 @@ local GetActiveSeason = C_Seasons and C_Seasons.GetActiveSeason or (function() r
 _G["CLM"] = CLM
 
 
+---@return number, any
 function CLM.GetExpansion()
     return floor(select(4, GetBuildInfo())/10000) - 1, GetActiveSeason()
 end
 
+---@return boolean
 function CLM.IsClassicEra()
     local expansion, season = CLM.GetExpansion()
     return (expansion == LE_EXPANSION_CLASSIC) and ((season == nil) or (season == Enum.SeasonID.NoSeason))
 end
 
+---@return boolean
 function CLM.IsSoD()
     local expansion, season = CLM.GetExpansion()
     return (expansion == LE_EXPANSION_CLASSIC) and (season == Enum.SeasonID.SeasonOfDiscovery)
@@ -53,6 +56,8 @@ local LOG = CLM.LOG
 local MODULES = CLM.MODULES
 local UTILS = CLM.UTILS
 
+---@param versionString string
+---@return table
 function UTILS.ParseVersionString(versionString)
     local major, minor, patch, changeset = string.match(versionString, "^v(%d+).(%d+).(%d+)-?(.*)")
     return {
@@ -107,6 +112,9 @@ local function Initialize_Logger()
 end
 
 
+---@param object table
+---@param moduleName string
+---@param entryPoint table
 local function RegisterUniversal(object, moduleName, entryPoint)
     if type(moduleName) ~= "string" then
         error("Registrar name must be a string.")
@@ -124,10 +132,14 @@ local function RegisterUniversal(object, moduleName, entryPoint)
     object[moduleName] = entryPoint
 end
 
+---@param moduleName string
+---@param entryPoint table
 function CLM.RegisterModule(moduleName, entryPoint)
     RegisterUniversal(CLM.MODULE, moduleName, entryPoint)
 end
 
+---@param moduleName string
+---@param entryPoint table
 function CLM.RegisterExternal(moduleName, entryPoint)
     RegisterUniversal(CLM.EXTERNAL, moduleName, entryPoint)
 end
@@ -240,10 +252,13 @@ local stages = {
 }
 local finalStage = { name = "_Enable", retry = false }
 
+---@param stage number
+---@return string, boolean
 local function getStage(stage)
     return (stages[stage] or finalStage).name, (stages[stage] or finalStage).retry
 end
 
+---@param stageNum number
 function CORE:_SequentialInitialize(stageNum)
     LOG:Trace("CORE:_SequentialInitialize()")
     local stage, retry = getStage(stageNum)

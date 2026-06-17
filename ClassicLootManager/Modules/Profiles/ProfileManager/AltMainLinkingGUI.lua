@@ -151,6 +151,7 @@ local function RegisterSlash(self)
     }
     CLM.MODULES.ConfigManager:RegisterSlash(slash)
 end
+---@class AltMainLinkingGUI
 local AltMainLinkingGUI = {}
 function AltMainLinkingGUI:Initialize()
     LOG:Trace("AltMainLinkingGUI:Initialize()")
@@ -168,6 +169,7 @@ function AltMainLinkingGUI:Initialize()
     self._initialized = true
 end
 
+---@param visible boolean?
 function AltMainLinkingGUI:Refresh(visible)
     LOG:Trace("AltMainLinkingGUI:Refresh()")
     if visible and not self.top:IsVisible() then return end

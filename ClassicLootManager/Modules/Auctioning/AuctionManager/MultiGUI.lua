@@ -718,6 +718,7 @@ local function RegisterSlash(self)
     CLM.MODULES.ConfigManager:RegisterSlash(options)
 end
 
+---@class AuctionManagerGUI
 local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")
@@ -789,11 +790,14 @@ function AuctionManagerGUI:BuildColumns()
 end
 
 
+---@param column table
+---@param callback function
 function AuctionManagerGUI:RegisterExternalColumn(column, callback)
     self.externalColumns[#self.externalColumns+1] = {column = column, callback = callback}
     self:BuildColumns()
 end
 
+---@param auctionItem AuctionItem
 function AuctionManagerGUI:SetVisibleAuctionItem(auctionItem)
     self.auctionItem = auctionItem
     self:Refresh()

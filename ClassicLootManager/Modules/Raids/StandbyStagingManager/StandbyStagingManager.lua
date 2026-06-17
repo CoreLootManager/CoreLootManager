@@ -75,6 +75,7 @@ local function HandleRevoke(self, data, sender)
     CLM.GUI.Unified:Refresh(true)
 end
 
+---@class StandbyStagingManager
 local StandbyStagingManager = {}
 function StandbyStagingManager:Initialize()
     LOG:Trace("StandbyStagingManager:Initialize()")
@@ -98,12 +99,18 @@ function StandbyStagingManager:Clear()
     self.standby = {}
 end
 
+---@param raidUid string|number
+---@param GUID string
+---@return boolean
 function StandbyStagingManager:IsPlayerOnStandby(raidUid, GUID)
     LOG:Trace("StandbyStagingManager:IsPlayerOnStandby()")
     if not self.standby[raidUid] then return false end
     return self.standby[raidUid][GUID] and true or false
 end
 
+---@param raidUid string|number
+---@param GUID string
+---@return boolean
 function StandbyStagingManager:AddToStandby(raidUid, GUID)
     LOG:Trace("StandbyStagingManager:AddToStandby()")
     LOG:Debug("AddToStandby %s: %s", raidUid, GUID)
@@ -113,6 +120,9 @@ function StandbyStagingManager:AddToStandby(raidUid, GUID)
     return (previous ~= self.standby[raidUid][GUID])
 end
 
+---@param raidUid string|number
+---@param GUID string
+---@return boolean
 function StandbyStagingManager:RemoveFromStandby(raidUid, GUID)
     LOG:Trace("StandbyStagingManager:RemoveFromStandby()")
     LOG:Debug("RemoveFromStandby %s: %s", raidUid, GUID)
@@ -122,11 +132,14 @@ function StandbyStagingManager:RemoveFromStandby(raidUid, GUID)
     return (previous ~= self.standby[raidUid][GUID])
 end
 
+---@param raidUid string|number
+---@return table
 function StandbyStagingManager:GetStandby(raidUid)
     LOG:Trace("StandbyStagingManager:GetStandby()")
     return self.standby[raidUid] or {}
 end
 -- Comms API
+---@param raidUid string|number
 function StandbyStagingManager:SignupToStandby(raidUid)
     LOG:Trace("StandbyStagingManager:SignupToStandby()")
     local message = CLM.MODELS.StandbyStagingCommStructure:New(
@@ -137,6 +150,7 @@ function StandbyStagingManager:SignupToStandby(raidUid)
                 UTILS.ColorCodeText(CLM.L["request"], "44cc44"))
 end
 
+---@param raidUid string|number
 function StandbyStagingManager:RevokeStandby(raidUid)
     LOG:Trace("StandbyStagingManager:RevokeStandby()")
     local message = CLM.MODELS.StandbyStagingCommStructure:New(

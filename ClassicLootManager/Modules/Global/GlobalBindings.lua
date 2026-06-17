@@ -36,6 +36,7 @@ function CLM_Binding_QuickStartAuction() -- luacheck: ignore
     end
 end
 
+---@param tier number
 local function awardForTierValue(tier)
     if GameTooltip then
         local _, itemLink = GameTooltip:GetItem()

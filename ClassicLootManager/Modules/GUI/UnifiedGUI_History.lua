@@ -59,6 +59,7 @@ local tooltipPool = CreateObjectPool(function(pool)
     return CreateFrame("GameTooltip", "CLMHistoryTT" .. tostring(pool.nextId), UIParent, "GameTooltipTemplate")
 end, function(_, frame) frame:Hide() end)
 
+---@class UnifiedGUI_History
 local UnifiedGUI_History = {
     name = "history",
     filter = CLM.MODELS.Filters:New(
@@ -73,6 +74,8 @@ local UnifiedGUI_History = {
     historyType = CONSTANTS.HISTORY_TYPE.ALL
 }
 
+---@return table lootList
+---@return table historyList
 function UnifiedGUI_History:GetSelection()
     LOG:Trace("UnifiedGUI_History:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()

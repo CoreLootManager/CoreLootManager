@@ -30,6 +30,7 @@ local function OpenNewUIKeybinds()
 end
 
 
+---@class GlobalConfigs
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
     self.db = CLM.MODULES.Database:Personal('global', {
@@ -381,221 +382,274 @@ Thank you patrons!
     CLM.MODULES.ConfigManager:Register(CLM.CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
+---@param value any
 function GlobalConfigs:SetRollType(value)
     self.db.loot_roll.rollOnLoot = CONSTANTS.ROLL_TYPE[value] and value or CONSTANTS.LOOT_ROLL_TYPE_IGNORE
 end
 
+---@return any
 function GlobalConfigs:GetRollType()
     return self.db.loot_roll.rollOnLoot
 end
 
 
+---@param value boolean
 function GlobalConfigs:SetLootRollIncludeLegendary(value)
     self.db.loot_roll.includeLegendary = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetLootRollIncludeLegendary()
     return self.db.loot_roll.includeLegendary
 end
 
+---@param value boolean
 function GlobalConfigs:SetLootRollIncludeStacking(value)
     self.db.loot_roll.includeStacking = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetLootRollIncludeStacking()
     return self.db.loot_roll.includeStacking
 end
 
+---@param value boolean
 function GlobalConfigs:SetLootRollIncludePatterns(value)
     self.db.loot_roll.includePatterns = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetLootRollIncludePatterns()
     return self.db.loot_roll.includePatterns
 end
 
+---@param value boolean
 function GlobalConfigs:SetLootRollIncludeMounts(value)
     self.db.loot_roll.includeMounts = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetLootRollIncludeMounts()
     return self.db.loot_roll.includeMounts
 end
 
+---@param value boolean
 function GlobalConfigs:SetLootRollIncludeToys(value)
     self.db.loot_roll.includeToys = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetLootRollIncludeToys()
     return self.db.loot_roll.includeToys
 end
 
+---@param value boolean
 function GlobalConfigs:SetLootRollIncludeCosmetics(value)
     self.db.loot_roll.includeCosmetics = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetLootRollIncludeCosmetics()
     return self.db.loot_roll.includeCosmetics
 end
 
+---@param value boolean
 function GlobalConfigs:SetSounds(value)
     self.db.sounds = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetSounds()
     return self.db.sounds
 end
 
+---@param value boolean
 function GlobalConfigs:SetAnnounceAwardToGuild(value)
     self.db.announce_award_to_guild = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetAnnounceAwardToGuild()
     return self.db.announce_award_to_guild
 end
 
+---@param value boolean
 function GlobalConfigs:SetAnnounceLootToRaid(value)
     self.db.announce_loot_to_raid = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetAnnounceLootToRaid()
     return self.db.announce_loot_to_raid
 end
 
+---@param value boolean
 function GlobalConfigs:SetAnnounceLootToRaidOwnerOnly(value)
     self.db.announce_loot_to_raid_owner_only = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetAnnounceLootToRaidOwnerOnly()
     return self.db.announce_loot_to_raid_owner_only
 end
 
+---@param value number
 function GlobalConfigs:SetAnnounceLootToRaidLevel(value)
     self.db.announce_loot_to_raid_level = tonumber(value)
 end
 
+---@return number
 function GlobalConfigs:GetAnnounceLootToRaidLevel()
     return self.db.announce_loot_to_raid_level or 3
 end
 
+---@param value string
 function GlobalConfigs:SetModifierCombination(value)
     self.db.modifier_combination = CONSTANTS.MODIFIER_COMBINATIONS[value] and value or CONSTANTS.MODIFIER_COMBINATION.ALT
 end
 
+---@return string
 function GlobalConfigs:GetModifierCombination()
     return self.db.modifier_combination or CONSTANTS.MODIFIER_COMBINATION.ALT
 end
 
+---@param value string
 function GlobalConfigs:SetAwardModifierCombination(value)
     self.db.award_modifier_combination = CONSTANTS.MODIFIER_COMBINATIONS[value] and value or CONSTANTS.MODIFIER_COMBINATION.ALT
 end
 
+---@return string
 function GlobalConfigs:GetAwardModifierCombination()
     return self.db.award_modifier_combination or CONSTANTS.MODIFIER_COMBINATION.ALT
 end
 
+---@param value boolean
 function GlobalConfigs:SetAllowChatCommands(value)
     self.db.chat_commands = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetAllowChatCommands()
     return self.db.chat_commands
 end
 
+---@param value boolean
 function GlobalConfigs:SetSuppressIncomingChatCommands(value)
     self.db.suppress_incoming_chat_commands = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetSuppressIncomingChatCommands()
     return self.db.suppress_incoming_chat_commands
 end
 
+---@param value boolean
 function GlobalConfigs:SetSuppressOutgoingChatCommands(value)
     self.db.suppress_outgoing_chat_commands = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetSuppressOutgoingChatCommands()
     return self.db.suppress_outgoing_chat_commands
 end
 
+---@param value boolean
 function GlobalConfigs:SetRaidWarning(value)
     self.db.raid_warnings.raid = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetRaidWarning()
     return self.db.raid_warnings.raid
 end
 
+---@param value boolean
 function GlobalConfigs:SetAuctionWarning(value)
     self.db.raid_warnings.auction = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetAuctionWarning()
     return self.db.raid_warnings.auction
 end
 
+---@param value boolean
 function GlobalConfigs:SetCommandsWarning(value)
     self.db.raid_warnings.commands = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetCommandsWarning()
     return self.db.raid_warnings.commands
 end
 
+---@param value boolean
 function GlobalConfigs:SetCountdownWarning(value)
     self.db.raid_warnings.countdown = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetCountdownWarning()
     return self.db.raid_warnings.countdown
 end
 
+---@param value boolean
 function GlobalConfigs:SetLootWarning(value)
     self.db.raid_warnings.loot = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetLootWarning()
     return self.db.raid_warnings.loot
 end
 
+---@param value boolean
 function GlobalConfigs:SetBidsWarning(value)
     self.db.raid_warnings.bids = value and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetBidsWarning()
     return self.db.raid_warnings.bids
 end
 
+---@param v boolean
 function GlobalConfigs:SetPriceTooltip(v)
     self.db.tooltips_display = v and true or false
 end
 
+---@return boolean
 function GlobalConfigs:GetPriceTooltip()
     return self.db.tooltips_display
 end
 
-
+---@return boolean
 function GlobalConfigs:GetDisableSync()
     return self.db.disable_sync
 end
 
+---@param value boolean
 function GlobalConfigs:SetDisableSync(value)
     self.db.disable_sync = value and true or false
 end
 
+---@return number
 function GlobalConfigs:GetUIScale()
     return self.db.uiscale
 end
 
+---@param v string?
 function GlobalConfigs:SetDisenchanterCSV(v)
     self.db.disenchanters = v or ""
     self.deList = nil
 end
 
+---@return string
 function GlobalConfigs:GetDisenchanterCSV()
     return self.db.disenchanters
 end
 
+---@return table
 function GlobalConfigs:GetDisenchanterList()
     if not self.deList then
         self.deList = {}

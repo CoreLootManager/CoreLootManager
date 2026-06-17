@@ -17,6 +17,25 @@ local nickMap = {
     "Mrgl-Mrgl "
 }
 
+---@class AuctionInfo
+---@field state number
+---@field configuration table
+---@field roster Roster
+---@field raid Raid
+---@field items table
+---@field itemUIDMap table
+---@field nextItemUID number
+---@field itemCount number
+---@field auctionTime number
+---@field antiSnipe number
+---@field endTime number
+---@field antiSnipeLimit number
+---@field passiveMode boolean
+---@field acceptingRolls boolean
+---@field hasUsableItems boolean|nil
+---@field rollItem table|nil
+---@field anonymousMap table
+---@field nextAnonymousId number
 local AuctionInfo = {} -- AuctionInfo
 AuctionInfo.__index = AuctionInfo
 
@@ -54,6 +73,8 @@ local function Clear(self)
     self.nextAnonymousId = 1
 end
 
+---@param object? table
+---@return AuctionInfo
 function AuctionInfo:New(object)
     local o = {}
     object = object or {}
@@ -109,6 +130,13 @@ local function UpdateAuctionTime(self)
     end
 end
 
+---@param auctionType number
+---@param mode number
+---@param useOS boolean
+---@param namedButtons boolean
+---@param increment number
+---@param fieldNames table
+---@return AuctionInfo
 function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, fieldNames)
     local o = {}
     setmetatable(o, self)
@@ -156,6 +184,7 @@ function AuctionInfo:NewShim(auctionType, mode, useOS, namedButtons, increment, 
     return o
 end
 
+---@param object AuctionInfo
 function AuctionInfo:CopySettings(object)
     assertTypeof(object, AuctionInfo)
     self.state = CONSTANTS.AUCTION_INFO.STATE.IDLE
@@ -200,6 +229,7 @@ local function UpdateRaidInternal(self, raid)
     self.raid = raid
 end
 
+---@param roster Roster
 function AuctionInfo:UpdateRoster(roster)
     assertTypeof(roster, CLM.MODELS.Roster)
     if self:IsInProgress() then
@@ -217,6 +247,7 @@ function AuctionInfo:UpdateRoster(roster)
 end
 
 -- Clears raid also
+---@param raid Raid
 function AuctionInfo:UpdateRaid(raid)
     assertTypeof(raid, CLM.MODELS.Raid)
     if self:IsInProgress() then
@@ -267,6 +298,9 @@ local function AddItemInternal(self, item, uid)
     return auctionItem
 end
 
+---@param auctionItem table
+---@param uid? number
+---@return table|nil
 function AuctionInfo:AddExistingAuctionItem(auctionItem, uid)
     assertCantAddItems(self)
     if GetItemInAuctionByLink(self, auctionItem) then
@@ -277,6 +311,9 @@ function AuctionInfo:AddExistingAuctionItem(auctionItem, uid)
     return auctionItem
 end
 
+---@param item table
+---@param uid? number
+---@return table|nil
 function AuctionInfo:AddItem(item, uid)
     assertCantAddItems(self)
     local auctionItem = AddItemInternal(self, item, uid)
@@ -286,6 +323,7 @@ function AuctionInfo:AddItem(item, uid)
     return auctionItem
 end
 
+---@param item table
 function AuctionInfo:RemoveItem(item)
     assertNotInProgress(self)
     local UID = self:GetAuctionItemUID(item)
@@ -296,10 +334,14 @@ function AuctionInfo:RemoveItem(item)
     end
 end
 
+---@param auctionItem table
+---@return boolean
 function AuctionInfo:IsItemInAuction(auctionItem)
     return self:GetAuctionItemUID(auctionItem) ~= nil
 end
 
+---@param itemLink string
+---@return number|nil
 function AuctionInfo:FindItemByLink(itemLink)
     if not self.itemUIDMap[itemLink] then
         for uid, item in pairs(self.items) do
@@ -312,18 +354,26 @@ function AuctionInfo:FindItemByLink(itemLink)
     return self.itemUIDMap[itemLink]
 end
 
+---@param auctionItem table
+---@return number|nil
 function AuctionInfo:GetAuctionItemUID(auctionItem)
     return self:FindItemByLink(auctionItem:GetItemLink())
 end
 
+---@param uid number
+---@return table|nil
 function AuctionInfo:GetItemByUID(uid)
     return self.items[uid]
 end
 
+---@return table
 function AuctionInfo:GetItems()
     return self.items
 end
 
+---@param uid number
+---@param username string
+---@param response table
 function AuctionInfo:SetResponse(uid, username, response)
     assertInProgress(self)
     local auctionItem = self.items[uid]
@@ -334,26 +384,32 @@ function AuctionInfo:SetResponse(uid, username, response)
     auctionItem:SetResponse(username, response)
 end
 
+---@return boolean
 function AuctionInfo:IsInProgress()
     return self.state == CONSTANTS.AUCTION_INFO.STATE.IN_PROGRESS
 end
 
+---@return boolean
 function AuctionInfo:IsComplete()
     return self.state == CONSTANTS.AUCTION_INFO.STATE.COMPLETE
 end
 
+---@return boolean
 function AuctionInfo:IsAcceptingRolls()
     return (self.acceptingRolls == true)
 end
 
+---@return boolean
 function AuctionInfo:CanAddItems()
     return CONSTANTS.AUCTION_INFO.STATES_ALLOW_ADDING_ITEMS[self.state]
 end
 
+---@return boolean
 function AuctionInfo:IsEmpty()
     return (self.itemCount <= 0)
 end
 
+---@return number
 function AuctionInfo:GetItemCount()
     return self.itemCount
 end
@@ -366,6 +422,7 @@ local function ignoreRolls(self)
     self.acceptingRolls = false
 end
 
+---@param auctionItem table
 function AuctionInfo:Roll(auctionItem)
     assertNotInProgress(self)
     assertIsAcceptingRolls(self)
@@ -385,6 +442,8 @@ function AuctionInfo:EndRoll()
     self.rollItem = nil
 end
 
+---@param who string
+---@param roll number
 function AuctionInfo:HandleRoll(who, roll)
     local response = self.rollItem:GetResponse(who)
     if not response then
@@ -404,10 +463,12 @@ function AuctionInfo:HandleRoll(who, roll)
 
 end
 
+---@return table|nil
 function AuctionInfo:GetRollItem()
     return self.rollItem
 end
 
+---@param endTime? number
 function AuctionInfo:Start(endTime)
     assertNotInProgress(self)
     assertIsAcceptingRolls(self)
@@ -430,26 +491,31 @@ end
 
 -- Configuration API
 
+---@param time number
 function AuctionInfo:SetTime(time)
     assertType(time, 'number')
     assertNotInProgress(self)
     self.auctionTime = time
 end
 
+---@return number
 function AuctionInfo:GetTime()
     return self.auctionTime
 end
 
+---@return number
 function AuctionInfo:GetEndTime()
     return self.endTime
 end
 
+---@param time number
 function AuctionInfo:SetAntiSnipe(time)
     assertType(time, 'number')
     assertNotInProgress(self)
     self.antiSnipe = time
 end
 
+---@return number
 function AuctionInfo:GetAntiSnipe()
     return self.antiSnipe
 end
@@ -459,86 +525,112 @@ function AuctionInfo:AntiSnipe()
     self.endTime = self.endTime + self.antiSnipe
 end
 
+---@return boolean
 function AuctionInfo:IsAntiSnipeAvailable()
     return self.antiSnipeLimit > 0
 end
 
+---@return number
 function AuctionInfo:GetType()
     return self.configuration:Get("auctionType")
 end
 
+---@return number
 function AuctionInfo:GetMode()
     return self.configuration:Get("itemValueMode")
 end
 
+---@return boolean
 function AuctionInfo:GetUseOS()
     return self.configuration:Get("useOS")
 end
 
+---@return boolean
 function AuctionInfo:GetAlwaysAllowBaseBids()
     return self.configuration:Get("baseAlways")
 end
 
+---@return boolean
 function AuctionInfo:GetAlwaysAllowAllInBids()
     return self.configuration:Get("allInAlways")
 end
 
+---@return boolean
 function AuctionInfo:GetAlwaysAllow0()
     return self.configuration:Get("always0")
 end
 
+---@return boolean
 function AuctionInfo:GetAllowEqualBids()
     return self.configuration:Get("allowEqualMax")
 end
 
+---@return boolean
 function AuctionInfo:GetAllowCancelPass()
     return self.configuration:Get("allowCancelPass")
 end
 
+---@return boolean
 function AuctionInfo:GetNamedButtonsMode()
     return self.configuration:Get("namedButtons")
 end
 
+---@return number
 function AuctionInfo:GetIncrement()
     return self.configuration:Get("minimalIncrement")
 end
 
+---@return number
 function AuctionInfo:GetTax()
     return self.configuration:Get("tax")
 end
 
+---@return number
 function AuctionInfo:GetRounding()
     return self.configuration:Get("roundDecimals")
 end
 
+---@return number
 function AuctionInfo:GetMinimumPoints()
     return self.configuration:Get("minimumPoints")
 end
 
+---@return boolean
 function AuctionInfo:GetAllowBelowMinStandings()
     return self.configuration:Get("allowBelowMinStandings")
 end
 
+---@return number
 function AuctionInfo:GetRollTime()
     return self.configuration:Get("rollTime")
 end
 
+---@param tier number
+---@return string
 function AuctionInfo:GetFieldName(tier)
     return self.roster:GetFieldName(tier)
 end
 
+---@param class number
+---@param itemId number
+---@return number
 function AuctionInfo:GetAwardMultiplier(class, itemId)
     return self.roster:GetClassItemMultiplierValue(class, itemId)
 end
 
+---@return Roster
 function AuctionInfo:GetRoster()
     return self.roster
 end
 
+---@return Raid
 function AuctionInfo:GetRaid()
     return self.raid
 end
 
+---@param uid number
+---@param username string
+---@return boolean
 function AuctionInfo:HasBids(uid, username)
     local item = self.items[uid]
     if item then
@@ -547,6 +639,7 @@ function AuctionInfo:HasBids(uid, username)
     return false
 end
 
+---@return boolean
 function AuctionInfo:HasUsableItems()
     if self.hasUsableItems == nil then
         self.hasUsableItems = false
@@ -560,6 +653,8 @@ function AuctionInfo:HasUsableItems()
     return self.hasUsableItems
 end
 
+---@param name string
+---@return string
 function AuctionInfo:GetAnonymousName(name)
     if not self.anonymousMap[name] then
         self.anonymousMap[name] = nickMap[math.random(1,#nickMap)] .. tostring(self.nextAnonymousId)

@@ -68,6 +68,7 @@ local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
 end
 
+---@class UnifiedGUI_Standings
 local UnifiedGUI_Standings = {
     name = "standings",
     awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT,
@@ -94,6 +95,7 @@ local function HandleRosterChange(rosterUid)
     end
 end
 
+---@return Profile[]
 function UnifiedGUI_Standings:GetSelection()
     LOG:Trace("UnifiedGUI_Standings:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()

@@ -48,6 +48,7 @@ local FORMAT_VALUES_GUI =  {
 --     return s
 -- end
 
+---@param self ExportGUI
 local function InitializeDB(self)
     self.db = CLM.MODULES.Database:GUI('export', {
         location = {nil, nil, "CENTER", 0, 0 },
@@ -88,6 +89,13 @@ local function GetProfileList()
     return profileList
 end
 
+---@class ExportGUI
+---@field db table
+---@field roster_select_list table
+---@field profile_select_list table
+---@field export_data string
+---@field top any
+---@field _initialized boolean
 local ExportGUI = {}
 function ExportGUI:Initialize()
     LOG:Trace("ExportGUI:Initialize()")
@@ -112,6 +120,9 @@ local days_in_month = {
 
 local leap_years = UTILS.Set({2022, 2024})
 
+---@param month number
+---@param year number
+---@return number
 local function getDaysInMonth(month, year)
     if month == 2 then
         return leap_years[year] and 29 or 28
@@ -153,6 +164,7 @@ for i=2019, tonumber(date("%Y", GetServerTime())) do
     timerange_select.year[i] = i
 end
 
+---@param self ExportGUI
 local function SanitizeDates(self)
     -- Check days in the month
     local begin_days = getDaysInMonth(self.db.export_config.timerange.begin.month, self.db.export_config.timerange.begin.year)
@@ -188,6 +200,8 @@ local function SanitizeDates(self)
     end
 end
 
+---@param self ExportGUI
+---@param offset number
 local function SetOffsetTime(self, offset)
     local time = GetServerTime()
     local d, m, y
@@ -203,7 +217,10 @@ local function SetOffsetTime(self, offset)
     self.db.export_config.timerange.begin.year    = tonumber(y)
 end
 
+---@param self ExportGUI
+---@return any
 local function Create(self)
+    ---@type any
     local parent = AceGUI:Create("Window")
     parent:SetLayout("Flow")
     parent:EnableResize(false)

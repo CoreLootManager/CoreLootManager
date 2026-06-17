@@ -3,6 +3,7 @@ local _, PRIV = ...
 PRIV.MODULES = {}
 PRIV.CONSTANTS = {}
 
+---@class Core
 local Core = {}
 
 local function InitializeDB()
@@ -18,34 +19,46 @@ local function InitializeDB()
     return db.tracker
 end
 
+---@param self Core
+---@param value boolean
 local function SetEnableTooltip(self, value)
     self.db.tooltip = value and true or false
 end
 
+---@return boolean
 function Core:GetEnableTooltip()
     return self.db.tooltip
 end
 
+---@param self Core
+---@param value boolean
 local function SetEnableTooltipExtended(self, value)
     self.db.tooltipExtended = value and true or false
 end
 
+---@return boolean
 function Core:GetEnableTooltipExtended()
     return self.db.tooltipExtended
 end
 
+---@param self Core
+---@param value boolean
 local function SetEnableAuctionColumn(self, value)
     self.db.auction = value and true or false
 end
 
+---@return boolean
 function Core:GetEnableAuctionColumn()
     return self.db.auction
 end
 
+---@param self Core
+---@param value boolean
 local function SetAlwaysEnable(self, value)
     self.db.alwaysEnable = value and true or false
 end
 
+---@return boolean
 function Core:GetAlwaysEnable()
     return self.db.alwaysEnable
 end
@@ -101,6 +114,7 @@ function Core:Initialize()
     self._initialized = true
 end
 
+---@return boolean
 function Core:IsInitialized()
     return self._initialized
 end

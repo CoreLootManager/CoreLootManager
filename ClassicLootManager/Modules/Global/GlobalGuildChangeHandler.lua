@@ -6,6 +6,7 @@ local LOG       = CLM.LOG
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
+---@class GlobalGuildChangeHandler
 local GlobalGuildChangeHandler = {
     changeDetected = false
 }

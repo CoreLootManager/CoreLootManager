@@ -17,6 +17,13 @@ local LEDGER_PROFILE = MODELS.LEDGER.PROFILE
 local LEDGER_DKP = MODELS.LEDGER.POINTS
 local LEDGER_LOOT = MODELS.LEDGER.LOOT
 
+---@class Migration
+---@field migrationOngoing boolean
+---@field migrateFromOfficerNotes boolean
+---@field playerCache table
+---@field timestamp number
+---@field playerDKP table
+---@field playerList table
 local Migration = {}
 function Migration:Initialize()
     if not ACL:CheckLevel(CONSTANTS.ACL.LEVEL.GUILD_MASTER) then return end
@@ -37,6 +44,9 @@ function Migration:Initialize()
     end)
 end
 
+---@param self Migration
+---@param name string
+---@return string?
 local function GetPlayerGuid(self, name)
     return self.playerCache[name]
 end
@@ -91,6 +101,7 @@ function Migration:Migrate()
         ColorCodeText(CLM.L["Minimap Icon -> Configuration -> Wipe events"], "6699ff"))
 end
 
+---@return number
 function Migration:GetOldTimestampUnique()
     self.timestamp = self.timestamp + 1
     return self.timestamp
@@ -131,6 +142,9 @@ function Migration:MigrateQDKPV2()
     self:_MigrateOfficerNoteDKP("QDKP_V2", "[Net]:(%d+)%s.*")
 end
 
+---@param name string
+---@param epgp boolean?
+---@return string, number
 local function NewRoster(name, epgp)
     name = tostring(name) .. tostring(GetTime())
     local timestamp = Migration:GetOldTimestampUnique()
@@ -147,6 +161,9 @@ local function NewRoster(name, epgp)
     return name, timestamp
 end
 
+---@param GUID string
+---@param name string
+---@param class string
 local function NewProfile(GUID, name, class)
     local timestamp = Migration:GetOldTimestampUnique()
     local profile = LEDGER_PROFILE.Update:new(GUID, name, class)
@@ -154,6 +171,8 @@ local function NewProfile(GUID, name, class)
     LedgerManager:Submit(profile)
 end
 
+---@param uid number
+---@param profiles table
 local function AddProfilesToRoster(uid, profiles)
     local timestamp = Migration:GetOldTimestampUnique()
     local profilesUpdate = LEDGER_ROSTER.UpdateProfiles:new(uid, profiles, false)
@@ -161,6 +180,10 @@ local function AddProfilesToRoster(uid, profiles)
     LedgerManager:Submit(profilesUpdate)
 end
 
+---@param uid number
+---@param targets string
+---@param value number
+---@param isSpent boolean?
 local function UpdatePoints(uid, targets, value, isSpent)
     -- points need to be set with newest time so they will overwrite the loot cost
     local timestamp = GetServerTime()
@@ -183,12 +206,19 @@ local function UpdatePoints(uid, targets, value, isSpent)
     LedgerManager:Submit(entry)
 end
 
+---@param uid number
+---@param GUID string
+---@param itemId number
+---@param value number
+---@param timestamp number
 local function AwardItem(uid, GUID, itemId, value, timestamp)
     local loot = LEDGER_LOOT.Award:new(uid, GUID, itemId, value)
     loot:setTime(timestamp)
     LedgerManager:Submit(loot)
 end
 
+---@param addonName string
+---@return boolean
 local function ValidateAddon(addonName)
 	local _, _, _, enabled, reason = UTILS.GetAddOnInfo(addonName)
 	if reason == "MISSING" or reason == "DISABLED" or not enabled then
@@ -207,6 +237,7 @@ local function ValidateAddon(addonName)
     return true
 end
 
+---@param addonName string
 function Migration:_MigrateMonolithEssential(addonName)
 	if not ValidateAddon(addonName) then
         LOG:Message(CLM.L["Skipping %s"], addonName)
@@ -413,6 +444,8 @@ function Migration:_MigrateCommunity()
     LOG:Message(CLM.L["Import complete"])
 end
 
+---@param addonName string
+---@param pattern string
 function Migration:_MigrateOfficerNoteDKP(addonName, pattern)
     -- addonName - String - Name of the addon
     -- pattern - Regex - Should select ep and gp when passed into match / find
@@ -455,6 +488,9 @@ function Migration:_MigrateOfficerNoteDKP(addonName, pattern)
     LOG:Message(CLM.L["Import complete"])
 end
 
+---@param addonName string
+---@param pattern string
+---@param gpFirst boolean?
 function Migration:_MigrateOfficerNoteEPGP(addonName, pattern, gpFirst)
     -- addonName - String - Name of the addon
     -- pattern - Regex - Should select ep and gp when passed into match / find

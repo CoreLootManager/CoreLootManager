@@ -259,6 +259,7 @@ local function registerWorkaroundHandler(self)
     isWorkaroundRegistered = true
 end
 
+---@class AutoAwardManager
 local AutoAwardManager = {}
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")
@@ -294,11 +295,13 @@ function AutoAwardManager:Disable()
     self.enabled = false
 end
 
+---@return boolean
 function AutoAwardManager:IsEnabled()
     LOG:Trace("AutoAwardManager:IsEnabled()")
     return self.enabled
 end
 
+---@return boolean
 function AutoAwardManager:EncounterInProgress()
     LOG:Trace("AutoAwardManager:EncounterInProgress()")
     return (self.encounterInProgress ~= 0)
@@ -315,6 +318,7 @@ function AutoAwardManager:DisableBossKillBonusAwarding()
     self.bossKillBonusAwardingEnabled = false
 end
 
+---@return boolean
 function AutoAwardManager:IsBossKillBonusAwardingEnabled()
     LOG:Trace("AutoAwardManager:IsBossKillBonusAwardingEnabled()")
     return self.bossKillBonusAwardingEnabled
@@ -336,6 +340,7 @@ function AutoAwardManager:DisableIntervalBonusAwarding()
     self.intervalBonusAwardingEnabled = false
 end
 
+---@return boolean
 function AutoAwardManager:IsIntervalBonusAwardingEnabled()
     LOG:Trace("AutoAwardManager:IsIntervalBonusAwardingEnabled()")
     return self.intervalBonusAwardingEnabled

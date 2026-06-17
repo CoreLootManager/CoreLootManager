@@ -47,6 +47,7 @@ local ITEM_REGISTRY     = "clm_bm_gui_opt_item"
 local BID_REGISTRY      = "clm_bm_gui_opt_bid"
 local BUTTON_REGISTRY   = "clm_bm_gui_opt_button"
 
+---@class BiddingManagerGUI
 local BiddingManagerGUI = {}
 
 local function InitializeDB(self)
@@ -1216,6 +1217,7 @@ function BiddingManagerGUI:AntiSnipe()
     end
 end
 
+---@param auctionItem AuctionItem
 function BiddingManagerGUI:SetVisibleAuctionItem(auctionItem)
     self.auctionItem = auctionItem
     if not auctionItem then return end

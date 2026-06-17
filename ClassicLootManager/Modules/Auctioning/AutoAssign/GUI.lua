@@ -42,6 +42,7 @@ local function ST_GetTradeTarget(row)
     return row.cols[2].value
 end
 
+---@class TradeListGUI
 local TradeListGUI = {}
 function TradeListGUI:Initialize()
     LOG:Trace("TradeListGUI:Initialize()")
@@ -205,6 +206,7 @@ function TradeListGUI:Create()
     f:Hide()
 end
 
+---@param rows number
 function TradeListGUI:UpdateSize(rows)
     local previousRows = self.previousRows or rows
     local rowDiff = rows - previousRows
@@ -234,6 +236,7 @@ function TradeListGUI:UpdateSize(rows)
     end
 end
 
+---@param visible boolean?
 function TradeListGUI:Refresh(visible)
     LOG:Trace("TradeListGUI:Refresh()")
     if not self._initialized then return end

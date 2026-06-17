@@ -229,6 +229,7 @@ local verify_point_change_type = {
     [CONSTANTS.POINT_MANAGER_ACTION.DECAY ] = verify_decay_point_change_type,
 }
 
+---@class PointManager
 local PointManager = {}
 function PointManager:Initialize()
     LOG:Trace("PointManager:Initialize()")
@@ -307,6 +308,14 @@ function PointManager:Initialize()
 
 end
 
+---@param roster Roster
+---@param targets table|Profile|number|string
+---@param value number
+---@param reason number
+---@param action number
+---@param note string?
+---@param pointChangeType number
+---@param forceInstant boolean?
 function PointManager:UpdatePoints(roster, targets, value, reason, action, note, pointChangeType, forceInstant)
     LOG:Trace("PointManager:UpdatePoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
@@ -369,6 +378,14 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
+---@param roster Roster
+---@param value number
+---@param reason number
+---@param action number
+---@param ignoreNegatives boolean?
+---@param note string?
+---@param pointChangeType number
+---@param forceInstant boolean?
 function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNegatives, note, pointChangeType, forceInstant)
     LOG:Trace("PointManager:UpdateRosterPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
@@ -406,6 +423,13 @@ function PointManager:UpdateRosterPoints(roster, value, reason, action, ignoreNe
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
+---@param raid Raid
+---@param value number
+---@param reason number
+---@param action number
+---@param note string?
+---@param pointChangeType number
+---@param forceInstant boolean?
 function PointManager:UpdateRaidPoints(raid, value, reason, action, note, pointChangeType, forceInstant)
     LOG:Trace("PointManager:UpdateRaidPoints()")
     if not CONSTANTS.POINT_MANAGER_ACTIONS[action] then
@@ -436,6 +460,8 @@ function PointManager:UpdateRaidPoints(raid, value, reason, action, note, pointC
     CLM.MODULES.LedgerManager:Submit(entry, forceInstant)
 end
 
+---@param pointHistory table
+---@param forceInstant boolean?
 function PointManager:RemovePointChange(pointHistory, forceInstant)
     LOG:Trace("PointManager:RemovePointChange()")
     if not typeof(pointHistory, CLM.MODELS.PointHistory) then
@@ -446,6 +472,13 @@ function PointManager:RemovePointChange(pointHistory, forceInstant)
     CLM.MODULES.LedgerManager:Remove(pointHistory:Entry(), forceInstant)
 end
 
+---@param roster Roster
+---@param targets table
+---@param value number
+---@param reason number
+---@param pointChangeType number
+---@param timestamp number
+---@param creator string
 function PointManager:UpdatePointsDirectly(roster, targets, value, reason, pointChangeType, timestamp, creator)
     LOG:Trace("PointManager:UpdatePointsDirectly()")
     if not roster then
@@ -459,6 +492,9 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, point
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, pointChangeType, timestamp, pointHistoryEntry, true)
 end
 
+---@param roster Roster
+---@param targets table
+---@param pointHistoryEntry table
 function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     LOG:Trace("PointManager:AddPointHistory()")
     if not roster then
@@ -477,6 +513,14 @@ function PointManager:AddPointHistory(roster, targets, pointHistoryEntry)
     end
 end
 
+---@param roster Roster
+---@param targets table
+---@param value number
+---@param reason number
+---@param timestamp number
+---@param creator string
+---@param note string?
+---@param pointChangeType number?
 function PointManager:AddFakePointHistory(roster, targets, value, reason, timestamp, creator, note, pointChangeType)
     LOG:Trace("PointManager:AddFakePointHistory()")
     if not roster then

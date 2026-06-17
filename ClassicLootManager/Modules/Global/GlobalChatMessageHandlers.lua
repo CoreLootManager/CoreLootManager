@@ -16,9 +16,11 @@ else
     InLockdown = (function() return false end)
 end
 
+---@param message string
+---@return string
 local function subsituteWithIcon(message)
     if InLockdown() then return message end
-    return string.gsub(message, "%[CLM%]", CLM_TEXTURE)
+    return (string.gsub(message, "%[CLM%]", CLM_TEXTURE))
 end
 
 local function filterSubsituteWithIcon(_, _, message, ...)
@@ -30,6 +32,7 @@ local CHAT_MESSAGE_CHANNELS = {"CHAT_MSG_GUILD", "CHAT_MSG_OFFICER", "CHAT_MSG_P
 "CHAT_MSG_SAY", "CHAT_MSG_YELL", "CHAT_MSG_WHISPER", "CHAT_MSG_WHISPER_INFORM", "CHAT_MSG_CHANNEL", "CHAT_MSG_BN_WHISPER", "CHAT_MSG_BN_WHISPER_INFORM", "CHAT_MSG_BN_CONVERSATION", "CHAT_MSG_INSTANCE_CHAT", "CHAT_MSG_INSTANCE_CHAT_LEADER"}
 
 
+---@class GlobalChatMessageHandlers
 local GlobalChatMessageHandlers = {}
 function GlobalChatMessageHandlers:Initialize()
     -- Substitute [CLM] with an icon

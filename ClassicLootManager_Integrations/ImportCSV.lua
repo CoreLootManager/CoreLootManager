@@ -10,6 +10,10 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
+---@param roster Roster
+---@param itemId number
+---@param values table
+---@return boolean?
 local function ImportSingle(roster, itemId, values)
     local sanitizedValues = CLM.MODULES.RosterManager:CompareAndSanitizeSlotTierValues(roster:GetItemValues(itemId), values)
     if sanitizedValues then
@@ -20,6 +24,7 @@ local function ImportSingle(roster, itemId, values)
     end
 end
 
+---@param self ItemValueOverrideImporter
 local function Import(self)
     LOG:Trace("ItemValueOverrideImporter:Import()")
     local roster = CLM.MODULES.RosterManager:GetRosterByUid(self.roster)
@@ -36,6 +41,8 @@ local function Import(self)
     LOG:Message("Import of %s overrides complete!", tostring(count))
 end
 
+---@param csvData string
+---@return table
 local function ParseCSV(csvData)
     LOG:Trace("ItemValueOverrideImporter:ParseCSV()")
     local data = {}
@@ -64,6 +71,7 @@ local function ParseCSV(csvData)
     return data
 end
 
+---@param self ItemValueOverrideImporter
 local function UpdateOptions(self)
     local options = {
         type = "group",
@@ -163,6 +171,18 @@ local function UpdateOptions(self)
     self.scroll:DoLayout()
 end
 
+---@class ItemValueOverrideImporter
+---@field _initialized boolean
+---@field importCSV string
+---@field importExecuted boolean?
+---@field inProgress boolean?
+---@field done boolean?
+---@field importedData number?
+---@field data table
+---@field roster number?
+---@field top any
+---@field options any
+---@field scroll any
 local ItemValueOverrideImporter = {}
 function ItemValueOverrideImporter:Initialize()
     LOG:Trace("Import:Initialize()")
@@ -184,6 +204,7 @@ end
 
 function ItemValueOverrideImporter:Create()
     LOG:Trace("ItemValueOverrideImporter:Create()")
+    ---@type any
     local f = AceGUI:Create("Window")
     f:SetLayout("Flow")
     f:EnableResize(false)
@@ -191,9 +212,11 @@ function ItemValueOverrideImporter:Create()
     f:SetWidth(460)
     f:SetHeight(500)
 
+    ---@type any
     local s = AceGUI:Create("ScrollFrame")
     s:SetWidth(440)
     s:SetHeight(450)
+    ---@type any
     local i = AceGUI:Create("SimpleGroup")
     i:SetWidth(400)
     s:AddChild(i)

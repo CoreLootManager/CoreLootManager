@@ -5,6 +5,7 @@
 
 local  _, CLM = ...
 
+---@class FADEFrame: Frame
 local FADE = CreateFrame('Frame')
 
 function FADE:Remove(frame)
@@ -91,6 +92,11 @@ end
 --     FADE:Add(frame, fadeInfo)
 -- end)
 
+---@param frame Frame
+---@param timeToFade number
+---@param startAlpha number
+---@param endAlpha number
+---@param info table?
 CLM.UTILS.FadeIn = (function (frame, timeToFade, startAlpha, endAlpha, info)
     if not frame then return end
     local fadeInfo = info or {}
@@ -101,6 +107,11 @@ CLM.UTILS.FadeIn = (function (frame, timeToFade, startAlpha, endAlpha, info)
     FADE:Add(frame, fadeInfo)
 end)
 
+---@param frame Frame
+---@param timeToFade number
+---@param startAlpha number
+---@param endAlpha number
+---@param info table?
 CLM.UTILS.FadeOut = (function (frame, timeToFade, startAlpha, endAlpha, info)
     if not frame then return end
     local fadeInfo = info or {}
@@ -215,6 +226,14 @@ CLM.UTILS.StopFlash = FLASH.Stop
 -- end)
 
 -- -- Function to start a frame flashing
+---@param frame Frame
+---@param fadeInTime number
+---@param fadeOutTime number
+---@param flashDuration number
+---@param showWhenDone boolean
+---@param flashInHoldTime number?
+---@param flashOutHoldTime number?
+---@param syncId any?
 CLM.UTILS.StartFlash = function(frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, syncId)
     if frame then
         local index = 1

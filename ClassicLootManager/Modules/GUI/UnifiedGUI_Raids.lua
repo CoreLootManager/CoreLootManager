@@ -21,6 +21,7 @@ local function refreshFn(...)
     CLM.GUI.Unified:Refresh(...)
 end
 
+---@class UnifiedGUI_Raids
 local UnifiedGUI_Raids = {
     name = "raids",
     -- filter = CLM.MODELS.Filters:New(
@@ -32,6 +33,7 @@ local UnifiedGUI_Raids = {
     configuration = CLM.MODELS.RosterConfiguration:New()
 }
 
+---@return Raid?
 function UnifiedGUI_Raids:GetSelection()
     LOG:Trace("UnifiedGUI_Raids:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()

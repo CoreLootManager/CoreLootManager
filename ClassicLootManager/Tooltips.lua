@@ -8,6 +8,9 @@ local UTILS     = CLM.UTILS
 
 local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png"
 
+---@param values table
+---@param itemValueMode number
+---@return string
 local function formatPriceText(values, itemValueMode)
     local text = ""
     if itemValueMode == CONSTANTS.ITEM_VALUE_MODE.TIERED then
@@ -79,6 +82,7 @@ local isSpecial = UTILS.Set({
     66998,
 })
 
+---@param tooltip GameTooltip
 local function addItemPriceToTooltip(tooltip)
     -- Sanity Check
     local itemLink

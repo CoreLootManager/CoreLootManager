@@ -164,6 +164,7 @@ local function Initialize(self)
     end
 end
 
+---@class CrossGuildSyncManager
 local CrossGuildSyncManager = { _initialized = false }
 function CrossGuildSyncManager:Initialize()
     self.players = InitializeDB('players')

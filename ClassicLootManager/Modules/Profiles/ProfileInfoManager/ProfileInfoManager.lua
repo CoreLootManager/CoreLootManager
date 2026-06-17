@@ -84,6 +84,7 @@ end
     --- PUBLIC ---
 ]]
 
+---@class ProfileInfoManager
 local ProfileInfoManager = {}
 function ProfileInfoManager:Initialize()
     LOG:Trace("ProfileInfoManager:Initialize()")
@@ -138,6 +139,7 @@ function ProfileInfoManager:Initialize()
 
 end
 
+---@return nil
 function ProfileInfoManager:RequestVersion()
     LOG:Trace("ProfileInfoManager:RequestVersion()")
     local message = CLM.MODELS.ProfileInfoCommStructure:New(CONSTANTS.PROFILE_INFO_COMM.TYPE.REQUEST_VERSION, {})

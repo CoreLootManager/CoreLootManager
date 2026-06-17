@@ -53,6 +53,7 @@ local function CreateConfigs(self)
     CLM.MODULES.ConfigManager:Register(CONSTANTS.CONFIGS.GROUP.GLOBAL, options)
 end
 
+---@class ChangelogGUI
 local ChangelogGUI = {}
 function ChangelogGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")

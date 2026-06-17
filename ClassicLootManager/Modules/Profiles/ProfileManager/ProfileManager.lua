@@ -21,6 +21,7 @@ else
     end
 end
 
+---@class ProfileManager
 local ProfileManager = {}
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")
@@ -241,6 +242,9 @@ function ProfileManager:Initialize()
 
 end
 
+---@param GUID string
+---@param name string
+---@param class string?
 function ProfileManager:NewProfile(GUID, name, class)
     LOG:Trace("ProfileManager:NewProfile()")
     if type(GUID) ~= "string" or GUID == "" then
@@ -289,6 +293,7 @@ function ProfileManager:NewProfile(GUID, name, class)
     CLM.MODULES.LedgerManager:Submit(CLM.MODELS.LEDGER.PROFILE.Update:new(GUID, name, class), true)
 end
 
+---@param GUID string
 function ProfileManager:RemoveProfile(GUID)
     LOG:Trace("ProfileManager:RemoveProfile()")
     if type(GUID) ~= "string" or GUID == "" then
@@ -308,6 +313,8 @@ local function PruneProfile(self, GUID, log)
     CLM.MODULES.LedgerManager:Remove(entry)
 end
 
+---@param alt string
+---@param main string?
 function ProfileManager:MarkAsAltByNames(alt, main)
     LOG:Trace("ProfileManager:MarkAsAltByNames()")
     local altProfile = self:GetProfileByName(alt)
@@ -354,6 +361,8 @@ function ProfileManager:MarkAsAltByNames(alt, main)
     end
 end
 
+---@param profiles table
+---@param lock boolean
 function ProfileManager:SetProfilesLock(profiles, lock)
     LOG:Trace("ProfileManager:SetProfilesLock()")
 
@@ -370,6 +379,8 @@ end
 
 -- Functionalities
 
+---@param selectedRank number?
+---@param minLevel number?
 function ProfileManager:FillFromGuild(selectedRank, minLevel)
     LOG:Trace("ProfileManager:FillFromGuild()")
     if LOG.SEVERITY.DEBUG >= LOG:GetSeverity() then
@@ -434,6 +445,8 @@ function ProfileManager:AddTarget()
     end
 end
 
+---@param minLevel number
+---@param nop boolean?
 function ProfileManager:PruneBelowLevel(minLevel, nop)
     LOG:Trace("ProfileManager:PruneBelowLevel()")
     local log = CLM.MODELS.ProfilePruneLog:New("level", nop)
@@ -460,6 +473,8 @@ function ProfileManager:PruneBelowLevel(minLevel, nop)
     LOG:Info("Pruned %s profiles below level %s", pruned, minLevel)
 end
 
+---@param rank number|string
+---@param nop boolean?
 function ProfileManager:PruneRank(rank, nop)
     LOG:Trace("ProfileManager:PruneRank()")
     local log = CLM.MODELS.ProfilePruneLog:New("rank", nop)
@@ -497,6 +512,7 @@ function ProfileManager:PruneRank(rank, nop)
     LOG:Info("Pruned %s profiles with rank %s", pruned, rank)
 end
 
+---@param nop boolean?
 function ProfileManager:PruneUnguilded(nop)
     LOG:Trace("ProfileManager:PruneUnguilded()")
     local log = CLM.MODELS.ProfilePruneLog:New("unguilded", nop)
@@ -532,6 +548,7 @@ function ProfileManager:WipeAll()
     self.cache = { profilesGuidMap = {}, profiles = {} }
 end
 
+---@return Profile?
 function ProfileManager:GetMyProfile()
     LOG:Trace("ProfileManager:GetMyProfile()")
     return self:GetProfileByGUID(whoamiGUID)
@@ -539,22 +556,30 @@ end
 
 -- Utility
 
+---@param name string
+---@return string?
 function ProfileManager:GetGUIDFromName(name)
     return self.cache.profilesGuidMap[name]
 end
 
+---@return table
 function ProfileManager:GetProfiles()
     return self.cache.profiles
 end
 
+---@param GUID string
+---@return Profile?
 function ProfileManager:GetProfileByGUID(GUID)
     return self.cache.profiles[GUID]
 end
 
+---@param name string
+---@return Profile?
 function ProfileManager:GetProfileByName(name)
     return self.cache.profiles[self.cache.profilesGuidMap[strlower(name)]]
 end
 
+---@return Profile
 function ProfileManager:GetDisenchanterProfile()
     return self._deProfile
 end

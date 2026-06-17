@@ -3,6 +3,8 @@ if not CLM then return end
 local eventDispatcher = LibStub("EventDispatcher")
 if not eventDispatcher then return end
 
+---@param self Frame
+---@param data table
 local function PointReceivedAlertFrame_SetUp(self, data)
     local value = tonumber(data.value) or 0
     value = (value ~= nil) and tostring(value) or tostring(data.value)
@@ -26,6 +28,8 @@ end
 
 local PointReceivedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("PointReceivedAlertFrameTemplate", PointReceivedAlertFrame_SetUp, 6, math.huge)
 
+---@param self Frame
+---@param data table
 local function BidAcceptedAlertFrame_SetUp(self, data)
     local value = tonumber(data.value)
     value = (value ~= nil) and tostring(value) or tostring(data.value)
@@ -34,6 +38,8 @@ end
 
 local BidAcceptedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("BidAcceptedAlertFrameTemplate", BidAcceptedAlertFrame_SetUp, 6, math.huge)
 
+---@param self Frame
+---@param data table
 local function BidDeniedAlertFrame_SetUp(self, data)
     local value = tonumber(data.value)
     value = (value ~= nil) and tostring(value) or tostring(data.value)

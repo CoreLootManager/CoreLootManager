@@ -209,6 +209,7 @@ local function CreateLoadingBanner(self)
     -- lb:Show()
 end
 
+---@class UnifiedGUI
 local UnifiedGUI = { tabs = {} }
 function UnifiedGUI:Initialize()
     InitializeDB(self)
@@ -319,6 +320,15 @@ local publicHandlers = {
     "dataReady"
 }
 
+---@param name string
+---@param order number
+---@param tableStructure table
+---@param tableDataFeeder function
+---@param horizontalOptionsFeeder function|table|nil
+---@param verticalOptionsFeeder function|table|nil
+---@param handlers table
+---@param icon string?
+---@param iconExtended string?
 function UnifiedGUI:RegisterTab(
     name, order, tableStructure, tableDataFeeder,
     horizontalOptionsFeeder, verticalOptionsFeeder,
@@ -370,6 +380,8 @@ function UnifiedGUI:RegisterTab(
     end
 end
 
+---@param name string
+---@return table
 function UnifiedGUI:GetStorage(name)
     if self.tabs[name] then
         if not self.db.storage[name] then
@@ -386,6 +398,7 @@ end
 
 
 -- Refresh the data
+---@param visible boolean?
 function UnifiedGUI:Refresh(visible)
     LOG:Trace("UnifiedGUI:Refresh()")
     if not self._initialized then return end

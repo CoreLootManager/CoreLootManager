@@ -614,6 +614,7 @@ local function buildEntryRow(entry, id)
     return row
 end
 
+---@class UnifiedGUI_Audit
 local UnifiedGUI_Audit = {
     name = "audit",
     filter = CLM.MODELS.Filters:New(
@@ -626,6 +627,7 @@ local UnifiedGUI_Audit = {
     tooltip = CreateFrame("GameTooltip", "CLMUnifiedGUIAuditDialogTooltip", UIParent, "GameTooltipTemplate"),
 }
 
+---@return table
 function UnifiedGUI_Audit:GetSelection()
     LOG:Trace("UnifiedGUI_Audit:GetSelection()")
     local st = CLM.GUI.Unified:GetScrollingTable()

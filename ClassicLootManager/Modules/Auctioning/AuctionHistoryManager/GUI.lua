@@ -54,6 +54,7 @@ local function ST_GetRolls(row)
     return row.cols[7].value
 end
 
+---@class AuctionHistoryGUI
 local AuctionHistoryGUI = {}
 function AuctionHistoryGUI:Initialize()
     LOG:Trace("AuctionHistoryGUI:Initialize()")
@@ -235,6 +236,7 @@ function AuctionHistoryGUI:Create()
 
 end
 
+---@param visible boolean?
 function AuctionHistoryGUI:Refresh(visible)
     LOG:Trace("AuctionHistoryGUI:Refresh()")
     if not self._initialized then return end

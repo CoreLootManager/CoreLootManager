@@ -26,6 +26,8 @@ PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION = {
     DISENCHANT = 8
 }
 
+---@param key string
+---@return table
 local function InitializeDB(key)
     local db = CLM.MODULES.Database:Server()
     if not db.integration then
@@ -356,6 +358,9 @@ local function CreateRCLCIntegration(self)
     return options
 end
 
+---@class Integration
+---@field db table
+---@field exportInProgress boolean
 local Integration = {}
 function Integration:InitializeConfigs()
     local options = {
@@ -549,59 +554,77 @@ function Integration:Initialize()
     self.exportInProgress = false
 end
 
+---@param value boolean
 function Integration:SetWoWDKPBotIntegration(value)
     self.db.wowdkpbot_integration = value and true or false
 end
 
+---@return boolean
 function Integration:GetWoWDKPBotIntegration()
     return self.db.wowdkpbot_integration
 end
 
+---@param value boolean
 function Integration:SetGargulIntegration(value)
     self.db.gargul_integration = value and true or false
 end
 
+---@return boolean
 function Integration:GetGargulIntegration()
     return self.db.gargul_integration
 end
 
+---@param handler string
+---@param action number
 function Integration:SetGargulAwardAction(handler, action)
     if not PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION_HANDLERS[handler] then return end
     local db = InitializeDB("gargul")
     db[handler] = PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS[action] and action or PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
 end
 
+---@param handler string
+---@return number
 function Integration:GetGargulAwardAction(handler)
     local db = InitializeDB("gargul")
     return db[handler] or PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
 end
 
+---@param value boolean
 function Integration:SetRCLCIntegration(value)
     self.db.rclc_integration = value and true or false
 end
 
+---@return boolean
 function Integration:GetRCLCIntegration()
     return self.db.rclc_integration
 end
 
+---@param conditionNum number
+---@param trigger string
 function Integration:SetRCLCAwardTrigger(conditionNum, trigger)
     local db = InitializeDB("rclc.handlers")
     if not db[conditionNum] then return end
     db[conditionNum].trigger = trigger or ""
 end
 
+---@param conditionNum number
+---@return string?
 function Integration:GetRCLCAwardTrigger(conditionNum)
     local db = InitializeDB("rclc.handlers")
     if not db[conditionNum] then return end
     return db[conditionNum].trigger
 end
 
+---@param conditionNum number
+---@param action number
 function Integration:SetRCLCAwardAction(conditionNum, action)
     local db = InitializeDB("rclc.handlers")
     if not db[conditionNum] then return end
     db[conditionNum].action = PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTIONS[action] and action or PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
 end
 
+---@param conditionNum number
+---@return number?
 function Integration:GetRCLCAwardAction(conditionNum)
     local db = InitializeDB("rclc.handlers")
     if not db[conditionNum] then return end
@@ -612,6 +635,8 @@ local function escape(text)
     return text:gsub("([%W])", "%%%1")
 end
 
+---@param response any
+---@return number
 function Integration:SearchRCLCAwardAction(response)
     response = strlower(tostring(response) or "")
     for _, condition in ipairs(InitializeDB("rclc.handlers")) do
@@ -623,6 +648,9 @@ function Integration:SearchRCLCAwardAction(response)
     return PRIV.CONSTANTS.EXTERNAL_LOOT_AWARD_ACTION.NONE
 end
 
+---@param config table
+---@param completeCallback function
+---@param updateCallback function
 function Integration:Export(config, completeCallback, updateCallback)
     if self.exportInProgress then
         LOG:Error("Integration: Export in progress")

@@ -13,6 +13,16 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local json = LibStub:GetLibrary("LibJsonLua")
 
+---@class GenericImport
+---@field _initialized boolean
+---@field guidCache table
+---@field actionDescriptor table?
+---@field importJson string?
+---@field importExecuted boolean?
+---@field inProgress boolean?
+---@field data table
+---@field top any
+---@field options AceGUIWidget
 local GenericImport = {}
 function GenericImport:Initialize()
     LOG:Trace("GenericImport:Initialize()")
@@ -29,6 +39,7 @@ end
     4) Set profile standings in rosters
 ]]
 
+---@param self GenericImport
 local function ParseImportData(self)
     local numRosters = #self.data.standings.roster
     local rosterMap = {}
@@ -95,6 +106,7 @@ local function ParseImportData(self)
     }
 end
 
+---@param self GenericImport
 local function Import_CreateRosters(self)
     local delay = 0
     for _, info in pairs(self.actionDescriptor.rosterMap) do
@@ -108,6 +120,7 @@ local function Import_CreateRosters(self)
     end
 end
 
+---@param self GenericImport
 local function Import_ConfigureRosters(self)
     for _, info in pairs(self.actionDescriptor.rosterMap) do
         if CLM.MODULES.RosterManager:GetRosterByName(info.name) then
@@ -121,12 +134,14 @@ local function Import_ConfigureRosters(self)
     end
 end
 
+---@param self GenericImport
 local function Import_CreateProfiles(self)
     for guid, info in pairs(self.actionDescriptor.profileMap) do
         CLM.MODULES.ProfileManager:NewProfile(guid, info.name, CLM.UTILS.CanonicalClass(info.class))
     end
 end
 
+---@param self GenericImport
 local function Import_AddProfilesToRosters(self)
     for _, info in pairs(self.actionDescriptor.rosterMap) do
         local roster = CLM.MODULES.RosterManager:GetRosterByName(info.name)
@@ -136,6 +151,7 @@ local function Import_AddProfilesToRosters(self)
     end
 end
 
+---@param self GenericImport
 local function Import_SetStandings(self)
     for _, info in pairs(self.actionDescriptor.rosterMap) do
         local roster = CLM.MODULES.RosterManager:GetRosterByName(info.name)
@@ -155,6 +171,7 @@ local function Import_SetStandings(self)
     end
 end
 
+---@param self GenericImport
 local function CacheNewGuidData(self)
     self.guidCache = {}
     for num=1, GetNumGuildMembers() do
@@ -166,6 +183,7 @@ local function CacheNewGuidData(self)
     end
 end
 
+---@param self GenericImport
 local function Import(self)
     C_Timer.After(0.5, function()
         LOG:Message("1/5: ".. CLM.L["Create Rosters"])
@@ -190,6 +208,7 @@ local function Import(self)
     end)
 end
 
+---@param self GenericImport
 local function UpdateOptions(self)
     local options = {
         type = "group",

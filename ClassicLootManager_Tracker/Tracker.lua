@@ -8,6 +8,9 @@ local _, PRIV = ...
 
 local track = {}
 
+---@param roster Roster
+---@param itemId number
+---@param player string
 local function BuildPlayerItemTrack(roster, itemId, player)
     local UID = roster:UID()
     if not track[UID] then
@@ -34,15 +37,24 @@ local function BuildPlayerItemTrack(roster, itemId, player)
     end
 end
 
+---@param roster Roster
+---@param itemId number
+---@param player string
+---@return number
 local function GetCount(roster, itemId, player)
     return track[roster:UID()][itemId][player].count
 end
 
+---@class Tracker
 local Tracker = {}
 function Tracker:Initialize()
     self.track = track
 end
 
+---@param roster Roster
+---@param itemId number
+---@param player string
+---@return number, boolean
 function Tracker:GetCount(roster, itemId, player)
     local success, count = pcall(GetCount, roster, itemId, player)
     if not success then

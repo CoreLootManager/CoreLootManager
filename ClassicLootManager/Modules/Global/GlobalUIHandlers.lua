@@ -143,6 +143,7 @@ local function AutoConfirm(_, _, rollID, roll)
     StaticPopup_Hide("CONFIRM_LOOT_ROLL")
 end
 
+---@class GlobalUIHandlers
 local GlobalUIHandlers = {}
 function GlobalUIHandlers:Initialize()
     CLM.MODULES.EventManager:RegisterWoWEvent({"START_LOOT_ROLL"}, Handler)
