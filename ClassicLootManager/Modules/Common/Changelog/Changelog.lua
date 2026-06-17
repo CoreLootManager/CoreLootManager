@@ -1,4 +1,5 @@
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 ---@type table[]
 CLM.ChangelogData = {
     {

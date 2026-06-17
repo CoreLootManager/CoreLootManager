@@ -1,8 +1,10 @@
 ---@diagnostic disable: param-type-mismatch
 local _, CLM = ...
+---@cast CLM CLMNamespace
 
 local LOG = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
+---@class UTILS
 local UTILS = CLM.UTILS
 
 local CLM_ICON_DARK = "Interface\\AddOns\\ClassicLootManager\\Media\\Icons\\clm-dark-32.png"

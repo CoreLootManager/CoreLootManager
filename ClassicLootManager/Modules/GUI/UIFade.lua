@@ -4,6 +4,7 @@
 ]]
 
 local  _, CLM = ...
+---@cast CLM CLMNamespace
 
 ---@class FADEFrame: Frame
 local FADE = CreateFrame('Frame')

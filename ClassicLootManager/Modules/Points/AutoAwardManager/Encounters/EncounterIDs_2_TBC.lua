@@ -1,4 +1,5 @@
 local _, CLM = ...
+---@cast CLM CLMNamespace
 
 if CLM.IsSoD() then return end
 if CLM.IsClassicEra() then return end

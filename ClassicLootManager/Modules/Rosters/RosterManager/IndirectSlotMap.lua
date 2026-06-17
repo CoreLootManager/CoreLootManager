@@ -1,4 +1,5 @@
 local _, CLM = ...
+---@cast CLM CLMNamespace
 
 ---@class IndirectMap
 ---@field slot table<number, string> map from itemId to inventory type string

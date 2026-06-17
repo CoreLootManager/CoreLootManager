@@ -1,4 +1,5 @@
 local _, CLM = ...
+---@cast CLM CLMNamespace
 
 local addonName = "Core Loot Manager" -- same as the UI name for config
 
