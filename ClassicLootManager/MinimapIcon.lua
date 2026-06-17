@@ -78,6 +78,7 @@ end
 
 local dropdown
 ---@class Minimap
+---@field _initialized boolean
 local Minimap = {}
 
 local function CreateConfig(self)

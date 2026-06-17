@@ -10,6 +10,7 @@ local UTILS     = CLM.UTILS
 
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -720,6 +721,24 @@ local function RegisterSlash(self)
 end
 
 ---@class AuctionManagerGUI
+---@field top AceGUIFrameWidget
+---@field AuctionOptionsGroup AceGUISimpleGroupWidget
+---@field AwardOptionsGroup AceGUISimpleGroupWidget
+---@field ItemOptionsGroup AceGUISimpleGroupWidget
+---@field ItemList table
+---@field BidList table
+---@field db table
+---@field _initialized boolean
+---@field auctionItem AuctionItem?
+---@field item table?
+---@field awardPlayer string?
+---@field awardPrice number?
+---@field awardValue number?
+---@field awardMultiplier number?
+---@field note string?
+---@field removeOnAward boolean
+---@field dataWidth number
+---@field externalColumns table
 local AuctionManagerGUI = {}
 function AuctionManagerGUI:Initialize()
     LOG:Trace("AuctionManagerGUI:Initialize()")

@@ -14,6 +14,9 @@ local myGUID = UTILS.whoamiGUID()
 local CLM_HISTORICAL_TTL = 5
 
 ---@class EventManager
+---@field callbacks table
+---@field bucketCallbacks table
+---@field messageCallbacks table
 local EventManager = {}
 function EventManager:Initialize()
     LOG:Trace("EventManager:Initialize()")

@@ -9,6 +9,7 @@ local LOG       = CLM.LOG
 
 -- Module part
 ---@class Logger
+---@field db table
 local Logger = {}
 function Logger:Initialize()
     LOG:Trace("Logger:Initialize()")

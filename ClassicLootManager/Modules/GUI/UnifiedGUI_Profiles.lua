@@ -26,6 +26,11 @@ local function ST_GetHighlight(row)
 end
 
 ---@class UnifiedGUI_Profiles
+---@field rank number?
+---@field minimumLevel number?
+---@field roster string?
+---@field alreadyDisplayed boolean?
+---@field RightClickMenu table
 local UnifiedGUI_Profiles = {
     name = "profiles",
     filter = CLM.MODELS.Filters:New(

@@ -20,6 +20,14 @@ local function IsPlayerInPvP()
 end
 
 ---@class RaidManager
+---@field RaidLeader string
+---@field MasterLooter string
+---@field IsMasterLootSystem boolean
+---@field IsGroupLootSystem boolean
+---@field RaidAssistants table
+---@field _initialized boolean
+---@field cache table
+---@field isEventHandlingRegistered boolean
 local RaidManager = {}
 function RaidManager:Initialize()
     LOG:Trace("RaidManager:Initialize()")

@@ -9,6 +9,9 @@ local UTILS     = CLM.UTILS
 local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
 ---@class TrustInfoProvider
+---@field cache table
+---@field cacheUpdateRequired boolean
+---@field trustedExternal table
 local TrustInfoProvider = {}
 function TrustInfoProvider:Initialize()
     LOG:Trace("TrustInfoProvider:Initialize()")

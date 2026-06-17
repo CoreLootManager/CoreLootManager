@@ -61,6 +61,11 @@ local tooltipPool = CreateObjectPool(function(pool)
 end, function(_, frame) frame:Hide() end)
 
 ---@class UnifiedGUI_History
+---@field historyType number
+---@field roster string?
+---@field profile string?
+---@field pendingLoot boolean
+---@field RightClickMenu table
 local UnifiedGUI_History = {
     name = "history",
     filter = CLM.MODELS.Filters:New(

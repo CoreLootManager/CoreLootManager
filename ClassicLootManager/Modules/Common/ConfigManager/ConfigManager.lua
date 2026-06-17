@@ -12,6 +12,10 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 ---@class ConfigManager
+---@field enabled boolean
+---@field generators table
+---@field options table
+---@field slash_options table
 local ConfigManager = { enabled = false }
 
 local function ConfigGenerator(config)

@@ -28,6 +28,7 @@ local CHAT_MESSAGE_CHANNEL = "RAID_WARNING"
 ---@field bidInfoSender BidInfoSender
 ---@field handlers table
 ---@field unregisterRolls function?
+---@field lastCountdownValue number?
 local AuctionManager = {}
 
 local function InitializeDB(self)

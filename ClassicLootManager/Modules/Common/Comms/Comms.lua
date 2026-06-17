@@ -18,6 +18,11 @@ local codec = LibStub("LibDeflate")
 local CommsPrefix = "CLM"
 
 ---@class Comms
+---@field allowSelfReceive table
+---@field callbacks table
+---@field enabled boolean
+---@field securityCallbacks table
+---@field suspended table
 local Comms = CLM.CORE:NewModule("Comms", {}, "AceComm-3.0")
 
 local COMMS_VERSION = 1

@@ -37,6 +37,10 @@ local function ScanTooltip(self)
 end
 
 ---@class BagItemChecker
+---@field fakeTooltip table
+---@field bag number
+---@field slot number
+---@field itemInfo table
 local BagItemChecker = {}
 function BagItemChecker:Initialize()
     self.fakeTooltip = CreateFrame("GameTooltip", "CLMAutoAssignBagItemCheckerFakeTooltip", UIParent, "GameTooltipTemplate")
@@ -193,6 +197,10 @@ end
 
 local lootWindowIsOpen = false
 
+---@class AutoAssign
+---@field tracking table
+---@field lastTradeTarget string?
+---@field lastTradedItems table?
 local AutoAssign = {}
 function AutoAssign:Initialize()
     LOG:Trace("AutoAssign:Initialize()")

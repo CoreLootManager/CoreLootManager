@@ -33,6 +33,15 @@ local function lazyCreateItem(self, itemId)
 end
 
 ---@class Roster
+---@field bossKillBonusValues table
+---@field classMultipliers table
+---@field configuration RosterConfiguration
+---@field defaultSlotValues table
+---@field fieldNames table
+---@field hardModeBossKillBonusValues table
+---@field itemValues table
+---@field pointHistory table
+---@field raidLoot table
 local Roster = {}
 ---@param uid integer
 ---@param pointType any
@@ -346,7 +355,7 @@ end
 
 ---@param source string
 ---@param targets table
----@param isArray boolean
+---@param isArray boolean?
 function Roster:MirrorStandings(source, targets, isArray)
     if isArray then
         for target, _ in pairs(targets) do

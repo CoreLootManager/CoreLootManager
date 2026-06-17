@@ -82,6 +82,10 @@ local function SetCalculator(self)
 end
 
 ---@class ItemValueCalculator
+---@field calculator function
+---@field equation number
+---@field expvar number
+---@field multiplier number
 local ItemValueCalculator = {}
 ---@return ItemValueCalculator
 function ItemValueCalculator:New()

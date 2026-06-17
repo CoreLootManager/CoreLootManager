@@ -12,6 +12,10 @@ local function stringifyVersion(version)
 end
 
 ---@class Version
+---@field version table
+---@field versionString string
+---@field _lastDisplayedMessage number
+---@field _lastDisplayedMessageD number
 local Version = {}
 function Version:Initialize()
         -- Parse autoversion

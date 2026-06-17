@@ -10,6 +10,10 @@ local UTILS     = CLM.UTILS
 local assertType = UTILS.assertType
 
 ---@class BidInfoSender
+---@field interval number
+---@field commsCallback function
+---@field current number
+---@field data table
 local BidInfoSender = {} -- BidInfoSender
 BidInfoSender.__index = BidInfoSender
 

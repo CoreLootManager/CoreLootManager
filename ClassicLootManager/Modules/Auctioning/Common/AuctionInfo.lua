@@ -37,6 +37,12 @@ local nickMap = {
 ---@field rollItem table|nil
 ---@field anonymousMap table
 ---@field nextAnonymousId number
+---@field auctionType number
+---@field mode number
+---@field increment number
+---@field useOS boolean
+---@field namedButtons boolean
+---@field fieldNames table
 local AuctionInfo = {} -- AuctionInfo
 AuctionInfo.__index = AuctionInfo
 
@@ -328,7 +334,7 @@ end
 function AuctionInfo:RemoveItem(item)
     assertNotInProgress(self)
     local UID = self:GetAuctionItemUID(item)
-    if self.items[UID] then
+    if UID and self.items[UID] then
         self.items[UID] = nil
         self.itemCount = self.itemCount - 1
         UpdateAuctionTime(self)
@@ -606,13 +612,13 @@ function AuctionInfo:GetRollTime()
     return self.configuration:Get("rollTime")
 end
 
----@param tier number
+---@param tier string
 ---@return string
 function AuctionInfo:GetFieldName(tier)
     return self.roster:GetFieldName(tier)
 end
 
----@param class number
+---@param class string
 ---@param itemId number
 ---@return number
 function AuctionInfo:GetAwardMultiplier(class, itemId)
@@ -667,6 +673,7 @@ end
 -----------------
 --- CONSTANTS ---
 -----------------
+---@diagnostic disable-next-line: missing-fields
 CONSTANTS.AUCTION_INFO = {
     STATE = {
         NOT_CONFIGURED = 0,

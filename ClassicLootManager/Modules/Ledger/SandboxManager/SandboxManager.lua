@@ -7,6 +7,7 @@ local LOG       = CLM.LOG
 -- local UTILS     = CLM.UTILS
 -- ------------------------------- --
 ---@class SandboxManager
+---@field isSandbox boolean
 local SandboxManager = {}
 function SandboxManager:Initialize()
     LOG:Trace("SandboxManager:Initialize()")

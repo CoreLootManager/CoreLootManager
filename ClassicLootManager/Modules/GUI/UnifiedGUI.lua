@@ -8,6 +8,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -211,6 +212,12 @@ local function CreateLoadingBanner(self)
 end
 
 ---@class UnifiedGUI
+---@field tabs table
+---@field aceObjects table
+---@field db table
+---@field _initialized boolean
+---@field percentage number?
+---@field selectedTab string
 local UnifiedGUI = { tabs = {} }
 function UnifiedGUI:Initialize()
     InitializeDB(self)

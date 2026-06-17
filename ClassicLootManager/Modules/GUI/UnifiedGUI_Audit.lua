@@ -616,6 +616,7 @@ local function buildEntryRow(entry, id)
 end
 
 ---@class UnifiedGUI_Audit
+---@field RightClickMenu table
 local UnifiedGUI_Audit = {
     name = "audit",
     filter = CLM.MODELS.Filters:New(

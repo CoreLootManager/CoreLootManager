@@ -8,6 +8,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 ---@class PointInfo
+---@field rounding number
 local PointInfo = {}
 ---@return PointInfo
 function PointInfo:New()

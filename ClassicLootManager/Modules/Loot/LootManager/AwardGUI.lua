@@ -8,6 +8,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -275,6 +276,18 @@ local function HookAwardFilling(self)
 end
 
 ---@class AwardGUI
+---@field top AceGUIFrameWidget
+---@field OptionsGroup AceGUISimpleGroupWidget
+---@field db table
+---@field _initialized boolean
+---@field itemId number
+---@field itemLink string
+---@field roster Roster?
+---@field rosterId string?
+---@field awardPlayer string?
+---@field awardName string?
+---@field awardValue number?
+---@field extra table?
 local AwardGUI = {}
 function AwardGUI:Initialize()
     LOG:Trace("AwardGUI:Initialize()")

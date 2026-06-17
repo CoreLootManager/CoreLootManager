@@ -2,6 +2,7 @@
 	Dropdown from AceGUI but in a button-like style with arrow instead of text
 ]]--
 local AceGUI = LibStub("AceGUI-3.0")
+--- AceGUI AceGUI
 local NOP = function() end
 
 do

@@ -23,6 +23,10 @@ else
 end
 
 ---@class ProfileManager
+---@field _deProfile Profile
+---@field cache table
+---@field db table
+---@field _initialized boolean
 local ProfileManager = {}
 function ProfileManager:Initialize()
     LOG:Trace("ProfileManager:Initialize()")

@@ -8,6 +8,7 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -153,6 +154,16 @@ local function RegisterSlash(self)
     CLM.MODULES.ConfigManager:RegisterSlash(slash)
 end
 ---@class AltMainLinkingGUI
+---@field top AceGUIWindowWidget
+---@field OptionsGroup AceGUISimpleGroupWidget
+---@field db table
+---@field _initialized boolean
+---@field alt string?
+---@field main string?
+---@field itemId number
+---@field itemLink string?
+---@field awardValue number
+---@field awardName string
 local AltMainLinkingGUI = {}
 function AltMainLinkingGUI:Initialize()
     LOG:Trace("AltMainLinkingGUI:Initialize()")

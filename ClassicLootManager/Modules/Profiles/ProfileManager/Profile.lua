@@ -8,6 +8,10 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 ---@class Profile
+---@field _GUID string
+---@field _versionString string
+---@field locked boolean
+---@field main string
 local Profile = {}
 
 ---@param entry table

@@ -23,6 +23,10 @@ local function refreshFn(...)
 end
 
 ---@class UnifiedGUI_Raids
+---@field configuration RosterConfiguration
+---@field roster string?
+---@field raidName string?
+---@field RightClickMenu table
 local UnifiedGUI_Raids = {
     name = "raids",
     -- filter = CLM.MODELS.Filters:New(

@@ -8,6 +8,7 @@ local  _, CLM = ...
 -- ------------------------------- --
 
 ---@class Hooks
+---@field handlers table
 local Hooks = {}
 
 function Hooks:Initialize()

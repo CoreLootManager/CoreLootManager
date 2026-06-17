@@ -70,6 +70,16 @@ local function refreshFn(...)
 end
 
 ---@class UnifiedGUI_Standings
+---@field context number
+---@field roster string?
+---@field awardReason number
+---@field awardType number?
+---@field awardValue string?
+---@field decayType number?
+---@field decayValue string?
+---@field note string?
+---@field includeNegative boolean?
+---@field RightClickMenu table
 local UnifiedGUI_Standings = {
     name = "standings",
     awardReason = CONSTANTS.POINT_CHANGE_REASON.MANUAL_ADJUSTMENT,

@@ -131,11 +131,11 @@
 ---@field STALE number
 
 ---@class CLMConstantsCommsDistribution
----@field WHISPER string
----@field GROUP string
----@field GUILD string
----@field BATTLEGROUND string
+---@field PARTY string
 ---@field RAID string
+---@field GUILD string
+---@field OFFICER string
+---@field WHISPER string
 
 ---@class CLMConstantsCommsPriority
 ---@field ALERT string
@@ -146,6 +146,7 @@
 ---@field SEPARATOR string
 ---@field PRIORITIES table
 ---@field PRIORITY CLMConstantsCommsPriority
+---@field DISTRIBUTIONS table
 ---@field DISTRIBUTION CLMConstantsCommsDistribution
 
 ---@class CLMConstantsConfigsGroup
@@ -417,7 +418,7 @@
 ---@field Version Version
 ---@field EventManager EventManager
 ---@field Logger Logger
----@field DB DB
+---@field Database DB
 ---@field Comms Comms
 ---@field ConfigManager ConfigManager
 ---@field Hooks Hooks
@@ -448,7 +449,7 @@
 ---@field MODELS CLMModelsNS
 ---@field CONSTANTS CLMConstants
 ---@field UTILS UTILS
----@field LOG Logger
+---@field LOG LibLoggerInstance
 ---@field L table
 ---@field AUTOVERSION string
 ---@field CORE table
@@ -463,3 +464,17 @@
 ---@field GlobalChatMessageHandlers GlobalChatMessageHandlers
 ---@field GlobalUIHandlers GlobalUIHandlers
 ---@field GlobalGuildChangeHandler GlobalGuildChangeHandler
+---@field PROFILER table
+---@field ChangelogData table
+---@field DifficultyID table
+---@field DifficultyIDsMap table
+---@field EncounterIDs table
+---@field EncounterIDsMap table
+---@field EncounterHasHardMode table
+---@field IndirectMap IndirectMap
+---@field awardBossKillBonus fun(id: number, difficultyId: number)
+---@field GetExpansion fun(): number, any
+---@field IsClassicEra fun(): boolean
+---@field IsSoD fun(): boolean
+---@field RegisterModule fun(moduleName: string, entryPoint: table)
+---@field RegisterExternal fun(moduleName: string, entryPoint: table)

@@ -10,6 +10,7 @@ local UTILS     = CLM.UTILS
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 
 local RightClickMenu
 
@@ -56,6 +57,13 @@ local function ST_GetRolls(row)
 end
 
 ---@class AuctionHistoryGUI
+---@field st table
+---@field top AceGUIFrameWidget
+---@field AuctionHistoryGroup AceGUISimpleGroupWidget
+---@field tooltip GameTooltip
+---@field db table
+---@field _initialized boolean
+---@field previousRows number
 local AuctionHistoryGUI = {}
 function AuctionHistoryGUI:Initialize()
     LOG:Trace("AuctionHistoryGUI:Initialize()")

@@ -261,6 +261,11 @@ local function registerWorkaroundHandler(self)
 end
 
 ---@class AutoAwardManager
+---@field enabled boolean
+---@field bossKillBonusAwardingEnabled boolean
+---@field encounterInProgress number
+---@field intervalBonusAwardingEnabled boolean
+---@field intervalTimer table?
 local AutoAwardManager = {}
 function AutoAwardManager:Initialize()
     LOG:Trace("AutoAwardManager:Initialize()")

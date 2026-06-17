@@ -12,6 +12,8 @@ local weekOffsetEU = UTILS.GetWeekOffsetEU()
 local weekOffsetUS = UTILS.GetWeekOffsetUS()
 
 ---@class AttendanceTracker
+---@field weeklyReset number
+---@field currentWeek number
 local AttendanceTracker = {}
 
 ---@param raidsPerWeekForFullAttendance? number

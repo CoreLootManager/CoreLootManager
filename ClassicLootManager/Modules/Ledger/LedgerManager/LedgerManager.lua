@@ -80,6 +80,21 @@ local function createLedgerAndRegisterCallbacks(self, database)
 end
 
 ---@class LedgerManager
+---@field _initialized boolean
+---@field activeDatabase table
+---@field activeLedger table
+---@field disabled boolean
+---@field incoherentState boolean
+---@field inSync boolean
+---@field isSandbox boolean
+---@field lastEntry any
+---@field mutatorCallbacks table
+---@field onRestartCallbacks table
+---@field onUpdateCallbacks table
+---@field _originalDatabase table
+---@field _originalLedger table
+---@field syncOngoing boolean
+---@field timeTravelTarget number
 local LedgerManager = { _initialized = false}
 function LedgerManager:Initialize()
     self.activeDatabase = CLM.MODULES.Database:Ledger()

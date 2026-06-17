@@ -10,6 +10,7 @@ local UTILS     = CLM.UTILS
 -- Libs
 local ScrollingTable = LibStub("ScrollingTable")
 local AceGUI = LibStub("AceGUI-3.0")
+---@cast AceGUI AceGUI
 
 local RightClickMenu
 
@@ -44,6 +45,13 @@ local function ST_GetTradeTarget(row)
 end
 
 ---@class TradeListGUI
+---@field st table
+---@field top AceGUIFrameWidget
+---@field TradeHistoryGroup AceGUISimpleGroupWidget
+---@field tooltip GameTooltip
+---@field db table
+---@field _initialized boolean
+---@field previousRows number
 local TradeListGUI = {}
 function TradeListGUI:Initialize()
     LOG:Trace("TradeListGUI:Initialize()")

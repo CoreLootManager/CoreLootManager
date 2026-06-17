@@ -8,6 +8,8 @@ local LOG       = CLM.LOG
 -- ------------------------------- --
 
 ---@class GlobalGuildChangeHandler
+---@field isInGuild boolean
+---@field changeDetected boolean
 local GlobalGuildChangeHandler = {
     changeDetected = false
 }

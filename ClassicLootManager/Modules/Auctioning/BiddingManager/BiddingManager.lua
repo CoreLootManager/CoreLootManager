@@ -462,6 +462,7 @@ local ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 local isFakeAuctionInProgress
 function BiddingManager:FakeAuction()
     if  isFakeAuctionInProgress then
+---@diagnostic disable-next-line: missing-parameter
         BiddingManager:HandleStopAuction()
         isFakeAuctionInProgress = false
         return

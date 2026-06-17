@@ -8,6 +8,8 @@ local CONSTANTS = CLM.CONSTANTS
 -- ------------------------------- --
 
 ---@class RosterConfiguration
+---@field hasHardCap boolean
+---@field hasWeeklyCap boolean
 local RosterConfiguration = {} -- Roster Configuration
 ---@param i? table
 ---@return RosterConfiguration

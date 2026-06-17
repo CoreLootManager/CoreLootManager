@@ -77,6 +77,8 @@ local function HandleRevoke(self, data, sender)
 end
 
 ---@class StandbyStagingManager
+---@field handlers table
+---@field standby table
 local StandbyStagingManager = {}
 function StandbyStagingManager:Initialize()
     LOG:Trace("StandbyStagingManager:Initialize()")

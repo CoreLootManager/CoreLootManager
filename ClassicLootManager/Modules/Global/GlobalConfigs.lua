@@ -32,6 +32,8 @@ end
 
 
 ---@class GlobalConfigs
+---@field db table
+---@field deList table?
 local GlobalConfigs = {}
 function GlobalConfigs:Initialize()
     self.db = CLM.MODULES.Database:Personal('global', {

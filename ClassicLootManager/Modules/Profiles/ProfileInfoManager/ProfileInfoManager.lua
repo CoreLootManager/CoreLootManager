@@ -86,6 +86,10 @@ end
 ]]
 
 ---@class ProfileInfoManager
+---@field _initialized boolean
+---@field _lastRequestResponse table
+---@field db table
+---@field handlers table
 local ProfileInfoManager = {}
 function ProfileInfoManager:Initialize()
     LOG:Trace("ProfileInfoManager:Initialize()")

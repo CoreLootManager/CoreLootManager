@@ -8,6 +8,8 @@ local UTILS     = CLM.UTILS
 -- ------------------------------- --
 
 ---@class RosterManager
+---@field cache table
+---@field db table
 local RosterManager = {}
 ---@return string
 function RosterManager:GenerateName()

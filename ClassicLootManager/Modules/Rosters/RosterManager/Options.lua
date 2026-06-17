@@ -16,6 +16,12 @@ local CBTYPE = {
 }
 
 ---@class RosterManagerOptions
+---@field copy_source_name string?
+---@field externalOptions table
+---@field handlers table
+---@field pointType number
+---@field readOnly boolean
+---@field rosterName string
 local RosterManagerOptions = { externalOptions = {} }
 
 local function GetRosterOption(name, option)

@@ -7,6 +7,7 @@ local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
 ---@class ACL
+---@field guildMaster boolean
 local ACL = {}
 function ACL:Initialize()
     LOG:Trace("ACL:Initialize()")
@@ -71,5 +72,6 @@ CONSTANTS.ACL.LEVELS = UTILS.Set({
 CLM.MODULES.ACL = ACL
 
 --@do-not-package@
+---@diagnostic disable-next-line: duplicate-set-field
 ACL.CheckLevel = function() return true end
 --@end-do-not-package@
