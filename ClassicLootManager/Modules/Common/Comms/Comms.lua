@@ -87,6 +87,7 @@ function Comms:Register(prefix, callback, securityCallbackOrLevel, allowSelfRece
     self.callbacks[prefix] = callback
     self.allowSelfReceive[prefix] = allowSelfReceive
     self:RegisterComm(prefix, "OnReceive")
+    return true
 end
 
 ---@param prefix string

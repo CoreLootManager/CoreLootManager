@@ -1,3 +1,4 @@
+---@diagnostic disable: inject-field
 --[[
     UIFade.lua Copyright (c) 2022 Sebastian Lindfors (Munk)
     https://github.com/seblindfors/ConsolePort/blob/master/ConsolePort/Utils/UIFade.lua

@@ -282,7 +282,8 @@
         "LE_EXPANSION_WAR_WITHIN",
         "IsAddOnLoaded",
         "SOUNDKIT",
-        "LibStub"
+        "LibStub",
+        "CombatLogGetCurrentEventInfo"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"
