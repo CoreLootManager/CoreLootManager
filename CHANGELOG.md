@@ -1,3 +1,11 @@
+# Core Loot Manager v5.7.3
+## Fixes
+### MoP Rosters
+Fixed missing options in MoP
+### MoP SoO
+Fixed difficulty levels in MoP SoO
+### Release fixes
+Various release quality fixes
 # Core Loot Manager v5.7.2
 ## Fixes
 ### UI errors

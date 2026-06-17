@@ -702,6 +702,10 @@ function RosterManager:SetRosterDynamicItemValueEquation(nameOrRoster, equation)
         LOG:Error("RosterManager:SetRosterDynamicItemValueEquation(): Missing equation")
         return
     end
+    if not roster then
+        LOG:Error("RosterManager:SetRosterDynamicItemValueEquation(): Invalid roster object or name")
+        return nil
+    end
     if roster:GetCalculator():GetEquation() == equation then
         LOG:Debug("RosterManager:SetRosterDynamicItemValueEquation(): No change to value. Skipping.")
         return
@@ -927,6 +931,11 @@ function RosterManager:RemoveRosterItemOverride(nameOrRoster, itemId)
     if not itemId then
         LOG:Error("RosterManager:RemoveRosterItemOverride(): Missing itemId")
         return
+    end
+
+    if not roster then
+        LOG:Error("RosterManager:RemoveRosterItemOverride(): Invalid roster object or name")
+        return nil
     end
 
     if not roster.itemValues[itemId] then

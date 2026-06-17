@@ -42,7 +42,7 @@
         {
             "label": "release",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_release",
+            "command": "./scripts/release.sh -d -o -u -m .pkgmeta",
             "problemMatcher": []
         },
         {

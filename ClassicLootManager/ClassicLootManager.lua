@@ -123,7 +123,7 @@ local function RegisterUniversal(object, moduleName, entryPoint)
         error(string.format("Registrar %s already registered.", moduleName))
     end
     if type(entryPoint) ~= "table" then
-        error(string.format("Registrar %s entry point is not a table."))
+        error(string.format("Registrar %s entry point is not a table.", moduleName))
     end
     if type(entryPoint.Initialize) ~= "function" then
         error(string.format("Registrar %s entry point is missing Initialize method.", moduleName))
@@ -135,7 +135,7 @@ end
 ---@param moduleName string
 ---@param entryPoint table
 function CLM.RegisterModule(moduleName, entryPoint)
-    RegisterUniversal(CLM.MODULE, moduleName, entryPoint)
+    RegisterUniversal(CLM.MODULES, moduleName, entryPoint)
 end
 
 ---@param moduleName string

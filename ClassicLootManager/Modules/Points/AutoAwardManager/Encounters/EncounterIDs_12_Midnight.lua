@@ -6,7 +6,7 @@ if CLM.IsClassicEra() then return end
 
 local EJ_GetInstanceInfo = EJ_GetInstanceInfo or (function() return nil end)
 
-CLM.EncounterIDs[LE_EXPANSION_MIDNIGHT or "LE_EXPANSION_MIDNIGHT"] = {
+CLM.EncounterIDs[LE_EXPANSION_MIDNIGHT or 11] = {
     {
         name = EJ_GetInstanceInfo(1307) or "The Voidspire",
         difficulty = { CLM.DifficultyID.NORMAL, CLM.DifficultyID.HEROIC, CLM.DifficultyID.MYTHIC },

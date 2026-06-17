@@ -3,6 +3,19 @@ local  _, CLM = ...
 ---@type table[]
 CLM.ChangelogData = {
     {
+        version = "v5.7.3",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "MoP Rosters", body = "Fixed missing options in MoP" },
+                    { header = "MoP SoO", body = "Fixed difficulty levels in MoP SoO" },
+                    { header = "Release fixes", body = "Various release quality fixes" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.7.2",
         data = {
             {
