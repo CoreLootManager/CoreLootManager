@@ -2,7 +2,7 @@
 local  _, CLM = ...
 ---@cast CLM CLMNamespace
 -- ------ CLM common cache ------- --
--- local LOG       = CLM.LOG
+local LOG       = CLM.LOG
 local CONSTANTS = CLM.CONSTANTS
 local UTILS     = CLM.UTILS
 -- ------------------------------- --
@@ -372,6 +372,7 @@ function RosterManagerOptions:_Handle(cbtype, info, ...)
     if cbtype == CBTYPE.CONFIRMATION then
         if CLM.MODULES.RaidManager:IsInActiveRaid() then
             local raid = CLM.MODULES.RaidManager:GetRaid()
+            if not raid then return false end
             if raid:Roster() == CLM.MODULES.RosterManager:GetRosterByName(roster_name) and CONFIRMATION_GROUPS[group] then
                 return CLM.L["You are changing roster settings during active raid. You can continue without any issues however the settings will not get applied until you start a new one."]
             end
@@ -813,6 +814,10 @@ end
 
 function RosterManagerOptions:GenerateRosterOptions(name)
     local roster = CLM.MODULES.RosterManager:GetRosterByName(name)
+    if not roster then
+        LOG:Debug("RosterManagerOptions:GenerateRosterOptions(): Unknown roster %s", tostring(name))
+        return
+    end
     local isManager = CLM.MODULES.ACL:CheckLevel(CONSTANTS.ACL.LEVEL.MANAGER)
 
     local isEPGP = (roster:GetPointType() == CONSTANTS.POINT_TYPE.EPGP)

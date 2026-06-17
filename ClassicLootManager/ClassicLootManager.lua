@@ -4,6 +4,11 @@ local GuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 
 local GetActiveSeason = C_Seasons and C_Seasons.GetActiveSeason or (function() return nil end)
 
+-- Define missing expansion constants for older WoW versions
+if not LE_EXPANSION_MIDNIGHT then
+    LE_EXPANSION_MIDNIGHT = 11
+end
+
 _G["CLM"] = CLM
 
 

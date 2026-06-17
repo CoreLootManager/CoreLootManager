@@ -350,6 +350,7 @@ function PointManager:UpdatePoints(roster, targets, value, reason, action, note,
 
     -- Always a list, even for single entry
     if typeof(targets, CLM.MODELS.Profile) or type(targets) == "number" or type(targets) == "string" then
+---@diagnostic disable-next-line: missing-fields
         targets = { targets }
     elseif type(targets) ~= "table" then
         LOG:Error("PointManager:UpdatePoints(): Invalid targets list")
@@ -487,7 +488,7 @@ function PointManager:UpdatePointsDirectly(roster, targets, value, reason, point
         return
     end
 
-    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, pointChangeType)
+    local pointHistoryEntry = CLM.MODELS.FakePointHistory:New(targets, timestamp, value, reason, creator, "", pointChangeType)
     roster:AddRosterPointHistory(pointHistoryEntry)
 
     update_profile_standings(mutate_update_standings, roster, targets, value, reason, pointChangeType, timestamp, pointHistoryEntry, true)
