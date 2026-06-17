@@ -279,7 +279,10 @@
         "INVSLOT_TABARD",
         "GetAddOnInfo",
         "GetLootMethod",
-        "LE_EXPANSION_WAR_WITHIN"
+        "LE_EXPANSION_WAR_WITHIN",
+        "IsAddOnLoaded",
+        "SOUNDKIT",
+        "LibStub"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"

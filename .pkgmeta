@@ -38,6 +38,7 @@ ignore:
   - scripts
   - assets
   - gitman.yml
+  - ClassicLootManager/_annotations
 
 move-folders:
   ClassicLootManager/ClassicLootManager: ClassicLootManager

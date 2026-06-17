@@ -33,15 +33,26 @@ local function lazyCreateItem(self, itemId)
 end
 
 ---@class Roster
+---@field uid integer
+---@field pointType any
 ---@field bossKillBonusValues table
 ---@field classMultipliers table
 ---@field configuration RosterConfiguration
 ---@field defaultSlotValues table
+---@field disenchantedLoot table
 ---@field fieldNames table
 ---@field hardModeBossKillBonusValues table
+---@field inRoster table
 ---@field itemValues table
 ---@field pointHistory table
+---@field pointInfo table
+---@field profileLoot table
+---@field profilePointHistory table
 ---@field raidLoot table
+---@field standings table
+---@field attendanceTracker AttendanceTracker
+---@field weeklyGains table
+---@field calculator ItemValueCalculator
 local Roster = {}
 ---@param uid integer
 ---@param pointType any
@@ -382,7 +393,7 @@ end
 
 ---@param source string
 ---@param targets table
----@param isArray boolean
+---@param isArray? boolean
 function Roster:MirrorWeeklyGains(source, targets, isArray)
     if isArray then
         for target, _ in pairs(targets) do

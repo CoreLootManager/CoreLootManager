@@ -45,8 +45,8 @@ local function ST_GetTradeTarget(row)
 end
 
 ---@class TradeListGUI
----@field st table
----@field top AceGUIFrameWidget
+---@field st LibSTTable
+---@field top AceGUIWindowWidget
 ---@field TradeHistoryGroup AceGUISimpleGroupWidget
 ---@field tooltip GameTooltip
 ---@field db table

@@ -54,6 +54,7 @@ function ACL:CheckLevel(level, name)
     return true
 end
 
+---@diagnostic disable-next-line: missing-fields
 CONSTANTS.ACL = {}
 CONSTANTS.ACL.LEVEL = {
     PLEBS = 0,

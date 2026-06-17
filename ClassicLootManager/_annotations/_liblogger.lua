@@ -26,6 +26,11 @@ function LibLoggerInstance:Trace(fmt, ...) end
 
 ---@param fmt string
 ---@param ... any
+function LibLoggerInstance:TraceAndCount(fmt, ...) end
+
+
+---@param fmt string
+---@param ... any
 function LibLoggerInstance:Debug(fmt, ...) end
 
 ---@param fmt string

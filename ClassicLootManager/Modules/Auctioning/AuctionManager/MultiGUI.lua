@@ -725,8 +725,8 @@ end
 ---@field AuctionOptionsGroup AceGUISimpleGroupWidget
 ---@field AwardOptionsGroup AceGUISimpleGroupWidget
 ---@field ItemOptionsGroup AceGUISimpleGroupWidget
----@field ItemList table
----@field BidList table
+---@field ItemList LibSTTable
+---@field BidList LibSTTable
 ---@field db table
 ---@field _initialized boolean
 ---@field auctionItem AuctionItem?

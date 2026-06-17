@@ -4,6 +4,26 @@
 ---@meta _
 
 -- ────────────────────────────────────────────────────────────
+-- AceComm-3.0 mixin
+-- ────────────────────────────────────────────────────────────
+
+---@class AceCommMixin
+local AceCommMixin = {}
+---@param prefix string
+---@param handler string|fun(prefix: string, message: string, distribution: string, sender: string)
+function AceCommMixin:RegisterComm(prefix, handler) end
+---@param prefix string
+function AceCommMixin:UnregisterComm(prefix) end
+---@param prefix string
+---@param text string
+---@param distribution string
+---@param target? string
+---@param priority? string
+---@param callbackFn? function
+---@param callbackArg? any
+function AceCommMixin:SendCommMessage(prefix, text, distribution, target, priority, callbackFn, callbackArg) end
+
+-- ────────────────────────────────────────────────────────────
 -- CONSTANTS sub-types
 -- ────────────────────────────────────────────────────────────
 

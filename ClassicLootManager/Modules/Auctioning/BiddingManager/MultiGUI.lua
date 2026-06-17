@@ -56,8 +56,8 @@ local BUTTON_REGISTRY   = "clm_bm_gui_opt_button"
 ---@field ButtonGroup AceGUISimpleGroupWidget
 ---@field DataGroup AceGUISimpleGroupWidget
 ---@field ItemGroup AceGUISimpleGroupWidget
----@field BidList table
----@field ItemList table
+---@field BidList LibSTTable
+---@field ItemList LibSTTable
 ---@field BidInput AceGUIEditBoxWidget
 ---@field bar BiddingTimerBar?
 ---@field testBar BiddingTimerBar?

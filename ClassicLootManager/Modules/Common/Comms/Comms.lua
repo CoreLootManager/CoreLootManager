@@ -17,7 +17,7 @@ local codec = LibStub("LibDeflate")
 
 local CommsPrefix = "CLM"
 
----@class Comms
+---@class Comms : AceCommMixin
 ---@field allowSelfReceive table
 ---@field callbacks table
 ---@field enabled boolean

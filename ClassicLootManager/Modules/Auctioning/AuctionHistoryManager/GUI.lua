@@ -57,7 +57,7 @@ local function ST_GetRolls(row)
 end
 
 ---@class AuctionHistoryGUI
----@field st table
+---@field st LibSTTable
 ---@field top AceGUIFrameWidget
 ---@field AuctionHistoryGroup AceGUISimpleGroupWidget
 ---@field tooltip GameTooltip

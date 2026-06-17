@@ -72,6 +72,7 @@ function AceGUIWidget:ClearAllPoints() end
 -- ────────────────────────────────────────────────────────────
 
 ---@class AceGUIContainer : AceGUIWidget
+---@field frame table WoW Frame underlying the widget
 local AceGUIContainer = {}
 
 ---@param layout string
@@ -113,6 +114,9 @@ function AceGUIWindowWidget:SetTitle(title) end
 
 ---@param text string
 function AceGUIWindowWidget:SetStatusText(text) end
+
+---@param enable boolean
+function AceGUIWindowWidget:EnableResize(enable) end
 
 -- ────────────────────────────────────────────────────────────
 -- SimpleGroup widget  (AceGUI:Create("SimpleGroup"))
