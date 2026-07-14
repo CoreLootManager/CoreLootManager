@@ -1,3 +1,9 @@
+# Core Loot Manager v5.7.4
+## Changes
+### Updated ToC
+ToC aligned to new game versions
+### Auction History UI
+Bids will now be displayed only when using detailed mode (holding CTRL) in History and Auction History UI
 # Core Loot Manager v5.7.3
 ## Fixes
 ### MoP Rosters

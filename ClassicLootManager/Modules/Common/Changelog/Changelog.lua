@@ -3,6 +3,18 @@ local  _, CLM = ...
 ---@type table[]
 CLM.ChangelogData = {
     {
+        version = "v5.7.4",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Updated ToC", body = "ToC aligned to new game versions" },
+                    { header = "Auction History UI", body = "Bids will now be displayed only when using detailed mode (holding CTRL) in History and Auction History UI" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.7.3",
         data = {
             {
