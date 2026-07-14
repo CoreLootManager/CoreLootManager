@@ -69,7 +69,8 @@ local function StoreWoWDKPBotData(self)
             db.rosters[name][GUID] = {
                 dkp = value, -- set standings
                 loot = {},
-                history = {}
+                history = {},
+                spent = roster:GP(GUID)
             }
             local data = db.rosters[name][GUID]
             -- set loot
