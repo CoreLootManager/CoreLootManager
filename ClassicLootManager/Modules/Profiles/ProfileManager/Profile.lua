@@ -14,7 +14,7 @@ local UTILS     = CLM.UTILS
 ---@field main string
 local Profile = {}
 
----@param entry table
+---@param entry table?
 ---@param name string?
 ---@param class string?
 ---@param main string?

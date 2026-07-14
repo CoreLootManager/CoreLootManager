@@ -220,13 +220,10 @@
         "INVSLOT_TRINKET2",
         "INVSLOT_BACK",
         "INVSLOT_TABARD",
-        "GetAddOnInfo",
         "GetLootMethod",
         "LE_EXPANSION_WAR_WITHIN",
-        "IsAddOnLoaded",
         "SOUNDKIT",
-        "LibStub",
-        "CombatLogGetCurrentEventInfo"
+        "LibStub"
     ],
     "Lua.diagnostics.disable": [
         "deprecated"
