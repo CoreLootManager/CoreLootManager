@@ -167,8 +167,6 @@ local function horizontalOptionsFeeder()
 end
 
 local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
-    -- local itemId = UTILS.GetItemIdFromLink(itemLink)
-    -- local itemString = "item:" .. tostring(itemId)
     tooltip:SetHyperlink(itemLink)
     if loot then
         local profile = CLM.MODULES.ProfileManager:GetProfileByGUID(UTILS.getGuidFromInteger(loot:Creator()))
@@ -185,6 +183,8 @@ local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
         tooltip:AddDoubleLine(CLM.L["Awarded by"], name)
         local auction = CLM.MODULES.AuctionHistoryManager:GetByUUID(loot:Entry():uuid())
         if detailsMode and auction then
+            tooltip:ClearLines()
+            tooltip:AddLine(itemLink)
             tooltip:AddLine("\n")
             for bidder, bid in pairs(auction.bids) do
                 local names = auction.names or {}
@@ -200,7 +200,6 @@ local function buildLootTooltip(tooltip, loot, itemLink, detailsMode)
                 if bidderProfile then
                     bidder = UTILS.ColorCodeText(bidder, UTILS.GetClassColor(bidderProfile:Class()).hex)
                 end
-
                 tooltip:AddDoubleLine(bidder, bid)
             end
             if detailsMode then

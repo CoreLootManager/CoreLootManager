@@ -164,29 +164,42 @@ local function CreateAuctionDisplay(self)
         if not tooltip then return end
         local itemId = ST_GetItemId(rowData)
         local itemString = "item:" .. tostring(itemId)
+
+        local detailsMode = IsControlKeyDown()
+
         tooltip:SetOwner(rowFrame, "ANCHOR_TOPRIGHT")
         tooltip:SetHyperlink(itemString)
         tooltip:AddLine(ST_GetAuctionTime(rowData))
-        local bidNames = ST_GetBidNames(rowData) or {}
-        local rolls = ST_GetRolls(rowData) or {}
-        local noBids = true
-        for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
-            noBids = false
-            bid  = tostring(bid)
-            if rolls[bidder] then
-                bid  = bid .. "/" .. tostring(rolls[bidder])
+
+        if detailsMode then
+            local _, itemLink = tooltip:GetItem()
+            tooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+            tooltip:ClearLines()
+            tooltip:AddLine(itemLink)
+            tooltip:AddLine(ST_GetAuctionTime(rowData))
+            tooltip:AddLine("\n")
+
+            local bidNames = ST_GetBidNames(rowData) or {}
+            local rolls = ST_GetRolls(rowData) or {}
+            local noBids = true
+            for bidder, bid in pairs(ST_GetAuctionBids(rowData)) do
+                noBids = false
+                bid  = tostring(bid)
+                if rolls[bidder] then
+                    bid  = bid .. "/" .. tostring(rolls[bidder])
+                end
+                if bidNames[bidder] then
+                    bid = bid .. " (" .. bidNames[bidder] .. ")"
+                end
+                local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
+                if bidderProfile then
+                    bidder = UTILS.ColorCodeText(Ambiguate(bidder, "none"), UTILS.GetClassColor(bidderProfile:Class()).hex)
+                end
+                tooltip:AddDoubleLine(bidder, bid)
             end
-            if bidNames[bidder] then
-                bid = bid .. " (" .. bidNames[bidder] .. ")"
+            if noBids then
+                tooltip:AddLine(CLM.L["No bids"])
             end
-            local bidderProfile = CLM.MODULES.ProfileManager:GetProfileByName(bidder)
-            if bidderProfile then
-                bidder = UTILS.ColorCodeText(Ambiguate(bidder, "none"), UTILS.GetClassColor(bidderProfile:Class()).hex)
-            end
-            tooltip:AddDoubleLine(bidder, bid)
-        end
-        if noBids then
-            tooltip:AddLine(CLM.L["No bids"])
         end
         tooltip:Show()
         return status
