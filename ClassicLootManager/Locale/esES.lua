@@ -1,5 +1,5 @@
 local _, CLM = ...
-if GetLocale() == "esES" then
+if GetLocale() == "esES" or GetLocale() == "esMX" then
 -- ClassicLootManager/Modules/Profiles/ProfileManager/ProfileManager.lua:351
 -- ClassicLootManager/Modules/GUI/UnifiedGUI_Audit.lua:323
 CLM.L[" alt of: "] = " ater de "
