@@ -761,9 +761,19 @@ local function tableDataFeeder()
         end
     end)
 
+    local getData = (function()
+        return CLM.MODULES.LedgerManager:GetData()
+    end)
+
+    if CLM.IsHardcore() then
+        getData = (function()
+            return CLM.MODULES.LedgerManager:GetRecentData()
+        end)
+    end
+
     if CLM.MODULES.LedgerManager:IsTimeTraveling() then
         local timeTravelTarget = CLM.MODULES.LedgerManager:GetTimeTravelTarget()
-        for i,entry in ipairs(CLM.MODULES.LedgerManager:GetData()) do
+        for i,entry in ipairs(getData()) do
             if entry:time() > timeTravelTarget then
                 break
             end
@@ -771,7 +781,7 @@ local function tableDataFeeder()
             fillIGNData(i, entry)
         end
     else
-        for i,entry in ipairs(CLM.MODULES.LedgerManager:GetData()) do
+        for i,entry in ipairs(getData()) do
             data[#data+1] = buildEntryRow(entry, i)
             fillIGNData(i, entry)
         end

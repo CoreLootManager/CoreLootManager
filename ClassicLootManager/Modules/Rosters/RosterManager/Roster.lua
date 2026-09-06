@@ -12,6 +12,8 @@ local weekOffsetUS = UTILS.GetWeekOffsetUS()
 
 local GLOBAL_FAKE_INVENTORY_SLOT = "_GLOBAL"
 
+local SIX_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 6
+
 local function fillSlotsArray(array)
     for key,_ in pairs(CONSTANTS.SLOT_VALUE_TIERS) do
         array[key] = 0
@@ -49,6 +51,10 @@ end
 ---@field profileLoot table
 ---@field profilePointHistory table
 ---@field raidLoot table
+---@field recentRaidLootCache table?
+---@field recentRaidLootCacheSeconds number?
+---@field recentRaidPointHistoryCache table?
+---@field recentRaidPointHistoryCacheSeconds number?
 ---@field standings table
 ---@field attendanceTracker AttendanceTracker
 ---@field weeklyGains table
@@ -652,6 +658,7 @@ function Roster:WipeLoot()
         self.profileLoot[GUID] = {}
     end
     self.raidLoot = {}
+    self.recentRaidLootCache = nil
 end
 
 function Roster:WipeHistory()
@@ -660,6 +667,7 @@ function Roster:WipeHistory()
         self.profilePointHistory[GUID] = {}
     end
     self.pointHistory = {}
+    self.recentRaidPointHistoryCache = nil
 end
 
 --[[
@@ -675,6 +683,7 @@ function Roster:AddLoot(loot, profile)
     local GUID = profile:GUID()
     self.profileLoot[GUID][#self.profileLoot[GUID]+1] = loot
     self.raidLoot[#self.raidLoot+1] = loot
+    self.recentRaidLootCache = nil
     if profile:IsLocked() then return end
     self.pointInfo[GUID]:AddSpent(loot:Value())
     if self:GetPointType() == CONSTANTS.POINT_TYPE.DKP then
@@ -688,6 +697,25 @@ end
 ---@return table
 function Roster:GetRaidLoot()
     return self.raidLoot or {}
+end
+
+---@param seconds number? timeframe in seconds (default: 6 months)
+---@return table
+function Roster:GetRecentRaidLoot(seconds)
+    seconds = seconds or SIX_MONTHS_IN_SECONDS
+    if self.recentRaidLootCache and self.recentRaidLootCacheSeconds == seconds then
+        return self.recentRaidLootCache
+    end
+    local cutoff = time() - seconds
+    local result = {}
+    for _, loot in ipairs(self.raidLoot or {}) do
+        if loot:Timestamp() >= cutoff then
+            result[#result+1] = loot
+        end
+    end
+    self.recentRaidLootCache = result
+    self.recentRaidLootCacheSeconds = seconds
+    return result
 end
 
 ---@param GUID string
@@ -715,11 +743,31 @@ end
 ---@param history table
 function Roster:AddRosterPointHistory(history)
     self.pointHistory[#self.pointHistory+1] = history
+    self.recentRaidPointHistoryCache = nil
 end
 
 ---@return table
 function Roster:GetRaidPointHistory()
     return self.pointHistory or {}
+end
+
+---@param seconds number? timeframe in seconds (default: 6 months)
+---@return table
+function Roster:GetRecentRaidPointHistory(seconds)
+    seconds = seconds or SIX_MONTHS_IN_SECONDS
+    if self.recentRaidPointHistoryCache and self.recentRaidPointHistoryCacheSeconds == seconds then
+        return self.recentRaidPointHistoryCache
+    end
+    local cutoff = time() - seconds
+    local result = {}
+    for _, entry in ipairs(self.pointHistory or {}) do
+        if entry:Timestamp() >= cutoff then
+            result[#result+1] = entry
+        end
+    end
+    self.recentRaidPointHistoryCache = result
+    self.recentRaidPointHistoryCacheSeconds = seconds
+    return result
 end
 
 ---@param GUID string

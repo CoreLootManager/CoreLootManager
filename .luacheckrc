@@ -50,6 +50,7 @@ globals = {
 	-- WoW
 	"C_ToyBox",
 	"C_TooltipInfo",
+	"C_GameRules",
 	"floor",
 	"LE_EXPANSION_CLASSIC",
 	"LE_EXPANSION_BURNING_CRUSADE",

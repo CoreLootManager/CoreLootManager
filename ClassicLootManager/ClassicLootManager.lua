@@ -29,6 +29,15 @@ function CLM.IsSoD()
     return (expansion == LE_EXPANSION_CLASSIC) and (season == Enum.SeasonID.SeasonOfDiscovery)
 end
 
+---@return boolean
+function CLM.IsHardcore()
+    if C_GameRules and C_GameRules.IsHardcoreActive then
+        return C_GameRules.IsHardcoreActive()
+    end
+
+    return false
+end
+
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
 CLM.MODULES = {}

@@ -9,6 +9,8 @@ local UTILS     = CLM.UTILS
 
 local LedgerLib = LibStub("EventSourcing/LedgerFactory")
 
+local TWO_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 2
+
 local STATUS_SYNCED = "synced"
 local STATUS_OUT_OF_SYNC = "out_of_sync"
 -- local STATUS_UNKNOWN = "unknown"
@@ -95,6 +97,8 @@ end
 ---@field _originalLedger table
 ---@field syncOngoing boolean
 ---@field timeTravelTarget number
+---@field recentDataCache table?
+---@field recentDataCacheSeconds number?
 local LedgerManager = { _initialized = false}
 function LedgerManager:Initialize()
     self.activeDatabase = CLM.MODULES.Database:Ledger()
@@ -104,7 +108,7 @@ function LedgerManager:Initialize()
     self.onRestartCallbacks = {}
     self._initialized = true
 
-
+    self:RegisterOnUpdate(function() self.recentDataCache = nil end)
 end
 
 ---@return boolean
@@ -158,11 +162,13 @@ end
 function LedgerManager:TimeTravel(timestamp)
     self.timeTravelTarget = timestamp
     self.activeLedger.getStateManager():travelToTime(timestamp)
+    self.recentDataCache = nil
     self:UpdateSyncState()
 end
 
 function LedgerManager:EndTimeTravel()
     self.activeLedger.getStateManager():stopTimeTravel()
+    self.recentDataCache = nil
     self:UpdateSyncState()
 end
 
@@ -331,6 +337,28 @@ end
 ---@return table
 function LedgerManager:GetData()
     return self.activeLedger.getSortedList():entries()
+end
+
+---@param seconds number? timeframe in seconds (default & max: 2 months)
+---@return table
+function LedgerManager:GetRecentData(seconds)
+    seconds = math.min(seconds or TWO_MONTHS_IN_SECONDS, TWO_MONTHS_IN_SECONDS)
+    if self.recentDataCache and self.recentDataCacheSeconds == seconds then
+        return self.recentDataCache
+    end
+    local now = self:IsTimeTraveling() and self.timeTravelTarget or time()
+    local cutoff = now - seconds
+    local result = {}
+    for _, entry in ipairs(self:GetData()) do
+        local entryTime = entry:time()
+        if entryTime > now then break end
+        if entryTime >= cutoff then
+            result[#result+1] = entry
+        end
+    end
+    self.recentDataCache = result
+    self.recentDataCacheSeconds = seconds
+    return result
 end
 
 function LedgerManager:RequestPeerStatusFromRaid()
