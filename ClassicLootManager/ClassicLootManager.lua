@@ -38,6 +38,11 @@ function CLM.IsHardcore()
     return false
 end
 
+---@return boolean
+function CLM.IsMainline()
+    return not CLM.IsClassicEra() and not CLM.IsSoD() and not CLM.IsHardcore()
+end
+
 CLM.CORE = LibStub("AceAddon-3.0"):NewAddon(name, "AceEvent-3.0", "AceBucket-3.0")
 
 CLM.MODULES = {}

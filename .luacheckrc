@@ -52,6 +52,7 @@ globals = {
 	"C_TooltipInfo",
 	"C_GameRules",
 	"floor",
+	"RaidWaringFrameMixin",
 	"LE_EXPANSION_CLASSIC",
 	"LE_EXPANSION_BURNING_CRUSADE",
 	"LE_EXPANSION_WRATH_OF_THE_LICH_KING",
