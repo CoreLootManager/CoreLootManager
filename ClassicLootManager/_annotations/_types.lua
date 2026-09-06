@@ -496,5 +496,6 @@ function AceCommMixin:SendCommMessage(prefix, text, distribution, target, priori
 ---@field GetExpansion fun(): number, any
 ---@field IsClassicEra fun(): boolean
 ---@field IsSoD fun(): boolean
+---@field IsHardcore fun(): boolean
 ---@field RegisterModule fun(moduleName: string, entryPoint: table)
 ---@field RegisterExternal fun(moduleName: string, entryPoint: table)
