@@ -436,7 +436,7 @@ local function tableDataFeeder()
         if isProfileHistory then
             pointList = roster:GetProfilePointHistoryByGUID(profile:GUID())
         else -- raid loot
-            if CLM.IsHardcore() then    
+            if CLM.IsHardcore() then
                 pointList = roster:GetRecentRaidPointHistory()
             else
                 pointList = roster:GetRaidPointHistory()
