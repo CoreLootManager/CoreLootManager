@@ -390,6 +390,19 @@ CLM.EncounterIDsMap = {
     -- March on Quel'Danas
     [3182] = EJ_GetEncounterInfo(2739) or "Belo'ren, Child of Al'ar",
     [3183] = EJ_GetEncounterInfo(2740) or "Midnight Falls",
+    -- The Venomous Abyss
+    [3470] = EJ_GetEncounterInfo(2888) or "Nek'zali the Soulcoiler",
+    [3445] = EJ_GetEncounterInfo(2874) or "Entombed Sentinels",
+    [3455] = EJ_GetEncounterInfo(2882) or "Vashnik the Malignant",
+    [3497] = EJ_GetEncounterInfo(2894) or "The Lost Explorers",
+    [3420] = EJ_GetEncounterInfo(2871) or "Sszorak",
+    [3421] = EJ_GetEncounterInfo(2887) or "The Twin Fangs",
+    [3429] = EJ_GetEncounterInfo(2883) or "The Coiled Altar",
+    [3492] = EJ_GetEncounterInfo(2895) or "Ula'tek",
+    -- Sporefall
+    [3159] = EJ_GetEncounterInfo(2711) or "Rotmire",
+    -- Tidebound Grotto
+    [3379] = EJ_GetEncounterInfo(2849) or "Nymrissa Wavecaller",
 }
 
 CLM.EncounterHasHardMode = CLM.UTILS.Set({
