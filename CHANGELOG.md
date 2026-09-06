@@ -1,3 +1,14 @@
+# Core Loot Manager v5.7.6
+## Changes
+### Midnight Phase 2
+Support for Midnight Phase 2 including Lairs
+## Fixes
+### Hardcore
+Limited histories to recent 2-3 months to avoid timeouts
+# Core Loot Manager v5.7.5
+## Hotfix
+### Hotfix
+Hotfix
 # Core Loot Manager v5.7.4
 ## Changes
 ### Updated ToC

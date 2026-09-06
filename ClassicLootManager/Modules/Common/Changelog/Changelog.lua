@@ -3,6 +3,34 @@ local  _, CLM = ...
 ---@type table[]
 CLM.ChangelogData = {
     {
+        version = "v5.7.6",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Midnight Phase 2", body = "Support for Midnight Phase 2 including Lairs" },
+                },
+            },
+            {
+                name = "Fixes",
+                data = {
+                    { header = "Hardcore", body = "Limited histories to recent 2-3 months to avoid timeouts" },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.7.5",
+        data = {
+            {
+                name = "Hotfix",
+                data = {
+                    { header = "Hotfix", body = "Hotfix" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.7.4",
         data = {
             {
