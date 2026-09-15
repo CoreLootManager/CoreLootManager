@@ -44,7 +44,7 @@ local function mainlineRaidWarningFrameOnEvent(self, event, message)
         message = subsituteWithIcon(message)
     end
 
-    RaidWaringFrameMixin.OnEvent(self, event, message)
+    RaidWarningFrameMixin.OnEvent(self, event, message)
 end
 
 local raidWarningFrameOnEvent = classicRaidWarningFrameOnEvent
