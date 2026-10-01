@@ -1199,6 +1199,11 @@ end
 
 local toggleCb = (function() BiddingManagerGUI:Toggle() end)
 function BiddingManagerGUI:StartAuction()
+    -- Drop previous auction bar before BuildBidOrder() refreshes bar info
+    if self.bar then
+        self.bar:Stop()
+        self.bar = nil
+    end
     self:BuildBidOrder()
     -- Hide Test Bar if present
     HideTestBar(self)
@@ -1230,6 +1235,7 @@ function BiddingManagerGUI:EndAuction()
     StoreLocation(self)
     if self.bar then
         self.bar:Stop()
+        self.bar = nil
     end
 end
 

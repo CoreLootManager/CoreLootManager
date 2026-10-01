@@ -20,6 +20,8 @@ local DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE = GameFontHighlightSmallOutline:GetFo
 
 SharedMedia:Register("statusbar", DEFAULT_TEXTURE_NAME, DEFAULT_TEXTURE)
 
+local OWNER_KEY = "clm:owner"
+
 ---@class BiddingTimerBar
 ---@field bar table
 ---@field parent Frame
@@ -49,6 +51,9 @@ local function Create(self, item, auction, options)
         fontSize = tonumber(options.fontSize) or DEFAULT_FONT_SIZE
     }
     self.bar = LibCandyBar:New(self.options.texture, self.options.width, self.options.height)
+    -- Bars are pooled and shared with other addons (e.g. BigWigs). Tag ownership
+    -- so we never touch the bar after it was stopped and recycled.
+    self.bar:Set(OWNER_KEY, self)
 
     self.bar:SetFont(SharedMedia:Fetch("font", self.options.fontName), self.options.fontSize)
 
@@ -133,9 +138,16 @@ function BiddingTimerBar:GetPoint()
     return self.parent:GetPoint()
 end
 
+---@return boolean
+function BiddingTimerBar:IsActive()
+    -- Stopped bars have their data cleared and may be reused by another addon
+    return (self.bar.data ~= nil) and (self.bar:Get(OWNER_KEY) == self)
+end
+
 ---@param item table?
 function BiddingTimerBar:UpdateInfo(item)
     if not item then return end
+    if not self:IsActive() then return end
     local note = ""
     if item:GetNote():len() > 0 then
         note = "(" .. item:GetNote() .. ")"
@@ -149,34 +161,40 @@ end
 
 ---@param time number
 function BiddingTimerBar:UpdateTime(time)
+    if not self:IsActive() then return end
     self.bar.exp = (self.bar.exp + time) -- trick to extend bar
 end
 
 ---@param width number
 function BiddingTimerBar:SetWidth(width)
     self.options.width = tonumber(width) or DEFAULT_WIDTH
+    if not self:IsActive() then return end
     self.bar:SetWidth(self.options.width)
 end
 
 function BiddingTimerBar:SetHeight(height)
     self.options.height = tonumber(height) or DEFAULT_WIDTH
+    if not self:IsActive() then return end
     self.bar:SetHeight(self.options.height)
 end
 
 function BiddingTimerBar:SetTexture(texture)
     self.options.texture = texture and tostring(texture) or DEFAULT_TEXTURE
+    if not self:IsActive() then return end
     self.bar.candyBarBar:SetStatusBarTexture(self.options.texture)
     self.bar.candyBarBackground:SetTexture(self.options.texture)
 end
 
 function BiddingTimerBar:SetFontName(fontName)
     self.options.fontName = fontName and tostring(fontName) or DEFAULT_FONT_NAME
+    if not self:IsActive() then return end
     local _, _fontSize = self.bar.candyBarLabel:GetFont()
     self.bar:SetFont(self.options.fontName, _fontSize)
 end
 
 function BiddingTimerBar:SetFontSize(fontSize)
     self.options.fontSize = tonumber(fontSize) or DEFAULT_FONT_SIZE
+    if not self:IsActive() then return end
     local _fontName, _ = self.bar.candyBarLabel:GetFont()
     self.bar:SetFont(_fontName, self.options.fontSize)
 end
@@ -195,7 +213,7 @@ end
 
 function BiddingTimerBar:Stop()
     self.parent:Hide()
-    if self.bar.running then
+    if self:IsActive() and self.bar.running then
         self.bar:Stop()
     end
 end
