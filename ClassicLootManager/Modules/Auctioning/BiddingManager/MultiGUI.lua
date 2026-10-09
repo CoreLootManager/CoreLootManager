@@ -1228,8 +1228,10 @@ end
 
 function BiddingManagerGUI:EndAuction()
     StoreLocation(self)
+
     if self.bar then
         self.bar:Stop()
+        self.bar = nil
     end
 end
 
