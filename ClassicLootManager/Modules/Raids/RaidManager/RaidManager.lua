@@ -635,6 +635,10 @@ function RaidManager:RegisterEventHandling()
     CLM.MODULES.EventManager:RegisterWoWBucketEvent({"PARTY_LOOT_METHOD_CHANGED","PLAYER_ROLES_ASSIGNED"}, 3, (function(...)
         self:UpdateGameRaidInformation() -- we dont need to check others; im not even sure if we need to do this
     end))
+    -- Roster events fired at login happen before registration
+    if IsInRaid() then
+        self:UpdateGameRaidInformation()
+    end
     self.isEventHandlingRegistered = true
 end
 
@@ -819,6 +823,12 @@ function RaidManager:IsAllowedToAuction(name, relaxed)
     end
 
     local allow = self.RaidAssistants[name]
+    -- Assistant list may be stale (e.g. after reload or a promotion still in event bucket)
+    if not allow and IsInRaid() and (GetTime() - (self.lastRaidInfoRefresh or 0) > 1) then
+        self.lastRaidInfoRefresh = GetTime()
+        self:UpdateGameRaidInformation()
+        allow = self.RaidAssistants[name]
+    end
     if not allow then
         LOG:Debug("%s is not allowed to auction.", name)
     end

@@ -54,6 +54,9 @@ local function GetUpgradedItems(itemId)
     return items
 end
 
+local STALE_AUCTION_GRACE_TIME = 300
+local REJECTED_AUCTIONEER_MESSAGE_INTERVAL = 30
+
 ---@class BiddingManager
 ---@field auction AuctionInfo
 ---@field auctioneer string
@@ -63,6 +66,7 @@ local BiddingManager = {}
 function BiddingManager:Initialize()
     LOG:Trace("BiddingManager:Initialize()")
 
+    local lastRejectedAuctioneerMessage = {}
     CLM.MODULES.Comms:Register(CLM.COMM_CHANNEL.AUCTION,
     (function(rawMessage, distribution, sender)
         local message = CLM.MODELS.AuctionCommStructure:New(rawMessage)
@@ -70,7 +74,16 @@ function BiddingManager:Initialize()
         self:HandleIncomingMessage(message, distribution, sender)
     end),
     (function(name)
-        return CLM.MODULES.AuctionManager:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
+        local allowed = CLM.MODULES.AuctionManager:IsAuctioneer(name, true) -- relaxed for cross-guild bidding
+        -- Comms only logs this as a warning so make sure the user knows why they don't see the auction
+        if not allowed and (name ~= UTILS.whoami()) then
+            local now = GetServerTime()
+            if now - (lastRejectedAuctioneerMessage[name] or 0) > REJECTED_AUCTIONEER_MESSAGE_INTERVAL then
+                lastRejectedAuctioneerMessage[name] = now
+                LOG:Message(CLM.L["Ignoring auction message from %s: not recognized as Master Looter or Raid Assistant."], name)
+            end
+        end
+        return allowed
     end),
     true)
 
@@ -260,8 +273,17 @@ end
 function BiddingManager:HandleStartAuction(data, sender)
     LOG:Trace("BiddingManager:HandleStartAuction()")
     if self:IsAuctionInProgress() then
-        LOG:Debug("Received new auction from %s while auction is in progress", sender)
-        return
+        -- Auctioneer can't start a new auction before ending the previous one, so we must have missed the stop.
+        -- Bidder side end time doesn't include anti-snipe, hence the generous grace period.
+        local isStale = (GetServerTime() > ((self.auction:GetEndTime() or 0) + STALE_AUCTION_GRACE_TIME))
+        if (sender == self.auctioneer) or isStale then
+            LOG:Debug("Replacing stale auction from %s with new auction from %s", self.auctioneer, sender)
+            EndAuction(self)
+            CLM.GUI.BiddingManager:EndAuction()
+        else
+            LOG:Message(CLM.L["Ignoring auction from %s: auction from %s is still in progress."], sender, self.auctioneer)
+            return
+        end
     end
     self.auctioneer = sender
     local success = StartAuction(self, CLM.MODELS.AuctionCommStartAuction:New(data))
