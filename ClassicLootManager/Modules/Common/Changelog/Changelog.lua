@@ -3,6 +3,29 @@ local  _, CLM = ...
 ---@type table[]
 CLM.ChangelogData = {
     {
+        version = "v5.7.8",
+        data = {
+            {
+                name = "Fixes",
+                data = {
+                    { header = "BigWigs conflict", body = "Auctions for BigWigs users should not fail anymore." },
+                    { header = "Raid Taint", body = "Raid Warning will no longer taint on retail however at the cost of missing CLM icon from it." },
+                },
+            },
+        },
+    },
+    {
+        version = "v5.7.7",
+        data = {
+            {
+                name = "Hotfix",
+                data = {
+                    { header = "Hotfix", body = "Hotfix" },
+                },
+            },
+        },
+    },
+    {
         version = "v5.7.6",
         data = {
             {

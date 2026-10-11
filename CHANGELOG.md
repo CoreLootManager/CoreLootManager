@@ -1,3 +1,13 @@
+# Core Loot Manager v5.7.8
+## Fixes
+### BigWigs conflict
+Auctions for BigWigs users should not fail anymore.
+### Raid Taint
+Raid Warning will no longer taint on retail however at the cost of missing CLM icon from it.
+# Core Loot Manager v5.7.7
+## Hotfix
+### Hotfix
+Hotfix
 # Core Loot Manager v5.7.6
 ## Changes
 ### Midnight Phase 2
