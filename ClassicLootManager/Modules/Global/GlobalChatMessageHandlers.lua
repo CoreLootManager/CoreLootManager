@@ -39,19 +39,6 @@ local function classicRaidWarningFrameOnEvent(self, event, message)
     end
 end
 
-local function mainlineRaidWarningFrameOnEvent(self, event, message)
-    if ( event == "CHAT_MSG_RAID_WARNING" ) then
-        message = subsituteWithIcon(message)
-    end
-
-    RaidWarningFrameMixin.OnEvent(self, event, message)
-end
-
-local raidWarningFrameOnEvent = classicRaidWarningFrameOnEvent
-if CLM.IsMainline() then
-    raidWarningFrameOnEvent = mainlineRaidWarningFrameOnEvent
-end
-
 ---@class GlobalChatMessageHandlers
 local GlobalChatMessageHandlers = {}
 function GlobalChatMessageHandlers:Initialize()
@@ -59,7 +46,9 @@ function GlobalChatMessageHandlers:Initialize()
     for _, channel in ipairs(CHAT_MESSAGE_CHANNELS) do
         ChatFrame_AddMessageEventFilter(channel, filterSubsituteWithIcon)
     end
-    RaidWarningFrame:SetScript("OnEvent", raidWarningFrameOnEvent)
+    if not CLM.IsMainline() then
+        RaidWarningFrame:SetScript("OnEvent", classicRaidWarningFrameOnEvent)
+    end
 end
 
 CLM.GlobalChatMessageHandlers = GlobalChatMessageHandlers
