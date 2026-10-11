@@ -50,6 +50,21 @@ local function Create(self, item, auction, options)
     }
     self.bar = LibCandyBar:New(self.options.texture, self.options.width, self.options.height)
 
+
+    LibCandyBar.RegisterCallback(self, "LibCandyBar_Stop", function(event, bar)
+    if self.bar ~= bar then
+        return
+    end
+
+     self.bar = nil
+
+    if self.parent then
+        self.parent:Hide()
+    end
+
+    LibCandyBar.UnregisterCallback(self, "LibCandyBar_Stop")
+end)
+
     self.bar:SetFont(SharedMedia:Fetch("font", self.options.fontName), self.options.fontSize)
 
     local duration = auction:GetEndTime() - GetServerTime()
@@ -135,11 +150,15 @@ end
 
 ---@param item table?
 function BiddingTimerBar:UpdateInfo(item)
-    if not item then return end
+    if not item or not self.bar then
+        return
+    end
+
     local note = ""
     if item:GetNote():len() > 0 then
         note = "(" .. item:GetNote() .. ")"
     end
+
     local link = item:GetItemLink() or ""
     self.bar:SetLabel(link .. " " .. note)
 
@@ -149,9 +168,12 @@ end
 
 ---@param time number
 function BiddingTimerBar:UpdateTime(time)
-    self.bar.exp = (self.bar.exp + time) -- trick to extend bar
-end
+    if not self.bar then
+        return
+    end
 
+    self.bar.exp = self.bar.exp + time
+end
 ---@param width number
 function BiddingTimerBar:SetWidth(width)
     self.options.width = tonumber(width) or DEFAULT_WIDTH
@@ -194,8 +216,11 @@ function BiddingTimerBar:GetOptions()
 end
 
 function BiddingTimerBar:Stop()
-    self.parent:Hide()
-    if self.bar.running then
+    if self.parent then
+        self.parent:Hide()
+    end
+
+    if self.bar and self.bar.running then
         self.bar:Stop()
     end
 end
