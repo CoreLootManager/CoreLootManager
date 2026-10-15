@@ -115,6 +115,8 @@ globals = {
 	"C_ChatInfo",
 	"C_ChatInfo.InChatMessagingLockdown",
 	"Settings.KEYBINDINGS_CATEGORY_ID",
+	"GetItemInfo",
+	"GetItemInfoInstant",
 	"C_Item.GetItemInfo",
 	"C_Item.GetItemInfoInstant",
 	"C_Item.GetItemQualityByID",
