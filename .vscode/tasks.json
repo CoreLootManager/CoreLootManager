@@ -46,37 +46,70 @@
             "problemMatcher": []
         },
         {
-            "label": "clean",
+            "label": "deploy",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_clean ${input:WOW_TARGET}",
+            "command": "bash",
+            "args": [
+                "-c",
+                "mkdir -p /wow/${input:WOW_TARGET}/Interface/AddOns/ && cp -r .release/* /wow/${input:WOW_TARGET}/Interface/AddOns/",
+            ],
             "problemMatcher": []
         },
         {
-            "label": "debug deploy",
+            "label": "debug",
             "type": "shell",
-            "command": "source ~/.bash_wow && clm_debug_deploy ${input:WOW_TARGET}",
+            "command": "bash",
+            "args": [
+                "-c",
+                "grep --include=\"*.lua\" -rl \"do-not-package\" | xargs -I {} cp {} /wow/${input:WOW_TARGET}/Interface/AddOns/{}"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "find",
+            "args": [
+                "/wow/*/Interface/AddOns/",
+                "-maxdepth", "1",
+                "-type", "d",
+                "-name", "\"ClassicLootManager*\"",
+                "-exec", "rm", "-rf", "{}", "+",
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "clean deploy debug",
+            "dependsOn": [
+                "clean",
+                "deploy",
+                "debug"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": []
         },
         {
             "label": "copy file",
             "type": "shell",
-            "command": "source ~/.bash_wow && cp ${relativeFile} $WOW/${input:WOW_TARGET}/Interface/AddOns/${relativeFile}",
+            "command": "cp ${relativeFile} /wow/${input:WOW_TARGET}/Interface/AddOns/${relativeFile}",
             "problemMatcher": []
         },
-        //${file}
     ],
     "inputs": [
         {
             "id": "WOW_TARGET",
             "description": "WoW target",
-            "default": "$CATA",
+            "default": "_retail_",
             "type": "pickString",
             "options": [
-                "$CATA",
-                "$TWW_11_0_7",
-                "$TWW",
-                "$ERA",
-                "$RETAIL"
+                "_retail_",
+                "_ptr_",
+                "_classic_ptr_",
+                "_classic_beta_",
             ]
         }
     ]

@@ -171,7 +171,7 @@ do
     }
     for _, id in pairs(Enum.ItemClass) do
         if not ignoredClasses[id] then
-            ItemClasses[id] = GetItemClassInfo(id)
+            ItemClasses[id] = C_Item.GetItemClassInfo(id)
         end
     end
 end
