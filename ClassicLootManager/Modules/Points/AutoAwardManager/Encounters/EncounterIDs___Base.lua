@@ -403,6 +403,8 @@ CLM.EncounterIDsMap = {
     [3159] = EJ_GetEncounterInfo(2711) or "Rotmire",
     -- Tidebound Grotto
     [3379] = EJ_GetEncounterInfo(2849) or "Nymrissa Wavecaller",
+    -- The Depths of the Endless
+    [3513] = EJ_GetEncounterInfo(2896) or "Kith’ix",
 }
 
 CLM.EncounterHasHardMode = CLM.UTILS.Set({

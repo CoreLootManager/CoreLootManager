@@ -61,5 +61,12 @@ CLM.EncounterIDs[LE_EXPANSION_MIDNIGHT or 11] = {
         data = {
             { id = 3379, name = CLM.EncounterIDsMap[3379] },
         }
+    },
+    {
+        name = EJ_GetInstanceInfo(1324) or "The Unbinding of Kith’ix",
+        difficulty = { CLM.DifficultyID.NORMAL, CLM.DifficultyID.HEROIC, CLM.DifficultyID.MYTHIC },
+        data = {
+            { id = 3513, name = CLM.EncounterIDsMap[3513] },
+        }
     }
 }
