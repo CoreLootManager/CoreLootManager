@@ -3,6 +3,18 @@ local  _, CLM = ...
 ---@type table[]
 CLM.ChangelogData = {
     {
+        version = "v5.8.0",
+        data = {
+            {
+                name = "Changes",
+                data = {
+                    { header = "Retail deprecation", body = "Fix deprecated Item calls." },
+                    { header = "Midnight 12.1.5 support", body = "Support Kith'ix raid." },
+                },
+            },
+        },
+    },
+    {
         version = "v5.7.8",
         data = {
             {

@@ -1,3 +1,9 @@
+# Core Loot Manager v5.8.0
+## Changes
+### Retail deprecation
+Fix deprecated Item calls.
+### Midnight 12.1.5 support
+Support Kith'ix raid.
 # Core Loot Manager v5.7.8
 ## Fixes
 ### BigWigs conflict
