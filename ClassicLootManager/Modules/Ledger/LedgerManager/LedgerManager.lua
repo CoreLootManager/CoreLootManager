@@ -46,7 +46,7 @@ local function createLedger(self, database)
         (function(data, distribution, target, progressCallback)
             return CLM.MODULES.Comms:Send(CLM.COMM_CHANNEL.LEDGER.DATA, data, distribution, target, "NORMAL")
         end), -- sendLargeMessage
-        0, 100, LOG)
+        0, 500, LOG)
 
         ledger.addSyncStateChangedListener(function(_, status)
             self:UpdateSyncState(status)
